@@ -2,8 +2,10 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeDtoSelectors.SaksbehandlerValgSelectors.opplystOmBotid
+import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -21,7 +23,7 @@ import no.nav.pensjon.brevbaker.api.model.FoedselsnummerSelectors.value
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<ForespoerselOmDokumentasjonAvBotidINorgeDto> {
 
     // PE_IY_03_167 - dette er delen for alder
     override val kode = Pesysbrevkoder.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER
@@ -31,7 +33,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<EmptyR
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = EmptyRedigerbarBrevdata::class,
+        letterDataType = ForespoerselOmDokumentasjonAvBotidINorgeDto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Forespørsel om dokumentasjon av botid i Norge - alder",
@@ -54,9 +56,14 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<EmptyR
                 )
                 text(Bokmal to "hovedregisterkort/navnekort", fontType = FontType.BOLD)
                 textExpr(
-                    Bokmal to " e.l) for ".expr() + felles.bruker.fulltNavn() + " med fødselsnummer " + felles.bruker.foedselsnummer.value + ". "
-                            + fritekst("Vedkommende har opplyst at han/hun var sist bosatt i deres kommune fra mm.dd.år til mm.dd.år.")
+                    Bokmal to " e.l) for ".expr() + felles.bruker.fulltNavn() + " med fødselsnummer " + felles.bruker.foedselsnummer.value + ". ",
                 )
+                showIf(saksbehandlerValg.opplystOmBotid) {
+                    val dato = fritekst("mm.dd.år")
+                    textExpr(
+                        Bokmal to "Vedkommende har opplyst at ".expr() + fritekst("han/hun") + " var sist bosatt i deres kommune fra " + dato + " til " + dato + ".",
+                    )
+                }
             }
 
             paragraph {
