@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.Felles
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -11,10 +10,6 @@ import org.junit.jupiter.api.Test
 class ExpressionEvalTest {
 
     data class SomeDto(val name: String, val kortNavn: String?)
-
-    @Suppress("unused")
-    @TemplateModelHelpers
-    object Helpers : HasModel<SomeDto>
 
     private val nameSelector = object : TemplateModelSelector<SomeDto, String> {
         override val className = "FakeSomeDtoNavnSelector"
