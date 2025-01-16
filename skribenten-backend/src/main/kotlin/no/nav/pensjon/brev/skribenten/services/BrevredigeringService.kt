@@ -147,7 +147,7 @@ class BrevredigeringService(
             rendreBrev(
                 brev = brevDto,
                 saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg,
-                signaturSignerende = signatur ?: brevDto.redigertBrev.signatur.saksbehandlerNavn,
+                signaturSignerende = signatur ?: brevDto.info.signaturSignerende,
             ).map { rendretBrev ->
                 val principal = PrincipalInContext.require()
                 transaction {
