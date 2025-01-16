@@ -1,18 +1,18 @@
 import { css } from "@emotion/react";
 import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import { Accordion, BodyShort, Button, Label, Tag, VStack } from "@navikt/ds-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { hentPdfForJournalpostQuery, sendBrev } from "~/api/sak-api-endpoints";
+import { getNavn } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
+import type { Mottaker } from "~/types/brev";
 import { type BestillBrevResponse, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
+import { humanizeName } from "~/utils/stringUtils";
+import { queryFold } from "~/utils/tanstackUtils";
 
-import type {
-  FerdigstillResponse,
-  FerdigstillResponser,
-  FerdigstillSuccessResponse,
-} from "./FerdigstillResultatContext";
+import type { FerdigstillResponse, FerdigstillResponser } from "./FerdigstillResultatContext";
 import { distribusjonstypeTilText } from "./KvitteringUtils";
 import Oppsummeringspar from "./Oppsummeringspar";
 
@@ -192,30 +192,55 @@ const KvittertBrevContent = (properties: {
           </KvittertBrevContentError>
         );
       } else {
-        return <KvittertBrevContentSuccess resultat={properties.resultat} sakId={properties.sakId} />;
+        return (
+          <BrevSendtKvittering
+            distribusjonstype={properties.resultat.brevInfo.distribusjonstype}
+            journalpostId={properties.resultat.response.journalpostId}
+            mottaker={properties.resultat.brevInfo.mottaker}
+            saksId={properties.sakId}
+          />
+        );
       }
     }
   }
 };
 
-const KvittertBrevContentSuccess = (properties: { sakId: string; resultat: FerdigstillSuccessResponse }) => {
+export const BrevSendtKvittering = (props: {
+  saksId: string;
+  distribusjonstype: Distribusjonstype;
+  journalpostId: number;
+  /**
+   * defaulter til brukeren
+   */
+  mottaker: Nullable<Mottaker>;
+}) => {
   const pdfForJournalpost = useMutation<Blob, Error>({
-    /* den er brukt i contexten av at journalpostId'en er sjekket til å være not null */
-    mutationFn: () => hentPdfForJournalpostQuery.queryFn(properties.sakId, properties.resultat.response.journalpostId!),
+    mutationFn: () => hentPdfForJournalpostQuery.queryFn(props.saksId, props.journalpostId),
     onSuccess: (pdf) => window.open(URL.createObjectURL(pdf), "_blank"),
+  });
+
+  const hentNavnQuery = useQuery({
+    queryKey: getNavn.queryKey(props.saksId),
+    queryFn: () => getNavn.queryFn(props.saksId),
   });
 
   return (
     <VStack align={"start"} gap="4">
-      {/* TODO <Oppsummeringspar tittel={"Mottaker"} verdi={""} /> */}
+      {props.mottaker ? (
+        <Oppsummeringspar tittel={"Mottaker"} verdi={props.mottaker.navn ?? "Fant ikke mottakerens navn"} />
+      ) : (
+        queryFold({
+          query: hentNavnQuery,
+          initial: () => <></>,
+          pending: () => <BodyShort>Henter mottaker navn...</BodyShort>,
+          error: (error) => <ApiError error={error} title={"Klarte ikke å hente mottaker"} />,
+          success: (navn) => <Oppsummeringspar tittel={"Mottaker"} verdi={humanizeName(navn)} />,
+        })
+      )}
 
-      <Oppsummeringspar
-        tittel={"Distribueres via"}
-        verdi={distribusjonstypeTilText(properties.resultat.brevInfo.distribusjonstype)}
-      />
-      {/* den er brukt i contexten av at journalpostId'en er sjekket til å være not null */}
-      <Oppsummeringspar tittel={"Journalpost ID"} verdi={properties.resultat.response.journalpostId!} />
-      {properties.resultat.brevInfo.distribusjonstype === Distribusjonstype.LOKALPRINT && (
+      <Oppsummeringspar tittel={"Distribueres via"} verdi={distribusjonstypeTilText(props.distribusjonstype)} />
+      <Oppsummeringspar tittel={"Journalpost ID"} verdi={props.journalpostId} />
+      {props.distribusjonstype === Distribusjonstype.LOKALPRINT && (
         <Button
           loading={pdfForJournalpost.isPending}
           onClick={() => pdfForJournalpost.mutate()}
