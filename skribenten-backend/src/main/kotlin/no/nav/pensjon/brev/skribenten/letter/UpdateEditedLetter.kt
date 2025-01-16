@@ -139,9 +139,14 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
             is Edit.ParagraphContent.Text.Literal -> when (rendered) {
                 is Edit.ParagraphContent.Text.Literal -> rendered.copy(editedText = edited.editedText, editedFontType = edited.editedFontType)
                 is Edit.ParagraphContent.Text.Variable -> throw UpdateEditedLetterException("Edited literal and rendered variable has same ID, cannot merge: $edited - $rendered")
+                is Edit.ParagraphContent.Text.NewLine -> throw UpdateEditedLetterException("Edited literal and rendered newLine has same ID, cannot merge: $edited - $rendered")
             }
-
             is Edit.ParagraphContent.Text.Variable -> throw UpdateEditedLetterException("Variable should never be considered edited: $edited")
+            is Edit.ParagraphContent.Text.NewLine -> when (rendered) {
+                is Edit.ParagraphContent.Text.NewLine -> edited
+                is Edit.ParagraphContent.Text.Literal -> throw UpdateEditedLetterException("Edited newLine and rendered literal has same ID, cannot merge: $edited - $rendered")
+                is Edit.ParagraphContent.Text.Variable -> throw UpdateEditedLetterException("Edited newLine and rendered variable has same ID, cannot merge: $edited - $rendered")
+            }
         }
 
     private fun mergeParagraphContent(edited: Edit.ParagraphContent, rendered: Edit.ParagraphContent): Edit.ParagraphContent =
@@ -225,6 +230,8 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
             is Edit.ParagraphContent.Text.Variable -> variableValues[content.id]
                 ?.let { content.copy(text = it) }
                 ?: Edit.ParagraphContent.Text.Literal(content.id, content.text, content.fontType, parentId = content.parentId)
+
+            is Edit.ParagraphContent.Text.NewLine -> content
         }
 
     private fun updateVariableValues(itemList: Edit.ParagraphContent.ItemList): Edit.ParagraphContent.ItemList =

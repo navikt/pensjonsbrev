@@ -1,3 +1,4 @@
+import { addNewLine } from "~/Brevredigering/LetterEditor/actions/addNewLine";
 import { cursorPosition } from "~/Brevredigering/LetterEditor/actions/cursorPosition";
 import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
 
@@ -12,6 +13,7 @@ const Actions = {
   create,
   cursorPosition,
   merge,
+  addNewLine,
   paste,
   split,
   switchTypography,

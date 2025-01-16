@@ -54,7 +54,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<EmptyR
                 )
                 text(Bokmal to "hovedregisterkort/navnekort", fontType = FontType.BOLD)
                 textExpr(
-                    Bokmal to " e.l) for ".expr() + felles.bruker.fulltNavn() + " med fødselsnummer " + felles.bruker.foedselsnummer.value + "."
+                    Bokmal to " e.l) for ".expr() + felles.bruker.fulltNavn() + " med fødselsnummer " + felles.bruker.foedselsnummer.value + ". "
                             + fritekst("Vedkommende har opplyst at han/hun var sist bosatt i deres kommune fra mm.dd.år til mm.dd.år.")
                 )
             }
