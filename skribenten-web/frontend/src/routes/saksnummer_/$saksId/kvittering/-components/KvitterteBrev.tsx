@@ -1,5 +1,4 @@
 import { css } from "@emotion/react";
-import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import { Accordion, BodyShort, Button, Label, Tag, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -12,11 +11,12 @@ import type { Nullable } from "~/types/Nullable";
 import { humanizeName } from "~/utils/stringUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 
-import type { FerdigstillResponse, FerdigstillResponser } from "./FerdigstillResultatContext";
 import { distribusjonstypeTilText } from "./KvitteringUtils";
 import Oppsummeringspar from "./Oppsummeringspar";
+import type { SendtBrevResponse, SendtBrevResponser } from "./SendtBrevResultatContext";
 
-const KvitterteBrev = (properties: { sakId: string; resultat: FerdigstillResponser }) => {
+//TODO - komponenten er nå i bruk i 2 forskjellige steder. flytt til /components
+const KvitterteBrev = (properties: { sakId: string; resultat: SendtBrevResponser }) => {
   return (
     <Accordion>
       {properties.resultat.map((result, index) => (
@@ -28,7 +28,7 @@ const KvitterteBrev = (properties: { sakId: string; resultat: FerdigstillRespons
 
 export default KvitterteBrev;
 
-const KvittertBrev = (properties: { sakId: string; resultat: FerdigstillResponse }) => {
+const KvittertBrev = (properties: { sakId: string; resultat: SendtBrevResponse }) => {
   const mutation = useMutation<BestillBrevResponse, Error, number>({
     mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
   });
@@ -39,7 +39,7 @@ const KvittertBrev = (properties: { sakId: string; resultat: FerdigstillResponse
         resultat={
           mutation.isSuccess
             ? {
-                status: "fulfilledWithSuccess",
+                status: "success",
                 brevInfo: properties.resultat.brevInfo,
                 response: mutation.data,
               }
@@ -54,7 +54,7 @@ const KvittertBrev = (properties: { sakId: string; resultat: FerdigstillResponse
         resultat={
           mutation.isSuccess
             ? {
-                status: "fulfilledWithSuccess",
+                status: "success",
                 brevInfo: properties.resultat.brevInfo,
                 response: mutation.data,
               }
@@ -66,7 +66,7 @@ const KvittertBrev = (properties: { sakId: string; resultat: FerdigstillResponse
   );
 };
 
-const KvittertBrevHeader = (properties: { sakId: string; resultat: FerdigstillResponse }) => {
+const KvittertBrevHeader = (properties: { sakId: string; resultat: SendtBrevResponse }) => {
   const { tag, tittel } = hentTagOgTittelForHeader(properties.resultat);
 
   return (
@@ -85,9 +85,9 @@ const KvittertBrevHeader = (properties: { sakId: string; resultat: FerdigstillRe
   );
 };
 
-const hentTagOgTittelForHeader = (resultat: FerdigstillResponse) => {
+const hentTagOgTittelForHeader = (resultat: SendtBrevResponse) => {
   switch (resultat.status) {
-    case "fulfilledWithError": {
+    case "error": {
       const tag = (
         <Tag size="small" variant={"error"}>
           Kunne ikke sende brev
@@ -96,7 +96,7 @@ const hentTagOgTittelForHeader = (resultat: FerdigstillResponse) => {
 
       return { tag, tittel: resultat.brevInfo.brevtittel };
     }
-    case "fulfilledWithSuccess": {
+    case "success": {
       const tag = resultat.response.journalpostId ? (
         <Tag
           size="small"
@@ -119,7 +119,7 @@ const hentTagOgTittelForHeader = (resultat: FerdigstillResponse) => {
 
 const KvittertBrevContentWrapper = (properties: {
   sakId: string;
-  resultat: FerdigstillResponse;
+  resultat: SendtBrevResponse;
   onPrøvIgjenClick: () => void;
   isPending: boolean;
   error: Nullable<Error>;
@@ -127,7 +127,6 @@ const KvittertBrevContentWrapper = (properties: {
   return (
     <Accordion.Content>
       <KvittertBrevContent
-        error={properties.error}
         isPending={properties.isPending}
         onPrøvIgjenClick={properties.onPrøvIgjenClick}
         resultat={properties.resultat}
@@ -139,57 +138,24 @@ const KvittertBrevContentWrapper = (properties: {
 
 const KvittertBrevContent = (properties: {
   sakId: string;
-  resultat: FerdigstillResponse;
+  resultat: SendtBrevResponse;
   onPrøvIgjenClick: () => void;
   isPending: boolean;
-  error: Nullable<Error>;
 }) => {
   switch (properties.resultat.status) {
-    case "fulfilledWithError": {
-      const error = properties.resultat.error;
-      const correlationId = error.response?.headers["x-request-id"] ?? null;
-
+    case "error": {
       return (
-        <KvittertBrevContentError
-          error={properties.error}
-          isPending={properties.isPending}
-          onPrøvIgjenClick={properties.onPrøvIgjenClick}
-          sakId={properties.sakId}
-        >
-          <BodyShort>Brevet ble ikke sendt pga en ukjent feil. Prøv igjen.</BodyShort>
-          <BodyShort>
-            Feilen var {error.code} - {error.message}
-          </BodyShort>
-          <BodyShort>Id for feilsøking: {correlationId ?? "Fant ikke feilsøkings-id"}</BodyShort>
-        </KvittertBrevContentError>
+        <BrevIkkeSendtKvittering isPending={properties.isPending} onPrøvIgjenClick={properties.onPrøvIgjenClick} />
       );
     }
-    case "fulfilledWithSuccess": {
+    case "success": {
       if (properties.resultat.response.error != null) {
         return (
-          <KvittertBrevContentError
-            error={properties.error}
-            isPending={properties.isPending}
-            onPrøvIgjenClick={properties.onPrøvIgjenClick}
-            sakId={properties.sakId}
-          >
-            <BodyShort>
-              Brevet ble ikke sendt pga {properties.resultat.response.error?.tekniskgrunn ?? "en ukjent teknisk grunn"}.
-              Prøv igjen.
-            </BodyShort>
-            <BodyShort>{properties.resultat.response.error?.beskrivelse}</BodyShort>
-          </KvittertBrevContentError>
+          <BrevIkkeSendtKvittering isPending={properties.isPending} onPrøvIgjenClick={properties.onPrøvIgjenClick} />
         );
       } else if (properties.resultat.response.journalpostId == null) {
         return (
-          <KvittertBrevContentError
-            error={properties.error}
-            isPending={properties.isPending}
-            onPrøvIgjenClick={properties.onPrøvIgjenClick}
-            sakId={properties.sakId}
-          >
-            <BodyShort>Brevet ble ikke sendt pga en ukjent feil. Prøv igjen.</BodyShort>
-          </KvittertBrevContentError>
+          <BrevIkkeSendtKvittering isPending={properties.isPending} onPrøvIgjenClick={properties.onPrøvIgjenClick} />
         );
       } else {
         return (
@@ -255,41 +221,11 @@ export const BrevSendtKvittering = (props: {
   );
 };
 
-export const KvittertBrevContentError = (properties: {
-  sakId: string;
-  children: React.ReactNode;
-  onPrøvIgjenClick: () => void;
-  isPending: boolean;
-  error: Nullable<Error>;
-}) => {
+export const BrevIkkeSendtKvittering = (properties: { onPrøvIgjenClick: () => void; isPending: boolean }) => {
   return (
     <VStack align="start" gap="3">
-      <div
-        css={css`
-          display: grid;
-          grid-template-columns: 1.5rem 1fr;
-          gap: 1rem;
-        `}
-      >
-        <XMarkOctagonFillIcon
-          css={css`
-            color: var(--a-nav-red);
-          `}
-          fontSize="1.5rem"
-          title="error"
-        />
-        <div
-          css={css`
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-          `}
-        >
-          {properties.children}
-        </div>
-      </div>
-
-      {properties.error && <ApiError error={properties.error} title={"Klarte ikke å sende brevet"} />}
+      <BodyShort size="small">Skribenten klarte ikke å sende brevet.</BodyShort>
+      <BodyShort size="small">Brevet ligger lagret i brevbehandler til brevet er sendt.</BodyShort>
 
       <Button
         loading={properties.isPending}

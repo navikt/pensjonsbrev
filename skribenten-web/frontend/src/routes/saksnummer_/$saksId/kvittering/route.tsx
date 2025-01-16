@@ -2,8 +2,8 @@ import { css } from "@emotion/react";
 import { Button, Heading, VStack } from "@navikt/ds-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
-import { useFerdigstillResultatContext } from "./-components/FerdigstillResultatContext";
 import KvitterteBrev from "./-components/KvitterteBrev";
+import { useSendtBrevResultatContext } from "./-components/SendtBrevResultatContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId/kvittering")({
   component: Kvittering,
@@ -12,7 +12,7 @@ export const Route = createFileRoute("/saksnummer/$saksId/kvittering")({
 function Kvittering() {
   const { saksId } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
-  const ferdigstillBrevContext = useFerdigstillResultatContext();
+  const ferdigstillBrevContext = useSendtBrevResultatContext();
 
   return (
     <div

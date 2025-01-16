@@ -16,11 +16,11 @@ import { type BrevInfo } from "~/types/brev";
 import { erBrevArkivert, erBrevKlar } from "~/utils/brevUtils";
 
 import type {
-  FerdigstillErrorResponse,
-  FerdigstillResponser,
-  FerdigstillSuccessResponse,
-} from "../../kvittering/-components/FerdigstillResultatContext";
-import { useFerdigstillResultatContext } from "../../kvittering/-components/FerdigstillResultatContext";
+  SendtBrevErrorResponse,
+  SendtBrevResponser,
+  SendtBrevSuccessResponse,
+} from "../../kvittering/-components/SendtBrevResultatContext";
+import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 import { Route } from "../route";
 
 export const FerdigstillOgSendBrevButton = (properties: {
@@ -103,16 +103,14 @@ const validationSchema = z.object({
 });
 
 const isFerdigstillSuccessResponse = (
-  res: FerdigstillSuccessResponse | FerdigstillErrorResponse,
-): res is FerdigstillSuccessResponse => {
-  return res.status === "fulfilledWithSuccess" && !!res.response.journalpostId;
-};
+  res: SendtBrevSuccessResponse | SendtBrevErrorResponse,
+): res is SendtBrevSuccessResponse => res.status === "success" && !!res.response.journalpostId;
 
 export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: boolean; onClose: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const queryClient = useQueryClient();
 
-  const ferdigstillBrevContext = useFerdigstillResultatContext();
+  const ferdigstillBrevContext = useSendtBrevResultatContext();
 
   const bestillBrevMutation = useMutation<BestillBrevResponse, Error, number>({
     mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
@@ -146,12 +144,12 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
     const requests = brevSomSkalSendes.map((brevInfo) =>
       bestillBrevMutation.mutateAsync(brevInfo.id).then(
         //vi har fortsatt behov for informasjon i brevet, så vi returnerer brevinfo sammen med responsen
-        (response) => ({ status: "fulfilledWithSuccess" as const, brevInfo, response }),
-        (error: AxiosError) => ({ status: "fulfilledWithError" as const, brevInfo, error }),
+        (response) => ({ status: "success" as const, brevInfo, response }),
+        (error: AxiosError) => ({ status: "error" as const, brevInfo, error }),
       ),
     );
 
-    const resultat: FerdigstillResponser = await Promise.allSettled(requests).then((result) =>
+    const resultat: SendtBrevResponser = await Promise.allSettled(requests).then((result) =>
       result.map((response) => {
         switch (response.status) {
           //fordi vi håndterer vanlige caser av rejected i mutation, vil resultatet 'alltid' være fulfilled

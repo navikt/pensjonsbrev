@@ -12,8 +12,7 @@ import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 import { queryFold } from "~/utils/tanstackUtils";
 
 import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
-import { FerdigstillResultatContextProvider } from "./kvittering/-components/FerdigstillResultatContext";
-import { SendVedtakContextProvider } from "./vedtak.$vedtakId/kvittering/-SendVedtakContext";
+import { SendtBrevResultatContextProvider } from "./kvittering/-components/SendtBrevResultatContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId")({
   beforeLoad: ({ params: { saksId }, search: { vedtaksId } }) => {
@@ -58,16 +57,16 @@ function SakLayout() {
   const sakContext = Route.useLoaderData();
 
   return (
-    <SendVedtakContextProvider>
-    <FerdigstillResultatContextProvider>
-      <MottakerContextProvider>
-        {sakContext && <Subheader sak={sakContext.sak} />}
-        <div className="page-margins">
-          <Outlet />
-        </div>
-      </MottakerContextProvider>
-    </FerdigstillResultatContextProvider>
-    </SendVedtakContextProvider>
+    <SendtBrevResultatContextProvider>
+      <FerdigstillResultatContextProvider>
+        <MottakerContextProvider>
+          <SakInfoBreadcrumbs sak={sakContext?.sak} />
+          <div className="page-margins">
+            <Outlet />
+          </div>
+        </MottakerContextProvider>
+      </FerdigstillResultatContextProvider>
+    </SendtBrevResultatContextProvider>
   );
 }
 
