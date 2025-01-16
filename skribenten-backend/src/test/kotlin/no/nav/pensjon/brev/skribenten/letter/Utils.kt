@@ -46,6 +46,7 @@ private fun Edit.ParagraphContent.Text.fixParentIds(parentId: Int?): Edit.Paragr
     when(this) {
         is Edit.ParagraphContent.Text.Literal -> copy(parentId = this.parentId ?: parentId)
         is Edit.ParagraphContent.Text.Variable -> copy(parentId = this.parentId ?: parentId)
+        is Edit.ParagraphContent.Text.NewLine -> copy(parentId = this.parentId ?: parentId)
     }
 
 private fun Edit.ParagraphContent.ItemList.Item.fixParentIds(parentId: Int?): Edit.ParagraphContent.ItemList.Item =
