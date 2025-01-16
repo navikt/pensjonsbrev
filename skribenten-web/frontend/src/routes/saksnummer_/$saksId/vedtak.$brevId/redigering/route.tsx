@@ -224,6 +224,7 @@ const Vedtak = (props: { saksId: string; brevResponse: BrevResponse }) => {
                   <BrevmalAlternativer
                     brevkode={props.brevResponse.info.brevkode}
                     submitOnChange={() => saksbehandlerValgMutation.mutate(form.getValues("saksbehandlerValg"))}
+                    withTitle
                   />
                 </VStack>
               </VStack>
@@ -256,9 +257,10 @@ export const BrevmalAlternativer = (props: {
   submitOnChange?: () => void;
   children?: React.ReactNode;
   /**
-   * Kan velge hvilke felter som skal vises. Default er at begge vises.
+   * Kan velge hvilke felter som skal vises. Default er at begge vises (dersom dem finnes, ellers bare den som finnes)
    */
   displaySingle?: "required" | "optional";
+  withTitle?: boolean;
 }) => {
   const specificationFormElements = usePartitionedModelSpecification(props.brevkode);
 
@@ -270,85 +272,136 @@ export const BrevmalAlternativer = (props: {
       return <BodyShort size="small">Henter skjema for saksbehandler valg...</BodyShort>;
     }
     case "success": {
-      if (props.displaySingle === "required") {
+      if (
+        specificationFormElements.optionalFields.length === 0 &&
+        specificationFormElements.requiredfields.length === 0
+      ) {
         return (
-          <SaksbehandlerValgModelEditor
-            brevkode={props.brevkode}
-            fieldsToRender={"required"}
-            specificationFormElements={specificationFormElements}
-            submitOnChange={props.submitOnChange}
-          />
-        );
-      } else if (props.displaySingle === "optional") {
-        return (
-          <SaksbehandlerValgModelEditor
-            brevkode={props.brevkode}
-            fieldsToRender={"optional"}
-            specificationFormElements={specificationFormElements}
-            submitOnChange={props.submitOnChange}
-          />
+          <VStack gap="3">
+            {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
+            <BodyShort size="small">Det finnes ikke tekstalternativer i denne malen.</BodyShort>
+          </VStack>
         );
       }
 
-      return (
-        <Tabs
-          css={css`
-            width: 100%;
-
-            display: flex;
-            flex-direction: column;
-            gap: var(--a-spacing-5);
-
-            .navds-tabs__scroll-button {
-              /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
-              display: none;
-            }
-          `}
-          defaultValue={BrevAlternativTab.TEKSTER}
-          fill
-          size="small"
-        >
-          <Tabs.List
-            css={css`
-              display: grid;
-              grid-template-columns: repeat(2, 1fr);
-            `}
-          >
-            <Tabs.Tab label="Tekster" value={BrevAlternativTab.TEKSTER} />
-            <Tabs.Tab label="Overstyring" value={BrevAlternativTab.OVERSTYRING} />
-          </Tabs.List>
-          <Tabs.Panel
-            css={css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--a-spacing-5);
-            `}
-            value={BrevAlternativTab.TEKSTER}
-          >
-            <SaksbehandlerValgModelEditor
-              brevkode={props.brevkode}
-              fieldsToRender={"optional"}
-              specificationFormElements={specificationFormElements}
-              submitOnChange={props.submitOnChange}
-            />
-          </Tabs.Panel>
-          <Tabs.Panel
-            css={css`
-              display: flex;
-              flex-direction: column;
-              gap: var(--a-spacing-5);
-            `}
-            value={BrevAlternativTab.OVERSTYRING}
-          >
+      if (props.displaySingle === "required" && specificationFormElements.requiredfields.length > 0) {
+        return (
+          <VStack gap="3">
+            {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
             <SaksbehandlerValgModelEditor
               brevkode={props.brevkode}
               fieldsToRender={"required"}
               specificationFormElements={specificationFormElements}
               submitOnChange={props.submitOnChange}
             />
-          </Tabs.Panel>
-          {props.children}
-        </Tabs>
+          </VStack>
+        );
+      }
+
+      if (props.displaySingle === "optional" && specificationFormElements.optionalFields.length > 0) {
+        return (
+          <VStack gap="3">
+            {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
+            <SaksbehandlerValgModelEditor
+              brevkode={props.brevkode}
+              fieldsToRender={"optional"}
+              specificationFormElements={specificationFormElements}
+              submitOnChange={props.submitOnChange}
+            />
+          </VStack>
+        );
+      }
+
+      if (specificationFormElements.optionalFields.length === 0) {
+        return (
+          <VStack gap="3">
+            {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
+            <SaksbehandlerValgModelEditor
+              brevkode={props.brevkode}
+              fieldsToRender={"required"}
+              specificationFormElements={specificationFormElements}
+              submitOnChange={props.submitOnChange}
+            />
+          </VStack>
+        );
+      }
+
+      if (specificationFormElements.requiredfields.length === 0) {
+        return (
+          <VStack gap="3">
+            {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
+            <SaksbehandlerValgModelEditor
+              brevkode={props.brevkode}
+              fieldsToRender={"optional"}
+              specificationFormElements={specificationFormElements}
+              submitOnChange={props.submitOnChange}
+            />
+          </VStack>
+        );
+      }
+
+      return (
+        <VStack gap="3">
+          {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
+          <Tabs
+            css={css`
+              width: 100%;
+
+              display: flex;
+              flex-direction: column;
+              gap: var(--a-spacing-5);
+
+              .navds-tabs__scroll-button {
+                /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
+                display: none;
+              }
+            `}
+            defaultValue={BrevAlternativTab.TEKSTER}
+            fill
+            size="small"
+          >
+            <Tabs.List
+              css={css`
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+              `}
+            >
+              <Tabs.Tab label="Tekster" value={BrevAlternativTab.TEKSTER} />
+              <Tabs.Tab label="Overstyring" value={BrevAlternativTab.OVERSTYRING} />
+            </Tabs.List>
+            <Tabs.Panel
+              css={css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--a-spacing-5);
+              `}
+              value={BrevAlternativTab.TEKSTER}
+            >
+              <SaksbehandlerValgModelEditor
+                brevkode={props.brevkode}
+                fieldsToRender={"optional"}
+                specificationFormElements={specificationFormElements}
+                submitOnChange={props.submitOnChange}
+              />
+            </Tabs.Panel>
+            <Tabs.Panel
+              css={css`
+                display: flex;
+                flex-direction: column;
+                gap: var(--a-spacing-5);
+              `}
+              value={BrevAlternativTab.OVERSTYRING}
+            >
+              <SaksbehandlerValgModelEditor
+                brevkode={props.brevkode}
+                fieldsToRender={"required"}
+                specificationFormElements={specificationFormElements}
+                submitOnChange={props.submitOnChange}
+              />
+            </Tabs.Panel>
+            {props.children}
+          </Tabs>
+        </VStack>
       );
     }
   }
