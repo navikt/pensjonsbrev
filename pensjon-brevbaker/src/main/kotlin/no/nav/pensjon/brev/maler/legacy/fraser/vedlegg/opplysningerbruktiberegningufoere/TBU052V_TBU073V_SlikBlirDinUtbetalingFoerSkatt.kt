@@ -34,7 +34,6 @@ data class TBU052V_TBU073V_SlikBlirDinUtbetalingFoerSkatt(
                                 Bokmal to "Slik blir din utbetaling før skatt",
                                 Nynorsk to "Slik blir den månadlege utbetalinga di før skatt",
                                 English to "This is your monthly payment before tax",
-                                FontType.BOLD
                             )
                         }
                         column(columnSpan = 1, ColumnAlignment.RIGHT) {

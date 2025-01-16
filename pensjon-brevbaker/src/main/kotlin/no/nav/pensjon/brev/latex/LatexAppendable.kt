@@ -16,14 +16,14 @@ class LatexAppendable(private val output: Appendable) {
         output.appendLine(latexString(s, escape))
     }
 
-    fun appenCmd(cmd: String, vararg args: String, escape: Boolean = true) {
+    fun appendCmd(cmd: String, vararg args: String, escape: Boolean = true) {
         output.append("""\$cmd""")
         args.map { latexString(it, escape) }
             .forEach { output.append("""{$it}""") }
         output.appendLine()
     }
 
-    fun appenCmd(cmd: String, argBuilder: CommandBuilder.() -> Unit) {
+    fun appendCmd(cmd: String, argBuilder: CommandBuilder.() -> Unit) {
         output.append("""\$cmd""")
         CommandBuilder(this).argBuilder()
         output.appendLine()

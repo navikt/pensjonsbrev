@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template.dsl
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import no.nav.pensjon.brev.Fixtures.felles
+import no.nav.pensjon.brev.outlineTestTemplate
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
 import no.nav.pensjon.brev.template.Element.OutlineContent.Paragraph

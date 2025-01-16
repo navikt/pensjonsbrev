@@ -185,10 +185,10 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                 )
                 table(
                     header = {
-                        column(3) { text(Bokmal to "Kolonne 1", Nynorsk to "Kolonne 1", FontType.BOLD) }
-                        column(1, RIGHT) { text(Bokmal to "Kolonne 2", Nynorsk to "Kolonne 2", FontType.BOLD) }
-                        column(1, RIGHT) { text(Bokmal to "Kolonne 3", Nynorsk to "Kolonne 3", FontType.BOLD) }
-                        column(1, RIGHT) { text(Bokmal to "Kolonne 4", Nynorsk to "Kolonne 4", FontType.BOLD) }
+                        column(3) { text(Bokmal to "Kolonne 1", Nynorsk to "Kolonne 1") }
+                        column(1, RIGHT) { text(Bokmal to "Kolonne 2", Nynorsk to "Kolonne 2") }
+                        column(1, RIGHT) { text(Bokmal to "Kolonne 3", Nynorsk to "Kolonne 3") }
+                        column(1, RIGHT) { text(Bokmal to "Kolonne 4", Nynorsk to "Kolonne 4") }
                     }
                 ) {
                     forEach(tilleggEksempel) { tillegg ->

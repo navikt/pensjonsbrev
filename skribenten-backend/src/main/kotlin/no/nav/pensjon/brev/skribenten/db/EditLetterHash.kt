@@ -12,7 +12,7 @@ fun Column<Edit.Letter>.writeHashTo(hash: Column<ByteArray>) =
     WithEditLetterHash(this, hash)
 
 fun Table.hashColumn(name: String): Column<ByteArray> =
-    binary(name, 32)
+    binary(name)
 
 fun Column<ByteArray>.editLetterHash(): ValueClassWrapper<EditLetterHash, ByteArray> =
     wrap({ EditLetterHash(Hex.encodeHexString(it)) }, { Hex.decodeHex(it.hex) })
