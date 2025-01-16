@@ -16,7 +16,7 @@ import type { BrevInfo, BrevResponse, Mottaker, SaksbehandlerValg } from "~/type
 import type { Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
-import { BrevmalAlternativer } from "../../../vedtak.$vedtakId/redigering/route";
+import { BrevmalAlternativer } from "../../../vedtak.$brevId/redigering/route";
 import type { SubmitTemplateOptions } from "../../route";
 import { Route } from "../../route";
 import { EndreMottakerModal } from "../endreMottaker/EndreMottaker";
