@@ -100,6 +100,7 @@ const SwitchField = (props: { prependName?: string; field: string; fieldType: TS
               field.onChange(v.target.checked);
               props.onSubmit?.();
             }}
+            size="small"
           >
             {convertFieldToReadableLabel(props.field)}
           </Switch>

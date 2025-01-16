@@ -376,7 +376,6 @@ function RedigerBrev({
           >
             <VStack gap="3">
               <Heading size="small">{brevmal.data?.name}</Heading>
-
               <BrevmalAlternativer brevkode={brev.info.brevkode} submitOnChange={onTekstValgAndOverstyringChange}>
                 <AutoSavingTextField
                   field={"signatur"}

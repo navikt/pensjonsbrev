@@ -11,7 +11,7 @@ import { getNavn } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
-import { BrevForhåndsvisning } from "./-components/BrevForhåndsvisning";
+import BrevForhåndsvisning from "./-components/BrevForhåndsvisning";
 import { FerdigstillOgSendBrevButton, FerdigstillOgSendBrevModal } from "./-components/FerdigstillBrev";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler")({
@@ -94,7 +94,7 @@ function Brevbehandler() {
           {alleBrevForSak.isSuccess && <BrevbehandlerMeny brevInfo={alleBrevForSak.data} saksId={saksId} />}
         </VStack>
 
-        <div ref={brevPdfContainerReference}>{brevId && <BrevForhåndsvisning brevId={brevId} sakId={saksId} />}</div>
+        <div ref={brevPdfContainerReference}>{brevId && <BrevForhåndsvisning brevId={brevId} saksId={saksId} />}</div>
 
         <HStack
           css={css`

@@ -7,7 +7,7 @@ import type { AxiosError } from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { getBrev, hurtiglagreSaksbehandlerValg, oppdaterAttestantSignatur } from "~/api/brev-queries";
+import { getBrev, oppdaterAttestantSignatur, oppdaterSaksbehandlerValg } from "~/api/brev-queries";
 import { attesterBrev, hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -139,7 +139,7 @@ const Arbeid = (props: { saksId: string; brevResponse: BrevResponse }) => {
 
   const saksbehandlerValgMutation = useMutation<BrevResponse, AxiosError, SaksbehandlerValg>({
     mutationFn: (saksbehandlerValg) => {
-      return hurtiglagreSaksbehandlerValg(props.brevResponse.info.id, saksbehandlerValg);
+      return oppdaterSaksbehandlerValg(props.brevResponse.info.id, saksbehandlerValg);
     },
     onSuccess: (response) => {
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
@@ -299,8 +299,7 @@ export const BrevmalAlternativer = (props: {
 
             display: flex;
             flex-direction: column;
-            gap: var(--a-spacing-6);
-            margin-top: 12px;
+            gap: var(--a-spacing-5);
 
             .navds-tabs__scroll-button {
               /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
@@ -324,8 +323,7 @@ export const BrevmalAlternativer = (props: {
             css={css`
               display: flex;
               flex-direction: column;
-              gap: var(--a-spacing-6);
-              margin-top: 12px;
+              gap: var(--a-spacing-5);
             `}
             value={BrevAlternativTab.TEKSTER}
           >
@@ -340,8 +338,7 @@ export const BrevmalAlternativer = (props: {
             css={css`
               display: flex;
               flex-direction: column;
-              gap: var(--a-spacing-6);
-              margin-top: 12px;
+              gap: var(--a-spacing-5);
             `}
             value={BrevAlternativTab.OVERSTYRING}
           >
