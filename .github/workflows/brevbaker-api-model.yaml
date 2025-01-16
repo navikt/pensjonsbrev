@@ -6,7 +6,7 @@ on:
     paths:
       - "pensjon-brevbaker-api-model/**"
       - "brevbaker-api-model-common/**"
-      - "brevbaker-api-model-mal/**"
+      - "brevbaker-dsl/**"
       - ".github/workflows/brevbaker-api-model.yaml"
   push:
     branches:
@@ -14,7 +14,7 @@ on:
     paths:
       - "pensjon-brevbaker-api-model/**"
       - "brevbaker-api-model-common/**"
-      - "brevbaker-api-model-mal/**"
+      - "brevbaker-dsl/**"
       - ".github/workflows/brevbaker-api-model.yaml"
 jobs:
   changes:
@@ -30,7 +30,7 @@ jobs:
           filters: |
             common:
               - 'brevbaker-api-model-common/**'
-              - 'brevbaker-api-model-mal/**'
+              - 'brevbaker-dsl/**'
             pensjonsbrev:
               - 'pensjon-brevbaker-api-model/**'
   "release-common":
@@ -60,7 +60,7 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
   "release-mal":
-    name: "brevbaker-api-model-mal"
+    name: "brevbaker-dsl"
     runs-on: "ubuntu-latest"
     permissions:
       packages: write
@@ -78,10 +78,10 @@ jobs:
           "distribution": "temurin"
           "java-version": "17"
       - name: "compile and run tests"
-        run: "./gradlew :brevbaker-api-model-mal:build"
+        run: "./gradlew :brevbaker-dsl:build"
       - name: "Release maven artifact"
         if: ${{ github.ref == 'refs/heads/main' && needs.changes.outputs.common == 'true' }}
-        run: "./gradlew :brevbaker-api-model-mal:publish"
+        run: "./gradlew :brevbaker-dsl:publish"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
@@ -107,7 +107,7 @@ jobs:
       - name: "compile and run tests"
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
-          ./gradlew :brevbaker-api-model-mal:publishToMavenLocal 
+          ./gradlew :brevbaker-dsl:publishToMavenLocal 
           ./gradlew :pensjon-brevbaker-api-model:build
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

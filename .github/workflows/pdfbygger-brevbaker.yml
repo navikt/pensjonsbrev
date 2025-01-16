@@ -48,7 +48,7 @@ jobs:
       - name: "compile and run tests"
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal
-          ./gradlew :brevbaker-api-model-mal:publishToMavenLocal 
+          ./gradlew :brevbaker-dsl:publishToMavenLocal 
           ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal 
           ./gradlew :pensjon-brevbaker:build
         env:
@@ -158,7 +158,7 @@ jobs:
       - name: "run integration tests"
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal
-          ./gradlew :brevbaker-api-model-mal:publishToMavenLocal 
+          ./gradlew :brevbaker-dsl:publishToMavenLocal 
           ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal 
           ./gradlew :pensjon-brevbaker:integrationTest
         env:

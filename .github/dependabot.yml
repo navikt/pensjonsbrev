@@ -19,7 +19,7 @@ updates:
     directories:
       - "/"
       - "/brevbaker-api-model-common"
-      - "/brevbaker-api-model-mal"
+      - "/brevbaker-dsl"
       - "/pdf-bygger"
       - "/pensjon-brevbaker"
       - "/pensjon-brevbaker-api-model"

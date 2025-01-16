@@ -16,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    api(project(":brevbaker-api-model-mal"))
+    api(project(":brevbaker-dsl"))
     ksp(project(":template-model-generator"))
 
     testImplementation(kotlin("test"))
