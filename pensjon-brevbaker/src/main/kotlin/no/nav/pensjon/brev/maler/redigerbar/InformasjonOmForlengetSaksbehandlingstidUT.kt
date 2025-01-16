@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.legacy.fraser.doksys.MeldeFraEndringer
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -71,7 +70,7 @@ object InformasjonOmForlengetSaksbehandlingstidUT : RedigerbarTemplate<EmptyRedi
                     English to "Without further delays, we assume the processing of your case to be completed within ".expr() + frist + ".".expr()
                 )
             }
-            includePhrase(MeldeFraEndringer)
+            includePhrase(Felles.MeldeFraEndringer)
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
     }
