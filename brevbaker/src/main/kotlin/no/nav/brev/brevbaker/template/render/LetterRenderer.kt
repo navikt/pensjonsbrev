@@ -1,6 +1,4 @@
-package no.nav.pensjon.brev.template.render
-
-import no.nav.pensjon.brev.template.*
+package no.nav.pensjon.brev.template
 
 abstract class LetterRenderer<R : Any> {
 
