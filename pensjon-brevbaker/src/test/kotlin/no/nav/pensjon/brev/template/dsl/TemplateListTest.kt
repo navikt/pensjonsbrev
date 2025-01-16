@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.template.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.outlineTestLetter
+import no.nav.pensjon.brev.outlineTestTemplate
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -18,7 +20,7 @@ class TemplateListTest {
             paragraph {
                 list {
                     item {
-                        text(Language.Bokmal to "Test")
+                        text(Bokmal to "Test")
                     }
                 }
             }
@@ -32,7 +34,7 @@ class TemplateListTest {
                             Element.OutlineContent.ParagraphContent.ItemList(
                                 listOf(
                                     Content(
-                                        Element.OutlineContent.ParagraphContent.ItemList.Item(listOf(newText(Language.Bokmal to "Test")))
+                                        Element.OutlineContent.ParagraphContent.ItemList.Item(listOf(newText(Bokmal to "Test")))
                                     )
                                 )
                             )
@@ -79,7 +81,7 @@ class TemplateListTest {
                 list {
                     showIf(true.expr()) {
                         item {
-                            text(Language.Bokmal to "Test")
+                            text(Bokmal to "Test")
                         }
                     }
                 }
@@ -88,9 +90,9 @@ class TemplateListTest {
 
         val expected = outlineTestLetter(
             Content(
-                    Element.OutlineContent.Paragraph(
-                        listOf(
-                            Content(
+                Element.OutlineContent.Paragraph(
+                    listOf(
+                        Content(
                             Element.OutlineContent.ParagraphContent.ItemList(
                                 listOf(
                                     ContentOrControlStructure.Conditional(
@@ -98,15 +100,16 @@ class TemplateListTest {
                                         listOf(
                                             Content(
                                                 Element.OutlineContent.ParagraphContent.ItemList.Item(
-                                                    listOf(newText(Language.Bokmal to "Test"))
+                                                    listOf(newText(Bokmal to "Test"))
                                                 )
                                             )
                                         ), emptyList()
                                     )
                                 )
-                            ))
+                            )
                         )
                     )
+                )
             )
         )
 

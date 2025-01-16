@@ -28,15 +28,15 @@ class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> : OutlineScope<
 interface OutlineScope<Lang : LanguageSupport, LetterData : Any> {
     fun addOutlineContent(e: OutlineElement<Lang>)
 
-    fun title1(create: TextOnlyScope<Lang, LetterData>.() -> Unit) {
-        TextOnlyScope<Lang, LetterData>().apply(create)
+    fun title1(create: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
+        PlainTextOnlyScope<Lang, LetterData>().apply(create)
             .let { Element.OutlineContent.Title1(it.elements) }
             .let { ContentOrControlStructure.Content(it) }
             .also { addOutlineContent(it) }
     }
 
-    fun title2(create: TextOnlyScope<Lang, LetterData>.() -> Unit) {
-        TextOnlyScope<Lang, LetterData>().apply(create)
+    fun title2(create: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
+        PlainTextOnlyScope<Lang, LetterData>().apply(create)
             .let { Element.OutlineContent.Title2(it.elements) }
             .let { ContentOrControlStructure.Content(it) }
             .also { addOutlineContent(it) }

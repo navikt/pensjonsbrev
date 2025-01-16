@@ -1,0 +1,38 @@
+% used for title1 and title2
+
+% minus parameter to length
+% The stretch added by plus 10pt minus 10pt is very important for LaTeX to be able to adjust the position of the elements
+% This makes latex to judge how bad it would be to break up content vs removing a little bit of space above a title
+% If for example you are in the middle of a paragraph, and you are just missing 10 pt of space to fit it in the current page
+% , subtracting a couple of pixels above each title instead of shipping the paragraph to the next page or breaking up the paragraph would be the best idea.
+
+% plus
+% plus, like minus allows LaTeX to add some space evenly above each title in the page, such that there isn't much room left on the bottom of the page.
+% This both looks nicer, and mitigates having large empty spaces at the end of a page, which might make readers think the letter is over.
+
+% space that will be added in case the previous element was not a title. Used for chapter like breaks.
+\newlength{\spacebetweentitleandnontitle}
+\setlength{\spacebetweentitleandnontitle}{\dimexpr(25pt-\parskip) plus 8pt minus 8pt}
+
+\newcommand{\lettersectiontitle}[1]{
+    \pagebreak[3] %strongly encourage page break before section title
+    % add more space between previous non-title element accounting for it's own space )
+    \ifdefstring{\previouselement}{title}{}{\addvspace{\spacebetweentitleandnontitle}}
+    #1
+    \nopagebreak
+    \\[0pt]         % TODO finn en bedre måte å få \linebreak til å fungere uten å legge til indent.
+    \addpenalty{10000} % Absolutely no page break here. Addpenalty carries the penalty through addvspace to the next element.
+    \addvspace{3pt} % require at least 6 pt of space until the next element.
+}
+
+% Title 1
+\newcommand{\lettersectiontitleone}[1]{
+    \lettersectiontitle{\titleone #1}
+    \setpreviouselement{title}
+}
+
+% Title 2
+\newcommand{\lettersectiontitletwo}[1]{
+    \lettersectiontitle{\titletwo #1}
+    \setpreviouselement{title}
+}

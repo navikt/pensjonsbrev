@@ -12,6 +12,9 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.render.TestTemplateDtoSelectors.etNavn
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.*
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.opentest4j.AssertionFailedError
 import org.slf4j.LoggerFactory
 
@@ -58,16 +61,15 @@ class PensjonLatexITest {
 
     // To figure out which character makes the compilation fail, set the FIND_FAILING_CHARACTERS to true.
     // FIND_FAILING_CHARACTERS is disabled by default to not take up too much time in case of universally failing compilation.
-    @Test
-    fun `try different characters to attempt escaping LaTeX`() {
+    @ParameterizedTest
+    @MethodSource("allCharacterRanges")
+    fun `try different characters to attempt escaping LaTeX`(fromRange: Int, toRange: Int) {
+        //allCharacterRanges
         val invalidCharacters = ArrayList<Int>()
 
         // split in multiple parts so that it doesn't time out the letter compilation
-        val parts = 4
-        val partSize = Char.MAX_VALUE.code / parts
-        repeat(parts) {
-            isValidCharacters(it * partSize, ((it + 1) * partSize + it).coerceAtMost(Char.MAX_VALUE.code), invalidCharacters)
-        }
+
+        isValidCharacters(fromRange, toRange, invalidCharacters)
 
         if (invalidCharacters.isNotEmpty()) {
             throw AssertionFailedError(
@@ -78,8 +80,6 @@ class PensjonLatexITest {
             )
         }
         assertThat(invalidCharacters, isEmpty)
-
-
     }
 
     private fun isValidCharacters(begin: Int, end: Int, invalidCharacters: ArrayList<Int>) {
@@ -140,4 +140,16 @@ class PensjonLatexITest {
         }
         return stringBuilder.toString()
     }
+
+    companion object {
+        @JvmStatic
+        fun allCharacterRanges(): List<Arguments> {
+            val parts = 4
+            val partSize = Char.MAX_VALUE.code / parts
+            return List(parts){
+                Arguments.of((it * partSize), (((it + 1) * partSize + it).coerceAtMost(Char.MAX_VALUE.code)))
+            }
+        }
+    }
+
 }

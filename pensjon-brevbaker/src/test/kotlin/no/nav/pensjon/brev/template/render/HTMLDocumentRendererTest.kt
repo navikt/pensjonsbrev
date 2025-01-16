@@ -10,10 +10,10 @@ class HTMLDocumentRendererTest {
     @Test
     fun renderDesignReference() {
         Letter(
-            DesignReferenceLetter.template,
+            LetterExample.template,
             createLetterExampleDto(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        ).renderTestHtml("DESIGN_REFERENCE_LETTER")
+        ).renderTestHtml("LETTER_EXAMPLE")
     }
 }

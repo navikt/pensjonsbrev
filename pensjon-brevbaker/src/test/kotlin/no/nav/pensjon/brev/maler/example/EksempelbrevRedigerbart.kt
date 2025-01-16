@@ -19,7 +19,6 @@ import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg3
 import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -187,10 +186,10 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
                 )
                 table(
                     header = {
-                        column(3) { text(Bokmal to "Kolonne 1", Nynorsk to "Kolonne 1", FontType.BOLD) }
-                        column(1, RIGHT) { text(Bokmal to "Kolonne 2", Nynorsk to "Kolonne 2", FontType.BOLD) }
-                        column(1, RIGHT) { text(Bokmal to "Kolonne 3", Nynorsk to "Kolonne 3", FontType.BOLD) }
-                        column(1, RIGHT) { text(Bokmal to "Kolonne 4", Nynorsk to "Kolonne 4", FontType.BOLD) }
+                        column(3) { text(Bokmal to "Kolonne 1", Nynorsk to "Kolonne 1") }
+                        column(1, RIGHT) { text(Bokmal to "Kolonne 2", Nynorsk to "Kolonne 2") }
+                        column(1, RIGHT) { text(Bokmal to "Kolonne 3", Nynorsk to "Kolonne 3") }
+                        column(1, RIGHT) { text(Bokmal to "Kolonne 4", Nynorsk to "Kolonne 4") }
                     }
                 ) {
                     forEach(pesysData.tilleggEksempel) { tillegg ->

@@ -149,7 +149,6 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                             Bokmal to "Bruttobeløp per måned",
                             Nynorsk to "Bruttobeløp per månad",
                             English to "Gross monthly amount",
-                            FontType.BOLD
                         )
                     }
                 }
@@ -285,7 +284,6 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                             Bokmal to "Før fradrag for inntekt",
                             Nynorsk to "Før frådrag for inntekt",
                             English to "Before deductions for income",
-                            FontType.BOLD
                         )
                     }
                     column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
@@ -293,7 +291,6 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                             Bokmal to "Etter fradrag for inntekt",
                             Nynorsk to "Etter frådrag for inntekt",
                             English to "After deductions for income",
-                            FontType.BOLD
                         )
                     }
                 }
