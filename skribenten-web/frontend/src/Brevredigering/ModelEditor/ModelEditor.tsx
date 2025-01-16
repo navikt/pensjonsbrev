@@ -121,10 +121,10 @@ export const SaksbehandlerValgModelEditor = (props: {
           register(`saksbehandlerValg.${field.field}`, { value: false });
         }
       }
-      return <VStack gap="6">{requiredFields.map((field) => field.element)}</VStack>;
+      return <VStack gap="5">{requiredFields.map((field) => field.element)}</VStack>;
     }
     case "optional": {
-      return <VStack gap="6">{optionalFields.map((field) => field.element)}</VStack>;
+      return <VStack gap="5">{optionalFields.map((field) => field.element)}</VStack>;
     }
   }
 };

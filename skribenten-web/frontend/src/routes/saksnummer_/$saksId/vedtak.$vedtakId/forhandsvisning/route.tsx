@@ -1,17 +1,15 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Button, Heading, HStack, Label, Modal, VStack } from "@navikt/ds-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
-import { hentPdfForBrev, hentPdfForBrevFunction } from "~/api/sak-api-endpoints";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse } from "~/types/brev";
-import { queryFold } from "~/utils/tanstackUtils";
 
 import { nyBrevResponse } from "../../../../../../cypress/utils/brevredigeringTestUtils";
-import PDFViewer from "../../brevbehandler/-components/PDFViewer";
+import BrevForhåndsvisning from "../../brevbehandler/-components/BrevForhåndsvisning";
 import { distribusjonstypeTilText } from "../../kvittering/-components/KvitteringUtils";
 import { useSendVedtakContext } from "../kvittering/-SendVedtakContext";
 
@@ -63,11 +61,6 @@ const VedtaksForhåndsvisning = () => {
   const [vilSendeBrev, setVilSendeBrev] = useState(false);
   const vedtak = queryClient.getQueryData<BrevResponse>(["vedtak", 1]) ?? nyBrevResponse({});
 
-  const hentPdfQuery = useQuery({
-    queryKey: hentPdfForBrev.queryKey(Number.parseInt(vedtakId)),
-    queryFn: () => hentPdfForBrevFunction(saksId, vedtakId),
-  });
-
   return (
     <>
       {vilSendeBrev && (
@@ -118,24 +111,7 @@ const VedtaksForhåndsvisning = () => {
             </VStack>
           </VStack>
         }
-        right={queryFold({
-          query: hentPdfQuery,
-          initial: () => <></>,
-          pending: () => <></>,
-          error: (error) => <Alert variant="error">{error.message}</Alert>,
-          success: (pdf) =>
-            pdf === null ? (
-              <VStack align="center">Fant ikke PDF</VStack>
-            ) : (
-              <PDFViewer
-                brevId={Number.parseInt(vedtakId)}
-                pdf={pdf}
-                sakId={saksId}
-                utenSlettKnapp
-                viewerHeight={"var(--main-page-content-height)"}
-              />
-            ),
-        })}
+        right={<BrevForhåndsvisning brevId={Number.parseInt(vedtakId)} saksId={saksId} />}
       />
     </>
   );
