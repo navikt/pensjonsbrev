@@ -5,13 +5,13 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import KvitterteBrev from "../../kvittering/-components/KvitterteBrev";
 import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 
-export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$vedtakId/kvittering")({
+export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$brevId/kvittering")({
   component: () => <Kvittering />,
 });
 
 const Kvittering = () => {
   const { resultat } = useSendtBrevResultatContext();
-  const { saksId, vedtakId } = Route.useParams();
+  const { saksId, brevId } = Route.useParams();
 
   if (resultat.length === 0) {
     return (
@@ -26,7 +26,7 @@ const Kvittering = () => {
         `}
       >
         <BodyShort>Ingen informasjon om brevsending</BodyShort>
-        <Link params={{ saksId, vedtakId }} to={"/saksnummer/$saksId/vedtak/$vedtakId/forhandsvisning"}>
+        <Link params={{ saksId, brevId }} to={"/saksnummer/$saksId/vedtak/$brevId/forhandsvisning"}>
           Tilbake til forhåndsvisning
         </Link>
       </Box>

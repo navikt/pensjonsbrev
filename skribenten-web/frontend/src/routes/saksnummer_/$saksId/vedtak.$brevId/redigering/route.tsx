@@ -26,7 +26,7 @@ import { queryFold } from "~/utils/tanstackUtils";
 
 import { nyBrevResponse } from "../../../../../../cypress/utils/brevredigeringTestUtils";
 
-export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$vedtakId/redigering")({
+export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$brevId/redigering")({
   component: () => <VedtakWrapper />,
 });
 
@@ -36,11 +36,11 @@ interface VedtakSidemenyFormData {
 }
 
 const VedtakWrapper = () => {
-  const { saksId, vedtakId } = Route.useParams();
+  const { saksId, brevId } = Route.useParams();
   const brevResponse = nyBrevResponse({});
 
   const hentBrevQuery = useQuery({
-    queryKey: getBrev.queryKey(Number.parseInt(vedtakId)),
+    queryKey: getBrev.queryKey(Number.parseInt(brevId)),
     queryFn: () => Promise.resolve(brevResponse),
   });
 
@@ -78,13 +78,12 @@ const VedtakWrapper = () => {
         <ApiError error={err} title={"En feil skjedde ved henting av vedtaksbrev"} />
       </Box>
     ),
-    success: (brev) => <Arbeid brevResponse={brev} saksId={saksId} />,
+    success: (brev) => <Vedtak brevResponse={brev} saksId={saksId} />,
   });
 };
 
-const Arbeid = (props: { saksId: string; brevResponse: BrevResponse }) => {
+const Vedtak = (props: { saksId: string; brevResponse: BrevResponse }) => {
   const queryClient = useQueryClient();
-
   const navigate = useNavigate({ from: Route.fullPath });
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(props.brevResponse));
 
@@ -105,9 +104,7 @@ const Arbeid = (props: { saksId: string; brevResponse: BrevResponse }) => {
 
   const defaultValuesModelEditor = useMemo(
     () => ({
-      saksbehandlerValg: {
-        ...props.brevResponse.saksbehandlerValg,
-      },
+      saksbehandlerValg: { ...props.brevResponse.saksbehandlerValg },
       signatur: props.brevResponse.redigertBrev.signatur.saksbehandlerNavn,
     }),
     [props.brevResponse.redigertBrev.signatur.saksbehandlerNavn, props.brevResponse.saksbehandlerValg],
@@ -118,9 +115,7 @@ const Arbeid = (props: { saksId: string; brevResponse: BrevResponse }) => {
   });
 
   const attestantSignaturMutation = useMutation<BrevResponse, AxiosError, string>({
-    mutationFn: (signatur) => {
-      return oppdaterAttestantSignatur(props.brevResponse.info.id, signatur);
-    },
+    mutationFn: (signatur) => oppdaterAttestantSignatur(props.brevResponse.info.id, signatur),
     onSuccess: (response) => {
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
@@ -138,9 +133,7 @@ const Arbeid = (props: { saksId: string; brevResponse: BrevResponse }) => {
   });
 
   const saksbehandlerValgMutation = useMutation<BrevResponse, AxiosError, SaksbehandlerValg>({
-    mutationFn: (saksbehandlerValg) => {
-      return oppdaterSaksbehandlerValg(props.brevResponse.info.id, saksbehandlerValg);
-    },
+    mutationFn: (saksbehandlerValg) => oppdaterSaksbehandlerValg(props.brevResponse.info.id, saksbehandlerValg),
     onSuccess: (response) => {
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
@@ -166,12 +159,11 @@ const Arbeid = (props: { saksId: string; brevResponse: BrevResponse }) => {
       onSuccess: () => {
         saksbehandlerValgMutation.mutate(values.saksbehandlerValg, {
           onSuccess: () => {
-            attesterMutation.mutate();
+            attesterMutation.mutate(void 0, { onSuccess: onSuccess });
           },
         });
       },
     });
-    onSuccess?.();
   };
 
   return (
@@ -179,8 +171,8 @@ const Arbeid = (props: { saksId: string; brevResponse: BrevResponse }) => {
       onSubmit={form.handleSubmit((v) =>
         onSubmit(v, () =>
           navigate({
-            to: "/saksnummer/$saksId/vedtak/$vedtakId/forhandsvisning",
-            params: { saksId: props.saksId, vedtakId: props.brevResponse.info.id.toString() },
+            to: "/saksnummer/$saksId/vedtak/$brevId/forhandsvisning",
+            params: { saksId: props.saksId, brevId: props.brevResponse.info.id.toString() },
           }),
         ),
       )}

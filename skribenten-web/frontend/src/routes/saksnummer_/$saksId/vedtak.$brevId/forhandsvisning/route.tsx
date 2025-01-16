@@ -13,25 +13,25 @@ import BrevForhåndsvisning from "../../brevbehandler/-components/BrevForhåndsv
 import { distribusjonstypeTilText } from "../../kvittering/-components/KvitteringUtils";
 import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 
-export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$vedtakId/forhandsvisning")({
+export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$brevId/forhandsvisning")({
   component: () => <VedtaksForhåndsvisning />,
 });
 
-const SendBrevModal = (props: { saksId: string; vedtakId: string; åpen: boolean; onClose: () => void }) => {
+const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; onClose: () => void }) => {
   const queryClient = useQueryClient();
   const { setResultat } = useSendtBrevResultatContext();
   const navigate = useNavigate({ from: Route.fullPath });
-  const vedtak = queryClient.getQueryData<BrevResponse>(["vedtak", 1]) ?? nyBrevResponse({});
+  const brevResponse = queryClient.getQueryData<BrevResponse>(["vedtak", 1]) ?? nyBrevResponse({});
 
   const sendBrevMutation = useMutation({
     mutationFn: () =>
       Promise.resolve(
-        setResultat([{ status: "success", brevInfo: vedtak.info, response: { journalpostId: 1, error: null } }]),
+        setResultat([{ status: "success", brevInfo: brevResponse.info, response: { journalpostId: 1, error: null } }]),
       ),
     onSettled: () =>
       navigate({
-        to: "/saksnummer/$saksId/vedtak/$vedtakId/kvittering",
-        params: { saksId: props.saksId, vedtakId: props.vedtakId },
+        to: "/saksnummer/$saksId/vedtak/$brevId/kvittering",
+        params: { saksId: props.saksId, brevId: props.brevId },
       }),
   });
 
@@ -56,7 +56,7 @@ const SendBrevModal = (props: { saksId: string; vedtakId: string; åpen: boolean
 
 const VedtaksForhåndsvisning = () => {
   const queryClient = useQueryClient();
-  const { saksId, vedtakId } = Route.useParams();
+  const { saksId, brevId } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
   const [vilSendeBrev, setVilSendeBrev] = useState(false);
   const vedtak = queryClient.getQueryData<BrevResponse>(["vedtak", 1]) ?? nyBrevResponse({});
@@ -64,7 +64,7 @@ const VedtaksForhåndsvisning = () => {
   return (
     <>
       {vilSendeBrev && (
-        <SendBrevModal onClose={() => setVilSendeBrev(false)} saksId={saksId} vedtakId={vedtakId} åpen={vilSendeBrev} />
+        <SendBrevModal brevId={brevId} onClose={() => setVilSendeBrev(false)} saksId={saksId} åpen={vilSendeBrev} />
       )}
       <ThreeSectionLayout
         bottom={
@@ -73,8 +73,8 @@ const VedtaksForhåndsvisning = () => {
               icon={<ArrowLeftIcon />}
               onClick={() =>
                 navigate({
-                  to: "/saksnummer/$saksId/vedtak/$vedtakId/redigering",
-                  params: { saksId, vedtakId: vedtakId },
+                  to: "/saksnummer/$saksId/vedtak/$brevId/redigering",
+                  params: { saksId, brevId },
                 })
               }
               size="small"
@@ -111,7 +111,7 @@ const VedtaksForhåndsvisning = () => {
             </VStack>
           </VStack>
         }
-        right={<BrevForhåndsvisning brevId={Number.parseInt(vedtakId)} saksId={saksId} />}
+        right={<BrevForhåndsvisning brevId={Number.parseInt(brevId)} saksId={saksId} />}
       />
     </>
   );
