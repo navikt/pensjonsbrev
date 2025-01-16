@@ -11,7 +11,7 @@ import type { BrevResponse } from "~/types/brev";
 import { nyBrevResponse } from "../../../../../../cypress/utils/brevredigeringTestUtils";
 import BrevForhåndsvisning from "../../brevbehandler/-components/BrevForhåndsvisning";
 import { distribusjonstypeTilText } from "../../kvittering/-components/KvitteringUtils";
-import { useSendVedtakContext } from "../kvittering/-SendVedtakContext";
+import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$vedtakId/forhandsvisning")({
   component: () => <VedtaksForhåndsvisning />,
@@ -19,14 +19,14 @@ export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$vedtakId/forha
 
 const SendBrevModal = (props: { saksId: string; vedtakId: string; åpen: boolean; onClose: () => void }) => {
   const queryClient = useQueryClient();
-  const { setVedtakResponse } = useSendVedtakContext();
+  const { setResultat } = useSendtBrevResultatContext();
   const navigate = useNavigate({ from: Route.fullPath });
   const vedtak = queryClient.getQueryData<BrevResponse>(["vedtak", 1]) ?? nyBrevResponse({});
 
   const sendBrevMutation = useMutation({
     mutationFn: () =>
       Promise.resolve(
-        setVedtakResponse({ status: "success", vedtak: vedtak, response: { journalpostId: 1, error: null } }),
+        setResultat([{ status: "success", brevInfo: vedtak.info, response: { journalpostId: 1, error: null } }]),
       ),
     onSettled: () =>
       navigate({

@@ -1,20 +1,19 @@
 import { css } from "@emotion/react";
-import { Accordion, BodyShort, Box, Button, Heading, Label, Tag, VStack } from "@navikt/ds-react";
+import { BodyShort, Box, Button, Heading, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { BrevSendtKvittering, KvittertBrevContentError } from "../../kvittering/-components/KvitterteBrev";
-import type { SendVedtakSuccessResponse } from "./-SendVedtakContext";
-import { useSendVedtakContext } from "./-SendVedtakContext";
+import KvitterteBrev from "../../kvittering/-components/KvitterteBrev";
+import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$vedtakId/kvittering")({
   component: () => <Kvittering />,
 });
 
 const Kvittering = () => {
-  const { response } = useSendVedtakContext();
+  const { resultat } = useSendtBrevResultatContext();
   const { saksId, vedtakId } = Route.useParams();
 
-  if (response.status === "initial") {
+  if (resultat.length === 0) {
     return (
       <Box
         background="bg-default"
@@ -48,25 +47,7 @@ const Kvittering = () => {
     >
       <VStack>
         <Heading size="medium">Kvittering</Heading>
-        <Accordion>
-          <Accordion.Item>
-            <Accordion.Header>
-              <VStack align="start">
-                {response.status === "success" && (
-                  <Tag size="small" variant="info">
-                    Lokalprint - sendt til joark
-                  </Tag>
-                )}
-                <Label size="small">{response.vedtak.redigertBrev.title}</Label>
-              </VStack>
-            </Accordion.Header>
-            <Accordion.Content>
-              <VStack align={"start"} gap="4">
-                {response.status === "success" && <SuccessDisplayer response={response} saksId={saksId} />}
-              </VStack>
-            </Accordion.Content>
-          </Accordion.Item>
-        </Accordion>
+        <KvitterteBrev resultat={resultat} sakId={saksId} />
       </VStack>
       <VStack gap="2">
         <Heading size="medium">Hva vil du gjøre nå?</Heading>
@@ -81,43 +62,4 @@ const Kvittering = () => {
       </VStack>
     </Box>
   );
-};
-
-const SuccessDisplayer = (props: { saksId: string; response: SendVedtakSuccessResponse }) => {
-  if (props.response.response.error != null) {
-    return (
-      <KvittertBrevContentError
-        error={props.response.response.error}
-        isPending={false}
-        onPrøvIgjenClick={() => {}}
-        sakId={props.saksId}
-      >
-        <BodyShort>
-          Brevet ble ikke sendt pga {props.response.response.error?.tekniskgrunn ?? "en ukjent teknisk grunn"}. Prøv
-          igjen.
-        </BodyShort>
-        <BodyShort>{props.response.response.error?.beskrivelse}</BodyShort>
-      </KvittertBrevContentError>
-    );
-  } else if (props.response.response.journalpostId == null) {
-    return (
-      <KvittertBrevContentError
-        error={props.response.response.error}
-        isPending={false}
-        onPrøvIgjenClick={() => {}}
-        sakId={props.saksId}
-      >
-        <BodyShort>Brevet ble ikke sendt pga en ukjent feil. Prøv igjen.</BodyShort>
-      </KvittertBrevContentError>
-    );
-  } else {
-    return (
-      <BrevSendtKvittering
-        distribusjonstype={props.response.vedtak.info.distribusjonstype}
-        journalpostId={props.response.response.journalpostId}
-        mottaker={props.response.vedtak.info.mottaker}
-        saksId={props.saksId}
-      />
-    );
-  }
 };
