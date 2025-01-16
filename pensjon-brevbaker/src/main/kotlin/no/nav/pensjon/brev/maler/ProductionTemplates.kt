@@ -50,7 +50,7 @@ object ProductionTemplates : AllTemplates {
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
         ForhaandsvarselVedTilbakekreving,
-        InformasjonOmSaksbehandlingstid,
+        InformasjonOmSaksbehandlingstidPE,
         OrienteringOmSaksbehandlingstid,
         InnhentingOpplysningerFraBruker,
         InnhentingDokumentasjonFraBruker,
