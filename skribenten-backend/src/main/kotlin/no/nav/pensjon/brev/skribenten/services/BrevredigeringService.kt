@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory
 import java.sql.Connection
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import kotlin.math.sign
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
 
@@ -54,8 +55,12 @@ data class GeneriskRedigerbarBrevdata(
 ) : RedigerbarBrevdata<BrevbakerBrevdata, BrevbakerBrevdata>
 
 sealed class BrevredigeringException(message: String) : Exception(message) {
-    class KanIkkeReservereBrevredigeringException(override val message: String, val response: Api.ReservasjonResponse) : BrevredigeringException(message)
-    class ArkivertBrevException(val brevId: Long, val journalpostId: Long) : BrevredigeringException("Brev med id $brevId er allerede arkivert i journalpost $journalpostId")
+    class KanIkkeReservereBrevredigeringException(override val message: String, val response: Api.ReservasjonResponse) :
+        BrevredigeringException(message)
+
+    class ArkivertBrevException(val brevId: Long, val journalpostId: Long) :
+        BrevredigeringException("Brev med id $brevId er allerede arkivert i journalpost $journalpostId")
+
     class BrevIkkeKlartTilSendingException(override val message: String) : BrevredigeringException(message)
     class BrevLaastForRedigeringException(override val message: String) : BrevredigeringException(message)
     class HarIkkeAttestantrolleException(override val message: String) : BrevredigeringException(message)
@@ -132,6 +137,7 @@ class BrevredigeringService(
         brevId: Long,
         nyeSaksbehandlerValg: SaksbehandlerValg?,
         nyttRedigertbrev: Edit.Letter?,
+        signatur: String?,
         frigiReservasjon: Boolean = false,
     ): ServiceResult<Dto.Brevredigering>? =
         hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
@@ -140,7 +146,8 @@ class BrevredigeringService(
             }
             rendreBrev(
                 brev = brevDto,
-                saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
+                saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg,
+                signaturSignerende = signatur ?: brevDto.redigertBrev.signatur.saksbehandlerNavn,
             ).map { rendretBrev ->
                 val principal = PrincipalInContext.require()
                 transaction {
@@ -149,6 +156,7 @@ class BrevredigeringService(
                         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
                         sistRedigertAvNavIdent = principal.navIdent
+                        signatur?.also { signaturSignerende = it }
                         if (frigiReservasjon) {
                             redigeresAvNavIdent = null
                         }

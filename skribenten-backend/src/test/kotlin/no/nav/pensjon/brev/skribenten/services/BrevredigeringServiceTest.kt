@@ -265,7 +265,8 @@ class BrevredigeringServiceTest {
                     saksId = sak.saksId + 1,
                     brevId = brev.info.id,
                     nyeSaksbehandlerValg = brev.saksbehandlerValg,
-                    nyttRedigertbrev = brev.redigertBrev
+                    nyttRedigertbrev = brev.redigertBrev,
+                    signatur = brev.redigertBrev.signatur.saksbehandlerNavn
                 )
             ).isNull()
             assertThat(
@@ -326,6 +327,7 @@ class BrevredigeringServiceTest {
                 brevId = original.info.id,
                 nyeSaksbehandlerValg = nyeValg,
                 nyttRedigertbrev = letter.toEdit(),
+                signatur = "Malenia"
             )?.resultOrNull()!!
         }
 
@@ -344,6 +346,7 @@ class BrevredigeringServiceTest {
             }
 
         assertNotEquals(original.saksbehandlerValg, oppdatert.saksbehandlerValg)
+        assertEquals("Malenia", oppdatert.info.signaturSignerende)
     }
 
     @Test
@@ -368,6 +371,7 @@ class BrevredigeringServiceTest {
                 brevId = original.info.id,
                 nyeSaksbehandlerValg = nyeValg,
                 nyttRedigertbrev = letter.toEdit(),
+                signatur = original.redigertBrev.signatur.saksbehandlerNavn
             )?.resultOrNull()!!
         }
 
@@ -383,7 +387,8 @@ class BrevredigeringServiceTest {
                 saksId = sak.saksId,
                 brevId = 1099,
                 nyeSaksbehandlerValg = saksbehandlerValg,
-                nyttRedigertbrev = letter.toEdit()
+                nyttRedigertbrev = letter.toEdit(),
+                signatur = letter.signatur.saksbehandlerNavn
             )?.resultOrNull()
         }
 
@@ -416,7 +421,8 @@ class BrevredigeringServiceTest {
                     saksId = sak.saksId,
                     brevId = 2098,
                     nyeSaksbehandlerValg = saksbehandlerValg,
-                    nyttRedigertbrev = letter.toEdit()
+                    nyttRedigertbrev = letter.toEdit(),
+                    signatur = letter.signatur.saksbehandlerNavn,
                 )
             }
         }
@@ -855,7 +861,8 @@ class BrevredigeringServiceTest {
                     saksId = sak.saksId,
                     brevId = brev.info.id,
                     nyeSaksbehandlerValg = brev.saksbehandlerValg,
-                    nyttRedigertbrev = letter(Paragraph(1, true, listOf(Literal(1, "blue pill")))).toEdit()
+                    nyttRedigertbrev = letter(Paragraph(1, true, listOf(Literal(1, "blue pill")))).toEdit(),
+                    signatur = letter.signatur.saksbehandlerNavn
                 )
             }
         }
@@ -889,7 +896,8 @@ class BrevredigeringServiceTest {
                     saksId = brev.info.saksId,
                     brevId = brev.info.id,
                     nyeSaksbehandlerValg = null,
-                    nyttRedigertbrev = letter(Paragraph(1, true, listOf(Literal(1, "blue pill")))).toEdit()
+                    nyttRedigertbrev = letter(Paragraph(1, true, listOf(Literal(1, "blue pill")))).toEdit(),
+                    signatur = letter.signatur.saksbehandlerNavn
                 )
             }
             assertThrows<ArkivertBrevException> {
@@ -986,6 +994,7 @@ class BrevredigeringServiceTest {
                 brevId = brev.info.id,
                 nyeSaksbehandlerValg = brev.saksbehandlerValg,
                 nyttRedigertbrev = null,
+                signatur = letter.signatur.saksbehandlerNavn,
                 frigiReservasjon = true,
             )?.resultOrNull()
         }
@@ -1004,6 +1013,7 @@ class BrevredigeringServiceTest {
                 brevId = brev.info.id,
                 nyeSaksbehandlerValg = brev.saksbehandlerValg,
                 nyttRedigertbrev = null,
+                signatur = letter.signatur.saksbehandlerNavn,
                 frigiReservasjon = false,
             )?.resultOrNull()
         }
@@ -1132,6 +1142,7 @@ class BrevredigeringServiceTest {
                         listOf(E_Literal(null, "", E_FontType.PLAIN, "and blue pill"))
                     )
                 ),
+                signatur = letter.signatur.saksbehandlerNavn,
                 frigiReservasjon = false,
             )?.resultOrNull()!!
         }
@@ -1222,7 +1233,8 @@ class BrevredigeringServiceTest {
                             )
                         )
                     )
-                )
+                ),
+                signatur = letter.signatur.saksbehandlerNavn
             )?.resultOrNull()!!
             brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
         }
