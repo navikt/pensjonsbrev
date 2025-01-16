@@ -18,7 +18,12 @@ import type { SendtBrevResponse, SendtBrevResponser } from "./SendtBrevResultatC
 //TODO - komponenten er nå i bruk i 2 forskjellige steder. flytt til /components
 const KvitterteBrev = (properties: { sakId: string; resultat: SendtBrevResponser }) => {
   return (
-    <Accordion>
+    <Accordion
+      css={css`
+        /* fastsetter bredden slik at innholdet ikke 'hopper' når man åpner/lukker. Dette skjer når parent container er flex */
+        width: 350px;
+      `}
+    >
       {properties.resultat.map((result, index) => (
         <KvittertBrev key={`resultat-${index}`} resultat={result} sakId={properties.sakId} />
       ))}
@@ -35,33 +40,15 @@ const KvittertBrev = (properties: { sakId: string; resultat: SendtBrevResponse }
 
   return (
     <Accordion.Item>
-      <KvittertBrevHeader
-        resultat={
-          mutation.isSuccess
-            ? {
-                status: "success",
-                brevInfo: properties.resultat.brevInfo,
-                response: mutation.data,
-              }
-            : properties.resultat
-        }
-        sakId={properties.sakId}
-      />
-      <KvittertBrevContentWrapper
-        error={mutation.isError ? mutation.error : null}
-        isPending={mutation.isPending}
-        onPrøvIgjenClick={() => mutation.mutate(properties.resultat.brevInfo.id)}
-        resultat={
-          mutation.isSuccess
-            ? {
-                status: "success",
-                brevInfo: properties.resultat.brevInfo,
-                response: mutation.data,
-              }
-            : properties.resultat
-        }
-        sakId={properties.sakId}
-      />
+      <KvittertBrevHeader resultat={properties.resultat} sakId={properties.sakId} />
+      <Accordion.Content>
+        <KvittertBrevContent
+          isPending={mutation.isPending}
+          onPrøvIgjenClick={() => mutation.mutate(properties.resultat.brevInfo.id)}
+          resultat={properties.resultat}
+          sakId={properties.sakId}
+        />
+      </Accordion.Content>
     </Accordion.Item>
   );
 };
@@ -115,25 +102,6 @@ const hentTagOgTittelForHeader = (resultat: SendtBrevResponse) => {
       return { tag, tittel: resultat.brevInfo.brevtittel };
     }
   }
-};
-
-const KvittertBrevContentWrapper = (properties: {
-  sakId: string;
-  resultat: SendtBrevResponse;
-  onPrøvIgjenClick: () => void;
-  isPending: boolean;
-  error: Nullable<Error>;
-}) => {
-  return (
-    <Accordion.Content>
-      <KvittertBrevContent
-        isPending={properties.isPending}
-        onPrøvIgjenClick={properties.onPrøvIgjenClick}
-        resultat={properties.resultat}
-        sakId={properties.sakId}
-      />
-    </Accordion.Content>
-  );
 };
 
 const KvittertBrevContent = (properties: {
@@ -224,17 +192,13 @@ export const BrevSendtKvittering = (props: {
 export const BrevIkkeSendtKvittering = (properties: { onPrøvIgjenClick: () => void; isPending: boolean }) => {
   return (
     <VStack align="start" gap="3">
-      <BodyShort size="small">Skribenten klarte ikke å sende brevet.</BodyShort>
-      <BodyShort size="small">Brevet ligger lagret i brevbehandler til brevet er sendt.</BodyShort>
+      <VStack gap="5">
+        <BodyShort size="small">Skribenten klarte ikke å sende brevet.</BodyShort>
+        <BodyShort size="small">Brevet ligger lagret i brevbehandler til brevet er sendt.</BodyShort>
+      </VStack>
 
-      <Button
-        loading={properties.isPending}
-        onClick={properties.onPrøvIgjenClick}
-        size="small"
-        type="button"
-        variant="primary-neutral"
-      >
-        Prøv igjen
+      <Button loading={properties.isPending} onClick={properties.onPrøvIgjenClick} size="small" type="button">
+        Prøv å sende igjen
       </Button>
     </VStack>
   );

@@ -45,7 +45,7 @@ const Kvittering = () => {
         padding: var(--a-spacing-8) var(--a-spacing-24);
       `}
     >
-      <VStack>
+      <VStack gap="5">
         <Heading size="medium">Kvittering</Heading>
         <KvitterteBrev resultat={resultat} sakId={saksId} />
       </VStack>
@@ -53,10 +53,10 @@ const Kvittering = () => {
         <Heading size="medium">Hva vil du gjøre nå?</Heading>
         <VStack align={"start"} gap="3">
           <Button size="small" type="button" variant="secondary">
-            Gå til brukeroversikt
+            TODO - Gå til brukeroversikt
           </Button>
           <Button size="small" type="button" variant="secondary">
-            Gå til dokumentoversikt
+            TODO - Gå til dokumentoversikt
           </Button>
         </VStack>
       </VStack>
