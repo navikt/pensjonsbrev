@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-
 data class LanguageSettings(val settings: Map<String, Element.OutlineContent.ParagraphContent.Text.Literal<BaseLanguages>>) {
     class MissingLanguageSettingException(msg: String) : Exception(msg)
 
