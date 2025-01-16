@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler
+package no.nav.brev.brevbaker
 
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
