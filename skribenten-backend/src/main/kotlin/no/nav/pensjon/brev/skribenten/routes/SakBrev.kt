@@ -51,7 +51,8 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                 saksId = sak.saksId,
                 brevId = brevId,
                 nyeSaksbehandlerValg = request.saksbehandlerValg,
-                nyttRedigertbrev = request.redigertBrev
+                nyttRedigertbrev = request.redigertBrev,
+                signatur = request.signatur,
             )?.onOk { brev -> call.respond(HttpStatusCode.OK, dto2ApiService.toApi(brev)) }
                 ?.onError { message, statusCode ->
                     logger.error("$statusCode - Feil ved oppdatering av brev ${brevId}: $message")

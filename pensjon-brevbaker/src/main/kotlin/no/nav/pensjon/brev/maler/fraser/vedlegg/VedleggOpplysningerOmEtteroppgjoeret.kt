@@ -101,7 +101,6 @@ data class FikkSkulleFaattTabell(
                             Bokmal to "Type stønad",
                             Nynorsk to "Type stønad",
                             English to "Type of benefit",
-                            fontType = FontType.BOLD,
                         )
                     }
                     column(columnSpan = 4, alignment = ColumnAlignment.RIGHT) {
@@ -109,7 +108,6 @@ data class FikkSkulleFaattTabell(
                             Bokmal to "Dette skulle du fått",
                             Nynorsk to "Dette skulle du fått",
                             English to "You should have received",
-                            fontType = FontType.BOLD,
                         )
                     }
                     column(columnSpan = 4, alignment = ColumnAlignment.RIGHT) {
@@ -117,7 +115,6 @@ data class FikkSkulleFaattTabell(
                             Bokmal to "Dette fikk du",
                             Nynorsk to "Dette fekk du",
                             English to "You received",
-                            fontType = FontType.BOLD,
                         )
                     }
                     column(columnSpan = 4, alignment = ColumnAlignment.RIGHT) {
@@ -125,7 +122,6 @@ data class FikkSkulleFaattTabell(
                             Bokmal to "Avviksbeløp",
                             Nynorsk to "Avviksbeløp",
                             English to "Deviation amount",
-                            fontType = FontType.BOLD,
                         )
                     }
                 }
@@ -961,7 +957,6 @@ data class FratrekkTabell(
                         Bokmal to "Type inntekt",
                         Nynorsk to "Type inntekt",
                         English to "Type of income",
-                        fontType = FontType.BOLD,
                     )
                 }
                 column(columnSpan = 3) {
@@ -969,7 +964,6 @@ data class FratrekkTabell(
                         Bokmal to "Årsak til trekk",
                         Nynorsk to "Årsak til trekk",
                         English to "Reason for deduction",
-                        fontType = FontType.BOLD,
                     )
                 }
                 column(columnSpan = 2, alignment = ColumnAlignment.RIGHT) {
@@ -977,7 +971,6 @@ data class FratrekkTabell(
                         Bokmal to "Beløp",
                         Nynorsk to "Beløp",
                         English to "Amount",
-                        fontType = FontType.BOLD,
                     )
                 }
             }
@@ -1122,7 +1115,6 @@ data class InntektTabell(
                         Bokmal to "Type inntekt",
                         Nynorsk to "Type inntekt",
                         English to "Type of income",
-                        fontType = FontType.BOLD,
                     )
                 }
                 column(columnSpan = 3) {
@@ -1130,7 +1122,6 @@ data class InntektTabell(
                         Bokmal to "Kilde",
                         Nynorsk to "Kjelde",
                         English to "Source",
-                        fontType = FontType.BOLD,
                     )
                 }
                 column(columnSpan = 2, alignment = ColumnAlignment.RIGHT) {
@@ -1138,7 +1129,6 @@ data class InntektTabell(
                         Bokmal to "Registrert inntekt",
                         Nynorsk to "Registrert inntekt",
                         English to "Registered income",
-                        fontType = FontType.BOLD,
                     )
                 }
             }

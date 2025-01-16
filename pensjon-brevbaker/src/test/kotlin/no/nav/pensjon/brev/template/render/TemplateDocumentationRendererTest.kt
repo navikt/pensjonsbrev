@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.TemplateModelSpecificationFactory
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brev.template.outlineTestTemplate
+import no.nav.pensjon.brev.outlineTestTemplate
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.*
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.ContentOrControlStructure.Conditional
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.ContentOrControlStructure.Content

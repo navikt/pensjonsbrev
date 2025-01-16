@@ -25,15 +25,12 @@ import kotlin.time.Duration.Companion.seconds
 
 fun main(args: Array<String>) = EngineMain.main(args)
 
-private val prometheusMeterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
-
 private fun Application.getProperty(name: String): String? =
     environment.config.propertyOrNull(name)?.getString()
 
 @Suppress("unused")
 fun Application.module() {
     val parallelism = getProperty("pdfBygger.latexParallelism")?.toInt() ?: Runtime.getRuntime().availableProcessors()
-    val activityCounter = ActiveCounter(prometheusMeterRegistry, "pensjonsbrev_pdf_compile_active", listOf(Tag.of("hpa", "value")))
     val laTeXService = LaTeXService(
         compileTimeout = getProperty("pdfBygger.compileTimeout")?.let { Duration.parse(it) } ?: 300.seconds,
         queueWaitTimeout = getProperty("pdfBygger.compileQueueWaitTimeout")?.let { Duration.parse(it) } ?: 4.seconds,
@@ -67,9 +64,11 @@ fun Application.module() {
         }
     }
 
+    val prometheusMeterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
     install(MicrometerMetrics) {
         registry = prometheusMeterRegistry
     }
+    val activityCounter = ActiveCounter(prometheusMeterRegistry, "pensjonsbrev_pdf_compile_active", listOf(Tag.of("hpa", "value")))
 
     install(CallLogging) {
         callIdMdc("x_correlationId")

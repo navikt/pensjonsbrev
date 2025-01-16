@@ -46,7 +46,7 @@ class BrevmalService(
     }
 
     private suspend fun hentMaler(sakstype: Sakstype, includeEblanketter: Boolean): Sequence<LetterMetadata> = coroutineScope {
-        val brevbaker = async { hentBrevakerMaler().asSequence().map { LetterMetadata.Brevbaker(it) } }
+        val brevbaker = async { hentBrevakerMaler().asSequence().filter { it.sakstyper.contains(sakstype) }.map { LetterMetadata.Brevbaker(it) } }
         val legacy = async { brevmetadataService.getBrevmalerForSakstype(sakstype).asSequence().map { LetterMetadata.Legacy(it, sakstype) } }
         val eblanketter = async {
             if (includeEblanketter) brevmetadataService.getEblanketter().asSequence().map { LetterMetadata.Legacy(it, sakstype) } else emptySequence()

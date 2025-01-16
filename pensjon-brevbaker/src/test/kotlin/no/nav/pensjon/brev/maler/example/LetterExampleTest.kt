@@ -1,15 +1,20 @@
 package no.nav.pensjon.brev.maler.example
 
-import no.nav.pensjon.brev.*
+import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
-import no.nav.pensjon.brev.template.*
-import org.junit.jupiter.api.*
+import no.nav.pensjon.brev.renderTestPDF
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.testBrevbakerApp
+import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
 
 @Tag(TestTags.INTEGRATION_TEST)
 class LetterExampleTest {
 
     @Test
-    fun test() {
+    fun test() = testBrevbakerApp {
         Letter(
             LetterExample.template,
             createLetterExampleDto(),
@@ -17,15 +22,4 @@ class LetterExampleTest {
             Fixtures.fellesAuto
         ).renderTestPDF("EKSEMPELBREV_BOKMAL")
     }
-
-    @Test
-    fun `test design reference letter`() {
-        Letter(
-            DesignReferenceLetter.template,
-            createLetterExampleDto(),
-            Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("DESIGN_REFERENCE_LETTER_BOKMAL")
-    }
-
 }

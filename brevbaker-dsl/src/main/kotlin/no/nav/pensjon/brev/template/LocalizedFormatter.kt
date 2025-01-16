@@ -6,17 +6,19 @@ import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.FormatStyle
 
+const val NON_BREAKING_SPACE = '\u00A0'
+
 abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOperation<T, Language, String>(doc) {
     object ShortDateFormat : LocalizedFormatter<LocalDate>() {
         override fun stableHashCode(): Int = "ShortDateFormat".hashCode()
         override fun apply(first: LocalDate, second: Language): String =
-            first.format(dateFormatter(second, FormatStyle.SHORT)).replace(' ', ' ') //space to non braking space
+            first.format(dateFormatter(second, FormatStyle.SHORT)).replace(' ', NON_BREAKING_SPACE) //space to non braking space
     }
 
     object DateFormat : LocalizedFormatter<LocalDate>() {
         override fun stableHashCode(): Int = "DateFormat".hashCode()
         override fun apply(first: LocalDate, second: Language): String =
-            first.format(dateFormatter(second, FormatStyle.LONG)).replace(' ', ' ') //space to non braking space
+            first.format(dateFormatter(second, FormatStyle.LONG)).replace(' ', NON_BREAKING_SPACE) //space to non braking space
     }
 
     object DoubleFormat : LocalizedFormatter<Double>() {
@@ -37,6 +39,7 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
             NumberFormat.getNumberInstance(second.locale())
                 .apply { maximumFractionDigits = 0 }
                 .format(first)
+                .replace(' ', NON_BREAKING_SPACE)
     }
 
     object TelefonnummerFormat : LocalizedFormatter<Telefonnummer>() {
@@ -61,3 +64,5 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
 
     }
 }
+
+private fun ch(): Char = NON_BREAKING_SPACE

@@ -11,15 +11,15 @@ import type {
   Item,
   ItemList,
   LiteralValue,
+  NewLine,
   ParagraphBlock,
   TextContent,
   TITLE1,
   Title1Block,
   TITLE2,
   Title2Block,
-  VariableValue,
 } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
 import type { LetterEditorState } from "../model/state";
@@ -32,12 +32,12 @@ export function isEditableContent(content: Content | undefined | null): boolean 
   return content != null && (content.type === VARIABLE || content.type === ITEM_LIST);
 }
 
-export function text<T extends LiteralValue | VariableValue | undefined>(
+export function text<T extends TextContent | undefined>(
   content: T,
 ): string | (undefined extends T ? undefined : never) {
   if (content?.type === LITERAL) {
     return content.editedText ?? content.text;
-  } else if (content?.type === VARIABLE) {
+  } else if (content?.type === VARIABLE || content?.type === NEW_LINE) {
     return content.text;
   } else {
     return undefined as undefined extends T ? undefined : never;
@@ -54,7 +54,6 @@ export function create(brev: BrevResponse): LetterEditorState {
   };
 }
 
-// TODO: skriv en test som verifiserer at kun elementer som har matchende parentId til from blir lagt til i deleted.
 export function removeElements<T extends Identifiable>(
   startIndex: number,
   count: number,
@@ -165,6 +164,23 @@ export function mergeLiteralsIfPossible<T extends Identifiable>(first: Draft<T>,
   }
 }
 
+/**
+ * Splits literal text at given offset by updating 'editedText' of the given literal and returning a new literal.
+ *
+ * @param literal the literal to update
+ * @param offset the offset to split at
+ * @returns a new literal
+ */
+export function splitLiteralAtOffset(literal: Draft<LiteralValue>, offset: number): LiteralValue {
+  const origText = text(literal);
+  const newText = cleanseText(origText.slice(0, Math.max(0, offset)));
+  const nextText = cleanseText(origText.slice(Math.max(0, offset)));
+
+  updateLiteralText(literal, newText);
+
+  return newLiteral({ text: "", editedText: nextText });
+}
+
 export function newTitle(args: {
   id?: Nullable<number>;
   content: TextContent[];
@@ -228,6 +244,15 @@ export function newItemList(args: { id?: Nullable<number>; items: Item[]; delete
     type: "ITEM_LIST",
     items: args.items,
     deletedItems: args.deletedItems ?? [],
+  };
+}
+
+export function createNewLine(): NewLine {
+  return {
+    id: null,
+    parentId: null,
+    type: NEW_LINE,
+    text: "",
   };
 }
 

@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 
 import type { TextContent } from "~/types/brevbakerTypes";
-import { LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+import { LITERAL, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
 
 export type TextProperties = {
   content: TextContent;
@@ -11,6 +11,9 @@ export const Text = ({ content }: TextProperties) => {
   switch (content.type) {
     case LITERAL: {
       return <span>{content.text}</span>;
+    }
+    case NEW_LINE: {
+      return <br />;
     }
     case VARIABLE: {
       return (

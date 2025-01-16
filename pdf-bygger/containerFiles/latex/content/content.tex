@@ -1,0 +1,23 @@
+% elements used to render the letter and attachment outline/content
+
+% used to track whether the title1/title2 should add extra space above. Needs to be declared before other content
+\newcommand{\previouselement}{title}
+
+%starts with true because of main title
+\newcommand{\setpreviouselement}[1]{
+    \renewcommand{\previouselement}{#1}
+}
+
+% Several elements use the \addvspace command. When two elements next to each other uses this kind of space, the highest value is chosen.
+ % For example:
+    % some paragraph text
+    % \addvspace{16pt}
+    % \addvspace{32pt}
+    % some title text
+% in this case only 32 pt of vertical space is added between the elements.
+
+\input{titles}
+\input{paragraph}
+\input{itemList}
+\input{forms}
+\input{table}

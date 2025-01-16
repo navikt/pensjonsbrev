@@ -45,4 +45,6 @@ object Features {
         PrincipalInContext.get()
             ?.let { UnleashContext.builder().userId(it.navIdent.id).build() }
             ?: UnleashContext.builder().build()
+
+    fun shutdown() = unleash?.shutdown()
 }
