@@ -88,7 +88,7 @@ dependencies {
 
     // Domenemodell
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
-    api("no.nav.pensjon.brevbaker:brevbaker-api-model-mal:1.0.0")
+    api(project(":brevbaker-dsl"))
 
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
