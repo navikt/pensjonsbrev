@@ -30,7 +30,7 @@ data class BarnepensjonBeregningsperiode(
     val grunnbeloep: Kroner,
     val antallBarn: Int,
     var utbetaltBeloep: Kroner,
-    val harForeldreloessats: Boolean?,
+    val harForeldreloessats: Boolean,
 )
 
 data class OmstillingsstoenadBeregning(

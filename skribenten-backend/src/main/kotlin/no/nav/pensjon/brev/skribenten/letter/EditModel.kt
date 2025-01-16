@@ -72,7 +72,7 @@ object Edit {
 
     sealed class ParagraphContent(val type: Type) : Identifiable {
         enum class Type {
-            ITEM_LIST, LITERAL, VARIABLE, TABLE,
+            ITEM_LIST, LITERAL, VARIABLE, TABLE, NEW_LINE,
         }
 
         data class ItemList(
@@ -153,6 +153,12 @@ object Edit {
             ) : Text(Type.VARIABLE) {
                 override fun isEdited(): Boolean = false
             }
+
+            data class NewLine(override val id: Int?, override val parentId: Int? = null) : Text(Type.NEW_LINE) {
+                override val text: String = ""
+                override val fontType: FontType = FontType.PLAIN
+                override fun isEdited(): Boolean = isNew()
+            }
         }
     }
 
@@ -187,6 +193,7 @@ object Edit {
                 val type = when (ParagraphContent.Type.valueOf(node.get("type").textValue())) {
                     ParagraphContent.Type.ITEM_LIST -> ParagraphContent.ItemList::class.java
                     ParagraphContent.Type.LITERAL -> ParagraphContent.Text.Literal::class.java
+                    ParagraphContent.Type.NEW_LINE -> ParagraphContent.Text.NewLine::class.java
                     ParagraphContent.Type.VARIABLE -> ParagraphContent.Text.Variable::class.java
                     ParagraphContent.Type.TABLE -> ParagraphContent.Table::class.java
                 }
@@ -198,9 +205,10 @@ object Edit {
             override fun deserialize(p: JsonParser, ctxt: DeserializationContext): ParagraphContent.Text {
                 val node = p.codec.readTree<JsonNode>(p)
                 val type = when (ParagraphContent.Type.valueOf(node.get("type").textValue())) {
-                    ParagraphContent.Type.LITERAL -> ParagraphContent.Text.Literal::class.java
-                    ParagraphContent.Type.VARIABLE -> ParagraphContent.Text.Variable::class.java
                     ParagraphContent.Type.ITEM_LIST -> throw DeserializationException("ITEM_LIST is not allowed in a text-only block.")
+                    ParagraphContent.Type.LITERAL -> ParagraphContent.Text.Literal::class.java
+                    ParagraphContent.Type.NEW_LINE -> ParagraphContent.Text.NewLine::class.java
+                    ParagraphContent.Type.VARIABLE -> ParagraphContent.Text.Variable::class.java
                     ParagraphContent.Type.TABLE -> throw DeserializationException("TABLE is not allowed in a text-only block.")
                 }
                 return p.codec.treeToValue(node, type)
@@ -234,7 +242,7 @@ fun ParagraphContent.Text.toEdit(parentId: Int?): Edit.ParagraphContent.Text =
     when (this) {
         is ParagraphContent.Text.Literal -> Edit.ParagraphContent.Text.Literal(id = id, text = text, fontType = fontType.toEdit(), tags = tags, parentId = parentId)
         is ParagraphContent.Text.Variable -> Edit.ParagraphContent.Text.Variable(id = id, text = text, fontType = fontType.toEdit(), parentId = parentId)
-        is ParagraphContent.Text.NewLine -> throw UnsupportedOperationException("Skribenten does not support element type: $type")
+        is ParagraphContent.Text.NewLine -> Edit.ParagraphContent.Text.NewLine(id = id, parentId = parentId)
     }
 
 fun ParagraphContent.Text.FontType.toEdit(): Edit.ParagraphContent.Text.FontType =
@@ -299,6 +307,8 @@ fun Edit.ParagraphContent.Text.toMarkup(): ParagraphContent.Text =
             text = text,
             fontType = fontType.toMarkup()
         )
+
+        is Edit.ParagraphContent.Text.NewLine -> ParagraphContent.Text.NewLine(id = id ?: 0)
     }
 
 fun Edit.ParagraphContent.Text.FontType.toMarkup(): ParagraphContent.Text.FontType =

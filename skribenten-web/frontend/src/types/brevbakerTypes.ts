@@ -75,6 +75,11 @@ export type VariableValue = Identifiable & {
   readonly name?: string;
   readonly text: string;
 };
+export const NEW_LINE = "NEW_LINE";
+export type NewLine = Identifiable & {
+  readonly type: typeof NEW_LINE;
+  readonly text: string;
+};
 
 export const ITEM_LIST = "ITEM_LIST";
 export type ItemList = Identifiable & {
@@ -110,7 +115,7 @@ export type ColumnSpec = Identifiable & {
 };
 export type ColumnAlignment = "LEFT" | "RIGHT";
 
-export type TextContent = LiteralValue | VariableValue;
+export type TextContent = LiteralValue | VariableValue | NewLine;
 export type Content = ItemList | TextContent;
 
 export type Block = Identifiable & {

@@ -822,11 +822,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
 }
 
 private fun ParagraphOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.barnepensjonssats(): StringExpression {
-    return ifElse(
-        sisteBeregningsperiode.harForeldreloessats.notNull(),
-        ifElse(sisteBeregningsperiode.harForeldreloessats.ifNull(false), 2.25, 1).formatTall(),
-        ifElse(erForeldreloes, 2.25, 1).formatTall()
-    )
+    return ifElse(sisteBeregningsperiode.harForeldreloessats, 2.25, 1).formatTall()
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.beregnetBarnepensjonGammeltOgNyttRegelverk(

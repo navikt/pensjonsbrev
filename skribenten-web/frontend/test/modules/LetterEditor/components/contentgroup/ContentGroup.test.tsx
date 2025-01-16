@@ -198,6 +198,16 @@ describe("enterHandler", () => {
       Actions.split(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text.length),
     );
   });
+
+  test("shift-enter will add a newLine instead of a new paragraph", async () => {
+    const { user } = setup();
+    await user.click(screen.getByText(content[0].text));
+    await user.keyboard("{End}{Shift>}{Enter}{/Shift}");
+
+    expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
+      Actions.addNewLine(editorState, { blockIndex: 0, contentIndex: 0, cursorPosition: "Heisann".length }),
+    );
+  });
 });
 
 describe("ArrowLeft will move focus to previous editable content", () => {

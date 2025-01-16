@@ -20,6 +20,10 @@ class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, 
         children.add(e)
     }
 
+    override fun newline() {
+        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.NewLine(children.size)))
+    }
+
     fun includePhrase(phrase: TextOnlyPhrase<out Lang>) {
         phrase.apply(this)
     }
@@ -50,9 +54,7 @@ interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalSc
         addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.Expression(expression, fontType)))
     }
 
-    fun newline() {
-        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.NewLine()))
-    }
+    fun newline()
 }
 
 interface PlainTextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
