@@ -15,7 +15,5 @@ interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalSc
         addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.Expression(expression, fontType)))
     }
 
-    fun newline() {
-        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.NewLine()))
-    }
+    fun newline()
 }

@@ -29,6 +29,31 @@ class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, 
     }
 }
 
+@LetterTemplateMarker
+class PlainTextOnlyScope<Lang : LanguageSupport, LetterData : Any> : PlainTextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Text<Lang>, PlainTextOnlyScope<Lang, LetterData>> {
+    private val children = mutableListOf<TextElement<Lang>>()
+    override val elements: List<TextElement<Lang>>
+        get() = children
+
+    override fun scopeFactory(): PlainTextOnlyScope<Lang, LetterData> = PlainTextOnlyScope()
+
+    override fun addControlStructure(e: TextElement<Lang>) {
+        children.add(e)
+    }
+
+    override fun addTextContent(e: TextElement<Lang>) {
+        children.add(e)
+    }
+
+}
+
+interface PlainTextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
+    fun addTextContent(e: TextElement<Lang>)
+    fun eval(expression: StringExpression) {
+        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.Expression(expression, FontType.PLAIN)))
+    }
+}
+
 // TextScope.text()
 //
 //
