@@ -38,6 +38,8 @@ object FeatureToggleHandler {
             state = InitState.DONE
         }
     }
+
+    fun shutdown() = unleash.shutdown()
 }
 
 enum class InitState { NEW, DONE }
