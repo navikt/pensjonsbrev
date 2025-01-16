@@ -8,6 +8,7 @@ object LanguageSetting {
     object Sakspart {
         const val navn = "navnprefix"
         const val gjelderNavn = "gjeldernavnprefix"
+        const val vedleggGjelderNavn = "vedlegggjeldernavnprefix"
         const val vergenavn = "vergenavnprefix"
         const val saksnummer = "saksnummerprefix"
         const val foedselsnummer = "foedselsnummerprefix"
@@ -42,6 +43,14 @@ val pensjonLatexSettings = languageSettings {
         )
     }
 
+    setting(LanguageSetting.Sakspart.vedleggGjelderNavn) {
+        Literal.create(
+            Bokmal to "Vedlegget gjelder:",
+            Nynorsk to "Vedlegget gjeld:",
+            English to "Attachment regarding:",
+        )
+    }
+
     setting(LanguageSetting.Sakspart.gjelderNavn) {
         Literal.create(
             Bokmal to "Saken gjelder:",
@@ -68,9 +77,9 @@ val pensjonLatexSettings = languageSettings {
 
     setting("sidesaksnummerprefix") {
         Literal.create(
-            Bokmal to "saksnummer: ",
-            Nynorsk to "saksnummer: ",
-            English to "case number: ",
+            Bokmal to "Saksnummer: ",
+            Nynorsk to "Saksnummer: ",
+            English to "Case number: ",
         )
     }
 

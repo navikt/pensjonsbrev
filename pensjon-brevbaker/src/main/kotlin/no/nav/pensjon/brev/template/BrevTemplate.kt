@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.toCode
+import no.nav.pensjon.brev.template.dsl.PlainTextScope
 import no.nav.pensjon.brev.template.dsl.TextScope
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 
@@ -32,6 +33,9 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevda
         )
 
     fun TextScope<*, *>.fritekst(beskrivelse: String): Expression<String> =
+        Expression.Literal(beskrivelse, setOf(ElementTags.FRITEKST))
+
+    fun PlainTextScope<*, *>.fritekst(beskrivelse: String): Expression<String> =
         Expression.Literal(beskrivelse, setOf(ElementTags.FRITEKST))
 }
 

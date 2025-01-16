@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.template.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.outlineTestLetter
+import no.nav.pensjon.brev.outlineTestTemplate
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.Conditional
 import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
@@ -21,12 +23,12 @@ class TemplateTableTest {
             paragraph {
                 table(header = {
                     column {
-                        text(Language.Bokmal to "header")
+                        text(Bokmal to "header")
                     }
                 }) {
                     row {
                         cell {
-                            text(Language.Bokmal to "joda")
+                            text(Bokmal to "joda")
                         }
                     }
                 }
@@ -52,7 +54,7 @@ class TemplateTableTest {
                                         Element.OutlineContent.ParagraphContent.Table.Row(
                                             listOf(
                                                 Element.OutlineContent.ParagraphContent.Table.Cell(
-                                                    listOf(newText(Language.Bokmal to "joda"))
+                                                    listOf(newText(Bokmal to "joda"))
                                                 )
                                             ), colSpec
                                         )
@@ -75,20 +77,20 @@ class TemplateTableTest {
                 paragraph {
                     table(header = {
                         column {
-                            text(Language.Bokmal to "header")
+                            text(Bokmal to "header")
                         }
                     }) {
                         row {
                             cell {
-                                text(Language.Bokmal to "en enkel celle")
+                                text(Bokmal to "en enkel celle")
                             }
                         }
                         row {
                             cell {
-                                text(Language.Bokmal to "en Henkel celle")
+                                text(Bokmal to "en Henkel celle")
                             }
                             cell {
-                                text(Language.Bokmal to "en celle for mye")
+                                text(Bokmal to "en celle for mye")
                             }
                         }
                     }
@@ -104,7 +106,7 @@ class TemplateTableTest {
                 paragraph {
                     table(header = {
                         column {
-                            text(Language.Bokmal to "header")
+                            text(Bokmal to "header")
                         }
                     }) {
                         row {
@@ -123,21 +125,21 @@ class TemplateTableTest {
             paragraph {
                 table(header = {
                     column {
-                        text(Language.Bokmal to "header")
+                        text(Bokmal to "header")
                     }
                 }) {
                     showIf(true.expr()) {
                         row {
                             cell {
                                 text(
-                                    Language.Bokmal to "hei",
+                                    Bokmal to "hei",
                                 )
                             }
                         }
                         row {
                             cell {
                                 text(
-                                    Language.Bokmal to "heihå",
+                                    Bokmal to "heihå",
                                 )
                             }
                         }
@@ -165,7 +167,7 @@ class TemplateTableTest {
                                             Element.OutlineContent.ParagraphContent.Table.Row(
                                                 listOf(
                                                     Element.OutlineContent.ParagraphContent.Table.Cell(
-                                                        listOf(newText(Language.Bokmal to "hei"))
+                                                        listOf(newText(Bokmal to "hei"))
                                                     )
                                                 ),
                                                 colSpec = colSpec
@@ -173,7 +175,7 @@ class TemplateTableTest {
                                             Element.OutlineContent.ParagraphContent.Table.Row(
                                                 listOf(
                                                     Element.OutlineContent.ParagraphContent.Table.Cell(
-                                                        listOf(newText(Language.Bokmal to "heihå"))
+                                                        listOf(newText(Bokmal to "heihå"))
                                                     )
                                                 ), colSpec = colSpec
                                             )

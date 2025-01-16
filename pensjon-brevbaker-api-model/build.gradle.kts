@@ -9,6 +9,7 @@ plugins {
 }
 
 group = "no.nav.pensjon.brev"
+
 version = "116"
 
 java {

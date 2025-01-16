@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.*
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList.Item
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.*
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal
+import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.NewLine
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Variable
 
 val Letter.literals: Sequence<Literal>
@@ -74,10 +75,12 @@ abstract class EditLetterSequence<T> {
         when (content) {
             is Literal -> visit(content)
             is Variable -> visit(content)
+            is NewLine -> visit(content)
         }
 
     open suspend fun SequenceScope<T>.visit(content: Literal): Unit = visitIdentifiable(content)
     open suspend fun SequenceScope<T>.visit(content: Variable): Unit = visitIdentifiable(content)
+    open suspend fun SequenceScope<T>.visit(content: NewLine): Unit = visitIdentifiable(content)
 
     open suspend fun SequenceScope<T>.visit(itemList: ItemList) {
         visitIdentifiable(itemList)

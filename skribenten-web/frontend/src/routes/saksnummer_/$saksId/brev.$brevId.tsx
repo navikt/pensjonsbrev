@@ -4,15 +4,16 @@ import { BodyLong, Box, Button, Heading, HStack, Label, Modal, Skeleton, Tabs, V
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { type Dispatch, type SetStateAction, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { type Dispatch, type SetStateAction, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import {
   getBrev,
   getBrevReservasjon,
-  hurtiglagreBrev,
-  hurtiglagreSaksbehandlerValg,
+  oppdaterBrev,
+  oppdaterBrevtekst,
+  oppdaterSaksbehandlerValg,
   oppdaterSignatur,
   tilbakestillBrev,
 } from "~/api/brev-queries";
@@ -27,7 +28,7 @@ import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/Sca
 import { SaksbehandlerValgModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
-import type { BrevResponse, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
+import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 import { queryFold } from "~/utils/tanstackUtils";
 
@@ -198,39 +199,89 @@ function RedigerBrev({
   saksId: string;
   vedtaksId: string | undefined;
 }) {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate({ from: Route.fullPath });
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brev));
+
   const brevmal = useQuery({
     queryKey: getSakContext.queryKey(saksId, vedtaksId),
     queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
     select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brev.info.brevkode),
   });
 
-  const navigate = useNavigate({ from: Route.fullPath });
   const showDebug = useSearch({
     strict: false,
     select: (search: { debug?: string | boolean }) => search?.["debug"] === "true" || search?.["debug"] === true,
   });
 
-  const saksbehandlerValgMutation = useHurtiglagreMutation(brev.info.id, setEditorState, hurtiglagreSaksbehandlerValg);
+  const saksbehandlerValgMutation = useHurtiglagreMutation(brev.info.id, setEditorState, oppdaterSaksbehandlerValg);
   const signaturMutation = useHurtiglagreMutation(brev.info.id, setEditorState, oppdaterSignatur);
-  const redigertBrevMutation = useHurtiglagreMutation(
+  const brevtekstMutation = useHurtiglagreMutation(
     brev.info.id,
     setEditorState,
     (brevId, args: { redigertBrev: EditedLetter; frigiReservasjon?: boolean }) => {
       applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
-      return hurtiglagreBrev(brevId, args.redigertBrev, args.frigiReservasjon);
+      return oppdaterBrevtekst(brevId, args.redigertBrev, args.frigiReservasjon);
     },
   );
 
-  const onSubmit = (values: RedigerBrevSidemenyFormData, onSuccess?: () => void) => {
-    saksbehandlerValgMutation.mutate(values.saksbehandlerValg, {
-      onSuccess: () => {
-        signaturMutation.mutate(values.signatur, {
-          onSuccess: onSuccess,
-        });
+  const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
+    mutationFn: (values) =>
+      oppdaterBrev({
+        saksId: Number.parseInt(saksId),
+        brevId: brev.info.id,
+        request: {
+          redigertBrev: values.redigertBrev,
+          saksbehandlerValg: values.saksbehandlerValg,
+          signatur: values.signatur,
+        },
+      }),
+  });
+
+  const defaultValuesModelEditor = useMemo(
+    () => ({
+      saksbehandlerValg: {
+        ...brev.saksbehandlerValg,
       },
+      signatur: brev.redigertBrev.signatur.saksbehandlerNavn,
+    }),
+    [brev.redigertBrev.signatur.saksbehandlerNavn, brev.saksbehandlerValg],
+  );
+
+  const form = useForm<RedigerBrevSidemenyFormData>({
+    defaultValues: defaultValuesModelEditor,
+  });
+
+  const onTekstValgAndOverstyringChange = () => {
+    form.trigger().then((isValid) => {
+      if (isValid) {
+        saksbehandlerValgMutation.mutate(form.getValues().saksbehandlerValg, {
+          onSuccess: () => {
+            signaturMutation.mutate(form.getValues().signatur);
+          },
+        });
+      }
     });
+  };
+
+  const onSubmit = (values: RedigerBrevSidemenyFormData, onSuccess?: () => void) => {
+    oppdaterBrevMutation.mutate(
+      {
+        redigertBrev: editorState.redigertBrev,
+        saksbehandlerValg: values.saksbehandlerValg,
+        signatur: values.signatur,
+      },
+      {
+        onSuccess: (response) => {
+          queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
+          //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
+          //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
+          queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brev.info.id) });
+          onSuccess?.();
+        },
+      },
+    );
   };
 
   const reservasjonQuery = useQuery({
@@ -242,11 +293,11 @@ function RedigerBrev({
   useEffect(() => {
     const timoutId = setTimeout(() => {
       if (editorState.isDirty) {
-        redigertBrevMutation.mutate({ redigertBrev: editorState.redigertBrev });
+        brevtekstMutation.mutate({ redigertBrev: editorState.redigertBrev });
       }
     }, 5000);
     return () => clearTimeout(timoutId);
-  }, [editorState.isDirty, editorState.redigertBrev, redigertBrevMutation]);
+  }, [editorState.isDirty, editorState.redigertBrev, brevtekstMutation]);
 
   useEffect(() => {
     if (editorState.redigertBrevHash !== brev.redigertBrevHash) {
@@ -258,32 +309,35 @@ function RedigerBrev({
     }
   }, [brev.redigertBrev, brev.redigertBrevHash, editorState.redigertBrevHash, setEditorState]);
 
-  const defaultValuesModelEditor = useMemo(
-    () => ({
-      saksbehandlerValg: {
-        ...brev.saksbehandlerValg,
-      },
-      signatur: brev.redigertBrev.signatur.saksbehandlerNavn,
-    }),
-    [brev.redigertBrev.signatur.saksbehandlerNavn, brev.saksbehandlerValg],
-  );
-  const formRef = useRef<HTMLFormElement>(null);
-
-  const form = useForm<RedigerBrevSidemenyFormData>({
-    defaultValues: defaultValuesModelEditor,
-  });
-
   useEffect(() => {
     form.reset(defaultValuesModelEditor);
   }, [defaultValuesModelEditor, form]);
 
-  const requestSubmit = useCallback(async () => {
-    formRef.current?.requestSubmit();
-  }, [formRef]);
+  const freeze =
+    brevtekstMutation.isPending ||
+    saksbehandlerValgMutation.isPending ||
+    signaturMutation.isPending ||
+    oppdaterBrevMutation.isPending;
+
+  const error =
+    brevtekstMutation.isError ||
+    saksbehandlerValgMutation.isError ||
+    signaturMutation.isError ||
+    oppdaterBrevMutation.isError;
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit((v) => onSubmit(v))} ref={formRef}>
+      <form
+        onSubmit={form.handleSubmit((v) =>
+          onSubmit(v, () =>
+            navigate({
+              to: "/saksnummer/$saksId/brevbehandler",
+              params: { saksId },
+              search: { brevId: brev.info.id },
+            }),
+          ),
+        )}
+      >
         <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
         {vilTilbakestilleMal && (
           <TilbakestillMalModal
@@ -321,15 +375,13 @@ function RedigerBrev({
           >
             <VStack gap="3">
               <Heading size="small">{brevmal.data?.name}</Heading>
-              <OpprettetBrevSidemenyForm brev={brev} submitOnChange={requestSubmit} />
+              <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
             </VStack>
             <LetterEditor
               editorHeight={"var(--main-page-content-height)"}
               editorState={editorState}
-              error={redigertBrevMutation.isError || saksbehandlerValgMutation.isError || signaturMutation.isError}
-              freeze={
-                redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending || signaturMutation.isPending
-              }
+              error={error}
+              freeze={freeze}
               setEditorState={setEditorState}
               showDebug={showDebug}
             />
@@ -374,29 +426,7 @@ function RedigerBrev({
               >
                 Tilbake til brevvelger
               </Button>
-              <Button
-                loading={
-                  redigertBrevMutation.isPending || saksbehandlerValgMutation.isPending || signaturMutation.isPending
-                }
-                onClick={async () => {
-                  onSubmit(form.getValues(), () => {
-                    redigertBrevMutation.mutate(
-                      { redigertBrev: editorState.redigertBrev, frigiReservasjon: true },
-                      {
-                        onSuccess: () => {
-                          navigate({
-                            to: "/saksnummer/$saksId/brevbehandler",
-                            params: { saksId },
-                            search: { brevId: brev.info.id },
-                          });
-                        },
-                      },
-                    );
-                  });
-                }}
-                size="small"
-                type="button"
-              >
+              <Button loading={oppdaterBrevMutation.isPending} size="small">
                 <HStack align={"center"} gap="2">
                   <Label size="small">Fortsett</Label> <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
                 </HStack>

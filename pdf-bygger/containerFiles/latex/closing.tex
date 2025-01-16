@@ -2,31 +2,64 @@
 %       Closing/last page of letter
 %----------------------------------------
 
+\newcommand{\closingsinglesignature}{
+    \vspace{4pt}
+    \feltsaksbehandlernavn
+    \\ \feltclosingsaksbehandlersuffix
+    \par
+    \vspace*{18pt}
+    \feltnavenhet
+}
+
+\newcommand{\closingdoublesignature}{
+    \vspace{5pt}
+    \doublesignature{\feltattestantnavn}{\feltsaksbehandlernavn}
+    \par
+    \vspace*{11pt}
+    \feltnavenhet
+}
+
+\newcommand{\closingautosignature}[1]{
+    \feltnavenhet
+    \par
+    \vspace*{18pt}
+    #1
+}
+
+\newcommand{\closingautosignaturevedtaksbrev}{
+    \closingautosignature{\feltclosingautomatisktextvedtaksbrev}
+}
+
+\newcommand{\closingautosignatureinfobrev}{
+    \closingautosignature{\feltclosingautomatisktextinfobrev}
+}
+
 % Closing page text
 \newcommand{\closing}{
-    \nopagebreak
+    \addvspace{28pt minus 16pt}
     \begin{minipage}{\textwidth}
+        \standardtext
         \sloppy % no word-breaking
         \raggedright % no word spacing
         \raggedbottom % no line stretching to fit page
         \frenchspacing % no double space after ended sentence
-        \vspace*{42pt}
-        \feltclosinggreeting
-        \par
-        \vspace*{4pt}
+        \feltclosinggreeting \\
         \closingbehandlet
-        \feltclosingvedlegg
-        \label{\currentSectionName} %set label for the last page before attachments
     \end{minipage}
+    \feltclosingvedlegg
+    \label{\currentSectionName} %set label for the last page before attachments
 }
 
 % attachmentList
 \newenvironment{attachmentList}
     {\par
-    \vspace{30pt}
+    \addvspace{42pt minus 20pt}
     % enclose in brackets to prevent font from bleeding out to the rest of the letter.
     % Should be the same as the secondary letter title, but without extra spacing after.
-    {\primaryFont\fontsize{\titletwotextsize}{0pt} \selectfont \textbf{\feltclosingvedleggprefix}}
+    \titletwo
+    \feltclosingvedleggprefix
+    \standardtext
+    \vspace{-12pt}
     \begin{itemize}}
     {\end{itemize}}
 
@@ -45,7 +78,6 @@
 
 \newcommand{\doublesignature}[2]{
     \setlength{\tabcolsep}{12pt}
-    \primaryFont \fontsize{\standardtextsize}{19.5pt} \selectfont
     \begin{signaturestable}{colspec={X[l]X[l]}, column{1} = {rightsep = 10mm},column{2} = {leftsep = 10mm}}
         #1 & #2 \\
         \feltclosingsaksbehandlersuffix & \feltclosingsaksbehandlersuffix \\
