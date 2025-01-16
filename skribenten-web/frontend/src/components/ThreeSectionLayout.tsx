@@ -9,6 +9,7 @@ const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNo
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        flex: 1;
       `}
     >
       <div

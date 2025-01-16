@@ -1,15 +1,18 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Button, Heading, HStack, Label, Modal, VStack } from "@navikt/ds-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
+import { hentPdfForBrev, hentPdfForBrevFunction } from "~/api/sak-api-endpoints";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse } from "~/types/brev";
+import { queryFold } from "~/utils/tanstackUtils";
 
 import { nyBrevResponse } from "../../../../../../cypress/utils/brevredigeringTestUtils";
 import PDFViewer from "../../brevbehandler/-components/PDFViewer";
+import { distribusjonstypeTilText } from "../../kvittering/-components/KvitteringUtils";
 import { useSendVedtakContext } from "../kvittering/-SendVedtakContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$vedtakId/forhandsvisning")({
@@ -60,6 +63,11 @@ const VedtaksForhåndsvisning = () => {
   const [vilSendeBrev, setVilSendeBrev] = useState(false);
   const vedtak = queryClient.getQueryData<BrevResponse>(["vedtak", 1]) ?? nyBrevResponse({});
 
+  const hentPdfQuery = useQuery({
+    queryKey: hentPdfForBrev.queryKey(Number.parseInt(vedtakId)),
+    queryFn: () => hentPdfForBrevFunction(saksId, vedtakId),
+  });
+
   return (
     <>
       {vilSendeBrev && (
@@ -100,23 +108,34 @@ const VedtaksForhåndsvisning = () => {
               <OppsummeringAvMottaker mottaker={vedtak.info.mottaker} saksId={saksId} withTitle />
               <VStack gap="1">
                 <Label size="small">Distribusjonstype</Label>
-                <BodyShort size="small">{vedtak.info.distribusjonstype}</BodyShort>
-                <Alert size="small" variant="warning">
-                  Du må åpne PDF og skrive ut brevet etter du har trykket på send brev.
-                </Alert>
+                <BodyShort size="small">{distribusjonstypeTilText(vedtak.info.distribusjonstype)}</BodyShort>
+                {vedtak.info.distribusjonstype === "LOKALPRINT" && (
+                  <Alert size="small" variant="warning">
+                    Du må åpne PDF og skrive ut brevet etter du har trykket på send brev.
+                  </Alert>
+                )}
               </VStack>
             </VStack>
           </VStack>
         }
-        right={
-          <PDFViewer
-            brevId={Number.parseInt(vedtakId)}
-            pdf={new Blob([])}
-            sakId={saksId}
-            utenSlettKnapp
-            viewerHeight={"var(--main-page-content-height)"}
-          />
-        }
+        right={queryFold({
+          query: hentPdfQuery,
+          initial: () => <></>,
+          pending: () => <></>,
+          error: (error) => <Alert variant="error">{error.message}</Alert>,
+          success: (pdf) =>
+            pdf === null ? (
+              <VStack align="center">Fant ikke PDF</VStack>
+            ) : (
+              <PDFViewer
+                brevId={Number.parseInt(vedtakId)}
+                pdf={pdf}
+                sakId={saksId}
+                utenSlettKnapp
+                viewerHeight={"var(--main-page-content-height)"}
+              />
+            ),
+        })}
       />
     </>
   );

@@ -1,14 +1,8 @@
 import { css } from "@emotion/react";
 import { Accordion, BodyShort, Box, Button, Heading, Label, Tag, VStack } from "@navikt/ds-react";
-import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { hentPdfForJournalpostQuery } from "~/api/sak-api-endpoints";
-import { ApiError } from "~/components/ApiError";
-
-import { distribusjonstypeTilText } from "../../kvittering/-components/KvitteringUtils";
-import { KvittertBrevContentError } from "../../kvittering/-components/KvitterteBrev";
-import Oppsummeringspar from "../../kvittering/-components/Oppsummeringspar";
+import { BrevSendtKvittering, KvittertBrevContentError } from "../../kvittering/-components/KvitterteBrev";
 import type { SendVedtakSuccessResponse } from "./-SendVedtakContext";
 import { useSendVedtakContext } from "./-SendVedtakContext";
 
@@ -90,12 +84,6 @@ const Kvittering = () => {
 };
 
 const SuccessDisplayer = (props: { saksId: string; response: SendVedtakSuccessResponse }) => {
-  const pdfForJournalpost = useMutation<Blob, Error, number>({
-    /* den er brukt i contexten av at journalpostId'en er sjekket til å være not null */
-    mutationFn: (journalpostId) => hentPdfForJournalpostQuery.queryFn(props.saksId, journalpostId),
-    onSuccess: (pdf) => window.open(URL.createObjectURL(pdf), "_blank"),
-  });
-
   if (props.response.response.error != null) {
     return (
       <KvittertBrevContentError
@@ -124,29 +112,12 @@ const SuccessDisplayer = (props: { saksId: string; response: SendVedtakSuccessRe
     );
   } else {
     return (
-      <VStack align={"start"} gap="4">
-        {/* TODO <Oppsummeringspar tittel={"Mottaker"} verdi={""} /> */}
-
-        <Oppsummeringspar
-          tittel={"Distribueres via"}
-          verdi={distribusjonstypeTilText(props.response.vedtak.info.distribusjonstype)}
-        />
-
-        {/* den er brukt i contexten av at journalpostId'en er sjekket til å være not null */}
-        <Oppsummeringspar tittel={"Journalpost ID"} verdi={props.response.response.journalpostId} />
-
-        <Button
-          loading={pdfForJournalpost.isPending}
-          // den er brukt i contexten av at journalpostId'en er sjekket til å være not null
-          onClick={() => pdfForJournalpost.mutate(props.response.response.journalpostId!)}
-          size="small"
-          type="button"
-        >
-          Åpne PDF i ny fane
-        </Button>
-
-        {pdfForJournalpost.isError && <ApiError error={pdfForJournalpost.error} title={"Klarte ikke å hente PDF"} />}
-      </VStack>
+      <BrevSendtKvittering
+        distribusjonstype={props.response.vedtak.info.distribusjonstype}
+        journalpostId={props.response.response.journalpostId}
+        mottaker={props.response.vedtak.info.mottaker}
+        saksId={props.saksId}
+      />
     );
   }
 };
