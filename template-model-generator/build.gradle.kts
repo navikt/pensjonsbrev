@@ -69,6 +69,8 @@ publishing {
 dependencies {
     compileOnly(kotlin("reflect"))
     implementation("com.google.devtools.ksp:symbol-processing-api:$kotlinVersion-$kspVersion")
+    implementation(project(":brevbaker-api-model-common"))
+    implementation(project(":brevbaker-api-model-mal"))
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
     // Byttet til fork som støtter kotlin > 2.0

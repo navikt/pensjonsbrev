@@ -115,10 +115,9 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.11.0")
 
-    implementation("no.nav.pensjon.brev:template-model-generator:$templateModelGeneratorVersion")
     implementation(project(":pensjonsmaler"))
     implementation(project(":etterlattemaler"))
-    ksp(project(":pensjonsmaler"))
+    ksp(project(":template-model-generator"))
 
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version") {
         because("we require deserialization/serialization of java.time.LocalDate")

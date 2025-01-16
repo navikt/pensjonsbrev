@@ -1,9 +1,6 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.expression.ExpressionTestSelectors.SomeDtoSelectors.name
-import no.nav.pensjon.brev.template.dsl.expression.ExpressionTestSelectors.SomeDtoSelectors.nameSelector
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -11,22 +8,6 @@ import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 class ExpressionTest {
-    data class SomeDto(val name: String)
-
-    @Suppress("unused")
-    @TemplateModelHelpers
-    object Helpers : HasModel<SomeDto>
-
-    @Test
-    fun `select creates a unaryinvoke with select`() {
-        val argument = Expression.FromScope.Argument<SomeDto>()
-        val expected = Expression.UnaryInvoke(
-            value = argument,
-            operation = UnaryOperation.Select(nameSelector)
-        )
-
-        assertEquals(expected, argument.name)
-    }
 
     @Test
     fun `format creates a binaryinvoke with dateformatting by letter language`() {

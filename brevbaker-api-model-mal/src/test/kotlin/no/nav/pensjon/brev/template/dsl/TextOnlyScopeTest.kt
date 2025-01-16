@@ -61,3 +61,5 @@ class TextOnlyScopeTest {
         }
     }
 }
+
+private data class SomeDto(val name: String, val pensjonInnvilget: Boolean, val kortNavn: String? = null)

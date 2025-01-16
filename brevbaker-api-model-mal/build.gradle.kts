@@ -27,8 +27,6 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib"))
     api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.8.0")
-    implementation("no.nav.pensjon.brev:template-model-generator:$templateModelGeneratorVersion")
-    ksp("no.nav.pensjon.brev:template-model-generator:$templateModelGeneratorVersion")
 
     // JUnit 5
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))

@@ -22,9 +22,8 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    implementation("no.nav.pensjon.brev:template-model-generator:$templateModelGeneratorVersion")
-    api("no.nav.pensjon.brevbaker:brevbaker-api-model-mal:1.0.0")
-    ksp("no.nav.pensjon.brev:template-model-generator:$templateModelGeneratorVersion")
+    api(project(":brevbaker-api-model-mal"))
+    ksp(project(":template-model-generator"))
     api(project(":pensjon-brevbaker-api-model"))
 
 

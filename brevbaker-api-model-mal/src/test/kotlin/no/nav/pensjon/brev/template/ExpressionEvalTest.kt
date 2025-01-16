@@ -1,11 +1,9 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.template.ExpressionEvalTestSelectors.SomeDtoSelectors.kortNavn
-import no.nav.pensjon.brev.template.ExpressionEvalTestSelectors.SomeDtoSelectors.name
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.saksnummer
+import no.nav.pensjon.brevbaker.api.model.Felles
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -17,6 +15,35 @@ class ExpressionEvalTest {
     @Suppress("unused")
     @TemplateModelHelpers
     object Helpers : HasModel<SomeDto>
+
+    private val nameSelector = object : TemplateModelSelector<SomeDto, String> {
+        override val className = "FakeSomeDtoNavnSelector"
+        override val propertyName = "value"
+        override val propertyType = "String"
+        override val selector = SomeDto::name
+    }
+
+    private val Expression<SomeDto>.name
+        get() = Expression.UnaryInvoke(this, UnaryOperation.Select(nameSelector))
+
+    private val kortNavnSelector = object : TemplateModelSelector<SomeDto, String?> {
+        override val className = "FakeKortNavnSelector"
+        override val propertyName = "value"
+        override val propertyType = "String"
+        override val selector = SomeDto::kortNavn
+    }
+    private val Expression<SomeDto>.kortNavn
+        get() = Expression.UnaryInvoke(this, UnaryOperation.Select(kortNavnSelector))
+
+    private val saksnummerSelector = object : TemplateModelSelector<Felles, String> {
+        override val className = "FakeFellesSelector"
+        override val propertyName = "value"
+        override val propertyType = "String"
+        override val selector = Felles::saksnummer
+    }
+
+    private val Expression<Felles>.saksnummer
+        get() = Expression.UnaryInvoke(this, UnaryOperation.Select(saksnummerSelector))
 
     private val scope = ExpressionScope(SomeDto("Ole", null), Fixtures.felles, Language.Bokmal)
     private val argumentExpr = Expression.FromScope.Argument<SomeDto>()
