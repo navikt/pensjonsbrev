@@ -1,15 +1,13 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val apiModelVersion: String by project
 val apiModelJavaTarget: String by System.getProperties()
-val templateModelGeneratorVersion: String by project
 
 plugins {
     kotlin("jvm")
     id("com.google.devtools.ksp")
 }
 
-group = "no.nav.pensjon.brev"
+group = "no.nav.brev.brevbaker"
 version = "0.0.1-SNAPSHOT"
 
 repositories {
@@ -18,15 +16,16 @@ repositories {
 }
 
 dependencies {
-    compileOnly(kotlin("stdlib"))
-    api(project(":brevbaker"))
+    api(project(":brevbaker-api-model-mal"))
     ksp(project(":template-model-generator"))
-    api(project(":pensjon-brevbaker-api-model"))
+
+    testImplementation(kotlin("test"))
 }
 
 tasks.test {
     useJUnitPlatform()
 }
+
 
 kotlin {
     compilerOptions {
@@ -41,7 +40,6 @@ kotlin {
         }
     }
 }
-
 tasks {
     compileJava {
         targetCompatibility = apiModelJavaTarget

@@ -22,7 +22,7 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    api(project(":brevbaker-api-model-mal"))
+    api(project(":brevbaker"))
     ksp(project(":template-model-generator"))
     api(project(":pensjon-brevbaker-api-model"))
 
