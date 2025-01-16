@@ -3,6 +3,7 @@
 %----------------------------------------
 
 \newcommand{\closingsinglesignature}{
+    \vspace{4pt}
     \feltsaksbehandlernavn
     \\ \feltclosingsaksbehandlersuffix
     \par
@@ -11,9 +12,10 @@
 }
 
 \newcommand{\closingdoublesignature}{
+    \vspace{5pt}
     \doublesignature{\feltattestantnavn}{\feltsaksbehandlernavn}
     \par
-    \vspace*{18pt}
+    \vspace*{11pt}
     \feltnavenhet
 }
 
@@ -34,16 +36,14 @@
 
 % Closing page text
 \newcommand{\closing}{
-    \addvspace{24pt minus 10pt}
+    \addvspace{28pt minus 16pt}
     \begin{minipage}{\textwidth}
         \standardtext
         \sloppy % no word-breaking
         \raggedright % no word spacing
         \raggedbottom % no line stretching to fit page
         \frenchspacing % no double space after ended sentence
-        \feltclosinggreeting
-        \par
-        \vspace*{4pt}
+        \feltclosinggreeting \\
         \closingbehandlet
     \end{minipage}
     \feltclosingvedlegg
@@ -56,9 +56,10 @@
     \addvspace{42pt minus 20pt}
     % enclose in brackets to prevent font from bleeding out to the rest of the letter.
     % Should be the same as the secondary letter title, but without extra spacing after.
-    \titletwo\feltclosingvedleggprefix
+    \titletwo
+    \feltclosingvedleggprefix
     \standardtext
-    \addvspace{6pt}
+    \vspace{-12pt}
     \begin{itemize}}
     {\end{itemize}}
 

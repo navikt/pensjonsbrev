@@ -169,6 +169,7 @@ for absolutefilename in $original_files/*.png; do
       filename=$(basename "$absolutefilename")
       echo -e "\n-------------------------------"
       echo comparing $filename
+      magick compare -metric MAE -density 150 -compose multiply $original_files/$filename $mogrify_folder/$filename $output_folder/$filename
       echo -e "\n-------------------------------"
 done
 ```

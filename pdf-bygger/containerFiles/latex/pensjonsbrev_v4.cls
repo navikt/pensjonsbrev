@@ -50,7 +50,7 @@
 \newcommand{\lettertitle}{\titlefont \fontsize{\titletextsize}{\titletextspacing} \fontseries{bf} \selectfont}
 
 % title 1
-\newfontfamily\titleonefont[LetterSpace=2.3]{Source Sans 3 Bold}
+\newfontfamily\titleonefont[LetterSpace=2.2]{Source Sans 3 Bold}
 \newcommand{\titleone}{\titleonefont \fontsize{\titleonetextsize}{\titleonetextspacing} \fontseries{bf} \selectfont}
 \newcommand{\titleonetextsize}{13pt}
 \newcommand{\titleonetextspacing}{10pt}

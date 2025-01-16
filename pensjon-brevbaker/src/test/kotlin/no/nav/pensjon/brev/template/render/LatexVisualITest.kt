@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.maler.example.lipsums
 import no.nav.pensjon.brev.renderTestPdfOutline
 import no.nav.pensjon.brev.renderTestVedleggPdf
-import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
