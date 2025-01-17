@@ -15,9 +15,9 @@ import java.time.format.FormatStyle
 
 private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
 
-object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
+object LatexDocumentRenderer {
 
-    override fun render(
+    fun render(
         letter: LetterMarkup,
         attachments: List<LetterMarkup.Attachment>,
         language: Language,

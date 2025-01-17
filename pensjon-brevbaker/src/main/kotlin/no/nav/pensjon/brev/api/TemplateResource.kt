@@ -92,7 +92,7 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
 
     private suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev)
-            .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
+            .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter.language, letter.felles, letter.template.letterMetadata.brevtype) }
             .let { laTeXCompilerService.producePDF(it) }
             .let { pdf ->
                 LetterResponse(

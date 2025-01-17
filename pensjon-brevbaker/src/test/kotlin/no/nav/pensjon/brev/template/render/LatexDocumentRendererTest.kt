@@ -87,9 +87,11 @@ class LatexDocumentRendererTest {
             val markup = Letter2Markup.render(Letter(outlineTestTemplate(outline), EmptyBrevdata, Bokmal, felles))
 
             val latexDocument = LatexDocumentRenderer.render(
-                letterMarkup = markup.letterMarkup,
+                letter = markup.letterMarkup,
                 attachments = markup.attachments,
-                letter = letter,
+                language = letter.language,
+                felles = letter.felles,
+                brevtype = letter.template.letterMetadata.brevtype,
             )
             val tex = latexDocument.files.find { it.fileName == "letter.tex" } as DocumentFile.PlainText
             assertThat(tex.content.lines().count { it.contains("templateparagraph") }, equalTo(expectedParagraphs))
