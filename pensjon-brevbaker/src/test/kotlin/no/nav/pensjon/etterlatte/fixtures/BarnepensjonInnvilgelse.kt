@@ -66,7 +66,8 @@ fun createBarnepensjonInnvilgelseDTO(): BarnepensjonInnvilgelseDTO {
                 harForeldreloessats = true,
             ),
             trygdetid = listOf(bruktTrygdetid),
-            bruktTrygdetid = bruktTrygdetid
+            bruktTrygdetid = bruktTrygdetid,
+            erYrkesskade = true,
         ),
         frivilligSkattetrekk = true,
         bosattUtland = true,
