@@ -1,9 +1,14 @@
-package no.nav.pensjon.brev.template
+package no.nav.pensjon.brev.template.render
 
-import no.nav.pensjon.brev.Fixtures.felles
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.render.Fixtures.felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class LetterTest {
 
@@ -13,7 +18,12 @@ class LetterTest {
         name = "test",
         letterDataType = TestData::class,
         languages = languages(Language.Bokmal),
-        letterMetadata = LetterMetadata("Test", false, LetterMetadata.Distribusjonstype.ANNET, brevtype = LetterMetadata.Brevtype.VEDTAKSBREV),
+        letterMetadata = LetterMetadata(
+            "Test",
+            false,
+            LetterMetadata.Distribusjonstype.ANNET,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
+        ),
     ) {
         title {
             text(Language.Bokmal to "test")
