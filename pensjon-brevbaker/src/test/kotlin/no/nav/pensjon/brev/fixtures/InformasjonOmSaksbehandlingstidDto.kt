@@ -1,14 +1,15 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto.SaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidPeDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidPeDto.SaksbehandlerValg
 
-fun createInformasjonOmSaksbehandlingstidDto() =
-    InformasjonOmSaksbehandlingstidDto(
+fun createInformasjonOmSaksbehandlingstidPeDto() =
+    InformasjonOmSaksbehandlingstidPeDto(
         saksbehandlerValg = SaksbehandlerValg(
             soeknadMottattFraUtland = false,
             venterPaaSvarAFP = false,
+            forlengetSaksbehandling = false
         ),
         pesysData = EmptyBrevdata
     )
