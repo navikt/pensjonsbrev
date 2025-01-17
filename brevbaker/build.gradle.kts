@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelJavaTarget: String by System.getProperties()
+val hamkrestVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -20,6 +21,7 @@ dependencies {
     ksp(project(":template-model-generator"))
 
     testImplementation(kotlin("test"))
+    testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
 }
 
 tasks.test {
