@@ -1,19 +1,20 @@
-package no.nav.pensjon.brev.template.dsl
+package no.nav.pensjon.brev.template.render.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
-import no.nav.pensjon.brev.Fixtures.felles
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.outlineTestTemplate
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.ForEachViewTestSelectors.ListArgumentSelectors.liste
-import no.nav.pensjon.brev.template.dsl.ForEachViewTestSelectors.ListArgumentSelectors.listeSelector
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.render.Fixtures.felles
 import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.pensjon.brev.template.render.dsl.ForEachViewTestSelectors.ListArgumentSelectors.liste
+import no.nav.pensjon.brev.template.render.dsl.ForEachViewTestSelectors.ListArgumentSelectors.listeSelector
 import no.nav.pensjon.brev.template.render.hasBlocks
+import no.nav.pensjon.brev.template.render.outlineTestTemplate
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

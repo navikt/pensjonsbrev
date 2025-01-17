@@ -1,7 +1,8 @@
-package no.nav.pensjon.brev.template.dsl
+package no.nav.pensjon.brev.template.render.dsl
 
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.Literal
+import no.nav.pensjon.brev.template.dsl.languageSettings
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

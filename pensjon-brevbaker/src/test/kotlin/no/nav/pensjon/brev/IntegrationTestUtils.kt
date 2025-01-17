@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.Letter
@@ -22,12 +23,10 @@ import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.OutlineElement
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.bokmalTittel
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.newText
-import no.nav.pensjon.brev.template.dsl.testLetterMetadata
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
@@ -195,12 +194,10 @@ internal inline fun <reified LetterData : Any> outlineTestTemplate(noinline func
         title.add(bokmalTittel)
         outline(function)
     }
-
-fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate(
-    name = "test",
-    title = listOf(bokmalTittel),
-    letterDataType = Unit::class,
-    language = languages(Bokmal),
-    outline = elements.asList(),
-    letterMetadata = testLetterMetadata
+internal val bokmalTittel = newText(Language.Bokmal to "test brev")
+internal val testLetterMetadata = LetterMetadata(
+    displayTitle = "En fin display tittel",
+    isSensitiv = false,
+    distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
 )

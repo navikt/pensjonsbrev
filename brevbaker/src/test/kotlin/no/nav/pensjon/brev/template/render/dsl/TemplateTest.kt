@@ -1,9 +1,18 @@
-package no.nav.pensjon.brev.template.dsl
+package no.nav.pensjon.brev.template.render.dsl
 
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
-import no.nav.pensjon.brev.template.dsl.SomeDtoSelectors.name
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
+import no.nav.pensjon.brev.template.dsl.TextOnlyScope
+import no.nav.pensjon.brev.template.dsl.choice
+import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.name
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

@@ -1,7 +1,8 @@
-package no.nav.pensjon.brev.template.dsl
+package no.nav.pensjon.brev.template.render.dsl
 
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 internal val bokmalTittel = newText(Language.Bokmal to "test brev")

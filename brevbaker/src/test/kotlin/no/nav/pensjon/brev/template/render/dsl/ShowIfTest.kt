@@ -1,17 +1,21 @@
-package no.nav.pensjon.brev.template.dsl
+package no.nav.pensjon.brev.template.render.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import no.nav.pensjon.brev.Fixtures.felles
-import no.nav.pensjon.brev.outlineTestTemplate
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
 import no.nav.pensjon.brev.template.Element.OutlineContent.Paragraph
-import no.nav.pensjon.brev.template.dsl.SomeDtoSelectors.name
-import no.nav.pensjon.brev.template.dsl.SomeDtoSelectors.pensjonInnvilget
+import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.render.Fixtures.felles
 import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.name
+import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.pensjonInnvilget
 import no.nav.pensjon.brev.template.render.hasBlocks
+import no.nav.pensjon.brev.template.render.outlineTestTemplate
 import org.junit.jupiter.api.Test
 
 class ShowIfTest {

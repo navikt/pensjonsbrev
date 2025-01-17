@@ -1,16 +1,20 @@
-package no.nav.pensjon.brev.template.dsl
+package no.nav.pensjon.brev.template.render.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
-import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.outlineTestLetter
-import no.nav.pensjon.brev.outlineTestTemplate
-import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.Conditional
 import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
+import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.InvalidTableDeclarationException
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.render.Fixtures
 import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.render.hasBlocks
+import no.nav.pensjon.brev.template.render.outlineTestLetter
+import no.nav.pensjon.brev.template.render.outlineTestTemplate
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -38,7 +42,7 @@ class TemplateTableTest {
         val colSpec = listOf(
             Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
                 Element.OutlineContent.ParagraphContent.Table.Cell(
-                    listOf(newText(Language.Bokmal to "header"))
+                    listOf(newText(Bokmal to "header"))
                 ), Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
             )
         )
@@ -150,7 +154,7 @@ class TemplateTableTest {
         val colSpec = listOf(
             Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
                 Element.OutlineContent.ParagraphContent.Table.Cell(
-                    listOf(newText(Language.Bokmal to "header"))
+                    listOf(newText(Bokmal to "header"))
                 ), Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
             )
         )
