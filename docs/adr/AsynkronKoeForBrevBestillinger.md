@@ -8,10 +8,9 @@ Technical Story: [Lage asynkron kø for brevbestillinger]
 ## Context and Problem Statement
 
 I dag har vi kun ett synkront løp for bestilling av brev. Det å rendre en PDF med LaTeX tar flere sekunder, og vi har 
-begrenset med ledig synkron kapasitet til en hver tid. For å komme rundt dette problemet i dag må konsumenter hensynta
-våres ledige kapasitet. Konsumenter må også ta stilling til tekniske feil som team pensjonsbrev er ansvarlige for å løse
-, og ha mekanismer for å forsøke på nytt i disse tilfellene. Det koster også penger å alltid ha tilgjengelige instanser 
-kjørende for å kunne håndtere store volum synkrone bestillinger.
+begrenset med ledig synkron kapasitet til en hver tid. Konsumenter må selv ta ansvar for å lage løsninger som ikke
+overbelaster kapasiteten til brevbaker ved å ha en fornuftig algoritme for throttling av requests og retry ved server
+feil (5xx)
 
 ## Decision Drivers
 * [Ekstra kompleksitet i løsningene til konsumenter]
