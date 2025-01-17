@@ -15,17 +15,13 @@ import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.io.IOException
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.template.jacksonObjectMapper
-import no.nav.pensjon.brev.template.render.LatexDocument
-import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
 import org.slf4j.LoggerFactory
 import kotlin.math.pow
 import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-data class PdfCompilationInput(val files: Map<String, String>)
 data class PDFCompilationOutput(val base64PDF: String)
 
 class LatexCompileException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
@@ -98,13 +94,8 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
 
     // TODO: LatexDocumentRenderer-kallet skal over i pdf-bygger-applikasjonen
     suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput =
-        producePDF(
-            latexLetter = LatexDocumentRenderer.render(pdfRequest.letterMarkup, pdfRequest.attachments, pdfRequest.language, pdfRequest.felles, pdfRequest.brevtype)
-        )
-
-    private suspend fun producePDF(latexLetter: LatexDocument): PDFCompilationOutput =
         withTimeoutOrNull(timeout) {
-            httpClient.post("$pdfByggerUrl/compile") {
+            httpClient.post("$pdfByggerUrl/produserBrev") {
                 contentType(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
                 //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
@@ -114,7 +105,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
                 // The solution is to seemingly do the same, but with creating a objectmapper outside of content-negotiation instead of simply using the following line:
                 // setBody(PdfCompilationInput(latexLetter.base64EncodedFiles()))
                 // this needs further investigation
-                setBody(objectmapper.writeValueAsBytes(PdfCompilationInput(latexLetter.base64EncodedFiles())))
+                setBody(objectmapper.writeValueAsBytes(pdfRequest))
             }.body()
         } ?: throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf")
 

@@ -1,6 +1,4 @@
-package no.nav.pensjon.brev.latex
-
-import no.nav.pensjon.brev.template.latexEscape
+package no.nav.pensjon.brev.pdfbygger
 
 @DslMarker
 annotation class LatexAppendableMarker

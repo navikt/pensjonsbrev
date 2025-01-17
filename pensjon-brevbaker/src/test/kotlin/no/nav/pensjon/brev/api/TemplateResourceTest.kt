@@ -4,9 +4,7 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
 import io.ktor.http.*
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
@@ -23,8 +21,6 @@ import no.nav.pensjon.brev.maler.example.Testmaler
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.render.DocumentFile
-import no.nav.pensjon.brev.template.render.LatexDocument
 import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -118,6 +114,7 @@ class TemplateResourceTest {
         }
     }
 
+    // TODO: Kommenter inn igjen og finn ut kor denne skal
 //    @Test
 //    fun `renderPDF redigertBrev uses letterMarkup from argument and includes attachments`() = runBlocking {
 //        val anAttachment = Letter2Markup.renderAttachmentsOnly(

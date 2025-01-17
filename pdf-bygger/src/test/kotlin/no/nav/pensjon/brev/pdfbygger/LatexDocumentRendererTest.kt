@@ -1,20 +1,20 @@
-package no.nav.pensjon.brev.template.render
+package no.nav.pensjon.brev.pdfbygger
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.Fixtures.felles
+import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.maler.example.LetterExample
+import no.nav.pensjon.brev.pdfbygger.Fixtures.felles
 import no.nav.pensjon.brev.template.LangBokmal
-import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.outlineTestTemplate
-import org.junit.jupiter.api.Test
+import no.nav.pensjon.brev.template.render.DocumentFile
+import no.nav.pensjon.brev.template.render.Letter2Markup
+import kotlin.test.Test
 
 class LatexDocumentRendererTest {
     @Test
@@ -80,18 +80,21 @@ class LatexDocumentRendererTest {
         val letter = Letter(
             LetterExample.template,
             EmptyBrevdata,
-            Bokmal,
+            Language.Bokmal,
             Fixtures.fellesAuto,
         )
         runBlocking {
-            val markup = Letter2Markup.render(Letter(outlineTestTemplate(outline), EmptyBrevdata, Bokmal, felles))
+            val markup =
+                Letter2Markup.render(Letter(outlineTestTemplate(outline), EmptyBrevdata, Language.Bokmal, felles))
 
             val latexDocument = LatexDocumentRenderer.render(
-                letter = markup.letterMarkup,
-                attachments = markup.attachments,
-                language = letter.language,
-                felles = letter.felles,
-                brevtype = letter.template.letterMetadata.brevtype,
+                PDFRequest(
+                    letterMarkup = markup.letterMarkup,
+                    attachments = markup.attachments,
+                    language = letter.language,
+                    felles = letter.felles,
+                    brevtype = letter.template.letterMetadata.brevtype,
+                )
             )
             val tex = latexDocument.files.find { it.fileName == "letter.tex" } as DocumentFile.PlainText
             assertThat(tex.content.lines().count { it.contains("templateparagraph") }, equalTo(expectedParagraphs))
@@ -101,26 +104,26 @@ class LatexDocumentRendererTest {
 
     private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testItemList() {
         list {
-            item { text(Bokmal to "test") }
+            item { text(Language.Bokmal to "test") }
         }
     }
 
     private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testTable() {
         table(
             header = {
-                column { text(Bokmal to "Column A") }
-                column { text(Bokmal to "Column B") }
+                column { text(Language.Bokmal to "Column A") }
+                column { text(Language.Bokmal to "Column B") }
             }
         ) {
             row {
-                cell { text(Bokmal to "Cell A-1") }
-                cell { text(Bokmal to "Cell B-1") }
+                cell { text(Language.Bokmal to "Cell A-1") }
+                cell { text(Language.Bokmal to "Cell B-1") }
             }
         }
     }
 
     private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testText() {
-        text(Bokmal to "test")
+        text(Language.Bokmal to "test")
     }
 
 }

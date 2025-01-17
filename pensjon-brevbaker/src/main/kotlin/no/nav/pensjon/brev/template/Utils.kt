@@ -21,27 +21,3 @@ fun ObjectMapper.brevbakerConfig() {
 }
 
 fun jacksonObjectMapper() = com.fasterxml.jackson.module.kotlin.jacksonObjectMapper().apply { brevbakerConfig() }
-
-val CHARACTER_BLACKLIST =
-    hashSetOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 127)
-
-fun String.latexEscape(): String =
-    this.map {
-        if (CHARACTER_BLACKLIST.contains(it.code)) {
-            ""
-        } else {
-            when (it) {
-                '#' -> """\#"""
-                '$' -> """\$"""
-                '%' -> """\%"""
-                '&' -> """\&"""
-                '\\' -> """\textbackslash{}"""
-                '^' -> """\textasciicircum{}"""
-                '_' -> """\_"""
-                '{' -> """\{"""
-                '}' -> """\}"""
-                '~' -> """\textasciitilde{}"""
-                else -> it.toString()
-            }
-        }
-    }.joinToString(separator = "")

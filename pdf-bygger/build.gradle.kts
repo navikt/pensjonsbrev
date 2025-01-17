@@ -55,6 +55,8 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+
+    testImplementation(project(":brevbaker"))
 }
 
 application {

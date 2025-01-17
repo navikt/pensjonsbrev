@@ -1,6 +1,7 @@
-package no.nav.pensjon.brev.template.render
+package no.nav.pensjon.brev.pdfbygger
 
-import no.nav.pensjon.brev.latex.LatexAppendable
+import no.nav.pensjon.brev.template.render.Document
+import no.nav.pensjon.brev.template.render.DocumentFile
 
 
 class LatexDocument : Document {

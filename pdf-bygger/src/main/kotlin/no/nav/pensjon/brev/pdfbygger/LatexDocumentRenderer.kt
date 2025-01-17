@@ -1,9 +1,12 @@
-package no.nav.pensjon.brev.template.render
+package no.nav.pensjon.brev.pdfbygger
 
-import no.nav.pensjon.brev.latex.LatexAppendable
+import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
+import no.nav.pensjon.brev.template.render.LanguageSetting
+import no.nav.pensjon.brev.template.render.fulltNavn
+import no.nav.pensjon.brev.template.render.pensjonLatexSettings
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Text.Size
@@ -17,7 +20,15 @@ private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
 
 object LatexDocumentRenderer {
 
-    fun render(
+    fun render(pdfRequest: PDFRequest) : LatexDocument = render(
+        letter = pdfRequest.letterMarkup,
+        attachments = pdfRequest.attachments,
+        language = pdfRequest.language,
+        felles = pdfRequest.felles,
+        brevtype = pdfRequest.brevtype,
+    )
+
+    private fun render(
         letter: LetterMarkup,
         attachments: List<LetterMarkup.Attachment>,
         language: Language,

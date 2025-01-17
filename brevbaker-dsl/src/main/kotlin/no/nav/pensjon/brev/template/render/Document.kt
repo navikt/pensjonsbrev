@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.pensjon.brev.latex.LatexAppendable
 import java.nio.file.Path
 import java.util.*
 

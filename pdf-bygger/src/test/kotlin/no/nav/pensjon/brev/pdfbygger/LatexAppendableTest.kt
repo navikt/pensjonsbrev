@@ -1,11 +1,10 @@
-package no.nav.pensjon.brev.latex
+package no.nav.pensjon.brev.pdfbygger
 
 import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.endsWith
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.startsWith
-import no.nav.pensjon.brev.template.latexEscape
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
