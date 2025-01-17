@@ -41,15 +41,17 @@ er godt innenfor grensene. Kafka er godt støttet av NAIS og utviklere har bedre
 * [option 0] Sette opp rate-limiting av konsumenter, og overlate ansvaret til dem for å oppfylle dette.
 * [option 1] Lage en kafka kø mellom brevbaker og pdf-bygger
 * [option 2] Lage en redis kø mellom brevbaker og pdf-bygger
+* [option 3] Lage en kafka kø med request/reply pattern rundt pdf-bygger
 
 ### [option 1] Lage en kafka kø mellom brevbaker og pdf-bygger
 
 Lage en asynkron kø som tar i mot letter markup og produserer PDF.
 
 Fordeler:
-* Kafka er mye brukt i NAV, så vi får bruke mye eksisterende kompetanse og GCP støtte
+* Kafka er mye brukt i NAV, så vi får bruke mye eksisterende kompetanse og GCP støtte.
 Ulemper:
 * Har begrenset kø-størrelse på 1MB, så vi kan i niche cases risikere at brev blir for store.
+* Vi må kjenne kallende tjeneste pga auth for å kalle tilbake.
 
 
 ### [option 2] Lage en redis kø mellom brevbaker og pdf-bygger
@@ -59,3 +61,12 @@ Fordeler:
 Ulemper:
 * Ikke mange i nav som bruker redis for kø-mekanismer.
 * Mer implementasjon må til for kø-mekanismen.
+
+
+### [option 3] Lage en kafka kø med request/reply pattern rundt pdf-bygger
+Fordeler:
+* Vi trenger ikke å kjenne til kallende tjeneste (kafka setter svar på svar-kø de bestemmer selv).
+* Kafka er mye brukt i NAV, så vi får bruke mye eksisterende kompetanse og GCP støtte.
+Ulemper:
+* Har begrenset kø-størrelse på 1MB, så vi kan i niche cases risikere at brev blir for store.
+* Vi må vente til vi har gjordt om pdf-bygger til å ta i mot letter markup istedenfor LaTeX filer.
