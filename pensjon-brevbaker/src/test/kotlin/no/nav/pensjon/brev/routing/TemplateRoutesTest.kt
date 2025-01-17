@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.alleRedigerbareMaler
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
-import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
+import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstidPE
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.render.TemplateDocumentation
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
@@ -65,9 +65,9 @@ class TemplateRoutesTest {
 
     @Test
     fun `can get description of redigerbar`() = testBrevbakerApp { client ->
-        val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}")
+        val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstidPE.kode.name}")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(InformasjonOmSaksbehandlingstid.description(), response.body<TemplateDescription.Redigerbar>())
+        assertEquals(InformasjonOmSaksbehandlingstidPE.description(), response.body<TemplateDescription.Redigerbar>())
     }
 
     @Test
@@ -79,9 +79,9 @@ class TemplateRoutesTest {
 
     @Test
     fun `can get modelSpecification of redigerbar`() = testBrevbakerApp { client ->
-        val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}/modelSpecification")
+        val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstidPE.kode.name}/modelSpecification")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(InformasjonOmSaksbehandlingstid.template.modelSpecification, response.body<TemplateModelSpecification>())
+        assertEquals(InformasjonOmSaksbehandlingstidPE.template.modelSpecification, response.body<TemplateModelSpecification>())
     }
 
     @Test
@@ -93,9 +93,9 @@ class TemplateRoutesTest {
 
     @Test
     fun `can get template documentation of redigerbar`() = testBrevbakerApp { client ->
-        val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}/doc/BOKMAL")
+        val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstidPE.kode.name}/doc/BOKMAL")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(TemplateDocumentationRenderer.render(InformasjonOmSaksbehandlingstid.template, Language.Bokmal), response.body<TemplateDocumentation>())
+        assertEquals(TemplateDocumentationRenderer.render(InformasjonOmSaksbehandlingstidPE.template, Language.Bokmal), response.body<TemplateDocumentation>())
     }
 
 }
