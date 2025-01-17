@@ -1,4 +1,4 @@
-# Asynkron kø for brevbestillinger
+# Asynkron kø brevbestilling
 
 * Status: [draft]
 * Deciders: Håkon Heggholmen
@@ -35,11 +35,12 @@ er godt innenfor grensene. Kafka er godt støttet av NAIS og utviklere har bedre
 * Vi får driftsansvar for køen.
 * Vi får mer kompleksitet i kodebasen våres.
 * Vi må integrere tilbake til applikasjonen som kaller oss.
-* 
+* Vi må passe på at vi ikke overbelaster bestiller/konsument.
 ## Considered Options
 
+* [option 0] Sette opp rate-limiting av konsumenter, og overlate ansvaret til dem for å oppfylle dette.
 * [option 1] Lage en kafka kø mellom brevbaker og pdf-bygger
-* [option 2] Lage en kafka redis kø mellom brevbaker og pdf-bygger
+* [option 2] Lage en redis kø mellom brevbaker og pdf-bygger
 
 ### [option 1] Lage en kafka kø mellom brevbaker og pdf-bygger
 
