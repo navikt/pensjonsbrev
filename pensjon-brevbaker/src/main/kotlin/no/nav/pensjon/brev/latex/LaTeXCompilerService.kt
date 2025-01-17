@@ -14,8 +14,11 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.io.IOException
+import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import no.nav.pensjon.brev.template.render.LatexDocument
+import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
 import org.slf4j.LoggerFactory
 import kotlin.math.pow
 import kotlin.random.Random
@@ -93,7 +96,13 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
         }
     }
 
-    suspend fun producePDF(latexLetter: LatexDocument): PDFCompilationOutput =
+    // TODO: LatexDocumentRenderer-kallet skal over i pdf-bygger-applikasjonen
+    suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput =
+        producePDF(
+            latexLetter = LatexDocumentRenderer.render(pdfRequest.letterMarkup, pdfRequest.attachments, pdfRequest.language, pdfRequest.felles, pdfRequest.brevtype)
+        )
+
+    private suspend fun producePDF(latexLetter: LatexDocument): PDFCompilationOutput =
         withTimeoutOrNull(timeout) {
             httpClient.post("$pdfByggerUrl/compile") {
                 contentType(ContentType.Application.Json)

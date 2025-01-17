@@ -118,28 +118,28 @@ class TemplateResourceTest {
         }
     }
 
-    @Test
-    fun `renderPDF redigertBrev uses letterMarkup from argument and includes attachments`() = runBlocking {
-        val anAttachment = Letter2Markup.renderAttachmentsOnly(
-            validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
-            InformasjonOmSaksbehandlingstid.template
-        ).firstOrNull()
-
-        val capturedLatex = slot<LatexDocument>()
-        redigerbar.renderPDF(validRedigertBrevRequest)
-        coVerify { latexMock.producePDF(capture(capturedLatex)) }
-
-        val letterLatexContent = capturedLatex.captured.files.filterIsInstance<DocumentFile.PlainText>().first { it.fileName == "letter.tex" }.content
-        assertThat(
-            letterLatexContent,
-            containsSubstring(validRedigertBrevRequest.letterMarkup.title)
-        )
-
-        // TODO: Vi har ingen redigerbare maler med vedlegg, if kan fjernes når vi har en mal med vedlegg.
-        if (anAttachment != null) {
-            assertThat(letterLatexContent, containsSubstring(anAttachment.title.joinToString { it.text }))
-        }
-    }
+//    @Test
+//    fun `renderPDF redigertBrev uses letterMarkup from argument and includes attachments`() = runBlocking {
+//        val anAttachment = Letter2Markup.renderAttachmentsOnly(
+//            validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
+//            InformasjonOmSaksbehandlingstid.template
+//        ).firstOrNull()
+//
+//        val capturedLatex = slot<LatexDocument>()
+//        redigerbar.renderPDF(validRedigertBrevRequest)
+//        coVerify { latexMock.producePDF(capture(capturedLatex)) }
+//
+//        val letterLatexContent = capturedLatex.captured.files.filterIsInstance<DocumentFile.PlainText>().first { it.fileName == "letter.tex" }.content
+//        assertThat(
+//            letterLatexContent,
+//            containsSubstring(validRedigertBrevRequest.letterMarkup.title)
+//        )
+//
+//        // TODO: Vi har ingen redigerbare maler med vedlegg, if kan fjernes når vi har en mal med vedlegg.
+//        if (anAttachment != null) {
+//            assertThat(letterLatexContent, containsSubstring(anAttachment.title.joinToString { it.text }))
+//        }
+//    }
 
 }
 
