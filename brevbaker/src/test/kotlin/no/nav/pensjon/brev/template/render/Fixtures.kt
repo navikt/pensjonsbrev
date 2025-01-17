@@ -1,10 +1,12 @@
 package no.nav.pensjon.brev.template.render
 
+import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brevbaker.api.model.Bruker
@@ -62,3 +64,7 @@ internal val testLetterMetadata = LetterMetadata(
     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
 )
+
+@TemplateModelHelpers
+object SomeDtoHelperGen : HasModel<SomeDto>
+data class SomeDto(val name: String, val pensjonInnvilget: Boolean, val kortNavn: String? = null)
