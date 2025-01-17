@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidPeDto
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.template.Letter
@@ -12,12 +12,13 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 @Tag(TestTags.INTEGRATION_TEST)
-class InformasjonOmSaksbehandlingstidITest {
+class InformasjonOmSaksbehandlingstidPeTest {
 
-    private val data = InformasjonOmSaksbehandlingstidDto(
-        saksbehandlerValg = InformasjonOmSaksbehandlingstidDto.SaksbehandlerValg(
+    private val data = InformasjonOmSaksbehandlingstidPeDto(
+        saksbehandlerValg = InformasjonOmSaksbehandlingstidPeDto.SaksbehandlerValg(
             soeknadMottattFraUtland = false,
             venterPaaSvarAFP = false,
+            forlengetSaksbehandling = true
         ),
         pesysData = EmptyBrevdata
     )
@@ -40,10 +41,15 @@ class InformasjonOmSaksbehandlingstidITest {
         )
     }
 
-    private fun writeAllLanguages(testNavn: String, data: InformasjonOmSaksbehandlingstidDto) {
+    @Test
+    fun `med forlenget saksbehandlingstid`() {
+        writeAllLanguages("med-forlenget-saksbehandlingstid", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(forlengetSaksbehandling = true)))
+    }
+
+    private fun writeAllLanguages(testNavn: String, data: InformasjonOmSaksbehandlingstidPeDto) {
         listOf(BOKMAL, NYNORSK, ENGLISH).forEach { lang ->
             Letter(
-                InformasjonOmSaksbehandlingstid.template,
+                InformasjonOmSaksbehandlingstidPE.template,
                 data,
                 lang.toLanguage(),
                 Fixtures.felles

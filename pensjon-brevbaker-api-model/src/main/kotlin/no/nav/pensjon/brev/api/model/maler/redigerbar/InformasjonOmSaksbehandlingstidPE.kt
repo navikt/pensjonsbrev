@@ -5,12 +5,13 @@ import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 
 @Suppress("unused")
-data class InformasjonOmSaksbehandlingstidDto(
+data class InformasjonOmSaksbehandlingstidPeDto(
     override val saksbehandlerValg: SaksbehandlerValg,
     override val pesysData: EmptyBrevdata
-) : RedigerbarBrevdata<InformasjonOmSaksbehandlingstidDto.SaksbehandlerValg, EmptyBrevdata> {
+) : RedigerbarBrevdata<InformasjonOmSaksbehandlingstidPeDto.SaksbehandlerValg, EmptyBrevdata> {
     data class SaksbehandlerValg(
         val soeknadMottattFraUtland: Boolean = false,
         val venterPaaSvarAFP: Boolean = false,
+        val forlengetSaksbehandling: Boolean = false,
     ) : BrevbakerBrevdata
 }
