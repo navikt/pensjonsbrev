@@ -105,7 +105,8 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
                 bruktTrygdetid
             ),
             erForeldreloes = true,
-            bruktTrygdetid = bruktTrygdetid
+            bruktTrygdetid = bruktTrygdetid,
+            erYrkesskade = false,
         ),
         frivilligSkattetrekk = true,
         brukerUnder18Aar = true,
