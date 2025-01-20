@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.text.NumberFormat
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
 abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOperation<T, Language, String>(doc) {
@@ -17,6 +18,14 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
         override fun stableHashCode(): Int = "DateFormat".hashCode()
         override fun apply(first: LocalDate, second: Language): String =
             first.format(dateFormatter(second, FormatStyle.LONG)).replace(' ', ' ') //space to non braking space
+    }
+
+    object MonthYearFormatter : LocalizedFormatter<LocalDate>() {
+        override fun apply(date: LocalDate, second: Language): String {
+            return date.format(DateTimeFormatter.ofPattern("MMMM yyyy", second.locale()))
+        }
+
+        override fun stableHashCode(): Int =  StableHash.of("MaanedAarFormatter").hashCode()
     }
 
     object DoubleFormat : LocalizedFormatter<Double>() {
