@@ -2,7 +2,9 @@ import { css } from "@emotion/react";
 import { BodyShort, Box, Button, Heading, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import KvitterteBrev from "../../kvittering/-components/KvitterteBrev";
+import KvitterteBrev from "~/components/kvitterteBrev/KvitterteBrev";
+import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
+
 import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$brevId/kvittering")({
@@ -12,6 +14,16 @@ export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$brevId/kvitter
 const Kvittering = () => {
   const { resultat } = useSendtBrevResultatContext();
   const { saksId, brevId } = Route.useParams();
+
+  const sendteBrev = resultat.map((resultat) =>
+    toKvittertBrev({
+      status: resultat.status,
+      context: "sendBrev",
+      brevFørHandling: resultat.brevInfo,
+      bestillBrevResponse: resultat.status === "success" ? resultat.response : null,
+      attesterResponse: null,
+    }),
+  );
 
   if (resultat.length === 0) {
     return (
@@ -47,7 +59,7 @@ const Kvittering = () => {
     >
       <VStack gap="5">
         <Heading size="medium">Kvittering</Heading>
-        <KvitterteBrev resultat={resultat} sakId={saksId} />
+        <KvitterteBrev kvitterteBrev={sendteBrev} sakId={saksId} />
       </VStack>
       <VStack gap="2">
         <Heading size="medium">Hva vil du gjøre nå?</Heading>

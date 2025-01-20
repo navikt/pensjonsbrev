@@ -284,125 +284,128 @@ export const BrevmalAlternativer = (props: {
         );
       }
 
-      if (props.displaySingle === "required" && specificationFormElements.requiredfields.length > 0) {
-        return (
-          <VStack gap="3">
-            {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
-            <SaksbehandlerValgModelEditor
-              brevkode={props.brevkode}
-              fieldsToRender={"required"}
-              specificationFormElements={specificationFormElements}
-              submitOnChange={props.submitOnChange}
-            />
-          </VStack>
-        );
-      }
-
-      if (props.displaySingle === "optional" && specificationFormElements.optionalFields.length > 0) {
-        return (
-          <VStack gap="3">
-            {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
-            <SaksbehandlerValgModelEditor
-              brevkode={props.brevkode}
-              fieldsToRender={"optional"}
-              specificationFormElements={specificationFormElements}
-              submitOnChange={props.submitOnChange}
-            />
-          </VStack>
-        );
-      }
-
-      if (specificationFormElements.optionalFields.length === 0) {
-        return (
-          <VStack gap="3">
-            {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
-            <SaksbehandlerValgModelEditor
-              brevkode={props.brevkode}
-              fieldsToRender={"required"}
-              specificationFormElements={specificationFormElements}
-              submitOnChange={props.submitOnChange}
-            />
-          </VStack>
-        );
-      }
-
-      if (specificationFormElements.requiredfields.length === 0) {
-        return (
-          <VStack gap="3">
-            {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
-            <SaksbehandlerValgModelEditor
-              brevkode={props.brevkode}
-              fieldsToRender={"optional"}
-              specificationFormElements={specificationFormElements}
-              submitOnChange={props.submitOnChange}
-            />
-          </VStack>
-        );
-      }
-
-      return (
-        <VStack gap="3">
-          {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
-          <Tabs
-            css={css`
-              width: 100%;
-
-              display: flex;
-              flex-direction: column;
-              gap: var(--a-spacing-5);
-
-              .navds-tabs__scroll-button {
-                /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
-                display: none;
-              }
-            `}
-            defaultValue={BrevAlternativTab.TEKSTER}
-            fill
-            size="small"
-          >
-            <Tabs.List
-              css={css`
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-              `}
-            >
-              <Tabs.Tab label="Tekster" value={BrevAlternativTab.TEKSTER} />
-              <Tabs.Tab label="Overstyring" value={BrevAlternativTab.OVERSTYRING} />
-            </Tabs.List>
-            <Tabs.Panel
-              css={css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--a-spacing-5);
-              `}
-              value={BrevAlternativTab.TEKSTER}
-            >
-              <SaksbehandlerValgModelEditor
-                brevkode={props.brevkode}
-                fieldsToRender={"optional"}
-                specificationFormElements={specificationFormElements}
-                submitOnChange={props.submitOnChange}
-              />
-            </Tabs.Panel>
-            <Tabs.Panel
-              css={css`
-                display: flex;
-                flex-direction: column;
-                gap: var(--a-spacing-5);
-              `}
-              value={BrevAlternativTab.OVERSTYRING}
-            >
+      if (props.displaySingle) {
+        if (props.displaySingle === "required" && specificationFormElements.requiredfields.length > 0) {
+          return (
+            <VStack gap="3">
+              {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
               <SaksbehandlerValgModelEditor
                 brevkode={props.brevkode}
                 fieldsToRender={"required"}
                 specificationFormElements={specificationFormElements}
                 submitOnChange={props.submitOnChange}
               />
-            </Tabs.Panel>
-            {props.children}
-          </Tabs>
-        </VStack>
-      );
+            </VStack>
+          );
+        }
+
+        if (props.displaySingle === "optional" && specificationFormElements.optionalFields.length > 0) {
+          return (
+            <VStack gap="3">
+              {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
+              <SaksbehandlerValgModelEditor
+                brevkode={props.brevkode}
+                fieldsToRender={"optional"}
+                specificationFormElements={specificationFormElements}
+                submitOnChange={props.submitOnChange}
+              />
+            </VStack>
+          );
+        }
+      } else {
+        if (specificationFormElements.optionalFields.length === 0) {
+          return (
+            <VStack gap="3">
+              {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
+              <SaksbehandlerValgModelEditor
+                brevkode={props.brevkode}
+                fieldsToRender={"required"}
+                specificationFormElements={specificationFormElements}
+                submitOnChange={props.submitOnChange}
+              />
+            </VStack>
+          );
+        }
+
+        if (specificationFormElements.requiredfields.length === 0) {
+          return (
+            <VStack gap="3">
+              {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
+              <SaksbehandlerValgModelEditor
+                brevkode={props.brevkode}
+                fieldsToRender={"optional"}
+                specificationFormElements={specificationFormElements}
+                submitOnChange={props.submitOnChange}
+              />
+            </VStack>
+          );
+        }
+
+        return (
+          <VStack gap="3">
+            {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
+            <Tabs
+              css={css`
+                width: 100%;
+
+                display: flex;
+                flex-direction: column;
+                gap: var(--a-spacing-5);
+
+                .navds-tabs__scroll-button {
+                  /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
+                  display: none;
+                }
+              `}
+              defaultValue={BrevAlternativTab.TEKSTER}
+              fill
+              size="small"
+            >
+              <Tabs.List
+                css={css`
+                  display: grid;
+                  grid-template-columns: repeat(2, 1fr);
+                `}
+              >
+                <Tabs.Tab label="Tekster" value={BrevAlternativTab.TEKSTER} />
+                <Tabs.Tab label="Overstyring" value={BrevAlternativTab.OVERSTYRING} />
+              </Tabs.List>
+              <Tabs.Panel
+                css={css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--a-spacing-5);
+                `}
+                value={BrevAlternativTab.TEKSTER}
+              >
+                <SaksbehandlerValgModelEditor
+                  brevkode={props.brevkode}
+                  fieldsToRender={"optional"}
+                  specificationFormElements={specificationFormElements}
+                  submitOnChange={props.submitOnChange}
+                />
+              </Tabs.Panel>
+              <Tabs.Panel
+                css={css`
+                  display: flex;
+                  flex-direction: column;
+                  gap: var(--a-spacing-5);
+                `}
+                value={BrevAlternativTab.OVERSTYRING}
+              >
+                <SaksbehandlerValgModelEditor
+                  brevkode={props.brevkode}
+                  fieldsToRender={"required"}
+                  specificationFormElements={specificationFormElements}
+                  submitOnChange={props.submitOnChange}
+                />
+              </Tabs.Panel>
+              {props.children}
+            </Tabs>
+          </VStack>
+        );
+      }
+      return null;
     }
   }
 };

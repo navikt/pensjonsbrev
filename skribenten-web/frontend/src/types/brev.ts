@@ -74,6 +74,7 @@ export type BrevInfo = {
   avsenderEnhet: Nullable<NAVEnhet>;
   spraak: SpraakKode;
   journalpostId: Nullable<number>;
+  vedtaksId: Nullable<number>;
 };
 
 export type BrevStatus = Kladd | UnderRedigering | Klar | Arkivert;

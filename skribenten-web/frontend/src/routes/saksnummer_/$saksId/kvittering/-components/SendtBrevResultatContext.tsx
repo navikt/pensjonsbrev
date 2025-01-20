@@ -3,8 +3,6 @@ import { createContext, useContext, useState } from "react";
 
 import type { BestillBrevResponse, BrevInfo } from "~/types/brev";
 
-//TODO - contexten er i bruk i 2 forskjellige steder, flytt til generell /contexts
-
 export type SendtBrevResponser = Array<SendtBrevSuccessResponse | SendtBrevErrorResponse>;
 export type SendtBrevResponse = SendtBrevSuccessResponse | SendtBrevErrorResponse;
 
