@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.pdfbygger
 
 import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.containsSubstring
 import com.natpryce.hamkrest.equalTo
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.PDFRequest
@@ -71,6 +72,31 @@ class LatexDocumentRendererTest {
                 testItemList()
             }
         }
+    }
+
+    @Test
+    fun `renderPDF redigertBrev uses letterMarkup from argument and includes attachments`() = runBlocking {
+        val letterData = createEksempelbrevRedigerbartDto()
+
+        val letter = Letter(EksempelbrevRedigerbart.template, letterData, Language.Bokmal, felles)
+
+        val letterMarkup = Letter2Markup.render(letter)
+
+        val pdfRequest = PDFRequest(
+            letterMarkup = letterMarkup.letterMarkup,
+            attachments = letterMarkup.attachments,
+            language = Language.Bokmal,
+            felles = felles,
+            brevtype = EksempelbrevRedigerbart.template.letterMetadata.brevtype,
+        )
+        val rendered = LatexDocumentRenderer.render(pdfRequest)
+
+        assertThat(
+            rendered.files.filterIsInstance<DocumentFile.PlainText>().first { it.fileName == "letter.tex" }.content,
+            containsSubstring("Du har fått innvilget pensjon")
+        )
+
+        assertThat(rendered.files.filterIsInstance<DocumentFile.PlainText>().first { it.fileName == "attachment_0.tex" }.content, containsSubstring("Test vedlegg"))
     }
 
     fun assertNumberOfParagraphs(

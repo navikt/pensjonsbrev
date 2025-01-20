@@ -4,7 +4,9 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
 import io.ktor.http.*
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
+import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
@@ -21,6 +23,7 @@ import no.nav.pensjon.brev.maler.example.Testmaler
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.render.DocumentFile
 import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -113,31 +116,6 @@ class TemplateResourceTest {
             assertThat(result, containsSubstring(anAttachmentTitle))
         }
     }
-
-    // TODO: Kommenter inn igjen og finn ut kor denne skal
-//    @Test
-//    fun `renderPDF redigertBrev uses letterMarkup from argument and includes attachments`() = runBlocking {
-//        val anAttachment = Letter2Markup.renderAttachmentsOnly(
-//            validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
-//            InformasjonOmSaksbehandlingstid.template
-//        ).firstOrNull()
-//
-//        val capturedLatex = slot<LatexDocument>()
-//        redigerbar.renderPDF(validRedigertBrevRequest)
-//        coVerify { latexMock.producePDF(capture(capturedLatex)) }
-//
-//        val letterLatexContent = capturedLatex.captured.files.filterIsInstance<DocumentFile.PlainText>().first { it.fileName == "letter.tex" }.content
-//        assertThat(
-//            letterLatexContent,
-//            containsSubstring(validRedigertBrevRequest.letterMarkup.title)
-//        )
-//
-//        // TODO: Vi har ingen redigerbare maler med vedlegg, if kan fjernes når vi har en mal med vedlegg.
-//        if (anAttachment != null) {
-//            assertThat(letterLatexContent, containsSubstring(anAttachment.title.joinToString { it.text }))
-//        }
-//    }
-
 }
 
 data class RandomLetterdata(val v1: Boolean) : BrevbakerBrevdata
