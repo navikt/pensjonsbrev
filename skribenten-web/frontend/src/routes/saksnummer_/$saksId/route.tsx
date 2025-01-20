@@ -11,6 +11,7 @@ import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 
 import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
+import { SendtBrevTilAttesteringResultatContext } from "./kvittering/-components/SendBrevTilAttesteringResultatContext";
 import { SendtBrevResultatContextProvider } from "./kvittering/-components/SendtBrevResultatContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId")({
@@ -56,14 +57,16 @@ function SakBreadcrumbsPage() {
   const sakContext = Route.useLoaderData();
 
   return (
-    <SendtBrevResultatContextProvider>
-      <MottakerContextProvider>
-        <SakInfoBreadcrumbs sak={sakContext?.sak} />
-        <div className="page-margins">
-          <Outlet />
-        </div>
-      </MottakerContextProvider>
-    </SendtBrevResultatContextProvider>
+    <SendtBrevTilAttesteringResultatContext>
+      <SendtBrevResultatContextProvider>
+        <MottakerContextProvider>
+          <SakInfoBreadcrumbs sak={sakContext?.sak} />
+          <div className="page-margins">
+            <Outlet />
+          </div>
+        </MottakerContextProvider>
+      </SendtBrevResultatContextProvider>
+    </SendtBrevTilAttesteringResultatContext>
   );
 }
 

@@ -6,13 +6,13 @@ import type { AxiosError } from "axios";
 import { useState } from "react";
 
 import { sendBrev } from "~/api/sak-api-endpoints";
+import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse } from "~/types/brev";
 
 import { nyBrevResponse } from "../../../../../../cypress/utils/brevredigeringTestUtils";
 import BrevForhåndsvisning from "../../brevbehandler/-components/BrevForhåndsvisning";
-import { distribusjonstypeTilText } from "../../kvittering/-components/KvitteringUtils";
 import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$brevId/forhandsvisning")({

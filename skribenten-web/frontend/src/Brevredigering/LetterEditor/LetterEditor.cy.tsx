@@ -30,6 +30,7 @@ function EditorWithState({ initial, focus }: { initial: EditedLetter; focus?: Fo
       avsenderEnhet: null,
       spraak: SpraakKode.Bokmaal,
       journalpostId: null,
+      vedtaksId: null,
     },
     redigertBrev: initial,
     redigertBrevHash: "hash1",

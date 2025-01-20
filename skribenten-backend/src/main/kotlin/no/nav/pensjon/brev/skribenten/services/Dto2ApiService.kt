@@ -45,6 +45,7 @@ class Dto2ApiService(
             avsenderEnhet = info.avsenderEnhetId?.let { norg2Service.getEnhet(it) },
             spraak = info.spraak.toApi(),
             journalpostId = info.journalpostId,
+            vedtaksId = info.vedtaksId,
         )
     }
 

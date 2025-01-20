@@ -165,6 +165,7 @@ export const nyBrevInfo = (args: {
   avsenderEnhet?: Nullable<NAVEnhet>;
   spraak?: SpraakKode;
   journalpostId?: Nullable<number>;
+  vedtaksId?: Nullable<number>;
 }): BrevInfo => {
   return {
     id: args.id ?? 1,
@@ -182,6 +183,7 @@ export const nyBrevInfo = (args: {
     avsenderEnhet: args.avsenderEnhet ?? null,
     spraak: args.spraak ?? SpraakKode.Engelsk,
     journalpostId: args.journalpostId ?? null,
+    vedtaksId: args.vedtaksId ?? null,
   };
 };
 

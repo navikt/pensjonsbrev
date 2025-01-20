@@ -29,7 +29,7 @@ import { useUserInfo } from "~/hooks/useUserInfo";
 import type { BrevStatus, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
-import { erBrevArkivert, erBrevKlar } from "~/utils/brevUtils";
+import { erBrevArkivert, erBrevKlar, erVedtaksbrev } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 import { humanizeName } from "~/utils/stringUtils";
 
@@ -255,12 +255,11 @@ const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
 
         <Switch
           checked={erLåst}
-          // TODO - finn en måte å gi feedback på dersom kallet gir error. Jeg antar at switcehn ikke blir endret dersom det er en error
           loading={låsForRedigeringMutation.isPending}
           onChange={(event) => låsForRedigeringMutation.mutate(event.target.checked)}
           size="small"
         >
-          Brevet er klart for sending
+          {erVedtaksbrev(props.brev) ? "Brevet er klart for attestering" : "Brevet er klart for sending"}
         </Switch>
 
         {låsForRedigeringMutation.isError && (
