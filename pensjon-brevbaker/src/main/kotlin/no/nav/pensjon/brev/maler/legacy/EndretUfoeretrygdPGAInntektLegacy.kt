@@ -247,14 +247,6 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         Nynorsk to "Vi har fått nye opplysningar om inntekta",
                     )
 
-                    //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false
-                    showIf(not(innvilgetBTFB)) {
-                        text (
-                            Bokmal to " din",
-                            Nynorsk to " di",
-                        )
-                    }
-
                     //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
                     showIf(innvilgetBTFB) {
                         textExpr(
@@ -274,6 +266,11 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                                 Nynorsk to "ditt",
                             )
                         }
+                    }.orShow {
+                        text(
+                            Bokmal to " din",
+                            Nynorsk to " di",
+                        )
                     }
 
                     text (
