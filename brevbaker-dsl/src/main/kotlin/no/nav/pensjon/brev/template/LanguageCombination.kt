@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template
 
-sealed class LanguageCombination {
+internal sealed class LanguageCombination {
 
     data class Single<Lang : Language>(val first: Lang) : LanguageCombination(), LanguageSupport.Single<Lang>, StableHash by StableHash.of(first) {
         override fun supports(language: Language): Boolean = language == first
