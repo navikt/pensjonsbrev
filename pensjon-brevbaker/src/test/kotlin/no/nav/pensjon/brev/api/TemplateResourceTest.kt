@@ -4,9 +4,7 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
 import io.ktor.http.*
 import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.slot
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
@@ -20,10 +18,8 @@ import no.nav.pensjon.brev.latex.PDFCompilationOutput
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.maler.example.Testmaler
-import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.render.DocumentFile
 import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -106,15 +102,12 @@ class TemplateResourceTest {
         val result = String(redigerbar.renderHTML(validRedigertBrevRequest).file)
         val anAttachmentTitle = Letter2Markup.renderAttachmentsOnly(
             validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
-            InformasjonOmSaksbehandlingstid.template
-        ).firstOrNull()?.title?.joinToString { it.text }
+            EksempelbrevRedigerbart.template
+        ).first().title.joinToString { it.text }
 
         assertThat(result, containsSubstring(validRedigertBrevRequest.letterMarkup.title))
 
-        // TODO: Vi har ingen redigerbare maler med vedlegg, if kan fjernes når vi har en mal med vedlegg.
-        if (anAttachmentTitle != null) {
-            assertThat(result, containsSubstring(anAttachmentTitle))
-        }
+        assertThat(result, containsSubstring(anAttachmentTitle))
     }
 }
 
