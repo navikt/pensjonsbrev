@@ -1,23 +1,35 @@
 package no.nav.pensjon.brev
 
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.request.*
+import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.template.AttachmentTemplate
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmal
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.OutlineElement
+import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
 import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.nio.file.Path
-import java.util.Base64
+import java.util.*
 import kotlin.io.path.Path
 
 val BREVBAKER_URL = System.getenv("BREVBAKER_URL") ?: "http://localhost:8080"
@@ -40,13 +52,60 @@ fun requestLetter(client: HttpClient, letterRequest: BestillBrevRequest<Brevkode
     }
 
 fun writeTestPDF(pdfFileName: String, pdf: ByteArray, path: Path = Path.of("build", "test_pdf")) {
-    val file = path.resolve("$pdfFileName.pdf").toFile()
+    val file = path.resolve("${pdfFileName.replace(" ", "_")}.pdf").toFile()
     file.parentFile.mkdirs()
     file.writeBytes(pdf)
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
 }
 
 private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
+
+fun renderTestPdfOutline(
+    outputFolder: String,
+    testName: String,
+    felles: Felles? = null,
+    brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+    attachments: List<AttachmentTemplate<LangBokmal, EmptyBrevdata>> = emptyList(),
+    title: String? = null,
+    outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
+) {
+    val template = createTemplate(
+        testName, EmptyBrevdata::class, languages(Bokmal), LetterMetadata(
+            testName,
+            false,
+            LetterMetadata.Distribusjonstype.VEDTAK,
+            brevtype
+        )
+    ) {
+        title {
+            text(Bokmal to (title ?: testName))
+        }
+        outline { outlineInit() }
+        attachments.forEach { includeAttachment(it) }
+    }
+    val letter = Letter(template, Unit, Bokmal, felles ?: Fixtures.fellesAuto)
+    letter.renderTestPDF(testName, Path.of("build/$outputFolder"))
+}
+
+fun renderTestVedleggPdf(
+    testName: String,
+    title: String? = null,
+    includeSakspart: Boolean,
+    outputFolder: String,
+    felles: Felles? = null,
+    outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
+    ) {
+    val vedlegg: AttachmentTemplate<LangBokmal, EmptyBrevdata> = createAttachment<LangBokmal, EmptyBrevdata>(
+        title = newText(
+            Bokmal to (title?: testName)
+        ),
+        includeSakspart = includeSakspart,
+    ) {
+        outlineInit()
+    }
+    renderTestPdfOutline(attachments = listOf(vedlegg), outputFolder = outputFolder, testName = testName, title = title, felles = felles) {  }
+}
+
 
 fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
     pdfFileName: String,
@@ -92,3 +151,47 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: Str
 
     return this
 }
+
+fun <AttachmentData : Any, Lang : LanguageSupport> createVedleggTestTemplate(
+    template: AttachmentTemplate<Lang, AttachmentData>,
+    attachmentData: Expression<AttachmentData>,
+    languages: Lang,
+) = createTemplate(
+    name = "test-template",
+    letterDataType = Unit::class,
+    languages = languages,
+    letterMetadata = LetterMetadata(
+        "test mal",
+        isSensitiv = false,
+        distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+        brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+    ),
+) {
+    title {
+        eval("Tittel".expr())
+    }
+
+    outline {}
+
+    includeAttachment(template, attachmentData)
+}
+
+internal inline fun <reified LetterData : Any> outlineTestTemplate(noinline function: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit) =
+    createTemplate(
+        name = "test",
+        letterDataType = LetterData::class,
+        languages = languages(Bokmal),
+        letterMetadata = testLetterMetadata,
+    ) {
+        title.add(bokmalTittel)
+        outline(function)
+    }
+
+fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate(
+    name = "test",
+    title = listOf(bokmalTittel),
+    letterDataType = Unit::class,
+    language = languages(Bokmal),
+    outline = elements.asList(),
+    letterMetadata = testLetterMetadata
+)

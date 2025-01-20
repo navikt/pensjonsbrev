@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template.dsl
 import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.pensjon.brev.Fixtures.felles
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.outlineTestTemplate
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.ForEachViewTestSelectors.ListArgumentSelectors.liste
 import no.nav.pensjon.brev.template.dsl.ForEachViewTestSelectors.ListArgumentSelectors.listeSelector
@@ -30,7 +31,7 @@ class ForEachViewTest {
                     eval(x)
                 }
             }
-            
+
             repeat(3) {
                 title1 { eval(str) }
             }

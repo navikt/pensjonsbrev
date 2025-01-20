@@ -27,6 +27,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.beregningsperioder
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.erYrkesskade
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.opphoerNesteAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.oppphoersdato
@@ -69,7 +70,7 @@ fun beregningAvOmstillingsstoenad(
         includeSakspart = false,
     ) {
         beregning(tidligereFamiliepleier.expr(), innvilgelsesaar.expr())
-        trygdetid(trygdetid, tidligereFamiliepleier.expr())
+        trygdetid(trygdetid, tidligereFamiliepleier.expr(), erYrkesskade)
         perioderMedRegistrertTrygdetid(trygdetid, tidligereFamiliepleier.expr())
         meldFraTilNav()
     }
@@ -431,6 +432,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, OmstillingsstoenadBeregning>.trygdetid(
     trygdetid: Expression<Trygdetid>,
     tidligereFamiliepleier: Expression<Boolean>,
+    erYrkesskade: Expression<Boolean?>,
 ) {
     title2 {
         text(
@@ -474,6 +476,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                 )
             }
         }
+
         paragraph {
             textExpr(
                 Bokmal to "For å få full omstillingsstønad må ".expr() +
@@ -498,7 +501,27 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                     trygdetid.beregnetTrygdetidAar.format() + " years.",
             )
         }
-        showIf(trygdetid.mindreEnnFireFemtedelerAvOpptjeningstiden) {
+
+        ifNotNull(erYrkesskade){erYrkesskade ->
+            showIf(erYrkesskade) {
+                paragraph {
+                    text(
+                        Bokmal to "Det er bekreftet at dødsfallet skyldes en godkjent yrkesskade eller yrkessykdom. " +
+                                "Det gis derfor omstillingsstønad etter egne særbestemmelser. Selv om den avdøde hadde mindre " +
+                                "enn 40 års trygdetid i Norge, er omstillingsstønaden beregnet med full trygdetid. " +
+                                "Dette framkommer ikke i tabellen nedenfor.",
+                        Nynorsk to "Det er stadfesta at dødsfallet kjem av ein godkjend yrkesskade eller yrkessjukdom. " +
+                                "Det blir derfor gitt omstillingsstønad etter eigne særreglar. Sjølv om den avdøde hadde " +
+                                "mindre enn 40 års trygdetid i Noreg, er omstillingsstønaden berekna med full trygdetid. Dette kjem ikkje fram i tabellen nedanfor.",
+                        English to "It has been confirmed that the death was caused by an approved occupational " +
+                                "injury or disease. The adjustment allowance is granted under special regulations. " +
+                                "Although the deceased had less than 40 years of social security coverage in Norway, " +
+                                "the adjustment allowance is calculated based on a full social security period. " +
+                                "This is not reflected in the table below.",
+                    )
+                }
+            }
+        }.orShowIf(trygdetid.mindreEnnFireFemtedelerAvOpptjeningstiden) {
             paragraph {
                 textExpr(
                     Bokmal to "Tabellen under «Perioder med registrert trygdetid» viser full framtidig ".expr() +
@@ -540,6 +563,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                     "of coverage is not included in the calculation.",
             )
         }
+
         paragraph {
             textExpr(
                 Bokmal to "Omstillingsstønaden din er beregnet etter bestemmelsene i EØS-avtalen ".expr() +

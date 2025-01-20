@@ -111,6 +111,7 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
                 erForskjellig = true,
             ),
             erForeldreloes = true,
+            erYrkesskade = false,
         ),
         frivilligSkattetrekk = true,
         bosattUtland = true,

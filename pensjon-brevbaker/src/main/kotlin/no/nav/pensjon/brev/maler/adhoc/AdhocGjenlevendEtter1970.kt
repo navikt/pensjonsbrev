@@ -86,7 +86,7 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
                 text(
                     Bokmal to "Trenger du hjelp til å få jobb eller jobbe mer?",
                     Nynorsk to "Treng du hjelp til å få jobb eller jobbe meir?",
-                    English to "Do you need help getting a job or more work?"
+                    English to "Do you need help getting a job or more work?",
                 )
             }
             paragraph {

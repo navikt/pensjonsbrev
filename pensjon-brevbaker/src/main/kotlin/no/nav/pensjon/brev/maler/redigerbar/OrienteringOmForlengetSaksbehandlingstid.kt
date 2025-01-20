@@ -25,7 +25,7 @@ object OrienteringOmForlengetSaksbehandlingstid : RedigerbarTemplate<EmptyRedige
     override val kode = Pesysbrevkoder.Redigerbar.PE_ORIENTERING_OM_FORLENGET_SAKSBEHANDLINGSTID
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.VARSEL
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
-    override val sakstyper = Sakstype.all
+    override val sakstyper = Sakstype.pensjon
 
     override val template = createTemplate(
         name = kode.name,

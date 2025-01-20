@@ -83,6 +83,7 @@ object VarselSaksbehandlingstidAuto : AutobrevTemplate<VarselSaksbehandlingstidA
                     English to "You must notify us of any changes that may impact your application. These changes might relate to your health, employment, income, marital status, or moving abroad."
                 )
             }
+
             paragraph {
                 text(
                     Bokmal to "For informasjon om hvordan du melder fra om endringer se: $UFOERETRYGD_ENDRING_URL",

@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brevbaker.api.model.*
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
@@ -17,7 +17,13 @@ private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
 
 object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
 
-    override fun render(letter: LetterMarkup, attachments: List<LetterMarkup.Attachment>, language: Language, felles: Felles, brevtype: LetterMetadata.Brevtype): LatexDocument =
+    override fun render(
+        letter: LetterMarkup,
+        attachments: List<LetterMarkup.Attachment>,
+        language: Language,
+        felles: Felles,
+        brevtype: LetterMetadata.Brevtype,
+    ): LatexDocument =
         LatexDocument().apply {
             newLatexFile("params.tex") {
                 appendMasterTemplateParameters(attachments, brevtype, felles, language)
@@ -56,51 +62,50 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
     }
 
     private fun LatexAppendable.appendXmpData(letter: LetterMarkup, language: Language, felles: Felles) {
-        appenCmd("Title", letter.title)
-        appenCmd("Language", language.locale().toLanguageTag())
-        appenCmd("Publisher", felles.avsenderEnhet.navn)
-        appenCmd("Date", felles.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
-        appenCmd("Producer", DOCUMENT_PRODUCER)
-        appenCmd("Creator", DOCUMENT_PRODUCER)
+        appendCmd("Title", letter.title)
+        appendCmd("Language", language.locale().toLanguageTag())
+        appendCmd("Publisher", felles.avsenderEnhet.navn)
+        appendCmd("Date", felles.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
+        appendCmd("Producer", DOCUMENT_PRODUCER)
+        appendCmd("Creator", DOCUMENT_PRODUCER)
     }
 
     private fun LatexAppendable.renderLetterTemplate(letter: LetterMarkup, attachments: List<LetterMarkup.Attachment>) {
-        appendln("""\documentclass{pensjonsbrev_v3}""", escape = false)
-        appenCmd("begin", "document")
-        appenCmd("firstpage")
-        appenCmd("tittel", letter.title)
+        appendln("""\documentclass{pensjonsbrev_v4}""", escape = false)
+        appendCmd("begin", "document")
+        appendCmd("firstpage")
+        appendCmd("tittel", letter.title)
         renderBlocks(letter.blocks)
-        appenCmd("closing")
+        appendCmd("closing")
         attachments.indices.forEach { id ->
-            appenCmd("input", "attachment_$id", escape = false)
+            appendCmd("input", "attachment_$id", escape = false)
         }
-        appenCmd("end", "document")
+        appendCmd("end", "document")
     }
 
-    private fun LatexAppendable.signaturCommands(saksbehandlere: SignerendeSaksbehandlere?, brevtype: LetterMetadata.Brevtype) {
-        appendNewCmd("closingbehandlet") {
-            if (saksbehandlere != null) {
-                val attestant = saksbehandlere.attesterendeSaksbehandler?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
+    private fun LatexAppendable.signaturCommands(
+        saksbehandlere: SignerendeSaksbehandlere?,
+        brevtype: LetterMetadata.Brevtype
+    ) {
+        if (saksbehandlere != null) {
+            appendNewCmd("feltsaksbehandlernavn", saksbehandlere.saksbehandler)
+            val attestant = saksbehandlere.attesterendeSaksbehandler
+                ?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
+                ?.also { appendNewCmd("feltattestantnavn", it) }
+
+            appendNewCmd("closingbehandlet"){
                 if (attestant != null) {
-                    appenCmd("doublesignature") {
-                        arg { append(attestant) }
-                        arg { append(saksbehandlere.saksbehandler) }
-                    }
+                    appendCmd("closingdoublesignature")
                 } else {
-                    append(saksbehandlere.saksbehandler)
-                    appendln(""" \\ \feltclosingsaksbehandlersuffix """, escape = false)
+                    appendCmd("closingsinglesignature")
                 }
-                appenCmd("par")
-                appenCmd("vspace*{12pt}")
-                appenCmd("feltnavenhet")
-            } else {
-                appenCmd("feltnavenhet")
-                appenCmd("par")
-                appenCmd("vspace*{12pt}")
+            }
+        } else {
+            appendNewCmd("closingbehandlet") {
                 if (brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
-                    appenCmd("feltclosingautomatisktextvedtaksbrev")
+                    appendCmd("closingautosignaturevedtaksbrev")
                 } else {
-                    appenCmd("feltclosingautomatisktextinfobrev")
+                    appendCmd("closingautosignatureinfobrev")
                 }
             }
         }
@@ -115,9 +120,9 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
     private fun LatexAppendable.saksinfoCommands(verge: String?) {
         verge?.also { appendNewCmd("feltvergenavn", it) }
         appendNewCmd("saksinfomottaker") {
-            appenCmd("begin", "saksinfotable", "")
+            appendCmd("begin", "saksinfotable", "")
             verge?.let {
-                appendln("""\feltvergenavnprefix & \feltvergenavn \\""", escape = false)
+                appendln("""\felt${LanguageSetting.Sakspart.vergenavn} & \feltvergenavn \\""", escape = false)
                 appendln(
                     """\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltnavnbruker \\""",
                     escape = false
@@ -135,7 +140,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
                 escape = false
             )
 
-            appenCmd("end", "saksinfotable")
+            appendCmd("end", "saksinfotable")
         }
     }
 
@@ -155,24 +160,24 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
     private fun LatexAppendable.vedleggCommand(attachments: List<LetterMarkup.Attachment>) {
         appendNewCmd("feltclosingvedlegg") {
             if (attachments.isNotEmpty()) {
-                appenCmd("begin", "attachmentList")
+                appendCmd("begin", "attachmentList")
 
                 attachments.forEach { attachment ->
                     append("""\item """, escape = false)
                     renderText(attachment.title)
                 }
-                appenCmd("end", "attachmentList")
+                appendCmd("end", "attachmentList")
             }
         }
     }
 
     private fun LatexAppendable.renderAttachment(attachment: LetterMarkup.Attachment) {
-        appenCmd("startvedlegg") {
+        appendCmd("startvedlegg") {
             arg { renderText(attachment.title) }
-            arg { if (attachment.includeSakspart) appenCmd("sakspart") }
+            arg { if (attachment.includeSakspart) append("includesakinfo") }
         }
         renderBlocks(attachment.blocks)
-        appenCmd("sluttvedlegg")
+        appendCmd("sluttvedlegg")
     }
 
     //
@@ -181,58 +186,65 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
     private fun LatexAppendable.renderBlocks(blocks: List<LetterMarkup.Block>): Unit =
         blocks.forEach { renderBlock(it) }
 
-    private fun LatexAppendable.renderText(elements: List<ParagraphContent.Text>): Unit =
+    private fun LatexAppendable.renderText(elements: List<Text>): Unit =
         elements.forEach { renderTextContent(it) }
 
     private fun LatexAppendable.renderBlock(block: LetterMarkup.Block): Unit =
         when (block) {
             is LetterMarkup.Block.Paragraph -> renderParagraph(block)
-            is LetterMarkup.Block.Title1 -> appenCmd("lettersectiontitleone") {
+            is LetterMarkup.Block.Title1 -> appendCmd("lettersectiontitleone") {
                 arg { renderText(block.content) }
             }
 
-            is LetterMarkup.Block.Title2 -> appenCmd("lettersectiontitletwo") {
+            is LetterMarkup.Block.Title2 -> appendCmd("lettersectiontitletwo") {
                 arg { renderText(block.content) }
             }
         }
 
-    private fun LatexAppendable.renderParagraph(
-        element: LetterMarkup.Block.Paragraph
-    ): Unit =
-        appenCmd("templateparagraph") {
-            arg {
-                element.content.forEach {
-                    renderParagraphContent(it)
-                }
+    private fun LatexAppendable.renderTextParagraph(text: List<Text>): Unit =
+        appendCmd("templateparagraph") {
+            arg { renderText(text) }
+        }
+
+    //TODO depricate table/itemlist/form inside paragraph and make them available outside.
+    // there should not be a different space between elements if within/outside paragraphs.
+    private fun LatexAppendable.renderParagraph(element: LetterMarkup.Block.Paragraph) {
+        var continousTextContent = mutableListOf<Text>()
+
+        element.content.forEach { current ->
+            if (current !is Text && continousTextContent.isNotEmpty()) {
+                renderTextParagraph(continousTextContent)
+                continousTextContent = mutableListOf()
+            }
+
+            when (current) {
+                is Form -> renderForm(current)
+                is ItemList -> renderList(current)
+                is Table -> renderTable(current)
+                is Text -> continousTextContent.add(current)
             }
         }
-
-    private fun LatexAppendable.renderParagraphContent(element: ParagraphContent): Unit =
-        when (element) {
-            is ParagraphContent.Form -> renderForm(element)
-            is ParagraphContent.ItemList -> renderList(element)
-            is ParagraphContent.Table -> renderTable(element)
-            is ParagraphContent.Text -> renderTextContent(element)
+        if (continousTextContent.isNotEmpty()) {
+            renderTextParagraph(continousTextContent)
         }
+    }
 
-    private fun LatexAppendable.renderList(
-        list: ParagraphContent.ItemList
-    ) {
+    private fun LatexAppendable.renderList(list: ItemList) {
         if (list.items.isNotEmpty()) {
-            appenCmd("begin", "itemize")
+            appendCmd("begin", "letteritemize")
             list.items.forEach { item ->
                 append("""\item """, escape = false)
                 renderText(item.content)
             }
-            appenCmd("end", "itemize")
+            appendCmd("end", "letteritemize")
         }
     }
 
-    private fun LatexAppendable.renderTable(table: ParagraphContent.Table) {
+    private fun LatexAppendable.renderTable(table: Table) {
         if (table.rows.isNotEmpty()) {
             val columnSpec = table.header.colSpec
 
-            appenCmd("begin", "letterTable", columnHeadersLatexString(columnSpec))
+            appendCmd("begin", "letterTable", columnHeadersLatexString(columnSpec))
 
             renderTableCells(columnSpec.map { it.headerContent }, columnSpec)
 
@@ -240,14 +252,11 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
                 renderTableCells(it.cells, table.header.colSpec)
             }
 
-            appenCmd("end", "letterTable")
+            appendCmd("end", "letterTable")
         }
     }
 
-    private fun LatexAppendable.renderTableCells(
-        cells: List<ParagraphContent.Table.Cell>,
-        colSpec: List<ParagraphContent.Table.ColumnSpec>
-    ) {
+    private fun LatexAppendable.renderTableCells(cells: List<Table.Cell>, colSpec: List<Table.ColumnSpec>) {
         cells.forEachIndexed { index, cell ->
             val columnSpan = colSpec[index].span
             if (columnSpan > 1) {
@@ -264,7 +273,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
         append("""\\""", escape = false)
     }
 
-    private fun columnHeadersLatexString(columnSpec: List<ParagraphContent.Table.ColumnSpec>): String =
+    private fun columnHeadersLatexString(columnSpec: List<Table.ColumnSpec>): String =
         columnSpec.joinToString("") {
             ("X" +
                     when (it.alignment) {
@@ -273,46 +282,46 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
                     }).repeat(it.span)
         }
 
-    private fun LatexAppendable.renderTextContent(element: ParagraphContent.Text): Unit =
+    private fun LatexAppendable.renderTextContent(element: Text): Unit =
         when (element) {
-            is ParagraphContent.Text.Literal -> renderTextLiteral(element.text, element.fontType)
-            is ParagraphContent.Text.Variable -> renderTextLiteral(element.text, element.fontType)
-            is ParagraphContent.Text.NewLine -> appenCmd("newline")
+            is Text.Literal -> renderTextLiteral(element.text, element.fontType)
+            is Text.Variable -> renderTextLiteral(element.text, element.fontType)
+            is Text.NewLine -> appendCmd("newline")
         }
 
     private fun LatexAppendable.renderTextLiteral(text: String, fontType: FontType): Unit =
         when (fontType) {
             FontType.PLAIN -> append(text)
-            FontType.BOLD -> appenCmd("textbf") { arg { append(text) } }
-            FontType.ITALIC -> appenCmd("textit") { arg { append(text) } }
+            FontType.BOLD -> appendCmd("textbf") { arg { append(text) } }
+            FontType.ITALIC -> appendCmd("textit") { arg { append(text) } }
         }
 
-    private fun LatexAppendable.renderForm(element: ParagraphContent.Form): Unit =
+    private fun LatexAppendable.renderForm(element: Form): Unit =
         when (element) {
-            is ParagraphContent.Form.MultipleChoice -> {
+            is Form.MultipleChoice -> {
                 if (element.vspace) {
-                    appenCmd("formvspace")
+                    appendCmd("formvspace")
                 }
 
-                appenCmd("begin") {
+                appendCmd("begin") {
                     arg { append("formChoice") }
                     arg { renderText(element.prompt) }
                 }
 
                 element.choices.forEach {
-                    appenCmd("item")
+                    appendCmd("formchoiceitem")
                     renderText(it.text)
                 }
 
-                appenCmd("end", "formChoice")
+                appendCmd("end", "formChoice")
             }
 
-            is ParagraphContent.Form.Text -> {
+            is Form.Text -> {
                 if (element.vspace) {
-                    appenCmd("formvspace")
+                    appendCmd("formvspace")
                 }
 
-                appenCmd("formText") {
+                appendCmd("formText") {
                     arg {
                         val size = when (element.size) {
                             Size.NONE -> 0

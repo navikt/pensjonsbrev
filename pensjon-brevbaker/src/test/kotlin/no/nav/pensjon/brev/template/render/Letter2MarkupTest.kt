@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.jacksonObjectMapper
-import no.nav.pensjon.brev.template.outlineTestTemplate
+import no.nav.pensjon.brev.outlineTestTemplate
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
 import no.nav.pensjon.brevbaker.api.model.Year
 import org.junit.jupiter.api.Assertions.assertEquals

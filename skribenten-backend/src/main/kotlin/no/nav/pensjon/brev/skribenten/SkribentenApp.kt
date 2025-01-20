@@ -35,9 +35,10 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 
 
 fun main() {
-    val skribentenConfig: Config = ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-        .resolveWith(ConfigFactory.load("azuread")) // loads azuread secrets for local
-        .getConfig("skribenten")
+    val skribentenConfig: Config =
+        ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
+            .resolveWith(ConfigFactory.load("azuread")) // loads azuread secrets for local
+            .getConfig("skribenten")
 
     ADGroups.init(skribentenConfig.getConfig("groups"))
 
@@ -71,14 +72,21 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
         exception<BadRequestException> { call, cause ->
             if (cause.cause is JsonConvertException) {
                 call.application.log.info(cause.message, cause)
-                call.respond(HttpStatusCode.BadRequest, cause.cause?.message ?: "Failed to deserialize json body: unknown reason")
+                call.respond(
+                    HttpStatusCode.BadRequest,
+                    cause.cause?.message ?: "Failed to deserialize json body: unknown reason"
+                )
             } else {
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Bad request exception")
             }
         }
         exception<BrevredigeringException> { call, cause ->
             when (cause) {
-                is ArkivertBrevException -> call.respond(HttpStatusCode.Conflict, cause.message ?: "Brev er allerede arkivert")
+                is ArkivertBrevException -> call.respond(
+                    HttpStatusCode.Conflict,
+                    cause.message ?: "Brev er allerede arkivert"
+                )
+
                 is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.BadRequest, cause.message)
                 is BrevLaastForRedigeringException -> call.respond(HttpStatusCode.Locked, cause.message)
                 is KanIkkeReservereBrevredigeringException -> call.respond(HttpStatusCode.Locked, cause.response)
@@ -115,6 +123,10 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
     }
     configureRouting(azureADConfig, skribentenConfig)
     configureMetrics()
+
+    monitor.subscribe(ApplicationStopPreparing) {
+        Features.shutdown()
+    }
 }
 
 fun Application.skribentenContenNegotiation() {
