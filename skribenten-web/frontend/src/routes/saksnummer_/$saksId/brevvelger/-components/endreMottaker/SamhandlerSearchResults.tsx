@@ -39,7 +39,7 @@ export function SamhandlerSearchResults({
     <VStack gap="2">
       <BodyShort size="small">{sortedSamhandlere.length} treff</BodyShort>
       {sortedSamhandlere.length > 0 && (
-        <Table onSortChange={(sortKey) => handleSort(sortKey)} sort={sort}>
+        <Table onSortChange={(sortKey) => handleSort(sortKey)} size="small" sort={sort}>
           <Table.Header>
             <Table.Row>
               <Table.ColumnHeader colSpan={2} sortKey="navn" sortable>
