@@ -14,7 +14,7 @@ import { hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { BestillBrevResponse } from "~/types/brev";
 import { type BrevInfo } from "~/types/brev";
-import { erBrevArkivert, erBrevKlar, erVedtaksbrev } from "~/utils/brevUtils";
+import { erBrevArkivert, erBrevKlar, skalBrevAttesteres } from "~/utils/brevUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 
 import { useSendBrevAttesteringContext } from "../../kvittering/-components/SendBrevTilAttesteringResultatContext";
@@ -123,7 +123,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   });
 
   const alleFerdigstilteBrev = useMemo(() => alleFerdigstilteBrevResult.data ?? [], [alleFerdigstilteBrevResult.data]);
-  const [ferdigstilteBrevTilAttestering, ferdigstilteBrevTilSending] = partition(alleFerdigstilteBrev, erVedtaksbrev);
+  const [ferdigstilteBrevTilAttestering, ferdigstilteBrevTilSending] = partition(alleFerdigstilteBrev, skalBrevAttesteres);
 
   const bestillBrevMutation = useMutation<BestillBrevResponse, Error, number>({
     mutationFn: (brevId) => sendBrev(properties.sakId, brevId),

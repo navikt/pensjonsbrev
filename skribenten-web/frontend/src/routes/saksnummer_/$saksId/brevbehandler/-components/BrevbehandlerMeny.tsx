@@ -29,7 +29,7 @@ import { useUserInfo } from "~/hooks/useUserInfo";
 import type { BrevStatus, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
-import { erBrevArkivert, erBrevKlar, erVedtaksbrev } from "~/utils/brevUtils";
+import { erBrevArkivert, erBrevKlar, erBrevTilAttestering, skalBrevAttesteres } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 import { humanizeName } from "~/utils/stringUtils";
 
@@ -121,7 +121,11 @@ const BrevItem = (properties: {
       <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>
         <Accordion.Header>
           <VStack gap="2">
-            <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
+            <Brevtilstand
+              attesteres={erBrevTilAttestering(properties.brev)}
+              gjeldendeBruker={gjeldendeBruker}
+              status={properties.brev.status}
+            />
             <Label size="small">{properties.brev.brevtittel}</Label>
           </VStack>
         </Accordion.Header>
@@ -142,6 +146,14 @@ const BrevItem = (properties: {
               </Detail>
               <Detail textColor="subtle">Brev opprettet: {formatStringDate(properties.brev.opprettet)}</Detail>
             </div>
+            {properties.brev.opprettetAv.id !== gjeldendeBruker?.navident && (
+              <Link
+                params={{ saksId: properties.saksId, brevId: properties.brev.id.toString() }}
+                to="/saksnummer/$saksId/vedtak/$brevId/redigering"
+              >
+                Attester brev
+              </Link>
+            )}
           </VStack>
         </Accordion.Content>
       </Accordion.Item>
@@ -259,7 +271,7 @@ const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
           onChange={(event) => låsForRedigeringMutation.mutate(event.target.checked)}
           size="small"
         >
-          {erVedtaksbrev(props.brev) ? "Brevet er klart for attestering" : "Brevet er klart for sending"}
+          {skalBrevAttesteres(props.brev) ? "Brevet er klart for attestering" : "Brevet er klart for sending"}
         </Switch>
 
         {låsForRedigeringMutation.isError && (
@@ -334,8 +346,16 @@ const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
   );
 };
 
-const Brevtilstand = ({ status, gjeldendeBruker }: { status: BrevStatus; gjeldendeBruker?: UserInfo }) => {
-  const { variant, text } = brevStatusTypeToTextAndTagVariant(status, gjeldendeBruker);
+const Brevtilstand = ({
+  status,
+  attesteres,
+  gjeldendeBruker,
+}: {
+  status: BrevStatus;
+  attesteres: boolean;
+  gjeldendeBruker?: UserInfo;
+}) => {
+  const { variant, text } = brevStatusTypeToTextAndTagVariant(status, attesteres, gjeldendeBruker);
 
   return (
     <Tag
