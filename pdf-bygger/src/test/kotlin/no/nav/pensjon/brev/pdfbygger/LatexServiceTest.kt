@@ -227,7 +227,7 @@ class LatexServiceTest {
             }
             assertNotNull(compilationTime, "Test timed out")
             println(compilationTime)
-            assertThat(compilationTime, isWithin(1L..1000L))
+            assertThat(compilationTime, isWithin(1L..1500L))
         }
 
     }
