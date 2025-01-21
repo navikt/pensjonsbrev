@@ -11,14 +11,14 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
-@Tag(TestTags.INTEGRATION_TEST)
+@Tag(TestTags.MANUAL_TEST)
 class InformasjonOmSaksbehandlingstidPeTest {
 
     private val data = InformasjonOmSaksbehandlingstidPeDto(
         saksbehandlerValg = InformasjonOmSaksbehandlingstidPeDto.SaksbehandlerValg(
             soeknadMottattFraUtland = false,
-            venterPaaSvarAFP = false,
-            forlengetSaksbehandling = true
+            venterPaaSvarAFP = true,
+            forlengetSaksbehandling = false
         ),
         pesysData = EmptyBrevdata
     )
@@ -30,20 +30,17 @@ class InformasjonOmSaksbehandlingstidPeTest {
 
     @Test
     fun `med land`() {
-        writeAllLanguages("med-land", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(soeknadMottattFraUtland = true)))
+        writeAllLanguages("med-land", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(soeknadMottattFraUtland = false)))
     }
 
     @Test
     fun `med venter svar AFP`() {
-        writeAllLanguages(
-            "med-venter-svar",
-            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(venterPaaSvarAFP = true))
-        )
+        writeAllLanguages("med-venter-svar", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(venterPaaSvarAFP = true)))
     }
 
     @Test
     fun `med forlenget saksbehandlingstid`() {
-        writeAllLanguages("med-forlenget-saksbehandlingstid", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(forlengetSaksbehandling = true)))
+        writeAllLanguages("med-forlenget-saksbehandlingstid", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(forlengetSaksbehandling = false)))
     }
 
     private fun writeAllLanguages(testNavn: String, data: InformasjonOmSaksbehandlingstidPeDto) {
@@ -56,5 +53,4 @@ class InformasjonOmSaksbehandlingstidPeTest {
             ).renderTestPDF("000130-$testNavn-${lang.name}")
         }
     }
-
 }
