@@ -400,7 +400,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                                 "40 års trygdetid i Norge, er barnepensjonen beregnet med full trygdetid. Dette framkommer " +
                                 "ikke i tabellen nedenfor.",
                         Nynorsk to "Det er stadfesta at dødsfallet kjem av ein godkjend yrkesskade eller yrkessjukdom. " +
-                                "Det blir derfor gitt barnepensjon etter eigne særreglar. Sjølv om dei avdøde hadde mindre " +
+                                "Det blir derfor gitt barnepensjon etter eigne særreglar. Sjølv om den avdøde hadde mindre " +
                                 "enn 40 års trygdetid i Noreg, er barnepensjonen berekna med full trygdetid. " +
                                 "Dette kjem ikkje fram i tabellen nedanfor.",
                         English to "It has been confirmed that the death was caused by an approved occupational injury " +
