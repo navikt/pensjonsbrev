@@ -1,7 +1,7 @@
 # Asynkron kø brevbestilling
 
 * Status: [draft]
-* Deciders: Håkon Heggholmen
+* Deciders: Håkon Heggholmen, Alexander Hoem Rosbach, Mads Opheim
 
 Technical Story: [Lage asynkron kø for brevbestillinger]
 
@@ -21,6 +21,7 @@ feil (5xx)
 ## Decision Outcome
 Vi lager en kafka kø. Meldings-størrelsen kan økes, og ved test virker det som om meldingene 
 er godt innenfor grensene. Kafka er godt støttet av NAIS og utviklere har bedre kjennskap til Kafka enn Redis.
+Redis er også ikke like utprøvd som en kø mellom ulike tjenester.
 
 ### Positive Consequences <!-- optional -->
 
@@ -48,9 +49,10 @@ Lage en asynkron kø som tar i mot letter markup og produserer PDF.
 
 Fordeler:
 * Kafka er mye brukt i NAV, så vi får bruke mye eksisterende kompetanse og GCP støtte.
+* Lettere for konsument å lese fordi Kafka er mye brukt i NAV.
+* Lettere å skalere pdf-bygger basert på metrics som er tilgjengelige på gcp
 Ulemper:
 * Har begrenset kø-størrelse på 1MB, så vi kan i niche cases risikere at brev blir for store.
-* Vi må kjenne kallende tjeneste pga auth for å kalle tilbake.
 
 
 ### [option 2] Lage en redis kø mellom brevbaker og pdf-bygger
