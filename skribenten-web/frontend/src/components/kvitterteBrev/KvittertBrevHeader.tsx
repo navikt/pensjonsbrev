@@ -41,7 +41,7 @@ const hentTagOgTittelForHeader = (args: {
     case "error": {
       const tag = (
         <Tag size="small" variant={"error"}>
-          {args.context === "attestering" ? "Kunne ikke sende brev til attestering" : "Kunne ikke sende brev"}
+          Kunne ikke sende brev
         </Tag>
       );
       return { tag, tittel: args.brevInfo.brevtittel };
