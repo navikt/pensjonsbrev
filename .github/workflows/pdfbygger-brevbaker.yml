@@ -222,7 +222,7 @@ jobs:
           "VARS": "pdf-bygger/.nais/dev.yaml"
 
   "deployPdfByggerAsyncToDev":
-    name: "Deploy pdf-bygger to dev"
+    name: "Deploy pdf-bygger-async to dev"
     permissions:
       contents: "read"
       id-token: "write"
@@ -236,7 +236,7 @@ jobs:
         env:
           "ENVIRONMENT": "dev-gcp:pdf-bygger-async"
           "CLUSTER": "dev-gcp"
-          "RESOURCE": "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml,pdf-bygger/.nais/topic.yaml" #TODO create hpa for queue based scaling
+          "RESOURCE": "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/topic.yaml" #TODO create hpa for queue based scaling
           "VAR": image=${{ needs.build-pdfbygger.outputs.image }}
           "VARS": "pdf-bygger/.nais/dev-async.yaml"
   "deployBrevbakerToProduction":
