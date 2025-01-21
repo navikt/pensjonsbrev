@@ -25,7 +25,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
 
   return (
     <VStack gap="6">
-      <VStack gap="4">
+      <VStack gap="6">
         <Controller
           control={properties.control}
           name="finnSamhandler.søketype"
