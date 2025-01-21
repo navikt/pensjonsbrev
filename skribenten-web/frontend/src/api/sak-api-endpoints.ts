@@ -74,6 +74,12 @@ export const fjernOverstyrtMottaker = async (argz: { saksId: string; brevId: str
   return (await axios.delete(`${SKRIBENTEN_API_BASE_PATH}/sak/${argz.saksId}/brev/${argz.brevId}/mottaker`)).data;
 };
 
+//TODO - bruk det faktiske endepunktet når det kommer
+export const sendBrevTilAttestering = async (args: { saksId: string; brevId: string | number }) => {
+  return (await axios.post<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}/attester`))
+    .data;
+};
+
 export const attesterBrev = async (args: { saksId: string; brevId: string | number }) =>
   (
     await axios.post<Blob>(`${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}/attester`, {

@@ -1,7 +1,7 @@
 import { Accordion, BodyShort, Button, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { hentPdfForJournalpostQuery, sendBrev } from "~/api/sak-api-endpoints";
+import { hentPdfForJournalpostQuery, sendBrev, sendBrevTilAttestering } from "~/api/sak-api-endpoints";
 import { getNavn } from "~/api/skribenten-api-endpoints";
 import Oppsummeringspar from "~/routes/saksnummer_/$saksId/kvittering/-components/Oppsummeringspar";
 import type { BestillBrevResponse, BrevInfo, Mottaker } from "~/types/brev";
@@ -10,7 +10,6 @@ import type { Nullable } from "~/types/Nullable";
 import { humanizeName } from "~/utils/stringUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 
-import { nyBrevInfo } from "../../../cypress/utils/brevredigeringTestUtils";
 import { ApiError } from "../ApiError";
 import { distribusjonstypeTilText } from "./KvitterteBrevUtils";
 
@@ -27,8 +26,8 @@ const AccordionContent = (props: {
     mutationFn: () => sendBrev(props.saksId, props.brevId),
   });
 
-  const sendBrevTilAttestering = useMutation<BrevInfo, Error>({
-    mutationFn: () => Promise.resolve(nyBrevInfo({})),
+  const sendBrevTilAttesteringMutation = useMutation<BrevInfo, Error>({
+    mutationFn: () => sendBrevTilAttestering({ saksId: props.saksId, brevId: props.brevId }),
   });
 
   switch (props.apiStatus) {
@@ -42,8 +41,8 @@ const AccordionContent = (props: {
         case "attestering": {
           return (
             <AccordionContentError
-              isPending={sendBrevTilAttestering.isPending}
-              onPrøvIgjenClick={sendBrevTilAttestering.mutate}
+              isPending={sendBrevTilAttesteringMutation.isPending}
+              onPrøvIgjenClick={sendBrevTilAttesteringMutation.mutate}
             />
           );
         }
