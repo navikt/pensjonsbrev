@@ -221,6 +221,24 @@ jobs:
           "VAR": image=${{ needs.build-pdfbygger.outputs.image }}
           "VARS": "pdf-bygger/.nais/dev.yaml"
 
+  "deployPdfByggerAsyncToDev":
+    name: "Deploy pdf-bygger to dev"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    needs: ["runIntegrationTests", "build-pdfbygger"]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v4"
+      - name: "Deploy to DEV"
+        uses: "nais/deploy/actions/deploy@v2"
+        env:
+          "ENVIRONMENT": "dev-gcp:pdf-bygger-async"
+          "CLUSTER": "dev-gcp"
+          "RESOURCE": "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/hpa.yaml,pdf-bygger/.nais/topic.yaml" #TODO create hpa for queue based scaling
+          "VAR": image=${{ needs.build-pdfbygger.outputs.image }}
+          "VARS": "pdf-bygger/.nais/dev-async.yaml"
   "deployBrevbakerToProduction":
     name: "Deploy brevbaker to production"
     permissions:
