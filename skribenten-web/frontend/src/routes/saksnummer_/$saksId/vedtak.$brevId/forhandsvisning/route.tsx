@@ -1,35 +1,88 @@
+import { css } from "@emotion/react";
 import { ArrowLeftIcon, ArrowRightIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Button, Heading, HStack, Label, Modal, VStack } from "@navikt/ds-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Alert, BodyShort, Box, Button, Heading, HStack, Label, Loader, Modal, VStack } from "@navikt/ds-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useState } from "react";
 
+import { getBrev } from "~/api/brev-queries";
 import { sendBrev } from "~/api/sak-api-endpoints";
+import { ApiError } from "~/components/ApiError";
 import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse } from "~/types/brev";
+import { queryFold } from "~/utils/tanstackUtils";
 
 import { nyBrevResponse } from "../../../../../../cypress/utils/brevredigeringTestUtils";
 import BrevForhåndsvisning from "../../brevbehandler/-components/BrevForhåndsvisning";
 import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 
 export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$brevId/forhandsvisning")({
-  component: () => <VedtaksForhåndsvisning />,
+  component: () => <VedtakForhåndsvisningWrapper />,
 });
 
-const VedtaksForhåndsvisning = () => {
-  const queryClient = useQueryClient();
+const VedtakForhåndsvisningWrapper = () => {
   const { saksId, brevId } = Route.useParams();
+  const hentBrevQuery = useQuery({
+    queryKey: getBrev.queryKey(Number.parseInt(brevId)),
+    queryFn: () => getBrev.queryFn(saksId, Number.parseInt(brevId)),
+  });
+
+  return queryFold({
+    query: hentBrevQuery,
+    initial: () => null,
+    pending: () => (
+      <Box
+        background="bg-default"
+        css={css`
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          align-items: center;
+          padding-top: var(--a-spacing-8);
+        `}
+      >
+        <VStack align="center" gap="1">
+          <Loader size="3xlarge" title="henter brev..." />
+          <Heading size="large">Henter brev....</Heading>
+        </VStack>
+      </Box>
+    ),
+    error: (err) => (
+      <Box
+        background="bg-default"
+        css={css`
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          align-items: center;
+          padding-top: var(--a-spacing-8);
+        `}
+      >
+        <ApiError error={err} title={"En feil skjedde ved henting av vedtaksbrev"} />
+      </Box>
+    ),
+    success: (brev) => <VedtaksForhåndsvisning brev={brev} saksId={saksId} />,
+  });
+};
+
+const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const [vilSendeBrev, setVilSendeBrev] = useState(false);
-  const brevResponse = queryClient.getQueryData<BrevResponse>(["vedtak", 1]) ?? nyBrevResponse({});
+
+  const brevResponse = props.brev;
 
   return (
     <>
       {vilSendeBrev && (
-        <SendBrevModal brevId={brevId} onClose={() => setVilSendeBrev(false)} saksId={saksId} åpen={vilSendeBrev} />
+        <SendBrevModal
+          brevId={props.brev.info.id.toString()}
+          onClose={() => setVilSendeBrev(false)}
+          saksId={props.saksId}
+          åpen={vilSendeBrev}
+        />
       )}
       <ThreeSectionLayout
         bottom={
@@ -39,7 +92,7 @@ const VedtaksForhåndsvisning = () => {
               onClick={() =>
                 navigate({
                   to: "/saksnummer/$saksId/vedtak/$brevId/redigering",
-                  params: { saksId, brevId },
+                  params: { saksId: props.saksId, brevId: props.brev.info.id.toString() },
                 })
               }
               size="small"
@@ -63,7 +116,7 @@ const VedtaksForhåndsvisning = () => {
           <VStack gap="3">
             <Heading size="small">{brevResponse.redigertBrev.title}</Heading>
             <VStack gap="4">
-              <OppsummeringAvMottaker mottaker={brevResponse.info.mottaker} saksId={saksId} withTitle />
+              <OppsummeringAvMottaker mottaker={brevResponse.info.mottaker} saksId={props.saksId} withTitle />
               <VStack gap="1">
                 <Label size="small">Distribusjonstype</Label>
                 <BodyShort size="small">{distribusjonstypeTilText(brevResponse.info.distribusjonstype)}</BodyShort>
@@ -76,7 +129,7 @@ const VedtaksForhåndsvisning = () => {
             </VStack>
           </VStack>
         }
-        right={<BrevForhåndsvisning brevId={Number.parseInt(brevId)} saksId={saksId} />}
+        right={<BrevForhåndsvisning brevId={props.brev.info.id} saksId={props.saksId} />}
       />
     </>
   );

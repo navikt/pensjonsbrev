@@ -24,8 +24,6 @@ import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse, SaksbehandlerValg } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
 
-import { nyBrevResponse } from "../../../../../../cypress/utils/brevredigeringTestUtils";
-
 export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$brevId/redigering")({
   component: () => <VedtakWrapper />,
 });
@@ -37,11 +35,10 @@ interface VedtakSidemenyFormData {
 
 const VedtakWrapper = () => {
   const { saksId, brevId } = Route.useParams();
-  const brevResponse = nyBrevResponse({});
 
   const hentBrevQuery = useQuery({
     queryKey: getBrev.queryKey(Number.parseInt(brevId)),
-    queryFn: () => Promise.resolve(brevResponse),
+    queryFn: () => getBrev.queryFn(saksId, Number.parseInt(brevId)),
   });
 
   return queryFold({
@@ -105,14 +102,33 @@ const Vedtak = (props: { saksId: string; brevResponse: BrevResponse }) => {
   const defaultValuesModelEditor = useMemo(
     () => ({
       saksbehandlerValg: { ...props.brevResponse.saksbehandlerValg },
-      signatur: props.brevResponse.redigertBrev.signatur.saksbehandlerNavn,
+      attestantSignatur: props.brevResponse.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
     }),
-    [props.brevResponse.redigertBrev.signatur.saksbehandlerNavn, props.brevResponse.saksbehandlerValg],
+    [props.brevResponse.redigertBrev.signatur.attesterendeSaksbehandlerNavn, props.brevResponse.saksbehandlerValg],
   );
 
   const form = useForm<VedtakSidemenyFormData>({
     defaultValues: defaultValuesModelEditor,
   });
+
+  useEffect(() => {
+    if (editorState.redigertBrevHash !== props.brevResponse.redigertBrevHash) {
+      setEditorState((previousState) => ({
+        ...previousState,
+        redigertBrev: props.brevResponse.redigertBrev,
+        redigertBrevHash: props.brevResponse.redigertBrevHash,
+      }));
+    }
+  }, [
+    props.brevResponse.redigertBrev,
+    props.brevResponse.redigertBrevHash,
+    editorState.redigertBrevHash,
+    setEditorState,
+  ]);
+
+  useEffect(() => {
+    form.reset(defaultValuesModelEditor);
+  }, [defaultValuesModelEditor, form]);
 
   const attestantSignaturMutation = useMutation<BrevResponse, AxiosError, string>({
     mutationFn: (signatur) => oppdaterAttestantSignatur(props.brevResponse.info.id, signatur),
@@ -160,17 +176,17 @@ const Vedtak = (props: { saksId: string; brevResponse: BrevResponse }) => {
       onSuccess: () => {
         saksbehandlerValgMutation.mutate(values.saksbehandlerValg, {
           onSuccess: () => {
-            attesterMutation.mutate(void 0, {
-              onSuccess: (pdf) => {
-                queryClient.setQueryData(hentPdfForBrev.queryKey(props.brevResponse.info.id), pdf);
-                onSuccess?.();
-              },
-            });
+            attesterMutation.mutate(void 0, { onSuccess: onSuccess });
           },
         });
       },
     });
   };
+
+  const freeze =
+    saksbehandlerValgMutation.isPending || attestantSignaturMutation.isPending || attesterMutation.isPending;
+
+  const error = saksbehandlerValgMutation.isError || attestantSignaturMutation.isError || attesterMutation.isError;
 
   return (
     <form
@@ -185,7 +201,7 @@ const Vedtak = (props: { saksId: string; brevResponse: BrevResponse }) => {
     >
       <ThreeSectionLayout
         bottom={
-          <Button icon={<ArrowRightIcon />} iconPosition="right" size="small">
+          <Button icon={<ArrowRightIcon />} iconPosition="right" loading={freeze} size="small">
             Fortsett
           </Button>
         }
@@ -235,8 +251,8 @@ const Vedtak = (props: { saksId: string; brevResponse: BrevResponse }) => {
           <LetterEditor
             editorHeight={"var(--main-page-content-height)"}
             editorState={editorState}
-            error={attestantSignaturMutation.isError || saksbehandlerValgMutation.isError}
-            freeze={attestantSignaturMutation.isPending || saksbehandlerValgMutation.isPending}
+            error={error}
+            freeze={freeze}
             setEditorState={setEditorState}
             showDebug={false}
           />
@@ -255,7 +271,7 @@ enum BrevAlternativTab {
 export const BrevmalAlternativer = (props: {
   brevkode: string;
   submitOnChange?: () => void;
-  children?: React.ReactNode;
+
   /**
    * Kan velge hvilke felter som skal vises. Default er at begge vises (dersom dem finnes, ellers bare den som finnes)
    */
@@ -400,7 +416,6 @@ export const BrevmalAlternativer = (props: {
                   submitOnChange={props.submitOnChange}
                 />
               </Tabs.Panel>
-              {props.children}
             </Tabs>
           </VStack>
         );

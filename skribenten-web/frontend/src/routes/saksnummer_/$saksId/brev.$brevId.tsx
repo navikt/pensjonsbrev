@@ -376,19 +376,18 @@ function RedigerBrev({
           >
             <VStack gap="3">
               <Heading size="small">{brevmal.data?.name}</Heading>
-              <BrevmalAlternativer brevkode={brev.info.brevkode} submitOnChange={onTekstValgAndOverstyringChange}>
-                <AutoSavingTextField
-                  field={"signatur"}
-                  fieldType={{
-                    type: "scalar",
-                    nullable: false,
-                    kind: "STRING",
-                  }}
-                  onSubmit={onTekstValgAndOverstyringChange}
-                  timeoutTimer={2500}
-                  type={"text"}
-                />
-              </BrevmalAlternativer>
+              <BrevmalAlternativer brevkode={brev.info.brevkode} submitOnChange={onTekstValgAndOverstyringChange} />
+              <AutoSavingTextField
+                field={"signatur"}
+                fieldType={{
+                  type: "scalar",
+                  nullable: false,
+                  kind: "STRING",
+                }}
+                onSubmit={onTekstValgAndOverstyringChange}
+                timeoutTimer={2500}
+                type={"text"}
+              />
             </VStack>
             <LetterEditor
               editorHeight={"var(--main-page-content-height)"}
