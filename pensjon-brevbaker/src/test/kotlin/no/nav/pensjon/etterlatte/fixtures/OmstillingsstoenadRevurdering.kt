@@ -93,6 +93,7 @@ fun createOmstillingsstoenadRevurderingDTO() =
                     ),
                 oppphoersdato = LocalDate.of(2024, 12, 1),
                 opphoerNesteAar = false,
+                erYrkesskade = false,
             ),
         erEndret = true,
         erOmgjoering = false,

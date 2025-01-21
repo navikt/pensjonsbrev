@@ -85,6 +85,7 @@ export type Arkivert = { type: "Arkivert" };
 export type OppdaterBrevRequest = {
   saksbehandlerValg: SaksbehandlerValg;
   redigertBrev: EditedLetter;
+  signatur: string;
 };
 
 export enum Distribusjonstype {

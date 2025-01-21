@@ -13,6 +13,7 @@ import type {
   Item,
   ItemList,
   LiteralValue,
+  NewLine,
   ParagraphBlock,
   Row,
   Table,
@@ -21,7 +22,7 @@ import type {
   Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, PARAGRAPH, TABLE, TITLE1, TITLE2, VARIABLE } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, TABLE, TITLE1, TITLE2, VARIABLE } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
 export function letter(...blocks: AnyBlock[]): LetterEditorState {
@@ -74,7 +75,7 @@ export function paragraph(...content: Content[]): ParagraphBlock {
     editable: true,
     type: PARAGRAPH,
     deletedContent: [],
-    content: withParent(content ?? [], id),
+    content: withParent(content, id),
   };
 }
 
@@ -93,7 +94,7 @@ export function title1(...content: TextContent[]): Title1Block {
     editable: true,
     type: TITLE1,
     deletedContent: [],
-    content: withParent(content ?? [], id),
+    content: withParent(content, id),
   };
 }
 export function title2(...content: TextContent[]): Title2Block {
@@ -104,7 +105,7 @@ export function title2(...content: TextContent[]): Title2Block {
     editable: true,
     type: TITLE2,
     deletedContent: [],
-    content: withParent(content ?? [], id),
+    content: withParent(content, id),
   };
 }
 
@@ -131,6 +132,15 @@ export function variable(text: string): VariableValue {
     parentId: null,
     type: VARIABLE,
     text,
+  };
+}
+
+export function newLine(): NewLine {
+  return {
+    id: randomId(),
+    parentId: null,
+    type: NEW_LINE,
+    text: "",
   };
 }
 

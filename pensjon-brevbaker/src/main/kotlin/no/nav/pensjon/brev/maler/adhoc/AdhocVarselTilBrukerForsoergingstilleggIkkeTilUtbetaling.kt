@@ -40,7 +40,7 @@ object AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling : AutobrevTempla
                 text(
                     Bokmal to "Forhåndsvarsel",
                     Nynorsk to "Førehandsvarsel",
-                    English to "Notice"
+                    English to "Notice",
                 )
             }
             paragraph {

@@ -57,7 +57,7 @@ class LatexAppendableTest {
     @Test
     fun `printCmd prints as command`() {
         val cmd = "paragraph"
-        appendable.appenCmd(cmd)
+        appendable.appendCmd(cmd)
         assertThat(printedString(), startsWith("""\$cmd"""))
     }
 
@@ -66,13 +66,13 @@ class LatexAppendableTest {
         val cmd = "paragraph"
         val arg1 = "mitt første argument"
         val arg2 = "mitt andre argument"
-        appendable.appenCmd(cmd, arg1, arg2)
+        appendable.appendCmd(cmd, arg1, arg2)
         assertThat(printedString(), startsWith("""\$cmd{$arg1}{$arg2}"""))
     }
 
     @Test
     fun `printCmd ends with newline`() {
-        appendable.appenCmd("paragraph")
+        appendable.appendCmd("paragraph")
         assertThat(printedString(), endsWith("\n"))
     }
 
@@ -80,7 +80,7 @@ class LatexAppendableTest {
     fun `printCmd escapes latex meta characters of arguments`() {
         val cmd = "paragraph"
         val arg = "min fine paragraf med _"
-        appendable.appenCmd(cmd, arg)
+        appendable.appendCmd(cmd, arg)
         assertThat(printedString(), startsWith("""\$cmd{${arg.latexEscape()}}"""))
     }
 
@@ -88,7 +88,7 @@ class LatexAppendableTest {
     fun `printCmd can print non-escaped arguments`() {
         val cmd = "paragraph"
         val arg = """\other{hei_sann}"""
-        appendable.appenCmd(cmd, arg, escape = false)
+        appendable.appendCmd(cmd, arg, escape = false)
         assertThat(printedString(), startsWith("""\$cmd{$arg}"""))
     }
 
@@ -119,7 +119,7 @@ class LatexAppendableTest {
     @Test
     fun `printCmd with CommandBuilder prints as command`() {
         val cmd = "paragraph"
-        appendable.appenCmd(cmd) { /* This empty block is important to test correct function */ }
+        appendable.appendCmd(cmd) { /* This empty block is important to test correct function */ }
         assertThat(printedString(), startsWith("""\$cmd"""))
     }
 
@@ -129,7 +129,7 @@ class LatexAppendableTest {
         val cmd = "paragraph"
         val arg1 = "mitt første argument"
         val arg2 = "mitt andre argument"
-        appendable.appenCmd(cmd) {
+        appendable.appendCmd(cmd) {
             arg { append(arg1) }
             arg { append(arg2) }
         }
@@ -138,7 +138,7 @@ class LatexAppendableTest {
 
     @Test
     fun `printCmd with CommandBuilder ends with newline`() {
-        appendable.appenCmd("paragraph") { arg { append("hei") } }
+        appendable.appendCmd("paragraph") { arg { append("hei") } }
         assertThat(printedString(), endsWith("\n"))
     }
 
@@ -165,14 +165,14 @@ class LatexAppendableTest {
     fun `printNewCmd with bodybuilder can have body that invokes other cmd`() {
         val invoke = "otherCmd"
         appendable.appendNewCmd("mycmd") {
-            appenCmd(invoke)
+            appendCmd(invoke)
         }
         assertThat(printedString().replace("\n", ""), endsWith("""{\$invoke}"""))
     }
 
     @Test
     fun `printCmd allows square brackets in argument`() {
-        appendable.appenCmd("aCmd", "regularArg", "X[l]")
+        appendable.appendCmd("aCmd", "regularArg", "X[l]")
         assertThat(printedString().replace("\n", ""), equalTo("""\aCmd{regularArg}{X[l]}"""))
     }
 }

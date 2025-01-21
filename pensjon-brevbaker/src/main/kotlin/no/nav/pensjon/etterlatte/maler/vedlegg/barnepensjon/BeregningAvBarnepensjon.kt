@@ -17,6 +17,7 @@ import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.antallBarn
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.bruktTrygdetid
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.erForeldreloes
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.erYrkesskade
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.forskjelligTrygdetid
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.grunnbeloep
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningSelectors.harForskjelligMetode
@@ -66,6 +67,7 @@ val beregningAvBarnepensjonGammeltOgNyttRegelverk: AttachmentTemplate<LangBokmal
             mindreEnnFireFemtedelerAvOpptjeningstiden,
             forskjelligTrygdetid,
             harForskjelligMetode,
+            erYrkesskade,
         )
         beregnetBarnepensjonGammeltOgNyttRegelverk(beregnetTrygdetidAar, prorataBroek, beregningsMetodeAnvendt, beregningsperioder)
     }
@@ -125,6 +127,7 @@ val beregningAvBarnepensjonNyttRegelverk: AttachmentTemplate<LangBokmalNynorskEn
             mindreEnnFireFemtedelerAvOpptjeningstiden,
             forskjelligTrygdetid,
             harForskjelligMetode,
+            erYrkesskade,
         )
         beregnetBarnepensjonNyttRegelverk(beregnetTrygdetidAar, prorataBroek, beregningsMetodeAnvendt, beregningsperioder, forskjelligTrygdetid)
     }
@@ -283,7 +286,8 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
     beregningsMetodeAnvendt: Expression<BeregningsMetode>,
     mindreEnnFireFemtedelerAvOpptjeningstiden: Expression<Boolean>,
     forskjelligTrygdetid: Expression<ForskjelligTrygdetid?>,
-    harForskjelligMetode: Expression<Boolean>
+    harForskjelligMetode: Expression<Boolean>,
+    erYrkesskade: Expression<Boolean?>,
 ) {
     title2 {
         text(
@@ -386,7 +390,27 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 }
             }
         }
-        showIf(mindreEnnFireFemtedelerAvOpptjeningstiden) {
+
+        ifNotNull(erYrkesskade) { erYrkesskade ->
+            showIf(erYrkesskade) {
+                paragraph {
+                    text(
+                        Bokmal to "Det er bekreftet at dødsfallet skyldes en godkjent yrkesskade eller yrkessykdom. " +
+                                "Det gis derfor barnepensjon etter egne særbestemmelser. Selv om den avdøde hadde mindre enn " +
+                                "40 års trygdetid i Norge, er barnepensjonen beregnet med full trygdetid. Dette framkommer " +
+                                "ikke i tabellen nedenfor.",
+                        Nynorsk to "Det er stadfesta at dødsfallet kjem av ein godkjend yrkesskade eller yrkessjukdom. " +
+                                "Det blir derfor gitt barnepensjon etter eigne særreglar. Sjølv om den avdøde hadde mindre " +
+                                "enn 40 års trygdetid i Noreg, er barnepensjonen berekna med full trygdetid. " +
+                                "Dette kjem ikkje fram i tabellen nedanfor.",
+                        English to "It has been confirmed that the death was caused by an approved occupational injury " +
+                                "or disease. The children's pension is granted under special regulations. Although the " +
+                                "deceased had less than 40 years of social security coverage in Norway, the children's pension " +
+                                "is calculated based on a full social security period. This is not reflected in the table below.",
+                    )
+                }
+            }
+        }.orShowIf(mindreEnnFireFemtedelerAvOpptjeningstiden) {
             paragraph {
                 text(
                     Bokmal to "Tabellen under «Perioder med registrert trygdetid» viser full framtidig trygdetid. " +
@@ -822,11 +846,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
 }
 
 private fun ParagraphOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.barnepensjonssats(): StringExpression {
-    return ifElse(
-        sisteBeregningsperiode.harForeldreloessats.notNull(),
-        ifElse(sisteBeregningsperiode.harForeldreloessats.ifNull(false), 2.25, 1).formatTall(),
-        ifElse(erForeldreloes, 2.25, 1).formatTall()
-    )
+    return ifElse(sisteBeregningsperiode.harForeldreloessats, 2.25, 1).formatTall()
 }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, BarnepensjonBeregning>.beregnetBarnepensjonGammeltOgNyttRegelverk(

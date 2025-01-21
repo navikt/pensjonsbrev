@@ -42,6 +42,7 @@ fun Application.brevbakerModule(
 
     monitor.subscribe(ApplicationStopPreparing) {
         it.log.info("Application preparing to shutdown gracefully")
+        FeatureToggleHandler.shutdown()
     }
     monitor.subscribe(ServerReady) { it.log.info("Ferdig med å sette opp applikasjonen") }
 

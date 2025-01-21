@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.In
 import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.createVedleggTestTemplate
+import no.nav.pensjon.brev.createVedleggTestTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brevbaker.api.model.Kroner
