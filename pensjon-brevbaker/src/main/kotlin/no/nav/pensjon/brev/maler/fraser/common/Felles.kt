@@ -10,6 +10,7 @@ import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
+import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonNyttRegelverk
 
 object Felles {
 
@@ -56,16 +57,19 @@ object Felles {
             paragraph {
                 text(
                     Bokmal to "Du finner mer informasjon på $merInformasjonUrl."
-                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
-                            + " Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon $telefonnummer,"
-                            + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss.",
                     Nynorsk to "Du finn meir informasjon på $merInformasjonUrl."
-                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
-                            + " Om du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe oss på telefon $telefonnummer,"
-                            + " kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss.",
                     English to "You can find more information at $merInformasjonUrl."
-                            + " At ${Constants.KONTAKT_URL}, you can chat or write to us."
-                            + " If you do not find the answer at ${Constants.NAV_URL}, you can call us at: +47 $telefonnummer,"
+                            + " At ${Constants.KONTAKT_URL}, you can chat or write to us.",
+                )
+                newline()
+                text(
+                    Bokmal to "Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon $telefonnummer,"
+                            + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                    Nynorsk to "Om du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe oss på telefon $telefonnummer,"
+                            + " kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                    English to "If you do not find the answer at ${Constants.NAV_URL}, you can call us at: +47 $telefonnummer,"
                             + " weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
                 )
             }
