@@ -8,6 +8,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { createBrev, getBrev } from "~/api/brev-queries";
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
+import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { Divider } from "~/components/Divider";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import type { LetterMetadata } from "~/types/apiTypes";
@@ -16,7 +17,6 @@ import type { BrevInfo, BrevResponse, Mottaker, SaksbehandlerValg } from "~/type
 import type { Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
-import { BrevmalAlternativer } from "../../../vedtak.$brevId/redigering/route";
 import type { SubmitTemplateOptions } from "../../route";
 import { Route } from "../../route";
 import { EndreMottakerModal } from "../endreMottaker/EndreMottaker";
