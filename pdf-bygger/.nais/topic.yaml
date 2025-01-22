@@ -6,7 +6,7 @@ metadata:
   labels:
     team: pensjonsbrev
 spec:
-  pool: nais-dev
+  pool: nav-dev
   acl:
     - team: pensjonsbrev
       application: pensjon-brevbaker
