@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { Box, Button, Heading, HStack, Label, Skeleton, VStack } from "@navikt/ds-react";
+import { Button, Heading, HStack, Label, Skeleton, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -18,6 +18,7 @@ import {
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
 import { ApiError } from "~/components/ApiError";
+import ArkivertBrev from "~/components/ArkivertBrev";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import ManagedLetterEditor from "~/components/managedLetterEditor/ManagedLetterEditor";
 import {
@@ -38,6 +39,7 @@ export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
 function RedigerBrevPage() {
   const { brevId, saksId } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
+
   const brevQuery = useQuery({
     queryKey: getBrev.queryKey(brevId),
     queryFn: () => getBrev.queryFn(saksId, brevId),
@@ -71,32 +73,7 @@ function RedigerBrevPage() {
         );
       }
       if (error.response?.status === 409) {
-        return (
-          <Box
-            background="surface-default"
-            css={css`
-              display: flex;
-              flex: 1;
-            `}
-            padding="6"
-          >
-            <VStack align="start" gap="2">
-              <Label size="small">Brevet er arkivert, og kan derfor ikke redigeres.</Label>
-              <Button
-                as={Link}
-                css={css`
-                  padding: 4px 0;
-                `}
-                params={{ saksId: saksId }}
-                size="small"
-                to="/saksnummer/$saksId/brevbehandler"
-                variant="tertiary"
-              >
-                Gå til brevbehandler
-              </Button>
-            </VStack>
-          </Box>
-        );
+        return <ArkivertBrev saksId={saksId} />;
       }
       return <ApiError error={error} title={"En feil skjedde ved henting av brev"} />;
     },
@@ -115,8 +92,25 @@ interface RedigerBrevSidemenyFormData {
 
 function RedigerBrev({ brev, doReload, saksId }: { brev: BrevResponse; doReload: () => void; saksId: string }) {
   const navigate = useNavigate({ from: Route.fullPath });
-
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+
+  const reservasjonQuery = useQuery({
+    queryKey: getBrevReservasjon.querykey(brev.info.id),
+    queryFn: () => getBrevReservasjon.queryFn(brev.info.id),
+    refetchInterval: 10_000,
+  });
+
+  const defaultValuesModelEditor = useMemo(
+    () => ({
+      saksbehandlerValg: { ...brev.saksbehandlerValg },
+      signatur: brev.redigertBrev.signatur.saksbehandlerNavn,
+    }),
+    [brev.redigertBrev.signatur.saksbehandlerNavn, brev.saksbehandlerValg],
+  );
+
+  const form = useForm<RedigerBrevSidemenyFormData>({
+    defaultValues: defaultValuesModelEditor,
+  });
 
   const saksbehandlerValgMutation = useMutation<BrevResponse, AxiosError, SaksbehandlerValg>({
     mutationFn: (values) => oppdaterSaksbehandlerValg(brev.info.id, values),
@@ -139,18 +133,6 @@ function RedigerBrev({ brev, doReload, saksId }: { brev: BrevResponse; doReload:
           signatur: values.signatur,
         },
       }),
-  });
-
-  const defaultValuesModelEditor = useMemo(
-    () => ({
-      saksbehandlerValg: { ...brev.saksbehandlerValg },
-      signatur: brev.redigertBrev.signatur.saksbehandlerNavn,
-    }),
-    [brev.redigertBrev.signatur.saksbehandlerNavn, brev.saksbehandlerValg],
-  );
-
-  const form = useForm<RedigerBrevSidemenyFormData>({
-    defaultValues: defaultValuesModelEditor,
   });
 
   const onTekstValgAndOverstyringChange = () => {
@@ -180,12 +162,6 @@ function RedigerBrev({ brev, doReload, saksId }: { brev: BrevResponse; doReload:
       },
     );
   };
-
-  const reservasjonQuery = useQuery({
-    queryKey: getBrevReservasjon.querykey(brev.info.id),
-    queryFn: () => getBrevReservasjon.queryFn(brev.info.id),
-    refetchInterval: 10_000,
-  });
 
   useEffect(() => {
     form.reset(defaultValuesModelEditor);
