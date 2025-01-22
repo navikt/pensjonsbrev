@@ -64,14 +64,18 @@ const Kvittering = () => {
       <VStack gap="2">
         <Heading size="medium">Hva vil du gjøre nå?</Heading>
         <VStack align={"start"} gap="3">
-          <Button size="small" type="button" variant="secondary">
-            TODO - Gå til brukeroversikt
-          </Button>
-          <Button size="small" type="button" variant="secondary">
-            TODO - Gå til dokumentoversikt
-          </Button>
+          <ButtonLink as={"a"} href={`https://psak/dokument/saksoversikt.jsf?&sakId=${saksId}`}>
+            Gå til brukeroversikt
+          </ButtonLink>
+          <ButtonLink as={"a"} href="https://www.nav.no">
+            Gå til dokumentoversikt
+          </ButtonLink>
         </VStack>
       </VStack>
     </Box>
   );
+};
+
+const ButtonLink = (props: React.ComponentPropsWithRef<typeof Button>) => {
+  return <Button size="small" variant="secondary" {...props} as="a" />;
 };

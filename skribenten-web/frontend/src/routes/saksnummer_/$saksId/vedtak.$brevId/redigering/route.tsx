@@ -140,6 +140,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   });
 
   //TODO - må ha 1 api for å gjøre alle disse operasjonene
+  //merk at vi ikke oppdaterer brevtekst ved neste klikk - se grunn rett over
   const onSubmit = (values: VedtakSidemenyFormData, onSuccess?: () => void) => {
     attestantSignaturMutation.mutate(values.attestantSignatur, {
       onSuccess: () =>
@@ -175,7 +176,46 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           </Button>
         }
         left={
-          <div>
+          <FormProvider {...form}>
+            <VStack gap="8">
+              <Heading size="small">{props.brev.redigertBrev.title}</Heading>
+              <VStack gap="4">
+                <OppsummeringAvMottaker mottaker={props.brev.info.mottaker} saksId={props.saksId} withTitle />
+                <VStack>
+                  <Label size="small">Distribusjonstype</Label>
+                  <BodyShort size="small">{props.brev.info.distribusjonstype}</BodyShort>
+                </VStack>
+              </VStack>
+              <Divider />
+              <VStack gap="5">
+                <Switch size="small">Marker tekst som er lagt til manuelt</Switch>
+                <Switch size="small">Vis slettet tekst</Switch>
+                <AutoSavingTextField
+                  field={"attestantSignatur"}
+                  fieldType={{
+                    type: "scalar",
+                    nullable: false,
+                    kind: "STRING",
+                  }}
+                  label="Underskrift"
+                  onSubmit={() => attestantSignaturMutation.mutate(form.getValues("attestantSignatur"))}
+                  timeoutTimer={2500}
+                  type={"text"}
+                />
+              </VStack>
+              <Divider />
+              <VStack>
+                <BrevmalAlternativer
+                  brevkode={props.brev.info.brevkode}
+                  submitOnChange={() => saksbehandlerValgMutation.mutate(form.getValues("saksbehandlerValg"))}
+                  withTitle
+                />
+              </VStack>
+            </VStack>
+          </FormProvider>
+        }
+        right={
+          <>
             <ReservertBrevError
               doRetry={props.doReload}
               onNeiClick={() =>
@@ -186,47 +226,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               }
               reservasjon={reservasjonQuery.data}
             />
-            <FormProvider {...form}>
-              <VStack gap="8">
-                <Heading size="small">{props.brev.redigertBrev.title}</Heading>
-                <VStack gap="4">
-                  <Heading size="small">{props.brev.redigertBrev.title}</Heading>
-                  <OppsummeringAvMottaker mottaker={props.brev.info.mottaker} saksId={props.saksId} withTitle />
-                  <VStack>
-                    <Label size="small">Distribusjonstype</Label>
-                    <BodyShort size="small">{props.brev.info.distribusjonstype}</BodyShort>
-                  </VStack>
-                </VStack>
-                <Divider />
-                <VStack gap="5">
-                  <Switch size="small">Marker tekst som er lagt til manuelt</Switch>
-                  <Switch size="small">Vis slettet tekst</Switch>
-                  <AutoSavingTextField
-                    field={"attestantSignatur"}
-                    fieldType={{
-                      type: "scalar",
-                      nullable: false,
-                      kind: "STRING",
-                    }}
-                    label="Underskrift"
-                    onSubmit={() => attestantSignaturMutation.mutate(form.getValues("attestantSignatur"))}
-                    timeoutTimer={2500}
-                    type={"text"}
-                  />
-                </VStack>
-                <Divider />
-                <VStack>
-                  <BrevmalAlternativer
-                    brevkode={props.brev.info.brevkode}
-                    submitOnChange={() => saksbehandlerValgMutation.mutate(form.getValues("saksbehandlerValg"))}
-                    withTitle
-                  />
-                </VStack>
-              </VStack>
-            </FormProvider>
-          </div>
+            <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} />
+          </>
         }
-        right={<ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} />}
       />
     </form>
   );
