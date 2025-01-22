@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyShort, Box, Button, Heading, Label, Loader, Switch, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -11,6 +11,7 @@ import { getBrev, getBrevReservasjon, oppdaterAttestantSignatur, oppdaterSaksbeh
 import { attesterBrev } from "~/api/sak-api-endpoints";
 import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
 import { ApiError } from "~/components/ApiError";
+import ArkivertBrev from "~/components/ArkivertBrev";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { Divider } from "~/components/Divider";
 import ManagedLetterEditor from "~/components/managedLetterEditor/ManagedLetterEditor";
@@ -36,6 +37,7 @@ interface VedtakSidemenyFormData {
 const VedtakWrapper = () => {
   const { saksId, brevId } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
+
   const hentBrevQuery = useQuery({
     queryKey: getBrev.queryKey(Number.parseInt(brevId)),
     queryFn: () => getBrev.queryFn(saksId, Number.parseInt(brevId)),
@@ -75,32 +77,7 @@ const VedtakWrapper = () => {
         );
       }
       if (err.response?.status === 409) {
-        return (
-          <Box
-            background="surface-default"
-            css={css`
-              display: flex;
-              flex: 1;
-            `}
-            padding="6"
-          >
-            <VStack align="start" gap="2">
-              <Label size="small">Brevet er arkivert, og kan derfor ikke redigeres.</Label>
-              <Button
-                as={Link}
-                css={css`
-                  padding: 4px 0;
-                `}
-                params={{ saksId: saksId }}
-                size="small"
-                to="/saksnummer/$saksId/brevbehandler"
-                variant="tertiary"
-              >
-                Gå til brevbehandler
-              </Button>
-            </VStack>
-          </Box>
-        );
+        return <ArkivertBrev saksId={saksId} />;
       }
 
       return (
