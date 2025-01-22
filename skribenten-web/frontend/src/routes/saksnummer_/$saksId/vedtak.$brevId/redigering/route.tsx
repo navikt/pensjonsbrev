@@ -1,25 +1,14 @@
 import { css } from "@emotion/react";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyShort, Box, Button, Heading, Label, Loader, Switch, Tabs, VStack } from "@navikt/ds-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-import {
-  getBrev,
-  getBrevReservasjon,
-  oppdaterAttestantSignatur,
-  oppdaterBrevtekst,
-  oppdaterSaksbehandlerValg,
-} from "~/api/brev-queries";
-import { attesterBrev, hentPdfForBrev } from "~/api/sak-api-endpoints";
-import Actions from "~/Brevredigering/LetterEditor/actions";
-import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
-import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
-import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
+import { getBrev, getBrevReservasjon, oppdaterAttestantSignatur, oppdaterSaksbehandlerValg } from "~/api/brev-queries";
+import { attesterBrev } from "~/api/sak-api-endpoints";
 import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
 import {
   SaksbehandlerValgModelEditor,
@@ -27,6 +16,11 @@ import {
 } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
+import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
+import {
+  ManagedLetterEditorContextProvider,
+  useManagedLetterEditorContext,
+} from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
@@ -128,17 +122,17 @@ const VedtakWrapper = () => {
         </Box>
       );
     },
-    success: (brev) => <Vedtak brev={brev} doReload={hentBrevQuery.refetch} saksId={saksId} />,
+    success: (brev) => (
+      <ManagedLetterEditorContextProvider brev={brev}>
+        <Vedtak brev={brev} doReload={hentBrevQuery.refetch} saksId={saksId} />
+      </ManagedLetterEditorContextProvider>
+    ),
   });
 };
 
-/**
- * TODO - refaktorer mutations til å bruke noe lignende som i brevEditor for saksbehandler. Mulig vi kan ha noe felles siden dem begge gjør mye av det samme
- */
 const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => void }) => {
-  const queryClient = useQueryClient();
   const navigate = useNavigate({ from: Route.fullPath });
-  const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(props.brev));
+  const { onSaveSuccess } = useManagedLetterEditorContext();
 
   const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(props.brev.info.id),
@@ -160,105 +154,35 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   const attestantSignaturMutation = useMutation<BrevResponse, AxiosError, string>({
     mutationFn: (signatur) => oppdaterAttestantSignatur(props.brev.info.id, signatur),
-    onSuccess: (response) => {
-      queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
-      //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
-      //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
-      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.info.id) });
-      setEditorState((previousState) => ({
-        ...previousState,
-        redigertBrev: response.redigertBrev,
-        redigertBrevHash: response.redigertBrevHash,
-        saksbehandlerValg: response.saksbehandlerValg,
-        info: response.info,
-        isDirty: false,
-      }));
-    },
+    onSuccess: (response) => onSaveSuccess(response),
   });
 
   const saksbehandlerValgMutation = useMutation<BrevResponse, AxiosError, SaksbehandlerValg>({
     mutationFn: (saksbehandlerValg) => oppdaterSaksbehandlerValg(props.brev.info.id, saksbehandlerValg),
-    onSuccess: (response) => {
-      queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
-      //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
-      //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
-      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.info.id) });
-      setEditorState((previousState) => ({
-        ...previousState,
-        redigertBrev: response.redigertBrev,
-        redigertBrevHash: response.redigertBrevHash,
-        saksbehandlerValg: response.saksbehandlerValg,
-        info: response.info,
-        isDirty: false,
-      }));
-    },
+    onSuccess: (response) => onSaveSuccess(response),
   });
 
   const attesterMutation = useMutation<Blob, AxiosError>({
     mutationFn: () => attesterBrev({ saksId: props.saksId, brevId: props.brev.info.id }),
   });
 
-  const { mutate: brevtekstMutation } = useMutation<BrevResponse, AxiosError>({
-    mutationFn: () => {
-      applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
-      return oppdaterBrevtekst(props.brev.info.id, editorState.redigertBrev);
-    },
-    onSuccess: (response) => {
-      queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
-      //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
-      //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
-      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.info.id) });
-      setEditorState((previousState) => ({
-        ...previousState,
-        redigertBrev: response.redigertBrev,
-        redigertBrevHash: response.redigertBrevHash,
-        saksbehandlerValg: response.saksbehandlerValg,
-        info: response.info,
-        isDirty: false,
-      }));
-    },
-  });
-
-  //TODO - muligens 1 api som tar inn all dette innholdet
+  //TODO - må ha 1 api for å gjøre alle disse operasjonene
   const onSubmit = (values: VedtakSidemenyFormData, onSuccess?: () => void) => {
     attestantSignaturMutation.mutate(values.attestantSignatur, {
       onSuccess: () =>
         saksbehandlerValgMutation.mutate(values.saksbehandlerValg, {
-          onSuccess: () =>
-            brevtekstMutation(void 0, {
-              onSuccess: () => attesterMutation.mutate(void 0, { onSuccess: onSuccess }),
-            }),
+          onSuccess: () => attesterMutation.mutate(void 0, { onSuccess: onSuccess }),
         }),
     });
   };
 
   const freeze =
     saksbehandlerValgMutation.isPending || attestantSignaturMutation.isPending || attesterMutation.isPending;
-
   const error = saksbehandlerValgMutation.isError || attestantSignaturMutation.isError || attesterMutation.isError;
 
   useEffect(() => {
     form.reset(defaultValuesModelEditor);
   }, [defaultValuesModelEditor, form]);
-
-  useEffect(() => {
-    if (editorState.redigertBrevHash !== props.brev.redigertBrevHash) {
-      setEditorState((previousState) => ({
-        ...previousState,
-        redigertBrev: props.brev.redigertBrev,
-        redigertBrevHash: props.brev.redigertBrevHash,
-      }));
-    }
-  }, [props.brev.redigertBrev, props.brev.redigertBrevHash, editorState.redigertBrevHash, setEditorState]);
-
-  useEffect(() => {
-    const timoutId = setTimeout(() => {
-      if (editorState.isDirty) {
-        brevtekstMutation();
-      }
-    }, 2000);
-    return () => clearTimeout(timoutId);
-  }, [editorState.isDirty, editorState.redigertBrev, brevtekstMutation]);
 
   return (
     <form
@@ -329,16 +253,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
             </FormProvider>
           </div>
         }
-        right={
-          <LetterEditor
-            editorHeight={"var(--main-page-content-height)"}
-            editorState={editorState}
-            error={error}
-            freeze={freeze}
-            setEditorState={setEditorState}
-            showDebug={false}
-          />
-        }
+        right={<ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} />}
       />
     </form>
   );
