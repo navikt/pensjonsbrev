@@ -26,7 +26,6 @@ import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/stat
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
 import { ApiError } from "~/components/ApiError";
-import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 import { queryFold } from "~/utils/tanstackUtils";
@@ -40,6 +39,7 @@ export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
 
 function RedigerBrevPage() {
   const { brevId, saksId } = Route.useParams();
+  const navigate = useNavigate({ from: Route.fullPath });
   const brevQuery = useQuery({
     queryKey: getBrev.queryKey(brevId),
     queryFn: () => getBrev.queryFn(saksId, brevId),
@@ -65,7 +65,11 @@ function RedigerBrevPage() {
     error: (error) => {
       if (error.response?.status === 423 && error.response?.data) {
         return (
-          <ReservertBrevError doRetry={brevQuery.refetch} reservasjon={error.response.data as ReservasjonResponse} />
+          <ReservertBrevError
+            doRetry={brevQuery.refetch}
+            onNeiClick={() => navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId } })}
+            reservasjon={error.response.data as ReservasjonResponse}
+          />
         );
       }
       if (error.response?.status === 409) {
@@ -102,8 +106,15 @@ function RedigerBrevPage() {
   });
 }
 
-const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: ReservasjonResponse; doRetry: () => void }) => {
-  const navigate = useNavigate({ from: Route.fullPath });
+export const ReservertBrevError = ({
+  reservasjon,
+  doRetry,
+  onNeiClick,
+}: {
+  reservasjon?: ReservasjonResponse;
+  doRetry: () => void;
+  onNeiClick: () => void;
+}) => {
   if (reservasjon) {
     return (
       <Modal
@@ -122,7 +133,7 @@ const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: Reservasjo
           <Button onClick={doRetry} type="button">
             Ja, åpne på nytt
           </Button>
-          <Button onClick={() => navigate({ to: BrevvelgerRoute.fullPath })} type="button" variant="tertiary">
+          <Button onClick={onNeiClick} type="button" variant="tertiary">
             Nei, gå til brevbehandler
           </Button>
         </Modal.Footer>
@@ -339,7 +350,11 @@ function RedigerBrev({
           ),
         )}
       >
-        <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
+        <ReservertBrevError
+          doRetry={doReload}
+          onNeiClick={() => navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId } })}
+          reservasjon={reservasjonQuery.data}
+        />
         {vilTilbakestilleMal && (
           <TilbakestillMalModal
             brevId={brev.info.id}
