@@ -19,11 +19,11 @@ import {
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
 import { ApiError } from "~/components/ApiError";
-import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
+import ManagedLetterEditor from "~/components/managedLetterEditor/ManagedLetterEditor";
 import {
   ManagedLetterEditorContextProvider,
   useManagedLetterEditorContext,
-} from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
+} from "~/components/managedLetterEditor/ManagedLetterEditorContext";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";

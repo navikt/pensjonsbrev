@@ -16,11 +16,11 @@ import {
 } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
-import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
+import ManagedLetterEditor from "~/components/managedLetterEditor/ManagedLetterEditor";
 import {
   ManagedLetterEditorContextProvider,
   useManagedLetterEditorContext,
-} from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
+} from "~/components/managedLetterEditor/ManagedLetterEditorContext";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
