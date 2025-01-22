@@ -1,10 +1,10 @@
 import { css } from "@emotion/react";
-import { ArrowCirclepathIcon, ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyLong, Box, Button, Heading, HStack, Label, Modal, Skeleton, VStack } from "@navikt/ds-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ArrowRightIcon } from "@navikt/aksel-icons";
+import { Box, Button, Heading, HStack, Label, Skeleton, VStack } from "@navikt/ds-react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -14,21 +14,21 @@ import {
   oppdaterBrev,
   oppdaterSaksbehandlerValg,
   oppdaterSignatur,
-  tilbakestillBrev,
 } from "~/api/brev-queries";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
 import { ApiError } from "~/components/ApiError";
+import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import ManagedLetterEditor from "~/components/managedLetterEditor/ManagedLetterEditor";
 import {
   ManagedLetterEditorContextProvider,
   useManagedLetterEditorContext,
 } from "~/components/managedLetterEditor/ManagedLetterEditorContext";
+import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
+import TilbakestillBrev from "~/components/TilbakestillBrev";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
-
-import { BrevmalAlternativer } from "./vedtak.$brevId/redigering/route";
 
 export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
   parseParams: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
@@ -108,95 +108,6 @@ function RedigerBrevPage() {
   });
 }
 
-export const ReservertBrevError = ({
-  reservasjon,
-  doRetry,
-  onNeiClick,
-}: {
-  reservasjon?: ReservasjonResponse;
-  doRetry: () => void;
-  onNeiClick: () => void;
-}) => {
-  if (reservasjon) {
-    return (
-      <Modal
-        header={{ heading: "Brevet redigeres av noen andre", closeButton: false }}
-        onClose={() => {}}
-        open={!reservasjon.vellykket}
-        width={478}
-      >
-        <Modal.Body>
-          <BodyLong>
-            Brevet er utilgjengelig for deg fordi {reservasjon.reservertAv.navn} har brevet åpent. Ønsker du å forsøke å
-            åpne brevet på nytt?
-          </BodyLong>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={doRetry} type="button">
-            Ja, åpne på nytt
-          </Button>
-          <Button onClick={onNeiClick} type="button" variant="tertiary">
-            Nei, gå til brevbehandler
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    );
-  }
-};
-
-const TilbakestillMalModal = (props: {
-  brevId: number;
-  åpen: boolean;
-  onClose: () => void;
-  resetEditor: (brevResponse: BrevResponse) => void;
-}) => {
-  const queryClient = useQueryClient();
-  const tilbakestillMutation = useMutation<BrevResponse, Error>({
-    mutationFn: () => tilbakestillBrev(props.brevId),
-    onSuccess: (response) => {
-      queryClient.setQueryData(getBrev.queryKey(props.brevId), response);
-      props.resetEditor(response);
-      props.onClose();
-    },
-  });
-
-  return (
-    <Modal
-      css={css`
-        border-radius: 0.25rem;
-      `}
-      header={{
-        heading: "Vil du tilbakestille brevmalen?",
-      }}
-      onClose={props.onClose}
-      open={props.åpen}
-      portal
-      width={600}
-    >
-      <Modal.Body>
-        <BodyLong>Innholdet du har endret eller lagt til i brevet vil bli slettet.</BodyLong>
-        <BodyLong>Du kan ikke angre denne handlingen.</BodyLong>
-      </Modal.Body>
-      <Modal.Footer>
-        <HStack gap="4">
-          <Button onClick={props.onClose} type="button" variant="tertiary">
-            Nei, behold brevet
-          </Button>
-
-          <Button
-            loading={tilbakestillMutation.isPending}
-            onClick={() => tilbakestillMutation.mutate()}
-            type="button"
-            variant="danger"
-          >
-            Ja, tilbakestill malen
-          </Button>
-        </HStack>
-      </Modal.Footer>
-    </Modal>
-  );
-};
-
 interface RedigerBrevSidemenyFormData {
   signatur: string;
   saksbehandlerValg: SaksbehandlerValg;
@@ -204,7 +115,7 @@ interface RedigerBrevSidemenyFormData {
 
 function RedigerBrev({ brev, doReload, saksId }: { brev: BrevResponse; doReload: () => void; saksId: string }) {
   const navigate = useNavigate({ from: Route.fullPath });
-  const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
+
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
   const saksbehandlerValgMutation = useMutation<BrevResponse, AxiosError, SaksbehandlerValg>({
@@ -304,26 +215,10 @@ function RedigerBrev({ brev, doReload, saksId }: { brev: BrevResponse; doReload:
               `}
               justify={"space-between"}
             >
-              {vilTilbakestilleMal && (
-                <TilbakestillMalModal
-                  brevId={brev.info.id}
-                  onClose={() => setVilTilbakestilleMal(false)}
-                  resetEditor={(brevResponse) => setEditorState(Actions.create(brevResponse))}
-                  åpen={vilTilbakestilleMal}
-                />
-              )}
-              <Button onClick={() => setVilTilbakestilleMal(true)} size="small" type="button" variant="danger">
-                <HStack align={"center"} gap="1">
-                  <ArrowCirclepathIcon
-                    css={css`
-                      transform: scaleX(-1);
-                    `}
-                    fontSize="1.5rem"
-                    title="Tilbakestill mal"
-                  />
-                  Tilbakestill malen
-                </HStack>
-              </Button>
+              <TilbakestillBrev
+                brevId={brev.info.id}
+                resetEditor={(brevResponse) => setEditorState(Actions.create(brevResponse))}
+              />
               <HStack gap="2" justify={"end"}>
                 <Button
                   onClick={() => {
