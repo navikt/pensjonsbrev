@@ -40,6 +40,11 @@ const KvitterteBrev = (properties: { sakId: string; kvitterteBrev: KvittertBrev[
 
 export default KvitterteBrev;
 
+/**
+ * Ikke så veldig glad i at vi må skille både mellom api status og context...
+ * ulik handling basert på context, og response fra backend er heller ikke det samme
+ * dette vil skalere veldig dårlig dersom kvitteringen skal måtte håndtere et nytt endepunkt, med ny response type
+ */
 const AccordionItem = (props: {
   saksId: string;
   brevFørHandling: BrevInfo;
