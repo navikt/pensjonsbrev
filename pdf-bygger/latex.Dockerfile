@@ -31,5 +31,4 @@ RUN tlmgr install pdfx
 RUN tlmgr install xmpincl
 RUN tlmgr install everyshi
 RUN tlmgr install etoolbox
-RUN tlmgr install ragged2e
 

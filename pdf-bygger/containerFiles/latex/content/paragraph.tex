@@ -1,7 +1,6 @@
 %Used for paragraph{...} element
 \newcommand{\templateparagraph}[1] {
-    \RaggedRight
-    \ifdefstring{\previouselement}{paragraph}{\par\addvspace{1pt}}{} % only put par skip between paragraphs, nowhere else. This reduces the possible combinations of spaces between elements.
+    \ifdefstring{\previouselement}{paragraph}{\par}{} % only put par skip between paragraphs, nowhere else. This reduces the possible combinations of spaces between elements.
     \setpreviouselement{paragraph}
     \standardtext
     #1

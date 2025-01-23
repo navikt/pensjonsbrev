@@ -17,7 +17,6 @@
 \RequirePackage{fontspec}         % declare font presets
 \RequirePackage{fancyhdr}         % custom page styles
 \RequirePackage{tabularray}       % better tables(tblr, longtblr)
-\RequirePackage{ragged2e}
 \RequirePackage{enumitem}         % for customizing itemlist
 \RequirePackage[absolute]{textpos}% first page absolute posistioned elements
 \input{params}                    % Must be done before pdfx is imported
@@ -64,15 +63,11 @@
 
 % paragraph spacing
 \setlength{\parindent}{0em}                 % indentations before first line in paragraph
-\setlength{\parskip}{0pt}                  % space between paragraphs
+\setlength{\parskip}{16pt}                  % space between paragraphs
 
-\setlength{\RaggedRightRightskip}{0pt}
-\setlength{\RaggedRightParindent}{0pt}
-\setlength{\RaggedRightParfillskip}{0pt}
-\setlength{\JustifyingParfillskip}{0pt}
-\setlength{\JustifyingParindent}{0pt}
 % general paragraph formatting
 \sloppy                                     % no word-breaking
+\raggedright                                % no word spacing
 \raggedbottom                               % no line stretching to fit page
 \frenchspacing                              % no double space after ended sentence
 
@@ -81,7 +76,6 @@
 \clubpenalty=9000                           % penalty for a broken page, with a single line of a paragraph remaining on the bottom of the preceding page.
 \widowpenalty=9000                          % penalty for a broken page, with a single line of a paragraph (called "widow") remaining on the top of the succeeding page.
 \@itempenalty=1000                          % penalty for breaking up an itemlist
-\hyphenpenalty=10000
 
 
 %----------------------------------------
