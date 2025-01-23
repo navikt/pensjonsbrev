@@ -12,15 +12,14 @@
 
 % space that will be added in case the previous element was not a title. Used for chapter like breaks.
 \newlength{\spacebetweentitleandnontitle}
-\setlength{\spacebetweentitleandnontitle}{\dimexpr(25pt-\parskip)}
+\setlength{\spacebetweentitleandnontitle}{25pt}
 
 \newcommand{\lettersectiontitle}[1]{
-    \pagebreak[3] %strongly encourage page break before section title
-    % add more space between previous non-title element accounting for it's own space )
-    \ifdefstring{\previouselement}{title}{}{\addvspace{\spacebetweentitleandnontitle}}
+    \pagebreak[3]
+    \ifdefstring{\previouselement}{title}{}{\\[0pt]\addvspace{\spacebetweentitleandnontitle}}
+    \RaggedRight
     #1
     \nopagebreak
-    \\[0pt]         % TODO finn en bedre måte å få \linebreak til å fungere uten å legge til indent.
     \addpenalty{10000} % Absolutely no page break here. Addpenalty carries the penalty through addvspace to the next element.
     \addvspace{3pt} % require at least 6 pt of space until the next element.
 }
