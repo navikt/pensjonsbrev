@@ -1,0 +1,40 @@
+package no.nav.pensjon.brev.latex
+
+import no.nav.pensjon.brev.TestTags
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.outlineTestTemplate
+import no.nav.pensjon.brev.renderTestPDF
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.dsl.text
+import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
+
+@Tag(TestTags.INTEGRATION_TEST)
+class ElementIntegrationTest {
+
+    @Test
+    fun `tom title1 burde ikke feile`() {
+        outlineTestTemplate<EmptyBrevdata> {
+            title1 { }
+            paragraph { text(Bokmal to "Test") }
+            title1 { text(Bokmal to "med tekst") }
+        }.renderTestPDF("elementTest tom title1")
+    }
+
+    @Test
+    fun `tom title2 burde ikke feile`() {
+        outlineTestTemplate<EmptyBrevdata> {
+            title2 { }
+            paragraph { text(Bokmal to "Test") }
+            title2 { text(Bokmal to "med tekst") }
+        }.renderTestPDF("elementTest tom title2")
+    }
+
+    @Test
+    fun `tom paragraph burde ikke feile`() {
+        outlineTestTemplate<EmptyBrevdata> {
+            title2 { text(Bokmal to "Test") }
+            paragraph { }
+        }.renderTestPDF("elementTest tom paragraph")
+    }
+}
