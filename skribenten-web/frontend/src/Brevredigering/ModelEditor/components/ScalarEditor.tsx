@@ -69,23 +69,24 @@ export const ScalarEditor = ({
 };
 
 const SwitchField = (props: { prependName?: string; field: string; fieldType: TScalar; onSubmit?: () => void }) => {
-  const { getFieldState, watch, formState } = useFormContext();
+  const { getFieldState, formState } = useFormContext();
   const fieldName = props.prependName ? `${props.prependName}.${props.field}` : props.field;
   const fieldState = getFieldState(fieldName, formState);
-  const watchedValue = watch(fieldName);
 
   /**
    * useEffekten er brukt kun i forbindelse med autolagring
+   *
+   * Vi gjør en submit ved onChange, og prøver på nytt hver 3 sekund dersom kallet feilet.
    */
   useEffect(() => {
-    if (fieldState.isDirty && (props.fieldType.nullable ? true : !!watchedValue) && props.onSubmit) {
+    if (fieldState.isDirty && props.onSubmit !== undefined) {
       const timeout = setTimeout(() => {
         props.onSubmit!();
-      }, 1);
+      }, 3000);
 
       return () => clearTimeout(timeout);
     }
-  }, [fieldState.isDirty, watchedValue, watch, props.onSubmit, props.field, props.fieldType.nullable]);
+  }, [fieldState.isDirty, props.onSubmit]);
 
   return (
     <div>
