@@ -12,8 +12,17 @@ export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$brevId/kvitter
 });
 
 const Kvittering = () => {
-  const { resultat } = useSendtBrevResultatContext();
+  const isProd = import.meta.env.PROD;
   const { saksId, brevId } = Route.useParams();
+  const { resultat } = useSendtBrevResultatContext();
+
+  const brukeroversiktQ2Url = `https://pensjon-psak-q2.dev.adeo.no/psak/bruker/brukeroversikt.jsf?sakId=${saksId}`;
+  const dokumentoversiktQ2Url = `https://pensjon-psak-q2.dev.adeo.no/psak/dokument/saksoversikt.jsf?sakId=${saksId}`;
+  const brukeroversiktProdUrl = `https://pensjon-psak.nais.adeo.no/psak/bruker/brukeroversikt.jsf?sakId=${saksId}`;
+  const dokumentoversiktProdUrl = `https://pensjon-psak.nais.adeo.no/psak/dokument/saksoversikt.jsf?sakId=${saksId}`;
+
+  const brukeroversiktUrl = isProd ? brukeroversiktProdUrl : brukeroversiktQ2Url;
+  const dokumentoversiktUrl = isProd ? dokumentoversiktProdUrl : dokumentoversiktQ2Url;
 
   const sendteBrev = resultat.map((resultat) =>
     toKvittertBrev({
@@ -37,6 +46,17 @@ const Kvittering = () => {
           padding-top: var(--a-spacing-8);
         `}
       >
+        <VStack gap="2">
+          <Heading size="medium">Hva vil du gjøre nå?</Heading>
+          <VStack align={"start"} gap="3">
+            <ButtonLink as={"a"} href={brukeroversiktUrl}>
+              Gå til brukeroversikt
+            </ButtonLink>
+            <ButtonLink as={"a"} href={dokumentoversiktUrl}>
+              Gå til dokumentoversikt
+            </ButtonLink>
+          </VStack>
+        </VStack>
         <BodyShort>Ingen informasjon om brevsending</BodyShort>
         <Link params={{ saksId, brevId }} to={"/saksnummer/$saksId/vedtak/$brevId/forhandsvisning"}>
           Tilbake til forhåndsvisning
@@ -64,10 +84,10 @@ const Kvittering = () => {
       <VStack gap="2">
         <Heading size="medium">Hva vil du gjøre nå?</Heading>
         <VStack align={"start"} gap="3">
-          <ButtonLink as={"a"} href={`https://psak/dokument/saksoversikt.jsf?&sakId=${saksId}`}>
+          <ButtonLink as={"a"} href={brukeroversiktUrl}>
             Gå til brukeroversikt
           </ButtonLink>
-          <ButtonLink as={"a"} href="https://www.nav.no">
+          <ButtonLink as={"a"} href={dokumentoversiktUrl}>
             Gå til dokumentoversikt
           </ButtonLink>
         </VStack>
