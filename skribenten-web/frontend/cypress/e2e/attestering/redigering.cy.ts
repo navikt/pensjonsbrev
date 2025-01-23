@@ -2,11 +2,10 @@ import { format, formatISO } from "date-fns";
 
 import type { BrevResponse } from "~/types/brev";
 
-import { nyBrevResponse } from "../utils/brevredigeringTestUtils";
+import { nyBrevResponse } from "../../utils/brevredigeringTestUtils";
 
 const defaultBrev = nyBrevResponse({});
-
-describe("attestering", () => {
+describe("attestant redigering", () => {
   beforeEach(() => {
     cy.setupSakStubs();
 

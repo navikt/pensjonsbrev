@@ -72,8 +72,6 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
   const navigate = useNavigate({ from: Route.fullPath });
   const [vilSendeBrev, setVilSendeBrev] = useState(false);
 
-  const brevResponse = props.brev;
-
   return (
     <>
       {vilSendeBrev && (
@@ -114,13 +112,13 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
         }
         left={
           <VStack gap="3">
-            <Heading size="small">{brevResponse.redigertBrev.title}</Heading>
+            <Heading size="small">{props.brev.redigertBrev.title}</Heading>
             <VStack gap="4">
-              <OppsummeringAvMottaker mottaker={brevResponse.info.mottaker} saksId={props.saksId} withTitle />
+              <OppsummeringAvMottaker mottaker={props.brev.info.mottaker} saksId={props.saksId} withTitle />
               <VStack gap="1">
                 <Label size="small">Distribusjonstype</Label>
-                <BodyShort size="small">{distribusjonstypeTilText(brevResponse.info.distribusjonstype)}</BodyShort>
-                {brevResponse.info.distribusjonstype === "LOKALPRINT" && (
+                <BodyShort size="small">{distribusjonstypeTilText(props.brev.info.distribusjonstype)}</BodyShort>
+                {props.brev.info.distribusjonstype === "LOKALPRINT" && (
                   <Alert size="small" variant="warning">
                     Du må åpne PDF og skrive ut brevet etter du har trykket på send brev.
                   </Alert>
