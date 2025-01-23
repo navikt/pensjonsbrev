@@ -9,10 +9,10 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTOSelectors.er6mndVarsel
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTOSelectors.er12MndVarsel
 
 data class OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO(
-    val er6mndVarsel: Boolean
+    val er12MndVarsel: Boolean
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -42,40 +42,8 @@ object OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfall :
             }
             outline {
 
-                // Hvis 6 mnd varsel
-                showIf(er6mndVarsel) {
-                    paragraph {
-                        text(
-                            Bokmal to
-                                    "Vi viser til vedtak om innvilgelse av omstillingsstønad av <dato vedtaksbrev> " +
-                                    "og informasjonsbrev av <dato infobrev er sendt>.",
-                            Nynorsk to
-                                    "Vi viser til vedtaket om innvilging av omstillingsstønad av <dato vedtaksbrev> " +
-                                    "og informasjonsbrevet av <dato infobrev er sendt>.",
-                            English to
-                                    "We refer to the decision to grant adjustment allowance, dated <dato vedtaksbrev>, " +
-                                    "and the information letter, dated <dato infobrev er sendt>.",
-                        )
-                    }
-                    paragraph {
-                        text(
-                            Bokmal to
-                                    "Når det er gått seks måneder etter dødsfallet, er det et krav for å motta omstillingsstønad " +
-                                    "at du er i minst 50 prosent arbeid eller annen aktivitet med sikte på å komme i arbeid. " +
-                                    "Som det fremgår av informasjonsbrevet du har mottatt er det noen unntak som gjør at du likevel kan motta omstillingsstønad videre.",
-                            Nynorsk to
-                                    "For å kunne halde fram med å få omstillingsstønad når det har gått seks månader sidan " +
-                                    "dødsfallet, må du vere i minst 50 prosent arbeid eller annan aktivitet med sikte på å kome " +
-                                    "i arbeid. Som det kjem fram av informasjonsbrevet du har fått er det nokre unntak som gjer at du likevel kan få omstillingsstønad vidare.",
-                            English to
-                                    "By six months after the death, adjustment allowance recipients are required to work or " +
-                                    "participate in other activity aimed at finding work. This activity requirement is equivalent " +
-                                    "to at least 50 percent of full-time work or activity. As can be seen from the information letter you have received, there are some exceptions which mean that you can still continue to receive adjustment allowance.",
-                        )
-                    }
-                }
-                // Hvis 12 mnd og oppover varsel
-                .orShow {
+                // Hvis 12 mnd varsel
+                showIf(er12MndVarsel) {
                     paragraph {
                         text(
                             Bokmal to
@@ -103,6 +71,39 @@ object OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfall :
                                     " This activity requirement is equivalent to at least 50 percent of full-time work or activity. When 12 months have passed since the death, " +
                                     "a requirement for 100 percent activity may be imposed. As can be seen from the information letter you have received, " +
                                     "there are some exceptions which mean that you can still continue to receive adjustment allowance.",
+                        )
+                    }
+
+                }
+                // Hvis 6 mnd og oppover varsel
+                .orShow {
+                    paragraph {
+                        text(
+                            Bokmal to
+                                    "Vi viser til vedtak om innvilgelse av omstillingsstønad av <dato vedtaksbrev> " +
+                                    "og informasjonsbrev av <dato infobrev er sendt>.",
+                            Nynorsk to
+                                    "Vi viser til vedtaket om innvilging av omstillingsstønad av <dato vedtaksbrev> " +
+                                    "og informasjonsbrevet av <dato infobrev er sendt>.",
+                            English to
+                                    "We refer to the decision to grant adjustment allowance, dated <dato vedtaksbrev>, " +
+                                    "and the information letter, dated <dato infobrev er sendt>.",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to
+                                    "Når det er gått seks måneder etter dødsfallet, er det et krav for å motta omstillingsstønad " +
+                                    "at du er i minst 50 prosent arbeid eller annen aktivitet med sikte på å komme i arbeid. " +
+                                    "Som det fremgår av informasjonsbrevet du har mottatt er det noen unntak som gjør at du likevel kan motta omstillingsstønad videre.",
+                            Nynorsk to
+                                    "For å kunne halde fram med å få omstillingsstønad når det har gått seks månader sidan " +
+                                    "dødsfallet, må du vere i minst 50 prosent arbeid eller annan aktivitet med sikte på å kome " +
+                                    "i arbeid. Som det kjem fram av informasjonsbrevet du har fått er det nokre unntak som gjer at du likevel kan få omstillingsstønad vidare.",
+                            English to
+                                    "By six months after the death, adjustment allowance recipients are required to work or " +
+                                    "participate in other activity aimed at finding work. This activity requirement is equivalent " +
+                                    "to at least 50 percent of full-time work or activity. As can be seen from the information letter you have received, there are some exceptions which mean that you can still continue to receive adjustment allowance.",
                         )
                     }
                 }
