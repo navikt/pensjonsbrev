@@ -77,7 +77,7 @@ class LaTeXService(
                     PDFCompilationResponse.Failure.Timeout("Compilation timed out in ${result.timeout}: completed ${result.completedRuns} runs")
             }
         } finally {
-            //tmpDir.toFile().deleteRecursively()
+            tmpDir.toFile().deleteRecursively()
         }
     }
 
