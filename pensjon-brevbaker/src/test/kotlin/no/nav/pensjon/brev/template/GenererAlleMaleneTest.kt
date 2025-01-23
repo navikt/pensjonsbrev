@@ -4,6 +4,8 @@ import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.ProductionTemplates
+import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
+import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.renderTestHtml
 import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.settOppFakeUnleash
@@ -75,6 +77,20 @@ class GenererAlleMaleneTest {
                         spraak,
                     )
                 } + ProductionTemplates.hentRedigerbareMaler().map {
+                    Arguments.of(
+                        it.template,
+                        it.kode,
+                        Fixtures.create(it.template.letterDataType),
+                        spraak,
+                    )
+                } + LetterExample.let {
+                    Arguments.of(
+                        it.template,
+                        it.kode,
+                        Fixtures.create(it.template.letterDataType),
+                        spraak,
+                    )
+                } + EksempelbrevRedigerbart.let {
                     Arguments.of(
                         it.template,
                         it.kode,
