@@ -9,8 +9,10 @@ import type {
   BrevInfo,
   DelvisOppdaterBrevRequest,
   DelvisOppdaterBrevResponse,
+  OppdaterBrevRequest,
 } from "~/types/brev";
 
+import { nyBrevInfo } from "../../cypress/utils/brevredigeringTestUtils";
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";
 
 export const hentAlleBrevForSak = {
@@ -76,14 +78,26 @@ export const fjernOverstyrtMottaker = async (argz: { saksId: string; brevId: str
 
 //TODO - bruk det faktiske endepunktet når det kommer
 export const sendBrevTilAttestering = async (args: { saksId: string; brevId: string | number }) => {
-  return (await axios.post<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}/attester`))
-    .data;
+  // return (await axios.post<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}/attester`))
+  //   .data;
+
+  return nyBrevInfo({
+    id: typeof args.brevId === "string" ? Number.parseInt(args.brevId) : args.brevId,
+  });
 };
 
-export const attesterBrev = async (args: { saksId: string; brevId: string | number }) =>
+export const attesterBrev = async (args: { saksId: string; brevId: string | number; request: OppdaterBrevRequest }) =>
   (
-    await axios.post<Blob>(`${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}/attester`, {
-      responseType: "blob",
-      headers: { Accept: "application/pdf" },
-    })
+    await axios.post<Blob>(
+      `${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}/attester`,
+      {
+        saksbehandlerValg: args.request.saksbehandlerValg,
+        redigertBrev: args.request.redigertBrev,
+        signatur: args.request.signatur,
+      },
+      {
+        responseType: "blob",
+        headers: { Accept: "application/pdf" },
+      },
+    )
   ).data;

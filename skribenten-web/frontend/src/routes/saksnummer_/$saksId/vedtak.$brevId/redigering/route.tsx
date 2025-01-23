@@ -22,7 +22,7 @@ import {
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
-import type { BrevResponse, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
+import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
 
 export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$brevId/redigering")({
@@ -105,7 +105,7 @@ const VedtakWrapper = () => {
 
 const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
-  const { onSaveSuccess } = useManagedLetterEditorContext();
+  const { editorState, onSaveSuccess } = useManagedLetterEditorContext();
 
   const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(props.brev.info.id),
@@ -135,19 +135,20 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     onSuccess: (response) => onSaveSuccess(response),
   });
 
-  const attesterMutation = useMutation<Blob, AxiosError>({
-    mutationFn: () => attesterBrev({ saksId: props.saksId, brevId: props.brev.info.id }),
+  const attesterMutation = useMutation<Blob, AxiosError, OppdaterBrevRequest>({
+    mutationFn: (requestData) =>
+      attesterBrev({ saksId: props.saksId, brevId: props.brev.info.id, request: requestData }),
   });
 
-  //TODO - må ha 1 api for å gjøre alle disse operasjonene
-  //merk at vi ikke oppdaterer brevtekst ved neste klikk - se grunn rett over
   const onSubmit = (values: VedtakSidemenyFormData, onSuccess?: () => void) => {
-    attestantSignaturMutation.mutate(values.attestantSignatur, {
-      onSuccess: () =>
-        saksbehandlerValgMutation.mutate(values.saksbehandlerValg, {
-          onSuccess: () => attesterMutation.mutate(void 0, { onSuccess: onSuccess }),
-        }),
-    });
+    attesterMutation.mutate(
+      {
+        saksbehandlerValg: values.saksbehandlerValg,
+        redigertBrev: editorState.redigertBrev,
+        signatur: values.attestantSignatur,
+      },
+      { onSuccess: onSuccess },
+    );
   };
 
   const freeze =
