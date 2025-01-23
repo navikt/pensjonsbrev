@@ -10,7 +10,7 @@ import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
+import { hentAlleBrevForSak, sendBrev, sendBrevTilAttestering } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { BestillBrevResponse } from "~/types/brev";
 import { type BrevInfo } from "~/types/brev";
@@ -123,14 +123,17 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   });
 
   const alleFerdigstilteBrev = useMemo(() => alleFerdigstilteBrevResult.data ?? [], [alleFerdigstilteBrevResult.data]);
-  const [ferdigstilteBrevTilAttestering, ferdigstilteBrevTilSending] = partition(alleFerdigstilteBrev, skalBrevAttesteres);
+  const [ferdigstilteBrevTilAttestering, ferdigstilteBrevTilSending] = partition(
+    alleFerdigstilteBrev,
+    skalBrevAttesteres,
+  );
 
   const bestillBrevMutation = useMutation<BestillBrevResponse, Error, number>({
     mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
   });
 
-  const sendBrevTilAttestering = useMutation<BrevInfo, AxiosError, number>({
-    mutationFn: (brevId) => Promise.resolve(ferdigstilteBrevTilAttestering.find((brev) => brev.id === brevId)!),
+  const sendBrevTilAttesteringMutation = useMutation<BrevInfo, AxiosError, number>({
+    mutationFn: (brevId) => sendBrevTilAttestering({ saksId: properties.sakId, brevId: brevId }),
   });
 
   const form = useForm<z.infer<typeof validationSchema>>({
@@ -168,7 +171,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
       ),
     );
     const attesteringRequests = brevSomSkalTilAttestering.map((brevInfo) =>
-      sendBrevTilAttestering.mutateAsync(brevInfo.id).then(
+      sendBrevTilAttesteringMutation.mutateAsync(brevInfo.id).then(
         (response) => ({ requestType: "attestering" as const, status: "success" as const, brevInfo, response }),
         (error: AxiosError) => ({ requestType: "attestering" as const, status: "error" as const, brevInfo, error }),
       ),
@@ -211,7 +214,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
         .filter((brev) => !sendteBrev.has(brev.id))
         .map((brev) => {
           const brevSomSkalErstattesDetSomFinnes = brevSomSkalTilAttestering.find((b) => b.id === brev.id)!;
-          return brev.id === brevSomSkalErstattesDetSomFinnes.id ? brevSomSkalErstattesDetSomFinnes : brev;
+          return brev.id === brevSomSkalErstattesDetSomFinnes?.id ? brevSomSkalErstattesDetSomFinnes : brev;
         }),
     );
     navigate({ to: "/saksnummer/$saksId/kvittering", params: { saksId: properties.sakId } });
