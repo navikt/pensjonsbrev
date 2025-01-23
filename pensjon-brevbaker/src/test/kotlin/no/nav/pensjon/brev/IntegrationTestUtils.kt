@@ -94,16 +94,16 @@ fun renderTestVedleggPdf(
     outputFolder: String,
     felles: Felles? = null,
     outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
-    ) {
+) {
     val vedlegg: AttachmentTemplate<LangBokmal, EmptyBrevdata> = createAttachment<LangBokmal, EmptyBrevdata>(
         title = newText(
-            Bokmal to (title?: testName)
+            Bokmal to (title ?: testName)
         ),
         includeSakspart = includeSakspart,
     ) {
         outlineInit()
     }
-    renderTestPdfOutline(attachments = listOf(vedlegg), outputFolder = outputFolder, testName = testName, title = title, felles = felles) {  }
+    renderTestPdfOutline(attachments = listOf(vedlegg), outputFolder = outputFolder, testName = testName, title = title, felles = felles) { }
 }
 
 
@@ -176,7 +176,9 @@ fun <AttachmentData : Any, Lang : LanguageSupport> createVedleggTestTemplate(
     includeAttachment(template, attachmentData)
 }
 
-internal inline fun <reified LetterData : Any> outlineTestTemplate(noinline function: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit) =
+internal inline fun <reified LetterData : Any> outlineTestTemplate(
+    noinline function: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit,
+): LetterTemplate<LangBokmal, LetterData> =
     createTemplate(
         name = "test",
         letterDataType = LetterData::class,
@@ -187,7 +189,10 @@ internal inline fun <reified LetterData : Any> outlineTestTemplate(noinline func
         outline(function)
     }
 
-fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate(
+internal fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = Fixtures.felles) =
+    Letter(this, EmptyBrevdata, Bokmal, felles).renderTestPDF(fileName)
+
+internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate(
     name = "test",
     title = listOf(bokmalTittel),
     letterDataType = Unit::class,
