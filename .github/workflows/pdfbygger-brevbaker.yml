@@ -178,7 +178,6 @@ jobs:
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
       - name: Comment percy review link
-        continue-on-error: true # Om vi har brukt opp percy kvoten så skal vi fortsatt
         uses: peter-evans/create-or-update-comment@v4
         if: ${{ needs.changes.outputs.latex == 'true' && github.event_name == 'pull_request' }}
         with:
