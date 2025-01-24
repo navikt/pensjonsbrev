@@ -12,6 +12,5 @@ data class InformasjonOmSaksbehandlingstidPeDto(
     data class SaksbehandlerValg(
         val soeknadMottattFraUtland: Boolean = false,
         val venterPaaSvarAFP: Boolean = false,
-        val forlengetSaksbehandling: Boolean = false,
     ) : BrevbakerBrevdata
 }
