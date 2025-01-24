@@ -41,9 +41,9 @@ object InformasjonOmSaksbehandlingstidPE : RedigerbarTemplate<InformasjonOmSaksb
     ) {
         title {
                 text(
-                    Bokmal to "Informasjon om forlenget saksbehandlingstid",
-                    Nynorsk to "Informasjon om forlenget saksbehandlingstid",
-                    English to "Information about application processing delay",
+                    Bokmal to "Informasjon om saksbehandlingstiden vår",
+                    Nynorsk to "Informasjon om saksbehandlingstida vår",
+                    English to "Information about application processing time",
                 )
             }
         outline {
@@ -90,14 +90,6 @@ object InformasjonOmSaksbehandlingstidPE : RedigerbarTemplate<InformasjonOmSaksb
                                 "This requires that you have submitted an application for AFP to Fellesordningen.",
                     )
                 }
-            }
-                paragraph {
-                    val frist = fritekst("frist")
-                    textExpr(
-                        Bokmal to "Vi antar at kravet ditt kan bli ferdigbehandlet innen ".expr() + frist + ".",
-                        Nynorsk to "Vi går ut frå at kravet ditt kan bli ferdigbehandla innan ".expr() + frist + ".",
-                        English to "Without further delays, we assume the processing of your case to be completed within ".expr() + frist + "."
-                    )
             }
                 paragraph {
                     val svartid = fritekst("svartid")
