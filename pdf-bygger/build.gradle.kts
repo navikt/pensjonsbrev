@@ -7,6 +7,7 @@ val hamkrestVersion: String by project
 val logbackVersion: String by project
 val logstashVersion: String by project
 val micrometerVersion: String by project
+val kafkaVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -49,7 +50,8 @@ dependencies {
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
     implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
-
+    implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
+    implementation("org.apache.kafka:connect-runtime:$kafkaVersion")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
