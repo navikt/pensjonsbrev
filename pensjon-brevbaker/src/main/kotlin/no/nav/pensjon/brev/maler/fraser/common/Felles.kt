@@ -57,13 +57,12 @@ object Felles {
             paragraph {
                 text(
                     Bokmal to "Du finner mer informasjon på $merInformasjonUrl."
-                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss.",
+                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. ",
                     Nynorsk to "Du finn meir informasjon på $merInformasjonUrl."
-                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss.",
+                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. ",
                     English to "You can find more information at $merInformasjonUrl."
-                            + " At ${Constants.KONTAKT_URL}, you can chat or write to us.",
+                            + " At ${Constants.KONTAKT_URL}, you can chat or write to us. ",
                 )
-                newline()
                 text(
                     Bokmal to "Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon $telefonnummer,"
                             + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
