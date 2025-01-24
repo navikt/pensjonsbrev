@@ -97,6 +97,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
             ),
             oppphoersdato = LocalDate.of(2024, 12, 1),
             opphoerNesteAar = false,
+            erYrkesskade = true,
         ),
         etterbetaling =
         OmstillingsstoenadEtterbetaling(

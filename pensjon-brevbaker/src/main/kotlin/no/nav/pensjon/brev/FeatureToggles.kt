@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev
 
+import no.nav.pensjon.brev.template.StableHash
 import no.nav.pensjon.brevbaker.api.model.FeatureToggle
 
-
-data class UnleashToggle(val name: String) : FeatureToggle {
+data class UnleashToggle(val name: String) : FeatureToggle, StableHash by StableHash.of("Toggle: $name") {
     override fun isEnabled() = FeatureToggleHandler.isEnabled(this)
 }
 

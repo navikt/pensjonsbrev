@@ -6,6 +6,8 @@ import java.time.LocalDate
 fun Expression<LocalDate>.format(short: Boolean = false) =
     format(formatter = if(short) LocalizedFormatter.ShortDateFormat else LocalizedFormatter.DateFormat)
 
+fun Expression<LocalDate>.formatMonthYear(): Expression<String> = this.format(LocalizedFormatter.MonthYearFormatter)
+
 private object LocalDateSelectors {
     val yearSelector = object : TemplateModelSelector<LocalDate, Int> {
         override val className = "java.time.LocalDate"

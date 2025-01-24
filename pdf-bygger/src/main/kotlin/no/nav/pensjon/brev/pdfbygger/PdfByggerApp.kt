@@ -153,7 +153,7 @@ private suspend fun RoutingContext.handleResult(
             if (result.error?.isNotBlank() == true) {
                 logger.info(result.error)
             }
-            call.respond(HttpStatusCode.InternalServerError, result)
+                    call.respond(HttpStatusCode.BadRequest, result)
         }
 
         is PDFCompilationResponse.Failure.Server -> {

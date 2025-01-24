@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.example
 
+import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.UnleashToggle
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -16,17 +17,36 @@ import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi1
 import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi2
 import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.ParagraphPhrase
+import no.nav.pensjon.brev.template.TextOnlyPhrase
+import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
+import no.nav.pensjon.brev.template.dsl.TextOnlyScope
+import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.enabled
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.fornavn
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
+import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 
 enum class LetterExampleBrevkode : Brevkode.Automatisk {
@@ -106,6 +126,20 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                     textExpr(
                         Bokmal to "Heisann ".expr() + it.navn + " håper du har en fin dag!",
                         Nynorsk to "Heisann ".expr() + it.navn + " håper du har en fin dag!",
+                    )
+                }
+            }
+
+            paragraph {
+                showIf(FeatureToggles.pl7231ForventetSvartid.expr().enabled() and true.expr()) {
+                    text(
+                        Bokmal to "a",
+                        Nynorsk to "b",
+                    )
+                }.orShow {
+                    text(
+                        Bokmal to "nei",
+                        Nynorsk to "kanskje",
                     )
                 }
             }

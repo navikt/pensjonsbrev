@@ -179,4 +179,26 @@ object Felles {
         }
     }
 
+    object MeldeFraEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 {
+                text(
+                    Bokmal to "Meld fra om endringer",
+                    Nynorsk to "Meld frå om endringar",
+                    Language.English to "Duty to report changes"
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du må melde fra til oss med en gang hvis det skjer endringer som kan ha betydning for saken din, "
+                            + "for eksempel ved endring av sivilstand eller ved flytting.",
+                    Nynorsk to "Du må melde frå til oss med ein gong dersom det skjer endringar som kan ha noko å seie for saka din, "
+                            + "for eksempel ved endring av sivilstand eller ved flytting.",
+                    Language.English to "You must notify us immediately if there are any changes that may affect your case, "
+                            + "such as a change in your marital status or if you move."
+                )
+            }
+        }
+    }
+
 }

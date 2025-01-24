@@ -104,5 +104,6 @@ internal fun lagBeregning() = BarnepensjonBeregning(
         beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
         mindreEnnFireFemtedelerAvOpptjeningstiden = false,
         navnAvdoed = "Elvis Presley"
-    )
+    ),
+    erYrkesskade = false,
 )

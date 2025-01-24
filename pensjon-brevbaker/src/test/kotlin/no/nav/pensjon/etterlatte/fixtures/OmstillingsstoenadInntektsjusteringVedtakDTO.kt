@@ -74,6 +74,7 @@ fun createOmstillingsstoenadInntektsjusteringVedtakDTO() = AarligInntektsjusteri
         ),
         oppphoersdato = LocalDate.of(2024, 12, 1),
         opphoerNesteAar = false,
+        erYrkesskade = false,
     ),
     omsRettUtenTidsbegrensning = false,
     tidligereFamiliepleier = false,
