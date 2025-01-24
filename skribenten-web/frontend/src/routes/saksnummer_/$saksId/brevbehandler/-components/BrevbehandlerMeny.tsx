@@ -21,7 +21,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useMemo, useState } from "react";
 
-import type { UserInfo } from "~/api/bff-endpoints";
+import { BrukerRoller, type UserInfo } from "~/api/bff-endpoints";
 import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { getNavn } from "~/api/skribenten-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
@@ -146,14 +146,15 @@ const BrevItem = (properties: {
               </Detail>
               <Detail textColor="subtle">Brev opprettet: {formatStringDate(properties.brev.opprettet)}</Detail>
             </div>
-            {properties.brev.opprettetAv.id !== gjeldendeBruker?.navident && (
-              <Link
-                params={{ saksId: properties.saksId, brevId: properties.brev.id.toString() }}
-                to="/saksnummer/$saksId/vedtak/$brevId/redigering"
-              >
-                Attester brev
-              </Link>
-            )}
+            {properties.brev.opprettetAv.id !== gjeldendeBruker?.navident &&
+              gjeldendeBruker?.rolle === BrukerRoller.Attestant && (
+                <Link
+                  params={{ saksId: properties.saksId, brevId: properties.brev.id.toString() }}
+                  to="/saksnummer/$saksId/vedtak/$brevId/redigering"
+                >
+                  Attester brev
+                </Link>
+              )}
           </VStack>
         </Accordion.Content>
       </Accordion.Item>

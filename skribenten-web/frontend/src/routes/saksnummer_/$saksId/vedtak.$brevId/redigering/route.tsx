@@ -192,6 +192,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 <Switch size="small">Marker tekst som er lagt til manuelt</Switch>
                 <Switch size="small">Vis slettet tekst</Switch>
                 <AutoSavingTextField
+                  autocomplete="Underskrift"
                   field={"attestantSignatur"}
                   fieldType={{
                     type: "scalar",
