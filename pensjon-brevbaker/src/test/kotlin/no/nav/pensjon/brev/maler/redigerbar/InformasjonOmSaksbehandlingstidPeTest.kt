@@ -18,7 +18,6 @@ class InformasjonOmSaksbehandlingstidPeTest {
         saksbehandlerValg = InformasjonOmSaksbehandlingstidPeDto.SaksbehandlerValg(
             soeknadMottattFraUtland = false,
             venterPaaSvarAFP = false,
-            forlengetSaksbehandling = true
         ),
         pesysData = EmptyBrevdata
     )
@@ -36,11 +35,6 @@ class InformasjonOmSaksbehandlingstidPeTest {
     @Test
     fun `med venter svar AFP`() {
         writeAllLanguages("med-venter-svar", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(venterPaaSvarAFP = true)))
-    }
-
-    @Test
-    fun `med forlenget saksbehandlingstid`() {
-        writeAllLanguages("med-forlenget-saksbehandlingstid", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(forlengetSaksbehandling = true)))
     }
 
     private fun writeAllLanguages(testNavn: String, data: InformasjonOmSaksbehandlingstidPeDto) {
