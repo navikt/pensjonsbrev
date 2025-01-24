@@ -20,6 +20,7 @@ import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -34,6 +35,7 @@ import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 import java.time.LocalDate
+import javax.sql.DataSource
 
 @Suppress("unused")
 object Favourites : Table() {
@@ -168,22 +170,31 @@ fun initDatabase(config: Config) =
     }
 
 fun initDatabase(jdbcUrl: String, username: String, password: String) {
-    val database = Database.connect(
-        HikariDataSource(HikariConfig().apply {
-            this.jdbcUrl = jdbcUrl
-            this.username = username
-            this.password = password
-            this.initializationFailTimeout = 6000
-            maximumPoolSize = 2
-            validate()
-        }),
-    )
+    val database = HikariDataSource(HikariConfig().apply {
+        this.jdbcUrl = jdbcUrl
+        this.username = username
+        this.password = password
+        this.initializationFailTimeout = 6000
+        maximumPoolSize = 2
+        validate()
+    })
+        .also { konfigurerFlyway(it) }
+        .let { Database.connect(it) }
+
     transaction(database) {
         withDataBaseLock {
             SchemaUtils.createMissingTablesAndColumns(BrevredigeringTable, DocumentTable, Favourites, MottakerTable)
+
         }
     }
 }
+
+private fun konfigurerFlyway(dataSource: DataSource) = Flyway
+    .configure()
+    .dataSource(dataSource)
+    .baselineOnMigrate(true)
+    .load()
+    .migrate()
 
 
 private fun createJdbcUrl(config: Config): String =

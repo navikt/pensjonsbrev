@@ -11,6 +11,7 @@ val logbackVersion: String by project
 val logstashVersion: String by project
 val micrometerVersion: String by project
 val mockkVersion: String by project
+val flywayVersion: String by project
 
 plugins {
     application
@@ -82,6 +83,10 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
     implementation("org.postgresql:postgresql:42.7.4")
     implementation("com.zaxxer:HikariCP:6.2.1")
+
+
+    // Databasemigrering
+    implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
 
     // Unleash
     implementation("io.getunleash:unleash-client-java:9.2.6")
