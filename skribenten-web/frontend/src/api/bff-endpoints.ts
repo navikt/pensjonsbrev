@@ -17,4 +17,10 @@ export const getUserInfo = {
 export type UserInfo = {
   name: string;
   navident: string;
+  rolle: BrukerRoller;
 };
+
+export enum BrukerRoller {
+  Saksbehandler = "Saksbehandler",
+  Attestant = "Attestant",
+}

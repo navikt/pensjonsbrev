@@ -223,6 +223,7 @@ function RedigerBrev({ brev, doReload, saksId }: { brev: BrevResponse; doReload:
               <Heading size="small">{brev.redigertBrev.title}</Heading>
               <BrevmalAlternativer brevkode={brev.info.brevkode} submitOnChange={onTekstValgAndOverstyringChange} />
               <AutoSavingTextField
+                autocomplete="Signatur"
                 field={"signatur"}
                 fieldType={{
                   type: "scalar",

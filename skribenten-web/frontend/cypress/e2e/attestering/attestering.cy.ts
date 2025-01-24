@@ -2,7 +2,9 @@ import type { Interception } from "cypress/types/net-stubbing";
 
 import type { BrevResponse } from "~/types/brev";
 
+import brev from "../../fixtures/bekreftelsePåFlyktningstatus/brev.json";
 import {
+  nyBrevInfo,
   nyBrevResponse,
   nyLiteral,
   nyParagraphBlock,
@@ -11,20 +13,165 @@ import {
 } from "../../utils/brevredigeringTestUtils";
 
 const defaultBrev = nyBrevResponse({});
+const bekreftelsePåFlyktningstatusBrev = brev as unknown as BrevResponse;
 
 describe("attestering", () => {
   beforeEach(() => {
     cy.setupSakStubs();
+    cy.viewport(1200, 1400);
+  });
 
+  it("sender et brev til attestering", () => {
+    cy.fixture("helloWorldPdf.txt").then((pdf) => {
+      cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/pdf", pdf).as("pdf");
+    });
+
+    cy.intercept("GET", "/bff/internal/userInfo", (req) =>
+      req.reply({ id: "Z990297", navn: "F_Z990297 E_Z990297", rolle: "Saksbehandler" }),
+    ).as("userInfo");
+
+    const brevEtterLagringAvSignatur = nyBrevResponse({
+      ...bekreftelsePåFlyktningstatusBrev,
+      redigertBrev: nyRedigertBrev({
+        ...bekreftelsePåFlyktningstatusBrev.redigertBrev,
+        signatur: nySignatur({
+          ...bekreftelsePåFlyktningstatusBrev.redigertBrev.signatur,
+          saksbehandlerNavn: "Dette er en signatur",
+        }),
+      }),
+    });
+
+    const brevEtterOppdateringAvTekst: BrevResponse = {
+      ...brevEtterLagringAvSignatur,
+      redigertBrev: nyRedigertBrev({
+        ...brevEtterLagringAvSignatur.redigertBrev,
+        signatur: brevEtterLagringAvSignatur.redigertBrev.signatur,
+        blocks: [
+          ...brevEtterLagringAvSignatur.redigertBrev.blocks,
+          nyParagraphBlock({ content: [nyLiteral({ editedText: "Dette er en ny tekstblokk", text: "" })] }),
+        ],
+      }),
+    };
+
+    const brevEtterLås: BrevResponse = {
+      ...brevEtterLagringAvSignatur,
+      info: nyBrevInfo({ ...brevEtterLagringAvSignatur.info, status: { type: "Klar" } }),
+    };
+
+    //brevvelger
+    cy.intercept(
+      "GET",
+      "/bff/skribenten-backend/brevmal/PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS/modelSpecification",
+      (req) => req.reply({ types: {}, letterModelTypeName: null }),
+    );
+
+    let hentAlleSakBrevKallNr = 0;
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (req) => {
+      //1 fordi ved klikking av det valgte brevet man skal opprette blir det gjort et nytt kall for å hente alle brev på saken
+      if (hentAlleSakBrevKallNr <= 1) {
+        hentAlleSakBrevKallNr++;
+        req.reply([]);
+      } else if (hentAlleSakBrevKallNr === 2) {
+        hentAlleSakBrevKallNr++;
+        req.reply([bekreftelsePåFlyktningstatusBrev.info]);
+      } else {
+        hentAlleSakBrevKallNr++;
+        req.reply([brevEtterLås.info]);
+      }
+    }).as("alleBrevPåSak");
+
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev", (req) => {
+      expect(req.body).to.deep.equal({
+        brevkode: "PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS",
+        spraak: "NB",
+        avsenderEnhetsId: "",
+        saksbehandlerValg: {},
+        mottaker: null,
+        vedtaksId: null,
+      });
+      return req.reply(bekreftelsePåFlyktningstatusBrev);
+    }).as("opprettBrev");
+
+    cy.visit("/saksnummer/123456/brevvelger?vedtakId=9876");
+
+    cy.contains("Innhente opplysninger").click();
+    cy.contains("Bekreftelse på flyktningstatus").click();
+    cy.get("@alleBrevPåSak.all").should("have.length", 1);
+    cy.contains("Åpne brev").click();
+
+    //brev redigering
+    cy.intercept("GET", "/bff/skribenten-backend/brev/1/reservasjon", {
+      fixture: "brevreservasjon.json",
+    }).as("reservasjon");
+
+    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
+      expect(req.body).to.deep.equal({});
+      req.reply(bekreftelsePåFlyktningstatusBrev);
+    }).as("saksbehandlerValg");
+
+    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/signatur", (req) => {
+      expect(req.body).to.deep.equal("Dette er en signatur");
+      req.reply(brevEtterLagringAvSignatur);
+    }).as("signatur");
+
+    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", (req) => {
+      req.reply(brevEtterOppdateringAvTekst);
+    }).as("oppdaterBrevtekst");
+
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1", (req) =>
+      req.reply(brevEtterOppdateringAvTekst),
+    ).as("lagreBrev");
+
+    cy.url().should("contain", "/saksnummer/123456/brev/1");
+    cy.get("@saksbehandlerValg.all").should("have.length", 0);
+    cy.get("@signatur.all").should("have.length", 0);
+    cy.contains("Signatur").click().type("{selectall}{backspace}Dette er en signatur");
+    cy.wait("@signatur");
+    cy.get("@saksbehandlerValg.all").should("have.length", 1);
+    cy.get("@signatur.all").should("have.length", 1);
+    cy.get("p:contains('Dette er en signatur')").should("exist");
+
+    cy.contains("ankomst til Norge.").focus().type("{end}{enter}Dette er en ny tekstblokk");
+    cy.wait("@oppdaterBrevtekst");
+    cy.contains("Dette er en ny tekstblokk").should("exist");
+    cy.get("@lagreBrev.all").should("have.length", 0);
+    cy.contains("Fortsett").click();
+    cy.wait("@lagreBrev");
+    cy.get("@lagreBrev.all").should("have.length", 1);
+
+    //brevbehandler
+    cy.intercept("PATCH", "/bff/skribenten-backend/sak/123456/brev/1", (req) => {
+      expect(req.body).to.deep.equal({ saksId: "123456", brevId: 1, laastForRedigering: true });
+      req.reply(brevEtterLås);
+    }).as("låsBrev");
+
+    cy.contains("Brevet er klart for attestering").click();
+    cy.wait("@låsBrev");
+    cy.contains("Ferdigstill 1 brev").click();
+    cy.contains("Vil du ferdigstille, og sende disse brevene?").should("exist");
+    cy.contains("Vedtaksbrev vil bli ferdigstilt, men sendes ikke før saken er attestert.").should("exist");
+    cy.contains("Bekreftelse på flyktningstatus").should("exist");
+    cy.get(`[data-cy="ferdigstillbrev-valgte-brev-til-attestering"] input[type="checkbox"][value="1"]`).should(
+      "be.checked",
+    );
+    cy.contains("Ja, send valgte brev").click();
+
+    //Kvittering
+    cy.url().should("contain", "/saksnummer/123456/kvittering");
+    cy.contains("Klar til attestering").should("exist");
+    cy.contains("Bekreftelse på flyktningstatus").click();
+    cy.contains("Mottaker").should("exist");
+    cy.contains("Tydelig Bakke").should("exist");
+    cy.contains("Distribueres via").should("exist");
+    cy.contains("Sentral print").should("exist");
+  });
+
+  it("kan attestere, forhåndsvise og sende brev", () => {
+    cy.visit("/saksnummer/123456/vedtak/1/redigering");
     cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
       fixture: "modelSpecification.json",
     }).as("modelSpecification");
 
-    cy.viewport(1200, 1400);
-    cy.visit("/saksnummer/123456/vedtak/1/redigering");
-  });
-
-  it("kan attestere, forhåndsvise og sende brev", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (req) => req.reply(defaultBrev)).as(
       "brev",
     );
