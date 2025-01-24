@@ -85,7 +85,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
 
     private fun LatexAppendable.signaturCommands(
         saksbehandlere: SignerendeSaksbehandlere?,
-        brevtype: LetterMetadata.Brevtype
+        brevtype: LetterMetadata.Brevtype,
     ) {
         if (saksbehandlere != null) {
             appendNewCmd("feltsaksbehandlernavn", saksbehandlere.saksbehandler)
@@ -93,7 +93,7 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
                 ?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
                 ?.also { appendNewCmd("feltattestantnavn", it) }
 
-            appendNewCmd("closingbehandlet"){
+            appendNewCmd("closingbehandlet") {
                 if (attestant != null) {
                     appendCmd("closingdoublesignature")
                 } else {
@@ -180,6 +180,13 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
         appendCmd("sluttvedlegg")
     }
 
+    fun LatexAppendable.renderIfNonEmptyText(content: List<Text>, render: LatexAppendable.(String) -> Unit) {
+        val text = String(StringBuilder().also { LatexAppendable(it).renderText(content) })
+        if (text.isNotEmpty()) {
+            render(text)
+        }
+    }
+
     //
     // Element rendering
     //
@@ -192,12 +199,13 @@ object LatexDocumentRenderer : DocumentRenderer<LatexDocument> {
     private fun LatexAppendable.renderBlock(block: LetterMarkup.Block): Unit =
         when (block) {
             is LetterMarkup.Block.Paragraph -> renderParagraph(block)
-            is LetterMarkup.Block.Title1 -> appendCmd("lettersectiontitleone") {
-                arg { renderText(block.content) }
+
+            is LetterMarkup.Block.Title1 -> renderIfNonEmptyText(block.content) { titleText ->
+                appendCmd("lettersectiontitleone", titleText)
             }
 
-            is LetterMarkup.Block.Title2 -> appendCmd("lettersectiontitletwo") {
-                arg { renderText(block.content) }
+            is LetterMarkup.Block.Title2 -> renderIfNonEmptyText(block.content) { titleText ->
+                appendCmd("lettersectiontitletwo", titleText)
             }
         }
 
