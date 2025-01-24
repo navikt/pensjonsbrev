@@ -24,7 +24,7 @@ class InformasjonOmSaksbehandlingstidPeTest {
 
     @Test
     fun `uten land og venter svar AFP`() {
-        writeAllLanguages("uten-land-og-venter-svar", data)
+        writeAllLanguages("uten-land-og-venter-svar", data.copy())
     }
 
     @Test
@@ -34,7 +34,7 @@ class InformasjonOmSaksbehandlingstidPeTest {
 
     @Test
     fun `med venter svar AFP`() {
-        writeAllLanguages("med-venter-svar", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(venterPaaSvarAFP = true)))
+        writeAllLanguages("med-venter-svar", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(venterPaaSvarAFP = false)))
     }
 
     private fun writeAllLanguages(testNavn: String, data: InformasjonOmSaksbehandlingstidPeDto) {
