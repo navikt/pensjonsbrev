@@ -30,8 +30,8 @@ data class TBU1121_Generated(
 			ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) {
 				textExpr (
 					Bokmal to " fra ".expr() + it.formatMonthYear(),
-					Nynorsk to " fra ".expr() + it.formatMonthYear() ,
-					English to " from ".expr() + it.formatMonthYear(),
+					Nynorsk to " frå ".expr() + it.formatMonthYear() ,
+					English to " starting ".expr() + it.formatMonthYear(),
 				)
 			}
 			text(

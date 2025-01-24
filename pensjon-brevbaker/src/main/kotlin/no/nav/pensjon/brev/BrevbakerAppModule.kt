@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.latex.LatexInvalidException
 import no.nav.pensjon.brev.latex.LatexTimeoutException
 import no.nav.pensjon.brev.maler.AllTemplates
 import no.nav.pensjon.brev.routing.brevRouting
+import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
 
 fun Application.brevbakerModule(
@@ -55,6 +56,7 @@ fun Application.brevbakerModule(
         }
         mdc("x_response_code") { it.response.status()?.value?.toString() }
         mdc("x_response_time") { it.processingTimeMillis(::getTimeMillis).toString() }
+        mdc("x_brevkode") { it.useBrevkodeFromCallContext() }
     }
 
     install(StatusPages) {
