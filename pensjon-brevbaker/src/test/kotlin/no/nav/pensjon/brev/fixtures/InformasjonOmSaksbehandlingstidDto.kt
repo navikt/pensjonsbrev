@@ -9,7 +9,6 @@ fun createInformasjonOmSaksbehandlingstidPeDto() =
         saksbehandlerValg = SaksbehandlerValg(
             soeknadMottattFraUtland = false,
             venterPaaSvarAFP = false,
-            forlengetSaksbehandling = false
         ),
         pesysData = EmptyBrevdata
     )
