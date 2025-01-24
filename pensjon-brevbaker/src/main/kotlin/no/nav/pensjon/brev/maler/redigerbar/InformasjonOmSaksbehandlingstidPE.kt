@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidPeDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidPeDtoSelectors.SaksbehandlerValgSelectors.forlengetSaksbehandling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidPeDtoSelectors.SaksbehandlerValgSelectors.soeknadMottattFraUtland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidPeDtoSelectors.SaksbehandlerValgSelectors.venterPaaSvarAFP
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidPeDtoSelectors.saksbehandlerValg
@@ -41,20 +40,12 @@ object InformasjonOmSaksbehandlingstidPE : RedigerbarTemplate<InformasjonOmSaksb
         )
     ) {
         title {
-            showIf(saksbehandlerValg.forlengetSaksbehandling) {
                 text(
                     Bokmal to "Informasjon om forlenget saksbehandlingstid",
                     Nynorsk to "Informasjon om forlenget saksbehandlingstid",
                     English to "Information about application processing delay",
                 )
-            } orShow {
-                text(
-                    Bokmal to "Informasjon om saksbehandlingstiden vår",
-                    Nynorsk to "Informasjon om saksbehandlingstida vår",
-                    English to "Information about application processing time",
-                )
             }
-        }
         outline {
             paragraph {
                 val mottattDato = fritekst("dato")
@@ -69,20 +60,6 @@ object InformasjonOmSaksbehandlingstidPE : RedigerbarTemplate<InformasjonOmSaksb
                                 " on " + mottattDato + "."
                     )
                 } orShow {
-                    showIf(saksbehandlerValg.forlengetSaksbehandling) {
-                        val aarsak = fritekst("årsak til forsinkelse")
-                        textExpr(
-                            Bokmal to "Vi har ".expr() + mottattDato + " mottatt din søknad om ".expr() + ytelse + ". "
-                                    + "Det vil dessverre ta oss lengre tid enn antatt å behandle kravet. "
-                                    + "Forsinkelsen skyldes ".expr() + aarsak + ".",
-                            Nynorsk to "Vi har ".expr() + mottattDato + " fått søknaden din om ".expr() + ytelse + ". "
-                                    + "Det vil dessverre ta oss lengre tid enn venta å behandle kravet. "
-                                    + "Forsinkinga skuldast ".expr() + aarsak + ".",
-                            English to "We have received your application for ".expr() + ytelse +
-                                    " on the ".expr() + mottattDato + ". " + "Due to delays in ".expr() +
-                                    aarsak + ", the processing of your case will take longer than we anticipated.".expr()
-                        )
-                    }.orShow {
                         textExpr(
                             Bokmal to "Vi har ".expr() + mottattDato + " mottatt søknaden din om " + ytelse + " fra folketrygden.",
                             Nynorsk to "Vi har ".expr() + mottattDato + " fått søknaden din om " + ytelse + " frå folketrygda.",
@@ -90,7 +67,6 @@ object InformasjonOmSaksbehandlingstidPE : RedigerbarTemplate<InformasjonOmSaksb
                         )
                     }
                 }
-            }
             showIf(saksbehandlerValg.venterPaaSvarAFP) {
                 paragraph {
                     val uttaksDato = fritekst("uttaksdato")
@@ -115,14 +91,6 @@ object InformasjonOmSaksbehandlingstidPE : RedigerbarTemplate<InformasjonOmSaksb
                     )
                 }
             }
-            showIf(saksbehandlerValg.forlengetSaksbehandling) {
-                title1 {
-                    text(
-                        Bokmal to "Ny svartid",
-                        Nynorsk to "Ny svartid",
-                        English to "New estimated date for completion",
-                    )
-                }
                 paragraph {
                     val frist = fritekst("frist")
                     textExpr(
@@ -130,8 +98,7 @@ object InformasjonOmSaksbehandlingstidPE : RedigerbarTemplate<InformasjonOmSaksb
                         Nynorsk to "Vi går ut frå at kravet ditt kan bli ferdigbehandla innan ".expr() + frist + ".",
                         English to "Without further delays, we assume the processing of your case to be completed within ".expr() + frist + "."
                     )
-                }
-            } orShow {
+            }
                 paragraph {
                     val svartid = fritekst("svartid")
                     textExpr(
@@ -147,7 +114,6 @@ object InformasjonOmSaksbehandlingstidPE : RedigerbarTemplate<InformasjonOmSaksb
                         English to "We will contact you if we need you to provide more information."
                     )
                 }
-            }
             includePhrase(Felles.MeldeFraEndringer)
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
