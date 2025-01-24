@@ -173,7 +173,8 @@ jobs:
         run: |
           npx percy upload pensjon-brevbaker/build/test_visual/ > percy.log
           cat percy.log
-          echo "Percy upload feilet" > percy-build-url
+          URL=$(cat percy.log | grep -e "build #[0-9]\+:" | sed 's/^.*build #[0-9]\+: //g')
+          if [[ $URL ]]; then echo $URL > percy-build-url;else echo "Percy upload feilet" > percy-build-url;fi
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
       - name: Comment percy review link
