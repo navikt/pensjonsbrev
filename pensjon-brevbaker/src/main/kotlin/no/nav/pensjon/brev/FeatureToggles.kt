@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev
 
-data class UnleashToggle(val name: String) {
+import no.nav.pensjon.brev.template.StableHash
+
+data class UnleashToggle(val name: String) : StableHash by StableHash.of("Toggle: $name") {
     fun isEnabled() = FeatureToggleHandler.isEnabled(this)
 }
 

@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.fixtures.*
 import no.nav.pensjon.brev.fixtures.alder.createInfoAlderspensjonOvergang67AarAutoDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createOrienteringOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
+import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
 import no.nav.pensjon.brevbaker.api.model.*
 import java.time.LocalDate
@@ -87,6 +88,7 @@ object Fixtures {
             UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T
             VarselSaksbehandlingstidAutoDto::class -> createVarselSaksbehandlingstidAutoDto() as T
             EndretUforetrygdPGAOpptjeningLegacyDto::class -> createEndretUforetrygdPGAOpptjeningLegacyDto() as T
+            EksempelRedigerbartDto::class -> createEksempelbrevRedigerbartDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
