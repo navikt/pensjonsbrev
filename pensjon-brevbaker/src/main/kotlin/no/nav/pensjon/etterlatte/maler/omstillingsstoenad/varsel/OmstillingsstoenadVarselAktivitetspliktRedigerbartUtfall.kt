@@ -41,17 +41,15 @@ object OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfall :
                 )
             }
             outline {
-
-                // Hvis 12 mnd varsel
                 showIf(er12MndVarsel) {
                     paragraph {
                         text(
                             Bokmal to
-                                    "Vi viser til vedtak om innvilgelse av omstillingsstønad av <dato vedtaksbrev>.",
+                                    "Vi viser til informasjonsbrev av <dato infobrev er sendt>.",
                             Nynorsk to
-                                    "Vi viser til vedtaket om innvilging av omstillingsstønad av <dato vedtaksbrev>.",
+                                    "Vi viser til informasjonsbrevet av <dato infobrev er sendt>.",
                             English to
-                                    "We refer to the decision to grant adjustment allowance, dated <dato vedtaksbrev>."
+                                    "We refer to the information letter, dated <dato infobrev er sendt>."
                         )
                     }
                     paragraph {
@@ -75,7 +73,7 @@ object OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfall :
                     }
 
                 }
-                // Hvis 6 mnd og oppover varsel
+                // Hvis 6 mnd varsel
                 .orShow {
                     paragraph {
                         text(
@@ -128,6 +126,7 @@ object OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfall :
                         English to "This follows from Sections 17-7 and 21-3 of the National Insurance Act.",
                     )
                 }
+
                 title2 {
                     text(
                         Bokmal to "Omstillingsstønaden stanses ved manglende aktivitet",
@@ -135,35 +134,71 @@ object OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfall :
                         English to "The adjustment allowance will be terminated if the activity requirement is not met",
                     )
                 }
-                paragraph {
-                    text(
-                        Bokmal to
-                                "Vi har ikke fått opplysninger som tilsier at du er i minst 50 prosent aktivitet eller " +
-                                "at du har grunn til å være unntatt fra aktivitetsplikten. I søknaden din om omstillingsstønad opplyste du at <sett inn forklaring>.",
-                        Nynorsk to
-                                "Vi har ikkje fått opplysningar som tilseier at du er i minst 50 prosent aktivitet, " +
-                                "eller at du har rett på fritak frå aktivitetsplikta. I søknaden din om omstillingsstønad opplyste du at <sett inn forklaring>.",
-                        English to
-                                "We have not received any information to indicate that you are participating in work or " +
-                                "an activity at a level equivalent to at least 50 percent of full-time work, nor have we " +
-                                "received any information to indicate that you are exempt from the activity requirement. In your application for adjustment allowance, you stated that <sett inn forklaring>.",
-                    )
+
+                showIf(er12MndVarsel) {
+                    paragraph {
+                        text(
+                            Bokmal to
+                                    "Vi har ikke fått opplysninger som tilsier at du er i opp mot 100 prosent aktivitet eller " +
+                                    "at du har grunn til å være unntatt fra aktivitetsplikten. Du har tidligere opplyst at <SETT INN FORKLARING>.",
+                            Nynorsk to
+                                    "Vi har ikkje fått opplysningar som tilseier at du er i opp mot 100 prosent aktivitet, " +
+                                    "eller at du har rett på fritak frå aktivitetsplikta. Du har tidlegare opplyst at <SETT INN FORKLARING>.",
+                            English to
+                                    "We have not received any information to indicate that you are participating in work or an activity " +
+                                    "at a level equivalent up to 100 percent, nor have we received any information to indicate that you " +
+                                    "are exempt from the activity requirement. You have previously stated that <SETT INN FORKLARING>.",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to
+                                    "Hvis du ikke dokumenterer opp mot 100 prosent aktivitet eller grunn til unntak fra aktivitet " +
+                                    "som nevnt i informasjonsbrevet innen tre uker fra datoen på dette brevet, vil utbetaling av " +
+                                    "omstillingsstønad stanse fra <DATO>.",
+                            Nynorsk to
+                                    "Viss du ikkje dokumenterer opp mot 100 prosent aktivitet eller grunn til unntak frå aktivitet" +
+                                    " som nemnt i informasjonsbrevet innan tre veker frå datoen på dette brevet, vil utbetalinga av" +
+                                    " omstillingsstønad stanse frå <DATO>.",
+                            English to "If you do not submit documentation of participating in an activity equivalent to 100 percent," +
+                                    " or reasons for being exempt from the activity requirement as mentioned in the information letter, " +
+                                    "within three weeks from the date of this letter, the adjustment allowance payments will be terminated from <DATO>."
+                        )
+                    }
+
                 }
-                paragraph {
-                    text(
-                        Bokmal to
-                                "Hvis du ikke dokumenterer minst 50 prosent aktivitet eller grunn til unntak fra aktivitet " +
-                                "som nevnt i informasjonsbrevet innen tre uker fra datoen på dette brevet, vil utbetaling av " +
-                                "omstillingsstønad stanse fra <dato>.",
-                        Nynorsk to
-                                "Viss du ikkje dokumenterer minst 50 prosent aktivitet eller grunn til unntak frå aktivitet " +
-                                "som nemnt i informasjonsbrevet, innan tre veker frå datoen på dette brevet, vil utbetalinga " +
-                                "av omstillingsstønad stanse frå <dato>.",
-                        English to "If you do not submit documentation of participating in an activity equivalent to " +
-                                "50 percent of full time, or reasons for being exempt from the activity requirement as mentioned " +
-                                "in the information letter, within three weeks from the date of this letter, the adjustment allowance " +
-                                "payments will be terminated from <dato>."
-                    )
+                // Hvis 6 mnd varsel
+                .orShow {
+                    paragraph {
+                        text(
+                            Bokmal to
+                                    "Vi har ikke fått opplysninger som tilsier at du er i minst 50 prosent aktivitet eller " +
+                                    "at du har grunn til å være unntatt fra aktivitetsplikten. I søknaden din om omstillingsstønad opplyste du at <sett inn forklaring>.",
+                            Nynorsk to
+                                    "Vi har ikkje fått opplysningar som tilseier at du er i minst 50 prosent aktivitet, " +
+                                    "eller at du har rett på fritak frå aktivitetsplikta. I søknaden din om omstillingsstønad opplyste du at <sett inn forklaring>.",
+                            English to
+                                    "We have not received any information to indicate that you are participating in work or " +
+                                    "an activity at a level equivalent to at least 50 percent of full-time work, nor have we " +
+                                    "received any information to indicate that you are exempt from the activity requirement. In your application for adjustment allowance, you stated that <sett inn forklaring>.",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to
+                                    "Hvis du ikke dokumenterer minst 50 prosent aktivitet eller grunn til unntak fra aktivitet " +
+                                    "som nevnt i informasjonsbrevet innen tre uker fra datoen på dette brevet, vil utbetaling av " +
+                                    "omstillingsstønad stanse fra <dato>.",
+                            Nynorsk to
+                                    "Viss du ikkje dokumenterer minst 50 prosent aktivitet eller grunn til unntak frå aktivitet " +
+                                    "som nemnt i informasjonsbrevet, innan tre veker frå datoen på dette brevet, vil utbetalinga " +
+                                    "av omstillingsstønad stanse frå <dato>.",
+                            English to "If you do not submit documentation of participating in an activity equivalent to " +
+                                    "50 percent of full time, or reasons for being exempt from the activity requirement as mentioned " +
+                                    "in the information letter, within three weeks from the date of this letter, the adjustment allowance " +
+                                    "payments will be terminated from <dato>."
+                        )
+                    }
                 }
             }
         }
