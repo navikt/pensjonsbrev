@@ -4,6 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidUtDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidUtDtoSelectors.SaksbehandlerValgSelectors.forlengetSaksbehandling
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidUtDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -37,11 +39,19 @@ object InformasjonOmSaksbehandlingstidUT : RedigerbarTemplate<InformasjonOmSaksb
         )
     ) {
         title {
-            text(
-                Bokmal to "Informasjon om saksbehandlingstiden vår",
-                Nynorsk to "Informasjon om saksbehandlingstida vår",
-                English to "Information about application processing time",
-            )
+            showIf(saksbehandlerValg.forlengetSaksbehandling) {
+                text(
+                    Bokmal to "Informasjon om forlenget saksbehandlingstid",
+                    Nynorsk to "Informasjon om forlenget saksbehandlingstid",
+                    English to "Information about application processing delay",
+                )
+            }.orShow {
+                text(
+                    Bokmal to "Informasjon om saksbehandlingstiden vår",
+                    Nynorsk to "Informasjon om saksbehandlingstida vår",
+                    English to "Information about our application processing time",
+                )
+            }
         }
 
         outline {
