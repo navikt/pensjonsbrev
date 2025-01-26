@@ -16,31 +16,22 @@ class InformasjonOmSaksbehandlingstidUtTest {
 
     private val data = InformasjonOmSaksbehandlingstidUtDto(
         saksbehandlerValg = InformasjonOmSaksbehandlingstidUtDto.SaksbehandlerValg(
-            soeknadMottattFraUtland = false,
-            venterPaaSvarAFP = false,
+            forlengetSaksbehandling = false
         ),
         pesysData = EmptyBrevdata
     )
 
     @Test
-    fun `uten land og venter svar AFP`() {
-        writeAllLanguages("uten-land-og-venter-svar", data)
+    fun `uten forlengetSaksbehandling`() {
+        writeAllLanguages("uten-forlenget-saksbehandlingstid", data)
     }
 
     @Test
-    fun `med land`() {
-        writeAllLanguages("med-land", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(soeknadMottattFraUtland = true)))
+    fun `med forlengetSaksbehandling`() {
+        writeAllLanguages("med-forlengset-saksbehandlingstid", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(forlengetSaksbehandling = true)))
     }
 
-    @Test
-    fun `med venter svar AFP`() {
-        writeAllLanguages(
-            "med-venter-svar",
-            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(venterPaaSvarAFP = true))
-        )
-    }
-
-    private fun writeAllLanguages(testNavn: String, data: InformasjonOmSaksbehandlingstidDto) {
+    private fun writeAllLanguages(testNavn: String, data: InformasjonOmSaksbehandlingstidUtDto) {
         listOf(BOKMAL, NYNORSK, ENGLISH).forEach { lang ->
             Letter(
                 InformasjonOmSaksbehandlingstid.template,
