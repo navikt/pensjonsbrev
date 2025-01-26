@@ -55,7 +55,7 @@ object InformasjonOmSaksbehandlingstidPE : RedigerbarTemplate<InformasjonOmSaksb
                     val annetLand = fritekst("land")
                     textExpr(
                         Bokmal to "Vi har ".expr() + mottattDato + " mottatt søknaden din om " + ytelse + " fra trygdemyndighetene i " + annetLand + ".",
-                        Nynorsk to "Vi har ".expr() + mottattDato + " fått søknaden din om " + ytelse + " fra trygdeorgana i " + annetLand + ".",
+                        Nynorsk to "Vi har ".expr() + mottattDato + " fått søknaden din om " + ytelse + " frå trygdeorgana i " + annetLand + ".",
                         English to "We received your application for ".expr() + ytelse + " from the National Insurance authorities in " + annetLand +
                                 " on " + mottattDato + "."
                     )
