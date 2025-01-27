@@ -1,10 +1,10 @@
-package no.nav.pensjon.brev.pdfbygger
+package no.nav.pensjon.brev.pdfbygger.latex
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
@@ -16,39 +16,18 @@ import kotlin.time.Duration.Companion.milliseconds
 
 private const val COMPILATION_RUNS = 2
 
-class LaTeXService(
+class LatexCompileService(
     latexCommand: String,
-    latexParallelism: Int,
     private val compileTimeout: Duration,
-    private val queueWaitTimeout: Duration,
-    private val tmpBaseDir: Path? =  Path.of("/app/tmp")
+    private val tmpBaseDir: Path? = Path.of("/app/tmp")
 ) {
+
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val decoder = Base64.getDecoder()
     private val encoder = Base64.getEncoder()
     private val latexCommand = latexCommand.split(" ").filter { it.isNotBlank() } + "letter.tex"
-    private val parallelismSemaphore = latexParallelism.takeIf { it > 0 }?.let { Semaphore(it) }
 
-    suspend fun producePDF(latexFiles: Map<String, String>): PDFCompilationResponse {
-        return if (parallelismSemaphore != null) {
-            val permit = withTimeoutOrNull(queueWaitTimeout) {
-                parallelismSemaphore.acquire()
-            }
-            if (permit != null) {
-                try {
-                    createLetter(latexFiles)
-                } finally {
-                    parallelismSemaphore.release()
-                }
-            } else {
-                PDFCompilationResponse.Failure.QueueTimeout(reason = "Compilation queue wait timed out: waited for $queueWaitTimeout")
-            }
-        } else {
-            createLetter(latexFiles)
-        }
-    }
-
-    private suspend fun createLetter(latexFiles: Map<String, String>): PDFCompilationResponse {
+    suspend fun createLetter(latexFiles: Map<String, String>): PDFCompilationResponse {
         val tmpDir = createTempDirectory(tmpBaseDir)
 
         return try {
@@ -66,7 +45,11 @@ class LaTeXService(
                         .let { PDFCompilationResponse.Base64PDF(it) }
 
                 is Execution.Failure.Compilation ->
-                    PDFCompilationResponse.Failure.Client(reason = "PDF compilation failed", output = result.output, error = result.error)
+                    PDFCompilationResponse.Failure.Client(
+                        reason = "PDF compilation failed",
+                        output = result.output,
+                        error = result.error
+                    )
 
                 is Execution.Failure.Execution -> {
                     logger.error("latexCommand failed", result.cause)
@@ -122,7 +105,10 @@ class LaTeXService(
                 if (process.exitValue() == 0) {
                     Execution.Success(pdf = workingDir.resolve("${File(texFilename).nameWithoutExtension}.pdf"))
                 } else {
-                    Execution.Failure.Compilation(output = output.toFile().readText(), error = error.toFile().readText())
+                    Execution.Failure.Compilation(
+                        output = output.toFile().readText(),
+                        error = error.toFile().readText()
+                    )
                 }
             } catch (e: IOException) {
                 Execution.Failure.Execution(e)

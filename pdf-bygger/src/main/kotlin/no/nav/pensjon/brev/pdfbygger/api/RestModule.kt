@@ -31,22 +31,20 @@ import io.ktor.util.date.getTimeMillis
 import io.micrometer.core.instrument.Tag
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
-import no.nav.pensjon.brev.pdfbygger.LaTeXService
+import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brev.pdfbygger.PdfCompilationInput
 import no.nav.pensjon.brev.pdfbygger.getProperty
-import java.nio.file.Path
+import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-fun Application.restModule() = {
+fun Application.restModule(latexCompileService: LatexCompileService) = {
     val parallelism = getProperty("pdfBygger.latex.latexParallelism")?.toInt() ?: Runtime.getRuntime().availableProcessors()
-    val laTeXService = LaTeXService(
-        compileTimeout = getProperty("pdfBygger.latex.compileTimeout")?.let { Duration.parse(it) } ?: 300.seconds,
+    val blockingLatexService = BlockingLatexService(
         queueWaitTimeout = getProperty("pdfBygger.latex.compileQueueWaitTimeout")?.let { Duration.parse(it) } ?: 4.seconds,
         latexParallelism = parallelism,
-        latexCommand = getProperty("pdfBygger.latex.latexCommand") ?: "xelatex --interaction=nonstopmode -halt-on-error",
-        tmpBaseDir = Path.of(environment.config.property("pdfBygger.latex.compileTmpDir").getString()),
+        latexCompileService = latexCompileService,
     )
 
     log.info("Target parallelism : $parallelism")
@@ -110,7 +108,7 @@ fun Application.restModule() = {
 
             val input = call.receive<PdfCompilationInput>()
             val result = activityCounter.count {
-                laTeXService.producePDF(input.files)
+                blockingLatexService.producePDF(input.files)
             }
 
             when (result) {
