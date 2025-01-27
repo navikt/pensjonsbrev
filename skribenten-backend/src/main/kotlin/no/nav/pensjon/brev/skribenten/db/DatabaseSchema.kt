@@ -27,12 +27,10 @@ import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.dao.id.IdTable
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SchemaUtils.withDataBaseLock
 import org.jetbrains.exposed.sql.javatime.date
 import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.json.json
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
-import org.jetbrains.exposed.sql.transactions.transaction
 import java.time.Instant
 import java.time.LocalDate
 import javax.sql.DataSource
@@ -169,8 +167,8 @@ fun initDatabase(config: Config) =
         initDatabase(createJdbcUrl(it), it.getString("username"), it.getString("password"))
     }
 
-fun initDatabase(jdbcUrl: String, username: String, password: String) {
-    val database = HikariDataSource(HikariConfig().apply {
+fun initDatabase(jdbcUrl: String, username: String, password: String) =
+    HikariDataSource(HikariConfig().apply {
         this.jdbcUrl = jdbcUrl
         this.username = username
         this.password = password
@@ -180,14 +178,6 @@ fun initDatabase(jdbcUrl: String, username: String, password: String) {
     })
         .also { konfigurerFlyway(it) }
         .let { Database.connect(it) }
-
-    transaction(database) {
-        withDataBaseLock {
-            SchemaUtils.createMissingTablesAndColumns(BrevredigeringTable, DocumentTable, Favourites, MottakerTable)
-
-        }
-    }
-}
 
 private fun konfigurerFlyway(dataSource: DataSource) = Flyway
     .configure()
