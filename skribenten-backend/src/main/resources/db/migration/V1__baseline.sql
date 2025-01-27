@@ -57,3 +57,8 @@ CREATE TABLE IF NOT EXISTS mottaker
     landkode           VARCHAR(2)  NULL,
     CONSTRAINT fk_mottaker_brevredigeringid__id FOREIGN KEY ("brevredigeringId") REFERENCES brevredigering (id) ON DELETE CASCADE ON UPDATE RESTRICT
 );
+
+CREATE TABLE IF NOT EXISTS busy
+(
+    busy BOOLEAN NOT NULL CONSTRAINT busy_busy_unique UNIQUE
+);
