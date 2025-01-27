@@ -42,8 +42,6 @@ const VedtakWrapper = () => {
     queryKey: getBrev.queryKey(Number.parseInt(brevId)),
     queryFn: () => getBrev.queryFn(saksId, Number.parseInt(brevId)),
     staleTime: Number.POSITIVE_INFINITY,
-    retry: (_, error: AxiosError) => error && error.response?.status !== 423 && error.response?.status !== 409,
-    throwOnError: (error: AxiosError) => error.response?.status !== 423 && error.response?.status !== 409,
   });
 
   return queryFold({
