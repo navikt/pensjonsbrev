@@ -284,11 +284,11 @@ function RedigerBrev({
     );
   };
 
-  // const reservasjonQuery = useQuery({
-  //   queryKey: getBrevReservasjon.querykey(brev.info.id),
-  //   queryFn: () => getBrevReservasjon.queryFn(brev.info.id),
-  //   refetchInterval: 10_000,
-  // });
+  const reservasjonQuery = useQuery({
+    queryKey: getBrevReservasjon.querykey(brev.info.id),
+    queryFn: () => getBrevReservasjon.queryFn(brev.info.id),
+    refetchInterval: 10_000,
+  });
 
   useEffect(() => {
     const timoutId = setTimeout(() => {
@@ -338,7 +338,7 @@ function RedigerBrev({
           ),
         )}
       >
-        {/* <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} /> */}
+        <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
         {vilTilbakestilleMal && (
           <TilbakestillMalModal
             brevId={brev.info.id}
