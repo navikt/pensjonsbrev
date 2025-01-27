@@ -1,4 +1,4 @@
 app-name: "pensjon-pdf-bygger-async"
 brevbaker-app: "pensjon-brevbaker"
 kafka-pool: "nav-dev"
-asyncWorker: str(true)
+minReplicas: 2

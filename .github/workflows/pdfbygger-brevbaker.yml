@@ -237,9 +237,9 @@ jobs:
         env:
           "ENVIRONMENT": "dev-gcp:pdf-bygger-async"
           "CLUSTER": "dev-gcp"
-          "RESOURCE": "pdf-bygger/.nais/nais.yaml,pdf-bygger/.nais/topic.yaml" #TODO create hpa for queue based scaling
+          "RESOURCE": "pdf-bygger/.nais/async/nais.yaml,pdf-bygger/.nais/async/topic.yaml" #TODO create hpa for queue based scaling
           "VAR": image=${{ needs.build-pdfbygger.outputs.image }}
-          "VARS": "pdf-bygger/.nais/dev-async.yaml"
+          "VARS": "pdf-bygger/.nais/async/dev.yaml"
   "deployBrevbakerToProduction":
     name: "Deploy brevbaker to production"
     permissions:

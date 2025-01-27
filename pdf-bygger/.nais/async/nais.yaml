@@ -6,6 +6,8 @@ metadata:
   labels:
     "team": "pensjonsbrev"
 spec:
+  kafka:
+    pool: {{kafka-pool}}
   image: {{image}}
   port: 8080
   terminationGracePeriodSeconds: 60
@@ -23,7 +25,9 @@ spec:
     initialDelay: 20
     timeout: 5
   replicas:
-    disableAutoScaling: true
+    min: {{ minReplicas }}
+    max: 20
+    cpuThresholdPercentage: 50
   prometheus:
     enabled: true
     path: "/metrics"
@@ -53,11 +57,7 @@ spec:
   env:
     - name: PDF_BYGGER_COMPILE_TIMEOUT
       value: "120s"
-    - name: PDF_BYGGER_LATEX_PARALLELISM
-      value: "4"
-    - name: PDF_BYGGER_COMPILE_QUEUE_WAIT_TIMEOUT
-      value: "1s"
     - name: PDF_BYGGER_COMPILE_TMP_DIR
       value: "/app/tmp"
     - name: PDF_BYGGER_IS_ASYNC
-      value: "false"
+      value: "true"
