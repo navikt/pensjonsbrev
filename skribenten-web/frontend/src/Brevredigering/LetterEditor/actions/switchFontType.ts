@@ -20,10 +20,8 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
     }
 
     const contentBeforeTheLiteralWeAreOn = block.content.slice(0, literalIndex.contentIndex);
-    const hasContentBeforeTheLiteralWeAreOn = contentBeforeTheLiteralWeAreOn.length > 0;
     const theContentWeAreOn = block.content[literalIndex.contentIndex];
     const contentAfterTheLiteralWeAreOn = block.content.slice(literalIndex.contentIndex + 1);
-    const hasContentAfterTheLiteralWeAreOn = contentAfterTheLiteralWeAreOn.length > 0;
 
     handleSwitchContent({
       content: theContentWeAreOn,
@@ -33,9 +31,7 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
           thisBlock: block,
           literalIndex: literalIndex,
           contentBeforeTheLiteralWeAreOn: contentBeforeTheLiteralWeAreOn,
-          hasContentBeforeTheLiteralWeAreOn: hasContentBeforeTheLiteralWeAreOn,
           contentAfterTheLiteralWeAreOn: contentAfterTheLiteralWeAreOn,
-          hasContentAfterTheLiteralWeAreOn: hasContentAfterTheLiteralWeAreOn,
           literal: literal,
           fonttype: fontType,
         }),
@@ -56,9 +52,7 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
               thisBlock: block,
               literalIndex: literalIndex,
               contentBeforeTheLiteralWeAreOn: contentBeforeTheLiteralWeAreOn,
-              hasContentBeforeTheLiteralWeAreOn: hasContentBeforeTheLiteralWeAreOn,
               contentAfterTheLiteralWeAreOn: contentAfterTheLiteralWeAreOn,
-              hasContentAfterTheLiteralWeAreOn: hasContentAfterTheLiteralWeAreOn,
               literal: literal,
               fonttype: fontType,
             }),
@@ -76,9 +70,7 @@ const switchFontTypeForLiteral = (args: {
   thisBlock: ParagraphBlock;
   literalIndex: LiteralIndex;
   contentBeforeTheLiteralWeAreOn: Content[];
-  hasContentBeforeTheLiteralWeAreOn: boolean;
   contentAfterTheLiteralWeAreOn: Content[];
-  hasContentAfterTheLiteralWeAreOn: boolean;
   literal: Draft<LiteralValue>;
   fonttype: FontType;
 }) => {
@@ -120,9 +112,7 @@ const switchFontTypeOfMarkedText = (args: {
   thisBlock: ParagraphBlock;
   literalIndex: LiteralIndex;
   contentBeforeTheLiteralWeAreOn: Content[];
-  hasContentBeforeTheLiteralWeAreOn: boolean;
   contentAfterTheLiteralWeAreOn: Content[];
-  hasContentAfterTheLiteralWeAreOn: boolean;
   literal: Draft<LiteralValue>;
   fonttype: FontType;
 }) => {
@@ -188,9 +178,7 @@ const switchFontTypeOfCurrentWord = (args: {
   thisBlock: ParagraphBlock;
   literalIndex: LiteralIndex;
   contentBeforeTheLiteralWeAreOn: Content[];
-  hasContentBeforeTheLiteralWeAreOn: boolean;
   contentAfterTheLiteralWeAreOn: Content[];
-  hasContentAfterTheLiteralWeAreOn: boolean;
   literal: Draft<LiteralValue>;
   fonttype: FontType;
 }) => {
