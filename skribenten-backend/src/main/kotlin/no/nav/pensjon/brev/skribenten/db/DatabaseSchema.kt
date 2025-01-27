@@ -183,6 +183,7 @@ private fun konfigurerFlyway(dataSource: DataSource) = Flyway
     .configure()
     .dataSource(dataSource)
     .baselineOnMigrate(true)
+    .validateMigrationNaming(true)
     .load()
     .migrate()
 
