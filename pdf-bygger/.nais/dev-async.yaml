@@ -2,3 +2,6 @@ app-name: "pensjon-pdf-bygger-async"
 brevbaker-app: "pensjon-brevbaker"
 minReplicas: 1 #TODO kan vi "scale from 0"? må lage egen hpa som sjekker kafka køen
 asyncWorker: str(true)
+define: &kafka_spec
+  kafka:
+    pool: nav-dev
