@@ -243,6 +243,22 @@ class LatexVisualITest {
     }
 
     @Test
+    fun `should not add extra line change when nearing end of line before shipping content to new line`() {
+
+        render {
+            paragraph { text(Bokmal to "Denne testen skal vise at det ikke fremstår en bug hvor det kommer ekstra linjeskift under innhold som tar opp hele bredden av linjen.") }
+            repeat(30) {
+                paragraph {
+                    text(
+                        Bokmal to "Denne linjen skal ikke ha større mellomrom til neste setning enn de andre. Dette er littegranne filler ˌˌˌˌˌˌ"
+                                + "ˌ".repeat(it)
+                    )
+                }
+            }
+        }
+    }
+
+    @Test
     fun `Table across multiple pages`() {
         render {
             paragraph {
