@@ -201,7 +201,7 @@ export function newTitle(args: {
 
 export function newParagraph(args: {
   id?: Nullable<number>;
-  parentId?: Nullable<number>
+  parentId?: Nullable<number>;
   content: Content[];
   deletedContent?: number[];
 }): ParagraphBlock {
@@ -217,7 +217,7 @@ export function newParagraph(args: {
 
 export function newLiteral(args: {
   id?: Nullable<number>;
-  parentId?: Nullable<number>
+  parentId?: Nullable<number>;
   text: string;
   editedText?: Nullable<string>;
   fontType?: Nullable<FontType>;
@@ -236,7 +236,12 @@ export function newLiteral(args: {
   };
 }
 
-export const newVariable = (args: { id?: Nullable<number>; text: string; parentId?: Nullable<number> ; fontType?: FontType }): VariableValue => {
+export const newVariable = (args: {
+  id?: Nullable<number>;
+  text: string;
+  parentId?: Nullable<number>;
+  fontType?: FontType;
+}): VariableValue => {
   return {
     type: VARIABLE,
     id: args.id ?? null,

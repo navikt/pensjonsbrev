@@ -67,7 +67,7 @@ describe("Switch font type ", () => {
         cy.contains("Er laget for").then((el) => {
           const element = el![0] as HTMLElement;
           const range = document.createRange();
-          const selection = window.getSelection()!;
+          const selection = globalThis.getSelection()!;
           range.setStart(element.firstChild!, 15);
           range.setEnd(element.firstChild!, 28);
           selection.addRange(range);
@@ -86,7 +86,7 @@ describe("Switch font type ", () => {
         cy.contains("teste piltast").then((el) => {
           const element = el![0] as HTMLElement;
           const range = document.createRange();
-          const selection = window.getSelection()!;
+          const selection = globalThis.getSelection()!;
           selection.removeAllRanges();
           range.setStart(element.firstChild!, 0);
           range.setEnd(element.firstChild!, 13);
@@ -115,7 +115,7 @@ describe("Switch font type ", () => {
         cy.contains("Er laget for").then((el) => {
           const element = el![0] as HTMLElement;
           const range = document.createRange();
-          const selection = window.getSelection()!;
+          const selection = globalThis.getSelection()!;
           selection.removeAllRanges();
           range.setStart(element.firstChild!, 15);
           range.setEnd(element.firstChild!, 28);
@@ -135,7 +135,7 @@ describe("Switch font type ", () => {
         cy.contains("teste piltast").then((el) => {
           const element = el![0] as HTMLElement;
           const range = document.createRange();
-          const selection = window.getSelection()!;
+          const selection = globalThis.getSelection()!;
           selection.removeAllRanges();
           range.setStart(element.firstChild!, 0);
           range.setEnd(element.firstChild!, 13);
@@ -164,7 +164,7 @@ describe("Switch font type ", () => {
         cy.contains("Er laget for").then((el) => {
           const element = el![0] as HTMLElement;
           const range = document.createRange();
-          const selection = window.getSelection()!;
+          const selection = globalThis.getSelection()!;
           selection.removeAllRanges();
           range.setStart(element.firstChild!, 15);
           range.setEnd(element.firstChild!, 28);
@@ -189,7 +189,7 @@ describe("Switch font type ", () => {
         cy.contains("teste piltast").then((el) => {
           const element = el![0] as HTMLElement;
           const range = document.createRange();
-          const selection = window.getSelection()!;
+          const selection = globalThis.getSelection()!;
           selection.removeAllRanges();
           range.setStart(element.firstChild!, 0);
           range.setEnd(element.firstChild!, 13);
@@ -312,7 +312,7 @@ describe("Switch font type ", () => {
   });
 
   describe("variables", () => {
-    it("plain/bold/", () => {
+    it("plain/bold/plain", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
       cy.get(".PARAGRAPH")
         .eq(0)
@@ -414,7 +414,7 @@ describe("Switch font type ", () => {
         .then((el) => {
           const element = el![0] as HTMLElement;
           const range = document.createRange();
-          const selection = window.getSelection()!;
+          const selection = globalThis.getSelection()!;
           selection.removeAllRanges();
           range.setStart(element.firstChild!, 5);
           range.setEnd(element.firstChild!, 10);

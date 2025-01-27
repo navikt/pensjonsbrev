@@ -15,12 +15,9 @@ const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontT
 
   return handleSwitchContent({
     content: theContentWeAreOn,
-    onLiteral: (literal) => {
-      return literal.editedFontType ?? literal.fontType;
-    },
-    onVariable: (variable) => {
-      return variable.fontType;
-    },
+    onLiteral: (literal) => literal.editedFontType ?? literal.fontType,
+    onVariable: (variable) => variable.fontType,
+    onNewLine: () => FontType.PLAIN,
     onItemList: (itemList) => {
       if (!isItemContentIndex(editorState.focus)) {
         return FontType.PLAIN;
@@ -29,12 +26,9 @@ const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontT
 
       return handleSwitchTextContent({
         content: item,
-        onLiteral: (literal) => {
-          return literal.editedFontType ?? literal.fontType;
-        },
-        onVariable: (variable) => {
-          return variable.fontType;
-        },
+        onLiteral: (literal) => literal.editedFontType ?? literal.fontType,
+        onVariable: (variable) => variable.fontType,
+        onNewLine: () => FontType.PLAIN,
       });
     },
   });

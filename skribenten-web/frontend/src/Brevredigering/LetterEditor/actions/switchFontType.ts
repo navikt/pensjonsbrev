@@ -41,6 +41,7 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
         }),
       onVariable: (variable) =>
         switchFontTypeForVariable({ draft, thisBlock: block, literalIndex, fonttype: fontType, variable }),
+      onNewLine: () => void 0,
       onItemList: (itemList) => {
         if (!isItemContentIndex(literalIndex)) {
           return;
@@ -63,6 +64,7 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
             }),
           onVariable: (variable) =>
             switchFontTypeForVariable({ draft, thisBlock: block, literalIndex, fonttype: fontType, variable }),
+          onNewLine: () => void 0,
         });
       },
     });
@@ -80,135 +82,14 @@ const switchFontTypeForLiteral = (args: {
   literal: Draft<LiteralValue>;
   fonttype: FontType;
 }) => {
-  const selection = window.getSelection();
+  const selection = globalThis.getSelection();
 
   const hasSelectionAndMarkedText = selection && (selection.toString?.()?.length ?? 0) > 0;
 
-  //TODO - koden i if-setningene kan flyttes til egne funksjoner
   if (hasSelectionAndMarkedText) {
-    const range = selection.getRangeAt(0);
-
-    const textBeforeTheSelection = (args.literal.editedText ?? args.literal.text).slice(0, range.startOffset);
-    const hasTextBeforeTheSelection = textBeforeTheSelection.length > 0;
-    const textInSelection = (args.literal.editedText ?? args.literal.text).slice(range.startOffset, range.endOffset);
-    const textAfterTheSelection = (args.literal.editedText ?? args.literal.text).slice(range.endOffset);
-    const hasTextAfterTheSelection = textAfterTheSelection.length > 0;
-
-    const changesTheWholeLiteral = textBeforeTheSelection.length === 0 && textAfterTheSelection.length === 0;
-
-    const newPreviousLiteral = newLiteral({
-      text: args.literal.text,
-      editedText: textBeforeTheSelection,
-      editedFontType: args.literal.editedFontType,
-    });
-    const newThisLiteral = newLiteral({
-      id: changesTheWholeLiteral ? args.literal.id : null,
-      text: args.literal.text,
-      editedText: changesTheWholeLiteral && args.literal.editedText === null ? null : textInSelection,
-      editedFontType: args.fonttype,
-      tags: changesTheWholeLiteral ? args.literal.tags : [],
-    });
-    const newNextLiteral = newLiteral({
-      text: args.literal.text,
-      editedText: textAfterTheSelection,
-      editedFontType: args.literal.editedFontType,
-    });
-
-    const newContent = [
-      ...(args.hasContentBeforeTheLiteralWeAreOn ? args.contentBeforeTheLiteralWeAreOn : []),
-      ...(hasTextBeforeTheSelection ? [newPreviousLiteral] : []),
-      newThisLiteral,
-      ...(hasTextAfterTheSelection ? [newNextLiteral] : []),
-      ...(args.hasContentAfterTheLiteralWeAreOn ? args.contentAfterTheLiteralWeAreOn : []),
-    ];
-
-    const result: ParagraphBlock = {
-      ...args.thisBlock,
-      content: newContent,
-      deletedContent: [...args.thisBlock.deletedContent, ...(args.literal.id ? [args.literal.id] : [])],
-    };
-
-    const newContentIndex = newContent.findIndex((c) => isEqual(c, newThisLiteral));
-
-    args.draft.focus = {
-      ...args.draft.focus,
-      blockIndex: args.literalIndex.blockIndex,
-      contentIndex: newContentIndex,
-      cursorPosition: newThisLiteral.editedText?.length ?? 0,
-    };
-    args.draft.redigertBrev.blocks[args.literalIndex.blockIndex] = result;
+    switchFontTypeOfMarkedText(args);
   } else {
-    const cursorPosition = getCursorOffset();
-
-    if (cursorPosition < 0) {
-      return;
-    }
-
-    const text = args.literal.editedText ?? args.literal.text;
-
-    const isWhiteSpace = text[cursorPosition] === " ";
-
-    if (isWhiteSpace) {
-      return;
-    }
-
-    let start = cursorPosition;
-    while (start > 0 && text[start - 1].trim() !== "") {
-      start--;
-    }
-
-    // Find the end of the word
-    let end = cursorPosition;
-    while (end < text.length && text[end].trim() !== "") {
-      end++;
-    }
-
-    const textBeforeTheWord = text.slice(0, start);
-    const hasTextBeforeTheWord = textBeforeTheWord.length > 0;
-    const theWord = text.slice(start, end);
-    const textAfterTheWord = text.slice(end);
-    const hasTextAfterTheWord = textAfterTheWord.length > 0;
-    const changesTheWholeLiteral = textBeforeTheWord.length === 0 && textAfterTheWord.length === 0;
-
-    const newPreviousLiteral = newLiteral({
-      text: args.literal.text,
-      editedText: textBeforeTheWord,
-      editedFontType: args.literal.editedFontType,
-    });
-    const newThisLiteral = newLiteral({
-      id: changesTheWholeLiteral ? args.literal.id : null,
-      text: args.literal.text,
-      editedText: changesTheWholeLiteral && args.literal.editedText === null ? null : theWord,
-      editedFontType: args.fonttype,
-    });
-    const newNextLiteral = newLiteral({
-      text: args.literal.text,
-      editedText: textAfterTheWord,
-      editedFontType: args.literal.editedFontType,
-    });
-
-    const newContent = [
-      ...(args.hasContentBeforeTheLiteralWeAreOn ? args.contentBeforeTheLiteralWeAreOn : []),
-      ...(hasTextBeforeTheWord ? [newPreviousLiteral] : []),
-      newThisLiteral,
-      ...(hasTextAfterTheWord ? [newNextLiteral] : []),
-      ...(args.hasContentAfterTheLiteralWeAreOn ? args.contentAfterTheLiteralWeAreOn : []),
-    ];
-
-    const result = {
-      ...args.thisBlock,
-      content: newContent,
-      deletedContent: [...args.thisBlock.deletedContent, ...(args.literal.id ? [args.literal.id] : [])],
-    };
-
-    const newContentIndex = newContent.findIndex((c) => isEqual(c, newThisLiteral));
-    args.draft.focus = {
-      ...args.draft.focus,
-      blockIndex: args.literalIndex.blockIndex,
-      contentIndex: newContentIndex,
-      cursorPosition: cursorPosition - start,
-    };
-    args.draft.redigertBrev.blocks[args.literalIndex.blockIndex] = result;
+    switchFontTypeOfCurrentWord(args);
   }
 };
 
@@ -232,4 +113,155 @@ const switchFontTypeForVariable = (args: {
   ];
 
   args.draft.redigertBrev.blocks[args.literalIndex.blockIndex].content = newContent;
+};
+
+const switchFontTypeOfMarkedText = (args: {
+  draft: Draft<LetterEditorState>;
+  thisBlock: ParagraphBlock;
+  literalIndex: LiteralIndex;
+  contentBeforeTheLiteralWeAreOn: Content[];
+  hasContentBeforeTheLiteralWeAreOn: boolean;
+  contentAfterTheLiteralWeAreOn: Content[];
+  hasContentAfterTheLiteralWeAreOn: boolean;
+  literal: Draft<LiteralValue>;
+  fonttype: FontType;
+}) => {
+  const selection = globalThis.getSelection()!;
+  const range = selection.getRangeAt(0);
+
+  const textBeforeTheSelection = (args.literal.editedText ?? args.literal.text).slice(0, range.startOffset);
+  const hasTextBeforeTheSelection = textBeforeTheSelection.length > 0;
+  const textInSelection = (args.literal.editedText ?? args.literal.text).slice(range.startOffset, range.endOffset);
+  const textAfterTheSelection = (args.literal.editedText ?? args.literal.text).slice(range.endOffset);
+  const hasTextAfterTheSelection = textAfterTheSelection.length > 0;
+
+  const changesTheWholeLiteral = textBeforeTheSelection.length === 0 && textAfterTheSelection.length === 0;
+
+  const newPreviousLiteral = newLiteral({
+    text: args.literal.text,
+    editedText: textBeforeTheSelection,
+    editedFontType: args.literal.editedFontType,
+  });
+  const newThisLiteral = newLiteral({
+    id: changesTheWholeLiteral ? args.literal.id : null,
+    text: args.literal.text,
+    editedText: changesTheWholeLiteral && args.literal.editedText === null ? null : textInSelection,
+    editedFontType: args.fonttype,
+    tags: changesTheWholeLiteral ? args.literal.tags : [],
+  });
+  const newNextLiteral = newLiteral({
+    text: args.literal.text,
+    editedText: textAfterTheSelection,
+    editedFontType: args.literal.editedFontType,
+  });
+
+  const newContent = [
+    ...args.contentBeforeTheLiteralWeAreOn,
+    ...(hasTextBeforeTheSelection ? [newPreviousLiteral] : []),
+    newThisLiteral,
+    ...(hasTextAfterTheSelection ? [newNextLiteral] : []),
+    ...args.contentAfterTheLiteralWeAreOn,
+  ];
+
+  const result: ParagraphBlock = {
+    ...args.thisBlock,
+    content: newContent,
+    deletedContent: [...args.thisBlock.deletedContent, ...(args.literal.id ? [args.literal.id] : [])],
+  };
+
+  const newContentIndex = newContent.findIndex((c) => isEqual(c, newThisLiteral));
+
+  args.draft.focus = {
+    ...args.draft.focus,
+    blockIndex: args.literalIndex.blockIndex,
+    contentIndex: newContentIndex,
+    cursorPosition: newThisLiteral.editedText?.length ?? 0,
+  };
+  args.draft.redigertBrev.blocks[args.literalIndex.blockIndex] = result;
+};
+
+/**
+ * Eksempel case er når dem har caret i midten av et ord, og vil bytte fonttypen på dette ordet.
+ */
+const switchFontTypeOfCurrentWord = (args: {
+  draft: Draft<LetterEditorState>;
+  thisBlock: ParagraphBlock;
+  literalIndex: LiteralIndex;
+  contentBeforeTheLiteralWeAreOn: Content[];
+  hasContentBeforeTheLiteralWeAreOn: boolean;
+  contentAfterTheLiteralWeAreOn: Content[];
+  hasContentAfterTheLiteralWeAreOn: boolean;
+  literal: Draft<LiteralValue>;
+  fonttype: FontType;
+}) => {
+  const cursorPosition = getCursorOffset();
+
+  if (cursorPosition < 0) {
+    return;
+  }
+
+  const text = args.literal.editedText ?? args.literal.text;
+
+  const isWhiteSpace = text[cursorPosition] === " ";
+
+  if (isWhiteSpace) {
+    return;
+  }
+
+  let wordStartPosition = cursorPosition;
+  while (wordStartPosition > 0 && text[wordStartPosition - 1].trim() !== "") {
+    wordStartPosition--;
+  }
+
+  let wordEndPosition = cursorPosition;
+  while (wordEndPosition < text.length && text[wordEndPosition].trim() !== "") {
+    wordEndPosition++;
+  }
+
+  const textBeforeTheWord = text.slice(0, wordStartPosition);
+  const hasTextBeforeTheWord = textBeforeTheWord.length > 0;
+  const theWord = text.slice(wordStartPosition, wordEndPosition);
+  const textAfterTheWord = text.slice(wordEndPosition);
+  const hasTextAfterTheWord = textAfterTheWord.length > 0;
+  const changesTheWholeLiteral = textBeforeTheWord.length === 0 && textAfterTheWord.length === 0;
+
+  const newPreviousLiteral = newLiteral({
+    text: args.literal.text,
+    editedText: textBeforeTheWord,
+    editedFontType: args.literal.editedFontType,
+  });
+  const newThisLiteral = newLiteral({
+    id: changesTheWholeLiteral ? args.literal.id : null,
+    text: args.literal.text,
+    editedText: changesTheWholeLiteral && args.literal.editedText === null ? null : theWord,
+    editedFontType: args.fonttype,
+  });
+  const newNextLiteral = newLiteral({
+    text: args.literal.text,
+    editedText: textAfterTheWord,
+    editedFontType: args.literal.editedFontType,
+  });
+
+  const newContent = [
+    ...args.contentBeforeTheLiteralWeAreOn,
+    ...(hasTextBeforeTheWord ? [newPreviousLiteral] : []),
+    newThisLiteral,
+    ...(hasTextAfterTheWord ? [newNextLiteral] : []),
+    ...args.contentAfterTheLiteralWeAreOn,
+  ];
+
+  const result = {
+    ...args.thisBlock,
+    content: newContent,
+    deletedContent: [...args.thisBlock.deletedContent, ...(args.literal.id ? [args.literal.id] : [])],
+  };
+
+  const newContentIndex = newContent.findIndex((c) => isEqual(c, newThisLiteral));
+  args.draft.focus = {
+    ...args.draft.focus,
+    blockIndex: args.literalIndex.blockIndex,
+    contentIndex: newContentIndex,
+    cursorPosition: cursorPosition - wordStartPosition,
+  };
+  args.draft.redigertBrev.blocks[args.literalIndex.blockIndex] = result;
 };
