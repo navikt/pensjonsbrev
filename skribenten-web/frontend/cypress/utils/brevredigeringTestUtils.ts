@@ -1,4 +1,3 @@
-import { newLiteral, newVariable } from "~/Brevredigering/LetterEditor/actions/common";
 import type {
   BrevInfo,
   BrevResponse,
@@ -9,26 +8,25 @@ import type {
   SaksbehandlerValg,
 } from "~/types/brev";
 import type {
+  AnyBlock,
   Content,
+  EditedLetter,
   Item,
   ItemList,
+  LiteralValue,
   ParagraphBlock,
+  Sakspart,
+  Signatur,
   TextContent,
   Title1Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import {
-  type AnyBlock,
-  type EditedLetter,
-  FontType,
-  type LiteralValue,
-  type Sakspart,
-  type Signatur,
-} from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
+import { newLiteral, newVariable } from "../../src/Brevredigering/LetterEditor/actions/common";
 import { SpraakKode } from "../../src/types/apiTypes";
 import { Distribusjonstype } from "../../src/types/brev";
+import { FontType } from "../../src/types/brevbakerTypes";
 
 export const nyBrevResponse = ({
   info = nyBrevInfo({}),
@@ -72,7 +70,11 @@ export const nyRedigertBrev = (args: {
         content: [
           newLiteral({ id: 1_507_865_607, parentId: 272_720_182, text: "We received your application for " }),
           newVariable({ id: -726_051_414, parentId: 272_720_182, text: "alderspensjon" }),
-          newLiteral({ id: -711_242_333, parentId: 272_720_182, text: " from the Norwegian National Insurance Scheme on " }),
+          newLiteral({
+            id: -711_242_333,
+            parentId: 272_720_182,
+            text: " from the Norwegian National Insurance Scheme on ",
+          }),
           newVariable({ id: -694_080_035, parentId: 272_720_182, text: "24 July 2024" }),
           newLiteral({ id: -1_114_690_237, parentId: 272_720_182, text: "." }),
         ],
@@ -84,7 +86,11 @@ export const nyRedigertBrev = (args: {
         parentId: null,
         editable: true,
         content: [
-          newLiteral({ id: -1_114_690_237, parentId: 822_540_105, text: "Our processing time for this type of application is usually " }),
+          newLiteral({
+            id: -1_114_690_237,
+            parentId: 822_540_105,
+            text: "Our processing time for this type of application is usually ",
+          }),
           newVariable({ id: 1_834_595_758, parentId: 822_540_105, text: "10" }),
           newLiteral({ id: 1_838_606_639, parentId: 822_540_105, text: " weeks." }),
         ],

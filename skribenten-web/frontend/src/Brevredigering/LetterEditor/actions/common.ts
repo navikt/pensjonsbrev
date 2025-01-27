@@ -1,8 +1,5 @@
 import type { Draft } from "immer";
 
-import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
-import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
-import { isFritekst, isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
 import type { BrevResponse } from "~/types/brev";
 import type {
   Content,
@@ -20,10 +17,12 @@ import type {
   Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { FontType, PARAGRAPH } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
+import { MergeTarget } from "../../../Brevredigering/LetterEditor/actions/merge";
+import { updateLiteralText } from "../../../Brevredigering/LetterEditor/actions/updateContentText";
+import { isFritekst, isLiteral } from "../../../Brevredigering/LetterEditor/model/utils";
+import { FontType, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, VARIABLE } from "../../../types/brevbakerTypes";
 import type { LetterEditorState } from "../model/state";
 
 export function cleanseText(text: string): string {
