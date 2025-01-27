@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelVersion: String by project
@@ -16,7 +17,7 @@ val flywayVersion: String by project
 plugins {
     application
     kotlin("jvm")
-    id("io.ktor.plugin")
+    id("com.gradleup.shadow")
 }
 
 group = "no.nav.pensjon.brev.skribenten"
@@ -25,8 +26,13 @@ application {
     mainClass.set("no.nav.pensjon.brev.skribenten.SkribentenAppKt")
 }
 
-ktor {
-    fatJar {
+tasks {
+    named<ShadowJar>("shadowJar") {
+        /* Lager en FatJar. Dette er en workaround for å få med plugin-konfig som Flyway trenger,
+        henta fra https://stackoverflow.com/a/77237118
+        Om du endrer denne til FatJar, start først appen i en container og se at databasemigreringa fortsatt fungerer
+         */
+        mergeServiceFiles()
         archiveFileName.set("app.jar")
     }
 }
@@ -86,6 +92,7 @@ dependencies {
 
 
     // Databasemigrering
+    implementation("org.flywaydb:flyway-core:$flywayVersion")
     implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
 
     // Unleash
