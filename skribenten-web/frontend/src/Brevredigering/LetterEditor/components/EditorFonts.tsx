@@ -93,9 +93,11 @@ const FontButton = (props: {
         color: var(--a-text-default);
         width: 32px;
         height: 32px;
+
         &:hover {
           color: var(--a-text-default);
         }
+
         /*
             TODO - style at knappen er aktiv etter ønsket design.
           */
