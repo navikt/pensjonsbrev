@@ -489,7 +489,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev().resultOrNull()!!
 
         awaitAll(*(0..<10).map {
-            async(Dispatchers.IO) {
+            async {
                 brevredigeringService.hentEllerOpprettPdf(
                     sak.saksId,
                     brev.info.id
@@ -644,7 +644,7 @@ class BrevredigeringServiceTest {
                 distribusjonstype = Distribusjonstype.SENTRALPRINT
             )
             brevredigeringService.hentEllerOpprettPdf(sak.saksId, brev.info.id)!!
-            assertThrows<BrevredigeringException.HarIkkeAttestantrolleException> {
+            assertThrows<HarIkkeAttestantrolleException> {
                 brevredigeringService.attester(sak.saksId, brev.info.id)
             }
         }
