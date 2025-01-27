@@ -5,6 +5,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.*
+import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.metrics.micrometer.MicrometerMetrics
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.callid.CallId
@@ -46,6 +47,9 @@ fun main(args: Array<String>) = EngineMain.main(args)
 
 fun Application.getProperty(name: String): String? =
     environment.config.propertyOrNull(name)?.getString()
+
+fun ApplicationConfig.getProperty(name: String): String? =
+    propertyOrNull(name)?.getString()
 
 @Suppress("unused")
 fun Application.module() {

@@ -9,6 +9,25 @@ services:
     ports:
       - "8081:8080"
       - "5016:5006"
+  pdf-bygger-async:
+    profiles:
+      - async
+    build: ./pdf-bygger
+    environment:
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:5006 -Djdk.lang.Process.launchMechanism=vfork #used for Apple M1 compatability
+      - PDF_COMPILE_TIMEOUT_SECONDS=200
+      - PDF_BYGGER_COMPILE_TMP_DIR=/tmp
+      - PDF_BYGGER_IS_ASYNC=true
+      - KAFKA_KEYSTORE_PATH=/secrets/client.keystore.p12
+      - KAFKA_TRUSTSTORE_PATH=/secrets/client.truststore.jks
+    ports:
+      - "8085:8080"
+      - "5019:5006"
+    env_file:
+      - ./pdf-bygger/secrets/.env
+    volumes:
+      - ./pdf-bygger/secrets/client.keystore.p12:/secrets/client.keystore.p12
+      - ./pdf-bygger/secrets/client.truststore.jks:/secrets/client.truststore.jks
   pensjon-brevbaker:
     environment:
       - NAIS_APP_NAME=brevbaker

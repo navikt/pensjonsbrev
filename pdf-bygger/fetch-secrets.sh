@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
+isfile=true
 bold=$(tput bold)
 normal=$(tput sgr0)
 white="[97;1m"
 yellow="[33;1m"
 endcolor="[0m"
+rm secrets/.env
+mkdir secrets -p
+
 
 if [ "${BASH_VERSINFO:-0}" -lt 4 ]; then
     echo "Du har for gammel versjon av bash. Vennligst installer versjon 4 eller høyere"
@@ -74,7 +78,8 @@ function fetch_kubernetes_secret {
     local namespace=$2
     local secret=$3
     local path=$4
-    local name=$5
+    local writefile=$5
+    local name=$6
     local context_namespace_secrets_key
     local context_namespace_secrets_value
     local secret_name
@@ -85,7 +90,6 @@ function fetch_kubernetes_secret {
     if [ -v kubernetes_context_namespace_secrets["$context_namespace_secrets_key"] ]; then
         context_namespace_secrets_value=${kubernetes_context_namespace_secrets["$context_namespace_secrets_key"]}
     else
-        echo "kubectl --context="$context" -n "$namespace" get secrets"
         context_namespace_secrets_value=$(kubectl --context="$context" -n "$namespace" get secrets)
         kubernetes_context_namespace_secrets["$context_namespace_secrets_key"]=$context_namespace_secrets_value
     fi
@@ -95,14 +99,16 @@ function fetch_kubernetes_secret {
     if [ -v kubernetes_secret_array["$secret_name"] ]; then
         secret_response=${kubernetes_secret_array["$secret_name"]}
     else
-        echo "kubectl --context="$context" -n "$namespace" get secret "$secret_name" -o json"
         secret_response=$(kubectl --context="$context" -n "$namespace" get secret "$secret_name" -o json)
         kubernetes_secret_array["$secret_name"]=$secret_response
     fi
 
-    echo "$secret_response" | jq -j ".data[\"$name\"]" | base64 --decode > secrets/$env/$path/$name
-
-    echo -e "${bold}${white}✔${endcolor}${normal}"
+    if [ "$writefile" == true ]; then
+        echo "$secret_response" | jq -j ".data[\"$name\"]" | base64 --decode > secrets/$name
+    else
+        secret=$(echo "$secret_response" | jq -j ".data[\"$name\"]" | base64 --decode)
+        echo "$name=$secret" >> secrets/.env
+    fi
 }
 
 function fetch_kubernetes_secret_array {
@@ -111,31 +117,32 @@ function fetch_kubernetes_secret_array {
     local namespace=$3
     local secret=$4
     local path=$5
+    local writefile=$6
     local A=("$@")
 
-    echo -n -e "\t- $type \n"
+    echo -n -e "\t- $type"
 
-    mkdir -p "secrets/$env/$path"
 
-    for i in "${A[@]:5}"
+    for i in "${A[@]:6}"
     do
-        fetch_kubernetes_secret "$context" "$namespace" "$secret" "$path" "$i"
+        fetch_kubernetes_secret "$context" "$namespace" "$secret" "$path" "$writefile" "$i"
     done
 
 
     spinIndex=0
     spinStarted=false
-    echo -e "\b${bold}${white}✔${endcolor}${normal}"
+    echo -e "${bold}${white}✔${endcolor}${normal}"
 }
 
 echo -e "${bold}Henter secrets fra Kubernetes${normal}"
 
-fetch_kubernetes_secret_array "Kafka" "nais-dev" "pensjonsbrev" "aiven-pensjonsbrev-pdf-bygger" "kafka" \
+fetch_kubernetes_secret_array "Kafka" "nais-dev" "pensjonsbrev" "aiven-pensjon-pdf-bygger-async" "kafka" false \
     "KAFKA_BROKERS" \
     "KAFKA_CREDSTORE_PASSWORD" \
     "KAFKA_SCHEMA_REGISTRY" \
     "KAFKA_SCHEMA_REGISTRY_USER" \
     "KAFKA_SCHEMA_REGISTRY_PASSWORD"
 
-
-echo -e "\b${bold}${white}✔${endcolor}${normal}"
+fetch_kubernetes_secret_array "Kafka" "nais-dev" "pensjonsbrev" "aiven-pensjon-pdf-bygger-async" "kafka" true \
+  "client.truststore.jks"\
+  "client.keystore.p12"

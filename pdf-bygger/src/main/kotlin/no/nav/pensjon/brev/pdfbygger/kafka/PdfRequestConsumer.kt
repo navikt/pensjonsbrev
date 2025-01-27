@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Semaphore
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brev.pdfbygger.PdfCompilationInput
+import no.nav.pensjon.brev.pdfbygger.getProperty
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -15,16 +16,16 @@ import kotlin.time.toJavaDuration
 
 class PdfRequestConsumer(kafkaConfig: ApplicationConfig, private val latexCompileService: LatexCompileService) {
     val properties = mapOf(
-        "bootstrap.servers" to kafkaConfig.property("bootstrap.servers"),
-        "security.protocol" to kafkaConfig.property("security.protocol"),
-        "ssl.keystore.type" to kafkaConfig.property("ssl.keystore.type"),
-        "ssl.keystore.location" to kafkaConfig.property("ssl.keystore.location"),
-        "ssl.keystore.password" to kafkaConfig.property("ssl.keystore.password"),
-        "ssl.key.password" to kafkaConfig.property("ssl.key.password"),
-        "ssl.truststore.type" to kafkaConfig.property("ssl.truststore.type"),
-        "ssl.truststore.location" to kafkaConfig.property("ssl.truststore.location"),
-        "ssl.truststore.password" to kafkaConfig.property("ssl.truststore.password"),
-        "max.poll.records" to kafkaConfig.property("ssl.truststore.password"),
+        "bootstrap.servers" to kafkaConfig.getProperty("bootstrap.servers"),
+        "security.protocol" to kafkaConfig.getProperty("security.protocol"),
+        "ssl.keystore.type" to kafkaConfig.getProperty("ssl.keystore.type"),
+        "ssl.keystore.location" to kafkaConfig.getProperty("ssl.keystore.location"),
+        "ssl.keystore.password" to kafkaConfig.getProperty("ssl.keystore.password"),
+        "ssl.key.password" to kafkaConfig.getProperty("ssl.key.password"),
+        "ssl.truststore.type" to kafkaConfig.getProperty("ssl.truststore.type"),
+        "ssl.truststore.location" to kafkaConfig.getProperty("ssl.truststore.location"),
+        "ssl.truststore.password" to kafkaConfig.getProperty("ssl.truststore.password"),
+        "group.id" to "pdf-bygger-async",
     )
 
     private val consumer =
