@@ -22,19 +22,19 @@ CREATE TABLE IF NOT EXISTS brevredigering
     "journalpostId"          BIGINT      NULL,
     "attestertAvNavIdent"    VARCHAR(50) NULL
 );
-CREATE INDEX brevredigering_saksid ON brevredigering ("saksId");
-CREATE INDEX brevredigering_opprettetavnavident ON brevredigering ("opprettetAvNavIdent");
+CREATE INDEX IF NOT EXISTS brevredigering_saksid ON brevredigering ("saksId");
+CREATE INDEX IF NOT EXISTS brevredigering_opprettetavnavident ON brevredigering ("opprettetAvNavIdent");
+
 CREATE TABLE IF NOT EXISTS "Document"
 (
     id                 BIGSERIAL PRIMARY KEY,
-    brevredigering     BIGINT NOT NULL,
+    brevredigering     BIGINT NOT NULL CONSTRAINT document_brevredigering_unique UNIQUE,
     "dokumentDato"     DATE   NOT NULL,
     brevpdf            bytea  NOT NULL,
     "redigertBrevHash" bytea  NOT NULL,
     CONSTRAINT fk_document_brevredigering__id FOREIGN KEY (brevredigering) REFERENCES brevredigering (id) ON DELETE CASCADE ON UPDATE RESTRICT
 );
-ALTER TABLE "Document"
-    ADD CONSTRAINT document_brevredigering_unique UNIQUE (brevredigering);
+
 CREATE TABLE IF NOT EXISTS favourites
 (
     id            SERIAL,
@@ -42,9 +42,10 @@ CREATE TABLE IF NOT EXISTS favourites
     "Letter Code" VARCHAR(50) NOT NULL,
     CONSTRAINT PK_Favourite_ID PRIMARY KEY (id)
 );
+
 CREATE TABLE IF NOT EXISTS mottaker
 (
-    "brevredigeringId" BIGINT PRIMARY KEY,
+    "brevredigeringId" BIGINT PRIMARY KEY CONSTRAINT mottaker_brevredigeringid_unique UNIQUE,
     "type"             VARCHAR(50) NOT NULL,
     "tssId"            VARCHAR(50) NULL,
     navn               VARCHAR(50) NULL,
@@ -56,5 +57,3 @@ CREATE TABLE IF NOT EXISTS mottaker
     landkode           VARCHAR(2)  NULL,
     CONSTRAINT fk_mottaker_brevredigeringid__id FOREIGN KEY ("brevredigeringId") REFERENCES brevredigering (id) ON DELETE CASCADE ON UPDATE RESTRICT
 );
-ALTER TABLE mottaker
-    ADD CONSTRAINT mottaker_brevredigeringid_unique UNIQUE ("brevredigeringId");
