@@ -1,4 +1,3 @@
 app-name: "pensjon-pdf-bygger"
 brevbaker-app: "pensjon-brevbaker"
-minReplicas: 12
 asyncWorker: str(false)

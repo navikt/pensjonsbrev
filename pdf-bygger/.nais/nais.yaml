@@ -6,7 +6,8 @@ metadata:
   labels:
     "team": "pensjonsbrev"
 spec:
-  <<: *kafka_spec
+  kafka:
+    pool: {{kafka-pool}}
   image: {{image}}
   port: 8080
   terminationGracePeriodSeconds: 60
