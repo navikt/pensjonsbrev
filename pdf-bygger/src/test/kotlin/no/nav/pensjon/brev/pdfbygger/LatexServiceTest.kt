@@ -7,6 +7,7 @@ import kotlinx.coroutines.*
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse.Base64PDF
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse.Failure
 import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
+import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createTempFile
 import kotlin.io.path.deleteIfExists
@@ -67,11 +68,13 @@ class LatexServiceTest {
         try {
             runBlocking {
                 val service = BlockingLatexService(
-                    latexCommand = "/usr/bin/env bash ${getScriptPath("neverEndingCompileWithOutput.sh")} ${output.absolutePathString()}",
                     latexParallelism = 1,
-                    compileTimeout = 100.milliseconds,
                     queueWaitTimeout = 1.seconds,
-                    tmpBaseDir = null,
+                    latexCompileService = LatexCompileService(
+                        latexCommand = "/usr/bin/env bash ${getScriptPath("neverEndingCompileWithOutput.sh")} ${output.absolutePathString()}",
+                        compileTimeout = 100.milliseconds,
+                        tmpBaseDir = null,
+                    )
                 )
                 assertResult<Failure.Timeout>(service.producePDF(emptyMap()))
 
@@ -98,11 +101,13 @@ class LatexServiceTest {
     @Test
     fun `producePDF fails when command does not exist`() {
         val service = BlockingLatexService(
-            latexCommand = "_non_existing.sh",
             latexParallelism = 1,
-            compileTimeout = 60.seconds,
             queueWaitTimeout = 60.seconds,
-            tmpBaseDir = null,
+            latexCompileService = LatexCompileService(
+                latexCommand = "_non_existing.sh",
+                compileTimeout = 60.seconds,
+                tmpBaseDir = null,
+            )
         )
         runBlocking {
             assertResult<Failure.Server>(service.producePDF(emptyMap())) {
@@ -114,11 +119,13 @@ class LatexServiceTest {
     @Test
     fun `producePDF trims extra spaces in command`() {
         val service = BlockingLatexService(
-            latexCommand = "/usr/bin/env bash ${getScriptPath("simpleCompile.sh")}" + " ",
             latexParallelism = 1,
-            compileTimeout = 60.seconds,
             queueWaitTimeout = 60.seconds,
-            tmpBaseDir = null,
+            latexCompileService = LatexCompileService(
+                latexCommand = "/usr/bin/env bash ${getScriptPath("simpleCompile.sh")}" + " ",
+                compileTimeout = 60.seconds,
+                tmpBaseDir = null,
+            )
         )
         runBlocking {
             assertResult<Base64PDF>(service.producePDF(emptyMap()))
@@ -128,11 +135,13 @@ class LatexServiceTest {
     @Test
     fun `producePDF limits parallel compilations`() {
         val service = BlockingLatexService(
-            latexCommand = "/usr/bin/env bash ${getScriptPath("compileInSeconds.sh")} 0.1" + " ",
             latexParallelism = 1,
-            compileTimeout = 500.milliseconds,
             queueWaitTimeout = 100.milliseconds,
-            tmpBaseDir = null,
+            latexCompileService = LatexCompileService(
+                latexCommand = "/usr/bin/env bash ${getScriptPath("compileInSeconds.sh")} 0.1" + " ",
+                compileTimeout = 500.milliseconds,
+                tmpBaseDir = null,
+            )
         )
 
         runBlocking {
@@ -155,11 +164,13 @@ class LatexServiceTest {
     @Test
     fun `producePDF waits in queue for compilation until max queue wait`() {
         val service = BlockingLatexService(
-            latexCommand = "/usr/bin/env bash ${getScriptPath("neverEndingCompile.sh")}" + " ",
             latexParallelism = 1,
-            compileTimeout = 300.seconds,
             queueWaitTimeout = 50.milliseconds,
-            tmpBaseDir = null,
+            latexCompileService = LatexCompileService(
+                latexCommand = "/usr/bin/env bash ${getScriptPath("neverEndingCompile.sh")}" + " ",
+                compileTimeout = 300.seconds,
+                tmpBaseDir = null,
+            ),
         )
         runBlocking {
             val blockingCompilation = launch { service.producePDF(emptyMap()) }
@@ -186,11 +197,13 @@ class LatexServiceTest {
     @Test
     fun `producePDF waits in compilation queue and will run when admitted before max queue wait timeout`() {
         val service = BlockingLatexService(
-            latexCommand = "/usr/bin/env bash ${getScriptPath("compileInSeconds.sh")} 0.1" + " ",
             latexParallelism = 1,
-            compileTimeout = 500.milliseconds,
             queueWaitTimeout = 1.seconds,
-            tmpBaseDir = null,
+            latexCompileService = LatexCompileService(
+                latexCommand = "/usr/bin/env bash ${getScriptPath("compileInSeconds.sh")} 0.1" + " ",
+                compileTimeout = 500.milliseconds,
+                tmpBaseDir = null,
+            )
         )
         runBlocking {
             val blockingCompilation = launch { service.producePDF(emptyMap()) }
@@ -213,11 +226,13 @@ class LatexServiceTest {
     @Test
     fun `LatexService will not enforce any parallelism limit when set to less than 1`() {
         val service = BlockingLatexService(
-            latexCommand = "/usr/bin/env bash ${getScriptPath("simpleCompile.sh")}" + " ",
             latexParallelism = 0,
-            compileTimeout = 500.milliseconds,
             queueWaitTimeout = 1.seconds,
-            tmpBaseDir = null,
+            latexCompileService = LatexCompileService(
+                latexCommand = "/usr/bin/env bash ${getScriptPath("simpleCompile.sh")}" + " ",
+                compileTimeout = 500.milliseconds,
+                tmpBaseDir = null,
+            )
         )
         runBlocking {
             val requests = List(Runtime.getRuntime().availableProcessors() * 10) {
@@ -241,11 +256,13 @@ class LatexServiceTest {
     private fun producePdf(scriptName: String, files: Map<String, String> = emptyMap(), timeout: Duration = 60.seconds): PDFCompilationResponse =
         runBlocking {
             BlockingLatexService(
-                latexCommand = "/usr/bin/env bash ${getScriptPath(scriptName)}",
-                compileTimeout = timeout,
                 queueWaitTimeout = timeout,
                 latexParallelism = 1,
-                tmpBaseDir = null
+                latexCompileService = LatexCompileService(
+                    latexCommand = "/usr/bin/env bash ${getScriptPath(scriptName)}",
+                    compileTimeout = timeout,
+                    tmpBaseDir = null
+                )
             ).producePDF(files)
         }
 

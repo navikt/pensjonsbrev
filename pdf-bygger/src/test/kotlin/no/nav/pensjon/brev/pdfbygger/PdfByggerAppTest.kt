@@ -92,11 +92,11 @@ class PdfByggerAppTest {
     private fun ApplicationTestBuilder.appConfig(latexCommand: String? = null, parallelism: Int? = null, compileTimeout: Duration? = null, queueTimeout: Duration? = null) =
         environment {
             val overrides = listOfNotNull(
-                latexCommand?.let { "pdfBygger.latexCommand" to "/usr/bin/env bash $it" },
-                parallelism?.let { "pdfBygger.latexParallelism" to "$it" },
-                compileTimeout?.let { "pdfBygger.compileTimeout" to "$it" },
-                queueTimeout?.let { "pdfBygger.compileQueueWaitTimeout" to "$it" },
-                "pdfBygger.compileTmpDir" to "/tmp",
+                latexCommand?.let { "pdfBygger.latex.latexCommand" to "/usr/bin/env bash $it" },
+                parallelism?.let { "pdfBygger.latex.latexParallelism" to "$it" },
+                compileTimeout?.let { "pdfBygger.latex.compileTimeout" to "$it" },
+                queueTimeout?.let { "pdfBygger.latex.compileQueueWaitTimeout" to "$it" },
+                "pdfBygger.latex.compileTmpDir" to "/tmp",
             )
             config = ApplicationConfig(null).mergeWith(MapApplicationConfig(overrides))
         }
