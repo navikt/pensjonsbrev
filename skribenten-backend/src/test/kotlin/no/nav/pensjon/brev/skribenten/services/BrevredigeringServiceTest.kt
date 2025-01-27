@@ -489,7 +489,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev().resultOrNull()!!
 
         awaitAll(*(0..<10).map {
-            async {
+            async(Dispatchers.IO) {
                 brevredigeringService.hentEllerOpprettPdf(
                     sak.saksId,
                     brev.info.id
