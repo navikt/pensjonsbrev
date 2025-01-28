@@ -55,8 +55,6 @@ jobs:
           pull: true
           docker_context: ./skribenten-backend
           dockerfile: skribenten-backend/Dockerfile
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
 
   deploy-skribenten-backend-dev:
     name: "Deploy skribenten-backend to dev"

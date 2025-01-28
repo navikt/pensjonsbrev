@@ -1,10 +1,11 @@
 package no.nav.pensjon.brev.maler.legacy
 
+import no.nav.pensjon.brev.FeatureToggles
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUfoeretrygdPGAInntektDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUfoeretrygdPGAInntektDtoSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUfoeretrygdPGAInntektDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUfoeretrygdPGAInntektDtoSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
@@ -24,6 +25,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
+import java.time.LocalDate
 
 @TemplateModelHelpers
 object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGAInntektDto> {
@@ -2167,11 +2169,34 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                         )
                     }
                 }
-                text (
-                    Bokmal to "Dersom vi mottar dokumentasjon fra deg som bekrefter at du har slik inntekt, kan vi gjøre en ny beregning av uføretrygden din.",
-                    Nynorsk to "Dersom vi mottek dokumentasjon frå deg som stadfestar at du har slik inntekt, kan vi gjera ei ny berekning av uføretrygda di.",
-                )
+
+                // Når feature toggelen slettes skal resten av if-en bli igjen, også det i orShow
+                showIf(FeatureToggles.pl7822EndretInntekt.expr().enabled() and pe.vedtaksdata_virkningfom().legacyGreaterThanOrEqual(LocalDate.of(2023, 1, 1)) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
+                    text(
+                        Bokmal to "Hva kan holdes utenfor personinntekten til den andre forelderen?",
+                        Nynorsk to "Kva kan haldast utanfor personinntekta til den andre forelderen?",
+                    )
+
+                    list {
+                        item {
+                            text(
+                                Bokmal to "Erstatningsoppgjør for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon fra Nav",
+                                Nynorsk to "Erstatningsoppgjer for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon frå Nav",
+                            )
+                        }
+                    }
+                    text(
+                        Bokmal to "Dersom vi mottar dokumentasjon fra deg som bekrefter slik inntekt, kan vi gjøre en ny beregning.",
+                        Nynorsk to "Dersom vi mottar dokumentasjon frå deg som stadfestar slik inntekt, kan vi gjera ei ny berekning.",
+                    )
+                }.orShow {
+                    text(
+                        Bokmal to "Dersom vi mottar dokumentasjon fra deg som bekrefter at du har slik inntekt, kan vi gjøre en ny beregning av uføretrygden din.",
+                        Nynorsk to "Dersom vi mottar dokumentasjon frå deg som stadfestar at du har slik inntekt, kan vi gjera ei ny berekning av uføretrygda di.",
+                    )
+                }
             }
+
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
             includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
