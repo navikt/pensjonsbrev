@@ -71,11 +71,11 @@ object InformasjonOmForlengetSaksbehandlingstidPE : RedigerbarTemplate<EmptyRedi
                 )
             }
             paragraph {
-                val frist = fritekst("antall dager/uker/måneder")
+                val svartid = fritekst("svartid")
                 textExpr(
-                    Bokmal to "Vi antar at kravet ditt kan bli ferdigbehandlet innen ".expr() + frist + ".".expr(),
-                    Nynorsk to "Vi reknar med at kravet ditt kan bli ferdigbehandla innan ".expr() + frist + ".".expr(),
-                    English to "Without further delays, we assume the processing of your case to be completed within ".expr() + frist + ".".expr()
+                    Bokmal to "Vi antar at kravet ditt kan bli ferdigbehandlet innen ".expr() + svartid + ".".expr(),
+                    Nynorsk to "Vi reknar med at kravet ditt kan bli ferdigbehandla innan ".expr() + svartid + ".".expr(),
+                    English to "Without further delays, we assume the processing of your case to be completed within ".expr() + svartid + ".".expr()
                 )
             }
             includePhrase(Felles.MeldeFraEndringer)
