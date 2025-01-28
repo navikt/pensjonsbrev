@@ -61,3 +61,5 @@ spec:
       value: "/app/tmp"
     - name: PDF_BYGGER_IS_ASYNC
       value: "true"
+    - name: KAFKA_PDF_RENDER_TOPIC
+      value: {{kafka-pdf-render-topic}}

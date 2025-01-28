@@ -23,12 +23,12 @@ fun Application.kafkaModule(latexCompileService: LatexCompileService) {
 
 private fun createKafkaConfig(kafkaConfig: ApplicationConfig): Map<String, String?> = mapOf(
     "bootstrap.servers" to kafkaConfig.getProperty("bootstrap.servers"),
-    "security.protocol" to kafkaConfig.getProperty("security.protocol"),
-    "ssl.keystore.type" to kafkaConfig.getProperty("ssl.keystore.type"),
+    "security.protocol" to "SSL",
+    "ssl.keystore.type" to "PKCS12",
     "ssl.keystore.location" to kafkaConfig.getProperty("ssl.keystore.location"),
     "ssl.keystore.password" to kafkaConfig.getProperty("ssl.keystore.password"),
     "ssl.key.password" to kafkaConfig.getProperty("ssl.key.password"),
-    "ssl.truststore.type" to kafkaConfig.getProperty("ssl.truststore.type"),
+    "ssl.truststore.type" to "JKS",
     "ssl.truststore.location" to kafkaConfig.getProperty("ssl.truststore.location"),
     "ssl.truststore.password" to kafkaConfig.getProperty("ssl.truststore.password"),
     "group.id" to "pdf-bygger-async",

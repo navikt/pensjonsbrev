@@ -80,5 +80,7 @@ spec:
       value: "http://pensjon-pdf-bygger:8080"
     - name: PDF_BYGGER_MAX_RETRIES
       value: "250"
+    - name: KAFKA_PDF_RENDER_TOPIC
+      value: {{kafka-pdf-render-topic}}
   envFrom:
     - secret: pensjon-brevbaker-unleash-api-token

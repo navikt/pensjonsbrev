@@ -136,13 +136,13 @@ function fetch_kubernetes_secret_array {
 
 echo -e "${bold}Henter secrets fra Kubernetes${normal}"
 
-fetch_kubernetes_secret_array "Kafka" "nais-dev" "pensjonsbrev" "aiven-pensjon-pdf-bygger-async" "kafka" false \
+fetch_kubernetes_secret_array "Kafka" "nais-dev" "pensjonsbrev" "aiven-pensjon-pdf-bygger-async-q2" "kafka" false \
     "KAFKA_BROKERS" \
     "KAFKA_CREDSTORE_PASSWORD" \
     "KAFKA_SCHEMA_REGISTRY" \
     "KAFKA_SCHEMA_REGISTRY_USER" \
     "KAFKA_SCHEMA_REGISTRY_PASSWORD"
 
-fetch_kubernetes_secret_array "Kafka" "nais-dev" "pensjonsbrev" "aiven-pensjon-pdf-bygger-async" "kafka" true \
+fetch_kubernetes_secret_array "Kafka" "nais-dev" "pensjonsbrev" "aiven-pensjon-pdf-bygger-async-q2" "kafka" true \
   "client.truststore.jks"\
   "client.keystore.p12"

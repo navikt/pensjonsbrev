@@ -1,4 +1,4 @@
-# Asynkron kø brevbestilling
+~~# Asynkron kø brevbestilling
 
 * Status: [draft]
 * Deciders: Håkon Heggholmen, Alexander Hoem Rosbach, Mads Opheim
@@ -70,4 +70,4 @@ Fordeler:
 * Kafka er mye brukt i NAV, så vi får bruke mye eksisterende kompetanse og GCP støtte.
 Ulemper:
 * Har begrenset kø-størrelse på 1MB, så vi kan i niche cases risikere at brev blir for store.
-* Vi må vente til vi har gjordt om pdf-bygger til å ta i mot letter markup istedenfor LaTeX filer.
+* Vi må vente til vi har gjordt om pdf-bygger til å ta i mot letter markup istedenfor LaTeX filer.~~
