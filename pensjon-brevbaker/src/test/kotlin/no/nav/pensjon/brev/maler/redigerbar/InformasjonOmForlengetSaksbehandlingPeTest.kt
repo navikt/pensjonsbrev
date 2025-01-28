@@ -11,25 +11,25 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
-class OrienteringOmForlengetSaksbehandlingTest {
+class InformasjonOmForlengetSaksbehandlingPeTest {
 
     @Test
     fun testPdf() {
         Letter(
-            OrienteringOmForlengetSaksbehandlingstid.template,
+            InformasjonOmForlengetSaksbehandlingstidPE.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.English,
             Fixtures.felles
-        ).renderTestPDF(OrienteringOmForlengetSaksbehandlingstid.kode.name)
+        ).renderTestPDF(InformasjonOmForlengetSaksbehandlingstidPE.kode.name)
     }
 
     @Test
     fun testHtml() {
         Letter(
-            OrienteringOmForlengetSaksbehandlingstid.template,
+            InformasjonOmForlengetSaksbehandlingstidPE.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
             Fixtures.felles
-        ).renderTestHtml(OrienteringOmForlengetSaksbehandlingstid.kode.name)
+        ).renderTestHtml(InformasjonOmForlengetSaksbehandlingstidPE.kode.name)
     }
 }
