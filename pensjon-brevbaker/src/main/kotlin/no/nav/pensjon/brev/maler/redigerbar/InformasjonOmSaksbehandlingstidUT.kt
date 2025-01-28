@@ -64,7 +64,7 @@ object InformasjonOmSaksbehandlingstidUT : RedigerbarTemplate<InformasjonOmSaksb
                                 + "Det vil dessverre ta oss lengre tid enn antatt å behandle kravet. "
                                 + "Forsinkelsen skyldes ".expr() + aarsak + ".".expr(),
                         Nynorsk to "Vi har ".expr() + mottattDato + " fått søknaden din om uføretrygd. "
-                                + "Det vil dessverre ta oss lengre tid enn venta å handsame kravet. "
+                                + "Det vil dessverre ta oss lengre tid enn venta å behandle kravet. "
                                 + "Forsinkinga skuldast ".expr() + aarsak + ".".expr(),
                         English to "We have received your application for disabilty benefit on the ".expr() + mottattDato + ". "
                                 + "Due to delays in ".expr() + aarsak + ", "
