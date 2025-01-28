@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelVersion: String by project
 val apiModelJavaTarget: String by System.getProperties()
-val templateModelGeneratorVersion: String by project
 val jacksonJsr310Version: String by project
 val jupiterVersion: String by project
 

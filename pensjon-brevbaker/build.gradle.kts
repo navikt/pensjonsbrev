@@ -10,7 +10,6 @@ val logstashVersion: String by project
 val micrometerVersion: String by project
 val jacksonJsr310Version: String by project
 val mockkVersion: String by project
-val templateModelGeneratorVersion: String by project
 
 plugins {
     application

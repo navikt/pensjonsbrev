@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 val apiModelJavaTarget: String by System.getProperties()
 val hamkrestVersion: String by project
 val jupiterVersion: String by project
-val templateModelGeneratorVersion: String by project
 
 plugins {
     kotlin("jvm")
