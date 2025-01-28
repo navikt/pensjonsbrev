@@ -24,13 +24,10 @@ const EditorBulletList = (props: {
           width: 32px;
           height: 32px;
 
-          /*
-            TODO - style at knappen er aktiv etter ønsket design.
-          */
           ${erAlleElementerIBlockenItemList &&
           css`
-            background-color: #ccc;
-            color: #000;
+            background-color: #23262a;
+            color: #ffffff;
             border-color: #999;
             box-shadow: inset 0 0 5px rgb(0 0 0 / 20%);
           `}

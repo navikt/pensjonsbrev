@@ -8,6 +8,12 @@ import { SpraakKode } from "~/types/apiTypes";
 import { type BrevResponse, Distribusjonstype } from "~/types/brev";
 import type { EditedLetter } from "~/types/brevbakerTypes";
 
+import {
+  nyBrevResponse,
+  nyLiteral,
+  nyParagraphBlock,
+  nyRedigertBrev,
+} from "../../../../cypress/utils/brevredigeringTestUtils";
 import exampleLetter1Json from "../example-letter-1.json";
 import { LetterEditor } from "../LetterEditor";
 
@@ -210,6 +216,36 @@ describe("Switch font type ", () => {
       });
     });
     describe("unmarked text", () => {
+      it("endring av fonttype av en literal inne i et punkt skal bevare all content i punkten", () => {
+        cy.mount(
+          <EditorWithState
+            initial={
+              nyBrevResponse({
+                redigertBrev: nyRedigertBrev({
+                  blocks: [
+                    nyParagraphBlock({
+                      content: [
+                        nyLiteral({ text: "Jeg er en literal," }),
+                        nyLiteral({ text: " som blir fulgt opp av en annen literal," }),
+                        nyLiteral({ text: " og til slutt, en siste literal" }),
+                      ],
+                    }),
+                  ],
+                }),
+              }).redigertBrev
+            }
+          />,
+        );
+        cy.contains("Jeg er en literal, som blir fulgt opp av en annen literal, og til slutt, en siste literal")
+          .should("exist")
+          .click();
+        cy.getDataCy("editor-bullet-list").click();
+        cy.getDataCy("fonttype-bold").click();
+        cy.contains("Jeg er en literal, som blir fulgt opp av en annen literal, og til slutt, en siste literal")
+          .should("exist")
+          .click();
+      });
+
       it("handles switching plain/bold/plain", () => {
         cy.mount(<EditorWithState initial={exampleLetter1} />);
         cy.get(".PARAGRAPH")
@@ -429,6 +465,15 @@ describe("Switch font type ", () => {
           expect(el[0].childNodes[0].childNodes).to.have.length(3);
         });
       cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-weight", "700");
+    });
+
+    it("endring av fonttype av en variable inne i et punkt skal bevare all content i punkten", () => {
+      cy.mount(<EditorWithState initial={nyBrevResponse({}).redigertBrev} />);
+
+      cy.contains("Our processing time for this type of application is usually 10 weeks.").should("exist").click();
+      cy.getDataCy("editor-bullet-list").click();
+      cy.getDataCy("fonttype-bold").click();
+      cy.contains("Our processing time for this type of application is usually 10 weeks.").should("exist").click();
     });
   });
 });

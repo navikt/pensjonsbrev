@@ -1,8 +1,7 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
-import { isEqual } from "lodash";
 
-import type { Content, FontType, LiteralValue, ParagraphBlock, VariableValue } from "~/types/brevbakerTypes";
+import type { Content, FontType, ItemList, LiteralValue, ParagraphBlock, VariableValue } from "~/types/brevbakerTypes";
 import { handleSwitchContent, handleSwitchTextContent, isItemContentIndex } from "~/utils/brevbakerUtils";
 
 import type { Action } from "../lib/actions";
@@ -18,6 +17,7 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
     if (block.type !== "PARAGRAPH") {
       return;
     }
+    draft.isDirty = true;
 
     const contentBeforeTheLiteralWeAreOn = block.content.slice(0, literalIndex.contentIndex);
     const theContentWeAreOn = block.content[literalIndex.contentIndex];
@@ -25,8 +25,8 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
 
     handleSwitchContent({
       content: theContentWeAreOn,
-      onLiteral: (literal) =>
-        switchFontTypeForLiteral({
+      onLiteral: (literal) => {
+        const result = switchFontTypeForLiteral({
           draft: draft,
           thisBlock: block,
           literalIndex: literalIndex,
@@ -34,20 +34,50 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
           contentAfterTheLiteralWeAreOn: contentAfterTheLiteralWeAreOn,
           literal: literal,
           fonttype: fontType,
-        }),
-      onVariable: (variable) =>
-        switchFontTypeForVariable({ draft, thisBlock: block, literalIndex, fonttype: fontType, variable }),
+        });
+
+        if (!result) {
+          return;
+        }
+
+        draft.focus = {
+          ...draft.focus,
+          blockIndex: literalIndex.blockIndex,
+          contentIndex:
+            block.content.slice(0, literalIndex.contentIndex).length + result.newThisLiteralPositionInNewContent,
+          cursorPosition: result.updatedCursorPosition,
+        };
+        block.content = [
+          ...contentBeforeTheLiteralWeAreOn,
+          ...result.resultingContent,
+          ...contentAfterTheLiteralWeAreOn,
+        ];
+        block.deletedContent = [...block.deletedContent, ...(result.deletedContent ? [result.deletedContent] : [])];
+      },
+      onVariable: (variable) => {
+        const newVariable = switchFontTypeForVariable({
+          draft,
+          thisBlock: block,
+          literalIndex,
+          fonttype: fontType,
+          variable,
+        });
+
+        block.content = [...contentBeforeTheLiteralWeAreOn, newVariable, ...contentAfterTheLiteralWeAreOn];
+      },
       onNewLine: () => void 0,
       onItemList: (itemList) => {
         if (!isItemContentIndex(literalIndex)) {
           return;
         }
-        const item = itemList.items[literalIndex.itemIndex].content[literalIndex.itemContentIndex];
+
+        const item = itemList.items[literalIndex.itemIndex];
+        const itemContent = item.content[literalIndex.itemContentIndex];
 
         return handleSwitchTextContent({
-          content: item,
-          onLiteral: (literal) =>
-            switchFontTypeForLiteral({
+          content: itemContent,
+          onLiteral: (literal) => {
+            const result = switchFontTypeForLiteral({
               draft: draft,
               thisBlock: block,
               literalIndex: literalIndex,
@@ -55,9 +85,54 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
               contentAfterTheLiteralWeAreOn: contentAfterTheLiteralWeAreOn,
               literal: literal,
               fonttype: fontType,
-            }),
-          onVariable: (variable) =>
-            switchFontTypeForVariable({ draft, thisBlock: block, literalIndex, fonttype: fontType, variable }),
+            });
+
+            if (!result) {
+              return;
+            }
+
+            const newItemContent = [
+              ...item.content.slice(0, literalIndex.itemContentIndex),
+              ...result.resultingContent,
+              ...item.content.slice(literalIndex.itemContentIndex + 1),
+            ];
+
+            draft.focus = {
+              ...draft.focus,
+              blockIndex: literalIndex.blockIndex,
+              cursorPosition: result.updatedCursorPosition,
+              itemContentIndex:
+                item.content.slice(0, literalIndex.itemContentIndex).length + result.newThisLiteralPositionInNewContent,
+            };
+            (
+              draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex] as Draft<ItemList>
+            ).items[literalIndex.itemIndex].content = newItemContent;
+            (
+              draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex] as Draft<ItemList>
+            ).items[literalIndex.itemIndex].deletedContent = [
+              ...item.deletedContent,
+              ...(result.deletedContent ? [result.deletedContent] : []),
+            ];
+          },
+          onVariable: (variable) => {
+            const newVariable = switchFontTypeForVariable({
+              draft,
+              thisBlock: block,
+              literalIndex,
+              fonttype: fontType,
+              variable,
+            });
+
+            const newItemContent = [
+              ...item.content.slice(0, literalIndex.itemContentIndex),
+              newVariable,
+              ...item.content.slice(literalIndex.itemContentIndex + 1),
+            ];
+
+            (
+              draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex] as Draft<ItemList>
+            ).items[literalIndex.itemIndex].content = newItemContent;
+          },
           onNewLine: () => void 0,
         });
       },
@@ -78,11 +153,7 @@ const switchFontTypeForLiteral = (args: {
 
   const hasSelectionAndMarkedText = selection && (selection.toString?.()?.length ?? 0) > 0;
 
-  if (hasSelectionAndMarkedText) {
-    switchFontTypeOfMarkedText(args);
-  } else {
-    switchFontTypeOfCurrentWord(args);
-  }
+  return hasSelectionAndMarkedText ? switchFontTypeOfMarkedText(args) : switchFontTypeOfCurrentWord(args);
 };
 
 const switchFontTypeForVariable = (args: {
@@ -92,27 +163,17 @@ const switchFontTypeForVariable = (args: {
   fonttype: FontType;
   variable: Draft<VariableValue>;
 }) => {
-  const theNewVariable = newVariable({
+  return newVariable({
     id: args.variable.id,
     text: args.variable.text,
     fontType: args.fonttype,
   });
-
-  const newContent = [
-    ...args.thisBlock.content.slice(0, args.literalIndex.contentIndex),
-    theNewVariable,
-    ...args.thisBlock.content.slice(args.literalIndex.contentIndex + 1),
-  ];
-
-  args.draft.redigertBrev.blocks[args.literalIndex.blockIndex].content = newContent;
 };
 
 const switchFontTypeOfMarkedText = (args: {
   draft: Draft<LetterEditorState>;
   thisBlock: ParagraphBlock;
   literalIndex: LiteralIndex;
-  contentBeforeTheLiteralWeAreOn: Content[];
-  contentAfterTheLiteralWeAreOn: Content[];
   literal: Draft<LiteralValue>;
   fonttype: FontType;
 }) => {
@@ -146,28 +207,17 @@ const switchFontTypeOfMarkedText = (args: {
   });
 
   const newContent = [
-    ...args.contentBeforeTheLiteralWeAreOn,
     ...(hasTextBeforeTheSelection ? [newPreviousLiteral] : []),
     newThisLiteral,
     ...(hasTextAfterTheSelection ? [newNextLiteral] : []),
-    ...args.contentAfterTheLiteralWeAreOn,
   ];
 
-  const result: ParagraphBlock = {
-    ...args.thisBlock,
-    content: newContent,
-    deletedContent: [...args.thisBlock.deletedContent, ...(args.literal.id ? [args.literal.id] : [])],
+  return {
+    resultingContent: newContent,
+    updatedCursorPosition: newThisLiteral.editedText?.length ?? 0,
+    newThisLiteralPositionInNewContent: hasTextBeforeTheSelection ? 1 : 0,
+    deletedContent: changesTheWholeLiteral ? null : args.literal.id,
   };
-
-  const newContentIndex = newContent.findIndex((c) => isEqual(c, newThisLiteral));
-
-  args.draft.focus = {
-    ...args.draft.focus,
-    blockIndex: args.literalIndex.blockIndex,
-    contentIndex: newContentIndex,
-    cursorPosition: newThisLiteral.editedText?.length ?? 0,
-  };
-  args.draft.redigertBrev.blocks[args.literalIndex.blockIndex] = result;
 };
 
 /**
@@ -177,8 +227,6 @@ const switchFontTypeOfCurrentWord = (args: {
   draft: Draft<LetterEditorState>;
   thisBlock: ParagraphBlock;
   literalIndex: LiteralIndex;
-  contentBeforeTheLiteralWeAreOn: Content[];
-  contentAfterTheLiteralWeAreOn: Content[];
   literal: Draft<LiteralValue>;
   fonttype: FontType;
 }) => {
@@ -231,25 +279,15 @@ const switchFontTypeOfCurrentWord = (args: {
   });
 
   const newContent = [
-    ...args.contentBeforeTheLiteralWeAreOn,
     ...(hasTextBeforeTheWord ? [newPreviousLiteral] : []),
     newThisLiteral,
     ...(hasTextAfterTheWord ? [newNextLiteral] : []),
-    ...args.contentAfterTheLiteralWeAreOn,
   ];
 
-  const result = {
-    ...args.thisBlock,
-    content: newContent,
-    deletedContent: [...args.thisBlock.deletedContent, ...(args.literal.id ? [args.literal.id] : [])],
+  return {
+    resultingContent: newContent,
+    updatedCursorPosition: cursorPosition - wordStartPosition,
+    newThisLiteralPositionInNewContent: hasTextBeforeTheWord ? 1 : 0,
+    deletedContent: changesTheWholeLiteral ? null : args.literal.id,
   };
-
-  const newContentIndex = newContent.findIndex((c) => isEqual(c, newThisLiteral));
-  args.draft.focus = {
-    ...args.draft.focus,
-    blockIndex: args.literalIndex.blockIndex,
-    contentIndex: newContentIndex,
-    cursorPosition: cursorPosition - wordStartPosition,
-  };
-  args.draft.redigertBrev.blocks[args.literalIndex.blockIndex] = result;
 };
