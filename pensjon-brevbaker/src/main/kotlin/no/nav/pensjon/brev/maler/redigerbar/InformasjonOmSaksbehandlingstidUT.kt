@@ -87,32 +87,35 @@ object InformasjonOmSaksbehandlingstidUT : RedigerbarTemplate<InformasjonOmSaksb
                     )
                 }
                 paragraph {
-                    showIf(saksbehandlerValg.forlengetSaksbehandlingstid) {
-                        val svartid = fritekst("svartid")
-                        textExpr(
-                            Bokmal to "Vi antar at kravet ditt kan bli ferdigbehandlet innen ".expr() + svartid + ".",
-                            Nynorsk to "Vi reknar med at kravet ditt kan bli ferdigbehandla innan ".expr() + svartid + ".",
-                            English to "Without further delays, we assume the processing of your case to be completed within ".expr() + svartid + "."
-                        )
-                    }.orShow {
-                        val svartid = fritekst("svartid")
-                        textExpr(
-                            Bokmal to "Saksbehandlingstiden vår er vanligvis ".expr() + svartid + ".",
-                            Nynorsk to "Saksbehandlingstida vår er vanlegvis ".expr() + svartid + ".",
-                            English to "Our processing time is usually ".expr() + svartid + ".",
-                        )
-                    }
-                }
-                paragraph {
-                    text(
-                        Bokmal to "Dersom vi trenger flere opplysninger fra deg, vil du høre fra oss.",
-                        Nynorsk to "Dersom vi treng fleire opplysningar frå deg, vil du høyre frå oss.",
-                        English to "We will contact you if we need you to provide more information."
+                    val svartid = fritekst("svartid")
+                    textExpr(
+                        Bokmal to "Vi antar at kravet ditt kan bli ferdigbehandlet innen ".expr() + svartid + ".",
+                        Nynorsk to "Vi reknar med at kravet ditt kan bli ferdigbehandla innan ".expr() + svartid + ".",
+                        English to "Without further delays, we assume the processing of your case to be completed within ".expr() + svartid + "."
                     )
                 }
-                includePhrase(Felles.MeldeFraEndringer)
-                includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
+            }.orShow {
+                paragraph {
+                    val svartid = fritekst("svartid")
+                    textExpr(
+                        Bokmal to "Saksbehandlingstiden vår er vanligvis ".expr() + svartid + ".",
+                        Nynorsk to "Saksbehandlingstida vår er vanlegvis ".expr() + svartid + ".",
+                        English to "Our processing time is usually ".expr() + svartid + ".",
+                    )
+                }
             }
+            paragraph {
+                text(
+                    Bokmal to "Dersom vi trenger flere opplysninger fra deg, vil du høre fra oss.",
+                    Nynorsk to "Dersom vi treng fleire opplysningar frå deg, vil du høyre frå oss.",
+                    English to "We will contact you if we need you to provide more information."
+                )
+            }
+            includePhrase(Felles.MeldeFraEndringer)
+            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
     }
 }
+
+
+

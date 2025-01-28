@@ -11,7 +11,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
-@Tag(TestTags.INTEGRATION_TEST)
+@Tag(TestTags.MANUAL_TEST)
 class InformasjonOmSaksbehandlingstidUtTest {
 
     private val data = InformasjonOmSaksbehandlingstidUtDto(
@@ -34,7 +34,7 @@ class InformasjonOmSaksbehandlingstidUtTest {
     private fun writeAllLanguages(testNavn: String, data: InformasjonOmSaksbehandlingstidUtDto) {
         listOf(BOKMAL, NYNORSK, ENGLISH).forEach { lang ->
             Letter(
-                InformasjonOmSaksbehandlingstid.template,
+                InformasjonOmSaksbehandlingstidUT.template,
                 data,
                 lang.toLanguage(),
                 Fixtures.felles

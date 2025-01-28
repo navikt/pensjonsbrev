@@ -11,7 +11,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
-@Tag(TestTags.INTEGRATION_TEST)
+@Tag(TestTags.MANUAL_TEST)
 class InformasjonOmSaksbehandlingstidITest {
 
     private val data = InformasjonOmSaksbehandlingstidDto(
