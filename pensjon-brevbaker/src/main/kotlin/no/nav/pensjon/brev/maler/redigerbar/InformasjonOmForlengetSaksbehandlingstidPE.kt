@@ -74,7 +74,7 @@ object InformasjonOmForlengetSaksbehandlingstidPE : RedigerbarTemplate<EmptyRedi
                 val frist = fritekst("antall dager/uker/måneder")
                 textExpr(
                     Bokmal to "Vi antar at kravet ditt kan bli ferdigbehandlet innen ".expr() + frist + ".".expr(),
-                    Nynorsk to "Vi antar at kravet ditt kan bli ferdigbehandlet innen ".expr() + frist + ".".expr(),
+                    Nynorsk to "Vi reknar med at kravet ditt kan bli ferdigbehandla innan ".expr() + frist + ".".expr(),
                     English to "Without further delays, we assume the processing of your case to be completed within ".expr() + frist + ".".expr()
                 )
             }
