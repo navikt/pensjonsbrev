@@ -62,9 +62,6 @@ jobs:
           pull: true
           docker_context: ./pensjon-brevbaker
           dockerfile: pensjon-brevbaker/Dockerfile
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-
   "build-pdfbygger":
     name: "build pdfbygger"
     runs-on: "ubuntu-latest"
@@ -94,8 +91,6 @@ jobs:
           pull: true
           docker_context: ./pdf-bygger
           dockerfile: pdf-bygger/Dockerfile
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
       - name: "Publish container image to ghcr.io"
         run: |
           echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
