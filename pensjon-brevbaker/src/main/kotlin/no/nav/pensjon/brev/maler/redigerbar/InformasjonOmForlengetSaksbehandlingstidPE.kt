@@ -55,9 +55,9 @@ object InformasjonOmForlengetSaksbehandlingstidPE : RedigerbarTemplate<EmptyRedi
                     Bokmal to "Vi har ".expr() + dato + " mottatt din søknad om ".expr() + ytelse + ". "
                             + "Det vil dessverre ta oss lengre tid enn antatt å behandle kravet. "
                             + "Forsinkelsen skyldes ".expr() + aarsak + ".".expr(),
-                    Nynorsk to "Vi har ".expr() + dato + " mottatt din søknad om ".expr() + ytelse + ". "
-                            + "Det vil dessverre ta oss lengre tid enn antatt å behandle kravet. "
-                            + "Forsinkelsen skyldes ".expr() + aarsak + ".".expr(),
+                    Nynorsk to "Vi har ".expr() + dato + " fått søknaden din om ".expr() + ytelse + ". "
+                            + "Det vil dessverre ta oss lengre tid enn venta å behandle kravet. "
+                            + "Forsinkinga skuldast ".expr() + aarsak + ".".expr(),
                     English to "We have received your application for ".expr() + ytelse +
                             " on the ".expr() + dato + ". " + "Due to delays in ".expr() +
                             aarsak + ", the processing of your case will take longer than we anticipated.".expr()
