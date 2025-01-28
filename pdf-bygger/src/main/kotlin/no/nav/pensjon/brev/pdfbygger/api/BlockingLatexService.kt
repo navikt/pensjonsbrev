@@ -1,10 +1,10 @@
-package no.nav.pensjon.brev.pdfbygger.latex
+package no.nav.pensjon.brev.pdfbygger.api
 
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.withTimeoutOrNull
-import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
+import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
+import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
 import kotlin.time.Duration
-
 
 class BlockingLatexService(
     latexParallelism: Int,

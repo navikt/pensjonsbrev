@@ -4,7 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
-import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
+import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException

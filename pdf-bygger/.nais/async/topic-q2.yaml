@@ -1,7 +1,7 @@
 apiVersion: kafka.nais.io/v1
 kind: Topic
 metadata:
-  name: pdf-bygger-render
+  name: pdf-bygger-render-q2
   namespace: pensjonsbrev
   labels:
     team: pensjonsbrev
@@ -12,7 +12,7 @@ spec:
       application: pensjon-brevbaker
       access: write
     - team: pensjonsbrev
-      application: pensjon-pdf-bygger-async
+      application: pensjon-pdf-bygger-async-q2
       access: read
   config:
     partitions: 20

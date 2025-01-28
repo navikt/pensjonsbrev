@@ -10,6 +10,8 @@ metadata:
 spec:
   image: {{image}}
   port: 8080
+  kafka:
+    pool: {{kafka-pool}}
   terminationGracePeriodSeconds: 60
   service:
     port: 80

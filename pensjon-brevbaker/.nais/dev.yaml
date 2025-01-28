@@ -1,5 +1,6 @@
 app-name: "pensjon-brevbaker"
 pdf-bygger-app: "pensjon-pdf-bygger"
+kafka-pool: "nav-dev"
 ingresses:
   - "https://pensjon-brevbaker.intern.dev.nav.no"
 

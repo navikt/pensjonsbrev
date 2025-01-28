@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.pdfbygger
+package no.nav.pensjon.brev.pdfbygger.model
 
 sealed class PDFCompilationResponse {
     data class Base64PDF(val base64PDF: String): PDFCompilationResponse()

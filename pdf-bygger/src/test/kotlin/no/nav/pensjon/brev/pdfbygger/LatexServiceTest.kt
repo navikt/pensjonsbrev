@@ -4,10 +4,11 @@ import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
 import io.ktor.util.*
 import kotlinx.coroutines.*
-import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse.Base64PDF
-import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse.Failure
-import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
+import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse.Base64PDF
+import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse.Failure
+import no.nav.pensjon.brev.pdfbygger.api.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
+import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createTempFile
 import kotlin.io.path.deleteIfExists
