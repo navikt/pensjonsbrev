@@ -1,6 +1,9 @@
 package no.nav.pensjon.brev.pdfbygger
 
 import com.fasterxml.jackson.core.JacksonException
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
@@ -46,8 +49,15 @@ fun Application.module() {
         it.log.info("Application preparing to shutdown gracefully")
     }
 
+
     install(ContentNegotiation) {
-        jackson()
+        jackson {
+            registerModule(JavaTimeModule())
+            registerModule(LetterMarkupModule)
+            enable(SerializationFeature.INDENT_OUTPUT)
+            disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+        }
     }
 
     install(Compression) {
