@@ -16,5 +16,6 @@ fun Application.brevbakerTestModule() = this.brevbakerModule(
 
         override fun hentRedigerbareMaler() = alleRedigerbareMaler
     },
-    konfigurerFeatureToggling = { settOppFakeUnleash() }
+    konfigurerFeatureToggling = { settOppFakeUnleash() },
+    brukAsyncProducer = false,
 )

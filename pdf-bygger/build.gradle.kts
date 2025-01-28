@@ -45,13 +45,13 @@ dependencies {
     implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("io.ktor:ktor-server-compression-jvm:$ktorVersion")
+    implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
+    implementation("org.apache.kafka:connect-runtime:$kafkaVersion")
 
     // Metrics
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
     implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
-    implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
-    implementation("org.apache.kafka:connect-runtime:$kafkaVersion")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")

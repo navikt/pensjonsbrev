@@ -11,6 +11,7 @@ val micrometerVersion: String by project
 val apiModelVersion: String by project
 val jacksonJsr310Version: String by project
 val mockkVersion: String by project
+val kafkaVersion: String by project
 
 plugins {
     application
@@ -118,6 +119,8 @@ dependencies {
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.11.0")
+    implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
+    implementation("org.apache.kafka:connect-runtime:$kafkaVersion")
 
     implementation(project(":template-model-generator"))
     ksp(project(":template-model-generator"))

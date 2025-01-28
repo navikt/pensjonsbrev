@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
@@ -27,6 +28,7 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
     val name: String,
     templates: Set<T>,
     private val laTeXCompilerService: LaTeXCompilerService,
+    private val latexAsyncCompilerService: LatexAsyncCompilerService,
 ) {
     private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
 
@@ -39,6 +41,11 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
     suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
             renderPDF(createLetter(kode, letterData, language, felles))
+        }
+
+    suspend fun renderPdfAsync(orderId: String, brevbestilling: BestillBrevRequest<Kode>) =
+        with(brevbestilling) {
+            renderPdfAsync(orderId, createLetter(kode, letterData, language, felles))
         }
 
     suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
@@ -74,8 +81,14 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
             listOf(Tag.of("brevkode", brevkode.kode()))
         ).increment()
 
-    private fun createLetter(brevkode: Kode, brevdata: BrevbakerBrevdata, spraak: LanguageCode, felles: Felles): Letter<BrevbakerBrevdata> {
-        val template = getTemplate(brevkode)?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
+    private fun createLetter(
+        brevkode: Kode,
+        brevdata: BrevbakerBrevdata,
+        spraak: LanguageCode,
+        felles: Felles
+    ): Letter<BrevbakerBrevdata> {
+        val template =
+            getTemplate(brevkode)?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
 
         val language = spraak.toLanguage()
         if (!template.language.supports(language)) {
@@ -90,7 +103,10 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
         )
     }
 
-    private suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
+    private suspend fun renderPDF(
+        letter: Letter<BrevbakerBrevdata>,
+        redigertBrev: LetterMarkup? = null
+    ): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev)
             .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
             .let { laTeXCompilerService.producePDF(it) }
@@ -101,6 +117,11 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
                     letterMetadata = letter.template.letterMetadata
                 )
             }
+
+    private fun renderPdfAsync(orderId: String, letter: Letter<BrevbakerBrevdata>) =
+        renderCompleteMarkup(letter)
+            .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
+            .let { latexAsyncCompilerService.renderAsync(orderId, it) }
 
     private fun renderHTML(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev)
@@ -113,7 +134,10 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
                 )
             }
 
-    private fun renderCompleteMarkup(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterWithAttachmentsMarkup =
+    private fun renderCompleteMarkup(
+        letter: Letter<BrevbakerBrevdata>,
+        redigertBrev: LetterMarkup? = null
+    ): LetterWithAttachmentsMarkup =
         letter.toScope().let { scope ->
             LetterWithAttachmentsMarkup(
                 redigertBrev ?: Letter2Markup.renderLetterOnly(scope, letter.template),
@@ -122,7 +146,10 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
         }
 
 
-    private fun parseArgument(letterData: BrevbakerBrevdata, template: LetterTemplate<*, BrevbakerBrevdata>): BrevbakerBrevdata =
+    private fun parseArgument(
+        letterData: BrevbakerBrevdata,
+        template: LetterTemplate<*, BrevbakerBrevdata>
+    ): BrevbakerBrevdata =
         try {
             objectMapper.convertValue(letterData, template.letterDataType.java)
         } catch (e: IllegalArgumentException) {

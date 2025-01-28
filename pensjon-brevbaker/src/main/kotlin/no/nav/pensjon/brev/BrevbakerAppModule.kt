@@ -27,6 +27,7 @@ import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.converters.LetterResponseFileConverter
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
 import no.nav.pensjon.brev.latex.LatexCompileException
 import no.nav.pensjon.brev.latex.LatexInvalidException
 import no.nav.pensjon.brev.latex.LatexTimeoutException
@@ -37,7 +38,8 @@ import no.nav.pensjon.brev.template.brevbakerConfig
 
 fun Application.brevbakerModule(
     templates: AllTemplates,
-    konfigurerFeatureToggling: (ApplicationConfig) -> Unit = { konfigurerUnleash(it) }
+    konfigurerFeatureToggling: (ApplicationConfig) -> Unit = { konfigurerUnleash(it) },
+    brukAsyncProducer: Boolean = true
 ) {
     val brevbakerConfig = environment.config.config("brevbaker")
 
@@ -127,10 +129,12 @@ fun Application.brevbakerModule(
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
 
+    val latexAsyncCompilerService = LatexAsyncCompilerService(brevbakerConfig.config("kafka"))
+
     konfigurerFeatureToggling(brevbakerConfig)
 
     configureMetrics()
-    brevRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService, templates)
+    brevRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService, templates, latexAsyncCompilerService)
 }
 
 private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
