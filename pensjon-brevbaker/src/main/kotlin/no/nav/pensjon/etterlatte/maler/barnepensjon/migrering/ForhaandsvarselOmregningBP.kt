@@ -18,7 +18,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 @TemplateModelHelpers
 object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttRegelverkDTO> {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_FORHAANDSVARSEL_OMREGNING
-    override val template: LetterTemplate<*, BarnepensjonOmregnetNyttRegelverkDTO> = createTemplate(
+    override val template = createTemplate(
         name = kode.name,
         letterDataType = BarnepensjonOmregnetNyttRegelverkDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
