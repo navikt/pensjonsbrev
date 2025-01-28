@@ -19,7 +19,7 @@ import no.nav.pensjon.brev.template.includePhrase
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object OrienteringOmForlengetSaksbehandlingstid : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object InformasjonOmForlengetSaksbehandlingstidPE : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     // PE_IY_05_041
     override val kode = Pesysbrevkoder.Redigerbar.PE_ORIENTERING_OM_FORLENGET_SAKSBEHANDLINGSTID
