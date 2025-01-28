@@ -16,6 +16,10 @@ interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>
     fun description(): TemplateDescription
 }
 
+interface RedigerbarBiTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>, AltLetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>> : RedigerbarTemplate<LetterData> {
+    fun transformer(fra: AltLetterData): LetterData
+}
+
 interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart> {
     val kategori: TemplateDescription.Brevkategori
     val brevkontekst: TemplateDescription.Brevkontekst
@@ -37,6 +41,10 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevda
 
     fun PlainTextScope<*, *>.fritekst(beskrivelse: String): Expression<String> =
         Expression.Literal(beskrivelse, setOf(ElementTags.FRITEKST))
+}
+
+interface AutobrevBiTemplate<out LetterData : BrevbakerBrevdata, AltLetterData : BrevbakerBrevdata> : AutobrevTemplate<LetterData> {
+    fun transformer(fra: AltLetterData): LetterData
 }
 
 interface AutobrevTemplate<out LetterData : BrevbakerBrevdata> : BrevTemplate<LetterData, Brevkode.Automatisk> {

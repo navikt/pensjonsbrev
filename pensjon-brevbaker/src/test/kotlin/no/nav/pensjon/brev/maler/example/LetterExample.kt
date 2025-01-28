@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi1
 import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi2
 import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.AutobrevBiTemplate
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
@@ -56,9 +56,18 @@ enum class LetterExampleBrevkode : Brevkode.Automatisk {
 }
 
 @TemplateModelHelpers
-object LetterExample : AutobrevTemplate<LetterExampleDto> {
+object LetterExample : AutobrevBiTemplate<LetterExampleDto, LetterExampleForenklaDto> {
 
     override val kode: Brevkode.Automatisk = LetterExampleBrevkode.TESTBREV
+
+    override fun transformer(fra: LetterExampleForenklaDto): LetterExampleDto = LetterExampleDto(
+        pensjonInnvilget = fra.pensjonInnvilget,
+        datoInnvilget = fra.datoInnvilget,
+        navneliste = fra.navneliste,
+        tilleggEksempel = fra.tilleggEksempel,
+        datoAvslaatt = null,
+        pensjonBeloep = null
+    )
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
@@ -330,6 +339,13 @@ data class LetterExampleDto(
     val tilleggEksempel: List<ExampleTilleggDto>,
     val datoAvslaatt: LocalDate?,
     val pensjonBeloep: Int?,
+) : BrevbakerBrevdata
+
+data class LetterExampleForenklaDto(
+    val pensjonInnvilget: Boolean,
+    val datoInnvilget: LocalDate,
+    val navneliste: List<String>,
+    val tilleggEksempel: List<ExampleTilleggDto>,
 ) : BrevbakerBrevdata
 
 data class ExampleTilleggDto(

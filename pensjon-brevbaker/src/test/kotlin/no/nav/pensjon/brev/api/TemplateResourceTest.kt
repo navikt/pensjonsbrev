@@ -2,12 +2,14 @@ package no.nav.pensjon.brev.api
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
+import io.getunleash.FakeUnleash
 import io.ktor.http.*
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import io.mockk.slot
 import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.FeatureToggleHandler
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
@@ -21,6 +23,7 @@ import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.maler.example.Testmaler
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
+import no.nav.pensjon.brev.settOppFakeUnleash
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.render.DocumentFile
@@ -29,6 +32,7 @@ import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.util.*
@@ -71,6 +75,9 @@ class TemplateResourceTest {
             )
         )
     )
+
+    @BeforeEach
+    fun setup() = settOppFakeUnleash()
 
     @Test
     fun `can renderPDF with valid letterData`(): Unit = runBlocking {
