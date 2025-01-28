@@ -59,7 +59,7 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-  "release-mal":
+  "bygg-dsl":
     name: "brevbaker-dsl"
     runs-on: "ubuntu-latest"
     permissions:
@@ -78,12 +78,9 @@ jobs:
           "distribution": "temurin"
           "java-version": "17"
       - name: "compile and run tests"
-        run: "./gradlew :brevbaker-dsl:build"
-      - name: "Release maven artifact"
-        if: ${{ github.ref == 'refs/heads/main' && needs.changes.outputs.common == 'true' }}
-        run: "./gradlew :brevbaker-dsl:publish"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        run: |
+          ./gradlew :brevbaker-api-model-common:publishToMavenLocal
+          ./gradlew :brevbaker-dsl:build
 
   "release-pensjon":
     name: "pensjon-brevbaker-api-model"
@@ -106,8 +103,7 @@ jobs:
           "java-version": "17"
       - name: "compile and run tests"
         run: |
-          ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
-          ./gradlew :brevbaker-dsl:publishToMavenLocal 
+          ./gradlew :brevbaker-api-model-common:publishToMavenLocal  
           ./gradlew :pensjon-brevbaker-api-model:build
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
