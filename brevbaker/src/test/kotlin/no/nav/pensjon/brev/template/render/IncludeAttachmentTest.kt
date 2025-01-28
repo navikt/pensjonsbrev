@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.createAttachment
@@ -28,20 +29,20 @@ class IncludeAttachmentTest {
     fun `attachment is included in template`() {
         val testVedlegg = createAttachment<LangNynorsk, Unit>(
             title = newText(
-                Language.Nynorsk to "Test vedlegg",
+                Nynorsk to "Test vedlegg",
             ),
             includeSakspart = true
         ) {
             paragraph {
-                text(Language.Nynorsk to "test")
+                text(Nynorsk to "test")
             }
         }
 
         val expected = LetterTemplate(
             name = "test",
-            title = listOf(newText(Language.Nynorsk to "tittel")),
+            title = listOf(newText(Nynorsk to "tittel")),
             letterDataType = SomeDto::class,
-            language = languages(Language.Nynorsk),
+            language = languages(Nynorsk),
             outline = emptyList(),
             attachments = listOf(
                 IncludeAttachment(Unit.expr(), testVedlegg, false.expr())
@@ -52,10 +53,10 @@ class IncludeAttachmentTest {
         val actual = createTemplate(
             name = "test",
             letterDataType = SomeDto::class,
-            languages = languages(Language.Nynorsk),
+            languages = languages(Nynorsk),
             letterMetadata = testLetterMetadata,
         ) {
-            title { text(Language.Nynorsk to "tittel") }
+            title { text(Nynorsk to "tittel") }
             outline {}
             includeAttachment(testVedlegg, Unit.expr(), false.expr())
         }
@@ -72,22 +73,22 @@ class IncludeAttachmentTest {
     inner class IncludeIfNotNull{
         private val testVedlegg = createAttachment<LangNynorsk, String>(
             title = newText(
-                Language.Nynorsk to "Test vedlegg",
+                Nynorsk to "Test vedlegg",
             ),
             includeSakspart = true
         ) {
             paragraph {
-                text(Language.Nynorsk to "test")
+                text(Nynorsk to "test")
             }
         }
 
         private val testTemplate = createTemplate(
             name = "test",
             letterDataType = NullData::class,
-            languages = languages(Language.Nynorsk),
+            languages = languages(Nynorsk),
             letterMetadata = testLetterMetadata,
         ) {
-            title { text(Language.Nynorsk to "tittel") }
+            title { text(Nynorsk to "tittel") }
             outline {}
             includeAttachmentIfNotNull(testVedlegg, test)
         }
@@ -100,9 +101,9 @@ class IncludeAttachmentTest {
             @Suppress("UNCHECKED_CAST")
             val expected = LetterTemplate(
                 name = "test",
-                title = listOf(newText(Language.Nynorsk to "tittel")),
+                title = listOf(newText(Nynorsk to "tittel")),
                 letterDataType = NullData::class,
-                language = languages(Language.Nynorsk),
+                language = languages(Nynorsk),
                 outline = emptyList(),
                 attachments = listOf(
                     IncludeAttachment(selector as Expression<String>, testVedlegg, selector.notNull())
@@ -113,7 +114,7 @@ class IncludeAttachmentTest {
         @Test
         fun `attachment is not included when using includeAttachmentIfNotNull and attachmentData is null`(){
             assertThat(
-                Letter2Markup.render(Letter(testTemplate, NullData(null), Language.Nynorsk, Fixtures.felles)),
+                Letter2Markup.render(Letter(testTemplate, NullData(null), Nynorsk, Fixtures.felles)),
                 has(LetterWithAttachmentsMarkup::attachments, isEmpty)
             )
         }
@@ -121,7 +122,7 @@ class IncludeAttachmentTest {
         @Test
         fun `attachment is included when using includeAttachmentIfNotNull and attachmentData is not null`(){
             assertThat(
-                Letter2Markup.render(Letter(testTemplate, NullData("testtekst"), Language.Nynorsk, Fixtures.felles)),
+                Letter2Markup.render(Letter(testTemplate, NullData("testtekst"), Nynorsk, Fixtures.felles)),
                 hasAttachments {
                     attachment {
                         title { literal("Test vedlegg") }

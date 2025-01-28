@@ -7,7 +7,6 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 
-
 class OperationsTest {
 
     @Test

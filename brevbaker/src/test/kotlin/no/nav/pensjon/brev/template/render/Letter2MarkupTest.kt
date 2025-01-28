@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -18,19 +19,20 @@ import no.nav.pensjon.brev.template.render.Fixtures.felles
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.Year
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class Letter2MarkupTest {
 
     private inline fun <reified LetterData : Any> renderTemplate(data: LetterData, noinline template: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit) =
-        Letter2Markup.render(Letter(outlineTestTemplate(template), data, Language.Bokmal, felles))
+        Letter2Markup.render(Letter(outlineTestTemplate(template), data, Bokmal, felles))
 
     @Test
     fun `outline root elements are rendered in same order`() {
         val result = renderTemplate(EmptyBrevdata) {
-            title1 { text(Language.Bokmal to "hei tittel") }
-            paragraph { text(Language.Bokmal to "hei paragraph") }
-            paragraph { text(Language.Bokmal to "hei paragraph2") }
+            title1 { text(Bokmal to "hei tittel") }
+            paragraph { text(Bokmal to "hei paragraph") }
+            paragraph { text(Bokmal to "hei paragraph2") }
         }
 
         assertThat(
@@ -47,22 +49,22 @@ class Letter2MarkupTest {
     fun `paragraph element renders as block of type PARAGRAPH`() {
         val result = renderTemplate(EmptyBrevdata) { paragraph { } }
 
-        Assertions.assertEquals(LetterMarkup.Block.Type.PARAGRAPH, result.letterMarkup.blocks.firstOrNull()?.type)
+        assertEquals(LetterMarkup.Block.Type.PARAGRAPH, result.letterMarkup.blocks.firstOrNull()?.type)
     }
 
     @Test
     fun `title1 element renders as block of type TITLE1`() {
         val result = renderTemplate(EmptyBrevdata) { title1 { } }
 
-        Assertions.assertEquals(LetterMarkup.Block.Type.TITLE1, result.letterMarkup.blocks.firstOrNull()?.type)
+        assertEquals(LetterMarkup.Block.Type.TITLE1, result.letterMarkup.blocks.firstOrNull()?.type)
     }
 
     @Test
     fun `paragraph content is rendered in order`() {
         val result = renderTemplate(EmptyBrevdata) {
             paragraph {
-                text(Language.Bokmal to "first")
-                text(Language.Bokmal to "second")
+                text(Bokmal to "first")
+                text(Bokmal to "second")
             }
         }
 
@@ -81,8 +83,8 @@ class Letter2MarkupTest {
     fun `title1 content is rendered in order`() {
         val result = renderTemplate(EmptyBrevdata) {
             title1 {
-                text(Language.Bokmal to "first")
-                text(Language.Bokmal to "second")
+                text(Bokmal to "first")
+                text(Bokmal to "second")
             }
         }
 
@@ -101,7 +103,7 @@ class Letter2MarkupTest {
     fun `title1 with expression renders as declared`() {
         val result = renderTemplate(EmptyBrevdata) {
             title1 {
-                textExpr(Language.Bokmal to "noe tekst ".expr() + Year(2024).expr().format())
+                textExpr(Bokmal to "noe tekst ".expr() + Year(2024).expr().format())
             }
         }
 
@@ -121,17 +123,17 @@ class Letter2MarkupTest {
         val template = createTemplate(
             name = "test",
             letterDataType = EmptyBrevdata::class,
-            languages = languages(Language.Bokmal),
+            languages = languages(Bokmal),
             letterMetadata = testLetterMetadata,
         ) {
             title {
-                textExpr(Language.Bokmal to "noe tekst ".expr() + Year(2024).expr().format())
+                textExpr(Bokmal to "noe tekst ".expr() + Year(2024).expr().format())
             }
             outline {
                 paragraph { }
             }
         }
-        val result = Letter2Markup.render(Letter(template, EmptyBrevdata, Language.Bokmal, felles))
+        val result = Letter2Markup.render(Letter(template, EmptyBrevdata, Bokmal, felles))
 
         assertThat(
             result.letterMarkup.title,
@@ -143,9 +145,9 @@ class Letter2MarkupTest {
     fun `template newLine renders as declared`() {
         val result = renderTemplate(EmptyBrevdata) {
             paragraph {
-                text(Language.Bokmal to "hei")
+                text(Bokmal to "hei")
                 newline()
-                text(Language.Bokmal to "ha det bra")
+                text(Bokmal to "ha det bra")
             }
         }
 

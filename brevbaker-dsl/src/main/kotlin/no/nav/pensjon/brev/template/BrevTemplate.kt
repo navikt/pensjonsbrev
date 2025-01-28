@@ -16,15 +16,6 @@ interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>
     fun description(): TemplateDescription
 }
 
-interface AutobrevTemplate<out LetterData : BrevbakerBrevdata> : BrevTemplate<LetterData, Brevkode.Automatisk> {
-    override fun description(): TemplateDescription.Autobrev =
-        TemplateDescription.Autobrev(
-            name = template.name,
-            letterDataClass = template.letterDataType.java.name,
-            languages = template.language.all().map { it.toCode() },
-            metadata = template.letterMetadata,
-        )
-}
 interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart> {
     val kategori: TemplateDescription.Brevkategori
     val brevkontekst: TemplateDescription.Brevkontekst
@@ -46,6 +37,16 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevda
 
     fun PlainTextScope<*, *>.fritekst(beskrivelse: String): Expression<String> =
         Expression.Literal(beskrivelse, setOf(ElementTags.FRITEKST))
+}
+
+interface AutobrevTemplate<out LetterData : BrevbakerBrevdata> : BrevTemplate<LetterData, Brevkode.Automatisk> {
+    override fun description(): TemplateDescription.Autobrev =
+        TemplateDescription.Autobrev(
+            name = template.name,
+            letterDataClass = template.letterDataType.java.name,
+            languages = template.language.all().map { it.toCode() },
+            metadata = template.letterMetadata,
+        )
 }
 
 fun Language.toCode(): LanguageCode =

@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterRenderer
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -25,7 +26,8 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.render.Fixtures.felles
 import no.nav.pensjon.brev.template.render.TestVedleggDtoSelectors.testVerdi1
 import no.nav.pensjon.brev.template.toScope
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 
 class LetterRendererTest {
@@ -33,7 +35,7 @@ class LetterRendererTest {
     val letter = Letter(
         LetterExample.template,
         createLetterExampleDto(),
-        Language.Bokmal,
+        Bokmal,
         felles
     )
 
@@ -69,7 +71,7 @@ class LetterRendererTest {
         renderer.render(letter)
 
         assertScopeEquals(letter.toScope(), renderer.letterScope)
-        Assertions.assertEquals(letter.template, renderer.template)
+        assertEquals(letter.template, renderer.template)
     }
 
     @Test
@@ -80,12 +82,12 @@ class LetterRendererTest {
                 listOf(
                     ContentOrControlStructure.Content(
                         Element.OutlineContent.ParagraphContent.Text.Literal.create(
-                            Language.Bokmal to "hei"
+                            Bokmal to "hei"
                         )
                     ),
                     ContentOrControlStructure.Content(
                         Element.OutlineContent.ParagraphContent.Text.Literal.create(
-                            Language.Bokmal to "jadda"
+                            Bokmal to "jadda"
                         )
                     ),
                 )
@@ -102,8 +104,8 @@ class LetterRendererTest {
             actualScopes.add(scope)
         }
 
-        Assertions.assertEquals(expectedElements, actualElements)
-        Assertions.assertFalse(actualScopes.isEmpty())
+        assertEquals(expectedElements, actualElements)
+        assertFalse(actualScopes.isEmpty())
         actualScopes.forEach { assertScopeEquals(expectedScope, it) }
     }
 
@@ -114,45 +116,45 @@ class LetterRendererTest {
 
         val content = TextOnlyScope<LangBokmal, Unit>().apply {
             forEach(itemsExpr.expr()) {
-                textExpr(Language.Bokmal to it + " person")
-                text(Language.Bokmal to "jadda")
+                textExpr(Bokmal to it + " person")
+                text(Bokmal to "jadda")
                 nextExpression = it
             }
         }
         val expectedElements = listOf(
-            Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(Language.Bokmal to nextExpression + " person"),
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "jadda")
+            Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(Bokmal to nextExpression + " person"),
+            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "jadda")
         )
 
         val actualElements = mutableListOf<Element.OutlineContent.ParagraphContent<*>>()
         val actualScopes = mutableListOf<ExpressionScope<*>>()
-        MockRenderer().publicRender(ExpressionScope(Unit, felles, Language.Bokmal), content.elements) { scope, element ->
+        MockRenderer().publicRender(ExpressionScope(Unit, felles, Bokmal), content.elements) { scope, element ->
             actualElements.add(element)
             actualScopes.add(scope)
         }
 
         // Three times expectedElements because itemsExpr contains three items, so loop executes three times
-        Assertions.assertEquals(expectedElements + expectedElements + expectedElements, actualElements)
+        assertEquals(expectedElements + expectedElements + expectedElements, actualElements)
 
         // The actualScopes should allow us to evaluate nextExpression and end up with itemsExpr
-        Assertions.assertEquals(itemsExpr, actualScopes.map { nextExpression.eval(it) }.distinct())
+        assertEquals(itemsExpr, actualScopes.map { nextExpression.eval(it) }.distinct())
     }
 
     @Test
     fun `render Conditional will pass showIf elements to block when predicate is true`() {
         val content = TextOnlyScope<LangBokmal, Unit>().apply {
             showIf(true.expr()) {
-                text(Language.Bokmal to "hei ")
-                text(Language.Bokmal to "person")
+                text(Bokmal to "hei ")
+                text(Bokmal to "person")
             } orShow {
-                text(Language.Bokmal to "should not be rendered")
+                text(Bokmal to "should not be rendered")
             }
         }
 
-        val expectedScope = ExpressionScope(Unit, felles, Language.Bokmal)
+        val expectedScope = ExpressionScope(Unit, felles, Bokmal)
         val expectedElements = listOf(
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "hei "),
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "person"),
+            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "hei "),
+            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "person"),
         )
 
         val actualScopes = mutableListOf<ExpressionScope<*>>()
@@ -162,9 +164,9 @@ class LetterRendererTest {
             actualScopes.add(scope)
         }
 
-        Assertions.assertEquals(expectedElements, actualElements)
+        assertEquals(expectedElements, actualElements)
         // No scope changes
-        Assertions.assertFalse(actualScopes.isEmpty())
+        assertFalse(actualScopes.isEmpty())
         actualScopes.forEach { assertScopeEquals(expectedScope, it) }
     }
 
@@ -172,17 +174,17 @@ class LetterRendererTest {
     fun `render Conditional will pass showElse elements to block when predicate is false`() {
         val content = TextOnlyScope<LangBokmal, Unit>().apply {
             showIf(false.expr()) {
-                text(Language.Bokmal to "should not be rendered")
+                text(Bokmal to "should not be rendered")
             } orShow {
-                text(Language.Bokmal to "hei ")
-                text(Language.Bokmal to "person")
+                text(Bokmal to "hei ")
+                text(Bokmal to "person")
             }
         }
 
-        val expectedScope = ExpressionScope(Unit, felles, Language.Bokmal)
+        val expectedScope = ExpressionScope(Unit, felles, Bokmal)
         val expectedElements = listOf(
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "hei "),
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "person"),
+            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "hei "),
+            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "person"),
         )
 
         val actualScopes = mutableListOf<ExpressionScope<*>>()
@@ -192,19 +194,19 @@ class LetterRendererTest {
             actualScopes.add(scope)
         }
 
-        Assertions.assertEquals(expectedElements, actualElements)
+        assertEquals(expectedElements, actualElements)
         // No scope changes
-        Assertions.assertFalse(actualScopes.isEmpty())
+        assertFalse(actualScopes.isEmpty())
         actualScopes.forEach { assertScopeEquals(expectedScope, it) }
     }
 
     @Test
     fun `render attachments will only render attachments where predicate is true`() {
-        val attachment1 = createAttachment<LangBokmal, Unit>(newText(Language.Bokmal to "tittel"), false) {
-            paragraph { text(Language.Bokmal to "Attachment #1") }
+        val attachment1 = createAttachment<LangBokmal, Unit>(newText(Bokmal to "tittel"), false) {
+            paragraph { text(Bokmal to "Attachment #1") }
         }
-        val attachment2 = createAttachment<LangBokmal, Unit>(newText(Language.Bokmal to "tittel2"), false) {
-            paragraph { text(Language.Bokmal to "Attachment #2") }
+        val attachment2 = createAttachment<LangBokmal, Unit>(newText(Bokmal to "tittel2"), false) {
+            paragraph { text(Bokmal to "Attachment #2") }
         }
         val attachments = listOf(
             IncludeAttachment(Unit.expr(), attachment1, true.expr()),
@@ -216,12 +218,12 @@ class LetterRendererTest {
             ExpressionScope(
                 Unit,
                 felles,
-                Language.Bokmal
+                Bokmal
             ), attachments) { _, _, attachment ->
             actualAttachments.add(attachment)
         }
 
-        Assertions.assertEquals(listOf(attachment1), actualAttachments)
+        assertEquals(listOf(attachment1), actualAttachments)
     }
 
     data class LetterData(val name: String, val vedlegg: TestVedleggDto)
@@ -229,8 +231,8 @@ class LetterRendererTest {
     @Test
     fun `render attachments will receive scope based on letterScope and data Expression and can evaluate attachment expressions`() {
         var attachmentScopedExpr: Expression<String>? = null
-        val attachment1 = createAttachment(newText(Language.Bokmal to "tittel"), false) {
-            paragraph { textExpr(Language.Bokmal to testVerdi1) }
+        val attachment1 = createAttachment(newText(Bokmal to "tittel"), false) {
+            paragraph { textExpr(Bokmal to testVerdi1) }
             attachmentScopedExpr = testVerdi1
         }
         val letterData = LetterData("Anonymous", TestVedleggDto("a value", "another value"))
@@ -245,19 +247,19 @@ class LetterRendererTest {
 
         var evaluatedAttachmentScopedExpr: String? = null
         MockRenderer().publicRenderAttachments(
-            ExpressionScope(letterData, felles, Language.Bokmal),
+            ExpressionScope(letterData, felles, Bokmal),
             listOf(IncludeAttachment(vedleggDataExpr, attachment1, true.expr()))
         ) { scope, _, _ ->
             evaluatedAttachmentScopedExpr = attachmentScopedExpr?.eval(scope)
         }
 
-        Assertions.assertEquals(letterData.vedlegg.testVerdi1, evaluatedAttachmentScopedExpr)
+        assertEquals(letterData.vedlegg.testVerdi1, evaluatedAttachmentScopedExpr)
     }
 
 
     private fun assertScopeEquals(expected: ExpressionScope<*>, actual: ExpressionScope<*>?) {
-        Assertions.assertEquals(expected.felles, actual?.felles)
-        Assertions.assertEquals(expected.argument, actual?.argument)
-        Assertions.assertEquals(expected.language, actual?.language)
+        assertEquals(expected.felles, actual?.felles)
+        assertEquals(expected.argument, actual?.argument)
+        assertEquals(expected.language, actual?.language)
     }
 }

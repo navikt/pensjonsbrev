@@ -103,7 +103,6 @@ sealed class Expression<out Out> : StableHash {
 
 typealias StringExpression = Expression<String>
 
-
 sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Element<Lang>> : StableHash {
     data class Content<out Lang : LanguageSupport, C : Element<Lang>>(
         val content: C,
@@ -121,8 +120,6 @@ sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Eleme
         val next: Expression.FromScope.Assigned<Item>
     ) : ContentOrControlStructure<Lang, C>(), StableHash by StableHash.of(items, StableHash.of(body), next)
 }
-
-
 
 typealias TextElement<Lang> = ContentOrControlStructure<Lang, Element.OutlineContent.ParagraphContent.Text<Lang>>
 typealias TableRowElement<Lang> = ContentOrControlStructure<Lang, Element.OutlineContent.ParagraphContent.Table.Row<Lang>>
