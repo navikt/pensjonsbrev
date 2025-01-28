@@ -101,6 +101,7 @@ fun Application.module() {
             val result = activityCounter.count {
                 call.receive<PDFRequest>()
                     .let { LatexDocumentRenderer.render(it) }
+                    // TODO: Dropp base64-enkodinga (og dekodinga inni)
                     .let { laTeXService.producePDF(it.base64EncodedFiles()) }
             }
             handleResult(result, call.application.environment.log)

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.pdfbygger
 
 import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
@@ -23,7 +24,7 @@ object LatexDocumentRenderer {
     fun render(pdfRequest: PDFRequest) : LatexDocument = render(
         letter = pdfRequest.letterMarkup,
         attachments = pdfRequest.attachments,
-        language = pdfRequest.language,
+        language = pdfRequest.language.toLanguage(),
         felles = pdfRequest.felles,
         brevtype = pdfRequest.brevtype,
     )

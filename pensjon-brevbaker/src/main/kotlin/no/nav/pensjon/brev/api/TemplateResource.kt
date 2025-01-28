@@ -95,7 +95,7 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
             .let { laTeXCompilerService.producePDF(PDFRequest(
                 letterMarkup = it.letterMarkup,
                 attachments = it.attachments,
-                language = letter.language,
+                language = letter.language.toCode(),
                 felles = letter.felles,
                 brevtype = letter.template.letterMetadata.brevtype
             )) }

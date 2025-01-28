@@ -15,6 +15,8 @@ import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.DocumentFile
 import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.pensjon.brev.template.toCode
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import kotlin.test.Test
 
 class LatexDocumentRendererTest {
@@ -85,7 +87,7 @@ class LatexDocumentRendererTest {
         val pdfRequest = PDFRequest(
             letterMarkup = letterMarkup.letterMarkup,
             attachments = letterMarkup.attachments,
-            language = Language.Bokmal,
+            language = LanguageCode.BOKMAL,
             felles = felles,
             brevtype = EksempelbrevRedigerbart.template.letterMetadata.brevtype,
         )
@@ -117,7 +119,7 @@ class LatexDocumentRendererTest {
                 PDFRequest(
                     letterMarkup = markup.letterMarkup,
                     attachments = markup.attachments,
-                    language = letter.language,
+                    language = letter.language.toCode(),
                     felles = letter.felles,
                     brevtype = letter.template.letterMetadata.brevtype,
                 )

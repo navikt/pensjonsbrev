@@ -31,6 +31,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.nio.file.Path
@@ -123,7 +124,7 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
                     PDFRequest(
                         it.letterMarkup,
                         it.attachments,
-                        language,
+                        language.toCode(),
                         felles,
                         template.letterMetadata.brevtype
                     )
