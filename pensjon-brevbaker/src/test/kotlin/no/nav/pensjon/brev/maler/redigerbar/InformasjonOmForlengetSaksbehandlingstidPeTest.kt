@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
-class InformasjonOmForlengetSaksbehandlingPeTest {
+class InformasjonOmForlengetSaksbehandlingstidPeTest {
 
     @Test
     fun testPdf() {
