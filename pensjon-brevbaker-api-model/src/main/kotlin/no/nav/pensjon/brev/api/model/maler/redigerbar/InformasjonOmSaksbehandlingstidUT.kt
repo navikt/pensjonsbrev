@@ -10,6 +10,6 @@ data class InformasjonOmSaksbehandlingstidUtDto(
     override val pesysData: EmptyBrevdata
 ) : RedigerbarBrevdata<InformasjonOmSaksbehandlingstidUtDto.SaksbehandlerValg, EmptyBrevdata> {
     data class SaksbehandlerValg(
-        val forlengetSaksbehandling: Boolean = false,
+        val forlengetSaksbehandlingstid: Boolean = false,
     ) : BrevbakerBrevdata
 }

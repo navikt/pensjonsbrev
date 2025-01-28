@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidUtDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidUtDtoSelectors.SaksbehandlerValgSelectors.forlengetSaksbehandling
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidUtDtoSelectors.SaksbehandlerValgSelectors.forlengetSaksbehandlingstid
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidUtDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.*
@@ -39,7 +39,7 @@ object InformasjonOmSaksbehandlingstidUT : RedigerbarTemplate<InformasjonOmSaksb
         )
     ) {
         title {
-            showIf(saksbehandlerValg.forlengetSaksbehandling) {
+            showIf(saksbehandlerValg.forlengetSaksbehandlingstid) {
                 text(
                     Bokmal to "Informasjon om forlenget saksbehandlingstid",
                     Nynorsk to "Informasjon om forlenget saksbehandlingstid",
@@ -53,12 +53,11 @@ object InformasjonOmSaksbehandlingstidUT : RedigerbarTemplate<InformasjonOmSaksb
                 )
             }
         }
-
         outline {
             paragraph {
                 val mottattDato = fritekst("dato")
 
-                showIf(saksbehandlerValg.forlengetSaksbehandling) {
+                showIf(saksbehandlerValg.forlengetSaksbehandlingstid) {
                     val aarsak = fritekst("årsak til forsinkelse")
                     textExpr(
                         Bokmal to "Vi har ".expr() + mottattDato + " mottatt din søknad om uføretrygd. "
@@ -79,7 +78,7 @@ object InformasjonOmSaksbehandlingstidUT : RedigerbarTemplate<InformasjonOmSaksb
                     )
                 }
             }
-            showIf(saksbehandlerValg.forlengetSaksbehandling) {
+            showIf(saksbehandlerValg.forlengetSaksbehandlingstid) {
                 title1 {
                     text(
                         Bokmal to "Ny svartid",
@@ -88,7 +87,7 @@ object InformasjonOmSaksbehandlingstidUT : RedigerbarTemplate<InformasjonOmSaksb
                     )
                 }
                 paragraph {
-                    showIf(saksbehandlerValg.forlengetSaksbehandling) {
+                    showIf(saksbehandlerValg.forlengetSaksbehandlingstid) {
                         val svartid = fritekst("svartid")
                         textExpr(
                             Bokmal to "Vi antar at kravet ditt kan bli ferdigbehandlet innen ".expr() + svartid + ".",

@@ -16,19 +16,19 @@ class InformasjonOmSaksbehandlingstidUtTest {
 
     private val data = InformasjonOmSaksbehandlingstidUtDto(
         saksbehandlerValg = InformasjonOmSaksbehandlingstidUtDto.SaksbehandlerValg(
-            forlengetSaksbehandling = false
+            forlengetSaksbehandlingstid = false
         ),
         pesysData = EmptyBrevdata
     )
 
     @Test
-    fun `uten forlengetSaksbehandling`() {
+    fun `uten forlengetSaksbehandlingstid`() {
         writeAllLanguages("uten-forlenget-saksbehandlingstid", data)
     }
 
     @Test
-    fun `med forlengetSaksbehandling`() {
-        writeAllLanguages("med-forlengset-saksbehandlingstid", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(forlengetSaksbehandling = true)))
+    fun `med forlengetSaksbehandlingstid`() {
+        writeAllLanguages("med-forlengset-saksbehandlingstid", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(forlengetSaksbehandlingstid = true)))
     }
 
     private fun writeAllLanguages(testNavn: String, data: InformasjonOmSaksbehandlingstidUtDto) {
