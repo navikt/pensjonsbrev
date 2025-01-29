@@ -124,7 +124,12 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
 
     private fun parseArgument(letterData: BrevbakerBrevdata, template: BrevTemplate<BrevbakerBrevdata, *>): BrevbakerBrevdata =
         try {
-            objectMapper.convertValue(template.konverter(letterData), template.template.letterDataType.java)
+            val data = if (template is Konverterbar<*>) {
+                template.konverter(letterData)
+            } else {
+                letterData
+            }
+            objectMapper.convertValue(data, template.template.letterDataType.java)
         } catch (e: IllegalArgumentException) {
             throw ParseLetterDataException("Could not deserialize letterData: ${e.message}", e)
         }
