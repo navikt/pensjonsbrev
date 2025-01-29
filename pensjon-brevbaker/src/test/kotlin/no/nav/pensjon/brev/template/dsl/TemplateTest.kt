@@ -26,7 +26,7 @@ class TemplateTest {
         }
 
         assertEquals(
-            LetterTemplate<LangBokmal, Unit, Unit>(
+            LetterTemplate(
                 name = "test",
                 title = listOf(bokmalTittel),
                 letterDataType = Unit::class,
@@ -78,7 +78,7 @@ class TemplateTest {
         }
 
         assertEquals(
-            LetterTemplate<LangBokmal, SomeDto, Unit>(
+            LetterTemplate(
                 name = "test",
                 title = listOf(bokmalTittel),
                 letterDataType = SomeDto::class,
@@ -126,7 +126,7 @@ class TemplateTest {
         }
 
         assertEquals(
-            LetterTemplate<LangBokmal, Unit, Unit>(
+            LetterTemplate(
                 name = "test",
                 title = listOf(bokmalTittel),
                 letterDataType = Unit::class,
@@ -165,7 +165,7 @@ class TemplateTest {
         }
 
         assertEquals(
-            LetterTemplate<LangBokmal, Unit, Unit>(
+            LetterTemplate(
                 name = "test",
                 title = listOf(bokmalTittel),
                 letterDataType = Unit::class,

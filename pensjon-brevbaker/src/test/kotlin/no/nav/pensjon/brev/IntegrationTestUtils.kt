@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.Letter
@@ -95,7 +94,7 @@ fun renderTestVedleggPdf(
     felles: Felles? = null,
     outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
 ) {
-    val vedlegg: AttachmentTemplate<LangBokmal, EmptyBrevdata> = createAttachment<LangBokmal, EmptyBrevdata>(
+    val vedlegg: AttachmentTemplate<LangBokmal, EmptyBrevdata> = createAttachment(
         title = newText(
             Bokmal to (title ?: testName)
         ),
@@ -178,7 +177,7 @@ fun <AttachmentData : Any, Lang : LanguageSupport> createVedleggTestTemplate(
 
 internal inline fun <reified LetterData : Any> outlineTestTemplate(
     noinline function: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit,
-): LetterTemplate<LangBokmal, LetterData, *> =
+): LetterTemplate<LangBokmal, LetterData> =
     createTemplate(
         name = "test",
         letterDataType = LetterData::class,
@@ -189,15 +188,14 @@ internal inline fun <reified LetterData : Any> outlineTestTemplate(
         outline(function)
     }
 
-internal fun LetterTemplate<LangBokmal, EmptyBrevdata, *>.renderTestPDF(fileName: String, felles: Felles = Fixtures.felles) =
+internal fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = Fixtures.felles) =
     Letter(this, EmptyBrevdata, Bokmal, felles).renderTestPDF(fileName)
 
-internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate<LangBokmal, Unit, Unit>(
+internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate(
     name = "test",
     title = listOf(bokmalTittel),
     letterDataType = Unit::class,
     language = languages(Bokmal),
     outline = elements.asList(),
-    letterMetadata = testLetterMetadata,
-    alternativeData = null,
+    letterMetadata = testLetterMetadata
 )

@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 class ShowIfTest {
     @Test
     fun `createTemplate adds showIf`() {
-        val expected = LetterTemplate<LangNynorsk, SomeDto, Unit>(
+        val expected = LetterTemplate(
             name = "test",
             title = listOf(nynorskTittel),
             letterDataType = SomeDto::class,
@@ -63,7 +63,7 @@ class ShowIfTest {
     @Test
     fun `orShowIf adds a conditional element as else`() {
         val exprScope = Expression.FromScope.Argument<SomeDto>()
-        val expected = LetterTemplate<LangNynorsk, SomeDto, Unit>(
+        val expected = LetterTemplate(
             name = "test",
             title = listOf(nynorskTittel),
             letterDataType = SomeDto::class,
@@ -114,7 +114,7 @@ class ShowIfTest {
     @Test
     fun `final orShow nests as showOr in inner-most conditional element`() {
         val exprScope = Expression.FromScope.Argument<SomeDto>()
-        val expected = LetterTemplate<LangNynorsk, SomeDto, Unit>(
+        val expected = LetterTemplate(
             name = "test",
             title = listOf(nynorskTittel),
             letterDataType = SomeDto::class,

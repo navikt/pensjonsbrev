@@ -76,7 +76,6 @@ object LetterExample : AutobrevBiTemplate<LetterExampleDto, LetterExampleForenkl
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
         letterDataType = LetterExampleDto::class, // Data class containing the required data of this letter
-        altData = { alt: LetterExampleForenklaDto -> this.konverter(alt) },
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems

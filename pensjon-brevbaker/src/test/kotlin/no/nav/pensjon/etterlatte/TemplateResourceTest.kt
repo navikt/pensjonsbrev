@@ -26,7 +26,7 @@ class TemplateResourceTest {
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
     fun <T : Any> testPdf(
-        template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T, *>,
+        template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
         etterlatteBrevKode: Brevkode.Automatisk,
         fixtures: T,
         spraak: Language,
@@ -39,7 +39,7 @@ class TemplateResourceTest {
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
     fun <T : Any> testHtml(
-        template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T, *>,
+        template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
         etterlatteBrevKode: Brevkode.Automatisk,
         fixtures: T,
         spraak: Language,
@@ -58,7 +58,7 @@ class TemplateResourceTest {
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
     fun <T : Any> jsontest(
-        template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T, *>,
+        template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
         etterlatteBrevKode: Brevkode.Automatisk,
         fixtures: T,
         spraak: Language,

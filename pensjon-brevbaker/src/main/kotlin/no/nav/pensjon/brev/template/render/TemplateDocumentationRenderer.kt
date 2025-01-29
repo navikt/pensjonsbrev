@@ -12,7 +12,7 @@ import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
 object TemplateDocumentationRenderer {
 
-    fun render(template: LetterTemplate<*, *, *>, lang: Language): TemplateDocumentation =
+    fun render(template: LetterTemplate<*, *>, lang: Language): TemplateDocumentation =
         TemplateDocumentation(
             title = renderText(template.title, lang),
             outline = renderOutline(template.outline, lang),

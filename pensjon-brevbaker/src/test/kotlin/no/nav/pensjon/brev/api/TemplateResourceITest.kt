@@ -17,7 +17,7 @@ class TemplateResourceITest {
         testTemplate(LetterExample.kode, LetterExample.template)
     }
 
-    private fun testTemplate(kode: Brevkode.Automatisk, template: LetterTemplate<*, *,*>?) {
+    private fun testTemplate(kode: Brevkode.Automatisk, template: LetterTemplate<*, *>?) {
         if (template == null) {
             fail { "TemplateResource.getTemplates() returned a template name that doesnt exist: $kode" }
         }

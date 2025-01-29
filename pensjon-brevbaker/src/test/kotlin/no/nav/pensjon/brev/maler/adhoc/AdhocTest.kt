@@ -10,13 +10,13 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class AdhocTest {
-    fun testHtml(template: LetterTemplate<*, *, *>, htmlName: String, vararg language: Language) {
+    fun testHtml(template: LetterTemplate<*, *>, htmlName: String, vararg language: Language) {
         language.forEach {
             Letter(template, Unit, it, Fixtures.fellesAuto).renderTestHtml(htmlName + "_${it}")
         }
     }
 
-    fun testAdhocPdf(template: LetterTemplate<*, *, *>, pdfName: String, vararg language: Language) {
+    fun testAdhocPdf(template: LetterTemplate<*, *>, pdfName: String, vararg language: Language) {
         language.forEach {
             Letter(template, Unit, it, Fixtures.fellesAuto).renderTestPDF(pdfName + "_${it}")
         }
