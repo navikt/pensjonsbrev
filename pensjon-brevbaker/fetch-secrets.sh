@@ -1,6 +1,6 @@
 #!/bin/bash
 
-KUBE_CLUSTER="dev-gcp"
+KUBE_CLUSTER="nais-dev"
 
 if [ "${BASH_VERSINFO:-0}" -lt 4 ]; then
     echo "Du har for gammel versjon av bash. Vennligst installer versjon 4 eller høyere"
@@ -128,14 +128,14 @@ getSecret pensjon-brevbaker-unleash-api-token unleash
 
 echo -e "${bold}Henter secrets fra Kubernetes${normal}"
 
-fetch_kubernetes_secret_array "Kafka" "nais-dev" "pensjonsbrev" "aiven-pensjon-brevbaker" "kafka" false \
+fetch_kubernetes_secret_array "Kafka" $KUBE_CLUSTER "pensjonsbrev" "aiven-pensjon-brevbaker" "kafka" false \
     "KAFKA_BROKERS" \
     "KAFKA_CREDSTORE_PASSWORD" \
     "KAFKA_SCHEMA_REGISTRY" \
     "KAFKA_SCHEMA_REGISTRY_USER" \
     "KAFKA_SCHEMA_REGISTRY_PASSWORD"
 
-fetch_kubernetes_secret_array "Kafka" "nais-dev" "pensjonsbrev" "aiven-pensjon-brevbaker" "kafka" true \
+fetch_kubernetes_secret_array "Kafka" $KUBE_CLUSTER "pensjonsbrev" "aiven-pensjon-brevbaker" "kafka" true \
   "client.truststore.jks"\
   "client.keystore.p12"
 

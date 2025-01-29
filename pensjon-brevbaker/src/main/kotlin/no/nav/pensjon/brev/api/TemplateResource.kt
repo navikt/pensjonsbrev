@@ -28,7 +28,7 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
     val name: String,
     templates: Set<T>,
     private val laTeXCompilerService: LaTeXCompilerService,
-    private val latexAsyncCompilerService: LatexAsyncCompilerService,
+    private val latexAsyncCompilerService: LatexAsyncCompilerService?,
 ) {
     private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
 
@@ -43,7 +43,7 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
             renderPDF(createLetter(kode, letterData, language, felles))
         }
 
-    suspend fun renderPdfAsync(orderId: String, brevbestilling: BestillBrevRequest<Kode>) =
+    fun renderPdfAsync(orderId: String, brevbestilling: BestillBrevRequest<Kode>) =
         with(brevbestilling) {
             renderPdfAsync(orderId, createLetter(kode, letterData, language, felles))
         }
@@ -118,10 +118,10 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
                 )
             }
 
-    private fun renderPdfAsync(orderId: String, letter: Letter<BrevbakerBrevdata>) =
+    private fun renderPdfAsync(orderId: String, letter: Letter<BrevbakerBrevdata>): Unit =
         renderCompleteMarkup(letter)
             .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
-            .let { latexAsyncCompilerService.renderAsync(orderId, it) }
+            .let { latexAsyncCompilerService?.renderAsync(orderId, it) }
 
     private fun renderHTML(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev)

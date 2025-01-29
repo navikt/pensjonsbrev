@@ -17,7 +17,7 @@ fun Application.brevRouting(
     authenticationNames: Array<String>,
     latexCompilerService: LaTeXCompilerService,
     brevProvider: AllTemplates,
-    latexAsyncCompilerService: LatexAsyncCompilerService
+    latexAsyncCompilerService: LatexAsyncCompilerService?,
 ) =
     routing {
         val autobrev = TemplateResource("autobrev", brevProvider.hentAutobrevmaler(), latexCompilerService, latexAsyncCompilerService)
