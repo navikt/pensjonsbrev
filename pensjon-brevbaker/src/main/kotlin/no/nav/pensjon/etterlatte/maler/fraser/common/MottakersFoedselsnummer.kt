@@ -24,14 +24,14 @@ fun mottakersFoedselsnummer(
         is Language.Bokmal ->
             ifElse(
                 harVerge,
-                "fødselsnummer til den du er verge for".expr(),
-                ifElse(under18Aar, "fødselsnummer til barnet", "fødselsnummer")
+                "fødselsnummeret til den du er verge for".expr(),
+                ifElse(under18Aar, "fødselsnummeret til barnet", "fødselsnummer")
             )
 
         is Language.Nynorsk -> ifElse(
             harVerge,
-            "fødselsnummer til den du er verje for".expr(),
-            ifElse(under18Aar, "fødselsnummer til barnet", "fødselsnummer")
+            "fødselsnummeret til den du er verje for".expr(),
+            ifElse(under18Aar, "fødselsnummeret til barnet", "fødselsnummer")
         )
     }
 
