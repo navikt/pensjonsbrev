@@ -156,7 +156,7 @@ object BarnepensjonFellesFraser {
                     )
                     kontakttelefonPensjon(bosattUtland)
                     text(
-                        Bokmal to ", hverdager klokken 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
+                        Bokmal to ", hverdager mellom klokken 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
                         Nynorsk to ", kvardagar mellom klokka 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
                         English to ", Monday to Friday between 9:00 AM and 3:00 PM. If you provide your national identity number, we can more easily provide you with quick and good help."
                     )

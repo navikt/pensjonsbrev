@@ -86,7 +86,7 @@ object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<Omstillingss
                                     "Dette gjer du ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}.",
                                 English to
                                         "submit additional documentation on the application for adjustment allowance. " +
-                                        "You can do this by going to ${Constants.ETTERSENDE_OMS_URL}.",
+                                        "You can do this by going to ${Constants.Engelsk.ETTERSENDE_OMS_URL}.",
                             )
                         }
                         item {
