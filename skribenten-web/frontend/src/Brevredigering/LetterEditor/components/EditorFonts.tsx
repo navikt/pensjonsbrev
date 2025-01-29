@@ -101,7 +101,7 @@ const FontButton = (props: {
         ${props.active &&
         css`
           background-color: #23262a;
-          color: #ffffff;
+          color: #fff;
           border-color: #999;
           box-shadow: inset 0 0 5px rgb(0 0 0 / 20%);
         `}
