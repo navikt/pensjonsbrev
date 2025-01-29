@@ -313,6 +313,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleOnFocus = (e: React.FocusEvent) => {
     e.preventDefault();
+    //i word vil endring av fonttype beholde markering av teksten, derimot så vil denne state oppdateringen fjerne markeringen
     setEditorState((oldState) => ({
       ...oldState,
       focus: literalIndex,
