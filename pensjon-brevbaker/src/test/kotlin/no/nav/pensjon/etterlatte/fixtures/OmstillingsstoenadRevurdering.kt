@@ -71,14 +71,16 @@ fun createOmstillingsstoenadRevurderingDTO() =
                                 Trygdetidsperiode(
                                     datoFOM = LocalDate.of(2000, 1, 1),
                                     datoTOM = LocalDate.of(2023, 12, 31),
-                                    land = "NOR",
+                                    land = "Norge",
+                                    landkode = "NOR",
                                     opptjeningsperiode = Periode(23, 0, 0),
                                     type = TrygdetidType.FAKTISK,
                                 ),
                                 Trygdetidsperiode(
                                     datoFOM = LocalDate.of(2024, 1, 1),
                                     datoTOM = LocalDate.of(2050, 12, 31),
-                                    land = "NOR",
+                                    land = "Norge",
+                                    landkode = "NOR",
                                     opptjeningsperiode = Periode(26, 0, 0),
                                     type = TrygdetidType.FREMTIDIG,
                                 ),

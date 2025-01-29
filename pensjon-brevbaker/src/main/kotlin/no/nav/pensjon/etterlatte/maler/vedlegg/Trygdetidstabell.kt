@@ -11,6 +11,7 @@ import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.datoTOM
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.land
+import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.landkode
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.opptjeningsperiode
 import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.type
 import no.nav.pensjon.etterlatte.maler.fraser.common.PeriodeITabell
@@ -49,11 +50,19 @@ data class Trygdetidstabell(
                     row {
                         cell { includePhrase(PeriodeITabell(periode.datoFOM, periode.datoTOM)) }
                         cell {
-                            textExpr(
-                                Language.Bokmal to periode.land,
-                                Language.Nynorsk to periode.land,
-                                Language.English to periode.land,
-                            )
+                            ifNotNull(periode.land) { land ->
+                                textExpr(
+                                    Language.Bokmal to land + " (" + periode.landkode + ")",
+                                    Language.Nynorsk to land + " (" + periode.landkode + ")",
+                                    Language.English to land + " (" + periode.landkode + ")",
+                                )
+                            }.orShow {
+                                textExpr(
+                                    Language.Bokmal to periode.landkode,
+                                    Language.Nynorsk to periode.landkode,
+                                    Language.English to periode.landkode,
+                                )
+                            }
                         }
                         cell {
                             ifNotNull(periode.opptjeningsperiode) {
