@@ -14,11 +14,11 @@ interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>
     val template: LetterTemplate<*, LetterData, *>
     val kode: Kode
     fun description(): TemplateDescription
+
+    fun konverter(fra: Any): LetterData = (fra as LetterData)
 }
 
-interface RedigerbarBiTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>, AltLetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>> : RedigerbarTemplate<LetterData> {
-    fun transformer(fra: AltLetterData): LetterData
-}
+interface RedigerbarBiTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>, AltLetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>> : RedigerbarTemplate<LetterData>
 
 interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevdata, out BrevbakerBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart> {
     val kategori: TemplateDescription.Brevkategori
@@ -43,9 +43,7 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevda
         Expression.Literal(beskrivelse, setOf(ElementTags.FRITEKST))
 }
 
-interface AutobrevBiTemplate<out LetterData : BrevbakerBrevdata, AltLetterData : BrevbakerBrevdata> : AutobrevTemplate<LetterData> {
-    fun transformer(fra: AltLetterData): LetterData
-}
+interface AutobrevBiTemplate<out LetterData : BrevbakerBrevdata, AltLetterData : BrevbakerBrevdata> : AutobrevTemplate<LetterData>
 
 interface AutobrevTemplate<out LetterData : BrevbakerBrevdata> : BrevTemplate<LetterData, Brevkode.Automatisk> {
     override fun description(): TemplateDescription.Autobrev =

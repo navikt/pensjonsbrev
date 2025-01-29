@@ -60,19 +60,23 @@ object LetterExample : AutobrevBiTemplate<LetterExampleDto, LetterExampleForenkl
 
     override val kode: Brevkode.Automatisk = LetterExampleBrevkode.TESTBREV
 
-    override fun transformer(fra: LetterExampleForenklaDto): LetterExampleDto = LetterExampleDto(
-        pensjonInnvilget = fra.pensjonInnvilget,
-        datoInnvilget = fra.datoInnvilget,
-        navneliste = fra.navneliste,
-        tilleggEksempel = fra.tilleggEksempel,
-        datoAvslaatt = null,
-        pensjonBeloep = null
-    )
+    override fun konverter(fra: Any): LetterExampleDto = when(fra) {
+        is LetterExampleForenklaDto -> LetterExampleDto(
+                pensjonInnvilget = fra.pensjonInnvilget,
+                datoInnvilget = fra.datoInnvilget,
+                navneliste = fra.navneliste,
+                tilleggEksempel = fra.tilleggEksempel,
+                datoAvslaatt = null,
+                pensjonBeloep = null
+            )
+        is LetterExampleDto -> fra
+        else -> throw IllegalArgumentException("Feil inndataparameter")
+    }
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
         letterDataType = LetterExampleDto::class, // Data class containing the required data of this letter
-        altData = { alt: LetterExampleForenklaDto -> this.transformer(alt) },
+        altData = { alt: LetterExampleForenklaDto -> this.konverter(alt) },
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
