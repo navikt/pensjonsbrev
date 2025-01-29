@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.legacy
+package no.nav.pensjon.brev.maler.ufoereBrev
 
 import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.EndretUfoeretrygdPGAInntektDto
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
+import no.nav.pensjon.brev.maler.legacy.FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2278_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
