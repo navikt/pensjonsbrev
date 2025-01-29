@@ -76,14 +76,15 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
 
     private fun createLetter(brevkode: Kode, brevdata: BrevbakerBrevdata, spraak: LanguageCode, felles: Felles): Letter<BrevbakerBrevdata> {
         val template = getTemplate(brevkode) ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
+        val letterTemplate = template.template
 
         val language = spraak.toLanguage()
-        if (!template.template.language.supports(language)) {
-            throw BadRequestException("Template '${brevkode}' doesn't support language: ${template.template.language}")
+        if (!letterTemplate.language.supports(language)) {
+            throw BadRequestException("Template '${brevkode}' doesn't support language: ${letterTemplate.language}")
         }
 
         return Letter(
-            template = template.template,
+            template = letterTemplate,
             argument = parseArgument(brevdata, template),
             language = language,
             felles = felles,
