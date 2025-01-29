@@ -71,8 +71,8 @@ object Felles {
                             "${Constants.BESKJED_TIL_NAV_URL}. Alternativt kan du " +
                             "sende oss svar i posten. Adressa finn du på ${Constants.ETTERSENDELSE_URL}.",
                     English to "You can send us a statement regarding the matter by logging in to: " +
-                            "${Constants.BESKJED_TIL_NAV_URL}. You can also " +
-                            "send us your statement by post. The address can be found at: ${Constants.ETTERSENDELSE_URL}.",
+                            "${Constants.Engelsk.BESKJED_TIL_NAV_URL}. You can also " +
+                            "send us your statement by post. The address can be found at: ${Constants.Engelsk.ETTERSENDELSE_URL}.",
                 )
             }
         }
