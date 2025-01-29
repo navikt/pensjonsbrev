@@ -60,7 +60,7 @@ object LetterExample : AutobrevBiTemplate<LetterExampleDto, LetterExampleForenkl
 
     override val kode: Brevkode.Automatisk = LetterExampleBrevkode.TESTBREV
 
-    override fun konverter(fra: Any): LetterExampleDto = when(fra) {
+    override fun konverter(fra: BrevbakerBrevdata): LetterExampleDto = when(fra) {
         is LetterExampleForenklaDto -> LetterExampleDto(
                 pensjonInnvilget = fra.pensjonInnvilget,
                 datoInnvilget = fra.datoInnvilget,
