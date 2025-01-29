@@ -60,6 +60,13 @@ object LetterExample : AutobrevBiTemplate<LetterExampleDto, LetterExampleForenkl
 
     override val kode: Brevkode.Automatisk = LetterExampleBrevkode.TESTBREV
 
+    /* TODO: _fra_ er her, viss det kjem frå deserialisering, inn som GenericBrevdata,
+    som i praksis er ein LinkedHashMap.
+    Dermed vil ikkje dette funke, faktisk. Hmm
+    Generelt ikkje openbart korleis vi kan veta om DTO-en som kjem inn er av den eine eller den andre typen,
+    utover med å berre prøve på dei forskjellige kandidatane, men det er heller ikkje godt nok,
+    for det kan jo godt vera at payloaden fint kan passe til både DTO-klasse 1 og DTO-klasse 2
+     */
     override fun konverter(fra: BrevbakerBrevdata): LetterExampleDto = when(fra) {
         is LetterExampleForenklaDto -> LetterExampleDto(
                 pensjonInnvilget = fra.pensjonInnvilget,
