@@ -31,7 +31,7 @@ class IncludeAttachmentTest {
             }
         }
 
-        val expected = LetterTemplate(
+        val expected = LetterTemplate<LangNynorsk, SomeDto, Unit>(
             name = "test",
             title = listOf(newText(Nynorsk to "tittel")),
             letterDataType = SomeDto::class,
@@ -92,7 +92,7 @@ class IncludeAttachmentTest {
 
 
             @Suppress("UNCHECKED_CAST")
-            val expected = LetterTemplate(
+            val expected = LetterTemplate<LangNynorsk, NullData, Unit>(
                 name = "test",
                 title = listOf(newText(Nynorsk to "tittel")),
                 letterDataType = NullData::class,

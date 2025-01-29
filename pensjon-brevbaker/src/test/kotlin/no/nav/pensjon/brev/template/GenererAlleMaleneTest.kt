@@ -22,7 +22,7 @@ class GenererAlleMaleneTest {
     @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("alleMalene")
     fun <T : Any> testPdf(
-        template: LetterTemplate<LanguageSupport, T>,
+        template: LetterTemplate<LanguageSupport, T, *>,
         brevkode: Brevkode<*>,
         fixtures: T,
         spraak: Language,
@@ -44,7 +44,7 @@ class GenererAlleMaleneTest {
     @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("alleMalene")
     fun <T : Any> testHtml(
-        template: LetterTemplate<LanguageSupport, T>,
+        template: LetterTemplate<LanguageSupport, T, *>,
         brevkode: Brevkode<*>,
         fixtures: T,
         spraak: Language,

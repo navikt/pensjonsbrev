@@ -14,9 +14,26 @@ fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
     languages: Lang,
     letterMetadata: LetterMetadata,
     init: TemplateRootScope<Lang, LetterData>.() -> Unit
-): LetterTemplate<Lang, LetterData> =
+): LetterTemplate<Lang, LetterData, Unit> = createTemplate(
+    name,
+    letterDataType,
+    languages,
+    letterMetadata,
+    null,
+    init
+)
+
+
+fun <Lang : LanguageSupport, LetterData : Any, AltLetterData: Any?> createTemplate(
+    name: String,
+    letterDataType: KClass<LetterData>,
+    languages: Lang,
+    letterMetadata: LetterMetadata,
+    altData: ((fra: AltLetterData) -> LetterData)?,
+    init: TemplateRootScope<Lang, LetterData>.() -> Unit
+): LetterTemplate<Lang, LetterData, AltLetterData> =
     with(TemplateRootScope<Lang, LetterData>().apply(init)) {
-        return LetterTemplate(name, title, letterDataType, languages, outline, attachments, letterMetadata)
+        return LetterTemplate(name, title, letterDataType, languages, outline, attachments, letterMetadata, altData)
     }
 
 @TemplateModelHelpers([Felles::class])

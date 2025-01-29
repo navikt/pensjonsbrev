@@ -17,9 +17,9 @@ class LetterRendererTest {
 
     class MockRenderer : LetterRenderer<HTMLDocument>() {
         var letterScope: ExpressionScope<*>? = null
-        var template: LetterTemplate<*, *>? = null
+        var template: LetterTemplate<*, *, *>? = null
 
-        override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): HTMLDocument {
+        override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *, *>): HTMLDocument {
             letterScope = scope
             this.template = template
 

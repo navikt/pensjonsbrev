@@ -16,13 +16,13 @@ data class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attac
 object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
     private val languageSettings = pensjonLatexSettings
 
-    override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterWithAttachmentsMarkup =
+    override fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *, *>): LetterWithAttachmentsMarkup =
         LetterWithAttachmentsMarkup(
             letterMarkup = renderLetterOnly(scope, template),
             attachments = renderAttachmentsOnly(scope, template)
         )
 
-    fun renderLetterOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterMarkup =
+    fun renderLetterOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *, *>): LetterMarkup =
         LetterMarkup(
             title = renderText(scope, template.title).joinToString(separator = "") { it.text },
             sakspart = Sakspart(
@@ -44,7 +44,7 @@ object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             }
         )
 
-    fun renderAttachmentsOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>) = buildList {
+    fun renderAttachmentsOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *, *>) = buildList {
         render(scope, template.attachments) { scope, _, attachment ->
             add(
                 Attachment(

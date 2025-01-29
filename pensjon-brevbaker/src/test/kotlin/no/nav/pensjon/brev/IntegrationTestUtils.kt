@@ -178,7 +178,7 @@ fun <AttachmentData : Any, Lang : LanguageSupport> createVedleggTestTemplate(
 
 internal inline fun <reified LetterData : Any> outlineTestTemplate(
     noinline function: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit,
-): LetterTemplate<LangBokmal, LetterData> =
+): LetterTemplate<LangBokmal, LetterData, *> =
     createTemplate(
         name = "test",
         letterDataType = LetterData::class,
@@ -189,14 +189,15 @@ internal inline fun <reified LetterData : Any> outlineTestTemplate(
         outline(function)
     }
 
-internal fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = Fixtures.felles) =
+internal fun LetterTemplate<LangBokmal, EmptyBrevdata, *>.renderTestPDF(fileName: String, felles: Felles = Fixtures.felles) =
     Letter(this, EmptyBrevdata, Bokmal, felles).renderTestPDF(fileName)
 
-internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate(
+internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate<LangBokmal, Unit, Unit>(
     name = "test",
     title = listOf(bokmalTittel),
     letterDataType = Unit::class,
     language = languages(Bokmal),
     outline = elements.asList(),
-    letterMetadata = testLetterMetadata
+    letterMetadata = testLetterMetadata,
+    alternativeData = null,
 )

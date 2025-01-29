@@ -4,7 +4,7 @@ import no.nav.pensjon.brevbaker.api.model.*
 import java.time.LocalDate
 import kotlin.reflect.KClass
 
-data class LetterTemplate<Lang : LanguageSupport, out LetterData : Any>(
+data class LetterTemplate<Lang : LanguageSupport, out LetterData : Any, AltLetterData: Any?>(
     val name: String,
     val title: List<TextElement<Lang>>,
     val letterDataType: KClass<out LetterData>,
@@ -12,6 +12,7 @@ data class LetterTemplate<Lang : LanguageSupport, out LetterData : Any>(
     val outline: List<OutlineElement<Lang>>,
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
     val letterMetadata: LetterMetadata,
+    val alternativeData: ((AltLetterData) -> LetterData)? = null,
 ) {
     val modelSpecification: TemplateModelSpecification = TemplateModelSpecificationFactory(letterDataType).build()
 
