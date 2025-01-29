@@ -54,6 +54,7 @@ class PdfRequestConsumer(
         parallelismSemaphore.acquire()
         val result = latexCompileService.createLetter(files.files)
         parallelismSemaphore.release()
+        println("Compiled pdf successfully")
         return result
     }
 

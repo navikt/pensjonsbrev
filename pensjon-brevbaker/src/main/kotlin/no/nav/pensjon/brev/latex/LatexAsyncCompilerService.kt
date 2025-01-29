@@ -27,6 +27,7 @@ class LatexAsyncCompilerService(
                 PdfCompilationInput(document.base64EncodedFiles())
             )
         )
+        producer.flush();
     }
 
 }

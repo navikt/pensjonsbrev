@@ -1,6 +1,6 @@
 #!/bin/bash
 
-KUBE_CLUSTER="dev-gcp"
+KUBE_CLUSTER="nais-dev"
 
 function checkKubectl() {
   echo "Verify kubectl, may take some time..."
@@ -46,5 +46,5 @@ which base64 || (
 ) || exit 1
 
 mkdir -p secrets
-kubectl --context dev-gcp -n pensjonsbrev get secret azure-locust -o json | jq '.data | map_values(@base64d)' > secrets/azuread.json
+kubectl --context $KUBE_CLUSTER -n pensjonsbrev get secret azure-locust -o json | jq '.data | map_values(@base64d)' > secrets/azuread.json
 echo "All secrets are fetched and stored in the \"secrets\" folder."

@@ -11,9 +11,9 @@ class BrevbakerLoadTest(FastHttpUser):
     #network_timeout = 300.0
     @task
     def load_test(self):
-        #headers = {'Content-Type': 'application/json'} # local testing
-        headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token(), 'X-Request-ID': str(uuid.uuid4())}# dev environment testing
-        self.client.post("/letter/autobrev/pdf", payload, headers=headers)
+        headers = {'Content-Type': 'application/json', 'orderId': str(uuid.uuid4())} # local testing
+        #headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token(), 'X-Request-ID': str(uuid.uuid4()), 'orderId': str(uuid.uuid4())}# dev environment testing
+        self.client.post("/letter/autobrev/pdfQueued", payload, headers=headers)
 
     def access_token(self):
         return self.token.token

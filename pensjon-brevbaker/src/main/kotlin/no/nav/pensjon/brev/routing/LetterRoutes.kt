@@ -33,7 +33,7 @@ fun Route.letterRoutes(
         post<BestillBrevRequest<Brevkode.Automatisk>>("/pdfQueued") { brevbestilling ->
             installBrevkodeInCallContext(brevbestilling.kode)// TODO trenger vi denne?
             // TODO flytt inn i request?
-            val orderId = call.queryParameters["orderId"] ?: throw IllegalArgumentException("orderId er påkrevd")
+            val orderId = call.request.headers["orderId"] ?: throw IllegalArgumentException("orderId er påkrevd")
             autobrev.renderPdfAsync(orderId, brevbestilling)
             autobrev.countLetter(brevbestilling.kode)
             call.respond(HttpStatusCode.OK)
