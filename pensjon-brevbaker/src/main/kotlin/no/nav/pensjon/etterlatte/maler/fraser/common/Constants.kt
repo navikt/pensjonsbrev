@@ -45,6 +45,9 @@ object Constants {
         const val FULLMAKT_URL = "${Constants.FULLMAKT_URL}/en"
         const val KONTAKT_URL = "${Constants.KONTAKT_URL}/en"
         const val UTBETALING_INFO = "${Constants.Utland.UTBETALING_INFO}/en"
+        const val SAKSBEHANDLINGSTIDER_URL = "${Constants.SAKSBEHANDLINGSTIDER_URL}/en"
+        const val SAKSBEHANDLINGSTIDER_BP = "$SAKSBEHANDLINGSTIDER_URL#childrens-pension"
+        const val SAKSBEHANDLINGSTIDER_OMS = "$SAKSBEHANDLINGSTIDER_URL#adjustment-allowance"
     }
 
     object Utland {
