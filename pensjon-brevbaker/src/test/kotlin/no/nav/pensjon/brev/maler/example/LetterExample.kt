@@ -70,7 +70,7 @@ object LetterExample : AutobrevBiTemplate<LetterExampleDto, LetterExampleForenkl
                 pensjonBeloep = null
             )
         is LetterExampleDto -> fra
-        else -> throw IllegalArgumentException("Feil inndataparameter")
+        else -> throw IllegalArgumentException("Feil inndataparameter: ${fra.javaClass.name}")
     }
 
     override val template = createTemplate(
