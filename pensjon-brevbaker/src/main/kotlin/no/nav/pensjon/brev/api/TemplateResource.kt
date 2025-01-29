@@ -75,15 +75,15 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
         ).increment()
 
     private fun createLetter(brevkode: Kode, brevdata: BrevbakerBrevdata, spraak: LanguageCode, felles: Felles): Letter<BrevbakerBrevdata> {
-        val template = getTemplate(brevkode)?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
+        val template = getTemplate(brevkode) ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
 
         val language = spraak.toLanguage()
-        if (!template.language.supports(language)) {
-            throw BadRequestException("Template '${brevkode}' doesn't support language: ${template.language}")
+        if (!template.template.language.supports(language)) {
+            throw BadRequestException("Template '${brevkode}' doesn't support language: ${template.template.language}")
         }
 
         return Letter(
-            template = template,
+            template = template.template,
             argument = parseArgument(brevdata, template),
             language = language,
             felles = felles,
@@ -122,9 +122,9 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
         }
 
 
-    private fun parseArgument(letterData: BrevbakerBrevdata, template: LetterTemplate<*, BrevbakerBrevdata, *>): BrevbakerBrevdata =
+    private fun parseArgument(letterData: BrevbakerBrevdata, template: BrevTemplate<BrevbakerBrevdata, *>): BrevbakerBrevdata =
         try {
-            objectMapper.convertValue(letterData, template.letterDataType.java)
+            objectMapper.convertValue(template.konverter(letterData), template.template.letterDataType.java)
         } catch (e: IllegalArgumentException) {
             throw ParseLetterDataException("Could not deserialize letterData: ${e.message}", e)
         }
