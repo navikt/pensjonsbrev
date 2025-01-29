@@ -236,11 +236,11 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                 textExpr(
                     Bokmal to " Fratrekk for inntekt i måneder før du er innvilget stønad er ".expr() +
                         sisteFratrekkInnAar.format() + " kroner. Vi har lagt til grunn at du har en inntekt på " +
-                        sisteInntekt.format() + " kroner i innvilgede måneder i år.",
+                        sisteInntekt.format() + " kroner i innvilgede måneder dette året.",
 
                     Nynorsk to " Fråtrekk for inntekt i månader før du er innvilga stønad er ".expr() +
                         sisteFratrekkInnAar.format() + " kroner. Vi har lagt til grunn at du har ei inntekt på " +
-                        sisteInntekt.format() + " kroner i innvilga månader i år.",
+                        sisteInntekt.format() + " kroner i innvilga månader dette året.",
 
                     English to " Deduction for income in months before you are granted allowance is NOK ".expr() +
                         sisteFratrekkInnAar.format() + ". We have assumed that you have an income of NOK " +
@@ -248,8 +248,8 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                 )
             }
             text(
-                Bokmal to " Beløpet er avrundet ned til nærmeste tusen.",
-                Nynorsk to " Beløpet er avrunda ned til næraste tusen.",
+                Bokmal to " Inntekt blir alltid avrundet ned til nærmeste tusen.",
+                Nynorsk to " Inntekt blir alltid avrunda ned til næraste tusen.",
                 English to " The amount is rounded down to the nearest thousand.",
             )
         }
@@ -299,8 +299,8 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     }
                 }
                 text(
-                    Bokmal to " Beløpet er avrundet ned til nærmeste tusen.",
-                    Nynorsk to " Beløpet er avrunda ned til næraste tusen.",
+                    Bokmal to " Inntekt blir alltid avrundet ned til nærmeste tusen.",
+                    Nynorsk to " Inntekt blir alltid avrunda ned til næraste tusen.",
                     English to " The amount is rounded down to the nearest thousand."
                 )
             }

@@ -138,7 +138,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
                             Nynorsk to "Ettersend dokumentasjon frå søknad om omstillingsstønad. " +
                                     "Dette gjer du ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}.",
                             English to "send more documentation later from your adjustment allowance application. " +
-                                    "Do this online here: ${Constants.ETTERSENDE_OMS_URL}.",
+                                    "Do this online here: ${Constants.Engelsk.ETTERSENDE_OMS_URL}.",
                         )
                     }
                     item {
