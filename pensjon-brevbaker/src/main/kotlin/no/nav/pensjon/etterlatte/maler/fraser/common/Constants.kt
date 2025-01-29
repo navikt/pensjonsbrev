@@ -38,6 +38,7 @@ object Constants {
     object Engelsk {
         const val BARNEPENSJON_URL = "${Constants.BARNEPENSJON_URL}/en"
         const val BESKJED_TIL_NAV_URL = "${Constants.BESKJED_TIL_NAV_URL}/en"
+        const val ETTERSENDE_OMS_URL = "${Constants.ETTERSENDELSE_URL}en#adjustment-allowance"
         const val ETTERSENDELSE_URL = "${Constants.ETTERSENDELSE_URL}/en"
         const val FULLMAKT_URL = "${Constants.FULLMAKT_URL}/en"
         const val KLAGE_URL = "${Constants.KLAGE_URL}/en"
