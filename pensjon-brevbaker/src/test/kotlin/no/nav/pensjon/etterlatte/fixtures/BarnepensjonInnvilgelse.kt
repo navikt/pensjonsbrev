@@ -21,14 +21,16 @@ fun createBarnepensjonInnvilgelseDTO(): BarnepensjonInnvilgelseDTO {
             Trygdetidsperiode(
                 datoFOM = LocalDate.of(2004, 1, 1),
                 datoTOM = LocalDate.of(2024, 1, 1),
-                land = "NOR",
+                land = "Norge",
+                landkode = "NOR",
                 opptjeningsperiode = Periode(20, 0, 0),
                 type = TrygdetidType.FAKTISK
             ),
             Trygdetidsperiode(
                 datoFOM = LocalDate.of(2024, 1, 1),
                 datoTOM = LocalDate.of(2044, 1, 1),
-                land = "NOR",
+                land = "Norge",
+                landkode = "NOR",
                 opptjeningsperiode = Periode(20, 0, 0),
                 type = TrygdetidType.FREMTIDIG
             )
