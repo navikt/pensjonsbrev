@@ -80,7 +80,7 @@ object OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall : EtterlatteTe
                         textExpr(
                             Bokmal to "Vi har lagt til grunn at du ikke har inntekt som omstillingsstønaden skal reduseres etter i innvilgede måneder i ".expr()+inntektsaar.format()+".",
                             Nynorsk to "Vi har lagt til grunn at du ikkje har inntekt som omstillingsstønaden skal reduserast etter i innvilga månader i ".expr()+inntektsaar.format()+".",
-                            English to "We have assumed that you will have no income from which the adjustment allowance will be reduced after ".expr()+inntektsaar.format()+".",
+                            English to "We have assumed that you will have no income from which the adjustment allowance will be reduced in granted months in ".expr()+inntektsaar.format()+".",
                         )
                     }
                 }
