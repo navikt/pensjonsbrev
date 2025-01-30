@@ -183,10 +183,10 @@ export const EndreMottakerModal = (properties: {
 
   const onAvbrytClick = useCallback(() => {
     setVilAvbryte(true);
-    if (!form.formState.isDirty) {
+    if (!form.formState.dirtyFields.manuellAdresse) {
       properties.onClose();
     }
-  }, [form.formState.isDirty, properties]);
+  }, [form.formState.dirtyFields.manuellAdresse, properties]);
 
   return (
     <Modal
@@ -195,7 +195,10 @@ export const EndreMottakerModal = (properties: {
       `}
       data-cy="endre-mottaker-modal"
       header={{
-        heading: vilAvbryte && form.formState.isDirty ? "Vil du avbryte endring av mottaker?" : "Endre mottaker",
+        heading:
+          vilAvbryte && form.formState.dirtyFields.manuellAdresse
+            ? "Vil du avbryte endring av mottaker?"
+            : "Endre mottaker",
       }}
       onClose={properties.onClose}
       open={properties.åpen}
@@ -204,7 +207,7 @@ export const EndreMottakerModal = (properties: {
       vi vil likevel få litt andre tekniske problemer som event propagation. Denne kan vi likevel bare stoppe..
       */
       portal
-      width={600}
+      width={vilAvbryte && form.formState.dirtyFields.manuellAdresse ? 480 : 600}
     >
       <Modal.Body>
         <form
@@ -221,7 +224,7 @@ export const EndreMottakerModal = (properties: {
             })(event);
           }}
         >
-          {vilAvbryte && form.formState.isDirty ? (
+          {vilAvbryte && form.formState.dirtyFields.manuellAdresse ? (
             <BekreftAvbrytelse onBekreftAvbryt={properties.onClose} onIkkeAvbryt={() => setVilAvbryte(false)} />
           ) : (
             <ModalTabs
