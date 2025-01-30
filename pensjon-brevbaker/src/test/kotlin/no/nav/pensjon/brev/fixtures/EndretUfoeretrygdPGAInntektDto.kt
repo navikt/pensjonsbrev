@@ -9,5 +9,6 @@ fun createEndretUfoeretrygdPGAInntektDto() =
     EndretUfoeretrygdPGAInntektDto(
         pe = Fixtures.create(),
         maanedligUfoeretrygdFoerSkatt = Fixtures.create(),
-        orienteringOmRettigheterUfoere = Fixtures.create()
+        orienteringOmRettigheterUfoere = Fixtures.create(),
+        
     )
