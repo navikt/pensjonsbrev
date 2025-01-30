@@ -1042,14 +1042,14 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                         showIf(justeringsbelopPerArBTFB.notEqualTo(0)) {
                             showIf(justeringsbelopPerArBTFB.greaterThan(0)) {
-                                text(
-                                    Bokmal to "Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor lagt til " + justeringsbelopPerArUtenMinusBTFB.format() + " kroner i det vi reduserer barnetillegget med for resten av året. ",
-                                    Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor lagt til " + justeringsbelopPerArUtenMinusBTFB.format() + " kroner i det vi har redusert barnetillegget med for resten av året. ",
+                                textExpr(
+                                    Bokmal to "Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor lagt til ".expr() + justeringsbelopPerArUtenMinusBTFB.format() + " kroner i det vi reduserer barnetillegget med for resten av året. ",
+                                    Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor lagt til ".expr() + justeringsbelopPerArUtenMinusBTFB.format() + " kroner i det vi har redusert barnetillegget med for resten av året. ",
                                 )
                             }.orShow {
-                                text(
-                                    Bokmal to "Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor trukket fra " + justeringsbelopPerArUtenMinusBTFB.format() + " kroner i det vi reduserer barnetillegget med for resten av året. ",
-                                    Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor trekt frå " + justeringsbelopPerArUtenMinusBTFB.format() + " kroner i det vi har redusert barnetillegget med for resten av året. ",
+                                textExpr(
+                                    Bokmal to "Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor trukket fra ".expr() + justeringsbelopPerArUtenMinusBTFB.format() + " kroner i det vi reduserer barnetillegget med for resten av året. ",
+                                    Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor trekt frå ".expr() + justeringsbelopPerArUtenMinusBTFB.format() + " kroner i det vi har redusert barnetillegget med for resten av året. ",
                                 )
                             }
                         }
@@ -1076,14 +1076,14 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
                                 Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor ",
                             )
                             showIf(justeringsbelopPerArBTSB.greaterThan(0)) {
-                                text(
-                                    Bokmal to "Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor lagt til " + justeringsbelopPerArUtenMinusBTSB.format() + " kroner i det vi reduserer barnetillegget med for resten av året. ",
-                                    Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor lagt til " + justeringsbelopPerArUtenMinusBTSB.format() + " kroner i det vi reduserte barnetillegget med for resten av året. ",
+                                textExpr(
+                                    Bokmal to "Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor lagt til ".expr() + justeringsbelopPerArUtenMinusBTSB.format() + " kroner i det vi reduserer barnetillegget med for resten av året. ",
+                                    Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor lagt til ".expr() + justeringsbelopPerArUtenMinusBTSB.format() + " kroner i det vi reduserte barnetillegget med for resten av året. ",
                                 )
                             }.orShow {
-                                text(
-                                    Bokmal to "Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor trukket fra " + justeringsbelopPerArUtenMinusBTSB.format() + " kroner i det vi reduserer barnetillegget med for resten av året. ",
-                                    Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor trekt frå " + justeringsbelopPerArUtenMinusBTSB.format() + " kroner i det vi reduserte barnetillegget med for resten av året. ",
+                                textExpr(
+                                    Bokmal to "Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor trukket fra ".expr() + justeringsbelopPerArUtenMinusBTSB.format() + " kroner i det vi reduserer barnetillegget med for resten av året. ",
+                                    Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor trekt frå ".expr() + justeringsbelopPerArUtenMinusBTSB.format() + " kroner i det vi reduserte barnetillegget med for resten av året. ",
                                 )
                             }
                         }
