@@ -1,4 +1,4 @@
-package no.nav.pensjon.brevbaker.api.model
+package no.nav.pensjon.brev.api.model
 
 interface FeatureToggle {
     fun isEnabled(): Boolean

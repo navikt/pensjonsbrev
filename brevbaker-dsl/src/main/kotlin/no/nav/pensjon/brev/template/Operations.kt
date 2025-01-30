@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.Bruker
-import no.nav.pensjon.brevbaker.api.model.FeatureToggle
+import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import kotlin.math.absoluteValue
