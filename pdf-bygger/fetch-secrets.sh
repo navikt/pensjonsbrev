@@ -6,7 +6,7 @@ normal=$(tput sgr0)
 white="[97;1m"
 yellow="[33;1m"
 endcolor="[0m"
-rm secrets/.env
+rm -f secrets/.env
 mkdir secrets -p
 
 

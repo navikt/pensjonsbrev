@@ -1,6 +1,10 @@
 package no.nav.pensjon.brev.pdfbygger.kafka
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Semaphore
@@ -9,6 +13,7 @@ import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
 import no.nav.pensjon.brev.pdfbygger.model.PdfCompilationInput
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.StringDeserializer
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
@@ -20,7 +25,7 @@ class PdfRequestConsumer(
     private val consumer =
         KafkaConsumer<String, PdfCompilationInput>(properties, StringDeserializer(), PdfCompilationInputDeserializer())
 
-    private val parallelism = Runtime.getRuntime().availableProcessors() * 2
+    private val parallelism = Runtime.getRuntime().availableProcessors()
     private val parallelismSemaphore = parallelism.takeIf { it > 0 }?.let { Semaphore(it) }
         ?: throw IllegalStateException("Not enough cores to run async worker")
 
@@ -29,23 +34,25 @@ class PdfRequestConsumer(
     }
 
     private fun poll() =
-        consumer.poll(3.seconds.toJavaDuration())
+        consumer.poll(5.seconds.toJavaDuration())
             .map { it.value() }
 
     fun flow() =
         flow {
             while (true) {
-                emit(poll())
+                val workInQueue =  parallelism - parallelismSemaphore.availablePermits
+                if(workInQueue < parallelism / 2) {
+                    emit(poll())
+                    println("Polled message")
+                } else {
+                    delay(500.milliseconds)
+                    println("Still working on ${parallelismSemaphore.availablePermits} requests. No need to poll.")
+                }
             }
         }.onEach { input ->
-            val result = input.map { compile(it) }
-            // TODO retry logic?
-            // TODO remove debug logging
-            result.forEach {
-                println("PDF compilation finished with result: $it")
+            coroutineScope {
+                input.map { async { compile(it) } }.awaitAll()
             }
-
-            // TODO write to passed return queue
         }.onEach {
             consumer.commitAsync()
         }

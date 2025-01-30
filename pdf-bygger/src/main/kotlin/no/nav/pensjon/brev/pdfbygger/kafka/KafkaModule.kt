@@ -32,5 +32,5 @@ private fun createKafkaConfig(kafkaConfig: ApplicationConfig): Map<String, Strin
     "ssl.truststore.location" to kafkaConfig.getProperty("ssl.truststore.location"),
     "ssl.truststore.password" to kafkaConfig.getProperty("ssl.truststore.password"),
     "group.id" to "pdf-bygger-async",
-    "max.poll.records" to "8",
+    "max.poll.records" to "50",
 )
