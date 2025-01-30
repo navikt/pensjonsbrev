@@ -6,5 +6,5 @@ import java.time.LocalDate
 
 fun createOmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfallDTO() = OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO(
     inntektsbeloep = Kroner(20000),
-    opphoerDato = LocalDate.of(2025, 11, 1),
+    inntektsaar = 2025
 )

@@ -21,14 +21,16 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
             Trygdetidsperiode(
                 datoFOM = LocalDate.of(2004, 1, 1),
                 datoTOM = LocalDate.of(2024, 3, 1),
-                land = "NOR",
+                land = "Norge",
+                landkode = "NOR",
                 opptjeningsperiode = Periode(20, 2, 0),
                 type = TrygdetidType.FAKTISK
             ),
             Trygdetidsperiode(
                 datoFOM = LocalDate.of(2024, 4, 1),
                 datoTOM = LocalDate.of(2044, 1, 1),
-                land = "NOR",
+                land = "Norge",
+                landkode = "NOR",
                 opptjeningsperiode = Periode(19, 10, 0),
                 type = TrygdetidType.FREMTIDIG
             )
@@ -83,14 +85,16 @@ fun createBarnepensjonRevurderingDTO():BarnepensjonRevurderingDTO {
                         Trygdetidsperiode(
                             datoFOM = LocalDate.of(2014, 1, 1),
                             datoTOM = LocalDate.of(2024, 1, 1),
-                            land = "NOR",
+                            land = "Norge",
+                            landkode = "NOR",
                             opptjeningsperiode = Periode(10, 0, 0),
                             type = TrygdetidType.FAKTISK
                         ),
                         Trygdetidsperiode(
                             datoFOM = LocalDate.of(2024, 1, 1),
                             datoTOM = LocalDate.of(2044, 1, 1),
-                            land = "NOR",
+                            land = "Norge",
+                            landkode = "NOR",
                             opptjeningsperiode = Periode(20, 0, 0),
                             type = TrygdetidType.FREMTIDIG
                         )

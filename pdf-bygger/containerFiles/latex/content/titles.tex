@@ -14,25 +14,11 @@
 \newlength{\spacebetweentitleandnontitle}
 \setlength{\spacebetweentitleandnontitle}{\dimexpr(25pt-\parskip) plus 8pt minus 8pt}
 
-\newcommand{\lettersectiontitle}[1]{
-    \pagebreak[3] %strongly encourage page break before section title
-    % add more space between previous non-title element accounting for it's own space )
-    \ifdefstring{\previouselement}{title}{}{\addvspace{\spacebetweentitleandnontitle}}
-    #1
-    \nopagebreak
-    \\[0pt]         % TODO finn en bedre måte å få \linebreak til å fungere uten å legge til indent.
-    \addpenalty{10000} % Absolutely no page break here. Addpenalty carries the penalty through addvspace to the next element.
-    \addvspace{3pt} % require at least 6 pt of space until the next element.
-}
+% do not split the command with newlines. It will be included in the content.
+\newcommand{\lettersectiontitle}[1]{\pagebreak[3]\ifdefstring{\previouselement}{title}{}{\addvspace{\spacebetweentitleandnontitle}}#1\nopagebreak\\[0pt]\addpenalty{10000}\addvspace{3pt}}
 
 % Title 1
-\newcommand{\lettersectiontitleone}[1]{
-    \lettersectiontitle{\titleone #1}
-    \setpreviouselement{title}
-}
+\newcommand{\lettersectiontitleone}[1]{\lettersectiontitle{\titleone #1}\setpreviouselement{title}}
 
 % Title 2
-\newcommand{\lettersectiontitletwo}[1]{
-    \lettersectiontitle{\titletwo #1}
-    \setpreviouselement{title}
-}
+\newcommand{\lettersectiontitletwo}[1]{\lettersectiontitle{\titletwo #1}\setpreviouselement{title}}

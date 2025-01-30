@@ -140,7 +140,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
                         bosattIUtlandet,
                         Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE,
                         Constants.KONTAKTTELEFON_PENSJON
-                    ) + ", hverdager 09.00-15.00. Hvis du oppgir fødselsnummer" + ifElse(
+                    ) + ", hverdager mellom klokken 09.00-15.00. Hvis du oppgir fødselsnummer" + ifElse(
                         harVerge,
                         " til den du er verge for".expr(),
                         ifElse(under18Aar, " til barnet", "")
