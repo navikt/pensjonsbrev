@@ -61,9 +61,9 @@ object OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall : EtterlatteTe
 
                 paragraph {
                     textExpr(
-                        Bokmal to "Du har ikke meldt om endring i inntekten for neste kalenderår. Vi har derfor basert beregningen på inntektsopplysningene du oppga for inneværende kalenderår. Inntekten er justert til å reflektere inntek i innvilga ".expr()+inntektsaar.format()+".",
+                        Bokmal to "Du har ikke meldt om endring i inntekten for neste kalenderår. Vi har derfor basert beregningen på inntektsopplysningene du oppga for inneværende kalenderår. Inntekten er justert til å reflektere inntek i innvilga måneder i ".expr()+inntektsaar.format()+".",
                         Nynorsk to "Du har ikkje meldt om endring i inntekta for neste kalenderår. Vi har difor basert utrekninga vår på inntektsopplysningane du har oppgitt for inneverande kalenderår. Inntekta er justert slik at ho reflekterer inntekt i innvilga månader i ".expr()+inntektsaar.format()+".",
-                        English to "You have not notified us of any changes in your income for the next calendar year. Therefore we have based the calculation on the income information you provided for the current calendar year. Income is adjusted to reflect income income in granted months in ".expr()+inntektsaar.format()+".",
+                        English to "You have not notified us of any changes in your income for the next calendar year. Therefore we have based the calculation on the income information you provided for the current calendar year. Income is adjusted to reflect income in granted months in ".expr()+inntektsaar.format()+".",
                     )
                 }
 
@@ -71,8 +71,8 @@ object OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall : EtterlatteTe
                     paragraph {
                         textExpr(
                             Bokmal to "Vi har lagt til grunn at du har ".expr()+inntektsbeloep.format() + " kroner som forventet inntekt i innvilgede måneder i  ".expr()+inntektsaar.format()+".",
-                            Nynorsk to "Vi har lagt til grunn at du har ".expr()+inntektsbeloep.format() + " kroner som forventa inntekt i innvilga månadar i ".expr()+inntektsaar.format()+".",
-                            English to "We have applied as a basis that you have NOK ".expr()+inntektsbeloep.format() + " in expected income in granted months in ".expr()+inntektsaar.format()+".",
+                            Nynorsk to "Vi har lagt til grunn at du har ".expr()+inntektsbeloep.format() + " kroner som forventa inntekt i innvilga månader i ".expr()+inntektsaar.format()+".",
+                            English to "We have assumed a basis of NOK ".expr()+inntektsbeloep.format() + " in expected income for the granted months in ".expr()+inntektsaar.format()+".",
                         )
                     }
                 }.orShow {
