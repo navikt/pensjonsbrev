@@ -19,6 +19,7 @@ dsl : - det som trengs for å lage en mal
 object "brevbaker-bibliotek" as bibliotek
 bibliotek : skal eksponeres
 
+object Gjenny #yellow
 
 object "brevbaker-model" as modelcommon
 modelcommon : - som i dag
@@ -47,7 +48,9 @@ pensjonsmalene ..> tmg
 bibliotek ..> tmg
 
 PEN --> apimodel
+Gjenny --> modelcommon
 
 Skribenten --> modelcommon
+Skribenten --> apimodel
 
 @enduml
