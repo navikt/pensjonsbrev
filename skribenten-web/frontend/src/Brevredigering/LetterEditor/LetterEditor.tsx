@@ -1,5 +1,3 @@
-import "./editor.css";
-
 import { css } from "@emotion/react";
 import { Heading } from "@navikt/ds-react";
 import type { Dispatch, SetStateAction } from "react";
@@ -8,10 +6,10 @@ import { createContext, useContext } from "react";
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 
-import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
+import { EditableBlockComposer } from "./components/TextBlocks";
 import type { LetterEditorState } from "./model/state";
 import { useEditorKeyboardShortcuts } from "./utils";
 
@@ -55,24 +53,33 @@ export const LetterEditor = ({
         >
           <EditorMenu />
         </div>
-        <div className="editor">
+        <div
+          css={css`
+            margin-top: var(--a-spacing-6);
+            /*clamp: minimum, ideal, max */
+            padding: 0 clamp(1rem, 2vw, 4rem);
+            caret-color: green;
+
+            [contenteditable] {
+              &:focus-within {
+                outline: none;
+              }
+            }
+          `}
+          data-cy="letter-editor"
+        >
           <SakspartView sakspart={letter.sakspart} />
           <Heading
             css={css`
               margin: var(--a-spacing-8) 0;
-              cursor: default;
             `}
-            level="1"
+            level="2"
             size="large"
           >
             {letter.title}
           </Heading>
           <div onKeyDown={editorKeyboardShortcuts}>
-            {blocks.map((block, blockIndex) => (
-              <div className={block.type} key={blockIndex}>
-                <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
-              </div>
-            ))}
+            <EditableBlockComposer blocks={blocks} />
           </div>
           <SignaturView signatur={letter.signatur} />
         </div>

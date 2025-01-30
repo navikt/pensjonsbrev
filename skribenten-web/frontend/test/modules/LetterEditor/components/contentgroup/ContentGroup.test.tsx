@@ -6,7 +6,7 @@ import { afterEach, describe, expect, test, vi } from "vitest";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newLiteral } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
-import { ContentGroup } from "~/Brevredigering/LetterEditor/components/ContentGroup";
+import { EditableBlockComposer } from "~/Brevredigering/LetterEditor/components/TextBlocks";
 import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
 import type { CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
@@ -25,7 +25,7 @@ const block: ParagraphBlock = {
   deletedContent: [],
   content,
 };
-const editorState = letter(block, block, block);
+const editorState = letter(block);
 const setEditorState: Mock<CallbackReceiver<LetterEditorState>> = vi.fn();
 
 afterEach(() => {
@@ -37,7 +37,7 @@ function setup() {
     user: userEvent.setup(),
     ...render(
       <EditorStateContext.Provider value={{ freeze: false, error: false, editorState, setEditorState }}>
-        <ContentGroup literalIndex={{ blockIndex: 0, contentIndex: 0 }} />
+        <EditableBlockComposer blocks={[block]} />
       </EditorStateContext.Provider>,
     ),
   };
@@ -72,11 +72,7 @@ function setupComplex(stateOverride?: LetterEditorState) {
       <EditorStateContext.Provider
         value={{ freeze: false, error: false, editorState: stateOverride ?? complexEditorState, setEditorState }}
       >
-        {(stateOverride ?? complexEditorState).redigertBrev.blocks.map((block, blockIndex) => (
-          <div className={block.type} key={blockIndex}>
-            <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
-          </div>
-        ))}
+        <EditableBlockComposer blocks={(stateOverride ?? complexEditorState).redigertBrev.blocks} />
       </EditorStateContext.Provider>,
     ),
   };
