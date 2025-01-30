@@ -90,7 +90,8 @@ enum class BeregningsMetode {
 data class Trygdetidsperiode(
     val datoFOM: LocalDate,
     val datoTOM: LocalDate?,
-    val land: String,
+    val landkode: String,
+    val land: String?,
     val opptjeningsperiode: Periode?,
     val type: TrygdetidType,
 )
