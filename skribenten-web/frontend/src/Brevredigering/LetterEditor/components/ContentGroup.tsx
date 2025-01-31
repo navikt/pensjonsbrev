@@ -22,7 +22,7 @@ import {
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
 import { NEW_LINE } from "~/types/brevbakerTypes";
-import { ElementTags, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+import { ElementTags, FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 /**
  * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
@@ -56,7 +56,16 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
           }
           case NEW_LINE:
           case VARIABLE: {
-            return <Text content={content} key={_contentIndex} />;
+            return (
+              <Text
+                content={content}
+                key={_contentIndex}
+                literalIndex={{
+                  blockIndex: literalIndex.blockIndex,
+                  contentIndex: _contentIndex,
+                }}
+              />
+            );
           }
           case ITEM_LIST: {
             return (
@@ -304,6 +313,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleOnFocus = (e: React.FocusEvent) => {
     e.preventDefault();
+    //i word vil endring av fonttype beholde markering av teksten, derimot så vil denne state oppdateringen fjerne markeringen
     setEditorState((oldState) => ({
       ...oldState,
       focus: literalIndex,
@@ -329,14 +339,16 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       // However, the tests will not work if set to plaintext-only. For some reason focus/input and other events will not be triggered by userEvent as expected.
       // This is not documented anywhere I could find and caused a day of frustration, beware
       contentEditable={!freeze}
-      css={
-        erFritekst &&
+      css={css`
+        ${erFritekst &&
         css`
           color: var(--a-blue-500);
           text-decoration: underline;
           cursor: pointer;
-        `
-      }
+        `}
+        ${content.editedFontType === FontType.BOLD && "font-weight: bold;"}
+        ${content.editedFontType === FontType.ITALIC && "font-style: italic;"}
+      `}
       onClick={handleOnclick}
       onFocus={handleOnFocus}
       onInput={(event) => {

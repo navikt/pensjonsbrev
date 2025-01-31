@@ -7,6 +7,7 @@ val hamkrestVersion: String by project
 val logbackVersion: String by project
 val logstashVersion: String by project
 val micrometerVersion: String by project
+val jacksonJsr310Version: String by project
 
 plugins {
     kotlin("jvm")
@@ -50,10 +51,17 @@ dependencies {
     implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
     implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
 
+    implementation(project(":brevbaker-dsl"))
+
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version") {
+        because("we require deserialization/serialization of java.time.LocalDate")
+    }
 
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+
+    testImplementation(project(":brevbaker"))
 }
 
 application {

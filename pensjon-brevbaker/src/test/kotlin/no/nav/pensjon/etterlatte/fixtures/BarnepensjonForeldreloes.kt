@@ -25,14 +25,16 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
             Trygdetidsperiode(
                 datoFOM = LocalDate.of(2004, 1, 1),
                 datoTOM = LocalDate.of(2024, 1, 1),
-                land = "NOR",
+                land = "Norge",
+                landkode = "NOR",
                 opptjeningsperiode = Periode(20, 0, 0),
                 type = TrygdetidType.FAKTISK
             ),
             Trygdetidsperiode(
                 datoFOM = LocalDate.of(2024, 1, 1),
                 datoTOM = LocalDate.of(2044, 1, 1),
-                land = "NOR",
+                land = "Norge",
+                landkode = "NOR",
                 opptjeningsperiode = Periode(20, 0, 0),
                 type = TrygdetidType.FREMTIDIG
             )
@@ -50,21 +52,24 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
             Trygdetidsperiode(
                 datoFOM = LocalDate.of(2004, 1, 1),
                 datoTOM = LocalDate.of(2014, 1, 1),
-                land = "NOR",
+                land = "Norge",
+                landkode = "NOR",
                 opptjeningsperiode = Periode(10, 0, 0),
                 type = TrygdetidType.FAKTISK
             ),
             Trygdetidsperiode(
                 datoFOM = LocalDate.of(2014, 1, 1),
                 datoTOM = LocalDate.of(2023, 10, 1),
-                land = "SWE",
+                land = "Sverige",
+                landkode = "SWE",
                 opptjeningsperiode = Periode(10, 0, 0),
                 type = TrygdetidType.FAKTISK
             ),
             Trygdetidsperiode(
                 datoFOM = LocalDate.of(2023, 11, 1),
                 datoTOM = LocalDate.of(2044, 1, 1),
-                land = "NOR",
+                land = "Norge",
+                landkode = "NOR",
                 opptjeningsperiode = Periode(20, 0, 0),
                 type = TrygdetidType.FREMTIDIG
             )

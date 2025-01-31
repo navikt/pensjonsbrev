@@ -14,7 +14,6 @@ plugins {
 group = "no.nav.pensjon.brev"
 version = "0.0.1-SNAPSHOT"
 
-
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.fromTarget(javaTarget))
@@ -46,6 +45,8 @@ tasks {
 dependencies {
     compileOnly(kotlin("reflect"))
     implementation("com.google.devtools.ksp:symbol-processing-api:$kotlinVersion-$kspVersion")
+    implementation(project(":brevbaker-api-model-common"))
+    implementation(project(":brevbaker-dsl"))
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
     // Byttet til fork som støtter kotlin > 2.0
