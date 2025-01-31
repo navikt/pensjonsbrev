@@ -11,7 +11,7 @@ export type TextProperties = {
   literalIndex: LiteralIndex;
 };
 
-export const Text = ({ content, literalIndex }: TextProperties) => {
+export const NonEditableText = ({ content, literalIndex }: TextProperties) => {
   const { editorState, setEditorState } = useEditor();
   const isFocused =
     editorState.focus.blockIndex === literalIndex.blockIndex &&

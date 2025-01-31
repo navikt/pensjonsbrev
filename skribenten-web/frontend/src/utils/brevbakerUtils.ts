@@ -2,7 +2,18 @@ import type { Draft } from "immer";
 
 import type { BlockContentIndex, ItemContentIndex, LiteralIndex } from "~/Brevredigering/LetterEditor/actions/model";
 import type { Focus } from "~/Brevredigering/LetterEditor/model/state";
-import type { Content, ItemList, LiteralValue, NewLine, TextContent, VariableValue } from "~/types/brevbakerTypes";
+import type {
+  AnyBlock,
+  Content,
+  ItemList,
+  LiteralValue,
+  NewLine,
+  ParagraphBlock,
+  TextContent,
+  Title1Block,
+  Title2Block,
+  VariableValue,
+} from "~/types/brevbakerTypes";
 
 export const handleSwitchContent = <T, U, V, W>(args: {
   content: Content;
@@ -42,6 +53,25 @@ export const handleSwitchTextContent = <T>(args: {
     }
     case "NEW_LINE": {
       return args.onNewLine(args.content);
+    }
+  }
+};
+
+export const handleSwitchBlock = <T>(args: {
+  block: AnyBlock;
+  onTitle1: (titleBlock: Title1Block) => T;
+  onTitle2: (titleBlock: Title2Block) => T;
+  onParagraph: (paragraphBlock: ParagraphBlock) => T;
+}): T => {
+  switch (args.block.type) {
+    case "TITLE1": {
+      return args.onTitle1(args.block);
+    }
+    case "TITLE2": {
+      return args.onTitle2(args.block);
+    }
+    case "PARAGRAPH": {
+      return args.onParagraph(args.block);
     }
   }
 };

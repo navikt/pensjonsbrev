@@ -56,9 +56,6 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
       },
       onVariable: (variable) => {
         const newVariable = switchFontTypeForVariable({
-          draft,
-          thisBlock: block,
-          literalIndex,
           fonttype: fontType,
           variable,
         });
@@ -116,9 +113,6 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
           },
           onVariable: (variable) => {
             const newVariable = switchFontTypeForVariable({
-              draft,
-              thisBlock: block,
-              literalIndex,
               fonttype: fontType,
               variable,
             });
@@ -156,19 +150,12 @@ const switchFontTypeForLiteral = (args: {
   return hasSelectionAndMarkedText ? switchFontTypeOfMarkedText(args) : switchFontTypeOfCurrentWord(args);
 };
 
-const switchFontTypeForVariable = (args: {
-  draft: Draft<LetterEditorState>;
-  thisBlock: ParagraphBlock;
-  literalIndex: LiteralIndex;
-  fonttype: FontType;
-  variable: Draft<VariableValue>;
-}) => {
-  return newVariable({
+const switchFontTypeForVariable = (args: { fonttype: FontType; variable: Draft<VariableValue> }) =>
+  newVariable({
     id: args.variable.id,
     text: args.variable.text,
     fontType: args.fonttype,
   });
-};
 
 const switchFontTypeOfMarkedText = (args: {
   draft: Draft<LetterEditorState>;

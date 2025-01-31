@@ -68,7 +68,12 @@ export const LetterEditor = ({
           `}
           data-cy="letter-editor"
         >
-          <SakspartView sakspart={letter.sakspart} />
+          <SakspartView
+            sakspart={letter.sakspart}
+            wrapperStyles={css`
+              margin-bottom: 1.88rem;
+            `}
+          />
           <Heading
             css={css`
               line-height: 30px;
@@ -80,10 +85,20 @@ export const LetterEditor = ({
           >
             {letter.title}
           </Heading>
-          <div onKeyDown={editorKeyboardShortcuts}>
+          <div
+            css={css`
+              margin-bottom: 39px;
+            `}
+            onKeyDown={editorKeyboardShortcuts}
+          >
             <EditableBlockComposer blocks={blocks} />
           </div>
-          <SignaturView signatur={letter.signatur} />
+          <SignaturView
+            signatur={letter.signatur}
+            wrapperStyles={css`
+              margin-bottom: 48px;
+            `}
+          />
         </div>
         {showDebug && <DebugPanel />}
       </EditorStateContext.Provider>
