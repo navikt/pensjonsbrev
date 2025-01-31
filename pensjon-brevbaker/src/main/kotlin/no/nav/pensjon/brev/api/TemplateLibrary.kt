@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.api
 
+import no.nav.pensjon.brev.FeatureToggleHandler
 import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -22,8 +23,6 @@ class TemplateLibrary<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevd
         // kode == DinBrevmal.kode && FeatureToggles.dinToggle.isEnabled() -> DinBrevmalV2
         kode == Pesysbrevkoder.Redigerbar.UT_ORIENTERING_OM_SAKSBEHANDLINGSTID.kode() && FeatureToggles.pl7231ForventetSvartid.isEnabled() -> OrienteringOmSaksbehandlingstidV2
         kode == Pesysbrevkoder.AutoBrev.UT_VARSEL_SAKSBEHANDLINGSTID_AUTO.kode() && FeatureToggles.pl7231ForventetSvartid.isEnabled() -> VarselSaksbehandlingstidAutoV2
-        kode == Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD.kode() && !FeatureToggles.brevmalUTavslag.isEnabled() -> null
-        kode == Pesysbrevkoder.Redigerbar.PE_OVERSETTELSE_AV_DOKUMENTER.kode() && !FeatureToggles.brevMedFritekst.isEnabled() -> null
-        else -> templates[kode]
+        else -> templates[kode]?.takeIf { it.kode.toggle()?.let { FeatureToggleHandler.isEnabled(it) } ?: true }
     }
 }
