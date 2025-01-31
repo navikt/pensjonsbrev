@@ -21,7 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import java.util.*
 
-private val objectMapper = jacksonObjectMapper()
+private val objectMapper = brevbakerJacksonObjectMapper()
 private val base64Decoder = Base64.getDecoder()
 
 class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
@@ -43,7 +43,7 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
             renderPDF(createLetter(kode, letterData, language, felles))
         }
 
-    fun renderPdfAsync(orderId: String, brevbestilling: BestillBrevRequest<Kode>) =
+    suspend fun renderPdfAsync(orderId: String, brevbestilling: BestillBrevRequest<Kode>) =
         with(brevbestilling) {
             renderPdfAsync(orderId, createLetter(kode, letterData, language, felles))
         }
@@ -123,11 +123,15 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
                 )
             }
 
-    private fun renderPdfAsync(orderId: String, letter: Letter<BrevbakerBrevdata>): Unit =
-        renderCompleteMarkup(letter)
-            .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
-            .let { latexAsyncCompilerService?.renderAsync(orderId, it) }
-
+    private suspend fun renderPdfAsync(orderId: String, letter: Letter<BrevbakerBrevdata>): Unit =
+        renderCompleteMarkup(letter, null)
+            .let { latexAsyncCompilerService?.renderAsync(orderId, PDFRequest(
+                letterMarkup = it.letterMarkup,
+                attachments = it.attachments,
+                language = letter.language.toCode(),
+                felles = letter.felles,
+                brevtype = letter.template.letterMetadata.brevtype
+            )) }
     private fun renderHTML(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev)
             .let { HTMLDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }

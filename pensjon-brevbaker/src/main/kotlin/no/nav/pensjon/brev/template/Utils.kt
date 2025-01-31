@@ -6,8 +6,6 @@ import no.nav.pensjon.brev.converters.BrevbakerBrevdataModule
 import no.nav.pensjon.brev.converters.BrevkodeModule
 import no.nav.pensjon.brev.converters.LetterMarkupModule
 import no.nav.pensjon.brev.converters.TemplateModelSpecificationModule
-import java.time.format.*
-import kotlin.reflect.KClass
 
 fun ObjectMapper.brevbakerConfig() {
     registerModule(JavaTimeModule())
@@ -20,4 +18,4 @@ fun ObjectMapper.brevbakerConfig() {
     enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
 }
 
-fun jacksonObjectMapper() = com.fasterxml.jackson.module.kotlin.jacksonObjectMapper().apply { brevbakerConfig() }
+fun brevbakerJacksonObjectMapper() = com.fasterxml.jackson.module.kotlin.jacksonObjectMapper().apply { brevbakerConfig() }

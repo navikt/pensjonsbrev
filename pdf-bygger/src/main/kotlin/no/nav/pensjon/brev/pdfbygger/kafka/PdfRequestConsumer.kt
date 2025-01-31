@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.pdfbygger.kafka
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -8,11 +7,14 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Semaphore
+import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
+import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
-import no.nav.pensjon.brev.pdfbygger.model.PdfCompilationInput
+import no.nav.pensjon.brev.pdfbygger.pdfByggerObjectMapper
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.common.serialization.StringDeserializer
+import kotlin.jvm.java
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
@@ -23,7 +25,7 @@ class PdfRequestConsumer(
 ) {
 
     private val consumer =
-        KafkaConsumer<String, PdfCompilationInput>(properties, StringDeserializer(), PdfCompilationInputDeserializer())
+        KafkaConsumer<String, PDFRequest>(properties, StringDeserializer(), PDFRequestDeserializer())
 
     private val parallelism = Runtime.getRuntime().availableProcessors()
     private val parallelismSemaphore = parallelism.takeIf { it > 0 }?.let { Semaphore(it) }
@@ -57,9 +59,10 @@ class PdfRequestConsumer(
             consumer.commitAsync()
         }
 
-    private suspend fun compile(files: PdfCompilationInput): PDFCompilationResponse {
+    private suspend fun compile(request: PDFRequest): PDFCompilationResponse {
         parallelismSemaphore.acquire()
-        val result = latexCompileService.createLetter(files.files)
+        val result = LatexDocumentRenderer.render(request)
+            .let { latexCompileService.createLetter(it.base64EncodedFiles()) }
         parallelismSemaphore.release()
         println("Compiled pdf successfully")
         return result
@@ -67,11 +70,11 @@ class PdfRequestConsumer(
 
 }
 
-private class PdfCompilationInputDeserializer :
-    org.apache.kafka.common.serialization.Deserializer<PdfCompilationInput> {
-    private val mapper = jacksonObjectMapper()
+private class PDFRequestDeserializer :
+    org.apache.kafka.common.serialization.Deserializer<PDFRequest> {
+    private val mapper = pdfByggerObjectMapper()
 
-    override fun deserialize(topic: String?, data: ByteArray): PdfCompilationInput {
-        return mapper.readValue(data, PdfCompilationInput::class.java)
+    override fun deserialize(topic: String?, data: ByteArray): PDFRequest {
+        return mapper.readValue(data, PDFRequest::class.java)
     }
 }

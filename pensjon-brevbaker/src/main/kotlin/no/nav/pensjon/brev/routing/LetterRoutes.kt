@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.routing
 
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.*
@@ -33,7 +34,7 @@ fun Route.letterRoutes(
         post<BestillBrevRequest<Brevkode.Automatisk>>("/pdfQueued") { brevbestilling ->
             installBrevkodeInCallContext(brevbestilling.kode)// TODO trenger vi denne?
             // TODO flytt inn i request?
-            val orderId = call.request.headers["orderId"] ?: throw IllegalArgumentException("orderId er påkrevd")
+            val orderId = call.request.headers["orderId"] ?: throw BadRequestException("orderId er påkrevd")
             autobrev.renderPdfAsync(orderId, brevbestilling)
             autobrev.countLetter(brevbestilling.kode)
             call.respond(HttpStatusCode.OK)

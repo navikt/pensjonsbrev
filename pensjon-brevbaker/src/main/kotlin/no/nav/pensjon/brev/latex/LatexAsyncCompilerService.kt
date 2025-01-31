@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.latex
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.server.config.*
-import no.nav.pensjon.brev.template.render.LatexDocument
+import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.serialization.Serializer
@@ -13,18 +13,18 @@ class LatexAsyncCompilerService(
 ) {
     private val topic = kafkaConfig.property("topic").getString()
     private val producer =
-        KafkaProducer<String, PdfCompilationInput>(
+        KafkaProducer<String, PDFRequest>(
             createKafkaConfig(kafkaConfig),
             StringSerializer(),
-            PdfCompilationInputSerializer()
+            PDFRequestSerializer()
         )
 
-    fun renderAsync(orderId: String, document: LatexDocument) {
+    fun renderAsync(orderId: String, request: PDFRequest) {
         producer.send(
-            ProducerRecord<String, PdfCompilationInput>(
+            ProducerRecord<String, PDFRequest>(
                 topic,
                 orderId,
-                PdfCompilationInput(document.base64EncodedFiles())
+                request
             )
         )
         producer.flush();
@@ -32,10 +32,10 @@ class LatexAsyncCompilerService(
 
 }
 
-private class PdfCompilationInputSerializer : Serializer<PdfCompilationInput> {
-    private val mapper = jacksonObjectMapper()
+private class PDFRequestSerializer : Serializer<PDFRequest> {
+    private val mapper = brevbakerJacksonObjectMapper()
 
-    override fun serialize(topic: String, data: PdfCompilationInput): ByteArray {
+    override fun serialize(topic: String, data: PDFRequest): ByteArray {
         return mapper.writeValueAsBytes(data)
     }
 }

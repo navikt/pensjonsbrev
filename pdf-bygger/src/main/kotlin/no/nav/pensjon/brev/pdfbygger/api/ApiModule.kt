@@ -24,18 +24,22 @@ import io.ktor.server.request.path
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
+import io.ktor.server.routing.RoutingContext
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
 import io.ktor.util.date.getTimeMillis
+import io.ktor.util.logging.Logger
 import io.micrometer.core.instrument.Tag
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
-import no.nav.pensjon.brev.pdfbygger.model.PdfCompilationInput
 import no.nav.pensjon.brev.pdfbygger.getProperty
-import no.nav.pensjon.brev.pdfbygger.api.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
+import no.nav.pensjon.brev.pdfbygger.model.PdfCompilationInput
+import no.nav.pensjon.brev.pdfbygger.pdfByggerConfig
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -54,7 +58,9 @@ fun Application.apiModule(
     log.info("Target parallelism : $parallelism")
 
     install(ContentNegotiation) {
-        jackson()
+        jackson {
+            pdfByggerConfig()
+        }
     }
 
     install(Compression) {
@@ -77,11 +83,7 @@ fun Application.apiModule(
     install(MicrometerMetrics) {
         registry = prometheusMeterRegistry
     }
-    val activityCounter = ActiveCounter.Companion(
-        prometheusMeterRegistry,
-        "pensjonsbrev_pdf_compile_active",
-        listOf(Tag.of("hpa", "value"))
-    )
+    val activityCounter = ActiveCounter(prometheusMeterRegistry, "pensjonsbrev_pdf_compile_active", listOf(Tag.of("hpa", "value")))
 
     install(CallLogging) {
         callIdMdc("x_correlationId")
@@ -96,7 +98,7 @@ fun Application.apiModule(
 
     install(StatusPages) {
         exception<JacksonException> { call, cause ->
-            call.respond(HttpStatusCode.Companion.BadRequest, cause.message ?: "Failed to deserialize json body: unknown reason")
+            call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown reason")
         }
     }
 
@@ -107,6 +109,18 @@ fun Application.apiModule(
     }
 
     routing {
+
+        post("/produserBrev") {
+            val result = activityCounter.count {
+                call.receive<PDFRequest>()
+                    .let { LatexDocumentRenderer.render(it) }
+                    // TODO: Dropp base64-enkodinga (og dekodinga inni)
+                    .let { blockingLatexService.producePDF(it.base64EncodedFiles()) }
+            }
+            handleResult(result, call.application.environment.log)
+        }
+
+        // TODO: Slett denne. Ventar med det for å unngå nedetid
         post("/compile") {
             val logger = call.application.environment.log
 
@@ -115,54 +129,60 @@ fun Application.apiModule(
                 blockingLatexService.producePDF(input.files)
             }
 
-            when (result) {
-                is PDFCompilationResponse.Base64PDF -> call.respond(result)
-                is PDFCompilationResponse.Failure.Client -> {
-                    logger.info("Client error: ${result.reason}")
-                    if (result.output?.isNotBlank() == true) {
-                        logger.info(result.output)
-                    }
-                    if (result.error?.isNotBlank() == true) {
-                        logger.info(result.error)
-                    }
-                    call.respond(HttpStatusCode.Companion.BadRequest, result)
-                }
-
-                is PDFCompilationResponse.Failure.Server -> {
-                    logger.error(result.reason)
-                    call.respond(HttpStatusCode.Companion.InternalServerError, result)
-                }
-
-                is PDFCompilationResponse.Failure.Timeout -> {
-                    logger.error(result.reason)
-                    call.respond(HttpStatusCode.Companion.InternalServerError, result)
-                }
-
-                is PDFCompilationResponse.Failure.QueueTimeout -> {
-                    logger.warn("Kø-timeout, løses med automatisk oppstart av flere pods: ${result.reason}")
-                    call.respond(HttpStatusCode.Companion.ServiceUnavailable, result)
-                }
-            }
+            handleResult(result, logger)
         }
 
         get("/isAlive") {
-            call.respondText("Alive!", ContentType.Text.Plain, HttpStatusCode.Companion.OK)
+            call.respondText("Alive!", ContentType.Text.Plain, HttpStatusCode.OK)
         }
 
         get("/isReady") {
             val currentActivity = activityCounter.currentCount()
             if (currentActivity > parallelism) {
-                val msg =
-                    "Application not ready: pdf compilation activity of $currentActivity above target of $parallelism"
+                val msg = "Application not ready: pdf compilation activity of $currentActivity above target of $parallelism"
                 call.application.log.info(msg)
-                call.respondText(msg, ContentType.Text.Plain, HttpStatusCode.Companion.ServiceUnavailable)
+                call.respondText(msg, ContentType.Text.Plain, HttpStatusCode.ServiceUnavailable)
             } else {
-                call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.Companion.OK)
+                call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
             }
         }
 
         get("/metrics") {
             call.respond(prometheusMeterRegistry.scrape())
+        }
+    }
+}
+
+private suspend fun RoutingContext.handleResult(
+    result: PDFCompilationResponse,
+    logger: Logger,
+) {
+    when (result) {
+        is PDFCompilationResponse.Base64PDF -> call.respond(result)
+        is PDFCompilationResponse.Failure.Client -> {
+            logger.info("Client error: ${result.reason}")
+            if (result.output?.isNotBlank() == true) {
+                logger.info(result.output)
+            }
+            if (result.error?.isNotBlank() == true) {
+                logger.info(result.error)
+            }
+            call.respond(HttpStatusCode.BadRequest, result)
+        }
+
+        is PDFCompilationResponse.Failure.Server -> {
+            logger.error(result.reason)
+            call.respond(HttpStatusCode.InternalServerError, result)
+        }
+
+        is PDFCompilationResponse.Failure.Timeout -> {
+            logger.error(result.reason)
+            call.respond(HttpStatusCode.InternalServerError, result)
+        }
+
+        is PDFCompilationResponse.Failure.QueueTimeout -> {
+            logger.warn("Kø-timeout, løses med automatisk oppstart av flere pods: ${result.reason}")
+            call.respond(HttpStatusCode.ServiceUnavailable, result)
         }
     }
 }

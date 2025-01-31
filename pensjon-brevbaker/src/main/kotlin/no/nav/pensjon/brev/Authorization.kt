@@ -6,7 +6,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.config.*
-import no.nav.pensjon.brev.template.jacksonObjectMapper
+import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import org.slf4j.LoggerFactory
 import java.net.URL
 
@@ -30,7 +30,7 @@ data class JwtConfig(val name: String, val issuer: String, val jwksUrl: String, 
         private fun getPreAuthorizedApps(): List<PreAuthorizedApp>? =
             System.getenv("AZURE_APP_PRE_AUTHORIZED_APPS")?.let {
                 try {
-                    jacksonObjectMapper().readValue(it)
+                    brevbakerJacksonObjectMapper().readValue(it)
                 } catch (e: JacksonException) {
                     logger.warn("Failed to deserialize preAuthorized apps, value was: $it", e)
                     emptyList()

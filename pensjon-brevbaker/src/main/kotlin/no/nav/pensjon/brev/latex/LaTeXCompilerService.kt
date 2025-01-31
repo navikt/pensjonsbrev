@@ -15,7 +15,7 @@ import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.io.IOException
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.template.jacksonObjectMapper
+import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import org.slf4j.LoggerFactory
 import kotlin.math.pow
 import kotlin.random.Random
@@ -30,7 +30,7 @@ class LatexInvalidException(msg: String, cause: Throwable? = null) : Exception(m
 
 class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 30, private val timeout: Duration = 300.seconds) {
     private val logger = LoggerFactory.getLogger(this::class.java)
-    private val objectmapper = jacksonObjectMapper()
+    private val objectmapper = brevbakerJacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
             jackson()

@@ -18,7 +18,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Files
 import java.nio.file.Paths
 
-private val objectMapper = jacksonObjectMapper()
+private val objectMapper = brevbakerJacksonObjectMapper()
 
 class TemplateResourceTest {
 

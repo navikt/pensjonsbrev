@@ -2,9 +2,14 @@ package no.nav.pensjon.brev.pdfbygger
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 
@@ -65,4 +70,14 @@ object LetterMarkupModule : SimpleModule() {
                 return p.codec.treeToValue(node, clazz)
             }
         }
+}
+
+fun pdfByggerObjectMapper() = jacksonObjectMapper().apply { pdfByggerConfig() }
+
+fun ObjectMapper.pdfByggerConfig() {
+    registerModule(JavaTimeModule())
+    registerModule(LetterMarkupModule)
+    enable(SerializationFeature.INDENT_OUTPUT)
+    disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
 }

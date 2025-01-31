@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.pdfbygger
+package no.nav.pensjon.brev.pdfbygger.latex
 
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.toLanguage
@@ -8,11 +8,12 @@ import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brev.template.render.pensjonLatexSettings
-import no.nav.pensjon.brevbaker.api.model.*
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.*
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Text.Size
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnAlignment
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
+import no.nav.pensjon.brevbaker.api.model.Bruker
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.NAVEnhet
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -55,7 +56,7 @@ object LatexDocumentRenderer {
     ) {
         pensjonLatexSettings.writeLanguageSettings(language) { settingName, settingValue ->
             appendNewCmd("felt$settingName") {
-                renderTextLiteral(settingValue, FontType.PLAIN)
+                renderTextLiteral(settingValue, LetterMarkup.ParagraphContent.Text.FontType.PLAIN)
             }
         }
 
@@ -192,7 +193,7 @@ object LatexDocumentRenderer {
         appendCmd("sluttvedlegg")
     }
 
-    fun LatexAppendable.renderIfNonEmptyText(content: List<Text>, render: LatexAppendable.(String) -> Unit) {
+    fun LatexAppendable.renderIfNonEmptyText(content: List<LetterMarkup.ParagraphContent.Text>, render: LatexAppendable.(String) -> Unit) {
         val text = String(StringBuilder().also { LatexAppendable(it).renderText(content) })
         if (text.isNotEmpty()) {
             render(text)
@@ -205,7 +206,7 @@ object LatexDocumentRenderer {
     private fun LatexAppendable.renderBlocks(blocks: List<LetterMarkup.Block>): Unit =
         blocks.forEach { renderBlock(it) }
 
-    private fun LatexAppendable.renderText(elements: List<Text>): Unit =
+    private fun LatexAppendable.renderText(elements: List<LetterMarkup.ParagraphContent.Text>): Unit =
         elements.forEach { renderTextContent(it) }
 
     private fun LatexAppendable.renderBlock(block: LetterMarkup.Block): Unit =
@@ -221,7 +222,7 @@ object LatexDocumentRenderer {
             }
         }
 
-    private fun LatexAppendable.renderTextParagraph(text: List<Text>): Unit =
+    private fun LatexAppendable.renderTextParagraph(text: List<LetterMarkup.ParagraphContent.Text>): Unit =
         appendCmd("templateparagraph") {
             arg { renderText(text) }
         }
@@ -229,19 +230,19 @@ object LatexDocumentRenderer {
     //TODO depricate table/itemlist/form inside paragraph and make them available outside.
     // there should not be a different space between elements if within/outside paragraphs.
     private fun LatexAppendable.renderParagraph(element: LetterMarkup.Block.Paragraph) {
-        var continousTextContent = mutableListOf<Text>()
+        var continousTextContent = mutableListOf<LetterMarkup.ParagraphContent.Text>()
 
         element.content.forEach { current ->
-            if (current !is Text && continousTextContent.isNotEmpty()) {
+            if (current !is LetterMarkup.ParagraphContent.Text && continousTextContent.isNotEmpty()) {
                 renderTextParagraph(continousTextContent)
                 continousTextContent = mutableListOf()
             }
 
             when (current) {
-                is Form -> renderForm(current)
-                is ItemList -> renderList(current)
-                is Table -> renderTable(current)
-                is Text -> continousTextContent.add(current)
+                is LetterMarkup.ParagraphContent.Form -> renderForm(current)
+                is LetterMarkup.ParagraphContent.ItemList -> renderList(current)
+                is LetterMarkup.ParagraphContent.Table -> renderTable(current)
+                is LetterMarkup.ParagraphContent.Text -> continousTextContent.add(current)
             }
         }
         if (continousTextContent.isNotEmpty()) {
@@ -249,7 +250,7 @@ object LatexDocumentRenderer {
         }
     }
 
-    private fun LatexAppendable.renderList(list: ItemList) {
+    private fun LatexAppendable.renderList(list: LetterMarkup.ParagraphContent.ItemList) {
         if (list.items.isNotEmpty()) {
             appendCmd("begin", "letteritemize")
             list.items.forEach { item ->
@@ -260,7 +261,7 @@ object LatexDocumentRenderer {
         }
     }
 
-    private fun LatexAppendable.renderTable(table: Table) {
+    private fun LatexAppendable.renderTable(table: LetterMarkup.ParagraphContent.Table) {
         if (table.rows.isNotEmpty()) {
             val columnSpec = table.header.colSpec
 
@@ -276,7 +277,7 @@ object LatexDocumentRenderer {
         }
     }
 
-    private fun LatexAppendable.renderTableCells(cells: List<Table.Cell>, colSpec: List<Table.ColumnSpec>) {
+    private fun LatexAppendable.renderTableCells(cells: List<LetterMarkup.ParagraphContent.Table.Cell>, colSpec: List<LetterMarkup.ParagraphContent.Table.ColumnSpec>) {
         cells.forEachIndexed { index, cell ->
             val columnSpan = colSpec[index].span
             if (columnSpan > 1) {
@@ -293,32 +294,32 @@ object LatexDocumentRenderer {
         append("""\\""", escape = false)
     }
 
-    private fun columnHeadersLatexString(columnSpec: List<Table.ColumnSpec>): String =
+    private fun columnHeadersLatexString(columnSpec: List<LetterMarkup.ParagraphContent.Table.ColumnSpec>): String =
         columnSpec.joinToString("") {
             ("X" +
                     when (it.alignment) {
-                        ColumnAlignment.LEFT -> "[l]"
-                        ColumnAlignment.RIGHT -> "[r]"
+                        LetterMarkup.ParagraphContent.Table.ColumnAlignment.LEFT -> "[l]"
+                        LetterMarkup.ParagraphContent.Table.ColumnAlignment.RIGHT -> "[r]"
                     }).repeat(it.span)
         }
 
-    private fun LatexAppendable.renderTextContent(element: Text): Unit =
+    private fun LatexAppendable.renderTextContent(element: LetterMarkup.ParagraphContent.Text): Unit =
         when (element) {
-            is Text.Literal -> renderTextLiteral(element.text, element.fontType)
-            is Text.Variable -> renderTextLiteral(element.text, element.fontType)
-            is Text.NewLine -> appendCmd("newline")
+            is LetterMarkup.ParagraphContent.Text.Literal -> renderTextLiteral(element.text, element.fontType)
+            is LetterMarkup.ParagraphContent.Text.Variable -> renderTextLiteral(element.text, element.fontType)
+            is LetterMarkup.ParagraphContent.Text.NewLine -> appendCmd("newline")
         }
 
-    private fun LatexAppendable.renderTextLiteral(text: String, fontType: FontType): Unit =
+    private fun LatexAppendable.renderTextLiteral(text: String, fontType: LetterMarkup.ParagraphContent.Text.FontType): Unit =
         when (fontType) {
-            FontType.PLAIN -> append(text)
-            FontType.BOLD -> appendCmd("textbf") { arg { append(text) } }
-            FontType.ITALIC -> appendCmd("textit") { arg { append(text) } }
+            LetterMarkup.ParagraphContent.Text.FontType.PLAIN -> append(text)
+            LetterMarkup.ParagraphContent.Text.FontType.BOLD -> appendCmd("textbf") { arg { append(text) } }
+            LetterMarkup.ParagraphContent.Text.FontType.ITALIC -> appendCmd("textit") { arg { append(text) } }
         }
 
-    private fun LatexAppendable.renderForm(element: Form): Unit =
+    private fun LatexAppendable.renderForm(element: LetterMarkup.ParagraphContent.Form): Unit =
         when (element) {
-            is Form.MultipleChoice -> {
+            is LetterMarkup.ParagraphContent.Form.MultipleChoice -> {
                 if (element.vspace) {
                     appendCmd("formvspace")
                 }
@@ -336,7 +337,7 @@ object LatexDocumentRenderer {
                 appendCmd("end", "formChoice")
             }
 
-            is Form.Text -> {
+            is LetterMarkup.ParagraphContent.Form.Text -> {
                 if (element.vspace) {
                     appendCmd("formvspace")
                 }
@@ -344,9 +345,9 @@ object LatexDocumentRenderer {
                 appendCmd("formText") {
                     arg {
                         val size = when (element.size) {
-                            Size.NONE -> 0
-                            Size.SHORT -> 25
-                            Size.LONG -> 60
+                            LetterMarkup.ParagraphContent.Form.Text.Size.NONE -> 0
+                            LetterMarkup.ParagraphContent.Form.Text.Size.SHORT -> 25
+                            LetterMarkup.ParagraphContent.Form.Text.Size.LONG -> 60
                         }
                         renderText(element.prompt)
                         append(" ${".".repeat(size)}")
