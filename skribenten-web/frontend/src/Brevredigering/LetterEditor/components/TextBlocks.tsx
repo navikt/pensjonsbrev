@@ -21,7 +21,6 @@ export const EditableBlockComposer = (props: { blocks: AnyBlock[] }) =>
       onTitle1: (title1) => (
         <TextContentComposer
           blockIndex={blockIndex}
-          dataCy="TITLE1"
           key={`block-${blockIndex}`}
           textContent={title1.content}
           textStyle={css`
@@ -34,7 +33,6 @@ export const EditableBlockComposer = (props: { blocks: AnyBlock[] }) =>
       onTitle2: (title2) => (
         <TextContentComposer
           blockIndex={blockIndex}
-          dataCy="TITLE2"
           key={`block-${blockIndex}`}
           textContent={title2.content}
           textStyle={css`
@@ -57,7 +55,6 @@ const ContentComposer = (props: { blockIndex: number; content: Content[] }) => (
       line-height: var(--a-font-line-height-heading-xsmall);
       margin-bottom: 27px;
     `}
-    data-cy="PARAGRAPH"
   >
     {props.content.map((content, contentIndex) =>
       handleSwitchContent({
@@ -108,9 +105,8 @@ const TextContentComposer = (props: {
   existingContentIndex?: number;
   itemIndex?: number;
   textStyle?: SerializedStyles;
-  dataCy?: string;
 }) => (
-  <div css={props.textStyle} data-cy={props.dataCy}>
+  <div css={props.textStyle}>
     {props.textContent.map((content, contentIndex) => {
       const updatedLiteralIndex: LiteralIndex =
         props.itemIndex === undefined
