@@ -80,7 +80,7 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-json:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
-    implementation("org.postgresql:postgresql:42.7.5")
+    implementation("org.postgresql:postgresql:42.7.3")
     implementation("com.zaxxer:HikariCP:6.2.1")
 
     // Unleash
