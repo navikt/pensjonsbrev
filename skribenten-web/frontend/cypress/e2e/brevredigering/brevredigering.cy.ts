@@ -130,11 +130,11 @@ describe("Brevredigering", () => {
     cy.visit("/saksnummer/123456/brev/1");
     cy.contains("Lagret 26.07.2024 ").should("exist");
     cy.contains("Dersom vi trenger flere opplysninger").click();
-    cy.focused().type(" hello!");
+    cy.focused().type("{enter}hello!");
 
     cy.contains("Tilbakestill malen").click();
     cy.contains("Nei, behold brevet").click();
-    cy.contains(" hello!").should("exist");
+    cy.contains("hello!").should("exist");
   });
 
   it("kan ikke redigere et arkivert brev", () => {

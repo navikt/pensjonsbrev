@@ -26,7 +26,7 @@ import { ElementTags, FontType } from "~/types/brevbakerTypes";
  * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
  * If y-coord is exactly at the edge it sometimes misses. To avoid that we move the point a little bit away from the line.
  */
-const Y_COORD_SAFETY_MARGIN = 30;
+const Y_COORD_SAFETY_MARGIN = 10;
 
 const isFocusingItemContentIndex = (focus: Focus): focus is ItemContentIndex & { cursorPosition?: number } => {
   return "itemIndex" in focus && "itemContentIndex" in focus;

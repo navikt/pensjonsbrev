@@ -40,6 +40,7 @@ export function DebugPanel() {
         align-self: flex-start;
         background: var(--a-blue-200);
         width: 100%;
+        overflow: auto;
       `}
     >
       <HStack gap={"4"}>
