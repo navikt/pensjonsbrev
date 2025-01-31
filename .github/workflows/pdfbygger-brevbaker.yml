@@ -240,7 +240,7 @@ jobs:
       - name: "Deploy to DEV"
         uses: "nais/deploy/actions/deploy@v2"
         env:
-          "ENVIRONMENT": "dev-gcp:pdf-bygger-async"
+          "ENVIRONMENT": "dev-gcp:pdf-bygger-async-q2"
           "CLUSTER": "dev-gcp"
           "RESOURCE": "pdf-bygger/.nais/async/nais.yaml,pdf-bygger/.nais/async/topic-q2.yaml" #TODO create hpa for queue based scaling
           "VAR": image=${{ needs.build-pdfbygger.outputs.image }}

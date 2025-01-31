@@ -25,13 +25,9 @@ spec:
     initialDelay: 20
     timeout: 5
   replicas:
-    min: {{ minReplicas }}
+    min: {{ minReplicas }} #TODO regn ut skalering med egen hpa basert på kafka-køen
     max: 20
     cpuThresholdPercentage: 50
-  prometheus:
-    enabled: true
-    path: "/metrics"
-    port: "8080"
   observability:
     autoInstrumentation:
       enabled: true
@@ -45,11 +41,7 @@ spec:
       cpu: "1"
       memory: "1024Mi"
     limits:
-      memory: "8192Mi"
-  accessPolicy:
-    inbound:
-      rules:
-        - application: {{brevbaker-app}}
+      memory: "4096Mi"
   filesFrom:
     - emptyDir:
         medium: Memory
