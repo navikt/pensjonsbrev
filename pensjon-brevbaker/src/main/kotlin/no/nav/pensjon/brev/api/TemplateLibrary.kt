@@ -14,7 +14,7 @@ class TemplateLibrary<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevd
 
     fun listTemplatesWithMetadata() = templates.mapNotNull { getTemplate(it.key) }.map { it.description() }
 
-    fun listTemplatekeys() = templates.keys
+    fun listTemplatekeys() = templates.filter { getTemplate(it.key) != null }.keys
 
     fun getTemplate(kode: Kode) = getTemplate(kode.kode())
 

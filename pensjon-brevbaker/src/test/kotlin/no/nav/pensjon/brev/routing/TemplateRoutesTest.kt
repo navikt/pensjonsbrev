@@ -44,7 +44,9 @@ class TemplateRoutesTest {
     fun `can get names of all redigerbar`() = testBrevbakerApp { client ->
         val response = client.get("/templates/redigerbar")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(alleRedigerbareMaler.map { it.kode.kode() }.toSet(), response.body<Set<String>>())
+        assertEquals(alleRedigerbareMaler
+            .filterNot { it.kode in setOf(Pesysbrevkoder.Redigerbar.PE_OVERSETTELSE_AV_DOKUMENTER, Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD) }
+            .map { it.kode.kode() }.toSet(), response.body<Set<String>>())
     }
 
     @Test
