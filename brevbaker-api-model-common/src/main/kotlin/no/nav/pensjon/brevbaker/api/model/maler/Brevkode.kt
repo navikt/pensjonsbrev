@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler
 
-import no.nav.pensjon.brev.api.model.Toggle
+import no.nav.pensjon.brev.api.model.ToggleName
 
 interface Brevkode<T: Brevkode<T>> {
 
@@ -10,7 +10,7 @@ interface Brevkode<T: Brevkode<T>> {
 
     fun kode(): String
 
-    fun toggle(): Toggle? = null
+    fun toggle(): ToggleName? = null
 }
 
 @JvmInline

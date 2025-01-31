@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.api.model.maler
 
-import no.nav.pensjon.brev.api.model.Toggle
+import no.nav.pensjon.brev.api.model.ToggleName
 
-enum class FeatureToggles : Toggle {
+enum class FeatureToggles : ToggleName {
     brevMedFritekst,
     brevmal_ut_avslag;
 

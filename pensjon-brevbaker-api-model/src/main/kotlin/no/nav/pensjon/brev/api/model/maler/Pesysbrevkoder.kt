@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler
 
-import no.nav.pensjon.brev.api.model.Toggle
+import no.nav.pensjon.brev.api.model.ToggleName
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Automatisk
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart
 
@@ -54,7 +54,7 @@ object Pesysbrevkoder {
 
         override fun kode(): String = this.name
 
-        override fun toggle(): Toggle? =
+        override fun toggle(): ToggleName? =
             when(this) {
                 PE_OVERSETTELSE_AV_DOKUMENTER -> FeatureToggles.brevMedFritekst
                 UT_AVSLAG_UFOERETRYGD -> FeatureToggles.brevmal_ut_avslag

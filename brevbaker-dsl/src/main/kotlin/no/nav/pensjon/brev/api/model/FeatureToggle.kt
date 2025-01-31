@@ -1,5 +1,5 @@
 package no.nav.pensjon.brev.api.model
 
-interface FeatureToggle {
+interface FeatureToggle : ToggleName {
     fun isEnabled(): Boolean
 }

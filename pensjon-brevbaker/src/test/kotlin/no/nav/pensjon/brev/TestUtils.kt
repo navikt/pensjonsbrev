@@ -8,7 +8,7 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.config.*
 import io.ktor.server.testing.*
-import no.nav.pensjon.brev.api.model.Toggle
+import no.nav.pensjon.brev.api.model.ToggleName
 import no.nav.pensjon.brev.template.brevbakerConfig
 
 fun testBrevbakerApp(block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit): Unit = testApplication {
@@ -34,12 +34,12 @@ fun settOppFakeUnleash() = FeatureToggleHandler.configure {
     unleash = { fakeUnleash }
 }
 
-fun aktiverToggle(toggle: Toggle) {
+fun aktiverToggle(toggle: ToggleName) {
     settOppFakeUnleash()
     fakeUnleash.enable(unleashTogglePrefix + toggle.key())
 }
 
-fun deaktiverToggle(toggle: Toggle) {
+fun deaktiverToggle(toggle: ToggleName) {
     settOppFakeUnleash()
     fakeUnleash.disable(unleashTogglePrefix + toggle.key())
 }

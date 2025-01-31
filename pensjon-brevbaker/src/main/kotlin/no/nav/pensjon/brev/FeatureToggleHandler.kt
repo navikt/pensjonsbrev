@@ -4,7 +4,7 @@ import io.getunleash.DefaultUnleash
 import io.getunleash.Unleash
 import io.getunleash.UnleashContext
 import io.getunleash.util.UnleashConfig
-import no.nav.pensjon.brev.api.model.Toggle
+import no.nav.pensjon.brev.api.model.ToggleName
 
 const val unleashTogglePrefix = "pensjonsbrev.brevbaker."
 
@@ -13,7 +13,7 @@ object FeatureToggleHandler {
     private lateinit var unleashAction: () -> Unleash
     private val unleash: Unleash by lazy { unleashAction() }
 
-    fun isEnabled(toggle: Toggle): Boolean =
+    fun isEnabled(toggle: ToggleName): Boolean =
         unleash.isEnabled(unleashTogglePrefix + toggle.key(), UnleashContext.builder().build())
 
     fun configure(block: FeatureToggleConfig.() -> Unit) {

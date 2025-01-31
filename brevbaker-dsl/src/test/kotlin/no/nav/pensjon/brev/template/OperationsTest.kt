@@ -84,14 +84,14 @@ class OperationsTest {
 
         @Test
         fun `enabled gir true viss funksjonen returnerer true`() {
-            val toggle = object : FeatureToggle { override fun isEnabled() = true }
+            val toggle = object : FeatureToggle { override fun isEnabled() = true; override fun key() = "t1" }
             val expr = toggle.expr().enabled()
             assertEquals(expr.eval(scope), true)
         }
 
         @Test
         fun `enabled gir false viss funksjonen returnerer false`() {
-            val toggle = object : FeatureToggle { override fun isEnabled() = false }
+            val toggle = object : FeatureToggle { override fun isEnabled() = false; override fun key() = "t2" }
             val expr = toggle.expr().enabled()
             assertEquals(expr.eval(scope), false)
         }
