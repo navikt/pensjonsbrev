@@ -18,7 +18,7 @@ import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.converters.LetterResponseFileConverter
 import no.nav.pensjon.brev.latex.*
-import no.nav.pensjon.brev.maler.AllTemplates
+import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig

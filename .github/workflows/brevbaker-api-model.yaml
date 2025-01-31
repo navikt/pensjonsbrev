@@ -6,6 +6,7 @@ on:
     paths:
       - "pensjon-brevbaker-api-model/**"
       - "brevbaker-api-model-common/**"
+      - "brevbaker-dsl/**"
       - ".github/workflows/brevbaker-api-model.yaml"
   push:
     branches:
@@ -13,6 +14,7 @@ on:
     paths:
       - "pensjon-brevbaker-api-model/**"
       - "brevbaker-api-model-common/**"
+      - "brevbaker-dsl/**"
       - ".github/workflows/brevbaker-api-model.yaml"
 jobs:
   changes:
@@ -28,6 +30,7 @@ jobs:
           filters: |
             common:
               - 'brevbaker-api-model-common/**'
+              - 'brevbaker-dsl/**'
             pensjonsbrev:
               - 'pensjon-brevbaker-api-model/**'
   "release-common":
@@ -56,6 +59,29 @@ jobs:
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
+  "bygg-dsl":
+    name: "brevbaker-dsl"
+    runs-on: "ubuntu-latest"
+    permissions:
+      packages: write
+    needs: [ changes ]
+    steps:
+      - uses: "actions/checkout@v4"
+      - uses: "gradle/actions/wrapper-validation@v4"
+      - uses: "actions/cache@v4"
+        with:
+          "path": "~/.gradle/caches"
+          "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
+          "restore-keys": "${{ runner.os }}-gradle-"
+      - uses: "actions/setup-java@v4"
+        with:
+          "distribution": "temurin"
+          "java-version": "17"
+      - name: "compile and run tests"
+        run: |
+          ./gradlew :brevbaker-api-model-common:publishToMavenLocal
+          ./gradlew :brevbaker-dsl:build
+
   "release-pensjon":
     name: "pensjon-brevbaker-api-model"
     runs-on: "ubuntu-latest"
@@ -77,7 +103,7 @@ jobs:
           "java-version": "17"
       - name: "compile and run tests"
         run: |
-          ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
+          ./gradlew :brevbaker-api-model-common:publishToMavenLocal  
           ./gradlew :pensjon-brevbaker-api-model:build
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

@@ -19,9 +19,13 @@ updates:
     directories:
       - "/"
       - "/brevbaker-api-model-common"
+      - "/brevbaker"
+      - "/brevbaker-dsl"
+      - "/etterlattemaler"
       - "/pdf-bygger"
       - "/pensjon-brevbaker"
       - "/pensjon-brevbaker-api-model"
+      - "/pensjonsmaler"
       - "/skribenten-backend"
       - "/template-model-generator"
       - "/tjenestebuss-integrasjon"

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler
 
+import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*

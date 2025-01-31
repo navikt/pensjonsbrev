@@ -47,6 +47,9 @@ object Constants {
         const val SKRIVTILOSS_URL = "${Constants.SKRIVTILOSS_URL}/en"
         const val UTBETALING_INFO = "${Constants.Utland.UTBETALING_INFO}/en"
         const val UTBETALINGSDATOER_URL = "${Constants.UTBETALINGSDATOER_URL}/en"
+        const val SAKSBEHANDLINGSTIDER_URL = "${Constants.SAKSBEHANDLINGSTIDER_URL}/en"
+        const val SAKSBEHANDLINGSTIDER_BP = "$SAKSBEHANDLINGSTIDER_URL#childrens-pension"
+        const val SAKSBEHANDLINGSTIDER_OMS = "$SAKSBEHANDLINGSTIDER_URL#adjustment-allowance"
     }
 
     object Utland {

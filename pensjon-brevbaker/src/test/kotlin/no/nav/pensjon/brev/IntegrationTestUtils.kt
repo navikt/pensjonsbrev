@@ -1,9 +1,11 @@
 package no.nav.pensjon.brev
 
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -20,16 +22,20 @@ import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.OutlineElement
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
-import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
 import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.nio.file.Path
-import java.util.*
+import java.util.Base64
 import kotlin.io.path.Path
 
 val BREVBAKER_URL = System.getenv("BREVBAKER_URL") ?: "http://localhost:8080"
@@ -113,15 +119,18 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
 ): Letter<ParameterType> {
     Letter2Markup.render(this)
         .let {
-            LatexDocumentRenderer.render(
-                it.letterMarkup,
-                it.attachments,
-                language,
-                felles,
-                template.letterMetadata.brevtype
-            )
+            runBlocking {
+                laTeXCompilerService.producePDF(
+                    PDFRequest(
+                        it.letterMarkup,
+                        it.attachments,
+                        language.toCode(),
+                        felles,
+                        template.letterMetadata.brevtype
+                    )
+                )
+            }.base64PDF
         }
-        .let { runBlocking { laTeXCompilerService.producePDF(it).base64PDF } }
         .also { writeTestPDF(pdfFileName, Base64.getDecoder().decode(it), path) }
     return this
 }
@@ -199,4 +208,12 @@ internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = Le
     language = languages(Bokmal),
     outline = elements.asList(),
     letterMetadata = testLetterMetadata
+)
+
+internal val bokmalTittel = newText(Language.Bokmal to "test brev")
+internal val testLetterMetadata = LetterMetadata(
+    displayTitle = "En fin display tittel",
+    isSensitiv = false,
+    distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
 )

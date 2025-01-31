@@ -4,6 +4,7 @@ import io.ktor.http.*
 import io.ktor.server.plugins.*
 import io.micrometer.core.instrument.Tag
 import no.nav.pensjon.brev.Metrics
+import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -13,7 +14,6 @@ import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
-import no.nav.pensjon.brev.template.render.LatexDocumentRenderer
 import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.render.LetterWithAttachmentsMarkup
 import no.nav.pensjon.brevbaker.api.model.Felles
@@ -108,8 +108,13 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
         redigertBrev: LetterMarkup? = null
     ): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev)
-            .let { LatexDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
-            .let { laTeXCompilerService.producePDF(it) }
+            .let { laTeXCompilerService.producePDF(PDFRequest(
+                letterMarkup = it.letterMarkup,
+                attachments = it.attachments,
+                language = letter.language.toCode(),
+                felles = letter.felles,
+                brevtype = letter.template.letterMetadata.brevtype
+            )) }
             .let { pdf ->
                 LetterResponse(
                     file = base64Decoder.decode(pdf.base64PDF),

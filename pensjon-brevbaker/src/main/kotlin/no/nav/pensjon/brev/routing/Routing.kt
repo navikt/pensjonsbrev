@@ -10,7 +10,7 @@ import io.ktor.server.routing.*
 import no.nav.pensjon.brev.api.TemplateResource
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
-import no.nav.pensjon.brev.maler.AllTemplates
+import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.etterlatte.EtterlatteMaler
 
 fun Application.brevRouting(
