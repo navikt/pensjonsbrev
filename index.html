@@ -449,6 +449,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_løsningsbeskrivelse_av_brevbaker_og_pdfbygger">Løsningsbeskrivelse av Brevbaker og pdfbygger</a>
 <ul class="sectlevel1">
+<li><a href="#_arkitektur_2">Arkitektur</a></li>
 <li><a href="#_prosess_brukstilfelle">Prosess / Brukstilfelle</a>
 <ul class="sectlevel2">
 <li><a href="#_1_bestillersystemet_fyller_ut_en_letterrequest_med_informasjon_som_skrives_i_brevet">1. Bestillersystemet fyller ut en LetterRequest med informasjon som skrives i brevet.</a></li>
@@ -649,6 +650,16 @@ Verken PDF dokumentet eller informasjonen som brukes til å generere dokumentet 
 <p>Pdf-bygger er en tjeneste som mottar en liste med filer, og kompilerer de som ett LaTeX prosjekt.</p>
 </div>
 <div class="sect1">
+<h2 id="_arkitektur_2">Arkitektur</h2>
+<div class="sectionbody">
+<div class="imageblock">
+<div class="content">
+<img src="moduldiagram.svg" alt="moduldiagram" width="733" height="613">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_prosess_brukstilfelle">Prosess / Brukstilfelle</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -664,6 +675,7 @@ Verken PDF dokumentet eller informasjonen som brukes til å generere dokumentet 
 <div class="paragraph">
 <p>(modell kan være utdatert)</p>
 </div>
+<hr>
 <div class="imageblock">
 <div class="content">
 <img src="img/datagrunnlag-letterrequest.svg" alt="datagrunnlag letterrequest" width="831" height="505">
@@ -1573,7 +1585,7 @@ object OmsorgEgenAuto : AutobrevTemplate&lt;OmsorgEgenAutoDto&gt; {
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-12-13 08:48:15 UTC
+Last updated 2025-01-31 07:29:44 UTC
 </div>
 </div>
 </body>
