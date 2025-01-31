@@ -14,5 +14,11 @@ spec:
     - team: pensjonsbrev
       application: pensjon-pdf-bygger-async-q2
       access: read
+    - team: pensjonsbrev
+      application: pensjon-brevbaker-lokal
+      access: write
+    - team: pensjonsbrev
+      application: pensjon-pdf-bygger-async-q2-lokal
+      access: read
   config:
     partitions: 20

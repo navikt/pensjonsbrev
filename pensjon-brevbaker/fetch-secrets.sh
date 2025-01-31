@@ -2,107 +2,48 @@
 
 KUBE_CLUSTER="nais-dev"
 
-if [ "${BASH_VERSINFO:-0}" -lt 4 ]; then
-    echo "Du har for gammel versjon av bash. Vennligst installer versjon 4 eller høyere"
+function checkKubectl() {
+  echo "Verify kubectl, may take some time..."
+  output="$(kubectl --context $KUBE_CLUSTER version 2>&1)"
+  status=$?
 
-    if [[ $OSTYPE == 'darwin'* ]]; then
-        echo
-        echo "På Mac kan du kjøre: ${white}brew install bash${endcolor}"
-    fi
+  if [ $status -gt 0 ] ; then
+    if echo "$output" | grep -q "command not found" ; then
+      echo "ERROR: You need to install kubectl: $output"
+      echo "Howto: https://doc.nais.io/basics/access/"
+      return $status
 
-    exit 1
-fi
+    elif echo "$output" | grep -q "Unable to connect to the server" ; then
+      error_msg="$(echo "$output" | grep "Unable to connect to the server" | cut -d':' -f2)"
+      echo "ERROR: Cannot connect to kubernetes cluster $KUBE_CLUSTER: $error_msg"
+      echo "Have you remembered to connect naisdevice? (see https://doc.nais.io/basics/access/)"
+      return 1
 
-if command -v nais >& /dev/null; then
-  DISCONNECT_STATUS=$(nais device status | grep -c Disconnected)
+    elif echo "$output" | grep -q "error: You must be logged in" ; then
+      echo "ERROR: Not logged in to the cluster. Use 'gcloud auth login' (see https://doc.nais.io/basics/access/)."
+      return 1
 
-  if [ $DISCONNECT_STATUS -eq 1 ]; then
-    read -p "Du er ikke koblet til med naisdevice. Vil du koble til? (j/n) " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[YyjJ]$ ]]; then
-      nais device connect
     else
-      echo -e "${red}Du må være koblet til med naisdevice, avslutter${endcolor}"
-      exit 1
-    fi
-  fi
-fi
+      echo "WARN: Got unknown error from kubectl, but will attempt to fetch secrets anyway."
+      return 0
 
-jq --version >& /dev/null || (
+    fi
+  elif echo "$output" | grep -q "Client Version" && echo "$output" | grep -q "Server Version" ; then
+    echo "kubectl: OK "
+    return 0
+  else
+    echo "WARN: Got unexpected output from 'kubectl version', but will attempt to fetch secrets anyway."
+    return 0
+  fi
+}
+
+checkKubectl || exit 1
+jq --version || (
   echo "ERROR: You need to install the jq CLI tool on your machine: https://stedolan.github.io/jq/" && exit 1
 ) || exit 1
-base64 --help >& /dev/null || (
+which base64 || (
   echo "ERROR: You need to install the base64 tool on your machine. (brew install base64 on macOS)" && exit 1
 ) || exit 1
-which kubectl >& /dev/null || (
-  echo "ERROR: You need to install and configure kubectl (see: https://confluence.adeo.no/x/UzjYF)" && exit 1
-) || exit 1
-
-declare -A kubernetes_context_namespace_secrets
-declare -A kubernetes_secret_array
-function fetch_kubernetes_secret {
-    local context=$1
-    local namespace=$2
-    local secret=$3
-    local path=$4
-    local writefile=$5
-    local name=$6
-    local context_namespace_secrets_key
-    local context_namespace_secrets_value
-    local secret_name
-    local secret_response
-
-    context_namespace_secrets_key="$context:$namespace"
-
-    if [ -v kubernetes_context_namespace_secrets["$context_namespace_secrets_key"] ]; then
-        context_namespace_secrets_value=${kubernetes_context_namespace_secrets["$context_namespace_secrets_key"]}
-    else
-        context_namespace_secrets_value=$(kubectl --context="$context" -n "$namespace" get secrets)
-        kubernetes_context_namespace_secrets["$context_namespace_secrets_key"]=$context_namespace_secrets_value
-    fi
-
-    secret_name=$(echo "$context_namespace_secrets_value" | grep "$secret" | tail -1 | awk '{print $1}')
-
-    if [ -v kubernetes_secret_array["$secret_name"] ]; then
-        secret_response=${kubernetes_secret_array["$secret_name"]}
-    else
-        secret_response=$(kubectl --context="$context" -n "$namespace" get secret "$secret_name" -o json)
-        kubernetes_secret_array["$secret_name"]=$secret_response
-    fi
-
-    if [ "$writefile" == true ]; then
-        echo "$secret_response" | jq -j ".data[\"$name\"]" | base64 --decode > secrets/$name
-    else
-        secret=$(echo "$secret_response" | jq -j ".data[\"$name\"]" | base64 --decode)
-        echo "$name=$secret" >> secrets/$path.env
-    fi
-}
-
-function fetch_kubernetes_secret_array {
-    local type=$1
-    local context=$2
-    local namespace=$3
-    local secret=$4
-    local path=$5
-    local writefile=$6
-    local A=("$@")
-
-    echo -n -e "\t- $type"
-
-      if [ "$writefile" == false ]; then
-          rm -f secrets/$path.env
-      fi
-
-    for i in "${A[@]:6}"
-    do
-        fetch_kubernetes_secret "$context" "$namespace" "$secret" "$path" "$writefile" "$i"
-    done
-
-
-    spinIndex=0
-    spinStarted=false
-    echo -e "${bold}${white}✔${endcolor}${normal}"
-}
 
 function getSecret() {
   local secret_name="$1"
@@ -126,17 +67,18 @@ getSecret "$secret_name" azuread
 # Unleash ApiToken
 getSecret pensjon-brevbaker-unleash-api-token unleash
 
-echo -e "${bold}Henter secrets fra Kubernetes${normal}"
+#kafka
 
-fetch_kubernetes_secret_array "Kafka" $KUBE_CLUSTER "pensjonsbrev" "aiven-pensjon-brevbaker" "kafka" false \
-    "KAFKA_BROKERS" \
-    "KAFKA_CREDSTORE_PASSWORD" \
-    "KAFKA_SCHEMA_REGISTRY" \
-    "KAFKA_SCHEMA_REGISTRY_USER" \
-    "KAFKA_SCHEMA_REGISTRY_PASSWORD"
+#nais aiven create -p nav-dev -e 100 -s aiven-pensjon-brevbaker-q2-local kafka pensjon-brevbaker-lokal pensjonsbrev
+nais aiven tidy
+nais aiven get kafka aiven-pensjon-brevbaker-q2-local pensjonsbrev
+rm -rf ./secrets/kafka
+mv /tmp/aiven-secret* ./secrets/kafka
 
-fetch_kubernetes_secret_array "Kafka" $KUBE_CLUSTER "pensjonsbrev" "aiven-pensjon-brevbaker" "kafka" true \
-  "client.truststore.jks"\
-  "client.keystore.p12"
+# Erstatt paths i filer for å kunne mounte fila riktig i pdf-bygger containeren. Laget for å få riktig path i container
+find ./secrets/kafka/* -type f -exec sed -i 's/\/tmp\/aiven-secret-.*\//\/secrets\//g' {} \;
 
-echo "All secrets are fetched and stored in the \"secrets\" folder."
+#rett opp i kcat conf (brukes kun utenfor container)
+sed -i 's/\/secrets\//\.\//g' ./secrets/kafka/kcat.conf
+
+echo -e "Kafka secrets hentet til ./secrets/kafka"

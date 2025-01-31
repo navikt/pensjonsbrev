@@ -1,7 +1,12 @@
 package no.nav.pensjon.brev.pdfbygger.kafka
 
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
 import io.ktor.server.config.*
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
@@ -10,6 +15,16 @@ import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 
 fun Application.kafkaModule(latexCompileService: LatexCompileService) {
     val kafkaConfig = createKafkaConfig(environment.config.config("pdfBygger.kafka"))
+
+    routing {
+        get("/isAlive") {
+            call.respondText("Alive!", ContentType.Text.Plain, HttpStatusCode.OK)
+        }
+
+        get("/isReady") {
+            call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
+        }
+    }
 
     val pdfRequestConsumer = PdfRequestConsumer(
         latexCompileService = latexCompileService,

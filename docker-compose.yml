@@ -18,14 +18,12 @@ services:
       - PDF_COMPILE_TIMEOUT_SECONDS=200
       - PDF_BYGGER_COMPILE_TMP_DIR=/tmp
       - PDF_BYGGER_IS_ASYNC=true
-      - KAFKA_KEYSTORE_PATH=/secrets/client.keystore.p12
-      - KAFKA_TRUSTSTORE_PATH=/secrets/client.truststore.jks
       - KAFKA_PDF_RENDER_TOPIC=pensjonsbrev.pdf-bygger-render-q2
     ports:
       - "8085:8080"
       - "5019:5019"
     env_file:
-      - ./pdf-bygger/secrets/.env
+      - ./pdf-bygger/secrets/kafka-secret.env
     volumes:
       - ./pdf-bygger/secrets/client.keystore.p12:/secrets/client.keystore.p12
       - ./pdf-bygger/secrets/client.truststore.jks:/secrets/client.truststore.jks
@@ -37,8 +35,6 @@ services:
       - AZURE_OPENID_CONFIG_ISSUER=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
       - AZURE_APP_CLIENT_ID=66a118a6-95db-4a64-be81-3af02048a46e
       - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"skribenten-backend","clientId":"adce3431-deeb-422f-959c-298b644b7611"}]
-      - KAFKA_KEYSTORE_PATH=/secrets/client.keystore.p12
-      - KAFKA_TRUSTSTORE_PATH=/secrets/client.truststore.jks
       - KAFKA_PDF_RENDER_TOPIC=pensjonsbrev.pdf-bygger-render-q2
       # Allows requests without auth-header #opens up debug port
       - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5015
@@ -48,10 +44,11 @@ services:
       - "5015:5015" # debug port
     env_file:
       - ./pensjon-brevbaker/secrets/unleash.env
-      - ./pensjon-brevbaker/secrets/kafka.env
+      - ./pensjon-brevbaker/secrets/kafka/kafka-secret.env
     volumes:
-      - ./pensjon-brevbaker/secrets/client.keystore.p12:/secrets/client.keystore.p12
-      - ./pensjon-brevbaker/secrets/client.truststore.jks:/secrets/client.truststore.jks
+      - ./pensjon-brevbaker/secrets/kafka:/secrets
+      - ./pensjon-brevbaker/secrets/kafka/client.keystore.p12:/secrets/client.keystore.p12
+      - ./pensjon-brevbaker/secrets/kafka/client.truststore.jks:/secrets/client.truststore.jks
   skribenten-backend:
     profiles:
       - skribenten
