@@ -39,7 +39,7 @@ jobs:
           "java-version": "17"
       - name: "compile and run tests"
         run: |
-          ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
+          ./gradlew :brevbaker-api-model-common:publishToMavenLocal
           ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal 
           ./gradlew :skribenten-backend:build
         env:

@@ -6,6 +6,10 @@ on:
       - "build.gradle.kts"
       - "gradle.properties"
       - "template-model-generator/**"
+      - "brevbaker/**"
+      - "brevbaker-dsl/**"
+      - "etterlattemaler/**"
+      - "pensjonsmaler/**"
       - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger-brevbaker.yml"
@@ -17,6 +21,10 @@ on:
       - "build.gradle.kts"
       - "gradle.properties"
       - "template-model-generator/**"
+      - "brevbaker/**"
+      - "brevbaker-dsl/**"
+      - "etterlattemaler/**"
+      - "pensjonsmaler/**"
       - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger-brevbaker.yml"
@@ -79,7 +87,9 @@ jobs:
           "java-version": "17"
           "cache": "gradle"
       - name: "compile and run tests"
-        run: "./gradlew :pdf-bygger:build"
+        run: |
+          ./gradlew :brevbaker-api-model-common:publishToMavenLocal
+          ./gradlew :pdf-bygger:build
       - name: "Build and publish container image to GAR"
         uses: nais/docker-build-push@v0
         id: docker-push
