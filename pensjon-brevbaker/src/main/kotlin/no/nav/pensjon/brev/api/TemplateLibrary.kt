@@ -11,17 +11,19 @@ import no.nav.pensjon.brev.template.BrevTemplate
 class TemplateLibrary<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(templates: Set<T>) {
     private val templates: Map<String, T> = templates.associateBy { it.kode.kode() }
 
-    fun listTemplatesWithMetadata() = templates.map { getTemplate(it.key)!!.description() }
+    fun listTemplatesWithMetadata() = templates.mapNotNull { getTemplate(it.key) }.map { it.description() }
 
     fun listTemplatekeys() = templates.keys
 
     fun getTemplate(kode: Kode) = getTemplate(kode.kode())
 
-    fun getTemplate(kode: String) = when {
+    private fun getTemplate(kode: String) = when {
         // Legg inn her hvis du ønsker å styre forskjellige versjoner, feks
         // kode == DinBrevmal.kode && FeatureToggles.dinToggle.isEnabled() -> DinBrevmalV2
         kode == Pesysbrevkoder.Redigerbar.UT_ORIENTERING_OM_SAKSBEHANDLINGSTID.kode() && FeatureToggles.pl7231ForventetSvartid.isEnabled() -> OrienteringOmSaksbehandlingstidV2
         kode == Pesysbrevkoder.AutoBrev.UT_VARSEL_SAKSBEHANDLINGSTID_AUTO.kode() && FeatureToggles.pl7231ForventetSvartid.isEnabled() -> VarselSaksbehandlingstidAutoV2
+        kode == Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD.kode() && !FeatureToggles.brevmalUTavslag.isEnabled() -> null
+        kode == Pesysbrevkoder.Redigerbar.PE_OVERSETTELSE_AV_DOKUMENTER.kode() && !FeatureToggles.brevMedFritekst.isEnabled() -> null
         else -> templates[kode]
     }
 }
