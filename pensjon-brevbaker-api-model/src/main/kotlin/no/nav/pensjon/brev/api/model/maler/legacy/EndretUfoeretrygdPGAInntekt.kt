@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
-import no.nav.pensjon.brevbaker.api.model.Kroner?
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 @Suppress("unused")
@@ -34,7 +34,7 @@ data class EndretUfoeretrygdPGAInntektDto(
     val beregningBelopOkt: Boolean,
     val barnetilleggRegelverkType: String?,
     val brukerBorINorge: Boolean,
-    
+
     // Barnetillegg fellesbarn
     val innvilgetBTFB: Boolean,
     val gammeltBelopBTFB: Kroner?,
