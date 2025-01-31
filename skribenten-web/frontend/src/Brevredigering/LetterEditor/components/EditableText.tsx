@@ -1,0 +1,325 @@
+import { css } from "@emotion/react";
+import React, { useEffect, useRef } from "react";
+
+import Actions from "~/Brevredigering/LetterEditor/actions";
+import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
+import type { BlockContentIndex, ItemContentIndex, LiteralIndex } from "~/Brevredigering/LetterEditor/actions/model";
+import { logPastedClipboard } from "~/Brevredigering/LetterEditor/actions/paste";
+import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
+import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
+import type { Focus } from "~/Brevredigering/LetterEditor/model/state";
+import {
+  areAnyContentEditableSiblingsPlacedHigher,
+  areAnyContentEditableSiblingsPlacedLower,
+  findOnLineAbove,
+  findOnLineBelow,
+  focusAtOffset,
+  getCaretRect,
+  getCursorOffset,
+  getCursorOffsetOrRange,
+  gotoCoordinates,
+} from "~/Brevredigering/LetterEditor/services/caretUtils";
+import type { LiteralValue } from "~/types/brevbakerTypes";
+import { ElementTags } from "~/types/brevbakerTypes";
+
+/**
+ * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
+ * If y-coord is exactly at the edge it sometimes misses. To avoid that we move the point a little bit away from the line.
+ */
+const Y_COORD_SAFETY_MARGIN = 30;
+
+const isFocusingItemContentIndex = (focus: Focus): focus is ItemContentIndex & { cursorPosition?: number } => {
+  return "itemIndex" in focus && "itemContentIndex" in focus;
+};
+
+const isFocusingBlockContentIndex = (focus: Focus): focus is BlockContentIndex & { cursorPosition?: number } => {
+  return !isFocusingItemContentIndex(focus);
+};
+
+const hasFocus = (focus: Focus, literalIndex: LiteralIndex) => {
+  if (isFocusingBlockContentIndex(focus) && isFocusingBlockContentIndex(literalIndex)) {
+    return focus.blockIndex === literalIndex.blockIndex && focus.contentIndex === literalIndex.contentIndex;
+  } else if (isFocusingItemContentIndex(focus) && isFocusingItemContentIndex(literalIndex)) {
+    return (
+      focus.blockIndex === literalIndex.blockIndex &&
+      focus.contentIndex === literalIndex.contentIndex &&
+      focus.itemIndex === literalIndex.itemIndex &&
+      focus.itemContentIndex === literalIndex.itemContentIndex
+    );
+  }
+
+  return false;
+};
+
+export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
+  const contentEditableReference = useRef<HTMLSpanElement>(null);
+  const { freeze, editorState, setEditorState } = useEditor();
+
+  const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
+
+  //hvis teksten har endret seg, skal elementet oppføre seg som en helt vanlig literal
+  const erFritekst = content.tags.includes(ElementTags.FRITEKST) && content.editedText === null;
+
+  const text = (content.editedText ?? content.text) || "​";
+  useEffect(() => {
+    if (contentEditableReference.current !== null && contentEditableReference.current.textContent !== text) {
+      contentEditableReference.current.textContent = text;
+    }
+  }, [text]);
+
+  useEffect(() => {
+    if (
+      !freeze &&
+      shouldBeFocused &&
+      contentEditableReference.current !== null &&
+      editorState.focus.cursorPosition !== undefined
+    ) {
+      focusAtOffset(contentEditableReference.current.childNodes[0], editorState.focus.cursorPosition);
+    }
+  }, [editorState.focus.cursorPosition, shouldBeFocused, freeze]);
+
+  const handleEnter = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    event.preventDefault();
+    const offset = getCursorOffset();
+    if (event.shiftKey) {
+      applyAction(Actions.addNewLine, setEditorState, { ...literalIndex, cursorPosition: offset });
+    } else {
+      applyAction(Actions.split, setEditorState, literalIndex, offset);
+    }
+  };
+
+  const handleBackspace = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    const cursorPosition = getCursorOffset();
+    if (
+      cursorPosition === 0 ||
+      (contentEditableReference.current?.textContent?.startsWith("​") && cursorPosition === 1)
+    ) {
+      event.preventDefault();
+      applyAction(Actions.merge, setEditorState, literalIndex, MergeTarget.PREVIOUS);
+    }
+  };
+
+  const handleDelete = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    const cursorIsAtEnd = getCursorOffset() >= text.length;
+    if (cursorIsAtEnd) {
+      event.preventDefault();
+      applyAction(Actions.merge, setEditorState, literalIndex, MergeTarget.NEXT);
+    }
+  };
+
+  /**
+   * Vi har 2 forventinger når vi taster venste-pil:
+   * 1. Hvis vi er i et fritekst-felt, og den er markert:
+   *  - Skal første tast fjerne markeringen og sette markøren til starten av teksten
+   *  - Skal andre tast flytte markøren til neste posisjon
+   * 2. Hvis vi er i en vanlig literal (eller en redigert fritekst-felt):
+   *  - skal tast alltid flytte posisjon
+   */
+  const handleArrowLeft = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    if (contentEditableReference.current === null) return;
+
+    const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
+    const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
+
+    const cursorOffsetOrRange = getCursorOffsetOrRange();
+    if (cursorOffsetOrRange === undefined) return;
+
+    const isCursorOffset = typeof cursorOffsetOrRange === "number";
+    const isRange = !isCursorOffset;
+
+    if (isRange && erFritekst) {
+      const nextFocus = allSpans[thisSpanIndex];
+      focusAtOffset(nextFocus.childNodes[0], cursorOffsetOrRange.startOffset);
+    } else {
+      const cursorIsAtBeginning = isCursorOffset ? cursorOffsetOrRange === 0 : cursorOffsetOrRange.startOffset === 0;
+
+      if (!cursorIsAtBeginning) return;
+
+      const previousSpanIndex = thisSpanIndex - 1;
+      if (previousSpanIndex < 0) return;
+
+      const isPreviousSpanInSameBlock =
+        allSpans[previousSpanIndex].parentElement === contentEditableReference.current.parentElement;
+
+      event.preventDefault();
+      const nextFocus = allSpans[previousSpanIndex];
+
+      focusAtOffset(
+        nextFocus.childNodes[0],
+        isPreviousSpanInSameBlock ? (nextFocus.textContent?.length ?? 0) - 1 : (nextFocus.textContent?.length ?? 0),
+      );
+    }
+  };
+
+  /**
+   * Vi har 2 forventinger når vi taster høyre-pil:
+   * 1. Hvis vi er i et fritekst-felt, og den er markert:
+   *  - Skal første tast fjerne markeringen og sette markøren til slutten av teksten
+   *  - Skal andre tast flytte markøren til neste posisjon
+   * 2. Hvis vi er i en vanlig literal (eller en redigert fritekst-felt):
+   *  - skal tast alltid flytte posisjon
+   */
+  const handleArrowRight = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    if (contentEditableReference.current === null) return;
+
+    const allSpans = [...document.querySelectorAll<HTMLSpanElement>("span[contenteditable]")];
+    const thisSpanIndex = allSpans.indexOf(contentEditableReference.current);
+
+    const cursorOffsetOrRange = getCursorOffsetOrRange();
+    if (cursorOffsetOrRange === undefined) return;
+
+    const isCursorOffset = typeof cursorOffsetOrRange === "number";
+    const isRange = !isCursorOffset;
+
+    if (isRange && erFritekst) {
+      const nextFocus = allSpans[thisSpanIndex];
+      focusAtOffset(nextFocus.childNodes[0], cursorOffsetOrRange.endOffset);
+    } else {
+      const cursorIsAtEnd = isCursorOffset
+        ? cursorOffsetOrRange >= text.length
+        : cursorOffsetOrRange.endOffset >= text.length;
+
+      if (!cursorIsAtEnd) return;
+
+      const nextSpanIndex = thisSpanIndex + 1;
+      if (nextSpanIndex > allSpans.length - 1) return;
+
+      const isNextSpanInSameBlock =
+        allSpans[nextSpanIndex].parentElement === contentEditableReference.current.parentElement;
+
+      event.preventDefault();
+      const nextFocus = allSpans[nextSpanIndex];
+      focusAtOffset(nextFocus.childNodes[0], isNextSpanInSameBlock ? 1 : 0);
+    }
+  };
+
+  const handleArrowUp = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    const element = contentEditableReference.current;
+    const caretCoordinates = getCaretRect();
+
+    if (element === null || caretCoordinates === undefined) {
+      return;
+    }
+
+    const shouldDoItOurselves = !areAnyContentEditableSiblingsPlacedHigher(element);
+
+    if (shouldDoItOurselves) {
+      const next = findOnLineAbove(element);
+
+      if (next) {
+        gotoCoordinates({ x: caretCoordinates.x, y: next.bottom - Y_COORD_SAFETY_MARGIN });
+        event.preventDefault();
+      }
+    }
+  };
+
+  const handleArrowDown = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    const element = contentEditableReference.current;
+    const caretCoordinates = getCaretRect();
+
+    if (element === null || caretCoordinates === undefined) {
+      return;
+    }
+
+    const shouldDoItOurselves = !areAnyContentEditableSiblingsPlacedLower(element);
+    if (shouldDoItOurselves) {
+      const next = findOnLineBelow(element);
+
+      if (next) {
+        gotoCoordinates({ x: caretCoordinates.x, y: next.top + Y_COORD_SAFETY_MARGIN });
+        event.preventDefault();
+      }
+    }
+  };
+
+  const handlePaste = (event: React.ClipboardEvent<HTMLSpanElement>) => {
+    event.preventDefault();
+    // TODO: for debugging frem til vi er ferdig å teste liming
+    logPastedClipboard(event.clipboardData);
+
+    const offset = getCursorOffset();
+    if (offset >= 0) {
+      applyAction(Actions.paste, setEditorState, literalIndex, offset, event.clipboardData);
+    }
+  };
+
+  const handleOnclick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!erFritekst) return;
+    handleWordSelect(e.target as HTMLSpanElement);
+  };
+
+  const handleOnFocus = (e: React.FocusEvent) => {
+    e.preventDefault();
+    setEditorState((oldState) => ({
+      ...oldState,
+      focus: literalIndex,
+    }));
+    if (!erFritekst) return;
+    handleWordSelect(e.target as HTMLSpanElement);
+  };
+
+  const handleWordSelect = (element: HTMLSpanElement) => {
+    const selection = globalThis.getSelection();
+    const range = document.createRange();
+
+    if (selection) {
+      selection.removeAllRanges();
+      range.selectNodeContents(element.childNodes[0]);
+      selection.addRange(range);
+    }
+  };
+
+  return (
+    <span
+      // NOTE: ideally this would be "plaintext-only", and it works in practice.
+      // However, the tests will not work if set to plaintext-only. For some reason focus/input and other events will not be triggered by userEvent as expected.
+      // This is not documented anywhere I could find and caused a day of frustration, beware
+      contentEditable={!freeze}
+      css={
+        erFritekst &&
+        css`
+          color: var(--a-blue-500);
+          text-decoration: underline;
+          cursor: pointer;
+        `
+      }
+      onClick={handleOnclick}
+      onFocus={handleOnFocus}
+      onInput={(event) => {
+        applyAction(
+          Actions.updateContentText,
+          setEditorState,
+          literalIndex,
+          (event.target as HTMLSpanElement).textContent ?? "",
+        );
+      }}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") {
+          handleEnter(event);
+        }
+        if (event.key === "Backspace") {
+          handleBackspace(event);
+        }
+        if (event.key === "Delete") {
+          handleDelete(event);
+        }
+        if (event.key === "ArrowLeft") {
+          handleArrowLeft(event);
+        }
+        if (event.key === "ArrowRight") {
+          handleArrowRight(event);
+        }
+        if (event.key === "ArrowDown") {
+          handleArrowDown(event);
+        }
+        if (event.key === "ArrowUp") {
+          handleArrowUp(event);
+        }
+      }}
+      onPaste={handlePaste}
+      ref={contentEditableReference}
+      tabIndex={erFritekst ? 0 : -1}
+    />
+  );
+}

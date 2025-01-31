@@ -25,7 +25,6 @@ export const SignaturView = ({ signatur }: { signatur: Signatur }) => (
   <div
     css={css`
       opacity: 0.5;
-      margin-top: var(--a-spacing-8);
       display: flex;
       flex-direction: column;
       gap: var(--a-spacing-6);

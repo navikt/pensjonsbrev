@@ -20,11 +20,11 @@ export const EditableBlockComposer = (props: { blocks: AnyBlock[] }) => {
                 key={`block-${blockIndex}`}
                 textContent={block.content}
                 textStyle={css`
-                  font-size: var(--a-font-size-heading-medium);
-                  letter-spacing: -0.002em;
-                  line-height: var(--a-font-line-height-heading-medium);
+                  font-size: 19.5px;
+                  line-height: var(--a-font-line-height-heading-xsmall);
+                  letter-spacing: 0.375px;
                   font-weight: var(--a-font-weight-bold);
-                  margin-bottom: var(--a-spacing-2);
+                  margin-bottom: var(--a-spacing-1-alt);
                 `}
               />
             );
@@ -37,11 +37,11 @@ export const EditableBlockComposer = (props: { blocks: AnyBlock[] }) => {
                 key={`block-${blockIndex}`}
                 textContent={block.content}
                 textStyle={css`
-                  font-size: var(--a-font-size-heading-small);
-                  letter-spacing: -0.001em;
-                  line-height: var(--a-font-line-height-heading-small);
+                  font-size: 18px;
+                  line-height: var(--a-font-line-height-heading-xsmall);
+                  letter-spacing: 0.3px;
                   font-weight: var(--a-font-weight-bold);
-                  margin-bottom: var(--a-spacing-2);
+                  margin-bottom: var(--a-spacing-1-alt);
                 `}
               />
             );
@@ -66,7 +66,9 @@ const ContentComposer = (props: { blockIndex: number; content: Content[]; dataCy
   return (
     <div
       css={css`
-        margin-bottom: var(--a-spacing-8);
+        font-size: 16.5px;
+        line-height: var(--a-font-line-height-heading-xsmall);
+        margin-bottom: 27px;
       `}
       data-cy={props.dataCy ?? "PARAGRAPH"}
     >

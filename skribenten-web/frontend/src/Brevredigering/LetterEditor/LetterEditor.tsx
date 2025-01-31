@@ -71,10 +71,12 @@ export const LetterEditor = ({
           <SakspartView sakspart={letter.sakspart} />
           <Heading
             css={css`
-              margin: var(--a-spacing-8) 0;
+              line-height: 30px;
+              margin-bottom: 27px;
+              letter-spacing: 0.45px;
             `}
-            level="2"
-            size="large"
+            level="3"
+            size="medium"
           >
             {letter.title}
           </Heading>
