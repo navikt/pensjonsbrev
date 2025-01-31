@@ -201,7 +201,7 @@ describe("toggle bullet-liet", () => {
       cy.getDataCy("editor-bullet-list").click();
       cy.get("ul").should("have.length", 1);
       cy.get("li").should("have.length", 1);
-      cy.get(".PARAGRAPH").eq(0).contains("skal brytes ut").should("exist");
+      cy.getDataCy("PARAGRAPH").eq(0).contains("skal brytes ut").should("exist");
     });
 
     it("bevarer content som er rundt en punktliste når man toggler av på starten av en punktliste", () => {
@@ -363,7 +363,7 @@ describe("toggle bullet-liet", () => {
       cy.getDataCy("editor-bullet-list").click();
       cy.get("ul").should("have.length", 1);
       cy.get("li").should("have.length", 1);
-      cy.get(".PARAGRAPH").eq(0).contains("skal brytes ut").should("exist");
+      cy.getDataCy("PARAGRAPH").eq(0).contains("skal brytes ut").should("exist");
     });
 
     it("fjerner punkt fra midten av en punktliste", () => {
@@ -381,7 +381,7 @@ describe("toggle bullet-liet", () => {
       cy.getDataCy("editor-bullet-list").click();
       cy.get("ul").should("have.length", 2);
       cy.get("li").should("have.length", 2);
-      cy.get(".PARAGRAPH").eq(0).contains("skal brytes ut").should("exist");
+      cy.getDataCy("PARAGRAPH").eq(0).contains("skal brytes ut").should("exist");
     });
   });
 });
