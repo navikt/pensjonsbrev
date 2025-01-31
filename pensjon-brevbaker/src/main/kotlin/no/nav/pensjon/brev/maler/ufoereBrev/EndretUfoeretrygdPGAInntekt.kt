@@ -56,13 +56,13 @@ object EndretUfoeretrygdPGAInntekt : AutobrevTemplate<EndretUfoeretrygdPGAInntek
         val gammeltBelop = pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut()
         val nyttBelop = pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut()
         val virkningFom = pe.vedtaksdata_virkningfom()
-        val virkningFomAr = pe.ut_virkningfomar()
+        val virkningFomAr = pe.ut_virkningfomar() // Ikke med i modellen
         val forventetInntekt = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt()
         val utbetalingsgrad = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad()
         val uforegrad = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-        val ettArForVirkningstidspunkt = pe.ut_virkningstidpunktarminus1ar()
+        val ettArForVirkningstidspunkt = pe.ut_virkningstidpunktarminus1ar() // Ikke med i modellen
         val vilFylle67IlaVirkningFomAr = pe.ut_vilfylle67ivirkningfomar()
-        val virkningFomErForsteDagIAaret = FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom())
+        val virkningFomErForsteDagIAaret = FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(pe.vedtaksdata_virkningfom()) // Ikke med i modellen
         val ektefelletilleggInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
         val gjenlevendetilleggInnvilget = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()
         val instoppholdType = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype() // TODO: tom er null ikke ""
