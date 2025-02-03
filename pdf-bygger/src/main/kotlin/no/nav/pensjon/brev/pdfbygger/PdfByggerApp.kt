@@ -117,18 +117,6 @@ fun Application.module() {
             handleResult(result, call.application.environment.log)
         }
 
-        // TODO: Slett denne. Ventar med det for å unngå nedetid
-        post("/compile") {
-            val logger = call.application.environment.log
-
-            val input = call.receive<PdfCompilationInput>()
-            val result = activityCounter.count {
-                laTeXService.producePDF(input.files)
-            }
-
-            handleResult(result, logger)
-        }
-
         get("/isAlive") {
             call.respondText("Alive!", ContentType.Text.Plain, HttpStatusCode.OK)
         }
