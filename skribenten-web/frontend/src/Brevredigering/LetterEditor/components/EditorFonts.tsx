@@ -13,10 +13,6 @@ const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontT
   const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
   const theContentWeAreOn = block.content[editorState.focus.contentIndex];
 
-  // console.log("the block:", block);
-  // console.log("trying to get content from:", editorState.focus.contentIndex);
-  // console.log("theContentWeAreOn", theContentWeAreOn);
-
   return handleSwitchContent({
     content: theContentWeAreOn,
     onLiteral: (literal) => literal.editedFontType ?? literal.fontType,
