@@ -1,16 +1,13 @@
 package no.nav.pensjon.brev.template.render
 
 import java.nio.file.Path
-import java.util.Base64
 
 interface Document {
     val files: List<DocumentFile>
-    fun base64EncodedFiles(): Map<String, String> = files.associate {
-        it.fileName to base64Encoder.encodeToString(it.content.toByteArray(Charsets.UTF_8))
+    fun files(): Map<String, String> = files.associate {
+        it.fileName to it.content
     }
 }
-
-private val base64Encoder: Base64.Encoder = Base64.getEncoder()
 
 class DocumentFile(val fileName: String, val content: String) {
     constructor(fileName: String, contentWriter: Appendable.() -> Unit) :

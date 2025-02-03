@@ -24,7 +24,6 @@ class LaTeXService(
     private val tmpBaseDir: Path? =  Path.of("/app/tmp")
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
-    private val decoder = Base64.getDecoder()
     private val encoder = Base64.getEncoder()
     private val latexCommand = latexCommand.split(" ").filter { it.isNotBlank() } + "letter.tex"
     private val parallelismSemaphore = latexParallelism.takeIf { it > 0 }?.let { Semaphore(it) }
@@ -55,14 +54,14 @@ class LaTeXService(
             latexFiles.forEach {
                 tmpDir.resolve(it.key).toFile().apply {
                     createNewFile()
-                    writeBytes(decoder.decode(it.value))
+                    writeText(it.value)
                 }
             }
 
             when (val result: Execution = compile(tmpDir)) {
                 is Execution.Success ->
                     result.pdf.toFile().readBytes()
-                        .let { encoder.encodeToString(it) }
+                        .let {  encoder.encodeToString(it) }
                         .let { PDFCompilationResponse.Base64PDF(it) }
 
                 is Execution.Failure.Compilation ->
