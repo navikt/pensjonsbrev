@@ -9,7 +9,7 @@ plugins {
 }
 
 group = "no.nav.pensjon.brev"
-version = "121"
+version = "122"
 
 java {
     withSourcesJar()
