@@ -276,12 +276,18 @@ describe("Endrer på mottaker", () => {
     cy.contains("Avbryt").click();
     cy.getDataCy("endre-mottaker-modal").should("not.exist");
   });
-  it("må bekrefte avbrytelse dersom det finnes endringer", () => {
-    cy.getDataCy("brevmal-search").click().type("brev fra nav");
-    cy.getDataCy("brevmal-button").click();
-    cy.getDataCy("toggle-endre-mottaker-modal").click();
-    cy.get("[data-cy=endre-mottaker-søk-button]").should("not.exist");
-    cy.getDataCy("endre-mottaker-søketype-select").select("Direkte oppslag");
+  it("må bekrefte avbrytelse dersom det finnes endringer for manuellAdresse", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
+      fixture: "modelSpecification.json",
+    }).as("modelSpecification");
+
+    cy.intercept("GET", "/bff/skribenten-backend/land", { fixture: "land.json" });
+
+    cy.getDataCy("brevmal-search").click().type("Informasjon om saksbehandlingstid");
+    cy.getDataCy("brevmal-button").eq(1).click();
+    cy.contains("Endre mottaker").click();
+    cy.contains("Legg til manuelt").click();
+    cy.contains("Navn").click().type("Fornavn Etternavnsen");
     cy.contains("Avbryt").click();
 
     //får opp bekreftelse
