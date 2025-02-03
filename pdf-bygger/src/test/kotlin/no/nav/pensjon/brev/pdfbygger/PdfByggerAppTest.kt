@@ -1,5 +1,10 @@
 package no.nav.pensjon.brev.pdfbygger
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
 import io.ktor.client.request.*
@@ -8,7 +13,13 @@ import io.ktor.http.*
 import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.*
+import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.Test
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import kotlin.test.assertEquals
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -16,6 +27,30 @@ import kotlin.time.Duration.Companion.seconds
 
 class PdfByggerAppTest {
     private val compileRequest = this::class.java.classLoader.getResource("pdfbygger-request.json")!!.readText()
+    private val pdfRequest = PDFRequest(
+        letterMarkup = LetterMarkup(
+            title = "Tittel 1",
+            sakspart = LetterMarkup.Sakspart(
+                gjelderNavn = "Navn Navnesen",
+                gjelderFoedselsnummer = "12345678901",
+                saksnummer = "123",
+                dokumentDato = LocalDate.of(2025, 1, 1).format(DateTimeFormatter.ISO_LOCAL_DATE)
+            ),
+            blocks = listOf(), // TODO
+            signatur = LetterMarkup.Signatur(
+                hilsenTekst = "hilsen",
+                saksbehandlerRolleTekst = "saksbehandler",
+                saksbehandlerNavn = "Saksbehandler Saksbehandlersen",
+                attesterendeSaksbehandlerNavn = null,
+                navAvsenderEnhet = "Nav sentralt",
+            )
+        ),
+        attachments = listOf(),
+        language = LanguageCode.BOKMAL,
+        felles = Fixtures.felles,
+        brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
+    )
+    private val objectMapper = jacksonObjectMapper().apply { brevbakerConfig() }
 
     @Test
     fun appRuns() {
@@ -45,9 +80,9 @@ class PdfByggerAppTest {
         testApplication {
             appConfig(latexCommand = getScriptPath(name = "neverEndingCompile.sh"), parallelism = 1, compileTimeout = 1.seconds, queueTimeout = 1.seconds)
 
-            val response = client.post("/compile") {
+            val response = client.post("/produserBrev") {
                 contentType(ContentType.Application.Json)
-                setBody(compileRequest)
+                setBody(objectMapper.writeValueAsString(pdfRequest))
             }
             assertEquals(HttpStatusCode.InternalServerError, response.status)
             assertThat(response.bodyAsText(), containsSubstring("Compilation timed out"))
@@ -101,4 +136,12 @@ class PdfByggerAppTest {
             config = ApplicationConfig(null).mergeWith(MapApplicationConfig(overrides))
         }
 
+}
+
+fun ObjectMapper.brevbakerConfig() {
+    registerModule(JavaTimeModule())
+    registerModule(LetterMarkupModule)
+    enable(SerializationFeature.INDENT_OUTPUT)
+    disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
 }
