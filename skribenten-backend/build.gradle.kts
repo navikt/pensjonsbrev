@@ -84,7 +84,7 @@ dependencies {
     implementation("com.zaxxer:HikariCP:6.2.1")
 
     // Unleash
-    implementation("io.getunleash:unleash-client-java:9.3.2")
+    implementation("io.getunleash:unleash-client-java:10.0.0")
 
     // Domenemodell
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
