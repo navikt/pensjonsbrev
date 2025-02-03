@@ -3,7 +3,6 @@ import type { Dispatch, SetStateAction } from "react";
 import Actions from "./actions";
 import { applyAction } from "./lib/actions";
 import type { LetterEditorState } from "./model/state";
-import { getCursorOffset } from "./services/caretUtils";
 
 export enum Typography {
   PARAGRAPH = "PARAGRAPH",
@@ -32,7 +31,5 @@ export const useEditorKeyboardShortcuts = (
       event.preventDefault();
       applyAction(Actions.switchTypography, setEditorState, editorState.focus, Typography.TITLE2);
     }
-    //setter fokuset tilbake til editor etter valgt tekststil
-    applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
   };
 };
