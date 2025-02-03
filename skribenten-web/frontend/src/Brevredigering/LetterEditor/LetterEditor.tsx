@@ -56,14 +56,20 @@ export const LetterEditor = ({
           <EditorMenu />
         </div>
         <div className="editor">
-          <SakspartView sakspart={letter.sakspart} />
+          <SakspartView
+            sakspart={letter.sakspart}
+            wrapperStyles={css`
+              margin-bottom: 1.88rem;
+            `}
+          />
           <Heading
             css={css`
-              margin: var(--a-spacing-8) 0;
-              cursor: default;
+              line-height: 30px;
+              margin-bottom: 27px;
+              letter-spacing: 0.45px;
             `}
-            level="1"
-            size="large"
+            level="3"
+            size="medium"
           >
             {letter.title}
           </Heading>
@@ -74,7 +80,12 @@ export const LetterEditor = ({
               </div>
             ))}
           </div>
-          <SignaturView signatur={letter.signatur} />
+          <SignaturView
+            signatur={letter.signatur}
+            wrapperStyles={css`
+              margin-bottom: 48px;
+            `}
+          />
         </div>
         {showDebug && <DebugPanel />}
       </EditorStateContext.Provider>
