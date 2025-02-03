@@ -57,9 +57,9 @@ describe("Typography", () => {
       });
       it("caret holder seg i samme posisjon ved toggle", () => {
         cy.mount(<EditorWithState />);
-        cy.contains("title1").click();
+        cy.contains("title1").click().type("{leftArrow}{leftArrow}");
         cy.getDataCy("typography-select").select("Normal (alt+1)");
-        assertCaret("title1", 24);
+        assertCaret("title1", 22);
       });
     });
     describe("shortcut", () => {
@@ -77,8 +77,8 @@ describe("Typography", () => {
       it("caret holder seg i samme posisjon ved toggle", () => {
         cy.mount(<EditorWithState />);
         cy.contains("title1").click();
-        cy.contains("title1").type("{alt}1");
-        assertCaret("title1", 24);
+        cy.contains("title1").type("{leftArrow}{leftArrow}{alt}1");
+        assertCaret("title1", 22);
       });
     });
   });
@@ -97,9 +97,9 @@ describe("Typography", () => {
       });
       it("caret holder seg i samme posisjon ved toggle", () => {
         cy.mount(<EditorWithState />);
-        cy.contains("title2").click();
+        cy.contains("title2").click().type("{leftArrow}{leftArrow}");
         cy.getDataCy("typography-select").select("Normal (alt+1)");
-        assertCaret("title2", 24);
+        assertCaret("title2", 22);
       });
     });
     describe("shortcut", () => {
@@ -117,8 +117,8 @@ describe("Typography", () => {
       it("caret holder seg i samme posisjon ved toggle", () => {
         cy.mount(<EditorWithState />);
         cy.contains("title2").click();
-        cy.contains("title2").type("{alt}1");
-        assertCaret("title2", 24);
+        cy.contains("title2").type("{leftArrow}{leftArrow}{alt}1");
+        assertCaret("title2", 22);
       });
     });
   });
@@ -137,9 +137,9 @@ describe("Typography", () => {
       });
       it("caret holder seg i samme posisjon ved toggle", () => {
         cy.mount(<EditorWithState />);
-        cy.contains("paragraph").click();
+        cy.contains("paragraph").click().type("{leftArrow}{leftArrow}");
         cy.getDataCy("typography-select").select("Overskrift (alt+2)");
-        assertCaret("paragraph", 27);
+        assertCaret("paragraph", 25);
       });
     });
     describe("shortcut", () => {
@@ -157,8 +157,8 @@ describe("Typography", () => {
       it("caret holder seg i samme posisjon ved toggle", () => {
         cy.mount(<EditorWithState />);
         cy.contains("paragraph").click();
-        cy.contains("paragraph").type("{alt}2");
-        assertCaret("paragraph", 27);
+        cy.contains("paragraph").type("{leftArrow}{leftArrow}{alt}2");
+        assertCaret("paragraph", 25);
       });
     });
   });
