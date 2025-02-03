@@ -42,14 +42,8 @@ class PdfRequestConsumer(
     fun flow() =
         flow {
             while (true) {
-                val workInQueue =  parallelism - parallelismSemaphore.availablePermits
-                if(workInQueue < parallelism / 2) {
-                    emit(poll())
-                    println("Polled message")
-                } else {
-                    delay(500.milliseconds)
-                    println("Still working on ${parallelismSemaphore.availablePermits} requests. No need to poll.")
-                }
+                emit(poll())
+                println("Polled message")
             }
         }.onEach { input ->
             coroutineScope {

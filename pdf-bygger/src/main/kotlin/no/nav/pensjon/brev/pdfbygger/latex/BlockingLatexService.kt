@@ -1,8 +1,7 @@
-package no.nav.pensjon.brev.pdfbygger.api
+package no.nav.pensjon.brev.pdfbygger.latex
 
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.withTimeoutOrNull
-import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
 import kotlin.time.Duration
 

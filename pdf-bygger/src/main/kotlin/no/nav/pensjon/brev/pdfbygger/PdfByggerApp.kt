@@ -2,7 +2,13 @@ package no.nav.pensjon.brev.pdfbygger
 
 import io.ktor.server.application.*
 import io.ktor.server.config.*
+import io.ktor.server.metrics.micrometer.MicrometerMetrics
 import io.ktor.server.netty.*
+import io.ktor.server.response.respond
+import io.ktor.server.routing.get
+import io.ktor.server.routing.routing
+import io.micrometer.prometheusmetrics.PrometheusConfig
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.pdfbygger.api.apiModule
 import no.nav.pensjon.brev.pdfbygger.kafka.kafkaModule
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
@@ -25,6 +31,17 @@ fun Application.module() {
         it.log.info("Application preparing to shutdown gracefully")
     }
 
+    val prometheusMeterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
+    install(MicrometerMetrics) {
+        registry = prometheusMeterRegistry
+    }
+    
+    routing {
+        get("/metrics") {
+            call.respond(prometheusMeterRegistry.scrape())
+        }
+    }
+
     val latexCompileService = LatexCompileService(
         compileTimeout = getProperty("pdfBygger.latex.compileTimeout")?.let { Duration.parse(it) } ?: 300.seconds,
         latexCommand = getProperty("pdfBygger.latex.latexCommand")
@@ -33,11 +50,9 @@ fun Application.module() {
     )
 
     if (getProperty("pdfBygger.isAsyncWorker")?.toBoolean() == true) {
-        // TODO hva gjør vi med retries? skal en worker bare stå og stange på den? Skal den over til feil-kø med retry?
-        //   Kanskje det går fint om vi er veldig strenge på input validering og tester at markup ikke kan føre til feilet latex kompilering.
-        kafkaModule(latexCompileService)
+        kafkaModule(latexCompileService, prometheusMeterRegistry)
     } else {
-        apiModule(latexCompileService)
+        apiModule(latexCompileService, prometheusMeterRegistry)
     }
 
 }
