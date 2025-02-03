@@ -4,9 +4,6 @@ import java.nio.file.Path
 
 interface Document {
     val files: List<DocumentFile>
-    fun files(): Map<String, String> = files.associate {
-        it.fileName to it.content
-    }
 }
 
 class DocumentFile(val fileName: String, val content: String) {

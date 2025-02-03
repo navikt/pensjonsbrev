@@ -111,7 +111,7 @@ fun Application.module() {
             val result = activityCounter.count {
                 call.receive<PDFRequest>()
                     .let { LatexDocumentRenderer.render(it) }
-                    .let { laTeXService.producePDF(it.files()) }
+                    .let { laTeXService.producePDF(it.files.associate { it.fileName to it.content }) }
             }
             handleResult(result, call.application.environment.log)
         }
