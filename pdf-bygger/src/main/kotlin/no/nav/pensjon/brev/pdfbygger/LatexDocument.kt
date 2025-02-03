@@ -16,8 +16,4 @@ class LatexDocument : Document {
         newPlainTextFile(fileName) {
             LatexAppendable(this).apply(writeToFile)
         }
-
-    fun addFiles(newFiles: List<DocumentFile>) {
-        _files.addAll(newFiles)
-    }
 }
