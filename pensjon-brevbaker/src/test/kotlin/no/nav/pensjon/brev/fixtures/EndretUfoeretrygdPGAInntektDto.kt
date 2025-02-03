@@ -46,7 +46,6 @@ fun createEndretUfoeretrygdPGAInntektDto() =
         fribelopBTFB = 2000,
         avkortningInntektstakBTFB = 2000,
         arligAvkortningsbelopBTFB = 2000,
-        justeringsbelopPerArUtenMinusBTFB = 2000,
         gammeltBelopBTSB = 2000,
         nyttBelopBTSB = 2000,
         innvilgetBTSB = true,
@@ -58,6 +57,5 @@ fun createEndretUfoeretrygdPGAInntektDto() =
         fribelopBTSB = 2000,
         avkortningInntektstakBTSB = 2000,
         arligAvkortningsbelopBTSB = 2000,
-        justeringsbelopPerArUtenMinusBTSB = 2000,
         brukerBorINorge = true,
     )

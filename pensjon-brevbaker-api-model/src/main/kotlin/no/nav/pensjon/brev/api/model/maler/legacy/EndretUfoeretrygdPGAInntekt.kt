@@ -49,7 +49,6 @@ data class EndretUfoeretrygdPGAInntektDto(
     val fribelopBTFB: Int?,
     val avkortningInntektstakBTFB: Int?,
     val arligAvkortningsbelopBTFB: Int?,
-    val justeringsbelopPerArUtenMinusBTFB: Int?,
 
     // Barnetillegg saerkullsbarn
     val innvilgetBTSB: Boolean,
@@ -63,5 +62,4 @@ data class EndretUfoeretrygdPGAInntektDto(
     val fribelopBTSB: Int?,
     val avkortningInntektstakBTSB: Int?,
     val arligAvkortningsbelopBTSB: Int?,
-    val justeringsbelopPerArUtenMinusBTSB: Int?,
 ) : BrevbakerBrevdata

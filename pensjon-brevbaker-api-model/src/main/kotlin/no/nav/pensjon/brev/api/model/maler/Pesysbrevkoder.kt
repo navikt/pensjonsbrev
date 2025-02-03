@@ -31,8 +31,7 @@ object Pesysbrevkoder {
         UT_OPPHOER_BT_AUTO,
         UT_UNG_UFOER_20_AAR_AUTO,
         UT_VARSEL_SAKSBEHANDLINGSTID_AUTO,
-        UT_BARNETILLEGG_ENDRET_AUTO,
-        UT_ENDRET_PGA_INNTEKT_PILOT;
+        UT_BARNETILLEGG_ENDRET_AUTO;
 
         override fun kode(): String = this.name
     }

@@ -33,7 +33,7 @@ import java.time.LocalDate
 object EndretUfoeretrygdPGAInntekt : AutobrevTemplate<EndretUfoeretrygdPGAInntektDto> {
 
     // PE_UT_05_100
-    override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_INNTEKT_PILOT
+    override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_INNTEKT
 
     override val template = createTemplate(
         name = kode.name,
