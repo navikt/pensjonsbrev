@@ -26,7 +26,6 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class PdfByggerAppTest {
-    private val compileRequest = this::class.java.classLoader.getResource("pdfbygger-request.json")!!.readText()
     private val pdfRequest = PDFRequest(
         letterMarkup = LetterMarkup(
             title = "Tittel 1",
@@ -63,13 +62,13 @@ class PdfByggerAppTest {
     }
 
     @Test
-    fun `app can compile latex to pdf`() {
+    fun `app can compile LetterMarkup to pdf`() {
         testApplication {
             appConfig(latexCommand = getScriptPath("simpleCompile.sh"), parallelism = 1, compileTimeout = 1.seconds, queueTimeout = 1.seconds)
 
-            val response = client.post("/compile") {
+            val response = client.post("/produserBrev") {
                 contentType(ContentType.Application.Json)
-                setBody(compileRequest)
+                setBody(objectMapper.writeValueAsString(pdfRequest))
             }
             assertEquals(HttpStatusCode.OK, response.status)
         }
@@ -107,9 +106,9 @@ class PdfByggerAppTest {
 
                 val requests = List(parallelism * parallelismFactor) {
                     async(Dispatchers.Default) {
-                        client.post("/compile") {
+                        client.post("/produserBrev") {
                             contentType(ContentType.Application.Json)
-                            setBody(compileRequest)
+                            setBody(objectMapper.writeValueAsString(pdfRequest))
                         }
                     }
                 }
