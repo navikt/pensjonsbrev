@@ -113,7 +113,7 @@ const BrevvelgerMainContent = (props: {
         `}
         gap="6"
       >
-        <Heading level="1" size="small">
+        <Heading level="5" size="small">
           Brevmeny
         </Heading>
         <Brevmaler
