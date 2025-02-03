@@ -5,13 +5,13 @@ class HTMLDocument(indexHTMLBuilder: Appendable.() -> Unit) : Document {
     override val files: List<DocumentFile>
         get() = _files
 
-    val indexHTML: DocumentFile.PlainText = DocumentFile.PlainText("index.html", indexHTMLBuilder).also { _files.add(it) }
+    val indexHTML: DocumentFile = DocumentFile("index.html", indexHTMLBuilder).also { _files.add(it) }
 
     fun newFile(filename: String, writeToFile: Appendable.() -> Unit) {
-        _files.add(DocumentFile.PlainText(filename, writeToFile))
+        _files.add(DocumentFile(filename, writeToFile))
     }
 
-    fun addFile(file: DocumentFile.PlainText) {
+    fun addFile(file: DocumentFile) {
         _files.add(file)
     }
 }

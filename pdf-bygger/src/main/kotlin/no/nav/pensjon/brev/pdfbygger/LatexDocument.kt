@@ -10,7 +10,7 @@ class LatexDocument : Document {
         get() = _files
 
     private fun newPlainTextFile(fileName: String, writeToFile: Appendable.() -> Unit) =
-        _files.add(DocumentFile.PlainText(fileName, writeToFile))
+        _files.add(DocumentFile(fileName, writeToFile))
 
     fun newLatexFile(fileName: String, writeToFile: LatexAppendable.() -> Unit) =
         newPlainTextFile(fileName) {

@@ -1,30 +1,22 @@
 package no.nav.pensjon.brev.template.render
 
 import java.nio.file.Path
-import java.util.*
+import java.util.Base64
 
 interface Document {
     val files: List<DocumentFile>
-    fun base64EncodedFiles(): Map<String, String> =
-        files.associate {
-            when (it) {
-                is DocumentFile.PlainText -> it.fileName to base64Encoder.encodeToString(it.content.toByteArray(Charsets.UTF_8))
-            }
-        }
+    fun base64EncodedFiles(): Map<String, String> = files.associate {
+        it.fileName to base64Encoder.encodeToString(it.content.toByteArray(Charsets.UTF_8))
+    }
 }
 
 private val base64Encoder: Base64.Encoder = Base64.getEncoder()
 
-sealed class DocumentFile {
-    abstract val fileName: String
-    abstract fun writeTo(path: Path)
+class DocumentFile(val fileName: String, val content: String) {
+    constructor(fileName: String, contentWriter: Appendable.() -> Unit) :
+            this(fileName, String(StringBuilder().apply(contentWriter)))
 
-    class PlainText(override val fileName: String, val content: String) : DocumentFile() {
-        constructor(fileName: String, contentWriter: Appendable.() -> Unit) :
-                this(fileName, String(StringBuilder().apply(contentWriter)))
-
-        override fun writeTo(path: Path) {
-            path.resolve(fileName).toFile().writeText(content, Charsets.UTF_8)
-        }
+    fun writeTo(path: Path) {
+        path.resolve(fileName).toFile().writeText(content, Charsets.UTF_8)
     }
 }
