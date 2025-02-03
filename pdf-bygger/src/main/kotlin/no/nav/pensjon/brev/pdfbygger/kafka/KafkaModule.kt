@@ -7,14 +7,13 @@ import io.ktor.server.config.*
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
-import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
 import no.nav.pensjon.brev.pdfbygger.getProperty
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 
-fun Application.kafkaModule(latexCompileService: LatexCompileService, prometheusMeterRegistry: PrometheusMeterRegistry) {
+fun Application.kafkaModule(latexCompileService: LatexCompileService) {
     val kafkaConfig = createKafkaConfig(environment.config.config("pdfBygger.kafka"))
 
     routing {

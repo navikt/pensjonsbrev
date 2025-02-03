@@ -2,14 +2,8 @@ package no.nav.pensjon.brev.pdfbygger
 
 import io.ktor.server.application.*
 import io.ktor.server.config.*
-import io.ktor.server.metrics.micrometer.MicrometerMetrics
 import io.ktor.server.netty.*
-import io.ktor.server.response.respond
-import io.ktor.server.routing.get
-import io.ktor.server.routing.routing
-import io.micrometer.prometheusmetrics.PrometheusConfig
-import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
-import no.nav.pensjon.brev.pdfbygger.api.apiModule
+import no.nav.pensjon.brev.pdfbygger.api.restModule
 import no.nav.pensjon.brev.pdfbygger.kafka.kafkaModule
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 import java.nio.file.Path
@@ -31,17 +25,6 @@ fun Application.module() {
         it.log.info("Application preparing to shutdown gracefully")
     }
 
-    val prometheusMeterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
-    install(MicrometerMetrics) {
-        registry = prometheusMeterRegistry
-    }
-    
-    routing {
-        get("/metrics") {
-            call.respond(prometheusMeterRegistry.scrape())
-        }
-    }
-
     val latexCompileService = LatexCompileService(
         compileTimeout = getProperty("pdfBygger.latex.compileTimeout")?.let { Duration.parse(it) } ?: 300.seconds,
         latexCommand = getProperty("pdfBygger.latex.latexCommand")
@@ -50,9 +33,9 @@ fun Application.module() {
     )
 
     if (getProperty("pdfBygger.isAsyncWorker")?.toBoolean() == true) {
-        kafkaModule(latexCompileService, prometheusMeterRegistry)
+        kafkaModule(latexCompileService)
     } else {
-        apiModule(latexCompileService, prometheusMeterRegistry)
+        restModule(latexCompileService)
     }
 
 }
