@@ -108,7 +108,7 @@ const BrevvelgerMainContent = (props: {
           width: 720px;
           border-left: 1px solid var(--a-gray-200);
           border-right: 1px solid var(--a-gray-200);
-          padding: var(--a-spacing-6);
+          padding: var(--a-spacing-5) var(--a-spacing-6);
           overflow-y: scroll;
         `}
         gap="6"
