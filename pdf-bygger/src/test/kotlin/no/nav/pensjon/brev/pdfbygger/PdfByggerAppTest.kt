@@ -35,7 +35,7 @@ class PdfByggerAppTest {
                 saksnummer = "123",
                 dokumentDato = LocalDate.of(2025, 1, 1).format(DateTimeFormatter.ISO_LOCAL_DATE)
             ),
-            blocks = listOf(), // TODO
+            blocks = listOf(),
             signatur = LetterMarkup.Signatur(
                 hilsenTekst = "hilsen",
                 saksbehandlerRolleTekst = "saksbehandler",
