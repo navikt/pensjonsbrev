@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
@@ -57,10 +58,10 @@ data class Beregningsperiodetabell(
                 forEach(beregningsperioder) { periode ->
                     row {
                         cell { includePhrase(PeriodeITabell(periode.datoFOM, periode.datoTOM)) }
-                        cell { includePhrase(Felles.KronerText(periode.ytelseFoerAvkorting)) }
-                        cell { includePhrase(Felles.KronerText(periode.inntekt)) }
+                        cell { includePhrase(KronerText(periode.ytelseFoerAvkorting)) }
+                        cell { includePhrase(KronerText(periode.inntekt)) }
                         cell {
-                            includePhrase(Felles.KronerText(periode.utbetaltBeloep))
+                            includePhrase(KronerText(periode.utbetaltBeloep))
                             showIf(periode.sanksjon) {
                                 text(
                                     Language.Bokmal to " - sanksjon",

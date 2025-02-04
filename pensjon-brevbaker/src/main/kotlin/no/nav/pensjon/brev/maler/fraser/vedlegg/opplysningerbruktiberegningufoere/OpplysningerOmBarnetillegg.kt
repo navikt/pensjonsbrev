@@ -39,6 +39,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.foedselsdatoPaaBarnTilleggetGjelder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BarnetilleggGjeldendeSelectors.saerkullsbarn_safe
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.model.ubestemtForm
@@ -394,7 +395,7 @@ data class OpplysningerOmBarnetillegg(
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(beloepAarBrutto))
+                            includePhrase(KronerText(beloepAarBrutto))
                         }
                     }
 
@@ -416,7 +417,7 @@ data class OpplysningerOmBarnetillegg(
                                 }
                             }
                             cell {
-                                includePhrase(Felles.KronerText(avkortningsbeloepAar))
+                                includePhrase(KronerText(avkortningsbeloepAar))
                             }
                         }
                     }
@@ -432,7 +433,7 @@ data class OpplysningerOmBarnetillegg(
                                 )
                             }
                             cell {
-                                includePhrase(Felles.KronerText(justeringsbeloepAar.absoluteValue()))
+                                includePhrase(KronerText(justeringsbeloepAar.absoluteValue()))
                             }
                         }
                     }
@@ -448,7 +449,7 @@ data class OpplysningerOmBarnetillegg(
                                 )
                             }
                             cell {
-                                includePhrase(Felles.KronerText(beloepAarNetto, BOLD))
+                                includePhrase(KronerText(beloepAarNetto, BOLD))
                             }
                         }
                     }
@@ -463,7 +464,7 @@ data class OpplysningerOmBarnetillegg(
                                 )
                             }
                             cell {
-                                includePhrase(Felles.KronerText(beloepNetto))
+                                includePhrase(KronerText(beloepNetto))
                             }
                         }
                     }

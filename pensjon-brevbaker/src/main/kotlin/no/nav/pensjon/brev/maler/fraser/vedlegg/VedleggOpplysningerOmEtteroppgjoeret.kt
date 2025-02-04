@@ -39,6 +39,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.InntektOgFratrekkSelectors.inntekt
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.model.ubestemtForm
 import no.nav.pensjon.brev.template.*
@@ -133,9 +134,9 @@ data class FikkSkulleFaattTabell(
                     ifNotNull(resultat) {
                         row {
                             cell { addTextContent(typeStoenad) }
-                            cell { includePhrase(Felles.KronerText(it.skulleFaatt)) }
-                            cell { includePhrase(Felles.KronerText(it.fikk)) }
-                            cell { includePhrase(Felles.KronerText(it.avvik)) }
+                            cell { includePhrase(KronerText(it.skulleFaatt)) }
+                            cell { includePhrase(KronerText(it.fikk)) }
+                            cell { includePhrase(KronerText(it.avvik)) }
                         }
                     }
                 }
@@ -178,7 +179,7 @@ data class FikkSkulleFaattTabell(
                     }
                     cell { }
                     cell { }
-                    cell { includePhrase(Felles.KronerText(totaltAvvik, FontType.BOLD)) }
+                    cell { includePhrase(KronerText(totaltAvvik, FontType.BOLD)) }
                 }
             }
         }
@@ -984,14 +985,14 @@ data class FratrekkTabell(
                         eval(fratrekkLinje.aarsak.format(LocalizedAarsak))
                     }
                     cell {
-                        includePhrase(Felles.KronerText(fratrekkLinje.beloep))
+                        includePhrase(KronerText(fratrekkLinje.beloep))
                     }
                 }
             }
             row {
                 cell { addTextContent(sumText) }
                 cell { }
-                cell { includePhrase(Felles.KronerText(fratrekk.sum, fontType = FontType.BOLD)) }
+                cell { includePhrase(KronerText(fratrekk.sum, fontType = FontType.BOLD)) }
             }
         }
 
@@ -1142,14 +1143,14 @@ data class InntektTabell(
                         eval(inntektLinje.registerKilde.format(LocalizedKilde))
                     }
                     cell {
-                        includePhrase(Felles.KronerText(inntektLinje.beloep))
+                        includePhrase(KronerText(inntektLinje.beloep))
                     }
                 }
             }
             row {
                 cell { addTextContent(sumText) }
                 cell { }
-                cell { includePhrase(Felles.KronerText(inntekt.sum, fontType = FontType.BOLD)) }
+                cell { includePhrase(KronerText(inntekt.sum, fontType = FontType.BOLD)) }
             }
         }
 

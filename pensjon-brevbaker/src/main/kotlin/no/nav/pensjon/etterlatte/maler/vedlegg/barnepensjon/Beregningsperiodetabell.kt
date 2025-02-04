@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -56,8 +57,8 @@ data class Beregningsperiodetabell(
                 forEach(beregningsperioder) {
                     row {
                         cell { includePhrase(PeriodeITabell(it.datoFOM, it.datoTOM)) }
-                        cell { includePhrase(Felles.KronerText(it.grunnbeloep)) }
-                        cell { includePhrase(Felles.KronerText(it.utbetaltBeloep)) }
+                        cell { includePhrase(KronerText(it.grunnbeloep)) }
+                        cell { includePhrase(KronerText(it.utbetaltBeloep)) }
                     }
                 }
             }

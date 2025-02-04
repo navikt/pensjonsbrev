@@ -46,6 +46,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.YrkesskadeGjeldendeSelectors.skadetidspunkt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.YrkesskadeGjeldendeSelectors.yrkesskadegrad
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.tableFormat
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Expression
@@ -114,7 +115,7 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar))
+                            includePhrase(KronerText(ufoeretrygdGjeldende.beregningsgrunnlagBeloepAar))
                         }
                     }
                 }
@@ -129,7 +130,7 @@ data class TabellUfoereOpplysninger(
                                 )
                             }
                             cell {
-                                includePhrase(Felles.KronerText(beloep))
+                                includePhrase(KronerText(beloep))
                             }
                         }
                     }
@@ -144,7 +145,7 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(inntektFoerUfoereGjeldende.ifuInntekt))
+                            includePhrase(KronerText(inntektFoerUfoereGjeldende.ifuInntekt))
                         }
                     }
                 }
@@ -159,7 +160,7 @@ data class TabellUfoereOpplysninger(
                                 )
                             }
                             cell {
-                                includePhrase(Felles.KronerText(beloep))
+                                includePhrase(KronerText(beloep))
                             }
                         }
                     }
@@ -191,7 +192,7 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(inntektsAvkortingGjeldende.inntektsgrenseAar))
+                            includePhrase(KronerText(inntektsAvkortingGjeldende.inntektsgrenseAar))
                         }
                     }
                 }
@@ -205,7 +206,7 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(inntektsAvkortingGjeldende.forventetInntektAar))
+                            includePhrase(KronerText(inntektsAvkortingGjeldende.forventetInntektAar))
                         }
                     }
                 }
@@ -238,7 +239,7 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(inntektsAvkortingGjeldende.inntektstak))
+                            includePhrase(KronerText(inntektsAvkortingGjeldende.inntektstak))
                         }
                     }
                 }.orShow {
@@ -251,7 +252,7 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            includePhrase(Felles.KronerText(inntektsAvkortingGjeldende.inntektsgrenseAar))
+                            includePhrase(KronerText(inntektsAvkortingGjeldende.inntektsgrenseAar))
                         }
                     }
                 }
@@ -384,7 +385,7 @@ data class TabellUfoereOpplysninger(
                                 )
                             }
                             cell {
-                                includePhrase(Felles.KronerText(yrkesskade.inntektVedSkadetidspunkt))
+                                includePhrase(KronerText(yrkesskade.inntektVedSkadetidspunkt))
                             }
                         }
                     }
@@ -707,7 +708,7 @@ data class TabellUfoereOpplysninger(
                                 )
                             }
                             cell {
-                                includePhrase(Felles.KronerText(saerkullsbarn.fribeloep))
+                                includePhrase(KronerText(saerkullsbarn.fribeloep))
                             }
                         }
                     }
@@ -721,7 +722,7 @@ data class TabellUfoereOpplysninger(
                                 )
                             }
                             cell {
-                                includePhrase(Felles.KronerText(fellesbarn.fribeloep))
+                                includePhrase(KronerText(fellesbarn.fribeloep))
                             }
                         }
                     }
@@ -741,9 +742,9 @@ data class TabellUfoereOpplysninger(
                             }
                             cell {
                                 showIf(samletInntektBruktIAvkortningFelles.greaterThan(0)) {
-                                    includePhrase(Felles.KronerText(samletInntektBruktIAvkortningFelles))
+                                    includePhrase(KronerText(samletInntektBruktIAvkortningFelles))
                                 }.orShow {
-                                    includePhrase(Felles.KronerText(inntektBruktIAvkortningSaerkull))
+                                    includePhrase(KronerText(inntektBruktIAvkortningSaerkull))
                                 }
                             }
                         }
@@ -759,7 +760,7 @@ data class TabellUfoereOpplysninger(
                                 )
                             }
                             cell {
-                                includePhrase(Felles.KronerText(fellesbarn.inntektAnnenForelder))
+                                includePhrase(KronerText(fellesbarn.inntektAnnenForelder))
                             }
                         }
                     }
@@ -776,7 +777,7 @@ data class TabellUfoereOpplysninger(
                                 )
                             }
                             cell {
-                                includePhrase(Felles.KronerText(inntektstakSaerkull))
+                                includePhrase(KronerText(inntektstakSaerkull))
                             }
                         }
                     }
@@ -791,7 +792,7 @@ data class TabellUfoereOpplysninger(
                                     )
                                 }
                                 cell {
-                                    includePhrase(Felles.KronerText(fellesBarn.beloepFratrukketAnnenForeldersInntekt))
+                                    includePhrase(KronerText(fellesBarn.beloepFratrukketAnnenForeldersInntekt))
                                 }
                             }
                         }
@@ -807,7 +808,7 @@ data class TabellUfoereOpplysninger(
                                 )
                             }
                             cell {
-                                includePhrase(Felles.KronerText(inntektstakFelles))
+                                includePhrase(KronerText(inntektstakFelles))
                             }
                         }
                     }

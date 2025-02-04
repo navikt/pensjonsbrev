@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -59,9 +60,9 @@ data class BeregningsperiodetabellEtterbetaling(
                 forEach(beregningsperioder) {
                     row {
                         cell { includePhrase(PeriodeITabell(it.datoFOM, it.datoTOM)) }
-                        cell { includePhrase(Felles.KronerText(it.ytelseFoerAvkorting)) }
-                        cell { includePhrase(Felles.KronerText(it.inntekt)) }
-                        cell { includePhrase(Felles.KronerText(it.utbetaltBeloep)) }
+                        cell { includePhrase(KronerText(it.ytelseFoerAvkorting)) }
+                        cell { includePhrase(KronerText(it.inntekt)) }
+                        cell { includePhrase(KronerText(it.utbetaltBeloep)) }
                     }
                 }
             }

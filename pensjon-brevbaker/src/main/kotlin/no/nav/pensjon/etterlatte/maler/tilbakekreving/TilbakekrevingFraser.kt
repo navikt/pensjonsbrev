@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
@@ -447,7 +448,7 @@ object TilbakekrevingVedleggFraser {
 							)
 						}
 						cell {
-							includePhrase(Felles.KronerText(summer.bruttoTilbakekreving))
+							includePhrase(KronerText(summer.bruttoTilbakekreving))
 						}
 					}
 					row {
@@ -459,7 +460,7 @@ object TilbakekrevingVedleggFraser {
 							)
 						}
 						cell {
-							includePhrase(Felles.KronerText(summer.fradragSkatt))
+							includePhrase(KronerText(summer.fradragSkatt))
 						}
 					}
 					row {
@@ -471,7 +472,7 @@ object TilbakekrevingVedleggFraser {
 							)
 						}
 						cell {
-							includePhrase(Felles.KronerText(summer.nettoTilbakekreving))
+							includePhrase(KronerText(summer.nettoTilbakekreving))
 						}
 					}
 					row {
@@ -483,7 +484,7 @@ object TilbakekrevingVedleggFraser {
 							)
 						}
 						cell {
-							includePhrase(Felles.KronerText(summer.renteTillegg))
+							includePhrase(KronerText(summer.renteTillegg))
 						}
 					}
 					row {
@@ -496,7 +497,7 @@ object TilbakekrevingVedleggFraser {
 							)
 						}
 						cell {
-							includePhrase(Felles.KronerText(summer.sumNettoRenter, FontType.BOLD))
+							includePhrase(KronerText(summer.sumNettoRenter, FontType.BOLD))
 						}
 					}
 				}
@@ -558,7 +559,7 @@ object TilbakekrevingVedleggFraser {
 								)
 							}
 							cell {
-								includePhrase(Felles.KronerText(periode.beloeper.feilutbetaling))
+								includePhrase(KronerText(periode.beloeper.feilutbetaling))
 							}
 							cell {
 								textExpr(
@@ -568,10 +569,10 @@ object TilbakekrevingVedleggFraser {
 								)
 							}
 							cell {
-								includePhrase(Felles.KronerText(periode.beloeper.bruttoTilbakekreving))
+								includePhrase(KronerText(periode.beloeper.bruttoTilbakekreving))
 							}
 							cell {
-								includePhrase(Felles.KronerText(periode.beloeper.nettoTilbakekreving))
+								includePhrase(KronerText(periode.beloeper.nettoTilbakekreving))
 							}
 						}
 					}
