@@ -1,6 +1,9 @@
 package no.nav.pensjon.brev.pdfbygger
 
 import com.fasterxml.jackson.core.JacksonException
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
@@ -15,9 +18,11 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.date.*
+import io.ktor.util.logging.Logger
 import io.micrometer.core.instrument.Tag
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import no.nav.pensjon.brev.PDFRequest
 import java.nio.file.Path
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -44,8 +49,15 @@ fun Application.module() {
         it.log.info("Application preparing to shutdown gracefully")
     }
 
+
     install(ContentNegotiation) {
-        jackson()
+        jackson {
+            registerModule(JavaTimeModule())
+            registerModule(LetterMarkupModule)
+            enable(SerializationFeature.INDENT_OUTPUT)
+            disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+        }
     }
 
     install(Compression) {
@@ -94,6 +106,18 @@ fun Application.module() {
     }
 
     routing {
+
+        post("/produserBrev") {
+            val result = activityCounter.count {
+                call.receive<PDFRequest>()
+                    .let { LatexDocumentRenderer.render(it) }
+                    // TODO: Dropp base64-enkodinga (og dekodinga inni)
+                    .let { laTeXService.producePDF(it.base64EncodedFiles()) }
+            }
+            handleResult(result, call.application.environment.log)
+        }
+
+        // TODO: Slett denne. Ventar med det for å unngå nedetid
         post("/compile") {
             val logger = call.application.environment.log
 
@@ -102,34 +126,7 @@ fun Application.module() {
                 laTeXService.producePDF(input.files)
             }
 
-            when (result) {
-                is PDFCompilationResponse.Base64PDF -> call.respond(result)
-                is PDFCompilationResponse.Failure.Client -> {
-                    logger.info("Client error: ${result.reason}")
-                    if (result.output?.isNotBlank() == true) {
-                        logger.info(result.output)
-                    }
-                    if (result.error?.isNotBlank() == true) {
-                        logger.info(result.error)
-                    }
-                    call.respond(HttpStatusCode.BadRequest, result)
-                }
-
-                is PDFCompilationResponse.Failure.Server -> {
-                    logger.error(result.reason)
-                    call.respond(HttpStatusCode.InternalServerError, result)
-                }
-
-                is PDFCompilationResponse.Failure.Timeout -> {
-                    logger.error(result.reason)
-                    call.respond(HttpStatusCode.InternalServerError, result)
-                }
-
-                is PDFCompilationResponse.Failure.QueueTimeout -> {
-                    logger.warn("Kø-timeout, løses med automatisk oppstart av flere pods: ${result.reason}")
-                    call.respond(HttpStatusCode.ServiceUnavailable, result)
-                }
-            }
+            handleResult(result, logger)
         }
 
         get("/isAlive") {
@@ -149,6 +146,40 @@ fun Application.module() {
 
         get("/metrics") {
             call.respond(prometheusMeterRegistry.scrape())
+        }
+    }
+}
+
+private suspend fun RoutingContext.handleResult(
+    result: PDFCompilationResponse,
+    logger: Logger,
+) {
+    when (result) {
+        is PDFCompilationResponse.Base64PDF -> call.respond(result)
+        is PDFCompilationResponse.Failure.Client -> {
+            logger.info("Client error: ${result.reason}")
+            if (result.output?.isNotBlank() == true) {
+                logger.info(result.output)
+            }
+            if (result.error?.isNotBlank() == true) {
+                logger.info(result.error)
+            }
+            call.respond(HttpStatusCode.BadRequest, result)
+        }
+
+        is PDFCompilationResponse.Failure.Server -> {
+            logger.error(result.reason)
+            call.respond(HttpStatusCode.InternalServerError, result)
+        }
+
+        is PDFCompilationResponse.Failure.Timeout -> {
+            logger.error(result.reason)
+            call.respond(HttpStatusCode.InternalServerError, result)
+        }
+
+        is PDFCompilationResponse.Failure.QueueTimeout -> {
+            logger.warn("Kø-timeout, løses med automatisk oppstart av flere pods: ${result.reason}")
+            call.respond(HttpStatusCode.ServiceUnavailable, result)
         }
     }
 }

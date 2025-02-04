@@ -9,6 +9,13 @@ Verken PDF dokumentet eller informasjonen som brukes til å generere dokumentet 
 
 Pdf-bygger er en tjeneste som mottar en liste med filer, og kompilerer de som ett LaTeX prosjekt.
 
+== Arkitektur
+[plantuml, moduldiagram, format=svg]
+....
+include::moduldiagram.puml[]
+....
+
+
 == Prosess / Brukstilfelle
 Overordnet vil en bestilling gå slik:
 [plantuml, target=img/sekvens-diagram, format=svg]
@@ -21,6 +28,8 @@ Brevbaker -> BestillendeSystem: PDF + mal-metadata (4)
 === 1. Bestillersystemet fyller ut en LetterRequest med informasjon som skrives i brevet.
 
 (modell kan være utdatert)
+
+---
 
 [plantuml, target=img/datagrunnlag-letterrequest, format=svg]
 ....

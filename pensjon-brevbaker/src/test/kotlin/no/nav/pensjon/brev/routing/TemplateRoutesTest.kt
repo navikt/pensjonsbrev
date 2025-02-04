@@ -74,28 +74,36 @@ class TemplateRoutesTest {
     fun `can get modelSpecification of autobrev`() = testBrevbakerApp { client ->
         val response = client.get("/templates/autobrev/${OmsorgEgenAuto.kode.name}/modelSpecification")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(OmsorgEgenAuto.template.modelSpecification, response.body<TemplateModelSpecification>())
+        assertEquals(OmsorgEgenAuto.template.modelSpecification(), response.body<TemplateModelSpecification>())
     }
 
     @Test
     fun `can get modelSpecification of redigerbar`() = testBrevbakerApp { client ->
         val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}/modelSpecification")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(InformasjonOmSaksbehandlingstid.template.modelSpecification, response.body<TemplateModelSpecification>())
+        assertEquals(InformasjonOmSaksbehandlingstid.template.modelSpecification(), response.body<TemplateModelSpecification>())
     }
 
     @Test
     fun `can get template documentation of autobrev`() = testBrevbakerApp { client ->
         val response = client.get("/templates/autobrev/${ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.kode.name}/doc/BOKMAL")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(TemplateDocumentationRenderer.render(ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template, Language.Bokmal), response.body<TemplateDocumentation>())
+        assertEquals(TemplateDocumentationRenderer.render(
+            ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
+            Language.Bokmal,
+            ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template.modelSpecification()
+        ), response.body<TemplateDocumentation>())
     }
 
     @Test
     fun `can get template documentation of redigerbar`() = testBrevbakerApp { client ->
         val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}/doc/BOKMAL")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(TemplateDocumentationRenderer.render(InformasjonOmSaksbehandlingstid.template, Language.Bokmal), response.body<TemplateDocumentation>())
+        assertEquals(TemplateDocumentationRenderer.render(
+            InformasjonOmSaksbehandlingstid.template,
+            Language.Bokmal,
+            InformasjonOmSaksbehandlingstid.template.modelSpecification()
+        ), response.body<TemplateDocumentation>())
     }
 
 }

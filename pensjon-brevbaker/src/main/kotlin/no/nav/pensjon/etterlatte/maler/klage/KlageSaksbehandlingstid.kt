@@ -17,14 +17,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.BARNEPENSJON_URL
-import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTAKTTELEFON_PENSJON
-import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE
-import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.SAKSBEHANDLINGSTIDER_BP
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.SAKSBEHANDLINGSTIDER_OMS
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
+import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjonExpr
 import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTOSelectors.borIUtlandet
 import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTOSelectors.datoForVedtak
 import no.nav.pensjon.etterlatte.maler.klage.KlageSaksbehandlingstidDTOSelectors.datoMottatKlage
@@ -166,14 +163,14 @@ object KlageSaksbehandlingstid : EtterlatteTemplate<KlageSaksbehandlingstidDTO> 
 
                 paragraph {
                     textExpr(
-                        Bokmal to "Du kan finne svar på ".expr() + ifElse(sakType.equalTo(SakType.BARNEPENSJON), BARNEPENSJON_URL.expr(), OMS_URL.expr()) + "." +
-                        " Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon" + ifElse(borIUtlandet, KONTAKTTELEFON_PENSJON_MED_LANDKODE, KONTAKTTELEFON_PENSJON) + " hverdager mellom klokken 09.00-15.00." +
+                        Bokmal to "Du kan finne svar på ".expr() + sakUrl(sakType) + "." +
+                        " Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon" + kontakttelefonPensjonExpr(borIUtlandet) + " hverdager mellom klokken 09.00-15.00." +
                                 " Om du oppgir <fødselsnummer ditt/fødselsnummer til barnet/ fødselsnummer til den du er verge for>, kan vi lettere gi deg rask og god hjelp.",
-                        Nynorsk to "Du finn meir informasjon på ".expr() + ifElse(sakType.equalTo(SakType.BARNEPENSJON), BARNEPENSJON_URL.expr(), OMS_URL.expr()) + "." +
-                                " Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon" + ifElse(borIUtlandet, KONTAKTTELEFON_PENSJON_MED_LANDKODE, KONTAKTTELEFON_PENSJON) + " kvardagar mellom klokka 09.00–15.00."  +
+                        Nynorsk to "Du finn meir informasjon på ".expr() + sakUrl(sakType) + "." +
+                                " Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon" + kontakttelefonPensjonExpr(borIUtlandet) + " kvardagar mellom klokka 09.00–15.00."  +
                                 " Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir  <fødselsnummeret ditt / fødselsnummeret til barnet / fødselsnummeret til den du er verje for>.",
-                        English to "For more information, visit us online: ".expr() + ifElse(sakType.equalTo(SakType.BARNEPENSJON), BARNEPENSJON_URL.expr(), OMS_URL.expr()) + "." +
-                                " If you cannot find the answer to your question, you can call us by phone at" + ifElse(borIUtlandet, KONTAKTTELEFON_PENSJON_MED_LANDKODE, KONTAKTTELEFON_PENSJON) + " Monday to Friday between 9:00 AM and 3:00 PM." + "" +
+                        English to "For more information, visit us online: ".expr() + sakUrl(sakType) + "." +
+                                " If you cannot find the answer to your question, you can call us by phone at" + kontakttelefonPensjonExpr(borIUtlandet) + " Monday to Friday between 9:00 AM and 3:00 PM." + "" +
                                 " If you state <your national identity number/child's national identity number/ for guardians, the national identity number of your ward >, we will be able to provide you with fast and adequate help.",
                     )
                 }

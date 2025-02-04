@@ -8,25 +8,26 @@ import type {
   SaksbehandlerValg,
 } from "~/types/brev";
 import type {
+  AnyBlock,
   Content,
+  EditedLetter,
   Item,
   ItemList,
+  LiteralValue,
   ParagraphBlock,
+  Sakspart,
+  Signatur,
   TextContent,
   Title1Block,
+  Title2Block,
   VariableValue,
-} from "~/types/brevbakerTypes";
-import {
-  type AnyBlock,
-  type EditedLetter,
-  type LiteralValue,
-  type Sakspart,
-  type Signatur,
 } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
+import { newLiteral, newParagraph, newVariable } from "../../src/Brevredigering/LetterEditor/actions/common";
 import { SpraakKode } from "../../src/types/apiTypes";
 import { Distribusjonstype } from "../../src/types/brev";
+import { FontType } from "../../src/types/brevbakerTypes";
 
 export const nyBrevResponse = ({
   info = nyBrevInfo({}),
@@ -68,42 +69,15 @@ export const nyRedigertBrev = (args: {
         parentId: null,
         editable: true,
         content: [
-          {
-            id: 1_507_865_607,
-            parentId: 272_720_182,
-            text: "We received your application for ",
-            editedText: null,
-            type: "LITERAL",
-            tags: [],
-          },
-          {
-            id: -726_051_414,
-            parentId: 272_720_182,
-            text: "alderspensjon",
-            type: "VARIABLE",
-          },
-          {
+          newLiteral({ id: 1_507_865_607, parentId: 272_720_182, text: "We received your application for " }),
+          newVariable({ id: -726_051_414, parentId: 272_720_182, text: "alderspensjon" }),
+          newLiteral({
             id: -711_242_333,
             parentId: 272_720_182,
             text: " from the Norwegian National Insurance Scheme on ",
-            editedText: null,
-            type: "LITERAL",
-            tags: [],
-          },
-          {
-            id: -694_080_035,
-            parentId: 272_720_182,
-            text: "24 July 2024",
-            type: "VARIABLE",
-          },
-          {
-            id: 46,
-            parentId: 272_720_182,
-            text: ".",
-            editedText: null,
-            type: "LITERAL",
-            tags: [],
-          },
+          }),
+          newVariable({ id: -694_080_035, parentId: 272_720_182, text: "24 July 2024" }),
+          newLiteral({ id: -1_114_690_237, parentId: 272_720_182, text: "." }),
         ],
         deletedContent: [],
         type: "PARAGRAPH",
@@ -113,28 +87,13 @@ export const nyRedigertBrev = (args: {
         parentId: null,
         editable: true,
         content: [
-          {
+          newLiteral({
             id: -1_114_690_237,
             parentId: 822_540_105,
             text: "Our processing time for this type of application is usually ",
-            editedText: null,
-            type: "LITERAL",
-            tags: [],
-          },
-          {
-            id: 1_834_595_758,
-            parentId: 822_540_105,
-            text: "10",
-            type: "VARIABLE",
-          },
-          {
-            id: 1_838_606_639,
-            parentId: 822_540_105,
-            text: " weeks.",
-            editedText: null,
-            type: "LITERAL",
-            tags: [],
-          },
+          }),
+          newVariable({ id: 1_834_595_758, parentId: 822_540_105, text: "10" }),
+          newLiteral({ id: 1_838_606_639, parentId: 822_540_105, text: " weeks." }),
         ],
         deletedContent: [],
         type: "PARAGRAPH",
@@ -192,6 +151,8 @@ export const nyLiteral = (args: { id?: Nullable<number>; text?: string }): Liter
   parentId: null,
   text: args.text ?? "ny literal default text",
   editedText: args.text ?? "ny literal default edited-text",
+  fontType: FontType.PLAIN,
+  editedFontType: null,
   tags: [],
 });
 
@@ -201,6 +162,7 @@ export const nyVariable = (args: { id?: Nullable<number>; name?: string; text?: 
   parentId: null,
   name: args.name,
   text: args.text ?? "ny variable default text",
+  fontType: FontType.PLAIN,
 });
 
 //TODO - kan heller bruke newItem fra common.ts
@@ -233,16 +195,21 @@ export const nyTitle1Block = (args: {
   deletedContent: [],
 });
 
-//TODO - kan heller bruke newParagraph fra common.ts
-export const nyParagraphBlock = (args: {
+export const nyTitle2Block = (args: {
   id?: Nullable<number>;
   editable?: boolean;
-  content?: Content[];
-}): ParagraphBlock => ({
-  type: "PARAGRAPH",
+  content?: TextContent[];
+}): Title2Block => ({
+  type: "TITLE2",
   id: args.id ?? null,
   parentId: null,
   editable: args.editable ?? true,
   content: args.content ?? [nyVariable({})],
   deletedContent: [],
 });
+
+export const nyParagraphBlock = (args: { id?: Nullable<number>; content?: Content[] }): ParagraphBlock =>
+  newParagraph({
+    id: args.id,
+    content: args.content ?? [],
+  });

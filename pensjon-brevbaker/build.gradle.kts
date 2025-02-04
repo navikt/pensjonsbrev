@@ -8,7 +8,6 @@ val jupiterVersion: String by project
 val hamkrestVersion: String by project
 val logstashVersion: String by project
 val micrometerVersion: String by project
-val apiModelVersion: String by project
 val jacksonJsr310Version: String by project
 val mockkVersion: String by project
 
@@ -34,6 +33,7 @@ ktor {
 
 repositories {
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven") }
+    mavenLocal()
 }
 
 kotlin {
@@ -116,17 +116,17 @@ dependencies {
     implementation("io.ktor:ktor-server-swagger:$ktorVersion")
     implementation("io.ktor:ktor-client-encoding:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
-    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.12.0")
 
-    implementation(project(":template-model-generator"))
+    implementation(project(":pensjonsmaler"))
+    implementation(project(":etterlattemaler"))
     ksp(project(":template-model-generator"))
 
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version") {
         because("we require deserialization/serialization of java.time.LocalDate")
     }
 
-    implementation("io.getunleash:unleash-client-java:9.2.6")
+    implementation("io.getunleash:unleash-client-java:10.0.0")
 
     // Metrics
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")

@@ -84,10 +84,11 @@ dependencies {
     implementation("com.zaxxer:HikariCP:6.2.1")
 
     // Unleash
-    implementation("io.getunleash:unleash-client-java:9.2.6")
+    implementation("io.getunleash:unleash-client-java:10.0.0")
 
     // Domenemodell
     implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
+    api(project(":brevbaker-dsl"))
 
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
@@ -97,7 +98,7 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version")
 
     // Hashing
-    implementation("commons-codec:commons-codec:1.17.2")
+    implementation("commons-codec:commons-codec:1.18.0")
 
     // Metrics
     implementation("io.ktor:ktor-server-metrics:$ktorVersion")
@@ -111,7 +112,7 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:${mockkVersion}")
-    testImplementation("org.assertj:assertj-core:3.27.2")
+    testImplementation("org.assertj:assertj-core:3.27.3")
     testImplementation("org.testcontainers:postgresql:1.20.4")
 
 }

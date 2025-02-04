@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.template.dsl.helpers
 
 import com.natpryce.hamkrest.*
 import com.tschuchort.compiletesting.*
+import no.nav.pensjon.brev.template.LangBokmal
+import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import java.io.File
 
 fun hasKspErrorMessages(msg: String): Matcher<String> =
@@ -26,3 +28,5 @@ fun List<SourceFile>.compile(): JvmCompilationResult {
         sources = sourcesToCompile
     }.compile()
 }
+
+typealias SimpleTemplateScope<LetterData> = TemplateRootScope<LangBokmal, LetterData>
