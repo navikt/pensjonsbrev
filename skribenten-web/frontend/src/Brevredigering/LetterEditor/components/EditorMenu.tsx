@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { CheckmarkCircleFillIcon, ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
-import { HStack, Loader, Select } from "@navikt/ds-react";
+import { BodyShort, HStack, Loader, Select } from "@navikt/ds-react";
 import { format, isToday } from "date-fns";
 import { memo, useEffect, useRef, useState } from "react";
 
@@ -131,7 +131,7 @@ const LagringSuccess = memo((properties: { dateTime: string }) => {
   return (
     <HStack gap="1">
       {ikon}
-      {tekst}
+      <BodyShort size="small">{tekst}</BodyShort>
     </HStack>
   );
 });
