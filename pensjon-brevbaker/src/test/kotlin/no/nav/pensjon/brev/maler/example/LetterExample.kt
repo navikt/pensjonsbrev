@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.example
 
 import no.nav.pensjon.brev.FeatureToggles
-import no.nav.pensjon.brev.UnleashToggle
+import no.nav.pensjon.brev.ToggleImpl
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.navn
@@ -144,7 +144,7 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                 }
             }
 
-            showIf(UnleashToggle("" + System.currentTimeMillis()).expr().enabled()) {
+            showIf(ToggleImpl("" + System.currentTimeMillis()).expr().enabled()) {
                 paragraph {
                     text(
                         Bokmal to "Tekst styrt av funksjonsbryter",

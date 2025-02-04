@@ -1,5 +1,5 @@
 package no.nav.pensjon.brev.api.model
 
-interface ToggleName {
+interface FeatureToggle {
     fun key(): String
 }

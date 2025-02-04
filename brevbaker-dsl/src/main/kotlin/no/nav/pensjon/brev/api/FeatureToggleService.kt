@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api
 
-import no.nav.pensjon.brev.api.model.ToggleName
+import no.nav.pensjon.brev.api.model.FeatureToggle
 
 interface FeatureToggleService {
-    fun isEnabled(toggle: ToggleName): Boolean
+    fun isEnabled(toggle: FeatureToggle): Boolean
 }

@@ -4,20 +4,23 @@ import io.getunleash.DefaultUnleash
 import io.getunleash.Unleash
 import io.getunleash.UnleashContext
 import io.getunleash.util.UnleashConfig
-import no.nav.pensjon.brev.api.model.ToggleName
+import no.nav.pensjon.brev.api.FeatureToggleService
+import no.nav.pensjon.brev.api.model.FeatureToggle
+import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 
 const val unleashTogglePrefix = "pensjonsbrev.brevbaker."
 
-object FeatureToggleHandler {
+object FeatureToggleHandler : FeatureToggleService {
 
     private lateinit var unleashAction: () -> Unleash
     private val unleash: Unleash by lazy { unleashAction() }
 
-    fun isEnabled(toggle: ToggleName): Boolean =
+    override fun isEnabled(toggle: FeatureToggle): Boolean =
         unleash.isEnabled(unleashTogglePrefix + toggle.key(), UnleashContext.builder().build())
 
     fun configure(block: FeatureToggleConfig.() -> Unit) {
         Builder().setConfig(FeatureToggleConfig().apply(block)).build()
+        FeatureToggleSingleton.init(this)
     }
 
     private class Builder {
