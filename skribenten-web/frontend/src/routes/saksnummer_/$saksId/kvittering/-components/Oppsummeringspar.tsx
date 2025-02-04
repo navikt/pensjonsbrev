@@ -35,7 +35,9 @@ const Oppsummeringspar = (properties: {
         </BodyShort>
       )}
 
-      <BodyShort>{properties.verdi}</BodyShort>
+      <BodyShort size={typeof properties.size === "object" ? properties.size.bodyShort : properties.size}>
+        {properties.verdi}
+      </BodyShort>
     </div>
   );
 };
