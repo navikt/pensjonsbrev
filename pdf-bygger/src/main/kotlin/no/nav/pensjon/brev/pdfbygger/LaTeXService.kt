@@ -16,7 +16,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 private const val COMPILATION_RUNS = 2
 
-class LaTeXService(
+internal class LaTeXService(
     latexCommand: String,
     latexParallelism: Int,
     private val compileTimeout: Duration,
@@ -28,7 +28,7 @@ class LaTeXService(
     private val latexCommand = latexCommand.split(" ").filter { it.isNotBlank() } + "letter.tex"
     private val parallelismSemaphore = latexParallelism.takeIf { it > 0 }?.let { Semaphore(it) }
 
-    suspend fun producePDF(latexFiles: Map<String, String>): PDFCompilationResponse {
+    internal suspend fun producePDF(latexFiles: Map<String, String>): PDFCompilationResponse {
         return if (parallelismSemaphore != null) {
             val permit = withTimeoutOrNull(queueWaitTimeout) {
                 parallelismSemaphore.acquire()
