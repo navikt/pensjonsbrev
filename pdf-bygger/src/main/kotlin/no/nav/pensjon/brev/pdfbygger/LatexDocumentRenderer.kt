@@ -192,7 +192,7 @@ object LatexDocumentRenderer {
         appendCmd("sluttvedlegg")
     }
 
-    fun LatexAppendable.renderIfNonEmptyText(content: List<Text>, render: LatexAppendable.(String) -> Unit) {
+    private fun LatexAppendable.renderIfNonEmptyText(content: List<Text>, render: LatexAppendable.(String) -> Unit) {
         val text = String(StringBuilder().also { LatexAppendable(it).renderText(content) })
         if (text.isNotEmpty()) {
             render(text)
