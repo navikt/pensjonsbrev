@@ -24,7 +24,7 @@ class InformasjonOmSaksbehandlingstidPeTest {
 
     @Test
     fun `uten land og venter svar AFP`() {
-        writeAllLanguages("uten-land-og-venter-svar", data.copy())
+        writeAllLanguages("uten-land-og-venter-svar", data)
     }
 
     @Test
