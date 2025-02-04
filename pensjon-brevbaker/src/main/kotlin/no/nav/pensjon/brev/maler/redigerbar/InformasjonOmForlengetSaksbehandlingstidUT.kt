@@ -51,10 +51,10 @@ object InformasjonOmForlengetSaksbehandlingstidUT : RedigerbarTemplate<EmptyRedi
                 textExpr(
                     Bokmal to "Vi har ".expr() + dato + " mottatt din søknad om uføretrygd. "
                             + "Det vil dessverre ta oss lengre tid enn antatt å behandle kravet. "
-                            + "Forsinkelsen skyldes ".expr() + aarsak + ".".expr(),
+                            + "Forsinkelsen skyldes ".expr() + aarsak + ".",
                     English to "We have received your application for disabilty benefit on the ".expr() + dato + ". "
                             + "Due to delays in ".expr() + aarsak + ", "
-                            + "the processing of your case will take longer than we anticipated.".expr()
+                            + "the processing of your case will take longer than we anticipated."
                 )
             }
             title1 {
@@ -66,8 +66,8 @@ object InformasjonOmForlengetSaksbehandlingstidUT : RedigerbarTemplate<EmptyRedi
             paragraph {
                 val frist = fritekst("antall dager/uker/måneder")
                 textExpr(
-                    Bokmal to "Vi antar at kravet ditt kan bli ferdigbehandlet innen ".expr() + frist + ".".expr(),
-                    English to "Without further delays, we assume the processing of your case to be completed within ".expr() + frist + ".".expr()
+                    Bokmal to "Vi antar at kravet ditt kan bli ferdigbehandlet innen ".expr() + frist + ".",
+                    English to "Without further delays, we assume the processing of your case to be completed within ".expr() + frist + "."
                 )
             }
             includePhrase(Felles.MeldeFraEndringer)
