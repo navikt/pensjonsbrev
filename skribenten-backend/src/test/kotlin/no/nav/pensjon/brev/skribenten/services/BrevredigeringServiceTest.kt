@@ -644,7 +644,7 @@ class BrevredigeringServiceTest {
                 distribusjonstype = Distribusjonstype.SENTRALPRINT
             )
             brevredigeringService.hentEllerOpprettPdf(sak.saksId, brev.info.id)!!
-            assertThrows<BrevredigeringException.HarIkkeAttestantrolleException> {
+            assertThrows<HarIkkeAttestantrolleException> {
                 brevredigeringService.attester(sak.saksId, brev.info.id)
             }
         }

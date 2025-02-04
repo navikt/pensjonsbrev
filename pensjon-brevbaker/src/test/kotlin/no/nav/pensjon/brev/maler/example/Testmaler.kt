@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.example
 
-import no.nav.pensjon.brev.maler.AllTemplates
+import no.nav.brev.brevbaker.AllTemplates
 
 object Testmaler : AllTemplates {
     override fun hentAutobrevmaler() = setOf(LetterExample)

@@ -20,7 +20,7 @@ import no.nav.pensjon.brev.latex.PDFCompilationOutput
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.maler.example.Testmaler
-import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstidPE
+import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.render.DocumentFile
@@ -107,7 +107,7 @@ class TemplateResourceTest {
         val result = String(redigerbar.renderHTML(validRedigertBrevRequest).file)
         val anAttachmentTitle = Letter2Markup.renderAttachmentsOnly(
             validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
-            InformasjonOmSaksbehandlingstidPE.template
+            InformasjonOmSaksbehandlingstid.template
         ).firstOrNull()?.title?.joinToString { it.text }
 
         assertThat(result, containsSubstring(validRedigertBrevRequest.letterMarkup.title))
@@ -122,7 +122,7 @@ class TemplateResourceTest {
     fun `renderPDF redigertBrev uses letterMarkup from argument and includes attachments`() = runBlocking {
         val anAttachment = Letter2Markup.renderAttachmentsOnly(
             validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
-            InformasjonOmSaksbehandlingstidPE.template
+            InformasjonOmSaksbehandlingstid.template
         ).firstOrNull()
 
         val capturedLatex = slot<LatexDocument>()

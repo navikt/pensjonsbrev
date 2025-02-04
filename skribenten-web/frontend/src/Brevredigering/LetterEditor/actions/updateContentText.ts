@@ -2,8 +2,8 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 
 import type { LiteralValue } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL } from "~/types/brevbakerTypes";
 
+import { ITEM_LIST, LITERAL } from "../../../types/brevbakerTypes";
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
 import { cleanseText } from "./common";

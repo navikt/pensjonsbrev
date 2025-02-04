@@ -16,15 +16,12 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.inntektsaar
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.inntektsbeloep
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.opphoerDato
-import java.time.LocalDate
 
 data class OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO(
     val inntektsbeloep: Kroner,
-    // Hvis denne settes, så viser vi mal for at du ikke er innvilget hele neste år. Så hvis opphør er i 2026 og vi
-    // vi varsler for 2025 blir det feil å sende med datoen for 2026. Dette bør klart framgå av kode / navn på felt
-    val opphoerDato: LocalDate?
+    val inntektsaar: Int
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -62,60 +59,29 @@ object OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall : EtterlatteTe
                     )
                 }
 
-                // opphør før desember neste år
-                ifNotNull(opphoerDato) { kjentOpphoerDato ->
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du har ikke meldt om endring i inntekten for neste kalenderår. Vi har derfor basert beregningen på inntektsopplysningene du oppga for inneværende kalenderår. Inntekten er justert til å reflektere inntekt i innvilga måneder i ".expr()+inntektsaar.format()+".",
+                        Nynorsk to "Du har ikkje meldt om endring i inntekta for neste kalenderår. Vi har difor basert utrekninga vår på inntektsopplysningane du har oppgitt for inneverande kalenderår. Inntekta er justert slik at ho reflekterer inntekt i innvilga månader i ".expr()+inntektsaar.format()+".",
+                        English to "You have not notified us of any changes in your income for the next calendar year. Therefore we have based the calculation on the income information you provided for the current calendar year. Income is adjusted to reflect income in granted months in ".expr()+inntektsaar.format()+".",
+                    )
+                }
+
+                showIf(inntektsbeloep.notEqualTo(0)){
                     paragraph {
-                        text(
-                            Bokmal to "Du har ikke meldt om endring i inntekten for neste kalenderår. Vi har derfor basert beregningen på inntektsopplysningene du oppga for inneværende kalenderår. Inntekten er justert etter antall innvilgede måneder.",
-                            Nynorsk to "Du har ikkje meldt om endring i inntekta for neste kalenderår. Vi har difor basert utrekninga vår på inntektsopplysningane du har oppgitt for inneverande kalenderår. Inntekta er justert ut frå talet på månader som er innvilga.",
-                            English to "You have not notified us of any changes in your income for the next calendar year. Therefore we have based the calculation on the income information you provided for the current calendar year. Income has been adjusted according to the number of granted adjustment allowance months.",
+                        textExpr(
+                            Bokmal to "Vi har lagt til grunn at du har ".expr()+inntektsbeloep.format() + " kroner som forventet inntekt i innvilgede måneder i  ".expr()+inntektsaar.format()+".",
+                            Nynorsk to "Vi har lagt til grunn at du har ".expr()+inntektsbeloep.format() + " kroner som forventa inntekt i innvilga månader i ".expr()+inntektsaar.format()+".",
+                            English to "We have assumed a basis of NOK ".expr()+inntektsbeloep.format() + " in expected income for the granted months in ".expr()+inntektsaar.format()+".",
                         )
                     }
-
-                    showIf(inntektsbeloep.notEqualTo(0)) {
-                        paragraph {
-                            textExpr(
-                                Bokmal to "Vi har lagt til grunn at du har ".expr() + inntektsbeloep.format() + " kroner i forventet inntekt i månedene med innvilget omstillingsstønad neste år. Dette forutsetter at du vil motta omstillingsstønad frem til " + kjentOpphoerDato.format() + ".",
-                                Nynorsk to "Vi har lagt til grunn at du har ".expr() + inntektsbeloep.format() + " kroner i forventa inntekt i månadene med innvilga omstillingsstønad neste år. Dette føreset at du får omstillingsstønad fram til " + kjentOpphoerDato.format() + ".",
-                                English to "We have applied as a basis that you have NOK ".expr() + inntektsbeloep.format() + " in expected income in the months of granted adjustment allowance next year. This is on the premise that you will receive adjustment allowance up to " + kjentOpphoerDato.format() + ".",
-                            )
-                        }
-                    }.orShow {
-                        paragraph {
-                            text(
-                                Bokmal to "Vi har lagt til grunn at du ikke har inntekt som omstillingsstønaden skal reduseres etter i månedene med innvilget omstillingsstønad neste år.",
-                                Nynorsk to "Vi har lagt til grunn at du ikkje har inntekt som omstillingsstønaden skal reduserast etter i månadane med innvilga omstillingsstønad neste år.",
-                                English to "We have assumed that you will have no income by which the adjustment allowance will be reduced during the months when the adjustment allowance is granted next year.",
-                            )
-                        }
-                    }
-
-                // innvilget hele neste år
                 }.orShow {
                     paragraph {
-                        text(
-                            Bokmal to "Du har ikke meldt om endring i inntekten for neste kalenderår. Vi har derfor basert beregningen på inntektsopplysningene du oppga for inneværende kalenderår. Inntekten er justert til å reflektere en årsinntekt.",
-                            Nynorsk to "Du har ikkje meldt om endring i inntekta for neste kalenderår. Vi har difor basert utrekninga vår på inntektsopplysningane du har oppgitt for inneverande kalenderår. Inntekta er justert slik at ho reflekterer ei årsinntekt.",
-                            English to "You have not notified us of any changes in your income for the next calendar year. Therefore we have based the calculation on the income information you provided for the current calendar year. Income is adjusted to reflect an annual income.",
+                        textExpr(
+                            Bokmal to "Vi har lagt til grunn at du ikke har inntekt som omstillingsstønaden skal reduseres etter i innvilgede måneder i ".expr()+inntektsaar.format()+".",
+                            Nynorsk to "Vi har lagt til grunn at du ikkje har inntekt som omstillingsstønaden skal reduserast etter i innvilga månader i ".expr()+inntektsaar.format()+".",
+                            English to "We have assumed that you will have no income from which the adjustment allowance will be reduced in granted months in ".expr()+inntektsaar.format()+".",
                         )
-                    }
-
-                    showIf(inntektsbeloep.notEqualTo(0)){
-                        paragraph {
-                            textExpr(
-                                Bokmal to "Vi har lagt til grunn at du har ".expr()+inntektsbeloep.format() + " kroner som forventet inntekt neste år. Dette forutsetter at du mottar omstillingsstønad hele året.",
-                                Nynorsk to "Vi har lagt til grunn at du har ".expr()+inntektsbeloep.format() + " kroner som forventa inntekt neste år. Dette føreset at du får omstillingsstønad heile året.",
-                                English to "We have applied as a basis that you have NOK ".expr()+inntektsbeloep.format() + " in expected income for next year. This is on the premise that you receive adjustment allowance for the entire year.",
-                            )
-                        }
-                    }.orShow {
-                        paragraph {
-                            text(
-                                Bokmal to "Vi har lagt til grunn at du ikke har inntekt som omstillingsstønaden skal reduseres etter neste år.",
-                                Nynorsk to "Vi har lagt til grunn at du ikkje har inntekt som omstillingsstønaden skal reduserast etter neste år.",
-                                English to "We have assumed that you will have no income from which the adjustment allowance will be reduced after next year.",
-                            )
-                        }
                     }
                 }
 

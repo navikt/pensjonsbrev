@@ -16,7 +16,7 @@ object Constants {
     const val KONTAKT_URL = "$NAV_URL/kontaktoss"
     const val KLAGE_URL = "$NAV_URL/klage"
     const val GRUNNBELOEP_URL = "$NAV_URL/grunnbelopet"
-    const val ETTERSENDELSE_URL = "$NAV_URL/ettersendelse"
+    const val ETTERSENDELSE_URL = "$NAV_URL/ettersende"
     const val ETTERSENDE_OMS_URL = "$NAV_URL/ettersende#omstillingsstonad"
     const val BESKJED_TIL_NAV_URL = "$NAV_URL/send-beskjed"
     const val BP_SKATTETREKK = "$NAV_URL/barnepensjon#skattetrekk"
@@ -36,15 +36,20 @@ object Constants {
     const val SAKSBEHANDLINGSTIDER_OMS = "$SAKSBEHANDLINGSTIDER_URL#omstillingsstonad"
 
     object Engelsk {
-        const val UTBETALINGSDATOER_URL = "${Constants.UTBETALINGSDATOER_URL}/en"
-        const val KLAGE_URL = "${Constants.KLAGE_URL}/en"
         const val BARNEPENSJON_URL = "${Constants.BARNEPENSJON_URL}/en"
-        const val SKRIVTILOSS_URL = "${Constants.SKRIVTILOSS_URL}/en"
         const val BESKJED_TIL_NAV_URL = "${Constants.BESKJED_TIL_NAV_URL}/en"
-        const val KONTONUMMER_URL = "${Constants.KONTONUMMER_URL}/en"
+        const val ETTERSENDE_OMS_URL = "${Constants.ETTERSENDELSE_URL}en#adjustment-allowance"
+        const val ETTERSENDELSE_URL = "${Constants.ETTERSENDELSE_URL}/en"
         const val FULLMAKT_URL = "${Constants.FULLMAKT_URL}/en"
+        const val KLAGE_URL = "${Constants.KLAGE_URL}/en"
+        const val KONTONUMMER_URL = "${Constants.KONTONUMMER_URL}/en"
         const val KONTAKT_URL = "${Constants.KONTAKT_URL}/en"
+        const val SKRIVTILOSS_URL = "${Constants.SKRIVTILOSS_URL}/en"
         const val UTBETALING_INFO = "${Constants.Utland.UTBETALING_INFO}/en"
+        const val UTBETALINGSDATOER_URL = "${Constants.UTBETALINGSDATOER_URL}/en"
+        const val SAKSBEHANDLINGSTIDER_URL = "${Constants.SAKSBEHANDLINGSTIDER_URL}/en"
+        const val SAKSBEHANDLINGSTIDER_BP = "$SAKSBEHANDLINGSTIDER_URL#childrens-pension"
+        const val SAKSBEHANDLINGSTIDER_OMS = "$SAKSBEHANDLINGSTIDER_URL#adjustment-allowance"
     }
 
     object Utland {

@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import { newLiteral } from "~/Brevredigering/LetterEditor/actions/common";
 import { isEmptyContent } from "~/Brevredigering/LetterEditor/model/utils";
 import type { Content, Item, ItemList, LiteralValue, ParagraphBlock, TextContent } from "~/types/brevbakerTypes";
 import { LITERAL } from "~/types/brevbakerTypes";
@@ -338,27 +339,17 @@ describe("LetterEditorActions.split", () => {
       expect(splitFromEmptyItem.redigertBrev.blocks).toHaveLength(1);
       expect(select<ParagraphBlock>(splitFromEmptyItem, { blockIndex: 0 }).content).toHaveLength(2);
       expect(select<ItemList>(splitFromEmptyItem, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(1);
-      expect(select<LiteralValue>(splitFromEmptyItem, { blockIndex: 0, contentIndex: 1 })).toStrictEqual({
-        id: null,
-        parentId: null,
-        type: LITERAL,
-        text: "",
-        editedText: "",
-        tags: [],
-      });
+      expect(select<LiteralValue>(splitFromEmptyItem, { blockIndex: 0, contentIndex: 1 })).toStrictEqual(
+        newLiteral({ text: "", editedText: "" }),
+      );
 
       const splitFromEmptyLastContent = Actions.split(splitFromEmptyItem, { blockIndex: 0, contentIndex: 1 }, 0);
       expect(splitFromEmptyLastContent.redigertBrev.blocks).toHaveLength(2);
       expect(select<ParagraphBlock>(splitFromEmptyLastContent, { blockIndex: 0 }).content).toHaveLength(1);
       expect(select<ParagraphBlock>(splitFromEmptyLastContent, { blockIndex: 1 }).content).toHaveLength(1);
-      expect(select<LiteralValue>(splitFromEmptyLastContent, { blockIndex: 1, contentIndex: 0 })).toStrictEqual({
-        id: null,
-        parentId: null,
-        type: LITERAL,
-        text: "",
-        editedText: "",
-        tags: [],
-      });
+      expect(select<LiteralValue>(splitFromEmptyLastContent, { blockIndex: 1, contentIndex: 0 })).toStrictEqual(
+        newLiteral({ text: "", editedText: "" }),
+      );
     });
 
     test("splitting from last new empty item in itemlist results in in content after itemlist", () => {

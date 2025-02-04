@@ -5,7 +5,9 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.BinaryOperation
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.LocalizedFormatter
+import no.nav.pensjon.brev.template.TemplateModelSpecificationFactory
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -26,7 +28,11 @@ class TemplateDocumentationRendererTest {
     @Test
     fun canRenderDocumentationForAllTemplates() {
         (ProductionTemplates.hentAutobrevmaler() + ProductionTemplates.hentRedigerbareMaler()).forEach {
-            TemplateDocumentationRenderer.render(it.template, it.template.language.all().first())
+            TemplateDocumentationRenderer.render(
+                it.template,
+                it.template.language.all().first(),
+                it.template.modelSpecification()
+            )
         }
     }
 
@@ -81,7 +87,7 @@ class TemplateDocumentationRendererTest {
                 )
             )
         )
-        assertEquals(expected, TemplateDocumentationRenderer.render(templ, Bokmal).outline.first())
+        assertEquals(expected, TemplateDocumentationRenderer.render(templ, Bokmal, templ.modelSpecification()).outline.first())
     }
 
     @Test
@@ -134,7 +140,7 @@ class TemplateDocumentationRendererTest {
                 )
             )
         )
-        assertEquals(expected, TemplateDocumentationRenderer.render(templ, Bokmal).outline.first())
+        assertEquals(expected, TemplateDocumentationRenderer.render(templ, Bokmal, templ.modelSpecification()).outline.first())
     }
 
     @Test
@@ -161,7 +167,7 @@ class TemplateDocumentationRendererTest {
                 )
             )
         )
-        assertEquals(expected, TemplateDocumentationRenderer.render(templ, Bokmal).outline.first())
+        assertEquals(expected, TemplateDocumentationRenderer.render(templ, Bokmal, templ.modelSpecification()).outline.first())
     }
 }
 
@@ -195,3 +201,5 @@ object ExpressionVisitor {
             is Element.ParagraphContent.Table.Row -> element.cells.flatMap { visit(it.text) }
         }
 }
+
+fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactory(this.letterDataType).build()

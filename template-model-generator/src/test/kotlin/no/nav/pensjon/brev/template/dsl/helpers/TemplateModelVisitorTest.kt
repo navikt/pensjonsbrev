@@ -26,7 +26,7 @@ class TemplateModelVisitorTest {
         val result = SourceFile.kotlin(
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.NestedModel
                     import no.nav.pensjon.brev.template.dsl.helpers.NestedModelSelectors.second
@@ -35,7 +35,7 @@ class TemplateModelVisitorTest {
                     @TemplateModelHelpers
                     object MyClass : HasModel<NestedModel> {
                         fun doSomething() {
-                            TemplateGlobalScope<NestedModel>().second.lastName
+                            SimpleTemplateScope<NestedModel>().second.lastName
                         }
                     }
                     """.trimIndent()
@@ -53,7 +53,7 @@ class TemplateModelVisitorTest {
         val result = SourceFile.kotlin(
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.NestedModelWithRepetition
                     import no.nav.pensjon.brev.template.dsl.helpers.NestedModelWithRepetitionSelectors.second
@@ -62,7 +62,7 @@ class TemplateModelVisitorTest {
                     @TemplateModelHelpers
                     object MyClass : HasModel<NestedModelWithRepetition> {
                         fun doSomething() {
-                            TemplateGlobalScope<NestedModelWithRepetition>().second.lastName
+                            SimpleTemplateScope<NestedModelWithRepetition>().second.lastName
                         }
                     }
                     """.trimIndent()
@@ -81,7 +81,7 @@ class TemplateModelVisitorTest {
             "MyClass.kt", """
                 import no.nav.pensjon.brev.template.HasModel
                 import no.nav.pensjon.brev.template.Expression
-                import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                 import no.nav.pensjon.brev.template.dsl.helpers.ModelWithTypeParameters
                 import no.nav.pensjon.brev.template.dsl.helpers.ModelWithTypeParametersSelectors.otherList
@@ -90,7 +90,7 @@ class TemplateModelVisitorTest {
                 @TemplateModelHelpers
                 object MyClass : HasModel<ModelWithTypeParameters> {
                     fun doSomething() {
-                        val list: Expression<List<NestedModel>> = TemplateGlobalScope<ModelWithTypeParameters>().otherList
+                        val list: Expression<List<NestedModel>> = SimpleTemplateScope<ModelWithTypeParameters>().otherList
                     }
                 }
             """.trimIndent()
@@ -109,8 +109,9 @@ class TemplateModelVisitorTest {
             "MyClass.kt", """
                 import no.nav.pensjon.brev.template.HasModel
                 import no.nav.pensjon.brev.template.Expression
-                import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                import no.nav.pensjon.brev.template.LangBokmal
                 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                 import no.nav.pensjon.brev.template.somepkg.ModelOutsideOfTestPackage
                 import no.nav.pensjon.brev.template.somepkg.ModelOutsideOfTestPackageSelectors.thing
                 import no.nav.pensjon.brev.template.otherpkg.TypeParameterModel
@@ -120,7 +121,7 @@ class TemplateModelVisitorTest {
                 @TemplateModelHelpers
                 object MyClass : HasModel<ModelOutsideOfTestPackage> {
                     fun doSomething() {
-                        val list: Expression<TypeParameterModel<OtherWithTypeParameter<SimpleModel>>> = TemplateGlobalScope<ModelOutsideOfTestPackage>().thing
+                        val list: Expression<TypeParameterModel<OtherWithTypeParameter<SimpleModel>>> = SimpleTemplateScope<ModelOutsideOfTestPackage>().thing
                     }
                 }
             """.trimIndent()
@@ -156,7 +157,7 @@ class TemplateModelVisitorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
@@ -181,7 +182,7 @@ class TemplateModelVisitorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                     import ANameSelectors.first
@@ -211,7 +212,7 @@ class TemplateModelVisitorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                     import ANameSelectors.first

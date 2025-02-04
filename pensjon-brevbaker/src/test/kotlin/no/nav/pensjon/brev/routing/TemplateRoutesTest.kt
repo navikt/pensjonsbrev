@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.alleRedigerbareMaler
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
-import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstidPE
+import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.render.TemplateDocumentation
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
@@ -65,37 +65,45 @@ class TemplateRoutesTest {
 
     @Test
     fun `can get description of redigerbar`() = testBrevbakerApp { client ->
-        val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstidPE.kode.name}")
+        val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(InformasjonOmSaksbehandlingstidPE.description(), response.body<TemplateDescription.Redigerbar>())
+        assertEquals(InformasjonOmSaksbehandlingstid.description(), response.body<TemplateDescription.Redigerbar>())
     }
 
     @Test
     fun `can get modelSpecification of autobrev`() = testBrevbakerApp { client ->
         val response = client.get("/templates/autobrev/${OmsorgEgenAuto.kode.name}/modelSpecification")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(OmsorgEgenAuto.template.modelSpecification, response.body<TemplateModelSpecification>())
+        assertEquals(OmsorgEgenAuto.template.modelSpecification(), response.body<TemplateModelSpecification>())
     }
 
     @Test
     fun `can get modelSpecification of redigerbar`() = testBrevbakerApp { client ->
-        val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstidPE.kode.name}/modelSpecification")
+        val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}/modelSpecification")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(InformasjonOmSaksbehandlingstidPE.template.modelSpecification, response.body<TemplateModelSpecification>())
+        assertEquals(InformasjonOmSaksbehandlingstid.template.modelSpecification(), response.body<TemplateModelSpecification>())
     }
 
     @Test
     fun `can get template documentation of autobrev`() = testBrevbakerApp { client ->
         val response = client.get("/templates/autobrev/${ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.kode.name}/doc/BOKMAL")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(TemplateDocumentationRenderer.render(ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template, Language.Bokmal), response.body<TemplateDocumentation>())
+        assertEquals(TemplateDocumentationRenderer.render(
+            ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
+            Language.Bokmal,
+            ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template.modelSpecification()
+        ), response.body<TemplateDocumentation>())
     }
 
     @Test
     fun `can get template documentation of redigerbar`() = testBrevbakerApp { client ->
-        val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstidPE.kode.name}/doc/BOKMAL")
+        val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}/doc/BOKMAL")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(TemplateDocumentationRenderer.render(InformasjonOmSaksbehandlingstidPE.template, Language.Bokmal), response.body<TemplateDocumentation>())
+        assertEquals(TemplateDocumentationRenderer.render(
+            InformasjonOmSaksbehandlingstid.template,
+            Language.Bokmal,
+            InformasjonOmSaksbehandlingstid.template.modelSpecification()
+        ), response.body<TemplateDocumentation>())
     }
 
 }
