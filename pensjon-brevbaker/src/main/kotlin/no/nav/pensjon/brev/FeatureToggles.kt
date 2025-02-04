@@ -1,11 +1,6 @@
 package no.nav.pensjon.brev
 
-import no.nav.pensjon.brev.api.model.FeatureToggle
-import no.nav.pensjon.brev.template.StableHash
-
-data class ToggleImpl(val name: String) : FeatureToggle, StableHash by StableHash.of("Toggle: $name") {
-    override fun key() = name
-}
+import no.nav.pensjon.brev.api.model.ToggleImpl
 
 object FeatureToggles {
     // Sett inn featuretoggles her

@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.example
 
 import no.nav.pensjon.brev.FeatureToggles
-import no.nav.pensjon.brev.ToggleImpl
+import no.nav.pensjon.brev.api.model.ToggleImpl
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.navn

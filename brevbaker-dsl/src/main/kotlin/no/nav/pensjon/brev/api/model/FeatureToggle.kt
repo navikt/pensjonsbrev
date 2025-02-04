@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model
 
 import no.nav.pensjon.brev.api.FeatureToggleService
+import no.nav.pensjon.brev.template.StableHash
 
 object FeatureToggleSingleton {
     private lateinit var featureToggleService: FeatureToggleService
@@ -15,4 +16,8 @@ object FeatureToggleSingleton {
         }
         return featureToggleService.isEnabled(toggle)
     }
+}
+
+data class ToggleImpl(val name: String) : FeatureToggle, StableHash by StableHash.of("Toggle: $name") {
+    override fun key() = name
 }
