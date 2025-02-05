@@ -17,15 +17,16 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBeloeperSelectors.fradragSkatt
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.brukerNavn
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.datoTilsvarBruker
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.datoVarselEllerVedtak
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.doedsbo
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.sakType
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.tilbakekreving
-import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTOSelectors.varsel
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDataSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDataSelectors.brukerNavn
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDataSelectors.datoTilsvarBruker
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDataSelectors.datoVarselEllerVedtak
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDataSelectors.doedsbo
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDataSelectors.sakType
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDataSelectors.tilbakekreving
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDataSelectors.varsel
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.skalTilbakekreve
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.summer
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
@@ -33,6 +34,10 @@ import java.time.LocalDate
 
 data class TilbakekrevingBrevDTO(
     override val innhold: List<Element>,
+    val data: TilbakekrevingBrevData,
+) : FerdigstillingBrevDTO
+
+data class TilbakekrevingBrevData(
     val sakType: SakType,
     val bosattUtland: Boolean,
     val brukerNavn: String,
@@ -43,7 +48,7 @@ data class TilbakekrevingBrevDTO(
     val datoTilsvarBruker: LocalDate?,
 
     val tilbakekreving: TilbakekrevingDTO
-) : FerdigstillingBrevDTO
+)
 
 data class TilbakekrevingDTO(
     val fraOgMed: LocalDate,
@@ -90,85 +95,86 @@ object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedma
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
     ) {
+
         title {
-            showIf(tilbakekreving.skalTilbakekreve) {
-                showIf(doedsbo) {
+            showIf(data.tilbakekreving.skalTilbakekreve) {
+                showIf(data.doedsbo) {
                     textExpr(
-                        Bokmal to "Dødsboet må betale tilbake ".expr() + sakType.format(),
-                        Nynorsk to "Dødsbuet må betale tilbake ".expr() + sakType.format(),
-                        English to "The estate must pay reimbursement for ".expr() + sakType.format()
+                        Bokmal to "Dødsboet må betale tilbake ".expr() + data.sakType.format(),
+                        Nynorsk to "Dødsbuet må betale tilbake ".expr() + data.sakType.format(),
+                        English to "The estate must pay reimbursement for ".expr() + data.sakType.format()
                     )
                 }.orShow {
                     textExpr(
-                        Bokmal to "Du må betale tilbake ".expr() + sakType.format(),
-                        Nynorsk to "Du må betale tilbake ".expr() + sakType.format(),
-                        English to "You must pay reimbursement for ".expr() + sakType.format()
+                        Bokmal to "Du må betale tilbake ".expr() + data.sakType.format(),
+                        Nynorsk to "Du må betale tilbake ".expr() + data.sakType.format(),
+                        English to "You must pay reimbursement for ".expr() + data.sakType.format()
                     )
                 }
             }.orShow {
                 textExpr(
-                    Bokmal to "Du skal ikke betale tilbake ".expr() + sakType.format(),
-                    Nynorsk to "Du skal ikkje betale tilbake ".expr() + sakType.format(),
-                    English to "No reimbursement for ".expr() + sakType.format() + " will be claimed",
+                    Bokmal to "Du skal ikke betale tilbake ".expr() + data.sakType.format(),
+                    Nynorsk to "Du skal ikkje betale tilbake ".expr() + data.sakType.format(),
+                    English to "No reimbursement for ".expr() + data.sakType.format() + " will be claimed",
                 )
             }
 
         }
         outline {
-            showIf(doedsbo) {
-                includePhrase(TilbakekrevingFraser.ViserTilVarselbrevDoedsbo(datoVarselEllerVedtak, datoTilsvarBruker))
+            showIf(data.doedsbo) {
+                includePhrase(TilbakekrevingFraser.ViserTilVarselbrevDoedsbo(data.datoVarselEllerVedtak, data.datoTilsvarBruker))
             }.orShow {
                 includePhrase(
                     TilbakekrevingFraser.ViserTilVarselbrev(
-                        sakType,
-                        varsel,
-                        datoVarselEllerVedtak,
-                        datoTilsvarBruker
+                        data.sakType,
+                        data.varsel,
+                        data.datoVarselEllerVedtak,
+                        data.datoTilsvarBruker
                     )
                 )
             }
 
-            showIf(tilbakekreving.skalTilbakekreve) {
-                showIf(doedsbo) {
+            showIf(data.tilbakekreving.skalTilbakekreve) {
+                showIf(data.doedsbo) {
                     includePhrase(
-                        TilbakekrevingFraser.KonklusjonTilbakekrevingDoedsbo(sakType, tilbakekreving, brukerNavn)
+                        TilbakekrevingFraser.KonklusjonTilbakekrevingDoedsbo(data.sakType, data.tilbakekreving, data.brukerNavn)
                     )
-                    showIf(tilbakekreving.summer.fradragSkatt.greaterThan(0)) {
+                    showIf(data.tilbakekreving.summer.fradragSkatt.greaterThan(0)) {
                         includePhrase(TilbakekrevingFraser.TrukketSkatt)
                     }
-                    includePhrase(TilbakekrevingFraser.VedtakGjortEtterLover(tilbakekreving))
+                    includePhrase(TilbakekrevingFraser.VedtakGjortEtterLover(data.tilbakekreving))
                     includePhrase(TilbakekrevingFraser.ReferanseTilVedleggDoedsbo)
                     includePhrase(TilbakekrevingFraser.SkattDoedsbo)
                 }.orShow {
-                    includePhrase(TilbakekrevingFraser.KonklusjonTilbakekreving(sakType, tilbakekreving))
-                    showIf(tilbakekreving.summer.fradragSkatt.greaterThan(0)) {
+                    includePhrase(TilbakekrevingFraser.KonklusjonTilbakekreving(data.sakType, data.tilbakekreving))
+                    showIf(data.tilbakekreving.summer.fradragSkatt.greaterThan(0)) {
                         includePhrase(TilbakekrevingFraser.TrukketSkatt)
                     }
-                    includePhrase(TilbakekrevingFraser.VedtakGjortEtterLover(tilbakekreving))
+                    includePhrase(TilbakekrevingFraser.VedtakGjortEtterLover(data.tilbakekreving))
                     includePhrase(TilbakekrevingFraser.ReferanseTilVedlegg)
                     includePhrase(TilbakekrevingFraser.Skatt)
                 }
             }.orShow {
-                includePhrase(TilbakekrevingFraser.HovedInnholdIngenTilbakekreving(sakType, tilbakekreving, doedsbo))
+                includePhrase(TilbakekrevingFraser.HovedInnholdIngenTilbakekreving(data.sakType, data.tilbakekreving, data.doedsbo))
             }
 
             konverterElementerTilBrevbakerformat(innhold)
 
         }
 
-        includeAttachment(tilbakekrevingVedlegg, tilbakekreving)
+        includeAttachment(tilbakekrevingVedlegg, data.tilbakekreving)
 
         // Nasjonal
         includeAttachment(
             klageOgAnke(bosattUtland = false, tilbakekreving = true),
             innhold,
-            bosattUtland.not().and(doedsbo.not())
+            data.bosattUtland.not().and(data.doedsbo.not())
         )
         // Bosatt utland
         includeAttachment(
             klageOgAnke(bosattUtland = true, tilbakekreving = true),
             innhold,
-            bosattUtland.and(doedsbo.not())
+            data.bosattUtland.and(data.doedsbo.not())
         )
     }
 }
