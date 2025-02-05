@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.pensjonInnvil
 import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.tilleggEksempel
 import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi1
 import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi2
-import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
+import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT

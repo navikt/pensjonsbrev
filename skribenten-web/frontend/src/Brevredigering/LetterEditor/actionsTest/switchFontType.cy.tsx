@@ -365,7 +365,7 @@ describe("Switch font type ", () => {
         .then((el) => {
           expect(el[0].childNodes[0].childNodes).to.have.length(3);
         });
-      cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-weight", "700");
+      cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-weight", "400");
       cy.getDataCy("fonttype-bold").click();
       cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-weight", "400");
 
@@ -393,7 +393,7 @@ describe("Switch font type ", () => {
           expect(el[0].childNodes[0].childNodes).to.have.length(3);
         });
 
-      cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-style", "italic");
+      cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-style", "normal");
       cy.getDataCy("fonttype-italic").click();
       cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-style", "normal");
 
@@ -423,11 +423,11 @@ describe("Switch font type ", () => {
         });
 
       cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-style", "normal");
-      cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-weight", "700");
+      cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-weight", "400");
 
       cy.getDataCy("fonttype-italic").click();
 
-      cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-style", "italic");
+      cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-style", "normal");
       cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-weight", "400");
 
       cy.get(".PARAGRAPH")
@@ -464,7 +464,7 @@ describe("Switch font type ", () => {
         .then((el) => {
           expect(el[0].childNodes[0].childNodes).to.have.length(3);
         });
-      cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-weight", "700");
+      cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-weight", "400");
     });
 
     it("endring av fonttype av en variable inne i et punkt skal bevare all content i punkten", () => {

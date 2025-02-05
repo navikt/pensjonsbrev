@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.navn
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg1
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg2
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg3
-import no.nav.pensjon.brev.maler.fraser.common.Felles.KronerText
+import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Language.Bokmal

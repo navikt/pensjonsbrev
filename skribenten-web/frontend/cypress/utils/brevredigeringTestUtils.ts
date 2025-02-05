@@ -19,11 +19,12 @@ import type {
   Signatur,
   TextContent,
   Title1Block,
+  Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
-import { newLiteral, newVariable } from "../../src/Brevredigering/LetterEditor/actions/common";
+import { newLiteral, newParagraph, newVariable } from "../../src/Brevredigering/LetterEditor/actions/common";
 import { SpraakKode } from "../../src/types/apiTypes";
 import { Distribusjonstype } from "../../src/types/brev";
 import { FontType } from "../../src/types/brevbakerTypes";
@@ -194,16 +195,21 @@ export const nyTitle1Block = (args: {
   deletedContent: [],
 });
 
-//TODO - kan heller bruke newParagraph fra common.ts
-export const nyParagraphBlock = (args: {
+export const nyTitle2Block = (args: {
   id?: Nullable<number>;
   editable?: boolean;
-  content?: Content[];
-}): ParagraphBlock => ({
-  type: "PARAGRAPH",
+  content?: TextContent[];
+}): Title2Block => ({
+  type: "TITLE2",
   id: args.id ?? null,
   parentId: null,
   editable: args.editable ?? true,
   content: args.content ?? [nyVariable({})],
   deletedContent: [],
 });
+
+export const nyParagraphBlock = (args: { id?: Nullable<number>; content?: Content[] }): ParagraphBlock =>
+  newParagraph({
+    id: args.id,
+    content: args.content ?? [],
+  });
