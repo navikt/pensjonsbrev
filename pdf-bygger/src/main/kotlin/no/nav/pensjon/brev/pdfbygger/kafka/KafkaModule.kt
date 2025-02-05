@@ -14,7 +14,8 @@ import no.nav.pensjon.brev.pdfbygger.getProperty
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 
 fun Application.kafkaModule(latexCompileService: LatexCompileService) {
-    val kafkaConfig = createKafkaConfig(environment.config.config("pdfBygger.kafka"))
+    val config = environment.config.config("pdfBygger.kafka")
+    val kafkaConfig = createKafkaConfig(config)
 
     routing {
         get("/isAlive") {
@@ -29,7 +30,8 @@ fun Application.kafkaModule(latexCompileService: LatexCompileService) {
     val pdfRequestConsumer = PdfRequestConsumer(
         latexCompileService = latexCompileService,
         properties = kafkaConfig,
-        topic = environment.config.config("pdfBygger.kafka").property("topic").getString()
+        topic = config.property("topic").getString(),
+        retryTopic = config.property("retryTopic").getString(),
     )
 
     @OptIn(DelicateCoroutinesApi::class)
@@ -47,5 +49,5 @@ private fun createKafkaConfig(kafkaConfig: ApplicationConfig): Map<String, Strin
     "ssl.truststore.location" to kafkaConfig.getProperty("ssl.truststore.location"),
     "ssl.truststore.password" to kafkaConfig.getProperty("ssl.truststore.password"),
     "group.id" to "pdf-bygger-async",
-    "max.poll.records" to "50",
+    "enable.auto.commit" to "false",
 )

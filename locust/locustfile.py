@@ -11,8 +11,17 @@ class BrevbakerLoadTest(FastHttpUser):
     #network_timeout = 300.0
     @task
     def load_test(self):
-        headers = {'Content-Type': 'application/json', 'orderId': str(uuid.uuid4())} # local testing
-        #headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token(), 'X-Request-ID': str(uuid.uuid4()), 'orderId': str(uuid.uuid4())}# dev environment testing
+        #Test av synkront kall lokalt:
+        #headers = {'Content-Type': 'application/json'}
+
+        #Test av asynkront kall lokalt:
+        #headers = {'Content-Type': 'application/json', 'orderId': str(uuid.uuid4())}
+
+        #Test av synkront kall på clusteret:
+        #headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token(), 'X-Request-ID': str(uuid.uuid4())}
+
+        # Test av async på clusteret:
+        #headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token(), 'X-Request-ID': str(uuid.uuid4()), 'orderId': str(uuid.uuid4())}
         self.client.post("/letter/autobrev/pdfQueued", payload, headers=headers)
 
     def access_token(self):

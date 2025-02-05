@@ -1,7 +1,7 @@
 apiVersion: kafka.nais.io/v1
 kind: Topic
 metadata:
-  name: pdf-bygger-render-q2
+  name: pdf-bygger-render-retry-q2
   namespace: pensjonsbrev
   labels:
     team: pensjonsbrev
@@ -9,16 +9,10 @@ spec:
   pool: nav-dev
   acl:
     - team: pensjonsbrev
-      application: pensjon-brevbaker
-      access: write
-    - team: pensjonsbrev
       application: pensjon-pdf-bygger-async-q2
-      access: read
-    - team: pensjonsbrev
-      application: pensjon-brevbaker-lokal
-      access: write
+      access: readwrite
     - team: pensjonsbrev
       application: pensjon-pdf-bygger-async-q2-lokal
-      access: read
+      access: readwrite
   config:
     partitions: 100

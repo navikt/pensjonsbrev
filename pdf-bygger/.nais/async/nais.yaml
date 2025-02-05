@@ -26,7 +26,7 @@ spec:
     timeout: 5
   replicas:
     min: {{ minReplicas }} #TODO regn ut skalering med egen hpa basert på kafka-køen
-    max: 20
+    max: 100
     cpuThresholdPercentage: 50
   observability:
     autoInstrumentation:
@@ -55,3 +55,5 @@ spec:
       value: "true"
     - name: KAFKA_PDF_RENDER_TOPIC
       value: {{kafka-pdf-render-topic}}
+    - name: KAFKA_PDF_RENDER_RETRY_TOPIC
+      value: {{kafka-pdf-render-retry-topic}}

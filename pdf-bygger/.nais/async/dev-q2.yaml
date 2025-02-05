@@ -1,4 +1,4 @@
 app-name: "pensjon-pdf-bygger-async-q2"
 kafka-pool: "nav-dev"
 kafka-pdf-render-topic: "pensjonsbrev.pdf-bygger-render-q2"
-minReplicas: 2
+minReplicas: 1
