@@ -3,26 +3,25 @@ import "./appStyles.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { createRouter, NotFoundRoute, RouterProvider } from "@tanstack/react-router";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
 import React from "react";
 import ReactDOM from "react-dom/client";
 
 import { ApiError } from "~/components/ApiError";
 
-import { Route as rootRoute } from "./routes/__root";
 import { routeTree } from "./routeTree.gen";
 
 const queryClient = new QueryClient();
 
-const notFoundRoute = new NotFoundRoute({
-  getParentRoute: () => rootRoute,
-  component: () => "Finner ikke siden",
-});
-
 // Set up a Router instance
 const router = createRouter({
   routeTree,
-  notFoundRoute,
+  /**
+   * https://tanstack.com/router/v1/docs/framework/react/guide/not-found-errors#the-notfoundmode-option
+   * For å fjerne deprecation, og opprettholde samme funksjonalitet som tidligere, settes denne til root.
+   * Ideelt sett skal denne være 'fuzzy', så kan hver route håndtere NotFound selv.
+   */
+  notFoundMode: "root",
   defaultErrorComponent: ({ error }) => <ApiError error={error} title="Noe gikk galt." />,
   context: {
     queryClient,
