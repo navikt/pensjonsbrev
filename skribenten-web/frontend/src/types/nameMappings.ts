@@ -6,7 +6,7 @@ export const SPRAAK_ENUM_TO_TEXT = {
   [SpraakKode.Nynorsk]: "Nynorsk",
   [SpraakKode.Engelsk]: "Engelsk",
   [SpraakKode.Fransk]: "Fransk",
-  [SpraakKode.NordSamisk]: "Nord samisk",
+  [SpraakKode.NordSamisk]: "Nordsamisk",
 };
 
 export const SAK_TYPE_TO_TEXT: Record<SakType, string> = {
