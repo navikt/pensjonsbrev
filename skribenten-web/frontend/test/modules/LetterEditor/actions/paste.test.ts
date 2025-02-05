@@ -39,6 +39,14 @@ describe("LetterEditorActions.paste", () => {
 
       expect(text(select<LiteralValue>(result, index))).toEqual("Her har vi ikke noe");
     });
+    test("should update cursorPosition", () => {
+      const state = letter(paragraph(literal({ text: "Hei" })));
+      const clipboard = new MockDataTransfer({ "text/plain": " Hade" });
+      const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 10, clipboard);
+
+      expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("Hei Hade");
+      expect(result.focus.cursorPosition).toEqual(8);
+    });
   });
 
   describe("format: text/html", () => {
@@ -115,6 +123,17 @@ describe("LetterEditorActions.paste", () => {
       };
       expect(text(select<LiteralValue>(result, itemIndex))).toEqual("mer");
       expect(text(select<LiteralValue>(result, { ...itemIndex, itemIndex: 1 }))).toEqual("enda mer");
+    });
+
+    test("should update cursorPosition", () => {
+      const state = letter(paragraph(literal({ text: "Hei" })));
+      const clipboard = new MockDataTransfer({ "text/html": "<p> html</p>" });
+      const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 10, clipboard);
+
+      expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("Hei html");
+      console.log(result.redigertBrev.blocks[0].content);
+      console.log(result.focus);
+      expect(result.focus.cursorPosition).toEqual(8);
     });
   });
 });
