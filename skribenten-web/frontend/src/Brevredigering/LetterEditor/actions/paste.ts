@@ -25,37 +25,47 @@ export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
 
 export function logPastedClipboard(clipboardData: DataTransfer) {
   log("available paste types - " + JSON.stringify(clipboardData.types));
-  log("pasted content - " + clipboardData.getData("text/html"));
+  log("pasted html content - " + clipboardData.getData("text/html"));
+  log("pasted plain content - " + clipboardData.getData("text/plain"));
 }
 
 function insertTextInLetter(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, offset: number, str: string) {
   const content = draft.redigertBrev.blocks[literalIndex.blockIndex]?.content[literalIndex.contentIndex];
+  const cursorPositionUpdater = (l: number) => (draft.focus.cursorPosition = l);
+  // const cursorPositionUpdater = (l: number) => void 0;
+
   if (content?.type === ITEM_LIST && "itemContentIndex" in literalIndex) {
     const itemContent = content.items[literalIndex.itemIndex]?.content[literalIndex?.itemContentIndex];
     if (itemContent?.type === LITERAL) {
-      insertText(itemContent, offset, str);
+      insertText(itemContent, offset, str, cursorPositionUpdater);
     } else {
       log("cannot insert text into variable - " + str);
     }
   } else if (content?.type === LITERAL && !("itemContentIndex" in literalIndex)) {
-    insertText(content, offset, str);
+    insertText(content, offset, str, cursorPositionUpdater);
   } else {
     log("literalIndex is invalid " + JSON.stringify(literalIndex));
     log("text - " + str);
   }
 }
 
-function insertText(draft: Draft<LiteralValue>, offset: number, str: string) {
+function insertText(
+  draft: Draft<LiteralValue>,
+  offset: number,
+  str: string,
+  cursorPositionUpdater: (l: number) => void,
+) {
   const existingText = text(draft);
   if (offset <= 0) {
     updateLiteralText(draft, str + existingText);
+    cursorPositionUpdater(str.length);
   } else if (offset >= existingText.length) {
     updateLiteralText(draft, existingText + str);
+    cursorPositionUpdater(existingText.length + str.length);
   } else {
-    updateLiteralText(
-      draft,
-      existingText.slice(0, Math.max(0, offset)) + str + existingText.slice(Math.max(0, offset)),
-    );
+    const text = existingText.slice(0, Math.max(0, offset)) + str + existingText.slice(Math.max(0, offset));
+    updateLiteralText(draft, text);
+    cursorPositionUpdater(text.length);
   }
 }
 
