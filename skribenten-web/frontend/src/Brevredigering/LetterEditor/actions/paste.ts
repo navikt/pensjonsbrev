@@ -1,16 +1,15 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
-import { newItem, newItemList, newLiteral, newParagraph, text } from "~/Brevredigering/LetterEditor/actions/common";
+import { newItem, newItemList, newLiteral, text } from "~/Brevredigering/LetterEditor/actions/common";
 import type { LiteralIndex } from "~/Brevredigering/LetterEditor/actions/model";
-import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
 import type { Action } from "~/Brevredigering/LetterEditor/lib/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import type { LiteralValue } from "~/types/brevbakerTypes";
-import { PARAGRAPH, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
+import type { Content, Item, ItemList, LiteralValue } from "~/types/brevbakerTypes";
 import { LITERAL } from "~/types/brevbakerTypes";
 import { ITEM_LIST } from "~/types/brevbakerTypes";
+import { handleSwitchContent } from "~/utils/brevbakerUtils";
 
 export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number, clipboard: DataTransfer]> =
   produce((draft, literalIndex, offset, clipboard) => {
@@ -69,6 +68,223 @@ function insertText(
   }
 }
 
+type TextPath = { textContent: string; path: string };
+
+//TODO - test
+function helper(el: Element, currentPath: string): TextPath[] {
+  const children = [...el.children];
+  if (children.length === 0) {
+    // Leaf element: return its text (if any)
+    const text = el.textContent;
+    return text ? [{ textContent: text, path: currentPath }] : [];
+  } else if (children.length === 1) {
+    // Only one child → flatten the branch (drill down)
+    const child = children[0];
+    const childPath = `${currentPath}.${child.tagName.toLowerCase()}`;
+    return helper(child, childPath);
+  } else {
+    // More than one child: process each child separately.
+    const results: TextPath[] = [];
+    for (const child of children) {
+      const childPath = `${currentPath}.${child.tagName.toLowerCase()}`;
+      const childCandidates = helper(child, childPath);
+      if (childCandidates.length > 0) {
+        results.push(...childCandidates);
+      } else {
+        // If no candidate was found in this branch, use the child's own text.
+        const text = child.textContent;
+        if (text) {
+          results.push({ textContent: text, path: childPath });
+        }
+      }
+    }
+    return results;
+  }
+}
+
+function extractTextPathsFromOuter(outer: Element): TextPath[] {
+  const results: TextPath[] = [];
+  // Process each direct child of the outer element.
+  for (const child of outer.children) {
+    // Build the initial path as: outerTag.childTag (both lower‑case)
+    const initialPath = `${outer.tagName.toLowerCase()}.${child.tagName.toLowerCase()}`;
+    // Get the candidate(s) from this branch.
+    const candidates = helper(child, initialPath);
+    if (candidates.length > 0) {
+      results.push(...candidates);
+    } else {
+      // If no candidate was found, fallback to the child's own text.
+      const text = child.textContent;
+      if (text) {
+        results.push({ textContent: text, path: initialPath });
+      }
+    }
+  }
+  return results;
+}
+
+//TODO - test
+function extractTextWithDeepestPath(documentBody: HTMLElement): TextPath[] {
+  return extractTextPathsFromOuter(documentBody);
+}
+
+/**
+ * eksempel:
+ *
+ * Si at brevet inneholder, og at vi har kopiert samme innhold:
+ *  Punktliste
+ *     - Første punkt
+ *     - Andre punkt
+ *
+ * Dersom vi limer inn før 'P'en 'punktliste', skal resultatet bli duplisert. Altså at vi skal ha to punktlister etter hverandre
+ *
+ * Dersom vi limer inn på midten av 'punktliste', skal resultatet bli:
+ *    Punkt Punktliste
+ *       - Første punkt
+ *       - Andre punkt
+ *     liste
+ *     - Første punkt
+ *     - Andre punkt
+ *
+ * Dersom vi limer inn på slutten av 'punktliste', skal resultatet bli:
+ *    Punktliste Punktliste
+ *       - Første punkt
+ *       - Andre punkt
+ *
+ *     - Første punkt
+ *     - Andre punkt
+ *
+ * Merk at mellomrommet kommer fra at når man kopierer fra Word, legger den til et ekstra span element
+ *
+ * Dersom vi limer inn på starten av et punkt i punktlisten, skal resultatet bli:
+ *  Punktliste
+ *    - punktliste
+ *    - Første punkt
+ *    - Andre punkt
+ *    - Første punkt
+ *    - Andre punkt
+ *
+ * Dersom vi limer inn på midten av et punkt i en punktliste, skal resultatet bli:
+ * Punktliste
+ *    - Første punktliste
+ *    - første punkt
+ *    - andre punkt
+ *    - punkt
+ *    - andre punkt
+ *
+ * Dersom vi limer inn på slutten av et punkt i en punktliste, skal resultatet bli:
+ * Punktliste
+ *   - Første punkt punktliste
+ *   - første punkt
+ *   - andre punkt
+ *   -
+ *   - andre punkt
+ *
+ * * Merk at mellomrommet kommer fra at når man kopierer fra Word, legger den til et ekstra span element
+ */
+const appendToCurrentLiteral = (
+  currentBlockContent: Content[],
+  literalIndex: LiteralIndex,
+  literal: LiteralValue,
+  extracted: TextPath[],
+  offset: number,
+) => {
+  const appendingToStartOfLiteral = offset === 0;
+  const appendingToMiddleOfLiteral = offset > 0 && offset < (literal.editedText?.length ?? literal.text.length);
+
+  console.log("extracted:", extracted);
+  const mappedToBrevbakerTypes = extracted.map((textPath) => {
+    return textPath.path.includes("li")
+      ? newItem({ content: [newLiteral({ text: textPath.textContent })] })
+      : newLiteral({ text: textPath.textContent });
+  });
+
+  console.log("---------mappedToBrevbakerTypes-----------");
+  console.dir(JSON.parse(JSON.stringify(mappedToBrevbakerTypes)), { depth: null });
+  console.log("----------------------------");
+
+  const combined = combineNeighbouringItemLists(mappedToBrevbakerTypes);
+
+  console.log("---------combined-----------");
+  console.dir(JSON.parse(JSON.stringify(combined)), { depth: null });
+  console.log("----------------------------");
+
+  const isFirstCombinedElementLiteral = combined[0].type === LITERAL;
+
+  const doesCombinedContainListElements = combined.some((item) => item.type === ITEM_LIST);
+
+  if (appendingToStartOfLiteral) {
+    console.log("start of literal");
+    const newContent = [...combined, ...currentBlockContent];
+    console.log("the new content:", JSON.parse(JSON.stringify(newContent)));
+    return newContent;
+  } else if (appendingToMiddleOfLiteral) {
+    console.log("middle of literal");
+    const startOfSplitString = (literal.editedText ?? literal.text).slice(0, offset);
+    const endOfSplitString = (literal.editedText ?? literal.text).slice(offset);
+
+    console.log("startOfSplitString:", startOfSplitString);
+    console.log("endOfSplitString:", endOfSplitString);
+
+    if (doesCombinedContainListElements) {
+      const newContent = [
+        ...currentBlockContent.slice(0, literalIndex.contentIndex),
+        newLiteral({ text: startOfSplitString + (combined[0] as LiteralValue).text }),
+        ...combined.slice(1),
+        newLiteral({ text: endOfSplitString }),
+        ...currentBlockContent.slice(literalIndex.contentIndex + 1),
+      ];
+
+      console.log("newContent:", JSON.parse(JSON.stringify(newContent)));
+
+      return newContent;
+    } else {
+      console.log("combined contains only literals");
+
+      const firstCombined = combined.at(0) as LiteralValue;
+      const lastCombined = combined.length > 1 ? (combined.at(-1) as LiteralValue) : null;
+      const betweenCombined = combined.slice(1, -1) as LiteralValue[];
+
+      console.log("firstCombined:", firstCombined);
+      console.log("lastCombined:", lastCombined);
+      console.log("betweenCombined:", betweenCombined);
+
+      const newContent = [
+        ...currentBlockContent.slice(0, literalIndex.contentIndex),
+        newLiteral({
+          text: startOfSplitString + firstCombined.text + (combined.length > 1 ? "" : endOfSplitString),
+        }),
+        ...betweenCombined,
+        ...(lastCombined ? [newLiteral({ text: lastCombined.text + endOfSplitString })] : []),
+        ...currentBlockContent.slice(literalIndex.contentIndex + 1),
+      ];
+
+      console.log("newContent:", JSON.parse(JSON.stringify(newContent)));
+
+      return newContent;
+    }
+  } else {
+    console.log("end of literal");
+
+    const theTextWeWant = isFirstCombinedElementLiteral
+      ? (combined[0] as LiteralValue).text
+      : (combined[0] as ItemList).items[0].content[0].text;
+
+    const builtText = literal.text + theTextWeWant;
+
+    const newContent = [
+      ...currentBlockContent.slice(0, literalIndex.contentIndex),
+      newLiteral({ text: builtText }),
+      ...(isFirstCombinedElementLiteral
+        ? combined.slice(1)
+        : [newItemList({ items: (combined[0] as ItemList).items.slice(1) })]),
+      ...currentBlockContent.slice(literalIndex.contentIndex + 1),
+    ];
+    // console.log("the new content:", JSON.parse(JSON.stringify(newContent)));
+    return newContent;
+  }
+};
+
 function insertHtmlClipboardInLetter(
   draft: Draft<LetterEditorState>,
   literalIndex: LiteralIndex,
@@ -78,119 +294,77 @@ function insertHtmlClipboardInLetter(
   const parser = new DOMParser();
   const document = parser.parseFromString(clipboard.getData("text/html"), "text/html");
 
-  insertElement(draft, literalIndex, offset, document.body);
-}
+  const thisBlock = draft.redigertBrev.blocks[literalIndex.blockIndex];
+  const blockContent = thisBlock.content;
+  const current = blockContent[literalIndex.contentIndex];
+  const extracted = extractTextWithDeepestPath(document.body);
+  // console.log("current:", JSON.parse(JSON.stringify(current)));
 
-function insertElement(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, offset: number, parent: Element) {
-  for (let i = 0; i < parent.children.length; i++) {
-    const element = parent.children[i];
+  handleSwitchContent({
+    content: current,
+    onLiteral: (literal) => {
+      //literalen som vi er på, er tom
+      if ((literal.editedText?.trim()?.length ?? literal.text?.trim()?.length ?? 0) === 0) {
+        /**
+         * så vil vi appende alt innholdet fra clipboard, akkurat som strukturen i clipboard er
+         */
+        // console.log("literalen er tom");
 
-    switch (element.tagName) {
-      case "DIV": {
-        insertElement(draft, literalIndex, offset, element);
-        break;
-      }
-      case "SPAN": {
-        const str = element.textContent ?? "";
-        insertTextInLetter(draft, literalIndex, offset, str);
-        offset += str.length;
-        break;
-      }
-      case "P": {
-        const str = element.textContent ?? "";
-        if (i === 0) {
-          insertTextInLetter(draft, literalIndex, offset, str);
-          offset += str.length;
-        } else {
-          splitRecipe(draft, literalIndex, offset);
-          if ("itemContentIndex" in literalIndex) {
-            literalIndex = { ...literalIndex, itemIndex: literalIndex.itemIndex + 1 };
-            offset = 0;
-          } else {
-            literalIndex = { ...literalIndex, blockIndex: literalIndex.blockIndex + 1 };
-            offset = 0;
-          }
-          insertTextInLetter(draft, literalIndex, offset, str);
-        }
-        break;
-      }
-      case "OL":
-      case "UL": {
-        interpretULorOL(draft, literalIndex, offset, element);
-        break;
-      }
-      case "BR": {
-        break;
-      }
-      default: {
-        log("unsupported element " + element.tagName);
-      }
-    }
-  }
-  draft.focus = { ...literalIndex, cursorPosition: offset };
-}
+        const mappedToBrevbakerTypes = extracted.map((textPath) => {
+          return textPath.path.includes("li")
+            ? newItem({ content: [newLiteral({ text: textPath.textContent })] })
+            : newLiteral({ text: textPath.textContent });
+        });
 
-function interpretULorOL(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, offset: number, ul: Element) {
-  let isFirstItem = true;
-
-  for (const item of ul.children) {
-    if (item.tagName === "LI") {
-      const text = item.textContent ?? "";
-
-      if (isFirstItem) {
-        insertTextInLetter(draft, literalIndex, offset, text);
-        offset += text.length;
-        isFirstItem = false;
+        const combined = combineNeighbouringItemLists(mappedToBrevbakerTypes);
+        thisBlock.content = combined;
       } else {
-        const currentContent = draft.redigertBrev.blocks[literalIndex.blockIndex]?.content?.[literalIndex.contentIndex];
-
-        if (currentContent?.type === ITEM_LIST && "itemContentIndex" in literalIndex) {
-          currentContent.items.push(newItem({ content: [newLiteral({ text })] }));
-          literalIndex = { ...literalIndex, itemIndex: literalIndex.itemIndex + 1 };
-          offset += text.length;
-        } else if (currentContent?.type === LITERAL && !("itemContentIndex" in literalIndex)) {
-          const currentBlock = draft.redigertBrev.blocks[literalIndex.blockIndex];
-
-          if (currentBlock?.type === PARAGRAPH) {
-            currentBlock.content.push(newItemList({ items: [newItem({ content: [newLiteral({ text })] })] }));
-            literalIndex = {
-              ...literalIndex,
-              contentIndex: literalIndex.contentIndex + 1,
-              itemIndex: 0,
-              itemContentIndex: 0,
-            };
-            offset = text.length;
-          } else if (currentBlock?.type === TITLE1 || currentBlock?.type === TITLE2) {
-            draft.redigertBrev.blocks.splice(
-              literalIndex.blockIndex + 1,
-              0,
-              newParagraph({ content: [newItemList({ items: [newItem({ content: [newLiteral({ text })] })] })] }),
-            );
-            literalIndex = {
-              blockIndex: literalIndex.blockIndex + 1,
-              contentIndex: 0,
-              itemIndex: 0,
-              itemContentIndex: 0,
-            };
-            offset = text.length;
-          } else {
-            log("literalIndex is invalid " + JSON.stringify(literalIndex));
-            log("block doesn't exist");
-          }
-        } else {
-          log("literalIndex is invalid " + JSON.stringify(literalIndex));
-          log(
-            "either literalIndex refers to an itemList item and block-content isn't that, or it refers to an itemList without itemContentIndex",
-          );
-        }
+        /**
+         * appender det første elementet i clipboard til den nåværende literalen,
+         * og resten av elementene i clipboard vil bli lagt til som nye elementer i brevet
+         */
+        // console.log("literalen er ikke tom");
+        const appended = appendToCurrentLiteral(blockContent, literalIndex, literal, extracted, offset);
+        // console.log(appended);
+        thisBlock.content = appended!;
       }
+    },
+    onVariable: () => {
+      throw new Error("Cannot paste into variable");
+    },
+    onItemList: () => {
+      throw new Error("paste into itemList not yet implemented");
+    },
+    onNewLine: () => {
+      throw new Error("paste into itemList not yet implemented");
+    },
+  });
+}
+
+//TODO - test
+const combineNeighbouringItemLists = (arr: (LiteralValue | Item)[]): (LiteralValue | ItemList)[] => {
+  const temp: (LiteralValue | ItemList)[] = [];
+  let bufferItemListContent: Item[] = [];
+
+  for (const current of arr) {
+    if ("type" in current && current.type === "LITERAL") {
+      if (bufferItemListContent.length > 0) {
+        temp.push(newItemList({ items: bufferItemListContent }));
+      }
+      temp.push(current);
+      bufferItemListContent = [];
     } else {
-      log("pasted ul or ol contains unsupported element - " + item.tagName);
+      bufferItemListContent.push(current as Item);
     }
   }
-}
+
+  if (bufferItemListContent.length > 0) {
+    temp.push(newItemList({ items: bufferItemListContent }));
+  }
+
+  return temp;
+};
 
 function log(message: string) {
-  // eslint-disable-next-line no-console
   console.log("Skribenten:pasteHandler: " + message);
 }
