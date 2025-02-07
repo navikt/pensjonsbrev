@@ -38,6 +38,7 @@ object Constants {
     const val REGULERING_ALDERSPENSJON_URL = "$NAV_URL/reguleringalderspensjon"
     const val SEND_BESKJED_URL = "$NAV_URL/send-beskjed"
     const val SKATTEETATEN_URL = "skatteetaten.no"
+    const val SKATTEETATEN_PENSJONIST_URL = "skatteeten.no/pensjonist"
     const val SKJEMA_URL = "$NAV_URL/skjema"
     const val SKRIV_TIL_OSS_URL = "$NAV_URL/skriv-til-oss"
     const val UFOERETRYGD_ENDRING_URL = "$NAV_URL/uforetrygd-endring"
