@@ -2,7 +2,7 @@ import { expect } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { text } from "~/Brevredigering/LetterEditor/actions/common";
-import type { LiteralValue } from "~/types/brevbakerTypes";
+import type { ItemList, LiteralValue } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, select, title1 } from "../utils";
 
@@ -64,7 +64,8 @@ describe("LetterEditorActions.paste", () => {
       const clipboard = new MockDataTransfer({ "text/html": "<span> da</span><span> ikke</span>" });
       const result = Actions.paste(state, index, 10, clipboard);
 
-      expect(text(select<LiteralValue>(result, index))).toEqual("Her har vi da ikke noe");
+      expect(text(select<LiteralValue>(result, index))).toEqual("Her har vi da");
+      expect(text(select<LiteralValue>(result, { ...index, contentIndex: 1 }))).toEqual(" ikke noe");
     });
     test("multiple p elements should append first to existing", () => {
       const index = { blockIndex: 0, contentIndex: 0 };
@@ -73,7 +74,7 @@ describe("LetterEditorActions.paste", () => {
       const result = Actions.paste(state, index, 10, clipboard);
 
       expect(text(select<LiteralValue>(result, index))).toEqual("Her har vi da");
-      expect(text(select<LiteralValue>(result, { ...index, blockIndex: 1 }))).toEqual(" ikke noe");
+      expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 1 }))).toEqual(" ikke noe");
     });
 
     test("multiple p elements should append first to existing list item", () => {
@@ -116,8 +117,8 @@ describe("LetterEditorActions.paste", () => {
 
       expect(text(select<LiteralValue>(result, index))).toEqual("Her har vi noe annet");
       const itemIndex = {
-        blockIndex: index.blockIndex + 1,
-        contentIndex: 0,
+        blockIndex: 0,
+        contentIndex: 1,
         itemIndex: 0,
         itemContentIndex: 0,
       };
@@ -128,13 +129,80 @@ describe("LetterEditorActions.paste", () => {
     test("should update cursorPosition", () => {
       const state = letter(paragraph(literal({ text: "Hei" })));
       const clipboard = new MockDataTransfer({ "text/html": "<p> html</p>" });
-      const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 10, clipboard);
+      const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 3, clipboard);
 
       expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("Hei html");
-      console.log(result.redigertBrev.blocks[0].content);
-      console.log(result.focus);
       expect(result.focus.cursorPosition).toEqual(8);
     });
+
+    test("innliming av tekst + punktliste i en tom literal bare legger den rett in", () => {
+      const clipboard = new MockDataTransfer({
+        "text/html":
+          "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
+      });
+      const state = letter(paragraph(literal({ text: "" })));
+      const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 0, clipboard);
+
+      expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("Punktliste");
+      const actualFirstItemList = itemList(select<ItemList>(result, { blockIndex: 0, contentIndex: 2 }));
+      expect(actualFirstItemList.items[0].content[0].text).toEqual("Første punkt");
+      expect(actualFirstItemList.items[1].content[0].text).toEqual(" ");
+      expect(actualFirstItemList.items[2].content[0].text).toEqual("Andre punkt");
+      expect(actualFirstItemList.items[3].content[0].text).toEqual(" ");
+    });
+
+    test("innliming av tekst + punktliste i starten av en literal pusher teksten bak et hakk", () => {
+      const clipboard = new MockDataTransfer({
+        "text/html":
+          "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
+      });
+      const state = letter(paragraph(literal({ text: "Hei" })));
+      const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 0, clipboard);
+
+      expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("Punktliste");
+      const actualFirstItemList = itemList(select<ItemList>(result, { blockIndex: 0, contentIndex: 2 }));
+      expect(actualFirstItemList.items[0].content[0].text).toEqual("Første punkt");
+      expect(actualFirstItemList.items[1].content[0].text).toEqual(" ");
+      expect(actualFirstItemList.items[2].content[0].text).toEqual("Andre punkt");
+      expect(actualFirstItemList.items[3].content[0].text).toEqual(" ");
+      expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 3 }))).toEqual("Hei");
+    });
+    test("innliming av tekst + punktliste på midten av en literal appender det kopierte innholdet til teksten før caret, og teksten etter caret blir flyttet et hakk ned", () => {
+      const clipboard = new MockDataTransfer({
+        "text/html":
+          "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
+      });
+      const state = letter(paragraph(literal({ text: "Help" })));
+      const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 2, clipboard);
+
+      expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("HePunktliste");
+      expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 1 }))).toEqual(" ");
+      const actualFirstItemList = itemList(select<ItemList>(result, { blockIndex: 0, contentIndex: 2 }));
+      expect(actualFirstItemList.items[0].content[0].text).toEqual("Første punkt");
+      expect(actualFirstItemList.items[1].content[0].text).toEqual(" ");
+      expect(actualFirstItemList.items[2].content[0].text).toEqual("Andre punkt");
+      expect(actualFirstItemList.items[3].content[0].text).toEqual(" ");
+
+      expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 3 }))).toEqual("lp");
+    });
+
+    test("innliming av tekst + punktliste på slutten av en literal appender det kopierte innholdet til literalen", () => {
+      const clipboard = new MockDataTransfer({
+        "text/html":
+          "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
+      });
+      const state = letter(paragraph(literal({ text: "Hei" })));
+      const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 4, clipboard);
+
+      expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("HeiPunktliste");
+      expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 1 }))).toEqual(" ");
+      const actualFirstItemList = itemList(select<ItemList>(result, { blockIndex: 0, contentIndex: 2 }));
+      expect(actualFirstItemList.items[0].content[0].text).toEqual("Første punkt");
+      expect(actualFirstItemList.items[1].content[0].text).toEqual(" ");
+      expect(actualFirstItemList.items[2].content[0].text).toEqual("Andre punkt");
+      expect(actualFirstItemList.items[3].content[0].text).toEqual(" ");
+    });
+    //TODO - tester for innliming i et punkt
   });
 });
 
