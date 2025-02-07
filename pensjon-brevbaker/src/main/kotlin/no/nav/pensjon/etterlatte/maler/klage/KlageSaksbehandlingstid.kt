@@ -153,7 +153,7 @@ object KlageSaksbehandlingstid : EtterlatteTemplate<KlageSaksbehandlingstidDTO> 
                         }
                     }
                 }
-                title1 {
+                title2 {
                     text(
                         Bokmal to "Har du spørsmål?",
                         Nynorsk to "Har du spørsmål?",
