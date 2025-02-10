@@ -70,6 +70,7 @@ export default [{
         "@typescript-eslint/consistent-type-imports": ["warn"],
         "@typescript-eslint/switch-exhaustiveness-check": "error",
         "react/no-unused-prop-types": "error",
+        "unicorn/no-array-reduce": "off",
         "unicorn/filename-case": "off",
         "unicorn/no-null": "off",
         "unicorn/no-useless-undefined": "off",
