@@ -2,9 +2,14 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelJavaTarget: String by System.getProperties()
 val hamkrestVersion: String by project
+val logstashVersion: String by project
+val ktorVersion: String by System.getProperties()
+val jacksonJsr310Version: String by project
 
 plugins {
     kotlin("jvm")
+    id("java-library")
+    id("java-test-fixtures")
     id("com.google.devtools.ksp")
 }
 
@@ -24,6 +29,18 @@ dependencies {
 
     testImplementation(kotlin("test"))
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
+
+
+    testFixturesImplementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
+    testFixturesImplementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+    testFixturesImplementation("io.ktor:ktor-client-cio:$ktorVersion")
+    testFixturesImplementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    testFixturesImplementation("io.ktor:ktor-client-encoding:$ktorVersion")
+    testFixturesImplementation("io.ktor:ktor-server-call-id:$ktorVersion")
+
+    testFixturesImplementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version") {
+        because("we require deserialization/serialization of java.time.LocalDate")
+    }
 }
 
 tasks.test {

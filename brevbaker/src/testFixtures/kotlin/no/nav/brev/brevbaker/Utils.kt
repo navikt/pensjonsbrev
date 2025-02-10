@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte
+package no.nav.brev.brevbaker
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper

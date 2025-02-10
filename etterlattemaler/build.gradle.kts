@@ -38,11 +38,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("io.mockk:mockk:${mockkVersion}")
 
-    testImplementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
-    testImplementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
-    testImplementation("io.ktor:ktor-client-cio:$ktorVersion")
-    testImplementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-    testImplementation("io.ktor:ktor-client-encoding:$ktorVersion")
+    testImplementation(testFixtures(project(":brevbaker")))
     testImplementation("io.ktor:ktor-server-call-id:$ktorVersion")
 }
 

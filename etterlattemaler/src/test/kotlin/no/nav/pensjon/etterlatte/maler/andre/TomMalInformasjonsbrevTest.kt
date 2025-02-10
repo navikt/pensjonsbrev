@@ -1,13 +1,13 @@
 package no.nav.pensjon.etterlatte.maler.andre
 
+import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.renderTestHtml
+import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
-import no.nav.pensjon.etterlatte.TestTags
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
-import no.nav.pensjon.etterlatte.renderTestHtml
-import no.nav.pensjon.etterlatte.renderTestPDF
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -20,7 +20,7 @@ internal class TomMalInformasjonsbrevTest {
             TomMalInformasjonsbrev.template,
             Fixtures.create<ManueltBrevMedTittelDTO>(),
             Language.Bokmal,
-            Fixtures.felles
+            no.nav.brev.brevbaker.Fixtures.felles
         )
         letter.renderTestPDF(EtterlatteBrevKode.TOM_MAL_INFORMASJONSBREV.name)
     }
@@ -31,7 +31,7 @@ internal class TomMalInformasjonsbrevTest {
             TomMalInformasjonsbrev.template,
             Fixtures.create<ManueltBrevMedTittelDTO>(),
             Language.Bokmal,
-            Fixtures.felles
+            no.nav.brev.brevbaker.Fixtures.felles
         ).renderTestHtml(EtterlatteBrevKode.TOM_MAL_INFORMASJONSBREV.name)
     }
 

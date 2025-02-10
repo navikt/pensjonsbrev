@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte
+package no.nav.brev.brevbaker
 
 import io.ktor.callid.*
 import io.ktor.client.*
