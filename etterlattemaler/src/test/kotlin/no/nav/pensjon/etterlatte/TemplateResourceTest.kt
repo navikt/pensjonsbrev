@@ -1,10 +1,7 @@
 package no.nav.pensjon.etterlatte
 
 import io.ktor.util.reflect.*
-import no.nav.pensjon.brev.TestTags
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.renderTestHtml
-import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.etterlatte.maler.BrevDTO
