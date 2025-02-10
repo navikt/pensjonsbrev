@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev
+package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.ToggleImpl
 
