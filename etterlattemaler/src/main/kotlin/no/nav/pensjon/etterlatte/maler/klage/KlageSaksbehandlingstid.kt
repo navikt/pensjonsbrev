@@ -164,7 +164,7 @@ object KlageSaksbehandlingstid : EtterlatteTemplate<KlageSaksbehandlingstidDTO> 
                 paragraph {
                     textExpr(
                         Bokmal to "Du kan finne svar på ".expr() + sakUrl(sakType) + "." +
-                                " Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon " + kontakttelefonPensjonExpr(borIUtlandet) + " hverdager mellom klokken 09.00-15.00." +
+                        " Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon " + kontakttelefonPensjonExpr(borIUtlandet) + " hverdager mellom klokken 09.00-15.00." +
                                 " Om du oppgir <fødselsnummer ditt/fødselsnummer til barnet/ fødselsnummer til den du er verge for>, kan vi lettere gi deg rask og god hjelp.",
                         Nynorsk to "Du finn meir informasjon på ".expr() + sakUrl(sakType) + "." +
                                 " Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon " + kontakttelefonPensjonExpr(borIUtlandet) + " kvardagar mellom klokka 09.00–15.00."  +
