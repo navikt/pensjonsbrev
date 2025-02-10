@@ -200,9 +200,9 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
                 div(classes("form-text")) {
                     div { renderText(element.prompt) }
                     val size = when (element.size) {
-                        no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Text.Size.NONE -> "none"
-                        no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Text.Size.SHORT -> "short"
-                        no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Text.Size.LONG -> "long"
+                        ParagraphContent.Form.Text.Size.NONE -> "none"
+                        ParagraphContent.Form.Text.Size.SHORT -> "short"
+                        ParagraphContent.Form.Text.Size.LONG -> "long"
                     }
                     div(classes("form-line-$size")) { }
                 }
