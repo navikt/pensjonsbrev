@@ -26,7 +26,7 @@ object BarnepensjonFellesFraser {
             paragraph {
                 text(
                     Bokmal to "Vi har nå mottatt opplysninger fra utenlandske trygdemyndigheter, som gjør at du har rett på pensjonen etter EØS/avtalelandreglene.",
-                    Nynorsk to "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du ikkje har rett på pensjonen vurdert etter EØS/avtalelandreglane.",
+                    Nynorsk to "Vi har no mottatt opplysningar frå utanlandske trygdemyndigheiter, som gjer at du har rett på pensjonen vurdert etter EØS/avtalelandreglane.",
                     English to "We have now received information from foreign social security authorities, which means you are entitled to the pension under the EEA/agreement country rules.",
                 )
             }
