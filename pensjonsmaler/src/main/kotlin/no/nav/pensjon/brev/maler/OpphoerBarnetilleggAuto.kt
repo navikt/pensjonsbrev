@@ -42,7 +42,6 @@ import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.gjenlevendetille
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.harUtbetalingsgrad
 import no.nav.pensjon.brev.api.model.maler.UfoeretrygdSelectors.utbetaltPerMaaned
 import no.nav.pensjon.brev.maler.fraser.OpphoerBarnetillegg
-import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg
