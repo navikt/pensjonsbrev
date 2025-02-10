@@ -88,7 +88,7 @@ class LatexServiceTest {
 
     @Test
     fun `producePDF writes all inputFiles`() {
-        assertResult<Base64PDF>(producePdf("useFilesCompile.sh", files = mapOf("f1.txt" to "file 1".encodeBase64(), "f2.txt" to "file 2".encodeBase64()))) {
+        assertResult<Base64PDF>(producePdf("useFilesCompile.sh", files = mapOf("f1.txt" to "file 1", "f2.txt" to "file 2"))) {
             val compiledOutput = it.decodePlaintext().lines()
             assertThat(compiledOutput, hasSize(equalTo(2)) and hasElement("file 1") and hasElement("file 2"))
         }
