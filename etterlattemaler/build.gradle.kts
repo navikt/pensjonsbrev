@@ -7,6 +7,7 @@ val jacksonJsr310Version: String by project
 val jupiterVersion: String by project
 val logstashVersion: String by project
 val ktorVersion: String by System.getProperties()
+val mockkVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -35,6 +36,7 @@ dependencies {
     // JUnit 5
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("io.mockk:mockk:${mockkVersion}")
 
     testImplementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
     testImplementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
