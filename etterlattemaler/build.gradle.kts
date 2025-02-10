@@ -5,6 +5,8 @@ val apiModelVersion: String by project
 val apiModelJavaTarget: String by System.getProperties()
 val jacksonJsr310Version: String by project
 val jupiterVersion: String by project
+val logstashVersion: String by project
+val ktorVersion: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
@@ -33,6 +35,13 @@ dependencies {
     // JUnit 5
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+
+    testImplementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
+    testImplementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
+    testImplementation("io.ktor:ktor-client-cio:$ktorVersion")
+    testImplementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    testImplementation("io.ktor:ktor-client-encoding:$ktorVersion")
+    testImplementation("io.ktor:ktor-server-call-id:$ktorVersion")
 }
 
 tasks.test {
