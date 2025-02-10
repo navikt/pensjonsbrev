@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 fun Expression<IntBroek?>.formatBroek(): Expression<String> = this.format(IntBroekFormatter)
 
