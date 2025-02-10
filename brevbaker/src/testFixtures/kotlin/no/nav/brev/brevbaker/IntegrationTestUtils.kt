@@ -185,7 +185,7 @@ fun <AttachmentData : Any, Lang : LanguageSupport> createVedleggTestTemplate(
     includeAttachment(template, attachmentData)
 }
 
-internal inline fun <reified LetterData : Any> outlineTestTemplate(
+inline fun <reified LetterData : Any> outlineTestTemplate(
     noinline function: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit,
 ): LetterTemplate<LangBokmal, LetterData> =
     createTemplate(
@@ -198,7 +198,7 @@ internal inline fun <reified LetterData : Any> outlineTestTemplate(
         outline(function)
     }
 
-internal fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = Fixtures.felles) =
+fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = Fixtures.felles) =
     Letter(this, EmptyBrevdata, Bokmal, felles).renderTestPDF(fileName)
 
 internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate(
@@ -210,8 +210,9 @@ internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = Le
     letterMetadata = testLetterMetadata
 )
 
-internal val bokmalTittel = newText(Language.Bokmal to "test brev")
-internal val testLetterMetadata = LetterMetadata(
+val bokmalTittel = newText(Language.Bokmal to "test brev")
+
+val testLetterMetadata = LetterMetadata(
     displayTitle = "En fin display tittel",
     isSensitiv = false,
     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,

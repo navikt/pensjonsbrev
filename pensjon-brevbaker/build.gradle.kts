@@ -137,5 +137,7 @@ dependencies {
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("io.mockk:mockk:${mockkVersion}")
+
+    testImplementation(testFixtures(project(":brevbaker")))
 }
 
