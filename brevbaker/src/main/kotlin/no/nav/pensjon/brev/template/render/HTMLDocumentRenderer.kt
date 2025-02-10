@@ -38,7 +38,7 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
 
     override fun render(
         letter: LetterMarkup,
-        attachments: List<LetterMarkup.Attachment>,
+        attachments: List<Attachment>,
         language: Language,
         felles: Felles,
         brevtype: LetterMetadata.Brevtype
@@ -82,26 +82,22 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
 
     private fun FlowContent.brevdato(language: Language, felles: Felles): Unit =
         div(classes("brevdato")) {
-            text(felles.dokumentDato.format(dateFormatter(language, java.time.format.FormatStyle.SHORT)))
+            text(felles.dokumentDato.format(dateFormatter(language, FormatStyle.SHORT)))
         }
 
     private fun FlowContent.renderClosing(language: Language, felles: Felles, brevtype: LetterMetadata.Brevtype) {
         div("closing") {
             // Med vennlig hilsen
             div(classes("closing-greeting")) {
-                text(languageSettings.getSetting(language,
-                    no.nav.pensjon.brev.template.render.LanguageSetting.Closing.greeting
-                ))
+                text(languageSettings.getSetting(language, LanguageSetting.Closing.greeting))
             }
             div(classes("closing-enhet")) { text(felles.avsenderEnhet.navn) }
 
             val signerende = felles.signerendeSaksbehandlere
             if (signerende != null) {
                 div(classes("closing-manuell")) {
-                    val saksbehandlerTekst = languageSettings.getSetting(language,
-                        no.nav.pensjon.brev.template.render.LanguageSetting.Closing.saksbehandler
-                    )
-                    signerende.attesterendeSaksbehandler?.takeIf { brevtype == no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV }?.let {
+                    val saksbehandlerTekst = languageSettings.getSetting(language, LanguageSetting.Closing.saksbehandler)
+                    signerende.attesterendeSaksbehandler?.takeIf { brevtype == VEDTAKSBREV }?.let {
                         div(classes("closing-saksbehandler")) {
                             div { text(it) }
                             div { text(saksbehandlerTekst) }
@@ -114,25 +110,19 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
                 }
             } else {
                 div(classes("closing-automatisk")) {
-                    if (brevtype == no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV) {
-                        text(languageSettings.getSetting(language,
-                            no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskVedtaksbrev
-                        ))
+                    if (brevtype == VEDTAKSBREV) {
+                        text(languageSettings.getSetting(language, automatiskVedtaksbrev))
                     } else {
-                        text(languageSettings.getSetting(language,
-                            no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskInformasjonsbrev
-                        ))
+                        text(languageSettings.getSetting(language, automatiskInformasjonsbrev))
                     }
                 }
             }
         }
     }
 
-    private fun FlowContent.renderAttachment(attachment: LetterMarkup.Attachment, language: Language, felles: Felles): Unit =
+    private fun FlowContent.renderAttachment(attachment: Attachment, language: Language, felles: Felles): Unit =
         div(classes("vedlegg")) {
-            img(classes = classes("logo"), src = navLogoImg, alt = languageSettings.getSetting(language,
-                no.nav.pensjon.brev.template.render.LanguageSetting.HTML.altTextLogo
-            ))
+            img(classes = classes("logo"), src = navLogoImg, alt = languageSettings.getSetting(language, LanguageSetting.HTML.altTextLogo))
             h1(classes("tittel")) { renderText(attachment.title) }
             if (attachment.includeSakspart) {
                 renderSakspart(language, felles)
@@ -142,59 +132,59 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             }
         }
 
-    private fun FlowContent.renderBlock(block: LetterMarkup.Block): Unit =
+    private fun FlowContent.renderBlock(block: Block): Unit =
         when (block) {
-            is LetterMarkup.Block.Paragraph -> renderParagraph(block)
-            is LetterMarkup.Block.Title1 -> h2(classes("title1")) { renderText(block.content) }
-            is LetterMarkup.Block.Title2 -> h3(classes("title2")) { renderText(block.content) }
+            is Block.Paragraph -> renderParagraph(block)
+            is Block.Title1 -> h2(classes("title1")) { renderText(block.content) }
+            is Block.Title2 -> h3(classes("title2")) { renderText(block.content) }
         }
 
-    private fun FlowContent.renderParagraph(paragraph: LetterMarkup.Block.Paragraph) {
+    private fun FlowContent.renderParagraph(paragraph: Block.Paragraph) {
         div(classes("paragraph")) {
             paragraph.content.forEach { renderParagraphContent(it) }
         }
     }
 
-    private fun FlowContent.renderParagraphContent(element: LetterMarkup.ParagraphContent) {
+    private fun FlowContent.renderParagraphContent(element: ParagraphContent) {
         when (element) {
-            is LetterMarkup.ParagraphContent.Form -> renderForm(element)
-            is LetterMarkup.ParagraphContent.Text -> renderTextContent(element)
-            is LetterMarkup.ParagraphContent.ItemList -> renderList(element)
-            is LetterMarkup.ParagraphContent.Table -> renderTable(element)
+            is ParagraphContent.Form -> renderForm(element)
+            is ParagraphContent.Text -> renderTextContent(element)
+            is ParagraphContent.ItemList -> renderList(element)
+            is ParagraphContent.Table -> renderTable(element)
         }
     }
 
-    private fun FlowOrPhrasingContent.renderText(elements: List<LetterMarkup.ParagraphContent.Text>) {
+    private fun FlowOrPhrasingContent.renderText(elements: List<ParagraphContent.Text>) {
         elements.forEach { renderTextContent(it) }
     }
 
-    private fun FlowOrPhrasingContent.renderTextContent(element: LetterMarkup.ParagraphContent.Text) {
+    private fun FlowOrPhrasingContent.renderTextContent(element: ParagraphContent.Text) {
         when (element.fontType) {
-            no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType.PLAIN -> renderTextContentWithoutStyle(element)
-            no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType.BOLD -> span(classes("text-bold")) {
+            FontType.PLAIN -> renderTextContentWithoutStyle(element)
+            FontType.BOLD -> span(classes("text-bold")) {
                 renderTextContentWithoutStyle(element)
             }
-            no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType.ITALIC -> span(classes("text-italic")) {
+            FontType.ITALIC -> span(classes("text-italic")) {
                 renderTextContentWithoutStyle(element)
             }
         }
     }
 
-    private fun Tag.renderTextWithoutStyle(elements: List<LetterMarkup.ParagraphContent.Text>) {
+    private fun Tag.renderTextWithoutStyle(elements: List<ParagraphContent.Text>) {
         elements.forEach { renderTextContentWithoutStyle(it) }
     }
 
-    private fun Tag.renderTextContentWithoutStyle(element: LetterMarkup.ParagraphContent.Text) {
+    private fun Tag.renderTextContentWithoutStyle(element: ParagraphContent.Text) {
         when (element) {
-            is LetterMarkup.ParagraphContent.Text.Variable -> text(element.text)
-            is LetterMarkup.ParagraphContent.Text.Literal -> text(element.text)
-            is LetterMarkup.ParagraphContent.Text.NewLine -> br
+            is ParagraphContent.Text.Variable -> text(element.text)
+            is ParagraphContent.Text.Literal -> text(element.text)
+            is ParagraphContent.Text.NewLine -> br
         }
     }
 
-    private fun FlowContent.renderForm(element: LetterMarkup.ParagraphContent.Form) {
+    private fun FlowContent.renderForm(element: ParagraphContent.Form) {
         when (element) {
-            is LetterMarkup.ParagraphContent.Form.MultipleChoice -> {
+            is ParagraphContent.Form.MultipleChoice -> {
                 div(classes("form-choice")) {
                     div { renderText(element.prompt) }
                     element.choices.forEach {
@@ -206,7 +196,7 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
                 }
             }
 
-            is LetterMarkup.ParagraphContent.Form.Text -> {
+            is ParagraphContent.Form.Text -> {
                 div(classes("form-text")) {
                     div { renderText(element.prompt) }
                     val size = when (element.size) {
@@ -220,7 +210,7 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         }
     }
 
-    private fun FlowContent.renderList(element: LetterMarkup.ParagraphContent.ItemList) {
+    private fun FlowContent.renderList(element: ParagraphContent.ItemList) {
         ul {
             element.items.forEach {
                 li { renderText(it.content) }
@@ -228,7 +218,7 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         }
     }
 
-    private fun FlowContent.renderTable(table: LetterMarkup.ParagraphContent.Table) {
+    private fun FlowContent.renderTable(table: ParagraphContent.Table) {
         // Small screen
         ul(classes("table")) {
             table.rows.forEach { row ->
@@ -286,23 +276,23 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
     private fun classes(vararg classes: String?): String =
         classes.filterNotNull().joinToString(" ") { "pensjonsbrev-$it" }
 
-    private fun alignmentClass(alignment: LetterMarkup.ParagraphContent.Table.ColumnAlignment): String =
+    private fun alignmentClass(alignment: ParagraphContent.Table.ColumnAlignment): String =
         when (alignment) {
-            LetterMarkup.ParagraphContent.Table.ColumnAlignment.LEFT -> "text-left"
-            LetterMarkup.ParagraphContent.Table.ColumnAlignment.RIGHT -> "text-right"
+            ParagraphContent.Table.ColumnAlignment.LEFT -> "text-left"
+            ParagraphContent.Table.ColumnAlignment.RIGHT -> "text-right"
         }
 
     private fun FlowContent.renderSakspart(language: Language, felles: Felles) =
         div(classes("sakspart")) {
             with(felles.bruker) {
                 val navnPrefix =
-                    if (felles.vergeNavn != null) no.nav.pensjon.brev.template.render.LanguageSetting.Sakspart.gjelderNavn else no.nav.pensjon.brev.template.render.LanguageSetting.Sakspart.navn
+                    if (felles.vergeNavn != null) LanguageSetting.Sakspart.gjelderNavn else LanguageSetting.Sakspart.navn
 
                 listOfNotNull(
-                    felles.vergeNavn?.let { no.nav.pensjon.brev.template.render.LanguageSetting.Sakspart.vergenavn to it },
+                    felles.vergeNavn?.let { LanguageSetting.Sakspart.vergenavn to it },
                     navnPrefix to fulltNavn(),
-                    no.nav.pensjon.brev.template.render.LanguageSetting.Sakspart.foedselsnummer to foedselsnummer.value,
-                    no.nav.pensjon.brev.template.render.LanguageSetting.Sakspart.saksnummer to felles.saksnummer,
+                    LanguageSetting.Sakspart.foedselsnummer to foedselsnummer.value,
+                    LanguageSetting.Sakspart.saksnummer to felles.saksnummer,
                 )
             }.forEach {
                 div(classes("sakspart-tittel")) { text(languageSettings.getSetting(language, it.first)) }

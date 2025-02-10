@@ -32,7 +32,6 @@ ktor {
 }
 
 repositories {
-    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven") }
     mavenLocal()
 }
 
@@ -116,7 +115,6 @@ dependencies {
     implementation("io.ktor:ktor-server-swagger:$ktorVersion")
     implementation("io.ktor:ktor-client-encoding:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.12.0")
 
     implementation(project(":pensjonsmaler"))
     implementation(project(":etterlattemaler"))
