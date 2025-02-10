@@ -14,11 +14,13 @@ version = "0.0.1-SNAPSHOT"
 repositories {
     mavenCentral()
     mavenLocal()
+    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven") }
 }
 
 dependencies {
     api(project(":brevbaker-dsl"))
     ksp(project(":template-model-generator"))
+    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.12.0")
 
     testImplementation(kotlin("test"))
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
