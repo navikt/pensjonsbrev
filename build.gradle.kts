@@ -59,6 +59,7 @@ subprojects {
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
         coloredOutput.set(true)
+        outputToConsole.set(true)
         reporters {
             reporter(ReporterType.CHECKSTYLE)
             reporter(ReporterType.JSON)
