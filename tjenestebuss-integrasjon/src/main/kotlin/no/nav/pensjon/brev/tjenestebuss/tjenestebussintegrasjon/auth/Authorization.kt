@@ -2,15 +2,16 @@ package no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth
 
 import com.auth0.jwk.JwkProviderBuilder
 import com.typesafe.config.Config
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
+import io.ktor.server.auth.AuthenticationConfig
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.auth.jwt.jwt
 import org.slf4j.LoggerFactory
-import java.net.ProxySelector
 import java.net.InetSocketAddress
+import java.net.ProxySelector
 import java.net.URI
 import java.net.URL
 
-private const val jwtAzureAdName = "AZURE_AD"
+private const val JWT_AZURE_AD_NAME = "AZURE_AD"
 private val logger =
     LoggerFactory.getLogger("no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.Authentication")
 
@@ -21,13 +22,13 @@ data class JwtConfig(
     val clientId: String,
     val tokenUri: String,
     val clientSecret: String,
-    val requireAzureAdClaims: Boolean
+    val requireAzureAdClaims: Boolean,
 )
 
 fun Config.requireAzureADConfig() =
     getConfig("azureAD").let {
         JwtConfig(
-            name = jwtAzureAdName,
+            name = JWT_AZURE_AD_NAME,
             issuer = it.getString("issuer"),
             jwksUrl = it.getString("jwksUrl"),
             clientId = it.getString("clientId"),
@@ -43,7 +44,7 @@ fun AuthenticationConfig.tjenestebusJwt(config: JwtConfig) =
         val proxyUri: URI? = System.getenv("HTTP_PROXY")?.let { URI.create(it) }
         val jwkBuilder = JwkProviderBuilder(URL(config.jwksUrl))
             .apply {
-                if(proxyUri != null) {
+                if (proxyUri != null) {
                     proxied(ProxySelector.of(InetSocketAddress(proxyUri.host, proxyUri.port)).select(URI(config.jwksUrl)).first())
                 }
             }

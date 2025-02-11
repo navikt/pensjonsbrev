@@ -22,7 +22,6 @@ private const val XML_SCHEMA_URL = "http://www.w3.org/2001/XMLSchema"
 private const val XML_SCHEMA_INS_URL = "http://www.w3.org/2001/XMLSchema-instance"
 private const val WSSE = "wsse"
 
-
 class SamhandlerClientFactory(config: Config) : ClientFactory<Samhandler> {
     private val samhandlerClientUrl = config.getString("url")
     private val samhandlerUsername = config.getString("username")
