@@ -35,7 +35,7 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
                 TemplateModelSpecification(
                     types = objectTypes,
                     letterModelTypeName = from.qualifiedName,
-                )
+                ),
             )
         }
 
@@ -45,7 +45,11 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
         return spec
     }
 
-    private fun validateTypes(spec: TemplateModelSpecification, path: List<String>, type: ObjectTypeSpecification) {
+    private fun validateTypes(
+        spec: TemplateModelSpecification,
+        path: List<String>,
+        type: ObjectTypeSpecification,
+    ) {
         type.values.forEach {
             if (it is FieldType.Object) {
                 if (path.contains(it.typeName)) {

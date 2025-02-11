@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-data class TrygdetidListeNorTabell(val trygdetidsGrunnlagsListe: Expression<List<Trygdetidsgrunnlag>>): OutlinePhrase<LangBokmalNynorskEnglish>(){
+data class TrygdetidListeNorTabell(val trygdetidsGrunnlagsListe: Expression<List<Trygdetidsgrunnlag>>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             table(
@@ -33,12 +33,12 @@ data class TrygdetidListeNorTabell(val trygdetidsGrunnlagsListe: Expression<List
                             English to "To (and including)",
                         )
                     }
-                }
+                },
             ) {
-                forEach(trygdetidsGrunnlagsListe){ trygdetidsgrunnlag ->
+                forEach(trygdetidsGrunnlagsListe) { trygdetidsgrunnlag ->
                     row {
                         cell {
-                            ifNotNull(trygdetidsgrunnlag.trygdetidfom){
+                            ifNotNull(trygdetidsgrunnlag.trygdetidfom) {
                                 textExpr(
                                     Bokmal to it.format(),
                                     Nynorsk to it.format(),
@@ -47,7 +47,7 @@ data class TrygdetidListeNorTabell(val trygdetidsGrunnlagsListe: Expression<List
                             }
                         }
                         cell {
-                            ifNotNull(trygdetidsgrunnlag.trygdetidtom){
+                            ifNotNull(trygdetidsgrunnlag.trygdetidtom) {
                                 textExpr(
                                     Bokmal to it.format(),
                                     Nynorsk to it.format(),

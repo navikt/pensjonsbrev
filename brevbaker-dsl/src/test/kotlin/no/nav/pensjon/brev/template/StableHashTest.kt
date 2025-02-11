@@ -5,8 +5,7 @@ import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 
 class StableHashTest {
-
-    private data class StableImpl(val value: Int): StableHash {
+    private data class StableImpl(val value: Int) : StableHash {
         override fun stableHashCode() = hashCode()
     }
 
@@ -58,5 +57,4 @@ class StableHashTest {
         assertEquals(MyEnum.TWO.name.hashCode(), StableHash.of(MyEnum.TWO).stableHashCode())
         assertNotEquals(MyEnum.ONE.name.hashCode(), StableHash.of(MyEnum.TWO).stableHashCode())
     }
-
 }

@@ -16,10 +16,10 @@ data class TBU2384_Generated(
     val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        //[TBU2384, TBU2384NN, TBU2384EN]
+        // [TBU2384, TBU2384NN, TBU2384EN]
 
         paragraph {
-            textExpr (
+            textExpr(
                 Bokmal to "Vi har avslått søknaden din om uføretrygd som vi mottok ".expr() + pe.vedtaksdata_kravhode_kravmottatdato().format() + ".",
                 Nynorsk to "Vi har avslått søknaden din om uføretrygd som vi fekk ".expr() + pe.vedtaksdata_kravhode_kravmottatdato().format() + ".",
                 English to "We have denied your application for disability benefit, which we received on ".expr() + pe.vedtaksdata_kravhode_kravmottatdato().format() + ".",

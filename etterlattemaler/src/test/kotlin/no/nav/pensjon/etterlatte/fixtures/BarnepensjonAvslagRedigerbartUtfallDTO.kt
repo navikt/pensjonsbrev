@@ -4,5 +4,5 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagRed
 
 fun createBarnepensjonAvslagRedigerbartUtfallDTO(): BarnepensjonAvslagRedigerbartUtfallDTO =
     BarnepensjonAvslagRedigerbartUtfallDTO(
-        erSluttbehandling = true
+        erSluttbehandling = true,
     )

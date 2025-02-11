@@ -8,10 +8,16 @@ internal class LatexDocument : Document {
     override val files: List<DocumentFile>
         get() = _files
 
-    private fun newPlainTextFile(fileName: String, writeToFile: Appendable.() -> Unit) =
+    private fun newPlainTextFile(
+        fileName: String,
+        writeToFile: Appendable.() -> Unit,
+    ) =
         _files.add(DocumentFile(fileName, writeToFile))
 
-    internal fun newLatexFile(fileName: String, writeToFile: LatexAppendable.() -> Unit) =
+    internal fun newLatexFile(
+        fileName: String,
+        writeToFile: LatexAppendable.() -> Unit,
+    ) =
         newPlainTextFile(fileName) {
             LatexAppendable(this).apply(writeToFile)
         }

@@ -23,10 +23,9 @@ import no.nav.pensjon.brev.template.dsl.text
 
 data class TBU037V_4(
     val pe: Expression<PE>,
-): OutlinePhrase<LangBokmalNynorskEnglish>() {
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-
-        //IF( PE_UT_Avdod()= true  AND  (PE_pebrevkode <> "PE_UT_05_100"  AND PE_pebrevkode <> "PE_UT_04_300"  AND PE_pebrevkode <> "PE_UT_07_100"  AND PE_pebrevkode <> "PE_UT_14_300"  AND  PE_pebrevkode <> "PE_UT_04_500"  AND PE_pebrevkode <> "PE_UT_06_300"  AND (PE_pebrevkode <> "PE_UT_04_102"      OR (PE_pebrevkode = "PE_UT_04_102"     AND PE_Vedtaksdata_Kravhode_KravArsakType <> "tilst_dod"))  AND PE_UT_InntektslandTrueHvorBruktLikTrue_Avdod() AND PE_Vedtaksdata_Kravhode_KravArsakType<>"soknad_bt")  ) THEN      INCLUDE ENDIF
+        // IF( PE_UT_Avdod()= true  AND  (PE_pebrevkode <> "PE_UT_05_100"  AND PE_pebrevkode <> "PE_UT_04_300"  AND PE_pebrevkode <> "PE_UT_07_100"  AND PE_pebrevkode <> "PE_UT_14_300"  AND  PE_pebrevkode <> "PE_UT_04_500"  AND PE_pebrevkode <> "PE_UT_06_300"  AND (PE_pebrevkode <> "PE_UT_04_102"      OR (PE_pebrevkode = "PE_UT_04_102"     AND PE_Vedtaksdata_Kravhode_KravArsakType <> "tilst_dod"))  AND PE_UT_InntektslandTrueHvorBruktLikTrue_Avdod() AND PE_Vedtaksdata_Kravhode_KravArsakType<>"soknad_bt")  ) THEN      INCLUDE ENDIF
         showIf((pe.ut_avdod() and (pe.pebrevkode().notEqualTo("PE_UT_05_100") and pe.pebrevkode().notEqualTo("PE_UT_04_300") and pe.pebrevkode().notEqualTo("PE_UT_07_100") and pe.pebrevkode().notEqualTo("PE_UT_14_300") and pe.pebrevkode().notEqualTo("PE_UT_04_500") and pe.pebrevkode().notEqualTo("PE_UT_06_300") and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))) and pe.ut_inntektslandtruehvorbruktliktrue_avdod() and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")))) {
             paragraph {
                 text(
@@ -35,7 +34,7 @@ data class TBU037V_4(
                     English to "The emphasized income has been selected, because this will yield a higher payout for you.",
                 )
             }
-            //Integer i i = 1  FOR i = 1 TO Count(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Omsorgsaar)  IF( FF_GetArrayElement_Float(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste ,i) <> 0  AND FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Omsorgsaar ,i) = true ) THEN      INCLUDE ENDIF  NEXT
+            // Integer i i = 1  FOR i = 1 TO Count(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Omsorgsaar)  IF( FF_GetArrayElement_Float(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste ,i) <> 0  AND FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Omsorgsaar ,i) = true ) THEN      INCLUDE ENDIF  NEXT
             showIf(pe.avdodHarOpptjeningUTMedFoerstegangstjenesteOgOmsorg()) {
                 paragraph {
                     text(
@@ -45,7 +44,7 @@ data class TBU037V_4(
                     )
                 }
             }
-            //Integer i i = 1  FOR i = 1 TO Count(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Omsorgsaar) IF(  FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Omsorgsaar,i) = true AND FF_GetArrayElement_Float(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste, i) = 0  ) THEN      INCLUDE ENDIF NEXT
+            // Integer i i = 1  FOR i = 1 TO Count(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Omsorgsaar) IF(  FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Omsorgsaar,i) = true AND FF_GetArrayElement_Float(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste, i) = 0  ) THEN      INCLUDE ENDIF NEXT
             showIf(pe.avdodHarOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste()) {
                 paragraph {
                     text(
@@ -55,7 +54,7 @@ data class TBU037V_4(
                     )
                 }
             }
-            //Integer i i = 1 FOR i = 1 TO Count(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste)  IF( FF_GetArrayElement_Float(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste,i) <> 0 AND FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Omsorgsaar, i) = false    ) THEN      INCLUDE ENDIF NEXT
+            // Integer i i = 1 FOR i = 1 TO Count(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste)  IF( FF_GetArrayElement_Float(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Forstegansgstjeneste,i) <> 0 AND FF_GetArrayElement_Boolean(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GjenlevendetilleggInformasjon_BeregningsgrunnlagAvdodOrdiner_OpptjeningUTListe_OpptjeningUT_Omsorgsaar, i) = false    ) THEN      INCLUDE ENDIF NEXT
             showIf(pe.avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg()) {
                 paragraph {
                     text(
@@ -66,6 +65,5 @@ data class TBU037V_4(
                 }
             }
         }
-
     }
 }

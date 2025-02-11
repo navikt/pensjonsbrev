@@ -3,5 +3,7 @@
 package no.nav.pensjon.brevbaker.api.model
 
 enum class LanguageCode {
-    BOKMAL, NYNORSK, ENGLISH;
+    BOKMAL,
+    NYNORSK,
+    ENGLISH,
 }

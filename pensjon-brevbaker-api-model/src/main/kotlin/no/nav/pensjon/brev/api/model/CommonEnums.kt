@@ -7,13 +7,13 @@ enum class Sivilstand {
     ENSLIG,
     ENKE,
     GIFT,
-    GIFT_LEVER_ADSKILT, //TODO depricate, replace with BorMedSivilstand and remove after testing OpphoerBarnetilleggAuto - HH
+    GIFT_LEVER_ADSKILT, // TODO depricate, replace with BorMedSivilstand and remove after testing OpphoerBarnetilleggAuto - HH
     SEPARERT,
     PARTNER,
-    PARTNER_LEVER_ADSKILT, //TODO depricate, replace with BorMedSivilstand and remove after testing OpphoerBarnetilleggAuto - HH
+    PARTNER_LEVER_ADSKILT, // TODO depricate, replace with BorMedSivilstand and remove after testing OpphoerBarnetilleggAuto - HH
     SEPARERT_PARTNER,
-    SAMBOER1_5, //TODO depricate, replace with BorMedSivilstand and remove after testing OpphoerBarnetilleggAuto - HH
-    SAMBOER3_2, //TODO depricate, replace with BorMedSivilstand and remove after testing OpphoerBarnetilleggAuto - HH
+    SAMBOER1_5, // TODO depricate, replace with BorMedSivilstand and remove after testing OpphoerBarnetilleggAuto - HH
+    SAMBOER3_2, // TODO depricate, replace with BorMedSivilstand and remove after testing OpphoerBarnetilleggAuto - HH
 }
 
 enum class SivilstandAvdoed {
@@ -24,7 +24,7 @@ enum class SivilstandAvdoed {
 }
 
 // Bruker er koblet mot en ektefelle, partner eller samboer og angir bor med/benyttet sivilstatus i beregningen
-enum class BorMedSivilstand{
+enum class BorMedSivilstand {
     PARTNER_LEVER_ADSKILT,
     GIFT_LEVER_ADSKILT,
     EKTEFELLE,
@@ -52,7 +52,7 @@ enum class Beregningsmetode {
     PRORATA,
     SOR_KOREA,
     SVEITS,
-    USA
+    USA,
 }
 
 enum class YtelseForAldersovergangKode {

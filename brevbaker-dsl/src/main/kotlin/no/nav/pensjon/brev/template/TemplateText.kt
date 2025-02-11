@@ -44,11 +44,11 @@ class PlainTextOnlyScope<Lang : LanguageSupport, LetterData : Any> : PlainTextSc
     override fun addTextContent(e: TextElement<Lang>) {
         children.add(e)
     }
-
 }
 
 interface PlainTextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
     fun addTextContent(e: TextElement<Lang>)
+
     fun eval(expression: StringExpression) {
         addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.Expression(expression, FontType.PLAIN)))
     }
@@ -107,7 +107,6 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
 ) {
     Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, lang3, fontType).also { addTextContent(Content(it)) }
 }
-
 
 // PlainTextScope.text()
 //

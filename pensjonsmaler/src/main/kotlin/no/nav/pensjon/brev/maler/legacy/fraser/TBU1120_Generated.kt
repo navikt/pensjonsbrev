@@ -17,29 +17,29 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 data class TBU1120_Generated(
-	val pe: Expression<PE>,
+    val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-		//[TBU1120NN, TBU1120, TBU1120EN]
-		val beregningUfore_totalNetto: Expression<Kroner> = pe.vedtaksdata_beregningsdata_beregningufore_totalnetto()
-		paragraph {
-			textExpr (
-				Bokmal to "Du får ".expr() + beregningUfore_totalNetto.format() + " kroner i uføretrygd per måned før skatt" ,
-				Nynorsk to "Du får ".expr() + beregningUfore_totalNetto.format() + " kroner i uføretrygd per månad før skatt",
-				English to "Your monthly disability benefit payment will be NOK ".expr() + beregningUfore_totalNetto.format() + " before tax",
-			)
-			ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) {
-				textExpr (
-					Bokmal to " fra ".expr() + it.formatMonthYear(),
-					Nynorsk to " frå ".expr() + it.formatMonthYear() ,
-					English to " starting ".expr() + it.formatMonthYear(),
-				)
-			}
-			text(
-				Bokmal to ".",
-				Nynorsk to ".",
-				English to ".",
-			)
-		}
+        // [TBU1120NN, TBU1120, TBU1120EN]
+        val beregningUfore_totalNetto: Expression<Kroner> = pe.vedtaksdata_beregningsdata_beregningufore_totalnetto()
+        paragraph {
+            textExpr(
+                Bokmal to "Du får ".expr() + beregningUfore_totalNetto.format() + " kroner i uføretrygd per måned før skatt",
+                Nynorsk to "Du får ".expr() + beregningUfore_totalNetto.format() + " kroner i uføretrygd per månad før skatt",
+                English to "Your monthly disability benefit payment will be NOK ".expr() + beregningUfore_totalNetto.format() + " before tax",
+            )
+            ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) {
+                textExpr(
+                    Bokmal to " fra ".expr() + it.formatMonthYear(),
+                    Nynorsk to " frå ".expr() + it.formatMonthYear(),
+                    English to " starting ".expr() + it.formatMonthYear(),
+                )
+            }
+            text(
+                Bokmal to ".",
+                Nynorsk to ".",
+                English to ".",
+            )
+        }
     }
 }

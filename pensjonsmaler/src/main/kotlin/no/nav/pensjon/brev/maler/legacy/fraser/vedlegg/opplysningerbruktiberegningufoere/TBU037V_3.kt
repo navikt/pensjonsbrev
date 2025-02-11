@@ -34,28 +34,26 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
-
 data class TBU037V_3(
     val pe: Expression<PE>,
-): OutlinePhrase<LangBokmalNynorskEnglish>(){
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-
         // det å bruke data som ikke finnes i exstream ville ha ført til at hele tabellen forsvant, så dette oppnår samme resultat.
-        ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()){ virkFom ->
+        ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) { virkFom ->
 
-            //IF( PE_UT_Avdod()= true  AND  (PE_pebrevkode <> "PE_UT_05_100"  AND PE_pebrevkode <> "PE_UT_04_300"  AND PE_pebrevkode <> "PE_UT_07_100"  AND PE_pebrevkode <> "PE_UT_14_300"  AND  PE_pebrevkode <> "PE_UT_04_500"  AND PE_pebrevkode <> "PE_UT_06_300"  AND (PE_pebrevkode <> "PE_UT_04_102"      OR (PE_pebrevkode = "PE_UT_04_102"     AND PE_Vedtaksdata_Kravhode_KravArsakType <> "tilst_dod"))  AND PE_UT_InntektslandTrueHvorBruktLikTrue_Avdod() AND PE_Vedtaksdata_Kravhode_KravArsakType<>"soknad_bt")  ) THEN      INCLUDE ENDIF
-            showIf((pe.ut_avdod() and (pe.pebrevkode().notEqualTo("PE_UT_05_100") and pe.pebrevkode().notEqualTo("PE_UT_04_300") and pe.pebrevkode().notEqualTo("PE_UT_07_100") and pe.pebrevkode().notEqualTo("PE_UT_14_300") and pe.pebrevkode().notEqualTo("PE_UT_04_500") and pe.pebrevkode().notEqualTo("PE_UT_06_300") and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))) and pe.ut_inntektslandtruehvorbruktliktrue_avdod() and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")))){
-                //[TBU037V_3]
+            // IF( PE_UT_Avdod()= true  AND  (PE_pebrevkode <> "PE_UT_05_100"  AND PE_pebrevkode <> "PE_UT_04_300"  AND PE_pebrevkode <> "PE_UT_07_100"  AND PE_pebrevkode <> "PE_UT_14_300"  AND  PE_pebrevkode <> "PE_UT_04_500"  AND PE_pebrevkode <> "PE_UT_06_300"  AND (PE_pebrevkode <> "PE_UT_04_102"      OR (PE_pebrevkode = "PE_UT_04_102"     AND PE_Vedtaksdata_Kravhode_KravArsakType <> "tilst_dod"))  AND PE_UT_InntektslandTrueHvorBruktLikTrue_Avdod() AND PE_Vedtaksdata_Kravhode_KravArsakType<>"soknad_bt")  ) THEN      INCLUDE ENDIF
+            showIf((pe.ut_avdod() and (pe.pebrevkode().notEqualTo("PE_UT_05_100") and pe.pebrevkode().notEqualTo("PE_UT_04_300") and pe.pebrevkode().notEqualTo("PE_UT_07_100") and pe.pebrevkode().notEqualTo("PE_UT_14_300") and pe.pebrevkode().notEqualTo("PE_UT_04_500") and pe.pebrevkode().notEqualTo("PE_UT_06_300") and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or (pe.pebrevkode().equalTo("PE_UT_04_102") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))) and pe.ut_inntektslandtruehvorbruktliktrue_avdod() and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")))) {
+                // [TBU037V_3]
 
                 paragraph {
-                    textExpr (
+                    textExpr(
                         Bokmal to "Inntekt lagt til grunn for beregning av avdødes uføretrygd fra ".expr() + virkFom.format(),
                         Nynorsk to "Inntekt lagd til grunn for berekning av avdødes uføretrygd frå ".expr() + virkFom.format(),
                         English to "Income on which to calculate the disability benefit for the decedent of ".expr() + virkFom.format(),
-                        BOLD
+                        BOLD,
                     )
                 }
-                //[TBU037V_3]
+                // [TBU037V_3]
 
                 paragraph {
                     table(header = {
@@ -87,8 +85,8 @@ data class TBU037V_3(
                                 English to "Comments",
                             )
                         }
-                    }){
-                        forEach(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_beregningsgrunnlagavdodordiner_opptjeningutliste()) {opptjeningUt ->
+                    }) {
+                        forEach(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gjenlevendetillegginformasjon_beregningsgrunnlagavdodordiner_opptjeningutliste()) { opptjeningUt ->
                             row {
                                 cell {
                                     showIf(opptjeningUt.brukt_safe.ifNull(false)) {
@@ -130,16 +128,16 @@ data class TBU037V_3(
                                     }
                                 }
                                 cell {
-                                    showIf(opptjeningUt.forstegansgstjeneste_safe.ifNull(0).notEqualTo(0)){
-                                        text (
+                                    showIf(opptjeningUt.forstegansgstjeneste_safe.ifNull(0).notEqualTo(0)) {
+                                        text(
                                             Bokmal to "Førstegangsteneste * ",
                                             Nynorsk to "Førstegongsteneste * ",
                                             English to "Initial service * ",
                                         )
                                     }
 
-                                    showIf(opptjeningUt.omsorgsaar_safe.ifNull(false)){
-                                        text (
+                                    showIf(opptjeningUt.omsorgsaar_safe.ifNull(false)) {
+                                        text(
                                             Bokmal to "Omsorgsår *",
                                             Nynorsk to "Omsorgsår *",
                                             English to "Care Work *",

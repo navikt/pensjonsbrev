@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilka
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
-
 data class BeregningsVilkar(
     val ieubegrunnelse: String?,
     val ieuinntekt: Kroner?,
@@ -14,5 +13,5 @@ data class BeregningsVilkar(
     val uforegrad: Int?,
     val uforetidspunkt: LocalDate?,
     val virkningstidpunkt: LocalDate?,
-    val yrkesskadegrad: Int?
+    val yrkesskadegrad: Int?,
 )

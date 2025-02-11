@@ -48,87 +48,88 @@ data class BarnepensjonForeldreloesDTO(
     val harUtbetaling: Boolean,
     val kunNyttRegelverk: Boolean,
     val vedtattIPesys: Boolean,
-    val erEtterbetaling: Boolean
+    val erEtterbetaling: Boolean,
 ) : FerdigstillingBrevDTO
-
 
 @TemplateModelHelpers
 object BarnepensjonInnvilgelseForeldreloes : EtterlatteTemplate<BarnepensjonForeldreloesDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INNVILGELSE_FORELDRELOES
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonForeldreloesDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - innvilget søknad om barnepensjon - foreldreløs",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title {
-            showIf(vedtattIPesys) {
-                text(
-                    Bokmal to "Barnepensjonen er endret fra 1. januar 2024",
-                    Nynorsk to "Barnepensjonen er endra frå 1. januar 2024",
-                    English to "Your children’s pension has been changed as of 1 January 2024",
-                )
-            }.orShowIf(erGjenoppretting) {
-                text(
-                    Bokmal to "Du er innvilget barnepensjon på nytt",
-                    Nynorsk to "Du er innvilga barnepensjon på ny",
-                    English to "You have been granted children’s pension again",
-                )
-            }.orShow {
-                text(
-                    Bokmal to "Vi har innvilget søknaden din om barnepensjon",
-                    Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
-                    English to "We have granted your application for a children's pension",
-                )
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = BarnepensjonForeldreloesDTO::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - innvilget søknad om barnepensjon - foreldreløs",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                showIf(vedtattIPesys) {
+                    text(
+                        Bokmal to "Barnepensjonen er endret fra 1. januar 2024",
+                        Nynorsk to "Barnepensjonen er endra frå 1. januar 2024",
+                        English to "Your children’s pension has been changed as of 1 January 2024",
+                    )
+                }.orShowIf(erGjenoppretting) {
+                    text(
+                        Bokmal to "Du er innvilget barnepensjon på nytt",
+                        Nynorsk to "Du er innvilga barnepensjon på ny",
+                        English to "You have been granted children’s pension again",
+                    )
+                }.orShow {
+                    text(
+                        Bokmal to "Vi har innvilget søknaden din om barnepensjon",
+                        Nynorsk to "Vi har innvilga søknaden din om barnepensjon",
+                        English to "We have granted your application for a children's pension",
+                    )
+                }
             }
-        }
 
-        outline {
-            konverterElementerTilBrevbakerformat(innhold)
+            outline {
+                konverterElementerTilBrevbakerformat(innhold)
 
-            showIf(harUtbetaling) {
-                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(erEtterbetaling, bosattUtland, frivilligSkattetrekk))
+                showIf(harUtbetaling) {
+                    includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(erEtterbetaling, bosattUtland, frivilligSkattetrekk))
+                }
+                includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon(erMigrertYrkesskade))
+                includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
+                includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
+                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
             }
-            includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon(erMigrertYrkesskade))
-            includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
-            includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
-            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
+
+            // Beregning av barnepensjon nytt regelverk
+            includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregning, kunNyttRegelverk)
+
+            // Vedlegg under 18 år
+            includeAttachment(
+                informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal,
+                innhold,
+                brukerUnder18Aar.and(bosattUtland.not()),
+            )
+            includeAttachment(
+                informasjonTilDegSomHandlerPaaVegneAvBarnetUtland,
+                innhold,
+                brukerUnder18Aar.and(bosattUtland),
+            )
+
+            // Vedlegg over 18 år
+            includeAttachment(
+                informasjonTilDegSomMottarBarnepensjonNasjonal,
+                innhold,
+                brukerUnder18Aar.not().and(bosattUtland.not()),
+            )
+            includeAttachment(
+                informasjonTilDegSomMottarBarnepensjonUtland,
+                innhold,
+                brukerUnder18Aar.not().and(bosattUtland),
+            )
+
+            includeAttachment(dineRettigheterOgPlikterBosattUtland, innhold, bosattUtland)
+            includeAttachment(dineRettigheterOgPlikterNasjonal, innhold, bosattUtland.not())
         }
-
-        // Beregning av barnepensjon nytt regelverk
-        includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregning, kunNyttRegelverk)
-
-        // Vedlegg under 18 år
-        includeAttachment(
-            informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal,
-            innhold,
-            brukerUnder18Aar.and(bosattUtland.not())
-        )
-        includeAttachment(
-            informasjonTilDegSomHandlerPaaVegneAvBarnetUtland,
-            innhold,
-            brukerUnder18Aar.and(bosattUtland)
-        )
-
-        // Vedlegg over 18 år
-        includeAttachment(
-            informasjonTilDegSomMottarBarnepensjonNasjonal,
-            innhold,
-            brukerUnder18Aar.not().and(bosattUtland.not())
-        )
-        includeAttachment(
-            informasjonTilDegSomMottarBarnepensjonUtland,
-            innhold,
-            brukerUnder18Aar.not().and(bosattUtland)
-        )
-
-        includeAttachment(dineRettigheterOgPlikterBosattUtland, innhold, bosattUtland)
-        includeAttachment(dineRettigheterOgPlikterNasjonal, innhold, bosattUtland.not())
-    }
 }

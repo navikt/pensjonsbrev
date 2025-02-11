@@ -14,15 +14,15 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.INTEGRATION_TEST)
 class BarnepensjonAvslagTest {
-
     @Test
     fun pdftest() {
-        val letter = Letter(
-            BarnepensjonAvslag.template,
-            Fixtures.create<BarnepensjonAvslagDTO>(),
-            Language.Bokmal,
-            no.nav.brev.brevbaker.Fixtures.felles,
-        )
+        val letter =
+            Letter(
+                BarnepensjonAvslag.template,
+                Fixtures.create<BarnepensjonAvslagDTO>(),
+                Language.Bokmal,
+                no.nav.brev.brevbaker.Fixtures.felles,
+            )
         letter.renderTestPDF(EtterlatteBrevKode.BARNEPENSJON_AVSLAG.name)
     }
 

@@ -24,11 +24,11 @@ data class LetterTemplate<Lang : LanguageSupport, out LetterData : Any>(
 }
 
 sealed class Expression<out Out> : StableHash {
-
     abstract fun eval(scope: ExpressionScope<*>): Out
 
     data class Literal<out Out>(val value: Out, val tags: Set<ElementTags> = emptySet()) : Expression<Out>() {
         override fun eval(scope: ExpressionScope<*>): Out = value
+
         override fun stableHashCode(): Int = stableHash(value).stableHashCode()
 
         private fun stableHash(v: Any?): StableHash =
@@ -52,19 +52,24 @@ sealed class Expression<out Out> : StableHash {
     sealed class FromScope<out Out> : Expression<Out>() {
         object Felles : FromScope<no.nav.pensjon.brevbaker.api.model.Felles>() {
             override fun eval(scope: ExpressionScope<*>) = scope.felles
+
             override fun stableHashCode(): Int = "FromScope.Felles".hashCode()
         }
 
         object Language : FromScope<no.nav.pensjon.brev.template.Language>() {
             override fun eval(scope: ExpressionScope<*>) = scope.language
+
             override fun stableHashCode(): Int = "FromScope.Language".hashCode()
         }
 
         class Argument<out Out> : FromScope<Out>() {
             @Suppress("UNCHECKED_CAST")
             override fun eval(scope: ExpressionScope<*>) = scope.argument as Out
+
             override fun equals(other: Any?): Boolean = other is Argument<*>
+
             override fun hashCode(): Int = javaClass.hashCode()
+
             override fun stableHashCode(): Int = "FromScope.Argument".hashCode()
         }
 
@@ -91,7 +96,7 @@ sealed class Expression<out Out> : StableHash {
     data class BinaryInvoke<In1, In2, out Out>(
         val first: Expression<In1>,
         val second: Expression<In2>,
-        val operation: BinaryOperation<In1, In2, Out>
+        val operation: BinaryOperation<In1, In2, Out>,
     ) : Expression<Out>(), StableHash by StableHash.of(first, second, operation) {
         override fun eval(scope: ExpressionScope<*>): Out = operation.apply(first.eval(scope), second.eval(scope))
     }
@@ -117,7 +122,7 @@ sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Eleme
     data class ForEach<out Lang : LanguageSupport, C : Element<Lang>, Item : Any>(
         val items: Expression<Collection<Item>>,
         val body: List<ContentOrControlStructure<Lang, C>>,
-        val next: Expression.FromScope.Assigned<Item>
+        val next: Expression.FromScope.Assigned<Item>,
     ) : ContentOrControlStructure<Lang, C>(), StableHash by StableHash.of(items, StableHash.of(body), next)
 }
 
@@ -128,7 +133,6 @@ typealias ListItemElement<Lang> = ContentOrControlStructure<Lang, Element.Outlin
 typealias OutlineElement<Lang> = ContentOrControlStructure<Lang, Element.OutlineContent<Lang>>
 
 sealed class Element<out Lang : LanguageSupport> : StableHash {
-
     sealed class OutlineContent<out Lang : LanguageSupport> : Element<Lang>() {
         data class Title1<out Lang : LanguageSupport>(val text: List<TextElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(text)
 
@@ -137,16 +141,15 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
         data class Paragraph<out Lang : LanguageSupport>(val paragraph: List<ParagraphContentElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(paragraph)
 
         sealed class ParagraphContent<out Lang : LanguageSupport> : Element<Lang>() {
-
             data class ItemList<out Lang : LanguageSupport>(
-                val items: List<ListItemElement<Lang>>
+                val items: List<ListItemElement<Lang>>,
             ) : ParagraphContent<Lang>(), StableHash by StableHash.of(items) {
                 init {
                     if (items.flatMap { getItems(it) }.isEmpty()) throw InvalidListDeclarationException("List has no items")
                 }
 
                 data class Item<out Lang : LanguageSupport>(
-                    val text: List<TextElement<Lang>>
+                    val text: List<TextElement<Lang>>,
                 ) : Element<Lang>(), StableHash by StableHash.of(text)
 
                 private fun getItems(item: ListItemElement<Lang>): List<Item<Lang>> =
@@ -162,7 +165,6 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                 val rows: List<TableRowElement<Lang>>,
                 val header: Header<Lang>,
             ) : ParagraphContent<Lang>(), StableHash by StableHash.of(StableHash.of(rows), header) {
-
                 init {
                     if (rows.flatMap { getRows(it) }.isEmpty()) {
                         throw InvalidTableDeclarationException("A table must have at least one row")
@@ -178,7 +180,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
 
                 data class Row<out Lang : LanguageSupport>(
                     val cells: List<Cell<Lang>>,
-                    val colSpec: List<ColumnSpec<Lang>>
+                    val colSpec: List<ColumnSpec<Lang>>,
                 ) : Element<Lang>(), StableHash by StableHash.of(StableHash.of(cells), StableHash.of(colSpec)) {
                     init {
                         if (cells.isEmpty()) {
@@ -199,17 +201,18 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                 }
 
                 data class Cell<out Lang : LanguageSupport>(
-                    val text: List<TextElement<Lang>>
+                    val text: List<TextElement<Lang>>,
                 ) : StableHash by StableHash.of(text)
 
                 data class ColumnSpec<out Lang : LanguageSupport>(
                     val headerContent: Cell<Lang>,
                     val alignment: ColumnAlignment,
-                    val columnSpan: Int = 1
+                    val columnSpan: Int = 1,
                 ) : StableHash by StableHash.of(headerContent, StableHash.of(alignment), StableHash.of(columnSpan))
 
                 enum class ColumnAlignment {
-                    LEFT, RIGHT
+                    LEFT,
+                    RIGHT,
                 }
             }
 
@@ -222,7 +225,6 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                     val languages: Lang,
                     override val fontType: FontType,
                 ) : Text<Lang>(), StableHash by StableHash.of(StableHash.of(text), StableHash.of(languages), StableHash.of(fontType)) {
-
                     fun text(language: Language): String =
                         text[language]
                             ?: throw IllegalArgumentException("Text.Literal doesn't contain language: ${language::class.qualifiedName}")
@@ -230,11 +232,11 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                     companion object {
                         fun <Lang1 : Language> create(
                             lang1: Pair<Lang1, String>,
-                            fontType: FontType = FontType.PLAIN
+                            fontType: FontType = FontType.PLAIN,
                         ) = Literal<LanguageSupport.Single<Lang1>>(
                             text = mapOf(lang1),
                             languages = LanguageCombination.Single(lang1.first),
-                            fontType = fontType
+                            fontType = fontType,
                         )
 
                         fun <Lang1 : Language, Lang2 : Language> create(
@@ -244,7 +246,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                         ) = Literal<LanguageSupport.Double<Lang1, Lang2>>(
                             text = mapOf(lang1, lang2),
                             languages = LanguageCombination.Double(lang1.first, lang2.first),
-                            fontType = fontType
+                            fontType = fontType,
                         )
 
                         fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> create(
@@ -255,7 +257,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                         ) = Literal<LanguageSupport.Triple<Lang1, Lang2, Lang3>>(
                             text = mapOf(lang1, lang2, lang3),
                             languages = LanguageCombination.Triple(lang1.first, lang2.first, lang3.first),
-                            fontType = fontType
+                            fontType = fontType,
                         )
                     }
                 }
@@ -263,21 +265,19 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                 enum class FontType {
                     PLAIN,
                     BOLD,
-                    ITALIC
+                    ITALIC,
                 }
 
                 data class Expression<out Lang : LanguageSupport>(
                     val expression: StringExpression,
-                    override val fontType: FontType = FontType.PLAIN
+                    override val fontType: FontType = FontType.PLAIN,
                 ) : Text<Lang>(), StableHash by StableHash.of(expression, StableHash.of(fontType)) {
-
                     @ConsistentCopyVisibility
                     data class ByLanguage<out Lang : LanguageSupport> private constructor(
                         val expression: Map<Language, StringExpression>,
                         val languages: Lang,
-                        override val fontType: FontType
+                        override val fontType: FontType,
                     ) : Text<Lang>(), StableHash by StableHash.of(StableHash.of(expression), languages, StableHash.of(fontType)) {
-
                         fun expr(language: Language): StringExpression =
                             expression[language]
                                 ?: throw IllegalArgumentException("Text.Expression.ByLanguage doesn't contain language: ${language::class.qualifiedName}")
@@ -285,7 +285,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                         companion object {
                             fun <Lang1 : Language> create(
                                 lang1: Pair<Lang1, StringExpression>,
-                                fontType: FontType = FontType.PLAIN
+                                fontType: FontType = FontType.PLAIN,
                             ) = ByLanguage<LanguageSupport.Single<Lang1>>(mapOf(lang1), LanguageCombination.Single(lang1.first), fontType)
 
                             fun <Lang1 : Language, Lang2 : Language> create(
@@ -329,5 +329,4 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
             }
         }
     }
-
 }

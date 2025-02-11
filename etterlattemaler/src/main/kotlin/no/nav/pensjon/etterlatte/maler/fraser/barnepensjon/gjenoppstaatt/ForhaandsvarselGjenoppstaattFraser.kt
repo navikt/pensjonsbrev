@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 
 object ForhaandsvarselGjenoppstaattFraser {
-
     object ReglerForBarnepensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
@@ -136,6 +135,5 @@ object ForhaandsvarselGjenoppstaattFraser {
                 }
             }
         }
-
     }
 }

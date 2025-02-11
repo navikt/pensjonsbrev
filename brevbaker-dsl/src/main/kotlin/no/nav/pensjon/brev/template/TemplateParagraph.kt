@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.template.dsl
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
 
-
 @LetterTemplateMarker
 class ParagraphOnlyScope<Lang : LanguageSupport, LetterData : Any> : ParagraphScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent<Lang>, ParagraphOnlyScope<Lang, LetterData>> {
     private val children = mutableListOf<ParagraphContentElement<Lang>>()
@@ -45,18 +44,22 @@ interface ParagraphScope<Lang : LanguageSupport, LetterData : Any> : TextScope<L
 
     fun table(
         header: TableHeaderScope<Lang, LetterData>.() -> Unit,
-        init: TableScope<Lang, LetterData>.() -> Unit
+        init: TableScope<Lang, LetterData>.() -> Unit,
     ) {
         val colSpec = TableHeaderScope<Lang, LetterData>().apply(header).elements
 
         Element.OutlineContent.ParagraphContent.Table(
             rows = TableScope<Lang, LetterData>(colSpec).apply(init).elements,
-            header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec)
+            header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec),
         ).let { Content(it) }
             .also { addParagraphContent(it) }
     }
 
-    fun formText(size: Element.OutlineContent.ParagraphContent.Form.Text.Size, prompt: TextElement<Lang>, vspace: Boolean = true) {
+    fun formText(
+        size: Element.OutlineContent.ParagraphContent.Form.Text.Size,
+        prompt: TextElement<Lang>,
+        vspace: Boolean = true,
+    ) {
         Element.OutlineContent.ParagraphContent.Form.Text(prompt, size, vspace)
             .let { Content(it) }
             .also { addParagraphContent(it) }
@@ -65,7 +68,7 @@ interface ParagraphScope<Lang : LanguageSupport, LetterData : Any> : TextScope<L
     fun formChoice(
         prompt: TextElement<Lang>,
         vspace: Boolean = true,
-        init: TemplateFormChoiceScope<Lang, LetterData>.() -> Unit
+        init: TemplateFormChoiceScope<Lang, LetterData>.() -> Unit,
     ) {
         TemplateFormChoiceScope<Lang, LetterData>().apply(init)
             .let { Element.OutlineContent.ParagraphContent.Form.MultipleChoice(prompt, it.choices, vspace) }

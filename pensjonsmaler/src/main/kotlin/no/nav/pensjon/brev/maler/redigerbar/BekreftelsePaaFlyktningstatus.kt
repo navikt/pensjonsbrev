@@ -22,41 +22,40 @@ import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
 
 @TemplateModelHelpers
 object BekreftelsePaaFlyktningstatus : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
-
     // PE_IY_03_049
     override val kode = Pesysbrevkoder.Redigerbar.PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS
     override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = Sakstype.all
 
-
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = EmptyRedigerbarBrevdata::class,
-        languages = languages(Bokmal),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Bekreftelse på flyktningstatus",
-            isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
-        )
-    ) {
-        title {
-            text(
-                Bokmal to "Bekreftelse på flyktningstatus"
-            )
-        }
-        outline {
-            paragraph {
-                textExpr(
-                    Bokmal to felles.avsenderEnhet.navn + " ønsker å få bekreftet om " + felles.bruker.fulltNavn() + " med fødselsnummer " +
-                            felles.bruker.foedselsnummer.value + " er registrert med flyktningstatus hos dere."
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = EmptyRedigerbarBrevdata::class,
+            languages = languages(Bokmal),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Bekreftelse på flyktningstatus",
+                    isSensitiv = false,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Bokmal to "Bekreftelse på flyktningstatus",
                 )
             }
-            paragraph {
-                text(Bokmal to "Vi ønsker i den forbindelse kopi av vedtaket og dato for ankomst til Norge.")
+            outline {
+                paragraph {
+                    textExpr(
+                        Bokmal to felles.avsenderEnhet.navn + " ønsker å få bekreftet om " + felles.bruker.fulltNavn() + " med fødselsnummer " +
+                            felles.bruker.foedselsnummer.value + " er registrert med flyktningstatus hos dere.",
+                    )
+                }
+                paragraph {
+                    text(Bokmal to "Vi ønsker i den forbindelse kopi av vedtaket og dato for ankomst til Norge.")
+                }
             }
         }
-    }
 }
-

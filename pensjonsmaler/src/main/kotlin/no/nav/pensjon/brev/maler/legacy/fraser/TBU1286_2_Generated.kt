@@ -16,12 +16,10 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-
 data class TBU1286_2_Generated(
     val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-
         paragraph {
             text(
                 Bokmal to "Barnetillegget",
@@ -29,7 +27,7 @@ data class TBU1286_2_Generated(
                 English to "You will not receive child supplement ",
             )
 
-            //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true
+            // PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true
             showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) {
                 textExpr(
                     Bokmal to " for ".expr() + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre,",
@@ -45,4 +43,3 @@ data class TBU1286_2_Generated(
         }
     }
 }
-        

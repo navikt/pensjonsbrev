@@ -42,7 +42,7 @@ data class Beregningsperiodetabell(
                             Language.English to "Payout per month before taxes",
                         )
                     }
-                }
+                },
             ) {
                 forEach(beregningsperioder) {
                     row {

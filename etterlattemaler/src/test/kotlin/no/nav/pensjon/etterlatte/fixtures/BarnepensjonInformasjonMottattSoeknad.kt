@@ -6,7 +6,7 @@ import java.time.LocalDate
 fun createBarnepensjonInformasjonMottattSoeknadDTO() =
     BarnepensjonMottattSoeknadDTO(
         mottattDato = LocalDate.of(2024, 1, 1),
-        bosattUtland =  true,
+        bosattUtland = true,
         erOver18aar = false,
-        borINorgeEllerIkkeAvtaleland = true
+        borINorgeEllerIkkeAvtaleland = true,
     )

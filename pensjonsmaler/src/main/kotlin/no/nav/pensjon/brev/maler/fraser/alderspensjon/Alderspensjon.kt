@@ -26,7 +26,7 @@ class Alderspensjon {
                 newline()
                 text(
                     Bokmal to "0607 Oslo",
-                    English to "0607 Oslo"
+                    English to "0607 Oslo",
                 )
                 showIf(Expression.FromScope.Language.equalTo(English.expr())) { newline() }
                 text(
@@ -35,7 +35,5 @@ class Alderspensjon {
                 )
             }
         }
-
     }
-
 }

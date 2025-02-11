@@ -17,7 +17,6 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.NasjonalEllerUtland
 
 class OmstillingsstoenadAktivitetspliktFraser {
-
     data class DuMaaMeldeFraOmEndringer(
         val nasjonalEllerUtland: Expression<NasjonalEllerUtland>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -33,11 +32,11 @@ class OmstillingsstoenadAktivitetspliktFraser {
             paragraph {
                 text(
                     Bokmal to "Vi minner om plikten din til å melde fra om endringer som kan ha betydning for " +
-                            "stønaden du får fra oss. Du må melde fra hvis",
+                        "stønaden du får fra oss. Du må melde fra hvis",
                     Nynorsk to "Vi minner om at du pliktar å melde frå om endringar som kan ha betydning for " +
-                            "stønaden du får frå oss. Du må melde frå dersom",
+                        "stønaden du får frå oss. Du må melde frå dersom",
                     English to "Please remember that you are obligated to notify us about changes that may have significance " +
-                            "to the benefits or allowances you receive from Nav. You must report any changes if",
+                        "to the benefits or allowances you receive from Nav. You must report any changes if",
                 )
 
                 list {
@@ -134,11 +133,11 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     item {
                         text(
                             Bokmal to "ettersende dokumentasjon fra søknad om omstillingsstønad. " +
-                                    "Dette gjør du ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}",
+                                "Dette gjør du ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}",
                             Nynorsk to "Ettersend dokumentasjon frå søknad om omstillingsstønad. " +
-                                    "Dette gjer du ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}.",
+                                "Dette gjer du ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}.",
                             English to "send more documentation later from your adjustment allowance application. " +
-                                    "Do this online here: ${Constants.Engelsk.ETTERSENDE_OMS_URL}.",
+                                "Do this online here: ${Constants.Engelsk.ETTERSENDE_OMS_URL}.",
                         )
                     }
                     item {
@@ -168,7 +167,6 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     English to "If you fail to report changes and/or are paid too much allowance, Nav has the right to collect the incorrect amount.",
                 )
             }
-
         }
     }
 
@@ -185,12 +183,12 @@ class OmstillingsstoenadAktivitetspliktFraser {
             paragraph {
                 text(
                     Bokmal to "Hvis du har helseutfordringer, kan du undersøke mulighetene for andre ytelser " +
-                            "eller støtteordninger ved ditt lokale Nav-kontor og på ${Constants.HELSE_URL}.",
+                        "eller støtteordninger ved ditt lokale Nav-kontor og på ${Constants.HELSE_URL}.",
                     Nynorsk to "Viss du har helseutfordringar, kan du undersøkje moglegheitene for andre ytingar " +
-                            "eller støtteordningar ved ditt lokale Nav-kontor og på ${Constants.HELSE_URL}.",
+                        "eller støtteordningar ved ditt lokale Nav-kontor og på ${Constants.HELSE_URL}.",
                     English to "If you are faced with difficult health challenges, you can investigate the possibilities " +
-                            "for other benefits or support schemes through your local Nav office, or check out various " +
-                            "opportunities online: ${Constants.HELSE_URL}.",
+                        "for other benefits or support schemes through your local Nav office, or check out various " +
+                        "opportunities online: ${Constants.HELSE_URL}.",
                 )
             }
         }
@@ -209,45 +207,45 @@ class OmstillingsstoenadAktivitetspliktFraser {
             paragraph {
                 text(
                     Bokmal to "Nav tilbyr ulike tjenester og støtteordninger for deg som trenger hjelp til å få jobb. " +
-                            "Du kan finne flere jobbsøkertips og informasjon på ${Constants.ARBEID_URL}.",
+                        "Du kan finne flere jobbsøkertips og informasjon på ${Constants.ARBEID_URL}.",
                     Nynorsk to "Nav tilbyr ulike tenester og støtteordningar for deg som treng hjelp med å kome i " +
-                            "arbeid. Du finn fleire jobbsøkjartips og informasjon på ${Constants.ARBEID_URL}.",
+                        "arbeid. Du finn fleire jobbsøkjartips og informasjon på ${Constants.ARBEID_URL}.",
                     English to "The Norwegian Labour and Welfare Administration (Nav) offers various services and " +
-                            "support schemes for those who need help finding a job. You can find more job seeker's tips " +
-                            "and information online: ${Constants.ARBEID_URL}.",
+                        "support schemes for those who need help finding a job. You can find more job seeker's tips " +
+                        "and information online: ${Constants.ARBEID_URL}.",
                 )
             }
 
             paragraph {
                 text(
                     Bokmal to "På nettsiden arbeidsplassen.no kan du søke etter ledige stillinger i ditt område " +
-                            "eller andre steder i landet. Her kan du også opprette varsler på e-post for å få " +
-                            "meldinger om jobber som passer deg. Du finner også mange gode råd og tips for " +
-                            "jobbsøking på ${Constants.FINN_JOBBENE_URL}.",
+                        "eller andre steder i landet. Her kan du også opprette varsler på e-post for å få " +
+                        "meldinger om jobber som passer deg. Du finner også mange gode råd og tips for " +
+                        "jobbsøking på ${Constants.FINN_JOBBENE_URL}.",
                     Nynorsk to "På nettsida arbeidsplassen.no kan du søkje etter ledige stillingar i nærområdet " +
-                            "ditt eller andre stader i landet. Her kan du også opprette varsel på e-post for å få " +
-                            "meldingar om jobbar som passar deg. Du finn i tillegg mange gode råd og tips for " +
-                            "jobbsøking på ${Constants.FINN_JOBBENE_URL}.",
+                        "ditt eller andre stader i landet. Her kan du også opprette varsel på e-post for å få " +
+                        "meldingar om jobbar som passar deg. Du finn i tillegg mange gode råd og tips for " +
+                        "jobbsøking på ${Constants.FINN_JOBBENE_URL}.",
                     English to "To apply for vacant positions in your area or other place around the country, you " +
-                            "can see this webpage: arbeidsplassen.no. You can also set up e-mail notifications to receive " +
-                            "information and offers about jobs that are suited to your situation. There are also many " +
-                            "good tips on looking for work here: ${Constants.FINN_JOBBENE_URL}.",
+                        "can see this webpage: arbeidsplassen.no. You can also set up e-mail notifications to receive " +
+                        "information and offers about jobs that are suited to your situation. There are also many " +
+                        "good tips on looking for work here: ${Constants.FINN_JOBBENE_URL}.",
                 )
             }
 
             paragraph {
                 text(
                     Bokmal to "Trenger du hjelp til å komme i jobb eller ønsker å øke arbeidsinnsatsen din, " +
-                            "kan du få veiledning og støtte fra oss. Vi kan fortelle deg om ulike muligheter i " +
-                            "arbeidsmarkedet eller snakke med deg om nødvendig utdanning eller andre tiltak som " +
-                            "kan hjelpe deg med å komme i arbeid.",
+                        "kan du få veiledning og støtte fra oss. Vi kan fortelle deg om ulike muligheter i " +
+                        "arbeidsmarkedet eller snakke med deg om nødvendig utdanning eller andre tiltak som " +
+                        "kan hjelpe deg med å komme i arbeid.",
                     Nynorsk to "Viss du treng hjelp med å kome i jobb, eller ønskjer å auke arbeidsinnsatsen din, " +
-                            "kan du få rettleiing og støtte frå oss. Vi kan informere deg om ulike moglegheiter i " +
-                            "arbeidsmarknaden, eller snakke med deg om nødvendig utdanning eller andre tiltak som kan " +
-                            "hjelpe deg med å kome i arbeid.",
+                        "kan du få rettleiing og støtte frå oss. Vi kan informere deg om ulike moglegheiter i " +
+                        "arbeidsmarknaden, eller snakke med deg om nødvendig utdanning eller andre tiltak som kan " +
+                        "hjelpe deg med å kome i arbeid.",
                     English to "If you need help joining the work force or want to increase your work hours, you " +
-                            "can get guidance and support from us. We can tell you about various opportunities in the " +
-                            "labour market or talk to you about necessary education or other measures that can help you find work.",
+                        "can get guidance and support from us. We can tell you about various opportunities in the " +
+                        "labour market or talk to you about necessary education or other measures that can help you find work.",
                 )
             }
         }
@@ -277,14 +275,14 @@ class OmstillingsstoenadAktivitetspliktFraser {
                 paragraph {
                     text(
                         Bokmal to "For at du skal motta korrekt utbetaling, er det viktig at du informerer oss hvis " +
-                                "du får en forventet årsinntekt som vil overstige et halvt grunnbeløp. Dette er per i dag 62 014 kroner. " +
-                                "Grunnbeløpet blir justert hvert år fra 1. mai.",
+                            "du får en forventet årsinntekt som vil overstige et halvt grunnbeløp. Dette er per i dag 62 014 kroner. " +
+                            "Grunnbeløpet blir justert hvert år fra 1. mai.",
                         Nynorsk to "For at du få rett utbetaling, er det viktig at du gir oss beskjed viss du får ei " +
-                                "forventa årsinntekt som vil overstige eit halvt grunnbeløp. Dette er per i dag 62 014 kroner. " +
-                                "Grunnbeløpet blir justert kvart år frå 1. mai.",
+                            "forventa årsinntekt som vil overstige eit halvt grunnbeløp. Dette er per i dag 62 014 kroner. " +
+                            "Grunnbeløpet blir justert kvart år frå 1. mai.",
                         English to "To receive the correct amount, you are obligated to inform us about any changes to " +
-                                "your anticipated annual income that exceeds one half of the basic amount. This is currently " +
-                                "NOK 62 014. The basic amount is adjusted on 1 May each year.",
+                            "your anticipated annual income that exceeds one half of the basic amount. This is currently " +
+                            "NOK 62 014. The basic amount is adjusted on 1 May each year.",
                     )
                 }
             }
@@ -292,30 +290,30 @@ class OmstillingsstoenadAktivitetspliktFraser {
             paragraph {
                 text(
                     Bokmal to "Hvis inntekten din har endret seg, må du oppgi ny forventet brutto inntekt for " +
-                            "inneværende år. Gjelder inntektsendringen fra før du ble innvilget stønaden, skal du også " +
-                            "oppgi inntekt fra januar til og med måneden før du fikk innvilget stønaden.",
+                        "inneværende år. Gjelder inntektsendringen fra før du ble innvilget stønaden, skal du også " +
+                        "oppgi inntekt fra januar til og med måneden før du fikk innvilget stønaden.",
                     Nynorsk to "Dersom inntekta di har endra seg, må du oppgi ny forventa brutto inntekt for " +
-                            "inneverande år. Viss inntektsendringa gjeld frå før du blei innvilga stønaden, oppgir du i " +
-                            "tillegg inntekt frå januar til og med månaden før du fekk innvilga stønaden.",
+                        "inneverande år. Viss inntektsendringa gjeld frå før du blei innvilga stønaden, oppgir du i " +
+                        "tillegg inntekt frå januar til og med månaden før du fekk innvilga stønaden.",
                     English to "If your income has changed, you must state the new anticipated gross income for the " +
-                            "current year. If the change in income applies from before you were granted the allowance, " +
-                            "you must also state your income from January up to and including the month before you were " +
-                            "granted the allowance.",
+                        "current year. If the change in income applies from before you were granted the allowance, " +
+                        "you must also state your income from January up to and including the month before you were " +
+                        "granted the allowance.",
                 )
             }
 
             paragraph {
                 text(
                     Bokmal to "Vi vil justere stønaden fra måneden etter du gir beskjed. Meld derfor fra snarest " +
-                            "mulig for å få mest mulig riktig utbetalt omstillingsstønad, slik at etteroppgjøret blir " +
-                            "så riktig som mulig. Du kan finne mer informasjon om etteroppgjør på ${Constants.OMS_ETTEROPPGJOER_URL}.",
+                        "mulig for å få mest mulig riktig utbetalt omstillingsstønad, slik at etteroppgjøret blir " +
+                        "så riktig som mulig. Du kan finne mer informasjon om etteroppgjør på ${Constants.OMS_ETTEROPPGJOER_URL}.",
                     Nynorsk to "Vi vil justere stønaden frå månaden etter du gir beskjed. Meld difor frå snarast " +
-                            "råd, slik at du får utbetalt omstillingsstønaden du har krav på, og etteroppgjeret blir " +
-                            "mest mogleg rett. Du finn meir informasjon om etteroppgjer på ${Constants.OMS_ETTEROPPGJOER_URL}.",
+                        "råd, slik at du får utbetalt omstillingsstønaden du har krav på, og etteroppgjeret blir " +
+                        "mest mogleg rett. Du finn meir informasjon om etteroppgjer på ${Constants.OMS_ETTEROPPGJOER_URL}.",
                     English to "We will then adjust your allowance starting in the month after you inform us of the change. " +
-                            "It is therefore important to notify us as soon as possible to receive the correct amount of adjustment " +
-                            "allowance, so that any final settlement will be as correct as possible. You can find more information " +
-                            "about final settlements online: ${Constants.OMS_ETTEROPPGJOER_URL}.",
+                        "It is therefore important to notify us as soon as possible to receive the correct amount of adjustment " +
+                        "allowance, so that any final settlement will be as correct as possible. You can find more information " +
+                        "about final settlements online: ${Constants.OMS_ETTEROPPGJOER_URL}.",
                 )
             }
         }
@@ -326,7 +324,6 @@ class OmstillingsstoenadAktivitetspliktFraser {
         val tolvMaanederEtterDoedsfall: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-
             title2 {
                 text(
                     Bokmal to "Hvordan oppfylle aktivitetsplikten?",
@@ -337,7 +334,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
 
             paragraph {
                 textExpr(
-                    Bokmal to "Du fyller aktivitetsplikten hvis du er ".expr() + ifElse(tolvMaanederEtterDoedsfall, "100 prosent", "minst 50 prosent" ) + " aktiv ved å",
+                    Bokmal to "Du fyller aktivitetsplikten hvis du er ".expr() + ifElse(tolvMaanederEtterDoedsfall, "100 prosent", "minst 50 prosent") + " aktiv ved å",
                     Nynorsk to "Du oppfyller aktivitetsplikta dersom du er ".expr() + ifElse(tolvMaanederEtterDoedsfall, "100 prosent", "minst 50 prosent") + " aktiv ved å",
                     English to "You are in compliance with the activity obligation if you are ".expr() + ifElse(tolvMaanederEtterDoedsfall, "100 percent", "at least 50 percent") + " active",
                 )
@@ -372,21 +369,27 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     }
                     item {
                         textExpr(
-                            Bokmal to "være reell arbeidssøker".expr() + ifElse(
-                                nasjonalEllerUtland.equalTo(
-                                    NasjonalEllerUtland.UTLAND
-                                ), " i bostedslandet ditt", ""
-                            ),
-                            Nynorsk to "vere reell arbeidssøkjar".expr() + ifElse(
-                                nasjonalEllerUtland.equalTo(
-                                    NasjonalEllerUtland.UTLAND
-                                ), " i landet der du er busett", ""
-                            ),
-                            English to "being a genuine job seeker".expr() + ifElse(
-                                nasjonalEllerUtland.equalTo(
-                                    NasjonalEllerUtland.UTLAND
-                                ), " in your country of residence", ""
-                            ),
+                            Bokmal to "være reell arbeidssøker".expr() +
+                                ifElse(
+                                    nasjonalEllerUtland.equalTo(
+                                        NasjonalEllerUtland.UTLAND,
+                                    ),
+                                    " i bostedslandet ditt", "",
+                                ),
+                            Nynorsk to "vere reell arbeidssøkjar".expr() +
+                                ifElse(
+                                    nasjonalEllerUtland.equalTo(
+                                        NasjonalEllerUtland.UTLAND,
+                                    ),
+                                    " i landet der du er busett", "",
+                                ),
+                            English to "being a genuine job seeker".expr() +
+                                ifElse(
+                                    nasjonalEllerUtland.equalTo(
+                                        NasjonalEllerUtland.UTLAND,
+                                    ),
+                                    " in your country of residence", "",
+                                ),
                         )
                     }
                     item {
@@ -398,7 +401,6 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     }
                 }
             }
-
         }
     }
 
@@ -428,11 +430,11 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     item {
                         text(
                             Bokmal to "har sykdom eller helseutfordringer som hindrer deg fra å være i minst 50 " +
-                                    "prosent arbeid eller arbeidsrettet aktivitet, og du benytter din gjenværende arbeidsevne.",
+                                "prosent arbeid eller arbeidsrettet aktivitet, og du benytter din gjenværende arbeidsevne.",
                             Nynorsk to "har sjukdom eller helseutfordringar som hindrar deg i å vere i minst 50 " +
-                                    "prosent arbeid eller arbeidsretta aktivitet, og du nyttar di attverande arbeidsevne",
+                                "prosent arbeid eller arbeidsretta aktivitet, og du nyttar di attverande arbeidsevne",
                             English to "have an illness or health problems that hinder you from working at least 50 " +
-                                    "percent or being involved in a work-related activity, and you use your residual ability to work",
+                                "percent or being involved in a work-related activity, and you use your residual ability to work",
                         )
                     }
                     item {
@@ -452,37 +454,37 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     item {
                         text(
                             Bokmal to "er forhindret fra å være i arbeid eller arbeidsrettet aktivitet på grunn av " +
-                                    "sykdom, skade eller funksjonsnedsettelse hos barnet ditt. Barnets tilstand må " +
-                                    "dokumenteres av lege. Det må også dokumenteres at barnets tilstand er årsaken til " +
-                                    "at du er forhindret fra å være i arbeid eller arbeidsrettet aktivitet",
+                                "sykdom, skade eller funksjonsnedsettelse hos barnet ditt. Barnets tilstand må " +
+                                "dokumenteres av lege. Det må også dokumenteres at barnets tilstand er årsaken til " +
+                                "at du er forhindret fra å være i arbeid eller arbeidsrettet aktivitet",
                             Nynorsk to "er hindra i å vere i arbeid eller arbeidsretta aktivitet fordi du har eit " +
-                                    "barn med sjukdom, skade eller funksjonsnedsetjing. Tilstanden til barnet må vere " +
-                                    "dokumentert av lege. Det må også dokumenterast at tilstanden til barnet er årsaka " +
-                                    "til at du er hindra i å vere i arbeid eller arbeidsretta aktivitet",
+                                "barn med sjukdom, skade eller funksjonsnedsetjing. Tilstanden til barnet må vere " +
+                                "dokumentert av lege. Det må også dokumenterast at tilstanden til barnet er årsaka " +
+                                "til at du er hindra i å vere i arbeid eller arbeidsretta aktivitet",
                             English to "are prevented from working or work-related activity due to illness, injury or " +
-                                    "reduced functionality of your child. The child's condition must be documented by a medical doctor. " +
-                                    "You must also document that the child's condition is the reason why you are being prevented " +
-                                    "from working or being involved in a work-related activity",
+                                "reduced functionality of your child. The child's condition must be documented by a medical doctor. " +
+                                "You must also document that the child's condition is the reason why you are being prevented " +
+                                "from working or being involved in a work-related activity",
                         )
                     }
                     item {
                         text(
                             Bokmal to "er forhindret fra å være i slik aktivitet på grunn av omsorg for barn som " +
-                                    "mangler tilfredsstillende tilsynsordning, og den manglende tilsynsordningen ikke skyldes deg selv",
+                                "mangler tilfredsstillende tilsynsordning, og den manglende tilsynsordningen ikke skyldes deg selv",
                             Nynorsk to "er hindra i å vere i ein slik aktivitet grunna omsorg for barn som manglar " +
-                                    "tilfredsstillande tilsynsordning, og du ikkje sjølv er skuld i den manglande tilsynsordninga",
+                                "tilfredsstillande tilsynsordning, og du ikkje sjølv er skuld i den manglande tilsynsordninga",
                             English to "are prevented from engaging in such activity due to caring for a child who " +
-                                    "lacks satisfactory supervision, and the lack of supervision is not your fault",
+                                "lacks satisfactory supervision, and the lack of supervision is not your fault",
                         )
                     }
                     item {
                         text(
                             Bokmal to "har kortvarig fravær fra aktivitet på grunn av sykdom eller skade hos deg " +
-                                    "eller barn du har omsorg for",
+                                "eller barn du har omsorg for",
                             Nynorsk to "har kortvarig fråvær frå aktivitet fordi anten du sjølv eller eit barn du " +
-                                    "har omsorg for, har sjukdom eller skade",
+                                "har omsorg for, har sjukdom eller skade",
                             English to "are absent from the activity temporarily due to illness or injury, either " +
-                                    "yours or the child you are caring for",
+                                "yours or the child you are caring for",
                         )
                     }
                     item {
@@ -494,8 +496,6 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     }
                 }
             }
-
         }
     }
-
 }

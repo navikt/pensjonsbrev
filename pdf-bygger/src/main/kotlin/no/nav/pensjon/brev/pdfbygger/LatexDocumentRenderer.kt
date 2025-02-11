@@ -20,14 +20,14 @@ import java.time.format.FormatStyle
 private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
 
 internal object LatexDocumentRenderer {
-
-    internal fun render(pdfRequest: PDFRequest) : LatexDocument = render(
-        letter = pdfRequest.letterMarkup,
-        attachments = pdfRequest.attachments,
-        language = pdfRequest.language.toLanguage(),
-        felles = pdfRequest.felles,
-        brevtype = pdfRequest.brevtype,
-    )
+    internal fun render(pdfRequest: PDFRequest): LatexDocument =
+        render(
+            letter = pdfRequest.letterMarkup,
+            attachments = pdfRequest.attachments,
+            language = pdfRequest.language.toLanguage(),
+            felles = pdfRequest.felles,
+            brevtype = pdfRequest.brevtype,
+        )
 
     private fun render(
         letter: LetterMarkup,
@@ -43,7 +43,7 @@ internal object LatexDocumentRenderer {
             newLatexFile("letter.xmpdata") { appendXmpData(letter, language, felles) }
             newLatexFile("letter.tex") { renderLetterTemplate(letter, attachments) }
             attachments.forEachIndexed { id, attachment ->
-                newLatexFile("attachment_${id}.tex") { renderAttachment(attachment) }
+                newLatexFile("attachment_$id.tex") { renderAttachment(attachment) }
             }
         }
 
@@ -73,7 +73,11 @@ internal object LatexDocumentRenderer {
         }
     }
 
-    private fun LatexAppendable.appendXmpData(letter: LetterMarkup, language: Language, felles: Felles) {
+    private fun LatexAppendable.appendXmpData(
+        letter: LetterMarkup,
+        language: Language,
+        felles: Felles,
+    ) {
         appendCmd("Title", letter.title)
         appendCmd("Language", language.locale().toLanguageTag())
         appendCmd("Publisher", felles.avsenderEnhet.navn)
@@ -82,7 +86,10 @@ internal object LatexDocumentRenderer {
         appendCmd("Creator", DOCUMENT_PRODUCER)
     }
 
-    private fun LatexAppendable.renderLetterTemplate(letter: LetterMarkup, attachments: List<LetterMarkup.Attachment>) {
+    private fun LatexAppendable.renderLetterTemplate(
+        letter: LetterMarkup,
+        attachments: List<LetterMarkup.Attachment>,
+    ) {
         appendln("""\documentclass{pensjonsbrev_v4}""", escape = false)
         appendCmd("begin", "document")
         appendCmd("firstpage")
@@ -101,9 +108,10 @@ internal object LatexDocumentRenderer {
     ) {
         if (saksbehandlere != null) {
             appendNewCmd("feltsaksbehandlernavn", saksbehandlere.saksbehandler)
-            val attestant = saksbehandlere.attesterendeSaksbehandler
-                ?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
-                ?.also { appendNewCmd("feltattestantnavn", it) }
+            val attestant =
+                saksbehandlere.attesterendeSaksbehandler
+                    ?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
+                    ?.also { appendNewCmd("feltattestantnavn", it) }
 
             appendNewCmd("closingbehandlet") {
                 if (attestant != null) {
@@ -137,19 +145,19 @@ internal object LatexDocumentRenderer {
                 appendln("""\felt${LanguageSetting.Sakspart.vergenavn} & \feltvergenavn \\""", escape = false)
                 appendln(
                     """\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltnavnbruker \\""",
-                    escape = false
+                    escape = false,
                 )
             } ?: appendln(
                 """\felt${LanguageSetting.Sakspart.navn} & \feltnavnbruker \\""",
-                escape = false
+                escape = false,
             )
             appendln(
                 """\felt${LanguageSetting.Sakspart.foedselsnummer} & \feltfoedselsnummerbruker \\""",
-                escape = false
+                escape = false,
             )
             appendln(
                 """\felt${LanguageSetting.Sakspart.saksnummer} & \feltsaksnummer \hfill \letterdate\\""",
-                escape = false
+                escape = false,
             )
 
             appendCmd("end", "saksinfotable")
@@ -192,7 +200,10 @@ internal object LatexDocumentRenderer {
         appendCmd("sluttvedlegg")
     }
 
-    private fun LatexAppendable.renderIfNonEmptyText(content: List<Text>, render: LatexAppendable.(String) -> Unit) {
+    private fun LatexAppendable.renderIfNonEmptyText(
+        content: List<Text>,
+        render: LatexAppendable.(String) -> Unit,
+    ) {
         val text = String(StringBuilder().also { LatexAppendable(it).renderText(content) })
         if (text.isNotEmpty()) {
             render(text)
@@ -212,13 +223,15 @@ internal object LatexDocumentRenderer {
         when (block) {
             is LetterMarkup.Block.Paragraph -> renderParagraph(block)
 
-            is LetterMarkup.Block.Title1 -> renderIfNonEmptyText(block.content) { titleText ->
-                appendCmd("lettersectiontitleone", titleText)
-            }
+            is LetterMarkup.Block.Title1 ->
+                renderIfNonEmptyText(block.content) { titleText ->
+                    appendCmd("lettersectiontitleone", titleText)
+                }
 
-            is LetterMarkup.Block.Title2 -> renderIfNonEmptyText(block.content) { titleText ->
-                appendCmd("lettersectiontitletwo", titleText)
-            }
+            is LetterMarkup.Block.Title2 ->
+                renderIfNonEmptyText(block.content) { titleText ->
+                    appendCmd("lettersectiontitletwo", titleText)
+                }
         }
 
     private fun LatexAppendable.renderTextParagraph(text: List<Text>): Unit =
@@ -226,7 +239,7 @@ internal object LatexDocumentRenderer {
             arg { renderText(text) }
         }
 
-    //TODO depricate table/itemlist/form inside paragraph and make them available outside.
+    // TODO depricate table/itemlist/form inside paragraph and make them available outside.
     // there should not be a different space between elements if within/outside paragraphs.
     private fun LatexAppendable.renderParagraph(element: LetterMarkup.Block.Paragraph) {
         var continousTextContent = mutableListOf<Text>()
@@ -276,7 +289,10 @@ internal object LatexDocumentRenderer {
         }
     }
 
-    private fun LatexAppendable.renderTableCells(cells: List<Table.Cell>, colSpec: List<Table.ColumnSpec>) {
+    private fun LatexAppendable.renderTableCells(
+        cells: List<Table.Cell>,
+        colSpec: List<Table.ColumnSpec>,
+    ) {
         cells.forEachIndexed { index, cell ->
             val columnSpan = colSpec[index].span
             if (columnSpan > 1) {
@@ -295,11 +311,13 @@ internal object LatexDocumentRenderer {
 
     private fun columnHeadersLatexString(columnSpec: List<Table.ColumnSpec>): String =
         columnSpec.joinToString("") {
-            ("X" +
+            (
+                "X" +
                     when (it.alignment) {
                         ColumnAlignment.LEFT -> "[l]"
                         ColumnAlignment.RIGHT -> "[r]"
-                    }).repeat(it.span)
+                    }
+            ).repeat(it.span)
         }
 
     private fun LatexAppendable.renderTextContent(element: Text): Unit =
@@ -309,7 +327,10 @@ internal object LatexDocumentRenderer {
             is Text.NewLine -> appendCmd("newline")
         }
 
-    private fun LatexAppendable.renderTextLiteral(text: String, fontType: FontType): Unit =
+    private fun LatexAppendable.renderTextLiteral(
+        text: String,
+        fontType: FontType,
+    ): Unit =
         when (fontType) {
             FontType.PLAIN -> append(text)
             FontType.BOLD -> appendCmd("textbf") { arg { append(text) } }
@@ -343,11 +364,12 @@ internal object LatexDocumentRenderer {
 
                 appendCmd("formText") {
                     arg {
-                        val size = when (element.size) {
-                            Size.NONE -> 0
-                            Size.SHORT -> 25
-                            Size.LONG -> 60
-                        }
+                        val size =
+                            when (element.size) {
+                                Size.NONE -> 0
+                                Size.SHORT -> 25
+                                Size.LONG -> 60
+                            }
                         renderText(element.prompt)
                         append(" ${".".repeat(size)}")
                     }

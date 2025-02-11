@@ -35,44 +35,46 @@ data class BarnepensjonForeldreloesRedigerbarDTO(
     val erGjenoppretting: Boolean,
     val vedtattIPesys: Boolean,
     val forskjelligAvdoedPeriode: ForskjelligAvdoedPeriode? = null,
-    val erSluttbehandling: Boolean = false
+    val erSluttbehandling: Boolean = false,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonInnvilgelseForeldreloesRedigerbartUfall :
     EtterlatteTemplate<BarnepensjonForeldreloesRedigerbarDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INNVILGELSE_UTFALL_FORELDRELOES
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonForeldreloesRedigerbarDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - innvilgelse - Foreldreløs",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title {
-            text(Language.Bokmal to "", Language.Nynorsk to "", Language.English to "")
-        }
-        outline {
-            includePhrase(
-                BarnepensjonForeldreloesFraser.Vedtak(
-                    virkningstidspunkt = virkningsdato,
-                    sistePeriodeBeloep = sisteBeregningsperiodeBeloep,
-                    sistePeriodeFom = sisteBeregningsperiodeDatoFom,
-                    flerePerioder = flerePerioder,
-                    harUtbetaling = harUtbetaling,
-                    vedtattIPesys = vedtattIPesys,
-                    erGjenoppretting = erGjenoppretting,
-                    forskjelligAvdoedPeriode = forskjelligAvdoedPeriode,
-                    erSluttbehandling = erSluttbehandling,
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = BarnepensjonForeldreloesRedigerbarDTO::class,
+            languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - innvilgelse - Foreldreløs",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(Language.Bokmal to "", Language.Nynorsk to "", Language.English to "")
+            }
+            outline {
+                includePhrase(
+                    BarnepensjonForeldreloesFraser.Vedtak(
+                        virkningstidspunkt = virkningsdato,
+                        sistePeriodeBeloep = sisteBeregningsperiodeBeloep,
+                        sistePeriodeFom = sisteBeregningsperiodeDatoFom,
+                        flerePerioder = flerePerioder,
+                        harUtbetaling = harUtbetaling,
+                        vedtattIPesys = vedtattIPesys,
+                        erGjenoppretting = erGjenoppretting,
+                        forskjelligAvdoedPeriode = forskjelligAvdoedPeriode,
+                        erSluttbehandling = erSluttbehandling,
+                    ),
                 )
-            )
-            includePhrase(
-                BarnepensjonForeldreloesFraser.BegrunnelseForVedtaketRedigerbart(erEtterbetaling, vedtattIPesys),
-            )
+                includePhrase(
+                    BarnepensjonForeldreloesFraser.BegrunnelseForVedtaketRedigerbart(erEtterbetaling, vedtattIPesys),
+                )
+            }
         }
-    }
 }

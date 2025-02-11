@@ -7,5 +7,6 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 interface AllTemplates {
     fun hentAutobrevmaler(): Set<AutobrevTemplate<BrevbakerBrevdata>>
+
     fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>>
 }

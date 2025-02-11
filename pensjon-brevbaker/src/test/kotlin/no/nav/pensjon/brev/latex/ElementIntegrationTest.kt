@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.INTEGRATION_TEST)
 class ElementIntegrationTest {
-
     @Test
     fun `tom title1 burde ikke feile`() {
         outlineTestTemplate<EmptyBrevdata> {

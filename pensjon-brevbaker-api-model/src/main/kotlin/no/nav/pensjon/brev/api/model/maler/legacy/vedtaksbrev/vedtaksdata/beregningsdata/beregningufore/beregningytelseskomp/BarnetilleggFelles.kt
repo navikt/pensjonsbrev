@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.bereg
 
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
-
 data class BarnetilleggFelles(
     val avkortningsinformasjon: AvkortningsInformasjonBT?,
     val btfbinnvilget: Boolean?,

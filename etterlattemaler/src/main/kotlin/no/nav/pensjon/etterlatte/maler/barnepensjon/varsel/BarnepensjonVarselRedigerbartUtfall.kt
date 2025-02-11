@@ -29,51 +29,53 @@ data class BarnepensjonVarselRedigerbartUtfallDTO(
 object BarnepensjonVarselRedigerbartUtfall : EtterlatteTemplate<BarnepensjonVarselRedigerbartUtfallDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_VARSEL_UTFALL
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonVarselRedigerbartUtfallDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Varsel",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
-            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
-        ),
-    ) {
-        title {
-            text(
-                Bokmal to "",
-                Nynorsk to "",
-                English to "",
-            )
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = BarnepensjonVarselRedigerbartUtfallDTO::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Varsel",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Bokmal to "",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            outline {
+                paragraph {
+                    text(
+                        Bokmal to "Stortinget har vedtatt nye regler for barnepensjon. De nye reglene gjelder fra 1. januar 2024.",
+                        Nynorsk to "Stortinget har vedteke nye reglar for barnepensjon. Dei nye reglane gjeld frå og med 1. januar 2024.",
+                        English to "The Storting has adopted new rules for children’s pension. The new rules apply from 1 January 2024.",
+                    )
+                }
+                title2 {
+                    text(
+                        Bokmal to "Forhåndsvarsel om innvilgelse av ny barnepensjon",
+                        Nynorsk to "Førehandsvarsel om ny innvilga barnepensjon",
+                        English to " Advance notice regarding approval of new children’s pensions",
+                    )
+                }
+                showIf(automatiskBehandla) {
+                    includePhrase(Automatisk(erBosattUtlandet))
+                }.orShow { includePhrase(Manuelt(erBosattUtlandet)) }
+                paragraph {
+                    text(
+                        Bokmal to "Hvis du har andre ytelser fra Nav, Lånekassen, andre tjenestepensjonsordninger eller fra andre land enn Norge, må du selv undersøke hvilke konsekvenser barnepensjon fra folketrygden vil ha for deg.",
+                        Nynorsk to "Dersom du får andre ytingar frå Nav, Lånekassen eller andre tenestepensjonsordningar, eller frå andre land enn Noreg, må du sjølv undersøkje kva konsekvensar barnepensjonen frå folketrygda får for deg.",
+                        English to "If you receive other benefits from Nav, Lånekassen, other pension schemes or from countries other than Norway, you must yourself investigate the consequences that the children’s pension from the National Insurance scheme will have for you.",
+                    )
+                }
+            }
         }
-        outline {
-            paragraph {
-                text(
-                    Bokmal to "Stortinget har vedtatt nye regler for barnepensjon. De nye reglene gjelder fra 1. januar 2024.",
-                    Nynorsk to "Stortinget har vedteke nye reglar for barnepensjon. Dei nye reglane gjeld frå og med 1. januar 2024.",
-                    English to "The Storting has adopted new rules for children’s pension. The new rules apply from 1 January 2024.",
-                )
-            }
-            title2 {
-                text(
-                    Bokmal to "Forhåndsvarsel om innvilgelse av ny barnepensjon",
-                    Nynorsk to "Førehandsvarsel om ny innvilga barnepensjon",
-                    English to " Advance notice regarding approval of new children’s pensions",
-                )
-            }
-            showIf(automatiskBehandla) {
-                includePhrase(Automatisk(erBosattUtlandet))
-            }.orShow { includePhrase(Manuelt(erBosattUtlandet)) }
-            paragraph {
-                text(
-                    Bokmal to "Hvis du har andre ytelser fra Nav, Lånekassen, andre tjenestepensjonsordninger eller fra andre land enn Norge, må du selv undersøke hvilke konsekvenser barnepensjon fra folketrygden vil ha for deg.",
-                    Nynorsk to "Dersom du får andre ytingar frå Nav, Lånekassen eller andre tenestepensjonsordningar, eller frå andre land enn Noreg, må du sjølv undersøkje kva konsekvensar barnepensjonen frå folketrygda får for deg.",
-                    English to "If you receive other benefits from Nav, Lånekassen, other pension schemes or from countries other than Norway, you must yourself investigate the consequences that the children’s pension from the National Insurance scheme will have for you.",
-                )
-            }
-        }
-    }
 
     data class Automatisk(val erBosattUtlandet: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

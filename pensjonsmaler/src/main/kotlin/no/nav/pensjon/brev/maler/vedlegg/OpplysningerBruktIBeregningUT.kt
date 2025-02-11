@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BeregnetUTPerManedGjeldendeSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.BeregnetUTPerManedGjeldendeSelectors.virkDatoFom
@@ -28,13 +27,17 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 
-fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, skalViseBarnetillegg: Boolean) =
+fun createVedleggOpplysningerBruktIBeregningUT(
+    skalViseMinsteytelse: Boolean,
+    skalViseBarnetillegg: Boolean,
+) =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningUTDto>(
-        title = newText(
-            Bokmal to "Opplysninger om beregningen",
-            Nynorsk to "Opplysningar om utrekninga",
-            English to "Information about calculations"
-        ),
+        title =
+            newText(
+                Bokmal to "Opplysninger om beregningen",
+                Nynorsk to "Opplysningar om utrekninga",
+                English to "Information about calculations",
+            ),
         includeSakspart = false,
     ) {
         val inntektsgrenseErUnderTak =
@@ -65,9 +68,9 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                 harMinsteytelse = minsteytelseGjeldende_sats.notNull(),
                 borMedSivilstand = borMedSivilstand,
                 brukersSivilstand = sivilstand,
-            )
+            ),
         )
-        if(skalViseMinsteytelse) {
+        if (skalViseMinsteytelse) {
             val harMinsteytelseSats = minsteytelseGjeldende_sats.ifNull(0.0).greaterThan(0.0)
             showIf(harMinsteytelseSats) {
                 includePhrase(
@@ -77,12 +80,12 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                         ufoeretrygdGjeldende = ufoeretrygdGjeldende,
                         inntektFoerUfoereGjeldende = inntektFoerUfoereGjeldende,
                         inntektsgrenseErUnderTak = inntektsgrenseErUnderTak,
-                    )
+                    ),
                 )
             }
         }
 
-        if(skalViseBarnetillegg) {
+        if (skalViseBarnetillegg) {
             ifNotNull(barnetilleggGjeldende) { barnetillegg ->
                 includePhrase(
                     OpplysningerOmBarnetillegg(
@@ -91,9 +94,8 @@ fun createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse: Boolean, sk
                         harYrkesskade = yrkesskadeGjeldende.notNull(),
                         harKravaarsakEndringInntekt = harKravaarsakEndringInntekt,
                         fraOgMedDatoErNesteAar = fraOgMedDatoErNesteAar,
-                    )
+                    ),
                 )
             }
         }
     }
-

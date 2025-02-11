@@ -16,26 +16,28 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 object BarnepensjonVedleggBeregningTrygdetidRedigerbartUtfall : EtterlatteTemplate<ManueltBrevDTO>, Vedlegg {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_VEDLEGG_BEREGNING_TRYGDETID_UTFALL
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = ManueltBrevDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Beregning av trygdetid",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title {
-            text(
-                Language.Bokmal to "",
-                Language.Nynorsk to "",
-                Language.English to "",
-            )
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = ManueltBrevDTO::class,
+            languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Beregning av trygdetid",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Language.Bokmal to "",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                )
+            }
+            outline {
+                includePhrase(Felles.BlankTekst)
+            }
         }
-        outline {
-            includePhrase(Felles.BlankTekst)
-        }
-    }
 }

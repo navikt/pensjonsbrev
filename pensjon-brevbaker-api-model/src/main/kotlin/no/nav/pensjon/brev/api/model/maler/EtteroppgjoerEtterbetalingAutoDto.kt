@@ -7,4 +7,4 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 data class EtteroppgjoerEtterbetalingAutoDto(
     val pe: PE,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
-): BrevbakerBrevdata
+) : BrevbakerBrevdata

@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 data class TrygdetidsListeBilateralTabell(
-    val trygdetidsgrunnlagListeBilateral: Expression<List<TrygdetidsgrunnlagBilateral>>
+    val trygdetidsgrunnlagListeBilateral: Expression<List<TrygdetidsgrunnlagBilateral>>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -41,7 +41,7 @@ data class TrygdetidsListeBilateralTabell(
                             English to "To (and including)",
                         )
                     }
-                }
+                },
             ) {
                 forEach(trygdetidsgrunnlagListeBilateral) { trygdetidBilateral ->
                     row {
@@ -77,5 +77,4 @@ data class TrygdetidsListeBilateralTabell(
             }
         }
     }
-
 }

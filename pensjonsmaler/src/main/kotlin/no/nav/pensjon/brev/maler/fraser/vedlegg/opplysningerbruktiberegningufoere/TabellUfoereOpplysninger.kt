@@ -85,7 +85,7 @@ data class TabellUfoereOpplysninger(
     val harMinsteytelse: Expression<Boolean>,
     val brukersSivilstand: Expression<Sivilstand>,
     val borMedSivilstand: Expression<BorMedSivilstand?>,
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             table(
@@ -98,14 +98,14 @@ data class TabellUfoereOpplysninger(
                         )
                     }
                     column(columnSpan = 1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {}
-                }
+                },
             ) {
                 row {
                     cell {
                         text(
                             Language.Bokmal to "Uføretidspunkt",
                             Language.Nynorsk to "Uføretidspunkt",
-                            Language.English to "Date of disability"
+                            Language.English to "Date of disability",
                         )
                     }
                     cell {
@@ -113,7 +113,7 @@ data class TabellUfoereOpplysninger(
                         textExpr(
                             Language.Bokmal to ufoeretidspunkt,
                             Language.Nynorsk to ufoeretidspunkt,
-                            Language.English to ufoeretidspunkt
+                            Language.English to ufoeretidspunkt,
                         )
                     }
                 }
@@ -123,7 +123,7 @@ data class TabellUfoereOpplysninger(
                             text(
                                 Language.Bokmal to "Beregningsgrunnlag",
                                 Language.Nynorsk to "Utrekningsgrunnlag",
-                                Language.English to "Basis for calculation"
+                                Language.English to "Basis for calculation",
                             )
                         }
                         cell {
@@ -138,7 +138,7 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Beregningsgrunnlag yrkesskade",
                                     Language.Nynorsk to "Utrekningsgrunnlag yrkesskade",
-                                    Language.English to "Basis for calculation due to occupational injury"
+                                    Language.English to "Basis for calculation due to occupational injury",
                                 )
                             }
                             cell {
@@ -153,7 +153,7 @@ data class TabellUfoereOpplysninger(
                             text(
                                 Language.Bokmal to "Inntekt før uførhet",
                                 Language.Nynorsk to "Inntekt før uførleik",
-                                Language.English to "Income prior to disability"
+                                Language.English to "Income prior to disability",
                             )
                         }
                         cell {
@@ -168,7 +168,7 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Inntekt etter uførhet",
                                     Language.Nynorsk to "Inntekt etter uførleik",
-                                    Language.English to "Income after disability"
+                                    Language.English to "Income after disability",
                                 )
                             }
                             cell {
@@ -182,7 +182,7 @@ data class TabellUfoereOpplysninger(
                         text(
                             Language.Bokmal to "Uføregrad",
                             Language.Nynorsk to "Uføregrad",
-                            Language.English to "Degree of disability"
+                            Language.English to "Degree of disability",
                         )
                     }
                     cell {
@@ -190,7 +190,7 @@ data class TabellUfoereOpplysninger(
                         textExpr(
                             Language.Bokmal to ufoeregrad + " %",
                             Language.Nynorsk to ufoeregrad + " %",
-                            Language.English to ufoeregrad + " %"
+                            Language.English to ufoeregrad + " %",
                         )
                     }
                 }
@@ -200,7 +200,7 @@ data class TabellUfoereOpplysninger(
                             text(
                                 Language.Bokmal to "Inntektsgrense",
                                 Language.Nynorsk to "Inntektsgrense",
-                                Language.English to "Income cap"
+                                Language.English to "Income cap",
                             )
                         }
                         cell {
@@ -214,7 +214,7 @@ data class TabellUfoereOpplysninger(
                             text(
                                 Language.Bokmal to "Forventet inntekt",
                                 Language.Nynorsk to "Forventa inntekt",
-                                Language.English to "Expected income"
+                                Language.English to "Expected income",
                             )
                         }
                         cell {
@@ -228,7 +228,7 @@ data class TabellUfoereOpplysninger(
                             text(
                                 Language.Bokmal to "Kompensasjonsgrad",
                                 Language.Nynorsk to "Kompensasjonsgrad",
-                                Language.English to "Percentage of compensation"
+                                Language.English to "Percentage of compensation",
                             )
                         }
                         cell {
@@ -236,7 +236,7 @@ data class TabellUfoereOpplysninger(
                             textExpr(
                                 Language.Bokmal to kompensasjonsgrad + " %",
                                 Language.Nynorsk to kompensasjonsgrad + " %",
-                                Language.English to kompensasjonsgrad + " %"
+                                Language.English to kompensasjonsgrad + " %",
                             )
                         }
                     }
@@ -247,7 +247,7 @@ data class TabellUfoereOpplysninger(
                             text(
                                 Language.Bokmal to "Inntekt som medfører at uføretrygden ikke blir utbetalt",
                                 Language.Nynorsk to "Inntekt som fører til at uføretrygda ikkje blir utbetalt",
-                                Language.English to "Income that will lead to no payment of your disability benefit"
+                                Language.English to "Income that will lead to no payment of your disability benefit",
                             )
                         }
                         cell {
@@ -260,7 +260,7 @@ data class TabellUfoereOpplysninger(
                             text(
                                 Language.Bokmal to "Inntekt som medfører at uføretrygden ikke blir utbetalt",
                                 Language.Nynorsk to "Inntekt som fører til at uføretrygda ikkje blir utbetalt",
-                                Language.English to "Income that will lead to no payment of your disability benefit"
+                                Language.English to "Income that will lead to no payment of your disability benefit",
                             )
                         }
                         cell {
@@ -275,15 +275,15 @@ data class TabellUfoereOpplysninger(
                             text(
                                 Language.Bokmal to "Sivilstatus lagt til grunn i beregningen",
                                 Language.Nynorsk to "Sivilstatus lagt til grunn i utrekninga",
-                                Language.English to "Marital status applied to calculation"
+                                Language.English to "Marital status applied to calculation",
                             )
                         }
                         cell {
-                            ifNotNull(borMedSivilstand){
+                            ifNotNull(borMedSivilstand) {
                                 textExpr(
                                     Language.Bokmal to it.tableFormat(),
                                     Language.Nynorsk to it.tableFormat(),
-                                    Language.English to it.tableFormat()
+                                    Language.English to it.tableFormat(),
                                 )
                             }.orShowIf(brukersSivilstand.isOneOf(Sivilstand.ENKE)) {
                                 text(
@@ -301,24 +301,26 @@ data class TabellUfoereOpplysninger(
                         }
                     }
 
-                    ifNotNull(borMedSivilstand){ borMedSivilstand->
-                        showIf(borMedSivilstand.isOneOf(
-                            BorMedSivilstand.GIFT_LEVER_ADSKILT,
-                            BorMedSivilstand.PARTNER_LEVER_ADSKILT
-                        )) {
+                    ifNotNull(borMedSivilstand) { borMedSivilstand ->
+                        showIf(
+                            borMedSivilstand.isOneOf(
+                                BorMedSivilstand.GIFT_LEVER_ADSKILT,
+                                BorMedSivilstand.PARTNER_LEVER_ADSKILT,
+                            ),
+                        ) {
                             val erGift = borMedSivilstand.isOneOf(BorMedSivilstand.GIFT_LEVER_ADSKILT)
                             row {
                                 cell {
                                     textExpr(
-                                        Language.Bokmal to "Du eller ".expr()
-                                                + ifElse(erGift, "ektefellen", "partneren") +
-                                                " er registrert med annet bosted, eller er på institusjon",
-                                        Language.Nynorsk to "Du eller ".expr()
-                                                + ifElse(erGift, "ektefellen", "partnaren") +
-                                                " er registrert med annan bustad, eller er på institusjon",
-                                        Language.English to "You or your ".expr()
-                                                + ifElse(erGift, "spouse", "partner") +
-                                                " have been registered as having a different address, or as living in an institution",
+                                        Language.Bokmal to "Du eller ".expr() +
+                                            ifElse(erGift, "ektefellen", "partneren") +
+                                            " er registrert med annet bosted, eller er på institusjon",
+                                        Language.Nynorsk to "Du eller ".expr() +
+                                            ifElse(erGift, "ektefellen", "partnaren") +
+                                            " er registrert med annan bustad, eller er på institusjon",
+                                        Language.English to "You or your ".expr() +
+                                            ifElse(erGift, "spouse", "partner") +
+                                            " have been registered as having a different address, or as living in an institution",
                                     )
                                 }
                                 cell {
@@ -330,7 +332,6 @@ data class TabellUfoereOpplysninger(
                                 }
                             }
                         }
-
                     }
                 }
 
@@ -340,14 +341,14 @@ data class TabellUfoereOpplysninger(
                             text(
                                 Language.Bokmal to "Ung ufør",
                                 Language.Nynorsk to "Ung ufør",
-                                Language.English to "Young disabled"
+                                Language.English to "Young disabled",
                             )
                         }
                         cell {
                             text(
                                 Language.Bokmal to "Ja",
                                 Language.Nynorsk to "Ja",
-                                Language.English to "Yes"
+                                Language.English to "Yes",
                             )
                         }
                     }
@@ -360,7 +361,7 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Yrkesskadegrad",
                                     Language.Nynorsk to "Yrkesskadegrad",
-                                    Language.English to "Degree of disability due to occupational injury"
+                                    Language.English to "Degree of disability due to occupational injury",
                                 )
                             }
                             cell {
@@ -368,7 +369,7 @@ data class TabellUfoereOpplysninger(
                                 textExpr(
                                     Language.Bokmal to yrkesskadegrad + " %",
                                     Language.Nynorsk to yrkesskadegrad + " %",
-                                    Language.English to yrkesskadegrad + " %"
+                                    Language.English to yrkesskadegrad + " %",
                                 )
                             }
                         }
@@ -378,7 +379,7 @@ data class TabellUfoereOpplysninger(
                             text(
                                 Language.Bokmal to "Skadetidspunktet for yrkesskaden",
                                 Language.Nynorsk to "Skadetidspunktet for yrkesskaden",
-                                Language.English to "Date of injury"
+                                Language.English to "Date of injury",
                             )
                         }
                         cell {
@@ -386,7 +387,7 @@ data class TabellUfoereOpplysninger(
                             textExpr(
                                 Language.Bokmal to skadetidspunkt,
                                 Language.Nynorsk to skadetidspunkt,
-                                Language.English to skadetidspunkt
+                                Language.English to skadetidspunkt,
                             )
                         }
                     }
@@ -396,7 +397,7 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Årlig arbeidsinntekt på skadetidspunktet",
                                     Language.Nynorsk to "Årleg arbeidsinntekt på skadetidspunktet",
-                                    Language.English to "Annual income at the date of injury"
+                                    Language.English to "Annual income at the date of injury",
                                 )
                             }
                             cell {
@@ -414,14 +415,14 @@ data class TabellUfoereOpplysninger(
                             text(
                                 Language.Bokmal to "Du er innvilget flyktningstatus fra UDI",
                                 Language.Nynorsk to "Du er innvilga flyktningstatus frå UDI",
-                                Language.English to "You have been granted status as a refugee by the Norwegian Directorate of Immigration (UDI)"
+                                Language.English to "You have been granted status as a refugee by the Norwegian Directorate of Immigration (UDI)",
                             )
                         }
                         cell {
                             text(
                                 Language.Bokmal to "Ja",
                                 Language.Nynorsk to "Ja",
-                                Language.English to "Yes"
+                                Language.English to "Yes",
                             )
                         }
                     }
@@ -432,7 +433,7 @@ data class TabellUfoereOpplysninger(
                             text(
                                 Language.Bokmal to "Trygdetid (maksimalt 40 år)",
                                 Language.Nynorsk to "Trygdetid (maksimalt 40 år)",
-                                Language.English to "Insurance period (maximum 40 years)"
+                                Language.English to "Insurance period (maximum 40 years)",
                             )
                         }
                         cell {
@@ -440,7 +441,7 @@ data class TabellUfoereOpplysninger(
                             textExpr(
                                 Language.Bokmal to anvendtTT + " år",
                                 Language.Nynorsk to anvendtTT + " år",
-                                Language.English to anvendtTT + " years"
+                                Language.English to anvendtTT + " years",
                             )
                         }
                     }
@@ -452,7 +453,7 @@ data class TabellUfoereOpplysninger(
                             text(
                                 Language.Bokmal to "Teoretisk trygdetid i Norge og andre EØS-land som er brukt i beregningen (maksimalt 40 år)",
                                 Language.Nynorsk to "Teoretisk trygdetid i Noreg og andre EØS-land som er brukt i utrekninga (maksimalt 40 år)",
-                                Language.English to "Theoretical insurance period in Norway and other EEA countries used in the calculation (maximum 40 years)"
+                                Language.English to "Theoretical insurance period in Norway and other EEA countries used in the calculation (maximum 40 years)",
                             )
                         }
                         // Implement logic for year/years
@@ -461,7 +462,7 @@ data class TabellUfoereOpplysninger(
                             textExpr(
                                 Language.Bokmal to anvendtTT + " år",
                                 Language.Nynorsk to anvendtTT + " år",
-                                Language.English to anvendtTT + " years"
+                                Language.English to anvendtTT + " years",
                             )
                         }
                     }
@@ -471,16 +472,16 @@ data class TabellUfoereOpplysninger(
                         beregningsmetode.isOneOf(
                             Beregningsmetode.EOS,
                             Beregningsmetode.NORDISK,
-                            Beregningsmetode.FOLKETRYGD
-                        )
-                    )
+                            Beregningsmetode.FOLKETRYGD,
+                        ),
+                    ),
                 ) {
                     row {
                         cell {
                             text(
                                 Language.Bokmal to "Teoretisk trygdetid i Norge og andre avtaleland som er brukt i beregningen (maksimalt 40 år)",
                                 Language.Nynorsk to "Teoretisk trygdetid i Noreg og andre avtaleland som er brukt i utrekninga (maksimalt 40 år)",
-                                Language.English to "Theoretical insurance period in Norway and other partner countries used in the calculation (maximum 40 years)"
+                                Language.English to "Theoretical insurance period in Norway and other partner countries used in the calculation (maximum 40 years)",
                             )
                         }
                         cell {
@@ -488,7 +489,7 @@ data class TabellUfoereOpplysninger(
                             textExpr(
                                 Language.Bokmal to anvendtTT + " år",
                                 Language.Nynorsk to anvendtTT + " år",
-                                Language.English to anvendtTT + " years"
+                                Language.English to anvendtTT + " years",
                             )
                         }
                     }
@@ -500,7 +501,7 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Faktisk trygdetid i Norge",
                                     Language.Nynorsk to "Faktisk trygdetid i Noreg",
-                                    Language.English to "Actual insurance period in Norway"
+                                    Language.English to "Actual insurance period in Norway",
                                 )
                             }
                             cell {
@@ -517,7 +518,7 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Faktisk trygdetid i andre EØS-land",
                                     Language.Nynorsk to "Faktisk trygdetid i andre EØS-land",
-                                    Language.English to "Actual insurance period(s) in other EEA countries"
+                                    Language.English to "Actual insurance period(s) in other EEA countries",
                                 )
                             }
                             cell {
@@ -532,7 +533,7 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Faktisk trygdetid i Norge og EØS-land (maksimalt 40 år)",
                                     Language.Nynorsk to "Faktisk trygdetid i Noreg og EØS-land (maksimalt 40 år)",
-                                    Language.English to "Actual insurance period in Norway and EEA countries (maximum 40 years)"
+                                    Language.English to "Actual insurance period in Norway and EEA countries (maximum 40 years)",
                                 )
                             }
                             cell { includePhrase(Felles.MaanederText(nevnerTTEOS)) }
@@ -541,21 +542,21 @@ data class TabellUfoereOpplysninger(
 
                     ifNotNull(
                         trygdetidsdetaljerGjeldende.tellerTTEOS,
-                        trygdetidsdetaljerGjeldende.nevnerTTEOS
+                        trygdetidsdetaljerGjeldende.nevnerTTEOS,
                     ) { tellerTTEOS, nevnerTTEOS ->
                         row {
                             cell {
                                 text(
                                     Language.Bokmal to "Forholdstallet brukt i beregning av trygdetid",
                                     Language.Nynorsk to "Forholdstalet brukt i utrekning av trygdetid",
-                                    Language.English to "Ratio applied in calculation of insurance period"
+                                    Language.English to "Ratio applied in calculation of insurance period",
                                 )
                             }
                             cell {
                                 textExpr(
                                     Language.Bokmal to tellerTTEOS.format() + " / " + nevnerTTEOS.format(),
                                     Language.Nynorsk to tellerTTEOS.format() + " / " + nevnerTTEOS.format(),
-                                    Language.English to tellerTTEOS.format() + " / " + nevnerTTEOS.format()
+                                    Language.English to tellerTTEOS.format() + " / " + nevnerTTEOS.format(),
                                 )
                             }
                         }
@@ -569,7 +570,7 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Faktisk trygdetid i annet nordisk land som brukes i beregning av framtidig trygdetid",
                                     Language.Nynorsk to "Faktisk trygdetid i anna nordisk land som blir brukt i utrekning av framtidig trygdetid",
-                                    Language.English to "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)"
+                                    Language.English to "Actual insurance period in another Nordic country, applied in calculation of future insurance period(s)",
                                 )
                             }
                             cell { includePhrase(Felles.MaanederText(faktiskTTNordiskKonv)) }
@@ -580,15 +581,15 @@ data class TabellUfoereOpplysninger(
                     showIf(
                         beregningsmetode.isOneOf(
                             Beregningsmetode.NORDISK,
-                            Beregningsmetode.FOLKETRYGD
-                        ) and framtidigTTNorsk.lessThan(480)
+                            Beregningsmetode.FOLKETRYGD,
+                        ) and framtidigTTNorsk.lessThan(480),
                     ) {
                         row {
                             cell {
                                 text(
                                     Language.Bokmal to "Norsk framtidig trygdetid",
                                     Language.Nynorsk to "Norsk framtidig trygdetid",
-                                    Language.English to "Future insurance period in Norway"
+                                    Language.English to "Future insurance period in Norway",
                                 )
                             }
                             cell {
@@ -600,21 +601,21 @@ data class TabellUfoereOpplysninger(
                 showIf(beregningsmetode.isOneOf(Beregningsmetode.NORDISK)) {
                     ifNotNull(
                         trygdetidsdetaljerGjeldende.tellerTTNordiskKonv,
-                        trygdetidsdetaljerGjeldende.nevnerTTNordiskKonv
+                        trygdetidsdetaljerGjeldende.nevnerTTNordiskKonv,
                     ) { tellerTTNordiskKonv, nevnerTTNordiskKonv ->
                         row {
                             cell {
                                 text(
                                     Language.Bokmal to "Forholdstallet brukt i reduksjon av norsk framtidig trygdetid",
                                     Language.Nynorsk to "Forholdstalet brukt i reduksjon av norsk framtidig trygdetid",
-                                    Language.English to "Ratio applied in reduction of future Norwegian insurance period"
+                                    Language.English to "Ratio applied in reduction of future Norwegian insurance period",
                                 )
                             }
                             cell {
                                 textExpr(
                                     Language.Bokmal to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format(),
                                     Language.Nynorsk to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format(),
-                                    Language.English to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format()
+                                    Language.English to tellerTTNordiskKonv.format() + " / " + nevnerTTNordiskKonv.format(),
                                 )
                             }
                         }
@@ -626,7 +627,7 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Samlet trygdetid brukt i beregning av uføretrygd etter reduksjon av framtidig trygdetid",
                                     Language.Nynorsk to "Samla trygdetid brukt i utrekning av uføretrygd etter reduksjon av framtidig trygdetid",
-                                    Language.English to "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s"
+                                    Language.English to "Total insurance period applied in calculating disability benefit after reduction of future insurance period(s",
                                 )
                             }
                             cell { includePhrase(Felles.MaanederText(samletTTNordiskKonv)) }
@@ -635,7 +636,6 @@ data class TabellUfoereOpplysninger(
                 }
 
                 ifNotNull(trygdetidsdetaljerGjeldende.utenforEOSogNorden) {
-
                     val faktiskTTBilateral = it.faktiskTTBilateral
                     val nevnerProRata = it.nevnerProRata
                     val tellerProRata = it.tellerProRata
@@ -644,15 +644,15 @@ data class TabellUfoereOpplysninger(
                         beregningsmetode.isNotAnyOf(
                             Beregningsmetode.FOLKETRYGD,
                             Beregningsmetode.NORDISK,
-                            Beregningsmetode.EOS
-                        )
+                            Beregningsmetode.EOS,
+                        ),
                     ) {
                         row {
                             cell {
                                 text(
                                     Language.Bokmal to "Faktisk trygdetid i annet avtaleland",
                                     Language.Nynorsk to "Faktisk trygdetid i anna avtaleland",
-                                    Language.English to "Actual insurance period(s) in another partner country"
+                                    Language.English to "Actual insurance period(s) in another partner country",
                                 )
                             }
                             cell {
@@ -664,7 +664,7 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Faktisk trygdetid i Norge og avtaleland (maksimalt 40 år)",
                                     Language.Nynorsk to "Faktisk trygdetid i Noreg og avtaleland (maksimalt 40 år)",
-                                    Language.English to "Actual insurance period in Norway and partner countries (maximum 40 years)"
+                                    Language.English to "Actual insurance period in Norway and partner countries (maximum 40 years)",
                                 )
                             }
                             cell {
@@ -676,23 +676,22 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Forholdstallet brukt i beregning av uføretrygd",
                                     Language.Nynorsk to "Forholdstalet brukt i utrekning av uføretrygd",
-                                    Language.English to "Ratio applied in calculation of insurance period"
+                                    Language.English to "Ratio applied in calculation of insurance period",
                                 )
                             }
                             cell {
                                 textExpr(
                                     Language.Bokmal to tellerProRata.format() + " / " + nevnerProRata.format(),
                                     Language.Nynorsk to tellerProRata.format() + " / " + nevnerProRata.format(),
-                                    Language.English to tellerProRata.format() + " / " + nevnerProRata.format()
+                                    Language.English to tellerProRata.format() + " / " + nevnerProRata.format(),
                                 )
                             }
                         }
                     }
 
-                    //førstegangsbehandling bruker bor i utlandet
-                    //TODO manglende felt år med inntekt
-                    //TODO år med inntekt brukt i beregningen
-
+                    // førstegangsbehandling bruker bor i utlandet
+                    // TODO manglende felt år med inntekt
+                    // TODO år med inntekt brukt i beregningen
                 }
 
                 ifNotNull(barnetilleggGjeldende) { barnetillegg ->
@@ -701,7 +700,7 @@ data class TabellUfoereOpplysninger(
                             text(
                                 Language.Bokmal to "Totalt antall barn du har barnetillegg for",
                                 Language.Nynorsk to "Totalt antall barn du har barnetillegg for",
-                                Language.English to "Total number of children for whom you receive child supplement"
+                                Language.English to "Total number of children for whom you receive child supplement",
                             )
                         }
                         val totaltAntallBarn = barnetillegg.foedselsdatoPaaBarnTilleggetGjelder.size()
@@ -719,7 +718,7 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Fribeløp for særkullsbarn",
                                     Language.Nynorsk to "Fribeløp for særkullsbarn",
-                                    Language.English to "Exemption amount for children from a previous relationship"
+                                    Language.English to "Exemption amount for children from a previous relationship",
                                 )
                             }
                             cell {
@@ -733,7 +732,7 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Fribeløp for fellesbarn",
                                     Language.Nynorsk to "Fribeløp for fellessbarn",
-                                    Language.English to "Exemption amount for joint children"
+                                    Language.English to "Exemption amount for joint children",
                                 )
                             }
                             cell {
@@ -752,7 +751,7 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Samlet inntekt som er brukt i fastsettelse av barnetillegg",
                                     Language.Nynorsk to "Samla inntekt som er brukt i fastsetjinga av barnetillegg",
-                                    Language.English to "Your income, which is used to calculate child supplement"
+                                    Language.English to "Your income, which is used to calculate child supplement",
                                 )
                             }
                             cell {
@@ -771,7 +770,7 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Samlet inntekt til annen forelder som er brukt i fastsettelse av barnetillegg",
                                     Language.Nynorsk to "Samla inntekt til annen forelder som er brukt i fastsetjinga av barnetillegg",
-                                    Language.English to "Income of the other parent, which is used to calculate child supplement"
+                                    Language.English to "Income of the other parent, which is used to calculate child supplement",
                                 )
                             }
                             cell {
@@ -788,7 +787,7 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Samlet inntekt for deg som gjør at barnetillegget ikke blir utbetalt",
                                     Language.Nynorsk to "Samla inntekt for deg som gjer at barnetillegget ikkje blir utbetalt",
-                                    Language.English to "Your income which means that no child supplement is received"
+                                    Language.English to "Your income which means that no child supplement is received",
                                 )
                             }
                             cell {
@@ -819,7 +818,7 @@ data class TabellUfoereOpplysninger(
                                 text(
                                     Language.Bokmal to "Samlet inntekt for deg og annen forelder som gjør at barnetillegget ikke blir utbetalt",
                                     Language.Nynorsk to "Samla inntekt for deg og annan forelder som gjer at barnetillegget ikkje blir utbetalt",
-                                    Language.English to "Total combined income which means that no child supplement is received"
+                                    Language.English to "Total combined income which means that no child supplement is received",
                                 )
                             }
                             cell {

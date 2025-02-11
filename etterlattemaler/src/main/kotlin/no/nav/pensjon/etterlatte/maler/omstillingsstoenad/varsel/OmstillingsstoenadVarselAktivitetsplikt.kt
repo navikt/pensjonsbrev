@@ -85,8 +85,8 @@ object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<Omstillingss
                                 Nynorsk to "ettersend dokumentasjon frå søknad om omstillingsstønad. " +
                                     "Dette gjer du ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}.",
                                 English to
-                                        "submit additional documentation on the application for adjustment allowance. " +
-                                        "You can do this by going to ${Constants.Engelsk.ETTERSENDE_OMS_URL}.",
+                                    "submit additional documentation on the application for adjustment allowance. " +
+                                    "You can do this by going to ${Constants.Engelsk.ETTERSENDE_OMS_URL}.",
                             )
                         }
                         item {

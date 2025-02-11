@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 
 class LanguageTest {
-
     @Test
     fun `languageSettings creates LanguageSettings`() {
         Assertions.assertEquals(LanguageSettings(emptyMap()), languageSettings {})
@@ -17,25 +16,28 @@ class LanguageTest {
     fun `languageSettings_setting adds textblock to name`() {
         val name = "greeting"
 
-        val expected = LanguageSettings(
-            mapOf(
-                name to Element.OutlineContent.ParagraphContent.Text.Literal.create(
-                    Language.Bokmal to "123",
-                    Language.Nynorsk to "234",
-                    Language.English to "345",
-                )
+        val expected =
+            LanguageSettings(
+                mapOf(
+                    name to
+                        Element.OutlineContent.ParagraphContent.Text.Literal.create(
+                            Language.Bokmal to "123",
+                            Language.Nynorsk to "234",
+                            Language.English to "345",
+                        ),
+                ),
             )
-        )
 
-        val actual = languageSettings {
-            setting(name) {
-                Element.OutlineContent.ParagraphContent.Text.Literal.create(
-                    Language.Bokmal to "123",
-                    Language.Nynorsk to "234",
-                    Language.English to "345",
-                )
+        val actual =
+            languageSettings {
+                setting(name) {
+                    Element.OutlineContent.ParagraphContent.Text.Literal.create(
+                        Language.Bokmal to "123",
+                        Language.Nynorsk to "234",
+                        Language.English to "345",
+                    )
+                }
             }
-        }
 
         Assertions.assertEquals(expected, actual)
     }
@@ -44,16 +46,18 @@ class LanguageTest {
     fun `languageSettings_setting adds element to name`() {
         val name = "greeting"
 
-        val element = Element.OutlineContent.ParagraphContent.Text.Literal.create(
-            Language.Bokmal to "123",
-            Language.Nynorsk to "234",
-            Language.English to "345",
-        )
+        val element =
+            Element.OutlineContent.ParagraphContent.Text.Literal.create(
+                Language.Bokmal to "123",
+                Language.Nynorsk to "234",
+                Language.English to "345",
+            )
         val expected = LanguageSettings(mapOf(name to element))
 
-        val actual = languageSettings {
-            setting(name, element)
-        }
+        val actual =
+            languageSettings {
+                setting(name, element)
+            }
 
         Assertions.assertEquals(expected, actual)
     }

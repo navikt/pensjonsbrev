@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.template.LocalizedFormatter.MonthYearFormatter
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
-import no.nav.pensjon.brev.template.LocalizedFormatter.MonthYearFormatter
 
 class LocalizedFormatterTest {
     @Test

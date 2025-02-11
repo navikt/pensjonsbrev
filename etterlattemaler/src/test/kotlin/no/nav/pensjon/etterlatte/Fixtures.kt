@@ -49,7 +49,6 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingRedigerbartB
 import kotlin.reflect.KClass
 
 object Fixtures {
-
     inline fun <reified T : Any> create(): T = create(T::class)
 
     @Suppress("UNCHECKED_CAST")
@@ -111,6 +110,4 @@ object Fixtures {
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
-
 }
-

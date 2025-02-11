@@ -22,7 +22,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.Omstillingstoen
 data class OmstillingstoenadAvslagRedigerbartUtfallDTO(
     val avdoedNavn: String,
     val erSluttbehandling: Boolean = false,
-    val tidligereFamiliepleier: Boolean = false
+    val tidligereFamiliepleier: Boolean = false,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -37,12 +37,12 @@ object OmstillingsstoenadAvslagRedigerbartUtfall :
             letterDataType = OmstillingstoenadAvslagRedigerbartUtfallDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
-            LetterMetadata(
-                displayTitle = "Vedtak - begrunnelse for avslag",
-                isSensitiv = true,
-                distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-            ),
+                LetterMetadata(
+                    displayTitle = "Vedtak - begrunnelse for avslag",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
         ) {
             title {
                 text(
@@ -57,8 +57,8 @@ object OmstillingsstoenadAvslagRedigerbartUtfall :
                     OmstillingsstoenadAvslagFraser.Vedtak(
                         erSluttbehandling,
                         tidligereFamiliepleier,
-                        avdoedNavn
-                    )
+                        avdoedNavn,
+                    ),
                 )
                 includePhrase(Vedtak.BegrunnelseForVedtaket)
                 includePhrase(OmstillingsstoenadFellesFraser.FyllInn)

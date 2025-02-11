@@ -13,15 +13,15 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.INTEGRATION_TEST)
 internal class TomMalInformasjonsbrevTest {
-
     @Test
     fun pdftest() {
-        val letter = Letter(
-            TomMalInformasjonsbrev.template,
-            Fixtures.create<ManueltBrevMedTittelDTO>(),
-            Language.Bokmal,
-            no.nav.brev.brevbaker.Fixtures.felles
-        )
+        val letter =
+            Letter(
+                TomMalInformasjonsbrev.template,
+                Fixtures.create<ManueltBrevMedTittelDTO>(),
+                Language.Bokmal,
+                no.nav.brev.brevbaker.Fixtures.felles,
+            )
         letter.renderTestPDF(EtterlatteBrevKode.TOM_MAL_INFORMASJONSBREV.name)
     }
 
@@ -31,8 +31,7 @@ internal class TomMalInformasjonsbrevTest {
             TomMalInformasjonsbrev.template,
             Fixtures.create<ManueltBrevMedTittelDTO>(),
             Language.Bokmal,
-            no.nav.brev.brevbaker.Fixtures.felles
+            no.nav.brev.brevbaker.Fixtures.felles,
         ).renderTestHtml(EtterlatteBrevKode.TOM_MAL_INFORMASJONSBREV.name)
     }
-
 }

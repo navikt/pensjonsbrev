@@ -18,31 +18,32 @@ import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 object TomDelmal : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TOM_DELMAL
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = ManueltBrevDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Tom delmal",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
-            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
-        ),
-    ) {
-        title {
-            text(
-                Language.Bokmal to "",
-                Language.Nynorsk to "",
-                Language.English to "",
-            )
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = ManueltBrevDTO::class,
+            languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Tom delmal",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Language.Bokmal to "",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                )
+            }
+            outline {
+                includePhrase(
+                    TomDelmalTekst,
+                )
+            }
         }
-        outline {
-            includePhrase(
-                TomDelmalTekst,
-            )
-
-        }
-    }
 }
 
 object TomDelmalTekst : OutlinePhrase<LangBokmalNynorskEnglish>() {

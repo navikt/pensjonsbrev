@@ -8,18 +8,20 @@ fun createPlaceholderForRedigerbartInnhold(): List<Element> =
     listOf(
         Element(
             type = ElementType.HEADING_THREE,
-            children = listOf(
-                InnerElement(
-                    text = "Redigerbart innhold"
-                )
-            )
+            children =
+                listOf(
+                    InnerElement(
+                        text = "Redigerbart innhold",
+                    ),
+                ),
         ),
         Element(
             type = ElementType.PARAGRAPH,
-            children = listOf(
-                InnerElement(
-                    text = "Her kommer det redigerbart innhold"
-                )
-            )
-        )
+            children =
+                listOf(
+                    InnerElement(
+                        text = "Her kommer det redigerbart innhold",
+                    ),
+                ),
+        ),
     )

@@ -48,8 +48,10 @@ object TestTags {
     const val MANUAL_TEST = "manual-test"
 }
 
-
-fun requestLetter(client: HttpClient, letterRequest: BestillBrevRequest<Brevkode.Automatisk>): LetterResponse =
+fun requestLetter(
+    client: HttpClient,
+    letterRequest: BestillBrevRequest<Brevkode.Automatisk>,
+): LetterResponse =
     runBlocking {
         client.post("letter/autobrev/pdf") {
             contentType(ContentType.Application.Json)
@@ -57,7 +59,11 @@ fun requestLetter(client: HttpClient, letterRequest: BestillBrevRequest<Brevkode
         }.body()
     }
 
-fun writeTestPDF(pdfFileName: String, pdf: ByteArray, path: Path = Path.of("build", "test_pdf")) {
+fun writeTestPDF(
+    pdfFileName: String,
+    pdf: ByteArray,
+    path: Path = Path.of("build", "test_pdf"),
+) {
     val file = path.resolve("${pdfFileName.replace(" ", "_")}.pdf").toFile()
     file.parentFile.mkdirs()
     file.writeBytes(pdf)
@@ -75,20 +81,24 @@ fun renderTestPdfOutline(
     title: String? = null,
     outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
 ) {
-    val template = createTemplate(
-        testName, EmptyBrevdata::class, languages(Bokmal), LetterMetadata(
+    val template =
+        createTemplate(
             testName,
-            false,
-            LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype
-        )
-    ) {
-        title {
-            text(Bokmal to (title ?: testName))
+            EmptyBrevdata::class,
+            languages(Bokmal),
+            LetterMetadata(
+                testName,
+                false,
+                LetterMetadata.Distribusjonstype.VEDTAK,
+                brevtype,
+            ),
+        ) {
+            title {
+                text(Bokmal to (title ?: testName))
+            }
+            outline { outlineInit() }
+            attachments.forEach { includeAttachment(it) }
         }
-        outline { outlineInit() }
-        attachments.forEach { includeAttachment(it) }
-    }
     val letter = Letter(template, Unit, Bokmal, felles ?: Fixtures.fellesAuto)
     letter.renderTestPDF(testName, Path.of("build/$outputFolder"))
 }
@@ -101,17 +111,18 @@ fun renderTestVedleggPdf(
     felles: Felles? = null,
     outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
 ) {
-    val vedlegg: AttachmentTemplate<LangBokmal, EmptyBrevdata> = createAttachment<LangBokmal, EmptyBrevdata>(
-        title = newText(
-            Bokmal to (title ?: testName)
-        ),
-        includeSakspart = includeSakspart,
-    ) {
-        outlineInit()
-    }
+    val vedlegg: AttachmentTemplate<LangBokmal, EmptyBrevdata> =
+        createAttachment<LangBokmal, EmptyBrevdata>(
+            title =
+                newText(
+                    Bokmal to (title ?: testName),
+                ),
+            includeSakspart = includeSakspart,
+        ) {
+            outlineInit()
+        }
     renderTestPdfOutline(attachments = listOf(vedlegg), outputFolder = outputFolder, testName = testName, title = title, felles = felles) { }
 }
-
 
 fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
     pdfFileName: String,
@@ -126,8 +137,8 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
                         it.attachments,
                         language.toCode(),
                         felles,
-                        template.letterMetadata.brevtype
-                    )
+                        template.letterMetadata.brevtype,
+                    ),
                 )
             }.base64PDF
         }
@@ -135,7 +146,11 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
     return this
 }
 
-fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: String = "test_html") {
+fun writeTestHTML(
+    letterName: String,
+    htmlLetter: HTMLDocument,
+    buildSubDir: String = "test_html",
+) {
     val dir = Path("build/$buildSubDir/$letterName")
     dir.toFile().mkdirs()
     htmlLetter.files.forEach { it.writeTo(dir) }
@@ -153,7 +168,7 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: Str
                 it.attachments,
                 language,
                 felles,
-                template.letterMetadata.brevtype
+                template.letterMetadata.brevtype,
             )
         }
         .also { writeTestHTML(htmlFileName, it) }
@@ -169,12 +184,13 @@ fun <AttachmentData : Any, Lang : LanguageSupport> createVedleggTestTemplate(
     name = "test-template",
     letterDataType = Unit::class,
     languages = languages,
-    letterMetadata = LetterMetadata(
-        "test mal",
-        isSensitiv = false,
-        distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
-        brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-    ),
+    letterMetadata =
+        LetterMetadata(
+            "test mal",
+            isSensitiv = false,
+            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+        ),
 ) {
     title {
         eval("Tittel".expr())
@@ -198,23 +214,28 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
         outline(function)
     }
 
-fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = Fixtures.felles) =
+fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(
+    fileName: String,
+    felles: Felles = Fixtures.felles,
+) =
     Letter(this, EmptyBrevdata, Bokmal, felles).renderTestPDF(fileName)
 
-internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate(
-    name = "test",
-    title = listOf(bokmalTittel),
-    letterDataType = Unit::class,
-    language = languages(Bokmal),
-    outline = elements.asList(),
-    letterMetadata = testLetterMetadata
-)
+internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) =
+    LetterTemplate(
+        name = "test",
+        title = listOf(bokmalTittel),
+        letterDataType = Unit::class,
+        language = languages(Bokmal),
+        outline = elements.asList(),
+        letterMetadata = testLetterMetadata,
+    )
 
 val bokmalTittel = newText(Language.Bokmal to "test brev")
 
-val testLetterMetadata = LetterMetadata(
-    displayTitle = "En fin display tittel",
-    isSensitiv = false,
-    distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
-    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-)
+val testLetterMetadata =
+    LetterMetadata(
+        displayTitle = "En fin display tittel",
+        isSensitiv = false,
+        distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+        brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+    )

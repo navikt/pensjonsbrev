@@ -16,14 +16,16 @@ import java.time.format.FormatStyle
 import java.util.*
 
 object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
-
     private val languageSettings = pensjonHTMLSettings
     private val css = getResource("html/style.css").toString(Charsets.UTF_8)
     private val navLogoImg =
         "data:image/png;base64,${Base64.getEncoder().encodeToString(getResource("html/nav-logo.png"))}"
     private val fontBinary = listOf(fontFaceCss("normal", 400), fontFaceCss("italic", 400), fontFaceCss("normal", 700))
 
-    private fun fontFaceCss(style: String, weight: Int) =
+    private fun fontFaceCss(
+        style: String,
+        weight: Int,
+    ) =
         """
         @font-face {
             font-family: 'Source Sans Pro';
@@ -41,7 +43,7 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         attachments: List<Attachment>,
         language: Language,
         felles: Felles,
-        brevtype: LetterMetadata.Brevtype
+        brevtype: LetterMetadata.Brevtype,
     ): HTMLDocument =
         HTMLDocument {
             appendLine("<!DOCTYPE html>").appendHTML().html {
@@ -59,7 +61,7 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
                             img(
                                 classes = classes("logo"),
                                 src = navLogoImg,
-                                alt = languageSettings.getSetting(language, LanguageSetting.HTML.altTextLogo)
+                                alt = languageSettings.getSetting(language, LanguageSetting.HTML.altTextLogo),
                             )
                             div(classes("brevhode")) {
                                 renderSakspart(language, felles)
@@ -80,12 +82,19 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             }
         }
 
-    private fun FlowContent.brevdato(language: Language, felles: Felles): Unit =
+    private fun FlowContent.brevdato(
+        language: Language,
+        felles: Felles,
+    ): Unit =
         div(classes("brevdato")) {
             text(felles.dokumentDato.format(dateFormatter(language, FormatStyle.SHORT)))
         }
 
-    private fun FlowContent.renderClosing(language: Language, felles: Felles, brevtype: LetterMetadata.Brevtype) {
+    private fun FlowContent.renderClosing(
+        language: Language,
+        felles: Felles,
+        brevtype: LetterMetadata.Brevtype,
+    ) {
         div("closing") {
             // Med vennlig hilsen
             div(classes("closing-greeting")) {
@@ -120,7 +129,11 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         }
     }
 
-    private fun FlowContent.renderAttachment(attachment: Attachment, language: Language, felles: Felles): Unit =
+    private fun FlowContent.renderAttachment(
+        attachment: Attachment,
+        language: Language,
+        felles: Felles,
+    ): Unit =
         div(classes("vedlegg")) {
             img(classes = classes("logo"), src = navLogoImg, alt = languageSettings.getSetting(language, LanguageSetting.HTML.altTextLogo))
             h1(classes("tittel")) { renderText(attachment.title) }
@@ -161,12 +174,14 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
     private fun FlowOrPhrasingContent.renderTextContent(element: ParagraphContent.Text) {
         when (element.fontType) {
             FontType.PLAIN -> renderTextContentWithoutStyle(element)
-            FontType.BOLD -> span(classes("text-bold")) {
-                renderTextContentWithoutStyle(element)
-            }
-            FontType.ITALIC -> span(classes("text-italic")) {
-                renderTextContentWithoutStyle(element)
-            }
+            FontType.BOLD ->
+                span(classes("text-bold")) {
+                    renderTextContentWithoutStyle(element)
+                }
+            FontType.ITALIC ->
+                span(classes("text-italic")) {
+                    renderTextContentWithoutStyle(element)
+                }
         }
     }
 
@@ -199,11 +214,12 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             is ParagraphContent.Form.Text -> {
                 div(classes("form-text")) {
                     div { renderText(element.prompt) }
-                    val size = when (element.size) {
-                        ParagraphContent.Form.Text.Size.NONE -> "none"
-                        ParagraphContent.Form.Text.Size.SHORT -> "short"
-                        ParagraphContent.Form.Text.Size.LONG -> "long"
-                    }
+                    val size =
+                        when (element.size) {
+                            ParagraphContent.Form.Text.Size.NONE -> "none"
+                            ParagraphContent.Form.Text.Size.SHORT -> "short"
+                            ParagraphContent.Form.Text.Size.LONG -> "long"
+                        }
                     div(classes("form-line-$size")) { }
                 }
             }
@@ -282,7 +298,10 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             ParagraphContent.Table.ColumnAlignment.RIGHT -> "text-right"
         }
 
-    private fun FlowContent.renderSakspart(language: Language, felles: Felles) =
+    private fun FlowContent.renderSakspart(
+        language: Language,
+        felles: Felles,
+    ) =
         div(classes("sakspart")) {
             with(felles.bruker) {
                 val navnPrefix =
@@ -304,5 +323,4 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         this::class.java.getResourceAsStream("/$fileName")
             ?.use { it.readAllBytes() }
             ?: throw IllegalStateException("""Could not find resource /$fileName""")
-
 }

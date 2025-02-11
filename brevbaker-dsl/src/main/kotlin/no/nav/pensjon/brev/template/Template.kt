@@ -12,7 +12,7 @@ fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
     letterDataType: KClass<LetterData>,
     languages: Lang,
     letterMetadata: LetterMetadata,
-    init: TemplateRootScope<Lang, LetterData>.() -> Unit
+    init: TemplateRootScope<Lang, LetterData>.() -> Unit,
 ): LetterTemplate<Lang, LetterData> =
     with(TemplateRootScope<Lang, LetterData>().apply(init)) {
         return LetterTemplate(name, title, letterDataType, languages, outline, attachments, letterMetadata)
@@ -24,7 +24,6 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
     val outline: MutableList<OutlineElement<Lang>> = mutableListOf(),
     val attachments: MutableList<IncludeAttachment<Lang, *>> = mutableListOf(),
 ) : TemplateGlobalScope<LetterData> {
-
     fun title(init: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
         title.addAll(PlainTextOnlyScope<Lang, LetterData>().apply(init).elements)
     }
@@ -61,15 +60,14 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
     }
 }
 
-
 @LetterTemplateMarker
 class TemplateFormChoiceScope<Lang : LanguageSupport, LetterData : Any>(
-    val choices: MutableList<Element.OutlineContent.ParagraphContent.Text<Lang>> = mutableListOf()
+    val choices: MutableList<Element.OutlineContent.ParagraphContent.Text<Lang>> = mutableListOf(),
 ) : TemplateGlobalScope<LetterData>
 
 fun <Lang1 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageSupport.Single<Lang1>, LetterData>.choice(
     lang1: Pair<Lang1, String>,
-    fontType: FontType = FontType.PLAIN
+    fontType: FontType = FontType.PLAIN,
 ) {
     Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, fontType).also { choices.add(it) }
 }

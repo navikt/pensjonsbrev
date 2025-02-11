@@ -20,11 +20,12 @@ import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.telefonnummer
 
 val vedleggDineRettigheterOgPlikterUfoere =
     createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterUfoereDto>(
-        title = newText(
-            Bokmal to "Dine rettigheter og plikter",
-            Nynorsk to "Rettane og pliktene dine",
-            English to "Your rights and obligations"
-        ),
+        title =
+            newText(
+                Bokmal to "Dine rettigheter og plikter",
+                Nynorsk to "Rettane og pliktene dine",
+                English to "Your rights and obligations",
+            ),
         includeSakspart = false,
     ) {
         includePhrase(VedleggPlikter)
@@ -37,17 +38,17 @@ val vedleggDineRettigheterOgPlikterUfoere =
 
                 showIf(
                     bruker_borINorge
-                            and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
+                        and institusjon_gjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM),
                 ) {
                     item { includePhrase(VedleggPlikterUT3) }
                     item { includePhrase(VedleggPlikterUT4) }
                 }
 
                 item { includePhrase(VedleggPlikterUT5) }
-                item { includePhrase(VedleggPlikterEndretSivilstatus)}
+                item { includePhrase(VedleggPlikterEndretSivilstatus) }
 
                 showIf(harInnvilgetBarnetilleggFellesBarn) {
-                    item { includePhrase(VedleggPlikterEndretInntektBarnetillegg)}
+                    item { includePhrase(VedleggPlikterEndretInntektBarnetillegg) }
                 }
 
                 showIf(harInnvilgetBarnetillegg) {

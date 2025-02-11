@@ -73,12 +73,13 @@ class TemplateModelSpecificationFactoryTest {
     fun `object fields have Object type and name can be looked up in specification types`() {
         assertThat(aModelSpec["sub"], equalTo(FieldType.Object(false, AModel.SubModel::class.qualifiedName!!)))
         assertThat(
-            spec.types[AModel.SubModel::class.qualifiedName!!]!!, equalTo(
+            spec.types[AModel.SubModel::class.qualifiedName!!]!!,
+            equalTo(
                 mapOf(
                     "navn" to FieldType.Scalar(false, Kind.STRING),
                     "alder" to FieldType.Scalar(false, Kind.NUMBER),
-                )
-            )
+                ),
+            ),
         )
     }
 
@@ -96,7 +97,10 @@ class TemplateModelSpecificationFactoryTest {
         assertThrows<TemplateModelSpecificationError> { TemplateModelSpecificationFactory(NoPrimaryConstructor::class).build() }
     }
 
-    class NotADataClass(val navn: String, @Suppress("unused") val alder: Int)
+    class NotADataClass(
+        val navn: String,
+        @Suppress("unused") val alder: Int,
+    )
 
     @Test
     fun `fails for non data class`() {
@@ -141,20 +145,22 @@ class TemplateModelSpecificationFactoryTest {
                     "objekt" to FieldType.Object(true, AModel.SubModel::class.qualifiedName!!),
                     "listNullable" to FieldType.Array(true, FieldType.Scalar(false, Kind.STRING)),
                     "listWithNullable" to FieldType.Array(false, FieldType.Scalar(true, Kind.STRING)),
-                    "list" to FieldType.Array(true, FieldType.Scalar(true, Kind.STRING))
-                )
-            )
+                    "list" to FieldType.Array(true, FieldType.Scalar(true, Kind.STRING)),
+                ),
+            ),
         )
 
         assertThat(
             spec.types[AModel.SubModel::class.qualifiedName!!]!!,
-            equalTo(mapOf("navn" to FieldType.Scalar(false, Kind.STRING), "alder" to FieldType.Scalar(false, Kind.NUMBER)))
+            equalTo(mapOf("navn" to FieldType.Scalar(false, Kind.STRING), "alder" to FieldType.Scalar(false, Kind.NUMBER))),
         )
     }
 
     data class Recursive(val next: Recursive?)
+
     data class SubRecursive(val next: Child) {
         data class Child(val next: Grandchild)
+
         data class Grandchild(val next: SubRecursive)
     }
 
@@ -167,5 +173,4 @@ class TemplateModelSpecificationFactoryTest {
             TemplateModelSpecificationFactory(SubRecursive::class).build()
         }
     }
-
 }

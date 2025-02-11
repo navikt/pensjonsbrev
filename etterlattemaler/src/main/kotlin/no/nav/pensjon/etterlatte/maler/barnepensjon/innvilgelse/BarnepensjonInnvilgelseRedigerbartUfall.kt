@@ -33,42 +33,44 @@ data class BarnepensjonInnvilgelseRedigerbartUtfallDTO(
     val harFlereUtbetalingsperioder: Boolean,
     val erGjenoppretting: Boolean,
     val harUtbetaling: Boolean,
-    val erSluttbehandling: Boolean = false
+    val erSluttbehandling: Boolean = false,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonInnvilgelseRedigerbartUfall : EtterlatteTemplate<BarnepensjonInnvilgelseRedigerbartUtfallDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_INNVILGELSE_UTFALL
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonInnvilgelseRedigerbartUtfallDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - innvilgelse",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title {
-            text(Language.Bokmal to "", Language.Nynorsk to "", Language.English to "")
-        }
-        outline {
-            includePhrase(
-                BarnepensjonInnvilgelseFraser.Foerstegangsbehandlingsvedtak(
-                    avdoed,
-                    virkningsdato,
-                    sisteBeregningsperiodeDatoFom,
-                    sisteBeregningsperiodeBeloep,
-                    erEtterbetaling,
-                    harFlereUtbetalingsperioder,
-                    erGjenoppretting,
-                    harUtbetaling,
-                    erSluttbehandling
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = BarnepensjonInnvilgelseRedigerbartUtfallDTO::class,
+            languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - innvilgelse",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),
-            )
-            includePhrase(BarnepensjonInnvilgelseFraser.BegrunnelseForVedtaketRedigerbart(erEtterbetaling))
+        ) {
+            title {
+                text(Language.Bokmal to "", Language.Nynorsk to "", Language.English to "")
+            }
+            outline {
+                includePhrase(
+                    BarnepensjonInnvilgelseFraser.Foerstegangsbehandlingsvedtak(
+                        avdoed,
+                        virkningsdato,
+                        sisteBeregningsperiodeDatoFom,
+                        sisteBeregningsperiodeBeloep,
+                        erEtterbetaling,
+                        harFlereUtbetalingsperioder,
+                        erGjenoppretting,
+                        harUtbetaling,
+                        erSluttbehandling,
+                    ),
+                )
+                includePhrase(BarnepensjonInnvilgelseFraser.BegrunnelseForVedtaketRedigerbart(erEtterbetaling))
+            }
         }
-    }
 }

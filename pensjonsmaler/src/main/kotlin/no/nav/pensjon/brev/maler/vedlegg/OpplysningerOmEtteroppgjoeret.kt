@@ -18,22 +18,23 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 
 @TemplateModelHelpers
-val vedleggOpplysningerOmEtteroppgjoeret = createAttachment<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretDto>(
-    title = newText(
-        Bokmal to "Opplysninger om etteroppgjøret",
-        Nynorsk to "Opplysningar om etteroppgjeret",
-        English to "Information about the settlement",
-    ),
-    includeSakspart = true,
-) {
+val vedleggOpplysningerOmEtteroppgjoeret =
+    createAttachment<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretDto>(
+        title =
+            newText(
+                Bokmal to "Opplysninger om etteroppgjøret",
+                Nynorsk to "Opplysningar om etteroppgjeret",
+                English to "Information about the settlement",
+            ),
+        includeSakspart = true,
+    ) {
 
-    includePhrase(Introduksjon(periode))
-    includePhrase(FikkSkulleFaattTabell(periode, harFaattForMye, harGjenlevendeTillegg, ufoeretrygd, barnetillegg, totaltAvvik))
-    includePhrase(DuHarFaattAvviksBeloep(totaltAvvik, harFaattForMye, periode))
-    includePhrase(OmBeregningAvUfoeretrygd(barnetillegg, harGjenlevendeTillegg, pensjonsgivendeInntekt, periode, pensjonsgivendeInntektBruktIBeregningen, ufoeretrygd))
-    ifNotNull(barnetillegg) {
-        includePhrase(OmBeregningAvBarnetillegg(it, periode))
+        includePhrase(Introduksjon(periode))
+        includePhrase(FikkSkulleFaattTabell(periode, harFaattForMye, harGjenlevendeTillegg, ufoeretrygd, barnetillegg, totaltAvvik))
+        includePhrase(DuHarFaattAvviksBeloep(totaltAvvik, harFaattForMye, periode))
+        includePhrase(OmBeregningAvUfoeretrygd(barnetillegg, harGjenlevendeTillegg, pensjonsgivendeInntekt, periode, pensjonsgivendeInntektBruktIBeregningen, ufoeretrygd))
+        ifNotNull(barnetillegg) {
+            includePhrase(OmBeregningAvBarnetillegg(it, periode))
+        }
+        includePhrase(ErOpplysningeneOmInntektFeil(barnetillegg.felles_safe.notNull()))
     }
-    includePhrase(ErOpplysningeneOmInntektFeil(barnetillegg.felles_safe.notNull()))
-}
-

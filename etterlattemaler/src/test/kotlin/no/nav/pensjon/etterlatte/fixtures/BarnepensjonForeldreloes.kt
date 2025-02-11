@@ -19,105 +19,112 @@ import java.time.Month
 import java.time.YearMonth
 
 fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
-    val tt2 = Trygdetid(
-        navnAvdoed = "Død Sist",
-        trygdetidsperioder = listOf(
-            Trygdetidsperiode(
-                datoFOM = LocalDate.of(2004, 1, 1),
-                datoTOM = LocalDate.of(2024, 1, 1),
-                land = "Norge",
-                landkode = "NOR",
-                opptjeningsperiode = Periode(20, 0, 0),
-                type = TrygdetidType.FAKTISK
-            ),
-            Trygdetidsperiode(
-                datoFOM = LocalDate.of(2024, 1, 1),
-                datoTOM = LocalDate.of(2044, 1, 1),
-                land = "Norge",
-                landkode = "NOR",
-                opptjeningsperiode = Periode(20, 0, 0),
-                type = TrygdetidType.FREMTIDIG
-            )
-        ),
-        beregnetTrygdetidAar = 40,
-        prorataBroek = null,
-        beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
-        beregningsMetodeFraGrunnlag = BeregningsMetode.BEST,
-        mindreEnnFireFemtedelerAvOpptjeningstiden = false
-    )
+    val tt2 =
+        Trygdetid(
+            navnAvdoed = "Død Sist",
+            trygdetidsperioder =
+                listOf(
+                    Trygdetidsperiode(
+                        datoFOM = LocalDate.of(2004, 1, 1),
+                        datoTOM = LocalDate.of(2024, 1, 1),
+                        land = "Norge",
+                        landkode = "NOR",
+                        opptjeningsperiode = Periode(20, 0, 0),
+                        type = TrygdetidType.FAKTISK,
+                    ),
+                    Trygdetidsperiode(
+                        datoFOM = LocalDate.of(2024, 1, 1),
+                        datoTOM = LocalDate.of(2044, 1, 1),
+                        land = "Norge",
+                        landkode = "NOR",
+                        opptjeningsperiode = Periode(20, 0, 0),
+                        type = TrygdetidType.FREMTIDIG,
+                    ),
+                ),
+            beregnetTrygdetidAar = 40,
+            prorataBroek = null,
+            beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
+            beregningsMetodeFraGrunnlag = BeregningsMetode.BEST,
+            mindreEnnFireFemtedelerAvOpptjeningstiden = false,
+        )
 
-    val tt1 = Trygdetid(
-        navnAvdoed = "Først Død",
-        trygdetidsperioder = listOf(
-            Trygdetidsperiode(
-                datoFOM = LocalDate.of(2004, 1, 1),
-                datoTOM = LocalDate.of(2014, 1, 1),
-                land = "Norge",
-                landkode = "NOR",
-                opptjeningsperiode = Periode(10, 0, 0),
-                type = TrygdetidType.FAKTISK
-            ),
-            Trygdetidsperiode(
-                datoFOM = LocalDate.of(2014, 1, 1),
-                datoTOM = LocalDate.of(2023, 10, 1),
-                land = "Sverige",
-                landkode = "SWE",
-                opptjeningsperiode = Periode(10, 0, 0),
-                type = TrygdetidType.FAKTISK
-            ),
-            Trygdetidsperiode(
-                datoFOM = LocalDate.of(2023, 11, 1),
-                datoTOM = LocalDate.of(2044, 1, 1),
-                land = "Norge",
-                landkode = "NOR",
-                opptjeningsperiode = Periode(20, 0, 0),
-                type = TrygdetidType.FREMTIDIG
-            )
-        ),
-        beregnetTrygdetidAar = 40,
-        prorataBroek = IntBroek(3, 4),
-        beregningsMetodeAnvendt = BeregningsMetode.PRORATA,
-        beregningsMetodeFraGrunnlag = BeregningsMetode.PRORATA,
-        mindreEnnFireFemtedelerAvOpptjeningstiden = false
-
-    )
+    val tt1 =
+        Trygdetid(
+            navnAvdoed = "Først Død",
+            trygdetidsperioder =
+                listOf(
+                    Trygdetidsperiode(
+                        datoFOM = LocalDate.of(2004, 1, 1),
+                        datoTOM = LocalDate.of(2014, 1, 1),
+                        land = "Norge",
+                        landkode = "NOR",
+                        opptjeningsperiode = Periode(10, 0, 0),
+                        type = TrygdetidType.FAKTISK,
+                    ),
+                    Trygdetidsperiode(
+                        datoFOM = LocalDate.of(2014, 1, 1),
+                        datoTOM = LocalDate.of(2023, 10, 1),
+                        land = "Sverige",
+                        landkode = "SWE",
+                        opptjeningsperiode = Periode(10, 0, 0),
+                        type = TrygdetidType.FAKTISK,
+                    ),
+                    Trygdetidsperiode(
+                        datoFOM = LocalDate.of(2023, 11, 1),
+                        datoTOM = LocalDate.of(2044, 1, 1),
+                        land = "Norge",
+                        landkode = "NOR",
+                        opptjeningsperiode = Periode(20, 0, 0),
+                        type = TrygdetidType.FREMTIDIG,
+                    ),
+                ),
+            beregnetTrygdetidAar = 40,
+            prorataBroek = IntBroek(3, 4),
+            beregningsMetodeAnvendt = BeregningsMetode.PRORATA,
+            beregningsMetodeFraGrunnlag = BeregningsMetode.PRORATA,
+            mindreEnnFireFemtedelerAvOpptjeningstiden = false,
+        )
     return BarnepensjonForeldreloesDTO(
         innhold = createPlaceholderForRedigerbartInnhold(),
-        beregning = BarnepensjonBeregning(
-            innhold = createPlaceholderForRedigerbartInnhold(),
-            virkningsdato = LocalDate.now(),
-            antallBarn = 2,
-            grunnbeloep = Kroner(123456),
-            beregningsperioder = listOf(
-                BarnepensjonBeregningsperiode(
-                    datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
-                    datoTOM = LocalDate.of(2023, Month.JULY, 31),
-                    grunnbeloep = Kroner(123456),
-                    antallBarn = 2,
-                    utbetaltBeloep = Kroner(6234),
-                    harForeldreloessats = true,
-                )
-            ),
-            sisteBeregningsperiode = BarnepensjonBeregningsperiode(
-                datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
-                datoTOM = LocalDate.of(2023, Month.JULY, 31),
-                grunnbeloep = Kroner(123456),
+        beregning =
+            BarnepensjonBeregning(
+                innhold = createPlaceholderForRedigerbartInnhold(),
+                virkningsdato = LocalDate.now(),
                 antallBarn = 2,
-                utbetaltBeloep = Kroner(6234),
-                harForeldreloessats = true,
+                grunnbeloep = Kroner(123456),
+                beregningsperioder =
+                    listOf(
+                        BarnepensjonBeregningsperiode(
+                            datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
+                            datoTOM = LocalDate.of(2023, Month.JULY, 31),
+                            grunnbeloep = Kroner(123456),
+                            antallBarn = 2,
+                            utbetaltBeloep = Kroner(6234),
+                            harForeldreloessats = true,
+                        ),
+                    ),
+                sisteBeregningsperiode =
+                    BarnepensjonBeregningsperiode(
+                        datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
+                        datoTOM = LocalDate.of(2023, Month.JULY, 31),
+                        grunnbeloep = Kroner(123456),
+                        antallBarn = 2,
+                        utbetaltBeloep = Kroner(6234),
+                        harForeldreloessats = true,
+                    ),
+                trygdetid = listOf(tt1, tt2),
+                bruktTrygdetid = tt2,
+                forskjelligTrygdetid =
+                    ForskjelligTrygdetid(
+                        foersteTrygdetid = tt1,
+                        foersteVirkningsdato = LocalDate.of(2023, 11, 1),
+                        senereVirkningsdato = LocalDate.of(2024, 1, 1),
+                        harForskjelligMetode = true,
+                        erForskjellig = true,
+                    ),
+                erForeldreloes = true,
+                erYrkesskade = false,
             ),
-            trygdetid = listOf(tt1, tt2),
-            bruktTrygdetid = tt2,
-            forskjelligTrygdetid = ForskjelligTrygdetid(
-                foersteTrygdetid = tt1,
-                foersteVirkningsdato = LocalDate.of(2023, 11, 1),
-                senereVirkningsdato = LocalDate.of(2024, 1, 1),
-                harForskjelligMetode = true,
-                erForskjellig = true,
-            ),
-            erForeldreloes = true,
-            erYrkesskade = false,
-        ),
         frivilligSkattetrekk = true,
         bosattUtland = true,
         brukerUnder18Aar = true,
@@ -126,19 +133,20 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
         erGjenoppretting = false,
         vedtattIPesys = false,
         erMigrertYrkesskade = false,
-        erEtterbetaling = false
+        erEtterbetaling = false,
     )
 }
 
 fun createBarnepensjonForeldreloesRedigerbarDTO(): BarnepensjonForeldreloesRedigerbarDTO {
-    val siste = BarnepensjonBeregningsperiode(
-        datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
-        datoTOM = LocalDate.of(2023, Month.JULY, 31),
-        grunnbeloep = Kroner(123456),
-        antallBarn = 2,
-        utbetaltBeloep = Kroner(6234),
-        harForeldreloessats = true,
-    )
+    val siste =
+        BarnepensjonBeregningsperiode(
+            datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
+            datoTOM = LocalDate.of(2023, Month.JULY, 31),
+            grunnbeloep = Kroner(123456),
+            antallBarn = 2,
+            utbetaltBeloep = Kroner(6234),
+            harForeldreloessats = true,
+        )
     val foersteDoed = YearMonth.now().minusMonths(6)
     val andreDoed = YearMonth.now().minusMonths(3).atDay(1)
 
@@ -151,12 +159,12 @@ fun createBarnepensjonForeldreloesRedigerbarDTO(): BarnepensjonForeldreloesRedig
         erEtterbetaling = true,
         flerePerioder = true,
         vedtattIPesys = false,
-        forskjelligAvdoedPeriode = ForskjelligAvdoedPeriode(
-            foersteAvdoed = Avdoed(navn = "Død Først", doedsdato = foersteDoed.atDay(7)),
-            senereAvdoed = Avdoed(navn = "Senere Død", doedsdato = andreDoed),
-            senereVirkningsdato = andreDoed.plusMonths(1)
-
-        ),
-        erSluttbehandling = false
+        forskjelligAvdoedPeriode =
+            ForskjelligAvdoedPeriode(
+                foersteAvdoed = Avdoed(navn = "Død Først", doedsdato = foersteDoed.atDay(7)),
+                senereAvdoed = Avdoed(navn = "Senere Død", doedsdato = andreDoed),
+                senereVirkningsdato = andreDoed.plusMonths(1),
+            ),
+        erSluttbehandling = false,
     )
 }

@@ -29,5 +29,3 @@ data class TemplateModelSpecification(val types: Map<String, ObjectTypeSpecifica
         enum class Type { scalar, enum, array, `object` }
     }
 }
-
-

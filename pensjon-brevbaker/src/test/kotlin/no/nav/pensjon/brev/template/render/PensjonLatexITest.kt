@@ -35,25 +35,27 @@ class PensjonLatexITest {
 
     @Test
     fun canRender() {
-        val template = createTemplate(
-            name = "test-template",
-            letterDataType = TestTemplateDto::class,
-            languages = languages(Bokmal),
-            letterMetadata = LetterMetadata(
-                displayTitle = "En fin display tittel",
-                isSensitiv = false,
-                distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
-                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-            )
-        ) {
-            title { text(Bokmal to "En fin tittel") }
-            outline {
-                paragraph {
-                    text(Bokmal to "Argumentet etNavn er: ")
-                    eval(etNavn)
+        val template =
+            createTemplate(
+                name = "test-template",
+                letterDataType = TestTemplateDto::class,
+                languages = languages(Bokmal),
+                letterMetadata =
+                    LetterMetadata(
+                        displayTitle = "En fin display tittel",
+                        isSensitiv = false,
+                        distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+                        brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                    ),
+            ) {
+                title { text(Bokmal to "En fin tittel") }
+                outline {
+                    paragraph {
+                        text(Bokmal to "Argumentet etNavn er: ")
+                        eval(etNavn)
+                    }
                 }
             }
-        }
         Letter(template, brevData, Bokmal, Fixtures.felles).renderTestPDF("pensjonLatexITest_canRender")
     }
 
@@ -66,8 +68,11 @@ class PensjonLatexITest {
     // FIND_FAILING_CHARACTERS is disabled by default to not take up too much time in case of universally failing compilation.
     @ParameterizedTest
     @MethodSource("allCharacterRanges")
-    fun `try different characters to attempt escaping LaTeX`(fromRange: Int, toRange: Int) {
-        //allCharacterRanges
+    fun `try different characters to attempt escaping LaTeX`(
+        fromRange: Int,
+        toRange: Int,
+    ) {
+        // allCharacterRanges
         val invalidCharacters = ArrayList<Int>()
 
         // split in multiple parts so that it doesn't time out the letter compilation
@@ -79,19 +84,23 @@ class PensjonLatexITest {
                 """
                     Escaped characters managed to crash the letter compilation:
                     ${invalidCharacters.joinToString()}}
-                """.trimIndent()
+                """.trimIndent(),
             )
         }
         assertThat(invalidCharacters, isEmpty)
     }
 
-    private fun isValidCharacters(begin: Int, end: Int, invalidCharacters: ArrayList<Int>) {
+    private fun isValidCharacters(
+        begin: Int,
+        end: Int,
+        invalidCharacters: ArrayList<Int>,
+    ) {
         if (testCharacters(begin, end)) {
-            //All characters are valid
+            // All characters are valid
             return
         } else if (FIND_FAILING_CHARACTERS) {
             if (begin - end == 0) {
-                //Failed at single character
+                // Failed at single character
                 invalidCharacters.add(begin)
                 return
             }
@@ -103,40 +112,51 @@ class PensjonLatexITest {
         }
     }
 
-    private fun testCharacters(startChar: Int, endChar: Int): Boolean {
+    private fun testCharacters(
+        startChar: Int,
+        endChar: Int,
+    ): Boolean {
         try {
-            val testTemplate = createTemplate(
-                name = "test-template",
-                letterDataType = TestTemplateDto::class,
-                languages = languages(Bokmal),
-                letterMetadata = LetterMetadata(
-                    displayTitle = "En fin display tittel",
-                    isSensitiv = false,
-                    distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
-                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-                )
-            ) {
-                title { text(Bokmal to "En fin tittel") }
-                outline {
-                    paragraph {
-                        text(Bokmal to addChars(startChar, endChar) + "test")
-                        eval(etNavn)
+            val testTemplate =
+                createTemplate(
+                    name = "test-template",
+                    letterDataType = TestTemplateDto::class,
+                    languages = languages(Bokmal),
+                    letterMetadata =
+                        LetterMetadata(
+                            displayTitle = "En fin display tittel",
+                            isSensitiv = false,
+                            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+                            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                        ),
+                ) {
+                    title { text(Bokmal to "En fin tittel") }
+                    outline {
+                        paragraph {
+                            text(Bokmal to addChars(startChar, endChar) + "test")
+                            eval(etNavn)
+                        }
                     }
                 }
-            }
 
             Letter(testTemplate, brevData, Bokmal, Fixtures.felles)
                 .renderTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar")
 
             return true
         } catch (e: Throwable) {
-            if (!FIND_FAILING_CHARACTERS) throw e
-            else logger.error("Failed printing character in range $startChar - $endChar with message: ${e.message}")
+            if (!FIND_FAILING_CHARACTERS) {
+                throw e
+            } else {
+                logger.error("Failed printing character in range $startChar - $endChar with message: ${e.message}")
+            }
             return false
         }
     }
 
-    private fun addChars(from: Int, to: Int): String {
+    private fun addChars(
+        from: Int,
+        to: Int,
+    ): String {
         val stringBuilder = StringBuilder()
         for (i in from..to) {
             stringBuilder.append(Char(i)).append(" ")
@@ -149,10 +169,9 @@ class PensjonLatexITest {
         fun allCharacterRanges(): List<Arguments> {
             val parts = 4
             val partSize = Char.MAX_VALUE.code / parts
-            return List(parts){
+            return List(parts) {
                 Arguments.of((it * partSize), (((it + 1) * partSize + it).coerceAtMost(Char.MAX_VALUE.code)))
             }
         }
     }
-
 }

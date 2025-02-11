@@ -23,6 +23,7 @@ import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.request.path
 import io.ktor.server.response.respond
 import io.ktor.util.date.getTimeMillis
+import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.converters.LetterResponseFileConverter
@@ -30,14 +31,13 @@ import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.LatexCompileException
 import no.nav.pensjon.brev.latex.LatexInvalidException
 import no.nav.pensjon.brev.latex.LatexTimeoutException
-import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
 
 fun Application.brevbakerModule(
     templates: AllTemplates,
-    konfigurerFeatureToggling: (ApplicationConfig) -> Unit = { konfigurerUnleash(it) }
+    konfigurerFeatureToggling: (ApplicationConfig) -> Unit = { konfigurerUnleash(it) },
 ) {
     val brevbakerConfig = environment.config.config("brevbaker")
 
@@ -68,7 +68,7 @@ fun Application.brevbakerModule(
             if (cause.cause is JacksonException) {
                 call.respond(
                     HttpStatusCode.BadRequest,
-                    cause.cause?.message ?: "Failed to deserialize json body: unknown reason"
+                    cause.cause?.message ?: "Failed to deserialize json body: unknown reason",
                 )
             } else {
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Unknown failure")
@@ -86,13 +86,13 @@ fun Application.brevbakerModule(
             call.application.log.info("Latex compilation failed due to invalid latex", cause)
             call.respond(
                 HttpStatusCode.InternalServerError,
-                cause.message ?: "Latex compilation failed due to invalid latex"
+                cause.message ?: "Latex compilation failed due to invalid latex",
             )
         }
         exception<ParameterConversionException> { call, cause ->
             call.respond(
                 HttpStatusCode.BadRequest,
-                cause.message ?: "Failed to convert path parameter to required type: unknown cause"
+                cause.message ?: "Failed to convert path parameter to required type: unknown cause",
             )
         }
         exception<ParseLetterDataException> { call, cause ->
@@ -122,10 +122,11 @@ fun Application.brevbakerModule(
         }
     }
 
-    val latexCompilerService = LaTeXCompilerService(
-        pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
-        maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
-    )
+    val latexCompilerService =
+        LaTeXCompilerService(
+            pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
+            maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
+        )
 
     konfigurerFeatureToggling(brevbakerConfig)
 
