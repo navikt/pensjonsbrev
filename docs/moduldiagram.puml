@@ -1,6 +1,8 @@
 @startuml
 
 object "pensjon-brevbaker" as brevbaker
+brevbaker : dagens applikasjon
+
 object pensjonsmalene #pink
 pensjonsmalene : - ny modul
 pensjonsmalene : - her ligger malene og malkodene
@@ -17,6 +19,7 @@ dsl : - det som trengs for å lage en mal
 object "brevbaker-bibliotek" as bibliotek
 bibliotek : skal eksponeres
 
+object Gjenny #yellow
 
 object "brevbaker-model" as modelcommon
 modelcommon : - som i dag
@@ -45,7 +48,8 @@ pensjonsmalene ..> tmg
 bibliotek ..> tmg
 
 PEN --> apimodel
+Gjenny --> modelcommon
 
-Skribenten --> dsl
+Skribenten --> modelcommon
 
 @enduml

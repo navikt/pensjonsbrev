@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.YtelseForAldersovergangKode
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -503,21 +504,21 @@ object InfoSkattAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                Bokmal to "Du bør endre skattekortet når du begynner å ta ut alderspensjon. Dette kan du gjøre selv på $SKATTEETATEN_URL. " +
+                Bokmal to "Du bør endre skattekortet når du begynner å ta ut alderspensjon. Dette kan du gjøre selv på $SKATTEETATEN_PENSJONIST_URL. " +
                         "Der får du også mer informasjon om skattekort for pensjonister. Vi får skattekortet elektronisk. Du skal derfor ikke sende det til oss.",
-                Nynorsk to "Du bør endre skattekortet når du byrjar å ta ut alderspensjon. Dette kan du gjere sjølv på $SKATTEETATEN_URL. " +
+                Nynorsk to "Du bør endre skattekortet når du byrjar å ta ut alderspensjon. Dette kan du gjere sjølv på $SKATTEETATEN_PENSJONIST_URL. " +
                         "Der får du også meir informasjon om skattekort for pensjonistar. Vi får skattekortet elektronisk. Du skal derfor ikkje sende det til oss.",
-                English to "When you start drawing retirement pension, you should change your tax deduction card. You can change your tax card by logging on to $SKATTEETATEN_URL. " +
+                English to "When you start drawing retirement pension, you should change your tax deduction card. You can change your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL. " +
                         "There you will find more information regarding the tax deduction card for pensioners. We will receive the tax card directly from the Norwegian Tax Administration, meaning you do not need to send it to us."
             )
         }
         paragraph {
             text(
-                Bokmal to "På $SKATTEETATEN_URL finner du også informasjon om skatt når du bor utenfor Norge. " +
+                Bokmal to "På $SKATTEETATEN_PENSJONIST_URL finner du også informasjon om skatt når du bor utenfor Norge. " +
                         "Du må selv avklare spørsmål om skatteplikt til det landet du bor i med skattemyndighetene der.",
-                Nynorsk to "På $SKATTEETATEN_URL finn du også informasjon om skatt når du bur utanfor Noreg. " +
+                Nynorsk to "På $SKATTEETATEN_PENSJONIST_URL finn du også informasjon om skatt når du bur utanfor Noreg. " +
                         "Du må sjølv avklare spørsmål om skatteplikt til det landet du bur i med skatteorgana der.",
-                English to "At $SKATTEETATEN_URL, you will also find information about tax liability to Norway after moving abroad. " +
+                English to "At $SKATTEETATEN_PENSJONIST_URL, you will also find information about tax liability to Norway after moving abroad. " +
                         "You must clarify questions about tax liability to your country of residence with the local tax authorities."
             )
         }

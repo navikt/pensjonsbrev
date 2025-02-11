@@ -4,7 +4,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.LetterMetadata
@@ -60,23 +59,9 @@ class BrevmalService(
     private suspend fun hentBrevakerMaler(): List<TemplateDescription.Redigerbar> =
         if (Features.brevbakerbrev.isEnabled()) {
             brevbakerService.getTemplates()
-                .map { result ->
-                    result.filter { brev ->
-                        when {
-                            brev.erMalMedFritekst() -> Features.brevMedFritekst.isEnabled()
-                            brev.name == Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD.name -> Features.brevmalUTavslag.isEnabled()
-                            else -> true
-                        }
-                    }
-                }
                 .catch { message, statusCode ->
                     logger.error("Kunne ikke hente brevmaler fra brevbaker: $message - $statusCode")
                     emptyList()
                 }
         } else emptyList()
-
-    private fun TemplateDescription.erMalMedFritekst() = name in setOf(
-        Pesysbrevkoder.Redigerbar.PE_OVERSETTELSE_AV_DOKUMENTER, // Ikke helt klart hvordan vi skal løse fritekst med forhåndsutfylt data fra Felles (navEnhets navn).
-    ).map { it.name }
-
 }
