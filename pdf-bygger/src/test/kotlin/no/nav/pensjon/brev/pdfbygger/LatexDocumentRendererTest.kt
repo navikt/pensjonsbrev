@@ -4,8 +4,11 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
 import com.natpryce.hamkrest.equalTo
 import kotlinx.coroutines.runBlocking
+import no.nav.brev.brevbaker.maler.example.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
+import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.pdfbygger.Fixtures.felles
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language
