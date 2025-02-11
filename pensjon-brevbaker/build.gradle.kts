@@ -14,7 +14,6 @@ val mockkVersion: String by project
 plugins {
     application
     kotlin("jvm")
-    id("com.google.devtools.ksp")
     id("io.ktor.plugin")
 }
 
@@ -118,7 +117,6 @@ dependencies {
 
     implementation(project(":pensjonsmaler"))
     implementation(project(":etterlattemaler"))
-    ksp(project(":template-model-generator"))
 
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version") {
         because("we require deserialization/serialization of java.time.LocalDate")
