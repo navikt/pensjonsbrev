@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     val kotlinVersion: String by System.getProperties()
     val ktorVersion: String by System.getProperties()
@@ -6,6 +8,7 @@ plugins {
     kotlin("jvm") version kotlinVersion apply false
     id("com.google.devtools.ksp") version "$kotlinVersion-$kspVersion" apply false
     id("io.ktor.plugin") version ktorVersion apply false
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.2"
 }
 
 allprojects {
@@ -19,5 +22,34 @@ allprojects {
                 includeGroup("no.nav.pensjon.brevbaker") // api-model-common
             }
         }
+    }
+}
+
+tasks {
+    withType<KotlinCompile>().configureEach {
+        dependsOn("ktlintFormat")
+    }
+
+    task("build") {
+        dependsOn("copyPreCommitHook")
+    }
+
+    register<Copy>("copyPreCommitHook") {
+        from(".scripts/pre-commit")
+        into(".git/hooks")
+        filePermissions {
+            user {
+                execute = true
+            }
+        }
+        doFirst {
+            println("Installing git hooks...")
+        }
+        doLast {
+            println("Git hooks installed successfully.")
+        }
+        description = "Copy pre-commit hook to .git/hooks"
+        group = "git hooks"
+        outputs.upToDateWhen { false }
     }
 }
