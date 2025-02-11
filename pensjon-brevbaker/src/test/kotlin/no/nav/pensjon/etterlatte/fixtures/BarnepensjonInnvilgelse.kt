@@ -78,7 +78,8 @@ fun createBarnepensjonInnvilgelseDTO(): BarnepensjonInnvilgelseDTO {
         erGjenoppretting = false,
         harUtbetaling = true,
         erMigrertYrkesskade = false,
-        erEtterbetaling = false
+        erEtterbetaling = false,
+        datoVedtakOmgjoering = LocalDate.now()
     )
 }
 

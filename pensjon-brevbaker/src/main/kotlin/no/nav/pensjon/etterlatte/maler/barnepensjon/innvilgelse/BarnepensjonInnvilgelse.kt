@@ -5,10 +5,14 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -19,6 +23,7 @@ import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.brukerUnder18Aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.datoVedtakOmgjoering
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.erEtterbetaling
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.erGjenoppretting
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.erMigrertYrkesskade
@@ -36,6 +41,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSom
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomHandlerPaaVegneAvBarnetUtland
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomMottarBarnepensjonNasjonal
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomMottarBarnepensjonUtland
+import java.time.LocalDate
 
 data class BarnepensjonInnvilgelseDTO(
     override val innhold: List<Element>,
@@ -48,7 +54,8 @@ data class BarnepensjonInnvilgelseDTO(
     val frivilligSkattetrekk: Boolean,
     val harUtbetaling: Boolean,
     val kunNyttRegelverk: Boolean,
-    val erSluttbehandling: Boolean = false
+    val erSluttbehandling: Boolean = false,
+    val datoVedtakOmgjoering: LocalDate? = null,
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
@@ -67,7 +74,15 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
         ),
     ) {
         title {
-            showIf(erGjenoppretting) {
+
+            ifNotNull(datoVedtakOmgjoering) {
+                textExpr(
+                    Bokmal to "Vi har omgjort vedtaket om omstillingsstønad av ".expr() + it.format(),
+                    Nynorsk to "Vi har gjort om vedtaket om omstillingsstønad av ".expr() + it.format(),
+                    English to "We have reversed our decision regarding the adjustment allowance on ".expr() + it.format(),
+                )
+            }
+            .orShowIf(erGjenoppretting) {
                 text(
                     Bokmal to "Du er innvilget barnepensjon på nytt",
                     Nynorsk to "Du er innvilga barnepensjon på ny",
