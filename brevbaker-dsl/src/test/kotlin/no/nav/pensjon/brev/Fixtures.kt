@@ -33,5 +33,4 @@ object Fixtures {
                 ),
             vergeNavn = null,
         )
-    val fellesAuto = felles.copy(signerendeSaksbehandlere = null)
 }
