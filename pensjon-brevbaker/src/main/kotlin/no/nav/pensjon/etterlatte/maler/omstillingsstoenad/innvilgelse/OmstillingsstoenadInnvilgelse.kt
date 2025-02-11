@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse
 
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
@@ -87,7 +88,7 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
             }
 
             outline {
-                showIf(datoVedtakOmgjoering.notNull().not()){
+                showIf(datoVedtakOmgjoering.equalTo(null)){
                     includePhrase(
                         OmstillingsstoenadInnvilgelseFraser.Vedtak(avdoed, beregning, harUtbetaling, tidligereFamiliepleier, erSluttbehandling),
                     )
