@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 
 plugins {
     val kotlinVersion: String by System.getProperties()
@@ -51,5 +52,23 @@ tasks {
         description = "Copy pre-commit hook to .git/hooks"
         group = "git hooks"
         outputs.upToDateWhen { false }
+    }
+}
+
+subprojects {
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+        coloredOutput.set(true)
+        reporters {
+            reporter(ReporterType.CHECKSTYLE)
+            reporter(ReporterType.JSON)
+            reporter(ReporterType.HTML)
+        }
+        filter {
+            exclude { element ->
+                val path = element.file.path
+                path.contains("generated/") || path.contains("build.gradle.kts")
+            }
+        }
     }
 }
