@@ -45,14 +45,19 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
 
     override val template =
         createTemplate(
-            name = "EKSEMPEL_BREV", // Letter ID
-            letterDataType = LetterExampleDto::class, // Data class containing the required data of this letter
+            // Letter ID
+            name = "EKSEMPEL_BREV",
+            // Data class containing the required data of this letter
+            letterDataType = LetterExampleDto::class,
             languages = languages(Bokmal, Nynorsk),
             letterMetadata =
                 LetterMetadata(
-                    displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
-                    isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
-                    distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, // Brukes ved distribusjon av brevet
+                    // Display title for external systems
+                    displayTitle = "Dette er ett eksempel-brev",
+                    // If this letter contains sensitive information requiring level 4 log-in
+                    isSensitiv = false,
+                    // Brukes ved distribusjon av brevet
+                    distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),
         ) {

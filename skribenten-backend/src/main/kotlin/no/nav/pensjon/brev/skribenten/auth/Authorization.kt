@@ -28,12 +28,12 @@ data class JwtConfig(
     data class PreAuthorizedApp(val name: String, val clientId: String)
 }
 
-private const val jwtAzureAdName = "AZURE_AD"
+private const val JWT_AZURE_AD_NAME = "AZURE_AD"
 
 fun Config.requireAzureADConfig() =
     getConfig("azureAD").let {
         JwtConfig(
-            name = jwtAzureAdName,
+            name = JWT_AZURE_AD_NAME,
             issuer = it.getString("issuer"),
             jwksUrl = it.getString("jwksUrl"),
             clientId = it.getString("clientId"),

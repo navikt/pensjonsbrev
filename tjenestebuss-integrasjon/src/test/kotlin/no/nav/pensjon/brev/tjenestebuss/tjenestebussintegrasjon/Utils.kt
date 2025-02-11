@@ -25,13 +25,14 @@ fun createTestApplication(block: suspend ApplicationTestBuilder.(client: HttpCli
         }
         application {
             install(ContentNegotiation) {
-                jackson {  }
+                jackson { }
             }
         }
-        val client = createClient {
-            install(io.ktor.client.plugins.contentnegotiation.ContentNegotiation) {
-                jackson {  }
+        val client =
+            createClient {
+                install(io.ktor.client.plugins.contentnegotiation.ContentNegotiation) {
+                    jackson { }
+                }
             }
-        }
         block(client)
     }

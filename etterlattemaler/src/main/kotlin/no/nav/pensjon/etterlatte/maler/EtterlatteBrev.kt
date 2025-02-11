@@ -16,7 +16,8 @@ data class BarnepensjonBeregning(
     val grunnbeloep: Kroner,
     val beregningsperioder: List<BarnepensjonBeregningsperiode>,
     val sisteBeregningsperiode: BarnepensjonBeregningsperiode,
-    val bruktTrygdetid: Trygdetid, // Fra og med siste åpne periode
+    // Fra og med siste åpne periode
+    val bruktTrygdetid: Trygdetid,
     val trygdetid: List<Trygdetid>,
     val erForeldreloes: Boolean = false,
     val forskjelligTrygdetid: ForskjelligTrygdetid? = null,

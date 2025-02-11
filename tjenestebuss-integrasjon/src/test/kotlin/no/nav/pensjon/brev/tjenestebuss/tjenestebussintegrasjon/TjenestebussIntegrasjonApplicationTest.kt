@@ -7,19 +7,19 @@ import org.junit.Test
 import kotlin.test.assertEquals
 
 class TjenestebussIntegrasjonApplicationTest {
+    @Test
+    fun isAlive() =
+        testApplication {
+            val response = client.get("/isAlive")
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals("Alive!", response.bodyAsText())
+        }
 
     @Test
-    fun isAlive() = testApplication {
-        val response = client.get("/isAlive")
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals("Alive!", response.bodyAsText())
-    }
-
-    @Test
-    fun isReady() = testApplication {
-        val response = client.get("/isReady")
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals("Ready!", response.bodyAsText())
-    }
-
+    fun isReady() =
+        testApplication {
+            val response = client.get("/isReady")
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals("Ready!", response.bodyAsText())
+        }
 }

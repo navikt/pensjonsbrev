@@ -142,21 +142,21 @@ internal object LatexDocumentRenderer {
         appendNewCmd("saksinfomottaker") {
             appendCmd("begin", "saksinfotable", "")
             verge?.let {
-                appendln("""\felt${LanguageSetting.Sakspart.vergenavn} & \feltvergenavn \\""", escape = false)
+                appendln("""\felt${LanguageSetting.Sakspart.VERGENAVN} & \feltvergenavn \\""", escape = false)
                 appendln(
-                    """\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltnavnbruker \\""",
+                    """\felt${LanguageSetting.Sakspart.GJELDER_NAVN} & \feltnavnbruker \\""",
                     escape = false,
                 )
             } ?: appendln(
-                """\felt${LanguageSetting.Sakspart.navn} & \feltnavnbruker \\""",
+                """\felt${LanguageSetting.Sakspart.NAVN} & \feltnavnbruker \\""",
                 escape = false,
             )
             appendln(
-                """\felt${LanguageSetting.Sakspart.foedselsnummer} & \feltfoedselsnummerbruker \\""",
+                """\felt${LanguageSetting.Sakspart.FOEDSELSNUMMER} & \feltfoedselsnummerbruker \\""",
                 escape = false,
             )
             appendln(
-                """\felt${LanguageSetting.Sakspart.saksnummer} & \feltsaksnummer \hfill \letterdate\\""",
+                """\felt${LanguageSetting.Sakspart.SAKSNUMMER} & \feltsaksnummer \hfill \letterdate\\""",
                 escape = false,
             )
 

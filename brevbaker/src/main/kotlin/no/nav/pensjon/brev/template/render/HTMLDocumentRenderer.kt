@@ -4,8 +4,8 @@ import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
-import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskInformasjonsbrev
-import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskVedtaksbrev
+import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.AUTOMATISK_INFORMASJONSBREV
+import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.AUTOMATISK_VEDTAKSBREV
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
@@ -61,7 +61,7 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
                             img(
                                 classes = classes("logo"),
                                 src = navLogoImg,
-                                alt = languageSettings.getSetting(language, LanguageSetting.HTML.altTextLogo),
+                                alt = languageSettings.getSetting(language, LanguageSetting.HTML.ALT_TEXT_LOGO),
                             )
                             div(classes("brevhode")) {
                                 renderSakspart(language, felles)
@@ -98,14 +98,14 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         div("closing") {
             // Med vennlig hilsen
             div(classes("closing-greeting")) {
-                text(languageSettings.getSetting(language, LanguageSetting.Closing.greeting))
+                text(languageSettings.getSetting(language, LanguageSetting.Closing.GREETING))
             }
             div(classes("closing-enhet")) { text(felles.avsenderEnhet.navn) }
 
             val signerende = felles.signerendeSaksbehandlere
             if (signerende != null) {
                 div(classes("closing-manuell")) {
-                    val saksbehandlerTekst = languageSettings.getSetting(language, LanguageSetting.Closing.saksbehandler)
+                    val saksbehandlerTekst = languageSettings.getSetting(language, LanguageSetting.Closing.SAKSBEHANDLER)
                     signerende.attesterendeSaksbehandler?.takeIf { brevtype == VEDTAKSBREV }?.let {
                         div(classes("closing-saksbehandler")) {
                             div { text(it) }
@@ -120,9 +120,9 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             } else {
                 div(classes("closing-automatisk")) {
                     if (brevtype == VEDTAKSBREV) {
-                        text(languageSettings.getSetting(language, automatiskVedtaksbrev))
+                        text(languageSettings.getSetting(language, AUTOMATISK_VEDTAKSBREV))
                     } else {
-                        text(languageSettings.getSetting(language, automatiskInformasjonsbrev))
+                        text(languageSettings.getSetting(language, AUTOMATISK_INFORMASJONSBREV))
                     }
                 }
             }
@@ -135,7 +135,7 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         felles: Felles,
     ): Unit =
         div(classes("vedlegg")) {
-            img(classes = classes("logo"), src = navLogoImg, alt = languageSettings.getSetting(language, LanguageSetting.HTML.altTextLogo))
+            img(classes = classes("logo"), src = navLogoImg, alt = languageSettings.getSetting(language, LanguageSetting.HTML.ALT_TEXT_LOGO))
             h1(classes("tittel")) { renderText(attachment.title) }
             if (attachment.includeSakspart) {
                 renderSakspart(language, felles)
@@ -305,13 +305,13 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         div(classes("sakspart")) {
             with(felles.bruker) {
                 val navnPrefix =
-                    if (felles.vergeNavn != null) LanguageSetting.Sakspart.gjelderNavn else LanguageSetting.Sakspart.navn
+                    if (felles.vergeNavn != null) LanguageSetting.Sakspart.GJELDER_NAVN else LanguageSetting.Sakspart.NAVN
 
                 listOfNotNull(
-                    felles.vergeNavn?.let { LanguageSetting.Sakspart.vergenavn to it },
+                    felles.vergeNavn?.let { LanguageSetting.Sakspart.VERGENAVN to it },
                     navnPrefix to fulltNavn(),
-                    LanguageSetting.Sakspart.foedselsnummer to foedselsnummer.value,
-                    LanguageSetting.Sakspart.saksnummer to felles.saksnummer,
+                    LanguageSetting.Sakspart.FOEDSELSNUMMER to foedselsnummer.value,
+                    LanguageSetting.Sakspart.SAKSNUMMER to felles.saksnummer,
                 )
             }.forEach {
                 div(classes("sakspart-tittel")) { text(languageSettings.getSetting(language, it.first)) }

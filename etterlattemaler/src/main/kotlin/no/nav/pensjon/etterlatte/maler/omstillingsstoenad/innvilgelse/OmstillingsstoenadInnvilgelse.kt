@@ -32,8 +32,10 @@ data class OmstillingsstoenadInnvilgelseDTO(
     val avdoed: Avdoed?,
     val beregning: OmstillingsstoenadBeregning,
     val innvilgetMindreEnnFireMndEtterDoedsfall: Boolean,
-    val lavEllerIngenInntekt: Boolean?, // TODO: skal fases ut
-    val omsRettUtenTidsbegrensning: Boolean = lavEllerIngenInntekt ?: false, // TODO: overtar for lavEllerIngenInntekt
+    // TODO: skal fases ut
+    val lavEllerIngenInntekt: Boolean?,
+    // TODO: overtar for lavEllerIngenInntekt
+    val omsRettUtenTidsbegrensning: Boolean = lavEllerIngenInntekt ?: false,
     val harUtbetaling: Boolean,
     val etterbetaling: OmstillingsstoenadEtterbetaling?,
     val tidligereFamiliepleier: Boolean = false,

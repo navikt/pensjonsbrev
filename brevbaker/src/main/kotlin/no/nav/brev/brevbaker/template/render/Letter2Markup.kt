@@ -43,8 +43,8 @@ object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             signatur =
                 scope.felles.signerendeSaksbehandlere.let { sign ->
                     Signatur(
-                        hilsenTekst = languageSettings.getSetting(scope.language, LanguageSetting.Closing.greeting),
-                        saksbehandlerRolleTekst = languageSettings.getSetting(scope.language, LanguageSetting.Closing.saksbehandler),
+                        hilsenTekst = languageSettings.getSetting(scope.language, LanguageSetting.Closing.GREETING),
+                        saksbehandlerRolleTekst = languageSettings.getSetting(scope.language, LanguageSetting.Closing.SAKSBEHANDLER),
                         saksbehandlerNavn = sign?.saksbehandler ?: "",
                         attesterendeSaksbehandlerNavn = sign?.attesterendeSaksbehandler ?: "",
                         navAvsenderEnhet = scope.felles.avsenderEnhet.navn,

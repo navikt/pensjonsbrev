@@ -16,11 +16,6 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadDataSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadDataSelectors.tidligereFamiliepleier
 
-data class InformasjonOmOmstillingsstoenadData(
-    val tidligereFamiliepleier: Boolean = false,
-    val bosattUtland: Boolean = false,
-)
-
 fun informasjonOmOmstillingsstoenad(): AttachmentTemplate<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData> {
     return createAttachment(
         title =

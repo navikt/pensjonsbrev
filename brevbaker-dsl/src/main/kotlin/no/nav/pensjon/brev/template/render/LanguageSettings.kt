@@ -6,29 +6,29 @@ import no.nav.pensjon.brev.template.dsl.languageSettings
 
 object LanguageSetting {
     object Sakspart {
-        const val navn = "navnprefix"
-        const val gjelderNavn = "gjeldernavnprefix"
-        const val vedleggGjelderNavn = "vedlegggjeldernavnprefix"
-        const val vergenavn = "vergenavnprefix"
-        const val saksnummer = "saksnummerprefix"
-        const val foedselsnummer = "foedselsnummerprefix"
+        const val NAVN = "navnprefix"
+        const val GJELDER_NAVN = "gjeldernavnprefix"
+        const val VEDLEGG_GJELDER_NAVN = "vedlegggjeldernavnprefix"
+        const val VERGENAVN = "vergenavnprefix"
+        const val SAKSNUMMER = "saksnummerprefix"
+        const val FOEDSELSNUMMER = "foedselsnummerprefix"
     }
 
     object Closing {
-        const val automatiskVedtaksbrev = "closingautomatisktextvedtaksbrev"
-        const val greeting = "closinggreeting"
-        const val saksbehandler = "closingsaksbehandlersuffix"
-        const val automatiskInformasjonsbrev = "closingautomatisktextinfobrev"
+        const val AUTOMATISK_VEDTAKSBREV = "closingautomatisktextvedtaksbrev"
+        const val GREETING = "closinggreeting"
+        const val SAKSBEHANDLER = "closingsaksbehandlersuffix"
+        const val AUTOMATISK_INFORMASJONSBREV = "closingautomatisktextinfobrev"
     }
 
     object HTML {
-        const val altTextLogo = "altTextLogo"
+        const val ALT_TEXT_LOGO = "altTextLogo"
     }
 }
 
 val pensjonLatexSettings =
     languageSettings {
-        setting(LanguageSetting.Sakspart.navn) {
+        setting(LanguageSetting.Sakspart.NAVN) {
             Literal.create(
                 Bokmal to "Navn:",
                 Nynorsk to "Namn:",
@@ -36,7 +36,7 @@ val pensjonLatexSettings =
             )
         }
 
-        setting(LanguageSetting.Sakspart.vergenavn) {
+        setting(LanguageSetting.Sakspart.VERGENAVN) {
             Literal.create(
                 Bokmal to "Verge:",
                 Nynorsk to "Verje:",
@@ -44,7 +44,7 @@ val pensjonLatexSettings =
             )
         }
 
-        setting(LanguageSetting.Sakspart.vedleggGjelderNavn) {
+        setting(LanguageSetting.Sakspart.VEDLEGG_GJELDER_NAVN) {
             Literal.create(
                 Bokmal to "Vedlegget gjelder:",
                 Nynorsk to "Vedlegget gjeld:",
@@ -52,7 +52,7 @@ val pensjonLatexSettings =
             )
         }
 
-        setting(LanguageSetting.Sakspart.gjelderNavn) {
+        setting(LanguageSetting.Sakspart.GJELDER_NAVN) {
             Literal.create(
                 Bokmal to "Saken gjelder:",
                 Nynorsk to "Saka gjeld:",
@@ -60,7 +60,7 @@ val pensjonLatexSettings =
             )
         }
 
-        setting(LanguageSetting.Sakspart.saksnummer) {
+        setting(LanguageSetting.Sakspart.SAKSNUMMER) {
             Literal.create(
                 Bokmal to "Saksnummer:",
                 Nynorsk to "Saksnummer:",
@@ -68,7 +68,7 @@ val pensjonLatexSettings =
             )
         }
 
-        setting(LanguageSetting.Sakspart.foedselsnummer) {
+        setting(LanguageSetting.Sakspart.FOEDSELSNUMMER) {
             Literal.create(
                 Bokmal to "Fødselsnummer:",
                 Nynorsk to "Fødselsnummer:",
@@ -100,7 +100,7 @@ val pensjonLatexSettings =
             )
         }
 
-        setting(LanguageSetting.Closing.greeting) {
+        setting(LanguageSetting.Closing.GREETING) {
             Literal.create(
                 Bokmal to "Med vennlig hilsen",
                 Nynorsk to "Med vennleg helsing",
@@ -108,21 +108,21 @@ val pensjonLatexSettings =
             )
         }
 
-        setting(LanguageSetting.Closing.saksbehandler) {
+        setting(LanguageSetting.Closing.SAKSBEHANDLER) {
             Literal.create(
                 Bokmal to "Saksbehandler",
                 Nynorsk to "Saksbehandlar",
                 English to "Caseworker",
             )
         }
-        setting(LanguageSetting.Closing.automatiskInformasjonsbrev) {
+        setting(LanguageSetting.Closing.AUTOMATISK_INFORMASJONSBREV) {
             Literal.create(
                 Bokmal to "Brevet er produsert automatisk og derfor ikke underskrevet av saksbehandler.",
                 Nynorsk to "Brevet er produsert automatisk og er difor ikkje underskrive av saksbehandler.",
                 English to "This letter has been processed automatically and is therefore not signed by an assessor.",
             )
         }
-        setting(LanguageSetting.Closing.automatiskVedtaksbrev) {
+        setting(LanguageSetting.Closing.AUTOMATISK_VEDTAKSBREV) {
             Literal.create(
                 Bokmal to "Saken har blitt automatisk saksbehandlet. Vedtaksbrevet er derfor ikke underskrevet av saksbehandler.",
                 Nynorsk to "Saken har blitt automatisk saksbehandla. Vedtaksbrevet er derfor ikkje underskriven av saksbehandlar.",
@@ -154,7 +154,7 @@ val pensjonLatexSettings =
 
 val pensjonHTMLSettings =
     languageSettings(pensjonLatexSettings) {
-        setting(LanguageSetting.HTML.altTextLogo) {
+        setting(LanguageSetting.HTML.ALT_TEXT_LOGO) {
             Literal.create(
                 Bokmal to "Nav logo",
                 Nynorsk to "Nav logo",

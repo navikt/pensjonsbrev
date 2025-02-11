@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test
 private const val EXPECTED_EXSTREAM_URL = "http://beste-exstream-brev"
 private const val EXPECTED_DOKSYS_URL = "http://beste-doksys-brev"
 
-private const val journalpostId = "1234"
-private const val dokumentId = "5678"
+private const val JOURNALPOST_ID = "1234"
+private const val DOKUMENT_ID = "5678"
 
 class LegacyBrevServiceTest {
     private val principalIdent = NavIdent("kulIdent1234")
@@ -86,9 +86,9 @@ class LegacyBrevServiceTest {
                     SafService.HentDokumenterResponse(
                         SafService.HentDokumenterResponse.Journalposter(
                             SafService.HentDokumenterResponse.Journalpost(
-                                journalpostId,
+                                JOURNALPOST_ID,
                                 listOf(
-                                    SafService.HentDokumenterResponse.Dokument(dokumentId),
+                                    SafService.HentDokumenterResponse.Dokument(DOKUMENT_ID),
                                 ),
                             ),
                         ),
@@ -100,15 +100,15 @@ class LegacyBrevServiceTest {
         mockk<PenService> {
             coEvery {
                 bestillDoksysBrev(any(), any(), any())
-            } returns ServiceResult.Ok(Pen.BestillDoksysBrevResponse(journalpostId, null))
+            } returns ServiceResult.Ok(Pen.BestillDoksysBrevResponse(JOURNALPOST_ID, null))
             coEvery {
                 bestillExstreamBrev(any())
-            } returns ServiceResult.Ok(Pen.BestillExstreamBrevResponse(journalpostId))
+            } returns ServiceResult.Ok(Pen.BestillExstreamBrevResponse(JOURNALPOST_ID))
             coEvery {
-                redigerDoksysBrev(eq(journalpostId), eq(dokumentId))
+                redigerDoksysBrev(eq(JOURNALPOST_ID), eq(DOKUMENT_ID))
             } returns ServiceResult.Ok(Pen.RedigerDokumentResponse(EXPECTED_DOKSYS_URL))
             coEvery {
-                redigerExstreamBrev(eq(journalpostId))
+                redigerExstreamBrev(eq(JOURNALPOST_ID))
             } returns ServiceResult.Ok(Pen.RedigerDokumentResponse(EXPECTED_EXSTREAM_URL))
         }
     private val navansattService =
