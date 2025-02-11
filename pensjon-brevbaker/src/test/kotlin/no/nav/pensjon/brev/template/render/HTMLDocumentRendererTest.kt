@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.maler.example.createLetterExampleDto
 import no.nav.brev.brevbaker.renderTestHtml
-import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.maler.example.*
 import no.nav.pensjon.brev.template.*
 import org.junit.jupiter.api.Test

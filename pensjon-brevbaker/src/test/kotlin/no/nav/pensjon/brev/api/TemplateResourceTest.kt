@@ -7,12 +7,12 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.maler.example.createEksempelbrevRedigerbartDto
+import no.nav.brev.brevbaker.maler.example.createLetterExampleDto
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
-import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.PDFCompilationOutput
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart

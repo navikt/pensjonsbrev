@@ -9,12 +9,12 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import no.nav.brev.brevbaker.Fixtures
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.maler.example.createEksempelbrevRedigerbartDto
+import no.nav.brev.brevbaker.maler.example.createLetterExampleDto
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
-import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
-import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.template.Language

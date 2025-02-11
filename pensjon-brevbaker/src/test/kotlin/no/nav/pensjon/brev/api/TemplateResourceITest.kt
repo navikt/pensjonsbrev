@@ -2,12 +2,12 @@ package no.nav.pensjon.brev.api
 
 import no.nav.brev.brevbaker.Fixtures
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.maler.example.createLetterExampleDto
 import no.nav.brev.brevbaker.requestLetter
 import no.nav.brev.brevbaker.writeTestPDF
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brevbaker.api.model.LanguageCode

@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.fixtures
+package no.nav.brev.brevbaker.maler.example
 
 import no.nav.pensjon.brev.maler.example.*
 import no.nav.pensjon.brevbaker.api.model.Kroner

@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.maler.example
 
+import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.ToggleImpl
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.navn
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg1
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg2
@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.ParagraphPhrase
+import no.nav.pensjon.brev.template.StableHash
 import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -54,6 +55,10 @@ enum class LetterExampleBrevkode : Brevkode.Automatisk {
     ;
 
     override fun kode() = name
+}
+
+object TestToggle : FeatureToggle, StableHash by StableHash.of("TestToggleKey") {
+    override fun key() = "TestToggleKey"
 }
 
 @TemplateModelHelpers
@@ -137,7 +142,7 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                 }
 
                 paragraph {
-                    showIf(FeatureToggles.pl7231ForventetSvartid.expr().enabled() and true.expr()) {
+                    showIf(TestToggle.expr().enabled() and true.expr()) {
                         text(
                             Bokmal to "a",
                             Nynorsk to "b",

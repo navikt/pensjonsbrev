@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.fixtures
+package no.nav.brev.brevbaker.maler.example
 
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto

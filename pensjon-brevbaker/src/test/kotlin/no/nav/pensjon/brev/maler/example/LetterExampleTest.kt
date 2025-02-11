@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.maler.example
 
 import no.nav.brev.brevbaker.Fixtures
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.maler.example.createLetterExampleDto
 import no.nav.brev.brevbaker.renderTestPDF
-import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.testBrevbakerApp
