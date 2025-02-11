@@ -6,12 +6,14 @@ import com.google.devtools.ksp.symbol.*
 import no.nav.pensjon.brev.template.TemplateModelSelector
 import java.io.PrintWriter
 
-private val templateModelSelectorName = TemplateModelSelector::class.qualifiedName
-    ?: throw InitializationError("Couldn't determine qualified name of ${TemplateModelSelector::class.simpleName}")
+private val templateModelSelectorName =
+    TemplateModelSelector::class.qualifiedName
+        ?: throw InitializationError("Couldn't determine qualified name of ${TemplateModelSelector::class.simpleName}")
 private const val INDENT = "    "
 
 internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>>) {
     private data class Node(val decl: KSClassDeclaration, var include: Boolean, val children: MutableMap<KSClassDeclaration, Node> = mutableMapOf())
+
     private data class Root(val node: Node, val dependencies: MutableSet<KSFile>)
 
     private val roots: MutableMap<KSClassDeclaration, Root> = mutableMapOf()
@@ -22,7 +24,10 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
         }
     }
 
-    private fun findOrCreateBranches(branch: KSClassDeclaration, dependencies: Set<KSFile>): Node =
+    private fun findOrCreateBranches(
+        branch: KSClassDeclaration,
+        dependencies: Set<KSFile>,
+    ): Node =
         when (val parent = branch.parentDeclaration) {
             null -> {
                 roots[branch]?.apply { this.dependencies += dependencies }?.node
@@ -43,7 +48,11 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
     }
 
     companion object {
-        private fun generateSelectors(node: Node, indent: String, writer: PrintWriter) {
+        private fun generateSelectors(
+            node: Node,
+            indent: String,
+            writer: PrintWriter,
+        ) {
             val className = node.decl.simpleName.asString()
             writer.println("${indent}object ${className}Selectors {")
 
@@ -54,10 +63,14 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
             writer.println()
             node.children.values.forEach { generateSelectors(it, indent + INDENT, writer) }
 
-            writer.println("${indent}}")
+            writer.println("$indent}")
         }
 
-        private fun generateSelectors(property: KSPropertyDeclaration, indent: String, writer: PrintWriter) {
+        private fun generateSelectors(
+            property: KSPropertyDeclaration,
+            indent: String,
+            writer: PrintWriter,
+        ) {
             val propertyName = property.simpleName.asString()
             val selectorName = "${propertyName}Selector"
             val declaringClass = property.closestClassDeclaration() ?: throw InvalidVisitorState("Couldn't find class of $propertyName: but we came here from a class...")
@@ -91,11 +104,15 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
             |       UnaryOperation.SafeCall($selectorName)
             |   )
             |
-            """.replaceIndentByMargin(indent)
+            """.replaceIndentByMargin(indent),
             )
         }
 
-        private fun <T> createFile(codeGenerator: CodeGenerator, root: Root, useBlock: (PrintWriter) -> T): T {
+        private fun <T> createFile(
+            codeGenerator: CodeGenerator,
+            root: Root,
+            useBlock: (PrintWriter) -> T,
+        ): T {
             val className = root.node.decl.simpleName.asString()
             val pkg = root.node.decl.packageName.asString()
 
@@ -110,7 +127,7 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
                 import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
                 import no.nav.pensjon.brev.template.ExpressionScope
 
-                """.trimIndent()
+                    """.trimIndent(),
                 )
                 useBlock(writer)
             }
@@ -120,10 +137,11 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
             resolve().let { resolved ->
                 val typeName = resolved.declaration.qualifiedName?.asString() ?: throw InvalidModel("Couldn't determine qualified name for type: $this")
 
-                val typeArgs: String = resolved.arguments.map { it.type ?: throw InvalidModel("Couldn't determine type of type argument $it for $this") }
-                    .takeIf { it.isNotEmpty() }
-                    ?.joinToString(", ", "<", ">") { it.resolveWithTypeParameters() }
-                    ?: ""
+                val typeArgs: String =
+                    resolved.arguments.map { it.type ?: throw InvalidModel("Couldn't determine type of type argument $it for $this") }
+                        .takeIf { it.isNotEmpty() }
+                        ?.joinToString(", ", "<", ">") { it.resolveWithTypeParameters() }
+                        ?: ""
 
                 when (resolved.nullability) {
                     Nullability.NULLABLE -> "$typeName$typeArgs?"

@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.auth
 
-
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigParseOptions.defaults
@@ -9,7 +8,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class ADGroupsTest {
-
     @Test
     fun `groups config loads with init`() {
         ADGroups.init(lesInnADGrupper())
@@ -20,10 +18,10 @@ class ADGroupsTest {
         assertThat(ADGroups.strengtFortroligUtland.id).isNotBlank()
         assertThat(ADGroups.attestant.id).isNotBlank()
     }
-
 }
 
-fun lesInnADGrupper(): Config = ConfigFactory
-    .load("application-local", defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-    .getConfig("skribenten")
-    .getConfig("groups")
+fun lesInnADGrupper(): Config =
+    ConfigFactory
+        .load("application-local", defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
+        .getConfig("skribenten")
+        .getConfig("groups")

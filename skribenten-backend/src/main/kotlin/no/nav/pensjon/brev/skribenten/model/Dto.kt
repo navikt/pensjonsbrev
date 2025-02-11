@@ -83,12 +83,20 @@ object Dto {
         val landkode: String? = null,
     ) {
         companion object {
-            fun samhandler(tssId: String) = Mottaker(
-                type = MottakerType.SAMHANDLER,
-                tssId = tssId,
-            )
+            fun samhandler(tssId: String) =
+                Mottaker(
+                    type = MottakerType.SAMHANDLER,
+                    tssId = tssId,
+                )
 
-            fun norskAdresse(navn: String, postnummer: String, poststed: String, adresselinje1: String?, adresselinje2: String?, adresselinje3: String?) =
+            fun norskAdresse(
+                navn: String,
+                postnummer: String,
+                poststed: String,
+                adresselinje1: String?,
+                adresselinje2: String?,
+                adresselinje3: String?,
+            ) =
                 Mottaker(
                     type = MottakerType.NORSK_ADRESSE,
                     navn = navn,
@@ -124,49 +132,56 @@ object Dto {
 fun Api.OverstyrtMottaker.toDto() =
     when (this) {
         is Api.OverstyrtMottaker.Samhandler -> samhandler(tssId)
-        is Api.OverstyrtMottaker.NorskAdresse -> norskAdresse(
-            navn = navn,
-            postnummer = postnummer,
-            poststed = poststed,
-            adresselinje1 = adresselinje1,
-            adresselinje2 = adresselinje2,
-            adresselinje3 = adresselinje3,
-        )
-        is Api.OverstyrtMottaker.UtenlandskAdresse -> utenlandskAdresse(
-            navn = navn,
-            postnummer = postnummer,
-            poststed = poststed,
-            adresselinje1 = adresselinje1,
-            adresselinje2 = adresselinje2,
-            adresselinje3 = adresselinje3,
-            landkode = landkode,
-        )
+        is Api.OverstyrtMottaker.NorskAdresse ->
+            norskAdresse(
+                navn = navn,
+                postnummer = postnummer,
+                poststed = poststed,
+                adresselinje1 = adresselinje1,
+                adresselinje2 = adresselinje2,
+                adresselinje3 = adresselinje3,
+            )
+        is Api.OverstyrtMottaker.UtenlandskAdresse ->
+            utenlandskAdresse(
+                navn = navn,
+                postnummer = postnummer,
+                poststed = poststed,
+                adresselinje1 = adresselinje1,
+                adresselinje2 = adresselinje2,
+                adresselinje3 = adresselinje3,
+                landkode = landkode,
+            )
     }
 
-fun Dto.Mottaker.toPen(): Pen.SendRedigerbartBrevRequest.Mottaker = when (type) {
-    MottakerType.SAMHANDLER -> Pen.SendRedigerbartBrevRequest.Mottaker(type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.TSS_ID, tssId = tssId!!)
-    MottakerType.NORSK_ADRESSE -> Pen.SendRedigerbartBrevRequest.Mottaker(
-        type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.NORSK_ADRESSE,
-        norskAdresse = Pen.SendRedigerbartBrevRequest.Mottaker.NorskAdresse(
-            navn = navn!!,
-            postnummer = postnummer!!,
-            poststed = poststed!!,
-            adresselinje1 = adresselinje1,
-            adresselinje2 = adresselinje2,
-            adresselinje3 = adresselinje3,
-        ),
-    )
+fun Dto.Mottaker.toPen(): Pen.SendRedigerbartBrevRequest.Mottaker =
+    when (type) {
+        MottakerType.SAMHANDLER -> Pen.SendRedigerbartBrevRequest.Mottaker(type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.TSS_ID, tssId = tssId!!)
+        MottakerType.NORSK_ADRESSE ->
+            Pen.SendRedigerbartBrevRequest.Mottaker(
+                type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.NORSK_ADRESSE,
+                norskAdresse =
+                    Pen.SendRedigerbartBrevRequest.Mottaker.NorskAdresse(
+                        navn = navn!!,
+                        postnummer = postnummer!!,
+                        poststed = poststed!!,
+                        adresselinje1 = adresselinje1,
+                        adresselinje2 = adresselinje2,
+                        adresselinje3 = adresselinje3,
+                    ),
+            )
 
-    MottakerType.UTENLANDSK_ADRESSE -> Pen.SendRedigerbartBrevRequest.Mottaker(
-        type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.UTENLANDSK_ADRESSE,
-        utenlandskAdresse = Pen.SendRedigerbartBrevRequest.Mottaker.UtenlandsAdresse(
-            navn = navn!!,
-            landkode = landkode!!,
-            postnummer = postnummer,
-            poststed = poststed,
-            adresselinje1 = adresselinje1!!,
-            adresselinje2 = adresselinje2,
-            adresselinje3 = adresselinje3,
-        ),
-    )
-}
+        MottakerType.UTENLANDSK_ADRESSE ->
+            Pen.SendRedigerbartBrevRequest.Mottaker(
+                type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.UTENLANDSK_ADRESSE,
+                utenlandskAdresse =
+                    Pen.SendRedigerbartBrevRequest.Mottaker.UtenlandsAdresse(
+                        navn = navn!!,
+                        landkode = landkode!!,
+                        postnummer = postnummer,
+                        poststed = poststed,
+                        adresselinje1 = adresselinje1!!,
+                        adresselinje2 = adresselinje2,
+                        adresselinje3 = adresselinje3,
+                    ),
+            )
+    }

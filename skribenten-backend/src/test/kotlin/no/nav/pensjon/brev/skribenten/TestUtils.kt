@@ -26,14 +26,17 @@ data class MockPrincipal(override val navIdent: NavIdent, override val fullName:
         throw NotImplementedError("Not implemented in mock class")
     }
 
-    override fun setOnBehalfOfToken(scope: String, token: TokenResponse.OnBehalfOfToken) {
+    override fun setOnBehalfOfToken(
+        scope: String,
+        token: TokenResponse.OnBehalfOfToken,
+    ) {
         throw NotImplementedError("Not implemented in mock class")
     }
-
 }
 
 enum class Testbrevkoder : Brevkode.Redigerbart {
-    TESTBREV;
+    TESTBREV,
+    ;
 
     override fun kode() = name
 }

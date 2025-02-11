@@ -21,17 +21,18 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADServi
     private val samhandlerProxyUrl = configSamhandlerProxy.getString("url")
     private val samhandlerProxyScope = configSamhandlerProxy.getString("scope")
 
-    private val samhandlerProxyClient = HttpClient(CIO) {
-        defaultRequest {
-            url(samhandlerProxyUrl)
-        }
-        install(ContentNegotiation) {
-            jackson {
-                disable(FAIL_ON_UNKNOWN_PROPERTIES)
+    private val samhandlerProxyClient =
+        HttpClient(CIO) {
+            defaultRequest {
+                url(samhandlerProxyUrl)
             }
+            install(ContentNegotiation) {
+                jackson {
+                    disable(FAIL_ON_UNKNOWN_PROPERTIES)
+                }
+            }
+            callIdAndOnBehalfOfClient(samhandlerProxyScope, authService)
         }
-        callIdAndOnBehalfOfClient(samhandlerProxyScope, authService)
-    }
 
     private val logger = LoggerFactory.getLogger(SamhandlerService::class.java)
 
@@ -62,11 +63,14 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADServi
             }
 
     private val samhandlerNavnCache = Cache<String, String>()
-    suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = samhandlerNavnCache.cached(idTSSEkstern) {
-        hentSamhandler(idTSSEkstern).success?.navn
-    }
+
+    suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? =
+        samhandlerNavnCache.cached(idTSSEkstern) {
+            hentSamhandler(idTSSEkstern).success?.navn
+        }
 
     override val name = "SamhandlerService"
+
     override suspend fun ping(): ServiceResult<Boolean> =
         samhandlerProxyClient.get("/api/samhandler/ping").toServiceResult<String>().map { true }
 
@@ -113,17 +117,18 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADServi
 
     private fun FinnSamhandlerResponse.toFinnSamhandlerResponseDto() =
         FinnSamhandlerResponseDto(
-            samhandlere = samhandlerList.flatMap { samhandler ->
-                samhandler.avdelinger.map { avdeling ->
-                    FinnSamhandlerResponseDto.Samhandler(
-                        navn = avdeling.avdelingNavn.takeIf { !it.isNullOrBlank() } ?: samhandler.navn,
-                        samhandlerType = samhandler.samhandlerType,
-                        offentligId = samhandler.offentligId,
-                        idType = samhandler.idType,
-                        idTSSEkstern = avdeling.idTSSEkstern
-                    )
-                }
-            }
+            samhandlere =
+                samhandlerList.flatMap { samhandler ->
+                    samhandler.avdelinger.map { avdeling ->
+                        FinnSamhandlerResponseDto.Samhandler(
+                            navn = avdeling.avdelingNavn.takeIf { !it.isNullOrBlank() } ?: samhandler.navn,
+                            samhandlerType = samhandler.samhandlerType,
+                            offentligId = samhandler.offentligId,
+                            idType = samhandler.idType,
+                            idTSSEkstern = avdeling.idTSSEkstern,
+                        )
+                    }
+                },
         )
 
     data class SamhandlerEnkel(
@@ -150,12 +155,13 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AzureADServi
 
     private fun SamhandlerEnkel.toHentSamhandlerResponseDto() =
         HentSamhandlerResponseDto(
-            success = HentSamhandlerResponseDto.Success(
-                navn = navn,
-                samhandlerType = samhandlerType,
-                offentligId = offentligId,
-                idType = idType,
-            ),
-            failure = null
+            success =
+                HentSamhandlerResponseDto.Success(
+                    navn = navn,
+                    samhandlerType = samhandlerType,
+                    offentligId = offentligId,
+                    idType = idType,
+                ),
+            failure = null,
         )
 }

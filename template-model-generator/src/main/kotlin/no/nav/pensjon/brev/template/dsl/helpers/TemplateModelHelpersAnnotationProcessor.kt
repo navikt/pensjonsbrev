@@ -15,25 +15,29 @@ internal class TemplateModelHelpersAnnotationProcessorProvider : SymbolProcessor
         TemplateModelHelpersAnnotationProcessor(environment.codeGenerator, environment.logger)
 }
 
-internal fun <T : KSNode, R> Iterable<T>.foldAccept(initial: R, visitor: KSVisitor<R, R>) =
+internal fun <T : KSNode, R> Iterable<T>.foldAccept(
+    initial: R,
+    visitor: KSVisitor<R, R>,
+) =
     fold(initial) { acc, node ->
         node.accept(visitor, acc)
     }
 
 internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator: CodeGenerator, private val logger: KSPLogger) : SymbolProcessor {
-
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val hasModelDeclaration = resolver.getClassDeclarationByName<HasModel<*>>()?.asStarProjectedType()
-            ?: throw InitializationError("Couldn't resolve $HAS_MODEL_INTERFACE_NAME")
+        val hasModelDeclaration =
+            resolver.getClassDeclarationByName<HasModel<*>>()?.asStarProjectedType()
+                ?: throw InitializationError("Couldn't resolve $HAS_MODEL_INTERFACE_NAME")
 
-        val iterableDeclaration = resolver.getClassDeclarationByName<Iterable<*>>()?.asStarProjectedType()
-            ?: throw InitializationError("Couldn't resove Iterable<*>")
-
+        val iterableDeclaration =
+            resolver.getClassDeclarationByName<Iterable<*>>()?.asStarProjectedType()
+                ?: throw InitializationError("Couldn't resove Iterable<*>")
 
         return try {
-            val (validSymbols, invalidSymbols) = resolver.getSymbolsWithAnnotation(ANNOTATION_NAME).toList()
-                .also { logger.info("Processing annotated symbols: $it") }
-                .partition { it.validate() }
+            val (validSymbols, invalidSymbols) =
+                resolver.getSymbolsWithAnnotation(ANNOTATION_NAME).toList()
+                    .also { logger.info("Processing annotated symbols: $it") }
+                    .partition { it.validate() }
 
             val selectors = validSymbols.foldAccept(SelectorModels(), TemplateModelHelpersTargetVisitor(hasModelDeclaration, iterableDeclaration))
 
@@ -56,11 +60,17 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
     ) : KSDefaultVisitor<SelectorModels, SelectorModels>() {
         private val hasModelTypeParameter = hasModelType.declaration.typeParameters.first { it.simpleName.asString() == HAS_MODEL_TYPE_PARAMETER_NAME }
 
-        override fun defaultHandler(node: KSNode, data: SelectorModels): SelectorModels {
+        override fun defaultHandler(
+            node: KSNode,
+            data: SelectorModels,
+        ): SelectorModels {
             throw UnsupportedAnnotationTarget("Annotation $ANNOTATION_NAME does not support target $node at: ${node.location}", node)
         }
 
-        override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: SelectorModels): SelectorModels {
+        override fun visitClassDeclaration(
+            classDeclaration: KSClassDeclaration,
+            data: SelectorModels,
+        ): SelectorModels {
             if (classDeclaration.containingFile == null) {
                 logger.warn("Cannot determine source file for @$ANNOTATION_NAME annotated class: generated selectors will not have dependencies", classDeclaration)
             }
@@ -86,7 +96,10 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
             }
         }
 
-        override fun visitPropertyDeclaration(property: KSPropertyDeclaration, data: SelectorModels): SelectorModels {
+        override fun visitPropertyDeclaration(
+            property: KSPropertyDeclaration,
+            data: SelectorModels,
+        ): SelectorModels {
             if (property.containingFile == null) {
                 logger.warn("Cannot determine source file for @$ANNOTATION_NAME annotated property: generated selectors will not have dependencies", property)
             }
@@ -108,7 +121,7 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
         private fun KSAnnotated.getAdditionalModelsFromAnnotation(): Sequence<KSClassDeclaration> {
             return annotations.filter {
                 it.shortName.getShortName() == TemplateModelHelpers::class.simpleName &&
-                        it.annotationType.resolve().declaration.qualifiedName?.asString() == TemplateModelHelpers::class.qualifiedName
+                    it.annotationType.resolve().declaration.qualifiedName?.asString() == TemplateModelHelpers::class.qualifiedName
             }.flatMap { it.arguments }
                 .filter { it.name?.getShortName() == "additionalModels" }
                 .map { it.value }
@@ -129,7 +142,10 @@ internal class TemplateModelHelpersAnnotationProcessor(private val codeGenerator
             return searchTypeHierarchyForModelType(simpleName.asString(), superTypeThatExtendsHasModel()).resolve()
         }
 
-        private fun searchTypeHierarchyForModelType(targetName: String, type: KSTypeReference): KSTypeReference {
+        private fun searchTypeHierarchyForModelType(
+            targetName: String,
+            type: KSTypeReference,
+        ): KSTypeReference {
             return if (type.resolve().declaration == hasModelType.declaration) {
                 type.getTypeArgument(hasModelTypeParameter)?.type
                     ?: throw InvalidObjectTarget("Could not resolve type argument of $HAS_MODEL_TYPE_PARAMETER_NAME type parameter for $hasModelType in declaration of $targetName", type)

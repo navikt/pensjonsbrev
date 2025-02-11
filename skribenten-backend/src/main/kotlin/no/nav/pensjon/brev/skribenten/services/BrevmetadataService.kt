@@ -20,22 +20,24 @@ class BrevmetadataService(
 ) : ServiceStatus {
     private val brevmetadataUrl = config.getString("url")
     private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
-    private val httpClient = HttpClient(CIO) {
-        defaultRequest {
-            url(brevmetadataUrl)
-        }
-        install(ContentNegotiation) {
-            jackson {
-                disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    private val httpClient =
+        HttpClient(CIO) {
+            defaultRequest {
+                url(brevmetadataUrl)
             }
+            install(ContentNegotiation) {
+                jackson {
+                    disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                }
+            }
+            install(CallIdFromContext)
         }
-        install(CallIdFromContext)
-    }
 
     suspend fun getBrevmalerForSakstype(sakstype: Sakstype): List<BrevdataDto> {
-        val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/${sakstype.name}?includeXsd=false") {
-            contentType(ContentType.Application.Json)
-        }
+        val httpResponse =
+            httpClient.get("/api/brevdata/brevdataForSaktype/${sakstype.name}?includeXsd=false") {
+                contentType(ContentType.Application.Json)
+            }
         if (httpResponse.status.isSuccess()) {
             return httpResponse.body<List<BrevdataDto>>()
         } else {
@@ -52,15 +54,15 @@ class BrevmetadataService(
     }
 
     suspend fun getMal(brevkode: String): BrevdataDto {
-        return httpClient.get("/api/brevdata/brevForBrevkode/${brevkode}") {
+        return httpClient.get("/api/brevdata/brevForBrevkode/$brevkode") {
             contentType(ContentType.Application.Json)
         }.body<BrevdataDto>()
     }
 
     override val name = "Brevmetadata"
+
     override suspend fun ping(): ServiceResult<Boolean> =
         httpClient.get("/api/internal/isReady").toServiceResult<String>().map { true }
-
 }
 
 enum class SpraakKode {
@@ -94,26 +96,32 @@ data class BrevdataDto(
 
     @Suppress("unused")
     enum class BrevkategoriCode { BREV_MED_SKJEMA, INFORMASJON, INNHENTE_OPPL, NOTAT, OVRIG, VARSEL, VEDTAK }
-    enum class BrevSystem { DOKSYS, GAMMEL /*EXSTREAM*/, }
+
+    enum class BrevSystem {
+        DOKSYS,
+        GAMMEL /*EXSTREAM*/,
+    }
+
     enum class BrevkontekstCode { ALLTID, SAK, VEDTAK }
 
     @Suppress("unused")
     enum class DokumentType {
-        I, //Inngende dokument
-        N, //Notat
-        U, //Utgende dokument
+        I, // Inngende dokument
+        N, // Notat
+        U, // Utgende dokument
     }
 
     fun isRedigerbarBrevtittel(): Boolean =
-        brevkodeIBrevsystem == Brevkoder.FRITEKSTBREV_KODE
-                || (dokType == DokumentType.N && brevkodeIBrevsystem !in Brevkoder.ikkeRedigerbarBrevtittel)
+        brevkodeIBrevsystem == Brevkoder.FRITEKSTBREV_KODE ||
+            (dokType == DokumentType.N && brevkodeIBrevsystem !in Brevkoder.ikkeRedigerbarBrevtittel)
 
     enum class BrevregeltypeCode {
-        GG,     //Gammelt regelverk
-        GN,     //Nytt regelverk med gammel opptjening
-        NN,     //Nytt regelverk
-        ON,     //Overgangsordning med ny og gammel opptjening
-        OVRIGE;  //vrige brev, ikke knyttet til gammelt eller nytt regelverk.
+        GG, // Gammelt regelverk
+        GN, // Nytt regelverk med gammel opptjening
+        NN, // Nytt regelverk
+        ON, // Overgangsordning med ny og gammel opptjening
+        OVRIGE, // vrige brev, ikke knyttet til gammelt eller nytt regelverk.
+        ;
 
         fun gjelderGammeltRegelverk() =
             when (this) {

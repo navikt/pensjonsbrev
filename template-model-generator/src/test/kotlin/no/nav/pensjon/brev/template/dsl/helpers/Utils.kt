@@ -8,7 +8,7 @@ import java.io.File
 
 fun hasKspErrorMessages(msg: String): Matcher<String> =
     containsSubstring("e: Error occurred in KSP") and
-            containsSubstring(msg)
+        containsSubstring(msg)
 
 fun hasOnlySourceAndNoHelpers(): Matcher<Collection<File>> =
     hasSize(equalTo(2)) and allElements(has(File::getName, endsWith("MyClass.class") or endsWith("main.kotlin_module")))

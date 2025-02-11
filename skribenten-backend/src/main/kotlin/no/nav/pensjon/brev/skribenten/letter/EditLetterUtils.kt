@@ -9,4 +9,3 @@ fun Edit.Letter.klarTilSending(): Boolean =
 
 fun Edit.Letter.variablesValueMap(): Map<Int, String> =
     variables.mapNotNull { it.id?.let { id -> id to it.text } }.toMap()
-

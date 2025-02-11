@@ -13,23 +13,24 @@ private val annotationName = TemplateModelHelpers::class.qualifiedName!!
 private val hasModelName = HasModel::class.qualifiedName!!
 
 class TemplateModelHelpersAnnotationProcessorTest {
-
     // Used in tests
     @Suppress("unused")
     data class AModel(val navn: String)
 
     @Test
     fun `can generate helpers`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
 
                     @TemplateModelHelpers
                     object MyClass : HasModel<TemplateModelHelpersAnnotationProcessorTest.AModel> {}
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
@@ -38,16 +39,18 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
     @Test
     fun `can generate helpers for class in default package`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
 
                     @TemplateModelHelpers
                     object MyClass : HasModel<DefaultPackageModel> {}
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
@@ -56,8 +59,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
     @Test
     fun `generates expected helpers`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.Expression
                     import no.nav.pensjon.brev.template.TemplateModelSelector
                     import no.nav.pensjon.brev.template.HasModel
@@ -75,42 +80,45 @@ class TemplateModelHelpersAnnotationProcessorTest {
                             val actualSelector: TemplateModelSelector<TemplateModelHelpersAnnotationProcessorTest.AModel, String> = navnSelector
                         }
                     }
-                    """.trimIndent(),
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         // We use the generated helpers in MyClass above, with type declarations, so if they are not as expected then compilation will fail.
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
     }
 
-
     @Test
     fun `fails for annotated regular class`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 
                 @TemplateModelHelpers
                 class MyClass {}
-                """.trimIndent()
-        ).compile()
-
+                """.trimIndent(),
+            ).compile()
 
         assertThat(
-            result.messages, hasKspErrorMessages("$unsupportedAnnotationTarget: @$annotationName does not support target class kind CLASS (only supports OBJECT): MyClass")
+            result.messages,
+            hasKspErrorMessages("$unsupportedAnnotationTarget: @$annotationName does not support target class kind CLASS (only supports OBJECT): MyClass"),
         )
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.INTERNAL_ERROR))
     }
 
     @Test
     fun `fails for annotated object that does not extend HasModel`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 
                     @TemplateModelHelpers
                     object MyClass {}
-                """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.INTERNAL_ERROR))
         assertThat(result.messages, hasKspErrorMessages("$invalidObjectTarget: @$annotationName annotated target OBJECT must extend $hasModelName"))
@@ -118,8 +126,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
     @Test
     fun `generates helpers for annotated object that extends interface that extends HasModel`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
@@ -129,8 +139,8 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
                     @TemplateModelHelpers
                     object MyClass : AnotherInterface<TemplateModelHelpersAnnotationProcessorTest.AModel> {}
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
@@ -139,16 +149,18 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
     @Test
     fun `generates helpers for annotated object that has type HasModel`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
         
                     @TemplateModelHelpers
                     object MyClass : HasModel<TemplateModelHelpersAnnotationProcessorTest.AModel> {}
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
@@ -157,8 +169,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
     @Test
     fun `generates helpers for annotated object that is descendant of HasModel with mixing of type parameters`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
@@ -169,8 +183,8 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
                     @TemplateModelHelpers
                     object MyClass : AThirdInterface<Int, TemplateModelHelpersAnnotationProcessorTest.AModel> {}
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
@@ -179,8 +193,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
     @Test
     fun `generates helpers for annotated object that is descendant of HasModel where super type declare the model`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
@@ -191,8 +207,8 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
                     @TemplateModelHelpers
                     object MyClass : AThirdInterface<Int> {}
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
@@ -201,8 +217,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
     @Test
     fun `generates helpers for annotated property with type that is descendant of HasModel`() {
-        val result = SourceFile.kotlin(
-            "MyFile.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyFile.kt",
+                """
                 import no.nav.pensjon.brev.template.HasModel
                 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                 import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
@@ -211,8 +229,8 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
                 @TemplateModelHelpers
                 val anAttachment: SimpleAttachment<SimpleModel> = object : SimpleAttachment<SimpleModel> {}
-            """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
@@ -221,8 +239,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
     @Test
     fun `generates helpers for annotated property with type that is descendant of HasModel where super type declare the model`() {
-        val result = SourceFile.kotlin(
-            "MyFile.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyFile.kt",
+                """
                 import no.nav.pensjon.brev.template.HasModel
                 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
@@ -233,8 +253,8 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
                 @TemplateModelHelpers
                 val anAttachment: AThirdInterface<String> = object : AThirdInterface<String> {}
-            """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
@@ -243,16 +263,18 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
     @Test
     fun `generates helpers for annotated property with type HasModel`() {
-        val result = SourceFile.kotlin(
-            "MyFile.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyFile.kt",
+                """
                 import no.nav.pensjon.brev.template.HasModel
                 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                 import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                 
                 @TemplateModelHelpers
                 val anAttachment: HasModel<SimpleModel> = object : HasModel<SimpleModel> {}
-            """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
@@ -261,8 +283,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
     @Test
     fun `generates helper for data class type argument of List`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -274,8 +298,8 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     object MyClass : HasModel<List<SimpleModel>> {
                         val x: Expression<String> = Expression.Literal(SimpleModel("et navn")).name
                     }
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         assertThat(result.generatedFiles, hasSize(greaterThan(2)) and anyElement(has(File::getName, containsSubstring("SimpleModelSelectors"))))
@@ -283,8 +307,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
     @Test
     fun `generates helpers for multiple levels of models`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -304,25 +330,28 @@ class TemplateModelHelpersAnnotationProcessorTest {
                         val expr: Expression<First> = Expression.Literal(First(Second(Third(Fourth(99)))))
                         val value: Expression<Int> = expr.second.third.fourth.value
                     }
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         assertThat(result.generatedFiles, hasSize(greaterThan(6)))
         assertThat(
-            result.generatedFiles, allOf(
+            result.generatedFiles,
+            allOf(
                 anyElement(has(File::getName, containsSubstring("FirstSelectors"))),
                 anyElement(has(File::getName, containsSubstring("SecondSelectors"))),
                 anyElement(has(File::getName, containsSubstring("ThirdSelectors"))),
                 anyElement(has(File::getName, containsSubstring("FourthSelectors"))),
-            )
+            ),
         )
     }
 
     @Test
     fun `generates helpers for additionalModels`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import AnotherModelSelectors.age
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
@@ -337,8 +366,8 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     object MyClass : HasModel<List<SimpleModel>> {
                         val x: Expression<Int> = Expression.Literal(AnotherModel(35)).age
                     }
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         assertThat(result.generatedFiles, hasSize(greaterThan(3)) and anyElement(has(File::getName, containsSubstring("AnotherModelSelectors"))))
@@ -346,8 +375,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
     @Test
     fun `generates helpers for additionalModels when target is interface`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import AnotherModelSelectors.age
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
@@ -359,18 +390,19 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     @TemplateModelHelpers([AnotherModel::class])
                     interface MyInterface 
                     val x: Expression<Int> = Expression.Literal(AnotherModel(35)).age
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         assertThat(result.generatedFiles, hasSize(greaterThan(3)) and anyElement(has(File::getName, containsSubstring("AnotherModelSelectors"))))
     }
 
-
     @Test
     fun `generates helpers for models referenced in submodel`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -391,21 +423,26 @@ class TemplateModelHelpersAnnotationProcessorTest {
                         val child: Expression<ParentModel.ChildModel> = data.child
                         val uncleName: Expression<String> = child.uncle.name
                     }
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
-        assertThat(result.generatedFiles, allOf(
-            hasSize(greaterThan(3)),
-            anyElement(has(File::getName, containsSubstring("ParentModelSelectors"))),
-            anyElement(has(File::getName, containsSubstring("UncleModelSelectors"))),
-        ))
+        assertThat(
+            result.generatedFiles,
+            allOf(
+                hasSize(greaterThan(3)),
+                anyElement(has(File::getName, containsSubstring("ParentModelSelectors"))),
+                anyElement(has(File::getName, containsSubstring("UncleModelSelectors"))),
+            ),
+        )
     }
 
     @Test
     fun `does not fail when a model is referenced in a nested model and is used in another place`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -430,16 +467,18 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     object ReUse : HasModel<UncleModel> {
                         val uncleName: Expression<String> = Expression.Literal(UncleModel("Scrooge")).name
                     }
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
     }
 
     @Test
     fun `referencing a model in another nested model should result in complete hierarchy and not a top-level selector`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -466,13 +505,16 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     object ReUse : HasModel<AMother.UncleModel> {
                         val uncleName: Expression<String> = Expression.Literal(AMother.UncleModel("Scrooge")).name
                     }
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
-        assertThat(result.generatedFiles, allOf(
-            anyElement(has(File::getName, startsWith("AMotherSelectors\$UncleModelSelectors"))),
-            allElements(has(File::getName, startsWith("UncleModelSelectors").not()))
-        ))
+        assertThat(
+            result.generatedFiles,
+            allOf(
+                anyElement(has(File::getName, startsWith("AMotherSelectors\$UncleModelSelectors"))),
+                allElements(has(File::getName, startsWith("UncleModelSelectors").not())),
+            ),
+        )
     }
 }

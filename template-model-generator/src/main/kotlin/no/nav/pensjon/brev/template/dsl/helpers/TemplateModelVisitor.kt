@@ -5,17 +5,18 @@ import com.google.devtools.ksp.symbol.*
 import com.google.devtools.ksp.visitor.KSDefaultVisitor
 
 private val SKIPPED_NO_WARN_PACKAGES: Set<String> = setOf("kotlin", "java.util", "java.time")
-private val SKIPPED_NO_WARN_CLASSES: Set<String> = setOf(
-    "no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata",
-    "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata",
-)
+private val SKIPPED_NO_WARN_CLASSES: Set<String> =
+    setOf(
+        "no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata",
+        "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata",
+    )
 
 private fun KSPLogger.logSkipped(classDeclaration: KSClassDeclaration) {
     val message = "Skipping $classDeclaration: can only generate helpers for data classes"
 
-    if (classDeclaration.packageName.asString() in SKIPPED_NO_WARN_PACKAGES
-        || classDeclaration.classKind == ClassKind.ENUM_CLASS
-        || classDeclaration.qualifiedName?.asString() in SKIPPED_NO_WARN_CLASSES
+    if (classDeclaration.packageName.asString() in SKIPPED_NO_WARN_PACKAGES ||
+        classDeclaration.classKind == ClassKind.ENUM_CLASS ||
+        classDeclaration.qualifiedName?.asString() in SKIPPED_NO_WARN_CLASSES
     ) {
         info(message, classDeclaration)
     } else {
@@ -28,12 +29,17 @@ internal class TemplateModelVisitor(
     private val logger: KSPLogger,
     private val dependency: KSFile?,
 ) : KSDefaultVisitor<SelectorModels, SelectorModels>() {
-
-    override fun defaultHandler(node: KSNode, data: SelectorModels): SelectorModels {
+    override fun defaultHandler(
+        node: KSNode,
+        data: SelectorModels,
+    ): SelectorModels {
         throw MissingImplementation("Couldn't process node $node at: ${node.location}", node)
     }
 
-    override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: SelectorModels): SelectorModels =
+    override fun visitClassDeclaration(
+        classDeclaration: KSClassDeclaration,
+        data: SelectorModels,
+    ): SelectorModels =
         if (data.isVisited(classDeclaration)) {
             data.withDependency(classDeclaration, dependency)
         } else if (classDeclaration.classKind == ClassKind.CLASS && classDeclaration.modifiers.contains(Modifier.DATA)) {
@@ -43,7 +49,10 @@ internal class TemplateModelVisitor(
             data.withVisited(classDeclaration)
         }
 
-    override fun visitPropertyDeclaration(property: KSPropertyDeclaration, data: SelectorModels): SelectorModels {
+    override fun visitPropertyDeclaration(
+        property: KSPropertyDeclaration,
+        data: SelectorModels,
+    ): SelectorModels {
         val fromProp = findModel(property.type.resolve())?.accept(this, data)
         return if (fromProp != null) {
             fromProp
@@ -80,4 +89,3 @@ internal class TemplateModelVisitor(
         }
     }
 }
-

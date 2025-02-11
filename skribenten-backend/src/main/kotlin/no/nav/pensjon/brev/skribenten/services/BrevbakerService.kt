@@ -36,20 +36,21 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
     private val logger = LoggerFactory.getLogger(BrevredigeringService::class.java)!!
 
     private val brevbakerUrl = config.getString("url")
-    private val client = HttpClient(CIO) {
-        defaultRequest {
-            url(brevbakerUrl)
-        }
-        install(ContentNegotiation) {
-            jackson {
-                registerModule(JavaTimeModule())
-                registerModule(LetterMarkupModule)
-                registerModule(TemplateModelSpecificationModule)
-                disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    private val client =
+        HttpClient(CIO) {
+            defaultRequest {
+                url(brevbakerUrl)
             }
+            install(ContentNegotiation) {
+                jackson {
+                    registerModule(JavaTimeModule())
+                    registerModule(LetterMarkupModule)
+                    registerModule(TemplateModelSpecificationModule)
+                    disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                }
+            }
+            callIdAndOnBehalfOfClient(config.getString("scope"), authService)
         }
-        callIdAndOnBehalfOfClient(config.getString("scope"), authService)
-    }
 
     /**
      * Get model specification for a template.
@@ -71,7 +72,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
                     letterData = brevdata,
                     felles = felles,
                     language = spraak,
-                )
+                ),
             )
         }.toServiceResult()
 
@@ -90,8 +91,8 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
                     letterData = brevdata,
                     felles = felles,
                     language = spraak,
-                    letterMarkup = redigertBrev
-                )
+                    letterMarkup = redigertBrev,
+                ),
             )
         }.toServiceResult()
 
@@ -103,6 +104,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
         }.toServiceResult()
 
     private val templateCache = Cache<Brevkode.Redigerbart, TemplateDescription.Redigerbar>()
+
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
         templateCache.cached(brevkode) {
             client.get("/templates/redigerbar/${brevkode.kode()}").toServiceResult<TemplateDescription.Redigerbar>()
@@ -111,11 +113,11 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
         }
 
     override val name = "Brevbaker"
+
     override suspend fun ping(): ServiceResult<Boolean> =
         client.get("/ping_authorized")
             .toServiceResult<String>()
             .map { true }
-
 }
 
 object LetterMarkupModule : SimpleModule() {
@@ -129,47 +131,60 @@ object LetterMarkupModule : SimpleModule() {
 
     private fun blockDeserializer() =
         object : StdDeserializer<LetterMarkup.Block>(LetterMarkup.Block::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): LetterMarkup.Block {
+            override fun deserialize(
+                p: JsonParser,
+                ctxt: DeserializationContext,
+            ): LetterMarkup.Block {
                 val node = p.codec.readTree<JsonNode>(p)
-                val type = when (LetterMarkup.Block.Type.valueOf(node.get("type").textValue())) {
-                    LetterMarkup.Block.Type.TITLE1 -> LetterMarkup.Block.Title1::class.java
-                    LetterMarkup.Block.Type.TITLE2 -> LetterMarkup.Block.Title2::class.java
-                    LetterMarkup.Block.Type.PARAGRAPH -> LetterMarkup.Block.Paragraph::class.java
-                }
+                val type =
+                    when (LetterMarkup.Block.Type.valueOf(node.get("type").textValue())) {
+                        LetterMarkup.Block.Type.TITLE1 -> LetterMarkup.Block.Title1::class.java
+                        LetterMarkup.Block.Type.TITLE2 -> LetterMarkup.Block.Title2::class.java
+                        LetterMarkup.Block.Type.PARAGRAPH -> LetterMarkup.Block.Paragraph::class.java
+                    }
                 return p.codec.treeToValue(node, type)
             }
         }
 
     private fun paragraphContentDeserializer() =
         object : StdDeserializer<LetterMarkup.ParagraphContent>(LetterMarkup.ParagraphContent::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): LetterMarkup.ParagraphContent {
+            override fun deserialize(
+                p: JsonParser,
+                ctxt: DeserializationContext,
+            ): LetterMarkup.ParagraphContent {
                 val node = p.codec.readTree<JsonNode>(p)
-                val type = when (LetterMarkup.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
-                    LetterMarkup.ParagraphContent.Type.ITEM_LIST -> LetterMarkup.ParagraphContent.ItemList::class.java
-                    LetterMarkup.ParagraphContent.Type.LITERAL -> LetterMarkup.ParagraphContent.Text.Literal::class.java
-                    LetterMarkup.ParagraphContent.Type.VARIABLE -> LetterMarkup.ParagraphContent.Text.Variable::class.java
-                    LetterMarkup.ParagraphContent.Type.TABLE -> LetterMarkup.ParagraphContent.Table::class.java
-                    LetterMarkup.ParagraphContent.Type.FORM_TEXT -> LetterMarkup.ParagraphContent.Form.Text::class.java
-                    LetterMarkup.ParagraphContent.Type.FORM_CHOICE -> LetterMarkup.ParagraphContent.Form.MultipleChoice::class.java
-                    LetterMarkup.ParagraphContent.Type.NEW_LINE -> LetterMarkup.ParagraphContent.Text.NewLine::class.java
-                }
+                val type =
+                    when (LetterMarkup.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
+                        LetterMarkup.ParagraphContent.Type.ITEM_LIST -> LetterMarkup.ParagraphContent.ItemList::class.java
+                        LetterMarkup.ParagraphContent.Type.LITERAL -> LetterMarkup.ParagraphContent.Text.Literal::class.java
+                        LetterMarkup.ParagraphContent.Type.VARIABLE -> LetterMarkup.ParagraphContent.Text.Variable::class.java
+                        LetterMarkup.ParagraphContent.Type.TABLE -> LetterMarkup.ParagraphContent.Table::class.java
+                        LetterMarkup.ParagraphContent.Type.FORM_TEXT -> LetterMarkup.ParagraphContent.Form.Text::class.java
+                        LetterMarkup.ParagraphContent.Type.FORM_CHOICE -> LetterMarkup.ParagraphContent.Form.MultipleChoice::class.java
+                        LetterMarkup.ParagraphContent.Type.NEW_LINE -> LetterMarkup.ParagraphContent.Text.NewLine::class.java
+                    }
                 return p.codec.treeToValue(node, type)
             }
         }
 
     private fun textContentDeserializer() =
         object : StdDeserializer<LetterMarkup.ParagraphContent.Text>(LetterMarkup.ParagraphContent.Text::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): LetterMarkup.ParagraphContent.Text {
+            override fun deserialize(
+                p: JsonParser,
+                ctxt: DeserializationContext,
+            ): LetterMarkup.ParagraphContent.Text {
                 val node = p.codec.readTree<JsonNode>(p)
-                val clazz = when (val contentType = LetterMarkup.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
-                    LetterMarkup.ParagraphContent.Type.LITERAL -> LetterMarkup.ParagraphContent.Text.Literal::class.java
-                    LetterMarkup.ParagraphContent.Type.VARIABLE -> LetterMarkup.ParagraphContent.Text.Variable::class.java
-                    LetterMarkup.ParagraphContent.Type.NEW_LINE -> LetterMarkup.ParagraphContent.Text.NewLine::class.java
-                    LetterMarkup.ParagraphContent.Type.TABLE,
-                    LetterMarkup.ParagraphContent.Type.FORM_TEXT,
-                    LetterMarkup.ParagraphContent.Type.FORM_CHOICE,
-                    LetterMarkup.ParagraphContent.Type.ITEM_LIST -> throw BrevbakerServiceException("$contentType is not allowed in a text-only block.")
-                }
+                val clazz =
+                    when (val contentType = LetterMarkup.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
+                        LetterMarkup.ParagraphContent.Type.LITERAL -> LetterMarkup.ParagraphContent.Text.Literal::class.java
+                        LetterMarkup.ParagraphContent.Type.VARIABLE -> LetterMarkup.ParagraphContent.Text.Variable::class.java
+                        LetterMarkup.ParagraphContent.Type.NEW_LINE -> LetterMarkup.ParagraphContent.Text.NewLine::class.java
+                        LetterMarkup.ParagraphContent.Type.TABLE,
+                        LetterMarkup.ParagraphContent.Type.FORM_TEXT,
+                        LetterMarkup.ParagraphContent.Type.FORM_CHOICE,
+                        LetterMarkup.ParagraphContent.Type.ITEM_LIST,
+                        -> throw BrevbakerServiceException("$contentType is not allowed in a text-only block.")
+                    }
                 return p.codec.treeToValue(node, clazz)
             }
         }
@@ -184,16 +199,19 @@ object TemplateModelSpecificationModule : SimpleModule() {
 
     private fun fieldTypeDeserializer() =
         object : StdDeserializer<FieldType>(FieldType::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): FieldType {
+            override fun deserialize(
+                p: JsonParser,
+                ctxt: DeserializationContext,
+            ): FieldType {
                 val node = p.codec.readTree<JsonNode>(p)
-                val type = when (FieldType.Type.valueOf(node.get("type").textValue())) {
-                    FieldType.Type.array -> FieldType.Array::class.java
-                    FieldType.Type.scalar -> FieldType.Scalar::class.java
-                    FieldType.Type.enum -> FieldType.Enum::class.java
-                    FieldType.Type.`object` -> FieldType.Object::class.java
-                }
+                val type =
+                    when (FieldType.Type.valueOf(node.get("type").textValue())) {
+                        FieldType.Type.array -> FieldType.Array::class.java
+                        FieldType.Type.scalar -> FieldType.Scalar::class.java
+                        FieldType.Type.enum -> FieldType.Enum::class.java
+                        FieldType.Type.`object` -> FieldType.Object::class.java
+                    }
                 return p.codec.treeToValue(node, type)
             }
         }
-
 }

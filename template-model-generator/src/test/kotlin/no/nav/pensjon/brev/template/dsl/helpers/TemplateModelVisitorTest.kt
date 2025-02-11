@@ -20,11 +20,12 @@ data class NestedModelWithRepetition(val name: String, val first: SubModel, val 
 data class ModelWithTypeParameters(val name: String, val aList: List<String>, val otherList: List<NestedModel>, val aMap: Map<String, NestedModel>)
 
 class TemplateModelVisitorTest {
-
     @Test
     fun `generates helpers for models that has data classes as property types`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -38,8 +39,8 @@ class TemplateModelVisitorTest {
                             SimpleTemplateScope<NestedModel>().second.lastName
                         }
                     }
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
@@ -50,8 +51,10 @@ class TemplateModelVisitorTest {
 
     @Test
     fun `generates helpers for models that has data classes as property types with repetition`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -65,8 +68,8 @@ class TemplateModelVisitorTest {
                             SimpleTemplateScope<NestedModelWithRepetition>().second.lastName
                         }
                     }
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
@@ -77,8 +80,10 @@ class TemplateModelVisitorTest {
 
     @Test
     fun `generates helpers for models that has properties with type parameters`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                 import no.nav.pensjon.brev.template.HasModel
                 import no.nav.pensjon.brev.template.Expression
                 import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
@@ -93,8 +98,8 @@ class TemplateModelVisitorTest {
                         val list: Expression<List<NestedModel>> = SimpleTemplateScope<ModelWithTypeParameters>().otherList
                     }
                 }
-            """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
@@ -105,8 +110,10 @@ class TemplateModelVisitorTest {
 
     @Test
     fun `generates helpers for models that has properties with type parameters that require qualified type names`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                 import no.nav.pensjon.brev.template.HasModel
                 import no.nav.pensjon.brev.template.Expression
                 import no.nav.pensjon.brev.template.LangBokmal
@@ -124,8 +131,8 @@ class TemplateModelVisitorTest {
                         val list: Expression<TypeParameterModel<OtherWithTypeParameter<SimpleModel>>> = SimpleTemplateScope<ModelOutsideOfTestPackage>().thing
                     }
                 }
-            """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
@@ -135,16 +142,18 @@ class TemplateModelVisitorTest {
 
     @Test
     fun `ignores model that is not a data class`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
 
                     @TemplateModelHelpers
                     object MyClass : HasModel<List<String>> {}
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
@@ -153,8 +162,10 @@ class TemplateModelVisitorTest {
 
     @Test
     fun `generates helpers for nullable fields`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
                     import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
@@ -169,8 +180,8 @@ class TemplateModelVisitorTest {
                     object MyClass : HasModel<ModelWithNullable> {
                         val x: Expression<String?> = Expression.Literal(ModelWithNullable(SimpleModel("et navn"), 28)).simpleModel.name_safe
                     }
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         assertThat(result.generatedFiles, hasSize(greaterThan(2)) and anyElement(has(File::getName, containsSubstring("SimpleModelSelectors"))))
@@ -178,8 +189,10 @@ class TemplateModelVisitorTest {
 
     @Test
     fun `generates helpers for collection element types`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
                     import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
@@ -197,8 +210,8 @@ class TemplateModelVisitorTest {
                         val aName: Expression<String> = Expression.Literal(AName("firstname", "secondname")).first
                         val simple: Expression<String> = Expression.Literal(SimpleModel("hello")).name
                     }
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         assertThat(result.generatedFiles, hasSize(greaterThan(2)))
@@ -208,8 +221,10 @@ class TemplateModelVisitorTest {
 
     @Test
     fun `generates helpers for nullable collection element types`() {
-        val result = SourceFile.kotlin(
-            "MyClass.kt", """
+        val result =
+            SourceFile.kotlin(
+                "MyClass.kt",
+                """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
                     import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
@@ -227,13 +242,12 @@ class TemplateModelVisitorTest {
                         val aName: Expression<String> = Expression.Literal(AName("firstname", "secondname")).first
                         val simple: Expression<String> = Expression.Literal(SimpleModel("hello")).name
                     }
-                    """.trimIndent()
-        ).compile()
+                """.trimIndent(),
+            ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         assertThat(result.generatedFiles, hasSize(greaterThan(2)))
         assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("SimpleModelSelectors"))))
         assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("ANameSelectors"))))
     }
-
 }

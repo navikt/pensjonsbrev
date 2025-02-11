@@ -14,19 +14,25 @@ private val PrincipalContextPhase: PipelinePhase = PipelinePhase("PrincipalConte
 
 class PrincipalInContext {
     object Hook : KtorHook<suspend (ApplicationCall) -> Unit> {
-        override fun install(pipeline: ApplicationCallPipeline, handler: suspend (ApplicationCall) -> Unit) {
+        override fun install(
+            pipeline: ApplicationCallPipeline,
+            handler: suspend (ApplicationCall) -> Unit,
+        ) {
             pipeline.insertPhaseBefore(ApplicationCallPipeline.Call, PrincipalContextPhase)
             pipeline.insertPhaseAfter(PrincipalContextPhase, PrincipalInContextPhase)
             pipeline.intercept(PrincipalInContextPhase) { handler(call) }
         }
     }
 
-    companion object : ContextValue<UserPrincipal> by ContextValueProvider(ContextElement, "UserPrincipal", ContextElement::principal),
+    companion object :
+        ContextValue<UserPrincipal> by ContextValueProvider(ContextElement, "UserPrincipal", ContextElement::principal),
         BaseRouteScopedPlugin<Nothing, PrincipalInContext> {
-
         override val key = AttributeKey<PrincipalInContext>("PrincipalCoroutineContext")
 
-        override fun install(pipeline: ApplicationCallPipeline, configure: Nothing.() -> Unit): PrincipalInContext {
+        override fun install(
+            pipeline: ApplicationCallPipeline,
+            configure: Nothing.() -> Unit,
+        ): PrincipalInContext {
             val plugin = PrincipalInContext()
 
             pipeline.insertPhaseBefore(ApplicationCallPipeline.Call, PrincipalContextPhase)
@@ -49,7 +55,10 @@ private class ContextElement(val principal: UserPrincipal) : CoroutineContext.El
     companion object : CoroutineContext.Key<ContextElement>
 }
 
-suspend fun <T> withPrincipal(principal: UserPrincipal, block: suspend () -> T): T =
+suspend fun <T> withPrincipal(
+    principal: UserPrincipal,
+    block: suspend () -> T,
+): T =
     withContext(ContextElement(principal)) {
         block()
     }

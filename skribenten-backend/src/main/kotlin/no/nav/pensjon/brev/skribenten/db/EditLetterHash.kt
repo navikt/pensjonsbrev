@@ -21,15 +21,21 @@ fun Column<ByteArray>.editLetterHash(): ValueClassWrapper<EditLetterHash, ByteAr
 value class EditLetterHash(val hex: String)
 
 class WithEditLetterHash(private val letter: Column<Edit.Letter>, private val hash: Column<ByteArray>) {
-
-    operator fun <ID : Comparable<ID>> setValue(thisRef: Entity<ID>, property: KProperty<*>, value: Edit.Letter) {
+    operator fun <ID : Comparable<ID>> setValue(
+        thisRef: Entity<ID>,
+        property: KProperty<*>,
+        value: Edit.Letter,
+    ) {
         with(thisRef) {
             letter.setValue(thisRef, property, value)
             hash.setValue(thisRef, property, hashBrev(value))
         }
     }
 
-    operator fun <ID : Comparable<ID>> getValue(thisRef: Entity<ID>, property: KProperty<*>): Edit.Letter {
+    operator fun <ID : Comparable<ID>> getValue(
+        thisRef: Entity<ID>,
+        property: KProperty<*>,
+    ): Edit.Letter {
         return with(thisRef) {
             letter.getValue(thisRef, property)
         }
@@ -39,6 +45,5 @@ class WithEditLetterHash(private val letter: Column<Edit.Letter>, private val ha
         fun hashBrev(brev: Edit.Letter): ByteArray =
             DigestUtils.sha3_256(databaseObjectMapper.writeValueAsBytes(brev))
                 .also { assert(it.size == 32) { "SHA3-256 hash of redigertbrev was longer than 32 bytes: ${it.size}" } }
-
     }
 }

@@ -28,18 +28,19 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     private val penUrl = config.getString("url")
     private val penScope = config.getString("scope")
 
-    private val client = HttpClient(CIO) {
-        defaultRequest {
-            url(penUrl)
-        }
-        install(ContentNegotiation) {
-            jackson {
-                registerModule(JavaTimeModule())
-                disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    private val client =
+        HttpClient(CIO) {
+            defaultRequest {
+                url(penUrl)
             }
+            install(ContentNegotiation) {
+                jackson {
+                    registerModule(JavaTimeModule())
+                    disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                }
+            }
+            callIdAndOnBehalfOfClient(penScope, authService)
         }
-        callIdAndOnBehalfOfClient(penScope, authService)
-    }
 
     private suspend fun <R> handlePenErrorResponse(response: HttpResponse): ServiceResult<R> =
         if (response.status == HttpStatusCode.InternalServerError) {
@@ -65,8 +66,8 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
                             foedselsnr = sak.result.foedselsnr,
                             foedselsdato = sak.result.foedselsdato,
                             sakType = sak.result.sakType,
-                            enhetId = sak.result.enhetId
-                        )
+                            enhetId = sak.result.enhetId,
+                        ),
                     )
                 }
         }
@@ -74,7 +75,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     suspend fun bestillDoksysBrev(
         request: Api.BestillDoksysBrevRequest,
         enhetsId: String,
-        saksId: Long
+        saksId: Long,
     ): ServiceResult<Pen.BestillDoksysBrevResponse> =
         client.post("brev/skribenten/doksys/sak/$saksId") {
             setBody(
@@ -84,7 +85,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
                     journalfoerendeEnhet = enhetsId,
                     sprakKode = request.spraak,
                     vedtaksId = request.vedtaksId,
-                )
+                ),
             )
             contentType(ContentType.Application.Json)
         }.toServiceResult(::handlePenErrorResponse)
@@ -101,7 +102,10 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
             }
         }
 
-    suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): ServiceResult<Pen.RedigerDokumentResponse> =
+    suspend fun redigerDoksysBrev(
+        journalpostId: String,
+        dokumentId: String,
+    ): ServiceResult<Pen.RedigerDokumentResponse> =
         client.get("brev/dokument/metaforce/$journalpostId/$dokumentId")
             .toServiceResult(::handlePenErrorResponse)
 
@@ -113,6 +117,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         client.get("brev/skribenten/avtaleland").toServiceResult(::handlePenErrorResponse)
 
     override val name = "PEN"
+
     override suspend fun ping(): ServiceResult<Boolean> =
         client.get("/pen/actuator/health/readiness")
             .toServiceResult<String>()
@@ -121,12 +126,17 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): ServiceResult<Boolean> =
         client.get("brev/skribenten/vedtak/$vedtaksId/isKravPaaGammeltRegelverk").toServiceResult<Boolean>(::handlePenErrorResponse)
 
-    suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse.Data> =
+    suspend fun hentPesysBrevdata(
+        saksId: Long,
+        vedtaksId: Long?,
+        brevkode: Brevkode.Redigerbart,
+        avsenderEnhetsId: String?,
+    ): ServiceResult<BrevdataResponse.Data> =
         client.get("brev/skribenten/sak/$saksId/brevdata/${brevkode.kode()}") {
             if (avsenderEnhetsId != null) {
                 url {
                     parameters.append("enhetsId", avsenderEnhetsId)
-                    vedtaksId?.let{ parameters.append("vedtaksId", it.toString()) }
+                    vedtaksId?.let { parameters.append("vedtaksId", it.toString()) }
                 }
             }
         }.toServiceResult<BrevdataResponse>(::handlePenErrorResponse)
@@ -149,7 +159,6 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
             contentType(ContentType.Application.Json)
             url { parameters.append("distribuer", distribuer.toString()) }
         }.toServiceResult<Pen.BestillBrevResponse>(::handlePenErrorResponse)
-
 
     private data class BestillDoksysBrevRequest(
         val saksId: Long,

@@ -26,6 +26,7 @@ sealed class TokenResponse {
         @JsonProperty("expires_in") val expiresIn: Long,
     ) : TokenResponse() {
         private val expiresAt = LocalDateTime.now().plusSeconds(expiresIn)
+
         fun isValid(): Boolean = LocalDateTime.now().isBefore(expiresAt.minusMinutes(5))
     }
 
@@ -41,28 +42,34 @@ sealed class TokenResponse {
 }
 
 class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine = CIO.create()) {
-    private val client = HttpClient(engine) {
-        install(ContentNegotiation) {
-            jackson {
-                disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    private val client =
+        HttpClient(engine) {
+            install(ContentNegotiation) {
+                jackson {
+                    disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                }
             }
         }
-    }
 
-    private suspend fun exchangeToken(accessToken: UserAccessToken, scope: String): TokenResponse {
-        val response = client.submitForm(
-            url = jwtConfig.tokenUri,
-            formParameters = Parameters.build {
-                append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
-                append("client_id", jwtConfig.clientId)
-                append("client_secret", jwtConfig.clientSecret)
-                append("assertion", accessToken.token)
-                append("scope", scope)
-                append("requested_token_use", "on_behalf_of")
+    private suspend fun exchangeToken(
+        accessToken: UserAccessToken,
+        scope: String,
+    ): TokenResponse {
+        val response =
+            client.submitForm(
+                url = jwtConfig.tokenUri,
+                formParameters =
+                    Parameters.build {
+                        append("grant_type", "urn:ietf:params:oauth:grant-type:jwt-bearer")
+                        append("client_id", jwtConfig.clientId)
+                        append("client_secret", jwtConfig.clientSecret)
+                        append("assertion", accessToken.token)
+                        append("scope", scope)
+                        append("requested_token_use", "on_behalf_of")
+                    },
+            ) {
+                headers { append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded) }
             }
-        ) {
-            headers { append(HttpHeaders.ContentType, ContentType.Application.FormUrlEncoded) }
-        }
 
         return if (response.status.isSuccess()) {
             response.body<TokenResponse.OnBehalfOfToken>()
@@ -71,12 +78,15 @@ class AzureADService(private val jwtConfig: JwtConfig, engine: HttpClientEngine 
         }
     }
 
-    suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse {
+    suspend fun getOnBehalfOfToken(
+        principal: UserPrincipal,
+        scope: String,
+    ): TokenResponse {
         return principal.getOnBehalfOfToken(scope)?.takeIf { it.isValid() }
             ?: exchangeToken(principal.accessToken, scope).also {
-                    if (it is TokenResponse.OnBehalfOfToken) {
-                        principal.setOnBehalfOfToken(scope, it)
-                    }
+                if (it is TokenResponse.OnBehalfOfToken) {
+                    principal.setOnBehalfOfToken(scope, it)
                 }
+            }
     }
 }

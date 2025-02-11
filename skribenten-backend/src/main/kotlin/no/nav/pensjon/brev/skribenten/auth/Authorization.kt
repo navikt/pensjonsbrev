@@ -23,7 +23,7 @@ data class JwtConfig(
     val tokenUri: String,
     val clientSecret: String,
     val preAuthorizedApps: List<PreAuthorizedApp>,
-    val requireAzureAdClaims: Boolean
+    val requireAzureAdClaims: Boolean,
 ) {
     data class PreAuthorizedApp(val name: String, val clientId: String)
 }
@@ -40,7 +40,7 @@ fun Config.requireAzureADConfig() =
             tokenUri = it.getString("tokenEndpoint"),
             clientSecret = it.getString("clientSecret"),
             preAuthorizedApps = parsePreAuthorizedApps(it.getString("preAuthApps")),
-            requireAzureAdClaims = true
+            requireAzureAdClaims = true,
         )
     }
 
@@ -51,7 +51,6 @@ private fun parsePreAuthorizedApps(preAuthApps: String): List<JwtConfig.PreAutho
         logger.error("Failed to deserialize preAuthorizedApps, value was: $preAuthApps", e)
         emptyList()
     }
-
 
 fun AuthenticationConfig.skribentenJwt(config: JwtConfig) =
     jwt(config.name) {
@@ -83,7 +82,9 @@ private fun ApplicationCall.userAccessToken(): UserAccessToken =
     request.parseAuthorizationHeader().let {
         if (it is HttpAuthHeader.Single && it.authScheme == "Bearer") {
             UserAccessToken(it.blob)
-        } else throw InvalidAuthorization("Requires 'Bearer' authorization scheme, was: ${it?.authScheme}")
+        } else {
+            throw InvalidAuthorization("Requires 'Bearer' authorization scheme, was: ${it?.authScheme}")
+        }
     }
 
 class InvalidAuthorization(msg: String, cause: Throwable? = null) : Exception(msg, cause)
@@ -99,8 +100,13 @@ interface UserPrincipal {
     val fullName: String
 
     fun isInGroup(groupId: ADGroup): Boolean
+
     fun getOnBehalfOfToken(scope: String): TokenResponse.OnBehalfOfToken?
-    fun setOnBehalfOfToken(scope: String, token: TokenResponse.OnBehalfOfToken)
+
+    fun setOnBehalfOfToken(
+        scope: String,
+        token: TokenResponse.OnBehalfOfToken,
+    )
 }
 
 data class JwtUserPrincipal(override val accessToken: UserAccessToken, private val jwtPayload: Payload) : UserPrincipal {
@@ -109,15 +115,19 @@ data class JwtUserPrincipal(override val accessToken: UserAccessToken, private v
     private val onBehalfOfTokens = mutableMapOf<String, TokenResponse.OnBehalfOfToken>()
 
     override fun isInGroup(groupId: ADGroup) = groups.contains(groupId)
+
     override fun getOnBehalfOfToken(scope: String): TokenResponse.OnBehalfOfToken? = onBehalfOfTokens[scope]
-    override fun setOnBehalfOfToken(scope: String, token: TokenResponse.OnBehalfOfToken) {
+
+    override fun setOnBehalfOfToken(
+        scope: String,
+        token: TokenResponse.OnBehalfOfToken,
+    ) {
         onBehalfOfTokens[scope] = token
     }
 
     private fun getClaimAsString(claim: String): String =
         jwtPayload.getClaim(claim).asString()
             ?: throw MissingClaimException("Missing claim: $claim")
-
 
     private val groups: List<ADGroup> by lazy {
         jwtPayload.getClaim("groups")?.asList(String::class.java)?.map { ADGroup(it) }
