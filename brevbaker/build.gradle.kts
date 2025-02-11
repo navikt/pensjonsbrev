@@ -15,6 +15,11 @@ plugins {
 group = "no.nav.brev.brevbaker"
 version = "0.0.1-SNAPSHOT"
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
 repositories {
     mavenCentral()
     mavenLocal()
