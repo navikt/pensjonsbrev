@@ -3,10 +3,15 @@ package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -15,6 +20,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.Omstillingsstoe
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.avdoed
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.beregning
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.datoVedtakOmgjoering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.erSluttbehandling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.harUtbetaling
@@ -27,6 +33,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmO
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmOmstillingsstoenad
+import java.time.LocalDate
 
 data class OmstillingsstoenadInnvilgelseDTO(
     override val innhold: List<Element>,
@@ -40,6 +47,7 @@ data class OmstillingsstoenadInnvilgelseDTO(
     val tidligereFamiliepleier: Boolean = false,
     val bosattUtland: Boolean = false,
     val erSluttbehandling: Boolean = false,
+    val datoVedtakOmgjoering: LocalDate? = null,
 ) : FerdigstillingBrevDTO {
     val informasjonOmOmstillingsstoenadData = InformasjonOmOmstillingsstoenadData(tidligereFamiliepleier, bosattUtland)
 }
@@ -61,18 +69,29 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),
         ) {
+
             title {
-                text(
-                    Bokmal to "Vi har innvilget søknaden din om omstillingsstønad",
-                    Nynorsk to "Vi har innvilga søknaden din om omstillingsstønad",
-                    English to "We have granted your application for adjustment allowance",
-                )
+                ifNotNull(datoVedtakOmgjoering) {
+                    textExpr(
+                        Bokmal to "Vi har omgjort vedtaket om omstillingsstønad av ".expr() + it.format(),
+                        Nynorsk to "Vi har gjort om vedtaket om omstillingsstønad av ".expr() + it.format(),
+                        English to "We have reversed our decision regarding the adjustment allowance on ".expr() + it.format(),
+                    )
+                }.orShow {
+                    text(
+                        Bokmal to "Vi har innvilget søknaden din om omstillingsstønad",
+                        Nynorsk to "Vi har innvilga søknaden din om omstillingsstønad",
+                        English to "We have granted your application for adjustment allowance",
+                    )
+                }
             }
 
             outline {
-                includePhrase(
-                    OmstillingsstoenadInnvilgelseFraser.Vedtak(avdoed, beregning, harUtbetaling, tidligereFamiliepleier, erSluttbehandling),
-                )
+                showIf(datoVedtakOmgjoering.notNull().not()){
+                    includePhrase(
+                        OmstillingsstoenadInnvilgelseFraser.Vedtak(avdoed, beregning, harUtbetaling, tidligereFamiliepleier, erSluttbehandling),
+                    )
+                }
 
                 konverterElementerTilBrevbakerformat(innhold)
 
