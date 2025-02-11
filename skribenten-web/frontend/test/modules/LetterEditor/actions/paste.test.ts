@@ -59,7 +59,7 @@ describe("LetterEditorActions.paste", () => {
           const result = Actions.paste(state, index, 0, clipboard);
 
           expect(text(select<LiteralValue>(result, index))).toEqual("1Teksten min");
-          expect(result.focus.cursorPosition).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 1 });
+          expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 1 });
         });
         test("inserts multiple words", () => {
           const index = { blockIndex: 0, contentIndex: 0 };
@@ -68,7 +68,7 @@ describe("LetterEditorActions.paste", () => {
           const result = Actions.paste(state, index, 0, clipboard);
 
           expect(text(select<LiteralValue>(result, index))).toEqual("1 2Teksten min");
-          expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 3 });
+          expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 3 });
         });
         test("inserts single paragraph", () => {
           const index = { blockIndex: 0, contentIndex: 0 };
