@@ -61,10 +61,8 @@ kotlin {
     }
 }
 tasks {
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(apiModelJavaTarget)
-        }
+    kotlin {
+        jvmToolchain(apiModelJavaTarget.toInt())
     }
     compileJava {
         targetCompatibility = apiModelJavaTarget
