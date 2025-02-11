@@ -32,7 +32,7 @@ object InformasjonOmSaksbehandlingstidUT : RedigerbarTemplate<InformasjonOmSaksb
         letterDataType = InformasjonOmSaksbehandlingstidUtDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Informasjon om saksbehandlingstid Uføretrygd",
+            displayTitle = "Informasjon om saksbehandlingstid uføretrygd",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
