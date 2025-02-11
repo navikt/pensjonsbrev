@@ -8,7 +8,6 @@ val jacksonJsr310Version: String by project
 
 plugins {
     kotlin("jvm")
-    id("java-library")
     id("java-test-fixtures")
     id("com.google.devtools.ksp")
 }
