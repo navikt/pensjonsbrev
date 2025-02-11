@@ -12,14 +12,13 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class InformasjonOmForlengetSaksbehandlingUTTest {
-
     @Test
     fun testPdf() {
         Letter(
             InformasjonOmForlengetSaksbehandlingstidUT.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
-            Fixtures.felles
+            Fixtures.felles,
         ).renderTestPDF(InformasjonOmForlengetSaksbehandlingstidUT.kode.name)
     }
 
@@ -29,7 +28,7 @@ class InformasjonOmForlengetSaksbehandlingUTTest {
             InformasjonOmForlengetSaksbehandlingstidUT.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
-            Fixtures.felles
+            Fixtures.felles,
         ).renderTestHtml(InformasjonOmForlengetSaksbehandlingstidUT.kode.name)
     }
 }

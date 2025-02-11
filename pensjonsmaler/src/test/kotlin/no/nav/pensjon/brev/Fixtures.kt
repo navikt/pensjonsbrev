@@ -62,23 +62,15 @@ import no.nav.pensjon.brev.fixtures.redigerbar.createOrienteringOmSaksbehandling
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
-import no.nav.pensjon.brevbaker.api.model.Bruker
-import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.NAVEnhet
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import no.nav.pensjon.brevbaker.api.model.Year
-import java.time.LocalDate
 import kotlin.reflect.KClass
 
 object Fixtures {
-
     val felles = no.nav.brev.brevbaker.Fixtures.felles
 
     val fellesAuto = no.nav.brev.brevbaker.Fixtures.fellesAuto
 
-    inline fun <reified T: Any> create(): T = create(T::class)
+    inline fun <reified T : Any> create(): T = create(T::class)
 
     @Suppress("UNCHECKED_CAST")
     fun <T : Any> create(letterDataType: KClass<T>): T =

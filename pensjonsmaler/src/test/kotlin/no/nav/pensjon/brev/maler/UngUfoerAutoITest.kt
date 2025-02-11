@@ -10,14 +10,13 @@ import org.junit.jupiter.api.*
 
 @Tag(TestTags.MANUAL_TEST)
 class UngUfoerAutoITest {
-
     @Test
     fun pdftest() {
         Letter(
             UngUfoerAuto.template,
             Fixtures.create<UngUfoerAutoDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF("UNG_UFOER_AUTO_BOKMAL")
     }
 
@@ -27,8 +26,7 @@ class UngUfoerAutoITest {
             UngUfoerAuto.template,
             Fixtures.create<UngUfoerAutoDto>(),
             Language.Nynorsk,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestHtml("UNG_UFOER_AUTO_BOKMAL")
     }
-
 }

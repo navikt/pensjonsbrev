@@ -8,14 +8,14 @@ import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 
-const val unleashTogglePrefix = "pensjonsbrev.brevbaker."
+const val UNLEASH_TOGGLE_PREFIX = "pensjonsbrev.brevbaker."
 
 object FeatureToggleHandler : FeatureToggleService {
     private lateinit var unleashAction: () -> Unleash
     private val unleash: Unleash by lazy { unleashAction() }
 
     override fun isEnabled(toggle: FeatureToggle): Boolean =
-        unleash.isEnabled(unleashTogglePrefix + toggle.key(), UnleashContext.builder().build())
+        unleash.isEnabled(UNLEASH_TOGGLE_PREFIX + toggle.key(), UnleashContext.builder().build())
 
     fun configure(block: FeatureToggleConfig.() -> Unit) {
         Builder().setConfig(FeatureToggleConfig().apply(block)).build()

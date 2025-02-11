@@ -6,9 +6,10 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlin
 
 fun createInformasjonOmSaksbehandlingstidDto() =
     InformasjonOmSaksbehandlingstidDto(
-        saksbehandlerValg = SaksbehandlerValg(
-            soeknadMottattFraUtland = false,
-            venterPaaSvarAFP = false,
-        ),
-        pesysData = EmptyBrevdata
+        saksbehandlerValg =
+            SaksbehandlerValg(
+                soeknadMottattFraUtland = false,
+                venterPaaSvarAFP = false,
+            ),
+        pesysData = EmptyBrevdata,
     )

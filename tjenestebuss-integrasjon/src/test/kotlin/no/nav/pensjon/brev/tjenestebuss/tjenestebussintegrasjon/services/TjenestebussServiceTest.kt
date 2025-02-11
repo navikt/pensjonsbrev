@@ -154,9 +154,9 @@ private class HelloWorldService(pingExpiration: Duration = 5.minutes) : Tjeneste
 }
 
 private class CallIdReceiver : Handler<SOAPMessageContext> {
-    private val _receivedCallIds = mutableListOf<String>()
+    private val receivedCallIds = mutableListOf<String>()
     val callIds: List<String>
-        get() = _receivedCallIds
+        get() = receivedCallIds
 
     override fun handleMessage(context: SOAPMessageContext?): Boolean {
         if (context?.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY) == false) {
@@ -164,7 +164,7 @@ private class CallIdReceiver : Handler<SOAPMessageContext> {
                 ?.asSequence()
                 ?.firstOrNull { it.localName == "callId" }
                 ?.firstChild?.textContent
-                ?.also { _receivedCallIds.add(it) }
+                ?.also { receivedCallIds.add(it) }
         }
         return true
     }
