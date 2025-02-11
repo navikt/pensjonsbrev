@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -15,7 +14,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 object AdhocAlderspensjonFraFolketrygden : AutobrevTemplate<EmptyBrevdata> {
     override val kode = Pesysbrevkoder.AutoBrev.PE_AP_ADHOC_2024_REGLERENDRET_GJR_AP_MNTINDV
-    override val template: LetterTemplate<*, EmptyBrevdata> = createTemplate(
+    override val template = createTemplate(
         name = kode.name,
         letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal, Nynorsk, English),

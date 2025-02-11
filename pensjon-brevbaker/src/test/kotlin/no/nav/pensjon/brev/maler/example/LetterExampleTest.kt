@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.maler.example
 
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.TestTags
-import no.nav.pensjon.brev.fixtures.createLetterExampleDto
+import no.nav.pensjon.brev.fixtures.createLetterExampleForenklaDto
 import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
@@ -17,7 +17,7 @@ class LetterExampleTest {
     fun test() = testBrevbakerApp {
         Letter(
             LetterExample.template,
-            createLetterExampleDto(),
+            LetterExample.konverter(createLetterExampleForenklaDto()),
             Language.Bokmal,
             Fixtures.fellesAuto
         ).renderTestPDF("EKSEMPELBREV_BOKMAL")

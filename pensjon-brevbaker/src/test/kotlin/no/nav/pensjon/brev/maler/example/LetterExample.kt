@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi1
 import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi2
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.AutobrevBiTemplate
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
@@ -56,9 +56,29 @@ enum class LetterExampleBrevkode : Brevkode.Automatisk {
 }
 
 @TemplateModelHelpers
-object LetterExample : AutobrevTemplate<LetterExampleDto> {
+object LetterExample : AutobrevBiTemplate<LetterExampleDto, LetterExampleForenklaDto> {
 
     override val kode: Brevkode.Automatisk = LetterExampleBrevkode.TESTBREV
+
+    /* TODO: _fra_ er her, viss det kjem frå deserialisering, inn som GenericBrevdata,
+    som i praksis er ein LinkedHashMap.
+    Dermed vil ikkje dette funke, faktisk. Hmm
+    Generelt ikkje openbart korleis vi kan veta om DTO-en som kjem inn er av den eine eller den andre typen,
+    utover med å berre prøve på dei forskjellige kandidatane, men det er heller ikkje godt nok,
+    for det kan jo godt vera at payloaden fint kan passe til både DTO-klasse 1 og DTO-klasse 2
+     */
+    override fun konverter(fra: BrevbakerBrevdata): LetterExampleDto = when(fra) {
+        is LetterExampleForenklaDto -> LetterExampleDto(
+                pensjonInnvilget = fra.pensjonInnvilget,
+                datoInnvilget = fra.datoInnvilget,
+                navneliste = fra.navneliste,
+                tilleggEksempel = fra.tilleggEksempel,
+                datoAvslaatt = null,
+                pensjonBeloep = null
+            )
+        is LetterExampleDto -> fra
+        else -> throw IllegalArgumentException("Feil inndataparameter: ${fra.javaClass.name}")
+    }
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
@@ -330,6 +350,13 @@ data class LetterExampleDto(
     val tilleggEksempel: List<ExampleTilleggDto>,
     val datoAvslaatt: LocalDate?,
     val pensjonBeloep: Int?,
+) : BrevbakerBrevdata
+
+data class LetterExampleForenklaDto(
+    val pensjonInnvilget: Boolean,
+    val datoInnvilget: LocalDate,
+    val navneliste: List<String>,
+    val tilleggEksempel: List<ExampleTilleggDto>,
 ) : BrevbakerBrevdata
 
 data class ExampleTilleggDto(

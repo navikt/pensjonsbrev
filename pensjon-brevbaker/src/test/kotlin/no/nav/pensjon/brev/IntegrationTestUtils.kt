@@ -101,7 +101,7 @@ fun renderTestVedleggPdf(
     felles: Felles? = null,
     outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
 ) {
-    val vedlegg: AttachmentTemplate<LangBokmal, EmptyBrevdata> = createAttachment<LangBokmal, EmptyBrevdata>(
+    val vedlegg: AttachmentTemplate<LangBokmal, EmptyBrevdata> = createAttachment(
         title = newText(
             Bokmal to (title ?: testName)
         ),
