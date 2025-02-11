@@ -1,5 +1,9 @@
 package no.nav.pensjon.brev.template.render
 
+import no.nav.brev.brevbaker.maler.example.createLetterExampleDto
+import no.nav.pensjon.brev.maler.example.LetterExample
+import no.nav.pensjon.brev.maler.example.TestVedleggDto
+import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi1
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.ContentOrControlStructure
 import no.nav.pensjon.brev.template.Element
@@ -23,7 +27,6 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.render.Fixtures.felles
-import no.nav.pensjon.brev.template.render.TestVedleggDtoSelectors.testVerdi1
 import no.nav.pensjon.brev.template.toScope
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
