@@ -11,6 +11,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
 import no.nav.pensjon.brev.pdfbygger.getProperty
+import no.nav.pensjon.brev.pdfbygger.getPropertyOrNull
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 
 fun Application.kafkaModule(latexCompileService: LatexCompileService) {
@@ -38,7 +39,7 @@ fun Application.kafkaModule(latexCompileService: LatexCompileService) {
     pdfRequestConsumer.flow().launchIn(GlobalScope)
 }
 
-private fun createKafkaConfig(kafkaConfig: ApplicationConfig): Map<String, String?> = mapOf(
+private fun createKafkaConfig(kafkaConfig: ApplicationConfig): Map<String, String> = mapOf(
     "bootstrap.servers" to kafkaConfig.getProperty("bootstrap.servers"),
     "security.protocol" to "SSL",
     "ssl.keystore.type" to "PKCS12",

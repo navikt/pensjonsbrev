@@ -7,7 +7,6 @@ import io.ktor.serialization.jackson.jackson
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.application.log
-import io.ktor.server.metrics.micrometer.MicrometerMetrics
 import io.ktor.server.plugins.callid.CallId
 import io.ktor.server.plugins.callid.callIdMdc
 import io.ktor.server.plugins.callid.generate
@@ -31,12 +30,11 @@ import io.ktor.server.routing.routing
 import io.ktor.util.date.getTimeMillis
 import io.ktor.util.logging.Logger
 import io.micrometer.core.instrument.Tag
-import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
-import no.nav.pensjon.brev.pdfbygger.getProperty
+import no.nav.pensjon.brev.pdfbygger.getPropertyOrNull
 import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 import no.nav.pensjon.brev.pdfbygger.pdfByggerConfig
@@ -44,21 +42,16 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 fun Application.restModule(
-    latexCompileService: LatexCompileService
+    latexCompileService: LatexCompileService,
+    prometheusMeterRegistry: PrometheusMeterRegistry
 ) {
-    val parallelism =
-        getProperty("pdfBygger.latex.latexParallelism")?.toInt() ?: Runtime.getRuntime().availableProcessors()
+    val parallelism = getPropertyOrNull("pdfBygger.latex.latexParallelism")?.toInt() ?: Runtime.getRuntime().availableProcessors()
     val blockingLatexService = BlockingLatexService(
-        queueWaitTimeout = getProperty("pdfBygger.latex.compileQueueWaitTimeout")?.let { Duration.Companion.parse(it) }
+        queueWaitTimeout = getPropertyOrNull("pdfBygger.latex.compileQueueWaitTimeout")?.let { Duration.Companion.parse(it) }
             ?: 4.seconds,
         latexParallelism = parallelism,
         latexCompileService = latexCompileService,
     )
-
-    val prometheusMeterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
-    install(MicrometerMetrics) {
-        registry = prometheusMeterRegistry
-    }
 
     val activityCounter = ActiveCounter(prometheusMeterRegistry, "pensjonsbrev_pdf_compile_active", listOf(Tag.of("hpa", "value")))
 
@@ -85,7 +78,7 @@ fun Application.restModule(
             )
         }
     }
-    
+
     install(CallLogging) {
         callIdMdc("x_correlationId")
         disableDefaultColors()
@@ -133,9 +126,6 @@ fun Application.restModule(
             } else {
                 call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
             }
-        }
-        get("/metrics") {
-            call.respond(prometheusMeterRegistry.scrape())
         }
     }
 }
