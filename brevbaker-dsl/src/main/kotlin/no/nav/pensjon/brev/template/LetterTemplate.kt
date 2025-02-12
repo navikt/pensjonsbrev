@@ -305,7 +305,8 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                 }
 
                 data class NewLine<out Lang : LanguageSupport>(
-                    val index: Int, // To be able to distinguish between newLine-elements
+                    // To be able to distinguish between newLine-elements
+                    val index: Int,
                 ) : Text<Lang>(), StableHash by StableHash.of(StableHash.of("Element.OutlineContent.ParagraphContent.Text.NewLine"), StableHash.of(index)) {
                     override val fontType = FontType.PLAIN
                 }
