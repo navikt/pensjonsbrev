@@ -32,7 +32,7 @@ jobs:
       - uses: "actions/setup-java@v4"
         with:
           "distribution": "temurin"
-          "java-version": "17"
+          "java-version": "21"
       - name: "compile and run tests"
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal

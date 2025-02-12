@@ -49,7 +49,7 @@ jobs:
       - uses: "actions/setup-java@v4"
         with:
           "distribution": "temurin"
-          "java-version": "17"
+          "java-version": "21"
 
       - name: "compile and run tests"
         run: |
@@ -86,7 +86,7 @@ jobs:
       - uses: "actions/setup-java@v4"
         with:
           "distribution": "temurin"
-          "java-version": "17"
+          "java-version": "21"
       - name: "compile and run tests"
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal
@@ -148,7 +148,7 @@ jobs:
       - uses: "actions/setup-java@v4"
         with:
           "distribution": "temurin"
-          "java-version": "17"
+          "java-version": "21"
       - name: "run integration tests"
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
