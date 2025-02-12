@@ -58,8 +58,8 @@ object Pesysbrevkoder {
 
         override fun toggle(): FeatureToggle? =
             when (this) {
-                PE_OVERSETTELSE_AV_DOKUMENTER -> FeatureToggles.brevMedFritekst
-                UT_AVSLAG_UFOERETRYGD -> FeatureToggles.brevmal_ut_avslag
+                PE_OVERSETTELSE_AV_DOKUMENTER -> FeatureToggles.BREV_MED_FRITEKST
+                UT_AVSLAG_UFOERETRYGD -> FeatureToggles.BREVMAL_UT_AVSLAG
                 else -> null
             }
     }

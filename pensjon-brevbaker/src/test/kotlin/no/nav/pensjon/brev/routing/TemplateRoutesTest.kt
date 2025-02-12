@@ -118,8 +118,8 @@ class TemplateRoutesTest {
     @Test
     fun `filtrerer bort deaktiverte maler`() = testBrevbakerApp { client ->
         settOppFakeUnleash()
-        deaktiverToggle(FeatureToggles.brevMedFritekst)
-        deaktiverToggle(FeatureToggles.brevmal_ut_avslag)
+        deaktiverToggle(FeatureToggles.BREV_MED_FRITEKST)
+        deaktiverToggle(FeatureToggles.BREVMAL_UT_AVSLAG)
         val response = client.get("/templates/redigerbar?includeMetadata=true")
         assertEquals(HttpStatusCode.OK, response.status)
         val body = response.body<List<LinkedHashMap<*,*>>>()
