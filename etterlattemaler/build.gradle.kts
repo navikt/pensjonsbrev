@@ -1,7 +1,6 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val apiModelVersion: String by project
 val apiModelJavaTarget: String by System.getProperties()
 val jacksonJsr310Version: String by project
 val jupiterVersion: String by project
@@ -26,7 +25,6 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     api(project(":brevbaker"))
     ksp(project(":template-model-generator"))
-    api(project(":pensjon-brevbaker-api-model"))
 
 
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version") {
