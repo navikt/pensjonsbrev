@@ -491,7 +491,8 @@ object Barnetillegg {
             showIf((saerkullInnvilget or fellesInnvilget) and (not(saerkullUtbetalt) or not(fellesUtbetalt))) {
                 paragraph {
                     showIf(not(saerkullUtbetalt) and not(fellesUtbetalt) and fellesInnvilget and saerkullInnvilget) {
-                        textExpr( // TBU2490
+                        textExpr(
+                            // TBU2490
                             Bokmal to "Barnetillegget for ".expr() +
                                 ifElse(harFlereFellesBarn, "barna", "barnet") +
                                 " som bor med begge sine foreldre, blir ikke utbetalt fordi de samlede inntektene er høyere enn " +
@@ -515,7 +516,8 @@ object Barnetillegg {
                                 inntektstakSaerkullsbarn.format() + ". You will not receive child supplement because your income exceeds the income limit.",
                         )
                     }.orShowIf(not(saerkullUtbetalt) and saerkullInnvilget and not(fellesInnvilget)) {
-                        textExpr( // TBU1286.1
+                        textExpr(
+                            // TBU1286.1
                             Bokmal to "Barnetillegget for ".expr() +
                                 ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
                                 " blir ikke utbetalt fordi du har en samlet inntekt som er høyere enn " +
@@ -530,7 +532,8 @@ object Barnetillegg {
                                 inntektstakFellesbarn.format() + ". You will not receive child supplement because your income exceeds the income limit.",
                         )
                     }.orShowIf(not(saerkullUtbetalt) and saerkullInnvilget and fellesInnvilget) {
-                        textExpr( // TBU1286.1
+                        textExpr(
+                            // TBU1286.1
                             Bokmal to "Barnetillegget for ".expr() +
                                 ifElse(harFlereSaerkullsbarn, "barna", "barnet") +
                                 " som ikke bor sammen med begge foreldrene, blir ikke utbetalt fordi du alene har en samlet inntekt som er høyere enn " +
@@ -545,7 +548,8 @@ object Barnetillegg {
                                 inntektstakFellesbarn.format() + ". You will not receive child supplement because your income exceeds the income limit.",
                         )
                     }.orShowIf(not(fellesUtbetalt) and not(saerkullInnvilget) and fellesInnvilget) {
-                        textExpr( // TBU1286.2
+                        textExpr(
+                            // TBU1286.2
                             Bokmal to "Barnetillegget for ".expr() +
                                 ifElse(harFlereFellesBarn, "barna", "barnet") +
                                 " blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
@@ -560,7 +564,8 @@ object Barnetillegg {
                                 inntektstakFellesbarn.format() + ". You will not receive child supplement because your combined incomes exceed the income limit.",
                         )
                     }.orShowIf(not(fellesUtbetalt) and saerkullInnvilget and fellesInnvilget) {
-                        textExpr( // TBU1286.2
+                        textExpr(
+                            // TBU1286.2
                             Bokmal to "Barnetillegget for ".expr() +
                                 ifElse(harFlereFellesBarn, "barna", "barnet") +
                                 " som bor med begge sine foreldre, blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " +
