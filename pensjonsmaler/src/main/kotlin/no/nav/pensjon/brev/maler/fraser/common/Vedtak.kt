@@ -4,13 +4,9 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 
-
-
 object Vedtak {
-
     // vedtakOverskriftPesys_001
     object Overskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
-
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             title1 {
                 text(
@@ -25,7 +21,6 @@ object Vedtak {
      * TBU1092
      */
     object BegrunnelseOverskrift : OutlinePhrase<LangBokmalNynorskEnglish>() {
-
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             title1 {
                 text(

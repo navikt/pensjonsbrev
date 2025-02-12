@@ -40,61 +40,63 @@ data class OmstillingsstoenadRevurderingRedigerbartUtfallDTO(
     val harUtbetaling: Boolean,
     val inntekt: Kroner,
     val inntektsAar: Int,
-    val mottattInntektendringAutomatisk: LocalDate?
-): RedigerbartUtfallBrevDTO
+    val mottattInntektendringAutomatisk: LocalDate?,
+) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
-object OmstillingsstoenadRevurderingRedigerbartUtfall:
+object OmstillingsstoenadRevurderingRedigerbartUtfall :
     EtterlatteTemplate<OmstillingsstoenadRevurderingRedigerbartUtfallDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_REVURDERING_UTFALL
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = OmstillingsstoenadRevurderingRedigerbartUtfallDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - revurdering",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title {
-            text(
-                Language.Bokmal to "",
-                Language.Nynorsk to "",
-                Language.English to "",
-            )
-        }
-        outline {
-            includePhrase(
-                OmstillingsstoenadRevurderingFraser.RevurderingVedtak(
-                    erEndret,
-                    beregning,
-                    etterbetaling.notNull(),
-                    harFlereUtbetalingsperioder,
-                    harUtbetaling,
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = OmstillingsstoenadRevurderingRedigerbartUtfallDTO::class,
+            languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - revurdering",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),
-            )
-            includePhrase(Vedtak.BegrunnelseForVedtaket)
-            includePhrase(
-                OmstillingsstoenadRevurderingFraser.UtfallRedigerbart(
-                    erEtterbetaling,
-                    feilutbetaling,
-                    inntekt,
-                    inntektsAar,
-                    mottattInntektendringAutomatisk
+        ) {
+            title {
+                text(
+                    Language.Bokmal to "",
+                    Language.Nynorsk to "",
+                    Language.English to "",
                 )
-            )
-            showIf(harUtbetaling) {
-                includePhrase(OmstillingsstoenadRevurderingFraser.UtbetalingMedEtterbetaling(erEtterbetaling))
             }
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
-                includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingMedVarselRevurdering)
-            }
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
-                includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingUtenVarselRevurdering)
+            outline {
+                includePhrase(
+                    OmstillingsstoenadRevurderingFraser.RevurderingVedtak(
+                        erEndret,
+                        beregning,
+                        etterbetaling.notNull(),
+                        harFlereUtbetalingsperioder,
+                        harUtbetaling,
+                    ),
+                )
+                includePhrase(Vedtak.BegrunnelseForVedtaket)
+                includePhrase(
+                    OmstillingsstoenadRevurderingFraser.UtfallRedigerbart(
+                        erEtterbetaling,
+                        feilutbetaling,
+                        inntekt,
+                        inntektsAar,
+                        mottattInntektendringAutomatisk,
+                    ),
+                )
+                showIf(harUtbetaling) {
+                    includePhrase(OmstillingsstoenadRevurderingFraser.UtbetalingMedEtterbetaling(erEtterbetaling))
+                }
+                showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
+                    includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingMedVarselRevurdering)
+                }
+                showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
+                    includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingUtenVarselRevurdering)
+                }
             }
         }
-    }
 }

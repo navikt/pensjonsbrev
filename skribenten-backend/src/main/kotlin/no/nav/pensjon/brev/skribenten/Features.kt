@@ -7,7 +7,7 @@ import io.getunleash.UnleashContext
 import io.getunleash.util.UnleashConfig
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 
-private const val unleashTogglePrefix = "pensjonsbrev.skribenten."
+private const val UNLEASH_TOGGLE_PREFIX = "pensjonsbrev.skribenten."
 
 data class UnleashToggle(val name: String) {
     suspend fun isEnabled() = Features.isEnabled(this)
@@ -20,23 +20,27 @@ object Features {
     private var unleash: Unleash? = null
     private val overrides = mutableMapOf<String, Boolean>()
 
-    fun override(key: UnleashToggle, value: Boolean) {
+    fun override(
+        key: UnleashToggle,
+        value: Boolean,
+    ) {
         overrides[key.name] = value
     }
 
     fun initUnleash(config: Config) {
-        unleash = DefaultUnleash(
-            UnleashConfig.builder()
-                .appName(config.getString("appName"))
-                .environment(config.getString("environment"))
-                .unleashAPI(config.getString("host") + "/api")
-                .apiKey(config.getString("apiToken")).build()
-        )
+        unleash =
+            DefaultUnleash(
+                UnleashConfig.builder()
+                    .appName(config.getString("appName"))
+                    .environment(config.getString("environment"))
+                    .unleashAPI(config.getString("host") + "/api")
+                    .apiKey(config.getString("apiToken")).build(),
+            )
     }
 
     suspend fun isEnabled(toggle: UnleashToggle): Boolean =
         overrides[toggle.name]
-            ?: unleash?.isEnabled(unleashTogglePrefix + toggle.name, context())
+            ?: unleash?.isEnabled(UNLEASH_TOGGLE_PREFIX + toggle.name, context())
             ?: false
 
     private suspend fun context(): UnleashContext =

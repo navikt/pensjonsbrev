@@ -19,7 +19,6 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, Kode>> Route.templateRoutes(resource: TemplateResource<Kode, T>) =
     route("/${resource.name}") {
-
         get {
             if (call.parameters["includeMetadata"] == "true") {
                 call.respond(resource.listTemplatesWithMetadata())
@@ -30,9 +29,10 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
 
         route("/{kode}") {
             get {
-                val template = call.kode(resource)
-                    .let { resource.getTemplate(it) }
-                    ?.description()
+                val template =
+                    call.kode(resource)
+                        .let { resource.getTemplate(it) }
+                        ?.description()
 
                 if (template != null) {
                     call.respond(template)
@@ -44,9 +44,10 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
             get("/doc/{language}") {
                 val language = call.parameters.getOrFail<LanguageCode>("language").toLanguage()
 
-                val template = call.kode(resource)
-                    .let { resource.getTemplate(it)?.template }
-                    ?.takeIf { it.language.supports(language) }
+                val template =
+                    call.kode(resource)
+                        .let { resource.getTemplate(it)?.template }
+                        ?.takeIf { it.language.supports(language) }
 
                 if (template != null) {
                     call.respond(TemplateDocumentationRenderer.render(template, language, template.modelSpecification()))
@@ -56,8 +57,9 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
             }
 
             get("/modelSpecification") {
-                val template = call.kode(resource)
-                    .let { resource.getTemplate(it)?.template }
+                val template =
+                    call.kode(resource)
+                        .let { resource.getTemplate(it)?.template }
 
                 if (template != null) {
                     call.respond(template.modelSpecification())
@@ -71,10 +73,11 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
 fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactory(this.letterDataType).build()
 
 // TODO: Med riktig typing burde heile denne metoden vera unødvendig
-fun <Kode: Brevkode<Kode>> ApplicationCall.kode(resource: TemplateResource<Kode,*>): Kode = parameters.getOrFail<String>("kode").let {
-    if (resource.name == "autobrev") {
-        AutomatiskBrevkode(it)
-    } else {
-        RedigerbarBrevkode(it)
-    } as Kode
-}
+fun <Kode : Brevkode<Kode>> ApplicationCall.kode(resource: TemplateResource<Kode, *>): Kode =
+    parameters.getOrFail<String>("kode").let {
+        if (resource.name == "autobrev") {
+            AutomatiskBrevkode(it)
+        } else {
+            RedigerbarBrevkode(it)
+        } as Kode
+    }

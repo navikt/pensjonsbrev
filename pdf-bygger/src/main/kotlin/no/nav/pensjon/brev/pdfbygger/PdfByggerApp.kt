@@ -27,7 +27,6 @@ import java.nio.file.Path
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-
 fun main(args: Array<String>) = EngineMain.main(args)
 
 private fun Application.getProperty(name: String): String? =
@@ -36,19 +35,19 @@ private fun Application.getProperty(name: String): String? =
 @Suppress("unused")
 fun Application.module() {
     val parallelism = getProperty("pdfBygger.latexParallelism")?.toInt() ?: Runtime.getRuntime().availableProcessors()
-    val laTeXService = LaTeXService(
-        compileTimeout = getProperty("pdfBygger.compileTimeout")?.let { Duration.parse(it) } ?: 300.seconds,
-        queueWaitTimeout = getProperty("pdfBygger.compileQueueWaitTimeout")?.let { Duration.parse(it) } ?: 4.seconds,
-        latexParallelism = parallelism,
-        latexCommand = getProperty("pdfBygger.latexCommand") ?: "xelatex --interaction=nonstopmode -halt-on-error",
-        tmpBaseDir = Path.of(environment.config.property("pdfBygger.compileTmpDir").getString()),
-    )
+    val laTeXService =
+        LaTeXService(
+            compileTimeout = getProperty("pdfBygger.compileTimeout")?.let { Duration.parse(it) } ?: 300.seconds,
+            queueWaitTimeout = getProperty("pdfBygger.compileQueueWaitTimeout")?.let { Duration.parse(it) } ?: 4.seconds,
+            latexParallelism = parallelism,
+            latexCommand = getProperty("pdfBygger.latexCommand") ?: "xelatex --interaction=nonstopmode -halt-on-error",
+            tmpBaseDir = Path.of(environment.config.property("pdfBygger.compileTmpDir").getString()),
+        )
 
     log.info("Target parallelism : $parallelism")
     monitor.subscribe(ApplicationStopPreparing) {
         it.log.info("Application preparing to shutdown gracefully")
     }
-
 
     install(ContentNegotiation) {
         jackson {
@@ -64,14 +63,14 @@ fun Application.module() {
         gzip {
             priority = 1.0
             matchContentType(
-                ContentType.Application.Json
+                ContentType.Application.Json,
             )
         }
         deflate {
             priority = 10.0
             minimumSize(1024)
             matchContentType(
-                ContentType.Application.Json
+                ContentType.Application.Json,
             )
         }
     }
@@ -106,13 +105,13 @@ fun Application.module() {
     }
 
     routing {
-
         post("/produserBrev") {
-            val result = activityCounter.count {
-                call.receive<PDFRequest>()
-                    .let { LatexDocumentRenderer.render(it) }
-                    .let { laTeXService.producePDF(it.files.associate { it.fileName to it.content }) }
-            }
+            val result =
+                activityCounter.count {
+                    call.receive<PDFRequest>()
+                        .let { LatexDocumentRenderer.render(it) }
+                        .let { laTeXService.producePDF(it.files.associate { it.fileName to it.content }) }
+                }
             handleResult(result, call.application.environment.log)
         }
 
@@ -170,4 +169,3 @@ private suspend fun RoutingContext.handleResult(
         }
     }
 }
-

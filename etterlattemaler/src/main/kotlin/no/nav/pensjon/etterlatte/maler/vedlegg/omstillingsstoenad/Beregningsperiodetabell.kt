@@ -52,7 +52,7 @@ data class Beregningsperiodetabell(
                             Language.English to "Payout per month",
                         )
                     }
-                }
+                },
             ) {
                 forEach(beregningsperioder) { periode ->
                     row {

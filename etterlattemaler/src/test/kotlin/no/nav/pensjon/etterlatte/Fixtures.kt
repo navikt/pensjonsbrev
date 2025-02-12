@@ -49,7 +49,6 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingRedigerbartB
 import kotlin.reflect.KClass
 
 object Fixtures {
-
     val felles = no.nav.brev.brevbaker.Fixtures.felles
 
     inline fun <reified T : Any> create(): T = create(T::class)
@@ -113,6 +112,4 @@ object Fixtures {
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
-
 }
-

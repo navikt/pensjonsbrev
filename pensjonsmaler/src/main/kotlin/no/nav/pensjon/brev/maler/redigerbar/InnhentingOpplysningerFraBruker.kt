@@ -23,64 +23,63 @@ import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
 
 @TemplateModelHelpers
 object InnhentingOpplysningerFraBruker : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
-
     // PE_IY_03_048
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER
     override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper: Set<Sakstype> = Sakstype.all
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = EmptyRedigerbarBrevdata::class,
-        languages = languages(Bokmal, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Innhente opplysninger",
-            isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
-        )
-    ) {
-        title {
-            text(
-                Bokmal to "Du må sende oss flere opplysninger",
-                English to "Collection of detailed information",
-            )
-        }
-
-        outline {
-
-            paragraph {
-                val henvendelse = fritekst("blankett/brev/henvendelse")
-                val dato = fritekst("dato")
-                val opplysninger = fritekst("opplysning 1")
-
-                textExpr(
-                    Bokmal to felles.avsenderEnhet.navn + " har mottatt en " + henvendelse + " fra deg " + dato + ". For å kunne behandle henvendelsen mangler vi følgende opplysninger: ",
-                    English to felles.avsenderEnhet.navn + " received a " + henvendelse + " from you on " + dato + ". In order to process your request, we need the following information from you: ",
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = EmptyRedigerbarBrevdata::class,
+            languages = languages(Bokmal, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Innhente opplysninger",
+                    isSensitiv = false,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Bokmal to "Du må sende oss flere opplysninger",
+                    English to "Collection of detailed information",
                 )
-                list {
-                    item {
-                        textExpr(
-                            Bokmal to opplysninger,
-                            English to opplysninger,
-                        )
+            }
+
+            outline {
+
+                paragraph {
+                    val henvendelse = fritekst("blankett/brev/henvendelse")
+                    val dato = fritekst("dato")
+                    val opplysninger = fritekst("opplysning 1")
+
+                    textExpr(
+                        Bokmal to felles.avsenderEnhet.navn + " har mottatt en " + henvendelse + " fra deg " + dato + ". For å kunne behandle henvendelsen mangler vi følgende opplysninger: ",
+                        English to felles.avsenderEnhet.navn + " received a " + henvendelse + " from you on " + dato + ". In order to process your request, we need the following information from you: ",
+                    )
+                    list {
+                        item {
+                            textExpr(
+                                Bokmal to opplysninger,
+                                English to opplysninger,
+                            )
+                        }
                     }
                 }
+
+                paragraph {
+                    val dato = fritekst("dato")
+                    textExpr(
+                        Bokmal to "Vi ber deg derfor om å sende oss overnevnte opplysninger innen ".expr() + dato + " til adresse:",
+                        English to "Please send us the above information by ".expr() + dato + ", to the following address:",
+                    )
+                }
+                includePhrase(Alderspensjon.Returadresse)
+
+                includePhrase(Felles.HarDuSpoersmaal.alder)
             }
-
-
-            paragraph {
-                val dato = fritekst("dato")
-                textExpr(
-                    Bokmal to "Vi ber deg derfor om å sende oss overnevnte opplysninger innen ".expr() + dato + " til adresse:",
-                    English to "Please send us the above information by ".expr() + dato + ", to the following address:",
-                )
-            }
-            includePhrase(Alderspensjon.Returadresse)
-
-            includePhrase(Felles.HarDuSpoersmaal.alder)
         }
-    }
 }
-

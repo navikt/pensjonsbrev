@@ -31,50 +31,54 @@ import java.util.*
 class TemplateResourceTest {
     private val pdfInnhold = "generert pdf"
     private val base64PDF = Base64.getEncoder().encodeToString(pdfInnhold.toByteArray())
-    private val latexMock = mockk<LaTeXCompilerService> {
-        coEvery { producePDF(any()) } returns PDFCompilationOutput(base64PDF)
-    }
+    private val latexMock =
+        mockk<LaTeXCompilerService> {
+            coEvery { producePDF(any()) } returns PDFCompilationOutput(base64PDF)
+        }
     private val autobrev = TemplateResource("autobrev", Testmaler.hentAutobrevmaler(), latexMock)
     private val redigerbar = TemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), latexMock)
 
-    private val validAutobrevRequest = BestillBrevRequest(
-        LetterExample.kode,
-        createLetterExampleDto(),
-        Fixtures.fellesAuto,
-        LanguageCode.BOKMAL
-    )
-    private val validRedigertBrevRequest = BestillRedigertBrevRequest(
-        EksempelbrevRedigerbart.kode,
-        createEksempelbrevRedigerbartDto(),
-        Fixtures.felles,
-        LanguageCode.BOKMAL,
-        LetterMarkup(
-            "redigert markup",
-            LetterMarkup.Sakspart(
-                "gjelder bruker",
-                "123abc",
-                "001",
-                "en dato"
-            ),
-            emptyList(),
-            LetterMarkup.Signatur(
-                "hilsen oss",
-                "en rolle",
-                "Saksbehandlersen",
-                null,
-                "Akersgata"
-            )
+    private val validAutobrevRequest =
+        BestillBrevRequest(
+            LetterExample.kode,
+            createLetterExampleDto(),
+            Fixtures.fellesAuto,
+            LanguageCode.BOKMAL,
         )
-    )
+    private val validRedigertBrevRequest =
+        BestillRedigertBrevRequest(
+            EksempelbrevRedigerbart.kode,
+            createEksempelbrevRedigerbartDto(),
+            Fixtures.felles,
+            LanguageCode.BOKMAL,
+            LetterMarkup(
+                "redigert markup",
+                LetterMarkup.Sakspart(
+                    "gjelder bruker",
+                    "123abc",
+                    "001",
+                    "en dato",
+                ),
+                emptyList(),
+                LetterMarkup.Signatur(
+                    "hilsen oss",
+                    "en rolle",
+                    "Saksbehandlersen",
+                    null,
+                    "Akersgata",
+                ),
+            ),
+        )
 
     @Test
-    fun `can renderPDF with valid letterData`(): Unit = runBlocking {
-        val result = autobrev.renderPDF(validAutobrevRequest)
-        assertEquals(
-            LetterResponse(pdfInnhold.toByteArray(), ContentType.Application.Pdf.toString(), LetterExample.template.letterMetadata),
-            result
-        )
-    }
+    fun `can renderPDF with valid letterData`(): Unit =
+        runBlocking {
+            val result = autobrev.renderPDF(validAutobrevRequest)
+            assertEquals(
+                LetterResponse(pdfInnhold.toByteArray(), ContentType.Application.Pdf.toString(), LetterExample.template.letterMetadata),
+                result,
+            )
+        }
 
     @Test
     fun `can renderHTML with valid letterData`() {
@@ -84,11 +88,12 @@ class TemplateResourceTest {
     }
 
     @Test
-    fun `fails renderPDF with invalid letterData`(): Unit = runBlocking {
-        assertThrows<ParseLetterDataException> {
-            autobrev.renderPDF(validAutobrevRequest.copy(letterData = RandomLetterdata(true)))
+    fun `fails renderPDF with invalid letterData`(): Unit =
+        runBlocking {
+            assertThrows<ParseLetterDataException> {
+                autobrev.renderPDF(validAutobrevRequest.copy(letterData = RandomLetterdata(true)))
+            }
         }
-    }
 
     @Test
     fun `fails renderHTML with invalid letterData`() {
@@ -100,10 +105,11 @@ class TemplateResourceTest {
     @Test
     fun `renderHTML redigertBrev uses letterMarkup from argument and includes attachments`() {
         val result = String(redigerbar.renderHTML(validRedigertBrevRequest).file)
-        val anAttachmentTitle = Letter2Markup.renderAttachmentsOnly(
-            validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
-            EksempelbrevRedigerbart.template
-        ).first().title.joinToString { it.text }
+        val anAttachmentTitle =
+            Letter2Markup.renderAttachmentsOnly(
+                validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
+                EksempelbrevRedigerbart.template,
+            ).first().title.joinToString { it.text }
 
         assertThat(result, containsSubstring(validRedigertBrevRequest.letterMarkup.title))
 

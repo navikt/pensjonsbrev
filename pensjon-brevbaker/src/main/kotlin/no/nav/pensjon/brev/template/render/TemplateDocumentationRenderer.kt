@@ -11,8 +11,11 @@ import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression.Invo
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
 object TemplateDocumentationRenderer {
-
-    fun render(template: LetterTemplate<*, *>, lang: Language, modelSpecification: TemplateModelSpecification): TemplateDocumentation =
+    fun render(
+        template: LetterTemplate<*, *>,
+        lang: Language,
+        modelSpecification: TemplateModelSpecification,
+    ): TemplateDocumentation =
         TemplateDocumentation(
             title = renderText(template.title, lang),
             outline = renderOutline(template.outline, lang),
@@ -20,7 +23,10 @@ object TemplateDocumentationRenderer {
             templateModelSpecification = modelSpecification,
         )
 
-    private fun renderAttachment(attachment: IncludeAttachment<*, *>, lang: Language): TemplateDocumentation.Attachment =
+    private fun renderAttachment(
+        attachment: IncludeAttachment<*, *>,
+        lang: Language,
+    ): TemplateDocumentation.Attachment =
         TemplateDocumentation.Attachment(
             title = renderText(listOf(attachment.template.title), lang),
             outline = renderOutline(attachment.template.outline, lang),
@@ -30,13 +36,13 @@ object TemplateDocumentationRenderer {
 
     private fun <T : Element<*>, R : TemplateDocumentation.Element> renderContentOrStructure(
         contentOrStructure: List<ContentOrControlStructure<*, T>>,
-        mapper: (T) -> List<R>
+        mapper: (T) -> List<R>,
     ): List<TemplateDocumentation.ContentOrControlStructure<R>> =
         contentOrStructure.flatMap { el -> renderContentOrStructure(el) { mapper(it) } }
 
     private fun <T : Element<*>, R : TemplateDocumentation.Element> renderContentOrStructure(
         contentOrStructure: ContentOrControlStructure<*, T>,
-        mapper: (T) -> List<R>
+        mapper: (T) -> List<R>,
     ): List<TemplateDocumentation.ContentOrControlStructure<R>> =
         when (contentOrStructure) {
             is ContentOrControlStructure.Content -> mapper(contentOrStructure.content).map { TemplateDocumentation.ContentOrControlStructure.Content(it) }
@@ -49,21 +55,22 @@ object TemplateDocumentationRenderer {
                         showIf = renderContentOrStructure(contentOrStructure.showIf, mapper),
                         elseIf = elseIf.first,
                         showElse = elseIf.second,
-                    )
+                    ),
                 )
             }
 
-            is ContentOrControlStructure.ForEach<*, T, *> -> listOf(
-                TemplateDocumentation.ContentOrControlStructure.ForEach(
-                    items = renderExpression(contentOrStructure.items),
-                    body = renderContentOrStructure(contentOrStructure.body.toList(), mapper),
+            is ContentOrControlStructure.ForEach<*, T, *> ->
+                listOf(
+                    TemplateDocumentation.ContentOrControlStructure.ForEach(
+                        items = renderExpression(contentOrStructure.items),
+                        body = renderContentOrStructure(contentOrStructure.body.toList(), mapper),
+                    ),
                 )
-            )
         }
 
     private fun <T : Element<*>, R : TemplateDocumentation.Element> liftNestedIfElse(
         showElse: List<ContentOrControlStructure<*, T>>,
-        mapper: (T) -> List<R>
+        mapper: (T) -> List<R>,
     ): Pair<List<TemplateDocumentation.ContentOrControlStructure.Conditional.ElseIf<R>>, List<TemplateDocumentation.ContentOrControlStructure<R>>> {
         val first = showElse.firstOrNull()
         return if (showElse.size == 1 && first is ContentOrControlStructure.Conditional) {
@@ -71,8 +78,8 @@ object TemplateDocumentationRenderer {
                 listOf(
                     TemplateDocumentation.ContentOrControlStructure.Conditional.ElseIf(
                         renderExpression(first.predicate),
-                        renderContentOrStructure(first.showIf, mapper)
-                    )
+                        renderContentOrStructure(first.showIf, mapper),
+                    ),
                 ).plus(nestedIfElse) to nestedElse
             }
         } else {
@@ -82,66 +89,76 @@ object TemplateDocumentationRenderer {
 
     private fun renderOutline(
         outline: List<OutlineElement<*>>,
-        lang: Language
+        lang: Language,
     ): List<TemplateDocumentation.ContentOrControlStructure<TemplateDocumentation.Element.OutlineContent>> =
         renderContentOrStructure(outline) { listOf(renderOutline(it, lang)) }
 
-    private fun renderOutline(element: Element.OutlineContent<*>, lang: Language): TemplateDocumentation.Element.OutlineContent =
+    private fun renderOutline(
+        element: Element.OutlineContent<*>,
+        lang: Language,
+    ): TemplateDocumentation.Element.OutlineContent =
         when (element) {
             is Element.OutlineContent.Title1 -> TemplateDocumentation.Element.OutlineContent.Title1(renderText(element.text, lang))
             is Element.OutlineContent.Title2 -> TemplateDocumentation.Element.OutlineContent.Title2(renderText(element.text, lang))
-            is Element.OutlineContent.Paragraph -> TemplateDocumentation.Element.OutlineContent.Paragraph(
-                renderContentOrStructure(element.paragraph) {
-                    renderParagraphContent(it, lang)
-                }
-            )
+            is Element.OutlineContent.Paragraph ->
+                TemplateDocumentation.Element.OutlineContent.Paragraph(
+                    renderContentOrStructure(element.paragraph) {
+                        renderParagraphContent(it, lang)
+                    },
+                )
         }
 
     private fun renderParagraphContent(
         element: Element.OutlineContent.ParagraphContent<*>,
-        lang: Language
+        lang: Language,
     ): List<TemplateDocumentation.Element.ParagraphContent> =
         when (element) {
             is Element.OutlineContent.ParagraphContent.Form -> listOf(TemplateDocumentation.Element.ParagraphContent.Text.Literal("## missing documentation ##"))
-            is Element.OutlineContent.ParagraphContent.ItemList -> listOf(
-                TemplateDocumentation.Element.ParagraphContent.ItemList(
-                    renderContentOrStructure(element.items) { listOf(renderItem(it, lang)) }
+            is Element.OutlineContent.ParagraphContent.ItemList ->
+                listOf(
+                    TemplateDocumentation.Element.ParagraphContent.ItemList(
+                        renderContentOrStructure(element.items) { listOf(renderItem(it, lang)) },
+                    ),
                 )
-            )
 
             is Element.OutlineContent.ParagraphContent.Table -> listOf(renderTable(element, lang))
             is Element.OutlineContent.ParagraphContent.Text -> renderText(element, lang)
         }
 
-    private fun renderTable(table: Element.OutlineContent.ParagraphContent.Table<*>, lang: Language): TemplateDocumentation.Element.ParagraphContent {
+    private fun renderTable(
+        table: Element.OutlineContent.ParagraphContent.Table<*>,
+        lang: Language,
+    ): TemplateDocumentation.Element.ParagraphContent {
         return TemplateDocumentation.Element.ParagraphContent.Table(
             header = renderRow(table.header.colSpec.map { it.headerContent }, lang),
-            rows = renderContentOrStructure(table.rows) { listOf(renderRow(it.cells, lang)) }
+            rows = renderContentOrStructure(table.rows) { listOf(renderRow(it.cells, lang)) },
         )
     }
 
     private fun renderRow(
         cells: List<Element.OutlineContent.ParagraphContent.Table.Cell<*>>,
-        lang: Language
+        lang: Language,
     ): TemplateDocumentation.Element.ParagraphContent.Table.Row =
-        TemplateDocumentation.Element.ParagraphContent.Table.Row(cells.map {
-            TemplateDocumentation.Element.ParagraphContent.Table.Cell(
-                renderText(
-                    it.text,
-                    lang
+        TemplateDocumentation.Element.ParagraphContent.Table.Row(
+            cells.map {
+                TemplateDocumentation.Element.ParagraphContent.Table.Cell(
+                    renderText(
+                        it.text,
+                        lang,
+                    ),
                 )
-            )
-        })
+            },
+        )
 
     private fun renderText(
         text: List<TextElement<*>>,
-        lang: Language
+        lang: Language,
     ): List<TemplateDocumentation.ContentOrControlStructure<TemplateDocumentation.Element.ParagraphContent.Text>> =
         renderContentOrStructure(text) { renderText(it, lang) }
 
     private fun renderText(
         element: Element.OutlineContent.ParagraphContent.Text<*>,
-        lang: Language
+        lang: Language,
     ): List<TemplateDocumentation.Element.ParagraphContent.Text> =
         when (element) {
             is Element.OutlineContent.ParagraphContent.Text.Literal -> listOf(TemplateDocumentation.Element.ParagraphContent.Text.Literal(element.text(lang)))
@@ -152,7 +169,7 @@ object TemplateDocumentationRenderer {
 
     private fun renderItem(
         item: Element.OutlineContent.ParagraphContent.ItemList.Item<*>,
-        lang: Language
+        lang: Language,
     ): TemplateDocumentation.Element.ParagraphContent.ItemList.Item =
         TemplateDocumentation.Element.ParagraphContent.ItemList.Item(renderText(item.text, lang))
 
@@ -169,7 +186,7 @@ object TemplateDocumentationRenderer {
 
     private fun renderExpression(expr: Expression<*>): TemplateDocumentation.Expression =
         when (expr) {
-            is Expression.BinaryInvoke<*, *, *> ->renderBinaryInvoke(expr)
+            is Expression.BinaryInvoke<*, *, *> -> renderBinaryInvoke(expr)
             is Expression.FromScope.Language -> TemplateDocumentation.Expression.LetterData("language")
             is Expression.FromScope.Felles -> TemplateDocumentation.Expression.LetterData("felles")
             is Expression.FromScope.Argument -> TemplateDocumentation.Expression.LetterData("argument")
@@ -182,11 +199,11 @@ object TemplateDocumentationRenderer {
         when (expr.operation) {
             is LocalizedFormatter<*> -> renderExpression(expr.first)
             is BinaryOperation.IfNull<*> ->
-               if (expr.second is Expression.Literal && (expr.second as Expression.Literal<Any?>).value == false) {
-                   renderExpression(expr.first)
-               } else {
-                   renderAnyBinaryInvoke(expr)
-               }
+                if (expr.second is Expression.Literal && (expr.second as Expression.Literal<Any?>).value == false) {
+                    renderExpression(expr.first)
+                } else {
+                    renderAnyBinaryInvoke(expr)
+                }
             else -> renderAnyBinaryInvoke(expr)
         }
 
@@ -195,73 +212,85 @@ object TemplateDocumentationRenderer {
             renderOperation(expr.operation),
             renderExpression(expr.first),
             renderExpression(expr.second),
-            "TODO"
+            "TODO",
         )
 
     private fun renderUnaryInvoke(expr: Expression.UnaryInvoke<*, *>): TemplateDocumentation.Expression =
         when (expr.operation) {
-            is UnaryOperation.AbsoluteValue -> TemplateDocumentation.Expression.Invoke(
-                operator = Operation("abs", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value),
-            )
+            is UnaryOperation.AbsoluteValue ->
+                TemplateDocumentation.Expression.Invoke(
+                    operator = Operation("abs", Documentation.Notation.FUNCTION),
+                    first = renderExpression(expr.value),
+                )
 
-            is UnaryOperation.AbsoluteValueKroner -> TemplateDocumentation.Expression.Invoke(
-                operator = Operation("abs", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value)
-            )
+            is UnaryOperation.AbsoluteValueKroner ->
+                TemplateDocumentation.Expression.Invoke(
+                    operator = Operation("abs", Documentation.Notation.FUNCTION),
+                    first = renderExpression(expr.value),
+                )
 
             is UnaryOperation.MapCollection<*, *> -> TODO()
-            is UnaryOperation.Not -> if (expr.value is Expression.BinaryInvoke<*, *, *> && (expr.value as Expression.BinaryInvoke<*, *, *>).operation is BinaryOperation.Equal<*>) {
-                TemplateDocumentation.Expression.Invoke(
-                    operator = Operation("!=", Documentation.Notation.INFIX),
-                    first = renderExpression((expr.value as Expression.BinaryInvoke<*, *, *>).first),
-                    second = renderExpression((expr.value as Expression.BinaryInvoke<*, *, *>).second),
-                )
-            } else TemplateDocumentation.Expression.Invoke(
-                operator = Operation("!", Documentation.Notation.PREFIX),
-                first = renderExpression(expr.value),
-            )
+            is UnaryOperation.Not ->
+                if (expr.value is Expression.BinaryInvoke<*, *, *> && (expr.value as Expression.BinaryInvoke<*, *, *>).operation is BinaryOperation.Equal<*>) {
+                    TemplateDocumentation.Expression.Invoke(
+                        operator = Operation("!=", Documentation.Notation.INFIX),
+                        first = renderExpression((expr.value as Expression.BinaryInvoke<*, *, *>).first),
+                        second = renderExpression((expr.value as Expression.BinaryInvoke<*, *, *>).second),
+                    )
+                } else {
+                    TemplateDocumentation.Expression.Invoke(
+                        operator = Operation("!", Documentation.Notation.PREFIX),
+                        first = renderExpression(expr.value),
+                    )
+                }
 
-            is UnaryOperation.SafeCall -> TemplateDocumentation.Expression.Invoke(
-                operator = Operation("?.${(expr.operation as UnaryOperation.SafeCall<out Any, Any>).selector.propertyName}", Documentation.Notation.POSTFIX),
-                first = renderExpression(expr.value),
-                type = (expr.operation as UnaryOperation.SafeCall<out Any, Any>).selector.propertyType,
-            )
-
-            is UnaryOperation.Select -> if ((expr.operation as UnaryOperation.Select<out Any, Any?>).selector != intValueSelector) {
+            is UnaryOperation.SafeCall ->
                 TemplateDocumentation.Expression.Invoke(
-                    operator = Operation(".${(expr.operation as UnaryOperation.Select<out Any, Any?>).selector.propertyName}", Documentation.Notation.POSTFIX),
+                    operator = Operation("?.${(expr.operation as UnaryOperation.SafeCall<out Any, Any>).selector.propertyName}", Documentation.Notation.POSTFIX),
                     first = renderExpression(expr.value),
-                    type = (expr.operation as UnaryOperation.Select<out Any, Any?>).selector.propertyType,
+                    type = (expr.operation as UnaryOperation.SafeCall<out Any, Any>).selector.propertyType,
                 )
-            } else {
-                renderExpression(expr.value)
-            }
 
-            is UnaryOperation.SizeOf -> TemplateDocumentation.Expression.Invoke(
-                operator = Operation("size", Documentation.Notation.POSTFIX),
-                first = renderExpression(expr.value),
-            )
+            is UnaryOperation.Select ->
+                if ((expr.operation as UnaryOperation.Select<out Any, Any?>).selector != intValueSelector) {
+                    TemplateDocumentation.Expression.Invoke(
+                        operator = Operation(".${(expr.operation as UnaryOperation.Select<out Any, Any?>).selector.propertyName}", Documentation.Notation.POSTFIX),
+                        first = renderExpression(expr.value),
+                        type = (expr.operation as UnaryOperation.Select<out Any, Any?>).selector.propertyType,
+                    )
+                } else {
+                    renderExpression(expr.value)
+                }
 
-            is UnaryOperation.ToString -> TemplateDocumentation.Expression.Invoke(
-                operator = Operation("str", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value),
-            )
+            is UnaryOperation.SizeOf ->
+                TemplateDocumentation.Expression.Invoke(
+                    operator = Operation("size", Documentation.Notation.POSTFIX),
+                    first = renderExpression(expr.value),
+                )
 
-            is UnaryOperation.IsEmpty -> TemplateDocumentation.Expression.Invoke(
-                operator = Operation(text = "isEmpty", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value)
-            )
+            is UnaryOperation.ToString ->
+                TemplateDocumentation.Expression.Invoke(
+                    operator = Operation("str", Documentation.Notation.FUNCTION),
+                    first = renderExpression(expr.value),
+                )
 
-            is UnaryOperation.FunksjonsbryterEnabled -> TemplateDocumentation.Expression.Invoke(
-                operator = Operation(text = "enabled", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value)
-            )
+            is UnaryOperation.IsEmpty ->
+                TemplateDocumentation.Expression.Invoke(
+                    operator = Operation(text = "isEmpty", Documentation.Notation.FUNCTION),
+                    first = renderExpression(expr.value),
+                )
 
-            is UnaryOperation.BrukerFulltNavn -> TemplateDocumentation.Expression.Invoke(
-                operator = Operation("fulltNavn", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value),
-            )
+            is UnaryOperation.FunksjonsbryterEnabled ->
+                TemplateDocumentation.Expression.Invoke(
+                    operator = Operation(text = "enabled", Documentation.Notation.FUNCTION),
+                    first = renderExpression(expr.value),
+                )
+
+            is UnaryOperation.BrukerFulltNavn ->
+                TemplateDocumentation.Expression.Invoke(
+                    operator = Operation("fulltNavn", Documentation.Notation.FUNCTION),
+                    first = renderExpression(expr.value),
+                )
         }
 
     private fun renderOperation(operation: BinaryOperation<*, *, *>): Operation =
@@ -273,7 +302,7 @@ object TemplateDocumentationRenderer {
         } else {
             Operation(
                 text = operation::class.simpleName ?: "undocumentedOperation",
-                syntax = Documentation.Notation.FUNCTION
+                syntax = Documentation.Notation.FUNCTION,
             )
         }
 
@@ -298,7 +327,6 @@ object TemplateDocumentationRenderer {
                 acc + current
             }
         }
-
 }
 
 data class TemplateDocumentation(
@@ -323,6 +351,7 @@ data class TemplateDocumentation(
     @JsonPropertyOrder("controlStructureType")
     sealed class ContentOrControlStructure<E : Element> {
         data class Content<E : Element>(val content: E) : ContentOrControlStructure<E>()
+
         data class Conditional<E : Element>(
             val predicate: Expression,
             val showIf: List<ContentOrControlStructure<E>>,
@@ -334,7 +363,7 @@ data class TemplateDocumentation(
 
         data class ForEach<E : Element>(
             val items: Expression,
-            val body: List<ContentOrControlStructure<E>>
+            val body: List<ContentOrControlStructure<E>>,
         ) : ContentOrControlStructure<E>()
     }
 
@@ -354,13 +383,16 @@ data class TemplateDocumentation(
     sealed class Element {
         sealed class OutlineContent : Element() {
             data class Title1(val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
+
             data class Title2(val text: List<ContentOrControlStructure<ParagraphContent.Text>>) : OutlineContent()
+
             data class Paragraph(val paragraph: List<ContentOrControlStructure<ParagraphContent>>) : OutlineContent()
         }
 
         sealed class ParagraphContent : Element() {
             sealed class Text : ParagraphContent() {
                 data class Literal(val text: String) : Text()
+
                 data class Expression(val expression: TemplateDocumentation.Expression) : Text()
             }
 
@@ -370,6 +402,7 @@ data class TemplateDocumentation(
 
             data class Table(val header: Row, val rows: List<ContentOrControlStructure<Row>>) : ParagraphContent() {
                 data class Row(val cells: List<Cell>) : Element()
+
                 data class Cell(val text: List<ContentOrControlStructure<Text>>)
             }
         }
@@ -383,6 +416,7 @@ data class TemplateDocumentation(
     )
     sealed class Expression {
         data class Literal(val value: String) : Expression()
+
         data class LetterData(val scopeName: String) : Expression()
 
         @JsonInclude(JsonInclude.Include.NON_NULL)

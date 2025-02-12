@@ -11,14 +11,13 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class EndretUforetrygdPGAOpptjeningLegacyTest {
-
     @Test
     fun testPdf() {
         Letter(
             EndretUforetrygdPGAOpptjeningLegacy.template,
             Fixtures.create<EndretUforetrygdPGAOpptjeningLegacy>(),
             Language.Nynorsk,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF(EndretUforetrygdPGAOpptjeningLegacy.kode.name)
     }
 
@@ -28,7 +27,7 @@ class EndretUforetrygdPGAOpptjeningLegacyTest {
             EndretUforetrygdPGAOpptjeningLegacy.template,
             Fixtures.create<EndretUforetrygdPGAOpptjeningLegacy>(),
             Language.Nynorsk,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestHtml(EndretUforetrygdPGAOpptjeningLegacy.kode.name)
     }
 }

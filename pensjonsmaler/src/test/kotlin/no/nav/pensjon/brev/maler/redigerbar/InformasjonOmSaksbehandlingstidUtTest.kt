@@ -13,13 +13,14 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class InformasjonOmSaksbehandlingstidUtTest {
-
-    private val data = InformasjonOmSaksbehandlingstidUtDto(
-        saksbehandlerValg = InformasjonOmSaksbehandlingstidUtDto.SaksbehandlerValg(
-            forlengetSaksbehandlingstid = false
-        ),
-        pesysData = EmptyBrevdata
-    )
+    private val data =
+        InformasjonOmSaksbehandlingstidUtDto(
+            saksbehandlerValg =
+                InformasjonOmSaksbehandlingstidUtDto.SaksbehandlerValg(
+                    forlengetSaksbehandlingstid = false,
+                ),
+            pesysData = EmptyBrevdata,
+        )
 
     @Test
     fun `uten forlengetSaksbehandlingstid`() {
@@ -31,15 +32,17 @@ class InformasjonOmSaksbehandlingstidUtTest {
         writeAllLanguages("med-forlengset-saksbehandlingstid", data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(forlengetSaksbehandlingstid = true)))
     }
 
-    private fun writeAllLanguages(testNavn: String, data: InformasjonOmSaksbehandlingstidUtDto) {
+    private fun writeAllLanguages(
+        testNavn: String,
+        data: InformasjonOmSaksbehandlingstidUtDto,
+    ) {
         listOf(BOKMAL, NYNORSK, ENGLISH).forEach { lang ->
             Letter(
                 InformasjonOmSaksbehandlingstidUT.template,
                 data,
                 lang.toLanguage(),
-                Fixtures.felles
+                Fixtures.felles,
             ).renderTestPDF("000130-$testNavn-${lang.name}")
         }
     }
-
 }

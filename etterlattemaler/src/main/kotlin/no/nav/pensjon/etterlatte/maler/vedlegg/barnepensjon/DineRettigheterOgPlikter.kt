@@ -16,38 +16,41 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 
+@TemplateModelHelpers
+val dineRettigheterOgPlikterBosattUtland =
+    createAttachment(
+        title =
+            newText(
+                Bokmal to "Dine rettigheter og plikter",
+                Nynorsk to "Rettane og pliktene dine",
+                English to "Your rights and obligations",
+            ),
+        includeSakspart = false,
+    ) {
+        meldFraOmEndringer()
+        veiledningFraNavForvaltningsloven11()
+        includePhrase(Felles.HjelpFraAndreForvaltningsloven12)
+        duHarRettTilInnsynISakenDin()
+        klagePaaVedtaketFolketrygdloven2112(true.expr())
+    }
 
 @TemplateModelHelpers
-val dineRettigheterOgPlikterBosattUtland = createAttachment(
-    title = newText(
-        Bokmal to "Dine rettigheter og plikter",
-        Nynorsk to "Rettane og pliktene dine",
-        English to "Your rights and obligations",
-    ),
-    includeSakspart = false,
-) {
-    meldFraOmEndringer()
-    veiledningFraNavForvaltningsloven11()
-    includePhrase(Felles.HjelpFraAndreForvaltningsloven12)
-    duHarRettTilInnsynISakenDin()
-    klagePaaVedtaketFolketrygdloven2112(true.expr())
-}
-
-@TemplateModelHelpers
-val dineRettigheterOgPlikterNasjonal = createAttachment(
-    title = newText(
-        Bokmal to "Dine rettigheter og plikter",
-        Nynorsk to "Rettane og pliktene dine",
-        English to "Your rights and obligations",
-    ),
-    includeSakspart = false,
-) {
-    meldFraOmEndringer()
-    veiledningFraNavForvaltningsloven11()
-    includePhrase(Felles.HjelpFraAndreForvaltningsloven12)
-    duHarRettTilInnsynISakenDin()
-    klagePaaVedtaketFolketrygdloven2112(false.expr())
-}
+val dineRettigheterOgPlikterNasjonal =
+    createAttachment(
+        title =
+            newText(
+                Bokmal to "Dine rettigheter og plikter",
+                Nynorsk to "Rettane og pliktene dine",
+                English to "Your rights and obligations",
+            ),
+        includeSakspart = false,
+    ) {
+        meldFraOmEndringer()
+        veiledningFraNavForvaltningsloven11()
+        includePhrase(Felles.HjelpFraAndreForvaltningsloven12)
+        duHarRettTilInnsynISakenDin()
+        klagePaaVedtaketFolketrygdloven2112(false.expr())
+    }
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.meldFraOmEndringer() {
     title2 {
@@ -98,13 +101,13 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.meldFraOmEndringer()
                 "og du må straks melde fra om eventuelle feil til Nav. Er det utbetalt for mye barnepensjon fordi " +
                 "Nav ikke har fått beskjed, må pengene vanligvis betales tilbake.",
             Nynorsk to "Du er ansvarleg for å følgje med på bevegelsar på kontoen for utbetaling av barnepensjon, " +
-                    "og må straks melde frå til Nav dersom du blir merksam på feil. " +
-                    "Viss det har blitt utbetalt for mykje barnepensjon fordi Nav ikkje har fått beskjed om endringar, " +
-                    "må pengane vanlegvis betalast tilbake.",
+                "og må straks melde frå til Nav dersom du blir merksam på feil. " +
+                "Viss det har blitt utbetalt for mykje barnepensjon fordi Nav ikkje har fått beskjed om endringar, " +
+                "må pengane vanlegvis betalast tilbake.",
             English to "You are responsible for staying informed of the transactions in your bank account " +
-                    "regarding the payment of the children's pension, and you must immediately report any errors to Nav. " +
-                    "If too much children's pension has been paid because Nav has not been notified, " +
-                    "the money must normally be repaid.",
+                "regarding the payment of the children's pension, and you must immediately report any errors to Nav. " +
+                "If too much children's pension has been paid because Nav has not been notified, " +
+                "the money must normally be repaid.",
         )
     }
 }
@@ -123,11 +126,11 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
                 "under og etter saksbehandlingen. Dersom du har spørsmål eller er usikker på noe, vil vi gjøre " +
                 "vårt beste for å hjelpe deg.",
             Nynorsk to "Vi pliktar å rettleie deg om rettane og pliktene du har i saka, både før, " +
-                    "under og etter saksbehandlinga. Dersom du har spørsmål eller er usikker på noko, " +
-                    "vil vi gjere vårt beste for å hjelpe deg.",
+                "under og etter saksbehandlinga. Dersom du har spørsmål eller er usikker på noko, " +
+                "vil vi gjere vårt beste for å hjelpe deg.",
             English to "We have a duty to advise you of your rights and obligations in your case – before, " +
-                    "during and after the case has been processed. " +
-                    "If you have any questions or are unsure about anything, we will do our best to help you.",
+                "during and after the case has been processed. " +
+                "If you have any questions or are unsure about anything, we will do our best to help you.",
         )
     }
 }
@@ -162,23 +165,23 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             Bokmal to "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har " +
                 "fattet vedtaket vil da vurdere saken din på nytt.",
             Nynorsk to "Du kan klage på vedtaket innan seks veker frå du får det. " +
-                    "Kontoret som fatta vedtaket, vil då vurdere saka di på nytt.",
+                "Kontoret som fatta vedtaket, vil då vurdere saka di på nytt.",
             English to "You may appeal a decision within six weeks of receiving it. " +
-                    "The office that made the decision will then reconsider your case.",
+                "The office that made the decision will then reconsider your case.",
         )
     }
 
     paragraph {
         text(
             Bokmal to "Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. " +
-                    "Bruk gjerne skjemaet som du finner på ${Constants.KLAGE_URL}. " +
-                    "Trenger du hjelp, er du velkommen til å ringe oss på telefon ",
+                "Bruk gjerne skjemaet som du finner på ${Constants.KLAGE_URL}. " +
+                "Trenger du hjelp, er du velkommen til å ringe oss på telefon ",
             Nynorsk to "Du må setje fram klaga skriftleg og oppgi namn, fødselsnummer og adresse. " +
-                    "Bruk gjerne skjemaet du finn på ${Constants.KLAGE_URL}. " +
-                    "Viss du treng hjelp, må du gjerne ringje oss på telefon ",
+                "Bruk gjerne skjemaet du finn på ${Constants.KLAGE_URL}. " +
+                "Viss du treng hjelp, må du gjerne ringje oss på telefon ",
             English to "The appeal must be made in writing and contain your name, national identity number and address. " +
-                    "Feel free to use the form that you find online: ${Constants.Engelsk.KLAGE_URL}. " +
-                    "If you need help, you are welcome to call us by phone ",
+                "Feel free to use the form that you find online: ${Constants.Engelsk.KLAGE_URL}. " +
+                "If you need help, you are welcome to call us by phone ",
         )
         kontakttelefonPensjon(bosattUtland)
         text(

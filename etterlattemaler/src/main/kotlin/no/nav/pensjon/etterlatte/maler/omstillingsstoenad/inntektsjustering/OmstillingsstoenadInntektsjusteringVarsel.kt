@@ -19,7 +19,8 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.Aarl
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.virkningstidspunkt
 
 @TemplateModelHelpers
-object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<AarligInntektsjusteringVedtakDTO>,
+object OmstillingsstoenadInntektsjusteringVarsel :
+    EtterlatteTemplate<AarligInntektsjusteringVedtakDTO>,
     Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNTEKTSJUSTERING_VARSEL
 
@@ -29,12 +30,12 @@ object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<AarligInnte
             letterDataType = AarligInntektsjusteringVedtakDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
-            LetterMetadata(
-                displayTitle = "Varselbrev - inntektsjustering",
-                isSensitiv = true,
-                distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
-                brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
-            ),
+                LetterMetadata(
+                    displayTitle = "Varselbrev - inntektsjustering",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+                ),
         ) {
             title {
                 textExpr(
@@ -167,8 +168,6 @@ object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<AarligInnte
                 }
 
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
-
             }
         }
 }
-

@@ -8,10 +8,12 @@ import no.nav.pensjon.brev.template.StringExpression
 import no.nav.pensjon.brev.template.TextElement
 
 interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
-
     fun addTextContent(e: TextElement<Lang>)
 
-    fun eval(expression: StringExpression, fontType: FontType = FontType.PLAIN) {
+    fun eval(
+        expression: StringExpression,
+        fontType: FontType = FontType.PLAIN,
+    ) {
         addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.Expression(expression, fontType)))
     }
 

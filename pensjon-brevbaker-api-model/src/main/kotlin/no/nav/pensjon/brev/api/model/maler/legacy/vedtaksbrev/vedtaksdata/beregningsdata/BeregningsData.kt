@@ -6,5 +6,5 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregn
 data class BeregningsData(
     val beregningufore: BeregningUfore?,
     val beregningantallperioder: Int?,
-    val beregninguforeperiode: List<BeregningUforePeriode>
+    val beregninguforeperiode: List<BeregningUforePeriode>,
 )

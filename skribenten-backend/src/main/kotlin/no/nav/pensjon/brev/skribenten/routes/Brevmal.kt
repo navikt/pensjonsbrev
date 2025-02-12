@@ -19,6 +19,4 @@ fun Route.brevmal(brevbakerService: BrevbakerService) {
                 call.respond(status, message)
             }
     }
-
 }
-

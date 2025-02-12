@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
 
-
 @LetterTemplateMarker
 class ListScope<Lang : LanguageSupport, LetterData : Any> : ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.ItemList.Item<Lang>, ListScope<Lang, LetterData>> {
     private val children = mutableListOf<ListItemElement<Lang>>()
@@ -21,5 +20,4 @@ class ListScope<Lang : LanguageSupport, LetterData : Any> : ControlStructureScop
             .let { ContentOrControlStructure.Content(it) }
             .also { children.add(it) }
     }
-
 }

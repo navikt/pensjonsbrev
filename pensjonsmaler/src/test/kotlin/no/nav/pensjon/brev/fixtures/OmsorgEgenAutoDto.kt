@@ -8,16 +8,16 @@ fun createOmsorgEgenAutoDto() =
     OmsorgEgenAutoDto(
         aarEgenerklaringOmsorgspoeng = Year(2020),
         aarInnvilgetOmsorgspoeng = Year(2021),
-        egenerklaeringOmsorgsarbeidDto = createEgenerklaeringOmsorgsarbeidDto()
+        egenerklaeringOmsorgsarbeidDto = createEgenerklaeringOmsorgsarbeidDto(),
     )
-
 
 fun createEgenerklaeringOmsorgsarbeidDto() =
     EgenerklaeringOmsorgsarbeidDto(
         aarEgenerklaringOmsorgspoeng = Year(2020),
-        returadresse = ReturAdresse(
-            adresseLinje1 = "Postboks 6600 Etterstad",
-            postNr = "0607",
-            postSted = "Oslo",
-        )
+        returadresse =
+            ReturAdresse(
+                adresseLinje1 = "Postboks 6600 Etterstad",
+                postNr = "0607",
+                postSted = "Oslo",
+            ),
     )

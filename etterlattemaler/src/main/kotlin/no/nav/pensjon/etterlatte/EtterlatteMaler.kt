@@ -83,7 +83,6 @@ object EtterlatteMaler : AllTemplates {
             BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt,
             BarnepensjonMottattSoeknad,
             BarnepensjonInnhentingAvOpplysninger,
-
             // Omstillingsstønad
             OmstillingsstoenadAvslag,
             OmstillingsstoenadAvslagRedigerbartUtfall,
@@ -108,24 +107,20 @@ object EtterlatteMaler : AllTemplates {
             OmstillingsstoenadInntektsjusteringVedtak,
             OmstillingsstoenadInntektsjusteringVarsel,
             OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall,
-
             // Tilbakekreving
             TilbakekrevingInnhold,
             TilbakekrevingFerdig,
-
             // Klage
             AvvistKlageInnhold,
             AvvistKlageFerdigstilling,
             BlankettKlageinstans,
             KlageOversendelsesbrevBruker,
             KlageSaksbehandlingstid,
-
             // Informasjonsbrev
             TomMal,
             TomDelmal,
             TomMalInformasjonsbrev,
             UtsattKlagefrist,
-
             // Div migrering mm.
             ForhaandsvarselOmregningBP,
             EnkeltVedtakOmregningNyttRegelverk,

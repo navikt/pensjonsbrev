@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto
 
-
 class RedigerDoksysDokumentRequestDto(
     val journalpostId: String,
     val dokumentId: String,
@@ -18,7 +17,6 @@ data class RedigerDoksysDokumentResponseDto(val metaforceURI: String?, val failu
         ENHETSID_MANGLER,
     }
 }
-
 
 data class RedigerExstreamDokumentRequestDto(val journalpostId: String)
 

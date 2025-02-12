@@ -18,9 +18,11 @@ import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("no.nav.brev.skribenten.routes.SakBrev")
 
-fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: BrevredigeringService) =
+fun Route.sakBrev(
+    dto2ApiService: Dto2ApiService,
+    brevredigeringService: BrevredigeringService,
+) =
     route("/brev") {
-
         post<Api.OpprettBrevRequest> { request ->
             val sak: Pen.SakSelection = call.attributes[SakKey]
             val spraak = request.spraak.toLanguageCode()
@@ -55,7 +57,7 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                 signatur = request.signatur,
             )?.onOk { brev -> call.respond(HttpStatusCode.OK, dto2ApiService.toApi(brev)) }
                 ?.onError { message, statusCode ->
-                    logger.error("$statusCode - Feil ved oppdatering av brev ${brevId}: $message")
+                    logger.error("$statusCode - Feil ved oppdatering av brev $brevId: $message")
                     call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
                 }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
@@ -117,7 +119,7 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
 
             call.respond(
                 HttpStatusCode.OK,
-                brevredigeringService.hentBrevForSak(sak.saksId).map { dto2ApiService.toApi(it) }
+                brevredigeringService.hentBrevForSak(sak.saksId).map { dto2ApiService.toApi(it) },
             )
         }
 

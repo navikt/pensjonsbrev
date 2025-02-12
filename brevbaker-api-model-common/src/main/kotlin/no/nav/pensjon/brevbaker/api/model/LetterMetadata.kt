@@ -7,5 +7,6 @@ data class LetterMetadata(
     val brevtype: Brevtype,
 ) {
     enum class Distribusjonstype { VEDTAK, VIKTIG, ANNET, }
-    enum class Brevtype{ VEDTAKSBREV, INFORMASJONSBREV }
+
+    enum class Brevtype { VEDTAKSBREV, INFORMASJONSBREV }
 }

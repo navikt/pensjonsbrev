@@ -26,7 +26,9 @@ data class InnerElement(
     val children: List<InnerElement>? = null,
 )
 
-enum class ElementType(@JsonValue val value: String) {
+enum class ElementType(
+    @JsonValue val value: String,
+) {
     HEADING_TWO("heading-two"),
     HEADING_THREE("heading-three"),
     PARAGRAPH("paragraph"),

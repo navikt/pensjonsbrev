@@ -15,9 +15,12 @@ fun ParagraphOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, out Any
     textExpr(
         Bokmal to kontakttelefonPensjonExpr(utland),
         Nynorsk to kontakttelefonPensjonExpr(utland),
-        English to kontakttelefonPensjonExpr(utland))
+        English to kontakttelefonPensjonExpr(utland),
+    )
 
 fun kontakttelefonPensjonExpr(utland: Expression<Boolean>): Expression<String> =
-    ifElse(utland,
+    ifElse(
+        utland,
         KONTAKTTELEFON_PENSJON_MED_LANDKODE,
-        KONTAKTTELEFON_PENSJON)
+        KONTAKTTELEFON_PENSJON,
+    )

@@ -20,7 +20,6 @@ data class HentSamhandlerAdresseResponseDto(
     }
 }
 
-
 data class HentSamhandlerAdresseRequestDto(
     val idTSSEkstern: String,
 )

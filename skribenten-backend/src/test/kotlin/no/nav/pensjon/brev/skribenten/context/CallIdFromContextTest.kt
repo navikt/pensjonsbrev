@@ -12,20 +12,21 @@ import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
 
 class CallIdFromContextTest {
-
     private val clientWithCallIdlugin = HttpClient(MockEngine { respond("CallId: ${it.headers[HttpHeaders.XRequestId]}") }) { install(CallIdFromContext) }
 
     @Test
-    fun `feiler om callId ikke er i context`(): Unit = runBlocking {
-        assertThrows<CoroutineContextValueException> {
-            clientWithCallIdlugin.get("/something")
+    fun `feiler om callId ikke er i context`(): Unit =
+        runBlocking {
+            assertThrows<CoroutineContextValueException> {
+                clientWithCallIdlugin.get("/something")
+            }
         }
-    }
 
     @Test
-    fun `sender callId som XRequestId`(): Unit = runBlocking {
-        withCallId("et veldig kult kall") {
-            assertEquals("CallId: et veldig kult kall", clientWithCallIdlugin.get("/something").bodyAsText())
+    fun `sender callId som XRequestId`(): Unit =
+        runBlocking {
+            withCallId("et veldig kult kall") {
+                assertEquals("CallId: et veldig kult kall", clientWithCallIdlugin.get("/something").bodyAsText())
+            }
         }
-    }
 }

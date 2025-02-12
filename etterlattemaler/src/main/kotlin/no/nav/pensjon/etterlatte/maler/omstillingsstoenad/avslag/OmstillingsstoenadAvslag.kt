@@ -29,37 +29,39 @@ data class OmstillingstoenadAvslagDTO(
 object OmstillingsstoenadAvslag : EtterlatteTemplate<OmstillingstoenadAvslagDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_AVSLAG
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = OmstillingstoenadAvslagDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - avslag",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title {
-            text(
-                Bokmal to "Vi har avslått søknaden din om omstillingsstønad",
-                Nynorsk to "Vi har avslått søknaden din om omstillingsstønad",
-                English to "We have rejected your application for adjustment allowance",
-            )
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = OmstillingstoenadAvslagDTO::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - avslag",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Bokmal to "Vi har avslått søknaden din om omstillingsstønad",
+                    Nynorsk to "Vi har avslått søknaden din om omstillingsstønad",
+                    English to "We have rejected your application for adjustment allowance",
+                )
+            }
+
+            outline {
+                konverterElementerTilBrevbakerformat(innhold)
+
+                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlageAvslagOpphoer)
+                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
+                includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
+            }
+
+            // Nasjonal
+            includeAttachment(klageOgAnke(bosattUtland = false), innhold, bosattUtland.not())
+
+            // Bosatt utland
+            includeAttachment(klageOgAnke(bosattUtland = true), innhold, bosattUtland)
         }
-
-        outline {
-            konverterElementerTilBrevbakerformat(innhold)
-
-            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlageAvslagOpphoer)
-            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
-            includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
-        }
-
-        // Nasjonal
-        includeAttachment(klageOgAnke(bosattUtland = false), innhold, bosattUtland.not())
-
-        // Bosatt utland
-        includeAttachment(klageOgAnke(bosattUtland = true), innhold, bosattUtland)
-    }
 }

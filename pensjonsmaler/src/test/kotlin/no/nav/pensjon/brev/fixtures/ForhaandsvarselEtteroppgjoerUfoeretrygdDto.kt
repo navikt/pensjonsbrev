@@ -22,32 +22,36 @@ fun createForhaandsvarselEtteroppgjoerUfoeretrygdDto() =
 
 fun createForhaandsvarselEtteroppgjoerUfoeretrygdDtoOpplysningerOmEtteroppgjoret() =
     OpplysningerOmEtteroppgjoeretDto(
-        barnetillegg = Barnetillegg(
-            felles = null,
-            saerkull = Saerkullsbarn(
-                fribeloep = Kroner(10),
-                resultat = AvviksResultat(Kroner(10), Kroner(8), Kroner(-2), false),
-                harSamletInntektOverInntektstak = false,
-                samletInntekt = Kroner(10),
-                inntektstakSamletInntekt = Kroner(12),
+        barnetillegg =
+            Barnetillegg(
+                felles = null,
+                saerkull =
+                    Saerkullsbarn(
+                        fribeloep = Kroner(10),
+                        resultat = AvviksResultat(Kroner(10), Kroner(8), Kroner(-2), false),
+                        harSamletInntektOverInntektstak = false,
+                        samletInntekt = Kroner(10),
+                        inntektstakSamletInntekt = Kroner(12),
+                    ),
+                personinntekt = InntektOgFratrekk(Inntekt(emptyList(), Kroner(0)), Fratrekk(emptyList(), Kroner(0))),
+                mindreEnn40AarTrygdetid = true,
+                totaltResultat = AvviksResultat(Kroner(10), Kroner(8), Kroner(-2), false),
             ),
-            personinntekt = InntektOgFratrekk(Inntekt(emptyList(), Kroner(0)), Fratrekk(emptyList(), Kroner(0))),
-            mindreEnn40AarTrygdetid = true,
-            totaltResultat = AvviksResultat(Kroner(10), Kroner(8), Kroner(-2), false),
-        ),
         harGjenlevendeTillegg = false,
         harFaattForMye = true,
-        pensjonsgivendeInntekt = InntektOgFratrekk(
-            inntekt = Inntekt(emptyList(), Kroner(0)),
-            fratrekk = Fratrekk(emptyList(), Kroner(0)),
-        ),
+        pensjonsgivendeInntekt =
+            InntektOgFratrekk(
+                inntekt = Inntekt(emptyList(), Kroner(0)),
+                fratrekk = Fratrekk(emptyList(), Kroner(0)),
+            ),
         pensjonsgivendeInntektBruktIBeregningen = Kroner(400000),
         periode = Year(2022),
         totaltAvvik = Kroner(50000),
-        ufoeretrygd = AvviksResultat(
-            skulleFaatt = Kroner(100000),
-            fikk = Kroner(150000),
-            avvik = Kroner(50000),
-            harFaattForMye = false,
-        ),
+        ufoeretrygd =
+            AvviksResultat(
+                skulleFaatt = Kroner(100000),
+                fikk = Kroner(150000),
+                avvik = Kroner(50000),
+                harFaattForMye = false,
+            ),
     )

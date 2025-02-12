@@ -9,6 +9,4 @@ data class UforetrygdEtteroppgjor(
     val periodetom: LocalDate?,
     val uforetrygdetteroppgjordetaljbruker: UforetrygdEtteroppgjorDetaljBruker?,
     val uforetrygdetteroppgjordetaljeps: UforetrygdEtteroppgjorDetaljEPS?,
-
-
 )

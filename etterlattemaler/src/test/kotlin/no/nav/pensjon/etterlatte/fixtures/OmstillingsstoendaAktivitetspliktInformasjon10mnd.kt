@@ -9,5 +9,5 @@ fun createOmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO() =
         aktivitetsgrad = Aktivitetsgrad.OVER_50_PROSENT,
         utbetaling = true,
         redusertEtterInntekt = true,
-        nasjonalEllerUtland = NasjonalEllerUtland.NASJONAL
+        nasjonalEllerUtland = NasjonalEllerUtland.NASJONAL,
     )

@@ -13,30 +13,31 @@ import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import org.slf4j.LoggerFactory
 
-class KrrService(config: Config, authService: AzureADService): ServiceStatus {
+class KrrService(config: Config, authService: AzureADService) : ServiceStatus {
     private val krrUrl = config.getString("url")
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    private val client = HttpClient(CIO) {
-        defaultRequest {
-            url(krrUrl)
-        }
-        install(ContentNegotiation) {
-            jackson {
-                registerModule(JavaTimeModule())
+    private val client =
+        HttpClient(CIO) {
+            defaultRequest {
+                url(krrUrl)
             }
+            install(ContentNegotiation) {
+                jackson {
+                    registerModule(JavaTimeModule())
+                }
+            }
+            callIdAndOnBehalfOfClient(config.getString("scope"), authService)
         }
-        callIdAndOnBehalfOfClient(config.getString("scope"), authService)
-    }
 
     @Suppress("EnumEntryName")
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class KontaktinfoKRRResponse(val spraak: SpraakKode? = null) {
         enum class SpraakKode {
             nb, // bokmål
-            nn, //nynorsk
-            en, //engelsk
-            se, //nord-samisk
+            nn, // nynorsk
+            en, // engelsk
+            se, // nord-samisk
         }
     }
 
@@ -65,7 +66,7 @@ class KrrService(config: Config, authService: AzureADService): ServiceStatus {
                         KontaktinfoKRRResponse.SpraakKode.en -> SpraakKode.EN
                         KontaktinfoKRRResponse.SpraakKode.se -> SpraakKode.SE
                         null -> null
-                    }
+                    },
                 )
             }.catch { message, status ->
                 KontaktinfoResponse(
@@ -74,12 +75,13 @@ class KrrService(config: Config, authService: AzureADService): ServiceStatus {
                     } else {
                         logger.error("Feil ved henting av kontaktinformasjon. Status: $status Melding: $message")
                         KontaktinfoResponse.FailureType.ERROR
-                    }
+                    },
                 )
             }
     }
 
     override val name = "KRR"
+
     override suspend fun ping(): ServiceResult<Boolean> =
         client.get("/internal/health/readiness")
             .toServiceResult<String>()

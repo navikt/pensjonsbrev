@@ -21,7 +21,7 @@ internal class LaTeXService(
     latexParallelism: Int,
     private val compileTimeout: Duration,
     private val queueWaitTimeout: Duration,
-    private val tmpBaseDir: Path? =  Path.of("/app/tmp")
+    private val tmpBaseDir: Path? = Path.of("/app/tmp"),
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val encoder = Base64.getEncoder()
@@ -30,9 +30,10 @@ internal class LaTeXService(
 
     internal suspend fun producePDF(latexFiles: Map<String, String>): PDFCompilationResponse {
         return if (parallelismSemaphore != null) {
-            val permit = withTimeoutOrNull(queueWaitTimeout) {
-                parallelismSemaphore.acquire()
-            }
+            val permit =
+                withTimeoutOrNull(queueWaitTimeout) {
+                    parallelismSemaphore.acquire()
+                }
             if (permit != null) {
                 try {
                     createLetter(latexFiles)
@@ -61,7 +62,7 @@ internal class LaTeXService(
             when (val result: Execution = compile(tmpDir)) {
                 is Execution.Success ->
                     result.pdf.toFile().readBytes()
-                        .let {  encoder.encodeToString(it) }
+                        .let { encoder.encodeToString(it) }
                         .let { PDFCompilationResponse.Base64PDF(it) }
 
                 is Execution.Failure.Compilation ->
@@ -107,12 +108,13 @@ internal class LaTeXService(
         return withContext(Dispatchers.IO) {
             var process: Process? = null
             try {
-                process = ProcessBuilder(latexCommand)
-                    .directory(workingDir.toFile())
-                    .redirectOutput(ProcessBuilder.Redirect.appendTo(output.toFile()))
-                    .redirectError(ProcessBuilder.Redirect.appendTo(error.toFile()))
-                    .apply { environment()["TEXINPUTS"] = ".:/app/pensjonsbrev_latex//:" }
-                    .start()
+                process =
+                    ProcessBuilder(latexCommand)
+                        .directory(workingDir.toFile())
+                        .redirectOutput(ProcessBuilder.Redirect.appendTo(output.toFile()))
+                        .redirectError(ProcessBuilder.Redirect.appendTo(error.toFile()))
+                        .apply { environment()["TEXINPUTS"] = ".:/app/pensjonsbrev_latex//:" }
+                        .start()
 
                 while (process.isAlive) {
                     delay(50.milliseconds)
@@ -134,9 +136,12 @@ internal class LaTeXService(
 
 private sealed class Execution {
     data class Success(val pdf: Path) : Execution()
+
     sealed class Failure : Execution() {
         data class Compilation(val output: String, val error: String) : Failure()
+
         data class Execution(val cause: Throwable) : Failure()
+
         data class Timeout(val completedRuns: Int, val timeout: Duration) : Failure()
     }
 }

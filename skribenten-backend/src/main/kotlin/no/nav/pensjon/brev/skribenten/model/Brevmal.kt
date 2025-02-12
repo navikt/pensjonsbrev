@@ -26,7 +26,11 @@ interface LetterMetadata {
      * Om forGammeltRegelverk er null så betyr det at man ikke har hentet fra Pesys,
      * dette er kun fordi det per nå bare er relevant for brevmaler for ALDER.
      */
-    fun isRelevantRegelverk(sakstype: Sakstype, forGammeltRegelverk: Boolean?): Boolean
+    fun isRelevantRegelverk(
+        sakstype: Sakstype,
+        forGammeltRegelverk: Boolean?,
+    ): Boolean
+
     fun toApi(): Api.Brevmal
 
     /**
@@ -35,42 +39,50 @@ interface LetterMetadata {
     data class Legacy(val data: BrevdataDto, private val hasSakstype: Sakstype) : LetterMetadata {
         override val brevkode: String get() = data.brevkodeIBrevsystem
         override val brevkontekst: TemplateDescription.Brevkontekst?
-            get() = when(data.brevkontekst) {
-                BrevdataDto.BrevkontekstCode.ALLTID -> TemplateDescription.Brevkontekst.ALLE
-                BrevdataDto.BrevkontekstCode.SAK -> TemplateDescription.Brevkontekst.SAK
-                BrevdataDto.BrevkontekstCode.VEDTAK -> TemplateDescription.Brevkontekst.VEDTAK
-                null -> null
-            }
+            get() =
+                when (data.brevkontekst) {
+                    BrevdataDto.BrevkontekstCode.ALLTID -> TemplateDescription.Brevkontekst.ALLE
+                    BrevdataDto.BrevkontekstCode.SAK -> TemplateDescription.Brevkontekst.SAK
+                    BrevdataDto.BrevkontekstCode.VEDTAK -> TemplateDescription.Brevkontekst.VEDTAK
+                    null -> null
+                }
         override val isRedigerbart: Boolean get() = data.redigerbart
+
         override fun isForSakstype(sakstype: Sakstype) = sakstype == hasSakstype
 
-        override fun isRelevantRegelverk(sakstype: Sakstype, forGammeltRegelverk: Boolean?): Boolean =
+        override fun isRelevantRegelverk(
+            sakstype: Sakstype,
+            forGammeltRegelverk: Boolean?,
+        ): Boolean =
             when (sakstype) {
-                ALDER -> if (forGammeltRegelverk == true) {
-                    data.brevregeltype?.gjelderGammeltRegelverk() ?: true
-                } else {
-                    data.brevregeltype?.gjelderNyttRegelverk() ?: true
-                }
+                ALDER ->
+                    if (forGammeltRegelverk == true) {
+                        data.brevregeltype?.gjelderGammeltRegelverk() ?: true
+                    } else {
+                        data.brevregeltype?.gjelderNyttRegelverk() ?: true
+                    }
 
                 UFOREP -> data.brevregeltype?.gjelderGammeltRegelverk() ?: true
                 BARNEP, AFP, AFP_PRIVAT, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG -> true
             }
 
-        override fun toApi(): Api.Brevmal = with(data) {
-            Api.Brevmal(
-                name = dekode,
-                id = brevkodeIBrevsystem,
-                spraak = sprak ?: emptyList(),
-                brevsystem = when (brevsystem) {
-                    BrevdataDto.BrevSystem.DOKSYS -> BrevSystem.DOKSYS
-                    BrevdataDto.BrevSystem.GAMMEL -> BrevSystem.EXSTREAM
-                },
-                brevkategori = BrevmalOverstyring.kategori[brevkodeIBrevsystem]?.toKategoriTekst() ?: this.brevkategori?.toKategoriTekst(),
-                dokumentkategoriCode = this.dokumentkategori,
-                redigerbart = redigerbart,
-                redigerbarBrevtittel = isRedigerbarBrevtittel(),
-            )
-        }
+        override fun toApi(): Api.Brevmal =
+            with(data) {
+                Api.Brevmal(
+                    name = dekode,
+                    id = brevkodeIBrevsystem,
+                    spraak = sprak ?: emptyList(),
+                    brevsystem =
+                        when (brevsystem) {
+                            BrevdataDto.BrevSystem.DOKSYS -> BrevSystem.DOKSYS
+                            BrevdataDto.BrevSystem.GAMMEL -> BrevSystem.EXSTREAM
+                        },
+                    brevkategori = BrevmalOverstyring.kategori[brevkodeIBrevsystem]?.toKategoriTekst() ?: this.brevkategori?.toKategoriTekst(),
+                    dokumentkategoriCode = this.dokumentkategori,
+                    redigerbart = redigerbart,
+                    redigerbarBrevtittel = isRedigerbarBrevtittel(),
+                )
+            }
 
         private fun BrevdataDto.BrevkategoriCode.toKategoriTekst() =
             when (this) {
@@ -88,24 +100,30 @@ interface LetterMetadata {
      * Brevmetadata om brevmaler fra Brevbaker
      */
     data class Brevbaker(val data: TemplateDescription.Redigerbar) : LetterMetadata {
-        override fun toApi(): Api.Brevmal = with(data) {
-            Api.Brevmal(
-                name = metadata.displayTitle,
-                id = name,
-                brevsystem = BrevSystem.BREVBAKER,
-                spraak = this.languages.map { it.toSpraakKode() },
-                brevkategori = kategori.toKategoriTekst(),
-                dokumentkategoriCode = metadata.brevtype.toDokumentkategoriCode(),
-                redigerbart = true,
-                redigerbarBrevtittel = false,
-            )
-        }
+        override fun toApi(): Api.Brevmal =
+            with(data) {
+                Api.Brevmal(
+                    name = metadata.displayTitle,
+                    id = name,
+                    brevsystem = BrevSystem.BREVBAKER,
+                    spraak = this.languages.map { it.toSpraakKode() },
+                    brevkategori = kategori.toKategoriTekst(),
+                    dokumentkategoriCode = metadata.brevtype.toDokumentkategoriCode(),
+                    redigerbart = true,
+                    redigerbarBrevtittel = false,
+                )
+            }
 
         override val brevkontekst: TemplateDescription.Brevkontekst get() = data.brevkontekst
         override val isRedigerbart: Boolean = true
         override val brevkode: String get() = data.name
+
         override fun isForSakstype(sakstype: Sakstype) = sakstype in data.sakstyper
-        override fun isRelevantRegelverk(sakstype: Sakstype, forGammeltRegelverk: Boolean?) = true
+
+        override fun isRelevantRegelverk(
+            sakstype: Sakstype,
+            forGammeltRegelverk: Boolean?,
+        ) = true
 
         private fun LanguageCode.toSpraakKode(): SpraakKode =
             when (this) {

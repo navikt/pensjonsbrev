@@ -20,28 +20,33 @@ class NavansattService(config: Config, authService: AzureADService) : ServiceSta
     private val navansattUrl = config.getString("url")
     private val navansattScope = config.getString("scope")
 
-    private val client = HttpClient(CIO) {
-        defaultRequest {
-            url(navansattUrl)
-        }
-        install(ContentNegotiation) {
-            jackson {
-                registerModule(JavaTimeModule())
-                disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    private val client =
+        HttpClient(CIO) {
+            defaultRequest {
+                url(navansattUrl)
             }
+            install(ContentNegotiation) {
+                jackson {
+                    registerModule(JavaTimeModule())
+                    disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                }
+            }
+            callIdAndOnBehalfOfClient(navansattScope, authService)
         }
-        callIdAndOnBehalfOfClient(navansattScope, authService)
-    }
 
     suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> {
         return client.get("navansatt/$ansattId/enheter").toServiceResult<List<NAVAnsattEnhet>>()
     }
 
-    suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean> =
+    suspend fun harTilgangTilEnhet(
+        ansattId: String,
+        enhetsId: String,
+    ): ServiceResult<Boolean> =
         hentNavAnsattEnhetListe(ansattId)
             .map { it.any { enhet -> enhet.id == enhetsId } }
 
     private val navansattCache = Cache<String, Navansatt>()
+
     suspend fun hentNavansatt(ansattId: String): Navansatt? =
         navansattCache.cached(ansattId) {
             client.get("/navansatt/$ansattId").toServiceResult<Navansatt>()
@@ -54,7 +59,6 @@ class NavansattService(config: Config, authService: AzureADService) : ServiceSta
     override suspend fun ping(): ServiceResult<Boolean> =
         client.get("ping-authenticated").toServiceResult<String>().map { true }
 }
-
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class NAVAnsattEnhet(
@@ -69,5 +73,3 @@ data class Navansatt(
     val fornavn: String,
     val etternavn: String,
 )
-
-

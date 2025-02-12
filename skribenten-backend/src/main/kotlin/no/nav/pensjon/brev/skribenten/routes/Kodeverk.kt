@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.skribenten.services.respondWithResult
 
 fun Route.kodeverkRoute(penService: PenService) {
     route("/kodeverk") {
-
         install(CachingHeaders) {
             options { _, _ -> CachingOptions(CacheControl.MaxAge(maxAgeSeconds = 86400)) }
         }

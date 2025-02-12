@@ -11,24 +11,25 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class LetterTest {
-
     data class TestData(val s: String)
 
-    val template = createTemplate(
-        name = "test",
-        letterDataType = TestData::class,
-        languages = languages(Language.Bokmal),
-        letterMetadata = LetterMetadata(
-            "Test",
-            false,
-            LetterMetadata.Distribusjonstype.ANNET,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
-        ),
-    ) {
-        title {
-            text(Language.Bokmal to "test")
+    val template =
+        createTemplate(
+            name = "test",
+            letterDataType = TestData::class,
+            languages = languages(Language.Bokmal),
+            letterMetadata =
+                LetterMetadata(
+                    "Test",
+                    false,
+                    LetterMetadata.Distribusjonstype.ANNET,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(Language.Bokmal to "test")
+            }
         }
-    }
 
     @Test
     fun `constructor validates that template supports language`() {

@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOSSelectors.trygdetideosland
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOSSelectors.trygdetidfomeos_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOSSelectors.trygdetidtomeos_safe
-
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -16,8 +15,8 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 data class TrygdetidsListeEOSTabell(
-    val trygdetidsgrunnlagListeEOS: Expression<List<TrygdetidsgrunnlagEOS>>
-): OutlinePhrase<LangBokmalNynorskEnglish>(){
+    val trygdetidsgrunnlagListeEOS: Expression<List<TrygdetidsgrunnlagEOS>>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             table(
@@ -43,9 +42,9 @@ data class TrygdetidsListeEOSTabell(
                             English to "To (and including)",
                         )
                     }
-                }
+                },
             ) {
-                forEach(trygdetidsgrunnlagListeEOS){ trygdetidEOS ->
+                forEach(trygdetidsgrunnlagListeEOS) { trygdetidEOS ->
                     row {
                         cell {
                             textExpr(
@@ -77,5 +76,4 @@ data class TrygdetidsListeEOSTabell(
             }
         }
     }
-
 }

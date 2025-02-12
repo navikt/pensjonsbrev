@@ -14,20 +14,19 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class OpplysningerBruktIBeregningUTTest {
-
     @Test
     fun testVedlegg() {
-        val template = createVedleggTestTemplate(
-            createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse = true, skalViseBarnetillegg = true),
-            Fixtures.create(OpplysningerBruktIBeregningUTDto::class).expr(),
-            languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        )
+        val template =
+            createVedleggTestTemplate(
+                createVedleggOpplysningerBruktIBeregningUT(skalViseMinsteytelse = true, skalViseBarnetillegg = true),
+                Fixtures.create(OpplysningerBruktIBeregningUTDto::class).expr(),
+                languages(Language.Bokmal, Language.Nynorsk, Language.English),
+            )
         Letter(
             template,
             Unit,
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF("OpplysningerBruktIBeregningUfoere")
-
     }
 }

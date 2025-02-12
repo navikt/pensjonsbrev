@@ -36,8 +36,8 @@ class OmstillingsstoenadRevurderingFraser {
         val beregning: Expression<OmstillingsstoenadBeregningRevurderingRedigertbartUtfall>,
         val erEtterbetaling: Expression<Boolean>,
         val harFlereUtbetalingsperioder: Expression<Boolean>,
-        val harUtbetaling: Expression<Boolean>
-    ):
+        val harUtbetaling: Expression<Boolean>,
+    ) :
         OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             val formatertNyesteUtbetalingsperiodeDatoFom = beregning.sisteBeregningsperiode.datoFOM.format()
@@ -65,7 +65,7 @@ class OmstillingsstoenadRevurderingFraser {
                                     " each month before tax starting on " + formatertNyesteUtbetalingsperiodeDatoFom +
                                     ". Read more about amounts for previous periods and how we have calculated " +
                                     "your adjustment allowance in the attachment: Calculation of " +
-                                    "adjustment allowance."
+                                    "adjustment allowance.",
                             )
                         }
                     }.orShow {
@@ -76,7 +76,7 @@ class OmstillingsstoenadRevurderingFraser {
                                 Language.Nynorsk to "Omstillingsstønaden din har blitt endra frå ".expr() +
                                     formatertVirkningsdato + ".",
                                 Language.English to "Your adjustment allowance will change on ".expr() +
-                                    formatertVirkningsdato + "."
+                                    formatertVirkningsdato + ".",
                             )
                         }
                         paragraph {
@@ -86,7 +86,7 @@ class OmstillingsstoenadRevurderingFraser {
                                 Language.Nynorsk to "Du får ".expr() + formatertBeloep + " kroner kvar " +
                                     "månad før skatt.",
                                 Language.English to "You will receive NOK ".expr() + formatertBeloep +
-                                    " each month before tax."
+                                    " each month before tax.",
                             )
                         }
                         paragraph {
@@ -108,7 +108,7 @@ class OmstillingsstoenadRevurderingFraser {
                             Language.Nynorsk to "Omstillingsstønaden din er endret fra ".expr() +
                                 formatertVirkningsdato + ".",
                             Language.English to "Your adjustment allowance will change on ".expr() +
-                                formatertVirkningsdato + "."
+                                formatertVirkningsdato + ".",
                         )
                     }
                     paragraph {
@@ -130,7 +130,6 @@ class OmstillingsstoenadRevurderingFraser {
                         )
                     }
                 }
-
             }.orShow {
                 showIf(sanksjon) {
                     paragraph {
@@ -145,21 +144,21 @@ class OmstillingsstoenadRevurderingFraser {
                         text(
                             Language.Bokmal to "Omstillingsstønaden din er vurdert på nytt. ",
                             Language.Nynorsk to "Omstillingsstønaden din er vurdert på nytt. ",
-                            Language.English to "We have re-evaluated your adjustment allowance. "
+                            Language.English to "We have re-evaluated your adjustment allowance. ",
                         )
                         showIf(harUtbetaling) {
                             textExpr(
                                 Language.Bokmal to "Du får fortsatt ".expr() + formatertBeloep + " kroner per " +
                                     "måned før skatt.",
                                 Language.Nynorsk to "Du får framleis ".expr() + formatertBeloep + " kroner per månad før skatt.".expr(),
-                                Language.English to "You will continue to receive NOK ".expr() + formatertBeloep + " per month before tax.".expr()
+                                Language.English to "You will continue to receive NOK ".expr() + formatertBeloep + " per month before tax.".expr(),
                             )
                         }.orShow {
                             text(
                                 Language.Bokmal to "Du får fortsatt ikke utbetalt stønad.",
                                 Language.Nynorsk to "Du får framleis ikkje utbetalt stønad.",
                                 Language.English to "You will still not receive adjustment allowances because " +
-                                    "your income is higher than the limit for receiving adjustment allowance."
+                                    "your income is higher than the limit for receiving adjustment allowance.",
                             )
                         }
                     }
@@ -183,15 +182,15 @@ class OmstillingsstoenadRevurderingFraser {
         val feilutbetaling: Expression<FeilutbetalingType?>,
         val inntekt: Expression<Kroner>,
         val inntektsAar: Expression<Int>,
-        val mottattInntektendringAutomatisk: Expression<LocalDate?>
-    ): OutlinePhrase<LangBokmalNynorskEnglish>() {
+        val mottattInntektendringAutomatisk: Expression<LocalDate?>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             ifNotNull(mottattInntektendringAutomatisk) { mottattInntektendring ->
                 paragraph {
                     textExpr(
                         Bokmal to "Omstillingsstønaden din skal reduseres basert på inntekten du forventer å ha hvert kalenderår. Kun inntekt i måneder med innvilget omstillingsstønad blir medregnet.".expr(),
                         Nynorsk to "Omstillingsstønaden din skal reduserast basert på inntekta du forventar å ha kvart kalenderår. Berre inntekt i månader med innvilga omstillingsstønad blir teken med.".expr(),
-                        English to "Your adjustment allowance will be reduced based on the income you expect to earn each calendar year. Only income in months with granted adjustment allowance is included in the calculation.".expr()
+                        English to "Your adjustment allowance will be reduced based on the income you expect to earn each calendar year. Only income in months with granted adjustment allowance is included in the calculation.".expr(),
                     )
                 }
                 paragraph {
@@ -222,7 +221,7 @@ class OmstillingsstoenadRevurderingFraser {
                     textExpr(
                         Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven §§ 17-9, 22-12 og 22-13.".expr(),
                         Nynorsk to "Vedtaket er gjort etter føresegnene om omstillingsstønad i folketrygdlova §§ 17-9, 22-12 og 22-13.".expr(),
-                        English to "The decision has been made pursuant to the regulations on adjustment allowance in the National Insurance Act Sections 17-9, 22-12 and 22-13.".expr()
+                        English to "The decision has been made pursuant to the regulations on adjustment allowance in the National Insurance Act Sections 17-9, 22-12 and 22-13.".expr(),
                     )
                 }
             }.orShow {
@@ -235,21 +234,24 @@ class OmstillingsstoenadRevurderingFraser {
                 }
                 paragraph {
                     textExpr(
-                        Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven §§ <riktig paragrafhenvisning>".expr() + ifElse(
-                            etterbetaling,
-                            ", 22-12 og 22-13.",
-                            " og 22-12."
-                        ),
-                        Language.Nynorsk to "Vedtaket er gjort etter føresegnene om omstillingsstønad i folketrygdlova §§ <riktig paragrafhenvisning>".expr() + ifElse(
-                            etterbetaling,
-                            ", 22-12 og 22-13.",
-                            " og 22-12."
-                        ),
-                        Language.English to "This decision has been made pursuant to the provisions regarding adjustment allowance in the National Insurance Act – sections <riktig paragrafhenvisning>".expr() + ifElse(
-                            etterbetaling,
-                            ", 22-12 and 22-13.",
-                            " and 22-12."
-                        ),
+                        Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven §§ <riktig paragrafhenvisning>".expr() +
+                            ifElse(
+                                etterbetaling,
+                                ", 22-12 og 22-13.",
+                                " og 22-12.",
+                            ),
+                        Language.Nynorsk to "Vedtaket er gjort etter føresegnene om omstillingsstønad i folketrygdlova §§ <riktig paragrafhenvisning>".expr() +
+                            ifElse(
+                                etterbetaling,
+                                ", 22-12 og 22-13.",
+                                " og 22-12.",
+                            ),
+                        Language.English to "This decision has been made pursuant to the provisions regarding adjustment allowance in the National Insurance Act – sections <riktig paragrafhenvisning>".expr() +
+                            ifElse(
+                                etterbetaling,
+                                ", 22-12 and 22-13.",
+                                " and 22-12.",
+                            ),
                     )
                 }
             }
@@ -262,7 +264,7 @@ class OmstillingsstoenadRevurderingFraser {
 
     data class UtbetalingMedEtterbetaling(
         val erEtterbetaling: Expression<Boolean>,
-    ): OutlinePhrase<LangBokmalNynorskEnglish>() {
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             includePhrase(OmstillingsstoenadFellesFraser.Utbetaling)
 
@@ -299,7 +301,7 @@ class OmstillingsstoenadRevurderingFraser {
         }
     }
 
-    object FeilutbetalingUnder4RGUtenVarselRevurdering: OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object FeilutbetalingUnder4RGUtenVarselRevurdering : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
@@ -317,7 +319,7 @@ class OmstillingsstoenadRevurderingFraser {
         }
     }
 
-    object FeilutbetalingUtenVarselRevurdering: OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object FeilutbetalingUtenVarselRevurdering : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
@@ -346,7 +348,7 @@ class OmstillingsstoenadRevurderingFraser {
         }
     }
 
-    object FeilutbetalingMedVarselRevurdering: OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object FeilutbetalingMedVarselRevurdering : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
@@ -371,7 +373,7 @@ class OmstillingsstoenadRevurderingFraser {
         }
     }
 
-    object FeilutbetalingUnder4RGUtenVarselOpphoer: OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object FeilutbetalingUnder4RGUtenVarselOpphoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
                 text(
@@ -389,7 +391,7 @@ class OmstillingsstoenadRevurderingFraser {
         }
     }
 
-    object FeilutbetalingUtenVarselOpphoer: OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object FeilutbetalingUtenVarselOpphoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
@@ -418,7 +420,7 @@ class OmstillingsstoenadRevurderingFraser {
         }
     }
 
-    object FeilutbetalingMedVarselOpphoer: OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object FeilutbetalingMedVarselOpphoer : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
@@ -445,7 +447,7 @@ class OmstillingsstoenadRevurderingFraser {
 
     data class Aktivitetsplikt(
         val tidligereFamiliepleier: Expression<Boolean>,
-    ): OutlinePhrase<LangBokmalNynorskEnglish>() {
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 textExpr(
@@ -478,5 +480,4 @@ class OmstillingsstoenadRevurderingFraser {
             }
         }
     }
-
 }

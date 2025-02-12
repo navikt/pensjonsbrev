@@ -58,7 +58,8 @@ enum class EtterlatteBrevKode : Brevkode.Automatisk {
     AKTIVITETSPLIKT_INFORMASJON_6MND_INNHOLD,
     AKTIVITETSPLIKT_INFORMASJON_10MND_INNHOLD,
     KLAGE_SAKSBEHANDLINGS_INFO,
-    INGEN_REDIGERBAR_DEL; // Til bruk for å modellere at brevet ikke har en redigerbar del
+    INGEN_REDIGERBAR_DEL, // Til bruk for å modellere at brevet ikke har en redigerbar del
+    ;
 
     override fun kode() = name
 }

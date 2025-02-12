@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.Tjenest
 
 interface ServiceStatus {
     val name: String
+
     suspend fun ping(): ServiceResult<Boolean>
 }
 
@@ -25,30 +26,33 @@ fun Route.setupServiceStatus(vararg services: ServiceStatus) {
     }
 }
 
-
 private suspend fun Array<out ServiceStatus>.checkStatuses(): StatusResponse {
-    val pingResponses = this.associate {
-        it.name to try {
-            it.ping()
-        } catch (e: ClientRequestException) {
-            ServiceResult.Error(e.response.bodyAsText(), e.response.status)
-        } catch (e: Exception) {
-            ServiceResult.Error(e.message ?: "Unknown error", HttpStatusCode.InternalServerError)
+    val pingResponses =
+        this.associate {
+            it.name to
+                try {
+                    it.ping()
+                } catch (e: ClientRequestException) {
+                    ServiceResult.Error(e.response.bodyAsText(), e.response.status)
+                } catch (e: Exception) {
+                    ServiceResult.Error(e.message ?: "Unknown error", HttpStatusCode.InternalServerError)
+                }
         }
-    }
 
-    val results = pingResponses.mapValues {
-        when (val r = it.value) {
-            is ServiceResult.Ok -> r.result
-            is ServiceResult.Error -> false
+    val results =
+        pingResponses.mapValues {
+            when (val r = it.value) {
+                is ServiceResult.Ok -> r.result
+                is ServiceResult.Error -> false
+            }
         }
-    }
-    val errors = pingResponses.toList().mapNotNull {
-        when (val e = it.second) {
-            is ServiceResult.Ok -> null
-            is ServiceResult.Error -> it.first to "${e.statusCode}: ${e.error}"
-        }
-    }.toMap()
+    val errors =
+        pingResponses.toList().mapNotNull {
+            when (val e = it.second) {
+                is ServiceResult.Ok -> null
+                is ServiceResult.Error -> it.first to "${e.statusCode}: ${e.error}"
+            }
+        }.toMap()
 
     return StatusResponse(
         overall = results.values.all { it },

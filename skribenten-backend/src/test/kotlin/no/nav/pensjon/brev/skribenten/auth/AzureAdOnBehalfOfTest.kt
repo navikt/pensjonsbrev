@@ -16,7 +16,6 @@ import org.junit.jupiter.api.assertThrows
 import kotlin.test.assertEquals
 
 class AzureAdOnBehalfOfTest {
-
     private val principal = MockPrincipal(NavIdent("Cypher"), "Mr. Reagan")
     private val clientScope = "Matrix"
     private val adService = mockk<AzureADService>()
@@ -30,33 +29,36 @@ class AzureAdOnBehalfOfTest {
         }
 
     @Test
-    fun `feiler om principal ikke er i context`(): Unit = runBlocking {
-        assertThrows<CoroutineContextValueException> {
-            clientWithOBOPlugin.get("/something")
-        }
-    }
-
-    @Test
-    fun `utveksler obo-token med principal fra context`(): Unit = runBlocking {
-        val aToken = TokenResponse.OnBehalfOfToken("Joe Pantoliano", "", "", clientScope, 10_000)
-        coEvery { adService.getOnBehalfOfToken(eq(principal), eq(clientScope)) } returns aToken
-
-        val response = withPrincipal(principal) {
-            clientWithOBOPlugin.get("/something")
-        }
-        assertEquals("Principal: ${aToken.accessToken}", response.bodyAsText())
-    }
-
-    @Test
-    fun `feiler om authService svarer med feil`(): Unit = runBlocking {
-        val tokenError = TokenResponse.ErrorResponse("", "", emptyList(), "", "", "", null)
-        coEvery { adService.getOnBehalfOfToken(eq(principal), eq(clientScope)) } returns tokenError
-
-        assertThrows<AzureAdOnBehalfOfAuthorizationException> {
-            withPrincipal(principal) {
+    fun `feiler om principal ikke er i context`(): Unit =
+        runBlocking {
+            assertThrows<CoroutineContextValueException> {
                 clientWithOBOPlugin.get("/something")
             }
         }
-    }
 
+    @Test
+    fun `utveksler obo-token med principal fra context`(): Unit =
+        runBlocking {
+            val aToken = TokenResponse.OnBehalfOfToken("Joe Pantoliano", "", "", clientScope, 10_000)
+            coEvery { adService.getOnBehalfOfToken(eq(principal), eq(clientScope)) } returns aToken
+
+            val response =
+                withPrincipal(principal) {
+                    clientWithOBOPlugin.get("/something")
+                }
+            assertEquals("Principal: ${aToken.accessToken}", response.bodyAsText())
+        }
+
+    @Test
+    fun `feiler om authService svarer med feil`(): Unit =
+        runBlocking {
+            val tokenError = TokenResponse.ErrorResponse("", "", emptyList(), "", "", "", null)
+            coEvery { adService.getOnBehalfOfToken(eq(principal), eq(clientScope)) } returns tokenError
+
+            assertThrows<AzureAdOnBehalfOfAuthorizationException> {
+                withPrincipal(principal) {
+                    clientWithOBOPlugin.get("/something")
+                }
+            }
+        }
 }

@@ -17,21 +17,26 @@ import kotlin.time.Duration.Companion.seconds
 
 private const val HENT_JOURNAL_STATUS_QUERY_RESOURCE = "/saf/HentJournalpostStatus.graphql"
 private const val HENT_DOKUMENTER_QUERY_RESOURCE = "/saf/HentDokumenter.graphql"
-private val hentJournalStatusQuery = SafService::class.java.getResource(HENT_JOURNAL_STATUS_QUERY_RESOURCE)?.readText()
-    ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_JOURNAL_STATUS_QUERY_RESOURCE")
-private val hentDokumenterQuery = SafService::class.java.getResource(HENT_DOKUMENTER_QUERY_RESOURCE)?.readText()
-    ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_JOURNAL_STATUS_QUERY_RESOURCE")
+private val hentJournalStatusQuery =
+    SafService::class.java.getResource(HENT_JOURNAL_STATUS_QUERY_RESOURCE)?.readText()
+        ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_JOURNAL_STATUS_QUERY_RESOURCE")
+private val hentDokumenterQuery =
+    SafService::class.java.getResource(HENT_DOKUMENTER_QUERY_RESOURCE)?.readText()
+        ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_JOURNAL_STATUS_QUERY_RESOURCE")
 
 private const val TIMEOUT = 60
 
 data class JournalVariables(val journalpostId: String)
+
 data class JournalQuery(
     val query: String,
-    val variables: JournalVariables
+    val variables: JournalVariables,
 )
 
 enum class JournalpostLoadingResult {
-    ERROR, NOT_READY, READY
+    ERROR,
+    NOT_READY,
+    READY,
 }
 
 class SafService(config: Config, authService: AzureADService) : ServiceStatus {
@@ -40,30 +45,46 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
     private val safScope = config.getString("scope")
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    //TODO vurder å bruke en egen client for graphql: (https://opensource.expediagroup.com/graphql-kotlin/docs/client/client-overview/)
-    private val client = HttpClient(CIO) {
-        defaultRequest {
-            url(safUrl)
+    // TODO vurder å bruke en egen client for graphql: (https://opensource.expediagroup.com/graphql-kotlin/docs/client/client-overview/)
+    private val client =
+        HttpClient(CIO) {
+            defaultRequest {
+                url(safUrl)
+            }
+            install(ContentNegotiation) {
+                jackson()
+            }
+            callIdAndOnBehalfOfClient(safScope, authService)
         }
-        install(ContentNegotiation) {
-            jackson()
-        }
-        callIdAndOnBehalfOfClient(safScope, authService)
-    }
 
     data class HentJournalStatusResponse(val data: HentJournalpostData?, val errors: JsonNode?)
+
     data class HentJournalpostData(val journalpost: JournalPost)
 
     data class HentDokumenterResponse(val data: Journalposter?, val errors: JsonNode?) {
         data class Journalposter(val journalpost: Journalpost)
+
         data class Journalpost(val journalpostId: String, val dokumenter: List<Dokument>)
+
         data class Dokument(val dokumentInfoId: String)
     }
 
     data class JournalPost(val journalpostId: String, val journalstatus: Journalstatus)
+
     @Suppress("unused")
     enum class Journalstatus {
-        MOTTATT, JOURNALFOERT, FERDIGSTILT, EKSPEDERT, UNDER_ARBEID, FEILREGISTRERT, UTGAAR, AVBRUTT, UKJENT_BRUKER, RESERVERT, OPPLASTING_DOKUMENT, UKJENT,
+        MOTTATT,
+        JOURNALFOERT,
+        FERDIGSTILT,
+        EKSPEDERT,
+        UNDER_ARBEID,
+        FEILREGISTRERT,
+        UTGAAR,
+        AVBRUTT,
+        UKJENT_BRUKER,
+        RESERVERT,
+        OPPLASTING_DOKUMENT,
+        UKJENT,
     }
 
     private suspend fun getStatus(journalpostId: String): JournalpostLoadingResult =
@@ -72,8 +93,8 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
             setBody(
                 JournalQuery(
                     query = hentJournalStatusQuery,
-                    variables = JournalVariables(journalpostId)
-                )
+                    variables = JournalVariables(journalpostId),
+                ),
             )
         }.toServiceResult<HentJournalStatusResponse>()
             .map {
@@ -101,7 +122,8 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
                 delay(1000)
                 when (val result = getStatus(journalpostId)) {
                     JournalpostLoadingResult.READY,
-                    JournalpostLoadingResult.ERROR -> return@withTimeoutOrNull result
+                    JournalpostLoadingResult.ERROR,
+                    -> return@withTimeoutOrNull result
 
                     JournalpostLoadingResult.NOT_READY -> {}
                 }
@@ -115,8 +137,8 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
             setBody(
                 JournalQuery(
                     query = hentDokumenterQuery,
-                    variables = JournalVariables(journalpostId)
-                )
+                    variables = JournalVariables(journalpostId),
+                ),
             )
         }.toServiceResult<HentDokumenterResponse>()
 
@@ -139,11 +161,12 @@ class SafService(config: Config, authService: AzureADService) : ServiceStatus {
             .map { it.data?.journalpost?.dokumenter?.firstOrNull()?.dokumentInfoId }
             .nonNull(
                 "Fant ingen dokumenter for journalpostId: $journalpostId",
-                HttpStatusCode.NotFound
+                HttpStatusCode.NotFound,
             )
     }
 
     override val name = "SAF"
+
     override suspend fun ping() =
         client.options("").toServiceResult<String>().map { true }
 }

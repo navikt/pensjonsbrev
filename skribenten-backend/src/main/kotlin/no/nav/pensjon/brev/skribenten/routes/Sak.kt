@@ -33,15 +33,16 @@ fun Route.sakRoute(
             val sak: Pen.SakSelection = call.attributes[SakKey]
             val vedtaksId: String? = call.request.queryParameters["vedtaksId"]
             val hasAccessToEblanketter = principal().isInGroup(ADGroups.pensjonUtland)
-            val brevmetadata = if (vedtaksId != null) {
-                brevmalService.hentBrevmalerForVedtak(
-                    sakstype = sak.sakType.toBrevbaker(),
-                    includeEblanketter = hasAccessToEblanketter,
-                    vedtaksId = vedtaksId
-                )
-            } else {
-                brevmalService.hentBrevmalerForSak(sak.sakType.toBrevbaker(), hasAccessToEblanketter)
-            }
+            val brevmetadata =
+                if (vedtaksId != null) {
+                    brevmalService.hentBrevmalerForVedtak(
+                        sakstype = sak.sakType.toBrevbaker(),
+                        includeEblanketter = hasAccessToEblanketter,
+                        vedtaksId = vedtaksId,
+                    )
+                } else {
+                    brevmalService.hentBrevmalerForSak(sak.sakType.toBrevbaker(), hasAccessToEblanketter)
+                }
             call.respond(Api.SakContext(sak, brevmetadata))
         }
         route("/bestillBrev") {
@@ -60,7 +61,7 @@ fun Route.sakRoute(
                             gjelderPid = sak.foedselsnr,
                             request = request,
                             saksId = sak.saksId,
-                        )
+                        ),
                     )
                 }
 
@@ -72,7 +73,7 @@ fun Route.sakRoute(
                             gjelderPid = sak.foedselsnr,
                             request = request,
                             saksId = sak.saksId,
-                        )
+                        ),
                     )
                 }
             }

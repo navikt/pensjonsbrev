@@ -6,23 +6,28 @@ import no.nav.pensjon.brev.template.dsl.expression.notNull
 
 interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>, Scope : ControlStructureScope<Lang, LetterData, C, Scope>> : TemplateGlobalScope<LetterData> {
     fun scopeFactory(): Scope
+
     fun addControlStructure(e: ContentOrControlStructure<Lang, C>)
+
     val elements: List<ContentOrControlStructure<Lang, C>>
 
-    fun showIf(predicate: Expression<Boolean>, showIf: Scope.() -> Unit): ShowElseScope<Lang, LetterData, C, Scope> =
+    fun showIf(
+        predicate: Expression<Boolean>,
+        showIf: Scope.() -> Unit,
+    ): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(::scopeFactory).also { elseScope ->
             addControlStructure(
                 ContentOrControlStructure.Conditional(
                     predicate,
                     scopeFactory().apply(showIf).elements,
                     elseScope.scope.elements,
-                )
+                ),
             )
         }
 
     fun <E1 : Any> ifNotNull(
         expr1: Expression<E1?>,
-        scope: Scope.(Expression<E1>) -> Unit
+        scope: Scope.(Expression<E1>) -> Unit,
     ): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(::scopeFactory).also { elseScope ->
             addControlStructure(
@@ -34,14 +39,14 @@ interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : El
                         scope(this, expr1 as Expression<E1>)
                     }.elements,
                     elseScope.scope.elements,
-                )
+                ),
             )
         }
 
     fun <E1 : Any, E2 : Any> ifNotNull(
         expr1: Expression<E1?>,
         expr2: Expression<E2?>,
-        scope: Scope.(Expression<E1>, Expression<E2>) -> Unit
+        scope: Scope.(Expression<E1>, Expression<E2>) -> Unit,
     ): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(::scopeFactory).also { elseScope ->
             addControlStructure(
@@ -53,7 +58,7 @@ interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : El
                         scope(this, expr1 as Expression<E1>, expr2 as Expression<E2>)
                     }.elements,
                     elseScope.scope.elements,
-                )
+                ),
             )
         }
 
@@ -61,7 +66,7 @@ interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : El
         expr1: Expression<E1?>,
         expr2: Expression<E2?>,
         expr3: Expression<E3?>,
-        scope: Scope.(Expression<E1>, Expression<E2>, Expression<E3>) -> Unit
+        scope: Scope.(Expression<E1>, Expression<E2>, Expression<E3>) -> Unit,
     ): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(::scopeFactory).also { elseScope ->
             addControlStructure(
@@ -73,11 +78,14 @@ interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : El
                         scope(this, expr1 as Expression<E1>, expr2 as Expression<E2>, expr3 as Expression<E3>)
                     }.elements,
                     elseScope.scope.elements,
-                )
+                ),
             )
         }
 
-    fun <Item : Any> forEach(items: Expression<Collection<Item>>, body: Scope.(item: Expression<Item>) -> Unit) {
+    fun <Item : Any> forEach(
+        items: Expression<Collection<Item>>,
+        body: Scope.(item: Expression<Item>) -> Unit,
+    ) {
         val nextExpr = Expression.FromScope.Assigned<Item>(items.stableHashCode())
         addControlStructure(ContentOrControlStructure.ForEach(items, scopeFactory().apply { body(nextExpr) }.elements, nextExpr))
     }

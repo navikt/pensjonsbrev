@@ -4,8 +4,9 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 
-data class EndretBarnetilleggUfoeretrygdDto(
+@Suppress("unused")
+data class EndretUfoeretrygdPGAInntektDto(
     val pe: PE,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
-): BrevbakerBrevdata
+) : BrevbakerBrevdata

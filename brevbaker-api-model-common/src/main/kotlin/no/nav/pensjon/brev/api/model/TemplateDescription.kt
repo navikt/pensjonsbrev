@@ -14,8 +14,8 @@ interface TemplateDescription {
         override val name: String,
         override val letterDataClass: String,
         override val languages: List<LanguageCode>,
-        override val metadata: LetterMetadata
-    ): TemplateDescription
+        override val metadata: LetterMetadata,
+    ) : TemplateDescription
 
     data class Redigerbar(
         override val name: String,
@@ -25,7 +25,7 @@ interface TemplateDescription {
         val kategori: Brevkategori,
         val brevkontekst: Brevkontekst,
         val sakstyper: Set<Sakstype>,
-    ): TemplateDescription
+    ) : TemplateDescription
 
     enum class Brevkontekst { ALLE, SAK, VEDTAK }
 

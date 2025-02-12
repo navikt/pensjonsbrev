@@ -16,43 +16,44 @@ import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 data class TilbakekrevingRedigerbartBrevDTO(val utenVariabler: Boolean = true) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
-object TilbakekrevingInnhold: EtterlatteTemplate<TilbakekrevingRedigerbartBrevDTO>, Delmal {
-	override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TILBAKEKREVING_INNHOLD
+object TilbakekrevingInnhold : EtterlatteTemplate<TilbakekrevingRedigerbartBrevDTO>, Delmal {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TILBAKEKREVING_INNHOLD
 
-	override val template = createTemplate(
-		name = kode.name,
-		letterDataType = TilbakekrevingRedigerbartBrevDTO::class,
-		languages = languages(Bokmal, Nynorsk, English),
-		letterMetadata = LetterMetadata(
-			displayTitle = "Vedtak - Tilbakekreving",
-			isSensitiv = true,
-			distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-			brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-		),
-	) {
-		title {
-			text(
-				Bokmal to "",
-				Nynorsk to "",
-				English to "",
-			)
-		}
-		outline {
-			title2 {
-				text(
-					Bokmal to "Begrunnelse for vedtaket",
-					Nynorsk to "Grunngiving for vedtaket",
-					English to "Grounds for the decision",
-				)
-			}
-			paragraph {
-				text(
-					Bokmal to "FRITEKSTFELT HENTET FRA MALER PÅ NAVET",
-					Nynorsk to "FRITEKSTFELT HENTET FRA MALER PÅ NAVET",
-					English to "FRITEKSTFELT HENTET FRA MALER PÅ NAVET",
-				)
-			}
-
-		}
-	}
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = TilbakekrevingRedigerbartBrevDTO::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - Tilbakekreving",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Bokmal to "",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            outline {
+                title2 {
+                    text(
+                        Bokmal to "Begrunnelse for vedtaket",
+                        Nynorsk to "Grunngiving for vedtaket",
+                        English to "Grounds for the decision",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "FRITEKSTFELT HENTET FRA MALER PÅ NAVET",
+                        Nynorsk to "FRITEKSTFELT HENTET FRA MALER PÅ NAVET",
+                        English to "FRITEKSTFELT HENTET FRA MALER PÅ NAVET",
+                    )
+                }
+            }
+        }
 }

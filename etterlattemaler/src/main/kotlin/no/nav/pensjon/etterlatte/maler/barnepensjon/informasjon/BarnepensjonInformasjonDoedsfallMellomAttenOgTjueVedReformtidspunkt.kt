@@ -104,7 +104,6 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                     }
                 }
 
-
                 showIf(borIutland) {
                     paragraph {
                         text(
@@ -152,7 +151,7 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                     )
                 }
 
-                    includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(Expression.Literal(false), borIutland))
+                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(Expression.Literal(false), borIutland))
             }
         }
 }

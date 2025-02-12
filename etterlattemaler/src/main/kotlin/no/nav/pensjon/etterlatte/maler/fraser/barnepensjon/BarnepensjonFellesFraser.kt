@@ -12,7 +12,6 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 
 object BarnepensjonFellesFraser {
-
     object DuHarTidligereAvslagViHarFaattNyeOplysninger : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
@@ -30,7 +29,6 @@ object BarnepensjonFellesFraser {
                     English to "We have now received information from foreign social security authorities, which means you are entitled to the pension under the EEA/agreement country rules.",
                 )
             }
-
         }
     }
 
@@ -59,7 +57,7 @@ object BarnepensjonFellesFraser {
                 text(
                     Bokmal to "Du har rett til å klage",
                     Nynorsk to "Du har rett til å klage",
-                    English to "You have the right to appeal"
+                    English to "You have the right to appeal",
                 )
             }
             paragraph {
@@ -71,7 +69,7 @@ object BarnepensjonFellesFraser {
                     English to "If you believe the decision is incorrect, " +
                         "you may appeal the decision within six weeks from the date you received the decision. " +
                         "The appeal must be in writing. " +
-                        "You can find the form and information online: ${Constants.Engelsk.KLAGE_URL}."
+                        "You can find the form and information online: ${Constants.Engelsk.KLAGE_URL}.",
                 )
             }
         }
@@ -83,7 +81,7 @@ object BarnepensjonFellesFraser {
                 text(
                     Bokmal to "Du har rett til innsyn",
                     Nynorsk to "Du har rett til innsyn",
-                    English to "You have the right to access documents"
+                    English to "You have the right to access documents",
                 )
             }
             paragraph {
@@ -95,7 +93,7 @@ object BarnepensjonFellesFraser {
                         "å sjå dokumenta i saka di. Kontakt oss på telefon eller per post dersom du ønskjer innsyn.",
                     English to "As a general rule, you have the right to see the documents in your case " +
                         "pursuant to the provisions of Section 18 of the Public Administration Act. " +
-                        "If you want access, you can contact us by phone or mail."
+                        "If you want access, you can contact us by phone or mail.",
                 )
             }
         }
@@ -138,13 +136,13 @@ object BarnepensjonFellesFraser {
                     text(
                         Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon ",
                         Nynorsk to "Du finn meir informasjon på ${Constants.BARNEPENSJON_URL}. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon ",
-                        English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone at "
+                        English to "For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone at ",
                     )
                     kontakttelefonPensjon(bosattUtland)
                     text(
                         Bokmal to ", hverdager mellom klokken 09.00-15.00. Om du oppgir fødselsnummer til barnet, kan vi lettere gi deg rask og god hjelp.",
                         Nynorsk to ", kvardagar mellom klokka 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret til barnet.",
-                        English to ", Monday to Friday between 09:00 AM and 03:00 PM. If you provide your child's national identity number, we can more easily provide you with quick and good help."
+                        English to ", Monday to Friday between 09:00 AM and 03:00 PM. If you provide your child's national identity number, we can more easily provide you with quick and good help.",
                     )
                 }
             }.orShow {
@@ -152,13 +150,13 @@ object BarnepensjonFellesFraser {
                     text(
                         Bokmal to "Du finner mer informasjon på ${Constants.BARNEPENSJON_URL}. På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. Du kan også kontakte oss på telefon ",
                         Nynorsk to "Du finn meir informasjon på ${Constants.BARNEPENSJON_URL}. Du kan skrive til eller chatte med oss på ${Constants.KONTAKT_URL}. Alternativt kan du ringje oss på telefon ",
-                        English to "You can find answers to your questions online: ${Constants.Engelsk.BARNEPENSJON_URL}. Feel free to chat with us or write to us here: ${Constants.Engelsk.KONTAKT_URL}. You can also contact us by phone at "
+                        English to "You can find answers to your questions online: ${Constants.Engelsk.BARNEPENSJON_URL}. Feel free to chat with us or write to us here: ${Constants.Engelsk.KONTAKT_URL}. You can also contact us by phone at ",
                     )
                     kontakttelefonPensjon(bosattUtland)
                     text(
                         Bokmal to ", hverdager mellom klokken 09.00-15.00. Om du oppgir fødselsnummeret ditt, kan vi lettere gi deg rask og god hjelp.",
                         Nynorsk to ", kvardagar mellom klokka 09.00–15.00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir fødselsnummeret ditt.",
-                        English to ", Monday to Friday between 9:00 AM and 3:00 PM. If you provide your national identity number, we can more easily provide you with quick and good help."
+                        English to ", Monday to Friday between 9:00 AM and 3:00 PM. If you provide your national identity number, we can more easily provide you with quick and good help.",
                     )
                 }
             }
@@ -207,7 +205,7 @@ object BarnepensjonFellesFraser {
     data class UtbetalingAvBarnepensjon(
         val erEtterbetaling: Expression<Boolean>,
         val bosattUtland: Expression<Boolean>,
-        val frivilligSkattetrekk: Expression<Boolean>
+        val frivilligSkattetrekk: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
@@ -264,38 +262,37 @@ object BarnepensjonFellesFraser {
                 }
             }
 
-            showIf(frivilligSkattetrekk){
+            showIf(frivilligSkattetrekk) {
                 paragraph {
                     text(
                         Bokmal to
-                                "Du har bedt om ekstra skattetrekk utover 17 prosent. Det trekkes derfor ekstra skatt fra barnepensjonen din. Du kan se på utbetalingsmeldingen hvor mye som er trukket.",
+                            "Du har bedt om ekstra skattetrekk utover 17 prosent. Det trekkes derfor ekstra skatt fra barnepensjonen din. Du kan se på utbetalingsmeldingen hvor mye som er trukket.",
                         Nynorsk to
-                                "Du har bede om ekstra skattetrekk utover 17 prosent. Det blir derfor trekt ekstra skatt frå barnepensjonen din. Du kan sjå på utbetalingsmeldinga kor mykje som er trekt.",
+                            "Du har bede om ekstra skattetrekk utover 17 prosent. Det blir derfor trekt ekstra skatt frå barnepensjonen din. Du kan sjå på utbetalingsmeldinga kor mykje som er trekt.",
                         English to
-                                "You have requested additional tax deductions exceeding 17 percent. Additional tax is therefore deducted from your child's pension. You can see how much has been deducted on the disbursement notice.",
+                            "You have requested additional tax deductions exceeding 17 percent. Additional tax is therefore deducted from your child's pension. You can see how much has been deducted on the disbursement notice.",
                     )
                 }
                 paragraph {
                     text(
                         Bokmal to
-                                "Du må melde fra ved hvert årsskifte dersom du ønsker å fortsette med ekstra skattetrekk.",
+                            "Du må melde fra ved hvert årsskifte dersom du ønsker å fortsette med ekstra skattetrekk.",
                         Nynorsk to
-                                "Du må melda frå ved kvart årsskifte dersom du ønskjer å halda fram med ekstra skattetrekk.",
+                            "Du må melda frå ved kvart årsskifte dersom du ønskjer å halda fram med ekstra skattetrekk.",
                         English to
-                                "You must report at the end of each year if you wish to continue with the additional tax deductions.",
+                            "You must report at the end of each year if you wish to continue with the additional tax deductions.",
                     )
                 }
-
             }
 
             paragraph {
                 text(
                     Bokmal to
-                            "Du kan lese mer om skattetrekk på ${Constants.BP_SKATTETREKK} og ${Constants.BP_SKATTEETATEN}.",
+                        "Du kan lese mer om skattetrekk på ${Constants.BP_SKATTETREKK} og ${Constants.BP_SKATTEETATEN}.",
                     Nynorsk to
-                            "Du kan lese meir om skattetrekk på ${Constants.BP_SKATTETREKK} og ${Constants.BP_SKATTEETATEN}.",
+                        "Du kan lese meir om skattetrekk på ${Constants.BP_SKATTETREKK} og ${Constants.BP_SKATTEETATEN}.",
                     English to
-                            "Read more about tax deductions at ${Constants.BP_SKATTETREKK} and ${Constants.BP_SKATTEETATEN}.",
+                        "Read more about tax deductions at ${Constants.BP_SKATTETREKK} and ${Constants.BP_SKATTEETATEN}.",
                 )
             }
 

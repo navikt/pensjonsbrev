@@ -81,28 +81,30 @@ class MottakerTest {
         assertEquals("abc", mottaker.tssId)
     }
 
-    private fun createBrevredigering() = transaction {
-        Brevredigering.new {
-            saksId = 123L
-            opprettetAvNavIdent = principal
-            this.brevkode = Testbrevkoder.TESTBREV
-            this.spraak = LanguageCode.BOKMAL
-            this.avsenderEnhetId = "1111"
-            this.saksbehandlerValg = Api.GeneriskBrevdata()
-            laastForRedigering = false
-            distribusjonstype = Distribusjonstype.SENTRALPRINT
-            redigeresAvNavIdent = principal
-            opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-            sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-            redigertBrev = Edit.Letter(
-                "a",
-                LetterMarkup.Sakspart("b", "c", "d", "e"),
-                emptyList(),
-                LetterMarkup.Signatur("f", "g", "h", "i", "j"),
-                emptySet(),
-            )
-            sistRedigertAvNavIdent = principal
-            signaturSignerende = "en signatur"
+    private fun createBrevredigering() =
+        transaction {
+            Brevredigering.new {
+                saksId = 123L
+                opprettetAvNavIdent = principal
+                this.brevkode = Testbrevkoder.TESTBREV
+                this.spraak = LanguageCode.BOKMAL
+                this.avsenderEnhetId = "1111"
+                this.saksbehandlerValg = Api.GeneriskBrevdata()
+                laastForRedigering = false
+                distribusjonstype = Distribusjonstype.SENTRALPRINT
+                redigeresAvNavIdent = principal
+                opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
+                sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
+                redigertBrev =
+                    Edit.Letter(
+                        "a",
+                        LetterMarkup.Sakspart("b", "c", "d", "e"),
+                        emptyList(),
+                        LetterMarkup.Signatur("f", "g", "h", "i", "j"),
+                        emptySet(),
+                    )
+                sistRedigertAvNavIdent = principal
+                signaturSignerende = "en signatur"
+            }
         }
-    }
 }

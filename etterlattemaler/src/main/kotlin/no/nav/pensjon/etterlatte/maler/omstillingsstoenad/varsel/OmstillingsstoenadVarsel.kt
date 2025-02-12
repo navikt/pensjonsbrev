@@ -17,27 +17,29 @@ import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 object OmstillingsstoenadVarsel : EtterlatteTemplate<ManueltBrevMedTittelDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_VARSEL
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = ManueltBrevMedTittelDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Varselbrev omstillingsstønad",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
-            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
-        ),
-    ) {
-        title {
-            text(
-                Language.Bokmal to "",
-                Language.Nynorsk to "",
-                Language.English to ""
-            )
-        }
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = ManueltBrevMedTittelDTO::class,
+            languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Varselbrev omstillingsstønad",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Language.Bokmal to "",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                )
+            }
 
-        outline {
-            konverterElementerTilBrevbakerformat(innhold)
+            outline {
+                konverterElementerTilBrevbakerformat(innhold)
+            }
         }
-    }
 }

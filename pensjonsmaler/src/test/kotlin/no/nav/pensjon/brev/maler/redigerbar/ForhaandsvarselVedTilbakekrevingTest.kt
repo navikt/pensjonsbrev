@@ -12,14 +12,13 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class ForhaandsvarselVedTilbakekrevingTest {
-
     @Test
     fun testPdf() {
         Letter(
             ForhaandsvarselVedTilbakekreving.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
-            Fixtures.felles
+            Fixtures.felles,
         ).renderTestPDF(ForhaandsvarselVedTilbakekreving.kode.name)
     }
 
@@ -29,7 +28,7 @@ class ForhaandsvarselVedTilbakekrevingTest {
             ForhaandsvarselVedTilbakekreving.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
-            Fixtures.felles
+            Fixtures.felles,
         ).renderTestHtml(ForhaandsvarselVedTilbakekreving.kode.name)
     }
 }

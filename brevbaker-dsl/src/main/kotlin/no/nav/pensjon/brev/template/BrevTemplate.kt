@@ -13,6 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>> : HasModel<LetterData> {
     val template: LetterTemplate<*, LetterData>
     val kode: Kode
+
     fun description(): TemplateDescription
 }
 

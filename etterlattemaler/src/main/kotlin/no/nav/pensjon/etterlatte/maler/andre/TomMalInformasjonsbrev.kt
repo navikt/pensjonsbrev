@@ -21,31 +21,33 @@ import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 object TomMalInformasjonsbrev : EtterlatteTemplate<ManueltBrevMedTittelDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TOM_MAL_INFORMASJONSBREV
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = ManueltBrevMedTittelDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Infomasjonsbrev",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
-            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
-        ),
-    ) {
-        title {
-            ifNotNull(tittel) { tittel ->
-                textExpr(
-                    Bokmal to tittel,
-                    Nynorsk to tittel,
-                    English to tittel
-                )
-            } orShow {
-                text(Bokmal to "", Nynorsk to "", English to "")
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = ManueltBrevMedTittelDTO::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Infomasjonsbrev",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+                ),
+        ) {
+            title {
+                ifNotNull(tittel) { tittel ->
+                    textExpr(
+                        Bokmal to tittel,
+                        Nynorsk to tittel,
+                        English to tittel,
+                    )
+                } orShow {
+                    text(Bokmal to "", Nynorsk to "", English to "")
+                }
+            }
+
+            outline {
+                konverterElementerTilBrevbakerformat(innhold)
             }
         }
-
-        outline {
-            konverterElementerTilBrevbakerformat(innhold)
-        }
-    }
 }

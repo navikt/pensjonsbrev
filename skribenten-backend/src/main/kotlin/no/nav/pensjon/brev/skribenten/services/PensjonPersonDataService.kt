@@ -19,7 +19,7 @@ data class KontaktAdresseResponseDto(
     val adresseString: String,
     val adresselinjer: List<String>,
     val type: Adressetype,
-){
+) {
     @Suppress("unused")
     enum class Adressetype {
         MATRIKKELADRESSE,
@@ -35,21 +35,21 @@ data class KontaktAdresseResponseDto(
     }
 }
 
-class PensjonPersonDataService(config: Config, authService: AzureADService, clientEngine: HttpClientEngine = CIO.create()): ServiceStatus {
-
+class PensjonPersonDataService(config: Config, authService: AzureADService, clientEngine: HttpClientEngine = CIO.create()) : ServiceStatus {
     private val pensjonPersondataURL = config.getString("url")
     private val scope = config.getString("scope")
-    private val client = HttpClient(clientEngine) {
-        defaultRequest {
-            url(pensjonPersondataURL)
-        }
-        install(ContentNegotiation) {
-            jackson {
-                registerModule(JavaTimeModule())
+    private val client =
+        HttpClient(clientEngine) {
+            defaultRequest {
+                url(pensjonPersondataURL)
             }
+            install(ContentNegotiation) {
+                jackson {
+                    registerModule(JavaTimeModule())
+                }
+            }
+            callIdAndOnBehalfOfClient(scope, authService)
         }
-        callIdAndOnBehalfOfClient(scope, authService)
-    }
 
     suspend fun hentKontaktadresse(pid: String): ServiceResult<KontaktAdresseResponseDto?> =
         client.get("/api/adresse/kontaktadresse") {
@@ -65,6 +65,7 @@ class PensjonPersonDataService(config: Config, authService: AzureADService, clie
         }
 
     override val name = "Pensjon PersonData"
+
     override suspend fun ping(): ServiceResult<Boolean> =
         client.get("/actuator/health/liveness")
             .toServiceResult<String>()

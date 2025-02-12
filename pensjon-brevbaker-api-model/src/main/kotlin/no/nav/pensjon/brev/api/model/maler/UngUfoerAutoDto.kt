@@ -17,6 +17,7 @@ data class UngUfoerAutoDto(
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 ) : BrevbakerBrevdata {
     data class InnvilgetTillegg(val utbetalt: Boolean)
+
     data class Barnetillegg(
         val utbetalt: Boolean,
         val inntektstak: Kroner,

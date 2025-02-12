@@ -12,7 +12,6 @@ object UngUfoer {
 
     data class EndringMinsteYtelseUngUfoerVed20aar(val minsteytelseVedVirkSats: Expression<Double>) :
         OutlinePhrase<LangBokmalNynorsk>() {
-
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 text(
@@ -29,13 +28,13 @@ object UngUfoer {
                     item {
                         text(
                             Language.Bokmal to "Er du enslig, er minste årlige uføretrygd 2,91 ganger folketrygdens grunnbeløp.",
-                            Language.Nynorsk to "Er du einsleg, er minste årlege uføretrygd 2,91 gangar grunnbeløpet i folketrygda."
+                            Language.Nynorsk to "Er du einsleg, er minste årlege uføretrygd 2,91 gangar grunnbeløpet i folketrygda.",
                         )
                     }
                     item {
                         text(
                             Language.Bokmal to "Lever du sammen med en ektefelle eller samboer, er minste årlige ytelse 2,66 ganger folketrygdens grunnbeløp.",
-                            Language.Nynorsk to "Lever du saman med ein ektefelle eller sambuar, er minste årlege yting 2,66 gangar grunnbeløpet i folketrygda."
+                            Language.Nynorsk to "Lever du saman med ein ektefelle eller sambuar, er minste årlege yting 2,66 gangar grunnbeløpet i folketrygda.",
                         )
                     }
                 }
@@ -44,11 +43,10 @@ object UngUfoer {
             paragraph {
                 val satsFormatert = minsteytelseVedVirkSats.format()
                 textExpr(
-                    Language.Bokmal to "Du får derfor en årlig ytelse som utgjør ".expr()
-                            + satsFormatert + " ganger grunnbeløpet.",
-
-                    Language.Nynorsk to "Du får derfor ei årleg yting som utgjer ".expr()
-                            + satsFormatert + " gangar grunnbeløpet.",
+                    Language.Bokmal to "Du får derfor en årlig ytelse som utgjør ".expr() +
+                        satsFormatert + " ganger grunnbeløpet.",
+                    Language.Nynorsk to "Du får derfor ei årleg yting som utgjer ".expr() +
+                        satsFormatert + " gangar grunnbeløpet.",
                 )
             }
         }

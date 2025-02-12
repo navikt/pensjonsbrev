@@ -36,22 +36,36 @@ interface StableHash {
     fun stableHashCode(): Int
 
     companion object {
-        fun hash(firstField: StableHash?, vararg fields: StableHash?): Int =
+        fun hash(
+            firstField: StableHash?,
+            vararg fields: StableHash?,
+        ): Int =
             fields.toList().stableHashCode(firstField?.stableHashCode() ?: 0)
 
-        fun of(firstField: StableHash?, vararg fields: StableHash?): StableHash = ClassFieldsStableHash(firstField, *fields)
+        fun of(
+            firstField: StableHash?,
+            vararg fields: StableHash?,
+        ): StableHash = ClassFieldsStableHash(firstField, *fields)
+
         fun <T : StableHash?> of(list: List<T>): StableHash = ListStableHash(list)
+
         fun <K : StableHash?, V : StableHash?> of(map: Map<K, V>): StableHash = MapStableHash(map)
+
         @JvmName("ofStringMap")
         fun <K : StableHash?> of(map: Map<K, String>): StableHash = StringMapStableHash(map)
+
         fun of(selector: TemplateModelSelector<*, *>): StableHash = SelectorStableHash(selector)
+
         fun of(enum: Enum<*>): StableHash = EnumStableHash(enum)
+
         fun of(number: Number): StableHash = HashCodeStableHash(number)
+
         fun of(boolean: Boolean): StableHash = HashCodeStableHash(boolean)
+
         fun of(localDate: LocalDate): StableHash = HashCodeStableHash(localDate)
+
         fun of(string: String): StableHash = HashCodeStableHash(string)
     }
-
 }
 
 private class HashCodeStableHash(val value: Any) : StableHash {
@@ -76,11 +90,13 @@ private class ListStableHash<T : StableHash?>(val list: List<T>) : StableHash {
 
 private class MapStableHash<K : StableHash?, V : StableHash?>(val map: Map<K, V>) : StableHash {
     override fun stableHashCode() = map.entries.fold(0) { hash, e -> hash + stableHashCode(e) }
+
     private fun stableHashCode(entry: Map.Entry<K, V>): Int = (entry.key?.stableHashCode() ?: 0) xor (entry.value?.stableHashCode() ?: 0)
 }
 
 private class StringMapStableHash<K : StableHash?>(val map: Map<K, String>) : StableHash {
     override fun stableHashCode() = map.entries.fold(0) { hash, e -> hash + stableHashCode(e) }
+
     private fun stableHashCode(entry: Map.Entry<K, String>): Int = (entry.key?.stableHashCode() ?: 0) xor entry.value.hashCode()
 }
 

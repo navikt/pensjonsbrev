@@ -18,7 +18,9 @@ sealed class Language : StableHash {
         }
 
     object Bokmal : Language(), StableHash by StableHash.of("Language.Bokmal")
+
     object Nynorsk : Language(), StableHash by StableHash.of("Language.Nynorsk")
+
     object English : Language(), StableHash by StableHash.of("Language.English")
 }
 

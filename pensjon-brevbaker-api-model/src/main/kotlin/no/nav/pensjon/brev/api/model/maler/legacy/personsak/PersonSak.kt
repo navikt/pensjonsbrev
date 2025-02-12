@@ -6,6 +6,7 @@ data class PersonSak(
     val psfnr: PSfnr,
     val foedselsdato: LocalDate,
 )
+
 data class PSfnr(
     val tssid: String,
 )

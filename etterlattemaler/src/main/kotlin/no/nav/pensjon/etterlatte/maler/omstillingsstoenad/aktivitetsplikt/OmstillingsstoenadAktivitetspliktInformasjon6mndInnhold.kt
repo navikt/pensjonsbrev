@@ -58,22 +58,22 @@ object OmstillingsstoenadAktivitetspliktInformasjon6mndInnhold : EtterlatteTempl
                     paragraph {
                         text(
                             Bokmal to "Omstillingsstønaden din er redusert etter en arbeidsinntekt på " +
-                                    "<kronebeløp> kroner per år.",
+                                "<kronebeløp> kroner per år.",
                             Nynorsk to "Omstillingsstønaden din har blitt redusert ut frå ei arbeidsinntekt på " +
-                                    "<kronebeløp> kroner per år.",
+                                "<kronebeløp> kroner per år.",
                             English to "Your adjustment allowance is reduced based on your income from employment " +
-                                    "of NOK <kronebeløp> per year.",
+                                "of NOK <kronebeløp> per year.",
                         )
                     }
                 }.orShow {
                     paragraph {
                         text(
                             Bokmal to "Omstillingsstønaden din er i dag ikke redusert etter arbeidsinntekt " +
-                                    "eller annen inntekt som er likestilt med arbeidsinntekt.",
+                                "eller annen inntekt som er likestilt med arbeidsinntekt.",
                             Nynorsk to "Omstillingsstønaden din er i dag ikkje redusert ut frå arbeidsinntekt " +
-                                    "eller anna inntekt som er likestilt med arbeidsinntekt.",
+                                "eller anna inntekt som er likestilt med arbeidsinntekt.",
                             English to "Your current adjustment allowance is not reduced based on income from " +
-                                    "employment or other income that is similar to an income from employment.",
+                                "employment or other income that is similar to an income from employment.",
                         )
                     }
                 }
@@ -89,15 +89,15 @@ object OmstillingsstoenadAktivitetspliktInformasjon6mndInnhold : EtterlatteTempl
                 paragraph {
                     text(
                         Bokmal to "Stønaden skal reduseres med 45 prosent av arbeidsinntekten din og inntekt " +
-                                "som er likestilt med arbeidsinntekt, som er over halvparten av grunnbeløpet i folketrygden (G). " +
-                                "Stønaden blir redusert ut fra det du oppgir som forventet inntekt for gjeldende år.",
+                            "som er likestilt med arbeidsinntekt, som er over halvparten av grunnbeløpet i folketrygden (G). " +
+                            "Stønaden blir redusert ut fra det du oppgir som forventet inntekt for gjeldende år.",
                         Nynorsk to "Stønaden skal reduserast med 45 prosent av arbeidsinntekta di og inntekt " +
-                                "som er likestilt med arbeidsinntekt, som er over halvparten av grunnbeløpet i folketrygda (G). " +
-                                "Stønaden blir redusert ut frå det du oppgir som forventa inntekt for gjeldande år.",
+                            "som er likestilt med arbeidsinntekt, som er over halvparten av grunnbeløpet i folketrygda (G). " +
+                            "Stønaden blir redusert ut frå det du oppgir som forventa inntekt for gjeldande år.",
                         English to "The allowance will be reduced by 45 percent of your income from employment " +
-                                "or other income that is equivalent to income from employment, if this is more than " +
-                                "half of the basic amount in the national insurance (G). The allowance will be reduced " +
-                                "based on what you declare as anticipated income for the current year.",
+                            "or other income that is equivalent to income from employment, if this is more than " +
+                            "half of the basic amount in the national insurance (G). The allowance will be reduced " +
+                            "based on what you declare as anticipated income for the current year.",
                     )
                 }
 

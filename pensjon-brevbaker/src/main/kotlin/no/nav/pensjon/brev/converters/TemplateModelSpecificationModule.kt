@@ -16,16 +16,19 @@ object TemplateModelSpecificationModule : SimpleModule() {
 
     private fun fieldTypeDeserializer() =
         object : StdDeserializer<FieldType>(FieldType::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): FieldType {
+            override fun deserialize(
+                p: JsonParser,
+                ctxt: DeserializationContext,
+            ): FieldType {
                 val node = p.codec.readTree<JsonNode>(p)
-                val type = when (FieldType.Type.valueOf(node.get("type").textValue())) {
-                    FieldType.Type.array -> FieldType.Array::class.java
-                    FieldType.Type.scalar -> FieldType.Scalar::class.java
-                    FieldType.Type.enum -> FieldType.Enum::class.java
-                    FieldType.Type.`object` -> FieldType.Object::class.java
-                }
+                val type =
+                    when (FieldType.Type.valueOf(node.get("type").textValue())) {
+                        FieldType.Type.array -> FieldType.Array::class.java
+                        FieldType.Type.scalar -> FieldType.Scalar::class.java
+                        FieldType.Type.enum -> FieldType.Enum::class.java
+                        FieldType.Type.`object` -> FieldType.Object::class.java
+                    }
                 return p.codec.treeToValue(node, type)
             }
         }
-
 }

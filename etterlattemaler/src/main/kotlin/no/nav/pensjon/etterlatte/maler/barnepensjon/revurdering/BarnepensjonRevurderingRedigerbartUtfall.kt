@@ -27,43 +27,45 @@ data class BarnepensjonRevurderingRedigerbartUtfallDTO(
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
     val frivilligSkattetrekk: Boolean,
-    val erEtterbetaling: Boolean
+    val erEtterbetaling: Boolean,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonRevurderingRedigerbartUtfall : EtterlatteTemplate<BarnepensjonRevurderingRedigerbartUtfallDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING_UTFALL
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonRevurderingRedigerbartUtfallDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - revurdering",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title {
-            text(
-                Language.Bokmal to "",
-                Language.Nynorsk to "",
-                Language.English to "",
-            )
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = BarnepensjonRevurderingRedigerbartUtfallDTO::class,
+            languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - revurdering",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Language.Bokmal to "",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                )
+            }
+            outline {
+                includePhrase(Vedtak.BegrunnelseForVedtaket)
+                includePhrase(BarnepensjonRevurderingFraser.UtfallRedigerbart(erEtterbetaling, feilutbetaling))
+                showIf(harUtbetaling) {
+                    includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(erEtterbetaling, bosattUtland, frivilligSkattetrekk))
+                }
+                showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
+                    includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingMedVarselRevurdering)
+                }
+                showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
+                    includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingUtenVarselRevurdering)
+                }
+            }
         }
-        outline {
-            includePhrase(Vedtak.BegrunnelseForVedtaket)
-            includePhrase(BarnepensjonRevurderingFraser.UtfallRedigerbart(erEtterbetaling, feilutbetaling))
-            showIf(harUtbetaling) {
-                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(erEtterbetaling, bosattUtland, frivilligSkattetrekk))
-            }
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
-                includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingMedVarselRevurdering)
-            }
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
-                includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingUtenVarselRevurdering)
-            }
-        }
-    }
 }

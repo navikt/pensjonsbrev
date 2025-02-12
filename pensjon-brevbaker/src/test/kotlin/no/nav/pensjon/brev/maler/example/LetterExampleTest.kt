@@ -12,14 +12,14 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.INTEGRATION_TEST)
 class LetterExampleTest {
-
     @Test
-    fun test() = testBrevbakerApp {
-        Letter(
-            LetterExample.template,
-            createLetterExampleDto(),
-            Language.Bokmal,
-            Fixtures.fellesAuto
-        ).renderTestPDF("EKSEMPELBREV_BOKMAL")
-    }
+    fun test() =
+        testBrevbakerApp {
+            Letter(
+                LetterExample.template,
+                createLetterExampleDto(),
+                Language.Bokmal,
+                Fixtures.fellesAuto,
+            ).renderTestPDF("EKSEMPELBREV_BOKMAL")
+        }
 }

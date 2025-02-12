@@ -6,8 +6,6 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -41,8 +39,10 @@ data class OmstillingsstoenadInnvilgelseDTO(
     val avdoed: Avdoed?,
     val beregning: OmstillingsstoenadBeregning,
     val innvilgetMindreEnnFireMndEtterDoedsfall: Boolean,
-    val lavEllerIngenInntekt: Boolean?, // TODO: skal fases ut
-    val omsRettUtenTidsbegrensning: Boolean = lavEllerIngenInntekt ?: false, // TODO: overtar for lavEllerIngenInntekt
+    // TODO: skal fases ut
+    val lavEllerIngenInntekt: Boolean?,
+    // TODO: overtar for lavEllerIngenInntekt
+    val omsRettUtenTidsbegrensning: Boolean = lavEllerIngenInntekt ?: false,
     val harUtbetaling: Boolean,
     val etterbetaling: OmstillingsstoenadEtterbetaling?,
     val tidligereFamiliepleier: Boolean = false,
@@ -88,7 +88,7 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
             }
 
             outline {
-                showIf(datoVedtakOmgjoering.equalTo(null)){
+                showIf(datoVedtakOmgjoering.equalTo(null)) {
                     includePhrase(
                         OmstillingsstoenadInnvilgelseFraser.Vedtak(avdoed, beregning, harUtbetaling, tidligereFamiliepleier, erSluttbehandling),
                     )

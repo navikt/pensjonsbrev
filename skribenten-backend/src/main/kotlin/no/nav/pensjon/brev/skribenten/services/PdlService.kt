@@ -17,11 +17,13 @@ import org.slf4j.LoggerFactory
 private const val HENT_NAVN_QUERY_RESOURCE = "/pdl/HentNavn.graphql"
 private const val HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE = "/pdl/HentAdressebeskyttelse.graphql"
 
-private val hentNavnQuery = PdlService::class.java.getResource(HENT_NAVN_QUERY_RESOURCE)?.readText()
-    ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_NAVN_QUERY_RESOURCE")
+private val hentNavnQuery =
+    PdlService::class.java.getResource(HENT_NAVN_QUERY_RESOURCE)?.readText()
+        ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_NAVN_QUERY_RESOURCE")
 
-private val hentAdressebeskyttelseQuery = PdlService::class.java.getResource(HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE)?.readText()
-    ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE")
+private val hentAdressebeskyttelseQuery =
+    PdlService::class.java.getResource(HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE)?.readText()
+        ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE")
 
 private val logger = LoggerFactory.getLogger(PdlService::class.java)
 
@@ -29,24 +31,25 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
     private val pdlUrl = config.getString("url")
     private val pdlScope = config.getString("scope")
 
-    private val client = HttpClient(CIO) {
-        defaultRequest {
-            url(pdlUrl)
+    private val client =
+        HttpClient(CIO) {
+            defaultRequest {
+                url(pdlUrl)
+            }
+            install(ContentNegotiation) {
+                jackson()
+            }
+            callIdAndOnBehalfOfClient(pdlScope, authService)
         }
-        install(ContentNegotiation) {
-            jackson()
-        }
-        callIdAndOnBehalfOfClient(pdlScope, authService)
-    }
 
     private data class PDLQuery<T : Any>(
         val query: String,
-        val variables: T
+        val variables: T,
     )
 
     private data class FnrVariables(
         val ident: String,
-        val historikk: Boolean = false
+        val historikk: Boolean = false,
     )
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -61,6 +64,7 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
             data class PDLExtensions(val code: ErrorCode, val details: Details?) {
                 @Suppress("EnumEntryName")
                 enum class ErrorCode { unauthenticated, unauthorized, not_found, bad_request, server_error }
+
                 @JsonIgnoreProperties(ignoreUnknown = true)
                 data class Details(val type: String?, val cause: String?, val policy: String?, val errors: List<String>?)
             }
@@ -70,7 +74,7 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
     private data class DataWrapperPersonMedNavn(val hentPerson: PersonMedNavn?) {
         data class PersonMedNavn(val navn: List<Navn>? = null) {
             data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String) {
-                fun format() = "$fornavn ${mellomnavn?.plus(" ") ?: ""}${etternavn}"
+                fun format() = "$fornavn ${mellomnavn?.plus(" ") ?: ""}$etternavn"
             }
         }
     }
@@ -81,21 +85,24 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
         }
     }
 
-    suspend fun hentNavn(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<String> {
+    suspend fun hentNavn(
+        fnr: String,
+        behandlingsnummer: Pdl.Behandlingsnummer?,
+    ): ServiceResult<String> {
         return client.post("") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             headers {
                 append("Tema", "PEN")
-                if(behandlingsnummer != null) {
+                if (behandlingsnummer != null) {
                     append("Behandlingsnummer", behandlingsnummer.name)
                 }
             }
             setBody(
                 PDLQuery(
                     query = hentNavnQuery,
-                    variables = FnrVariables(fnr)
-                )
+                    variables = FnrVariables(fnr),
+                ),
             )
         }.toServiceResult<PDLResponse<DataWrapperPersonMedNavn>>()
             .map {
@@ -103,18 +110,21 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
             }
     }
 
-    suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> {
+    suspend fun hentAdressebeskyttelse(
+        fnr: String,
+        behandlingsnummer: Pdl.Behandlingsnummer?,
+    ): ServiceResult<List<Pdl.Gradering>> {
         return client.post("") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             setBody(
                 PDLQuery(
                     query = hentAdressebeskyttelseQuery,
-                    variables = FnrVariables(fnr)
-                )
+                    variables = FnrVariables(fnr),
+                ),
             )
             headers {
-                if(behandlingsnummer != null)  {
+                if (behandlingsnummer != null) {
                     set("Behandlingsnummer", behandlingsnummer.name)
                 }
             }
@@ -141,14 +151,15 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
     private fun <T> PDLResponse.PDLError.mapError(): ServiceResult.Error<T> =
         ServiceResult.Error(
             error = message,
-            statusCode = when (extensions?.code) {
-                PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthenticated -> HttpStatusCode.Unauthorized
-                PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthorized -> HttpStatusCode.Forbidden
-                PDLResponse.PDLError.PDLExtensions.ErrorCode.not_found -> HttpStatusCode.NotFound
-                PDLResponse.PDLError.PDLExtensions.ErrorCode.bad_request -> HttpStatusCode.BadRequest
-                PDLResponse.PDLError.PDLExtensions.ErrorCode.server_error -> HttpStatusCode.InternalServerError
-                null -> HttpStatusCode.InternalServerError
-            }
+            statusCode =
+                when (extensions?.code) {
+                    PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthenticated -> HttpStatusCode.Unauthorized
+                    PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthorized -> HttpStatusCode.Forbidden
+                    PDLResponse.PDLError.PDLExtensions.ErrorCode.not_found -> HttpStatusCode.NotFound
+                    PDLResponse.PDLError.PDLExtensions.ErrorCode.bad_request -> HttpStatusCode.BadRequest
+                    PDLResponse.PDLError.PDLExtensions.ErrorCode.server_error -> HttpStatusCode.InternalServerError
+                    null -> HttpStatusCode.InternalServerError
+                },
         )
 
     private fun List<PDLResponse.PDLError>.logErrors() {
@@ -160,9 +171,9 @@ class PdlService(config: Config, authService: AzureADService) : ServiceStatus {
     }
 
     override val name = "PDL"
+
     override suspend fun ping(): ServiceResult<Boolean> =
         client.options("")
             .toServiceResult<String>()
             .map { true }
-
 }

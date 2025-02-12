@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
 
-
 @LetterTemplateMarker
 class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> : OutlineScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent<Lang>, OutlineOnlyScope<Lang, LetterData>> {
     private val children = mutableListOf<OutlineElement<Lang>>()
@@ -22,7 +21,6 @@ class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> : OutlineScope<
     fun includePhrase(phrase: OutlinePhrase<out Lang>) {
         phrase.apply(this)
     }
-
 }
 
 interface OutlineScope<Lang : LanguageSupport, LetterData : Any> {
@@ -41,7 +39,6 @@ interface OutlineScope<Lang : LanguageSupport, LetterData : Any> {
             .let { ContentOrControlStructure.Content(it) }
             .also { addOutlineContent(it) }
     }
-
 
     fun paragraph(create: ParagraphOnlyScope<Lang, LetterData>.() -> Unit) {
         ParagraphOnlyScope<Lang, LetterData>().apply(create)

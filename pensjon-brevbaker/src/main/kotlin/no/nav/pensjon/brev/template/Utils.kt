@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.converters.BrevkodeModule
 import no.nav.pensjon.brev.converters.LetterMarkupModule
 import no.nav.pensjon.brev.converters.TemplateModelSpecificationModule
 import java.time.format.*
-import kotlin.reflect.KClass
 
 fun ObjectMapper.brevbakerConfig() {
     registerModule(JavaTimeModule())

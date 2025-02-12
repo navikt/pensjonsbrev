@@ -17,7 +17,7 @@ import no.nav.pensjon.etterlatte.maler.TrygdetidsperiodeSelectors.type
 import no.nav.pensjon.etterlatte.maler.fraser.common.PeriodeITabell
 
 data class Trygdetidstabell(
-    val trygdetidsperioder: Expression<List<Trygdetidsperiode>>
+    val trygdetidsperioder: Expression<List<Trygdetidsperiode>>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -44,7 +44,7 @@ data class Trygdetidstabell(
                             Language.English to "Basis for contribution time",
                         )
                     }
-                }
+                },
             ) {
                 forEach(trygdetidsperioder) { periode ->
                     row {
@@ -69,7 +69,7 @@ data class Trygdetidstabell(
                                 textExpr(
                                     Language.Bokmal to it.format() + ifElse(periode.type.equalTo(TrygdetidType.FREMTIDIG), " (fremtidig trygdetid)", ""),
                                     Language.Nynorsk to it.format() + ifElse(periode.type.equalTo(TrygdetidType.FREMTIDIG), " (framtidig trygdetid)", ""),
-                                    Language.English to  it.format() + ifElse(periode.type.equalTo(TrygdetidType.FREMTIDIG), " (future contribution time)", ""),
+                                    Language.English to it.format() + ifElse(periode.type.equalTo(TrygdetidType.FREMTIDIG), " (future contribution time)", ""),
                                 )
                             }
                         }
@@ -83,30 +83,34 @@ data class Trygdetidstabell(
 fun Expression<Periode>.format(): StringExpression = format(PeriodeFormatter)
 
 object PeriodeFormatter : LocalizedFormatter<Periode>() {
-    override fun apply(first: Periode, second: Language): String {
-        val actualValues = listOfNotNull(
-            first.aar.takeIf { it > 0 }?.let {
-                when (second) {
-                    Language.Bokmal -> "$it år"
-                    Language.Nynorsk -> "$it år"
-                    Language.English -> "$it years"
-                }
-            },
-            first.maaneder.takeIf { it > 0 }?.let {
-                when (second) {
-                    Language.Bokmal -> "$it måneder"
-                    Language.Nynorsk -> "$it månadar"
-                    Language.English -> "$it months"
-                }
-            },
-            first.dager.takeIf { it > 0 }?.let {
-                when (second) {
-                    Language.Bokmal -> "$it dager"
-                    Language.Nynorsk -> "$it dagar"
-                    Language.English -> "$it days"
-                }
-            }
-        )
+    override fun apply(
+        first: Periode,
+        second: Language,
+    ): String {
+        val actualValues =
+            listOfNotNull(
+                first.aar.takeIf { it > 0 }?.let {
+                    when (second) {
+                        Language.Bokmal -> "$it år"
+                        Language.Nynorsk -> "$it år"
+                        Language.English -> "$it years"
+                    }
+                },
+                first.maaneder.takeIf { it > 0 }?.let {
+                    when (second) {
+                        Language.Bokmal -> "$it måneder"
+                        Language.Nynorsk -> "$it månadar"
+                        Language.English -> "$it months"
+                    }
+                },
+                first.dager.takeIf { it > 0 }?.let {
+                    when (second) {
+                        Language.Bokmal -> "$it dager"
+                        Language.Nynorsk -> "$it dagar"
+                        Language.English -> "$it days"
+                    }
+                },
+            )
 
         return actualValues.joinToString(separator = ", ") { it }
     }

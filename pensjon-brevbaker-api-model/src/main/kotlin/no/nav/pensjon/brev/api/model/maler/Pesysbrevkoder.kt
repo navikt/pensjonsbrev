@@ -32,7 +32,8 @@ object Pesysbrevkoder {
         UT_OPPHOER_BT_AUTO,
         UT_UNG_UFOER_20_AAR_AUTO,
         UT_VARSEL_SAKSBEHANDLINGSTID_AUTO,
-        UT_BARNETILLEGG_ENDRET_AUTO;
+        UT_BARNETILLEGG_ENDRET_AUTO,
+        ;
 
         override fun kode(): String = this.name
     }
@@ -50,14 +51,15 @@ object Pesysbrevkoder {
         PE_VARSEL_OM_MULIG_AVSLAG,
         UT_AVSLAG_UFOERETRYGD,
         UT_INFORMASJON_OM_SAKSBEHANDLINGSTID,
-        UT_ORIENTERING_OM_SAKSBEHANDLINGSTID;
+        UT_ORIENTERING_OM_SAKSBEHANDLINGSTID,
+        ;
 
         override fun kode(): String = this.name
 
         override fun toggle(): FeatureToggle? =
-            when(this) {
-                PE_OVERSETTELSE_AV_DOKUMENTER -> FeatureToggles.brevMedFritekst
-                UT_AVSLAG_UFOERETRYGD -> FeatureToggles.brevmal_ut_avslag
+            when (this) {
+                PE_OVERSETTELSE_AV_DOKUMENTER -> FeatureToggles.BREV_MED_FRITEKST
+                UT_AVSLAG_UFOERETRYGD -> FeatureToggles.BREVMAL_UT_AVSLAG
                 else -> null
             }
     }

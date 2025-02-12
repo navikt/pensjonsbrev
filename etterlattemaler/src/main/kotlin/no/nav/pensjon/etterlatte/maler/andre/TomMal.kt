@@ -17,33 +17,34 @@ import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 object TomMal : EtterlatteTemplate<ManueltBrevDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TOM_MAL
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = ManueltBrevDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Tom mal",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title {
-            text(
-                Bokmal to "",
-                Nynorsk to "",
-                English to "",
-            )
-        }
-        outline {
-            paragraph {
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = ManueltBrevDTO::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Tom mal",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
                 text(
-                    Bokmal to "Dette er en tom mal som du må benytte for å fylle inn brevet",
+                    Bokmal to "",
                     Nynorsk to "",
-                    English to ""
+                    English to "",
                 )
             }
-
+            outline {
+                paragraph {
+                    text(
+                        Bokmal to "Dette er en tom mal som du må benytte for å fylle inn brevet",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
+            }
         }
-    }
 }

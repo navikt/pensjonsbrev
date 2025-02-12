@@ -29,7 +29,9 @@ object Edit {
 
     sealed class Block(val type: Type) : Identifiable {
         enum class Type {
-            TITLE1, TITLE2, PARAGRAPH,
+            TITLE1,
+            TITLE2,
+            PARAGRAPH,
         }
 
         abstract val editable: Boolean
@@ -72,7 +74,11 @@ object Edit {
 
     sealed class ParagraphContent(val type: Type) : Identifiable {
         enum class Type {
-            ITEM_LIST, LITERAL, VARIABLE, TABLE, NEW_LINE,
+            ITEM_LIST,
+            LITERAL,
+            VARIABLE,
+            TABLE,
+            NEW_LINE,
         }
 
         data class ItemList(
@@ -157,6 +163,7 @@ object Edit {
             data class NewLine(override val id: Int?, override val parentId: Int? = null) : Text(Type.NEW_LINE) {
                 override val text: String = ""
                 override val fontType: FontType = FontType.PLAIN
+
                 override fun isEdited(): Boolean = isNew()
             }
         }
@@ -175,45 +182,60 @@ object Edit {
             addDeserializer(ParagraphContent.Text::class.java, textContentDeserializer())
         }
 
-        private fun blockDeserializer() = object : StdDeserializer<Block>(Block::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Block {
-                val node = p.codec.readTree<JsonNode>(p)
-                val type = when (Block.Type.valueOf(node.get("type").textValue())) {
-                    Block.Type.TITLE1 -> Block.Title1::class.java
-                    Block.Type.TITLE2 -> Block.Title2::class.java
-                    Block.Type.PARAGRAPH -> Block.Paragraph::class.java
+        private fun blockDeserializer() =
+            object : StdDeserializer<Block>(Block::class.java) {
+                override fun deserialize(
+                    p: JsonParser,
+                    ctxt: DeserializationContext,
+                ): Block {
+                    val node = p.codec.readTree<JsonNode>(p)
+                    val type =
+                        when (Block.Type.valueOf(node.get("type").textValue())) {
+                            Block.Type.TITLE1 -> Block.Title1::class.java
+                            Block.Type.TITLE2 -> Block.Title2::class.java
+                            Block.Type.PARAGRAPH -> Block.Paragraph::class.java
+                        }
+                    return p.codec.treeToValue(node, type)
                 }
-                return p.codec.treeToValue(node, type)
             }
-        }
 
-        private fun paragraphContentDeserializer() = object : StdDeserializer<ParagraphContent>(ParagraphContent::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): ParagraphContent {
-                val node = p.codec.readTree<JsonNode>(p)
-                val type = when (ParagraphContent.Type.valueOf(node.get("type").textValue())) {
-                    ParagraphContent.Type.ITEM_LIST -> ParagraphContent.ItemList::class.java
-                    ParagraphContent.Type.LITERAL -> ParagraphContent.Text.Literal::class.java
-                    ParagraphContent.Type.NEW_LINE -> ParagraphContent.Text.NewLine::class.java
-                    ParagraphContent.Type.VARIABLE -> ParagraphContent.Text.Variable::class.java
-                    ParagraphContent.Type.TABLE -> ParagraphContent.Table::class.java
+        private fun paragraphContentDeserializer() =
+            object : StdDeserializer<ParagraphContent>(ParagraphContent::class.java) {
+                override fun deserialize(
+                    p: JsonParser,
+                    ctxt: DeserializationContext,
+                ): ParagraphContent {
+                    val node = p.codec.readTree<JsonNode>(p)
+                    val type =
+                        when (ParagraphContent.Type.valueOf(node.get("type").textValue())) {
+                            ParagraphContent.Type.ITEM_LIST -> ParagraphContent.ItemList::class.java
+                            ParagraphContent.Type.LITERAL -> ParagraphContent.Text.Literal::class.java
+                            ParagraphContent.Type.NEW_LINE -> ParagraphContent.Text.NewLine::class.java
+                            ParagraphContent.Type.VARIABLE -> ParagraphContent.Text.Variable::class.java
+                            ParagraphContent.Type.TABLE -> ParagraphContent.Table::class.java
+                        }
+                    return p.codec.treeToValue(node, type)
                 }
-                return p.codec.treeToValue(node, type)
             }
-        }
 
-        private fun textContentDeserializer() = object : StdDeserializer<ParagraphContent.Text>(ParagraphContent.Text::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): ParagraphContent.Text {
-                val node = p.codec.readTree<JsonNode>(p)
-                val type = when (ParagraphContent.Type.valueOf(node.get("type").textValue())) {
-                    ParagraphContent.Type.ITEM_LIST -> throw DeserializationException("ITEM_LIST is not allowed in a text-only block.")
-                    ParagraphContent.Type.LITERAL -> ParagraphContent.Text.Literal::class.java
-                    ParagraphContent.Type.NEW_LINE -> ParagraphContent.Text.NewLine::class.java
-                    ParagraphContent.Type.VARIABLE -> ParagraphContent.Text.Variable::class.java
-                    ParagraphContent.Type.TABLE -> throw DeserializationException("TABLE is not allowed in a text-only block.")
+        private fun textContentDeserializer() =
+            object : StdDeserializer<ParagraphContent.Text>(ParagraphContent.Text::class.java) {
+                override fun deserialize(
+                    p: JsonParser,
+                    ctxt: DeserializationContext,
+                ): ParagraphContent.Text {
+                    val node = p.codec.readTree<JsonNode>(p)
+                    val type =
+                        when (ParagraphContent.Type.valueOf(node.get("type").textValue())) {
+                            ParagraphContent.Type.ITEM_LIST -> throw DeserializationException("ITEM_LIST is not allowed in a text-only block.")
+                            ParagraphContent.Type.LITERAL -> ParagraphContent.Text.Literal::class.java
+                            ParagraphContent.Type.NEW_LINE -> ParagraphContent.Text.NewLine::class.java
+                            ParagraphContent.Type.VARIABLE -> ParagraphContent.Text.Variable::class.java
+                            ParagraphContent.Type.TABLE -> throw DeserializationException("TABLE is not allowed in a text-only block.")
+                        }
+                    return p.codec.treeToValue(node, type)
                 }
-                return p.codec.treeToValue(node, type)
             }
-        }
     }
 }
 
@@ -295,18 +317,20 @@ fun Edit.ParagraphContent.toMarkup(): ParagraphContent =
 
 fun Edit.ParagraphContent.Text.toMarkup(): ParagraphContent.Text =
     when (this) {
-        is Edit.ParagraphContent.Text.Literal -> ParagraphContent.Text.Literal(
-            id = id ?: 0,
-            text = editedText ?: text,
-            fontType = (editedFontType ?: fontType).toMarkup(),
-            tags = tags,
-        )
+        is Edit.ParagraphContent.Text.Literal ->
+            ParagraphContent.Text.Literal(
+                id = id ?: 0,
+                text = editedText ?: text,
+                fontType = (editedFontType ?: fontType).toMarkup(),
+                tags = tags,
+            )
 
-        is Edit.ParagraphContent.Text.Variable -> ParagraphContent.Text.Variable(
-            id = id ?: 0,
-            text = text,
-            fontType = fontType.toMarkup()
-        )
+        is Edit.ParagraphContent.Text.Variable ->
+            ParagraphContent.Text.Variable(
+                id = id ?: 0,
+                text = text,
+                fontType = fontType.toMarkup(),
+            )
 
         is Edit.ParagraphContent.Text.NewLine -> ParagraphContent.Text.NewLine(id = id ?: 0)
     }
@@ -338,7 +362,3 @@ fun Edit.ParagraphContent.Table.Row.toMarkup(): ParagraphContent.Table.Row =
 
 fun Edit.ParagraphContent.Table.Cell.toMarkup(): ParagraphContent.Table.Cell =
     ParagraphContent.Table.Cell(id = id ?: 0, text = text.map { it.toMarkup() })
-
-
-
-

@@ -11,35 +11,38 @@ import io.ktor.server.testing.*
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.template.brevbakerConfig
 
-fun testBrevbakerApp(block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit): Unit = testApplication {
-    environment {
-        config = ApplicationConfig("application.conf")
-    }
-    val client = createClient {
-        install(ContentNegotiation) {
-            jackson { brevbakerConfig() }
+fun testBrevbakerApp(block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit): Unit =
+    testApplication {
+        environment {
+            config = ApplicationConfig("application.conf")
         }
-        defaultRequest {
-            contentType(ContentType.Application.Json)
-        }
-    }
-    settOppFakeUnleash()
+        val client =
+            createClient {
+                install(ContentNegotiation) {
+                    jackson { brevbakerConfig() }
+                }
+                defaultRequest {
+                    contentType(ContentType.Application.Json)
+                }
+            }
+        settOppFakeUnleash()
 
-    block(client)
-}
+        block(client)
+    }
 
 val fakeUnleash = FakeUnleash()
 
-fun settOppFakeUnleash() = FeatureToggleHandler.configure {
-    unleash = { fakeUnleash }
-}
+fun settOppFakeUnleash() =
+    FeatureToggleHandler.configure {
+        unleash = { fakeUnleash }
+    }
 
 fun aktiverToggle(toggle: FeatureToggle) {
     settOppFakeUnleash()
-    fakeUnleash.enable(unleashTogglePrefix + toggle.key())
+    fakeUnleash.enable(UNLEASH_TOGGLE_PREFIX + toggle.key())
 }
 
 fun deaktiverToggle(toggle: FeatureToggle) {
     settOppFakeUnleash()
-    fakeUnleash.disable(unleashTogglePrefix + toggle.key())
+    fakeUnleash.disable(UNLEASH_TOGGLE_PREFIX + toggle.key())
 }

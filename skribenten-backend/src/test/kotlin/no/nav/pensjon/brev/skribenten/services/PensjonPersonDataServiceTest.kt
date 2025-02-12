@@ -17,10 +17,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class PensjonPersonDataServiceTest {
-
-    private val mockAdService = mockk<AzureADService> {
-        coEvery { getOnBehalfOfToken(any(), any()) } returns TokenResponse.OnBehalfOfToken("token", "refresh", "Bearer", "scope", 12345L)
-    }
+    private val mockAdService =
+        mockk<AzureADService> {
+            coEvery { getOnBehalfOfToken(any(), any()) } returns TokenResponse.OnBehalfOfToken("token", "refresh", "Bearer", "scope", 12345L)
+        }
 
     private val principal = MockPrincipal(NavIdent("veldig kul ansatt"), "Veldig kult navn")
 
@@ -46,15 +46,19 @@ class PensjonPersonDataServiceTest {
         }
     }
 
-    private fun mockResponse(adresse: KontaktAdresseResponseDto?, status: HttpStatusCode = HttpStatusCode.OK) = PensjonPersonDataService(
-        ConfigFactory.parseMap(mapOf("url" to "http://localhost", "scope" to "fri tilgang")),
-        mockAdService,
-        MockEngine {
-            respond(
-                content = adresse?.let { jacksonObjectMapper().writeValueAsString(it) } ?: "",
-                status = status,
-                headers = headersOf(HttpHeaders.ContentType, "application/json")
-            )
-        },
-    )
+    private fun mockResponse(
+        adresse: KontaktAdresseResponseDto?,
+        status: HttpStatusCode = HttpStatusCode.OK,
+    ) =
+        PensjonPersonDataService(
+            ConfigFactory.parseMap(mapOf("url" to "http://localhost", "scope" to "fri tilgang")),
+            mockAdService,
+            MockEngine {
+                respond(
+                    content = adresse?.let { jacksonObjectMapper().writeValueAsString(it) } ?: "",
+                    status = status,
+                    headers = headersOf(HttpHeaders.ContentType, "application/json"),
+                )
+            },
+        )
 }

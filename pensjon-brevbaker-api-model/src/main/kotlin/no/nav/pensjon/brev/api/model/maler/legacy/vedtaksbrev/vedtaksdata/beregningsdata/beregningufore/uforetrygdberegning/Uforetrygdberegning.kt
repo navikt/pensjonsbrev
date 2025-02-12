@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.bereg
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
-
 data class Uforetrygdberegning(
     val anvendttrygdetid: Int?,
     val mottarminsteytelse: Boolean?,
@@ -15,5 +14,5 @@ data class Uforetrygdberegning(
     val uforetidspunkt: LocalDate?,
     val proratabrokteller: Int?,
     val proratabroknevner: Int?,
-    val instopphanvendt: Boolean?
+    val instopphanvendt: Boolean?,
 )

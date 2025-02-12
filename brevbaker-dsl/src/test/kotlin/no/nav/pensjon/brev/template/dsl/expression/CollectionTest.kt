@@ -7,16 +7,16 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class CollectionTest {
-
     private val emptyScope: ExpressionScope<Unit> =
         ExpressionScope(Unit, Fixtures.felles, Language.Bokmal)
 
-    private val selector = object : TemplateModelSelector<Foedselsnummer, String> {
-        override val className = "FakeFoedselsnummerSelector"
-        override val propertyName = "value"
-        override val propertyType = "String"
-        override val selector = Foedselsnummer::value
-    }
+    private val selector =
+        object : TemplateModelSelector<Foedselsnummer, String> {
+            override val className = "FakeFoedselsnummerSelector"
+            override val propertyName = "value"
+            override val propertyType = "String"
+            override val selector = Foedselsnummer::value
+        }
 
     @Test
     fun `isEmpty checks that collection is empty`() {
@@ -40,7 +40,7 @@ class CollectionTest {
             val scope = ExpressionScope(Unit, Fixtures.felles, it)
             assertEquals(
                 LocalizedFormatter.CollectionFormat.apply(fnrs.map { it.value }, it),
-                fnrs.expr().map(selector).format().eval(scope)
+                fnrs.expr().map(selector).format().eval(scope),
             )
         }
     }

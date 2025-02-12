@@ -2,7 +2,6 @@ package no.nav.pensjon.etterlatte.maler.fraser.common
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -35,19 +34,19 @@ object Felles {
             paragraph {
                 text(
                     Bokmal to "Du kan be om hjelp fra andre under hele saksbehandlingen, for eksempel av advokat, " +
-                            "rettshjelper, en organisasjon du er medlem av eller en annen myndig person. Hvis den som " +
-                            "hjelper deg ikke er advokat, må du gi denne personen en skriftlig fullmakt. Bruk gjerne " +
-                            "skjemaet du finner på ${Constants.FULLMAKT_URL}.",
+                        "rettshjelper, en organisasjon du er medlem av eller en annen myndig person. Hvis den som " +
+                        "hjelper deg ikke er advokat, må du gi denne personen en skriftlig fullmakt. Bruk gjerne " +
+                        "skjemaet du finner på ${Constants.FULLMAKT_URL}.",
                     Nynorsk to "Du har under heile saksbehandlinga høve til å be om hjelp frå til dømes advokat, " +
-                            "rettshjelpar, organisasjonar du er medlem av, eller andre myndige personar. " +
-                            "Dersom personen som hjelper deg, ikkje er advokat, " +
-                            "må du gi vedkomande ei skriftleg fullmakt. " +
-                            "Bruk gjerne skjemaet du finn på ${Constants.FULLMAKT_URL}.",
+                        "rettshjelpar, organisasjonar du er medlem av, eller andre myndige personar. " +
+                        "Dersom personen som hjelper deg, ikkje er advokat, " +
+                        "må du gi vedkomande ei skriftleg fullmakt. " +
+                        "Bruk gjerne skjemaet du finn på ${Constants.FULLMAKT_URL}.",
                     English to "You can ask for help from others throughout case processing, such as an attorney, " +
-                            "legal aid, an organization of which you are a member or another person of legal age. " +
-                            "If the person helping you is not an attorney, " +
-                            "you must give this person a written power of attorney. " +
-                            "Feel free to use the form you find here:  ${Constants.Engelsk.FULLMAKT_URL}.",
+                        "legal aid, an organization of which you are a member or another person of legal age. " +
+                        "If the person helping you is not an attorney, " +
+                        "you must give this person a written power of attorney. " +
+                        "Feel free to use the form you find here:  ${Constants.Engelsk.FULLMAKT_URL}.",
                 )
             }
         }
@@ -65,14 +64,14 @@ object Felles {
             paragraph {
                 text(
                     Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på " +
-                            "${Constants.BESKJED_TIL_NAV_URL}. Du kan også sende " +
-                            "uttalelsen din til oss i posten. Adressen finner du på ${Constants.ETTERSENDELSE_URL}.",
+                        "${Constants.BESKJED_TIL_NAV_URL}. Du kan også sende " +
+                        "uttalelsen din til oss i posten. Adressen finner du på ${Constants.ETTERSENDELSE_URL}.",
                     Nynorsk to "Du kan sende svar til oss ved å logge inn på " +
-                            "${Constants.BESKJED_TIL_NAV_URL}. Alternativt kan du " +
-                            "sende oss svar i posten. Adressa finn du på ${Constants.ETTERSENDELSE_URL}.",
+                        "${Constants.BESKJED_TIL_NAV_URL}. Alternativt kan du " +
+                        "sende oss svar i posten. Adressa finn du på ${Constants.ETTERSENDELSE_URL}.",
                     English to "You can send us a statement regarding the matter by logging in to: " +
-                            "${Constants.Engelsk.BESKJED_TIL_NAV_URL}. You can also " +
-                            "send us your statement by post. The address can be found at: ${Constants.Engelsk.ETTERSENDELSE_URL}.",
+                        "${Constants.Engelsk.BESKJED_TIL_NAV_URL}. You can also " +
+                        "send us your statement by post. The address can be found at: ${Constants.Engelsk.ETTERSENDELSE_URL}.",
                 )
             }
         }
@@ -90,14 +89,14 @@ object Felles {
             paragraph {
                 text(
                     Bokmal to "Når fristen for uttale er gått ut, vil vi gjøre et vedtak og sende det " +
-                            "til deg. Hvis du må betale tilbake hele eller deler av beløpet, gir vi beskjed i " +
-                            "vedtaket om hvordan du betaler tilbake.",
+                        "til deg. Hvis du må betale tilbake hele eller deler av beløpet, gir vi beskjed i " +
+                        "vedtaket om hvordan du betaler tilbake.",
                     Nynorsk to "Når svarfristen har gått ut, fattar vi eit vedtak og sender det til deg. " +
-                            "Dersom du må betale tilbake heile eller delar av beløpet, forklarer vi i vedtaket " +
-                            "korleis du betaler tilbake.",
+                        "Dersom du må betale tilbake heile eller delar av beløpet, forklarer vi i vedtaket " +
+                        "korleis du betaler tilbake.",
                     English to "When the deadline for providing statements has expired, we will make a decision " +
-                            "and send it to you. If you are required to repay the whole or part of the amount, we will " +
-                            "inform you in the decision of how to make repayments.",
+                        "and send it to you. If you are required to repay the whole or part of the amount, we will " +
+                        "inform you in the decision of how to make repayments.",
                 )
             }
         }

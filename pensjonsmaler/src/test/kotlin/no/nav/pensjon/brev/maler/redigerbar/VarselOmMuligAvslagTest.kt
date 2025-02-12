@@ -12,14 +12,13 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class VarselOmMuligAvslagTest {
-
     @Test
     fun testPdf() {
         Letter(
             VarselOmMuligAvslag.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF(VarselOmMuligAvslag.kode.name)
     }
 
@@ -29,7 +28,7 @@ class VarselOmMuligAvslagTest {
             VarselOmMuligAvslag.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestHtml(VarselOmMuligAvslag.kode.name)
     }
 }

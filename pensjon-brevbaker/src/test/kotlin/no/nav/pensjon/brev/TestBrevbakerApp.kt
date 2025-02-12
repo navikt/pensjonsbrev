@@ -6,32 +6,40 @@ import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
 
-val alleAutobrevmaler = try {
-    ProductionTemplates.hentAutobrevmaler() + LetterExample
-} catch(e: ExceptionInInitializerError) {
-    formaterOgSkrivUtFeil(e, "Feila under initialisering av autobrev-maler: ")
-}
+val alleAutobrevmaler =
+    try {
+        ProductionTemplates.hentAutobrevmaler() + LetterExample
+    } catch (e: ExceptionInInitializerError) {
+        formaterOgSkrivUtFeil(e, "Feila under initialisering av autobrev-maler: ")
+    }
 
-val alleRedigerbareMaler = try {
-    ProductionTemplates.hentRedigerbareMaler() + EksempelbrevRedigerbart
-} catch(e: ExceptionInInitializerError) {
-    formaterOgSkrivUtFeil(e, "Feila under initialisering av redigerbare maler: ")
-}
+val alleRedigerbareMaler =
+    try {
+        ProductionTemplates.hentRedigerbareMaler() + EksempelbrevRedigerbart
+    } catch (e: ExceptionInInitializerError) {
+        formaterOgSkrivUtFeil(e, "Feila under initialisering av redigerbare maler: ")
+    }
 
-private fun formaterOgSkrivUtFeil(e: ExceptionInInitializerError, prefiks: String): Nothing =
+private fun formaterOgSkrivUtFeil(
+    e: ExceptionInInitializerError,
+    prefiks: String,
+): Nothing =
     throw RuntimeException(
         "$prefiks\n ${e.cause?.message}, stack trace: \n ${
             e.cause?.stackTrace?.joinToString(
-                "\n\t"
+                "\n\t",
             )
-        } \n \n", e.cause
+        } \n \n",
+        e.cause,
     )
 
-fun Application.brevbakerTestModule() = this.brevbakerModule(
-    templates = object : AllTemplates {
-        override fun hentAutobrevmaler() = alleAutobrevmaler
+fun Application.brevbakerTestModule() =
+    this.brevbakerModule(
+        templates =
+            object : AllTemplates {
+                override fun hentAutobrevmaler() = alleAutobrevmaler
 
-        override fun hentRedigerbareMaler() = alleRedigerbareMaler
-    },
-    konfigurerFeatureToggling = { settOppFakeUnleash() }
-)
+                override fun hentRedigerbareMaler() = alleRedigerbareMaler
+            },
+        konfigurerFeatureToggling = { settOppFakeUnleash() },
+    )

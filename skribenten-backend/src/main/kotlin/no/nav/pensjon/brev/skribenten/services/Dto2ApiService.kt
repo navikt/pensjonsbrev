@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.skribenten.db.MottakerType
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Api.BrevStatus
 import no.nav.pensjon.brev.skribenten.model.Api.NavAnsatt
-import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 class Dto2ApiService(
@@ -14,7 +14,6 @@ class Dto2ApiService(
     private val norg2Service: Norg2Service,
     private val samhandlerService: SamhandlerService,
 ) {
-
     suspend fun toApi(brevredigering: Dto.Brevredigering): Api.BrevResponse =
         Api.BrevResponse(
             info = toApi(brevredigering.info),
@@ -34,12 +33,13 @@ class Dto2ApiService(
             sistredigert = info.sistredigert,
             brevkode = info.brevkode,
             brevtittel = template?.metadata?.displayTitle ?: info.brevkode.kode(),
-            status = when {
-                info.journalpostId != null -> BrevStatus.Arkivert
-                info.laastForRedigering -> BrevStatus.Klar
-                info.redigeresAv != null -> BrevStatus.UnderRedigering(hentNavAnsatt(info.redigeresAv))
-                else -> BrevStatus.Kladd
-            },
+            status =
+                when {
+                    info.journalpostId != null -> BrevStatus.Arkivert
+                    info.laastForRedigering -> BrevStatus.Klar
+                    info.redigeresAv != null -> BrevStatus.UnderRedigering(hentNavAnsatt(info.redigeresAv))
+                    else -> BrevStatus.Kladd
+                },
             distribusjonstype = info.distribusjonstype,
             mottaker = info.mottaker?.toApi(),
             avsenderEnhet = info.avsenderEnhetId?.let { norg2Service.getEnhet(it) },
@@ -48,27 +48,29 @@ class Dto2ApiService(
         )
     }
 
-    private fun LanguageCode.toApi() = when (this) {
-        LanguageCode.BOKMAL -> SpraakKode.NB
-        LanguageCode.NYNORSK -> SpraakKode.NN
-        LanguageCode.ENGLISH -> SpraakKode.EN
-    }
+    private fun LanguageCode.toApi() =
+        when (this) {
+            LanguageCode.BOKMAL -> SpraakKode.NB
+            LanguageCode.NYNORSK -> SpraakKode.NN
+            LanguageCode.ENGLISH -> SpraakKode.EN
+        }
 
-    private suspend fun Dto.Mottaker.toApi(): Api.OverstyrtMottaker = when (type) {
-        MottakerType.SAMHANDLER -> Api.OverstyrtMottaker.Samhandler(tssId!!, samhandlerService.hentSamhandlerNavn(tssId))
-        MottakerType.NORSK_ADRESSE -> Api.OverstyrtMottaker.NorskAdresse(navn!!, postnummer!!, poststed!!, adresselinje1, adresselinje2, adresselinje3)
-        MottakerType.UTENLANDSK_ADRESSE -> Api.OverstyrtMottaker.UtenlandskAdresse(
-            navn!!,
-            postnummer,
-            poststed,
-            adresselinje1!!,
-            adresselinje2,
-            adresselinje3,
-            landkode!!
-        )
-    }
+    private suspend fun Dto.Mottaker.toApi(): Api.OverstyrtMottaker =
+        when (type) {
+            MottakerType.SAMHANDLER -> Api.OverstyrtMottaker.Samhandler(tssId!!, samhandlerService.hentSamhandlerNavn(tssId))
+            MottakerType.NORSK_ADRESSE -> Api.OverstyrtMottaker.NorskAdresse(navn!!, postnummer!!, poststed!!, adresselinje1, adresselinje2, adresselinje3)
+            MottakerType.UTENLANDSK_ADRESSE ->
+                Api.OverstyrtMottaker.UtenlandskAdresse(
+                    navn!!,
+                    postnummer,
+                    poststed,
+                    adresselinje1!!,
+                    adresselinje2,
+                    adresselinje3,
+                    landkode!!,
+                )
+        }
 
     suspend fun hentNavAnsatt(navIdent: NavIdent): NavAnsatt =
         NavAnsatt(navIdent, navansattService.hentNavansatt(navIdent.id)?.navn)
-
 }

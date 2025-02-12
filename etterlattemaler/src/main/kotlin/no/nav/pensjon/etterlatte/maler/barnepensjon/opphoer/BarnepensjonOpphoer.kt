@@ -38,56 +38,59 @@ data class BarnepensjonOpphoerDTO(
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
     val virkningsdato: LocalDate,
-    val feilutbetaling: FeilutbetalingType
+    val feilutbetaling: FeilutbetalingType,
 ) : FerdigstillingBrevDTO
+
 @TemplateModelHelpers
 object BarnepensjonOpphoer : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_OPPHOER
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonOpphoerDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - opphør",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title {
-            text(
-                Bokmal to "Vi har opphørt barnepensjonen din",
-                Nynorsk to "Vi har avvikla barnepensjonen din",
-                English to "We have terminated your children's pension",
-            )
-        }
-        outline {
-            paragraph {
-                textExpr(
-                    Bokmal to "Barnepensjonen din opphører fra ".expr() + virkningsdato.format() + ".",
-                    Nynorsk to "Barnepensjonen din fell bort frå og med ".expr() + virkningsdato.format() + ".",
-                    English to "Your children's pension will terminate on ".expr() + virkningsdato.format() + ".",
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = BarnepensjonOpphoerDTO::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - opphør",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Bokmal to "Vi har opphørt barnepensjonen din",
+                    Nynorsk to "Vi har avvikla barnepensjonen din",
+                    English to "We have terminated your children's pension",
                 )
             }
-            konverterElementerTilBrevbakerformat(innhold)
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
-                includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingMedVarselOpphoer)
+            outline {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Barnepensjonen din opphører fra ".expr() + virkningsdato.format() + ".",
+                        Nynorsk to "Barnepensjonen din fell bort frå og med ".expr() + virkningsdato.format() + ".",
+                        English to "Your children's pension will terminate on ".expr() + virkningsdato.format() + ".",
+                    )
+                }
+                konverterElementerTilBrevbakerformat(innhold)
+                showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
+                    includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingMedVarselOpphoer)
+                }
+                showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
+                    includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingUtenVarselOpphoer)
+                }
+                includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
+                includePhrase(BarnepensjonFellesFraser.DuHarRettTilInnsyn)
+                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
             }
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
-                includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingUtenVarselOpphoer)
-            }
-            includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
-            includePhrase(BarnepensjonFellesFraser.DuHarRettTilInnsyn)
-            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
+
+            // Nasjonal
+            includeAttachment(klageOgAnke(bosattUtland = false), innhold, bosattUtland.not())
+
+            // Bosatt utland
+            includeAttachment(klageOgAnke(bosattUtland = true), innhold, bosattUtland)
+
+            includeAttachment(forhaandsvarselFeilutbetalingBarnepensjonOpphoer, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
         }
-
-        // Nasjonal
-        includeAttachment(klageOgAnke(bosattUtland = false), innhold, bosattUtland.not())
-
-        // Bosatt utland
-        includeAttachment(klageOgAnke(bosattUtland = true), innhold, bosattUtland)
-
-        includeAttachment(forhaandsvarselFeilutbetalingBarnepensjonOpphoer, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
-    }
 }

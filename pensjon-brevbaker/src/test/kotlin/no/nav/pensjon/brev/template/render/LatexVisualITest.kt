@@ -30,15 +30,16 @@ class LatexVisualITest {
         brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
     ) {
-        val testName = overrideName ?: StackWalker.getInstance()
-            .walk { frames -> frames.skip(2).findFirst().map { it.methodName }.orElse("") }
+        val testName =
+            overrideName ?: StackWalker.getInstance()
+                .walk { frames -> frames.skip(2).findFirst().map { it.methodName }.orElse("") }
         renderTestPdfOutline(
             "test_visual/pdf",
             testName = testName,
             felles = felles,
             brevtype = brevtype,
             outlineInit = outlineInit,
-            title = title ?: testName
+            title = title ?: testName,
         )
     }
 
@@ -50,14 +51,14 @@ class LatexVisualITest {
     ) {
         renderTestVedleggPdf(
             outputFolder = "test_visual/pdf",
-            testName = testName ?: StackWalker.getInstance()
-                .walk { frames -> frames.skip(2).findFirst().map { it.methodName }.orElse("") },
+            testName =
+                testName ?: StackWalker.getInstance()
+                    .walk { frames -> frames.skip(2).findFirst().map { it.methodName }.orElse("") },
             includeSakspart = includeSakspart,
             outlineInit = vedleggOutlineInit,
             felles = felles,
         )
     }
-
 
     private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.ipsumText() = text(Bokmal to lipsums[1])
 
@@ -83,9 +84,10 @@ class LatexVisualITest {
     @Test
     fun `verge foersteside`() {
         render(
-            felles = Fixtures.felles.copy(
-                vergeNavn = "Verge vergeson"
-            )
+            felles =
+                Fixtures.felles.copy(
+                    vergeNavn = "Verge vergeson",
+                ),
         ) {
             testTitle1()
             paragraph { ipsumText() }
@@ -158,9 +160,10 @@ class LatexVisualITest {
     fun `verge vedlegg med saksinfo`() {
         renderTestVedlegg(
             includeSakspart = true,
-            felles = Fixtures.felles.copy(
-                vergeNavn = "Verge vergeson"
-            ),
+            felles =
+                Fixtures.felles.copy(
+                    vergeNavn = "Verge vergeson",
+                ),
         ) {
             testTitle1()
             paragraph { ipsumText() }
@@ -190,11 +193,13 @@ class LatexVisualITest {
     @Test
     fun `brev med saksbehandler underskrift`() {
         render(
-            felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlere(
-                    saksbehandler = "Ole Saksbehandler"
-                )
-            )
+            felles =
+                Fixtures.felles.copy(
+                    signerendeSaksbehandlere =
+                        SignerendeSaksbehandlere(
+                            saksbehandler = "Ole Saksbehandler",
+                        ),
+                ),
         ) {
             paragraph { ipsumText() }
         }
@@ -203,12 +208,14 @@ class LatexVisualITest {
     @Test
     fun `brev med saksbehandler og attestant underskrift`() {
         render(
-            felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlere(
-                    saksbehandler = "Ole Saksbehandler",
-                    attesterendeSaksbehandler = "Per Saksbehandler"
-                )
-            )
+            felles =
+                Fixtures.felles.copy(
+                    signerendeSaksbehandlere =
+                        SignerendeSaksbehandlere(
+                            saksbehandler = "Ole Saksbehandler",
+                            attesterendeSaksbehandler = "Per Saksbehandler",
+                        ),
+                ),
         ) {
             paragraph { ipsumText() }
         }
@@ -217,12 +224,14 @@ class LatexVisualITest {
     @Test
     fun `test av ulike `() {
         render(
-            felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlere(
-                    saksbehandler = "Ole Saksbehandler",
-                    attesterendeSaksbehandler = "Per Saksbehandler"
-                )
-            )
+            felles =
+                Fixtures.felles.copy(
+                    signerendeSaksbehandlere =
+                        SignerendeSaksbehandlere(
+                            saksbehandler = "Ole Saksbehandler",
+                            attesterendeSaksbehandler = "Per Saksbehandler",
+                        ),
+                ),
         ) {
             paragraph { ipsumText() }
         }
@@ -231,12 +240,14 @@ class LatexVisualITest {
     @Test
     fun `vedtaksbrev med saksbehandler underskrift`() {
         render(
-            felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlere(
-                    saksbehandler = "Ole Saksbehandler",
-                    attesterendeSaksbehandler = "Per Attesterende"
-                )
-            )
+            felles =
+                Fixtures.felles.copy(
+                    signerendeSaksbehandlere =
+                        SignerendeSaksbehandlere(
+                            saksbehandler = "Ole Saksbehandler",
+                            attesterendeSaksbehandler = "Per Attesterende",
+                        ),
+                ),
         ) {
             paragraph { ipsumText() }
         }
@@ -244,14 +255,13 @@ class LatexVisualITest {
 
     @Test
     fun `should not add extra line change when nearing end of line before shipping content to new line`() {
-
         render {
             paragraph { text(Bokmal to "Denne testen skal vise at det ikke fremstår en bug hvor det kommer ekstra linjeskift under innhold som tar opp hele bredden av linjen.") }
             repeat(30) {
                 paragraph {
                     text(
-                        Bokmal to "Denne linjen skal ikke ha større mellomrom til neste setning enn de andre. Dette er littegranne filler ˌˌˌˌˌˌ"
-                                + "ˌ".repeat(it)
+                        Bokmal to "Denne linjen skal ikke ha større mellomrom til neste setning enn de andre. Dette er littegranne filler ˌˌˌˌˌˌ" +
+                            "ˌ".repeat(it),
                     )
                 }
             }
@@ -279,11 +289,13 @@ class LatexVisualITest {
 
     @ParameterizedTest
     @MethodSource("allElementCombinations")
-    fun `Test unique content combinations`(elementA: ElementType, elementB: ElementType) {
+    fun `Test unique content combinations`(
+        elementA: ElementType,
+        elementB: ElementType,
+    ) {
         render(overrideName = "${elementA.description} then ${elementB.description}") {
             renderOutlineElementOfType(elementA)
             renderOutlineElementOfType(elementB)
-
         }
     }
 
@@ -325,7 +337,7 @@ class LatexVisualITest {
             header = {
                 column { text(Bokmal to "Column A") }
                 column { text(Bokmal to "Column B") }
-            }
+            },
         ) {
             row {
                 cell { text(Bokmal to "Cell A-1") }
@@ -347,7 +359,7 @@ class LatexVisualITest {
         T2("Title 2"),
         PAR("Paragraph"),
         TABLE("Table"),
-        LIST("Item list")
+        LIST("Item list"),
     }
 
     companion object {

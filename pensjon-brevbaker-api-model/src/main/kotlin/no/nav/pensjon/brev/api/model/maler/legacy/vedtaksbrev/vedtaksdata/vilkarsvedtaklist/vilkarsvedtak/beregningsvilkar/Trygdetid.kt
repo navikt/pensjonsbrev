@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilka
 
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.ttutlandtrygdeavtaleliste.TTUtlandTrygdeAvtaleListe
 
-//ttutlandtrygdeavtaleliste_safe.ttutlandtrygdeavtale_safe.fattbilateral_safe
+// ttutlandtrygdeavtaleliste_safe.ttutlandtrygdeavtale_safe.fattbilateral_safe
 data class Trygdetid(
     val fatteos: Int?,
     val framtidigtteos: Int?,
@@ -15,5 +15,5 @@ data class Trygdetid(
     val tttellernordisk: Int?,
     val ttnevnernordisk: Int?,
     val faTTA10Netto: Int?,
-    val ttutlandtrygdeavtaleliste: TTUtlandTrygdeAvtaleListe?
+    val ttutlandtrygdeavtaleliste: TTUtlandTrygdeAvtaleListe?,
 )

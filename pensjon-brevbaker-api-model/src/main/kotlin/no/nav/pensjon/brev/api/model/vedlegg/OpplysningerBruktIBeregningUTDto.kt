@@ -87,7 +87,6 @@ data class OpplysningerBruktIBeregningUTDto(
         val tellerTTNordiskKonv: Int?,
         val utenforEOSogNorden: UtenforEOSogNorden?,
     ) {
-
         data class UtenforEOSogNorden(
             val faktiskTTBilateral: Int,
             val tellerProRata: Int,

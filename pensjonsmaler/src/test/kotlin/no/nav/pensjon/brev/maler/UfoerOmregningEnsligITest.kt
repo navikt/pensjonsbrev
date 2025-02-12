@@ -10,7 +10,6 @@ import org.junit.jupiter.api.*
 
 @Tag(TestTags.MANUAL_TEST)
 class UfoerOmregningEnsligITest {
-
     @Test
     fun test() {
         Letter(

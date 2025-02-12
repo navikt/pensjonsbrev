@@ -14,7 +14,7 @@ class HTMLDocumentRendererTest {
             LetterExample.template,
             createLetterExampleDto(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestHtml("LETTER_EXAMPLE")
     }
 }

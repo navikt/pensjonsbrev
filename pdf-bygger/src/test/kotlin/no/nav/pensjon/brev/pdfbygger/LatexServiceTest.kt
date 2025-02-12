@@ -20,7 +20,6 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class LatexServiceTest {
-
     @Test
     fun `producePDF compiles two times`() {
         assertResult<Base64PDF>(producePdf("simpleCompile.sh")) { result ->
@@ -65,13 +64,14 @@ class LatexServiceTest {
         val output = createTempFile()
         try {
             runBlocking {
-                val service = LaTeXService(
-                    latexCommand = "/usr/bin/env bash ${getScriptPath("neverEndingCompileWithOutput.sh")} ${output.absolutePathString()}",
-                    latexParallelism = 1,
-                    compileTimeout = 100.milliseconds,
-                    queueWaitTimeout = 1.seconds,
-                    tmpBaseDir = null,
-                )
+                val service =
+                    LaTeXService(
+                        latexCommand = "/usr/bin/env bash ${getScriptPath("neverEndingCompileWithOutput.sh")} ${output.absolutePathString()}",
+                        latexParallelism = 1,
+                        compileTimeout = 100.milliseconds,
+                        queueWaitTimeout = 1.seconds,
+                        tmpBaseDir = null,
+                    )
                 assertResult<Failure.Timeout>(service.producePDF(emptyMap()))
 
                 val contentAfterTimeout = output.readText()
@@ -96,13 +96,14 @@ class LatexServiceTest {
 
     @Test
     fun `producePDF fails when command does not exist`() {
-        val service = LaTeXService(
-            latexCommand = "_non_existing.sh",
-            latexParallelism = 1,
-            compileTimeout = 60.seconds,
-            queueWaitTimeout = 60.seconds,
-            tmpBaseDir = null,
-        )
+        val service =
+            LaTeXService(
+                latexCommand = "_non_existing.sh",
+                latexParallelism = 1,
+                compileTimeout = 60.seconds,
+                queueWaitTimeout = 60.seconds,
+                tmpBaseDir = null,
+            )
         runBlocking {
             assertResult<Failure.Server>(service.producePDF(emptyMap())) {
                 assertThat(it.reason, containsSubstring("Compilation process execution failed"))
@@ -112,13 +113,14 @@ class LatexServiceTest {
 
     @Test
     fun `producePDF trims extra spaces in command`() {
-        val service = LaTeXService(
-            latexCommand = "/usr/bin/env bash ${getScriptPath("simpleCompile.sh")}" + " ",
-            latexParallelism = 1,
-            compileTimeout = 60.seconds,
-            queueWaitTimeout = 60.seconds,
-            tmpBaseDir = null,
-        )
+        val service =
+            LaTeXService(
+                latexCommand = "/usr/bin/env bash ${getScriptPath("simpleCompile.sh")}" + " ",
+                latexParallelism = 1,
+                compileTimeout = 60.seconds,
+                queueWaitTimeout = 60.seconds,
+                tmpBaseDir = null,
+            )
         runBlocking {
             assertResult<Base64PDF>(service.producePDF(emptyMap()))
         }
@@ -126,20 +128,22 @@ class LatexServiceTest {
 
     @Test
     fun `producePDF limits parallel compilations`() {
-        val service = LaTeXService(
-            latexCommand = "/usr/bin/env bash ${getScriptPath("compileInSeconds.sh")} 0.1" + " ",
-            latexParallelism = 1,
-            compileTimeout = 500.milliseconds,
-            queueWaitTimeout = 100.milliseconds,
-            tmpBaseDir = null,
-        )
+        val service =
+            LaTeXService(
+                latexCommand = "/usr/bin/env bash ${getScriptPath("compileInSeconds.sh")} 0.1" + " ",
+                latexParallelism = 1,
+                compileTimeout = 500.milliseconds,
+                queueWaitTimeout = 100.milliseconds,
+                tmpBaseDir = null,
+            )
 
         runBlocking {
-            val results = List(10) {
-                async {
-                    service.producePDF(emptyMap())
-                }
-            }.awaitAll()
+            val results =
+                List(10) {
+                    async {
+                        service.producePDF(emptyMap())
+                    }
+                }.awaitAll()
 
             val success = results.filterIsInstance<Base64PDF>()
             val timedOut = results.filterIsInstance<Failure.QueueTimeout>()
@@ -153,24 +157,26 @@ class LatexServiceTest {
 
     @Test
     fun `producePDF waits in queue for compilation until max queue wait`() {
-        val service = LaTeXService(
-            latexCommand = "/usr/bin/env bash ${getScriptPath("neverEndingCompile.sh")}" + " ",
-            latexParallelism = 1,
-            compileTimeout = 300.seconds,
-            queueWaitTimeout = 50.milliseconds,
-            tmpBaseDir = null,
-        )
+        val service =
+            LaTeXService(
+                latexCommand = "/usr/bin/env bash ${getScriptPath("neverEndingCompile.sh")}" + " ",
+                latexParallelism = 1,
+                compileTimeout = 300.seconds,
+                queueWaitTimeout = 50.milliseconds,
+                tmpBaseDir = null,
+            )
         runBlocking {
             val blockingCompilation = launch { service.producePDF(emptyMap()) }
 
             delay(10.milliseconds)
 
             var result: PDFCompilationResponse? = null
-            val compilationQueueWait = withTimeoutOrNull(1.seconds) {
-                measureTimeMillis {
-                    result = service.producePDF(emptyMap())
+            val compilationQueueWait =
+                withTimeoutOrNull(1.seconds) {
+                    measureTimeMillis {
+                        result = service.producePDF(emptyMap())
+                    }
                 }
-            }
 
             blockingCompilation.cancel()
 
@@ -184,22 +190,24 @@ class LatexServiceTest {
 
     @Test
     fun `producePDF waits in compilation queue and will run when admitted before max queue wait timeout`() {
-        val service = LaTeXService(
-            latexCommand = "/usr/bin/env bash ${getScriptPath("compileInSeconds.sh")} 0.1" + " ",
-            latexParallelism = 1,
-            compileTimeout = 500.milliseconds,
-            queueWaitTimeout = 1.seconds,
-            tmpBaseDir = null,
-        )
+        val service =
+            LaTeXService(
+                latexCommand = "/usr/bin/env bash ${getScriptPath("compileInSeconds.sh")} 0.1" + " ",
+                latexParallelism = 1,
+                compileTimeout = 500.milliseconds,
+                queueWaitTimeout = 1.seconds,
+                tmpBaseDir = null,
+            )
         runBlocking {
             val blockingCompilation = launch { service.producePDF(emptyMap()) }
 
             delay(10.milliseconds)
 
             var result: PDFCompilationResponse? = null
-            val compilationTime = withTimeoutOrNull(3.seconds) {
-                measureTimeMillis { result = service.producePDF(emptyMap()) }
-            }
+            val compilationTime =
+                withTimeoutOrNull(3.seconds) {
+                    measureTimeMillis { result = service.producePDF(emptyMap()) }
+                }
 
             assertNotNull(compilationTime, "Expected queued compilation to be completed by LatexService, but was cancelled by timeout in test")
             assertThat(compilationTime, isWithin(200L..800L))
@@ -211,38 +219,46 @@ class LatexServiceTest {
 
     @Test
     fun `LatexService will not enforce any parallelism limit when set to less than 1`() {
-        val service = LaTeXService(
-            latexCommand = "/usr/bin/env bash ${getScriptPath("simpleCompile.sh")}" + " ",
-            latexParallelism = 0,
-            compileTimeout = 500.milliseconds,
-            queueWaitTimeout = 1.seconds,
-            tmpBaseDir = null,
-        )
+        val service =
+            LaTeXService(
+                latexCommand = "/usr/bin/env bash ${getScriptPath("simpleCompile.sh")}" + " ",
+                latexParallelism = 0,
+                compileTimeout = 500.milliseconds,
+                queueWaitTimeout = 1.seconds,
+                tmpBaseDir = null,
+            )
         runBlocking {
-            val requests = List(Runtime.getRuntime().availableProcessors() * 10) {
-                async { service.producePDF(emptyMap()) }
-            }
-            val compilationTime = withTimeoutOrNull(10.seconds) {
-                measureTimeMillis { requests.awaitAll() }
-            }
+            val requests =
+                List(Runtime.getRuntime().availableProcessors() * 10) {
+                    async { service.producePDF(emptyMap()) }
+                }
+            val compilationTime =
+                withTimeoutOrNull(10.seconds) {
+                    measureTimeMillis { requests.awaitAll() }
+                }
             assertNotNull(compilationTime, "Test timed out")
             println(compilationTime)
             assertThat(compilationTime, isWithin(1L..1000L))
         }
-
     }
 
-    private inline fun <reified ToBe : PDFCompilationResponse> assertResult(result: PDFCompilationResponse?, assertBody: (ToBe) -> Unit = {}) {
+    private inline fun <reified ToBe : PDFCompilationResponse> assertResult(
+        result: PDFCompilationResponse?,
+        assertBody: (ToBe) -> Unit = {},
+    ) {
         assertIs<ToBe>(result)
         assertBody(result)
     }
 
-    private fun producePdf(scriptName: String, files: Map<String, String> = emptyMap(), timeout: Duration = 60.seconds): PDFCompilationResponse =
+    private fun producePdf(
+        scriptName: String,
+        files: Map<String, String> = emptyMap(),
+        timeout: Duration = 60.seconds,
+    ): PDFCompilationResponse =
         runBlocking {
             LaTeXService(latexCommand = "/usr/bin/env bash ${getScriptPath(scriptName)}", compileTimeout = timeout, queueWaitTimeout = timeout, latexParallelism = 1, tmpBaseDir = null).producePDF(files)
         }
 
     private fun Base64PDF.decodePlaintext(): String =
         base64PDF.decodeBase64String()
-
 }

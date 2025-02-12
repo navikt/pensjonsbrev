@@ -6,12 +6,12 @@ import no.nav.pensjon.brev.template.dsl.*
 
 object TBU1216_Generated : OutlinePhrase<LangBokmal>() {
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
-		//[TBU1216]
+        // [TBU1216]
 
-		paragraph {
-			text (
-				Bokmal to "Gjenlevendetillegget ditt er ikke redusert.",
-			)
-		}
+        paragraph {
+            text(
+                Bokmal to "Gjenlevendetillegget ditt er ikke redusert.",
+            )
+        }
     }
 }

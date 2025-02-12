@@ -5,6 +5,6 @@ import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInfo
 fun createBarnepensjonInformasjonDoedsfallDTO() =
     BarnepensjonInformasjonDoedsfallDTO(
         avdoedNavn = "Ola Nordmann",
-        borIutland =  false,
-        erOver18aar = false
+        borIutland = false,
+        erOver18aar = false,
     )

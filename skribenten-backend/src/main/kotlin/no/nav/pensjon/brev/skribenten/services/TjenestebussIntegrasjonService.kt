@@ -17,20 +17,20 @@ import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.Tjenest
 import org.slf4j.LoggerFactory
 
 class TjenestebussIntegrasjonService(config: Config, authService: AzureADService) : ServiceStatus {
-
     private val tjenestebussIntegrasjonUrl = config.getString("url")
     private val tjenestebussIntegrasjonScope = config.getString("scope")
     private val logger = LoggerFactory.getLogger(TjenestebussIntegrasjonService::class.java)
 
-    private val tjenestebussIntegrasjonClient = HttpClient(CIO) {
-        defaultRequest {
-            url(tjenestebussIntegrasjonUrl)
+    private val tjenestebussIntegrasjonClient =
+        HttpClient(CIO) {
+            defaultRequest {
+                url(tjenestebussIntegrasjonUrl)
+            }
+            install(ContentNegotiation) {
+                jackson()
+            }
+            callIdAndOnBehalfOfClient(tjenestebussIntegrasjonScope, authService)
         }
-        install(ContentNegotiation) {
-            jackson()
-        }
-        callIdAndOnBehalfOfClient(tjenestebussIntegrasjonScope, authService)
-    }
 
     suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto =
         tjenestebussIntegrasjonClient.post("/hentSamhandlerAdresse") {
@@ -44,10 +44,10 @@ class TjenestebussIntegrasjonService(config: Config, authService: AzureADService
             }
 
     override val name = "Tjenestebuss-integrasjon"
+
     override suspend fun ping(): ServiceResult<Boolean> =
         tjenestebussIntegrasjonClient.get("/isReady").toServiceResult<String>().map { true }
 
     suspend fun status(): ServiceResult<TjenestebussStatus> =
         tjenestebussIntegrasjonClient.get("/status").toServiceResult()
-
 }

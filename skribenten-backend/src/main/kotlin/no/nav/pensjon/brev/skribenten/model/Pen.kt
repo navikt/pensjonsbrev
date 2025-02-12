@@ -24,22 +24,24 @@ object Pen {
         GRBL(null),
         KRIGSP(null),
         OMSORG(null),
-        UFOREP(B255);
+        UFOREP(B255),
+        ;
 
-        fun toBrevbaker(): BrevbakerSakstype = when(this) {
-            AFP -> BrevbakerSakstype.AFP
-            AFP_PRIVAT -> BrevbakerSakstype.AFP_PRIVAT
-            ALDER -> BrevbakerSakstype.ALDER
-            BARNEP -> BrevbakerSakstype.BARNEP
-            FAM_PL -> BrevbakerSakstype.FAM_PL
-            GAM_YRK -> BrevbakerSakstype.GAM_YRK
-            GENRL -> BrevbakerSakstype.GENRL
-            GJENLEV -> BrevbakerSakstype.GJENLEV
-            GRBL -> BrevbakerSakstype.GRBL
-            KRIGSP -> BrevbakerSakstype.KRIGSP
-            OMSORG -> BrevbakerSakstype.OMSORG
-            UFOREP -> BrevbakerSakstype.UFOREP
-        }
+        fun toBrevbaker(): BrevbakerSakstype =
+            when (this) {
+                AFP -> BrevbakerSakstype.AFP
+                AFP_PRIVAT -> BrevbakerSakstype.AFP_PRIVAT
+                ALDER -> BrevbakerSakstype.ALDER
+                BARNEP -> BrevbakerSakstype.BARNEP
+                FAM_PL -> BrevbakerSakstype.FAM_PL
+                GAM_YRK -> BrevbakerSakstype.GAM_YRK
+                GENRL -> BrevbakerSakstype.GENRL
+                GJENLEV -> BrevbakerSakstype.GJENLEV
+                GRBL -> BrevbakerSakstype.GRBL
+                KRIGSP -> BrevbakerSakstype.KRIGSP
+                OMSORG -> BrevbakerSakstype.OMSORG
+                UFOREP -> BrevbakerSakstype.UFOREP
+            }
     }
 
     data class SakSelection(
@@ -118,7 +120,7 @@ object Pen {
         val enhetId: String?,
         val pdf: ByteArray,
         val eksternReferanseId: String,
-        val mottaker: Mottaker?
+        val mottaker: Mottaker?,
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -152,7 +154,9 @@ object Pen {
 
         data class Mottaker(val type: Type, val tssId: String? = null, val norskAdresse: NorskAdresse? = null, val utenlandskAdresse: UtenlandsAdresse? = null) {
             enum class Type { TSS_ID, NORSK_ADRESSE, UTENLANDSK_ADRESSE }
+
             data class NorskAdresse(val navn: String, val postnummer: String, val poststed: String, val adresselinje1: String?, val adresselinje2: String?, val adresselinje3: String?)
+
             // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
             data class UtenlandsAdresse(val navn: String, val landkode: String, val postnummer: String?, val poststed: String?, val adresselinje1: String, val adresselinje2: String?, val adresselinje3: String?)
         }

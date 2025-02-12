@@ -14,57 +14,60 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.postadresse
 
 @TemplateModelHelpers
-val informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal = createAttachment(
-    title = newText(
-        Bokmal to "Informasjon til deg som handler på vegne av barnet",
-        Nynorsk to "Informasjon til deg som handlar på vegner av barnet",
-        English to "Information for those acting on behalf of the child",
-    ),
-    includeSakspart = false,
-) {
-    informasjon()
-    postadresse(utland = false.expr())
-    endringAvKontonummerNasjonal()
-}
+val informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal =
+    createAttachment(
+        title =
+            newText(
+                Bokmal to "Informasjon til deg som handler på vegne av barnet",
+                Nynorsk to "Informasjon til deg som handlar på vegner av barnet",
+                English to "Information for those acting on behalf of the child",
+            ),
+        includeSakspart = false,
+    ) {
+        informasjon()
+        postadresse(utland = false.expr())
+        endringAvKontonummerNasjonal()
+    }
 
 @TemplateModelHelpers
-val informasjonTilDegSomHandlerPaaVegneAvBarnetUtland = createAttachment(
-    title = newText(
-        Bokmal to "Informasjon til deg som handler på vegne av barnet",
-        Nynorsk to "Informasjon til deg som handlar på vegner av barnet",
-        English to "Information for those acting on behalf of the child",
-    ),
-    includeSakspart = false,
-) {
-    informasjon()
-    postadresse(utland = true.expr())
-    endringAvKontonummerUtland()
-    utbetalingUtland()
-}
+val informasjonTilDegSomHandlerPaaVegneAvBarnetUtland =
+    createAttachment(
+        title =
+            newText(
+                Bokmal to "Informasjon til deg som handler på vegne av barnet",
+                Nynorsk to "Informasjon til deg som handlar på vegner av barnet",
+                English to "Information for those acting on behalf of the child",
+            ),
+        includeSakspart = false,
+    ) {
+        informasjon()
+        postadresse(utland = true.expr())
+        endringAvKontonummerUtland()
+        utbetalingUtland()
+    }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.informasjon() {
     paragraph {
         text(
             Bokmal to "Frem til barn fyller 18 år, er det verge som ivaretar barnets interesser. " +
-                    "Barns verge er foreldre eller andre personer oppnevnt av Statsforvalteren.",
+                "Barns verge er foreldre eller andre personer oppnevnt av Statsforvalteren.",
             Nynorsk to "Fram til barnet fyller 18 år, er det verja som varetek interessene til barnet. " +
-                    "Verja til barnet vil vere foreldra eller andre personar som Statsforvaltaren har utnemnt.",
+                "Verja til barnet vil vere foreldra eller andre personar som Statsforvaltaren har utnemnt.",
             English to "The interests of children are attended to by a guardian until a child reaches the age of 18. " +
-                    "A child's guardian is a parent(s) or another person appointed by the County Governor.",
+                "A child's guardian is a parent(s) or another person appointed by the County Governor.",
         )
     }
     paragraph {
         text(
             Bokmal to "Du kan ikke logge deg inn på våre nettsider på vegne av barnet. " +
-                    "Skal du sende oss noe må du bruke adressen ",
+                "Skal du sende oss noe må du bruke adressen ",
             Nynorsk to "Du kan ikkje logge deg inn på nettsidene våre på vegner av barnet. " +
-                    "Dersom du skal sende oss noko, må du gjere det til adressa",
+                "Dersom du skal sende oss noko, må du gjere det til adressa",
             English to "You may not log on to our website on behalf of your child. " +
-                    "If you want to send us something, you must use our mailing address:",
+                "If you want to send us something, you must use our mailing address:",
         )
     }
 }
-
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerUtland() {
     title2 {
@@ -108,11 +111,11 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     paragraph {
         text(
             Bokmal to "Forelder kan sende melding via ${Constants.SKRIVTILOSS_URL} eller sende skjema for melding om nytt " +
-                    "kontonummer i posten. Du må da legge ved kopi av gyldig legitimasjon.",
+                "kontonummer i posten. Du må da legge ved kopi av gyldig legitimasjon.",
             Nynorsk to "Som forelder kan du sende melding via ${Constants.SKRIVTILOSS_URL} " +
-                    "eller sende skjema for melding om nytt kontonummer i posten. Legg då ved ein kopi av gyldig legitimasjon.",
+                "eller sende skjema for melding om nytt kontonummer i posten. Legg då ved ein kopi av gyldig legitimasjon.",
             English to "Parent can notify us via ${Constants.Engelsk.SKRIVTILOSS_URL}, " +
-                    "or send the Notification of New Account Number Form by conventional mail. You must then enclose a copy of a valid proof of identity.",
+                "or send the Notification of New Account Number Form by conventional mail. You must then enclose a copy of a valid proof of identity.",
         )
     }
     paragraph {

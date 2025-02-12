@@ -63,7 +63,7 @@ object OmstillingsstoenadAvslagFraser {
                             Bokmal to "Din søknad om omstillingsstønad etter ".expr() + avdoedNavn + " er avslått.",
                             Nynorsk to "Søknaden din om omstillingsstønad etter ".expr() + avdoedNavn + " er avslått.",
                             English to
-                                    "Your application for adjustment allowance for the deceased ".expr() + avdoedNavn + " has been rejected.",
+                                "Your application for adjustment allowance for the deceased ".expr() + avdoedNavn + " has been rejected.",
                         )
                     }
                 }

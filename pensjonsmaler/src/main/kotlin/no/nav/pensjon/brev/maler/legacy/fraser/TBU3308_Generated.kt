@@ -6,13 +6,13 @@ import no.nav.pensjon.brev.template.dsl.*
 
 object TBU3308_Generated : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-		//[TBU3308_NN, TBU3308]
+        // [TBU3308_NN, TBU3308]
 
-		title1 {
-			text (
-				Bokmal to "Etterbetaling av beløpet",
-				Nynorsk to "Etterbetaling av beløpet",
-			)
-		}
+        title1 {
+            text(
+                Bokmal to "Etterbetaling av beløpet",
+                Nynorsk to "Etterbetaling av beløpet",
+            )
+        }
     }
 }

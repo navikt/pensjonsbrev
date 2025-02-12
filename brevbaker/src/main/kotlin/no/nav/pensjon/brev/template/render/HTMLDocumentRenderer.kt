@@ -4,8 +4,8 @@ import kotlinx.html.*
 import kotlinx.html.stream.appendHTML
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
-import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskInformasjonsbrev
-import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskVedtaksbrev
+import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.AUTOMATISK_INFORMASJONSBREV
+import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.AUTOMATISK_VEDTAKSBREV
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
@@ -16,14 +16,16 @@ import java.time.format.FormatStyle
 import java.util.*
 
 object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
-
     private val languageSettings = pensjonHTMLSettings
     private val css = getResource("html/style.css").toString(Charsets.UTF_8)
     private val navLogoImg =
         "data:image/png;base64,${Base64.getEncoder().encodeToString(getResource("html/nav-logo.png"))}"
     private val fontBinary = listOf(fontFaceCss("normal", 400), fontFaceCss("italic", 400), fontFaceCss("normal", 700))
 
-    private fun fontFaceCss(style: String, weight: Int) =
+    private fun fontFaceCss(
+        style: String,
+        weight: Int,
+    ) =
         """
         @font-face {
             font-family: 'Source Sans Pro';
@@ -41,7 +43,7 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         attachments: List<Attachment>,
         language: Language,
         felles: Felles,
-        brevtype: LetterMetadata.Brevtype
+        brevtype: LetterMetadata.Brevtype,
     ): HTMLDocument =
         HTMLDocument {
             appendLine("<!DOCTYPE html>").appendHTML().html {
@@ -59,7 +61,7 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
                             img(
                                 classes = classes("logo"),
                                 src = navLogoImg,
-                                alt = languageSettings.getSetting(language, LanguageSetting.HTML.altTextLogo)
+                                alt = languageSettings.getSetting(language, LanguageSetting.HTML.ALT_TEXT_LOGO),
                             )
                             div(classes("brevhode")) {
                                 renderSakspart(language, felles)
@@ -80,23 +82,30 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             }
         }
 
-    private fun FlowContent.brevdato(language: Language, felles: Felles): Unit =
+    private fun FlowContent.brevdato(
+        language: Language,
+        felles: Felles,
+    ): Unit =
         div(classes("brevdato")) {
             text(felles.dokumentDato.format(dateFormatter(language, FormatStyle.SHORT)))
         }
 
-    private fun FlowContent.renderClosing(language: Language, felles: Felles, brevtype: LetterMetadata.Brevtype) {
+    private fun FlowContent.renderClosing(
+        language: Language,
+        felles: Felles,
+        brevtype: LetterMetadata.Brevtype,
+    ) {
         div("closing") {
             // Med vennlig hilsen
             div(classes("closing-greeting")) {
-                text(languageSettings.getSetting(language, LanguageSetting.Closing.greeting))
+                text(languageSettings.getSetting(language, LanguageSetting.Closing.GREETING))
             }
             div(classes("closing-enhet")) { text(felles.avsenderEnhet.navn) }
 
             val signerende = felles.signerendeSaksbehandlere
             if (signerende != null) {
                 div(classes("closing-manuell")) {
-                    val saksbehandlerTekst = languageSettings.getSetting(language, LanguageSetting.Closing.saksbehandler)
+                    val saksbehandlerTekst = languageSettings.getSetting(language, LanguageSetting.Closing.SAKSBEHANDLER)
                     signerende.attesterendeSaksbehandler?.takeIf { brevtype == VEDTAKSBREV }?.let {
                         div(classes("closing-saksbehandler")) {
                             div { text(it) }
@@ -111,18 +120,22 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             } else {
                 div(classes("closing-automatisk")) {
                     if (brevtype == VEDTAKSBREV) {
-                        text(languageSettings.getSetting(language, automatiskVedtaksbrev))
+                        text(languageSettings.getSetting(language, AUTOMATISK_VEDTAKSBREV))
                     } else {
-                        text(languageSettings.getSetting(language, automatiskInformasjonsbrev))
+                        text(languageSettings.getSetting(language, AUTOMATISK_INFORMASJONSBREV))
                     }
                 }
             }
         }
     }
 
-    private fun FlowContent.renderAttachment(attachment: Attachment, language: Language, felles: Felles): Unit =
+    private fun FlowContent.renderAttachment(
+        attachment: Attachment,
+        language: Language,
+        felles: Felles,
+    ): Unit =
         div(classes("vedlegg")) {
-            img(classes = classes("logo"), src = navLogoImg, alt = languageSettings.getSetting(language, LanguageSetting.HTML.altTextLogo))
+            img(classes = classes("logo"), src = navLogoImg, alt = languageSettings.getSetting(language, LanguageSetting.HTML.ALT_TEXT_LOGO))
             h1(classes("tittel")) { renderText(attachment.title) }
             if (attachment.includeSakspart) {
                 renderSakspart(language, felles)
@@ -161,12 +174,14 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
     private fun FlowOrPhrasingContent.renderTextContent(element: ParagraphContent.Text) {
         when (element.fontType) {
             FontType.PLAIN -> renderTextContentWithoutStyle(element)
-            FontType.BOLD -> span(classes("text-bold")) {
-                renderTextContentWithoutStyle(element)
-            }
-            FontType.ITALIC -> span(classes("text-italic")) {
-                renderTextContentWithoutStyle(element)
-            }
+            FontType.BOLD ->
+                span(classes("text-bold")) {
+                    renderTextContentWithoutStyle(element)
+                }
+            FontType.ITALIC ->
+                span(classes("text-italic")) {
+                    renderTextContentWithoutStyle(element)
+                }
         }
     }
 
@@ -199,11 +214,12 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             is ParagraphContent.Form.Text -> {
                 div(classes("form-text")) {
                     div { renderText(element.prompt) }
-                    val size = when (element.size) {
-                        ParagraphContent.Form.Text.Size.NONE -> "none"
-                        ParagraphContent.Form.Text.Size.SHORT -> "short"
-                        ParagraphContent.Form.Text.Size.LONG -> "long"
-                    }
+                    val size =
+                        when (element.size) {
+                            ParagraphContent.Form.Text.Size.NONE -> "none"
+                            ParagraphContent.Form.Text.Size.SHORT -> "short"
+                            ParagraphContent.Form.Text.Size.LONG -> "long"
+                        }
                     div(classes("form-line-$size")) { }
                 }
             }
@@ -282,17 +298,20 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             ParagraphContent.Table.ColumnAlignment.RIGHT -> "text-right"
         }
 
-    private fun FlowContent.renderSakspart(language: Language, felles: Felles) =
+    private fun FlowContent.renderSakspart(
+        language: Language,
+        felles: Felles,
+    ) =
         div(classes("sakspart")) {
             with(felles.bruker) {
                 val navnPrefix =
-                    if (felles.vergeNavn != null) LanguageSetting.Sakspart.gjelderNavn else LanguageSetting.Sakspart.navn
+                    if (felles.vergeNavn != null) LanguageSetting.Sakspart.GJELDER_NAVN else LanguageSetting.Sakspart.NAVN
 
                 listOfNotNull(
-                    felles.vergeNavn?.let { LanguageSetting.Sakspart.vergenavn to it },
+                    felles.vergeNavn?.let { LanguageSetting.Sakspart.VERGENAVN to it },
                     navnPrefix to fulltNavn(),
-                    LanguageSetting.Sakspart.foedselsnummer to foedselsnummer.value,
-                    LanguageSetting.Sakspart.saksnummer to felles.saksnummer,
+                    LanguageSetting.Sakspart.FOEDSELSNUMMER to foedselsnummer.value,
+                    LanguageSetting.Sakspart.SAKSNUMMER to felles.saksnummer,
                 )
             }.forEach {
                 div(classes("sakspart-tittel")) { text(languageSettings.getSetting(language, it.first)) }
@@ -304,5 +323,4 @@ object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         this::class.java.getResourceAsStream("/$fileName")
             ?.use { it.readAllBytes() }
             ?: throw IllegalStateException("""Could not find resource /$fileName""")
-
 }

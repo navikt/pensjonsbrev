@@ -6,7 +6,11 @@ import com.natpryce.hamkrest.*
  * An isA matcher with overrides for actual and expected type names.
  * Useful when type names are long, makes for a more readable test failure text.
  */
-inline fun <R : Any, reified T : R> isA(crossinline actualType: R.() -> Any, expectedType: String, downcastMatcher: Matcher<T> = anything) =
+inline fun <R : Any, reified T : R> isA(
+    crossinline actualType: R.() -> Any,
+    expectedType: String,
+    downcastMatcher: Matcher<T> = anything,
+) =
     object : Matcher<R> {
         override fun invoke(actual: R) =
             if (actual is T) {
@@ -24,7 +28,6 @@ inline fun <R : Any, reified T : R> isA(crossinline actualType: R.() -> Any, exp
  *
  */
 class ListIndexMatcher<T>(private val index: Int, private val match: Matcher<T>) : Matcher.Primitive<List<T>>() {
-
     override val description: String
         get() = "at [$index] ${describe(match)}"
 
@@ -33,7 +36,9 @@ class ListIndexMatcher<T>(private val index: Int, private val match: Matcher<T>)
             val result = match(actual[index])
             if (result is MatchResult.Mismatch) {
                 MatchResult.Mismatch("at [$index] " + result.description)
-            } else result
+            } else {
+                result
+            }
         } else {
             MatchResult.Mismatch("was missing at [$index]")
         }
@@ -46,5 +51,4 @@ class ListIndexMatcher<T>(private val index: Int, private val match: Matcher<T>)
         fun <T> forList(matchers: List<Matcher<T>>): Matcher<List<T>> =
             allOf(matchers.mapIndexed { index, matcher -> ListIndexMatcher(index, matcher) })
     }
-
 }

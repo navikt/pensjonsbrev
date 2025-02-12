@@ -24,17 +24,16 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
-
 class TjenestebussServiceTest {
-
     private val callIdReceiver = CallIdReceiver()
 
-    private val server = JaxWsServerFactoryBean().apply {
-        serviceClass = HelloWorld::class.java
-        address = "http://localhost:9999/helloWorld"
-        serviceBean = HelloWorldProvider()
-        handlers = listOf(callIdReceiver)
-    }.create()
+    private val server =
+        JaxWsServerFactoryBean().apply {
+            serviceClass = HelloWorld::class.java
+            address = "http://localhost:9999/helloWorld"
+            serviceBean = HelloWorldProvider()
+            handlers = listOf(callIdReceiver)
+        }.create()
 
     private val service = HelloWorldService()
 
@@ -119,7 +118,6 @@ class TjenestebussServiceTest {
     }
 }
 
-
 @WebService
 interface HelloWorld {
     fun sayHi(): String
@@ -127,7 +125,7 @@ interface HelloWorld {
 
 @WebService(
     endpointInterface = "no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.services.HelloWorld",
-    serviceName = "HelloWorld"
+    serviceName = "HelloWorld",
 )
 private class HelloWorldProvider : HelloWorld {
     override fun sayHi(): String {
@@ -136,25 +134,29 @@ private class HelloWorldProvider : HelloWorld {
 }
 
 private class HelloWorldClientFactory : ClientFactory<HelloWorld> {
-    override fun create(handlers: List<Handler<SOAPMessageContext>>, features: List<Feature>): HelloWorld =
+    override fun create(
+        handlers: List<Handler<SOAPMessageContext>>,
+        features: List<Feature>,
+    ): HelloWorld =
         JaxWsProxyFactoryBean().apply {
             serviceClass = HelloWorld::class.java
             address = "http://localhost:9999/helloWorld"
             this.handlers = handlers
         }.create(HelloWorld::class.java)
-
 }
 
 private class HelloWorldService(pingExpiration: Duration = 5.minutes) : TjenestebussService<HelloWorld>(HelloWorldClientFactory(), pingExpiration) {
     override fun sendPing(): Boolean = client.sayHi().let { true }
+
     override val name = "testeson"
+
     fun sayHi(): String = client.sayHi()
 }
 
 private class CallIdReceiver : Handler<SOAPMessageContext> {
-    private val _receivedCallIds = mutableListOf<String>()
+    private val receivedCallIds = mutableListOf<String>()
     val callIds: List<String>
-        get() = _receivedCallIds
+        get() = receivedCallIds
 
     override fun handleMessage(context: SOAPMessageContext?): Boolean {
         if (context?.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY) == false) {
@@ -162,11 +164,12 @@ private class CallIdReceiver : Handler<SOAPMessageContext> {
                 ?.asSequence()
                 ?.firstOrNull { it.localName == "callId" }
                 ?.firstChild?.textContent
-                ?.also { _receivedCallIds.add(it) }
+                ?.also { receivedCallIds.add(it) }
         }
         return true
     }
 
     override fun handleFault(context: SOAPMessageContext?): Boolean = true
+
     override fun close(context: MessageContext?) {}
 }

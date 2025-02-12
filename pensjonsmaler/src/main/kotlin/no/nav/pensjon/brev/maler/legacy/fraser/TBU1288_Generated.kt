@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.template.dsl.text
 
 object TBU1288_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        //[TBU1288NN, TBU1288, TBU1288EN]
+        // [TBU1288NN, TBU1288, TBU1288EN]
 
         paragraph {
             text(

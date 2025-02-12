@@ -1,10 +1,13 @@
 package no.nav.pensjon.brev.template
 
 abstract class LetterRenderer<R : Any> {
-
     fun render(letter: Letter<*>): R = renderLetter(letter.toScope(), letter.template)
 
-    private fun <C : Element<*>> controlStructure(scope: ExpressionScope<*>, element: ContentOrControlStructure<*, C>, block: (s: ExpressionScope<*>, e: C) -> Unit) {
+    private fun <C : Element<*>> controlStructure(
+        scope: ExpressionScope<*>,
+        element: ContentOrControlStructure<*, C>,
+        block: (s: ExpressionScope<*>, e: C) -> Unit,
+    ) {
         when (element) {
             is ContentOrControlStructure.Content -> block(scope, element.content)
 
@@ -22,17 +25,28 @@ abstract class LetterRenderer<R : Any> {
         }
     }
 
-    protected fun <C : Element<*>> render(scope: ExpressionScope<*>, elements: Collection<ContentOrControlStructure<*, C>>, renderBlock: (scope: ExpressionScope<*>, element: C) -> Unit) {
+    protected fun <C : Element<*>> render(
+        scope: ExpressionScope<*>,
+        elements: Collection<ContentOrControlStructure<*, C>>,
+        renderBlock: (scope: ExpressionScope<*>, element: C) -> Unit,
+    ) {
         elements.forEach { controlStructure(scope, it, renderBlock) }
     }
 
     @JvmName("renderAttachments")
-    fun render(scope: ExpressionScope<*>, attachments: List<IncludeAttachment<*, *>>, renderAttachment: (attachmentScope: ExpressionScope<*>, id: Int, attachment: AttachmentTemplate<*, *>) -> Unit) {
+    fun render(
+        scope: ExpressionScope<*>,
+        attachments: List<IncludeAttachment<*, *>>,
+        renderAttachment: (attachmentScope: ExpressionScope<*>, id: Int, attachment: AttachmentTemplate<*, *>) -> Unit,
+    ) {
         attachments.filter { it.predicate.eval(scope) }
             .mapIndexed { index, attachment -> renderAttachment(attachment.toScope(scope), index, attachment.template) }
     }
 
-    protected fun <C : Element<*>> hasAnyContent(scope: ExpressionScope<*>, elements: List<ContentOrControlStructure<*, C>>): Boolean {
+    protected fun <C : Element<*>> hasAnyContent(
+        scope: ExpressionScope<*>,
+        elements: List<ContentOrControlStructure<*, C>>,
+    ): Boolean {
         var hasContent = false
         elements.forEach {
             controlStructure(scope, it) { _, _ -> hasContent = true }
@@ -40,6 +54,8 @@ abstract class LetterRenderer<R : Any> {
         return hasContent
     }
 
-    protected abstract fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): R
-
+    protected abstract fun renderLetter(
+        scope: ExpressionScope<*>,
+        template: LetterTemplate<*, *>,
+    ): R
 }

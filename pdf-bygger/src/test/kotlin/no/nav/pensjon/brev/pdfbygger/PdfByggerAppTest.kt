@@ -26,29 +26,33 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class PdfByggerAppTest {
-    private val pdfRequest = PDFRequest(
-        letterMarkup = LetterMarkup(
-            title = "Tittel 1",
-            sakspart = LetterMarkup.Sakspart(
-                gjelderNavn = "Navn Navnesen",
-                gjelderFoedselsnummer = "12345678901",
-                saksnummer = "123",
-                dokumentDato = LocalDate.of(2025, 1, 1).format(DateTimeFormatter.ISO_LOCAL_DATE)
-            ),
-            blocks = listOf(),
-            signatur = LetterMarkup.Signatur(
-                hilsenTekst = "hilsen",
-                saksbehandlerRolleTekst = "saksbehandler",
-                saksbehandlerNavn = "Saksbehandler Saksbehandlersen",
-                attesterendeSaksbehandlerNavn = null,
-                navAvsenderEnhet = "Nav sentralt",
-            )
-        ),
-        attachments = listOf(),
-        language = LanguageCode.BOKMAL,
-        felles = Fixtures.felles,
-        brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
-    )
+    private val pdfRequest =
+        PDFRequest(
+            letterMarkup =
+                LetterMarkup(
+                    title = "Tittel 1",
+                    sakspart =
+                        LetterMarkup.Sakspart(
+                            gjelderNavn = "Navn Navnesen",
+                            gjelderFoedselsnummer = "12345678901",
+                            saksnummer = "123",
+                            dokumentDato = LocalDate.of(2025, 1, 1).format(DateTimeFormatter.ISO_LOCAL_DATE),
+                        ),
+                    blocks = listOf(),
+                    signatur =
+                        LetterMarkup.Signatur(
+                            hilsenTekst = "hilsen",
+                            saksbehandlerRolleTekst = "saksbehandler",
+                            saksbehandlerNavn = "Saksbehandler Saksbehandlersen",
+                            attesterendeSaksbehandlerNavn = null,
+                            navAvsenderEnhet = "Nav sentralt",
+                        ),
+                ),
+            attachments = listOf(),
+            language = LanguageCode.BOKMAL,
+            felles = Fixtures.felles,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+        )
     private val objectMapper = jacksonObjectMapper().apply { brevbakerConfig() }
 
     @Test
@@ -66,10 +70,11 @@ class PdfByggerAppTest {
         testApplication {
             appConfig(latexCommand = getScriptPath("simpleCompile.sh"), parallelism = 1, compileTimeout = 1.seconds, queueTimeout = 1.seconds)
 
-            val response = client.post("/produserBrev") {
-                contentType(ContentType.Application.Json)
-                setBody(objectMapper.writeValueAsString(pdfRequest))
-            }
+            val response =
+                client.post("/produserBrev") {
+                    contentType(ContentType.Application.Json)
+                    setBody(objectMapper.writeValueAsString(pdfRequest))
+                }
             assertEquals(HttpStatusCode.OK, response.status)
         }
     }
@@ -79,10 +84,11 @@ class PdfByggerAppTest {
         testApplication {
             appConfig(latexCommand = getScriptPath(name = "neverEndingCompile.sh"), parallelism = 1, compileTimeout = 1.seconds, queueTimeout = 1.seconds)
 
-            val response = client.post("/produserBrev") {
-                contentType(ContentType.Application.Json)
-                setBody(objectMapper.writeValueAsString(pdfRequest))
-            }
+            val response =
+                client.post("/produserBrev") {
+                    contentType(ContentType.Application.Json)
+                    setBody(objectMapper.writeValueAsString(pdfRequest))
+                }
             assertEquals(HttpStatusCode.InternalServerError, response.status)
             assertThat(response.bodyAsText(), containsSubstring("Compilation timed out"))
         }
@@ -104,14 +110,15 @@ class PdfByggerAppTest {
                     queueTimeout = 10.milliseconds,
                 )
 
-                val requests = List(parallelism * parallelismFactor) {
-                    async(Dispatchers.Default) {
-                        client.post("/produserBrev") {
-                            contentType(ContentType.Application.Json)
-                            setBody(objectMapper.writeValueAsString(pdfRequest))
+                val requests =
+                    List(parallelism * parallelismFactor) {
+                        async(Dispatchers.Default) {
+                            client.post("/produserBrev") {
+                                contentType(ContentType.Application.Json)
+                                setBody(objectMapper.writeValueAsString(pdfRequest))
+                            }
                         }
                     }
-                }
 
                 val responses = requests.awaitAll()
                 val successful = responses.filter { it.status == HttpStatusCode.OK }
@@ -123,18 +130,23 @@ class PdfByggerAppTest {
         }
     }
 
-    private fun ApplicationTestBuilder.appConfig(latexCommand: String? = null, parallelism: Int? = null, compileTimeout: Duration? = null, queueTimeout: Duration? = null) =
+    private fun ApplicationTestBuilder.appConfig(
+        latexCommand: String? = null,
+        parallelism: Int? = null,
+        compileTimeout: Duration? = null,
+        queueTimeout: Duration? = null,
+    ) =
         environment {
-            val overrides = listOfNotNull(
-                latexCommand?.let { "pdfBygger.latexCommand" to "/usr/bin/env bash $it" },
-                parallelism?.let { "pdfBygger.latexParallelism" to "$it" },
-                compileTimeout?.let { "pdfBygger.compileTimeout" to "$it" },
-                queueTimeout?.let { "pdfBygger.compileQueueWaitTimeout" to "$it" },
-                "pdfBygger.compileTmpDir" to "/tmp",
-            )
+            val overrides =
+                listOfNotNull(
+                    latexCommand?.let { "pdfBygger.latexCommand" to "/usr/bin/env bash $it" },
+                    parallelism?.let { "pdfBygger.latexParallelism" to "$it" },
+                    compileTimeout?.let { "pdfBygger.compileTimeout" to "$it" },
+                    queueTimeout?.let { "pdfBygger.compileQueueWaitTimeout" to "$it" },
+                    "pdfBygger.compileTmpDir" to "/tmp",
+                )
             config = ApplicationConfig(null).mergeWith(MapApplicationConfig(overrides))
         }
-
 }
 
 fun ObjectMapper.brevbakerConfig() {

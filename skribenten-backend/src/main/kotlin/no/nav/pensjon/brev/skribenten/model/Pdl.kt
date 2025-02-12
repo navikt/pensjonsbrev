@@ -5,7 +5,7 @@ object Pdl {
         FORTROLIG,
         STRENGT_FORTROLIG,
         STRENGT_FORTROLIG_UTLAND,
-        INGEN
+        INGEN,
     }
 
     enum class Behandlingsnummer {

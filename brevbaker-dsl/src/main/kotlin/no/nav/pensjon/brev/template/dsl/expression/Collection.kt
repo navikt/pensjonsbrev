@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
-import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.api.model.FeatureToggle
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 fun <T> Expression<Collection<T>>.isEmpty(): Expression<Boolean> =
@@ -37,26 +37,25 @@ fun <T, R> Expression<Collection<T>>.map(mapper: UnaryOperation<T, R>): Expressi
 
 fun <In1, In2, Out> Expression<Collection<In1>>.map(
     mapper: BinaryOperation<In1, In2, Out>,
-    second: Expression<In2>
+    second: Expression<In2>,
 ): Expression<Collection<Out>> =
     Expression.BinaryInvoke(
         first = this,
         second = second,
-        operation = BinaryOperation.MapCollection(mapper)
+        operation = BinaryOperation.MapCollection(mapper),
     )
 
 fun <In1, In2, Out> Expression<Collection<In2>>.map(
     first: Expression<In1>,
-    mapper: BinaryOperation<In1, In2, Out>
+    mapper: BinaryOperation<In1, In2, Out>,
 ): Expression<Collection<Out>> =
     Expression.BinaryInvoke(
         first = this,
         second = first,
-        operation = BinaryOperation.MapCollection(BinaryOperation.Flip(mapper))
+        operation = BinaryOperation.MapCollection(BinaryOperation.Flip(mapper)),
     )
 
 fun <In> Expression<Collection<In>>.map(mapper: BinaryOperation<In, Language, String>): Expression<Collection<String>> =
     map(mapper, Expression.FromScope.Language)
 
 fun Expression<Collection<String>>.format(): StringExpression = format(formatter = LocalizedFormatter.CollectionFormat)
-

@@ -14,23 +14,19 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class OrienteringOmRettigheterUfoereTest {
-
     @Test
     fun testVedlegg() {
-        val template = createVedleggTestTemplate(
-            vedleggDineRettigheterOgPlikterUfoere,
-            Fixtures.create(OrienteringOmRettigheterUfoereDto::class).expr(),
-            languages(Bokmal, Nynorsk, English),
-        )
+        val template =
+            createVedleggTestTemplate(
+                vedleggDineRettigheterOgPlikterUfoere,
+                Fixtures.create(OrienteringOmRettigheterUfoereDto::class).expr(),
+                languages(Bokmal, Nynorsk, English),
+            )
         Letter(
             template,
             Unit,
             Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF("OrienteringOmRettigheterUfoere")
-
     }
 }
-
-
-

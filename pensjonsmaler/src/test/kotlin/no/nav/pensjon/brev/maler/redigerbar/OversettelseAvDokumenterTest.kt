@@ -12,14 +12,13 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class OversettelseAvDokumenterTest {
-
     @Test
     fun testPdf() {
         Letter(
             OversettelseAvDokumenter.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
-            Fixtures.felles
+            Fixtures.felles,
         ).renderTestPDF(OversettelseAvDokumenter.kode.name)
     }
 
@@ -29,7 +28,7 @@ class OversettelseAvDokumenterTest {
             OversettelseAvDokumenter.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
-            Fixtures.felles
+            Fixtures.felles,
         ).renderTestHtml(OversettelseAvDokumenter.kode.name)
     }
 }

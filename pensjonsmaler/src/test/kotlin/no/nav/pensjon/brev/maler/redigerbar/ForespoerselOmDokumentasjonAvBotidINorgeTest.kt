@@ -11,14 +11,13 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class ForespoerselOmDokumentasjonAvBotidINorgeTest {
-
     @Test
     fun testPdf() {
         Letter(
             ForespoerselOmDokumentasjonAvBotidINorgeAlder.template,
             Fixtures.create<EmptyBrevdata>(),
             Language.Bokmal,
-            Fixtures.felles
+            Fixtures.felles,
         ).renderTestPDF(ForespoerselOmDokumentasjonAvBotidINorgeAlder.kode.name)
     }
 }

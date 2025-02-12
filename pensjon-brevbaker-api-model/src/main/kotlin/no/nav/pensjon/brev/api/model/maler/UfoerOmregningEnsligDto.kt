@@ -24,7 +24,7 @@ data class UfoerOmregningEnsligDto(
     val bruker: Bruker,
     val harBarnetillegg: Boolean,
     val barnetilleggSaerkullsbarnVedVirk: BarnetilleggSaerkullsbarnVedvirk?,
-): BrevbakerBrevdata {
+) : BrevbakerBrevdata {
     data class Avdoed(
         val navn: String,
         val ektefelletilleggOpphoert: Boolean,
@@ -44,7 +44,7 @@ data class UfoerOmregningEnsligDto(
         val oppjustertBeloep: Kroner,
         val beloep: Kroner,
         val erMinsteinntekt: Boolean,
-        val erSannsynligEndret: Boolean
+        val erSannsynligEndret: Boolean,
     )
 
     data class Bruker(

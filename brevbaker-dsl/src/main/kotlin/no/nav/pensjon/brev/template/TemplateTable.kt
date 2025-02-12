@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.template.*
 @LetterTemplateMarker
 class TableScope<Lang : LanguageSupport, LetterData : Any>(
     private val colSpec: List<Element.OutlineContent.ParagraphContent.Table.ColumnSpec<Lang>>,
-) : ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Table.Row<Lang>, TableScope<Lang,LetterData>>{
+) : ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Table.Row<Lang>, TableScope<Lang, LetterData>> {
     private val children = mutableListOf<TableRowElement<Lang>>()
     override val elements: List<TableRowElement<Lang>>
         get() = children
@@ -22,9 +22,7 @@ class TableScope<Lang : LanguageSupport, LetterData : Any>(
             .let { ContentOrControlStructure.Content(it) }
             .also { children.add(it) }
     }
-
 }
-
 
 @LetterTemplateMarker
 class TableRowScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
@@ -35,8 +33,8 @@ class TableRowScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalSc
     fun cell(init: TextOnlyScope<Lang, LetterData>.() -> Unit) {
         children.add(
             Element.OutlineContent.ParagraphContent.Table.Cell(
-                TextOnlyScope<Lang, LetterData>().apply(init).elements
-            )
+                TextOnlyScope<Lang, LetterData>().apply(init).elements,
+            ),
         )
     }
 }
@@ -52,13 +50,12 @@ class TableHeaderScope<Lang : LanguageSupport, LetterData : Any> : TemplateGloba
         alignment: Element.OutlineContent.ParagraphContent.Table.ColumnAlignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT,
         init: PlainTextOnlyScope<Lang, LetterData>.() -> Unit,
     ) {
-
         children.add(
             Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
                 Element.OutlineContent.ParagraphContent.Table.Cell(PlainTextOnlyScope<Lang, LetterData>().apply(init).elements),
                 alignment,
-                columnSpan
-            )
+                columnSpan,
+            ),
         )
     }
 }

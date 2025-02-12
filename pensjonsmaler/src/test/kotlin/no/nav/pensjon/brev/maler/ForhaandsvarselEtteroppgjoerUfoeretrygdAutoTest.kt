@@ -18,7 +18,7 @@ class ForhaandsvarselEtteroppgjoerUfoeretrygdAutoTest {
             ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
             Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>(),
             Language.English,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF("UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO")
     }
 
@@ -28,7 +28,7 @@ class ForhaandsvarselEtteroppgjoerUfoeretrygdAutoTest {
             ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
             Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>(),
             Language.Nynorsk,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestHtml("UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO")
     }
 }

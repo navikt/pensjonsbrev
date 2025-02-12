@@ -20,7 +20,6 @@ import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFra
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepensjonNyttRegelverk
 
-
 data class BarnepensjonVarselDTO(
     override val innhold: List<Element>,
     val beregning: BarnepensjonBeregning?,
@@ -32,30 +31,32 @@ data class BarnepensjonVarselDTO(
 object BarnepensjonVarsel : EtterlatteTemplate<BarnepensjonVarselDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_VARSEL
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonVarselDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Varselbrev barnepensjon",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
-            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
-        ),
-    ) {
-        title {
-            text(
-                Language.Bokmal to "Forhåndsvarsel om ny barnepensjon fra 1. januar 2024",
-                Language.Nynorsk to "Førehandsvarsel om ny barnepensjon frå 1. januar 2024",
-                Language.English to "Advance notice of new children’s pension from 1 January",
-            )
-        }
-        outline {
-            konverterElementerTilBrevbakerformat(innhold)
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = BarnepensjonVarselDTO::class,
+            languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Varselbrev barnepensjon",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Language.Bokmal to "Forhåndsvarsel om ny barnepensjon fra 1. januar 2024",
+                    Language.Nynorsk to "Førehandsvarsel om ny barnepensjon frå 1. januar 2024",
+                    Language.English to "Advance notice of new children’s pension from 1 January",
+                )
+            }
+            outline {
+                konverterElementerTilBrevbakerformat(innhold)
 
-            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(erUnder18Aar, erBosattUtlandet))
-        }
+                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(erUnder18Aar, erBosattUtlandet))
+            }
 
-        includeAttachmentIfNotNull(beregningAvBarnepensjonNyttRegelverk, beregning)
-    }
+            includeAttachmentIfNotNull(beregningAvBarnepensjonNyttRegelverk, beregning)
+        }
 }

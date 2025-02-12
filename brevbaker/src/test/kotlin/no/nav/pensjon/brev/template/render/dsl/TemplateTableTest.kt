@@ -22,54 +22,59 @@ import org.junit.jupiter.api.Test
 class TemplateTableTest {
     @Test
     fun `table can be created with default values`() {
-
-        val doc = outlineTestTemplate<Unit> {
-            paragraph {
-                table(header = {
-                    column {
-                        text(Bokmal to "header")
-                    }
-                }) {
-                    row {
-                        cell {
-                            text(Bokmal to "joda")
+        val doc =
+            outlineTestTemplate<Unit> {
+                paragraph {
+                    table(header = {
+                        column {
+                            text(Bokmal to "header")
+                        }
+                    }) {
+                        row {
+                            cell {
+                                text(Bokmal to "joda")
+                            }
                         }
                     }
                 }
             }
-        }
 
-        val colSpec = listOf(
-            Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
-                Element.OutlineContent.ParagraphContent.Table.Cell(
-                    listOf(newText(Bokmal to "header"))
-                ), Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
+        val colSpec =
+            listOf(
+                Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
+                    Element.OutlineContent.ParagraphContent.Table.Cell(
+                        listOf(newText(Bokmal to "header")),
+                    ),
+                    Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT,
+                ),
             )
-        )
-        val expected = outlineTestLetter(
-            Content(
-                Element.OutlineContent.Paragraph(
-                    listOf(
-                        Content(
-                            Element.OutlineContent.ParagraphContent.Table(
-                                header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec),
-                                rows = listOf(
-                                    Content(
-                                        Element.OutlineContent.ParagraphContent.Table.Row(
-                                            listOf(
-                                                Element.OutlineContent.ParagraphContent.Table.Cell(
-                                                    listOf(newText(Bokmal to "joda"))
-                                                )
-                                            ), colSpec
-                                        )
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
+        val expected =
+            outlineTestLetter(
+                Content(
+                    Element.OutlineContent.Paragraph(
+                        listOf(
+                            Content(
+                                Element.OutlineContent.ParagraphContent.Table(
+                                    header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec),
+                                    rows =
+                                        listOf(
+                                            Content(
+                                                Element.OutlineContent.ParagraphContent.Table.Row(
+                                                    listOf(
+                                                        Element.OutlineContent.ParagraphContent.Table.Cell(
+                                                            listOf(newText(Bokmal to "joda")),
+                                                        ),
+                                                    ),
+                                                    colSpec,
+                                                ),
+                                            ),
+                                        ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
             )
-        )
 
         assertEquals(doc, expected)
     }
@@ -114,7 +119,6 @@ class TemplateTableTest {
                         }
                     }) {
                         row {
-
                         }
                     }
                 }
@@ -122,142 +126,150 @@ class TemplateTableTest {
         }
     }
 
-
     @Test
     fun `showif adds rows with predicates`() {
-        val doc = outlineTestTemplate<Unit> {
-            paragraph {
-                table(header = {
-                    column {
-                        text(Bokmal to "header")
-                    }
-                }) {
-                    showIf(true.expr()) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "hei",
-                                )
-                            }
+        val doc =
+            outlineTestTemplate<Unit> {
+                paragraph {
+                    table(header = {
+                        column {
+                            text(Bokmal to "header")
                         }
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "heihå",
-                                )
+                    }) {
+                        showIf(true.expr()) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "hei",
+                                    )
+                                }
+                            }
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "heihå",
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
-        }
-        val colSpec = listOf(
-            Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
-                Element.OutlineContent.ParagraphContent.Table.Cell(
-                    listOf(newText(Bokmal to "header"))
-                ), Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
+        val colSpec =
+            listOf(
+                Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
+                    Element.OutlineContent.ParagraphContent.Table.Cell(
+                        listOf(newText(Bokmal to "header")),
+                    ),
+                    Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT,
+                ),
             )
-        )
-        val expected = outlineTestLetter(
-            Content(
-                Element.OutlineContent.Paragraph(
-                    listOf(
-                        Content(
-                            Element.OutlineContent.ParagraphContent.Table(
-                                rows = listOf(
-                                    Conditional(
-                                        true.expr(),
+        val expected =
+            outlineTestLetter(
+                Content(
+                    Element.OutlineContent.Paragraph(
+                        listOf(
+                            Content(
+                                Element.OutlineContent.ParagraphContent.Table(
+                                    rows =
                                         listOf(
-                                            Element.OutlineContent.ParagraphContent.Table.Row(
+                                            Conditional(
+                                                true.expr(),
                                                 listOf(
-                                                    Element.OutlineContent.ParagraphContent.Table.Cell(
-                                                        listOf(newText(Bokmal to "hei"))
-                                                    )
-                                                ),
-                                                colSpec = colSpec
+                                                    Element.OutlineContent.ParagraphContent.Table.Row(
+                                                        listOf(
+                                                            Element.OutlineContent.ParagraphContent.Table.Cell(
+                                                                listOf(newText(Bokmal to "hei")),
+                                                            ),
+                                                        ),
+                                                        colSpec = colSpec,
+                                                    ),
+                                                    Element.OutlineContent.ParagraphContent.Table.Row(
+                                                        listOf(
+                                                            Element.OutlineContent.ParagraphContent.Table.Cell(
+                                                                listOf(newText(Bokmal to "heihå")),
+                                                            ),
+                                                        ),
+                                                        colSpec = colSpec,
+                                                    ),
+                                                ).map { Content(it) },
+                                                emptyList(),
                                             ),
-                                            Element.OutlineContent.ParagraphContent.Table.Row(
-                                                listOf(
-                                                    Element.OutlineContent.ParagraphContent.Table.Cell(
-                                                        listOf(newText(Bokmal to "heihå"))
-                                                    )
-                                                ), colSpec = colSpec
-                                            )
-                                        ).map { Content(it) }, emptyList()
-                                    )
+                                        ),
+                                    header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec),
                                 ),
-                                header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec)
-                            )
-                        )
-                    )
-                )
+                            ),
+                        ),
+                    ),
+                ),
             )
-        )
         assertEquals(expected, doc)
     }
 
     @Test
     fun `table is not rendered when all the rows are filtered out`() {
-        val doc = outlineTestTemplate<Unit> {
-            title1 { text(Bokmal to "THIS TEXT SHOULD RENDER") }
-            paragraph {
-                table(
-                    header = {
-                        column {
-                            text(
-                                Bokmal to "This text should not render1",
-                            )
-                        }
-                    }
-                ) {
-                    showIf(false.expr()) {
-                        row {
-                            cell {
+        val doc =
+            outlineTestTemplate<Unit> {
+                title1 { text(Bokmal to "THIS TEXT SHOULD RENDER") }
+                paragraph {
+                    table(
+                        header = {
+                            column {
                                 text(
-                                    Bokmal to "This text should not render2",
+                                    Bokmal to "This text should not render1",
                                 )
+                            }
+                        },
+                    ) {
+                        showIf(false.expr()) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "This text should not render2",
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
         val actual = Letter2Markup.render(Letter(doc, Unit, Bokmal, Fixtures.felles)).letterMarkup
         assertThat(
             actual,
             hasBlocks {
                 title1 { literal("THIS TEXT SHOULD RENDER") }
-                paragraph {  }
-            }
+                paragraph { }
+            },
         )
     }
 
     @Test
     fun `all table elements are rendered`() {
-        val doc = outlineTestTemplate<Unit> {
-            paragraph {
-                table(
-                    header = {
-                        column {
-                            text(
-                                Bokmal to "This text should render 1",
-                            )
-                        }
-                    }
-                ) {
-                    showIf(true.expr()) {
-                        row {
-                            cell {
+        val doc =
+            outlineTestTemplate<Unit> {
+                paragraph {
+                    table(
+                        header = {
+                            column {
                                 text(
-                                    Bokmal to "This text should render 2",
+                                    Bokmal to "This text should render 1",
                                 )
+                            }
+                        },
+                    ) {
+                        showIf(true.expr()) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "This text should render 2",
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
-        }
 
         assertThat(
             Letter2Markup.render(Letter(doc, Unit, Bokmal, Fixtures.felles)).letterMarkup,
@@ -268,7 +280,7 @@ class TemplateTableTest {
                         row { cell { literal("This text should render 2") } }
                     }
                 }
-            }
+            },
         )
     }
 }

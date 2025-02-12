@@ -10,14 +10,13 @@ import org.junit.jupiter.api.*
 
 @Tag(TestTags.MANUAL_TEST)
 class InfoAldersovergang67AarAutoTest {
-
     @Test
     fun testPdfNB() {
         Letter(
             InfoAldersovergang67AarAuto.template,
             Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF("INFO_ALDERSOVERGANG_67_AAR_AUTO_BOKMAL")
     }
 
@@ -27,7 +26,7 @@ class InfoAldersovergang67AarAutoTest {
             InfoAldersovergang67AarAuto.template,
             Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
             Language.Nynorsk,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF("INFO_ALDERSOVERGANG_67_AAR_AUTO_NYNORSK")
     }
 
@@ -37,10 +36,9 @@ class InfoAldersovergang67AarAutoTest {
             InfoAldersovergang67AarAuto.template,
             Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
             Language.English,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF("INFO_ALDERSOVERGANG_67_AAR_AUTO_ENGLISH")
     }
-
 
     @Test
     fun testHtml() {
@@ -48,7 +46,7 @@ class InfoAldersovergang67AarAutoTest {
             InfoAldersovergang67AarAuto.template,
             Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestHtml("INFO_ALDERSOVERGANG_67_AAR_AUTO_BOKMAL")
     }
 }

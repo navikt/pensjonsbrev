@@ -41,10 +41,10 @@ object BarnepensjonAvslagFraser {
                 }
                 paragraph {
                     textExpr(
-                        Bokmal to "Din søknad om barnepensjon etter ".expr() + avdoedNavn +  " er derfor endelig avslått.",
+                        Bokmal to "Din søknad om barnepensjon etter ".expr() + avdoedNavn + " er derfor endelig avslått.",
                         Nynorsk to "Søknaden din om barnepensjon etter ".expr() + avdoedNavn + " er derfor endeleg avslått.",
                         English to
-                                "Your application for children`s pension for the deceased ".expr() + avdoedNavn + " has therefore been finally rejected.",
+                            "Your application for children`s pension for the deceased ".expr() + avdoedNavn + " has therefore been finally rejected.",
                     )
                 }
             }.orShow {
@@ -53,7 +53,7 @@ object BarnepensjonAvslagFraser {
                         Bokmal to "Din søknad om barnepensjon etter ".expr() + avdoedNavn + " er avslått.",
                         Nynorsk to "Søknaden din om barnepensjon etter ".expr() + avdoedNavn + " er avslått.",
                         English to
-                                "Your application for children`s pension for the deceased ".expr() + avdoedNavn + " has been rejected.",
+                            "Your application for children`s pension for the deceased ".expr() + avdoedNavn + " has been rejected.",
                     )
                 }
             }

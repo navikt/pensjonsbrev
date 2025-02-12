@@ -12,30 +12,34 @@ import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.NewLine
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Variable
 
 val Letter.literals: Sequence<Literal>
-    get() = object : EditLetterSequence<Literal>() {
-        override suspend fun SequenceScope<Literal>.visit(content: Literal) {
-            yield(content)
-        }
-    }.build(this)
+    get() =
+        object : EditLetterSequence<Literal>() {
+            override suspend fun SequenceScope<Literal>.visit(content: Literal) {
+                yield(content)
+            }
+        }.build(this)
 
 val Letter.variables: Sequence<Variable>
-    get() = object : EditLetterSequence<Variable>() {
-        override suspend fun SequenceScope<Variable>.visit(content: Variable) {
-            yield(content)
-        }
-    }.build(this)
+    get() =
+        object : EditLetterSequence<Variable>() {
+            override suspend fun SequenceScope<Variable>.visit(content: Variable) {
+                yield(content)
+            }
+        }.build(this)
 
 val Letter.identifiable: Sequence<Edit.Identifiable>
-    get() = object : EditLetterSequence<Edit.Identifiable>() {
-        override suspend fun SequenceScope<Edit.Identifiable>.visitIdentifiable(element: Edit.Identifiable) {
-            yield(element)
-        }
-    }.build(this)
+    get() =
+        object : EditLetterSequence<Edit.Identifiable>() {
+            override suspend fun SequenceScope<Edit.Identifiable>.visitIdentifiable(element: Edit.Identifiable) {
+                yield(element)
+            }
+        }.build(this)
 
 abstract class EditLetterSequence<T> {
-    fun build(letter: Letter): Sequence<T> = sequence {
-        visit(letter)
-    }
+    fun build(letter: Letter): Sequence<T> =
+        sequence {
+            visit(letter)
+        }
 
     open suspend fun SequenceScope<T>.visitIdentifiable(element: Edit.Identifiable) = Unit
 
@@ -79,7 +83,9 @@ abstract class EditLetterSequence<T> {
         }
 
     open suspend fun SequenceScope<T>.visit(content: Literal): Unit = visitIdentifiable(content)
+
     open suspend fun SequenceScope<T>.visit(content: Variable): Unit = visitIdentifiable(content)
+
     open suspend fun SequenceScope<T>.visit(content: NewLine): Unit = visitIdentifiable(content)
 
     open suspend fun SequenceScope<T>.visit(itemList: ItemList) {

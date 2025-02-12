@@ -32,14 +32,17 @@ fun getVaultSecretConfig(): Config {
         secrets.listFiles()?.flatMap { secretDir ->
             secretDir.listFiles()
                 ?.map {
-                    "${secretDir.name.uppercase()}_${it.name.uppercase()}" to ConfigValueFactory.fromAnyRef(
-                        it.readText().trim(), it.absolutePath
-                    )
+                    "${secretDir.name.uppercase()}_${it.name.uppercase()}" to
+                        ConfigValueFactory.fromAnyRef(
+                            it.readText().trim(), it.absolutePath,
+                        )
                 }
                 ?: emptyList()
         }?.fold(ConfigFactory.empty()) { config, value -> config.withValue(value.first, value.second) }
             ?: ConfigFactory.empty()
-    } else ConfigFactory.empty()
+    } else {
+        ConfigFactory.empty()
+    }
 }
 
 fun Config.resolveLocalSecrets(vararg paths: String): Config =

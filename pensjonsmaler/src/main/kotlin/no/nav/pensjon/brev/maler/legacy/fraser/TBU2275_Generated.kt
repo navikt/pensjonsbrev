@@ -8,14 +8,14 @@ import no.nav.pensjon.brev.template.dsl.text
 
 object TBU2275_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-		//[TBU2275NN, TBU2275, TBU2275EN]
+        // [TBU2275NN, TBU2275, TBU2275EN]
 
-		title1 {
-			text (
-				Bokmal to "For deg som mottar ektefelletillegg",
-				Nynorsk to "For deg som får ektefelletillegg",
-				English to "For those receiving a spouse supplement",
-			)
-		}
+        title1 {
+            text(
+                Bokmal to "For deg som mottar ektefelletillegg",
+                Nynorsk to "For deg som får ektefelletillegg",
+                English to "For those receiving a spouse supplement",
+            )
+        }
     }
 }

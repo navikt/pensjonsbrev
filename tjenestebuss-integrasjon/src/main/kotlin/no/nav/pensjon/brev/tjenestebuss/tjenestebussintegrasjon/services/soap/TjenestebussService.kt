@@ -21,7 +21,10 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
 
 interface ClientFactory<Client> {
-    fun create(handlers: List<Handler<SOAPMessageContext>>, features: List<Feature>): Client
+    fun create(
+        handlers: List<Handler<SOAPMessageContext>>,
+        features: List<Feature>,
+    ): Client
 }
 
 abstract class TjenestebussService<Client>(factory: ClientFactory<Client>, pingExpiration: Duration = 10.minutes) : ServiceStatus {
@@ -29,25 +32,32 @@ abstract class TjenestebussService<Client>(factory: ClientFactory<Client>, pingE
     private val successfulResponseHandler = SuccessfulResponseHandler()
     private val pingExpiration = pingExpiration.toJavaDuration()
 
-    protected val client: Client = factory.create(
-        handlers = listOf(callIdHandler, successfulResponseHandler),
-        features = listOf(WSAddressingFeature())
-    )
+    protected val client: Client =
+        factory.create(
+            handlers = listOf(callIdHandler, successfulResponseHandler),
+            features = listOf(WSAddressingFeature()),
+        )
 
     abstract fun sendPing(): Boolean?
 
     override suspend fun ping(): Boolean? =
         if (successfulResponseHandler.successfulResponseAt?.isAfter(Instant.now() - pingExpiration) == true) {
             true
-        } else sendPing()
+        } else {
+            sendPing()
+        }
 
-    suspend fun <T> withCallId(callId: String?, block: suspend CoroutineScope.() -> T): T =
+    suspend fun <T> withCallId(
+        callId: String?,
+        block: suspend CoroutineScope.() -> T,
+    ): T =
         withContext(callIdHandler.callId.asContextElement(callId), block)
 
     class CallIdSoapHandler : Handler<SOAPMessageContext> {
         private val logger = LoggerFactory.getLogger(this::class.java)
 
         val callId = ThreadLocal<String?>()
+
         override fun handleMessage(context: SOAPMessageContext?): Boolean {
             if (context?.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY) == true) {
                 try {
@@ -59,9 +69,9 @@ abstract class TjenestebussService<Client>(factory: ClientFactory<Client>, pingE
                             sFactory.createName(
                                 "callId",
                                 "",
-                                "uri:no.nav.applikasjonsrammeverk"
-                            )
-                        ).apply { addTextNode(callId.get() ?: UUID.randomUUID().toString()) }
+                                "uri:no.nav.applikasjonsrammeverk",
+                            ),
+                        ).apply { addTextNode(callId.get() ?: UUID.randomUUID().toString()) },
                     )
                     return true
                 } catch (e: SOAPException) {
@@ -93,13 +103,14 @@ abstract class TjenestebussService<Client>(factory: ClientFactory<Client>, pingE
         }
 
         override fun handleFault(context: SOAPMessageContext?): Boolean = true
+
         override fun close(context: MessageContext?) {}
     }
 }
 
 suspend fun <T : TjenestebussService<*>, R> RoutingContext.withCallId(
     service: T,
-    block: suspend T.() -> R
+    block: suspend T.() -> R,
 ): R =
     service.withCallId(call.callId) {
         service.block()

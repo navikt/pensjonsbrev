@@ -36,7 +36,6 @@ import no.nav.pensjon.etterlatte.maler.klage.VedtakKlagenGjelderSelectors.datoAt
 import no.nav.pensjon.etterlatte.maler.klage.VedtakKlagenGjelderSelectors.vedtakTypeFormatert
 import java.time.LocalDate
 
-
 data class KlageOversendelseBlankettDTO(
     override val innhold: List<Element>,
     val formkrav: Formkrav,
@@ -45,14 +44,15 @@ data class KlageOversendelseBlankettDTO(
     val internKommentar: String?,
     val ovesendelseTekst: String,
     val klager: String,
-    val klageDato: LocalDate
+    val klageDato: LocalDate,
 ) : FerdigstillingBrevDTO {
     val oversendelseLinjer = ovesendelseTekst.split("\n")
     val internKommentarLinjer = internKommentar?.split("\n")
-    val sakTypeTekst = when (sakType) {
-        SakType.OMSTILLINGSSTOENAD -> "omstillingsstønad"
-        SakType.BARNEPENSJON -> "barnepensjon"
-    }
+    val sakTypeTekst =
+        when (sakType) {
+            SakType.OMSTILLINGSSTOENAD -> "omstillingsstønad"
+            SakType.BARNEPENSJON -> "barnepensjon"
+        }
 }
 
 data class Formkrav(
@@ -62,23 +62,24 @@ data class Formkrav(
     val erKlagerPartISaken: Boolean,
     val erKlagenFramsattInnenFrist: Boolean,
     val erFormkraveneOppfylt: Boolean,
-    val begrunnelse: String?
+    val begrunnelse: String?,
 ) {
     val begrunnelseLinjer = begrunnelse?.split("\n")
 }
 
 data class VedtakKlagenGjelder(
     val datoAttestert: LocalDate,
-    val vedtakType: VedtakType
+    val vedtakType: VedtakType,
 ) {
-    val vedtakTypeFormatert = when (vedtakType) {
-        VedtakType.INNVILGELSE -> "Innvilgelse"
-        VedtakType.OPPHOER -> "Opphør"
-        VedtakType.AVSLAG -> "Avslag på søknad"
-        VedtakType.ENDRING -> "Revurdering"
-        VedtakType.TILBAKEKREVING -> "Tilbakekreving"
-        VedtakType.AVVIST_KLAGE -> "Avvist klage"
-    }
+    val vedtakTypeFormatert =
+        when (vedtakType) {
+            VedtakType.INNVILGELSE -> "Innvilgelse"
+            VedtakType.OPPHOER -> "Opphør"
+            VedtakType.AVSLAG -> "Avslag på søknad"
+            VedtakType.ENDRING -> "Revurdering"
+            VedtakType.TILBAKEKREVING -> "Tilbakekreving"
+            VedtakType.AVVIST_KLAGE -> "Avvist klage"
+        }
 }
 
 enum class VedtakType {
@@ -93,80 +94,80 @@ enum class VedtakType {
 @TemplateModelHelpers
 object BlankettKlageinstans : EtterlatteTemplate<KlageOversendelseBlankettDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.KLAGE_OVERSENDELSE_BLANKETT
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = KlageOversendelseBlankettDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Blankett oversendelse klage",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
-            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
-        )
-    ) {
-        title {
-            text(
-                Language.Bokmal to "Klage oversendelsesblankett",
-                Language.Nynorsk to "Klage oversendelsesblankett",
-                Language.English to "Klage oversendelsesblankett"
-            )
-        }
-
-        outline {
-            title2 {
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = KlageOversendelseBlankettDTO::class,
+            languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Blankett oversendelse klage",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+                ),
+        ) {
+            title {
                 text(
-                    Language.Bokmal to "Informasjon om saken",
-                    Language.Nynorsk to "Informasjon om saken",
-                    Language.English to "Informasjon om saken"
-                )
-            }
-            formaterPunktMedSvar("Saktype", sakTypeTekst)
-            formaterPunktMedSvar("Klager", klager)
-            formaterPunktMedSvar("Klagedato", klageDato.format())
-
-            title2 {
-                text(
-                    Language.Bokmal to "Formkrav og klagefrist",
-                    Language.Nynorsk to "Formkrav og klagefrist",
-                    Language.English to "Formkrav og klagefrist"
+                    Language.Bokmal to "Klage oversendelsesblankett",
+                    Language.Nynorsk to "Klage oversendelsesblankett",
+                    Language.English to "Klage oversendelsesblankett",
                 )
             }
 
-            ifNotNull(formkrav.vedtaketKlagenGjelder) {
-                formaterPunktMedSvar("Dato vedtak attestert", it.datoAttestert.format())
-                formaterPunktMedSvar("Type vedtak", it.vedtakTypeFormatert)
-            } orShow {
-                formaterPunktMedSvar("Vedtak som klages på", "Det klages ikke på et konkret vedtak".expr())
-            }
+            outline {
+                title2 {
+                    text(
+                        Language.Bokmal to "Informasjon om saken",
+                        Language.Nynorsk to "Informasjon om saken",
+                        Language.English to "Informasjon om saken",
+                    )
+                }
+                formaterPunktMedSvar("Saktype", sakTypeTekst)
+                formaterPunktMedSvar("Klager", klager)
+                formaterPunktMedSvar("Klagedato", klageDato.format())
 
-            formaterKrav("Er klagen signert?", formkrav.erKlagenSignert)
-            formaterKrav("Er klager part i saken?", formkrav.erKlagerPartISaken)
-            formaterKrav("Er klagen framsatt innen frist?", formkrav.erKlagenFramsattInnenFrist)
-            formaterKrav("Klages det på konkrete elementer i vedtaket?", formkrav.gjelderKlagenNoeKonkretIVedtaket)
+                title2 {
+                    text(
+                        Language.Bokmal to "Formkrav og klagefrist",
+                        Language.Nynorsk to "Formkrav og klagefrist",
+                        Language.English to "Formkrav og klagefrist",
+                    )
+                }
 
-            ifNotNull(formkrav.begrunnelseLinjer) {
-                formaterTekstlinjer("Begrunnelse", it)
-            }
+                ifNotNull(formkrav.vedtaketKlagenGjelder) {
+                    formaterPunktMedSvar("Dato vedtak attestert", it.datoAttestert.format())
+                    formaterPunktMedSvar("Type vedtak", it.vedtakTypeFormatert)
+                } orShow {
+                    formaterPunktMedSvar("Vedtak som klages på", "Det klages ikke på et konkret vedtak".expr())
+                }
 
+                formaterKrav("Er klagen signert?", formkrav.erKlagenSignert)
+                formaterKrav("Er klager part i saken?", formkrav.erKlagerPartISaken)
+                formaterKrav("Er klagen framsatt innen frist?", formkrav.erKlagenFramsattInnenFrist)
+                formaterKrav("Klages det på konkrete elementer i vedtaket?", formkrav.gjelderKlagenNoeKonkretIVedtaket)
 
-            title2 {
-                text(Language.Bokmal to "Vurdering", Language.Nynorsk to "Vurdering", Language.English to "Vurdering")
-            }
-            formaterPunktMedSvar("Utfall", "Oppretthold vedtak".expr())
-            formaterPunktMedSvar("Hjemmel", hjemmel)
+                ifNotNull(formkrav.begrunnelseLinjer) {
+                    formaterTekstlinjer("Begrunnelse", it)
+                }
 
-            formaterTekstlinjer("Innstilling til Nav klageinstans", oversendelseLinjer)
-            ifNotNull(internKommentarLinjer) {
-                formaterTekstlinjer("Intern kommentar", it)
+                title2 {
+                    text(Language.Bokmal to "Vurdering", Language.Nynorsk to "Vurdering", Language.English to "Vurdering")
+                }
+                formaterPunktMedSvar("Utfall", "Oppretthold vedtak".expr())
+                formaterPunktMedSvar("Hjemmel", hjemmel)
+
+                formaterTekstlinjer("Innstilling til Nav klageinstans", oversendelseLinjer)
+                ifNotNull(internKommentarLinjer) {
+                    formaterTekstlinjer("Intern kommentar", it)
+                }
             }
         }
-    }
-
 }
 
 fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>.formaterPunktMedSvar(
     punkt: String,
-    svar: Expression<String>
+    svar: Expression<String>,
 ) {
     paragraph {
         text(Language.Bokmal to punkt, Language.Nynorsk to punkt, Language.English to punkt, FontType.BOLD)
@@ -177,7 +178,7 @@ fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.
 
 fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>.formaterKrav(
     tittel: String,
-    oppfylt: Expression<Boolean>
+    oppfylt: Expression<Boolean>,
 ) {
     paragraph {
         text(Language.Bokmal to tittel, Language.Nynorsk to tittel, Language.English to tittel, FontType.BOLD)
@@ -188,7 +189,7 @@ fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.
             text(
                 Language.Bokmal to "Ikke oppfylt",
                 Language.Nynorsk to "Ikke oppfylt",
-                Language.English to "Ikke oppfylt"
+                Language.English to "Ikke oppfylt",
             )
         }
     }
@@ -196,14 +197,14 @@ fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.
 
 fun <T : Any> OutlineOnlyScope<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>.formaterTekstlinjer(
     overskrift: String,
-    linjer: Expression<List<String>>
+    linjer: Expression<List<String>>,
 ) {
     paragraph {
         text(
             Language.Bokmal to overskrift,
             Language.Nynorsk to overskrift,
             Language.English to overskrift,
-            FontType.BOLD
+            FontType.BOLD,
         )
         newline()
         forEach(linjer) { linje ->

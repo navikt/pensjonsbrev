@@ -6,15 +6,15 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 
 class BaseTest {
-
     @Test
     fun `ifElse creates a BinaryInvoke with branches as a tuple`() {
         val actual = ifElse(true.expr(), "hei".expr(), "hade bra".expr())
-        val expected = Expression.BinaryInvoke(
-            first = true.expr(),
-            second = Expression.BinaryInvoke("hei".expr(), "hade bra".expr(), BinaryOperation.Tuple()),
-            operation = BinaryOperation.IfElse()
-        )
+        val expected =
+            Expression.BinaryInvoke(
+                first = true.expr(),
+                second = Expression.BinaryInvoke("hei".expr(), "hade bra".expr(), BinaryOperation.Tuple()),
+                operation = BinaryOperation.IfElse(),
+            )
 
         assertEquals(expected, actual)
     }
@@ -29,8 +29,10 @@ class BaseTest {
         assertEquals("hade bra", expr.eval(ExpressionScope(3, scope.felles, scope.language)))
     }
 
-    enum class TestEnum{
-        YES, NO, MAYBE
+    enum class TestEnum {
+        YES,
+        NO,
+        MAYBE,
     }
 
     @Test
@@ -81,9 +83,8 @@ class BaseTest {
         assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
     }
 
-
     @Nested
-    inner class EqualTo{
+    inner class EqualTo {
         val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
 
         @Test
@@ -100,7 +101,7 @@ class BaseTest {
     }
 
     @Nested
-    inner class NotEqualTo{
+    inner class NotEqualTo {
         val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
 
         @Test

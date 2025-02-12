@@ -7,12 +7,17 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 
-fun hasBlocks(matchSize: Boolean = true, builder: BlocksAssert.() -> Unit): Matcher<LetterMarkup> =
+fun hasBlocks(
+    matchSize: Boolean = true,
+    builder: BlocksAssert.() -> Unit,
+): Matcher<LetterMarkup> =
     has(LetterMarkup::blocks, BlocksAssert(matchSize).apply(builder).build())
 
-fun hasAttachments(matchSize: Boolean = true, builder: AttachmentsAssert.() -> Unit): Matcher<LetterWithAttachmentsMarkup> =
+fun hasAttachments(
+    matchSize: Boolean = true,
+    builder: AttachmentsAssert.() -> Unit,
+): Matcher<LetterWithAttachmentsMarkup> =
     has(LetterWithAttachmentsMarkup::attachments, AttachmentsAssert(matchSize).apply(builder).build())
-
 
 @DslMarker
 annotation class LetterMarkupMatcherDsl
@@ -28,7 +33,9 @@ class AttachmentsAssert(private val matchSize: Boolean) {
     fun build(): Matcher<List<LetterMarkup.Attachment>> =
         if (matchSize) {
             hasSize(equalTo(attachmentMatchers.size)) and ListIndexMatcher.forList(attachmentMatchers)
-        } else ListIndexMatcher.forList(attachmentMatchers)
+        } else {
+            ListIndexMatcher.forList(attachmentMatchers)
+        }
 }
 
 class AttachmentAssert {
@@ -38,7 +45,10 @@ class AttachmentAssert {
         attachmentMatchers.add(has(LetterMarkup.Attachment::title, ContentAssert().apply(that).build()))
     }
 
-    fun blocks(matchSize: Boolean = true, that: BlocksAssert.() -> Unit) {
+    fun blocks(
+        matchSize: Boolean = true,
+        that: BlocksAssert.() -> Unit,
+    ) {
         attachmentMatchers.add(has(LetterMarkup.Attachment::blocks, BlocksAssert(matchSize).apply(that).build()))
     }
 
@@ -62,9 +72,12 @@ class BlocksAssert(private val matchSize: Boolean) {
         blockMatchers.add(isA(Block::type, "TITLE2", has(Block.Title2::content, ContentAssert().apply(that).build())))
     }
 
-    fun build(): Matcher<List<Block>> = if (matchSize)
-        hasSize(equalTo(blockMatchers.size)) and ListIndexMatcher.forList(blockMatchers)
-    else ListIndexMatcher.forList(blockMatchers)
+    fun build(): Matcher<List<Block>> =
+        if (matchSize) {
+            hasSize(equalTo(blockMatchers.size)) and ListIndexMatcher.forList(blockMatchers)
+        } else {
+            ListIndexMatcher.forList(blockMatchers)
+        }
 }
 
 @LetterMarkupMatcherDsl
@@ -77,19 +90,19 @@ class ContentAssert {
 
     fun variable(str: String) {
         contentMatchers.add(
-            isA(ParagraphContent::type, "VARIABLE", TextAssert<ParagraphContent.Text.Variable>().apply { text(str) }.build())
+            isA(ParagraphContent::type, "VARIABLE", TextAssert<ParagraphContent.Text.Variable>().apply { text(str) }.build()),
         )
     }
 
     fun literal(that: TextAssert<ParagraphContent.Text.Literal>.() -> Unit) {
         contentMatchers.add(
-            isA(ParagraphContent::type, "LITERAL", TextAssert<ParagraphContent.Text.Literal>().apply(that).build())
+            isA(ParagraphContent::type, "LITERAL", TextAssert<ParagraphContent.Text.Literal>().apply(that).build()),
         )
     }
 
     fun literal(str: String) {
         contentMatchers.add(
-            isA(ParagraphContent::type, "LITERAL", TextAssert<ParagraphContent.Text.Literal>().apply { text(str) }.build())
+            isA(ParagraphContent::type, "LITERAL", TextAssert<ParagraphContent.Text.Literal>().apply { text(str) }.build()),
         )
     }
 
@@ -99,7 +112,7 @@ class ContentAssert {
 
     fun table(that: TableAssert.() -> Unit) {
         contentMatchers.add(
-            isA(ParagraphContent::type, "TABLE", TableAssert().apply(that).build())
+            isA(ParagraphContent::type, "TABLE", TableAssert().apply(that).build()),
         )
     }
 
@@ -136,22 +149,26 @@ class TableAssert {
 
     fun build(): Matcher<Table> =
         allOf(tableMatchers) and
-                has(Table::rows, hasSize(equalTo(rowMatchers.size)) and ListIndexMatcher.forList(rowMatchers))
+            has(Table::rows, hasSize(equalTo(rowMatchers.size)) and ListIndexMatcher.forList(rowMatchers))
 
     class RowAssert {
         private val cellMatchers = mutableListOf<Matcher<Table.Cell>>()
+
         fun cell(that: ContentAssert.() -> Unit) {
             cellMatchers.add(has(Table.Cell::text, ContentAssert().apply(that).build()))
         }
+
         fun build(): Matcher<Table.Row> =
             has(Table.Row::cells, hasSize(equalTo(cellMatchers.size)) and ListIndexMatcher.forList(cellMatchers))
     }
 
     class HeaderAssert {
         private val columnMatchers = mutableListOf<Matcher<Table.ColumnSpec>>()
+
         fun column(that: ContentAssert.() -> Unit) {
             columnMatchers.add(has(Table.ColumnSpec::headerContent, has(Table.Cell::text, ContentAssert().apply(that).build())))
         }
+
         fun build(): Matcher<Table.Header> =
             has(Table.Header::colSpec, hasSize(equalTo(columnMatchers.size)) and ListIndexMatcher.forList(columnMatchers))
     }

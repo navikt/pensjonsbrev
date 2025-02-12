@@ -13,12 +13,12 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
-    val pe: Expression<PE>
-): OutlinePhrase<LangBokmalNynorskEnglish>(){
+    val pe: Expression<PE>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        //IF(PE_UT_TBU056V() = true) THEN      INCLUDE ENDIF
+        // IF(PE_UT_TBU056V() = true) THEN      INCLUDE ENDIF
         showIf(pe.ut_tbu056v()) {
-            //[TBU052V-TBU073V]
+            // [TBU052V-TBU073V]
 
             title1 {
                 text(
@@ -35,7 +35,7 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
                     English to "Your degree of compensation is established by comparing what you ",
                 )
 
-                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = 100
+                // PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = 100
                 showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().equalTo(100)) {
                     text(
                         Bokmal to "har rett til i",
@@ -44,7 +44,7 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
                     )
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad < 100) THEN      INCLUDE ENDIF
+                // IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad < 100) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().lessThan(100))) {
                     text(
                         Bokmal to "ville hatt rett til i",
@@ -58,7 +58,7 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
                     English to "degree of disability ",
                 )
 
-                //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = 100
+                // PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = 100
                 showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().equalTo(100)) {
                     text(
                         Bokmal to "",
@@ -67,7 +67,7 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
                     )
                 }
 
-                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad < 100) THEN      INCLUDE ENDIF
+                // IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad < 100) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().lessThan(100))) {
                     text(
                         Bokmal to "",
@@ -83,78 +83,107 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
             }
         }
 
-        //IF(PE_UT_TBU056V() = true AND  (PE_pebrevkode <> "PE_UT_04_114" AND PE_pebrevkode <> "PE_UT_04_102" AND PE_pebrevkode <> "PE_UT_05_100" AND PE_pebrevkode <> "PE_UT_07_100") ) THEN      INCLUDE ENDIF
+        // IF(PE_UT_TBU056V() = true AND  (PE_pebrevkode <> "PE_UT_04_114" AND PE_pebrevkode <> "PE_UT_04_102" AND PE_pebrevkode <> "PE_UT_05_100" AND PE_pebrevkode <> "PE_UT_07_100") ) THEN      INCLUDE ENDIF
         showIf(
-            (pe.ut_tbu056v() and (pe.pebrevkode()
-                .notEqualTo("PE_UT_04_114") and pe.pebrevkode().notEqualTo("PE_UT_04_102") and pe.pebrevkode().notEqualTo(
-                "PE_UT_05_100"
-            ) and pe.pebrevkode().notEqualTo("PE_UT_07_100")))){
-            //[TBU052V-TBU073V]
+            (
+                pe.ut_tbu056v() and (
+                    pe.pebrevkode()
+                        .notEqualTo("PE_UT_04_114") and pe.pebrevkode().notEqualTo("PE_UT_04_102") and
+                        pe.pebrevkode().notEqualTo(
+                            "PE_UT_05_100",
+                        ) and pe.pebrevkode().notEqualTo("PE_UT_07_100")
+                )
+            ),
+        ) {
+            // [TBU052V-TBU073V]
 
             paragraph {
-                textExpr (
-                    Bokmal to "Inntekten din før du ble ufør er fastsatt til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                        .format() + " kroner. For å kunne fastsette kompensasjonsgraden din, må denne inntekten oppjusteres til dagens verdi. Oppjustert til dagens verdi tilsvarer dette en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                        .format() + " kroner.",
-                    Nynorsk to "Inntekta di før du blei ufør er fastsett til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                        .format() + " kroner. For å kunne fastsetje kompensasjonsgraden din, må inntekta oppjusterast til dagens verdi. Oppjustert til dagens verdi utgjer dette ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                        .format() + " kroner.",
-                    English to "Your income before you became disabled has been determined to be NOK ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                        .format() + ". To establish your degree of compensation this is adjusted to today’s value and is equivalent to an income of NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                        .format() + ".",
+                textExpr(
+                    Bokmal to "Inntekten din før du ble ufør er fastsatt til ".expr() +
+                        pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
+                            .format() + " kroner. For å kunne fastsette kompensasjonsgraden din, må denne inntekten oppjusteres til dagens verdi. Oppjustert til dagens verdi tilsvarer dette en inntekt på " +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                            .format() + " kroner.",
+                    Nynorsk to "Inntekta di før du blei ufør er fastsett til ".expr() +
+                        pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
+                            .format() + " kroner. For å kunne fastsetje kompensasjonsgraden din, må inntekta oppjusterast til dagens verdi. Oppjustert til dagens verdi utgjer dette ei inntekt på " +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                            .format() + " kroner.",
+                    English to "Your income before you became disabled has been determined to be NOK ".expr() +
+                        pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
+                            .format() + ". To establish your degree of compensation this is adjusted to today’s value and is equivalent to an income of NOK " +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                            .format() + ".",
                 )
             }
 
             paragraph {
-                textExpr (
-                    Bokmal to "Du har rett til 100 prosent uføretrygd, som utgjør ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " kroner per år.",
-                    Nynorsk to "Du har rett til 100 prosent uføretrygd, som utgjer ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " kroner per år.",
-                    English to "For you, a 100-percent disability benefit will total NOK ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " per year.",
+                textExpr(
+                    Bokmal to "Du har rett til 100 prosent uføretrygd, som utgjør ".expr() +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                            .format() + " kroner per år.",
+                    Nynorsk to "Du har rett til 100 prosent uføretrygd, som utgjer ".expr() +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                            .format() + " kroner per år.",
+                    English to "For you, a 100-percent disability benefit will total NOK ".expr() +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                            .format() + " per year.",
                 )
             }
 
             paragraph {
-                textExpr (
-                    Bokmal to "Du har rett til ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-                        .format() + " prosent uføretrygd. Regnet om til 100 prosent uføretrygd, utgjør dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " kroner per år.",
-                    Nynorsk to "Du har rett til ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-                        .format() + " prosent uføretrygd. Rekna om til 100 prosent uføretrygd, utgjer dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " kroner per år.",
-                    English to "You are entitled to ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-                        .format() + " percent disability benefit. This equals NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " per year, as a 100-percent disability benefit.",
+                textExpr(
+                    Bokmal to "Du har rett til ".expr() +
+                        pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
+                            .format() + " prosent uføretrygd. Regnet om til 100 prosent uføretrygd, utgjør dette " +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                            .format() + " kroner per år.",
+                    Nynorsk to "Du har rett til ".expr() +
+                        pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
+                            .format() + " prosent uføretrygd. Rekna om til 100 prosent uføretrygd, utgjer dette " +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                            .format() + " kroner per år.",
+                    English to "You are entitled to ".expr() +
+                        pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
+                            .format() + " percent disability benefit. This equals NOK " +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                            .format() + " per year, as a 100-percent disability benefit.",
                 )
             }
 
             paragraph {
-                textExpr (
-                    Bokmal to "Vi beregner kompensasjonsgraden din slik:(".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                        .format() + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .format() + " prosent.",
-                    Nynorsk to "Vi bereknar kompensasjonsgraden din slik:(".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                        .format() + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .format() + " prosent.",
-                    English to "We have calculated your degree of compensation as follows:(".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                        .format() + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                        .format() + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .format() + " percent.",
+                textExpr(
+                    Bokmal to "Vi beregner kompensasjonsgraden din slik:(".expr() +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                            .format() + " / " +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                            .format() + ") * 100 = " +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                            .format() + " prosent.",
+                    Nynorsk to "Vi bereknar kompensasjonsgraden din slik:(".expr() +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                            .format() + " / " +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                            .format() + ") * 100 = " +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                            .format() + " prosent.",
+                    English to "We have calculated your degree of compensation as follows:(".expr() +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                            .format() + " / " +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                            .format() + ") * 100 = " +
+                        pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
+                            .format() + " percent.",
                 )
             }
         }
 
-        //IF(PE_UT_TBU056V() = true) THEN      INCLUDE ENDIF
+        // IF(PE_UT_TBU056V() = true) THEN      INCLUDE ENDIF
         showIf(pe.ut_tbu056v()) {
-            //[TBU052V-TBU073V]
+            // [TBU052V-TBU073V]
 
             paragraph {
-
-                //IF(PE_UT_TBU056V_51() = true) THEN      INCLUDE ENDIF
+                // IF(PE_UT_TBU056V_51() = true) THEN      INCLUDE ENDIF
                 showIf(pe.ut_tbu056v_51()) {
                     text(
                         Bokmal to "Kompensasjonsgraden skal ved beregningen ikke settes høyere enn 70 prosent. ",
@@ -170,5 +199,4 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
             }
         }
     }
-
 }

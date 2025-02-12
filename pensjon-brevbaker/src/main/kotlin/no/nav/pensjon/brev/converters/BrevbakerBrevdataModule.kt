@@ -16,6 +16,9 @@ object BrevbakerBrevdataModule : SimpleModule() {
     }
 
     private object BrevdataDeserializer : JsonDeserializer<BrevbakerBrevdata>() {
-        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): BrevbakerBrevdata = ctxt.readValue(parser, GenericBrevdata::class.java)
+        override fun deserialize(
+            parser: JsonParser,
+            ctxt: DeserializationContext,
+        ): BrevbakerBrevdata = ctxt.readValue(parser, GenericBrevdata::class.java)
     }
 }

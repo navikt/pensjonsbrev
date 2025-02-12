@@ -43,13 +43,14 @@ object Favourites : Table() {
     override val primaryKey = PrimaryKey(id, name = "PK_Favourite_ID")
 }
 
-internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
-    registerModule(JavaTimeModule())
-    registerModule(Edit.JacksonModule)
-    registerModule(BrevbakerBrevdataModule)
-}
+internal val databaseObjectMapper: ObjectMapper =
+    jacksonObjectMapper().apply {
+        registerModule(JavaTimeModule())
+        registerModule(Edit.JacksonModule)
+        registerModule(BrevbakerBrevdataModule)
+    }
 
-class DatabaseJsonDeserializeException(cause: JacksonException): Exception("Failed to deserialize json-column from database", cause)
+class DatabaseJsonDeserializeException(cause: JacksonException) : Exception("Failed to deserialize json-column from database", cause)
 
 private inline fun <reified T> readJsonColumn(json: String): T =
     try {
@@ -106,7 +107,10 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var signaturAttestant by BrevredigeringTable.signaturAttestant
 
     companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
-        fun findByIdAndSaksId(id: Long, saksId: Long?) =
+        fun findByIdAndSaksId(
+            id: Long,
+            saksId: Long?,
+        ) =
             if (saksId == null) {
                 findById(id)
             } else {
@@ -167,26 +171,32 @@ fun initDatabase(config: Config) =
         initDatabase(createJdbcUrl(it), it.getString("username"), it.getString("password"))
     }
 
-fun initDatabase(jdbcUrl: String, username: String, password: String) =
-    HikariDataSource(HikariConfig().apply {
-        this.jdbcUrl = jdbcUrl
-        this.username = username
-        this.password = password
-        this.initializationFailTimeout = 6000
-        maximumPoolSize = 2
-        validate()
-    })
+fun initDatabase(
+    jdbcUrl: String,
+    username: String,
+    password: String,
+) =
+    HikariDataSource(
+        HikariConfig().apply {
+            this.jdbcUrl = jdbcUrl
+            this.username = username
+            this.password = password
+            this.initializationFailTimeout = 6000
+            maximumPoolSize = 2
+            validate()
+        },
+    )
         .also { konfigurerFlyway(it) }
         .let { Database.connect(it) }
 
-private fun konfigurerFlyway(dataSource: DataSource) = Flyway
-    .configure()
-    .dataSource(dataSource)
-    .baselineOnMigrate(true)
-    .validateMigrationNaming(true)
-    .load()
-    .migrate()
-
+private fun konfigurerFlyway(dataSource: DataSource) =
+    Flyway
+        .configure()
+        .dataSource(dataSource)
+        .baselineOnMigrate(true)
+        .validateMigrationNaming(true)
+        .load()
+        .migrate()
 
 private fun createJdbcUrl(config: Config): String =
     with(config) {
@@ -204,6 +214,9 @@ private object BrevbakerBrevdataModule : SimpleModule() {
     }
 
     private object BrevdataDeserializer : JsonDeserializer<BrevbakerBrevdata>() {
-        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): BrevbakerBrevdata = ctxt.readValue(parser, SaksbehandlerValg::class.java)
+        override fun deserialize(
+            parser: JsonParser,
+            ctxt: DeserializationContext,
+        ): BrevbakerBrevdata = ctxt.readValue(parser, SaksbehandlerValg::class.java)
     }
 }

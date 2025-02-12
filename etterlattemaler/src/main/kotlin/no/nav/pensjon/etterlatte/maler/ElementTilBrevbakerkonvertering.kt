@@ -75,7 +75,7 @@ fun <D : BrevDTO> OutlineOnlyScope<LangBokmalNynorskEnglish, D>.konverterElement
 }
 
 private fun <D : BrevDTO> ListScope<LangBokmalNynorskEnglish, D>.lagPunktlisteGammeltFormat(
-    items: Expression<List<InnerElement>>
+    items: Expression<List<InnerElement>>,
 ) {
     forEach(items) { listItem ->
         item {
@@ -91,7 +91,7 @@ private fun <D : BrevDTO> ListScope<LangBokmalNynorskEnglish, D>.lagPunktlisteGa
 }
 
 private fun <D : BrevDTO> ListScope<LangBokmalNynorskEnglish, D>.lagPunktliste(
-    items: Expression<List<InnerElement>>
+    items: Expression<List<InnerElement>>,
 ) {
     forEach(items) { listItem ->
         item {
