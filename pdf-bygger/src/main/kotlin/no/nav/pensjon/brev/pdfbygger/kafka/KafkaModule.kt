@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 fun Application.kafkaModule(latexCompileService: LatexCompileService) {
     val config = environment.config.config("pdfBygger.kafka")
     val kafkaConfig = createKafkaConfig(config)
-
     routing {
         get("/isAlive") {
             call.respondText("Alive!", ContentType.Text.Plain, HttpStatusCode.OK)
@@ -34,6 +33,10 @@ fun Application.kafkaModule(latexCompileService: LatexCompileService) {
         topic = config.property("topic").getString(),
         retryTopic = config.property("retryTopic").getString(),
     )
+
+    monitor.subscribe(ApplicationStopPreparing) {
+        pdfRequestConsumer.stop()
+    }
 
     @OptIn(DelicateCoroutinesApi::class)
     pdfRequestConsumer.flow().launchIn(GlobalScope)

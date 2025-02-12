@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger.kafka
 
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Semaphore
@@ -26,7 +24,7 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
 // Consumer will be timed out after 5 minutes if no polls occur
-private val FAILURE_RETRY_INTERVAL_SECONDS = 150.seconds.toJavaDuration()
+private val FAILURE_RETRY_INTERVAL_SECONDS = 120.seconds.toJavaDuration()
 
 
 private val QUEUE_READ_TIMEOUT = 5.seconds.toJavaDuration()
@@ -41,6 +39,7 @@ class PdfRequestConsumer(
     private val parallelismSemaphore = parallelism.takeIf { it > 0 }?.let { Semaphore(it) }
         ?: throw IllegalStateException("Not enough cores to run async worker")
     private val retryProducers = ConcurrentHashMap<String, KafkaProducer<String, PDFRequest>>()
+    private var shuttingDown = false
 
     // TODO should i close producers when repartitioning occurs? It should in theory just be a waste of threads/ a tiny bit of RAM
     private val consumer = KafkaConsumer<String, PDFRequest>(
@@ -67,9 +66,8 @@ class PdfRequestConsumer(
 
     fun flow() =
         flow {
-            while (true) {
-                // TODO prioritize between retry and success queue polling.
-                if (Instant.now() > nextRetryPoll) {
+            while (!shuttingDown) {
+                if (Instant.now() > nextRetryPoll && !shuttingDown) {
                     println("Polling message from render retry queue")
                     val retryMessages = pollRenderRetryQueue()
                     if (retryMessages.requests.isEmpty) {
@@ -78,8 +76,10 @@ class PdfRequestConsumer(
                         emit(retryMessages)
                     }
                 }
-                println("Polling message render queue")
-                emit(pollRenderQueue())
+                if (!shuttingDown) {
+                    println("Polling message render queue")
+                    emit(pollRenderQueue())
+                }
             }
         }.onEach { renderRequests ->
             val results = renderLetters(renderRequests)
@@ -87,12 +87,13 @@ class PdfRequestConsumer(
                 val (successes, failures) = results.partition { it.renderResult is PDFCompilationResponse.Base64PDF }
 
                 if (renderRequests.isFromRetryQueue) {
+                    println("Test: got ${successes.size} successes and ${failures.size} failures from retry queue")
                     if (failures.isEmpty()) {
                         println("Test: rendered ${successes.size} from retry queue")
                     } else {
+                        println("Test: rendered ${successes.size} from retry queue")
                         processRetryQueueResults(results, retryConsumer.groupMetadata())
                     }
-
                 } else {
                     if (failures.isEmpty()) {
                         println("Test: rendered ${successes.size} from normal queue without failures")
@@ -134,6 +135,7 @@ class PdfRequestConsumer(
                             println("Test: sendt a request to failure queue successfully.")
                             producer.commitTransaction()
                         } catch (e: Exception) {
+                            // TODO pass only certain exceptions along to crash the application.
                             producer.abortTransaction()
                             throw QueueCommitFailure("Failed to commit result to retry queue", e)
                         }
@@ -152,21 +154,22 @@ class PdfRequestConsumer(
                     sortedPartitionResults.takeWhile { it.renderResult is PDFCompilationResponse.Base64PDF }
 
                 val firstResult = partitionResults.first()
-                val producer = getOrCreateRetryProducer(firstResult.consumedTopic, firstResult.consumedPartiton)
+                //val producer = getOrCreateRetryProducer(firstResult.consumedTopic, firstResult.consumedPartiton)
 
-                if (successesBeforeFailure.isNotEmpty()) {
-                    val consumedFrom = TopicPartition(retryTopic, partition)
-                    val newOffset = OffsetAndMetadata(successesBeforeFailure.last().consumedOffset + 1)
-                    producer.beginTransaction()
-                    producer.sendOffsetsToTransaction(
-                        mapOf(consumedFrom to newOffset),
-                        groupMetadata
-                    )
-                    successesBeforeFailure.forEach {
-                        anySucceess = true
-                        // TODO produce successes
-                    }
-                }
+                //if (successesBeforeFailure.isNotEmpty()) {
+                //    val consumedFrom = TopicPartition(retryTopic, partition)
+                //    val newOffset = OffsetAndMetadata(successesBeforeFailure.last().consumedOffset + 1)
+                //    producer.beginTransaction()
+                //    producer.sendOffsetsToTransaction(
+                //        mapOf(consumedFrom to newOffset),
+                //        groupMetadata
+                //    )
+                //    successesBeforeFailure.forEach {
+                //        anySucceess = true
+                //        // TODO produce successes to topic
+                //    }
+                //    producer.commitTransaction()
+                //}
 
 
             }//.toMap()
@@ -218,6 +221,13 @@ class PdfRequestConsumer(
                 PDFRequestSerializer(),
             ).also { it.initTransactions() }
         }
+    }
+
+    fun stop() {
+        shuttingDown = true
+        consumer.close()
+        retryConsumer.close()
+        retryProducers.forEach { (_, producer) -> producer.close() }
     }
 }
 

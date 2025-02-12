@@ -15,7 +15,7 @@ class BrevbakerLoadTest(FastHttpUser):
         #headers = {'Content-Type': 'application/json'}
 
         #Test av asynkront kall lokalt:
-        #headers = {'Content-Type': 'application/json', 'orderId': str(uuid.uuid4())}
+        headers = {'Content-Type': 'application/json', 'orderId': str(uuid.uuid4())}
 
         #Test av synkront kall på clusteret:
         #headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token(), 'X-Request-ID': str(uuid.uuid4())}
