@@ -10,14 +10,13 @@ import org.junit.jupiter.api.*
 
 @Tag(TestTags.MANUAL_TEST)
 class OmsorgEgenAutoITest {
-
     @Test
     fun testPdf() {
         Letter(
             OmsorgEgenAuto.template,
             Fixtures.create<OmsorgEgenAutoDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF("OMSORG_EGEN_AUTO_BOKMAL")
     }
 
@@ -27,7 +26,7 @@ class OmsorgEgenAutoITest {
             OmsorgEgenAuto.template,
             Fixtures.create<OmsorgEgenAutoDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestHtml("OMSORG_EGEN_AUTO_BOKMAL")
     }
 }

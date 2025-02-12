@@ -13,19 +13,19 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.INTEGRATION_TEST)
 class PraktiskInformasjonEtteroppgjoerTest {
-
     @Test
     fun testVedlegg() {
-        val template = createVedleggTestTemplate(
-            vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd,
-            Unit.expr(),
-            languages(Bokmal)
-        )
+        val template =
+            createVedleggTestTemplate(
+                vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd,
+                Unit.expr(),
+                languages(Bokmal),
+            )
         Letter(
             template,
             Unit,
             Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF("PraktiskInformasjonEtteroppgjoer")
     }
 }

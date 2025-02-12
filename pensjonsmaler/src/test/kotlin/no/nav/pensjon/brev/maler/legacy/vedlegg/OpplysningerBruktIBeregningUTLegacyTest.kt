@@ -14,19 +14,19 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class OpplysningerBruktIBeregningUTLegacyTest {
-
     @Test
     fun testVedlegg() {
-        val template = createVedleggTestTemplate(
-            vedleggOpplysningerBruktIBeregningUTLegacy,
-            Fixtures.create(PE::class).expr(),
-            languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        )
+        val template =
+            createVedleggTestTemplate(
+                vedleggOpplysningerBruktIBeregningUTLegacy,
+                Fixtures.create(PE::class).expr(),
+                languages(Language.Bokmal, Language.Nynorsk, Language.English),
+            )
         Letter(
             template,
             Unit,
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF("OpplysningerBruktIBeregningUfoereLegacy")
     }
 }

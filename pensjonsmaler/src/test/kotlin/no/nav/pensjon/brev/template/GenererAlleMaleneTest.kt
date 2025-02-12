@@ -17,7 +17,6 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
 class GenererAlleMaleneTest {
-
     private val filterForPDF = listOf<String>("67")
 
     @Tag(TestTags.MANUAL_TEST)
@@ -63,7 +62,10 @@ class GenererAlleMaleneTest {
         ).renderTestHtml(filnavn(brevkode, spraak))
     }
 
-    private fun filnavn(brevkode: Brevkode<*>, spraak: Language) =
+    private fun filnavn(
+        brevkode: Brevkode<*>,
+        spraak: Language,
+    ) =
         "${brevkode.kode()}_${spraak.javaClass.simpleName}"
 
     companion object {
@@ -78,28 +80,31 @@ class GenererAlleMaleneTest {
                         Fixtures.create(it.template.letterDataType),
                         spraak,
                     )
-                } + ProductionTemplates.hentRedigerbareMaler().map {
-                    Arguments.of(
-                        it.template,
-                        it.kode,
-                        Fixtures.create(it.template.letterDataType),
-                        spraak,
-                    )
-                } + LetterExample.let {
-                    Arguments.of(
-                        LetterExample.template,
-                        LetterExample.kode,
-                        Fixtures.create(LetterExample.template.letterDataType),
-                        spraak,
-                    )
-                } + EksempelbrevRedigerbart.let {
-                    Arguments.of(
-                        EksempelbrevRedigerbart.template,
-                        EksempelbrevRedigerbart.kode,
-                        Fixtures.create(EksempelbrevRedigerbart.template.letterDataType),
-                        spraak,
-                    )
-                }
+                } +
+                    ProductionTemplates.hentRedigerbareMaler().map {
+                        Arguments.of(
+                            it.template,
+                            it.kode,
+                            Fixtures.create(it.template.letterDataType),
+                            spraak,
+                        )
+                    } +
+                    LetterExample.let {
+                        Arguments.of(
+                            LetterExample.template,
+                            LetterExample.kode,
+                            Fixtures.create(LetterExample.template.letterDataType),
+                            spraak,
+                        )
+                    } +
+                    EksempelbrevRedigerbart.let {
+                        Arguments.of(
+                            EksempelbrevRedigerbart.template,
+                            EksempelbrevRedigerbart.kode,
+                            Fixtures.create(EksempelbrevRedigerbart.template.letterDataType),
+                            spraak,
+                        )
+                    }
             }
         }
     }
@@ -109,5 +114,4 @@ object FeatureToggleDummy : FeatureToggleService {
     val toggles: MutableMap<FeatureToggle, Boolean> = mutableMapOf()
 
     override fun isEnabled(toggle: FeatureToggle): Boolean = toggles.get(toggle) ?: false
-
 }

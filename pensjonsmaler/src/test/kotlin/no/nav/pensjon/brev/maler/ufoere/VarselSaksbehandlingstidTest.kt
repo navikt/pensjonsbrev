@@ -11,14 +11,13 @@ import org.junit.jupiter.api.*
 
 @Tag(TestTags.MANUAL_TEST)
 class VarselSaksbehandlingstidTest {
-
     @Test
     fun pdftest() {
         Letter(
             VarselSaksbehandlingstidAuto.template,
             Fixtures.create<VarselSaksbehandlingstidAutoDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF("UT_VARSEL_SAKSBEHANDLINGSTID_AUTO")
     }
 
@@ -28,8 +27,7 @@ class VarselSaksbehandlingstidTest {
             VarselSaksbehandlingstidAuto.template,
             Fixtures.create<VarselSaksbehandlingstidAutoDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestHtml("UT_VARSEL_SAKSBEHANDLINGSTID_AUTO_BOKMAL")
     }
-
 }

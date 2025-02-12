@@ -12,14 +12,13 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class EtteroppgjoerEtterbetalingAutoTest {
-
     @Test
     fun testPdf() {
         Letter(
             EtteroppgjoerEtterbetalingAutoLegacy.template,
             Fixtures.create<EtteroppgjoerEtterbetalingAutoDto>(),
             Language.Nynorsk,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF("UT_ENDRET_PGA_INNTEKT")
     }
 
@@ -29,7 +28,7 @@ class EtteroppgjoerEtterbetalingAutoTest {
             EtteroppgjoerEtterbetalingAutoLegacy.template,
             Fixtures.create<EtteroppgjoerEtterbetalingAutoDto>(),
             Language.Nynorsk,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestHtml("UT_ENDRET_PGA_INNTEKT")
     }
 }

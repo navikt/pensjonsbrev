@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class OpphoerBarnetilleggAutoTest {
-
     @Test
     fun test() {
         Letter(

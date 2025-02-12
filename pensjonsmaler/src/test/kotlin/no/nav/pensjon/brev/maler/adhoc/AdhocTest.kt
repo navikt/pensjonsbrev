@@ -13,15 +13,23 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class AdhocTest {
-    fun testHtml(template: LetterTemplate<*, *>, htmlName: String, vararg language: Language) {
+    fun testHtml(
+        template: LetterTemplate<*, *>,
+        htmlName: String,
+        vararg language: Language,
+    ) {
         language.forEach {
-            Letter(template, Unit, it, Fixtures.fellesAuto).renderTestHtml(htmlName + "_${it}")
+            Letter(template, Unit, it, Fixtures.fellesAuto).renderTestHtml(htmlName + "_$it")
         }
     }
 
-    fun testAdhocPdf(template: LetterTemplate<*, *>, pdfName: String, vararg language: Language) {
+    fun testAdhocPdf(
+        template: LetterTemplate<*, *>,
+        pdfName: String,
+        vararg language: Language,
+    ) {
         language.forEach {
-            Letter(template, Unit, it, Fixtures.fellesAuto).renderTestPDF(pdfName + "_${it}")
+            Letter(template, Unit, it, Fixtures.fellesAuto).renderTestPDF(pdfName + "_$it")
         }
     }
 
@@ -30,7 +38,7 @@ class AdhocTest {
         testAdhocPdf(
             AdhocUfoeretrygdVarselOpphoerEktefelletillegg.template,
             pdfName = "UT_VARSEL_OPPHOER_EKTEFELLETILLEGG",
-            Bokmal
+            Bokmal,
         )
     }
 
@@ -39,7 +47,9 @@ class AdhocTest {
         testAdhocPdf(
             AdhocGjenlevendEtter1970.template,
             pdfName = "PE_ADHOC_2024_VEDTAK_GJENLEVENDETTER1970",
-            Bokmal, Nynorsk, English
+            Bokmal,
+            Nynorsk,
+            English,
         )
     }
 
@@ -48,7 +58,7 @@ class AdhocTest {
         testAdhocPdf(
             AdhocInformasjonHvilendeRett4Aar.template,
             pdfName = "PE_UT_ADHOC_2024_INFO_HVILENDE_RETT_4_AAR",
-            Bokmal
+            Bokmal,
         )
     }
 
@@ -57,7 +67,7 @@ class AdhocTest {
         testAdhocPdf(
             AdhocMidlertidigOpphoerHvilenderett10Aar.template,
             pdfName = "PE_UT_ADHOC_2024_MIDL_OPPHOER_HVILENDE_RETT_10_AAR",
-            Bokmal
+            Bokmal,
         )
     }
 
@@ -66,7 +76,7 @@ class AdhocTest {
         testAdhocPdf(
             AdhocVarselOpphoerMedHvilendeRett.template,
             pdfName = "UT_ADHOC_VARSEL_OPPHOER_MED_HVILENDE_RETT",
-            Bokmal
+            Bokmal,
         )
     }
 
@@ -75,7 +85,7 @@ class AdhocTest {
         testAdhocPdf(
             AdhocUfoeretrygdEtterbetalingDagpenger.template,
             pdfName = "UT_ADHOC_UFOERETRYGD_ETTERBETALING_DAGPENGER",
-            Bokmal
+            Bokmal,
         )
     }
 
@@ -84,7 +94,7 @@ class AdhocTest {
         testAdhocPdf(
             AdhocUfoeretrygdKombiDagpenger.template,
             pdfName = "UT_ADHOC_UFOERETRYGD_KOMBI_DAGPENGER",
-            Bokmal
+            Bokmal,
         )
     }
 
@@ -93,7 +103,7 @@ class AdhocTest {
         testAdhocPdf(
             AdhocUfoeretrygdKombiDagpengerInntektsavkorting.template,
             pdfName = "UT_ADHOC_UFOERETRYGD_KOMBI_DAGPENGER_AVKORTNING",
-            Bokmal
+            Bokmal,
         )
     }
 
@@ -102,7 +112,7 @@ class AdhocTest {
         testAdhocPdf(
             AdhocVarselOpphoerMedHvilendeRett.template,
             pdfName = "UT_ADHOC_VARSEL_OPPHOER_MED_HVILENDE_RETT",
-            Bokmal
+            Bokmal,
         )
     }
 
@@ -113,7 +123,7 @@ class AdhocTest {
             pdfName = "PE_AP_ADHOC_2024_REGLERENDRET_GJR_AP_MNTINDV",
             Bokmal,
             Nynorsk,
-            English
+            English,
         )
     }
 
@@ -124,10 +134,9 @@ class AdhocTest {
             pdfName = "PE_AP_ADHOC_2024_GJR_AP_MNTINDV_2",
             Bokmal,
             Nynorsk,
-            English
+            English,
         )
     }
-
 
     @Test
     fun `testAdhocFeilUtsendingAvGjenlevenderett pdf`() {
@@ -136,7 +145,7 @@ class AdhocTest {
             pdfName = "PE_ADHOC_2024_FEIL_INFOBREV_AP_SENDT_BRUKER",
             Bokmal,
             Nynorsk,
-            English
+            English,
         )
     }
 }

@@ -12,14 +12,13 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.MANUAL_TEST)
 class AvslagUfoeretrygdTest {
-
     @Test
     fun testPdf() {
         Letter(
             AvslagUfoeretrygd.template,
             Fixtures.create<AvslagUfoeretrygdDto>(),
             Language.Bokmal,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestPDF("UT_AVSLAG_UFOERTRYGD")
     }
 
@@ -29,7 +28,7 @@ class AvslagUfoeretrygdTest {
             AvslagUfoeretrygd.template,
             Fixtures.create<AvslagUfoeretrygdDto>(),
             Language.Nynorsk,
-            Fixtures.fellesAuto
+            Fixtures.fellesAuto,
         ).renderTestHtml("UT_AVSLAG_UFOERTRYGD")
     }
 }
