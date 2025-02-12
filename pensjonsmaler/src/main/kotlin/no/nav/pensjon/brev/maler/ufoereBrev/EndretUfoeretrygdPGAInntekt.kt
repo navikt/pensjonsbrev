@@ -1104,14 +1104,14 @@ object EndretUfoeretrygdPGAInntekt : AutobrevTemplate<EndretUfoeretrygdPGAInntek
                         showIf(justeringsbelopPerArBTFB.notEqualTo(0)) {
                             ifNotNull(justeringsbelopPerArBTFB) { justeringsbelopPerArBTFB ->
                                 showIf(justeringsbelopPerArBTFB.greaterThan(0)) {
-                                    text(
-                                        Bokmal to "Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor lagt til " + justeringsbelopPerArBTFB.absoluteValue().format() + " kroner i det vi reduserer barnetillegget med for resten av året. ",
-                                        Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor lagt til " + justeringsbelopPerArBTFB.absoluteValue().format() + " kroner i det vi har redusert barnetillegget med for resten av året. ",
+                                    textExpr(
+                                        Bokmal to "Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor lagt til ".expr() + justeringsbelopPerArBTFB.absoluteValue().format() + " kroner i det vi reduserer barnetillegget med for resten av året. ",
+                                        Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor lagt til ".expr() + justeringsbelopPerArBTFB.absoluteValue().format() + " kroner i det vi har redusert barnetillegget med for resten av året. ",
                                     )
                                 }.orShow {
-                                    text(
-                                        Bokmal to "Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor trukket fra " + justeringsbelopPerArBTFB.absoluteValue().format() + " kroner i det vi reduserer barnetillegget med for resten av året. ",
-                                        Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor trekt frå " + justeringsbelopPerArBTFB.absoluteValue().format() + " kroner i det vi har redusert barnetillegget med for resten av året. ",
+                                    textExpr(
+                                        Bokmal to "Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor trukket fra ".expr() + justeringsbelopPerArBTFB.absoluteValue().format() + " kroner i det vi reduserer barnetillegget med for resten av året. ",
+                                        Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor trekt frå ".expr() + justeringsbelopPerArBTFB.absoluteValue().format() + " kroner i det vi har redusert barnetillegget med for resten av året. ",
                                     )
                                 }
                             }
@@ -1143,14 +1143,14 @@ object EndretUfoeretrygdPGAInntekt : AutobrevTemplate<EndretUfoeretrygdPGAInntek
                             )
                             ifNotNull(justeringsbelopPerArBTSB) { justeringsbelopPerArBTSB ->
                                 showIf(justeringsbelopPerArBTSB.greaterThan(0)) {
-                                    text(
-                                        Bokmal to "Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor lagt til " + justeringsbelopPerArBTSB.absoluteValue().format() + " kroner i det vi reduserer barnetillegget med for resten av året. ",
-                                        Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor lagt til " + justeringsbelopPerArBTSB.absoluteValue().format() + " kroner i det vi reduserte barnetillegget med for resten av året. ",
+                                    textExpr(
+                                        Bokmal to "Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor lagt til ".expr() + justeringsbelopPerArBTSB.absoluteValue().format() + " kroner i det vi reduserer barnetillegget med for resten av året. ",
+                                        Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor lagt til ".expr() + justeringsbelopPerArBTSB.absoluteValue().format() + " kroner i det vi reduserte barnetillegget med for resten av året. ",
                                     )
                                 }.orShow {
-                                    text(
-                                        Bokmal to "Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor trukket fra " + justeringsbelopPerArBTSB.absoluteValue().format() + " kroner i det vi reduserer barnetillegget med for resten av året. ",
-                                        Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor trekt frå " + justeringsbelopPerArBTSB.absoluteValue().format() + " kroner i det vi reduserte barnetillegget med for resten av året. ",
+                                    textExpr(
+                                        Bokmal to "Vi har tatt hensyn til hvordan barnetillegget eventuelt har vært redusert i starten av året, og vi har derfor trukket fra ".expr() + justeringsbelopPerArBTSB.absoluteValue().format() + " kroner i det vi reduserer barnetillegget med for resten av året. ",
+                                        Nynorsk to "Vi har teke omsyn til korleis barnetillegget eventuelt har vore redusert i starten av året, og vi har derfor trekt frå ".expr() + justeringsbelopPerArBTSB.absoluteValue().format() + " kroner i det vi reduserte barnetillegget med for resten av året. ",
                                     )
                                 }
                             }
