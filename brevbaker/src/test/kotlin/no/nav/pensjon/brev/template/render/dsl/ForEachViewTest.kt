@@ -19,24 +19,24 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class ForEachViewTest {
-
     @Test
     fun `ForEachView will render the body for all list items`() {
         val listen = listOf("hei", "ha det bra", "og", "goodbye")
-        val actual = outlineTestTemplate<Unit> {
-            val myList = listen.expr()
-            val str = 5.expr().format()
+        val actual =
+            outlineTestTemplate<Unit> {
+                val myList = listen.expr()
+                val str = 5.expr().format()
 
-            paragraph {
-                forEach(myList) { x ->
-                    eval(x)
+                paragraph {
+                    forEach(myList) { x ->
+                        eval(x)
+                    }
+                }
+
+                repeat(3) {
+                    title1 { eval(str) }
                 }
             }
-
-            repeat(3) {
-                title1 { eval(str) }
-            }
-        }
 
         assertThat(
             Letter2Markup.render(Letter(actual, Unit, Language.Bokmal, felles)).letterMarkup,
@@ -54,17 +54,18 @@ class ForEachViewTest {
     @Test
     fun `ForEachView works for nested forEach`() {
         val listen = listOf(listOf("hei", "hello", "bonjour"), listOf("ha det bra", "goodbye", "au revoir"))
-        val actual = outlineTestTemplate<Unit> {
-            val myList = listen.expr()
+        val actual =
+            outlineTestTemplate<Unit> {
+                val myList = listen.expr()
 
-            paragraph {
-                forEach(myList) { subList ->
-                    forEach(subList) {
-                        eval(it)
+                paragraph {
+                    forEach(myList) { subList ->
+                        forEach(subList) {
+                            eval(it)
+                        }
                     }
                 }
             }
-        }
 
         assertThat(
             Letter2Markup.render(Letter(actual, Unit, Language.Bokmal, felles)).letterMarkup,
@@ -76,7 +77,7 @@ class ForEachViewTest {
                         }
                     }
                 }
-            }
+            },
         )
     }
 
@@ -85,22 +86,24 @@ class ForEachViewTest {
     @Test
     fun `ForEachView render works with letter argument`() {
         val listen = listOf("hei", "ha det bra", "og", "goodbye")
-        val selector = object : TemplateModelSelector<Argument, String> {
-            override val className = Argument::class.java.name
-            override val propertyName = "value"
-            override val propertyType = "String"
-            override val selector = Argument::value
-        }
+        val selector =
+            object : TemplateModelSelector<Argument, String> {
+                override val className = Argument::class.java.name
+                override val propertyName = "value"
+                override val propertyType = "String"
+                override val selector = Argument::value
+            }
 
-        val actual = outlineTestTemplate<Argument> {
-            val myList = listen.expr()
+        val actual =
+            outlineTestTemplate<Argument> {
+                val myList = listen.expr()
 
-            paragraph {
-                forEach(myList) { x ->
-                    eval(argument.select(selector) + x)
+                paragraph {
+                    forEach(myList) { x ->
+                        eval(argument.select(selector) + x)
+                    }
                 }
             }
-        }
 
         val render = Letter2Markup.render(Letter(actual, Argument("Tja:"), Language.Bokmal, felles))
         assertThat(
@@ -112,23 +115,24 @@ class ForEachViewTest {
                         variable(str)
                     }
                 }
-            }
+            },
         )
     }
 
     @Test
     fun `ForEach works with nested loops over the same collection`() {
         val list = listOf("1", "2")
-        val template = outlineTestTemplate<EmptyBrevdata> {
-            val listExpr = list.expr()
-            paragraph {
-                forEach(listExpr) { outer ->
-                    forEach(listExpr) { inner ->
-                        eval(outer + "," + inner + ";")
+        val template =
+            outlineTestTemplate<EmptyBrevdata> {
+                val listExpr = list.expr()
+                paragraph {
+                    forEach(listExpr) { outer ->
+                        forEach(listExpr) { inner ->
+                            eval(outer + "," + inner + ";")
+                        }
                     }
                 }
             }
-        }
         val expected = "1,1;1,2;2,1;2,2;"
 
         assertThat(
@@ -144,7 +148,7 @@ class ForEachViewTest {
                         }
                     }
                 }
-            }
+            },
         )
     }
 
@@ -155,37 +159,38 @@ class ForEachViewTest {
 
     @Test
     fun `ForEach uses stableHashCode of items to assign id of Assigned-Expression`() {
-        val template = outlineTestTemplate<ListArgument> {
-            paragraph {
-                forEach(liste) {
-                    textExpr(Language.Bokmal to it)
+        val template =
+            outlineTestTemplate<ListArgument> {
+                paragraph {
+                    forEach(liste) {
+                        textExpr(Language.Bokmal to it)
+                    }
                 }
             }
-        }
 
         val itemsExpr = Expression.FromScope.Argument<ListArgument>().select(listeSelector)
         val expectedNext = Expression.FromScope.Assigned<String>(itemsExpr.stableHashCode())
 
-        val expected = ContentOrControlStructure.Content(
-            Element.OutlineContent.Paragraph(
-                listOf(
-                    ContentOrControlStructure.ForEach(
-                        itemsExpr,
-                        listOf(
-                            ContentOrControlStructure.Content(
-                                Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(Language.Bokmal to expectedNext)
+        val expected =
+            ContentOrControlStructure.Content(
+                Element.OutlineContent.Paragraph(
+                    listOf(
+                        ContentOrControlStructure.ForEach(
+                            itemsExpr,
+                            listOf(
+                                ContentOrControlStructure.Content(
+                                    Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(Language.Bokmal to expectedNext),
+                                ),
                             ),
+                            expectedNext,
                         ),
-                        expectedNext
-                    )
-                )
+                    ),
+                ),
             )
-        )
 
         assertEquals(
             expected,
-            template.outline.first()
+            template.outline.first(),
         )
     }
-
 }

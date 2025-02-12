@@ -19,11 +19,12 @@ class TemplateLibrary<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevd
 
     fun getTemplate(kode: Kode) = getTemplate(kode.kode())
 
-    private fun getTemplate(kode: String) = when {
-        // Legg inn her hvis du ønsker å styre forskjellige versjoner, feks
-        // kode == DinBrevmal.kode && FeatureToggles.dinToggle.isEnabled() -> DinBrevmalV2
-        kode == Pesysbrevkoder.Redigerbar.UT_ORIENTERING_OM_SAKSBEHANDLINGSTID.kode() && FeatureToggleSingleton.isEnabled(FeatureToggles.pl7231ForventetSvartid) -> OrienteringOmSaksbehandlingstidV2
-        kode == Pesysbrevkoder.AutoBrev.UT_VARSEL_SAKSBEHANDLINGSTID_AUTO.kode() && FeatureToggleSingleton.isEnabled(FeatureToggles.pl7231ForventetSvartid) -> VarselSaksbehandlingstidAutoV2
-        else -> templates[kode]?.takeIf { it.kode.toggle()?.let { FeatureToggleHandler.isEnabled(it) } ?: true }
-    }
+    private fun getTemplate(kode: String) =
+        when {
+            // Legg inn her hvis du ønsker å styre forskjellige versjoner, feks
+            // kode == DinBrevmal.kode && FeatureToggles.dinToggle.isEnabled() -> DinBrevmalV2
+            kode == Pesysbrevkoder.Redigerbar.UT_ORIENTERING_OM_SAKSBEHANDLINGSTID.kode() && FeatureToggleSingleton.isEnabled(FeatureToggles.pl7231ForventetSvartid) -> OrienteringOmSaksbehandlingstidV2
+            kode == Pesysbrevkoder.AutoBrev.UT_VARSEL_SAKSBEHANDLINGSTID_AUTO.kode() && FeatureToggleSingleton.isEnabled(FeatureToggles.pl7231ForventetSvartid) -> VarselSaksbehandlingstidAutoV2
+            else -> templates[kode]?.takeIf { it.kode.toggle()?.let { FeatureToggleHandler.isEnabled(it) } ?: true }
+        }
 }
