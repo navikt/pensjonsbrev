@@ -36,10 +36,10 @@ fun settOppFakeUnleash() = FeatureToggleHandler.configure {
 
 fun aktiverToggle(toggle: FeatureToggle) {
     settOppFakeUnleash()
-    fakeUnleash.enable(unleashTogglePrefix + toggle.key())
+    fakeUnleash.enable(UNLEASH_TOGGLE_PREFIX + toggle.key())
 }
 
 fun deaktiverToggle(toggle: FeatureToggle) {
     settOppFakeUnleash()
-    fakeUnleash.disable(unleashTogglePrefix + toggle.key())
+    fakeUnleash.disable(UNLEASH_TOGGLE_PREFIX + toggle.key())
 }
