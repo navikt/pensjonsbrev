@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template.render.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
+import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
 import no.nav.pensjon.brev.template.Element.OutlineContent.Paragraph
@@ -15,7 +16,6 @@ import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.name
 import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.pensjonInnvilget
 import no.nav.pensjon.brev.template.render.hasBlocks
-import no.nav.pensjon.brev.template.render.outlineTestTemplate
 import org.junit.jupiter.api.Test
 
 class ShowIfTest {

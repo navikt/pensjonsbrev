@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.TestTags
+import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.renderTestPdfOutline
+import no.nav.brev.brevbaker.renderTestVedleggPdf
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.maler.example.lipsums
-import no.nav.pensjon.brev.renderTestPdfOutline
-import no.nav.pensjon.brev.renderTestVedleggPdf
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType

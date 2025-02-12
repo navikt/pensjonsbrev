@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { BodyShort, CopyButton } from "@navikt/ds-react";
+import { BodyShort, CopyButton, HStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Outlet } from "@tanstack/react-router";
@@ -9,6 +9,7 @@ import { getSakContext } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
+import { queryFold } from "~/utils/tanstackUtils";
 
 import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
 import { FerdigstillResultatContextProvider } from "./kvittering/-components/FerdigstillResultatContext";
@@ -45,20 +46,20 @@ export const Route = createFileRoute("/saksnummer/$saksId")({
     const { saksId } = Route.useParams();
     return <ApiError error={error} title={`Klarte ikke hente saksnummer ${saksId}`} />;
   },
-  component: SakBreadcrumbsPage,
+  component: SakLayout,
   validateSearch: (search: Record<string, unknown>): { vedtaksId?: string; enhetsId?: string } => ({
     vedtaksId: search.vedtaksId?.toString(),
     enhetsId: search.enhetsId?.toString(),
   }),
 });
 
-function SakBreadcrumbsPage() {
+function SakLayout() {
   const sakContext = Route.useLoaderData();
 
   return (
     <FerdigstillResultatContextProvider>
       <MottakerContextProvider>
-        <SakInfoBreadcrumbs sak={sakContext?.sak} />
+        {sakContext && <Subheader sak={sakContext.sak} />}
         <div className="page-margins">
           <Outlet />
         </div>
@@ -67,18 +68,13 @@ function SakBreadcrumbsPage() {
   );
 }
 
-function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
-  const { data: navn } = useQuery({
+function Subheader({ sak }: { sak: SakDto }) {
+  const { fødselsdato, personnummer } = splitFødselsnummer(sak.foedselsnr);
+  const hentNavnQuery = useQuery({
     queryKey: getNavn.queryKey(sak?.foedselsnr as string),
     queryFn: () => getNavn.queryFn(sak?.saksId?.toString() as string),
     enabled: !!sak,
   });
-
-  const { vedtaksId } = Route.useSearch();
-
-  if (!sak) {
-    return <></>;
-  }
 
   return (
     <div
@@ -93,6 +89,7 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
           display: flex;
           padding: var(--a-spacing-2) var(--a-spacing-8);
           align-items: center;
+          justify-content: space-between;
           border-bottom: 1px solid var(--a-gray-200);
           background: var(--a-surface-default);
 
@@ -111,16 +108,32 @@ function SakInfoBreadcrumbs({ sak }: { sak?: SakDto }) {
           }
         `}
       >
-        <BodyShort size="small">
-          {sak.foedselsnr} <CopyButton copyText={sak.foedselsnr} size="small" />
-        </BodyShort>
-        <BodyShort size="small">{navn ?? ""}</BodyShort>
-        <BodyShort size="small">Sakstype: {SAK_TYPE_TO_TEXT[sak.sakType]}</BodyShort>
-        <BodyShort size="small">
-          Saksnummer: {sak.saksId} <CopyButton copyText={sak.saksId.toString()} size="small" />
-        </BodyShort>
-        {vedtaksId && <BodyShort size="small">vedtaksId: {vedtaksId}</BodyShort>}
+        <HStack>
+          <BodyShort size="small">
+            {fødselsdato} {personnummer} <CopyButton copyText={sak.foedselsnr} size="small" variant="action" />
+          </BodyShort>
+          {queryFold({
+            query: hentNavnQuery,
+            initial: () => null,
+            pending: () => <BodyShort size="small">Henter navn...</BodyShort>,
+            error: () => <BodyShort size="small">Feil ved henting av navn</BodyShort>,
+            success: (navn) => <BodyShort size="small">{navn}</BodyShort>,
+          })}
+        </HStack>
+        <HStack>
+          <BodyShort size="small">{SAK_TYPE_TO_TEXT[sak.sakType]}</BodyShort>
+          <BodyShort size="small">
+            {sak.saksId} <CopyButton copyText={sak.saksId.toString()} size="small" variant="action" />
+          </BodyShort>
+        </HStack>
       </div>
     </div>
   );
 }
+
+const splitFødselsnummer = (fødselsnummer: string) => {
+  const fødselsdato = fødselsnummer.slice(0, 6);
+  const personnummer = fødselsnummer.slice(6);
+
+  return { fødselsdato, personnummer };
+};

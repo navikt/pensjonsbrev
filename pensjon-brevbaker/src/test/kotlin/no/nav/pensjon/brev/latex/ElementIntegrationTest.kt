@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.latex
 
-import no.nav.pensjon.brev.TestTags
+import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.outlineTestTemplate
+import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.outlineTestTemplate
-import no.nav.pensjon.brev.renderTestPDF
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.text
 import org.junit.jupiter.api.Tag

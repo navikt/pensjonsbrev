@@ -33,7 +33,6 @@ ktor {
 }
 
 repositories {
-    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven") }
     mavenLocal()
 }
 
@@ -117,7 +116,6 @@ dependencies {
     implementation("io.ktor:ktor-server-swagger:$ktorVersion")
     implementation("io.ktor:ktor-client-encoding:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.12.0")
     implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
     implementation("org.apache.kafka:connect-runtime:$kafkaVersion")
 
@@ -142,5 +140,7 @@ dependencies {
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("io.mockk:mockk:${mockkVersion}")
+
+    testImplementation(testFixtures(project(":brevbaker")))
 }
 

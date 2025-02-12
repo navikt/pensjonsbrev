@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brev.api.model.FeatureToggle
+import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import kotlin.math.absoluteValue
@@ -63,7 +64,7 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     }
 
     object FunksjonsbryterEnabled : UnaryOperation<FeatureToggle, Boolean>(), StableHash by StableHash.of("UnaryOperation.Enabled") {
-        override fun apply(input: FeatureToggle): Boolean = input.isEnabled()
+        override fun apply(input: FeatureToggle): Boolean = FeatureToggleSingleton.isEnabled(input)
     }
 
     object BrukerFulltNavn: UnaryOperation<Bruker, String>(), StableHash by StableHash.of("UnaryOperation.BrukerFulltNavn") {

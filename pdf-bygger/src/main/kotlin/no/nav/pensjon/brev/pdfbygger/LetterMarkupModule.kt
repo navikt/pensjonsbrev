@@ -13,7 +13,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 
-object LetterMarkupModule : SimpleModule() {
+internal object LetterMarkupModule : SimpleModule() {
     private fun readResolve(): Any = LetterMarkupModule
 
     class DeserializationException(message: String): Exception(message)

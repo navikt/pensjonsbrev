@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelVersion: String by project
@@ -11,11 +12,12 @@ val logbackVersion: String by project
 val logstashVersion: String by project
 val micrometerVersion: String by project
 val mockkVersion: String by project
+val flywayVersion: String by project
 
 plugins {
     application
     kotlin("jvm")
-    id("io.ktor.plugin")
+    id("com.gradleup.shadow")
 }
 
 group = "no.nav.pensjon.brev.skribenten"
@@ -24,8 +26,13 @@ application {
     mainClass.set("no.nav.pensjon.brev.skribenten.SkribentenAppKt")
 }
 
-ktor {
-    fatJar {
+tasks {
+    named<ShadowJar>("shadowJar") {
+        /* Lager en FatJar. Dette er en workaround for å få med plugin-konfig som Flyway trenger,
+        henta fra https://stackoverflow.com/a/77237118
+        Om du endrer denne til FatJar, start først appen i en container og se at databasemigreringa fortsatt fungerer
+         */
+        mergeServiceFiles()
         archiveFileName.set("app.jar")
     }
 }
@@ -83,12 +90,16 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.3")
     implementation("com.zaxxer:HikariCP:6.2.1")
 
+
+    // Databasemigrering
+    implementation("org.flywaydb:flyway-core:$flywayVersion")
+    implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
+
     // Unleash
     implementation("io.getunleash:unleash-client-java:10.0.0")
 
     // Domenemodell
-    implementation("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
-    api(project(":brevbaker-dsl"))
+    implementation("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.8.2")
 
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")

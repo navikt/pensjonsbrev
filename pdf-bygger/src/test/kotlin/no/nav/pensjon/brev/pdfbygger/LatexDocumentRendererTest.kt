@@ -95,11 +95,11 @@ class LatexDocumentRendererTest {
         val rendered = LatexDocumentRenderer.render(pdfRequest)
 
         assertThat(
-            rendered.files.filterIsInstance<DocumentFile.PlainText>().first { it.fileName == "letter.tex" }.content,
+            rendered.files.filterIsInstance<DocumentFile>().first { it.fileName == "letter.tex" }.content,
             containsSubstring("Du har fått innvilget pensjon")
         )
 
-        assertThat(rendered.files.filterIsInstance<DocumentFile.PlainText>().first { it.fileName == "attachment_0.tex" }.content, containsSubstring("Test vedlegg"))
+        assertThat(rendered.files.filterIsInstance<DocumentFile>().first { it.fileName == "attachment_0.tex" }.content, containsSubstring("Test vedlegg"))
     }
 
     fun assertNumberOfParagraphs(
@@ -125,7 +125,7 @@ class LatexDocumentRendererTest {
                     brevtype = letter.template.letterMetadata.brevtype,
                 )
             )
-            val tex = latexDocument.files.find { it.fileName == "letter.tex" } as DocumentFile.PlainText
+            val tex = latexDocument.files.find { it.fileName == "letter.tex" } as DocumentFile
             assertThat(tex.content.lines().count { it.contains("templateparagraph") }, equalTo(expectedParagraphs))
         }
     }

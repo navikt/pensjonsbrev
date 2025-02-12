@@ -7,7 +7,7 @@ import { handleSwitchContent, handleSwitchTextContent, isItemContentIndex } from
 import type { Action } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
 import { getCursorOffset } from "../services/caretUtils";
-import { newLiteral, newVariable } from "./common";
+import { newLiteral } from "./common";
 import type { LiteralIndex } from "./model";
 
 export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralIndex, fontType: FontType]> = produce(
@@ -56,9 +56,6 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
       },
       onVariable: (variable) => {
         const newVariable = switchFontTypeForVariable({
-          draft,
-          thisBlock: block,
-          literalIndex,
           fonttype: fontType,
           variable,
         });
@@ -116,9 +113,6 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
           },
           onVariable: (variable) => {
             const newVariable = switchFontTypeForVariable({
-              draft,
-              thisBlock: block,
-              literalIndex,
               fonttype: fontType,
               variable,
             });
@@ -156,18 +150,14 @@ const switchFontTypeForLiteral = (args: {
   return hasSelectionAndMarkedText ? switchFontTypeOfMarkedText(args) : switchFontTypeOfCurrentWord(args);
 };
 
-const switchFontTypeForVariable = (args: {
-  draft: Draft<LetterEditorState>;
-  thisBlock: ParagraphBlock;
-  literalIndex: LiteralIndex;
-  fonttype: FontType;
-  variable: Draft<VariableValue>;
-}) => {
-  return newVariable({
-    id: args.variable.id,
-    text: args.variable.text,
-    fontType: args.fonttype,
-  });
+const switchFontTypeForVariable = (args: { fonttype: FontType; variable: Draft<VariableValue> }) => {
+  return args.variable;
+  //TODO: Implement this - her trenger vi editedFontType, på samme måte som literals
+  // return newVariable({
+  //   id: args.variable.id,
+  //   text: args.variable.text,
+  //   editedFontType: args.fonttype,
+  // });
 };
 
 const switchFontTypeOfMarkedText = (args: {

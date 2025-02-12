@@ -13,21 +13,23 @@
 }
 
 .PARAGRAPH {
-    margin-bottom: var(--a-spacing-8);
+    font-size: 16.5px;
+    line-height: var(--a-font-line-height-heading-xsmall);
+    margin-bottom: 27px;
 }
 
 .TITLE1 {
-    font-size: var(--a-font-size-heading-medium);
-    letter-spacing: -0.002em;
-    line-height: var(--a-font-line-height-heading-medium);
+    font-size: 19.5px;
+    letter-spacing: 0.375px;
+    line-height: var(--a-font-line-height-heading-xsmall);
     font-weight: var(--a-font-weight-bold);
-    margin-bottom: var(--a-spacing-2);
+    margin-bottom: var(--a-spacing-1-alt);
 }
 
 .TITLE2 {
-    font-size: var(--a-font-size-heading-small);
-    letter-spacing: -0.001em;
-    line-height: var(--a-font-line-height-heading-small);
+    font-size: 18px;
+    letter-spacing: 0.3px;
+    line-height: var(--a-font-line-height-heading-xsmall);
     font-weight: var(--a-font-weight-bold);
-    margin-bottom: var(--a-spacing-2);
+    margin-bottom: var(--a-spacing-1-alt);
 }
