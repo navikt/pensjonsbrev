@@ -22,7 +22,8 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     api(project(":brevbaker"))
     ksp(project(":template-model-generator"))
-    api(project(":pensjon-brevbaker-api-model"))
+    api("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
+
 
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
