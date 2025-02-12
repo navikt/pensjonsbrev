@@ -33,61 +33,63 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSom
 @TemplateModelHelpers
 object EnkeltVedtakOmregningNyttRegelverkFerdig : EtterlatteTemplate<BarnepensjonOmregnetNyttRegelverkFerdigDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_VEDTAK_OMREGNING_FERDIG
-    override val template: LetterTemplate<*, BarnepensjonOmregnetNyttRegelverkFerdigDTO> = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonOmregnetNyttRegelverkFerdigDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Endring av barnepensjon",
-            isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
-        )
-    ) {
-        title {
-            text(
-                Bokmal to "Vedtak - endring av barnepensjon",
-                Nynorsk to "Vi har endra barnepensjonen din",
-                English to "Draft decision – adjustment of children's pension",
+    override val template: LetterTemplate<*, BarnepensjonOmregnetNyttRegelverkFerdigDTO> =
+        createTemplate(
+            name = kode.name,
+            letterDataType = BarnepensjonOmregnetNyttRegelverkFerdigDTO::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Endring av barnepensjon",
+                    isSensitiv = false,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Bokmal to "Vedtak - endring av barnepensjon",
+                    Nynorsk to "Vi har endra barnepensjonen din",
+                    English to "Draft decision – adjustment of children's pension",
+                )
+            }
+            outline {
+                konverterElementerTilBrevbakerformat(innhold)
+
+                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(erEtterbetaling, erBosattUtlandet, frivilligSkattetrekk))
+                includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
+                includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
+                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(erUnder18Aar, erBosattUtlandet))
+            }
+
+            // Beregning av barnepensjon nytt og gammelt regelverk
+            includeAttachment(beregningAvBarnepensjonGammeltOgNyttRegelverk, beregning)
+
+            // Vedlegg under 18 år
+            includeAttachment(
+                informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal,
+                innhold,
+                erUnder18Aar.and(erBosattUtlandet.not()),
             )
+            includeAttachment(
+                informasjonTilDegSomHandlerPaaVegneAvBarnetUtland,
+                innhold,
+                erUnder18Aar.and(erBosattUtlandet),
+            )
+
+            // Vedlegg over 18 år
+            includeAttachment(
+                informasjonTilDegSomMottarBarnepensjonNasjonal,
+                innhold,
+                erUnder18Aar.not().and(erBosattUtlandet.not()),
+            )
+            includeAttachment(
+                informasjonTilDegSomMottarBarnepensjonUtland,
+                innhold,
+                erUnder18Aar.not().and(erBosattUtlandet),
+            )
+
+            includeAttachment(dineRettigheterOgPlikterBosattUtland, innhold, erBosattUtlandet)
+            includeAttachment(dineRettigheterOgPlikterNasjonal, innhold, erBosattUtlandet.not())
         }
-        outline {
-            konverterElementerTilBrevbakerformat(innhold)
-
-            includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(erEtterbetaling, erBosattUtlandet, frivilligSkattetrekk))
-            includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
-            includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
-            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(erUnder18Aar, erBosattUtlandet))
-        }
-
-        // Beregning av barnepensjon nytt og gammelt regelverk
-        includeAttachment(beregningAvBarnepensjonGammeltOgNyttRegelverk, beregning)
-
-        // Vedlegg under 18 år
-        includeAttachment(
-            informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal,
-            innhold,
-            erUnder18Aar.and(erBosattUtlandet.not())
-        )
-        includeAttachment(
-            informasjonTilDegSomHandlerPaaVegneAvBarnetUtland,
-            innhold,
-            erUnder18Aar.and(erBosattUtlandet)
-        )
-
-        // Vedlegg over 18 år
-        includeAttachment(
-            informasjonTilDegSomMottarBarnepensjonNasjonal,
-            innhold,
-            erUnder18Aar.not().and(erBosattUtlandet.not())
-        )
-        includeAttachment(
-            informasjonTilDegSomMottarBarnepensjonUtland,
-            innhold,
-            erUnder18Aar.not().and(erBosattUtlandet)
-        )
-
-        includeAttachment(dineRettigheterOgPlikterBosattUtland, innhold, erBosattUtlandet)
-        includeAttachment(dineRettigheterOgPlikterNasjonal, innhold, erBosattUtlandet.not())
-    }
 }

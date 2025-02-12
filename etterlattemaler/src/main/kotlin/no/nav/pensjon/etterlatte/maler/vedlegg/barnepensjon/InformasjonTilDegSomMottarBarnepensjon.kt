@@ -14,33 +14,37 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.postadresse
 
 @TemplateModelHelpers
-val informasjonTilDegSomMottarBarnepensjonNasjonal = createAttachment(
-    title = newText(
-        Bokmal to "Informasjon til deg som mottar barnepensjon",
-        Nynorsk to "Informasjon til deg som får barnepensjon",
-        English to "Information to recipients of children’s pensions",
-    ),
-    includeSakspart = false,
-) {
-    informasjon()
-    postadresse(utland = false.expr())
-    endringAvKontonummerNasjonal()
-}
+val informasjonTilDegSomMottarBarnepensjonNasjonal =
+    createAttachment(
+        title =
+            newText(
+                Bokmal to "Informasjon til deg som mottar barnepensjon",
+                Nynorsk to "Informasjon til deg som får barnepensjon",
+                English to "Information to recipients of children’s pensions",
+            ),
+        includeSakspart = false,
+    ) {
+        informasjon()
+        postadresse(utland = false.expr())
+        endringAvKontonummerNasjonal()
+    }
 
 @TemplateModelHelpers
-val informasjonTilDegSomMottarBarnepensjonUtland = createAttachment(
-    title = newText(
-        Bokmal to "Informasjon til deg som mottar barnepensjon",
-        Nynorsk to "Informasjon til deg som får barnepensjon",
-        English to "Information to recipients of children’s pensions",
-    ),
-    includeSakspart = false,
-) {
-    informasjon()
-    postadresse(utland = true.expr())
-    endringAvKontonummerUtland()
-    utbetalingAvBarnepensjonUtland()
-}
+val informasjonTilDegSomMottarBarnepensjonUtland =
+    createAttachment(
+        title =
+            newText(
+                Bokmal to "Informasjon til deg som mottar barnepensjon",
+                Nynorsk to "Informasjon til deg som får barnepensjon",
+                English to "Information to recipients of children’s pensions",
+            ),
+        includeSakspart = false,
+    ) {
+        informasjon()
+        postadresse(utland = true.expr())
+        endringAvKontonummerUtland()
+        utbetalingAvBarnepensjonUtland()
+    }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.informasjon() {
     paragraph {
@@ -65,7 +69,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             Bokmal to "Du kan sjekke og endre kontonummeret som er registrert på deg ved å logge inn på ${Constants.NAV_URL}. Hvis du ikke kan melde fra digitalt, kan du melde om endringer via post. Du må da legge ved kopi av gyldig legitimasjon, eller vise gyldig legitimasjon ved personlig fremmøte på et Nav-kontor.",
             Nynorsk to "Du kan sjekke og endre kontonummeret som er registrert på deg ved å logge inn på ${Constants.NAV_URL}. Dersom du ikkje kan melde frå digitalt, kan du melde om endringar per post. Du må då leggje ved kopi av gyldig legitimasjon, eller vise gyldig legitimasjon ved personleg frammøte på eit Nav-kontor. ",
             English to "You can check and change the bank account number that is registered in our system by logging in to our website: ${Constants.NAV_URL}. If you are unable to notify us digitally, you can report any changes using conventional mail. Please remember to include a copy of a valid identification document or coming to the Nav office in person and bringing proof of identity.",
-            )
+        )
     }
     paragraph {
         text(

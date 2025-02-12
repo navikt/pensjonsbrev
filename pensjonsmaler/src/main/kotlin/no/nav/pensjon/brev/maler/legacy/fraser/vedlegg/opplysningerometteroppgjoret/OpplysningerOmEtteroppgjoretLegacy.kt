@@ -55,9 +55,8 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 object OpplysningerOmEtteroppgjoretLegacy {
-
     data class PE_UT_Etteroppgjor_DetaljEPS_InntektListe_InntektTypeKode(
-        val inntektType: Expression<String?>
+        val inntektType: Expression<String?>,
     ) : TextOnlyPhrase<LangBokmalNynorsk>() {
         override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(inntektType.equalTo("rap_arb")) {
@@ -115,7 +114,6 @@ object OpplysningerOmEtteroppgjoretLegacy {
                 )
             }
         }
-
     }
 
     data class PE_UT_Etteroppgjor_DetaljBruker_FratrekkListe_InntektTypeKode(
@@ -235,7 +233,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
     }
 
     data class PE_UT_Etteroppgjor_DetaljEPS_FratrekkListe_InntektTypeKode(
-        val inntektstypeKode: Expression<String?>
+        val inntektstypeKode: Expression<String?>,
     ) : TextOnlyPhrase<LangBokmalNynorsk>() {
         override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(inntektstypeKode.equalTo("rap_arb")) {
@@ -273,7 +271,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
     }
 
     data class PE_UT_Etteroppgjor_DetaljEPS_FratrekkListe_GrunnIkkeReduksjonKode(
-        val grunnIkkeReduksjonKode: Expression<String?>
+        val grunnIkkeReduksjonKode: Expression<String?>,
     ) : TextOnlyPhrase<LangBokmalNynorsk>() {
         override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(grunnIkkeReduksjonKode.equalTo("opptjent_for_innv_ut")) {
@@ -303,11 +301,10 @@ object OpplysningerOmEtteroppgjoretLegacy {
                 )
             }
         }
-
     }
 
     data class PE_UT_Etteroppgjor_DetaljBruker_InntektListe_InntektTypeKode(
-        val inntektTypeKode: Expression<String?>
+        val inntektTypeKode: Expression<String?>,
     ) : TextOnlyPhrase<LangBokmalNynorsk>() {
         override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(inntektTypeKode.equalTo("rap_arb")) {
@@ -363,7 +360,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
     }
 
     data class PE_UT_Etteroppgjor_DetaljBruker_InntektListe_RegisterKildeKode(
-        val registerkilde: Expression<String?>
+        val registerkilde: Expression<String?>,
     ) : TextOnlyPhrase<LangBokmalNynorsk>() {
         override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(registerkilde.equalTo("a_ordning")) {
@@ -388,9 +385,12 @@ object OpplysningerOmEtteroppgjoretLegacy {
     data class TabellTrukketFraInntekt(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(
-                (pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop()
-                    .notEqualTo(0)) and pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag()
-                    .isNotEmpty()
+                (
+                    pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop()
+                        .notEqualTo(0)
+                ) and
+                    pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag()
+                        .isNotEmpty(),
             ) {
                 title1 {
                     text(
@@ -428,13 +428,18 @@ object OpplysningerOmEtteroppgjoretLegacy {
                     }) {
                         forEach(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag()) { inntektsgrunnlag ->
 
-                            //IF( ( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'ikke_red' ) ) THEN      INCLUDE ENDIF
+                            // IF( ( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'ikke_red' ) ) THEN      INCLUDE ENDIF
                             showIf(
-                                ((inntektsgrunnlag.inntekttype_safe.equalTo("rap_nar") or inntektsgrunnlag.inntekttype_safe.equalTo("forintutl") or inntektsgrunnlag.inntekttype_safe.equalTo(
-                                    "rap_arb"
-                                ) or inntektsgrunnlag.inntekttype_safe.equalTo("ikke_red")))
+                                (
+                                    (
+                                        inntektsgrunnlag.inntekttype_safe.equalTo("rap_nar") or inntektsgrunnlag.inntekttype_safe.equalTo("forintutl") or
+                                            inntektsgrunnlag.inntekttype_safe.equalTo(
+                                                "rap_arb",
+                                            ) or inntektsgrunnlag.inntekttype_safe.equalTo("ikke_red")
+                                    )
+                                ),
                             ) {
-                                //[Table 3, Table 4, Table 5]
+                                // [Table 3, Table 4, Table 5]
 
                                 row {
                                     cell {
@@ -460,14 +465,12 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 text(
                                     Bokmal to "Inntekt trukket fra pensjonsgivende inntekt",
                                     Nynorsk to "Inntekt trekt frå pensjonsgivende inntekt",
-                                    BOLD
+                                    BOLD,
                                 )
                             }
                             cell {
-
                             }
                             cell {
-
                             }
                             cell {
                                 textExpr(
@@ -475,22 +478,30 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                         .format() + " kr",
                                     Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkut()
                                         .format() + " kr",
-                                    BOLD
+                                    BOLD,
                                 )
                             }
                         }
 
                         forEach(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag()) { inntektsgrunnlag ->
 
-                            //IF((PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) AND( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_and' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forpenutl'  ) ) THEN      INCLUDE ENDIF
+                            // IF((PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) AND( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_and' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forpenutl'  ) ) THEN      INCLUDE ENDIF
                             showIf(
-                                ((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
-                                    .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb()
-                                    .notEqualTo(0)) and (inntektsgrunnlag.inntekttype_safe.equalTo("rap_and") or inntektsgrunnlag.inntekttype_safe.equalTo(
-                                    "forpenutl"
-                                )))
+                                (
+                                    (
+                                        pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
+                                            .notEqualTo(0) or
+                                            pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb()
+                                                .notEqualTo(0)
+                                    ) and (
+                                        inntektsgrunnlag.inntekttype_safe.equalTo("rap_and") or
+                                            inntektsgrunnlag.inntekttype_safe.equalTo(
+                                                "forpenutl",
+                                            )
+                                    )
+                                ),
                             ) {
-                                //[Table 3, Table 4, Table 5]
+                                // [Table 3, Table 4, Table 5]
                                 row {
                                     cell {
                                         includePhrase(PE_UT_Etteroppgjor_DetaljBruker_FratrekkListe_InntektTypeKode(inntektsgrunnlag))
@@ -510,18 +521,20 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 }
                             }
                         }
-                        //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
+                        // IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
                         showIf(
-                            (pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
-                                .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
+                            (
+                                pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
+                                    .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)
+                            ),
                         ) {
-                            //[Table 3, Table 4, Table 5]
+                            // [Table 3, Table 4, Table 5]
                             row {
                                 cell {
                                     text(
                                         Bokmal to "Inntekt trukket fra personinntekt",
                                         Nynorsk to "Inntekt trekt frå personinntekt",
-                                        BOLD
+                                        BOLD,
                                     )
                                 }
                                 cell {}
@@ -532,7 +545,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                             .format() + " kr",
                                         Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkbt()
                                             .format() + " kr",
-                                        BOLD
+                                        BOLD,
                                     )
                                 }
                             }
@@ -547,9 +560,9 @@ object OpplysningerOmEtteroppgjoretLegacy {
         val pe: Expression<PE>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_Avviksbelop <> 0) THEN      INCLUDE ENDIF
+            // IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_Avviksbelop <> 0) THEN      INCLUDE ENDIF
             showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().notEqualTo(0))) {
-                //[Table 7, Table 8, Table 6]
+                // [Table 7, Table 8, Table 6]
 
                 title1 {
                     text(
@@ -557,7 +570,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
                         Nynorsk to "Oversikt over om du har fått for mykje eller for lite i ",
                     )
 
-                    //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0) THEN      INCLUDE ENDIF
+                    // IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0) THEN      INCLUDE ENDIF
                     showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().notEqualTo(0))) {
                         text(
                             Bokmal to "uføretrygd",
@@ -565,11 +578,15 @@ object OpplysningerOmEtteroppgjoretLegacy {
                         )
                     }
 
-                    //IF (PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0    AND (PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0    OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0)    ) THEN    INCLUDE ENDIF
+                    // IF (PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0    AND (PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0    OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0)    ) THEN    INCLUDE ENDIF
                     showIf(
-                        (pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput()
-                            .notEqualTo(0) and (pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
-                            .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)))
+                        (
+                            pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput()
+                                .notEqualTo(0) and (
+                                pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
+                                    .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)
+                            )
+                        ),
                     ) {
                         text(
                             Bokmal to " og ",
@@ -577,10 +594,12 @@ object OpplysningerOmEtteroppgjoretLegacy {
                         )
                     }
 
-                    //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
+                    // IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
                     showIf(
-                        (pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
-                            .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
+                        (
+                            pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
+                                .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)
+                        ),
                     ) {
                         text(
                             Bokmal to "barnetillegg",
@@ -609,7 +628,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 Nynorsk to "Dette fekk du i ",
                             )
 
-                            //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0) THEN      INCLUDE ENDIF
+                            // IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0) THEN      INCLUDE ENDIF
                             showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().notEqualTo(0))) {
                                 text(
                                     Bokmal to "uføretrygd",
@@ -617,11 +636,15 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 )
                             }
 
-                            //IF (PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0    AND    (PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0    OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0    )    ) THEN    INCLUDE ENDIF
+                            // IF (PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0    AND    (PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0    OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0    )    ) THEN    INCLUDE ENDIF
                             showIf(
-                                (pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput()
-                                    .notEqualTo(0) and (pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
-                                    .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)))
+                                (
+                                    pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput()
+                                        .notEqualTo(0) and (
+                                        pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
+                                            .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)
+                                    )
+                                ),
                             ) {
                                 text(
                                     Bokmal to " og ",
@@ -629,10 +652,12 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 )
                             }
 
-                            //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
+                            // IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
                             showIf(
-                                (pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
-                                    .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
+                                (
+                                    pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
+                                        .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)
+                                ),
                             ) {
                                 text(
                                     Bokmal to "barnetillegg",
@@ -647,7 +672,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             )
                         }
                     }) {
-                        //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0) THEN      INCLUDE ENDIF
+                        // IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0) THEN      INCLUDE ENDIF
                         showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput().notEqualTo(0))) {
                             row {
                                 cell {
@@ -656,7 +681,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                         Nynorsk to "Uføretrygd",
                                     )
 
-                                    //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true
+                                    // PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true
                                     showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) {
                                         text(
                                             Bokmal to " og gjenlevendetillegg",
@@ -683,9 +708,8 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     )
                                 }
                             }
-
                         }
-                        //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
+                        // IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
                         showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))) {
                             row {
                                 cell {
@@ -714,9 +738,9 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 }
                             }
                         }
-                        //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0) THEN      INCLUDE ENDIF
+                        // IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0) THEN      INCLUDE ENDIF
                         showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0))) {
-                            //[Table 6, Table 7, Table 5]
+                            // [Table 6, Table 7, Table 5]
                             row {
                                 cell {
                                     text(
@@ -729,36 +753,35 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                         Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptsb().format() + " kr",
                                         Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_totalbeloptsb().format() + " kr",
                                     )
-
                                 }
                                 cell {
                                     textExpr(
                                         Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptsb().format() + " kr",
                                         Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_tidligerebeloptsb().format() + " kr",
                                     )
-
                                 }
                                 cell {
                                     textExpr(
                                         Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().format() + " kr",
                                         Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().format() + " kr",
                                     )
-
                                 }
                             }
                         }
-                        //PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_EtteroppgjorResultatType = "tilbakekr"
+                        // PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_EtteroppgjorResultatType = "tilbakekr"
                         showIf(pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_etteroppgjorresultattype().equalTo("tilbakekr")) {
-                            //[Table 6, Table 7, Table 5]
+                            // [Table 6, Table 7, Table 5]
 
                             row {
                                 cell {
                                     textExpr(
-                                        Bokmal to "Beløpet du har fått for mye i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year()
-                                            .format() + ":",
-                                        Nynorsk to "Beløpet du har fått for mykje i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year()
-                                            .format() + ":",
-                                        BOLD
+                                        Bokmal to "Beløpet du har fått for mye i ".expr() +
+                                            pe.ut_uforetrygdetteroppgjor_periodefom_year()
+                                                .format() + ":",
+                                        Nynorsk to "Beløpet du har fått for mykje i ".expr() +
+                                            pe.ut_uforetrygdetteroppgjor_periodefom_year()
+                                                .format() + ":",
+                                        BOLD,
                                     )
                                 }
                                 cell { }
@@ -767,24 +790,26 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     textExpr(
                                         Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format() + " kr",
                                         Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format() + " kr",
-                                        BOLD
+                                        BOLD,
                                     )
                                 }
                             }
                         }
 
-                        //PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_EtteroppgjorResultatType = "etterbet"
+                        // PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_EtteroppgjorResultatType = "etterbet"
                         showIf(pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_etteroppgjorresultattype().equalTo("etterbet")) {
-                            //[Table 6, Table 7, Table 5]
+                            // [Table 6, Table 7, Table 5]
 
                             row {
                                 cell {
                                     textExpr(
-                                        Bokmal to "Beløpet du har fått for lite i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year()
-                                            .format() + ":",
-                                        Nynorsk to "Beløpet du har fått for lite i ".expr() + pe.ut_uforetrygdetteroppgjor_periodefom_year()
-                                            .format() + ":",
-                                        BOLD
+                                        Bokmal to "Beløpet du har fått for lite i ".expr() +
+                                            pe.ut_uforetrygdetteroppgjor_periodefom_year()
+                                                .format() + ":",
+                                        Nynorsk to "Beløpet du har fått for lite i ".expr() +
+                                            pe.ut_uforetrygdetteroppgjor_periodefom_year()
+                                                .format() + ":",
+                                        BOLD,
                                     )
                                 }
                                 cell { }
@@ -793,7 +818,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     textExpr(
                                         Bokmal to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format() + " kr",
                                         Nynorsk to pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().format() + " kr",
-                                        BOLD
+                                        BOLD,
                                     )
                                 }
                             }
@@ -808,14 +833,16 @@ object OpplysningerOmEtteroppgjoretLegacy {
         val pe: Expression<PE>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-
-            //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBbelopFratrukketAnnenForeldersInntekt <> 0) THEN      INCLUDE ENDIF
+            // IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBbelopFratrukketAnnenForeldersInntekt <> 0) THEN      INCLUDE ENDIF
             showIf(
-                (pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb()
-                    .notEqualTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
-                    .notEqualTo(0))
+                (
+                    pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb()
+                        .notEqualTo(0) and
+                        pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt()
+                            .notEqualTo(0)
+                ),
             ) {
-                //[TBU705V_Overskrift, Text 4]
+                // [TBU705V_Overskrift, Text 4]
                 title1 {
                     text(
                         Bokmal to "Beløp som er trukket fra inntekten til annen forelder",
@@ -850,16 +877,20 @@ object OpplysningerOmEtteroppgjoretLegacy {
                         }
                     }) {
                         forEach(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_fratrekkliste_inntektsgrunnlag()) { inntektsgrunnlag ->
-                            //IF(( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_and' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'forpenutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'ikke_red' ) ) THEN      INCLUDE ENDIF
+                            // IF(( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_and' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'forpenutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_FratrekkListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'ikke_red' ) ) THEN      INCLUDE ENDIF
                             showIf(
-                                ((inntektsgrunnlag.inntekttype_safe.equalTo("rap_nar")
-                                        or inntektsgrunnlag.inntekttype_safe.equalTo("forintutl")
-                                        or inntektsgrunnlag.inntekttype_safe.equalTo("rap_arb")
-                                        or inntektsgrunnlag.inntekttype_safe.equalTo("rap_and")
-                                        or inntektsgrunnlag.inntekttype_safe.equalTo("forpenutl")
-                                        or inntektsgrunnlag.inntekttype_safe.equalTo("ikke_red")))
+                                (
+                                    (
+                                        inntektsgrunnlag.inntekttype_safe.equalTo("rap_nar")
+                                            or inntektsgrunnlag.inntekttype_safe.equalTo("forintutl")
+                                            or inntektsgrunnlag.inntekttype_safe.equalTo("rap_arb")
+                                            or inntektsgrunnlag.inntekttype_safe.equalTo("rap_and")
+                                            or inntektsgrunnlag.inntekttype_safe.equalTo("forpenutl")
+                                            or inntektsgrunnlag.inntekttype_safe.equalTo("ikke_red")
+                                    )
+                                ),
                             ) {
-                                //[TBU705V_Tabell, Table 11]
+                                // [TBU705V_Tabell, Table 11]
 
                                 row {
                                     cell {
@@ -910,7 +941,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 text(
                                     Bokmal to "Inntekt trukket fra personinntekt",
                                     Nynorsk to "Inntekt trekt frå personinntekt",
-                                    BOLD
+                                    BOLD,
                                 )
                             }
                             cell { }
@@ -919,7 +950,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 textExpr(
                                     Bokmal to pe.ut_inntekt_trukket_fra_personinntekt().format() + " kr",
                                     Nynorsk to pe.ut_inntekt_trukket_fra_personinntekt().format() + " kr",
-                                    BOLD
+                                    BOLD,
                                 )
                             }
                         }
@@ -927,17 +958,15 @@ object OpplysningerOmEtteroppgjoretLegacy {
                 }
             }
         }
-
     }
 
     data class TabellInntekterEPS(
         val pe: Expression<PE>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-
-            //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0 ) AND Count(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType) <> 0  THEN      INCLUDE ENDIF
+            // IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0 ) AND Count(PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType) <> 0  THEN      INCLUDE ENDIF
             showIf((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)) and pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_inntektliste_inntektsgrunnlag().isNotEmpty()) {
-                //[Text 3, Text 4, Text 2]
+                // [Text 3, Text 4, Text 2]
                 title1 {
                     text(
                         Bokmal to "Inntekten til annen forelder",
@@ -966,18 +995,21 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             )
                         }
                     }) {
-
                         forEach(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_inntektliste_inntektsgrunnlag()) { inntektsGrunnlag ->
-                            //IF(( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_and' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'forpenutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'ikke_red' ) ) THEN      INCLUDE ENDIF
+                            // IF(( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_and' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'forpenutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljEPS_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'ikke_red' ) ) THEN      INCLUDE ENDIF
                             showIf(
-                                ((inntektsGrunnlag.inntekttype_safe.equalTo("rap_nar")
-                                        or inntektsGrunnlag.inntekttype_safe.equalTo("forintutl")
-                                        or inntektsGrunnlag.inntekttype_safe.equalTo("rap_arb")
-                                        or inntektsGrunnlag.inntekttype_safe.equalTo("rap_and")
-                                        or inntektsGrunnlag.inntekttype_safe.equalTo("forpenutl")
-                                        or inntektsGrunnlag.inntekttype_safe.equalTo("ikke_red")))
+                                (
+                                    (
+                                        inntektsGrunnlag.inntekttype_safe.equalTo("rap_nar")
+                                            or inntektsGrunnlag.inntekttype_safe.equalTo("forintutl")
+                                            or inntektsGrunnlag.inntekttype_safe.equalTo("rap_arb")
+                                            or inntektsGrunnlag.inntekttype_safe.equalTo("rap_and")
+                                            or inntektsGrunnlag.inntekttype_safe.equalTo("forpenutl")
+                                            or inntektsGrunnlag.inntekttype_safe.equalTo("ikke_red")
+                                    )
+                                ),
                             ) {
-                                //[Table 10, Table 12]
+                                // [Table 10, Table 12]
 
                                 row {
                                     cell {
@@ -1001,7 +1033,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 text(
                                     Bokmal to "Sum personinntekt",
                                     Nynorsk to "Sum personinntekt",
-                                    BOLD
+                                    BOLD,
                                 )
                             }
                             cell { }
@@ -1011,7 +1043,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                         .format() + " kr",
                                     Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljeps_suminntekterbt()
                                         .format() + " kr",
-                                    BOLD
+                                    BOLD,
                                 )
                             }
                         }
@@ -1019,19 +1051,23 @@ object OpplysningerOmEtteroppgjoretLegacy {
                 }
             }
         }
-
     }
 
     data class TabellInntektenDin(
-        val pe: Expression<PE>
+        val pe: Expression<PE>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            //[Text 2, Text 3, Text 4]
-            //IF((PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0  OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0  OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0))  THEN      INCLUDE ENDIF
+            // [Text 2, Text 3, Text 4]
+            // IF((PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0  OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0  OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0))  THEN      INCLUDE ENDIF
             showIf(
-                ((pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput()
-                    .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
-                    .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)))
+                (
+                    (
+                        pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput()
+                            .notEqualTo(0) or
+                            pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
+                                .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)
+                    )
+                ),
             ) {
                 title1 {
                     text(
@@ -1041,14 +1077,14 @@ object OpplysningerOmEtteroppgjoretLegacy {
                 }
             }
 
-
-            //IF((PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0  OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0  OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0))  THEN      INCLUDE ENDIF
+            // IF((PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopUT <> 0  OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0  OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0))  THEN      INCLUDE ENDIF
             showIf(
                 pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput()
-                    .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
-                    .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)
+                    .notEqualTo(0) or
+                    pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
+                        .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0),
             ) {
-                //[Table 3, Table 4, Table 5]
+                // [Table 3, Table 4, Table 5]
                 paragraph {
                     table(
                         header = {
@@ -1071,16 +1107,16 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     Nynorsk to "Registrert inntekt",
                                 )
                             }
-                        }
+                        },
                     ) {
                         forEach(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_inntektliste_inntektsgrunnlag()) { inntektsgrunnlag ->
-                            //IF( ( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' ) ) THEN      INCLUDE ENDIF
+                            // IF( ( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' ) ) THEN      INCLUDE ENDIF
                             showIf(
                                 inntektsgrunnlag.inntekttype_safe.equalTo("rap_nar")
-                                        or inntektsgrunnlag.inntekttype_safe.equalTo("forintutl")
-                                        or inntektsgrunnlag.inntekttype_safe.equalTo("rap_arb")
+                                    or inntektsgrunnlag.inntekttype_safe.equalTo("forintutl")
+                                    or inntektsgrunnlag.inntekttype_safe.equalTo("rap_arb"),
                             ) {
-                                //[Table 3, Table 4, Table 5]
+                                // [Table 3, Table 4, Table 5]
                                 row {
                                     cell {
                                         includePhrase(PE_UT_Etteroppgjor_DetaljBruker_InntektListe_InntektTypeKode(inntektsgrunnlag.inntekttype_safe))
@@ -1098,12 +1134,12 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             }
                         }
 
-                        //PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_SumInntekterUT = 0
+                        // PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_SumInntekterUT = 0
                         showIf(
                             pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut()
-                                .equalTo(0)
+                                .equalTo(0),
                         ) {
-                            //[Table 3, Table 4, Table 5]
+                            // [Table 3, Table 4, Table 5]
 
                             row {
                                 cell {}
@@ -1121,7 +1157,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                 text(
                                     Bokmal to "Sum pensjonsgivende inntekt",
                                     Nynorsk to "Sum pensjonsgivande inntekt",
-                                    BOLD
+                                    BOLD,
                                 )
                             }
                             cell {}
@@ -1131,19 +1167,21 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                         .format() + " kr",
                                     Nynorsk to pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut()
                                         .format() + " kr",
-                                    BOLD
+                                    BOLD,
                                 )
                             }
                         }
 
                         forEach(pe.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_inntektliste_inntektsgrunnlag()) { inntektsgrunnlag ->
-                            //IF( ( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' ) ) THEN      INCLUDE ENDIF
+                            // IF( ( PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'rap_nar' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) = 'forintutl' OR PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_UforetrygdEtteroppgjor_UforetrygdEtteroppgjorDetaljBruker_InntektListe_Inntektsgrunnlag_InntektType(SYS_TableRow) =  'rap_arb' ) ) THEN      INCLUDE ENDIF
                             showIf(
-                                (pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0)
-                                        or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
-                                        and (inntektsgrunnlag.inntekttype_safe.equalTo("rap_and") or inntektsgrunnlag.inntekttype_safe.equalTo("forpenutl"))
+                                (
+                                    pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().notEqualTo(0)
+                                        or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)
+                                )
+                                    and (inntektsgrunnlag.inntekttype_safe.equalTo("rap_and") or inntektsgrunnlag.inntekttype_safe.equalTo("forpenutl")),
                             ) {
-                                //[Table 3, Table 4, Table 5]
+                                // [Table 3, Table 4, Table 5]
                                 row {
                                     cell {
                                         includePhrase(PE_UT_Etteroppgjor_DetaljBruker_InntektListe_InntektTypeKode(inntektsgrunnlag.inntekttype_safe))
@@ -1161,12 +1199,14 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             }
                         }
 
-                        //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
+                        // IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
                         showIf(
-                            (pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
-                                .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
+                            (
+                                pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
+                                    .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)
+                            ),
                         ) {
-                            //[Table 3, Table 4, Table 5]
+                            // [Table 3, Table 4, Table 5]
 
                             row {
                                 cell {
@@ -1190,19 +1230,21 @@ object OpplysningerOmEtteroppgjoretLegacy {
                             }
                         }
 
-                        //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
+                        // IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTSB <> 0 OR PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF
                         showIf(
-                            (pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
-                                .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0))
+                            (
+                                pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb()
+                                    .notEqualTo(0) or pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb().notEqualTo(0)
+                            ),
                         ) {
-                            //[Table 3, Table 4, Table 5]
+                            // [Table 3, Table 4, Table 5]
 
                             row {
                                 cell {
                                     text(
                                         Bokmal to "Sum personinntekt",
                                         Nynorsk to "Sum personinntekt",
-                                        BOLD
+                                        BOLD,
                                     )
                                 }
                                 cell {}
@@ -1210,7 +1252,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
                                     textExpr(
                                         Bokmal to pe.ut_sum_inntekterbt_totalbeloput().format() + " kr",
                                         Nynorsk to pe.ut_sum_inntekterbt_totalbeloput().format() + " kr",
-                                        BOLD
+                                        BOLD,
                                     )
                                 }
                             }

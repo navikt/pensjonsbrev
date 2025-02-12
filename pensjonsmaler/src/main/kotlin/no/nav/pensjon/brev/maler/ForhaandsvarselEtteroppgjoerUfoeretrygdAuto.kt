@@ -20,26 +20,26 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.*
 
-
 // PE_UT_23_001 Varsel - etteroppgjør av uføretrygd ved feilutbetaling (auto)
 // Brevet bestilles av BPEN092 (Etteroppgjør Uføre), brevet går ut til de som har fått for mye uføretrygd utbetalt.
 // The conditional for showing the letter is: ResultatEO or ResultatForrigeEO = 'tilbakekr'
 
 @TemplateModelHelpers
 object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<ForhaandsvarselEtteroppgjoerUfoeretrygdDto> {
-
     override val kode = Pesysbrevkoder.AutoBrev.UT_EO_FORHAANDSVARSEL_FEILUTBETALING_AUTO
 
-    override val template = createTemplate(
+    override val template =
+        createTemplate(
             name = kode.name,
             letterDataType = ForhaandsvarselEtteroppgjoerUfoeretrygdDto::class,
             languages = languages(Bokmal, Nynorsk, English),
-            letterMetadata = LetterMetadata(
-                displayTitle = "Varsel - etteroppgjør av uføretrygd ved feilutbetaling (automatisk)",
-                isSensitiv = false,
-                distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-                brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
-            )
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Varsel - etteroppgjør av uføretrygd ved feilutbetaling (automatisk)",
+                    isSensitiv = false,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+                    brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+                ),
         ) {
             title {
                 val periode = opplysningerOmEtteroppgjoeretUfoeretrygd.periode.format()
@@ -47,19 +47,19 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                     textExpr(
                         Bokmal to "Nytt forhåndsvarsel om etteroppgjør av uføretrygd for ".expr() + periode,
                         Nynorsk to "Nytt førehandsvarsel om etteroppgjer av uføretrygd for ".expr() + periode,
-                        English to "New notice of settlement for disability benefit for ".expr() + periode
+                        English to "New notice of settlement for disability benefit for ".expr() + periode,
                     )
                 }.orShow {
                     textExpr(
                         Bokmal to "Forhåndsvarsel om etteroppgjør av uføretrygd for ".expr() + periode,
                         Nynorsk to "Førehandsvarsel om etteroppgjer av uføretrygd for ".expr() + periode,
-                        English to "Notice of settlement for disability benefit for ".expr() + periode
+                        English to "Notice of settlement for disability benefit for ".expr() + periode,
                     )
                 }
             }
             outline {
                 includePhrase(
-                    Innledning(opplysningerOmEtteroppgjoeretUfoeretrygd.totaltAvvik)
+                    Innledning(opplysningerOmEtteroppgjoeretUfoeretrygd.totaltAvvik),
                 )
                 includePhrase(SjekkBeregning)
                 includePhrase(HvordanDuBetalerTilbake)
@@ -70,7 +70,7 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                             oppjustertInntektFoerUfoerhet = oppjustertInntektFoerUfoerhet,
                             pensjonsgivendeInntektBruktIBeregningen = opplysningerOmEtteroppgjoeretUfoeretrygd.pensjonsgivendeInntektBruktIBeregningen,
                             periode = opplysningerOmEtteroppgjoeretUfoeretrygd.periode,
-                        )
+                        ),
                     )
                 }
 

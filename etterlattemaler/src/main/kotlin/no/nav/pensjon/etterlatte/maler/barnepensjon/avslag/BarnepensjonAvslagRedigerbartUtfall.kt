@@ -19,36 +19,37 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 data class BarnepensjonAvslagRedigerbartUtfallDTO(
     val avdoedNavn: String = "<Klarte ikke å finne navn automatisk, du må sette inn her>",
     val erSluttbehandling: Boolean = false,
-): RedigerbartUtfallBrevDTO
-
+) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonAvslagRedigerbartUtfall : EtterlatteTemplate<BarnepensjonAvslagRedigerbartUtfallDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_AVSLAG_UTFALL
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonAvslagRedigerbartUtfallDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - begrunnelse for avslag",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title {
-            text(
-                Language.Bokmal to "Vi har avslått søknaden din om barnepensjon",
-                Language.Nynorsk to "Vi har avslått søknaden din om barnepensjon",
-                Language.English to "We have rejected your application for a children's pension",
-            )
-        }
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = BarnepensjonAvslagRedigerbartUtfallDTO::class,
+            languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - begrunnelse for avslag",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Language.Bokmal to "Vi har avslått søknaden din om barnepensjon",
+                    Language.Nynorsk to "Vi har avslått søknaden din om barnepensjon",
+                    Language.English to "We have rejected your application for a children's pension",
+                )
+            }
 
-        outline {
-            includePhrase(BarnepensjonAvslagFraser.Vedtak(erSluttbehandling, avdoedNavn))
-            includePhrase(Vedtak.BegrunnelseForVedtaket)
-            includePhrase(BarnepensjonFellesFraser.FyllInn)
+            outline {
+                includePhrase(BarnepensjonAvslagFraser.Vedtak(erSluttbehandling, avdoedNavn))
+                includePhrase(Vedtak.BegrunnelseForVedtaket)
+                includePhrase(BarnepensjonFellesFraser.FyllInn)
+            }
         }
-    }
 }

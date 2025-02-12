@@ -21,33 +21,35 @@ import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.telefonnummer
 // Conditional for showing the attachment is: sakstype = AFP && vedtakResultat = INNVL
 
 @TemplateModelHelpers
-val dineRettigheterOgPlikterAFP = createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterAfpDto>(
-    title = newText(
-        Bokmal to "Dine rettigheter og plikter",
-        Nynorsk to "Dine rettar og plikter",
-        English to "Your rights and obligations"
-    ),
-    includeSakspart = false,
-) {
-    includePhrase(VedleggPlikterAFP)
-    paragraph {
-        list {
-            item { includePhrase(VedleggPlikterAFP1) }
-            showIf(bruker_sivilstand.isOneOf(ENSLIG, ENKE)) {
-                item { includePhrase(VedleggPlikterAFP2) }
-            }
+val dineRettigheterOgPlikterAFP =
+    createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterAfpDto>(
+        title =
+            newText(
+                Bokmal to "Dine rettigheter og plikter",
+                Nynorsk to "Dine rettar og plikter",
+                English to "Your rights and obligations",
+            ),
+        includeSakspart = false,
+    ) {
+        includePhrase(VedleggPlikterAFP)
+        paragraph {
+            list {
+                item { includePhrase(VedleggPlikterAFP1) }
+                showIf(bruker_sivilstand.isOneOf(ENSLIG, ENKE)) {
+                    item { includePhrase(VedleggPlikterAFP2) }
+                }
 
-            showIf(not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))) {
-                showIf(bruker_borINorge) {
-                    item { includePhrase(VedleggPlikterAFP3) }
-                }.orShow {
-                    item { includePhrase(VedleggPlikterAFP4) }
+                showIf(not(institusjon_gjeldende.isOneOf(FENGSEL, HELSE, SYKEHJEM))) {
+                    showIf(bruker_borINorge) {
+                        item { includePhrase(VedleggPlikterAFP3) }
+                    }.orShow {
+                        item { includePhrase(VedleggPlikterAFP4) }
+                    }
                 }
             }
         }
+        includePhrase(VedleggVeiledning)
+        includePhrase(VedleggInnsynSakPensjon(felles.avsenderEnhet.telefonnummer))
+        includePhrase(VedleggHjelpFraAndre)
+        includePhrase(VedleggKlagePaaVedtaket(felles.avsenderEnhet.telefonnummer))
     }
-    includePhrase(VedleggVeiledning)
-    includePhrase(VedleggInnsynSakPensjon(felles.avsenderEnhet.telefonnummer))
-    includePhrase(VedleggHjelpFraAndre)
-    includePhrase(VedleggKlagePaaVedtaket(felles.avsenderEnhet.telefonnummer))
-}

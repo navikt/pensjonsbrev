@@ -12,21 +12,23 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 
 @TemplateModelHelpers
-val dineRettigheterOgPlikter = createAttachment(
-    title = newText(
-        Bokmal to "Dine rettigheter og plikter",
-        Nynorsk to "Dine rettar og plikter",
-        English to "Your rights and obligations",
-    ),
-    includeSakspart = false,
-) {
-    meldFraOmEndringer()
-    feilutbetaling()
-    straffeansvar()
-    veiledningFraNavForvaltningsloven11()
-    includePhrase(Felles.HjelpFraAndreForvaltningsloven12)
-    duHarRettTilInnsynISakenDin()
-}
+val dineRettigheterOgPlikter =
+    createAttachment(
+        title =
+            newText(
+                Bokmal to "Dine rettigheter og plikter",
+                Nynorsk to "Dine rettar og plikter",
+                English to "Your rights and obligations",
+            ),
+        includeSakspart = false,
+    ) {
+        meldFraOmEndringer()
+        feilutbetaling()
+        straffeansvar()
+        veiledningFraNavForvaltningsloven11()
+        includePhrase(Felles.HjelpFraAndreForvaltningsloven12)
+        duHarRettTilInnsynISakenDin()
+    }
 
 private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.meldFraOmEndringer() {
     title2 {
@@ -90,7 +92,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
                     Bokmal to "du blir samboer med en du har felles barn med eller tidligere har vært gift med",
                     Nynorsk to "du blir sambuar med nokon du har barn med eller tidlegare har vore gift med",
                     English to "You become a cohabiting partner with someone you have common children with " +
-                            "or were previously married to",
+                        "or were previously married to",
                 )
             }
             item {
@@ -103,9 +105,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             item {
                 text(
                     Bokmal to "du skal oppholde deg utenfor Norge i en periode på mer enn seks måneder eller " +
-                            "skal flytte til et annet land",
+                        "skal flytte til et annet land",
                     Nynorsk to "du skal opphalde deg utanfor Noreg i meir enn seks månader, eller du skal " +
-                            "flytte til eit anna land",
+                        "flytte til eit anna land",
                     English to "You stay outside of Norway for more than 6 months or move to another country",
                 )
             }
@@ -131,16 +133,16 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     paragraph {
         text(
             Bokmal to "Du er ansvarlig for å holde deg orientert om bevegelser på kontoen for utbetaling av " +
-                    "omstillingsstønad og du må straks melde fra om du oppdager feil. Hvis du ikke melder fra om " +
-                    "endringer og får utbetalt for mye stønad, kan stønad som er utbetalt feil kreves tilbake.",
+                "omstillingsstønad og du må straks melde fra om du oppdager feil. Hvis du ikke melder fra om " +
+                "endringer og får utbetalt for mye stønad, kan stønad som er utbetalt feil kreves tilbake.",
             Nynorsk to "Du er ansvarleg for å følgje med på kor mykje omstillingsstønad som kjem inn på " +
-                    "kontoen din, og må melde frå med ein gong dersom du oppdagar feil. Dersom du får utbetalt for " +
-                    "mykje stønad fordi du ikkje har meldt frå om endringar, kan vi krevje at du betaler tilbake " +
-                    "det du ikkje hadde rett på.",
+                "kontoen din, og må melde frå med ein gong dersom du oppdagar feil. Dersom du får utbetalt for " +
+                "mykje stønad fordi du ikkje har meldt frå om endringar, kan vi krevje at du betaler tilbake " +
+                "det du ikkje hadde rett på.",
             English to "You are responsible for keeping yourself informed of transactions in your account " +
-                    "concerning payment of adjustment allowance and you must notify us if you discover any errors. " +
-                    "If you do not notify us of any changes and thereby receive too much in allowance, you can be " +
-                    "required to repay the overpaid amount.",
+                "concerning payment of adjustment allowance and you must notify us if you discover any errors. " +
+                "If you do not notify us of any changes and thereby receive too much in allowance, you can be " +
+                "required to repay the overpaid amount.",
         )
     }
 }
@@ -156,11 +158,11 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     paragraph {
         text(
             Bokmal to "Hvis du med vilje gir feil opplysninger eller ikke gir oss nødvendige opplysninger, " +
-                    "kan det medføre straffeansvar.",
+                "kan det medføre straffeansvar.",
             Nynorsk to "Det kan medføre straffeansvar dersom du med vilje gir feil opplysningar eller held " +
-                    "tilbake opplysningar vi treng.",
+                "tilbake opplysningar vi treng.",
             English to "If you knowingly provide incorrect information or fail to provide us with the " +
-                    "required information, this can lead to criminal liability. ",
+                "required information, this can lead to criminal liability. ",
         )
     }
 }
@@ -176,14 +178,14 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     paragraph {
         text(
             Bokmal to "Vi har plikt til å veilede deg om dine rettigheter og plikter i saken din, både før, " +
-                    "under og etter saksbehandlingen. Dersom du har spørsmål eller er usikker på noe, vil vi gjøre " +
-                    "vårt beste for å hjelpe deg.",
+                "under og etter saksbehandlingen. Dersom du har spørsmål eller er usikker på noe, vil vi gjøre " +
+                "vårt beste for å hjelpe deg.",
             Nynorsk to "Vi pliktar å rettleie deg om rettane og pliktene du har i saka, både før, " +
-                    "under og etter saksbehandlinga. Dersom du har spørsmål eller er usikker på noko, " +
-                    "vil vi gjere vårt beste for å hjelpe deg.",
+                "under og etter saksbehandlinga. Dersom du har spørsmål eller er usikker på noko, " +
+                "vil vi gjere vårt beste for å hjelpe deg.",
             English to "We have a duty to advise you of your rights and obligations in your case – before, " +
-                    "during and after the case has been processed. " +
-                    "If you have any questions or are unsure about anything, we will do our best to help you.",
+                "during and after the case has been processed. " +
+                "If you have any questions or are unsure about anything, we will do our best to help you.",
         )
     }
 }
@@ -194,17 +196,17 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
             Bokmal to "Du har rett til innsyn i saken din - forvaltningsloven § 18 ",
             Nynorsk to "Du har rett til innsyn i saka di – forvaltingslova § 18",
             English to "You have the right to access the documents in your case – Section 18 of the " +
-                    "Public Administration Act",
+                "Public Administration Act",
         )
     }
     paragraph {
         text(
             Bokmal to "Du har som hovedregel rett til å se dokumentene i saken din. Hvis du ønsker innsyn, " +
-                    "kan du kontakte oss på telefon eller per post.",
+                "kan du kontakte oss på telefon eller per post.",
             Nynorsk to "Du har som hovudregel rett til å sjå dokumenta i saka di. Kontakt oss på telefon " +
-                    "eller per post dersom du ønskjer innsyn.",
+                "eller per post dersom du ønskjer innsyn.",
             English to "As a general rule, you have the right to see the documents in your case. If " +
-                    "you want access, you can contact us by phone or mail.",
+                "you want access, you can contact us by phone or mail.",
         )
     }
 }

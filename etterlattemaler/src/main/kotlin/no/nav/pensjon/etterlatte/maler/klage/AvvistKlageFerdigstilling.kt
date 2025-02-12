@@ -24,7 +24,6 @@ import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.sakT
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 
-
 data class AvvistKlageFerdigDTO(
     override val innhold: List<Element>,
     val data: AvvistKlageInnholdDTO,
@@ -34,43 +33,45 @@ data class AvvistKlageFerdigDTO(
 object AvvistKlageFerdigstilling : EtterlatteTemplate<AvvistKlageFerdigDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.AVVIST_KLAGE_FERDIG
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = AvvistKlageFerdigDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - Avvist klage",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
-        )
-    ) {
-        title {
-            text(
-                Language.Bokmal to "Vi har avvist klagen din",
-                Language.Nynorsk to "Vi har avvist klaga di",
-                Language.English to "We have rejected your appeal"
-            )
-        }
-
-        outline {
-            konverterElementerTilBrevbakerformat(innhold)
-
-            showIf(data.sakType.equalTo(SakType.BARNEPENSJON)) {
-                includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
-                includePhrase(BarnepensjonFellesFraser.DuHarRettTilInnsyn)
-                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(true.expr(), data.bosattUtland))
-            } orShow {
-                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
-                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
-                includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = AvvistKlageFerdigDTO::class,
+            languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - Avvist klage",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Language.Bokmal to "Vi har avvist klagen din",
+                    Language.Nynorsk to "Vi har avvist klaga di",
+                    Language.English to "We have rejected your appeal",
+                )
             }
+
+            outline {
+                konverterElementerTilBrevbakerformat(innhold)
+
+                showIf(data.sakType.equalTo(SakType.BARNEPENSJON)) {
+                    includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
+                    includePhrase(BarnepensjonFellesFraser.DuHarRettTilInnsyn)
+                    includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(true.expr(), data.bosattUtland))
+                } orShow {
+                    includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlage)
+                    includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
+                    includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
+                }
+            }
+
+            // Nasjonal
+            includeAttachment(klageOgAnke(bosattUtland = true), innhold, data.bosattUtland)
+
+            // Bosatt utland
+            includeAttachment(klageOgAnke(bosattUtland = false), innhold, data.bosattUtland.not())
         }
-
-        // Nasjonal
-        includeAttachment(klageOgAnke(bosattUtland = true), innhold, data.bosattUtland)
-
-        // Bosatt utland
-        includeAttachment(klageOgAnke(bosattUtland = false), innhold, data.bosattUtland.not())
-    }
 }

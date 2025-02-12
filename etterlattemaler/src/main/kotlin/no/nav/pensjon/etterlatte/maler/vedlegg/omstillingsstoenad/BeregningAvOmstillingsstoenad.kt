@@ -58,15 +58,15 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
 
 fun beregningAvOmstillingsstoenad(
     tidligereFamiliepleier: Boolean,
-    innvilgelsesaar: Boolean
+    innvilgelsesaar: Boolean,
 ): AttachmentTemplate<LangBokmalNynorskEnglish, OmstillingsstoenadBeregning> =
     createAttachment(
         title =
-        newText(
-            Bokmal to "Beregning av omstillingsstønad",
-            Nynorsk to "Utrekning av omstillingsstønad",
-            English to "Calculation of adjustment allowance",
-        ),
+            newText(
+                Bokmal to "Beregning av omstillingsstønad",
+                Nynorsk to "Utrekning av omstillingsstønad",
+                English to "Calculation of adjustment allowance",
+            ),
         includeSakspart = false,
     ) {
         beregning(tidligereFamiliepleier.expr(), innvilgelsesaar.expr())
@@ -211,10 +211,8 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             textExpr(
                 Bokmal to "Din oppgitte inntekt for ".expr() + virkningsdato.formatAar() + " er " +
                     sisteOppgittInntekt.format() + " kroner.",
-
                 Nynorsk to "Du har ei oppgitt inntekt for ".expr() + virkningsdato.formatAar() + " på " +
                     sisteOppgittInntekt.format() + " kroner.",
-
                 English to "Your estimated income for ".expr() + virkningsdato.formatAar() + " is NOK " +
                     sisteOppgittInntekt.format() + ".",
             )
@@ -223,12 +221,10 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     textExpr(
                         Bokmal to " Dette er forventet inntekt frem til ".expr() + opphoer.format() +
                             ", som er forventet opphørsdato for mottak av stønaden.",
-
                         Nynorsk to " Dette er forventa inntekt fram til ".expr() + opphoer.format() +
                             ", som er forventa opphøyrsdato for mottak av stønaden.",
-
                         English to " This is the expected income until ".expr() + opphoer.format() +
-                            ", which is the expected end date for receiving the allowance."
+                            ", which is the expected end date for receiving the allowance.",
                     )
                 }
             }
@@ -237,11 +233,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                     Bokmal to " Fratrekk for inntekt i måneder før du er innvilget stønad er ".expr() +
                         sisteFratrekkInnAar.format() + " kroner. Vi har lagt til grunn at du har en inntekt på " +
                         sisteInntekt.format() + " kroner i innvilgede måneder dette året.",
-
                     Nynorsk to " Fråtrekk for inntekt i månader før du er innvilga stønad er ".expr() +
                         sisteFratrekkInnAar.format() + " kroner. Vi har lagt til grunn at du har ei inntekt på " +
                         sisteInntekt.format() + " kroner i innvilga månader dette året.",
-
                     English to " Deduction for income in months before you are granted allowance is NOK ".expr() +
                         sisteFratrekkInnAar.format() + ". We have assumed that you have an income of NOK " +
                         sisteInntekt.format() + " in granted months this year.",
@@ -289,10 +283,8 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                         textExpr(
                             Bokmal to " Dette er forventet inntekt frem til ".expr() + dato.format() +
                                 ", som er forventet opphørsdato for mottak av stønaden.".expr(),
-
                             Nynorsk to " Dette er forventa inntekt fram til ".expr() + dato.format() +
                                 ", som er forventa opphøyrsdato for mottak av stønaden.".expr(),
-
                             English to " This is the expected income from the grant until ".expr() + dato.format() +
                                 ", which is the expected end date for receiving the allowance.".expr(),
                         )
@@ -301,7 +293,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                 text(
                     Bokmal to " Inntekt blir alltid avrundet ned til nærmeste tusen.",
                     Nynorsk to " Inntekt blir alltid avrunda ned til næraste tusen.",
-                    English to " The amount is rounded down to the nearest thousand."
+                    English to " The amount is rounded down to the nearest thousand.",
                 )
             }
 
@@ -357,13 +349,13 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
                 textExpr(
                     Bokmal to "Det utbetales aldri mer enn stønadsbeløpet før reduksjon for inntekt. Har du rett på mer etterbetaling enn tillegget som utbetales resten av året, blir dette tatt hensyn til i etteroppgjøret.".expr(),
                     Nynorsk to "Det blir aldri utbetalt meir enn stønadsbeløpet før reduksjon for inntekt. Har du rett på meir etterbetaling enn tillegget som blir utbetalt resten av året, blir dette teke omsyn til i etteroppgjeret.".expr(),
-                    English to "No more is paid out than the allowance amount before reduction for income. If you are entitled to a larger back payment than the supplement paid for the rest of the year, this will be taken into account in the final settlement.".expr()
+                    English to "No more is paid out than the allowance amount before reduction for income. If you are entitled to a larger back payment than the supplement paid for the rest of the year, this will be taken into account in the final settlement.".expr(),
                 )
             }
         }
         showIf(
             sisteBeregningsperiode.restanse.notEqualTo(0) and
-            sisteBeregningsperiode.utbetaltBeloep.equalTo(0)
+                sisteBeregningsperiode.utbetaltBeloep.equalTo(0),
         ) {
             title2 {
                 text(
@@ -375,20 +367,20 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
             paragraph {
                 text(
                     Bokmal to "Den forventede inntekten din for inneværende år er blitt justert. " +
-                            "Siden du ikke får utbetalt stønad, kan vi ikke trekke inn for mye utbetalt stønad " +
-                            "i utbetalingene for resten av året. " +
-                            "Feilutbetalt stønad vil derfor bli behandlet i etteroppgjøret for i år, " +
-                            "som blir gjort etter at skatteåret er ferdig lignet neste år.",
+                        "Siden du ikke får utbetalt stønad, kan vi ikke trekke inn for mye utbetalt stønad " +
+                        "i utbetalingene for resten av året. " +
+                        "Feilutbetalt stønad vil derfor bli behandlet i etteroppgjøret for i år, " +
+                        "som blir gjort etter at skatteåret er ferdig lignet neste år.",
                     Nynorsk to "Den forventa inntekta di for inneverande år har vorte justert. " +
-                            "Sidan du ikkje får utbetalt stønad, kan vi ikkje trekkja inn for mykje utbetalt stønad " +
-                            "i utbetalingane for resten av året. " +
-                            "Feilutbetalt stønad vil derfor bli behandla i etteroppgjeret for i år, " +
-                            "som blir gjort etter at skatteåret er ferdig likna neste år.",
+                        "Sidan du ikkje får utbetalt stønad, kan vi ikkje trekkja inn for mykje utbetalt stønad " +
+                        "i utbetalingane for resten av året. " +
+                        "Feilutbetalt stønad vil derfor bli behandla i etteroppgjeret for i år, " +
+                        "som blir gjort etter at skatteåret er ferdig likna neste år.",
                     English to "Your estimated income for the current year has been adjusted. Since you are " +
-                            "not receiving any allowance for the rest of the year, we cannot deduct any overpaid " +
-                            "benefits from payments during this period. Any overpaid benefits will therefore be " +
-                            "addressed in the final settlement for this year, which will be completed after " +
-                            "the tax settlement for this year is finalized next year."
+                        "not receiving any allowance for the rest of the year, we cannot deduct any overpaid " +
+                        "benefits from payments during this period. Any overpaid benefits will therefore be " +
+                        "addressed in the final settlement for this year, which will be completed after " +
+                        "the tax settlement for this year is finalized next year.",
                 )
             }
         }
@@ -502,22 +494,22 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
             )
         }
 
-        ifNotNull(erYrkesskade){erYrkesskade ->
+        ifNotNull(erYrkesskade) { erYrkesskade ->
             showIf(erYrkesskade) {
                 paragraph {
                     text(
                         Bokmal to "Det er bekreftet at dødsfallet skyldes en godkjent yrkesskade eller yrkessykdom. " +
-                                "Det gis derfor omstillingsstønad etter egne særbestemmelser. Selv om den avdøde hadde mindre " +
-                                "enn 40 års trygdetid i Norge, er omstillingsstønaden beregnet med full trygdetid. " +
-                                "Dette framkommer ikke i tabellen nedenfor.",
+                            "Det gis derfor omstillingsstønad etter egne særbestemmelser. Selv om den avdøde hadde mindre " +
+                            "enn 40 års trygdetid i Norge, er omstillingsstønaden beregnet med full trygdetid. " +
+                            "Dette framkommer ikke i tabellen nedenfor.",
                         Nynorsk to "Det er stadfesta at dødsfallet kjem av ein godkjend yrkesskade eller yrkessjukdom. " +
-                                "Det blir derfor gitt omstillingsstønad etter eigne særreglar. Sjølv om den avdøde hadde " +
-                                "mindre enn 40 års trygdetid i Noreg, er omstillingsstønaden berekna med full trygdetid. Dette kjem ikkje fram i tabellen nedanfor.",
+                            "Det blir derfor gitt omstillingsstønad etter eigne særreglar. Sjølv om den avdøde hadde " +
+                            "mindre enn 40 års trygdetid i Noreg, er omstillingsstønaden berekna med full trygdetid. Dette kjem ikkje fram i tabellen nedanfor.",
                         English to "It has been confirmed that the death was caused by an approved occupational " +
-                                "injury or disease. The adjustment allowance is granted under special regulations. " +
-                                "Although the deceased had less than 40 years of social security coverage in Norway, " +
-                                "the adjustment allowance is calculated based on a full social security period. " +
-                                "This is not reflected in the table below.",
+                            "injury or disease. The adjustment allowance is granted under special regulations. " +
+                            "Although the deceased had less than 40 years of social security coverage in Norway, " +
+                            "the adjustment allowance is calculated based on a full social security period. " +
+                            "This is not reflected in the table below.",
                     )
                 }
             }

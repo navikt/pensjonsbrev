@@ -16,11 +16,12 @@ import no.nav.pensjon.brev.template.dsl.newText
 @TemplateModelHelpers
 val vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd =
     createAttachment<LangBokmalNynorskEnglish, Unit>(
-        title = newText(
-            Bokmal to "Praktisk informasjon om etteroppgjøret",
-            Nynorsk to "Praktisk informasjon om etteroppgjeret",
-            English to "Practical information about the settlement"
-        ),
+        title =
+            newText(
+                Bokmal to "Praktisk informasjon om etteroppgjøret",
+                Nynorsk to "Praktisk informasjon om etteroppgjeret",
+                English to "Practical information about the settlement",
+            ),
         includeSakspart = false,
     ) {
         includePhrase(InnledningPraktiskInformasjon)

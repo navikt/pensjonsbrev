@@ -6,8 +6,6 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -88,7 +86,7 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
             }
 
             outline {
-                showIf(datoVedtakOmgjoering.equalTo(null)){
+                showIf(datoVedtakOmgjoering.equalTo(null)) {
                     includePhrase(
                         OmstillingsstoenadInnvilgelseFraser.Vedtak(avdoed, beregning, harUtbetaling, tidligereFamiliepleier, erSluttbehandling),
                     )

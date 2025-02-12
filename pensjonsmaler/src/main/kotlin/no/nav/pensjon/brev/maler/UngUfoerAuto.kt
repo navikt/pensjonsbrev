@@ -30,72 +30,72 @@ import no.nav.pensjon.brevbaker.api.model.*
 // BrevTypeKode: PE_BA_04_505
 @TemplateModelHelpers
 object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
-
     override val kode = Pesysbrevkoder.AutoBrev.UT_UNG_UFOER_20_AAR_AUTO
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = UngUfoerAutoDto::class,
-        languages = languages(Bokmal, Nynorsk),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - endring av uføretrygd fordi du fyller 20 år",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        )
-    ) {
-        title {
-            text(
-                Bokmal to "Nav har regnet om uføretrygden din",
-                Nynorsk to "Nav har endra uføretrygda di",
-            )
-        }
-
-        outline {
-
-            includePhrase(Vedtak.Overskrift)
-            includePhrase(UngUfoer.UngUfoer20aar(kravVirkningFraOgMed))
-
-            includePhrase(
-                Ufoeretrygd.Beloep(
-                    perMaaned = totaltUfoerePerMnd,
-                    ufoeretrygd = true.expr(),
-                    ektefelle = ektefelle.utbetalt_safe.ifNull(false),
-                    gjenlevende = gjenlevende.utbetalt_safe.ifNull(false),
-                    fellesbarn = fellesbarn.utbetalt_safe.ifNull(false),
-                    saerkullsbarn = saerkullsbarn.utbetalt_safe.ifNull(false),
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = UngUfoerAutoDto::class,
+            languages = languages(Bokmal, Nynorsk),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - endring av uføretrygd fordi du fyller 20 år",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Bokmal to "Nav har regnet om uføretrygden din",
+                    Nynorsk to "Nav har endra uføretrygda di",
                 )
-            )
+            }
 
-            includePhrase(
-                Barnetillegg.BarnetilleggIkkeUtbetalt(
-                    saerkullInnvilget = saerkullsbarn.notNull(),
-                    saerkullUtbetalt = saerkullsbarn.utbetalt_safe.ifNull(false),
-                    harFlereSaerkullsbarn = saerkullsbarn.gjelderFlereBarn_safe.ifNull(false),
-                    inntektstakSaerkullsbarn = saerkullsbarn.inntektstak_safe.ifNull(Kroner(0)),
-                    fellesInnvilget = fellesbarn.notNull(),
-                    fellesUtbetalt = fellesbarn.utbetalt_safe.ifNull(false),
-                    harFlereFellesBarn = fellesbarn.gjelderFlereBarn_safe.ifNull(false),
-                    inntektstakFellesbarn = fellesbarn.inntektstak_safe.ifNull(Kroner(0)),
+            outline {
+
+                includePhrase(Vedtak.Overskrift)
+                includePhrase(UngUfoer.UngUfoer20aar(kravVirkningFraOgMed))
+
+                includePhrase(
+                    Ufoeretrygd.Beloep(
+                        perMaaned = totaltUfoerePerMnd,
+                        ufoeretrygd = true.expr(),
+                        ektefelle = ektefelle.utbetalt_safe.ifNull(false),
+                        gjenlevende = gjenlevende.utbetalt_safe.ifNull(false),
+                        fellesbarn = fellesbarn.utbetalt_safe.ifNull(false),
+                        saerkullsbarn = saerkullsbarn.utbetalt_safe.ifNull(false),
+                    ),
                 )
-            )
 
+                includePhrase(
+                    Barnetillegg.BarnetilleggIkkeUtbetalt(
+                        saerkullInnvilget = saerkullsbarn.notNull(),
+                        saerkullUtbetalt = saerkullsbarn.utbetalt_safe.ifNull(false),
+                        harFlereSaerkullsbarn = saerkullsbarn.gjelderFlereBarn_safe.ifNull(false),
+                        inntektstakSaerkullsbarn = saerkullsbarn.inntektstak_safe.ifNull(Kroner(0)),
+                        fellesInnvilget = fellesbarn.notNull(),
+                        fellesUtbetalt = fellesbarn.utbetalt_safe.ifNull(false),
+                        harFlereFellesBarn = fellesbarn.gjelderFlereBarn_safe.ifNull(false),
+                        inntektstakFellesbarn = fellesbarn.inntektstak_safe.ifNull(Kroner(0)),
+                    ),
+                )
 
-            includePhrase(Vedtak.BegrunnelseOverskrift)
-            includePhrase(UngUfoer.EndringMinsteYtelseUngUfoerVed20aar(minsteytelseVedVirkSats))
-            includePhrase(Ufoeretrygd.HjemmelSivilstand)
+                includePhrase(Vedtak.BegrunnelseOverskrift)
+                includePhrase(UngUfoer.EndringMinsteYtelseUngUfoerVed20aar(minsteytelseVedVirkSats))
+                includePhrase(Ufoeretrygd.HjemmelSivilstand)
 
-            includePhrase(Ufoeretrygd.VirkningFomOverskrift)
-            includePhrase(Ufoeretrygd.VirkningFraOgMed(kravVirkningFraOgMed))
+                includePhrase(Ufoeretrygd.VirkningFomOverskrift)
+                includePhrase(Ufoeretrygd.VirkningFraOgMed(kravVirkningFraOgMed))
 
-            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
-            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
-            includePhrase(Ufoeretrygd.SjekkUtbetalingene)
-            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
+                includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+                includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
+                includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
+                includePhrase(Ufoeretrygd.SjekkUtbetalingene)
+                includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
+            }
+
+            includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
+            includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
         }
-
-        includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
-        includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
-    }
 }

@@ -32,7 +32,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 object VedleggMaanedligeUfoeretrgdFoerSkatt {
-    //VedleggBelopUT_001
+    // VedleggBelopUT_001
     object VedleggBeloepUfoeretrygd : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             paragraph {
@@ -47,7 +47,6 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
     data class TabellBeregnetUTHele(
         val ufoeretrygd: Expression<MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             includePhrase(TabellUfoeretrygtTittel(ufoeretrygd.virkningFraOgMed, ufoeretrygd.virkningTilOgMed))
 
@@ -71,7 +70,7 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                             ordinaerUTBeloepNetto = ufoeretrygd.ordinaerUTBeloepNetto,
                             totalUTBeloepBrutto = ufoeretrygd.totalUTBeloepBrutto,
                             totalUTBeloepNetto = ufoeretrygd.totalUTBeloepNetto,
-                        )
+                        ),
                     )
                 }.orShow {
                     includePhrase(
@@ -85,7 +84,7 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                             gjenlevendetillegg = ufoeretrygd.gjenlevendetilleggNetto,
                             ordinaerUTBeloep = ufoeretrygd.ordinaerUTBeloepNetto,
                             totalUTBeloep = ufoeretrygd.totalUTBeloepNetto,
-                        )
+                        ),
                     )
                 }
             }
@@ -96,7 +95,6 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
         val virkningsDatoFraOgMed: Expression<LocalDate>,
         val virkningsDatoTilOgMed: Expression<LocalDate?>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             title1 {
                 val virkningsDatoFraOgMed = virkningsDatoFraOgMed.format(short = true)
@@ -116,7 +114,6 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                 }
             }
     }
-
 
     data class TabellUfoeretrygdTittel_broedtekst(
         val grunnbeloep: Expression<Kroner>,
@@ -151,7 +148,7 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                             English to "Gross monthly amount",
                         )
                     }
-                }
+                },
             ) {
                 row {
                     cell {
@@ -293,7 +290,7 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                             English to "After deductions for income",
                         )
                     }
-                }
+                },
             ) {
                 row {
                     cell {
@@ -470,7 +467,7 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                 Bokmal to "Sum før skatt",
                 Nynorsk to "Sum før skatt",
                 English to "Total before tax",
-                FontType.BOLD
+                FontType.BOLD,
             )
         }
     }

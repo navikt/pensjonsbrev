@@ -11,11 +11,12 @@ import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.telefonnummer
 
 val vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk =
     createAttachment<LangBokmalNynorskEnglish, EmptyBrevdata>(
-        title = newText(
-            Bokmal to "Dine rettigheter og mulighet til å klage",
-            Nynorsk to "Rettane dine og høve til å klage",
-            English to "Your rights and how to appeal"
-        ),
+        title =
+            newText(
+                Bokmal to "Dine rettigheter og mulighet til å klage",
+                Nynorsk to "Rettane dine og høve til å klage",
+                English to "Your rights and how to appeal",
+            ),
         includeSakspart = false,
     ) {
         includePhrase(VedleggVeiledning)

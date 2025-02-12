@@ -40,13 +40,13 @@ data class OmstillingsstoenadRevurderingDTO(
     val feilutbetaling: FeilutbetalingType,
     val tidligereFamiliepleier: Boolean = false,
     val bosattUtland: Boolean = false,
-    val erInnvilgelsesaar: Boolean
-): FerdigstillingBrevDTO {
+    val erInnvilgelsesaar: Boolean,
+) : FerdigstillingBrevDTO {
     val informasjonOmOmstillingsstoenadData = InformasjonOmOmstillingsstoenadData(tidligereFamiliepleier, bosattUtland)
 }
 
 @TemplateModelHelpers
-object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevurderingDTO>, Hovedmal {
+object OmstillingsstoenadRevurdering : EtterlatteTemplate<OmstillingsstoenadRevurderingDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_REVURDERING
 
     override val template =
@@ -55,12 +55,12 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
             letterDataType = OmstillingsstoenadRevurderingDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
-            LetterMetadata(
-                displayTitle = "Vedtak - Revurdering av omstillingsstønad",
-                isSensitiv = true,
-                distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-            ),
+                LetterMetadata(
+                    displayTitle = "Vedtak - Revurdering av omstillingsstønad",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
         ) {
             title {
                 text(
@@ -146,7 +146,6 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
                 beregning,
                 tidligereFamiliepleier.not().and(erInnvilgelsesaar),
             )
-
 
             includeAttachment(informasjonOmOmstillingsstoenad(), informasjonOmOmstillingsstoenadData)
 

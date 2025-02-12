@@ -27,33 +27,36 @@ data class OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO(
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
-object OmstillingsstoenadInnvilgelseRedigerbartUtfall : EtterlatteTemplate<OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO>,
+object OmstillingsstoenadInnvilgelseRedigerbartUtfall :
+    EtterlatteTemplate<OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO>,
     Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNVILGELSE_UTFALL
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - begrunnelse for innvilgelse",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title {
-            text(
-                Bokmal to "",
-                Nynorsk to "",
-                English to "",
-            )
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - begrunnelse for innvilgelse",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Bokmal to "",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            outline {
+                includePhrase(Vedtak.BegrunnelseForVedtaket)
+                includePhrase(
+                    OmstillingsstoenadInnvilgelseFraser.BegrunnelseForVedtaketRedigerbart(etterbetaling, tidligereFamiliepleier),
+                )
+            }
         }
-        outline {
-            includePhrase(Vedtak.BegrunnelseForVedtaket)
-            includePhrase(
-                OmstillingsstoenadInnvilgelseFraser.BegrunnelseForVedtaketRedigerbart(etterbetaling, tidligereFamiliepleier),
-            )
-        }
-    }
 }

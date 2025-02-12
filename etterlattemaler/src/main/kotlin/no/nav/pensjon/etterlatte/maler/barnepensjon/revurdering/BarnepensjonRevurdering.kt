@@ -71,88 +71,91 @@ data class BarnepensjonRevurderingDTO(
 object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_REVURDERING
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonRevurderingDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - revurdering",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title {
-            text(
-                Bokmal to "Vi har ",
-                Nynorsk to "Vi har ",
-                English to "We have ",
-            )
-
-            showIf(erOmgjoering) {
-                ifNotNull(datoVedtakOmgjoering) {
-                    textExpr(
-                        Bokmal to "omgjort vedtaket om barnepensjon av ".expr() + it.format(),
-                        Nynorsk to "gjort om vedtaket om barnepensjon av ".expr() + it.format(),
-                        English to "reversed our decision regarding the  children's pension on ".expr() + it.format(),
-                    )
-                }
-            }.orShow {
-                showIf(erEndret) {
-                    text(
-                        Bokmal to "endret",
-                        Nynorsk to "endra",
-                        English to "changed",
-                    )
-                } orShow {
-                    text(
-                        Bokmal to "vurdert",
-                        Nynorsk to "vurdert",
-                        English to "evaluated",
-                    )
-                }
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = BarnepensjonRevurderingDTO::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - revurdering",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
                 text(
-                    Bokmal to " barnepensjonen din",
-                    Nynorsk to " barnepensjonen din",
-                    English to " your children's pension",
+                    Bokmal to "Vi har ",
+                    Nynorsk to "Vi har ",
+                    English to "We have ",
                 )
+
+                showIf(erOmgjoering) {
+                    ifNotNull(datoVedtakOmgjoering) {
+                        textExpr(
+                            Bokmal to "omgjort vedtaket om barnepensjon av ".expr() + it.format(),
+                            Nynorsk to "gjort om vedtaket om barnepensjon av ".expr() + it.format(),
+                            English to "reversed our decision regarding the  children's pension on ".expr() + it.format(),
+                        )
+                    }
+                }.orShow {
+                    showIf(erEndret) {
+                        text(
+                            Bokmal to "endret",
+                            Nynorsk to "endra",
+                            English to "changed",
+                        )
+                    } orShow {
+                        text(
+                            Bokmal to "vurdert",
+                            Nynorsk to "vurdert",
+                            English to "evaluated",
+                        )
+                    }
+                    text(
+                        Bokmal to " barnepensjonen din",
+                        Nynorsk to " barnepensjonen din",
+                        English to " your children's pension",
+                    )
+                }
             }
+            outline {
+                includePhrase(
+                    BarnepensjonRevurderingFraser.RevurderingVedtak(
+                        erEndret,
+                        beregning,
+                        erEtterbetaling,
+                        harFlereUtbetalingsperioder,
+                        harUtbetaling,
+                    ),
+                )
+
+                konverterElementerTilBrevbakerformat(innhold)
+
+                includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon(erMigrertYrkesskade))
+                includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
+                includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
+                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
+            }
+
+            // Beregning av barnepensjon nytt og gammelt regelverk
+            includeAttachment(beregningAvBarnepensjonGammeltOgNyttRegelverk, beregning, kunNyttRegelverk.not())
+
+            // Beregning av barnepensjon nytt regelverk
+            includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregning, kunNyttRegelverk)
+
+            // Vedlegg under 18 år
+            includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal, innhold, brukerUnder18Aar.and(bosattUtland.not()))
+            includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetUtland, innhold, brukerUnder18Aar.and(bosattUtland))
+
+            // Vedlegg over 18 år
+            includeAttachment(informasjonTilDegSomMottarBarnepensjonNasjonal, innhold, brukerUnder18Aar.not().and(bosattUtland.not()))
+            includeAttachment(informasjonTilDegSomMottarBarnepensjonUtland, innhold, brukerUnder18Aar.not().and(bosattUtland))
+
+            includeAttachment(dineRettigheterOgPlikterBosattUtland, innhold, bosattUtland)
+            includeAttachment(dineRettigheterOgPlikterNasjonal, innhold, bosattUtland.not())
+
+            includeAttachment(forhaandsvarselFeilutbetalingBarnepensjonRevurdering, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
         }
-        outline {
-            includePhrase(
-                BarnepensjonRevurderingFraser.RevurderingVedtak(
-                erEndret,
-                beregning,
-                erEtterbetaling,
-                harFlereUtbetalingsperioder,
-                harUtbetaling
-            ))
-
-            konverterElementerTilBrevbakerformat(innhold)
-
-            includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon(erMigrertYrkesskade))
-            includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
-            includePhrase(BarnepensjonFellesFraser.DuHarRettTilAaKlage)
-            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
-        }
-
-        // Beregning av barnepensjon nytt og gammelt regelverk
-        includeAttachment(beregningAvBarnepensjonGammeltOgNyttRegelverk, beregning, kunNyttRegelverk.not())
-
-        // Beregning av barnepensjon nytt regelverk
-        includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregning, kunNyttRegelverk)
-
-        // Vedlegg under 18 år
-        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal, innhold, brukerUnder18Aar.and(bosattUtland.not()))
-        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetUtland, innhold, brukerUnder18Aar.and(bosattUtland))
-
-        // Vedlegg over 18 år
-        includeAttachment(informasjonTilDegSomMottarBarnepensjonNasjonal, innhold, brukerUnder18Aar.not().and(bosattUtland.not()))
-        includeAttachment(informasjonTilDegSomMottarBarnepensjonUtland, innhold, brukerUnder18Aar.not().and(bosattUtland))
-
-        includeAttachment(dineRettigheterOgPlikterBosattUtland, innhold, bosattUtland)
-        includeAttachment(dineRettigheterOgPlikterNasjonal, innhold, bosattUtland.not())
-
-        includeAttachment(forhaandsvarselFeilutbetalingBarnepensjonRevurdering, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
-    }
 }

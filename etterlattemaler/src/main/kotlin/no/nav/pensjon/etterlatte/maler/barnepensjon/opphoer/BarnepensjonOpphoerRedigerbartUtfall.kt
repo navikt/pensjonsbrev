@@ -18,37 +18,39 @@ import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderi
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
 data class BarnepensjonOpphoerRedigerbartUtfallDTO(
-    val feilutbetaling: FeilutbetalingType
+    val feilutbetaling: FeilutbetalingType,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
 object BarnepensjonOpphoerRedigerbartUtfall : EtterlatteTemplate<BarnepensjonOpphoerRedigerbartUtfallDTO>, Delmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.BARNEPENSJON_OPPHOER_UTFALL
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = BarnepensjonOpphoerRedigerbartUtfallDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - opphør",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title {
-            text(
-                Language.Bokmal to "",
-                Language.Nynorsk to "",
-                Language.English to "",
-            )
-        }
-        outline {
-            includePhrase(Vedtak.BegrunnelseForVedtaket)
-            includePhrase(BarnepensjonFellesFraser.FyllInn)
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_4RG_UTEN_VARSEL)) {
-                includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingUnder4RGUtenVarselOpphoer)
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = BarnepensjonOpphoerRedigerbartUtfallDTO::class,
+            languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - opphør",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Language.Bokmal to "",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                )
+            }
+            outline {
+                includePhrase(Vedtak.BegrunnelseForVedtaket)
+                includePhrase(BarnepensjonFellesFraser.FyllInn)
+                showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_4RG_UTEN_VARSEL)) {
+                    includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingUnder4RGUtenVarselOpphoer)
+                }
             }
         }
-    }
 }

@@ -57,290 +57,293 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 // 000073
 @TemplateModelHelpers
 object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
-
     override val kode = Pesysbrevkoder.AutoBrev.UT_OMREGNING_ENSLIG_AUTO
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = UfoerOmregningEnsligDto::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak – omregning til enslig uføretrygdet (automatisk)",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = VEDTAKSBREV
-        ),
-    ) {
-        val harMinsteytelseVedVirk = minsteytelseVedvirk_sats.notNull()
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = UfoerOmregningEnsligDto::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak – omregning til enslig uføretrygdet (automatisk)",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = VEDTAKSBREV,
+                ),
+        ) {
+            val harMinsteytelseVedVirk = minsteytelseVedvirk_sats.notNull()
 
-        title {
-            text(
-                Bokmal to "Nav har regnet om uføretrygden din",
-                Nynorsk to "Nav har rekna om uføretrygda di",
-                English to "Nav has altered your disability benefit",
-            )
-        }
-
-        outline {
-            val harBarnetilleggForSaerkullsbarnVedVirk = barnetilleggSaerkullsbarnVedVirk.notNull()
-            val harBarnOverfoertTilSaerkullsbarn =
-                barnetilleggSaerkullsbarnVedVirk.barnOverfoertTilSaerkullsbarn_safe.ifNull(emptyList()).isNotEmpty()
-            val harbarnSomTidligerVarSaerkullsbarn =
-                barnetilleggSaerkullsbarnVedVirk.barnTidligereSaerkullsbarn_safe.ifNull(emptyList()).isNotEmpty()
-            val harUfoereMaanedligBeloepVedvirk = ufoeretrygdVedVirk.totalUfoereMaanedligBeloep.greaterThan(0)
-
-            includePhrase(Vedtak.Overskrift)
-
-            includePhrase(
-                OmregnEPSInnledning(
-                    harMinsteytelseVedVirk = harMinsteytelseVedVirk,
-                    inntektFoerUfoereErSannsynligEndret = inntektFoerUfoerhetVedVirk.erSannsynligEndret,
-                    ektefelletilleggOpphoert = avdoed.ektefelletilleggOpphoert,
-                    harBarnetilleggForSaerkullsbarnVedVirk = harBarnetilleggForSaerkullsbarnVedVirk,
-                    harBarnOverfoertTilSaerkullsbarn = harBarnOverfoertTilSaerkullsbarn,
-                    avdoedNavn = avdoed.navn,
-                    kravVirkningsDatoFraOgMed = krav_virkningsDatoFraOgMed,
+            title {
+                text(
+                    Bokmal to "Nav har regnet om uføretrygden din",
+                    Nynorsk to "Nav har rekna om uføretrygda di",
+                    English to "Nav has altered your disability benefit",
                 )
-            )
+            }
 
-            includePhrase(
-                UtbetalingUfoeretrygd(
-                    totalUfoereMaanedligBeloep = ufoeretrygdVedVirk.totalUfoereMaanedligBeloep,
-                    harBarnetilleggForSaerkullsbarnVedVirk = harBarnetilleggForSaerkullsbarnVedVirk,
-                    institusjonsoppholdVedVirk = institusjonsoppholdVedVirk,
-                    harFlereUfoeretrygdPerioder = beregnetUTPerMaaned_antallBeregningsperioderPaaVedtak.greaterThan(1),
+            outline {
+                val harBarnetilleggForSaerkullsbarnVedVirk = barnetilleggSaerkullsbarnVedVirk.notNull()
+                val harBarnOverfoertTilSaerkullsbarn =
+                    barnetilleggSaerkullsbarnVedVirk.barnOverfoertTilSaerkullsbarn_safe.ifNull(emptyList()).isNotEmpty()
+                val harbarnSomTidligerVarSaerkullsbarn =
+                    barnetilleggSaerkullsbarnVedVirk.barnTidligereSaerkullsbarn_safe.ifNull(emptyList()).isNotEmpty()
+                val harUfoereMaanedligBeloepVedvirk = ufoeretrygdVedVirk.totalUfoereMaanedligBeloep.greaterThan(0)
+
+                includePhrase(Vedtak.Overskrift)
+
+                includePhrase(
+                    OmregnEPSInnledning(
+                        harMinsteytelseVedVirk = harMinsteytelseVedVirk,
+                        inntektFoerUfoereErSannsynligEndret = inntektFoerUfoerhetVedVirk.erSannsynligEndret,
+                        ektefelletilleggOpphoert = avdoed.ektefelletilleggOpphoert,
+                        harBarnetilleggForSaerkullsbarnVedVirk = harBarnetilleggForSaerkullsbarnVedVirk,
+                        harBarnOverfoertTilSaerkullsbarn = harBarnOverfoertTilSaerkullsbarn,
+                        avdoedNavn = avdoed.navn,
+                        kravVirkningsDatoFraOgMed = krav_virkningsDatoFraOgMed,
+                    ),
                 )
-            )
 
-            showIf(harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret) {
-                includePhrase(Vedtak.BegrunnelseOverskrift)
-                ifNotNull(minsteytelseVedvirk_sats) { minsteytelseVedVirkSats ->
-                    showIf(inntektFoerUfoerhetVedVirk.erSannsynligEndret) {
+                includePhrase(
+                    UtbetalingUfoeretrygd(
+                        totalUfoereMaanedligBeloep = ufoeretrygdVedVirk.totalUfoereMaanedligBeloep,
+                        harBarnetilleggForSaerkullsbarnVedVirk = harBarnetilleggForSaerkullsbarnVedVirk,
+                        institusjonsoppholdVedVirk = institusjonsoppholdVedVirk,
+                        harFlereUfoeretrygdPerioder = beregnetUTPerMaaned_antallBeregningsperioderPaaVedtak.greaterThan(1),
+                    ),
+                )
+
+                showIf(harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret) {
+                    includePhrase(Vedtak.BegrunnelseOverskrift)
+                    ifNotNull(minsteytelseVedvirk_sats) { minsteytelseVedVirkSats ->
+                        showIf(inntektFoerUfoerhetVedVirk.erSannsynligEndret) {
+                            includePhrase(
+                                EndringMinsteytelseOgMinstInntektFoerUfoerhetDoedEPS(
+                                    minsteytelseSats = minsteytelseVedVirkSats,
+                                    inntektFoerUfoerhet = inntektFoerUfoerhetVedVirk.beloep,
+                                    oppjustertInntektFoerUfoerhet = inntektFoerUfoerhetVedVirk.oppjustertBeloep,
+                                    kompensasjonsgradUfoeretrygd = ufoeretrygdVedVirk.kompensasjonsgrad,
+                                ),
+                            )
+                        } orShow {
+                            includePhrase(
+                                EndretMinsteytelseDoedEPS(
+                                    minsteytelseSatsVedvirk = minsteytelseVedVirkSats,
+                                    kompensasjonsgradUfoeretrygdVedvirk = ufoeretrygdVedVirk.kompensasjonsgrad,
+                                ),
+                            )
+                        }
+                    } orShow {
                         includePhrase(
-                            EndringMinsteytelseOgMinstInntektFoerUfoerhetDoedEPS(
-                                minsteytelseSats = minsteytelseVedVirkSats,
+                            EndretMinstInntektFoerUfoerhetDoedEPS(
                                 inntektFoerUfoerhet = inntektFoerUfoerhetVedVirk.beloep,
                                 oppjustertInntektFoerUfoerhet = inntektFoerUfoerhetVedVirk.oppjustertBeloep,
                                 kompensasjonsgradUfoeretrygd = ufoeretrygdVedVirk.kompensasjonsgrad,
-                            )
-                        )
-                    } orShow {
-                        includePhrase(
-                            EndretMinsteytelseDoedEPS(
-                                minsteytelseSatsVedvirk = minsteytelseVedVirkSats,
-                                kompensasjonsgradUfoeretrygdVedvirk = ufoeretrygdVedVirk.kompensasjonsgrad
-                            )
+                            ),
                         )
                     }
-                } orShow {
-                    includePhrase(
-                        EndretMinstInntektFoerUfoerhetDoedEPS(
-                            inntektFoerUfoerhet = inntektFoerUfoerhetVedVirk.beloep,
-                            oppjustertInntektFoerUfoerhet = inntektFoerUfoerhetVedVirk.oppjustertBeloep,
-                            kompensasjonsgradUfoeretrygd = ufoeretrygdVedVirk.kompensasjonsgrad,
-                        )
-                    )
                 }
-            }
 
-            includePhrase(
-                HjemmelSivilstandUfoeretrygd(
-                    harMinsteinntektFoerUfoerhet = inntektFoerUfoerhetVedVirk.erMinsteinntekt,
-                    ufoeretrygdErInntektsavkortet = ufoeretrygdVedVirk.erInntektsavkortet,
+                includePhrase(
+                    HjemmelSivilstandUfoeretrygd(
+                        harMinsteinntektFoerUfoerhet = inntektFoerUfoerhetVedVirk.erMinsteinntekt,
+                        ufoeretrygdErInntektsavkortet = ufoeretrygdVedVirk.erInntektsavkortet,
+                    ),
                 )
-            )
 
-            showIf(institusjonsoppholdVedVirk.isOneOf(Institusjon.HELSE)) {
-                includePhrase(HjemmelEPSDoedInstitusjonUfoeretrygd)
-            }.orShowIf(institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL)) {
-                includePhrase(HjemmelEPSDoedFengselUfoerUfoeretrygd)
-            }
-
-            showIf(avdoed.ektefelletilleggOpphoert) {
-                includePhrase(OpphoerEktefelletilleggOverskrift)
-                includePhrase(OpphoerEktefelletillegg)
-                includePhrase(HjemmelEktefelletillegg)
-            }
-
-            ifNotNull(barnetilleggSaerkullsbarnVedVirk) { barnetilleggSaerkullsbarnVedVirk ->
-
-                val harNettoBeloep = barnetilleggSaerkullsbarnVedVirk.beloep.greaterThan(0)
-                val harJusteringsbeloepSaerkull = barnetilleggSaerkullsbarnVedVirk.justeringsbeloepAar.notEqualTo(0)
-
-                showIf(harBarnOverfoertTilSaerkullsbarn) {
-                    includePhrase(OmregningFellesbarnOverskrift)
-                    includePhrase(InfoFellesbarnTilSaerkullsbarn(barnetilleggSaerkullsbarnVedVirk.barnOverfoertTilSaerkullsbarn))
-
-                    showIf(
-                        barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt
-                                and harbarnSomTidligerVarSaerkullsbarn
-                                and not(inntektFoerUfoerhetVedVirk.erSannsynligEndret)
-                                and not(harMinsteytelseVedVirk)
-                    ) {
-                        includePhrase(InfoTidligereSaerkullsbarn(barnetilleggSaerkullsbarnVedVirk.barnTidligereSaerkullsbarn))
-                    }
-
-                    showIf(
-                        harbarnSomTidligerVarSaerkullsbarn and (inntektFoerUfoerhetVedVirk.erSannsynligEndret or harMinsteytelseVedVirk)
-                                and barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt
-                    ) {
-                        includePhrase(InfoTidligereSaerkullsbarnOgEndretUfoeretrygd(barnetilleggSaerkullsbarnVedVirk.barnTidligereSaerkullsbarn))
-                    }
+                showIf(institusjonsoppholdVedVirk.isOneOf(Institusjon.HELSE)) {
+                    includePhrase(HjemmelEPSDoedInstitusjonUfoeretrygd)
+                }.orShowIf(institusjonsoppholdVedVirk.isOneOf(Institusjon.FENGSEL)) {
+                    includePhrase(HjemmelEPSDoedFengselUfoerUfoeretrygd)
                 }
 
-                showIf(
-                    harBarnetilleggForSaerkullsbarnVedVirk and (harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret or avdoed.ektefelletilleggOpphoert)
-                ) {
-                    includePhrase(EndringUfoeretrygdPaavirkerBarnetilleggOverskrift)
+                showIf(avdoed.ektefelletilleggOpphoert) {
+                    includePhrase(OpphoerEktefelletilleggOverskrift)
+                    includePhrase(OpphoerEktefelletillegg)
+                    includePhrase(HjemmelEktefelletillegg)
                 }
 
-                showIf(
-                    harBarnOverfoertTilSaerkullsbarn or (harBarnetilleggForSaerkullsbarnVedVirk and (harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret or avdoed.ektefelletilleggOpphoert))
-                ) {
+                ifNotNull(barnetilleggSaerkullsbarnVedVirk) { barnetilleggSaerkullsbarnVedVirk ->
 
-                    showIf(not(harBarnOverfoertTilSaerkullsbarn)) {
-                        includePhrase(InfoBarnetilleggSaerkullsbarnInntekt)
-                    }
+                    val harNettoBeloep = barnetilleggSaerkullsbarnVedVirk.beloep.greaterThan(0)
+                    val harJusteringsbeloepSaerkull = barnetilleggSaerkullsbarnVedVirk.justeringsbeloepAar.notEqualTo(0)
 
                     showIf(harBarnOverfoertTilSaerkullsbarn) {
-                        includePhrase(InfoBarnetilleggOverfortTilSaerkullsbarnInntekt)
+                        includePhrase(OmregningFellesbarnOverskrift)
+                        includePhrase(InfoFellesbarnTilSaerkullsbarn(barnetilleggSaerkullsbarnVedVirk.barnOverfoertTilSaerkullsbarn))
+
+                        showIf(
+                            barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt
+                                and harbarnSomTidligerVarSaerkullsbarn
+                                and not(inntektFoerUfoerhetVedVirk.erSannsynligEndret)
+                                and not(harMinsteytelseVedVirk),
+                        ) {
+                            includePhrase(InfoTidligereSaerkullsbarn(barnetilleggSaerkullsbarnVedVirk.barnTidligereSaerkullsbarn))
+                        }
+
+                        showIf(
+                            harbarnSomTidligerVarSaerkullsbarn and (inntektFoerUfoerhetVedVirk.erSannsynligEndret or harMinsteytelseVedVirk)
+                                and barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt,
+                        ) {
+                            includePhrase(InfoTidligereSaerkullsbarnOgEndretUfoeretrygd(barnetilleggSaerkullsbarnVedVirk.barnTidligereSaerkullsbarn))
+                        }
                     }
 
                     showIf(
-                        not(barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt)
+                        harBarnetilleggForSaerkullsbarnVedVirk and (harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret or avdoed.ektefelletilleggOpphoert),
                     ) {
-                        includePhrase(
-                            IkkeRedusertBarnetilleggSaerkullsbarnPgaInntekt(
-                                barnetilleggSaerkullsbarnInntektBruktIAvkortning = barnetilleggSaerkullsbarnVedVirk.inntektBruktIAvkortning,
-                                barnetilleggSaerkullsbarnFribeloep = barnetilleggSaerkullsbarnVedVirk.fribeloepVedvirk,
-                            )
-                        )
+                        includePhrase(EndringUfoeretrygdPaavirkerBarnetilleggOverskrift)
                     }
 
                     showIf(
-                        barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt and harNettoBeloep or (not(harNettoBeloep) and harJusteringsbeloepSaerkull)
+                        harBarnOverfoertTilSaerkullsbarn or (harBarnetilleggForSaerkullsbarnVedVirk and (harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret or avdoed.ektefelletilleggOpphoert)),
                     ) {
-                        includePhrase(
-                            RedusertBarnetilleggSaerkullsbarnPgaInntekt(
-                                barnetilleggSaerkullsbarnInntektBruktIAvkortning = barnetilleggSaerkullsbarnVedVirk.inntektBruktIAvkortning,
-                                barnetilleggSaerkullsbarnFribeloep = barnetilleggSaerkullsbarnVedVirk.fribeloepVedvirk,
+
+                        showIf(not(harBarnOverfoertTilSaerkullsbarn)) {
+                            includePhrase(InfoBarnetilleggSaerkullsbarnInntekt)
+                        }
+
+                        showIf(harBarnOverfoertTilSaerkullsbarn) {
+                            includePhrase(InfoBarnetilleggOverfortTilSaerkullsbarnInntekt)
+                        }
+
+                        showIf(
+                            not(barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt),
+                        ) {
+                            includePhrase(
+                                IkkeRedusertBarnetilleggSaerkullsbarnPgaInntekt(
+                                    barnetilleggSaerkullsbarnInntektBruktIAvkortning = barnetilleggSaerkullsbarnVedVirk.inntektBruktIAvkortning,
+                                    barnetilleggSaerkullsbarnFribeloep = barnetilleggSaerkullsbarnVedVirk.fribeloepVedvirk,
+                                ),
                             )
-                        )
-                    }
+                        }
 
-                    showIf(harJusteringsbeloepSaerkull and harNettoBeloep) {
-                        includePhrase(JusterBeloepRedusertBarnetilleggPgaInntekt)
-                    }
-
-                    showIf(harJusteringsbeloepSaerkull and not(harNettoBeloep)) {
-                        includePhrase(IkkeUtbetaltBarnetilleggPgaInntektOgJusteringsbelop)
-                    }
-
-                    showIf(
-                        barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt and not(harNettoBeloep) and not(
-                            harJusteringsbeloepSaerkull
-                        )
-                    ) {
-                        includePhrase(
-                            IkkeUtbetaltBarnetilleggSaerkullsbarnPgaInntekt(
-                                barnetilleggSaerkullsbarnInntektBruktIAvkortning = barnetilleggSaerkullsbarnVedVirk.inntektBruktIAvkortning,
-                                barnetilleggSaerkullsbarnInntektstak = barnetilleggSaerkullsbarnVedVirk.inntektstak,
+                        showIf(
+                            barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt and harNettoBeloep or (not(harNettoBeloep) and harJusteringsbeloepSaerkull),
+                        ) {
+                            includePhrase(
+                                RedusertBarnetilleggSaerkullsbarnPgaInntekt(
+                                    barnetilleggSaerkullsbarnInntektBruktIAvkortning = barnetilleggSaerkullsbarnVedVirk.inntektBruktIAvkortning,
+                                    barnetilleggSaerkullsbarnFribeloep = barnetilleggSaerkullsbarnVedVirk.fribeloepVedvirk,
+                                ),
                             )
-                        )
-                    }
+                        }
 
-                    showIf(barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt) {
-                        includePhrase(HjemmelBarnetilleggRedusert)
-                        includePhrase(MerInfoBarnetillegg)
-                    } orShow {
-                        includePhrase(HjemmelBarnetillegg)
+                        showIf(harJusteringsbeloepSaerkull and harNettoBeloep) {
+                            includePhrase(JusterBeloepRedusertBarnetilleggPgaInntekt)
+                        }
+
+                        showIf(harJusteringsbeloepSaerkull and not(harNettoBeloep)) {
+                            includePhrase(IkkeUtbetaltBarnetilleggPgaInntektOgJusteringsbelop)
+                        }
+
+                        showIf(
+                            barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt and not(harNettoBeloep) and
+                                not(
+                                    harJusteringsbeloepSaerkull,
+                                ),
+                        ) {
+                            includePhrase(
+                                IkkeUtbetaltBarnetilleggSaerkullsbarnPgaInntekt(
+                                    barnetilleggSaerkullsbarnInntektBruktIAvkortning = barnetilleggSaerkullsbarnVedVirk.inntektBruktIAvkortning,
+                                    barnetilleggSaerkullsbarnInntektstak = barnetilleggSaerkullsbarnVedVirk.inntektstak,
+                                ),
+                            )
+                        }
+
+                        showIf(barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt) {
+                            includePhrase(HjemmelBarnetilleggRedusert)
+                            includePhrase(MerInfoBarnetillegg)
+                        } orShow {
+                            includePhrase(HjemmelBarnetillegg)
+                        }
                     }
                 }
-            }
 
-            showIf(avdoed.sivilstand.isOneOf(GIFT, PARTNER, SAMBOER1_5)
-                        and ufoeretrygdVedVirk.harGradertUfoeretrygd) {
-                includePhrase(RettTilUfoeretrygdVedGradertUfoeretrygd)
-                includePhrase(HvemHarRettPaaOmstillingsstoenad)
-                includePhrase(StoerrelseOmstillingsstoenad(ufoeretrygdVedVirk.grunnbeloep))
-                includePhrase(HvordanSoekerDuOverskrift)
-                includePhrase(SoekGjenlevendetilleggEtter2024(bruker.borIAvtaleLand))
-            }
+                showIf(
+                    avdoed.sivilstand.isOneOf(GIFT, PARTNER, SAMBOER1_5)
+                        and ufoeretrygdVedVirk.harGradertUfoeretrygd,
+                ) {
+                    includePhrase(RettTilUfoeretrygdVedGradertUfoeretrygd)
+                    includePhrase(HvemHarRettPaaOmstillingsstoenad)
+                    includePhrase(StoerrelseOmstillingsstoenad(ufoeretrygdVedVirk.grunnbeloep))
+                    includePhrase(HvordanSoekerDuOverskrift)
+                    includePhrase(SoekGjenlevendetilleggEtter2024(bruker.borIAvtaleLand))
+                }
 
-            showIf(avdoed.sivilstand.isOneOf(GIFT, PARTNER, SAMBOER1_5)) {
-                includePhrase(AvdoedBoddArbeidetIUtlandOverskrift)
-                includePhrase(AvdoedBoddEllerArbeidetIUtland(bruker.borIAvtaleLand))
-                includePhrase(PensjonFraAndreOverskrift)
-                includePhrase(InfoAvdoedPenFraAndre)
-            }
+                showIf(avdoed.sivilstand.isOneOf(GIFT, PARTNER, SAMBOER1_5)) {
+                    includePhrase(AvdoedBoddArbeidetIUtlandOverskrift)
+                    includePhrase(AvdoedBoddEllerArbeidetIUtland(bruker.borIAvtaleLand))
+                    includePhrase(PensjonFraAndreOverskrift)
+                    includePhrase(InfoAvdoedPenFraAndre)
+                }
 
-            showIf(avdoed.harFellesBarnUtenBarnetillegg) {
-                includePhrase(HarBarnUnder18Overskrift)
-                includePhrase(HarBarnUtenBarnetillegg)
-                includePhrase(HarBarnUnder18)
-            }
+                showIf(avdoed.harFellesBarnUtenBarnetillegg) {
+                    includePhrase(HarBarnUnder18Overskrift)
+                    includePhrase(HarBarnUtenBarnetillegg)
+                    includePhrase(HarBarnUnder18)
+                }
 
-            includePhrase(Ufoeretrygd.VirkningFomOverskrift)
+                includePhrase(Ufoeretrygd.VirkningFomOverskrift)
 
-            showIf(
-                harUfoereMaanedligBeloepVedvirk and (harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret or avdoed.ektefelletilleggOpphoert)
-            ) {
-                includePhrase(VirkningstidspunktUfoeretrygd(krav_virkningsDatoFraOgMed))
-            }
+                showIf(
+                    harUfoereMaanedligBeloepVedvirk and (harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret or avdoed.ektefelletilleggOpphoert),
+                ) {
+                    includePhrase(VirkningstidspunktUfoeretrygd(krav_virkningsDatoFraOgMed))
+                }
 
-            showIf(
-                harUfoereMaanedligBeloepVedvirk
+                showIf(
+                    harUfoereMaanedligBeloepVedvirk
                         and not(harMinsteytelseVedVirk)
                         and not(inntektFoerUfoerhetVedVirk.erSannsynligEndret)
                         and not(avdoed.ektefelletilleggOpphoert)
-                        and not(harBarnOverfoertTilSaerkullsbarn)
-            ) {
-                includePhrase(VirkningstidspunktUfoeretrygdIngenEndring(krav_virkningsDatoFraOgMed))
-            }
+                        and not(harBarnOverfoertTilSaerkullsbarn),
+                ) {
+                    includePhrase(VirkningstidspunktUfoeretrygdIngenEndring(krav_virkningsDatoFraOgMed))
+                }
 
-            showIf(
-                harUfoereMaanedligBeloepVedvirk
+                showIf(
+                    harUfoereMaanedligBeloepVedvirk
                         and not(harMinsteytelseVedVirk)
                         and not(inntektFoerUfoerhetVedVirk.erSannsynligEndret)
                         and not(avdoed.ektefelletilleggOpphoert)
-                        and harBarnOverfoertTilSaerkullsbarn
-            ) {
-                includePhrase(VirkningstidspunktOmregningBarnetillegg(krav_virkningsDatoFraOgMed))
+                        and harBarnOverfoertTilSaerkullsbarn,
+                ) {
+                    includePhrase(VirkningstidspunktOmregningBarnetillegg(krav_virkningsDatoFraOgMed))
+                }
+
+                showIf(not(harUfoereMaanedligBeloepVedvirk)) {
+                    includePhrase(VirkningstidspunktUfoeretrygdAvkortetTil0(krav_virkningsDatoFraOgMed))
+                }
+
+                includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntektOverskrift)
+
+                showIf(harBarnetillegg) {
+                    includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntektBarnetillegg)
+                }.orShow {
+                    includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntekt)
+                }
+
+                includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+                includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
+                includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
+                includePhrase(Ufoeretrygd.SjekkUtbetalingene)
+                includePhrase(Ufoeretrygd.Skattekort)
+                includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(bruker.borINorge))
+                includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
             }
 
-            showIf(not(harUfoereMaanedligBeloepVedvirk)) {
-                includePhrase(VirkningstidspunktUfoeretrygdAvkortetTil0(krav_virkningsDatoFraOgMed))
-            }
+            includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
 
-            includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntektOverskrift)
+            includeAttachment(
+                createVedleggOpplysningerBruktIBeregningUT(
+                    skalViseMinsteytelse = true,
+                    skalViseBarnetillegg = false,
+                ),
+                opplysningerBruktIBeregningUT,
+                barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt_safe.ifNull(false) or harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret,
+            )
 
-            showIf(harBarnetillegg) {
-                includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntektBarnetillegg)
-            }.orShow {
-                includePhrase(Ufoeretrygd.MeldeFraOmEventuellInntekt)
-            }
-
-            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
-            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
-            includePhrase(Ufoeretrygd.SjekkUtbetalingene)
-            includePhrase(Ufoeretrygd.Skattekort)
-            includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(bruker.borINorge))
-            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
+            includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterOgPlikter)
         }
-
-        includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
-
-
-        includeAttachment(
-            createVedleggOpplysningerBruktIBeregningUT(
-                skalViseMinsteytelse = true,
-                skalViseBarnetillegg = false,
-            ),
-            opplysningerBruktIBeregningUT,
-            barnetilleggSaerkullsbarnVedVirk.erRedusertMotInntekt_safe.ifNull(false) or harMinsteytelseVedVirk or inntektFoerUfoerhetVedVirk.erSannsynligEndret
-        )
-
-        includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterOgPlikter)
-    }
 }

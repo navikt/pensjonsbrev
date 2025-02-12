@@ -37,12 +37,10 @@ data class TilbakekrevingBrevDTO(
     val bosattUtland: Boolean,
     val brukerNavn: String,
     val doedsbo: Boolean,
-
     val varsel: TilbakekrevingVarsel,
     val datoVarselEllerVedtak: LocalDate,
     val datoTilsvarBruker: LocalDate?,
-
-    val tilbakekreving: TilbakekrevingDTO
+    val tilbakekreving: TilbakekrevingDTO,
 ) : FerdigstillingBrevDTO
 
 data class TilbakekrevingDTO(
@@ -51,13 +49,13 @@ data class TilbakekrevingDTO(
     val skalTilbakekreve: Boolean,
     val helTilbakekreving: Boolean,
     val perioder: List<TilbakekrevingPeriode>,
-    val summer: TilbakekrevingBeloeper
+    val summer: TilbakekrevingBeloeper,
 )
 
 data class TilbakekrevingPeriode(
     val maaned: LocalDate,
     val beloeper: TilbakekrevingBeloeper,
-    val resultat: TilbakekrevingResultat
+    val resultat: TilbakekrevingResultat,
 )
 
 data class TilbakekrevingBeloeper(
@@ -66,7 +64,7 @@ data class TilbakekrevingBeloeper(
     val nettoTilbakekreving: Kroner,
     val fradragSkatt: Kroner,
     val renteTillegg: Kroner,
-    val sumNettoRenter: Kroner
+    val sumNettoRenter: Kroner,
 )
 
 enum class TilbakekrevingVarsel {
@@ -79,96 +77,96 @@ enum class TilbakekrevingVarsel {
 object TilbakekrevingFerdig : EtterlatteTemplate<TilbakekrevingBrevDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TILBAKEKREVING_FERDIG
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = TilbakekrevingBrevDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - Tilbakekreving",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title {
-            showIf(tilbakekreving.skalTilbakekreve) {
-                showIf(doedsbo) {
-                    textExpr(
-                        Bokmal to "Dødsboet må betale tilbake ".expr() + sakType.format(),
-                        Nynorsk to "Dødsbuet må betale tilbake ".expr() + sakType.format(),
-                        English to "The estate must pay reimbursement for ".expr() + sakType.format()
-                    )
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = TilbakekrevingBrevDTO::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - Tilbakekreving",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                showIf(tilbakekreving.skalTilbakekreve) {
+                    showIf(doedsbo) {
+                        textExpr(
+                            Bokmal to "Dødsboet må betale tilbake ".expr() + sakType.format(),
+                            Nynorsk to "Dødsbuet må betale tilbake ".expr() + sakType.format(),
+                            English to "The estate must pay reimbursement for ".expr() + sakType.format(),
+                        )
+                    }.orShow {
+                        textExpr(
+                            Bokmal to "Du må betale tilbake ".expr() + sakType.format(),
+                            Nynorsk to "Du må betale tilbake ".expr() + sakType.format(),
+                            English to "You must pay reimbursement for ".expr() + sakType.format(),
+                        )
+                    }
                 }.orShow {
                     textExpr(
-                        Bokmal to "Du må betale tilbake ".expr() + sakType.format(),
-                        Nynorsk to "Du må betale tilbake ".expr() + sakType.format(),
-                        English to "You must pay reimbursement for ".expr() + sakType.format()
+                        Bokmal to "Du skal ikke betale tilbake ".expr() + sakType.format(),
+                        Nynorsk to "Du skal ikkje betale tilbake ".expr() + sakType.format(),
+                        English to "No reimbursement for ".expr() + sakType.format() + " will be claimed",
                     )
                 }
-            }.orShow {
-                textExpr(
-                    Bokmal to "Du skal ikke betale tilbake ".expr() + sakType.format(),
-                    Nynorsk to "Du skal ikkje betale tilbake ".expr() + sakType.format(),
-                    English to "No reimbursement for ".expr() + sakType.format() + " will be claimed",
-                )
             }
-
-        }
-        outline {
-            showIf(doedsbo) {
-                includePhrase(TilbakekrevingFraser.ViserTilVarselbrevDoedsbo(datoVarselEllerVedtak, datoTilsvarBruker))
-            }.orShow {
-                includePhrase(
-                    TilbakekrevingFraser.ViserTilVarselbrev(
-                        sakType,
-                        varsel,
-                        datoVarselEllerVedtak,
-                        datoTilsvarBruker
-                    )
-                )
-            }
-
-            showIf(tilbakekreving.skalTilbakekreve) {
+            outline {
                 showIf(doedsbo) {
+                    includePhrase(TilbakekrevingFraser.ViserTilVarselbrevDoedsbo(datoVarselEllerVedtak, datoTilsvarBruker))
+                }.orShow {
                     includePhrase(
-                        TilbakekrevingFraser.KonklusjonTilbakekrevingDoedsbo(sakType, tilbakekreving, brukerNavn)
+                        TilbakekrevingFraser.ViserTilVarselbrev(
+                            sakType,
+                            varsel,
+                            datoVarselEllerVedtak,
+                            datoTilsvarBruker,
+                        ),
                     )
-                    showIf(tilbakekreving.summer.fradragSkatt.greaterThan(0)) {
-                        includePhrase(TilbakekrevingFraser.TrukketSkatt)
-                    }
-                    includePhrase(TilbakekrevingFraser.VedtakGjortEtterLover(tilbakekreving))
-                    includePhrase(TilbakekrevingFraser.ReferanseTilVedleggDoedsbo)
-                    includePhrase(TilbakekrevingFraser.SkattDoedsbo)
-                }.orShow {
-                    includePhrase(TilbakekrevingFraser.KonklusjonTilbakekreving(sakType, tilbakekreving))
-                    showIf(tilbakekreving.summer.fradragSkatt.greaterThan(0)) {
-                        includePhrase(TilbakekrevingFraser.TrukketSkatt)
-                    }
-                    includePhrase(TilbakekrevingFraser.VedtakGjortEtterLover(tilbakekreving))
-                    includePhrase(TilbakekrevingFraser.ReferanseTilVedlegg)
-                    includePhrase(TilbakekrevingFraser.Skatt)
                 }
-            }.orShow {
-                includePhrase(TilbakekrevingFraser.HovedInnholdIngenTilbakekreving(sakType, tilbakekreving, doedsbo))
+
+                showIf(tilbakekreving.skalTilbakekreve) {
+                    showIf(doedsbo) {
+                        includePhrase(
+                            TilbakekrevingFraser.KonklusjonTilbakekrevingDoedsbo(sakType, tilbakekreving, brukerNavn),
+                        )
+                        showIf(tilbakekreving.summer.fradragSkatt.greaterThan(0)) {
+                            includePhrase(TilbakekrevingFraser.TrukketSkatt)
+                        }
+                        includePhrase(TilbakekrevingFraser.VedtakGjortEtterLover(tilbakekreving))
+                        includePhrase(TilbakekrevingFraser.ReferanseTilVedleggDoedsbo)
+                        includePhrase(TilbakekrevingFraser.SkattDoedsbo)
+                    }.orShow {
+                        includePhrase(TilbakekrevingFraser.KonklusjonTilbakekreving(sakType, tilbakekreving))
+                        showIf(tilbakekreving.summer.fradragSkatt.greaterThan(0)) {
+                            includePhrase(TilbakekrevingFraser.TrukketSkatt)
+                        }
+                        includePhrase(TilbakekrevingFraser.VedtakGjortEtterLover(tilbakekreving))
+                        includePhrase(TilbakekrevingFraser.ReferanseTilVedlegg)
+                        includePhrase(TilbakekrevingFraser.Skatt)
+                    }
+                }.orShow {
+                    includePhrase(TilbakekrevingFraser.HovedInnholdIngenTilbakekreving(sakType, tilbakekreving, doedsbo))
+                }
+
+                konverterElementerTilBrevbakerformat(innhold)
             }
 
-            konverterElementerTilBrevbakerformat(innhold)
+            includeAttachment(tilbakekrevingVedlegg, tilbakekreving)
 
+            // Nasjonal
+            includeAttachment(
+                klageOgAnke(bosattUtland = false, tilbakekreving = true),
+                innhold,
+                bosattUtland.not().and(doedsbo.not()),
+            )
+            // Bosatt utland
+            includeAttachment(
+                klageOgAnke(bosattUtland = true, tilbakekreving = true),
+                innhold,
+                bosattUtland.and(doedsbo.not()),
+            )
         }
-
-        includeAttachment(tilbakekrevingVedlegg, tilbakekreving)
-
-        // Nasjonal
-        includeAttachment(
-            klageOgAnke(bosattUtland = false, tilbakekreving = true),
-            innhold,
-            bosattUtland.not().and(doedsbo.not())
-        )
-        // Bosatt utland
-        includeAttachment(
-            klageOgAnke(bosattUtland = true, tilbakekreving = true),
-            innhold,
-            bosattUtland.and(doedsbo.not())
-        )
-    }
 }

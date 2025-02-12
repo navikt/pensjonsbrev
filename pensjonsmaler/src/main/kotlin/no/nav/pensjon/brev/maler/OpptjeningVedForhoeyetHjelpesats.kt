@@ -17,43 +17,44 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 // BrevTypeKode: MF_000094
 @TemplateModelHelpers
 object OpptjeningVedForhoeyetHjelpesats : AutobrevTemplate<OpptjeningVedForhoeyetHjelpesatsDto> {
-
     override val kode = Pesysbrevkoder.AutoBrev.PE_OMSORG_HJELPESTOENAD_AUTO
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = OpptjeningVedForhoeyetHjelpesatsDto::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak – innvilgelse av omsorgsopptjening ved forhøyet hjelpestønad sats 3 eller 4",
-            isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-            brevtype = VEDTAKSBREV
-        )
-    ) {
-        title {
-            textExpr(
-                Bokmal to "Du får pensjonsopptjening for omsorgsarbeid for ".expr() + aarInnvilgetOmsorgspoeng.format(),
-                Nynorsk to "Du får pensjonsopptening for omsorgsarbeid for ".expr() + aarInnvilgetOmsorgspoeng.format(),
-                English to "Earned pension savings for unpaid care work for ".expr() + aarInnvilgetOmsorgspoeng.format(),
-            )
-        }
-
-        outline {
-            includePhrase(Vedtak.Overskrift)
-
-            includePhrase(Omsorgsopptjening.HjelpestoenadInnledn(aarInnvilgetOmsorgspoeng))
-
-            showIf(foedtEtter1953) {
-                includePhrase(Omsorgsopptjening.HjelpestKap20Hjemmel)
-            } orShow {
-                includePhrase(Omsorgsopptjening.HjelpestKap3Hjemmel)
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = OpptjeningVedForhoeyetHjelpesatsDto::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak – innvilgelse av omsorgsopptjening ved forhøyet hjelpestønad sats 3 eller 4",
+                    isSensitiv = false,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+                    brevtype = VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                textExpr(
+                    Bokmal to "Du får pensjonsopptjening for omsorgsarbeid for ".expr() + aarInnvilgetOmsorgspoeng.format(),
+                    Nynorsk to "Du får pensjonsopptening for omsorgsarbeid for ".expr() + aarInnvilgetOmsorgspoeng.format(),
+                    English to "Earned pension savings for unpaid care work for ".expr() + aarInnvilgetOmsorgspoeng.format(),
+                )
             }
 
-            includePhrase(Omsorgsopptjening.Info)
-            includePhrase(Omsorgsopptjening.OverforingInfo)
-            includePhrase(Omsorgsopptjening.HjelpestonadAutoGodkjennInfo)
-            includePhrase(Felles.HarDuSpoersmaal.omsorg)
+            outline {
+                includePhrase(Vedtak.Overskrift)
+
+                includePhrase(Omsorgsopptjening.HjelpestoenadInnledn(aarInnvilgetOmsorgspoeng))
+
+                showIf(foedtEtter1953) {
+                    includePhrase(Omsorgsopptjening.HjelpestKap20Hjemmel)
+                } orShow {
+                    includePhrase(Omsorgsopptjening.HjelpestKap3Hjemmel)
+                }
+
+                includePhrase(Omsorgsopptjening.Info)
+                includePhrase(Omsorgsopptjening.OverforingInfo)
+                includePhrase(Omsorgsopptjening.HjelpestonadAutoGodkjennInfo)
+                includePhrase(Felles.HarDuSpoersmaal.omsorg)
+            }
         }
-    }
 }

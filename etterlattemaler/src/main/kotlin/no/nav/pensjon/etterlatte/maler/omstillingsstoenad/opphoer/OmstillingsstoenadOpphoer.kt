@@ -36,58 +36,60 @@ data class OmstillingsstoenadOpphoerDTO(
     val innholdForhaandsvarsel: List<Element>,
     val virkningsdato: LocalDate,
     val bosattUtland: Boolean,
-    val feilutbetaling: FeilutbetalingType
-): FerdigstillingBrevDTO
+    val feilutbetaling: FeilutbetalingType,
+) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadOpphoer : EtterlatteTemplate<OmstillingsstoenadOpphoerDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_OPPHOER
 
-    override val template = createTemplate(
-        name = kode.name,
-        letterDataType = OmstillingsstoenadOpphoerDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - Opphør av omstillingsstønad",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        )
-    ) {
-        title {
-            text(
-                Bokmal to "Vi har opphørt omstillingsstønaden din",
-                Nynorsk to "Vi har avvikla omstillingsstønaden din",
-                English to "We have terminated your adjustment allowance",
-            )
-        }
-
-        outline {
-            paragraph {
-                textExpr(
-                    Bokmal to "Omstillingsstønaden din opphører fra ".expr() + virkningsdato.format() + ".",
-                    Nynorsk to "Omstillingsstønaden din fell bort frå og med ".expr() + virkningsdato.format() + ".",
-                    English to "Your adjustment allowance will terminate on: ".expr() + virkningsdato.format() + ".",
+    override val template =
+        createTemplate(
+            name = kode.name,
+            letterDataType = OmstillingsstoenadOpphoerDTO::class,
+            languages = languages(Bokmal, Nynorsk, English),
+            letterMetadata =
+                LetterMetadata(
+                    displayTitle = "Vedtak - Opphør av omstillingsstønad",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+        ) {
+            title {
+                text(
+                    Bokmal to "Vi har opphørt omstillingsstønaden din",
+                    Nynorsk to "Vi har avvikla omstillingsstønaden din",
+                    English to "We have terminated your adjustment allowance",
                 )
             }
-            konverterElementerTilBrevbakerformat(innhold)
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
-                includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingMedVarselOpphoer)
+
+            outline {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Omstillingsstønaden din opphører fra ".expr() + virkningsdato.format() + ".",
+                        Nynorsk to "Omstillingsstønaden din fell bort frå og med ".expr() + virkningsdato.format() + ".",
+                        English to "Your adjustment allowance will terminate on: ".expr() + virkningsdato.format() + ".",
+                    )
+                }
+                konverterElementerTilBrevbakerformat(innhold)
+                showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
+                    includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingMedVarselOpphoer)
+                }
+                showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
+                    includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingUtenVarselOpphoer)
+                }
+                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlageAvslagOpphoer)
+                includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
+                includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
-                includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingUtenVarselOpphoer)
-            }
-            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilAaKlageAvslagOpphoer)
-            includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
-            includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
+
+            // Nasjonal
+            includeAttachment(klageOgAnke(bosattUtland = false), innhold, bosattUtland.not())
+
+            // Bosatt utland
+            includeAttachment(klageOgAnke(bosattUtland = true), innhold, bosattUtland)
+
+            includeAttachment(forhaandsvarselFeilutbetalingOmstillingsstoenadOpphoer, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
         }
-
-        // Nasjonal
-        includeAttachment(klageOgAnke(bosattUtland = false), innhold, bosattUtland.not())
-
-        // Bosatt utland
-        includeAttachment(klageOgAnke(bosattUtland = true), innhold, bosattUtland)
-
-        includeAttachment(forhaandsvarselFeilutbetalingOmstillingsstoenadOpphoer, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
-    }
 }

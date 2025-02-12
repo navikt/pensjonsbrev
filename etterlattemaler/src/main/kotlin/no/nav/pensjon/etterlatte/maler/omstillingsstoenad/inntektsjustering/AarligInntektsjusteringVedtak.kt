@@ -46,7 +46,8 @@ data class AarligInntektsjusteringVedtakDTO(
 }
 
 @TemplateModelHelpers
-object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInntektsjusteringVedtakDTO>,
+object OmstillingsstoenadInntektsjusteringVedtak :
+    EtterlatteTemplate<AarligInntektsjusteringVedtakDTO>,
     Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMSTILLINGSSTOENAD_INNTEKTSJUSTERING_VEDTAK
 
@@ -56,12 +57,12 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
             letterDataType = AarligInntektsjusteringVedtakDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
-            LetterMetadata(
-                displayTitle = "Vedtaksbrev - inntektsjustering",
-                isSensitiv = true,
-                distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-            ),
+                LetterMetadata(
+                    displayTitle = "Vedtaksbrev - inntektsjustering",
+                    isSensitiv = true,
+                    distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
         ) {
             title {
                 textExpr(
@@ -71,7 +72,7 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
                 )
             }
             outline {
-                showIf(endringIUtbetaling){
+                showIf(endringIUtbetaling) {
                     paragraph {
                         textExpr(
                             Bokmal to "Omstillingsstønaden din er endret fra 1. januar ".expr() + inntektsaar.format() + ".",
@@ -85,27 +86,26 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
                     val sisteUtbetalteBeloep = beregning.sisteBeregningsperiode.utbetaltBeloep.format()
                     paragraph {
                         textExpr(
-                            Bokmal to "Omstillingsstønaden din er vurdert på nytt fra 1. januar ".expr() + inntektsaar.format() + ". "
-                                    + ifElse(harUtbetaling, "Du får fortsatt ".expr()+ sisteUtbetalteBeloep +" kroner per måned før skatt.","Du får fortsatt ikke utbetalt stønad.".expr()),
-                            Nynorsk to "Omstillingsstønaden din er vurdert på nytt frå 1. januar  ".expr() + inntektsaar.format() + ". "
-                                    + ifElse(harUtbetaling, "Du får framleis ".expr()+ sisteUtbetalteBeloep +" kroner per månad før skatt.", "Du får framleis ikkje utbetalt stønad.".expr()),
-                            English to "Your adjustment allowance has been reassessed from January 1, ".expr() + inntektsaar.format() + ". "
-                                    + ifElse(harUtbetaling, "You will continue to receive NOK ".expr()+ sisteUtbetalteBeloep +" per month before tax.", "You will still not be paid the allowance.".expr()),
+                            Bokmal to "Omstillingsstønaden din er vurdert på nytt fra 1. januar ".expr() + inntektsaar.format() + ". " +
+                                ifElse(harUtbetaling, "Du får fortsatt ".expr() + sisteUtbetalteBeloep + " kroner per måned før skatt.", "Du får fortsatt ikke utbetalt stønad.".expr()),
+                            Nynorsk to "Omstillingsstønaden din er vurdert på nytt frå 1. januar  ".expr() + inntektsaar.format() + ". " +
+                                ifElse(harUtbetaling, "Du får framleis ".expr() + sisteUtbetalteBeloep + " kroner per månad før skatt.", "Du får framleis ikkje utbetalt stønad.".expr()),
+                            English to "Your adjustment allowance has been reassessed from January 1, ".expr() + inntektsaar.format() + ". " +
+                                ifElse(harUtbetaling, "You will continue to receive NOK ".expr() + sisteUtbetalteBeloep + " per month before tax.", "You will still not be paid the allowance.".expr()),
                         )
                     }
 
                     paragraph {
                         text(
                             Bokmal to "Se hvordan vi har beregnet omstillingsstønaden din i vedlegget «Beregning av " +
-                                    "omstillingsstønad».",
+                                "omstillingsstønad».",
                             Nynorsk to "Du kan sjå i vedlegget «Utrekning av omstillingsstønad» korleis vi har " +
-                                    "rekna ut omstillingsstønaden din.",
+                                "rekna ut omstillingsstønaden din.",
                             English to
-                                    "You can see how we calculated your adjustment allowance in the attachment: Calculation of adjustment allowance.",
+                                "You can see how we calculated your adjustment allowance in the attachment: Calculation of adjustment allowance.",
                         )
                     }
                 }
-
 
                 title2 {
                     text(
@@ -152,4 +152,4 @@ object OmstillingsstoenadInntektsjusteringVedtak : EtterlatteTemplate<AarligInnt
             includeAttachment(informasjonOmOmstillingsstoenad(), informasjonOmOmstillingsstoenadData)
             includeAttachment(dineRettigheterOgPlikter, beregning)
         }
-    }
+}

@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_serkull
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget
-import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.model.*
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -14,7 +14,6 @@ data class TBU1286_1_Generated(
     val pe: Expression<PE>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-
         paragraph {
             text(
                 Bokmal to "Barnetillegget ",
@@ -22,7 +21,7 @@ data class TBU1286_1_Generated(
                 English to "You will not receive child supplement ",
             )
 
-            //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
+            // PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
             showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
                 textExpr(
                     Bokmal to "for ".expr() + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene, ",
@@ -36,7 +35,7 @@ data class TBU1286_1_Generated(
                 English to "because your total income ",
             )
 
-            //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
+            // PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
             showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) {
                 text(
                     Bokmal to "alene ",
@@ -52,4 +51,3 @@ data class TBU1286_1_Generated(
         }
     }
 }
-        
