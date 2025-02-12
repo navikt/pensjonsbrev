@@ -30,124 +30,144 @@ import org.junit.jupiter.api.Test
 
 @Tag(TestTags.INTEGRATION_TEST)
 class LetterRoutesITest {
-    private val autoBrevRequest = BestillBrevRequest(
-        kode = LetterExample.kode,
-        letterData = createLetterExampleDto(),
-        felles = Fixtures.fellesAuto,
-        language = LanguageCode.BOKMAL,
-    )
-    private val bestillMarkupRequest = BestillBrevRequest(
-        kode = EksempelbrevRedigerbart.kode,
-        letterData = createEksempelbrevRedigerbartDto(),
-        felles = Fixtures.felles,
-        language = LanguageCode.BOKMAL,
-    )
-    private val redigertBestilling = Letter(
-        template = EksempelbrevRedigerbart.template,
-        argument = bestillMarkupRequest.letterData,
-        language = Language.Bokmal,
-        felles = bestillMarkupRequest.felles
-    ).let { Letter2Markup.renderLetterOnly(it.toScope(), it.template) }
-        .let {
-            with(bestillMarkupRequest) {
-                BestillRedigertBrevRequest(kode, letterData, felles, language, it)
+    private val autoBrevRequest =
+        BestillBrevRequest(
+            kode = LetterExample.kode,
+            letterData = createLetterExampleDto(),
+            felles = Fixtures.fellesAuto,
+            language = LanguageCode.BOKMAL,
+        )
+    private val bestillMarkupRequest =
+        BestillBrevRequest(
+            kode = EksempelbrevRedigerbart.kode,
+            letterData = createEksempelbrevRedigerbartDto(),
+            felles = Fixtures.felles,
+            language = LanguageCode.BOKMAL,
+        )
+    private val redigertBestilling =
+        Letter(
+            template = EksempelbrevRedigerbart.template,
+            argument = bestillMarkupRequest.letterData,
+            language = Language.Bokmal,
+            felles = bestillMarkupRequest.felles,
+        ).let { Letter2Markup.renderLetterOnly(it.toScope(), it.template) }
+            .let {
+                with(bestillMarkupRequest) {
+                    BestillRedigertBrevRequest(kode, letterData, felles, language, it)
+                }
             }
+
+    @Test
+    fun isAlive() =
+        testBrevbakerApp { client ->
+            val response = client.get("/isAlive")
+
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals("Alive!", response.bodyAsText())
         }
 
     @Test
-    fun isAlive() = testBrevbakerApp { client ->
-        val response = client.get("/isAlive")
-
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals("Alive!", response.bodyAsText())
-    }
-
-    @Test
-    fun `render html can respond with raw html`() = testBrevbakerApp { client ->
-        val response = client.post("/letter/autobrev/html") {
-            accept(ContentType.Text.Html)
-            setBody(autoBrevRequest)
-        }
-        assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8), response.contentType())
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertThat(response.bodyAsText(), contains(Regex("<html.*>")))
-    }
-
-    @Test
-    fun `render html can respond with raw html with new code`() = testBrevbakerApp { client ->
-        val req = autoBrevRequest.copy(kode = AutomatiskBrevkode("TESTBREV"))
-        val response = client.post("/letter/autobrev/html") {
-            accept(ContentType.Text.Html)
-            setBody(req)
-        }
-        assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8), response.contentType())
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertThat(response.bodyAsText(), contains(Regex("<html.*>")))
-    }
-
-    @Test
-    fun `render html can respond with json`() = testBrevbakerApp { client ->
-        val responseBody = client.post("/letter/autobrev/html") {
-            accept(ContentType.Application.Json)
-            setBody(autoBrevRequest)
-        }.body<LetterResponse>()
-
-        assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8).toString(), responseBody.contentType)
-        assertThat(String(responseBody.file, Charsets.UTF_8), contains(Regex("<html.*>")))
-    }
-
-    @Test
-    fun `render pdf can respond with raw pdf`() = testBrevbakerApp { client ->
-        val response = client.post("/letter/autobrev/pdf") {
-            accept(ContentType.Application.Pdf)
-            setBody(autoBrevRequest)
-        }
-        assertEquals(ContentType.Application.Pdf, response.contentType())
-        assertEquals(HttpStatusCode.OK, response.status)
-    }
-
-    @Test
-    fun `render pdf can respond with json`() = testBrevbakerApp { client ->
-        val responseBody = client.post("/letter/autobrev/pdf") {
-            accept(ContentType.Application.Json)
-            setBody(autoBrevRequest)
-        }.body<LetterResponse>()
-
-        assertEquals(ContentType.Application.Pdf.toString(), responseBody.contentType)
-    }
-
-    @Test
-    fun `render markup responds with markup`() = testBrevbakerApp { client ->
-        val response = client.post("/letter/redigerbar/markup") {
-            accept(ContentType.Application.Json)
-            setBody(bestillMarkupRequest)
+    fun `render html can respond with raw html`() =
+        testBrevbakerApp { client ->
+            val response =
+                client.post("/letter/autobrev/html") {
+                    accept(ContentType.Text.Html)
+                    setBody(autoBrevRequest)
+                }
+            assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8), response.contentType())
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertThat(response.bodyAsText(), contains(Regex("<html.*>")))
         }
 
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(redigertBestilling.letterMarkup, response.body<LetterMarkup>())
-    }
-
     @Test
-    fun `can render html from markup`() = testBrevbakerApp { client ->
-        val response = client.post("/letter/redigerbar/html") {
-            accept(ContentType.Application.Json)
-            setBody(redigertBestilling)
+    fun `render html can respond with raw html with new code`() =
+        testBrevbakerApp { client ->
+            val req = autoBrevRequest.copy(kode = AutomatiskBrevkode("TESTBREV"))
+            val response =
+                client.post("/letter/autobrev/html") {
+                    accept(ContentType.Text.Html)
+                    setBody(req)
+                }
+            assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8), response.contentType())
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertThat(response.bodyAsText(), contains(Regex("<html.*>")))
         }
 
-        assertEquals(HttpStatusCode.OK, response.status)
-        val body = response.body<LetterResponse>()
-        assertThat(String(body.file, Charsets.UTF_8), containsSubstring(redigertBestilling.letterMarkup.title))
-    }
-
     @Test
-    fun `can render pdf from markup`() = testBrevbakerApp { client ->
-        val response = client.post("/letter/redigerbar/pdf") {
-            accept(ContentType.Application.Json)
-            setBody(redigertBestilling)
+    fun `render html can respond with json`() =
+        testBrevbakerApp { client ->
+            val responseBody =
+                client.post("/letter/autobrev/html") {
+                    accept(ContentType.Application.Json)
+                    setBody(autoBrevRequest)
+                }.body<LetterResponse>()
+
+            assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8).toString(), responseBody.contentType)
+            assertThat(String(responseBody.file, Charsets.UTF_8), contains(Regex("<html.*>")))
         }
 
-        assertEquals(HttpStatusCode.OK, response.status)
-        val body = response.body<LetterResponse>()
-        assertEquals(ContentType.Application.Pdf.toString(), body.contentType)
-    }
+    @Test
+    fun `render pdf can respond with raw pdf`() =
+        testBrevbakerApp { client ->
+            val response =
+                client.post("/letter/autobrev/pdf") {
+                    accept(ContentType.Application.Pdf)
+                    setBody(autoBrevRequest)
+                }
+            assertEquals(ContentType.Application.Pdf, response.contentType())
+            assertEquals(HttpStatusCode.OK, response.status)
+        }
+
+    @Test
+    fun `render pdf can respond with json`() =
+        testBrevbakerApp { client ->
+            val responseBody =
+                client.post("/letter/autobrev/pdf") {
+                    accept(ContentType.Application.Json)
+                    setBody(autoBrevRequest)
+                }.body<LetterResponse>()
+
+            assertEquals(ContentType.Application.Pdf.toString(), responseBody.contentType)
+        }
+
+    @Test
+    fun `render markup responds with markup`() =
+        testBrevbakerApp { client ->
+            val response =
+                client.post("/letter/redigerbar/markup") {
+                    accept(ContentType.Application.Json)
+                    setBody(bestillMarkupRequest)
+                }
+
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(redigertBestilling.letterMarkup, response.body<LetterMarkup>())
+        }
+
+    @Test
+    fun `can render html from markup`() =
+        testBrevbakerApp { client ->
+            val response =
+                client.post("/letter/redigerbar/html") {
+                    accept(ContentType.Application.Json)
+                    setBody(redigertBestilling)
+                }
+
+            assertEquals(HttpStatusCode.OK, response.status)
+            val body = response.body<LetterResponse>()
+            assertThat(String(body.file, Charsets.UTF_8), containsSubstring(redigertBestilling.letterMarkup.title))
+        }
+
+    @Test
+    fun `can render pdf from markup`() =
+        testBrevbakerApp { client ->
+            val response =
+                client.post("/letter/redigerbar/pdf") {
+                    accept(ContentType.Application.Json)
+                    setBody(redigertBestilling)
+                }
+
+            assertEquals(HttpStatusCode.OK, response.status)
+            val body = response.body<LetterResponse>()
+            assertEquals(ContentType.Application.Pdf.toString(), body.contentType)
+        }
 }

@@ -24,14 +24,13 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class TemplateDocumentationRendererTest {
-
     @Test
     fun canRenderDocumentationForAllTemplates() {
         (ProductionTemplates.hentAutobrevmaler() + ProductionTemplates.hentRedigerbareMaler()).forEach {
             TemplateDocumentationRenderer.render(
                 it.template,
                 it.template.language.all().first(),
-                it.template.modelSpecification()
+                it.template.modelSpecification(),
             )
         }
     }
@@ -48,131 +47,146 @@ class TemplateDocumentationRendererTest {
 
     @Test
     fun `if-elseif-else chain loeftes opp slik at de er paa samme nivaa`() {
-        val templ = outlineTestTemplate<Unit> {
-            paragraph {
-                showIf(true.expr()) {
-                    text(Bokmal to "første")
-                }.orShowIf(false.expr()) {
-                    text(Bokmal to "andre")
-                }.orShowIf(1.expr().greaterThan(2.expr())) {
-                    text(Bokmal to "tredje")
-                } orShow {
-                    text(Bokmal to "else")
+        val templ =
+            outlineTestTemplate<Unit> {
+                paragraph {
+                    showIf(true.expr()) {
+                        text(Bokmal to "første")
+                    }.orShowIf(false.expr()) {
+                        text(Bokmal to "andre")
+                    }.orShowIf(1.expr().greaterThan(2.expr())) {
+                        text(Bokmal to "tredje")
+                    } orShow {
+                        text(Bokmal to "else")
+                    }
                 }
             }
-        }
-        val expected = Content(
-            Paragraph(
-                listOf(
-                    Conditional(
-                        predicate = Expression.Literal("true"),
-                        showIf = listOf(Content(Text.Literal("første"))),
-                        elseIf = listOf(
-                            Conditional.ElseIf(
-                                predicate = Expression.Literal("false"),
-                                showIf = listOf(Content(Text.Literal("andre"))),
-                            ),
-                            Conditional.ElseIf(
-                                predicate = Expression.Invoke(
-                                    Expression.Invoke.Operation(">", BinaryOperation.Documentation.Notation.INFIX),
-                                    Expression.Literal("1"),
-                                    Expression.Literal("2"),
-                                    type = "TODO"
+        val expected =
+            Content(
+                Paragraph(
+                    listOf(
+                        Conditional(
+                            predicate = Expression.Literal("true"),
+                            showIf = listOf(Content(Text.Literal("første"))),
+                            elseIf =
+                                listOf(
+                                    Conditional.ElseIf(
+                                        predicate = Expression.Literal("false"),
+                                        showIf = listOf(Content(Text.Literal("andre"))),
+                                    ),
+                                    Conditional.ElseIf(
+                                        predicate =
+                                            Expression.Invoke(
+                                                Expression.Invoke.Operation(">", BinaryOperation.Documentation.Notation.INFIX),
+                                                Expression.Literal("1"),
+                                                Expression.Literal("2"),
+                                                type = "TODO",
+                                            ),
+                                        showIf = listOf(Content(Text.Literal("tredje"))),
+                                    ),
                                 ),
-                                showIf = listOf(Content(Text.Literal("tredje"))),
-                            ),
+                            showElse = listOf(Content(Text.Literal("else"))),
                         ),
-                        showElse = listOf(Content(Text.Literal("else"))),
-                    )
-                )
+                    ),
+                ),
             )
-        )
         assertEquals(expected, TemplateDocumentationRenderer.render(templ, Bokmal, templ.modelSpecification()).outline.first())
     }
 
     @Test
     fun `if-elseif-else chain loeftes kun opp om det er ett og bare ett element som er en conditional`() {
-        val templ = outlineTestTemplate<Unit> {
-            paragraph {
-                showIf(true.expr()) {
-                    text(Bokmal to "første")
-                } orShow {
-                    showIf(false.expr()) {
-                        text(Bokmal to "andre")
-                    }.orShow {
-                        text(Bokmal to "ekstra")
-                        showIf(1.expr().greaterThan(2.expr())) {
-                            text(Bokmal to "tredje")
-                        } orShow {
-                            text(Bokmal to "else")
+        val templ =
+            outlineTestTemplate<Unit> {
+                paragraph {
+                    showIf(true.expr()) {
+                        text(Bokmal to "første")
+                    } orShow {
+                        showIf(false.expr()) {
+                            text(Bokmal to "andre")
+                        }.orShow {
+                            text(Bokmal to "ekstra")
+                            showIf(1.expr().greaterThan(2.expr())) {
+                                text(Bokmal to "tredje")
+                            } orShow {
+                                text(Bokmal to "else")
+                            }
                         }
                     }
                 }
             }
-        }
-        val expected = Content(
-            Paragraph(
-                listOf(
-                    Conditional(
-                        predicate = Expression.Literal("true"),
-                        showIf = listOf(Content(Text.Literal("første"))),
-                        elseIf = listOf(
-                            Conditional.ElseIf(
-                                predicate = Expression.Literal("false"),
-                                showIf = listOf(Content(Text.Literal("andre"))),
-                            ),
-                        ),
-                        showElse = listOf(
-                            Content(Text.Literal("ekstra")),
-                            Conditional(
-                                predicate = Expression.Invoke(
-                                    Expression.Invoke.Operation(">", BinaryOperation.Documentation.Notation.INFIX),
-                                    Expression.Literal("1"),
-                                    Expression.Literal("2"),
-                                    type = "TODO"
+        val expected =
+            Content(
+                Paragraph(
+                    listOf(
+                        Conditional(
+                            predicate = Expression.Literal("true"),
+                            showIf = listOf(Content(Text.Literal("første"))),
+                            elseIf =
+                                listOf(
+                                    Conditional.ElseIf(
+                                        predicate = Expression.Literal("false"),
+                                        showIf = listOf(Content(Text.Literal("andre"))),
+                                    ),
                                 ),
-                                showIf = listOf(Content(Text.Literal("tredje"))),
-                                elseIf = emptyList(),
-                                showElse = listOf(Content(Text.Literal("else"))),
-                            ),
-                        )
-                    )
-                )
+                            showElse =
+                                listOf(
+                                    Content(Text.Literal("ekstra")),
+                                    Conditional(
+                                        predicate =
+                                            Expression.Invoke(
+                                                Expression.Invoke.Operation(">", BinaryOperation.Documentation.Notation.INFIX),
+                                                Expression.Literal("1"),
+                                                Expression.Literal("2"),
+                                                type = "TODO",
+                                            ),
+                                        showIf = listOf(Content(Text.Literal("tredje"))),
+                                        elseIf = emptyList(),
+                                        showElse = listOf(Content(Text.Literal("else"))),
+                                    ),
+                                ),
+                        ),
+                    ),
+                ),
             )
-        )
         assertEquals(expected, TemplateDocumentationRenderer.render(templ, Bokmal, templ.modelSpecification()).outline.first())
     }
 
     @Test
     fun `collection isEmpty expr blir forenklet`() {
-        val templ = outlineTestTemplate<Unit> {
-            paragraph {
-                textExpr(Bokmal to emptyList<String>().expr().isEmpty().format(BooleanFormatter))
+        val templ =
+            outlineTestTemplate<Unit> {
+                paragraph {
+                    textExpr(Bokmal to emptyList<String>().expr().isEmpty().format(BooleanFormatter))
+                }
             }
-        }
-        val expected = Content(
-            Paragraph(
-                listOf(
-                    Content(
-                        Text.Expression(
-                            Expression.Invoke(
-                                Expression.Invoke.Operation(
-                                    "isEmpty",
-                                    BinaryOperation.Documentation.Notation.FUNCTION
+        val expected =
+            Content(
+                Paragraph(
+                    listOf(
+                        Content(
+                            Text.Expression(
+                                Expression.Invoke(
+                                    Expression.Invoke.Operation(
+                                        "isEmpty",
+                                        BinaryOperation.Documentation.Notation.FUNCTION,
+                                    ),
+                                    first = Expression.Literal("[]"),
                                 ),
-                                first = Expression.Literal("[]"),
-                            )
-                        )
-                    )
-                )
+                            ),
+                        ),
+                    ),
+                ),
             )
-        )
         assertEquals(expected, TemplateDocumentationRenderer.render(templ, Bokmal, templ.modelSpecification()).outline.first())
     }
 }
 
 private object BooleanFormatter : LocalizedFormatter<Boolean>() {
-    override fun apply(first: Boolean, second: Language) = first.toString()
+    override fun apply(
+        first: Boolean,
+        second: Language,
+    ) = first.toString()
+
     override fun stableHashCode(): Int = "BooleanFormatter".hashCode()
 }
 

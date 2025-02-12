@@ -14,7 +14,6 @@ private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.Authorization"
 
 data class JwtConfig(val name: String, val issuer: String, val jwksUrl: String, val audience: List<String>, val preAuthorizedApps: List<PreAuthorizedApp>?, val requireAzureAdClaims: Boolean) {
     companion object {
-
         private const val JWT_AZURE_AD_NAME = "AZURE_AD"
 
         fun requireAzureADConfig(azureAdConfig: ApplicationConfig) =
