@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger.model
 
-internal sealed class PDFCompilationResponse {
+sealed class PDFCompilationResponse {
     data class Base64PDF(val base64PDF: String): PDFCompilationResponse()
     sealed class Failure: PDFCompilationResponse() {
         data class Client(val reason: String, val output: String? = null, val error: String? = null): Failure()

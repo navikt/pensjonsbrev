@@ -25,7 +25,7 @@ import kotlin.collections.partition
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
-private const val RETRY_INTERVAL_SECONDS = 150L
+private const val FAILURE_RETRY_INTERVAL_SECONDS = 150L
 
 
 private val QUEUE_READ_TIMEOUT = 5.seconds.toJavaDuration()
@@ -61,7 +61,8 @@ class PdfRequestConsumer(
         retryConsumer.subscribe(listOf(retryTopic))
     }
 
-    private var nextRetry: Instant = Instant.now()
+    private var lastRetryFailure: Instant = Instant.MIN
+    private var lastRetrySucceeded = false
 
     fun flow() =
         flow {
@@ -69,7 +70,6 @@ class PdfRequestConsumer(
                 // TODO prioritize between retry and success queue polling.
                 // maybe it's ok to just do every second one?
                 if (shouldPollFromRetryQueue()) {
-                    nextRetry = Instant.now()
                     emit(pollRenderRetryQueue())
                     println("Polled message from render retry queue")
                 } else {
@@ -84,16 +84,17 @@ class PdfRequestConsumer(
 
                 if (renderRequests.isFromRetryQueue) {
                     if (failures.isEmpty()) {
-                        // TODO commit all to successes
+                        println("Test: rendered ${successes.size} from retry queue")
                     } else {
                         processRetryQueueResults(results, retryConsumer.groupMetadata())
                     }
 
                 } else {
                     if (failures.isEmpty()) {
-                        // TODO commit all to successes
+                        println("Test: rendered ${successes.size} from normal queue without failures")
+                    } else {
+                        sendToRetryOrSuccessQueue(results, consumer.groupMetadata())
                     }
-                    sendToRetryOrSuccessQueue(results, consumer.groupMetadata())
                 }
             }
         }
@@ -114,7 +115,7 @@ class PdfRequestConsumer(
             .forEach {
                 when (it.renderResult) {
                     is PDFCompilationResponse.Base64PDF -> {
-                        // TODO send single success to queue
+                        println("Test: rendered a letter successfully that would be committed synchronously")
                     }
 
                     is PDFCompilationResponse.Failure -> {
@@ -127,6 +128,7 @@ class PdfRequestConsumer(
                         producer.beginTransaction()
                         producer.sendOffsetsToTransaction(mapOf(topicPartition to offsetAndMetadata), groupMetadata)
                         producer.send(ProducerRecord(retryTopic, it.key, it.renderRequest))
+                        println("Test: sendt a request to failure queue successfully.")
                         producer.commitTransaction()
                         // TODO error handling on failed transactions.
                     }
@@ -181,15 +183,10 @@ class PdfRequestConsumer(
             }.awaitAll()
         }
 
-    private fun sendToReplyTopic(renderResults: List<RenderResult>) {
-        println("Rendered ${renderResults.size} PDFs successfully")
-        // TODO actually send to reply topic.
-    }
-
     private suspend fun compile(request: PDFRequest): PDFCompilationResponse {
         parallelismSemaphore.acquire()
         val result = LatexDocumentRenderer.render(request)
-            .let { latexCompileService.createLetter(it.base64EncodedFiles()) }
+            .let { latexCompileService.createLetter(it.files) }
         parallelismSemaphore.release()
         println("Compiled pdf successfully")
         return result
@@ -212,7 +209,7 @@ class PdfRequestConsumer(
     }
 
     private fun shouldPollFromRetryQueue() =
-        nextRetry.plusSeconds(RETRY_INTERVAL_SECONDS) < Instant.now()
+
 
 }
 
@@ -241,3 +238,8 @@ private data class RenderResult(
     val consumedPartiton: Int,
     val consumedOffset: Long,
 )
+
+private enum class Topic {
+    RETRY,
+    RENDER,
+}

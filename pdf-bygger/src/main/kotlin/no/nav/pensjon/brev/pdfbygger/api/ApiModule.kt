@@ -39,7 +39,6 @@ import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
 import no.nav.pensjon.brev.pdfbygger.getProperty
 import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
-import no.nav.pensjon.brev.pdfbygger.model.PdfCompilationInput
 import no.nav.pensjon.brev.pdfbygger.pdfByggerConfig
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -111,26 +110,14 @@ fun Application.restModule(
     }
 
     routing {
+
         post("/produserBrev") {
             val result = activityCounter.count {
                 call.receive<PDFRequest>()
                     .let { LatexDocumentRenderer.render(it) }
-                    // TODO: Dropp base64-enkodinga (og dekodinga inni)
-                    .let { blockingLatexService.producePDF(it.base64EncodedFiles()) }
+                    .let { blockingLatexService.producePDF(it.files) }
             }
             handleResult(result, call.application.environment.log)
-        }
-
-        // TODO: Slett denne. Ventar med det for å unngå nedetid
-        post("/compile") {
-            val logger = call.application.environment.log
-
-            val input = call.receive<PdfCompilationInput>()
-            val result = activityCounter.count {
-                blockingLatexService.producePDF(input.files)
-            }
-
-            handleResult(result, logger)
         }
 
         get("/isAlive") {

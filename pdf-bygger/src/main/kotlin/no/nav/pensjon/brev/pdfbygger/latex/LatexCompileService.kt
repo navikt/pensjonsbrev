@@ -5,6 +5,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
+import no.nav.pensjon.brev.template.render.DocumentFile
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
@@ -16,7 +17,7 @@ import kotlin.time.Duration.Companion.milliseconds
 
 private const val COMPILATION_RUNS = 2
 
-internal class LatexCompileService(
+class LatexCompileService(
     latexCommand: String,
     private val compileTimeout: Duration,
     private val tmpBaseDir: Path? = Path.of("/app/tmp")
@@ -26,14 +27,14 @@ internal class LatexCompileService(
     private val encoder = Base64.getEncoder()
     private val latexCommand = latexCommand.split(" ").filter { it.isNotBlank() } + "letter.tex"
 
-    suspend fun createLetter(latexFiles: Map<String, String>): PDFCompilationResponse {
+    suspend fun createLetter(latexFiles: List<DocumentFile>): PDFCompilationResponse {
         val tmpDir = createTempDirectory(tmpBaseDir)
 
         return try {
             latexFiles.forEach {
-                tmpDir.resolve(it.key).toFile().apply {
+                tmpDir.resolve(it.fileName).toFile().apply {
                     createNewFile()
-                    writeText(it.value)
+                    writeText(it.content)
                 }
             }
 

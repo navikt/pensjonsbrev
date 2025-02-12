@@ -9,4 +9,4 @@ build/
 *.ipr
 out/
 
-/secrets
+secrets/

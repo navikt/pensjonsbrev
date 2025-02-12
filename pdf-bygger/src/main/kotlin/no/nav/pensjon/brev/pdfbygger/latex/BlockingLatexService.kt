@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.pdfbygger.latex
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
+import no.nav.pensjon.brev.template.render.DocumentFile
 import kotlin.time.Duration
 
 class BlockingLatexService(
@@ -12,7 +13,7 @@ class BlockingLatexService(
 ) {
     private val parallelismSemaphore = latexParallelism.takeIf { it > 0 }?.let { Semaphore(it) }
 
-    suspend fun producePDF(latexFiles: Map<String, String>): PDFCompilationResponse {
+    suspend fun producePDF(latexFiles: List<DocumentFile>): PDFCompilationResponse {
         return if (parallelismSemaphore != null) {
             val permit = withTimeoutOrNull(queueWaitTimeout) {
                 parallelismSemaphore.acquire()
