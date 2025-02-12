@@ -5,5 +5,5 @@ import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
 fun createTomMalInformasjonsbrev() =
     ManueltBrevMedTittelDTO(
         innhold = createPlaceholderForRedigerbartInnhold(),
-        tittel = "Dette er et informasjonsbrev"
+        tittel = "Dette er et informasjonsbrev",
     )
