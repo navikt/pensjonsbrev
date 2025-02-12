@@ -2,15 +2,14 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.FeatureToggleService
-import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 
 class OperationsTest {
-
     @Test
     fun `an operation without fields are considered equal based on class`() {
         assertEquals(UnaryOperation.ToString, UnaryOperation.ToString)
@@ -47,7 +46,6 @@ class OperationsTest {
         assertEquals("Agne og Jeremy", LocalizedFormatter.CollectionFormat.apply(list, Language.Nynorsk))
         assertEquals("Agne and Jeremy", LocalizedFormatter.CollectionFormat.apply(list, Language.English))
     }
-
 
     @Nested
     @DisplayName("Absolute value operators")
@@ -86,16 +84,30 @@ class OperationsTest {
 
         @Test
         fun `enabled gir true viss funksjonen returnerer true`() {
-            val toggle = object : FeatureToggle { override fun key() = "t1" }
-            FeatureToggleSingleton.init(object : FeatureToggleService { override fun isEnabled(toggle: FeatureToggle) = true })
+            val toggle =
+                object : FeatureToggle {
+                    override fun key() = "t1"
+                }
+            FeatureToggleSingleton.init(
+                object : FeatureToggleService {
+                    override fun isEnabled(toggle: FeatureToggle) = true
+                },
+            )
             val expr = toggle.expr().enabled()
             assertEquals(expr.eval(scope), true)
         }
 
         @Test
         fun `enabled gir false viss funksjonen returnerer false`() {
-            val toggle = object : FeatureToggle { override fun key() = "t2" }
-            FeatureToggleSingleton.init(object : FeatureToggleService { override fun isEnabled(toggle: FeatureToggle) = false })
+            val toggle =
+                object : FeatureToggle {
+                    override fun key() = "t2"
+                }
+            FeatureToggleSingleton.init(
+                object : FeatureToggleService {
+                    override fun isEnabled(toggle: FeatureToggle) = false
+                },
+            )
             val expr = toggle.expr().enabled()
             assertEquals(expr.eval(scope), false)
         }

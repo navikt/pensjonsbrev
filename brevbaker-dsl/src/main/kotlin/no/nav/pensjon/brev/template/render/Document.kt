@@ -8,7 +8,7 @@ interface Document {
 
 class DocumentFile(val fileName: String, val content: String) {
     constructor(fileName: String, contentWriter: Appendable.() -> Unit) :
-            this(fileName, String(StringBuilder().apply(contentWriter)))
+        this(fileName, String(StringBuilder().apply(contentWriter)))
 
     fun writeTo(path: Path) {
         path.resolve(fileName).toFile().writeText(content, Charsets.UTF_8)

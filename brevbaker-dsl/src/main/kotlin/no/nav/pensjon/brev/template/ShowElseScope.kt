@@ -15,7 +15,7 @@ class ShowElseScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>,
 
     fun orShowIf(
         predicate: Expression<Boolean>,
-        body: Scope.() -> Unit
+        body: Scope.() -> Unit,
     ): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(scopeFactory).also { showElse ->
             scope.addControlStructure(ContentOrControlStructure.Conditional(predicate, scopeFactory().apply(body).elements, showElse.scope.elements))
@@ -23,7 +23,7 @@ class ShowElseScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>,
 
     fun <E1 : Any> orIfNotNull(
         expr1: Expression<E1?>,
-        body: Scope.(Expression<E1>) -> Unit
+        body: Scope.(Expression<E1>) -> Unit,
     ): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(scopeFactory).also { elseScope ->
             scope.addControlStructure(
@@ -35,14 +35,14 @@ class ShowElseScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>,
                         body(this, expr1 as Expression<E1>)
                     }.elements,
                     elseScope.scope.elements,
-                )
+                ),
             )
         }
 
     fun <E1 : Any, E2 : Any> orIfNotNull(
         expr1: Expression<E1?>,
         expr2: Expression<E2?>,
-        body: Scope.(Expression<E1>, Expression<E2>) -> Unit
+        body: Scope.(Expression<E1>, Expression<E2>) -> Unit,
     ): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(scopeFactory).also { elseScope ->
             scope.addControlStructure(
@@ -54,7 +54,7 @@ class ShowElseScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>,
                         body(this, expr1 as Expression<E1>, expr2 as Expression<E2>)
                     }.elements,
                     elseScope.scope.elements,
-                )
+                ),
             )
         }
 
@@ -62,7 +62,7 @@ class ShowElseScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>,
         expr1: Expression<E1?>,
         expr2: Expression<E2?>,
         expr3: Expression<E3?>,
-        body: Scope.(Expression<E1>, Expression<E2>, Expression<E3>) -> Unit
+        body: Scope.(Expression<E1>, Expression<E2>, Expression<E3>) -> Unit,
     ): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(scopeFactory).also { elseScope ->
             scope.addControlStructure(
@@ -74,9 +74,7 @@ class ShowElseScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>,
                         body(this, expr1 as Expression<E1>, expr2 as Expression<E2>, expr3 as Expression<E3>)
                     }.elements,
                     elseScope.scope.elements,
-                )
+                ),
             )
         }
-
-
 }

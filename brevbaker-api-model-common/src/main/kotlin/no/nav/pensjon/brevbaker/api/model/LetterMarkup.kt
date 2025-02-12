@@ -2,7 +2,6 @@ package no.nav.pensjon.brevbaker.api.model
 
 @Suppress("unused")
 data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur) {
-
     data class Attachment(
         val title: List<ParagraphContent.Text>,
         val blocks: List<Block>,
@@ -10,6 +9,7 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
     )
 
     data class Sakspart(val gjelderNavn: String, val gjelderFoedselsnummer: String, val saksnummer: String, val dokumentDato: String)
+
     data class Signatur(
         val hilsenTekst: String,
         val saksbehandlerRolleTekst: String,
@@ -20,17 +20,27 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
 
     sealed class Block(open val id: Int, open val type: Type, open val editable: Boolean = true) {
         enum class Type {
-            TITLE1, TITLE2, PARAGRAPH,
+            TITLE1,
+            TITLE2,
+            PARAGRAPH,
         }
 
         data class Title1(override val id: Int, override val editable: Boolean, val content: List<ParagraphContent.Text>) : Block(id, Type.TITLE1, editable)
+
         data class Title2(override val id: Int, override val editable: Boolean, val content: List<ParagraphContent.Text>) : Block(id, Type.TITLE2, editable)
+
         data class Paragraph(override val id: Int, override val editable: Boolean, val content: List<ParagraphContent>) : Block(id, Type.PARAGRAPH, editable)
     }
 
     sealed class ParagraphContent(open val id: Int, open val type: Type) {
         enum class Type {
-            ITEM_LIST, LITERAL, VARIABLE, TABLE, FORM_TEXT, FORM_CHOICE, NEW_LINE
+            ITEM_LIST,
+            LITERAL,
+            VARIABLE,
+            TABLE,
+            FORM_TEXT,
+            FORM_CHOICE,
+            NEW_LINE,
         }
 
         data class ItemList(override val id: Int, val items: List<Item>) : ParagraphContent(id, Type.ITEM_LIST) {
@@ -60,9 +70,13 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
 
         data class Table(override val id: Int, val rows: List<Row>, val header: Header) : ParagraphContent(id, Type.TABLE) {
             data class Row(val id: Int, val cells: List<Cell>)
+
             data class Cell(val id: Int, val text: List<Text>)
+
             data class Header(val id: Int, val colSpec: List<ColumnSpec>)
+
             data class ColumnSpec(val id: Int, val headerContent: Cell, val alignment: ColumnAlignment, val span: Int)
+
             enum class ColumnAlignment { LEFT, RIGHT }
         }
 

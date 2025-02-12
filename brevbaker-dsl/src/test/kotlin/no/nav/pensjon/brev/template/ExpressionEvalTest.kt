@@ -6,36 +6,37 @@ import no.nav.pensjon.brevbaker.api.model.Felles
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
-
 class ExpressionEvalTest {
-
     data class SomeDto(val name: String, val kortNavn: String?)
 
-    private val nameSelector = object : TemplateModelSelector<SomeDto, String> {
-        override val className = "FakeSomeDtoNavnSelector"
-        override val propertyName = "value"
-        override val propertyType = "String"
-        override val selector = SomeDto::name
-    }
+    private val nameSelector =
+        object : TemplateModelSelector<SomeDto, String> {
+            override val className = "FakeSomeDtoNavnSelector"
+            override val propertyName = "value"
+            override val propertyType = "String"
+            override val selector = SomeDto::name
+        }
 
     private val Expression<SomeDto>.name
         get() = Expression.UnaryInvoke(this, UnaryOperation.Select(nameSelector))
 
-    private val kortNavnSelector = object : TemplateModelSelector<SomeDto, String?> {
-        override val className = "FakeKortNavnSelector"
-        override val propertyName = "value"
-        override val propertyType = "String"
-        override val selector = SomeDto::kortNavn
-    }
+    private val kortNavnSelector =
+        object : TemplateModelSelector<SomeDto, String?> {
+            override val className = "FakeKortNavnSelector"
+            override val propertyName = "value"
+            override val propertyType = "String"
+            override val selector = SomeDto::kortNavn
+        }
     private val Expression<SomeDto>.kortNavn
         get() = Expression.UnaryInvoke(this, UnaryOperation.Select(kortNavnSelector))
 
-    private val saksnummerSelector = object : TemplateModelSelector<Felles, String> {
-        override val className = "FakeFellesSelector"
-        override val propertyName = "value"
-        override val propertyType = "String"
-        override val selector = Felles::saksnummer
-    }
+    private val saksnummerSelector =
+        object : TemplateModelSelector<Felles, String> {
+            override val className = "FakeFellesSelector"
+            override val propertyName = "value"
+            override val propertyType = "String"
+            override val selector = Felles::saksnummer
+        }
 
     private val Expression<Felles>.saksnummer
         get() = Expression.UnaryInvoke(this, UnaryOperation.Select(saksnummerSelector))
@@ -83,21 +84,23 @@ class ExpressionEvalTest {
 
     @Test
     fun `eval BinaryInvoke returns expected value`() {
-        val evaluated: String = Expression.BinaryInvoke(
-            Expression.Literal("h"),
-            Expression.Literal("ei"),
-            BinaryOperation.Concat
-        ).eval(scope)
+        val evaluated: String =
+            Expression.BinaryInvoke(
+                Expression.Literal("h"),
+                Expression.Literal("ei"),
+                BinaryOperation.Concat,
+            ).eval(scope)
 
         assertEquals("hei", evaluated)
     }
 
     @Test
     fun `eval UnaryInvoke returns expected value`() {
-        val evaluated: String = Expression.UnaryInvoke(
-            Expression.Literal(4),
-            UnaryOperation.ToString
-        ).eval(scope)
+        val evaluated: String =
+            Expression.UnaryInvoke(
+                Expression.Literal(4),
+                UnaryOperation.ToString,
+            ).eval(scope)
 
         assertEquals("4", evaluated)
     }
@@ -113,5 +116,4 @@ class ExpressionEvalTest {
         val evaluated: Language = Expression.FromScope.Language.eval(scope)
         assertEquals(scope.language, evaluated)
     }
-
 }
