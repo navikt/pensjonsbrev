@@ -6,6 +6,7 @@ import io.ktor.server.routing.*
 
 interface ServiceStatus {
     val name: String
+
     suspend fun ping(): Boolean?
 }
 
@@ -19,19 +20,21 @@ fun Routing.setupServiceStatus(vararg services: ServiceStatus) {
 
 private suspend fun Array<out ServiceStatus>.checkStatuses(): StatusResponse =
     associate {
-        it.name to try {
-            Result.success(it.ping())
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }.let { statuses ->
-        val results = statuses.mapValues {
-            if (it.value.isSuccess) {
-                it.value.getOrNull()
-            } else {
-                false
+        it.name to
+            try {
+                Result.success(it.ping())
+            } catch (e: Exception) {
+                Result.failure(e)
             }
-        }
+    }.let { statuses ->
+        val results =
+            statuses.mapValues {
+                if (it.value.isSuccess) {
+                    it.value.getOrNull()
+                } else {
+                    false
+                }
+            }
         StatusResponse(
             overall = results.values.all { it == true },
             services = results,

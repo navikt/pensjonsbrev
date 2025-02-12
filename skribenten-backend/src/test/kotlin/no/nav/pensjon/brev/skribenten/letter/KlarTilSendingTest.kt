@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 class KlarTilSendingTest {
-
     private val fritekst = setOf(ElementTags.FRITEKST)
 
     @Test
@@ -33,5 +32,4 @@ class KlarTilSendingTest {
         val letter = editedLetter(Paragraph(null, true, listOf(Literal(null, "lit1", tags = fritekst), Literal(null, "lit2"))))
         assertFalse(letter.klarTilSending())
     }
-
 }

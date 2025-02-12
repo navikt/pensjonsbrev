@@ -17,22 +17,24 @@ class Norg2Service(val config: Config) {
     private val logger = LoggerFactory.getLogger(Norg2Service::class.java)
     private val norgUrl = config.getString("url")
 
-    private val client = HttpClient(CIO) {
-        defaultRequest {
-            url(norgUrl)
-        }
-        install(ContentNegotiation) {
-            jackson {
-                disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    private val client =
+        HttpClient(CIO) {
+            defaultRequest {
+                url(norgUrl)
             }
+            install(ContentNegotiation) {
+                jackson {
+                    disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                }
+            }
+            install(CallIdFromContext)
         }
-        install(CallIdFromContext)
-    }
 
     private val enhetCache = Cache<String, NavEnhet>()
+
     suspend fun getEnhet(enhetId: String) =
         enhetCache.cached(enhetId) {
-            //https://confluence.adeo.no/pages/viewpage.action?pageId=174848376
+            // https://confluence.adeo.no/pages/viewpage.action?pageId=174848376
             client.get("api/v1/enhet/$enhetId")
                 .toServiceResult<NavEnhet>()
                 .onError { error, statusCode -> logger.error("Fant ikke Nav-enhet $enhetId: $statusCode - $error") }
@@ -41,6 +43,6 @@ class Norg2Service(val config: Config) {
 }
 
 data class NavEnhet(
-    val enhetNr:String,
-    val navn: String
+    val enhetNr: String,
+    val navn: String,
 )

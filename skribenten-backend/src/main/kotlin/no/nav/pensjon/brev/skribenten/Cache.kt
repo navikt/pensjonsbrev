@@ -12,10 +12,16 @@ class Cache<K : Any, V : Any>(private val ttl: Duration = 10.minutes) {
 
     private data class Value<V : Any>(val invalidAt: TimeMark, val value: V)
 
-    suspend fun getValue(key: K, fetch: suspend (K) -> V?): V? =
+    suspend fun getValue(
+        key: K,
+        fetch: suspend (K) -> V?,
+    ): V? =
         cache[key]?.takeIf { it.invalidAt.hasNotPassedNow() }?.value
             ?: fetch(key)?.also { cache[key] = Value(timesource.markNow() + ttl, it) }
 
-    suspend fun cached(key: K, fetch: suspend (K) -> V?): V? =
+    suspend fun cached(
+        key: K,
+        fetch: suspend (K) -> V?,
+    ): V? =
         getValue(key, fetch)
 }

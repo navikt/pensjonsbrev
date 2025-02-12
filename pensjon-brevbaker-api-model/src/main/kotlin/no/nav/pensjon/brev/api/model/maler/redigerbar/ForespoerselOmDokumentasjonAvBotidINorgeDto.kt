@@ -8,5 +8,5 @@ data class ForespoerselOmDokumentasjonAvBotidINorgeDto(
     override val saksbehandlerValg: SaksbehandlerValg,
     override val pesysData: EmptyBrevdata,
 ) : RedigerbarBrevdata<ForespoerselOmDokumentasjonAvBotidINorgeDto.SaksbehandlerValg, EmptyBrevdata> {
-    data class SaksbehandlerValg(val opplystOmBotid: Boolean): BrevbakerBrevdata
+    data class SaksbehandlerValg(val opplystOmBotid: Boolean) : BrevbakerBrevdata
 }

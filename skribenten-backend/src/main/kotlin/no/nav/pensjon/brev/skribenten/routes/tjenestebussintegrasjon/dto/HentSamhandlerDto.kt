@@ -13,6 +13,7 @@ data class HentSamhandlerResponseDto(val success: Success?, val failure: Failure
         IKKE_FUNNET,
     }
 }
+
 class HentSamhandlerRequestDto(
     val idTSSEkstern: String,
     val hentDetaljert: Boolean,

@@ -18,7 +18,7 @@ class SamhandlerService(clientFactory: SamhandlerClientFactory) : TjenestebussSe
                 HentSamhandlerPrioritertAdresseRequest().apply {
                     this.ident = tssEksternId
                     this.identKode = "TSS_EKSTERN_ID"
-                }
+                },
             )?.let {
                 it.postadresse?.let { adresse ->
                     HentSamhandlerAdresseResponseDto(
@@ -30,7 +30,7 @@ class SamhandlerService(clientFactory: SamhandlerClientFactory) : TjenestebussSe
                             postnr = adresse.postnr?.trim(),
                             poststed = adresse.poststed?.trim(),
                             land = adresse.land?.kode?.trim(),
-                        )
+                        ),
                     )
                 }
             } ?: HentSamhandlerAdresseResponseDto(NOT_FOUND)

@@ -21,19 +21,20 @@ class AzureADServiceTest {
     fun `getOnBehalfOfToken can exchange token`() {
         val onBehalfOfToken = TokenResponse.OnBehalfOfToken("obo token", "refresh obo", "Bearer", "bla", 1024L)
 
-        val service = createService {
-            // verify that clientId, clientSecret and principal access token is used
-            val body = assertInstanceOf(FormDataContent::class.java, it.body)
-            assertEquals(principal.accessToken.token, body.formData["assertion"])
-            assertEquals(jwtConfig.clientId, body.formData["client_id"])
-            assertEquals(jwtConfig.clientSecret, body.formData["client_secret"])
+        val service =
+            createService {
+                // verify that clientId, clientSecret and principal access token is used
+                val body = assertInstanceOf(FormDataContent::class.java, it.body)
+                assertEquals(principal.accessToken.token, body.formData["assertion"])
+                assertEquals(jwtConfig.clientId, body.formData["client_id"])
+                assertEquals(jwtConfig.clientSecret, body.formData["client_secret"])
 
-            respond(
-                content = ByteReadChannel(objectMapper.writeValueAsBytes(onBehalfOfToken)),
-                status = HttpStatusCode.OK,
-                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-            )
-        }
+                respond(
+                    content = ByteReadChannel(objectMapper.writeValueAsBytes(onBehalfOfToken)),
+                    status = HttpStatusCode.OK,
+                    headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+                )
+            }
 
         runBlocking {
             assertEquals(onBehalfOfToken, service.getOnBehalfOfToken(principal, onBehalfOfToken.scope))
@@ -44,13 +45,14 @@ class AzureADServiceTest {
     fun `getOnBehalfOfToken returns error`() {
         val errorResponse = TokenResponse.ErrorResponse("an error", "a description", emptyList(), "123", "abc", "call", "abc")
 
-        val service = createService {
-            respond(
-                content = ByteReadChannel(objectMapper.writeValueAsBytes(errorResponse)),
-                status = HttpStatusCode.Unauthorized,
-                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-            )
-        }
+        val service =
+            createService {
+                respond(
+                    content = ByteReadChannel(objectMapper.writeValueAsBytes(errorResponse)),
+                    status = HttpStatusCode.Unauthorized,
+                    headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+                )
+            }
 
         runBlocking {
             assertEquals(errorResponse, service.getOnBehalfOfToken(principal, "abc"))
@@ -62,13 +64,14 @@ class AzureADServiceTest {
         val onBehalfOfToken = TokenResponse.OnBehalfOfToken("obo token", "refresh obo", "Bearer", "bla2", 1024L)
         val userPrincipal = JwtUserPrincipal(UserAccessToken("access_token 123532"), mockk())
 
-        val service = createService {
-            respond(
-                content = ByteReadChannel(objectMapper.writeValueAsBytes(onBehalfOfToken)),
-                status = HttpStatusCode.OK,
-                headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString())
-            )
-        }
+        val service =
+            createService {
+                respond(
+                    content = ByteReadChannel(objectMapper.writeValueAsBytes(onBehalfOfToken)),
+                    status = HttpStatusCode.OK,
+                    headers = headersOf(HttpHeaders.ContentType, ContentType.Application.Json.toString()),
+                )
+            }
         runBlocking {
             service.getOnBehalfOfToken(userPrincipal, "bla2")
         }
@@ -86,7 +89,6 @@ class AzureADServiceTest {
         }
         assertEquals(onBehalfOfToken, userPrincipal.getOnBehalfOfToken(onBehalfOfToken.scope))
     }
-
 
     private fun createService(handler: (suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData) = { respond("") }) =
         AzureADService(

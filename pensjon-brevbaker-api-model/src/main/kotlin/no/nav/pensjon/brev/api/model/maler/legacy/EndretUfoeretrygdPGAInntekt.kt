@@ -9,4 +9,4 @@ data class EndretUfoeretrygdPGAInntektDto(
     val pe: PE,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
-): BrevbakerBrevdata
+) : BrevbakerBrevdata

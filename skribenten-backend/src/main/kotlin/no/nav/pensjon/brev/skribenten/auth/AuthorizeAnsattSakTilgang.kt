@@ -5,7 +5,6 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.util.*
 import io.ktor.util.*
-import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.services.PdlService
@@ -23,22 +22,24 @@ class AuthorizeAnsattSakTilgangConfiguration {
     lateinit var penService: PenService
 }
 
-val AuthorizeAnsattSakTilgang = createRouteScopedPlugin("AuthorizeAnsattSakTilgang", ::AuthorizeAnsattSakTilgangConfiguration) {
-    on(PrincipalInContext.Hook) { call ->
-        val saksId = call.parameters.getOrFail(SAKSID_PARAM)
-        val pdlService = pluginConfig.pdlService
-        val penService = pluginConfig.penService
+val AuthorizeAnsattSakTilgang =
+    createRouteScopedPlugin("AuthorizeAnsattSakTilgang", ::AuthorizeAnsattSakTilgangConfiguration) {
+        on(PrincipalInContext.Hook) { call ->
+            val saksId = call.parameters.getOrFail(SAKSID_PARAM)
+            val pdlService = pluginConfig.pdlService
+            val penService = pluginConfig.penService
 
-        val ikkeTilgang = penService.hentSak(saksId).map { sak ->
-            call.attributes.put(SakKey, sak)
-            sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(sak.foedselsnr, sak.sakType.behandlingsnummer), PrincipalInContext.require())
-        }.catch(::AuthAnsattSakTilgangResponse)
+            val ikkeTilgang =
+                penService.hentSak(saksId).map { sak ->
+                    call.attributes.put(SakKey, sak)
+                    sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(sak.foedselsnr, sak.sakType.behandlingsnummer), PrincipalInContext.require())
+                }.catch(::AuthAnsattSakTilgangResponse)
 
-        if (ikkeTilgang != null) {
-            call.respond(ikkeTilgang.status, ikkeTilgang.melding)
+            if (ikkeTilgang != null) {
+                call.respond(ikkeTilgang.status, ikkeTilgang.melding)
+            }
         }
     }
-}
 
 private fun sjekkAdressebeskyttelse(
     adressebeskyttelse: ServiceResult<List<Pdl.Gradering>>,
@@ -50,7 +51,9 @@ private fun sjekkAdressebeskyttelse(
         if (adGrupper.any { !principal.isInGroup(it) }) {
             logger.warn("Tilgang til sak avvist for ${principal.navIdent}: har ikke tilgang til gradering")
             AuthAnsattSakTilgangResponse("", HttpStatusCode.NotFound)
-        } else null // får tilgang
+        } else {
+            null // får tilgang
+        }
     }.catch { _, status ->
         when (status) {
             HttpStatusCode.Forbidden -> AuthAnsattSakTilgangResponse("", HttpStatusCode.NotFound)

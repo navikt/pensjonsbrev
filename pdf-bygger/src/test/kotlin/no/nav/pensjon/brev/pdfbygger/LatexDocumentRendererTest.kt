@@ -77,58 +77,61 @@ class LatexDocumentRendererTest {
     }
 
     @Test
-    fun `renderPDF redigertBrev uses letterMarkup from argument and includes attachments`() = runBlocking {
-        val letterData = createEksempelbrevRedigerbartDto()
+    fun `renderPDF redigertBrev uses letterMarkup from argument and includes attachments`() =
+        runBlocking {
+            val letterData = createEksempelbrevRedigerbartDto()
 
-        val letter = Letter(EksempelbrevRedigerbart.template, letterData, Language.Bokmal, felles)
+            val letter = Letter(EksempelbrevRedigerbart.template, letterData, Language.Bokmal, felles)
 
-        val letterMarkup = Letter2Markup.render(letter)
+            val letterMarkup = Letter2Markup.render(letter)
 
-        val pdfRequest = PDFRequest(
-            letterMarkup = letterMarkup.letterMarkup,
-            attachments = letterMarkup.attachments,
-            language = LanguageCode.BOKMAL,
-            felles = felles,
-            brevtype = EksempelbrevRedigerbart.template.letterMetadata.brevtype,
-        )
-        val rendered = LatexDocumentRenderer.render(pdfRequest)
+            val pdfRequest =
+                PDFRequest(
+                    letterMarkup = letterMarkup.letterMarkup,
+                    attachments = letterMarkup.attachments,
+                    language = LanguageCode.BOKMAL,
+                    felles = felles,
+                    brevtype = EksempelbrevRedigerbart.template.letterMetadata.brevtype,
+                )
+            val rendered = LatexDocumentRenderer.render(pdfRequest)
 
-        assertThat(
-            rendered.files.filterIsInstance<DocumentFile>().first { it.fileName == "letter.tex" }.content,
-            containsSubstring("Du har fått innvilget pensjon")
-        )
+            assertThat(
+                rendered.files.filterIsInstance<DocumentFile>().first { it.fileName == "letter.tex" }.content,
+                containsSubstring("Du har fått innvilget pensjon"),
+            )
 
-        assertThat(rendered.files.filterIsInstance<DocumentFile>().first { it.fileName == "attachment_0.tex" }.content, containsSubstring("Test vedlegg"))
-    }
+            assertThat(rendered.files.filterIsInstance<DocumentFile>().first { it.fileName == "attachment_0.tex" }.content, containsSubstring("Test vedlegg"))
+        }
 
     fun assertNumberOfParagraphs(
         expectedParagraphs: Int,
-        outline: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit
+        outline: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
     ) {
-        val letter = Letter(
-            LetterExample.template,
-            EmptyBrevdata,
-            Language.Bokmal,
-            Fixtures.fellesAuto,
-        )
+        val letter =
+            Letter(
+                LetterExample.template,
+                EmptyBrevdata,
+                Language.Bokmal,
+                Fixtures.fellesAuto,
+            )
         runBlocking {
             val markup =
                 Letter2Markup.render(Letter(outlineTestTemplate(outline), EmptyBrevdata, Language.Bokmal, felles))
 
-            val latexDocument = LatexDocumentRenderer.render(
-                PDFRequest(
-                    letterMarkup = markup.letterMarkup,
-                    attachments = markup.attachments,
-                    language = letter.language.toCode(),
-                    felles = letter.felles,
-                    brevtype = letter.template.letterMetadata.brevtype,
+            val latexDocument =
+                LatexDocumentRenderer.render(
+                    PDFRequest(
+                        letterMarkup = markup.letterMarkup,
+                        attachments = markup.attachments,
+                        language = letter.language.toCode(),
+                        felles = letter.felles,
+                        brevtype = letter.template.letterMetadata.brevtype,
+                    ),
                 )
-            )
             val tex = latexDocument.files.find { it.fileName == "letter.tex" } as DocumentFile
             assertThat(tex.content.lines().count { it.contains("templateparagraph") }, equalTo(expectedParagraphs))
         }
     }
-
 
     private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testItemList() {
         list {
@@ -141,7 +144,7 @@ class LatexDocumentRendererTest {
             header = {
                 column { text(Language.Bokmal to "Column A") }
                 column { text(Language.Bokmal to "Column B") }
-            }
+            },
         ) {
             row {
                 cell { text(Language.Bokmal to "Cell A-1") }
@@ -153,5 +156,4 @@ class LatexDocumentRendererTest {
     private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testText() {
         text(Language.Bokmal to "test")
     }
-
 }

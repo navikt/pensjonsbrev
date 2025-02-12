@@ -52,7 +52,7 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
             if (cause.cause is JacksonException) {
                 call.respond(
                     HttpStatusCode.BadRequest,
-                    cause.cause?.message ?: "Failed to deserialize json body: unknown reason"
+                    cause.cause?.message ?: "Failed to deserialize json body: unknown reason",
                 )
             } else {
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Unknown failure")
@@ -71,7 +71,6 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
         val servicesConfig = config.getConfig("services")
         val samhandlerService =
             SamhandlerService(SamhandlerClientFactory(servicesConfig.getConfig("samhandlerService")))
-
 
         get("/isAlive") {
             call.respondText("Alive!", ContentType.Text.Plain, HttpStatusCode.OK)
@@ -100,4 +99,3 @@ fun Application.tjenestebussIntegrationApi(config: Config) {
 data class HentSamhandlerAdresseRequestDto(
     val idTSSEkstern: String,
 )
-

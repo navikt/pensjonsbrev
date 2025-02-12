@@ -11,8 +11,10 @@ class FavouritesRepository {
             Favourites.selectAll().where { Favourites.userId eq userId.id }.map { row -> row[Favourites.letterCode] }
         }
 
-
-    fun addFavourite(userID: NavIdent, letterId: String) {
+    fun addFavourite(
+        userID: NavIdent,
+        letterId: String,
+    ) {
         transaction {
             Favourites.insert {
                 it[userId] = userID.id
@@ -21,7 +23,10 @@ class FavouritesRepository {
         }
     }
 
-    fun removeFavourite(userID: NavIdent, letterId: String) {
+    fun removeFavourite(
+        userID: NavIdent,
+        letterId: String,
+    ) {
         transaction {
             Favourites.deleteWhere {
                 userId eq userID.id

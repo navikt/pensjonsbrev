@@ -20,18 +20,22 @@ object Features {
     private var unleash: Unleash? = null
     private val overrides = mutableMapOf<String, Boolean>()
 
-    fun override(key: UnleashToggle, value: Boolean) {
+    fun override(
+        key: UnleashToggle,
+        value: Boolean,
+    ) {
         overrides[key.name] = value
     }
 
     fun initUnleash(config: Config) {
-        unleash = DefaultUnleash(
-            UnleashConfig.builder()
-                .appName(config.getString("appName"))
-                .environment(config.getString("environment"))
-                .unleashAPI(config.getString("host") + "/api")
-                .apiKey(config.getString("apiToken")).build()
-        )
+        unleash =
+            DefaultUnleash(
+                UnleashConfig.builder()
+                    .appName(config.getString("appName"))
+                    .environment(config.getString("environment"))
+                    .unleashAPI(config.getString("host") + "/api")
+                    .apiKey(config.getString("apiToken")).build(),
+            )
     }
 
     suspend fun isEnabled(toggle: UnleashToggle): Boolean =

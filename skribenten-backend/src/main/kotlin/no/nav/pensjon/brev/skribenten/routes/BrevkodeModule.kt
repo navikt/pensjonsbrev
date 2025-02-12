@@ -17,12 +17,18 @@ object BrevkodeModule : SimpleModule() {
     }
 
     private object BrevkodeDeserializerAutomatisk : JsonDeserializer<Brevkode.Automatisk>() {
-        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): Brevkode.Automatisk =
+        override fun deserialize(
+            parser: JsonParser,
+            ctxt: DeserializationContext,
+        ): Brevkode.Automatisk =
             AutomatiskBrevkode(ctxt.readValue(parser, String::class.java))
     }
 
     private object BrevkodeDeserializerRedigerbart : JsonDeserializer<Brevkode.Redigerbart>() {
-        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): Brevkode.Redigerbart =
+        override fun deserialize(
+            parser: JsonParser,
+            ctxt: DeserializationContext,
+        ): Brevkode.Redigerbart =
             RedigerbarBrevkode(ctxt.readValue(parser, String::class.java))
     }
 }

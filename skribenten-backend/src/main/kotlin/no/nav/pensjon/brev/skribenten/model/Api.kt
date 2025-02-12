@@ -34,7 +34,7 @@ object Api {
     data class DelvisOppdaterBrevRequest(
         val laastForRedigering: Boolean? = null,
         val distribusjonstype: Distribusjonstype? = null,
-        val mottaker: OverstyrtMottaker? = null
+        val mottaker: OverstyrtMottaker? = null,
     )
 
     data class BrevInfo(
@@ -62,8 +62,11 @@ object Api {
     )
     sealed class BrevStatus {
         data object Kladd : BrevStatus()
+
         data class UnderRedigering(val redigeresAv: NavAnsatt) : BrevStatus()
+
         data object Klar : BrevStatus()
+
         data object Arkivert : BrevStatus()
     }
 
@@ -75,13 +78,14 @@ object Api {
     )
     sealed class OverstyrtMottaker {
         data class Samhandler(val tssId: String, val navn: String?) : OverstyrtMottaker()
+
         data class NorskAdresse(
             val navn: String,
             val postnummer: String,
             val poststed: String,
             val adresselinje1: String?,
             val adresselinje2: String?,
-            val adresselinje3: String?
+            val adresselinje3: String?,
         ) : OverstyrtMottaker()
 
         // landkode: To-bokstavers landkode ihht iso3166-1 alfa-2
@@ -115,7 +119,7 @@ object Api {
 
     data class SakContext(
         val sak: Pen.SakSelection,
-        val brevMetadata: List<Brevmal>
+        val brevMetadata: List<Brevmal>,
     )
 
     data class Brevmal(

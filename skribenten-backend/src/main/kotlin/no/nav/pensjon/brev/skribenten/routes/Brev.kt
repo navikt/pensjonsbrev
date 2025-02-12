@@ -16,8 +16,10 @@ import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("no.nav.brev.skribenten.routes.Brev")
 
-fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto2ApiService) {
-
+fun Route.brev(
+    brevredigeringService: BrevredigeringService,
+    dto2ApiService: Dto2ApiService,
+) {
     suspend fun RoutingContext.respond(brevResponse: ServiceResult<Dto.Brevredigering>?) {
         brevResponse?.map { dto2ApiService.toApi(it) }
             ?.onOk { brev -> call.respond(HttpStatusCode.OK, brev) }
@@ -39,7 +41,7 @@ fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto
                     nyttRedigertbrev = request,
                     signatur = null,
                     frigiReservasjon = frigiReservasjon,
-                )
+                ),
             )
         }
 
@@ -53,7 +55,7 @@ fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto
                     nyttRedigertbrev = null,
                     signatur = null,
                     frigiReservasjon = frigiReservasjon,
-                )
+                ),
             )
         }
 

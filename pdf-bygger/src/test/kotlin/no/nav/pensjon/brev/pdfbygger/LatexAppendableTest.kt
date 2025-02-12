@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class LatexAppendableTest {
-
     private lateinit var output: StringBuilder
     private lateinit var appendable: LatexAppendable
 
@@ -112,7 +111,7 @@ class LatexAppendableTest {
         val cmd = "mycommand"
         val body = """\othercmd{hei_sann}"""
         appendable.appendNewCmd(cmd, body, escape = false)
-        assertThat(printedString(), startsWith("""\newcommand{\$cmd}{${body}}"""))
+        assertThat(printedString(), startsWith("""\newcommand{\$cmd}{$body}"""))
     }
 
     @Test
@@ -121,7 +120,6 @@ class LatexAppendableTest {
         appendable.appendCmd(cmd) { /* This empty block is important to test correct function */ }
         assertThat(printedString(), startsWith("""\$cmd"""))
     }
-
 
     @Test
     fun `printCmd with CommandBuilder prints arguments in curly brackets`() {
