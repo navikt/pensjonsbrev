@@ -20,28 +20,30 @@ import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
 import java.time.Instant
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.partition
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
 private const val RETRY_INTERVAL_SECONDS = 150L
 
-private val POLL_SIZE_MULTIPLIER = 5
 
 private val QUEUE_READ_TIMEOUT = 5.seconds.toJavaDuration()
 
 class PdfRequestConsumer(
-    private val latexCompileService: LatexCompileService, properties: Map<String, String>,
+    private val latexCompileService: LatexCompileService,
+    private val properties: Map<String, String>,
     topic: String,
     private val retryTopic: String,
 ) {
     private val parallelism = Runtime.getRuntime().availableProcessors()
     private val parallelismSemaphore = parallelism.takeIf { it > 0 }?.let { Semaphore(it) }
         ?: throw IllegalStateException("Not enough cores to run async worker")
+    private val retryProducers = ConcurrentHashMap<String, KafkaProducer<String, PDFRequest>>()
 
     private val consumer = KafkaConsumer<String, PDFRequest>(
         properties
-            .plus("max.poll.records" to parallelism * POLL_SIZE_MULTIPLIER),
+            .plus("max.poll.records" to parallelism),
         StringDeserializer(),
         PDFRequestDeserializer()
     )
@@ -54,14 +56,6 @@ class PdfRequestConsumer(
             PDFRequestDeserializer()
         )
 
-    // we need one producer per partition to enable idempotent writing based on the incoming partition
-    private val retryProducer =
-        KafkaProducer<String, PDFRequest>(
-            properties,
-            StringSerializer(),
-            PDFRequestSerializer()
-        )
-
     init {
         consumer.subscribe(listOf(topic))
         retryConsumer.subscribe(listOf(retryTopic))
@@ -72,6 +66,8 @@ class PdfRequestConsumer(
     fun flow() =
         flow {
             while (true) {
+                // TODO prioritize between retry and success queue polling.
+                // maybe it's ok to just do every second one?
                 if (shouldPollFromRetryQueue()) {
                     nextRetry = Instant.now()
                     emit(pollRenderRetryQueue())
@@ -82,12 +78,23 @@ class PdfRequestConsumer(
                 }
             }
         }.onEach { renderRequests ->
-            val rendered = renderLetters(renderRequests, consumer.groupMetadata())
-            val (success, failures) = rendered.partition { it.renderResult is PDFCompilationResponse.Base64PDF }
-            if(renderRequests.isFromRetryQueue) {
-                processRetryQueueResults(rendered)
-            } else {
-                processRenderQueueResults(rendered)
+            val results = renderLetters(renderRequests)
+            if (results.isNotEmpty()) {
+                val (successes, failures) = results.partition { it.renderResult is PDFCompilationResponse.Base64PDF }
+
+                if (renderRequests.isFromRetryQueue) {
+                    if (failures.isEmpty()) {
+                        // TODO commit all to successes
+                    } else {
+                        processRetryQueueResults(results, retryConsumer.groupMetadata())
+                    }
+
+                } else {
+                    if (failures.isEmpty()) {
+                        // TODO commit all to successes
+                    }
+                    sendToRetryOrSuccessQueue(results, consumer.groupMetadata())
+                }
             }
         }
 
@@ -101,50 +108,78 @@ class PdfRequestConsumer(
         isFromRetryQueue = true
     )
 
-    private fun processRenderQueueResults(renderResults: List<RenderResult>) {
-        val (successes, failures) = renderResults.partition { it.response is PDFCompilationResponse.Base64PDF}
-        failures.forEach { retryProducer.send(ProducerRecord(it.record.key(), it.record.value())) }
-        sendToReplyTopic(successes)
+    private fun sendToRetryOrSuccessQueue(results: List<RenderResult>, groupMetadata: ConsumerGroupMetadata) {
+        results
+            .sortedBy { it.consumedOffset } // make sure higher offsets are not committed before lower ones
+            .forEach {
+                when (it.renderResult) {
+                    is PDFCompilationResponse.Base64PDF -> {
+                        // TODO send single success to queue
+                    }
+
+                    is PDFCompilationResponse.Failure -> {
+                        val producer = getOrCreateRetryProducer(it.consumedTopic, it.consumedPartiton)
+                        val offsetAndMetadata = OffsetAndMetadata(it.consumedOffset + 1)
+                        val topicPartition = TopicPartition(
+                            it.consumedTopic,
+                            it.consumedPartiton
+                        )
+                        producer.beginTransaction()
+                        producer.sendOffsetsToTransaction(mapOf(topicPartition to offsetAndMetadata), groupMetadata)
+                        producer.send(ProducerRecord(retryTopic, it.key, it.renderRequest))
+                        producer.commitTransaction()
+                        // TODO error handling on failed transactions.
+                    }
+                }
+            }
     }
 
-    private fun processRetryQueueResults(renderResults: List<RenderResult>) {
+    private fun processRetryQueueResults(results: List<RenderResult>, groupMetadata: ConsumerGroupMetadata) {
+        // send all to
+        results.groupBy { it.consumedPartiton }
+            .mapNotNull { (partition, partitionResults) ->
+                val sortedPartitionResults = partitionResults.sortedBy { it.consumedOffset }
+                val successesBeforeFailure =
+                    sortedPartitionResults.takeWhile { it.renderResult is PDFCompilationResponse.Base64PDF }
 
-        val offsets = renderResults.groupBy { it.record.partition() }
-            .map { (partition, partitionResults) ->
-                val sortedPartitionResults = partitionResults.sortedBy { it.record.offset() }
-                val firstFailure = sortedPartitionResults.firstOrNull { it.response is PDFCompilationResponse.Failure }
+                val firstResult = partitionResults.first()
+                //val producer = getOrCreateRetryProducer(firstResult.consumedTopic, firstResult.consumedPartiton)
 
-                // sets offset in partition to latest failure such that it will be re-processed
-                val offset = firstFailure?.record?.offset()
-                    ?: (sortedPartitionResults.last().record.offset() + 1)
+                //if (successesBeforeFailure.isNotEmpty()) {
+                //    val consumedFrom = TopicPartition(retryTopic, partition)
+                //    val newOffset = OffsetAndMetadata(successesBeforeFailure.last().consumedOffset + 1)
+                //    producer.beginTransaction()
+                //    producer.sendOffsetsToTransaction(
+                //        mapOf(consumedFrom to newOffset),
+                //        consumedWithMetadata
+                //    )
+                //    successesBeforeFailure.forEach {
+                //        // TODO produce successes
+                //    }
+                //}
 
-                TopicPartition(retryTopic, partition) to OffsetAndMetadata(offset)
-            }.toMap()
 
-        sendToReplyTopic(renderResults.filter { it.response is PDFCompilationResponse.Base64PDF })
-        retryConsumer.commitSync(offsets)
+            }//.toMap()
+
     }
 
     private suspend fun renderLetters(
         renderRequests: RenderRequests,
-        groupMetadata: ConsumerGroupMetadata
-    ): List<QueueableResult> =
+    ): List<RenderResult> =
         coroutineScope {
             renderRequests.requests.map { record ->
                 async {
-                    QueueableResult(
+                    RenderResult(
                         key = record.key(),
                         renderRequest = record.value(),
                         renderResult = compile(record.value()),
                         consumedTopic = record.topic(),
                         consumedPartiton = record.partition(),
                         consumedOffset = record.offset(),
-                        consumedWithMetadata = groupMetadata,
                     )
                 }
             }.awaitAll()
         }
-    }
 
     private fun sendToReplyTopic(renderResults: List<RenderResult>) {
         println("Rendered ${renderResults.size} PDFs successfully")
@@ -158,6 +193,22 @@ class PdfRequestConsumer(
         parallelismSemaphore.release()
         println("Compiled pdf successfully")
         return result
+    }
+
+    private fun getOrCreateRetryProducer(
+        consumedTopic: String,
+        consumedPartition: Int
+    ): KafkaProducer<String, PDFRequest> {
+        val key = "$consumedTopic-$consumedPartition"
+        return retryProducers.getOrPut(key) {
+            KafkaProducer<String, PDFRequest>(
+                properties
+                    .plus("transactional.id" to key)
+                    .plus("enable.idempotence" to "true"),
+                StringSerializer(),
+                PDFRequestSerializer(),
+            ).also { it.initTransactions() }
+        }
     }
 
     private fun shouldPollFromRetryQueue() =
@@ -176,22 +227,17 @@ private class PDFRequestSerializer : Serializer<PDFRequest> {
     override fun serialize(topic: String?, data: PDFRequest): ByteArray = mapper.writeValueAsBytes(data)
 }
 
-private data class RenderRequests(
+data class RenderRequests(
     val requests: ConsumerRecords<String, PDFRequest>,
     val isFromRetryQueue: Boolean,
 )
 
-private data class RenderResult(
-    val response: PDFCompilationResponse,
-    val record: ConsumerRecord<String, PDFRequest>
-)
 
-private data class QueueableResult(
+private data class RenderResult(
     val key: String,
     val renderRequest: PDFRequest,
     val renderResult: PDFCompilationResponse,
     val consumedTopic: String,
     val consumedPartiton: Int,
     val consumedOffset: Long,
-    val consumedWithMetadata: ConsumerGroupMetadata,
 )
