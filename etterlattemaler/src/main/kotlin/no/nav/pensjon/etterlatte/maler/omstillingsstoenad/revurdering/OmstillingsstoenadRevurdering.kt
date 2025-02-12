@@ -35,8 +35,10 @@ data class OmstillingsstoenadRevurderingDTO(
     val erOmgjoering: Boolean,
     val datoVedtakOmgjoering: LocalDate?,
     val beregning: OmstillingsstoenadBeregning,
-    val lavEllerIngenInntekt: Boolean?, // TODO: skal fases ut
-    val omsRettUtenTidsbegrensning: Boolean = lavEllerIngenInntekt ?: false, // TODO: overtar for lavEllerIngenInntekt
+    // TODO: skal fases ut
+    val lavEllerIngenInntekt: Boolean?,
+    // TODO: overtar for lavEllerIngenInntekt
+    val omsRettUtenTidsbegrensning: Boolean = lavEllerIngenInntekt ?: false,
     val feilutbetaling: FeilutbetalingType,
     val tidligereFamiliepleier: Boolean = false,
     val bosattUtland: Boolean = false,
