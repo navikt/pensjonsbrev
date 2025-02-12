@@ -164,7 +164,8 @@ class LegacyBrevService(
                             saksid = saksId.toString(),
                             saksbehandlernavn = saksbehandler.fornavn + " " + saksbehandler.etternavn,
                             saksbehandlerid = PrincipalInContext.require().navIdent.id,
-                            kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
+                            // TODO sett. Brukes dette for notater i det hele tatt?
+                            kravtype = null,
                             land = landkode.takeIf { isEblankett },
                             mottaker = if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid,
                             sensitivt = isSensitive,
