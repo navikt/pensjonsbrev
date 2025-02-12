@@ -325,24 +325,208 @@ describe("LetterEditorActions.paste", () => {
     });
 
     describe("paste into an item", () => {
-      test("multiple p elements should append first to existing list item", () => {
-        const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
-        const state = letter(paragraph(itemList({ items: [item(literal({ text: "Her har vi noe" }))] })));
-        const clipboard = new MockDataTransfer({ "text/html": "<p> da</p><p> ikke</p>" });
-        const result = Actions.paste(state, index, 10, clipboard);
+      describe("start of literal", () => {
+        test("inserts a single word", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Teksten min" }))] })));
+          const clipboard = new MockDataTransfer({ "text/html": "<span>1</span>" });
+          const result = Actions.paste(state, index, 0, clipboard);
 
-        expect(text(select<LiteralValue>(result, index))).toEqual("Her har vi da");
-        expect(text(select<LiteralValue>(result, { ...index, itemIndex: 1 }))).toEqual(" ikke noe");
+          expect(text(select<LiteralValue>(result, index))).toEqual("1Teksten min");
+          expect(result.focus).toEqual({ ...index, cursorPosition: 1 });
+        });
+        test("inserts multiple words", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Teksten min" }))] })));
+          const clipboard = new MockDataTransfer({ "text/html": "<span>1</span><span> 2</span" });
+          const result = Actions.paste(state, index, 0, clipboard);
+
+          expect(text(select<LiteralValue>(result, index))).toEqual("1 2Teksten min");
+          expect(result.focus).toEqual({ ...index, cursorPosition: 3 });
+        });
+        test("inserts single paragraph", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Teksten min" }))] })));
+          const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
+          const result = Actions.paste(state, index, 0, clipboard);
+
+          expect(text(select<LiteralValue>(result, index))).toEqual("1");
+          expect(text(select<LiteralValue>(result, { ...index, itemIndex: 1, itemContentIndex: 0 }))).toEqual(
+            "Teksten min",
+          );
+          expect(result.focus).toEqual({ ...index, itemIndex: 1, itemContentIndex: 0, cursorPosition: 0 });
+        });
+        test("inserts multiple paragraphs", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Teksten min" }))] })));
+          const clipboard = new MockDataTransfer({ "text/html": "<p>1</p><p>2</p>" });
+          const result = Actions.paste(state, index, 0, clipboard);
+
+          expect(text(select<LiteralValue>(result, index))).toEqual("1");
+          expect(text(select<LiteralValue>(result, { ...index, itemIndex: 1, itemContentIndex: 0 }))).toEqual("2");
+          expect(text(select<LiteralValue>(result, { ...index, itemIndex: 2, itemContentIndex: 0 }))).toEqual(
+            "Teksten min",
+          );
+          expect(result.focus).toEqual({ ...index, itemIndex: 2, itemContentIndex: 0, cursorPosition: 0 });
+        });
+        test("inserts ul list", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Teksten min" }))] })));
+          const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
+          const result = Actions.paste(state, index, 0, clipboard);
+
+          expect(text(select<LiteralValue>(result, { ...index }))).toEqual("1");
+          expect(text(select<LiteralValue>(result, { ...index, itemContentIndex: 0, itemIndex: 1 }))).toEqual("2");
+          expect(text(select<LiteralValue>(result, { ...index, itemContentIndex: 0, itemIndex: 2 }))).toEqual(
+            "Teksten min",
+          );
+          expect(result.focus).toEqual({ ...index, itemIndex: 2, itemContentIndex: 0, cursorPosition: 0 });
+        });
+        test("paragraph + ul", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const clipboard = new MockDataTransfer({
+            "text/html":
+              "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
+          });
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Hei" }))] })));
+          const result = Actions.paste(state, index, 0, clipboard);
+
+          expect(text(select<LiteralValue>(result, index))).toEqual("Punktliste");
+          expect(text(select<LiteralValue>(result, { ...index, itemContentIndex: 1 }))).toEqual("Første punkt");
+          expect(text(select<LiteralValue>(result, { ...index, itemContentIndex: 2 }))).toEqual("Andre punkt");
+          expect(text(select<LiteralValue>(result, { ...index, itemContentIndex: 3 }))).toEqual("Første punkt");
+          expect(text(select<LiteralValue>(result, { ...index, itemContentIndex: 4 }))).toEqual("Andre punkt");
+          expect(result.focus).toEqual({ ...index, itemContentIndex: 3, cursorPosition: 0 });
+        });
       });
+      describe("in the middle of a literal", () => {
+        test("inserts a single word", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Teksten min" }))] })));
+          const clipboard = new MockDataTransfer({ "text/html": "<span>1</span>" });
+          const result = Actions.paste(state, index, 7, clipboard);
 
-      test("ul list should append to existing itemList", () => {
-        const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
-        const state = letter(paragraph(itemList({ items: [item(literal({ text: "Her har vi noe " }))] })));
-        const clipboard = new MockDataTransfer({ "text/html": "<ul><li>annet</li><li>og enda mer</li></ul>" });
-        const result = Actions.paste(state, index, 15, clipboard);
+          expect(text(select<LiteralValue>(result, index))).toEqual("Teksten1 min");
+          expect(result.focus).toEqual({ ...index, cursorPosition: 8 });
+        });
+        test("inserts multiple words", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Teksten min" }))] })));
+          const clipboard = new MockDataTransfer({ "text/html": "<span>1</span><span> 2</span" });
+          const result = Actions.paste(state, index, 10, clipboard);
 
-        expect(text(select<LiteralValue>(result, index))).toEqual("Her har vi noe annet");
-        expect(text(select<LiteralValue>(result, { ...index, itemIndex: 1 }))).toEqual("og enda mer");
+          expect(text(select<LiteralValue>(result, index))).toEqual("Teksten1 2 min");
+          expect(result.focus).toEqual({ ...index, cursorPosition: 10 });
+        });
+        test("inserts single paragraph", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Teksten min" }))] })));
+          const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
+          const result = Actions.paste(state, index, 7, clipboard);
+
+          expect(text(select<LiteralValue>(result, index))).toEqual("Teksten1");
+          expect(text(select<LiteralValue>(result, { ...index, itemIndex: 1, itemContentIndex: 0 }))).toEqual(" min");
+          expect(result.focus).toEqual({ ...index, itemIndex: 1, itemContentIndex: 0, cursorPosition: 0 });
+        });
+        test("inserts multiple paragraphs", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Teksten min" }))] })));
+          const clipboard = new MockDataTransfer({ "text/html": "<p>1</p><p>2</p>" });
+          const result = Actions.paste(state, index, 7, clipboard);
+
+          expect(text(select<LiteralValue>(result, index))).toEqual("Teksten1");
+          expect(text(select<LiteralValue>(result, { ...index, itemIndex: 1, itemContentIndex: 0 }))).toEqual("2");
+          expect(text(select<LiteralValue>(result, { ...index, itemIndex: 2, itemContentIndex: 0 }))).toEqual(" min");
+          expect(result.focus).toEqual({ ...index, itemIndex: 2, itemContentIndex: 0, cursorPosition: 0 });
+        });
+        test("inserts ul list", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Her har vi noe" }))] })));
+          const clipboard = new MockDataTransfer({ "text/html": "<p> da</p><p> ikke</p>" });
+          const result = Actions.paste(state, index, 10, clipboard);
+
+          expect(text(select<LiteralValue>(result, index))).toEqual("Her har vi da");
+          expect(text(select<LiteralValue>(result, { ...index, itemIndex: 1 }))).toEqual(" ikke noe");
+        });
+        test("paragraph + ul", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const clipboard = new MockDataTransfer({
+            "text/html":
+              "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
+          });
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Teksten min" }))] })));
+          const result = Actions.paste(state, index, 7, clipboard);
+
+          expect(
+            text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 })),
+          ).toEqual("TekstenPunktliste");
+          expect(text(select<LiteralValue>(result, { ...index, itemIndex: 1 }))).toEqual("Første punkt");
+          expect(text(select<LiteralValue>(result, { ...index, itemIndex: 2 }))).toEqual("Andre punkt");
+          expect(text(select<LiteralValue>(result, { ...index, itemIndex: 3 }))).toEqual(" min");
+          expect(result.focus).toEqual({ ...index, itemIndex: 2, cursorPosition: 0 });
+        });
+      });
+      describe("at the end of a literal", () => {
+        test("inserts a single word", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Teksten min" }))] })));
+          const clipboard = new MockDataTransfer({ "text/html": "<span>Single</span>" });
+          const result = Actions.paste(state, index, 11, clipboard);
+
+          expect(text(select<LiteralValue>(result, index))).toEqual("Teksten minSingle");
+          expect(result.focus).toEqual({ ...index, cursorPosition: 17 });
+        });
+        test("inserts multiple words", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Teksten min" }))] })));
+          const clipboard = new MockDataTransfer({ "text/html": "<span>Single</span><span>Spanner</span>" });
+          const result = Actions.paste(state, index, 11, clipboard);
+
+          expect(text(select<LiteralValue>(result, index))).toEqual("Teksten minSingle Spanner");
+          expect(result.focus).toEqual({ ...index, cursorPosition: 25 });
+        });
+        test("inserts single paragraph", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Teksten min" }))] })));
+          const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
+          const result = Actions.paste(state, index, 11, clipboard);
+
+          expect(text(select<LiteralValue>(result, index))).toEqual("Teksten min1");
+          expect(result.focus).toEqual({ ...index, itemIndex: 0, itemContentIndex: 1, cursorPosition: 12 });
+        });
+        test("inserts multiple paragraphs", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Teksten min" }))] })));
+          const clipboard = new MockDataTransfer({ "text/html": "<p>1</p><p>2</p>" });
+          const result = Actions.paste(state, index, 11, clipboard);
+
+          expect(text(select<LiteralValue>(result, index))).toEqual("Teksten min1");
+          expect(text(select<LiteralValue>(result, { ...index, itemIndex: 1, itemContentIndex: 0 }))).toEqual("2");
+          expect(result.focus).toEqual({ ...index, itemIndex: 1, itemContentIndex: 0, cursorPosition: 1 });
+        });
+        test("inserts ul list", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Her har vi noe " }))] })));
+          const clipboard = new MockDataTransfer({ "text/html": "<ul><li>annet</li><li>og enda mer</li></ul>" });
+          const result = Actions.paste(state, index, 15, clipboard);
+
+          expect(text(select<LiteralValue>(result, index))).toEqual("Her har vi noe annet");
+          expect(text(select<LiteralValue>(result, { ...index, itemIndex: 1 }))).toEqual("og enda mer");
+        });
+        test("paragraph + ul", () => {
+          const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const clipboard = new MockDataTransfer({
+            "text/html":
+              "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
+          });
+          const state = letter(paragraph(itemList({ items: [item(literal({ text: "Hei" }))] })));
+          const result = Actions.paste(state, index, 4, clipboard);
+
+          expect(text(select<LiteralValue>(result, index))).toEqual("HeiPunktliste");
+          expect(text(select<LiteralValue>(result, { ...index, itemIndex: 1 }))).toEqual("Første punkt");
+          expect(text(select<LiteralValue>(result, { ...index, itemIndex: 2 }))).toEqual("Andre punkt");
+          expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, itemIndex: 2, cursorPosition: 11 });
+        });
       });
     });
   });
