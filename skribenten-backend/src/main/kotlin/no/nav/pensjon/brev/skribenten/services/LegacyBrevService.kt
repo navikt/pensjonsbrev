@@ -145,16 +145,21 @@ class LegacyBrevService(
                     brevGruppe = metadata.brevgruppe,
                     redigerbart = metadata.redigerbart,
                     sprakKode = spraak.toString(),
-                    brevMottakerNavn = mottakerText?.takeIf { isEblankett }, // custom felt kun for sed/eblankett,
+                    // custom felt kun for sed/eblankett,
+                    brevMottakerNavn = mottakerText?.takeIf { isEblankett },
                     sakskontekst =
                         Pen.BestillExstreamBrevRequest.Sakskontekst(
-                            journalenhet = enhetsId, // Nav org enhet nr som skriver brevet. Kommer med i signatur.
-                            gjelder = gjelderPid, // Hvem gjelder brevet? Kan være ulik fra mottaker om det er verge.
+                            // Nav org enhet nr som skriver brevet. Kommer med i signatur.
+                            journalenhet = enhetsId,
+                            // Hvem gjelder brevet? Kan være ulik fra mottaker om det er verge.
+                            gjelder = gjelderPid,
                             dokumentdato = LocalDateTime.now(),
                             dokumenttype = metadata.dokType.toString(),
                             fagsystem = "PEN",
-                            fagomradeKode = "PEN", // Fagområde pensjon uansett hva det faktisk er. Finnes det UFO?
-                            innhold = brevtittel, // Visningsnavn
+                            // Fagområde pensjon uansett hva det faktisk er. Finnes det UFO?
+                            fagomradeKode = "PEN",
+                            // Visningsnavn
+                            innhold = brevtittel,
                             kategori = if (isEblankett) SED.toString() else metadata.dokumentkategori.toString(),
                             saksid = saksId.toString(),
                             saksbehandlernavn = saksbehandler.fornavn + " " + saksbehandler.etternavn,

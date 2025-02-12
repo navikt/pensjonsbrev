@@ -99,7 +99,8 @@ data class BrevdataDto(
 
     enum class BrevSystem {
         DOKSYS,
-        GAMMEL /*EXSTREAM*/,
+        // GAMMEL == EXSTREAM
+        GAMMEL,
     }
 
     enum class BrevkontekstCode { ALLTID, SAK, VEDTAK }
