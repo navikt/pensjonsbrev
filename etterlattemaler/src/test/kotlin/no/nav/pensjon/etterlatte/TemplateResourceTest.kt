@@ -32,7 +32,7 @@ class TemplateResourceTest {
         fixtures: T,
         spraak: Language,
     ) {
-        val letter = Letter(template, fixtures, spraak, no.nav.brev.brevbaker.Fixtures.felles)
+        val letter = Letter(template, fixtures, spraak, Fixtures.felles)
 
         letter.renderTestPDF(filnavn(etterlatteBrevKode, spraak))
     }
@@ -49,7 +49,7 @@ class TemplateResourceTest {
             template,
             fixtures,
             spraak,
-            no.nav.brev.brevbaker.Fixtures.felles,
+            Fixtures.felles,
         ).renderTestHtml(filnavn(etterlatteBrevKode, spraak))
     }
 
@@ -78,7 +78,7 @@ class TemplateResourceTest {
             template,
             fixtures,
             spraak,
-            no.nav.brev.brevbaker.Fixtures.felles,
+            Fixtures.felles,
         ).let { Letter2Markup.render(it) }
             .also { json ->
                 Paths.get("build/test_json")

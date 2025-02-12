@@ -50,6 +50,8 @@ import kotlin.reflect.KClass
 
 object Fixtures {
 
+    val felles = no.nav.brev.brevbaker.Fixtures.felles
+
     inline fun <reified T : Any> create(): T = create(T::class)
 
     @Suppress("UNCHECKED_CAST")

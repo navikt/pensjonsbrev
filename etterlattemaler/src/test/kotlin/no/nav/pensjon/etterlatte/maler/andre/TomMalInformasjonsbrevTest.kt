@@ -20,7 +20,7 @@ internal class TomMalInformasjonsbrevTest {
             TomMalInformasjonsbrev.template,
             Fixtures.create<ManueltBrevMedTittelDTO>(),
             Language.Bokmal,
-            no.nav.brev.brevbaker.Fixtures.felles
+            Fixtures.felles
         )
         letter.renderTestPDF(EtterlatteBrevKode.TOM_MAL_INFORMASJONSBREV.name)
     }
@@ -31,7 +31,7 @@ internal class TomMalInformasjonsbrevTest {
             TomMalInformasjonsbrev.template,
             Fixtures.create<ManueltBrevMedTittelDTO>(),
             Language.Bokmal,
-            no.nav.brev.brevbaker.Fixtures.felles
+            Fixtures.felles
         ).renderTestHtml(EtterlatteBrevKode.TOM_MAL_INFORMASJONSBREV.name)
     }
 
