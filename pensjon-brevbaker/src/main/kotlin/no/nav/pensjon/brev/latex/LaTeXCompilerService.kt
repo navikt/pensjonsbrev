@@ -92,7 +92,6 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
         }
     }
 
-    // TODO: LatexDocumentRenderer-kallet skal over i pdf-bygger-applikasjonen
     suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput =
         withTimeoutOrNull(timeout) {
             httpClient.post("$pdfByggerUrl/produserBrev") {

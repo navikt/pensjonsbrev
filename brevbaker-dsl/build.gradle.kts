@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.8.1")
+    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.8.2")
 
     // JUnit 5
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))

@@ -9,7 +9,8 @@ plugins {
 }
 
 group = "no.nav.pensjon.brev"
-version = "119"
+version = "121"
+
 java {
     withSourcesJar()
     withJavadocJar()
@@ -22,7 +23,7 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.8.1")
+    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.8.2")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 }
 
