@@ -1,2 +1,3 @@
 app-name: "pensjon-pdf-bygger"
 brevbaker-app: "pensjon-brevbaker"
+ingresses: []
