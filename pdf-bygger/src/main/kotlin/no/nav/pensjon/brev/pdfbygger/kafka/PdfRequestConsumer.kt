@@ -25,7 +25,8 @@ import kotlin.collections.partition
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
-private const val FAILURE_RETRY_INTERVAL_SECONDS = 150L
+// Consumer will be timed out after 5 minutes if no polls occur
+private val FAILURE_RETRY_INTERVAL_SECONDS = 150.seconds.toJavaDuration()
 
 
 private val QUEUE_READ_TIMEOUT = 5.seconds.toJavaDuration()
@@ -61,20 +62,22 @@ class PdfRequestConsumer(
         retryConsumer.subscribe(listOf(retryTopic))
     }
 
-    private var lastRetryFailure: Instant = Instant.MIN
-    private var lastRetrySucceeded = false
+    private var nextRetry: Instant = Instant.MIN
 
     fun flow() =
         flow {
             while (true) {
                 // TODO prioritize between retry and success queue polling.
                 // maybe it's ok to just do every second one?
-                if (shouldPollFromRetryQueue()) {
-                    emit(pollRenderRetryQueue())
-                    println("Polled message from render retry queue")
-                } else {
-                    emit(pollRenderQueue())
+                if (nextRetry > Instant.now()) {
+                    // poll both
                     println("Polled message render queue")
+                    emit(pollRenderQueue())
+                    println("Polled message from render retry queue")
+                    emit(pollRenderRetryQueue())
+                } else {
+                    println("Polled message render queue and not retry")
+                    emit(pollRenderQueue())
                 }
             }
         }.onEach { renderRequests ->
@@ -125,12 +128,17 @@ class PdfRequestConsumer(
                             it.consumedTopic,
                             it.consumedPartiton
                         )
-                        producer.beginTransaction()
-                        producer.sendOffsetsToTransaction(mapOf(topicPartition to offsetAndMetadata), groupMetadata)
-                        producer.send(ProducerRecord(retryTopic, it.key, it.renderRequest))
-                        println("Test: sendt a request to failure queue successfully.")
-                        producer.commitTransaction()
-                        // TODO error handling on failed transactions.
+
+                        try {
+                            producer.beginTransaction()
+                            producer.sendOffsetsToTransaction(mapOf(topicPartition to offsetAndMetadata), groupMetadata)
+                            producer.send(ProducerRecord(retryTopic, it.key, it.renderRequest))
+                            println("Test: sendt a request to failure queue successfully.")
+                            producer.commitTransaction()
+                        } catch (e: Exception) {
+                            producer.abortTransaction()
+                            throw QueueCommitFailure("Failed to commit result to retry queue", e)
+                        }
                     }
                 }
             }
@@ -239,7 +247,4 @@ private data class RenderResult(
     val consumedOffset: Long,
 )
 
-private enum class Topic {
-    RETRY,
-    RENDER,
-}
+private class QueueCommitFailure(message: String, e: Throwable): Exception(message, e)
