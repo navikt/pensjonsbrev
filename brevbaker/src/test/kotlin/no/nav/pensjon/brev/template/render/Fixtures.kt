@@ -44,18 +44,6 @@ object Fixtures {
     val fellesAuto = felles.copy(signerendeSaksbehandlere = null)
 }
 
-
-internal inline fun <reified LetterData : Any> outlineTestTemplate(noinline function: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit) =
-    createTemplate(
-        name = "test",
-        letterDataType = LetterData::class,
-        languages = languages(Bokmal),
-        letterMetadata = testLetterMetadata,
-    ) {
-        title.add(bokmalTittel)
-        outline(function)
-    }
-
 internal val bokmalTittel = newText(Language.Bokmal to "test brev")
 internal val nynorskTittel = newText(Language.Nynorsk to "test brev")
 internal val testLetterMetadata = LetterMetadata(

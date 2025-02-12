@@ -1,7 +1,9 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelVersion: String by project
 val apiModelJavaTarget: String by System.getProperties()
+val jupiterVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -21,6 +23,10 @@ dependencies {
     api(project(":brevbaker"))
     ksp(project(":template-model-generator"))
     api(project(":pensjon-brevbaker-api-model"))
+
+    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation(testFixtures(project(":brevbaker")))
 }
 
 tasks.test {
@@ -47,5 +53,39 @@ tasks {
     }
     compileTestJava {
         targetCompatibility = apiModelJavaTarget
+    }
+}
+
+
+tasks {
+    test {
+        useJUnitPlatform {
+            excludeTags = setOf("integration-test", "manual-test")
+        }
+        testLogging {
+            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        }
+    }
+
+    task<Test>("integrationTest") {
+        group = LifecycleBasePlugin.VERIFICATION_GROUP
+        useJUnitPlatform {
+            includeTags = setOf("integration-test")
+        }
+        testLogging {
+            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        }
+    }
+    task<Test>("manualTest") {
+        group = LifecycleBasePlugin.VERIFICATION_GROUP
+        useJUnitPlatform {
+            includeTags = setOf("manual-test")
+        }
+        testLogging {
+            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        }
     }
 }

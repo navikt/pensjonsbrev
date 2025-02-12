@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.api
 
 import no.nav.pensjon.brev.FeatureToggleHandler
-import no.nav.pensjon.brev.FeatureToggles
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstidV2
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAutoV2
 import no.nav.pensjon.brev.template.BrevTemplate

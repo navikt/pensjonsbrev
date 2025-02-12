@@ -1,0 +1,274 @@
+html {
+    line-height: 1.5rem;
+    font-family: "Source Sans Pro", sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pensjonsbrev-rot {
+    max-width: 44rem;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+img.pensjonsbrev-logo {
+    height: 3rem;
+    margin-bottom: 2rem;
+}
+
+.pensjonsbrev-brev {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+h1.pensjonsbrev-tittel {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    line-height: 2rem;
+    font-size: 1.5rem;
+}
+
+.pensjonsbrev-brevhode {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.pensjonsbrev-brevkropp {
+    margin-top: 2rem;
+}
+
+h2.pensjonsbrev-title1 {
+    margin-top: 2rem;
+    margin-bottom: 0.0rem;
+    line-height: 1.7rem;
+    font-size: 1.25rem;
+}
+
+h3.pensjonsbrev-title2 {
+    margin-top: 2rem;
+    margin-bottom: 0.0rem;
+    line-height: 1.7rem;
+    font-size: 1.125rem;
+}
+
+.pensjonsbrev-paragraph {
+    margin-bottom: 1.5rem;
+}
+
+/* Common */
+.pensjonsbrev-text-left {
+    text-align: left;
+}
+
+.pensjonsbrev-text-right {
+    text-align: right;
+}
+
+.pensjonsbrev-text-italic {
+    font-style: italic;
+}
+
+.pensjonsbrev-text-bold {
+    font-weight: bold;
+}
+
+/* Sakspart */
+.pensjonsbrev-sakspart {
+    display: inline-grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(8, auto);/* TODO is it ok to have a static number here when the number of cells is variable? */
+}
+.pensjonsbrev-sakspart-tittel {
+    margin-top: 1rem;
+}
+/* fjern margin på første tittel slik at vi ikke får for større mellomrom til tittel */
+.pensjonsbrev-sakspart > .pensjonsbrev-sakspart-tittel:nth-child(1) {
+    margin-top: 0;
+}
+.pensjonsbrev-sakspart-verdi {
+    margin-top: 0.4rem;
+}
+
+/* table mobile */
+ul.pensjonsbrev-table {
+    list-style: none;
+    padding-left: 0;
+    border: 0.06rem solid #707070;
+    border-radius: 0.3rem;
+}
+ul.pensjonsbrev-table > li {
+    border-bottom: 0.06rem solid #707070;
+    padding: 1.3rem;
+}
+
+ul.pensjonsbrev-table > li:nth-child(even) {
+    background-color: #F7F7F7;
+}
+
+ul.pensjonsbrev-table > li > div {
+    display: inline-grid;
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, auto);
+    grid-row-gap: 0.3rem;
+    grid-column-gap: 1rem;
+}
+
+/* table big screen */
+table.pensjonsbrev-table {
+    display: none;
+    margin-top: 1rem;
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+table.pensjonsbrev-table > thead {
+    background-color: #E6F0FF;
+}
+
+table.pensjonsbrev-table > thead th {
+    padding: 0.9rem 0.5rem;
+}
+
+table.pensjonsbrev-table > tbody td {
+    padding: 0.6rem 0.5rem;
+}
+
+table.pensjonsbrev-table > tbody > tr:nth-child(even) {
+    background-color: #F7F7F7;
+    border-top: 0.06rem solid #E5E5E5;
+    border-bottom: 0.06rem solid #E5E5E5;
+}
+
+/* Closing */
+.pensjonsbrev-closing-greeting {
+    margin-top: 3rem;
+    margin-bottom: 1.3rem;
+}
+
+.pensjonsbrev-closing-automatisk {
+    margin-top: 0.3rem;
+}
+
+.pensjonsbrev-closing-manuell {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.pensjonsbrev-closing-saksbehandler {
+    margin-top: 1.3rem;
+    margin-right: 5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+hr.pensjonsbrev-vedlegg {
+    border: 0.06rem solid #262626;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Form */
+.pensjonsbrev-form-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+}
+.pensjonsbrev-form-text > div:first-child {
+    font-weight: bold;
+}
+.pensjonsbrev-form-line-long {
+    border-bottom: 0.06rem solid black;
+    height: 0.06rem;
+    width: 100%;
+}
+.pensjonsbrev-form-line-short {
+    border-bottom: 0.06rem solid black;
+    height: 0.06rem;
+    width: 60%;
+}
+.pensjonsbrev-form-line-none {
+    display: none;
+}
+
+.pensjonsbrev-form-choice {
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+    margin-bottom: 2rem;
+    margin-top: 1rem;
+}
+.pensjonsbrev-form-choice-checkbox {
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 0.13rem solid #707070;
+    border-radius: 0.3rem;
+    margin-right: 0.5rem;
+}
+.pensjonsbrev-form-choice > div:first-child {
+    font-weight: bold;
+}
+.pensjonsbrev-form-choice > div:not(:first-child) {
+    margin-bottom: 0.3rem;
+    display: flex;
+    flex-direction: row;
+}
+
+/* Liten -> Stor */
+@media (min-width: 30em) {
+    .pensjonsbrev-brevhode .pensjonsbrev-brevdato {
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+    }
+    .pensjonsbrev-brevhode {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .pensjonsbrev-sakspart {
+        grid-auto-flow: row;
+        grid-template-columns: repeat(2, auto);
+        grid-row-gap: 0.4rem;
+        grid-column-gap: 1rem;
+        grid-template-rows: none;
+    }
+    /* bruker row/column gap */
+    .pensjonsbrev-sakspart > div {
+        margin-top: 0;
+    }
+
+    ul.pensjonsbrev-table {
+        display: none;
+    }
+    table.pensjonsbrev-table {
+        display: table;
+    }
+}
+
+@media print {
+    div.pensjonsbrev-brev {
+        page-break-after: always;
+    }
+    div.pensjonsbrev-vedlegg {
+        page-break-after: always;
+    }
+    hr.pensjonsbrev-vedlegg {
+        display: none;
+    }
+    .pensjonsbrev-table {
+        -webkit-print-color-adjust: exact;
+    }
+}

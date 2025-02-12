@@ -5,6 +5,9 @@ val apiModelVersion: String by project
 val apiModelJavaTarget: String by System.getProperties()
 val jacksonJsr310Version: String by project
 val jupiterVersion: String by project
+val logstashVersion: String by project
+val ktorVersion: String by System.getProperties()
+val mockkVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -33,6 +36,10 @@ dependencies {
     // JUnit 5
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("io.mockk:mockk:${mockkVersion}")
+
+    testImplementation(testFixtures(project(":brevbaker")))
+    testImplementation("io.ktor:ktor-server-call-id:$ktorVersion")
 }
 
 tasks.test {
