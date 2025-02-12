@@ -39,10 +39,18 @@ class LatexCompileService(
             }
 
             when (val result: Execution = compile(tmpDir)) {
-                is Execution.Success ->
-                    result.pdf.toFile().readBytes()
-                        .let {  encoder.encodeToString(it) }
-                        .let { PDFCompilationResponse.Base64PDF(it) }
+                is Execution.Success -> {
+                    if (Math.random() * 10 > 9) {
+                        // TODO REMOVE before merge!!
+                        PDFCompilationResponse.Failure.Client(
+                            reason = "Synthetic pdf compilation failure!",
+                        )
+                    } else {
+                        result.pdf.toFile().readBytes()
+                            .let { encoder.encodeToString(it) }
+                            .let { PDFCompilationResponse.Base64PDF(it) }
+                    }
+                }
 
                 is Execution.Failure.Compilation ->
                     PDFCompilationResponse.Failure.Client(

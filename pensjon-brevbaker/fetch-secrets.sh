@@ -1,6 +1,6 @@
 #!/bin/bash
 
-KUBE_CLUSTER="nais-dev"
+KUBE_CLUSTER="dev-gcp"
 
 function checkKubectl() {
   echo "Verify kubectl, may take some time..."

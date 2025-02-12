@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse.Failure
 import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
+import no.nav.pensjon.brev.template.render.DocumentFile
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createTempFile
 import kotlin.io.path.deleteIfExists
@@ -77,7 +78,7 @@ class LatexServiceTest {
                         tmpBaseDir = null,
                     )
                 )
-                assertResult<Failure.Timeout>(service.producePDF(emptyMap()))
+                assertResult<Failure.Timeout>(service.producePDF(emptyList()))
 
                 val contentAfterTimeout = output.readText()
                 delay(500.milliseconds)
@@ -93,7 +94,15 @@ class LatexServiceTest {
 
     @Test
     fun `producePDF writes all inputFiles`() {
-        assertResult<Base64PDF>(producePdf("useFilesCompile.sh", files = mapOf("f1.txt" to "file 1", "f2.txt" to "file 2"))) {
+        assertResult<Base64PDF>(
+            producePdf(
+                "useFilesCompile.sh", files =
+                    listOf(
+                        DocumentFile("f1.txt", "file 1"),
+                        DocumentFile("f2.txt", "file 2")
+                    )
+            )
+        ) {
             val compiledOutput = it.decodePlaintext().lines()
             assertThat(compiledOutput, hasSize(equalTo(2)) and hasElement("file 1") and hasElement("file 2"))
         }
@@ -111,7 +120,7 @@ class LatexServiceTest {
             )
         )
         runBlocking {
-            assertResult<Failure.Server>(service.producePDF(emptyMap())) {
+            assertResult<Failure.Server>(service.producePDF(emptyList())) {
                 assertThat(it.reason, containsSubstring("Compilation process execution failed"))
             }
         }
@@ -129,7 +138,7 @@ class LatexServiceTest {
             )
         )
         runBlocking {
-            assertResult<Base64PDF>(service.producePDF(emptyMap()))
+            assertResult<Base64PDF>(service.producePDF(emptyList()))
         }
     }
 
@@ -148,7 +157,7 @@ class LatexServiceTest {
         runBlocking {
             val results = List(10) {
                 async {
-                    service.producePDF(emptyMap())
+                    service.producePDF(emptyList())
                 }
             }.awaitAll()
 
@@ -174,20 +183,23 @@ class LatexServiceTest {
             ),
         )
         runBlocking {
-            val blockingCompilation = launch { service.producePDF(emptyMap()) }
+            val blockingCompilation = launch { service.producePDF(emptyList()) }
 
             delay(10.milliseconds)
 
             var result: PDFCompilationResponse? = null
             val compilationQueueWait = withTimeoutOrNull(1.seconds) {
                 measureTimeMillis {
-                    result = service.producePDF(emptyMap())
+                    result = service.producePDF(emptyList())
                 }
             }
 
             blockingCompilation.cancel()
 
-            assertNotNull(compilationQueueWait, "Expected queued compilation to be cancelled by LatexService, but was cancelled by timeout in test")
+            assertNotNull(
+                compilationQueueWait,
+                "Expected queued compilation to be cancelled by LatexService, but was cancelled by timeout in test"
+            )
             assertThat(compilationQueueWait, isWithin(50L..100L))
             assertResult<Failure.QueueTimeout>(result) {
                 assertThat(it.reason, containsSubstring("queue wait timed out"))
@@ -207,16 +219,19 @@ class LatexServiceTest {
             )
         )
         runBlocking {
-            val blockingCompilation = launch { service.producePDF(emptyMap()) }
+            val blockingCompilation = launch { service.producePDF(emptyList()) }
 
             delay(10.milliseconds)
 
             var result: PDFCompilationResponse? = null
             val compilationTime = withTimeoutOrNull(3.seconds) {
-                measureTimeMillis { result = service.producePDF(emptyMap()) }
+                measureTimeMillis { result = service.producePDF(emptyList()) }
             }
 
-            assertNotNull(compilationTime, "Expected queued compilation to be completed by LatexService, but was cancelled by timeout in test")
+            assertNotNull(
+                compilationTime,
+                "Expected queued compilation to be completed by LatexService, but was cancelled by timeout in test"
+            )
             assertThat(compilationTime, isWithin(200L..800L))
             assertResult<Base64PDF>(result)
 
@@ -237,7 +252,7 @@ class LatexServiceTest {
         )
         runBlocking {
             val requests = List(Runtime.getRuntime().availableProcessors() * 10) {
-                async { service.producePDF(emptyMap()) }
+                async { service.producePDF(emptyList()) }
             }
             val compilationTime = withTimeoutOrNull(10.seconds) {
                 measureTimeMillis { requests.awaitAll() }
@@ -249,12 +264,19 @@ class LatexServiceTest {
 
     }
 
-    private inline fun <reified ToBe : PDFCompilationResponse> assertResult(result: PDFCompilationResponse?, assertBody: (ToBe) -> Unit = {}) {
+    private inline fun <reified ToBe : PDFCompilationResponse> assertResult(
+        result: PDFCompilationResponse?,
+        assertBody: (ToBe) -> Unit = {}
+    ) {
         assertIs<ToBe>(result)
         assertBody(result)
     }
 
-    private fun producePdf(scriptName: String, files: Map<String, String> = emptyMap(), timeout: Duration = 60.seconds): PDFCompilationResponse =
+    private fun producePdf(
+        scriptName: String,
+        files: List<DocumentFile> = emptyList(),
+        timeout: Duration = 60.seconds
+    ): PDFCompilationResponse =
         runBlocking {
             BlockingLatexService(
                 queueWaitTimeout = timeout,
