@@ -99,6 +99,7 @@ data class BrevdataDto(
 
     enum class BrevSystem {
         DOKSYS,
+
         // GAMMEL == EXSTREAM
         GAMMEL,
     }
