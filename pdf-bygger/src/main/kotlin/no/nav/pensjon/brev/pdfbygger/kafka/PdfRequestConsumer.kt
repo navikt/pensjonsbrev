@@ -11,10 +11,7 @@ import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
 import no.nav.pensjon.brev.pdfbygger.pdfByggerObjectMapper
-import org.apache.kafka.clients.consumer.ConsumerRecord
-import org.apache.kafka.clients.consumer.ConsumerRecords
-import org.apache.kafka.clients.consumer.KafkaConsumer
-import org.apache.kafka.clients.consumer.OffsetAndMetadata
+import org.apache.kafka.clients.consumer.*
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.TopicPartition
@@ -85,7 +82,8 @@ class PdfRequestConsumer(
                 }
             }
         }.onEach { renderRequests ->
-            val rendered = renderLetters(renderRequests)
+            val rendered = renderLetters(renderRequests, consumer.groupMetadata())
+            val (success, failures) = rendered.partition { it.renderResult is PDFCompilationResponse.Base64PDF }
             if(renderRequests.isFromRetryQueue) {
                 processRetryQueueResults(rendered)
             } else {
@@ -127,11 +125,22 @@ class PdfRequestConsumer(
         retryConsumer.commitSync(offsets)
     }
 
-    private suspend fun renderLetters(renderRequests: RenderRequests): List<RenderResult> {
-        return coroutineScope {
-            return@coroutineScope renderRequests.requests.map { record ->
+    private suspend fun renderLetters(
+        renderRequests: RenderRequests,
+        groupMetadata: ConsumerGroupMetadata
+    ): List<QueueableResult> =
+        coroutineScope {
+            renderRequests.requests.map { record ->
                 async {
-                    RenderResult(compile(record.value()), record)
+                    QueueableResult(
+                        key = record.key(),
+                        renderRequest = record.value(),
+                        renderResult = compile(record.value()),
+                        consumedTopic = record.topic(),
+                        consumedPartiton = record.partition(),
+                        consumedOffset = record.offset(),
+                        consumedWithMetadata = groupMetadata,
+                    )
                 }
             }.awaitAll()
         }
@@ -175,4 +184,14 @@ private data class RenderRequests(
 private data class RenderResult(
     val response: PDFCompilationResponse,
     val record: ConsumerRecord<String, PDFRequest>
+)
+
+private data class QueueableResult(
+    val key: String,
+    val renderRequest: PDFRequest,
+    val renderResult: PDFCompilationResponse,
+    val consumedTopic: String,
+    val consumedPartiton: Int,
+    val consumedOffset: Long,
+    val consumedWithMetadata: ConsumerGroupMetadata,
 )
