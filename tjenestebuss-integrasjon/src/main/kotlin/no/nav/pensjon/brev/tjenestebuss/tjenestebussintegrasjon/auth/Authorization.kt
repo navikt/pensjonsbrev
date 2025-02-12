@@ -10,7 +10,7 @@ import java.net.ProxySelector
 import java.net.URI
 import java.net.URL
 
-private const val jwtAzureAdName = "AZURE_AD"
+private const val JWT_AZURE_AD_NAME = "AZURE_AD"
 private val logger =
     LoggerFactory.getLogger("no.nav.pensjon.brev.tjenestebuss.tjenestebussintegrasjon.auth.Authentication")
 
@@ -27,7 +27,7 @@ data class JwtConfig(
 fun Config.requireAzureADConfig() =
     getConfig("azureAD").let {
         JwtConfig(
-            name = jwtAzureAdName,
+            name = JWT_AZURE_AD_NAME,
             issuer = it.getString("issuer"),
             jwksUrl = it.getString("jwksUrl"),
             clientId = it.getString("clientId"),
