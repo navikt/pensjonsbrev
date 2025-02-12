@@ -1,7 +1,6 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val apiModelVersion: String by project
 val exposedVersion: String by project
 val jacksonJsr310Version: String by project
 val javaTarget: String by System.getProperties()
