@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelJavaTarget: String by System.getProperties()
+val commonVersion: String by project
 val hamkrestVersion: String by project
 val jupiterVersion: String by project
 
@@ -24,7 +25,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.8.2")
+    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:$commonVersion")
 
     // JUnit 5
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
