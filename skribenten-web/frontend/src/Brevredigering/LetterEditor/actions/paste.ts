@@ -177,6 +177,7 @@ const insertTextAtStartOfLiteral = (
         newThisBlock,
         newAfterBlock.content.length > 0 ? newAfterBlock : [],
       ].flat();
+
       const updatedFocus = {
         ...draft.focus,
         itemContentIndex: 0,
@@ -198,7 +199,7 @@ const insertTextAtStartOfLiteral = (
         newContentAfterLiteralBlock.content.length > 0 ? newContentAfterLiteralBlock : [],
       ].flat();
 
-      const newBlockPosition = replaceThisBlockWith.findIndex((b) => isEqual(b, newNextBlock));
+      const newBlockPosition = replaceThisBlockWith.indexOf(newNextBlock);
       const newContentPosition = Math.max(newNextBlock.content.length - 1, 0);
 
       const lastEl = newNextBlock.content.at(-1);
@@ -213,7 +214,7 @@ const insertTextAtStartOfLiteral = (
         /* eslint-enable prettier/prettier */
 
       const updatedFocus = {
-        blockIndex: newBlockPosition,
+        blockIndex: draft.focus.blockIndex + newBlockPosition,
         contentIndex: newContentPosition,
         cursorPosition: newCursorPosition,
       };
@@ -231,7 +232,6 @@ const insertTextInTheMiddleOfLiteral = (
   parsedAndCombinedHtml: TraversedElement[],
   offset: number,
 ) => {
-  console.log("middle");
   const shouldBeItemList = isItemContentIndex(literalIndex);
   const firstCombinedElement = parsedAndCombinedHtml[0];
   const textBeforeOffset = (literalToBePastedInto.editedText ?? literalToBePastedInto.text).slice(0, offset);
@@ -250,7 +250,6 @@ const insertTextInTheMiddleOfLiteral = (
     });
 
     if (shouldBeItemList) {
-      console.log("span + shouldBeItemList");
       const newBeforeBlock = newParagraph({ content: contentBeforeLiteral });
       const newAfterBlock = newParagraph({ content: contentAfterLiteral });
       const traversedElementsAsItemListItems = parsedAndCombinedHtml
@@ -288,7 +287,6 @@ const insertTextInTheMiddleOfLiteral = (
 
       return { replaceThisBlockWith, updatedFocus };
     } else {
-      console.log("span + should be paragraph");
       const newContent = [...contentBeforeLiteral, newLiteralToBePastedIn, ...contentAfterLiteral];
       const newBlock = newParagraph({ content: [contentBeforeLiteral, newContent, contentAfterLiteral].flat() });
       const cursorPosition =
@@ -320,7 +318,6 @@ const insertTextInTheMiddleOfLiteral = (
           });
 
     if (shouldBeItemList) {
-      console.log("paragraph + shouldBeItemList");
       const newBeforeBlock = newParagraph({ content: contentBeforeLiteral });
       const newAfterBlock = newParagraph({ content: contentAfterLiteral });
 
@@ -359,19 +356,14 @@ const insertTextInTheMiddleOfLiteral = (
 
       return { replaceThisBlockWith, updatedFocus };
     }
-    console.log("span + paragraph");
+
     const newThisBlock = newParagraph({
       content: [
         firstMapped.content[0].type === "LITERAL"
           ? [theNewLiteral, ...(firstMapped.content.length > 1 ? firstMapped.content.slice(1) : [])]
           : [
               newItemList({
-                items: [
-                  newItem({
-                    content: [theNewLiteral],
-                  }),
-                  ...(firstMapped.content[0] as ItemList).items.slice(1),
-                ],
+                items: [newItem({ content: [theNewLiteral] }), ...(firstMapped.content[0] as ItemList).items.slice(1)],
               }),
             ],
       ].flat(),
@@ -390,11 +382,11 @@ const insertTextInTheMiddleOfLiteral = (
       newContentAfterLiteralBlock.content.length > 0 ? newContentAfterLiteralBlock : [],
     ].flat();
 
-    const newBlockPosition = replaceThisBlockWith.findIndex((b) => isEqual(b, restAfterBlock));
+    const newBlockPosition = replaceThisBlockWith.indexOf(restAfterBlock);
     const newContentPosition = Math.max((newBlocksAfterThisBlock.at(-1)?.content?.length ?? 0) - 1, 0);
 
     const updatedFocus = {
-      blockIndex: newBlockPosition,
+      blockIndex: literalIndex.blockIndex + newBlockPosition,
       contentIndex: newContentPosition,
       cursorPosition: 0,
     };
