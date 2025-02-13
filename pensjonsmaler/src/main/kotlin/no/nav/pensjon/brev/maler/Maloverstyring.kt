@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.redigerbar.OrienteringOmSaksbehandlingstidV2
-import no.nav.pensjon.brev.maler.ufoereBrev.EndretUfoeretrygdPGAInntekt
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAutoV2
 
 fun hentMuligOverstyrtMal(kode: String) = when {
