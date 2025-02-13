@@ -252,9 +252,25 @@ function Brevmaler({
                         });
                       }}
                       title={
-                        <HStack align="center" gap="2">
-                          <BrevSystemIcon brevsystem={template.brevsystem} />{" "}
-                          <BodyShort size="small">{template.name}</BodyShort>
+                        <HStack
+                          align={"center"}
+                          css={css`
+                            overflow: hidden;
+                          `}
+                          gap="2"
+                          wrap={false}
+                        >
+                          <BrevSystemIcon brevsystem={template.brevsystem} />
+                          <BodyShort
+                            css={css`
+                              overflow: hidden;
+                              text-overflow: ellipsis;
+                              max-width: 95%;
+                            `}
+                            size="small"
+                          >
+                            {template.name}
+                          </BodyShort>
                         </HStack>
                       }
                     />
@@ -313,11 +329,28 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; letterTemplates: LetterM
                   });
                 }}
                 title={
-                  <HStack align={"center"} gap="2">
+                  <HStack
+                    align={"center"}
+                    css={css`
+                      overflow: hidden;
+                    `}
+                    gap="2"
+                    wrap={false}
+                  >
                     <BrevSystemIcon
                       brevsystem={props.letterTemplates.find((template) => template.id === brev.brevkode)?.brevsystem}
                     />
-                    <BodyShort size="small">{brev.brevtittel}</BodyShort>
+
+                    <BodyShort
+                      css={css`
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        max-width: 90%;
+                      `}
+                      size="small"
+                    >
+                      {brev.brevtittel}
+                    </BodyShort>
                   </HStack>
                 }
               />
@@ -380,7 +413,7 @@ const BrevmalButton = (props: {
       onClick={props.onClick}
       variant="tertiary"
     >
-      <HStack justify={"space-between"}>
+      <HStack justify={"space-between"} wrap={false}>
         {props.title}
         {props.description && (
           <BodyShort
