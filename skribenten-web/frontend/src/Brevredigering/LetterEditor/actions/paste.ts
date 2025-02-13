@@ -114,7 +114,6 @@ const insertTextAtStartOfLiteral = (
     const combinedSpanText = firstCombinedElement.content.join(" ");
 
     const newLiteralToBePastedIn = newLiteral({
-      ...literalToBePastedInto,
       text: combinedSpanText + (literalToBePastedInto.editedText ?? literalToBePastedInto.text),
     });
 
