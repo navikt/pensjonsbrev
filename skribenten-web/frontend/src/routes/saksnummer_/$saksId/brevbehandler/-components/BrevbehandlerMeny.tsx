@@ -329,7 +329,7 @@ const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
           </RadioGroup>
         )}
 
-        {props.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && <LokalPrintInfoAlerts />}
+        {props.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && erLåst && <LokalPrintInfoAlerts />}
       </div>
     </div>
   );
