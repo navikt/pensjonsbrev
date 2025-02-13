@@ -9,6 +9,5 @@ import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAutoV2
 fun hentMuligOverstyrtMal(kode: String) = when {
     kode == Pesysbrevkoder.Redigerbar.UT_ORIENTERING_OM_SAKSBEHANDLINGSTID.kode() && FeatureToggleSingleton.isEnabled(FeatureToggles.pl7231ForventetSvartid) -> OrienteringOmSaksbehandlingstidV2
     kode == Pesysbrevkoder.AutoBrev.UT_VARSEL_SAKSBEHANDLINGSTID_AUTO.kode() && FeatureToggleSingleton.isEnabled(FeatureToggles.pl7231ForventetSvartid) -> VarselSaksbehandlingstidAutoV2
-    kode == Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_INNTEKT.kode() && FeatureToggleSingleton.isEnabled(FeatureToggles.pl7914EndretInntektPilot) -> EndretUfoeretrygdPGAInntekt
     else -> null
 }
