@@ -59,3 +59,4 @@ spec:
       value: "1s"
     - name: PDF_BYGGER_COMPILE_TMP_DIR
       value: "/app/tmp"
+  ingresses: [{{#each ingresses as |url|}}{{url}},{{/each}}]
