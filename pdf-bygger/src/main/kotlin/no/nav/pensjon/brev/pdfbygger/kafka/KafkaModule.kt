@@ -11,7 +11,6 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
 import no.nav.pensjon.brev.pdfbygger.getProperty
-import no.nav.pensjon.brev.pdfbygger.getPropertyOrNull
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 
 fun Application.kafkaModule(latexCompileService: LatexCompileService) {
@@ -30,7 +29,7 @@ fun Application.kafkaModule(latexCompileService: LatexCompileService) {
     val pdfRequestConsumer = PdfRequestConsumer(
         latexCompileService = latexCompileService,
         properties = kafkaConfig,
-        topic = config.property("topic").getString(),
+        renderTopic = config.property("topic").getString(),
         retryTopic = config.property("retryTopic").getString(),
     )
 
