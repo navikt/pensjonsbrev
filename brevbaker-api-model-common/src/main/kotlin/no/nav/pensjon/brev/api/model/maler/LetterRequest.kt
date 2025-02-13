@@ -15,6 +15,13 @@ data class BestillBrevRequest<T : Brevkode<T>>(
 )
 
 @Suppress("unused")
+data class BestillBrevRequestAsync<T : Brevkode<T>>(
+    val brevRequest: BestillBrevRequest<T>,
+    val messageId: String,
+    val replyTopic: String,
+)
+
+@Suppress("unused")
 data class BestillRedigertBrevRequest<T : Brevkode<T>>(
     val kode: T,
     val letterData: BrevbakerBrevdata,

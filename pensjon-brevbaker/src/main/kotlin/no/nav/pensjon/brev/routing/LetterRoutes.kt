@@ -8,6 +8,7 @@ import io.ktor.server.routing.*
 import io.ktor.util.*
 import no.nav.pensjon.brev.api.TemplateResource
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.BestillBrevRequestAsync
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -29,15 +30,6 @@ fun Route.letterRoutes(
             installBrevkodeInCallContext(brevbestilling.kode)
             call.respond(autobrev.renderPDF(brevbestilling))
             autobrev.countLetter(brevbestilling.kode)
-        }
-
-        post<BestillBrevRequest<Brevkode.Automatisk>>("/pdfQueued") { brevbestilling ->
-            installBrevkodeInCallContext(brevbestilling.kode)// TODO trenger vi denne?
-            // TODO flytt inn i request?
-            val orderId = call.request.headers["orderId"] ?: throw BadRequestException("orderId er påkrevd")
-            autobrev.renderPdfAsync(orderId, brevbestilling)
-            autobrev.countLetter(brevbestilling.kode)
-            call.respond(HttpStatusCode.OK)
         }
 
         post<BestillBrevRequest<Brevkode.Automatisk>>("/html") { brevbestilling ->

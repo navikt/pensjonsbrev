@@ -13,3 +13,9 @@ data class PDFRequest(
     val felles: Felles,
     val brevtype: LetterMetadata.Brevtype,
 )
+
+data class PDFRequestAsync(
+    val request: PDFRequest,
+    val messageId: String,
+    val replyTopic: String,
+)

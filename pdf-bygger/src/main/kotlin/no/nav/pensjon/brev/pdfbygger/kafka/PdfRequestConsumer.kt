@@ -4,7 +4,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.sync.Semaphore
-import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.PDFRequestAsync
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
@@ -17,6 +17,7 @@ import org.apache.kafka.common.serialization.Deserializer
 import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
+import org.slf4j.LoggerFactory
 import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.collections.partition
@@ -32,29 +33,33 @@ private val QUEUE_READ_TIMEOUT = 5.seconds.toJavaDuration()
 class PdfRequestConsumer(
     private val latexCompileService: LatexCompileService,
     private val properties: Map<String, String>,
-    topic: String,
+    private val topic: String,
     private val retryTopic: String,
 ) {
     private val parallelism = Runtime.getRuntime().availableProcessors()
     private val parallelismSemaphore = parallelism.takeIf { it > 0 }?.let { Semaphore(it) }
         ?: throw IllegalStateException("Not enough cores to run async worker")
-    private val retryProducers = ConcurrentHashMap<String, KafkaProducer<String, PDFRequest>>()
+    private val retryProducers = ConcurrentHashMap<String, KafkaProducer<String, PDFRequestAsync>>()
+    private val successProducers = ConcurrentHashMap<String, KafkaProducer<String, PDFCompilationResponse.Base64PDF>>()
     private var shuttingDown = false
 
+    private val logger = LoggerFactory.getLogger(PdfRequestConsumer::class.java)
+
+    // TODO add message id to logger
     // TODO should i close producers when repartitioning occurs? It should in theory just be a waste of threads/ a tiny bit of RAM
-    private val consumer = KafkaConsumer<String, PDFRequest>(
+    private val consumer = KafkaConsumer(
         properties
             .plus("max.poll.records" to parallelism),
         StringDeserializer(),
-        PDFRequestDeserializer()
+        PDFRequestAsyncDeserializer()
     )
 
     private val retryConsumer =
-        KafkaConsumer<String, PDFRequest>(
+        KafkaConsumer(
             properties
                 .plus("max.poll.records" to parallelism),
             StringDeserializer(),
-            PDFRequestDeserializer()
+            PDFRequestAsyncDeserializer()
         )
 
     init {
@@ -84,14 +89,13 @@ class PdfRequestConsumer(
         }.onEach { renderRequests ->
             val results = renderLetters(renderRequests)
             if (results.isNotEmpty()) {
-                val (successes, failures) = results.partition { it.renderResult is PDFCompilationResponse.Base64PDF }
+                val (successes, failures) = results.partition { it.pdf != null }
 
                 if (renderRequests.isFromRetryQueue) {
                     println("Test: got ${successes.size} successes and ${failures.size} failures from retry queue")
                     if (failures.isEmpty()) {
                         println("Test: rendered ${successes.size} from retry queue")
                     } else {
-                        println("Test: rendered ${successes.size} from retry queue")
                         processRetryQueueResults(results, retryConsumer.groupMetadata())
                     }
                 } else {
@@ -118,66 +122,76 @@ class PdfRequestConsumer(
         results
             .sortedBy { it.consumedOffset } // make sure higher offsets are not committed before lower ones
             .forEach {
-                when (it.renderResult) {
-                    is PDFCompilationResponse.Base64PDF -> {
-                        println("Test: rendered a letter successfully that would be committed synchronously")
-                    }
-
-                    is PDFCompilationResponse.Failure -> {
-                        val producer = getOrCreateRetryProducer(it.consumedTopic, it.consumedPartiton)
-                        val offsetAndMetadata = OffsetAndMetadata(it.consumedOffset + 1)
-                        val topicPartition = TopicPartition(it.consumedTopic, it.consumedPartiton)
-
-                        try {
-                            producer.beginTransaction()
-                            producer.sendOffsetsToTransaction(mapOf(topicPartition to offsetAndMetadata), groupMetadata)
-                            producer.send(ProducerRecord(retryTopic, it.key, it.renderRequest))
-                            println("Test: sendt a request to failure queue successfully.")
-                            producer.commitTransaction()
-                        } catch (e: Exception) {
-                            // TODO pass only certain exceptions along to crash the application.
-                            producer.abortTransaction()
-                            throw QueueCommitFailure("Failed to commit result to retry queue", e)
-                        }
-                    }
+                if (it.pdf != null) {
+                    val producer = getOrCreateSuccessProducer(topic, it.consumedPartiton)
+                    sendSingleSynchronous(it, it.renderRequest.replyTopic, it.pdf, producer, groupMetadata )
+                } else {
+                    val producer = getOrCreateRetryProducer(it.consumedTopic, it.consumedPartiton)
+                    sendSingleSynchronous(it, retryTopic, it.renderRequest, producer, groupMetadata )
                 }
             }
     }
 
+    private fun <Value> sendSingleSynchronous(
+        it: RenderResult,
+        topic: String,
+        value: Value,
+        producer: KafkaProducer<String, Value>,
+        groupMetadata: ConsumerGroupMetadata
+    ) {
+        val offsetAndMetadata = OffsetAndMetadata(it.consumedOffset + 1)
+        val topicPartition = TopicPartition(it.consumedTopic, it.consumedPartiton)
+        try {
+            producer.beginTransaction()
+            producer.sendOffsetsToTransaction(mapOf(topicPartition to offsetAndMetadata), groupMetadata)
+            producer.send(ProducerRecord(topic, value))
+            producer.commitTransaction()
+        } catch (e: Exception) {
+            producer.abortTransaction()
+            throw QueueCommitFailure("Failed to commit pdf to reply queue", e)
+        }
+    }
+
     private fun processRetryQueueResults(results: List<RenderResult>, groupMetadata: ConsumerGroupMetadata) {
-        // send all to
         var anySucceess = false
         results.groupBy { it.consumedPartiton }
             .mapNotNull { (partition, partitionResults) ->
                 val sortedPartitionResults = partitionResults.sortedBy { it.consumedOffset }
-                val successesBeforeFailure =
-                    sortedPartitionResults.takeWhile { it.renderResult is PDFCompilationResponse.Base64PDF }
+                val successesBeforeFailure = sortedPartitionResults.takeWhile { it.pdf != null }
 
-                val firstResult = partitionResults.first()
-                //val producer = getOrCreateRetryProducer(firstResult.consumedTopic, firstResult.consumedPartiton)
+                if (successesBeforeFailure.isNotEmpty()) {
+                    anySucceess = true
+                    val successProducer = getOrCreateSuccessProducer(retryTopic, partition)
+                    val consumedFrom = TopicPartition(retryTopic, partition)
+                    val newOffset = OffsetAndMetadata(successesBeforeFailure.last().consumedOffset + 1)
 
-                //if (successesBeforeFailure.isNotEmpty()) {
-                //    val consumedFrom = TopicPartition(retryTopic, partition)
-                //    val newOffset = OffsetAndMetadata(successesBeforeFailure.last().consumedOffset + 1)
-                //    producer.beginTransaction()
-                //    producer.sendOffsetsToTransaction(
-                //        mapOf(consumedFrom to newOffset),
-                //        groupMetadata
-                //    )
-                //    successesBeforeFailure.forEach {
-                //        anySucceess = true
-                //        // TODO produce successes to topic
-                //    }
-                //    producer.commitTransaction()
-                //}
-
-
+                    successProducer.beginTransaction()
+                    successProducer.sendOffsetsToTransaction(mapOf(consumedFrom to newOffset), groupMetadata)
+                    successesBeforeFailure.forEach {
+                        successProducer.send(ProducerRecord(it.renderRequest.replyTopic, it.pdf!!))
+                    }
+                    successProducer.commitTransaction()
+                }
             }//.toMap()
 
         if (!anySucceess) {
             nextRetryPoll = Instant.now().plus(FAILURE_RETRY_INTERVAL_SECONDS)
         }
+    }
 
+
+    private fun groupResultsPerTransaction(results: List<RenderResult>) {
+        // TODO split based on consumed topic, consumed partition and success topic.
+        val resultsPerConsumedTopic = results.groupBy { it.consumedTopic }.map { it.value }
+        val mapresultsPerConsumedTopicAndPartition = resultsPerConsumedTopic
+            .map { perConsumedTopicResults -> perConsumedTopicResults.groupBy { it.consumedPartiton } }
+            .flatMap { it.values }
+
+        mapresultsPerConsumedTopicAndPartition
+            .map { results ->
+                val sorted = results.sortedBy { it.consumedOffset }
+                // TODO group by adjacent success topic
+            }
     }
 
     private suspend fun renderLetters(
@@ -187,9 +201,8 @@ class PdfRequestConsumer(
             renderRequests.requests.map { record ->
                 async {
                     RenderResult(
-                        key = record.key(),
                         renderRequest = record.value(),
-                        renderResult = compile(record.value()),
+                        pdf = compile(record.value()),
                         consumedTopic = record.topic(),
                         consumedPartiton = record.partition(),
                         consumedOffset = record.offset(),
@@ -198,30 +211,52 @@ class PdfRequestConsumer(
             }.awaitAll()
         }
 
-    private suspend fun compile(request: PDFRequest): PDFCompilationResponse {
+    private suspend fun compile(request: PDFRequestAsync): PDFCompilationResponse.Base64PDF? {
         parallelismSemaphore.acquire()
-        val result = LatexDocumentRenderer.render(request)
+        val result = LatexDocumentRenderer.render(request.request)
             .let { latexCompileService.createLetter(it.files) }
         parallelismSemaphore.release()
-        println("Compiled pdf successfully")
-        return result
+
+        when (result) {
+            is PDFCompilationResponse.Base64PDF -> return result
+            is PDFCompilationResponse.Failure.Client -> logger.error(result.reason) // TODO better logging
+            is PDFCompilationResponse.Failure.QueueTimeout -> logger.error(result.reason)
+            is PDFCompilationResponse.Failure.Server -> logger.error(result.reason)
+            is PDFCompilationResponse.Failure.Timeout -> logger.error(result.reason)
+        }
+        return null
     }
 
     private fun getOrCreateRetryProducer(
         consumedTopic: String,
         consumedPartition: Int
-    ): KafkaProducer<String, PDFRequest> {
-        val key = "$consumedTopic-$consumedPartition"
-        return retryProducers.getOrPut(key) {
-            KafkaProducer<String, PDFRequest>(
+    ): KafkaProducer<String, PDFRequestAsync> {
+        val transactionId = "$consumedTopic-$consumedPartition"
+        return retryProducers.getOrPut(transactionId) {
+            KafkaProducer(
                 properties
-                    .plus("transactional.id" to key)
-                    .plus("enable.idempotence" to "true"),
+                    .plus("transactional.id" to transactionId),
                 StringSerializer(),
-                PDFRequestSerializer(),
+                PDFRequestAsyncSerializer(),
             ).also { it.initTransactions() }
         }
     }
+
+    private fun getOrCreateSuccessProducer(
+        consumedTopic: String,
+        consumedPartition: Int
+    ): KafkaProducer<String, PDFCompilationResponse.Base64PDF> {
+        val transactionId = "$consumedTopic-$consumedPartition"
+        return successProducers.getOrPut(transactionId) {
+            KafkaProducer(
+                properties
+                    .plus("transactional.id" to transactionId),
+                StringSerializer(),
+                Base64PDFSerializer(),
+            ).also { it.initTransactions() }
+        }
+    }
+
 
     fun stop() {
         shuttingDown = true
@@ -231,27 +266,33 @@ class PdfRequestConsumer(
     }
 }
 
-private class PDFRequestDeserializer : Deserializer<PDFRequest> {
+private class PDFRequestAsyncDeserializer : Deserializer<PDFRequestAsync> {
     private val mapper = pdfByggerObjectMapper()
-    override fun deserialize(topic: String?, data: ByteArray): PDFRequest =
-        mapper.readValue(data, PDFRequest::class.java)
+    override fun deserialize(topic: String?, data: ByteArray): PDFRequestAsync =
+        mapper.readValue(data, PDFRequestAsync::class.java)
 }
 
-private class PDFRequestSerializer : Serializer<PDFRequest> {
+private class PDFRequestAsyncSerializer : Serializer<PDFRequestAsync> {
     private val mapper = pdfByggerObjectMapper()
-    override fun serialize(topic: String?, data: PDFRequest): ByteArray = mapper.writeValueAsBytes(data)
+    override fun serialize(topic: String?, data: PDFRequestAsync): ByteArray = mapper.writeValueAsBytes(data)
 }
+
+private class Base64PDFSerializer : Serializer<PDFCompilationResponse.Base64PDF> {
+    private val mapper = pdfByggerObjectMapper()
+    override fun serialize(topic: String?, data: PDFCompilationResponse.Base64PDF): ByteArray =
+        mapper.writeValueAsBytes(data)
+}
+
 
 data class RenderRequests(
-    val requests: ConsumerRecords<String, PDFRequest>,
+    val requests: ConsumerRecords<String, PDFRequestAsync>,
     val isFromRetryQueue: Boolean,
 )
 
 
 private data class RenderResult(
-    val key: String,
-    val renderRequest: PDFRequest,
-    val renderResult: PDFCompilationResponse,
+    val renderRequest: PDFRequestAsync,
+    val pdf: PDFCompilationResponse.Base64PDF?,
     val consumedTopic: String,
     val consumedPartiton: Int,
     val consumedOffset: Long,

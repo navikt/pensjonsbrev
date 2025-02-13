@@ -5,7 +5,9 @@ import io.ktor.server.plugins.*
 import io.micrometer.core.instrument.Tag
 import no.nav.pensjon.brev.Metrics
 import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.PDFRequestAsync
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.BestillBrevRequestAsync
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
@@ -20,6 +22,7 @@ import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import java.util.*
+import javax.naming.ServiceUnavailableException
 
 private val objectMapper = brevbakerJacksonObjectMapper()
 private val base64Decoder = Base64.getDecoder()
@@ -43,10 +46,12 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
             renderPDF(createLetter(kode, letterData, language, felles))
         }
 
-    suspend fun renderPdfAsync(orderId: String, brevbestilling: BestillBrevRequest<Kode>) =
-        with(brevbestilling) {
-            renderPdfAsync(orderId, createLetter(kode, letterData, language, felles))
-        }
+    suspend fun renderPdfAsync(brevbestilling: BestillBrevRequestAsync<Kode>) =
+        renderPdfAsync(
+            letter = with(brevbestilling.brevRequest) { createLetter(kode, letterData, language, felles) },
+            messageId = brevbestilling.messageId,
+            replyTopic = brevbestilling.replyTopic
+        )
 
     suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
@@ -108,13 +113,17 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
         redigertBrev: LetterMarkup? = null
     ): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev)
-            .let { laTeXCompilerService.producePDF(PDFRequest(
-                letterMarkup = it.letterMarkup,
-                attachments = it.attachments,
-                language = letter.language.toCode(),
-                felles = letter.felles,
-                brevtype = letter.template.letterMetadata.brevtype
-            )) }
+            .let {
+                laTeXCompilerService.producePDF(
+                    PDFRequest(
+                        letterMarkup = it.letterMarkup,
+                        attachments = it.attachments,
+                        language = letter.language.toCode(),
+                        felles = letter.felles,
+                        brevtype = letter.template.letterMetadata.brevtype
+                    )
+                )
+            }
             .let { pdf ->
                 LetterResponse(
                     file = base64Decoder.decode(pdf.base64PDF),
@@ -123,15 +132,24 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
                 )
             }
 
-    private suspend fun renderPdfAsync(orderId: String, letter: Letter<BrevbakerBrevdata>): Unit =
+    private suspend fun renderPdfAsync(letter: Letter<BrevbakerBrevdata>, messageId: String, replyTopic: String): Unit =
         renderCompleteMarkup(letter, null)
-            .let { latexAsyncCompilerService?.renderAsync(orderId, PDFRequest(
-                letterMarkup = it.letterMarkup,
-                attachments = it.attachments,
-                language = letter.language.toCode(),
-                felles = letter.felles,
-                brevtype = letter.template.letterMetadata.brevtype
-            )) }
+            .let {
+                latexAsyncCompilerService!!.renderAsync(
+                    PDFRequestAsync(
+                        request = PDFRequest(
+                            letterMarkup = it.letterMarkup,
+                            attachments = it.attachments,
+                            language = letter.language.toCode(),
+                            felles = letter.felles,
+                            brevtype = letter.template.letterMetadata.brevtype
+                        ),
+                        messageId = messageId,
+                        replyTopic = replyTopic,
+                    )
+                )
+            }
+
     private fun renderHTML(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev)
             .let { HTMLDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }

@@ -11,6 +11,8 @@ import no.nav.pensjon.brev.api.TemplateResource
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
 import no.nav.brev.brevbaker.AllTemplates
+import no.nav.pensjon.brev.api.model.BestillBrevRequestAsync
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.etterlatte.EtterlatteMaler
 
 fun Application.brevRouting(
@@ -31,7 +33,17 @@ fun Application.brevRouting(
         authenticate(*authenticationNames, optional = application.developmentMode) {
             route("/letter") {
                 letterRoutes(autobrev, redigerbareBrev)
+                if(latexAsyncCompilerService != null) {
+                    post<BestillBrevRequestAsync<Brevkode.Automatisk>>("/${autobrev.name}/pdfAsync") { brevbestillingAsync ->
+                        val brevbestilling = brevbestillingAsync.brevRequest
+                        installBrevkodeInCallContext(brevbestilling.kode)
+                        autobrev.renderPdfAsync(brevbestillingAsync)
+                        autobrev.countLetter(brevbestilling.kode)
+                        call.respond(HttpStatusCode.OK)
+                    }
+                }
             }
+
 
             route("etterlatte") {
                 letterRoutes(

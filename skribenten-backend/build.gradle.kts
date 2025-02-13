@@ -99,7 +99,7 @@ dependencies {
     implementation("io.getunleash:unleash-client-java:10.0.0")
 
     // Domenemodell
-    implementation("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.8.2")
+    implementation("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.8.3")
 
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
