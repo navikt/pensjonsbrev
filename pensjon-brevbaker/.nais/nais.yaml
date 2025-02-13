@@ -75,7 +75,7 @@ spec:
       {{/each}}
   env:
     - name: PDF_BUILDER_URL
-      value: "http://pensjon-pdf-bygger:8080"
+      value: "http://pensjon-pdf-bygger"
     - name: PDF_BYGGER_MAX_RETRIES
       value: "250"
   envFrom:
