@@ -52,33 +52,93 @@ describe("LetterEditorActions.paste", () => {
   describe("format: text/html", () => {
     describe("paste into a literal", () => {
       describe("start of a literal", () => {
-        test("inserts a single word", () => {
-          const index = { blockIndex: 0, contentIndex: 0 };
-          const state = letter(paragraph(literal({ text: "Teksten min" })));
-          const clipboard = new MockDataTransfer({ "text/html": "<span>1</span>" });
-          const result = Actions.paste(state, index, 0, clipboard);
+        describe("inserts a single word", () => {
+          test("single paste", () => {
+            const index = { blockIndex: 0, contentIndex: 0 };
+            const state = letter(paragraph(literal({ text: "Teksten min" })));
+            const clipboard = new MockDataTransfer({ "text/html": "<span>1</span>" });
+            const result = Actions.paste(state, index, 0, clipboard);
 
-          expect(text(select<LiteralValue>(result, index))).toEqual("1Teksten min");
-          expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 1 });
+            expect(text(select<LiteralValue>(result, index))).toEqual("1Teksten min");
+            expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 1 });
+          });
+          test("multiple paste", () => {
+            const index = { blockIndex: 0, contentIndex: 0 };
+            const state = letter(paragraph(literal({ text: "Teksten min" })));
+            const clipboard = new MockDataTransfer({ "text/html": "<span>1</span>" });
+            const firstPasteResult = Actions.paste(state, index, 0, clipboard);
+
+            const secondPasteResult = Actions.paste(
+              firstPasteResult,
+              index,
+              firstPasteResult.focus.cursorPosition!,
+              clipboard,
+            );
+
+            expect(text(select<LiteralValue>(secondPasteResult, index))).toEqual("1 1Teksten min");
+            expect(secondPasteResult.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 3 });
+          });
         });
-        test("inserts multiple words", () => {
-          const index = { blockIndex: 0, contentIndex: 0 };
-          const state = letter(paragraph(literal({ text: "Teksten min" })));
-          const clipboard = new MockDataTransfer({ "text/html": "<span>1</span><span> 2</span" });
-          const result = Actions.paste(state, index, 0, clipboard);
 
-          expect(text(select<LiteralValue>(result, index))).toEqual("1 2Teksten min");
-          expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 3 });
+        describe("inserts multiple words", () => {
+          test("single paste", () => {
+            const index = { blockIndex: 0, contentIndex: 0 };
+            const state = letter(paragraph(literal({ text: "Teksten min" })));
+            const clipboard = new MockDataTransfer({ "text/html": "<span>1</span><span> 2</span" });
+            const result = Actions.paste(state, index, 0, clipboard);
+
+            expect(text(select<LiteralValue>(result, index))).toEqual("1 2Teksten min");
+            expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 3 });
+          });
+          test("multiple paste", () => {
+            const index = { blockIndex: 0, contentIndex: 0 };
+            const state = letter(paragraph(literal({ text: "Teksten min" })));
+            const clipboard = new MockDataTransfer({ "text/html": "<span>1</span><span> 2</span" });
+            const firstPasteResult = Actions.paste(state, index, 0, clipboard);
+
+            const secondPasteResult = Actions.paste(
+              firstPasteResult,
+              index,
+              firstPasteResult.focus.cursorPosition!,
+              clipboard,
+            );
+
+            expect(text(select<LiteralValue>(secondPasteResult, index))).toEqual("1 21 2Teksten min");
+            expect(secondPasteResult.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 6 });
+          });
         });
-        test("inserts single paragraph", () => {
-          const index = { blockIndex: 0, contentIndex: 0 };
-          const state = letter(paragraph(literal({ text: "Teksten min" })));
-          const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
-          const result = Actions.paste(state, index, 0, clipboard);
+        describe("inserts single paragraph", () => {
+          test("single paste", () => {
+            const index = { blockIndex: 0, contentIndex: 0 };
+            const state = letter(paragraph(literal({ text: "Teksten min" })));
+            const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
+            const result = Actions.paste(state, index, 0, clipboard);
 
-          expect(text(select<LiteralValue>(result, index))).toEqual("1");
-          expect(text(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }))).toEqual("Teksten min");
-          expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 0 });
+            expect(text(select<LiteralValue>(result, index))).toEqual("1");
+            expect(text(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }))).toEqual("Teksten min");
+            expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 0 });
+          });
+
+          test("multiple paste", () => {
+            const index = { blockIndex: 0, contentIndex: 0 };
+            const state = letter(paragraph(literal({ text: "Teksten min" })));
+            const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
+            const firstPasteResult = Actions.paste(state, index, 0, clipboard);
+
+            const secondPasteResult = Actions.paste(
+              firstPasteResult,
+              index,
+              firstPasteResult.focus.cursorPosition!,
+              clipboard,
+            );
+
+            expect(text(select<LiteralValue>(secondPasteResult, index))).toEqual("1");
+            expect(text(select<LiteralValue>(secondPasteResult, { blockIndex: 1, contentIndex: 0 }))).toEqual("1");
+            expect(text(select<LiteralValue>(secondPasteResult, { blockIndex: 2, contentIndex: 0 }))).toEqual(
+              "Teksten min",
+            );
+            expect(secondPasteResult.focus).toEqual({ blockIndex: 2, contentIndex: 0, cursorPosition: 0 });
+          });
         });
         test("inserts multiple paragraphs", () => {
           const index = { blockIndex: 0, contentIndex: 0 };
