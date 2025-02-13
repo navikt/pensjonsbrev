@@ -2,6 +2,7 @@ package no.nav.pensjon.brev
 
 import io.ktor.client.request.*
 import kotlinx.coroutines.runBlocking
+import no.nav.brev.brevbaker.BREVBAKER_URL
 import org.junit.jupiter.api.Test
 
 class ApplicationITest {

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.render.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
+import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -14,7 +15,6 @@ import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.render.dsl.ForEachViewTestSelectors.ListArgumentSelectors.liste
 import no.nav.pensjon.brev.template.render.dsl.ForEachViewTestSelectors.ListArgumentSelectors.listeSelector
 import no.nav.pensjon.brev.template.render.hasBlocks
-import no.nav.pensjon.brev.template.render.outlineTestTemplate
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

@@ -3,7 +3,10 @@ package no.nav.pensjon.brev.template.render
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.isEmpty
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.*
+import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.PDF_BUILDER_URL
+import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
