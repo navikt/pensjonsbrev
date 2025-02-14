@@ -3,19 +3,21 @@ import azuread
 import os
 import uuid
 
-payload = open(os.path.join(os.path.dirname(__file__), 'autobrev_request.json'), "r").read()
+# Test av synkront kall
+#payload = open(os.path.join(os.path.dirname(__file__), 'autobrev_request.json'), "r").read()
+# Test av asynkront kall
+payload = open(os.path.join(os.path.dirname(__file__), 'autobrev_request_async.json'), "r").read()
 
 class BrevbakerLoadTest(FastHttpUser):
     token = azuread.fetch_token()
     wait_time = between(0,0)
-    #network_timeout = 300.0
     @task
     def load_test(self):
         #Test av synkront kall lokalt:
         #headers = {'Content-Type': 'application/json'}
 
         #Test av asynkront kall lokalt:
-        headers = {'Content-Type': 'application/json', 'orderId': str(uuid.uuid4())}
+        headers = {'Content-Type': 'application/json'}
 
         #Test av synkront kall på clusteret:
         #headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token(), 'X-Request-ID': str(uuid.uuid4())}

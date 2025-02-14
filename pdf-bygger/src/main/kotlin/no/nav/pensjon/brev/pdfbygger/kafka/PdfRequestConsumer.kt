@@ -91,23 +91,26 @@ class PdfRequestConsumer(
             if (results.isNotEmpty()) {
                 val (successes, failures) = results.partition { it.pdf != null }
                 val consumedTopic = if (renderRequests.isFromRetryQueue) retryTopic else renderTopic
+                val consumerGroupMetadata = if (renderRequests.isFromRetryQueue) retryConsumer.groupMetadata() else consumer.groupMetadata()
 
                 if (failures.isEmpty()) {
-                    produceSuccessesForTopic(successes, consumedTopic)
+                    produceSuccessesForTopic(successes, consumedTopic, consumerGroupMetadata)
                 } else {
                     if (renderRequests.isFromRetryQueue) {
-                        processRetryQueueResults(results, retryConsumer.groupMetadata())
+                        processRetryQueueResults(results, consumerGroupMetadata)
                     } else {
-                        sendToRetryOrSuccessQueue(results, consumer.groupMetadata())
+                        sendToRetryOrSuccessQueue(results, consumerGroupMetadata)
                     }
                 }
             }
         }
 
-    private fun produceSuccessesForTopic(successes: List<RenderResult>, consumedTopic: String) {
+    private fun produceSuccessesForTopic(
+        successes: List<RenderResult>, consumedTopic: String, consumerGroupMetadata: ConsumerGroupMetadata
+    ) {
         successes.groupBy { it.consumedPartiton }
             .forEach { (partition, results) ->
-                produceSuccessesToTopicForPartition(partition, results, retryConsumer.groupMetadata(), consumedTopic)
+                produceSuccessesForTopicAndPartition(partition, results, consumerGroupMetadata, consumedTopic)
             }
     }
 
@@ -136,18 +139,18 @@ class PdfRequestConsumer(
     }
 
     private fun <Value> sendSingleSynchronous(
-        it: RenderResult,
+        result: RenderResult,
         topic: String,
         value: Value,
         producer: KafkaProducer<String, Value>,
-        groupMetadata: ConsumerGroupMetadata
+        groupMetadata: ConsumerGroupMetadata,
     ) {
-        val offsetAndMetadata = OffsetAndMetadata(it.consumedOffset + 1)
-        val topicPartition = TopicPartition(it.consumedTopic, it.consumedPartiton)
+        val offsetAndMetadata = OffsetAndMetadata(result.consumedOffset + 1)
+        val topicPartition = TopicPartition(result.consumedTopic, result.consumedPartiton)
         try {
             producer.beginTransaction()
             producer.sendOffsetsToTransaction(mapOf(topicPartition to offsetAndMetadata), groupMetadata)
-            producer.send(ProducerRecord(topic, value))
+            producer.send(ProducerRecord(topic, result.renderRequest.messageId, value))
             producer.commitTransaction()
         } catch (e: Exception) {
             producer.abortTransaction()
@@ -156,7 +159,7 @@ class PdfRequestConsumer(
     }
 
     private fun processRetryQueueResults(results: List<RenderResult>, groupMetadata: ConsumerGroupMetadata) {
-        var anySucceess = false
+        var onlyFailures = true
         results.groupBy { it.consumedPartiton }
             .mapNotNull { (partition, partitionResults) ->
                 val successesBeforeFailure = partitionResults
@@ -164,17 +167,17 @@ class PdfRequestConsumer(
                     .takeWhile { it.pdf != null }
 
                 if (successesBeforeFailure.isNotEmpty()) {
-                    anySucceess = true
-                    produceSuccessesToTopicForPartition(partition, successesBeforeFailure, groupMetadata, retryTopic)
+                    onlyFailures = false
+                    produceSuccessesForTopicAndPartition(partition, successesBeforeFailure, groupMetadata, retryTopic)
                 }
             }
 
-        if (!anySucceess) {
+        if (onlyFailures) {
             nextRetryPoll = Instant.now().plus(FAILURE_RETRY_INTERVAL_SECONDS)
         }
     }
 
-    private fun produceSuccessesToTopicForPartition(
+    private fun produceSuccessesForTopicAndPartition(
         consumedPartition: Int,
         results: List<RenderResult>,
         groupMetadata: ConsumerGroupMetadata,
@@ -187,7 +190,7 @@ class PdfRequestConsumer(
         successProducer.beginTransaction()
         successProducer.sendOffsetsToTransaction(mapOf(consumedFrom to newOffset), groupMetadata)
         results.forEach {
-            successProducer.send(ProducerRecord(it.renderRequest.replyTopic, it.pdf!!))
+            successProducer.send(ProducerRecord(it.renderRequest.replyTopic, it.renderRequest.messageId, it.pdf!!))
         }
         successProducer.commitTransaction()
     }

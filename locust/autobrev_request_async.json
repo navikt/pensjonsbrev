@@ -1,0 +1,136 @@
+{
+  "replyTopic": "pensjonsbrev.pdf-bygger-render-success-test-q2",
+  "messageId": "TEST_ID",
+  "brevRequest": {
+  "kode": "UT_UNG_UFOER_20_AAR_AUTO",
+  "language": "BOKMAL",
+  "letterData": {
+    "kravVirkningFraOgMed": [
+      2023,
+      10,
+      9
+    ],
+    "totaltUfoerePerMnd": {
+      "value": 9000
+    },
+    "ektefelle": null,
+    "gjenlevende": {
+      "utbetalt": true
+    },
+    "fellesbarn": {
+      "utbetalt": false,
+      "inntektstak": {
+        "value": 10000
+      },
+      "gjelderFlereBarn": false
+    },
+    "saerkullsbarn": {
+      "utbetalt": true,
+      "inntektstak": {
+        "value": 10000
+      },
+      "gjelderFlereBarn": true
+    },
+    "minsteytelseVedVirkSats": 2.91,
+    "maanedligUfoeretrygdFoerSkatt": {
+      "ufoeretrygdPerioder": [
+        {
+          "annetBelop": {
+            "value": 0
+          },
+          "barnetilleggSaerkullsbarnBrutto": {
+            "value": 3
+          },
+          "barnetilleggSaerkullsbarnNetto": {
+            "value": 4
+          },
+          "barnetilleggFellesbarnBrutto": {
+            "value": 1
+          },
+          "barnetilleggFellesbarnNetto": {
+            "value": 2
+          },
+          "gjenlevendetilleggBrutto": {
+            "value": 10
+          },
+          "gjenlevendetilleggNetto": {
+            "value": 11
+          },
+          "ektefelletilleggBrutto": {
+            "value": 6
+          },
+          "ektefelletilleggNetto": {
+            "value": 7
+          },
+          "dekningFasteUtgifter": {
+            "value": 5
+          },
+          "erAvkortet": true,
+          "garantitilleggNordisk27Brutto": {
+            "value": 8
+          },
+          "garantitilleggNordisk27Netto": {
+            "value": 9
+          },
+          "grunnbeloep": {
+            "value": 12
+          },
+          "ordinaerUTBeloepBrutto": {
+            "value": 13
+          },
+          "ordinaerUTBeloepNetto": {
+            "value": 14
+          },
+          "totalUTBeloepBrutto": {
+            "value": 15
+          },
+          "totalUTBeloepNetto": {
+            "value": 16
+          },
+          "virkningFraOgMed": [
+            2020,
+            1,
+            1
+          ],
+          "virkningTilOgMed": [
+            2020,
+            1,
+            2
+          ]
+        }
+      ]
+    },
+    "orienteringOmRettigheterUfoere": {
+      "sivilstand": "ENSLIG",
+      "bruker_borINorge": true,
+      "harTilleggForFlereBarn": false,
+      "harInnvilgetBarnetilleggFellesBarn": false,
+      "harInnvilgetBarnetilleggSaerkullsbarn": false,
+      "institusjon_gjeldende": "INGEN"
+    }
+  },
+  "felles": {
+    "dokumentDato": [
+      2020,
+      1,
+      1
+    ],
+    "saksnummer": "1337123",
+    "avsenderEnhet": {
+      "nettside": "nav.no",
+      "navn": "Nav Familie- og pensjonsytelser Porsgrunn",
+      "telefonnummer": {
+        "value": "55553334"
+      }
+    },
+    "bruker": {
+      "foedselsnummer": {
+        "value": "01019878910"
+      },
+      "fornavn": "Testerson",
+      "mellomnavn": "\"bruker\"",
+      "etternavn": "Test"
+    },
+    "signerendeSaksbehandlere": null
+  }
+}}
