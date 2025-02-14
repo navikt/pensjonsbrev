@@ -1,7 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val apiModelVersion = 121
+val apiModelVersion = 122
 val apiModelJavaTarget: String by System.getProperties()
 val jupiterVersion: String by project
 

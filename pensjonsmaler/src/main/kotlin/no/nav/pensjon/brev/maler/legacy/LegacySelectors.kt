@@ -589,4 +589,4 @@ fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforres
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskadebegrunnelse(): Expression<String> = vedtaksbrev.vedtaksdata.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().vilkar_safe.yrkesskadebegrunnelse_safe.ifNull("")
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat(): Expression<String> = vedtaksbrev_safe.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().vilkar_safe.yrkesskaderesultat_safe.ifNull("")
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkarvirkningfom(): Expression<LocalDate?> = vedtaksbrev.vedtaksdata_safe.vilkarsvedtaklist_safe.vilkarsvedtak_safe.getOrNull().vilkarvirkningfom_safe
-fun Expression<PE>.vedtaksdata_virkningfom(): Expression<LocalDate?> = vedtaksbrev_safe.vedtaksdata_safe.virkningfom_safe
+fun Expression<PE>.vedtaksdata_virkningfom(): Expression<LocalDate> = vedtaksbrev_safe.vedtaksdata_safe.virkningfom_safe.ifNull(LocalDate.now())
