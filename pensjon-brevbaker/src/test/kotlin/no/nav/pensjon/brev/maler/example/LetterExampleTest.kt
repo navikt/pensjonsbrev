@@ -6,7 +6,6 @@ import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.testBrevbakerApp
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -14,7 +13,7 @@ import org.junit.jupiter.api.Test
 class LetterExampleTest {
 
     @Test
-    fun test() = testBrevbakerApp {
+    fun test() {
         Letter(
             LetterExample.template,
             createLetterExampleDto(),
