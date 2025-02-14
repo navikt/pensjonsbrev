@@ -2,17 +2,24 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 import { isEqual } from "lodash";
 
-import { newItem, newItemList, newLiteral, newParagraph, text } from "~/Brevredigering/LetterEditor/actions/common";
+import {
+  findAdjoiningContent,
+  newItem,
+  newItemList,
+  newLiteral,
+  newParagraph,
+  text,
+} from "~/Brevredigering/LetterEditor/actions/common";
 import type { LiteralIndex } from "~/Brevredigering/LetterEditor/actions/model";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
 import type { Action } from "~/Brevredigering/LetterEditor/lib/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import type { AnyBlock, ItemList, LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
+import type { AnyBlock, ItemList, LiteralValue, ParagraphBlock, TextContent } from "~/types/brevbakerTypes";
 import { LITERAL } from "~/types/brevbakerTypes";
 import { ITEM_LIST } from "~/types/brevbakerTypes";
 import { handleSwitchContent, handleSwitchTextContent, isItemContentIndex } from "~/utils/brevbakerUtils";
 
-import { isLiteral } from "../model/utils";
+import { isItemList, isLiteral, isVariable } from "../model/utils";
 
 export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number, clipboard: DataTransfer]> =
   produce((draft, literalIndex, offset, clipboard) => {
@@ -141,9 +148,7 @@ const insertTextAtStartOfLiteral = (
       return { replaceThisBlockWith, updatedFocus };
     } else {
       const newContent = [...contentBeforeLiteral, newLiteralToBePastedIn, ...contentAfterLiteral];
-      const newThisBlock = newParagraph({
-        content: newContent,
-      });
+      const newThisBlock = newParagraph({ content: newContent });
 
       const replaceThisBlockWith = [newThisBlock];
       const updatedFocus = {
@@ -155,8 +160,6 @@ const insertTextAtStartOfLiteral = (
     }
   } else {
     if (shouldBeItemList) {
-      console.log("returning here");
-
       const traversedElementsAsItemListItems = parsedAndCombinedHtml.flatMap((t) => {
         return t.content.map((c) => newItem({ content: [newLiteral({ text: c })] }));
       });
@@ -183,36 +186,18 @@ const insertTextAtStartOfLiteral = (
 
       return { replaceThisBlockWith, updatedFocus };
     } else {
-      const newBeforeBlock = newParagraph({ content: contentBeforeLiteral });
       const newThisBlock = traversedElementsToBrevbaker(parsedAndCombinedHtml);
-      const newNextBlock = newParagraph({ content: [literalToBePastedInto] });
-      const newContentAfterLiteralBlock = newParagraph({ content: contentAfterLiteral });
+      const newNextBlock = newParagraph({
+        content: [contentBeforeLiteral, literalToBePastedInto, contentAfterLiteral].flat(),
+      });
 
-      const replaceThisBlockWith = [
-        newBeforeBlock.content.length > 0 ? newBeforeBlock : [],
-        ...newThisBlock,
-        newNextBlock,
-        newContentAfterLiteralBlock.content.length > 0 ? newContentAfterLiteralBlock : [],
-      ].flat();
-
+      const replaceThisBlockWith = [...newThisBlock, newNextBlock].flat();
       const newBlockPosition = replaceThisBlockWith.indexOf(newNextBlock);
-      const newContentPosition = Math.max(newNextBlock.content.length - 1, 0);
-
-      const lastEl = newNextBlock.content.at(-1);
-      const newCursorPosition =
-        //TODO - eslint og prettier clasher litt med syntax preferanse. Burde uansett gjøre denne cleanere
-        /* eslint-disable prettier/prettier */
-          (lastEl && lastEl.type === "ITEM_LIST"
-            ? lastEl.items.at(-1)?.content.at(-1)?.text.length
-            : (lastEl && "editedText" in lastEl
-              ? lastEl.editedText?.length
-              : lastEl?.text.length)) ?? 0;
-        /* eslint-enable prettier/prettier */
 
       const updatedFocus = {
         blockIndex: draft.focus.blockIndex + newBlockPosition,
-        contentIndex: newContentPosition,
-        cursorPosition: newCursorPosition,
+        contentIndex: 0,
+        cursorPosition: 0,
       };
 
       return { replaceThisBlockWith, updatedFocus };
@@ -284,7 +269,7 @@ const insertTextInTheMiddleOfLiteral = (
       return { replaceThisBlockWith, updatedFocus };
     } else {
       const newContent = [...contentBeforeLiteral, newLiteralToBePastedIn, ...contentAfterLiteral];
-      const newBlock = newParagraph({ content: [contentBeforeLiteral, newContent, contentAfterLiteral].flat() });
+      const newBlock = newParagraph({ content: newContent });
       const cursorPosition =
         textBeforeOffset +
         (firstCombinedElement.content.length > 1 ? combinedSpanText : ` ${firstCombinedElement.content[0]}`);
@@ -300,7 +285,6 @@ const insertTextInTheMiddleOfLiteral = (
       return { replaceThisBlockWith, updatedFocus };
     }
   } else {
-    const newBeforeBlock = newParagraph({ content: contentBeforeLiteral });
     const mappedToBrevbaker = traversedElementsToBrevbaker(parsedAndCombinedHtml);
     const firstMapped = mappedToBrevbaker[0];
     const restMapped = mappedToBrevbaker.slice(1);
@@ -355,6 +339,7 @@ const insertTextInTheMiddleOfLiteral = (
 
     const newThisBlock = newParagraph({
       content: [
+        contentBeforeLiteral,
         firstMapped.content[0].type === "LITERAL"
           ? [theNewLiteral, ...(firstMapped.content.length > 1 ? firstMapped.content.slice(1) : [])]
           : [
@@ -367,16 +352,11 @@ const insertTextInTheMiddleOfLiteral = (
 
     const newBlocksAfterThisBlock = restMapped;
 
-    const newContentAfterLiteralBlock = newParagraph({ content: contentAfterLiteral });
-    const restAfterBlock = newParagraph({ content: [newLiteral({ text: textAfterOffset })] });
+    const restAfterBlock = newParagraph({
+      content: [newLiteral({ text: textAfterOffset }), contentAfterLiteral].flat(),
+    });
 
-    const replaceThisBlockWith = [
-      newBeforeBlock.content.length > 0 ? newBeforeBlock : [],
-      newThisBlock,
-      ...newBlocksAfterThisBlock,
-      restAfterBlock,
-      newContentAfterLiteralBlock.content.length > 0 ? newContentAfterLiteralBlock : [],
-    ].flat();
+    const replaceThisBlockWith = [newThisBlock, ...newBlocksAfterThisBlock, restAfterBlock].flat();
 
     const newBlockPosition = replaceThisBlockWith.indexOf(restAfterBlock);
     const newContentPosition = Math.max((newBlocksAfterThisBlock.at(-1)?.content?.length ?? 0) - 1, 0);
@@ -438,9 +418,7 @@ const insertTextAtEndOfLiteral = (
     }
 
     const newContent = [...contentBeforeLiteral, newLiteralToBePastedIn, ...contentAfterLiteral];
-    const newThisBlock = newParagraph({
-      content: [contentBeforeLiteral, newContent, contentAfterLiteral].flat(),
-    });
+    const newThisBlock = newParagraph({ content: newContent });
 
     const replaceThisBlockWith = [newThisBlock];
 
@@ -505,6 +483,32 @@ const insertTextAtEndOfLiteral = (
       };
       return { replaceThisBlockWith, updatedFocus };
     }
+    console.log("heheh");
+
+    const textContentIndexes = findAdjoiningContent(
+      literalIndex.contentIndex,
+      thisBlock.content,
+      (v) => isLiteral(v) || isVariable(v),
+    );
+
+    const adjoiningItemListsIndexes = findAdjoiningContent(literalIndex.contentIndex, thisBlock.content, isItemList);
+
+    const allItemsBeforeLiteral = (
+      thisBlock.content.slice(adjoiningItemListsIndexes.startIndex, literalIndex.contentIndex) as ItemList[]
+    ).flatMap((i) => i.items);
+
+    const itemListsAfterLiteral = (
+      thisBlock.content.slice(literalIndex.contentIndex + 1, adjoiningItemListsIndexes.endIndex) as ItemList[]
+    ).flatMap((i) => i.items);
+
+    const textContentsBeforeLiteral = thisBlock.content.slice(
+      textContentIndexes.startIndex,
+      literalIndex.contentIndex,
+    ) as TextContent[];
+    const textContentsAfterLiteral = thisBlock.content.slice(
+      literalIndex.contentIndex + 1,
+      textContentIndexes.endIndex,
+    ) as TextContent[];
 
     const newLiteralContent =
       firstMapped.content[0].type === "LITERAL"
@@ -512,16 +516,23 @@ const insertTextAtEndOfLiteral = (
         : [
             newItemList({
               items: [
+                ...allItemsBeforeLiteral,
                 newItem({
-                  content: [theNewLiteral],
+                  content: [textContentsBeforeLiteral, theNewLiteral, textContentsAfterLiteral].flat(),
                 }),
                 ...(firstMapped.content[0] as ItemList).items.slice(1),
+                ...itemListsAfterLiteral,
               ],
             }),
           ];
 
     const newThisBlock = newParagraph({
-      content: [contentBeforeLiteral, newLiteralContent].flat(),
+      content: [
+        firstMapped.content[0].type === "LITERAL"
+          ? contentBeforeLiteral
+          : thisBlock.content.slice(0, textContentIndexes.startIndex - 1),
+        newLiteralContent,
+      ].flat(),
     });
 
     const newBlocksAfterThisBlock = restMapped;
@@ -553,7 +564,7 @@ const insertTextAtEndOfLiteral = (
 
     const itemContentIndex = lastContent?.type === "ITEM_LIST" ? 0 : undefined;
     const itemIndex = lastContent?.type === "ITEM_LIST" ? lastContent.items.length - 1 : undefined;
-    console.log("first");
+
     const updatedFocus = {
       blockIndex: draft.focus.blockIndex + newBlockPosition,
       contentIndex: newContentPosition,
