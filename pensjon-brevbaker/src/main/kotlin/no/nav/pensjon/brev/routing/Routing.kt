@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.etterlatte.EtterlatteMaler
 
-fun Application.brevRouting(authenticationNames: Array<String>, latexCompilerService: LaTeXCompilerService, brevProvider: AllTemplates) =
+fun Application.brevRouting(authenticationNames: Array<String>?, latexCompilerService: LaTeXCompilerService, brevProvider: AllTemplates) =
     routing {
         val autobrev = TemplateResource("autobrev", brevProvider.hentAutobrevmaler(), latexCompilerService)
         val redigerbareBrev = TemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), latexCompilerService)
@@ -22,7 +22,7 @@ fun Application.brevRouting(authenticationNames: Array<String>, latexCompilerSer
             templateRoutes(redigerbareBrev)
         }
 
-        authenticate(*authenticationNames, optional = application.developmentMode) {
+        authenticate(authenticationNames) {
             route("/letter") {
                 letterRoutes(autobrev, redigerbareBrev)
             }
@@ -49,3 +49,11 @@ fun Application.brevRouting(authenticationNames: Array<String>, latexCompilerSer
 
         swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")
     }
+
+fun Routing.authenticate(names: Array<String>?, build: Route.() -> Unit) {
+    if (names != null) {
+        authenticate(*names, optional = false, build = build)
+    } else {
+        build()
+    }
+}

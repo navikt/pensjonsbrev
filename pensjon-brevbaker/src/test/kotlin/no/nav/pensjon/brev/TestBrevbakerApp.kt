@@ -27,11 +27,12 @@ private fun formaterOgSkrivUtFeil(e: ExceptionInInitializerError, prefiks: Strin
         } \n \n", e.cause
     )
 
+// Brukes av `testBrevbakerApp` gjennom test/resources/application.conf
+@Suppress("unused")
 fun Application.brevbakerTestModule() = this.brevbakerModule(
     templates = object : AllTemplates {
         override fun hentAutobrevmaler() = alleAutobrevmaler
 
         override fun hentRedigerbareMaler() = alleRedigerbareMaler
-    },
-    konfigurerFeatureToggling = { settOppFakeUnleash() }
+    }
 )
