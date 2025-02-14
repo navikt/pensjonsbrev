@@ -155,8 +155,8 @@ const insertTextAtStartOfLiteral = (
     }
   } else {
     if (shouldBeItemList) {
-      const newBeforeBlock = newParagraph({ content: contentBeforeLiteral });
-      const newAfterBlock = newParagraph({ content: contentAfterLiteral });
+      console.log("returning here");
+
       const traversedElementsAsItemListItems = parsedAndCombinedHtml.flatMap((t) => {
         return t.content.map((c) => newItem({ content: [newLiteral({ text: c })] }));
       });
@@ -164,19 +164,15 @@ const insertTextAtStartOfLiteral = (
       const theNewItem = newItem({ content: [literalToBePastedInto] });
       const theNewItemList = newItemList({
         items: [
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemContentIndex),
+          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemIndex),
           ...traversedElementsAsItemListItems,
           theNewItem,
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(literalIndex.itemContentIndex + 1),
+          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(literalIndex.itemIndex + 1),
         ],
       });
       const newThisBlock = newParagraph({ content: [theNewItemList] });
 
-      const replaceThisBlockWith = [
-        newBeforeBlock.content.length > 0 ? newBeforeBlock : [],
-        newThisBlock,
-        newAfterBlock.content.length > 0 ? newAfterBlock : [],
-      ].flat();
+      const replaceThisBlockWith = [contentBeforeLiteral, newThisBlock, contentAfterLiteral].flat();
 
       const updatedFocus = {
         ...draft.focus,
@@ -473,9 +469,6 @@ const insertTextAtEndOfLiteral = (
           });
 
     if (shouldBeItemList) {
-      const newBeforeBlock = newParagraph({ content: contentBeforeLiteral });
-      const newAfterBlock = newParagraph({ content: contentAfterLiteral });
-
       const theNewItem = newItem({ content: [theNewLiteral] });
       const traversedElementsAsItemListItems = parsedAndCombinedHtml
         .flatMap((t) => {
@@ -483,32 +476,33 @@ const insertTextAtEndOfLiteral = (
         })
         .slice(1);
 
-      const theNewItemList = newItemList({
-        items: [
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemContentIndex),
-          theNewItem,
-          ...traversedElementsAsItemListItems,
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(literalIndex.itemContentIndex + 1),
-        ],
-      });
-      const newThisBlock = newParagraph({ content: [theNewItemList] });
+      const itemsBeforeLiteral = (thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(
+        0,
+        literalIndex.itemIndex,
+      );
+      const itemsAfterLiteral = (thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(
+        literalIndex.itemIndex + 1,
+      );
 
-      const replaceThisBlockWith = [
-        newBeforeBlock.content.length > 0 ? newBeforeBlock : [],
-        newThisBlock,
-        newAfterBlock.content.length > 0 ? newAfterBlock : [],
-      ].flat();
+      const theNewItemList = newItemList({
+        items: [...itemsBeforeLiteral, theNewItem, ...traversedElementsAsItemListItems, ...itemsAfterLiteral],
+      });
+
+      const newThisBlock = newParagraph({
+        content: [contentBeforeLiteral, theNewItemList, contentAfterLiteral].flat(),
+      });
+
+      const replaceThisBlockWith = [newThisBlock];
 
       const updatedFocus = {
         ...draft.focus,
         itemContentIndex: 0,
-        itemIndex: Math.max(traversedElementsAsItemListItems.length, 0),
+        itemIndex: literalIndex.itemIndex + Math.max(traversedElementsAsItemListItems.length, 0),
         cursorPosition:
           traversedElementsAsItemListItems.length > 0
             ? traversedElementsAsItemListItems.at(-1)?.content.at(-1)?.text.length
             : theNewLiteral.text.length,
       };
-
       return { replaceThisBlockWith, updatedFocus };
     }
 
@@ -559,9 +553,9 @@ const insertTextAtEndOfLiteral = (
 
     const itemContentIndex = lastContent?.type === "ITEM_LIST" ? 0 : undefined;
     const itemIndex = lastContent?.type === "ITEM_LIST" ? lastContent.items.length - 1 : undefined;
-
+    console.log("first");
     const updatedFocus = {
-      blockIndex: newBlockPosition,
+      blockIndex: draft.focus.blockIndex + newBlockPosition,
       contentIndex: newContentPosition,
       itemContentIndex: itemContentIndex,
       itemIndex: itemIndex,

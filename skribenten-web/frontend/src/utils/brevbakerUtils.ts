@@ -49,4 +49,4 @@ export const handleSwitchTextContent = <T>(args: {
 export const isBlockContentIndex = (f: Focus | LiteralIndex): f is BlockContentIndex => !isItemContentIndex(f);
 
 export const isItemContentIndex = (f: Focus | LiteralIndex): f is ItemContentIndex =>
-  "itemIndex" in f && "itemContentIndex" in f;
+  "itemIndex" in f && f.itemIndex !== undefined && "itemContentIndex" in f && f.itemContentIndex !== undefined;
