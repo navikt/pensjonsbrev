@@ -1,7 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val apiModelVersion: String by project
+val apiModelVersion = 122
 val apiModelJavaTarget: String by System.getProperties()
 val jupiterVersion: String by project
 
@@ -22,7 +22,8 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     api(project(":brevbaker"))
     ksp(project(":template-model-generator"))
-    api(project(":pensjon-brevbaker-api-model"))
+    api("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
+
 
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")

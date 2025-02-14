@@ -10,7 +10,7 @@ spec:
   port: 8080
   terminationGracePeriodSeconds: 60
   service:
-    port: 8080
+    port: 80
     protocol: http
   liveness:
     path: "/isAlive"
@@ -61,3 +61,4 @@ spec:
       value: "/app/tmp"
     - name: PDF_BYGGER_IS_ASYNC
       value: "false"
+  ingresses: [{{#each ingresses as |url|}}{{url}},{{/each}}]

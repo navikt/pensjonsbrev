@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.etterlatte.EtterlatteMaler
 
 fun Application.brevRouting(
-    authenticationNames: Array<String>,
+    authenticationNames: Array<String>?,
     latexCompilerService: LaTeXCompilerService,
     brevProvider: AllTemplates,
     latexAsyncCompilerService: LatexAsyncCompilerService?,
@@ -30,7 +30,7 @@ fun Application.brevRouting(
             templateRoutes(redigerbareBrev)
         }
 
-        authenticate(*authenticationNames, optional = application.developmentMode) {
+        authenticate(authenticationNames) {
             route("/letter") {
                 letterRoutes(autobrev, redigerbareBrev)
                 if(latexAsyncCompilerService != null) {
@@ -67,3 +67,11 @@ fun Application.brevRouting(
 
         swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")
     }
+
+fun Routing.authenticate(names: Array<String>?, build: Route.() -> Unit) {
+    if (names != null) {
+        authenticate(*names, optional = false, build = build)
+    } else {
+        build()
+    }
+}

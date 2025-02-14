@@ -97,6 +97,7 @@ object Fixtures {
             AarligInntektsjusteringVedtakDTO::class -> createOmstillingsstoenadInntektsjusteringVedtakDTO() as T
             OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO::class -> createOmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfallDTO() as T
 
+            //TilbakekrevingBrevDTO::class -> createTilbakekrevingFerdigDTO() as T
             TilbakekrevingBrevDTO::class -> createTilbakekrevingFerdigDTO() as T
             TilbakekrevingRedigerbartBrevDTO::class -> createTilbakekrevingRedigerbartBrevDTO() as T
 

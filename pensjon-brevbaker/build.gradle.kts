@@ -63,6 +63,7 @@ tasks {
     }
 
     task<Test>("integrationTest") {
+        outputs.doNotCacheIf("Output of this task is pdf from pdf-bygger which is not cached") { true }
         systemProperties["junit.jupiter.execution.parallel.enabled"] = true
         systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
         systemProperties["junit.jupiter.execution.parallel.config.strategy"] = "dynamic"

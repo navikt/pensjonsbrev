@@ -8,7 +8,10 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.FeatureToggle
+import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
@@ -117,6 +120,12 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
     pdfFileName: String,
     path: Path = Path.of("build", "test_pdf"),
 ): Letter<ParameterType> {
+    if (!FeatureToggleSingleton.isInitialized) {
+        FeatureToggleSingleton.init(object : FeatureToggleService {
+            override fun isEnabled(toggle: FeatureToggle): Boolean = true
+        })
+    }
+
     Letter2Markup.render(this)
         .let {
             runBlocking {

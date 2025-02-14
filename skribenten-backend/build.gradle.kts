@@ -1,8 +1,8 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val apiModelVersion: String by project
 val exposedVersion: String by project
+val commonVersion: String by project
 val jacksonJsr310Version: String by project
 val javaTarget: String by System.getProperties()
 val jupiterVersion: String by project
@@ -99,7 +99,7 @@ dependencies {
     implementation("io.getunleash:unleash-client-java:10.0.0")
 
     // Domenemodell
-    implementation("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.8.3")
+    implementation("no.nav.pensjon.brevbaker:brevbaker-api-model-common:$commonVersion")
 
     // Logging
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
