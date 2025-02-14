@@ -81,6 +81,17 @@ class BaseTest {
         assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
     }
 
+    @Test
+    fun `isNull returnerer false hvis verdi`() {
+        val expr: Expression<TestEnum?> = TestEnum.MAYBE.expr()
+        assertFalse(expr.isNull().eval(ExpressionScope(2, Fixtures.felles, Language.Nynorsk)))
+    }
+
+    @Test
+    fun `isNull returnerer true hvis ingen verdi`() {
+        val expr: Expression<TestEnum?> = null.expr()
+        assertTrue(expr.isNull().eval(ExpressionScope(2, Fixtures.felles, Language.Nynorsk)))
+    }
 
     @Nested
     inner class EqualTo{

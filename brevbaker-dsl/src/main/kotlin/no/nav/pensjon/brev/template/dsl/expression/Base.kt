@@ -21,6 +21,8 @@ fun <T : Any> Expression<T?>.ifNull(then: T): Expression<T> =
 
 fun <T : Any> Expression<T?>.notNull(): Expression<Boolean> = notEqualTo(null)
 
+fun <T : Any> Expression<T?>.isNull(): Expression<Boolean> = equalTo(null)
+
 fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression<Boolean> = Expression.BinaryInvoke(
     this,
     enums.asList().expr(),
