@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.FeatureToggleHandler
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.maler.hentMuligOverstyrtMal
+import no.nav.pensjon.brev.maler.isEnabled
 import no.nav.pensjon.brev.template.BrevTemplate
 
 class TemplateLibrary<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(templates: Set<T>) {
@@ -15,8 +16,6 @@ class TemplateLibrary<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevd
 
     fun getTemplate(kode: Kode) = getTemplate(kode.kode())
 
-    private fun getTemplate(kode: String) = hentMuligOverstyrtMal(kode) ?: templates[kode]?.takeIf { isEnabled(it) }
-
-    private fun isEnabled(template: T) =
-        template.kode.toggle()?.let { toggle -> FeatureToggleHandler.isEnabled(toggle) } ?: true
+    private fun getTemplate(kode: String) = hentMuligOverstyrtMal(kode) ?: templates[kode]
+        ?.takeIf { isEnabled(it.kode.kode()) }
 }
