@@ -10,7 +10,7 @@ spec:
     pool: {{kafka-pool}}
   image: {{image}}
   port: 8080
-  terminationGracePeriodSeconds: 60
+  terminationGracePeriodSeconds: 150
   service:
     port: 8080
     protocol: http

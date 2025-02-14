@@ -7,11 +7,13 @@ import io.ktor.server.config.*
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.launchIn
 import no.nav.pensjon.brev.pdfbygger.getProperty
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
+import org.slf4j.LoggerFactory
 
 fun Application.kafkaModule(latexCompileService: LatexCompileService) {
     val config = environment.config.config("pdfBygger.kafka")
@@ -33,12 +35,12 @@ fun Application.kafkaModule(latexCompileService: LatexCompileService) {
         retryTopic = config.property("retryTopic").getString(),
     )
 
+    pdfRequestConsumer.start()
     monitor.subscribe(ApplicationStopPreparing) {
+        log.info("Shutting down async worker")
         pdfRequestConsumer.stop()
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    pdfRequestConsumer.flow().launchIn(GlobalScope)
 }
 
 private fun createKafkaConfig(kafkaConfig: ApplicationConfig): Map<String, String> = mapOf(
@@ -55,3 +57,5 @@ private fun createKafkaConfig(kafkaConfig: ApplicationConfig): Map<String, Strin
     "enable.idempotence" to "true",
     "enable.auto.commit" to "false",
 )
+
+private class PdfConsumerShuttingDown() : CancellationException("PDF conumer was stopped because the application is stopping")

@@ -1,8 +1,7 @@
 package no.nav.pensjon.brev.pdfbygger.kafka
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Semaphore
 import no.nav.pensjon.brev.PDFRequestAsync
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
@@ -26,9 +25,8 @@ import kotlin.time.toJavaDuration
 
 // Consumer will be timed out after 5 minutes if no polls occur
 private val FAILURE_RETRY_INTERVAL_SECONDS = 120.seconds.toJavaDuration()
-
-
 private val QUEUE_READ_TIMEOUT = 5.seconds.toJavaDuration()
+private const val SEQUENTIAL_WORK_SIZE = 3
 
 class PdfRequestConsumer(
     private val latexCompileService: LatexCompileService,
@@ -42,6 +40,7 @@ class PdfRequestConsumer(
     private val retryProducers = ConcurrentHashMap<String, KafkaProducer<String, PDFRequestAsync>>()
     private val successProducers = ConcurrentHashMap<String, KafkaProducer<String, PDFCompilationResponse.Base64PDF>>()
     private var shuttingDown = false
+    private lateinit var flow: Flow<RenderRequests>
 
     private val logger = LoggerFactory.getLogger(PdfRequestConsumer::class.java)
 
@@ -49,30 +48,36 @@ class PdfRequestConsumer(
     // TODO housekeeping on repartition and possibly interval
     // TODO should i close producers when repartitioning occurs? It should in theory just be a waste of threads/ a tiny bit of RAM
     private val consumer = KafkaConsumer(
-        properties.plus("max.poll.records" to parallelism * 4),
+        properties.plus("max.poll.records" to parallelism * SEQUENTIAL_WORK_SIZE),
         StringDeserializer(),
         PDFRequestAsyncDeserializer()
     )
 
     private val retryConsumer =
         KafkaConsumer(
-            properties
-                .plus("max.poll.records" to parallelism),
+            properties.plus("max.poll.records" to parallelism),
             StringDeserializer(),
             PDFRequestAsyncDeserializer()
         )
 
-    init {
-        consumer.subscribe(listOf(renderTopic))
-        retryConsumer.subscribe(listOf(retryTopic))
+    private var nextRetryPoll: Instant = Instant.MIN
+
+    fun start() {
+        consumer.subscribe(listOf(renderTopic), PartitonRevokedListener { cleanUpProducers(it) })
+        retryConsumer.subscribe(listOf(retryTopic), PartitonRevokedListener { cleanUpProducers(it) })
+        flow = flow()
+        @OptIn(DelicateCoroutinesApi::class)
+        flow.launchIn(GlobalScope)
     }
 
-    private var nextRetryPoll: Instant = Instant.MIN
+    fun stop() {
+        shuttingDown = true
+    }
 
     fun flow() =
         flow {
-            while (!shuttingDown) {
-                if (Instant.now() > nextRetryPoll && !shuttingDown) {
+            while (true) {
+                if (Instant.now() > nextRetryPoll) {
                     println("Polling message from render retry queue")
                     val retryMessages = pollRenderRetryQueue()
                     if (retryMessages.requests.isEmpty) {
@@ -81,17 +86,17 @@ class PdfRequestConsumer(
                         emit(retryMessages)
                     }
                 }
-                if (!shuttingDown) {
-                    println("Polling message render queue")
-                    emit(pollRenderQueue())
-                }
+                println("Polling message render queue")
+                emit(pollRenderQueue())
             }
+        }.takeWhile {
+            !shuttingDown
         }.onEach { renderRequests ->
             val results = renderLetters(renderRequests)
             if (results.isNotEmpty()) {
                 val (successes, failures) = results.partition { it.pdf != null }
-                val consumedTopic = if (renderRequests.isFromRetryQueue) retryTopic else renderTopic
-                val consumerGroupMetadata = if (renderRequests.isFromRetryQueue) retryConsumer.groupMetadata() else consumer.groupMetadata()
+                val consumedTopic = renderRequests.topic()
+                val consumerGroupMetadata = renderRequests.groupMetadata()
 
                 if (failures.isEmpty()) {
                     produceSuccessesForTopic(successes, consumedTopic, consumerGroupMetadata)
@@ -103,6 +108,12 @@ class PdfRequestConsumer(
                     }
                 }
             }
+        }.onCompletion {
+            logger.info("Closing consumers and producers")
+            consumer.close()
+            retryConsumer.close()
+            retryProducers.forEach { it.value.close() }
+            successProducers.forEach { it.value.close() }
         }
 
     private fun produceSuccessesForTopic(
@@ -232,7 +243,7 @@ class PdfRequestConsumer(
         consumedTopic: String,
         consumedPartition: Int
     ): KafkaProducer<String, PDFRequestAsync> {
-        val transactionId = "$consumedTopic-$consumedPartition"
+        val transactionId = transactionId(consumedTopic, consumedPartition)
         return retryProducers.getOrPut(transactionId) {
             KafkaProducer(
                 properties
@@ -247,7 +258,7 @@ class PdfRequestConsumer(
         consumedTopic: String,
         consumedPartition: Int
     ): KafkaProducer<String, PDFCompilationResponse.Base64PDF> {
-        val transactionId = "$consumedTopic-$consumedPartition"
+        val transactionId = transactionId(consumedTopic, consumedPartition)
         return successProducers.getOrPut(transactionId) {
             KafkaProducer(
                 properties
@@ -258,13 +269,28 @@ class PdfRequestConsumer(
         }
     }
 
+    private fun transactionId(topic: String, partition: Int) = "$topic-$partition"
 
-    fun stop() {
-        shuttingDown = true
-        consumer.close()
-        retryConsumer.close()
-        retryProducers.forEach { (_, producer) -> producer.close() }
+    private fun cleanUpProducers(topicPartition: MutableCollection<TopicPartition>) {
+        topicPartition.forEach {
+            retryProducers[transactionId(it.topic(), it.partition())]?.close()
+            successProducers[transactionId(it.topic(), it.partition())]?.close()
+        }
     }
+
+    private fun RenderRequests.topic() =
+        if (isFromRetryQueue) {
+            retryTopic
+        } else {
+            renderTopic
+        }
+
+    private fun RenderRequests.groupMetadata() =
+        if (isFromRetryQueue) {
+            retryConsumer.groupMetadata()
+        } else {
+            consumer.groupMetadata()
+        }
 }
 
 private class PDFRequestAsyncDeserializer : Deserializer<PDFRequestAsync> {
@@ -300,3 +326,13 @@ private data class RenderResult(
 )
 
 private class QueueCommitFailure(message: String, e: Throwable) : Exception(message, e)
+
+private class PartitonRevokedListener(val onRevoked: (MutableCollection<TopicPartition>) -> Unit) :
+    ConsumerRebalanceListener {
+    override fun onPartitionsRevoked(partitions: MutableCollection<TopicPartition>) {
+        onRevoked(partitions)
+    }
+
+    override fun onPartitionsAssigned(partitions: MutableCollection<TopicPartition>) {}
+
+}
