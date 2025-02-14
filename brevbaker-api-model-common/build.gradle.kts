@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "no.nav.pensjon.brevbaker"
-version = "1.8.2"
+version = "1.8.3"
 
 java {
     withSourcesJar()
