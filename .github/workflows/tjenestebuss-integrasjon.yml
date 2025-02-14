@@ -15,7 +15,9 @@ on:
       - "gradle.properties"
       - "tjenestebuss-integrasjon/**"
       - ".github/workflows/tjenestebuss-integrasjon.yml"
-
+env:
+  JavaDistribution: "temurin"
+  JavaVersion: 21
 jobs:
   build-tjenestebuss-integrasjon:
     name: "Build tjenestebuss-integrasjon backend"
@@ -32,8 +34,8 @@ jobs:
       - uses: "gradle/actions/setup-gradle@v4"
       - uses: "actions/setup-java@v4"
         with:
-          "distribution": "temurin"
-          "java-version": "21"
+          "distribution": ${{ env.JavaDistribution }}
+          "java-version": ${{ env.JavaVersion }}
       - name: "compile and run tests"
         run: |
           ./gradlew :tjenestebuss-integrasjon:build

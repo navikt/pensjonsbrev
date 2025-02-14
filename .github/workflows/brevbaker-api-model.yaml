@@ -14,6 +14,9 @@ on:
       - "pensjon-brevbaker-api-model/**"
       - "brevbaker-api-model-common/**"
       - ".github/workflows/brevbaker-api-model.yaml"
+env:
+  JavaDistribution: "temurin"
+  JavaVersion: 21
 jobs:
   changes:
     runs-on: ubuntu-latest
@@ -42,8 +45,8 @@ jobs:
       - uses: "gradle/actions/setup-gradle@v4"
       - uses: "actions/setup-java@v4"
         with:
-          "distribution": "temurin"
-          "java-version": "21"
+          "distribution": ${{ env.JavaDistribution }}
+          "java-version": ${{ env.JavaVersion }}
       - name: "compile and run tests"
         run: "./gradlew :brevbaker-api-model-common:build"
       - name: "Release maven artifact"
@@ -65,8 +68,8 @@ jobs:
       - uses: "gradle/actions/setup-gradle@v4"
       - uses: "actions/setup-java@v4"
         with:
-          "distribution": "temurin"
-          "java-version": "21"
+          "distribution": ${{ env.JavaDistribution }}
+          "java-version": ${{ env.JavaVersion }}
       - name: "compile and run tests"
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal  
