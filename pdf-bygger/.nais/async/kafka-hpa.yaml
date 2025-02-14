@@ -1,3 +1,4 @@
+#file: noinspection KubernetesUnknownValues
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -9,7 +10,7 @@ spec:
     kind: Deployment
     name: {{app-name}}
   minReplicas: 0
-  maxReplicas: 20
+  maxReplicas: {{maxReplicas}}
   metrics:
     - type: External
       external:
@@ -17,7 +18,6 @@ spec:
           name: kafka_consumergroup_group_lag
           selector:
             matchLabels:
-              # noinspection KubernetesUnknownValues
               group: {{kafka.consumer-group-id}}
         target:
           type: AverageValue
