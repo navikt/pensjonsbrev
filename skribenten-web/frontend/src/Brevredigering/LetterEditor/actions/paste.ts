@@ -84,7 +84,16 @@ const pasteIntoLiteral = (
   offset: number,
   literalToBePastedInto: LiteralValue,
   parsedAndCombinedHtml: TraversedElement[],
-) => {
+): {
+  replaceThisBlockWith: ParagraphBlock[];
+  updatedFocus: {
+    cursorPosition: number;
+    itemContentIndex?: number;
+    itemIndex?: number;
+    blockIndex: number;
+    contentIndex: number;
+  };
+} => {
   const appendingToStartOfLiteral = offset === 0;
   const appendingToMiddleOfLiteral =
     offset > 0 && offset < (literalToBePastedInto.editedText?.length ?? literalToBePastedInto.text.length);
@@ -111,7 +120,16 @@ const insertTextAtStartOfLiteral = (
   thisBlock: Draft<AnyBlock>,
   literalToBePastedInto: LiteralValue,
   parsedAndCombinedHtml: TraversedElement[],
-) => {
+): {
+  replaceThisBlockWith: ParagraphBlock[];
+  updatedFocus: {
+    cursorPosition: number;
+    itemContentIndex?: number;
+    itemIndex?: number;
+    blockIndex: number;
+    contentIndex: number;
+  };
+} => {
   const shouldBeItemList = isItemContentIndex(literalIndex);
   const firstCombinedElement = parsedAndCombinedHtml[0];
   const contentBeforeLiteral = thisBlock.content.slice(0, literalIndex.contentIndex);
@@ -173,9 +191,9 @@ const insertTextAtStartOfLiteral = (
           ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(literalIndex.itemIndex + 1),
         ],
       });
-      const newThisBlock = newParagraph({ content: [theNewItemList] });
+      const newThisBlock = newParagraph({ content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral] });
 
-      const replaceThisBlockWith = [contentBeforeLiteral, newThisBlock, contentAfterLiteral].flat();
+      const replaceThisBlockWith = [newThisBlock];
 
       const updatedFocus = {
         ...draft.focus,
@@ -377,7 +395,16 @@ const insertTextAtEndOfLiteral = (
   thisBlock: Draft<AnyBlock>,
   literalToBePastedInto: LiteralValue,
   parsedAndCombinedHtml: TraversedElement[],
-) => {
+): {
+  replaceThisBlockWith: ParagraphBlock[];
+  updatedFocus: {
+    cursorPosition: number;
+    itemContentIndex?: number;
+    itemIndex?: number;
+    blockIndex: number;
+    contentIndex: number;
+  };
+} => {
   const shouldBeItemList = isItemContentIndex(literalIndex);
   const firstCombinedElement = parsedAndCombinedHtml[0];
   const contentBeforeLiteral = thisBlock.content.slice(0, literalIndex.contentIndex);
@@ -478,13 +505,11 @@ const insertTextAtEndOfLiteral = (
         itemIndex: literalIndex.itemIndex + Math.max(traversedElementsAsItemListItems.length, 0),
         cursorPosition:
           traversedElementsAsItemListItems.length > 0
-            ? traversedElementsAsItemListItems.at(-1)?.content.at(-1)?.text.length
+            ? (traversedElementsAsItemListItems.at(-1)?.content.at(-1)?.text.length ?? 0)
             : theNewLiteral.text.length,
       };
       return { replaceThisBlockWith, updatedFocus };
     }
-    console.log("heheh");
-
     const textContentIndexes = findAdjoiningContent(
       literalIndex.contentIndex,
       thisBlock.content,
