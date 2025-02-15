@@ -530,7 +530,10 @@ const insertTextAtEndOfLiteral = (
       content: [
         firstMapped.content[0].type === "LITERAL"
           ? contentBeforeLiteral
-          : thisBlock.content.slice(0, textContentIndexes.startIndex - 1),
+          : thisBlock.content.slice(
+              0,
+              textContentIndexes.count > 1 ? textContentIndexes.startIndex : adjoiningItemListsIndexes.startIndex,
+            ),
         newLiteralContent,
       ].flat(),
     });
