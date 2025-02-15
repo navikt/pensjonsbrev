@@ -1180,6 +1180,60 @@ describe("LetterEditorActions.paste", () => {
             expect(text(select<LiteralValue>(second, index))).toEqual("1 1Teksten min");
             expect(second.focus).toEqual({ ...index, cursorPosition: 3 });
           });
+          test("complex letter - literals and variables", () => {
+            const idx = { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 };
+            const state = letter(
+              paragraph(
+                literal({ text: "punktliste" }),
+                itemList({
+                  items: [
+                    item(literal({ text: "c1-i0-ic0" }), variable("c1-i0-ic1"), literal({ text: "c1-i0-ic2" })),
+                    item(literal({ text: "c1-i1-ic0" }), variable("c1-i1-ic1"), literal({ text: "c1-i1-ic2" })),
+                    item(literal({ text: "c1-i2-ic0" }), variable("c1-i2-ic1"), literal({ text: "c1-i2-ic2" })),
+                  ],
+                }),
+                literal({ text: "Etter punktliste" }),
+              ),
+              paragraph(literal({ text: "Bare en ny setning" })),
+            );
+            const clipboard = new MockDataTransfer({ "text/html": "<span>Pasta</span>" });
+            const result = Actions.paste(state, idx, 0, clipboard);
+
+            expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("punktliste");
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 0, itemContentIndex: 0 }))).toEqual(
+              "c1-i0-ic0",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 0, itemContentIndex: 1 }))).toEqual(
+              "c1-i0-ic1",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 0, itemContentIndex: 2 }))).toEqual(
+              "c1-i0-ic2",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 1, itemContentIndex: 0 }))).toEqual(
+              "Pastac1-i1-ic0",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 1, itemContentIndex: 1 }))).toEqual(
+              "c1-i1-ic1",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 1, itemContentIndex: 2 }))).toEqual(
+              "c1-i1-ic2",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 2, itemContentIndex: 0 }))).toEqual(
+              "c1-i2-ic0",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 2, itemContentIndex: 1 }))).toEqual(
+              "c1-i2-ic1",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 2, itemContentIndex: 2 }))).toEqual(
+              "c1-i2-ic2",
+            );
+            expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 2 }))).toEqual("Etter punktliste");
+
+            expect(text(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }))).toEqual(
+              "Bare en ny setning",
+            );
+            expect(result.focus).toEqual({ ...idx, cursorPosition: 5 });
+          });
         });
         describe("inserts multiple words", () => {
           test("single paste", () => {
@@ -1228,6 +1282,61 @@ describe("LetterEditorActions.paste", () => {
               "Teksten min",
             );
             expect(second.focus).toEqual({ ...index, itemIndex: 2, itemContentIndex: 0, cursorPosition: 0 });
+          });
+          test("complex letter - literals and variables", () => {
+            const idx = { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 };
+            const state = letter(
+              paragraph(
+                literal({ text: "punktliste" }),
+                itemList({
+                  items: [
+                    item(literal({ text: "c1-i0-ic0" }), variable("c1-i0-ic1"), literal({ text: "c1-i0-ic2" })),
+                    item(literal({ text: "c1-i1-ic0" }), variable("c1-i1-ic1"), literal({ text: "c1-i1-ic2" })),
+                    item(literal({ text: "c1-i2-ic0" }), variable("c1-i2-ic1"), literal({ text: "c1-i2-ic2" })),
+                  ],
+                }),
+                literal({ text: "Etter punktliste" }),
+              ),
+              paragraph(literal({ text: "Bare en ny setning" })),
+            );
+            const clipboard = new MockDataTransfer({ "text/html": "<p>Pasta</p>" });
+            const result = Actions.paste(state, idx, 0, clipboard);
+
+            expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("punktliste");
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 0, itemContentIndex: 0 }))).toEqual(
+              "c1-i0-ic0",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 0, itemContentIndex: 1 }))).toEqual(
+              "c1-i0-ic1",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 0, itemContentIndex: 2 }))).toEqual(
+              "c1-i0-ic2",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 1, itemContentIndex: 0 }))).toEqual("Pasta");
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 2, itemContentIndex: 0 }))).toEqual(
+              "c1-i1-ic0",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 2, itemContentIndex: 1 }))).toEqual(
+              "c1-i1-ic1",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 2, itemContentIndex: 2 }))).toEqual(
+              "c1-i1-ic2",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 3, itemContentIndex: 0 }))).toEqual(
+              "c1-i2-ic0",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 3, itemContentIndex: 1 }))).toEqual(
+              "c1-i2-ic1",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 3, itemContentIndex: 2 }))).toEqual(
+              "c1-i2-ic2",
+            );
+            expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 2 }))).toEqual("Etter punktliste");
+
+            expect(text(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }))).toEqual(
+              "Bare en ny setning",
+            );
+            expect(result.focus).toEqual({ ...idx, itemIndex: 2, itemContentIndex: 0, cursorPosition: 0 });
           });
         });
         describe("inserts multiple paragraphs", () => {
@@ -1291,6 +1400,62 @@ describe("LetterEditorActions.paste", () => {
             );
             expect(second.focus).toEqual({ ...index, itemIndex: 4, itemContentIndex: 0, cursorPosition: 0 });
           });
+          test("complex letter - literals and variables", () => {
+            const idx = { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 };
+            const state = letter(
+              paragraph(
+                literal({ text: "punktliste" }),
+                itemList({
+                  items: [
+                    item(literal({ text: "c1-i0-ic0" }), variable("c1-i0-ic1"), literal({ text: "c1-i0-ic2" })),
+                    item(literal({ text: "c1-i1-ic0" }), variable("c1-i1-ic1"), literal({ text: "c1-i1-ic2" })),
+                    item(literal({ text: "c1-i2-ic0" }), variable("c1-i2-ic1"), literal({ text: "c1-i2-ic2" })),
+                  ],
+                }),
+                literal({ text: "Etter punktliste" }),
+              ),
+              paragraph(literal({ text: "Bare en ny setning" })),
+            );
+            const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
+            const result = Actions.paste(state, idx, 0, clipboard);
+
+            expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("punktliste");
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 0, itemContentIndex: 0 }))).toEqual(
+              "c1-i0-ic0",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 0, itemContentIndex: 1 }))).toEqual(
+              "c1-i0-ic1",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 0, itemContentIndex: 2 }))).toEqual(
+              "c1-i0-ic2",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 1, itemContentIndex: 0 }))).toEqual("1");
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 2, itemContentIndex: 0 }))).toEqual("2");
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 3, itemContentIndex: 0 }))).toEqual(
+              "c1-i1-ic0",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 3, itemContentIndex: 1 }))).toEqual(
+              "c1-i1-ic1",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 3, itemContentIndex: 2 }))).toEqual(
+              "c1-i1-ic2",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 4, itemContentIndex: 0 }))).toEqual(
+              "c1-i2-ic0",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 4, itemContentIndex: 1 }))).toEqual(
+              "c1-i2-ic1",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 4, itemContentIndex: 2 }))).toEqual(
+              "c1-i2-ic2",
+            );
+            expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 2 }))).toEqual("Etter punktliste");
+
+            expect(text(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }))).toEqual(
+              "Bare en ny setning",
+            );
+            expect(result.focus).toEqual({ ...idx, itemIndex: 3, itemContentIndex: 0, cursorPosition: 0 });
+          });
         });
         describe("paragraph + ul", () => {
           test("single paste", () => {
@@ -1349,6 +1514,62 @@ describe("LetterEditorActions.paste", () => {
 
             expect(text(select<LiteralValue>(second, index))).toEqual("Teksten 1 1 min");
             expect(second.focus).toEqual({ ...index, cursorPosition: 11 });
+          });
+          test("complex letter - literals and variables", () => {
+            const idx = { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 1 };
+            const state = letter(
+              paragraph(
+                literal({ text: "punktliste" }),
+                itemList({
+                  items: [
+                    item(variable("c1-i0-ic0"), literal({ text: "c1-i0-ic1" }), variable("c1-i0-ic2")),
+                    item(variable("c1-i1-ic0"), literal({ text: "c1-i1-ic1" }), variable("c1-i1-ic2")),
+                    item(variable("c1-i2-ic0"), literal({ text: "c1-i2-ic1" }), variable("c1-i2-ic2")),
+                  ],
+                }),
+                literal({ text: "Etter punktliste" }),
+              ),
+              paragraph(literal({ text: "Bare en ny setning" })),
+            );
+            const clipboard = new MockDataTransfer({ "text/html": "<span>Pasta</span>" });
+            const result = Actions.paste(state, idx, 4, clipboard);
+
+            console.dir(result.redigertBrev.blocks, { depth: null });
+
+            expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("punktliste");
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 0, itemContentIndex: 0 }))).toEqual(
+              "c1-i0-ic0",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 0, itemContentIndex: 1 }))).toEqual(
+              "c1-i0-ic1",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 0, itemContentIndex: 2 }))).toEqual(
+              "c1-i0-ic2",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 1, itemContentIndex: 0 }))).toEqual(
+              "c1-i1-ic0",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 1, itemContentIndex: 1 }))).toEqual(
+              "c1-i Pasta1-ic1",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 1, itemContentIndex: 2 }))).toEqual(
+              "c1-i1-ic2",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 2, itemContentIndex: 0 }))).toEqual(
+              "c1-i2-ic0",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 2, itemContentIndex: 1 }))).toEqual(
+              "c1-i2-ic1",
+            );
+            expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 2, itemContentIndex: 2 }))).toEqual(
+              "c1-i2-ic2",
+            );
+            expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 2 }))).toEqual("Etter punktliste");
+
+            expect(text(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }))).toEqual(
+              "Bare en ny setning",
+            );
+            expect(result.focus).toEqual({ ...idx, cursorPosition: 10 });
           });
         });
         describe("inserts multiple words", () => {
