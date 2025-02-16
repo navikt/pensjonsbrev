@@ -112,9 +112,9 @@ function insertHtmlClipboardInLetter(
         ...replaceThisBlockWith,
         ...draft.redigertBrev.blocks.slice(literalIndex.blockIndex + 1),
       ];
-      console.log("newBlocks", newBlocks);
       draft.redigertBrev.blocks = newBlocks;
       draft.focus = { ...updatedFocus };
+      draft.isDirty = true;
     },
     onVariable: () => {
       throw new Error("Cannot paste into variable");
@@ -146,6 +146,7 @@ function insertHtmlClipboardInLetter(
           ];
           draft.redigertBrev.blocks = newBlocks;
           draft.focus = { ...updatedFocus };
+          draft.isDirty = true;
         },
         onVariable: () => {
           throw new Error("Cannot paste into variable");
@@ -225,10 +226,8 @@ const insertTextAtStartOfLiteral = (
 
     const newLiteralToBePastedIn = newLiteral({
       ...literalToBePastedInto,
-      id: null,
-      text: combinedSpanText + (literalToBePastedInto.editedText ?? literalToBePastedInto.text),
+      editedText: combinedSpanText + (literalToBePastedInto.editedText ?? literalToBePastedInto.text),
     });
-    const deletedContent = [literalToBePastedInto.id ? [literalToBePastedInto.id] : []].flat();
 
     if (shouldBeItemList) {
       const theNewItem = newItem({
@@ -252,8 +251,8 @@ const insertTextAtStartOfLiteral = (
       });
 
       const theNewParagraph = newParagraph({
+        ...thisBlock,
         content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral],
-        deletedContent: deletedContent,
       });
 
       const replaceThisBlockWith = [theNewParagraph];
@@ -267,7 +266,11 @@ const insertTextAtStartOfLiteral = (
       return { replaceThisBlockWith, updatedFocus };
     } else {
       const newContent = [...contentBeforeLiteral, newLiteralToBePastedIn, ...contentAfterLiteral];
-      const newThisBlock = newParagraph({ content: newContent, deletedContent: deletedContent });
+
+      const newThisBlock = newParagraph({
+        ...thisBlock,
+        content: newContent,
+      });
 
       const replaceThisBlockWith = [newThisBlock];
       const updatedFocus = {
@@ -355,7 +358,8 @@ const insertTextInTheMiddleOfLiteral = (
     const combinedSpanText = firstCombinedElement.content.join(" ");
 
     const newLiteralToBePastedIn = newLiteral({
-      text:
+      ...literalToBePastedInto,
+      editedText:
         textBeforeOffset +
         (firstCombinedElement.content.length > 1 ? combinedSpanText : ` ${firstCombinedElement.content[0]}`) +
         textAfterOffset,
@@ -427,10 +431,13 @@ const insertTextInTheMiddleOfLiteral = (
     const theNewLiteral =
       firstMapped.content[0].type === "LITERAL"
         ? newLiteral({
-            text: textBeforeOffset + (firstMapped.content[0] as LiteralValue).text,
+            ...literalToBePastedInto,
+            editedText: textBeforeOffset + (firstMapped.content[0] as LiteralValue).text,
           })
         : newLiteral({
-            text: textBeforeOffset + (firstMapped.content[0] as ItemList).items[0].content.map((c) => c.text).join(" "),
+            ...literalToBePastedInto,
+            editedText:
+              textBeforeOffset + (firstMapped.content[0] as ItemList).items[0].content.map((c) => c.text).join(" "),
           });
 
     if (shouldBeItemList) {
@@ -540,7 +547,8 @@ const insertTextAtEndOfLiteral = (
   if (firstCombinedElement.tag === "SPAN") {
     const combinedSpanText = firstCombinedElement.content.join(" ");
     const newLiteralToBePastedIn = newLiteral({
-      text: (literalToBePastedInto.editedText ?? literalToBePastedInto.text) + combinedSpanText,
+      ...literalToBePastedInto,
+      editedText: (literalToBePastedInto.editedText ?? literalToBePastedInto.text) + combinedSpanText,
     });
 
     const newCursorPosition = ((literalToBePastedInto.editedText ?? literalToBePastedInto.text) + combinedSpanText)
@@ -895,13 +903,7 @@ const traversedElementsToBrevbaker = (t: TraversedElement[]) =>
 
 const parseAndCombineHTML = (bodyElement: HTMLElement) => {
   const result = [...bodyElement.children].flatMap(traverseElement);
-  // console.log("-----result--------");
-  // console.dir(result, { depth: null });
-  // console.log("-----------------");
   const combined = mergeNeighboringTags(result);
-  // console.log("-----combined--------");
-  // console.dir(combined, { depth: null });
-  // console.log("-----------------");
   return combined;
 };
 
