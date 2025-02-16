@@ -2,6 +2,7 @@ import { expect } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { text } from "~/Brevredigering/LetterEditor/actions/common";
+import type { ParagraphBlock } from "~/types/brevbakerTypes";
 import { ElementTags, type ItemList, type LiteralValue } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, select, variable } from "../utils";
@@ -55,12 +56,14 @@ describe("LetterEditorActions.paste", () => {
         describe("inserts a single word", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(paragraph(literal({ text: "Teksten min" })));
+            const state = letter(paragraph(literal({ id: 1, text: "Teksten min" })));
             const clipboard = new MockDataTransfer({ "text/html": "<span>1</span>" });
             const result = Actions.paste(state, index, 0, clipboard);
 
             expect(text(select<LiteralValue>(result, index))).toEqual("1Teksten min");
             expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 1 });
+
+            expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toEqual([1]);
           });
           test("multiple paste", () => {
             const index = { blockIndex: 0, contentIndex: 0 };
@@ -906,6 +909,7 @@ describe("LetterEditorActions.paste", () => {
             );
             expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 3, cursorPosition: 18 });
           });
+
           test("complex letter - literals and itemlists", () => {
             const idx = { blockIndex: 0, contentIndex: 3 };
             const state = letter(
@@ -957,6 +961,33 @@ describe("LetterEditorActions.paste", () => {
             expect(text(select<LiteralValue>(second, { blockIndex: 1, contentIndex: 0 }))).toEqual("21");
             expect(text(select<LiteralValue>(second, { blockIndex: 2, contentIndex: 0 }))).toEqual("2");
             expect(second.focus).toEqual({ blockIndex: 2, contentIndex: 0, cursorPosition: 1 });
+          });
+          test("complex letter - literals and variables ", () => {
+            const idx = { blockIndex: 0, contentIndex: 4 };
+            const state = letter(
+              paragraph(
+                literal({ text: "Vi har" }),
+                literal({ text: "dato", tags: [ElementTags.FRITEKST] }),
+                literal({ text: "mottat søknaden din om" }),
+                literal({ text: "ytelse", tags: [ElementTags.FRITEKST] }),
+                literal({ text: "fra folketrygden" }),
+              ),
+              paragraph(literal({ text: "Bare en ny setning" })),
+            );
+            const clipboard = new MockDataTransfer({ "text/html": "<div><p>1</p></div><div><p>2</p></div>" });
+            const result = Actions.paste(state, idx, 16, clipboard);
+
+            expect(text(select<LiteralValue>(result, { ...idx, contentIndex: 0 }))).toEqual("Vi har");
+            expect(text(select<LiteralValue>(result, { ...idx, contentIndex: 1 }))).toEqual("dato");
+            expect(text(select<LiteralValue>(result, { ...idx, contentIndex: 2 }))).toEqual("mottat søknaden din om");
+            expect(text(select<LiteralValue>(result, { ...idx, contentIndex: 3 }))).toEqual("ytelse");
+            expect(text(select<LiteralValue>(result, { ...idx, contentIndex: 4 }))).toEqual("fra folketrygden1");
+            expect(text(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }))).toEqual("2");
+
+            expect(text(select<LiteralValue>(result, { blockIndex: 2, contentIndex: 0 }))).toEqual(
+              "Bare en ny setning",
+            );
+            expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 1 });
           });
         });
         describe("inserts ul list", () => {
@@ -1533,8 +1564,6 @@ describe("LetterEditorActions.paste", () => {
             );
             const clipboard = new MockDataTransfer({ "text/html": "<span>Pasta</span>" });
             const result = Actions.paste(state, idx, 4, clipboard);
-
-            console.dir(result.redigertBrev.blocks, { depth: null });
 
             expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("punktliste");
             expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 0, itemContentIndex: 0 }))).toEqual(
