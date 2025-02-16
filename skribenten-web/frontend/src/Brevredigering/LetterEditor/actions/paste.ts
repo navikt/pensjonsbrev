@@ -33,9 +33,9 @@ export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
   });
 
 export function logPastedClipboard(clipboardData: DataTransfer) {
-  log("available paste types - " + JSON.stringify(clipboardData.types));
-  log("pasted html content - " + clipboardData.getData("text/html"));
-  log("pasted plain content - " + clipboardData.getData("text/plain"));
+  // log("available paste types - " + JSON.stringify(clipboardData.types));
+  // log("pasted html content - " + clipboardData.getData("text/html"));
+  // log("pasted plain content - " + clipboardData.getData("text/plain"));
 }
 
 function insertTextInLetter(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, offset: number, str: string) {
@@ -75,6 +75,91 @@ function insertText(
     updateLiteralText(draft, text);
     cursorPositionUpdater(text.length);
   }
+}
+
+function insertHtmlClipboardInLetter(
+  draft: Draft<LetterEditorState>,
+  literalIndex: LiteralIndex,
+  offset: number,
+  clipboard: DataTransfer,
+) {
+  const parser = new DOMParser();
+  const document = parser.parseFromString(clipboard.getData("text/html"), "text/html");
+  const parsedAndCombinedHtml = parseAndCombineHTML(document.body);
+
+  if (parsedAndCombinedHtml.length === 0) {
+    //trenger ikke å lime inn tomt innhold
+    return;
+  }
+
+  const thisBlock = draft.redigertBrev.blocks[literalIndex.blockIndex];
+  const thisContent = thisBlock.content[literalIndex.contentIndex];
+
+  handleSwitchContent({
+    content: thisContent,
+    onLiteral: (literalToBePastedInto) => {
+      const { replaceThisBlockWith, updatedFocus } = pasteIntoLiteral(
+        draft,
+        literalIndex,
+        thisBlock,
+        offset,
+        literalToBePastedInto,
+        parsedAndCombinedHtml,
+      );
+
+      const newBlocks = [
+        ...draft.redigertBrev.blocks.slice(0, literalIndex.blockIndex),
+        ...replaceThisBlockWith,
+        ...draft.redigertBrev.blocks.slice(literalIndex.blockIndex + 1),
+      ];
+      console.log("newBlocks", newBlocks);
+      draft.redigertBrev.blocks = newBlocks;
+      draft.focus = { ...updatedFocus };
+    },
+    onVariable: () => {
+      throw new Error("Cannot paste into variable");
+    },
+    onItemList: (itemList) => {
+      if (!isItemContentIndex(literalIndex)) {
+        return;
+      }
+
+      const item = itemList.items[literalIndex.itemIndex];
+      const itemContent = item.content[literalIndex.itemContentIndex];
+
+      handleSwitchTextContent({
+        content: itemContent,
+        onLiteral: (literalToBePastedInto) => {
+          const { replaceThisBlockWith, updatedFocus } = pasteIntoLiteral(
+            draft,
+            literalIndex,
+            thisBlock,
+            offset,
+            literalToBePastedInto,
+            parsedAndCombinedHtml,
+          );
+
+          const newBlocks = [
+            ...draft.redigertBrev.blocks.slice(0, literalIndex.blockIndex),
+            ...replaceThisBlockWith,
+            ...draft.redigertBrev.blocks.slice(literalIndex.blockIndex + 1),
+          ];
+          draft.redigertBrev.blocks = newBlocks;
+          draft.focus = { ...updatedFocus };
+        },
+        onVariable: () => {
+          throw new Error("Cannot paste into variable");
+        },
+        onNewLine: () => {
+          throw new Error("Cannot paste into newline");
+        },
+      });
+    },
+    onNewLine: () => {
+      //TODO - newLine er en spesiell type content. Skal vi støtte paste inn i newLine?
+      throw new Error("Cannot paste into newline");
+    },
+  });
 }
 
 const pasteIntoLiteral = (
@@ -139,8 +224,11 @@ const insertTextAtStartOfLiteral = (
     const combinedSpanText = firstCombinedElement.content.join(" ");
 
     const newLiteralToBePastedIn = newLiteral({
+      ...literalToBePastedInto,
+      id: null,
       text: combinedSpanText + (literalToBePastedInto.editedText ?? literalToBePastedInto.text),
     });
+    const deletedContent = [literalToBePastedInto.id ? [literalToBePastedInto.id] : []].flat();
 
     if (shouldBeItemList) {
       const theNewItem = newItem({
@@ -165,6 +253,7 @@ const insertTextAtStartOfLiteral = (
 
       const theNewParagraph = newParagraph({
         content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral],
+        deletedContent: deletedContent,
       });
 
       const replaceThisBlockWith = [theNewParagraph];
@@ -178,11 +267,11 @@ const insertTextAtStartOfLiteral = (
       return { replaceThisBlockWith, updatedFocus };
     } else {
       const newContent = [...contentBeforeLiteral, newLiteralToBePastedIn, ...contentAfterLiteral];
-      const newThisBlock = newParagraph({ content: newContent });
+      const newThisBlock = newParagraph({ content: newContent, deletedContent: deletedContent });
 
       const replaceThisBlockWith = [newThisBlock];
       const updatedFocus = {
-        ...draft.focus,
+        ...literalIndex,
         cursorPosition: combinedSpanText.length,
       };
 
@@ -654,105 +743,31 @@ const insertTextAtEndOfLiteral = (
     const itemContentIndex = lastContent?.type === "ITEM_LIST" ? 0 : undefined;
     const itemIndex = lastContent?.type === "ITEM_LIST" ? lastContent.items.length - 1 : undefined;
 
-    const updatedFocus = {
-      blockIndex: draft.focus.blockIndex + newBlockPosition,
-      contentIndex: newContentPosition,
-      itemContentIndex: itemContentIndex,
-      itemIndex: itemIndex,
-      cursorPosition: newCursorPosition,
-    };
+    /*
+    Denne var litt vanskelig å finne ut av, har ikke klart å reprodusere for testene
+    editoren vil sette markøren på feil posisjon dersom man returnerer itemIndex og itemContentIndex som undefined
+    hvis man limer inn 2 p-tags. Siden dem blir satt som undefined, skal det ikke spille noe rolle om 
+    dem kommer med i objektet som undefined, eller om dem ikke kommer med i det hele tatt.
+    Men pga en bug(?) et eller annet sted, må man faktisk fjerne dem fra objektet for at det skal fungere.
+    */
+    const updatedFocus =
+      itemContentIndex !== undefined && itemIndex !== undefined
+        ? {
+            blockIndex: draft.focus.blockIndex + newBlockPosition,
+            contentIndex: newContentPosition,
+            cursorPosition: newCursorPosition,
+            itemContentIndex: itemContentIndex,
+            itemIndex: itemIndex,
+          }
+        : {
+            blockIndex: draft.focus.blockIndex + newBlockPosition,
+            contentIndex: newContentPosition,
+            cursorPosition: newCursorPosition,
+          };
 
     return { replaceThisBlockWith, updatedFocus };
   }
 };
-
-function insertHtmlClipboardInLetter(
-  draft: Draft<LetterEditorState>,
-  literalIndex: LiteralIndex,
-  offset: number,
-  clipboard: DataTransfer,
-) {
-  const parser = new DOMParser();
-  const document = parser.parseFromString(clipboard.getData("text/html"), "text/html");
-  const parsedAndCombinedHtml = parseAndCombineHTML(document.body);
-
-  if (parsedAndCombinedHtml.length === 0) {
-    //trenger ikke å lime inn tomt innhold
-    return;
-  }
-
-  const thisBlock = draft.redigertBrev.blocks[literalIndex.blockIndex];
-  const thisContent = thisBlock.content[literalIndex.contentIndex];
-
-  handleSwitchContent({
-    content: thisContent,
-    onLiteral: (literalToBePastedInto) => {
-      const { replaceThisBlockWith, updatedFocus } = pasteIntoLiteral(
-        draft,
-        literalIndex,
-        thisBlock,
-        offset,
-        literalToBePastedInto,
-        parsedAndCombinedHtml,
-      );
-
-      const newBlocks = [
-        ...draft.redigertBrev.blocks.slice(0, literalIndex.blockIndex),
-        ...replaceThisBlockWith,
-        ...draft.redigertBrev.blocks.slice(literalIndex.blockIndex + 1),
-      ];
-      draft.redigertBrev.blocks = newBlocks;
-      draft.focus = {
-        ...updatedFocus,
-      };
-    },
-    onVariable: () => {
-      throw new Error("Cannot paste into variable");
-    },
-    onItemList: (itemList) => {
-      if (!isItemContentIndex(literalIndex)) {
-        return;
-      }
-
-      const item = itemList.items[literalIndex.itemIndex];
-      const itemContent = item.content[literalIndex.itemContentIndex];
-
-      handleSwitchTextContent({
-        content: itemContent,
-        onLiteral: (literalToBePastedInto) => {
-          const { replaceThisBlockWith, updatedFocus } = pasteIntoLiteral(
-            draft,
-            literalIndex,
-            thisBlock,
-            offset,
-            literalToBePastedInto,
-            parsedAndCombinedHtml,
-          );
-
-          const newBlocks = [
-            ...draft.redigertBrev.blocks.slice(0, literalIndex.blockIndex),
-            ...replaceThisBlockWith,
-            ...draft.redigertBrev.blocks.slice(literalIndex.blockIndex + 1),
-          ];
-          draft.redigertBrev.blocks = newBlocks;
-          draft.focus = {
-            ...updatedFocus,
-          };
-        },
-        onVariable: () => {
-          throw new Error("Cannot paste into variable");
-        },
-        onNewLine: () => {
-          throw new Error("Cannot paste into newline");
-        },
-      });
-    },
-    onNewLine: () => {
-      //TODO - newLine er en spesiell type content. Skal vi støtte paste inn i newLine?
-      throw new Error("Cannot paste into newline");
-    },
-  });
-}
 
 interface TraversedElement {
   tag: "P" | "LI" | "SPAN";
