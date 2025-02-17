@@ -12,8 +12,8 @@ data class EndretUfoeretrygdPGAInntektDto(
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 
-    val gammeltBelop: Int,
-    val nyttBelop: Int,
+    val gammeltBelop: Int?,
+    val nyttBelop: Int?,
     val virkningFom: LocalDate,
     val forventetInntekt: Int?,
     val utbetalingsgrad: Int?,
