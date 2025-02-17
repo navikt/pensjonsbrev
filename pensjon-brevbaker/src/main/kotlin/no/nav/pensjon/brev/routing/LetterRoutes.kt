@@ -1,14 +1,11 @@
 package no.nav.pensjon.brev.routing
 
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.plugins.BadRequestException
+import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.util.*
+import io.ktor.util.AttributeKey
 import no.nav.pensjon.brev.api.TemplateResource
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
-import no.nav.pensjon.brev.api.model.BestillBrevRequestAsync
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.AutobrevTemplate

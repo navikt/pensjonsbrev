@@ -33,7 +33,7 @@ fun Application.brevRouting(
         authenticate(authenticationNames) {
             route("/letter") {
                 letterRoutes(autobrev, redigerbareBrev)
-                if(latexAsyncCompilerService != null) {
+                if (latexAsyncCompilerService != null) {
                     post<BestillBrevRequestAsync<Brevkode.Automatisk>>("/${autobrev.name}/pdfAsync") { brevbestillingAsync ->
                         val brevbestilling = brevbestillingAsync.brevRequest
                         installBrevkodeInCallContext(brevbestilling.kode)
