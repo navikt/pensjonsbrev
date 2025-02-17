@@ -1,5 +1,6 @@
 name: "Build and release pensjon-brevbaker-api-model"
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - "main"
@@ -61,7 +62,7 @@ jobs:
     permissions:
       packages: write
     needs: [ release-common, changes ]
-    if: ${{ always() && (needs.release-common.result == 'success' || needs.release-common.result == 'skipped') }}
+    if: ${{ always() && (needs.release-common.result == 'success' || needs.release-common.result == 'skipped' || github.event_name == 'workflow_dispatch') }}
     steps:
       - uses: "actions/checkout@v4"
       - uses: "gradle/actions/wrapper-validation@v4"
@@ -79,5 +80,10 @@ jobs:
       - name: "Release maven artifact"
         if:  ${{ github.ref == 'refs/heads/main' && needs.changes.outputs.pensjonsbrev == 'true' }}
         run: "./gradlew :pensjon-brevbaker-api-model:publish"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: "Release maven manually"
+        if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'
+        run: ./gradlew -Pversion="$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)" :pensjon-brevbaker-api-model:publish
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
