@@ -97,7 +97,7 @@ object EndretUfoeretrygdPGAInntekt : AutobrevTemplate<EndretUfoeretrygdPGAInntek
         )
     ) {
         val virkningFomErForsteDagIAaret = virkningFom.month.equalTo(1) and virkningFom.day.equalTo(1)
-        val endretUT = gammeltBelop.notEqualTo(nyttBelop)
+        val endretUT = gammeltBelop.ifNull(0).notEqualTo(nyttBelop.ifNull(0))
         val endretBT = gammeltBelopBTFB.notEqualTo(nyttBelopBTFB) or gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)
         val endretBTFB = gammeltBelopBTFB.notEqualTo(nyttBelopBTFB)
         val endretBTSB = gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)
@@ -493,15 +493,15 @@ object EndretUfoeretrygdPGAInntekt : AutobrevTemplate<EndretUfoeretrygdPGAInntek
 
                     paragraph {
                         ifNotNull(forventetInntekt) { forventetInntekt ->
-                            showIf(nyttBelop.greaterThan(0)) {
+                            showIf(nyttBelop.ifNull(0).greaterThan(0)) {
                                 showIf(forventetInntekt.greaterThan(avkortningInntektsgrense)) {
-                                    showIf(gammeltBelop.greaterThan(nyttBelop)) {
+                                    showIf(gammeltBelop.ifNull(0).greaterThan(nyttBelop.ifNull(0))) {
                                         text(
                                             Bokmal to "Uføretrygden din reduseres fordi du tjener over inntektsgrensen din. Selv om du får en reduksjon lønner det seg likevel å jobbe ved siden av uføretrygden. ",
                                             Nynorsk to "Uføretrygda di blir redusert fordi du tener over inntektsgrensa di. Sjølv om du får ein reduksjon, lønner det seg likevel å jobbe ved sida av uføretrygda. ",
                                         )
                                     }
-                                    showIf(utbetalingsgrad.equalTo(uforegrad) and gammeltBelop.lessThan(nyttBelop)) {
+                                    showIf(utbetalingsgrad.equalTo(uforegrad) and gammeltBelop.ifNull(0).lessThan(nyttBelop.ifNull(0))) {
                                         text(
                                             Bokmal to "Endringen i inntekten din gjør at uføretrygden ikke lenger er redusert. ",
                                             Nynorsk to "Endringa i inntekta di gjer at uføretrygda ikkje lenger er redusert. ",
@@ -540,7 +540,7 @@ object EndretUfoeretrygdPGAInntekt : AutobrevTemplate<EndretUfoeretrygdPGAInntek
                 }
 
                 ifNotNull( avkortningsbelopPerAr, forventetInntekt) { avkortningsbelopPerAr, forventetInntekt ->
-                    showIf(forventetInntekt.greaterThan(avkortningInntektsgrense) and nyttBelop.greaterThan(0)) {
+                    showIf(forventetInntekt.greaterThan(avkortningInntektsgrense) and nyttBelop.ifNull(0).greaterThan(0)) {
                         paragraph {
                             showIf(virkningFomErForsteDagIAaret) {
                                 textExpr(
@@ -558,7 +558,7 @@ object EndretUfoeretrygdPGAInntekt : AutobrevTemplate<EndretUfoeretrygdPGAInntek
                 }
 
                 ifNotNull( forventetInntekt) { forventetInntekt ->
-                    showIf(forventetInntekt.greaterThan(avkortningInntektstak) and nyttBelop.equalTo(0)) {
+                    showIf(forventetInntekt.greaterThan(avkortningInntektstak) and nyttBelop.ifNull(0).equalTo(0)) {
                         showIf(avkortningInntektsgrense.notEqualTo(avkortningInntektstak)) {
                             paragraph {
                                 textExpr(
@@ -972,7 +972,7 @@ object EndretUfoeretrygdPGAInntekt : AutobrevTemplate<EndretUfoeretrygdPGAInntek
                 }
 
             }.orShowIf(innvilgetBTSB or innvilgetBTFB) {
-                showIf(not(innvilgetGJT) and not(innvilgetET) and gammeltBelop.notEqualTo(nyttBelop)) {
+                showIf(not(innvilgetGJT) and not(innvilgetET) and gammeltBelop.ifNull(0).notEqualTo(nyttBelop.ifNull(0))) {
                     paragraph {
                         showIf(regelverktypeBT.equalTo("overgangsregler_2016")) {
                             text(
@@ -1036,7 +1036,7 @@ object EndretUfoeretrygdPGAInntekt : AutobrevTemplate<EndretUfoeretrygdPGAInntek
                 }
             }
 
-            showIf(endretUT and nyttBelop.greaterThan(0)) {
+            showIf(endretUT and nyttBelop.ifNull(0).greaterThan(0)) {
                 title1 {
                     text (
                         Bokmal to "Hva får du i uføretrygd framover?",
