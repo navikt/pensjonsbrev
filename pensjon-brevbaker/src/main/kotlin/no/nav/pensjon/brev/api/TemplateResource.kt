@@ -8,6 +8,7 @@ import no.nav.brev.brevbaker.BrevbakerPDF
 import no.nav.pensjon.brev.Metrics
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
+import no.nav.pensjon.brev.api.model.BrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -20,7 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 private val objectMapper = jacksonObjectMapper()
 
-abstract class AbstractTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
+abstract class AbstractTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>, Request : BrevRequest<Kode> >(
     val name: String,
     templates: Set<T>,
     laTeXCompilerService: LaTeXCompilerService
@@ -30,9 +31,9 @@ abstract class AbstractTemplateResource<Kode : Brevkode<Kode>, out T : BrevTempl
     fun listTemplatesWithMetadata() = templateLibrary.listTemplatesWithMetadata()
     fun listTemplatekeys() = templateLibrary.listTemplatekeys()
     fun getTemplate(kode: Kode) = templateLibrary.getTemplate(kode)
-    abstract suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse
+    abstract suspend fun renderPDF(brevbestilling: Request): LetterResponse
 
-    abstract fun renderHTML(brevbestilling: BestillBrevRequest<Kode>): LetterResponse
+    abstract fun renderHTML(brevbestilling: Request): LetterResponse
     fun countLetter(brevkode: Kode): Unit =
         Metrics.prometheusRegistry.counter(
             "pensjon_brevbaker_letter_request_count",
@@ -67,7 +68,7 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
     name: String,
     templates: Set<T>,
     laTeXCompilerService: LaTeXCompilerService,
-) : AbstractTemplateResource<Kode, T>(name, templates, laTeXCompilerService) {
+) : AbstractTemplateResource<Kode, T, BestillBrevRequest<Kode>>(name, templates, laTeXCompilerService) {
 
     override suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
