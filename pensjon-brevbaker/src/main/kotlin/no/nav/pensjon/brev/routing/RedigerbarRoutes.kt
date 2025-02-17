@@ -4,7 +4,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
-import no.nav.pensjon.brev.api.TemplateResource
+import no.nav.pensjon.brev.api.AutobrevTemplateResource
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 
 
 fun Route.redigerbarRoutes(
-    redigerbareBrev: TemplateResource<Brevkode.Redigerbart, RedigerbarTemplate<*>>,
+    redigerbareBrev: AutobrevTemplateResource<Brevkode.Redigerbart, RedigerbarTemplate<*>>,
 ) {
     route("/${redigerbareBrev.name}") {
         post<BestillBrevRequest<Brevkode.Redigerbart>>("/markup") { brevbestilling ->

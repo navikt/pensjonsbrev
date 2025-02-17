@@ -16,7 +16,7 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
     name: String,
     templates: Set<T>,
     laTeXCompilerService: LaTeXCompilerService,
-) : AbstractTemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>(name, templates, laTeXCompilerService) {
+) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>(name, templates, laTeXCompilerService) {
 
     fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         createLetter(brevbestilling.kode, brevbestilling.letterData, brevbestilling.language, brevbestilling.felles)

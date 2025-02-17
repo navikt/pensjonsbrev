@@ -21,7 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 private val objectMapper = jacksonObjectMapper()
 
-abstract class AbstractTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>, Request : BrevRequest<Kode> >(
+abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>, Request : BrevRequest<Kode> >(
     val name: String,
     templates: Set<T>,
     laTeXCompilerService: LaTeXCompilerService
@@ -64,11 +64,11 @@ abstract class AbstractTemplateResource<Kode : Brevkode<Kode>, out T : BrevTempl
         }
 }
 
-class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
+class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
     name: String,
     templates: Set<T>,
     laTeXCompilerService: LaTeXCompilerService,
-) : AbstractTemplateResource<Kode, T, BestillBrevRequest<Kode>>(name, templates, laTeXCompilerService) {
+) : TemplateResource<Kode, T, BestillBrevRequest<Kode>>(name, templates, laTeXCompilerService) {
 
     override suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
