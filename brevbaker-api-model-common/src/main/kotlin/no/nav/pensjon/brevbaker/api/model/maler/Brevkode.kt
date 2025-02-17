@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.api.model.maler
 
-import no.nav.pensjon.brev.api.model.FeatureToggle
-
 interface Brevkode<T: Brevkode<T>> {
 
     interface Automatisk : Brevkode<Automatisk>
@@ -9,8 +7,6 @@ interface Brevkode<T: Brevkode<T>> {
     interface Redigerbart : Brevkode<Redigerbart>
 
     fun kode(): String
-
-    fun toggle(): FeatureToggle? = null
 }
 
 @JvmInline

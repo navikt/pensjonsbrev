@@ -20,6 +20,6 @@ object FeatureToggleSingleton {
 
 }
 
-data class ToggleImpl(val name: String) : FeatureToggle, StableHash by StableHash.of("Toggle: $name") {
-    override fun key() = name
+data class FeatureToggle(val name: String) : StableHash by StableHash.of("Toggle: $name") {
+    fun key(): String = name
 }
