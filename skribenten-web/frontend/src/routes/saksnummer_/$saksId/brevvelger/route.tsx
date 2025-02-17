@@ -382,13 +382,7 @@ const BrevmalButton = (props: {
     >
       <HStack justify={"space-between"}>
         {props.title}
-        {props.description && (
-          <BodyShort 
-            size="small"
-          >
-            {props.description}
-          </BodyShort>
-        )}
+        {props.description && <BodyShort size="small">{props.description}</BodyShort>}
       </HStack>
     </Button>
   );
