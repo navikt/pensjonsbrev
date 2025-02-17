@@ -10,12 +10,13 @@ import io.ktor.server.routing.*
 import no.nav.pensjon.brev.api.AutobrevTemplateResource
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.brev.brevbaker.AllTemplates
+import no.nav.pensjon.brev.api.RedigerbarTemplateResource
 import no.nav.pensjon.etterlatte.EtterlatteMaler
 
 fun Application.brevRouting(authenticationNames: Array<String>?, latexCompilerService: LaTeXCompilerService, brevProvider: AllTemplates) =
     routing {
         val autobrev = AutobrevTemplateResource("autobrev", brevProvider.hentAutobrevmaler(), latexCompilerService)
-        val redigerbareBrev = AutobrevTemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), latexCompilerService)
+        val redigerbareBrev = RedigerbarTemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), latexCompilerService)
 
         route("/templates") {
             templateRoutes(autobrev)
