@@ -15,6 +15,7 @@ import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTOSelectors.datoVedtakOmgjoering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTOSelectors.tidligereFamiliepleier
 import java.time.LocalDate
@@ -24,6 +25,7 @@ data class OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO(
     val utbetalingsbeloep: Kroner,
     val etterbetaling: Boolean,
     val tidligereFamiliepleier: Boolean = false,
+    val datoVedtakOmgjoering: LocalDate? = null,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -50,6 +52,19 @@ object OmstillingsstoenadInnvilgelseRedigerbartUtfall : EtterlatteTemplate<Omsti
             )
         }
         outline {
+
+            ifNotNull(datoVedtakOmgjoering) {
+                paragraph {
+                    text(
+                        Bokmal to
+                            "<Fritekst / tekst fra tekstbiblioteket \"omgjøring etter klage\">",
+                        Nynorsk to
+                            "<Fritekst / tekst fra tekstbiblioteket \"omgjøring etter klage\">",
+                        English to
+                            "<Fritekst / tekst fra tekstbiblioteket \"omgjøring etter klage\">",)
+                }
+            }
+
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(
                 OmstillingsstoenadInnvilgelseFraser.BegrunnelseForVedtaketRedigerbart(etterbetaling, tidligereFamiliepleier),
