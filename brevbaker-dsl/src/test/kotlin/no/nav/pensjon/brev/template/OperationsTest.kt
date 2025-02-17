@@ -86,7 +86,7 @@ class OperationsTest {
 
         @Test
         fun `enabled gir true viss funksjonen returnerer true`() {
-            val toggle = object : FeatureToggle { override fun key() = "t1" }
+            val toggle = FeatureToggle("t1")
             FeatureToggleSingleton.init(object : FeatureToggleService { override fun isEnabled(toggle: FeatureToggle) = true })
             val expr = toggle.expr().enabled()
             assertEquals(expr.eval(scope), true)
@@ -94,7 +94,7 @@ class OperationsTest {
 
         @Test
         fun `enabled gir false viss funksjonen returnerer false`() {
-            val toggle = object : FeatureToggle { override fun key() = "t2" }
+            val toggle = FeatureToggle("t2")
             FeatureToggleSingleton.init(object : FeatureToggleService { override fun isEnabled(toggle: FeatureToggle) = false })
             val expr = toggle.expr().enabled()
             assertEquals(expr.eval(scope), false)

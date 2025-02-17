@@ -62,6 +62,9 @@ kotlin {
     }
 }
 tasks {
+    kotlin {
+        jvmToolchain(apiModelJavaTarget.toInt())
+    }
     compileJava {
         targetCompatibility = apiModelJavaTarget
     }

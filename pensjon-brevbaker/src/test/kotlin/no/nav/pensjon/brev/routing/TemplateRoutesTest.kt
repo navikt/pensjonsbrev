@@ -4,16 +4,14 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
+import no.nav.pensjon.brev.FeatureToggleHandler
 import no.nav.pensjon.brev.alleAutobrevmaler
 import no.nav.pensjon.brev.alleRedigerbareMaler
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.FeatureToggles
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.deaktiverToggle
 import no.nav.pensjon.brev.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
 import no.nav.pensjon.brev.maler.OmsorgEgenAuto
 import no.nav.pensjon.brev.maler.redigerbar.InformasjonOmSaksbehandlingstid
-import no.nav.pensjon.brev.settOppFakeUnleash
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.render.TemplateDocumentation
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
@@ -117,9 +115,10 @@ class TemplateRoutesTest {
 
     @Test
     fun `filtrerer bort deaktiverte maler`() = testBrevbakerApp { client ->
-        settOppFakeUnleash()
-        deaktiverToggle(FeatureToggles.brevMedFritekst)
-        deaktiverToggle(FeatureToggles.brevmal_ut_avslag)
+        FeatureToggleHandler.configure {
+            useFakeUnleash = true
+            fakeUnleashEnableAll = false
+        }
         val response = client.get("/templates/redigerbar?includeMetadata=true")
         assertEquals(HttpStatusCode.OK, response.status)
         val body = response.body<List<LinkedHashMap<*,*>>>()
