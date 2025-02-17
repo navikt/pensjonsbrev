@@ -231,6 +231,10 @@ const insertTextAtStartOfLiteral = (
 
     if (shouldBeItemList) {
       const theNewItem = newItem({
+        id:
+          thisBlock.content[literalIndex.contentIndex].type === ITEM_LIST
+            ? (thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].id
+            : undefined,
         content: [
           ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
             0,
@@ -243,6 +247,10 @@ const insertTextAtStartOfLiteral = (
         ],
       });
       const theNewItemList = newItemList({
+        id:
+          thisBlock.content[literalIndex.contentIndex].type === ITEM_LIST
+            ? thisBlock.content[literalIndex.contentIndex].id
+            : undefined,
         items: [
           ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemIndex),
           theNewItem,
@@ -263,6 +271,7 @@ const insertTextAtStartOfLiteral = (
         itemContentIndex: literalIndex.itemContentIndex,
         itemIndex: literalIndex.itemIndex,
       };
+
       return { replaceThisBlockWith, updatedFocus };
     } else {
       const newContent = [...contentBeforeLiteral, newLiteralToBePastedIn, ...contentAfterLiteral];
@@ -385,6 +394,10 @@ const insertTextInTheMiddleOfLiteral = (
         ],
       });
       const theNewItemList = newItemList({
+        id:
+          thisBlock.content[literalIndex.contentIndex].type === ITEM_LIST
+            ? thisBlock.content[literalIndex.contentIndex].id
+            : undefined,
         items: [
           ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemIndex),
           theNewItem,
@@ -393,7 +406,10 @@ const insertTextInTheMiddleOfLiteral = (
         ],
       });
 
-      const newThisBlock = newParagraph({ content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral] });
+      const newThisBlock = newParagraph({
+        ...thisBlock,
+        content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral],
+      });
 
       const replaceThisBlockWith = [newThisBlock];
       const cursorPosition =
@@ -409,7 +425,7 @@ const insertTextInTheMiddleOfLiteral = (
       return { replaceThisBlockWith, updatedFocus };
     } else {
       const newContent = [...contentBeforeLiteral, newLiteralToBePastedIn, ...contentAfterLiteral];
-      const newBlock = newParagraph({ content: newContent });
+      const newBlock = newParagraph({ ...thisBlock, content: newContent });
       const cursorPosition =
         textBeforeOffset +
         (firstCombinedElement.content.length > 1 ? combinedSpanText : ` ${firstCombinedElement.content[0]}`);
