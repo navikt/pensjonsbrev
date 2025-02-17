@@ -24,7 +24,7 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
 
     override suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
-            brevbakerPDF.lagPDF(createLetter(kode, letterData, language, felles), letterMarkup)
+            brevbakerPDF.renderPDF(createLetter(kode, letterData, language, felles), letterMarkup)
         }
 
     override fun renderHTML(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =

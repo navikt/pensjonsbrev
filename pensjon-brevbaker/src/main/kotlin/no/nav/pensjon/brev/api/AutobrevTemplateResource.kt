@@ -18,7 +18,7 @@ class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brevb
 
     override suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
-            brevbakerPDF.lagPDF(createLetter(kode, letterData, language, felles))
+            brevbakerPDF.renderPDF(createLetter(kode, letterData, language, felles))
         }
 
     override fun renderHTML(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
