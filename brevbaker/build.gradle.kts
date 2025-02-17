@@ -26,6 +26,7 @@ dependencies {
     api(project(":brevbaker-dsl"))
     ksp(project(":template-model-generator"))
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.12.0")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 
     testImplementation(kotlin("test"))
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
