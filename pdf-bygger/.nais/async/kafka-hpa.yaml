@@ -9,7 +9,7 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{app-name}}
-  minReplicas: 0
+  minReplicas: 1
   maxReplicas: {{maxReplicas}}
   metrics:
     - type: External
