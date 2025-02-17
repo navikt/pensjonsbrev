@@ -14,6 +14,7 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.io.IOException
+import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.template.jacksonObjectMapper
@@ -27,7 +28,7 @@ class LatexCompileException(msg: String, cause: Throwable? = null) : Exception(m
 class LatexTimeoutException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 class LatexInvalidException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 
-class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 30, private val timeout: Duration = 300.seconds) {
+class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 30, private val timeout: Duration = 300.seconds) : PDFByggerService {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val objectmapper = jacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
@@ -91,7 +92,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
         }
     }
 
-    suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput =
+    override suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput =
         withTimeoutOrNull(timeout) {
             httpClient.post("$pdfByggerUrl/produserBrev") {
                 contentType(ContentType.Application.Json)
