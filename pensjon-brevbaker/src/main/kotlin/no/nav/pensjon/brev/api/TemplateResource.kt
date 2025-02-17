@@ -24,14 +24,18 @@ abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brev
     templates: Set<T>,
     laTeXCompilerService: LaTeXCompilerService,
 ) {
-    protected val brevbaker = Brevbaker(laTeXCompilerService)
-    private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
-    fun listTemplatesWithMetadata() = templateLibrary.listTemplatesWithMetadata()
-    fun listTemplatekeys() = templateLibrary.listTemplatekeys()
-    fun getTemplate(kode: Kode) = templateLibrary.getTemplate(kode)
     abstract suspend fun renderPDF(brevbestilling: Request): LetterResponse
 
     abstract fun renderHTML(brevbestilling: Request): LetterResponse
+
+    protected val brevbaker = Brevbaker(laTeXCompilerService)
+    private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
+
+    fun listTemplatesWithMetadata() = templateLibrary.listTemplatesWithMetadata()
+    fun listTemplatekeys() = templateLibrary.listTemplatekeys()
+
+    fun getTemplate(kode: Kode) = templateLibrary.getTemplate(kode)
+
     fun countLetter(brevkode: Kode): Unit =
         Metrics.prometheusRegistry.counter(
             "pensjon_brevbaker_letter_request_count",
