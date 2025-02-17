@@ -63,8 +63,8 @@ class PdfRequestConsumer(
     private var nextRetryPoll: Instant = Instant.MIN
 
     fun start() {
-        consumer.subscribe(listOf(renderTopic), PartitonRevokedListener { cleanUpProducers(it) })
-        retryConsumer.subscribe(listOf(retryTopic), PartitonRevokedListener { cleanUpProducers(it) })
+        consumer.subscribe(listOf(renderTopic))
+        retryConsumer.subscribe(listOf(retryTopic))
         flow = flow()
         @OptIn(DelicateCoroutinesApi::class)
         flow.launchIn(GlobalScope)
@@ -327,13 +327,3 @@ private data class RenderResult(
 )
 
 private class QueueCommitFailure(message: String, e: Throwable) : Exception(message, e)
-
-private class PartitonRevokedListener(val onRevoked: (MutableCollection<TopicPartition>) -> Unit) :
-    ConsumerRebalanceListener {
-    override fun onPartitionsRevoked(partitions: MutableCollection<TopicPartition>) {
-        onRevoked(partitions)
-    }
-
-    override fun onPartitionsAssigned(partitions: MutableCollection<TopicPartition>) {}
-
-}
