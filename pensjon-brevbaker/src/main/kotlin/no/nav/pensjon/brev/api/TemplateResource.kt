@@ -20,22 +20,56 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 private val objectMapper = jacksonObjectMapper()
 
-class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
+abstract class AbstractTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
     val name: String,
     templates: Set<T>,
-    laTeXCompilerService: LaTeXCompilerService,
+    laTeXCompilerService: LaTeXCompilerService
 ) {
-    private val brevbakerPDF = BrevbakerPDF(laTeXCompilerService)
-
+    protected val brevbakerPDF = BrevbakerPDF(laTeXCompilerService)
     private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
-
     fun listTemplatesWithMetadata() = templateLibrary.listTemplatesWithMetadata()
-
     fun listTemplatekeys() = templateLibrary.listTemplatekeys()
-
     fun getTemplate(kode: Kode) = templateLibrary.getTemplate(kode)
+    abstract suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse
 
-    suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
+    abstract fun renderHTML(brevbestilling: BestillBrevRequest<Kode>): LetterResponse
+    fun countLetter(brevkode: Kode): Unit =
+        Metrics.prometheusRegistry.counter(
+            "pensjon_brevbaker_letter_request_count",
+            listOf(Tag.of("brevkode", brevkode.kode()))
+        ).increment()
+
+    protected fun createLetter(brevkode: Kode, brevdata: BrevbakerBrevdata, spraak: LanguageCode, felles: Felles): Letter<BrevbakerBrevdata> {
+        val template = getTemplate(brevkode)?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
+
+        val language = spraak.toLanguage()
+        if (!template.language.supports(language)) {
+            throw BadRequestException("Template '${brevkode}' doesn't support language: ${template.language}")
+        }
+
+        return Letter(
+            template = template,
+            argument = parseArgument(brevdata, template),
+            language = language,
+            felles = felles,
+        )
+    }
+
+    private fun parseArgument(letterData: BrevbakerBrevdata, template: LetterTemplate<*, BrevbakerBrevdata>): BrevbakerBrevdata =
+        try {
+            objectMapper.convertValue(letterData, template.letterDataType.java)
+        } catch (e: IllegalArgumentException) {
+            throw ParseLetterDataException("Could not deserialize letterData: ${e.message}", e)
+        }
+}
+
+class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
+    name: String,
+    templates: Set<T>,
+    laTeXCompilerService: LaTeXCompilerService,
+) : AbstractTemplateResource<Kode, T>(name, templates, laTeXCompilerService) {
+
+    override suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
             brevbakerPDF.lagPDF(createLetter(kode, letterData, language, felles))
         }
@@ -45,7 +79,7 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
             brevbakerPDF.lagPDF(createLetter(kode, letterData, language, felles), letterMarkup)
         }
 
-    fun renderHTML(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
+    override fun renderHTML(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
             BrevbakerHTML.renderHTML(createLetter(kode, letterData, language, felles))
         }
@@ -63,34 +97,4 @@ class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrev
     fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         createLetter(brevbestilling.kode, brevbestilling.letterData, brevbestilling.language, brevbestilling.felles)
             .let { Letter2Markup.renderLetterOnly(it.toScope(), it.template) }
-
-    fun countLetter(brevkode: Kode): Unit =
-        Metrics.prometheusRegistry.counter(
-            "pensjon_brevbaker_letter_request_count",
-            listOf(Tag.of("brevkode", brevkode.kode()))
-        ).increment()
-
-    private fun createLetter(brevkode: Kode, brevdata: BrevbakerBrevdata, spraak: LanguageCode, felles: Felles): Letter<BrevbakerBrevdata> {
-        val template = getTemplate(brevkode)?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
-
-        val language = spraak.toLanguage()
-        if (!template.language.supports(language)) {
-            throw BadRequestException("Template '${brevkode}' doesn't support language: ${template.language}")
-        }
-
-        return Letter(
-            template = template,
-            argument = parseArgument(brevdata, template),
-            language = language,
-            felles = felles,
-        )
-    }
-
-
-    private fun parseArgument(letterData: BrevbakerBrevdata, template: LetterTemplate<*, BrevbakerBrevdata>): BrevbakerBrevdata =
-        try {
-            objectMapper.convertValue(letterData, template.letterDataType.java)
-        } catch (e: IllegalArgumentException) {
-            throw ParseLetterDataException("Could not deserialize letterData: ${e.message}", e)
-        }
 }
