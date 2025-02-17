@@ -452,13 +452,13 @@ const insertTextInTheMiddleOfLiteral = (
     const theNewLiteral =
       firstMapped.content[0].type === "LITERAL"
         ? newLiteral({
-            ...literalToBePastedInto,
             editedText: textBeforeOffset + (firstMapped.content[0] as LiteralValue).text,
+            text: textBeforeOffset + (firstMapped.content[0] as LiteralValue).text,
           })
         : newLiteral({
-            ...literalToBePastedInto,
             editedText:
               textBeforeOffset + (firstMapped.content[0] as ItemList).items[0].content.map((c) => c.text).join(" "),
+            text: textBeforeOffset + (firstMapped.content[0] as ItemList).items[0].content.map((c) => c.text).join(" "),
           });
 
     if (shouldBeItemList) {
@@ -511,6 +511,7 @@ const insertTextInTheMiddleOfLiteral = (
     }
 
     const newThisBlock = newParagraph({
+      id: thisBlock.id,
       content: [
         contentBeforeLiteral,
         firstMapped.content[0].type === "LITERAL"
@@ -521,6 +522,7 @@ const insertTextInTheMiddleOfLiteral = (
               }),
             ],
       ].flat(),
+      deletedContent: [literalToBePastedInto.id ? [literalToBePastedInto.id] : []].flat(),
     });
 
     const newBlocksAfterThisBlock = restMapped;
