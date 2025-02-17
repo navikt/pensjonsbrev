@@ -136,4 +136,5 @@ fun createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() =
         utbetalingsbeloep = Kroner(12345),
         etterbetaling = true,
         tidligereFamiliepleier = false,
+        datoVedtakOmgjoering = null,
     )
