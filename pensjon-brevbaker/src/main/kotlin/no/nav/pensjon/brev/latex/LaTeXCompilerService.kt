@@ -14,6 +14,7 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.io.IOException
+import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import org.slf4j.LoggerFactory
@@ -21,8 +22,6 @@ import kotlin.math.pow
 import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
-
-data class PDFCompilationOutput(val base64PDF: String)
 
 class LatexCompileException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 class LatexTimeoutException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
