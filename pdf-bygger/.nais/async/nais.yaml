@@ -25,7 +25,9 @@ spec:
     initialDelay: 20
     timeout: 5
   replicas:
-    disableAutoScaling: true
+    min: 1
+    max: {{maxReplicas}}
+    cpuThresholdPercentage: 50
   observability:
     autoInstrumentation:
       enabled: true
