@@ -331,6 +331,7 @@ const insertTextAtStartOfLiteral = (
     } else {
       const newThisBlock = traversedElementsToBrevbaker(parsedAndCombinedHtml);
       const newNextBlock = newParagraph({
+        ...thisBlock,
         content: [contentBeforeLiteral, literalToBePastedInto, contentAfterLiteral].flat(),
       });
 
@@ -382,6 +383,10 @@ const insertTextInTheMiddleOfLiteral = (
         .slice(1);
 
       const theNewItem = newItem({
+        id:
+          thisBlock.content[literalIndex.contentIndex].type === ITEM_LIST
+            ? (thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].id
+            : undefined,
         content: [
           ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
             0,
