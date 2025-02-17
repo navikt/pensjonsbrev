@@ -245,7 +245,7 @@ jobs:
         env:
           "ENVIRONMENT": "dev-gcp:pdf-bygger-async-q2"
           "CLUSTER": "dev-gcp"
-          "RESOURCE": "pdf-bygger/.nais/async/nais.yaml,pdf-bygger/.nais/async/topic-q2.yaml,pdf-bygger/.nais/async/retry-topic-q2.yaml,pdf-bygger/.nais/async/kafka-hpa.yaml"
+          "RESOURCE": "pdf-bygger/.nais/async/nais.yaml,pdf-bygger/.nais/async/topic-q2.yaml,pdf-bygger/.nais/async/retry-topic-q2.yaml"
           "VAR": image=${{ needs.build-pdfbygger.outputs.image }}
           "VARS": "pdf-bygger/.nais/async/dev-q2.yaml"
   "deployBrevbakerToProduction":
