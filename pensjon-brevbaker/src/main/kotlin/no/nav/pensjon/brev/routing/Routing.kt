@@ -24,14 +24,12 @@ fun Application.brevRouting(authenticationNames: Array<String>?, latexCompilerSe
 
         authenticate(authenticationNames) {
             route("/letter") {
-                letterRoutes(autobrev, redigerbareBrev)
+                autobrevRoutes(autobrev)
+                redigerbarRoutes(redigerbareBrev)
             }
 
             route("etterlatte") {
-                letterRoutes(
-                    autobrev = TemplateResource("", EtterlatteMaler.hentAutobrevmaler(), latexCompilerService),
-                    redigerbareBrev = TemplateResource("ikke-i-bruk", EtterlatteMaler.hentRedigerbareMaler(), latexCompilerService)
-                )
+                autobrevRoutes(TemplateResource("", EtterlatteMaler.hentAutobrevmaler(), latexCompilerService))
             }
             get("/ping_authorized") {
                 val principal = call.authentication.principal<JWTPrincipal>()
