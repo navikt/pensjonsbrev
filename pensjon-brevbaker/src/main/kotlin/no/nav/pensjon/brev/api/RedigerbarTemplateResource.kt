@@ -23,11 +23,11 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
 
     override suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
-            brevbaker.renderPDF(createLetter(kode, letterData, language, felles), letterMarkup)
+            brevbaker.renderRedigertBrevPDF(createLetter(kode, letterData, language, felles), letterMarkup)
         }
 
     override fun renderHTML(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
-            brevbaker.renderHTML(createLetter(kode, letterData, language, felles), letterMarkup)
+            brevbaker.renderRedigertBrevHTML(createLetter(kode, letterData, language, felles), letterMarkup)
         }
 }
