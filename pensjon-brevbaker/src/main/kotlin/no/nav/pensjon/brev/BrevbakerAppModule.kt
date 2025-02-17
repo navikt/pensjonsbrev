@@ -25,7 +25,6 @@ import no.nav.pensjon.brev.template.brevbakerConfig
 
 fun Application.brevbakerModule(
     templates: AllTemplates,
-    konfigurerFeatureToggling: (ApplicationConfig) -> Unit = { konfigurerUnleash(it) },
     brukAsyncProducer: Boolean = true
 ) {
     val brevbakerConfig = environment.config.config("brevbaker")
@@ -104,12 +103,16 @@ fun Application.brevbakerModule(
         register(ContentType.Application.Pdf, LetterResponseFileConverter)
     }
 
-    val jwtConfigs = listOf(JwtConfig.requireAzureADConfig(brevbakerConfig.config("azureAD")))
-    install(Authentication) {
-        jwtConfigs.forEach {
-            brevbakerJwt(it)
+    val jwtConfigs = if (!developmentMode) {
+        val configs = listOf(JwtConfig.requireAzureADConfig(brevbakerConfig.config("azureAD")))
+        install(Authentication) {
+            configs.forEach {
+                brevbakerJwt(it)
+            }
         }
-    }
+        configs
+    } else null
+
 
     val latexCompilerService = LaTeXCompilerService(
         pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
@@ -120,21 +123,24 @@ fun Application.brevbakerModule(
         LatexAsyncCompilerService(brevbakerConfig.config("kafka"))
     } else null
 
-    konfigurerFeatureToggling(brevbakerConfig)
+    konfigurerUnleash(brevbakerConfig)
 
     configureMetrics()
-    brevRouting(jwtConfigs.map { it.name }.toTypedArray(), latexCompilerService, templates, latexAsyncCompilerService)
+    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerService, templates, latexAsyncCompilerService)
 }
 
 private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
-    FeatureToggleHandler.configure {
-        with(brevbakerConfig.config("unleash")) {
+    with(brevbakerConfig.config("unleash")) {
+        FeatureToggleHandler.configure {
+            useFakeUnleash = booleanProperty("useFakeUnleash")
+            fakeUnleashEnableAll = booleanProperty("fakeUnleashEnableAll")
             appName = stringProperty("appName")
             environment = stringProperty("environment")
-            this@configure.host = stringProperty("host")
+            host = stringProperty("host")
             apiToken = stringProperty("apiToken")
         }
     }
 }
 
-private fun ApplicationConfig.stringProperty(path: String): String = this.property(path).getString()
+private fun ApplicationConfig.booleanProperty(path: String, default: Boolean = false): Boolean = propertyOrNull(path)?.toString()?.toBoolean() ?: default
+private fun ApplicationConfig.stringProperty(path: String): String? = propertyOrNull(path)?.getString()
