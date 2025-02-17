@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.api
 
-import no.nav.brev.brevbaker.BrevbakerHTML
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -24,11 +23,11 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
 
     override suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
-            brevbakerPDF.renderPDF(createLetter(kode, letterData, language, felles), letterMarkup)
+            brevbaker.renderPDF(createLetter(kode, letterData, language, felles), letterMarkup)
         }
 
     override fun renderHTML(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
-            BrevbakerHTML.renderHTML(createLetter(kode, letterData, language, felles), letterMarkup)
+            brevbaker.renderHTML(createLetter(kode, letterData, language, felles), letterMarkup)
         }
 }

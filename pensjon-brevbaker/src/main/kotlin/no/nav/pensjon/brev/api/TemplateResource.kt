@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.api
 import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.NotFoundException
 import io.micrometer.core.instrument.Tag
-import no.nav.brev.brevbaker.BrevbakerPDF
+import no.nav.brev.brevbaker.Brevbaker
 import no.nav.pensjon.brev.Metrics
 import no.nav.pensjon.brev.api.model.BrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -24,7 +24,7 @@ abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brev
     templates: Set<T>,
     laTeXCompilerService: LaTeXCompilerService,
 ) {
-    protected val brevbakerPDF = BrevbakerPDF(laTeXCompilerService)
+    protected val brevbaker = Brevbaker(laTeXCompilerService)
     private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
     fun listTemplatesWithMetadata() = templateLibrary.listTemplatesWithMetadata()
     fun listTemplatekeys() = templateLibrary.listTemplatekeys()

@@ -14,7 +14,7 @@ import java.util.Base64
 
 private val base64Decoder = Base64.getDecoder()
 
-class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
+internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev)
             .let { pdfByggerService.producePDF(

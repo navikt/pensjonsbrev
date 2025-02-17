@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.render.LetterWithAttachmentsMarkup
 import no.nav.pensjon.brev.template.toScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
-object BrevbakerHTML {
+internal object BrevbakerHTML {
     fun renderHTML(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev)
             .let { HTMLDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
