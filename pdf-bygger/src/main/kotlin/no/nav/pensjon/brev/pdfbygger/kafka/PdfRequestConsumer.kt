@@ -48,7 +48,7 @@ class PdfRequestConsumer(
     // TODO housekeeping on repartition and possibly interval
     // TODO should i close producers when repartitioning occurs? It should in theory just be a waste of threads/ a tiny bit of RAM
     private val consumer = KafkaConsumer(
-        properties.plus("max.poll.records" to parallelism * SEQUENTIAL_WORK_SIZE),
+        properties.plus("max.poll.records" to parallelism),
         StringDeserializer(),
         PDFRequestAsyncDeserializer()
     )
@@ -107,6 +107,7 @@ class PdfRequestConsumer(
                         sendToRetryOrSuccessQueue(results, consumerGroupMetadata)
                     }
                 }
+                logger.info("Produced ${successes.size} successes and ${failures.size} failures")
             }
         }.onCompletion {
             logger.info("Closing consumers and producers")

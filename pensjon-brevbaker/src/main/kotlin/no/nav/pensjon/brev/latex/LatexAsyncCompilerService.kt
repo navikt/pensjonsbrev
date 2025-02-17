@@ -45,5 +45,4 @@ private fun createKafkaConfig(kafkaConfig: ApplicationConfig): Map<String, Strin
     "ssl.truststore.type" to "JKS",
     "ssl.truststore.location" to kafkaConfig.property("ssl.truststore.location").getString(),
     "ssl.truststore.password" to kafkaConfig.property("ssl.truststore.password").getString(),
-    "group.id" to "pdf-bygger-async",
 )

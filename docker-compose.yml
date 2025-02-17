@@ -20,6 +20,7 @@ services:
       - PDF_BYGGER_IS_ASYNC=true
       - KAFKA_PDF_RENDER_TOPIC=pensjonsbrev.pdf-bygger-render-q2
       - KAFKA_PDF_RENDER_RETRY_TOPIC=pensjonsbrev.pdf-bygger-render-retry-q2
+      - KAFKA_CONSUMER_GROUP_ID=pdf-bygger-async-q2
     ports:
       - "8085:8080"
       - "5019:5019"
