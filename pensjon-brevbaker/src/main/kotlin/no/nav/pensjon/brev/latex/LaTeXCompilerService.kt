@@ -92,9 +92,9 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
         }
     }
 
-    override suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput =
+    override suspend fun producePDF(pdfRequest: PDFRequest, url: String): PDFCompilationOutput =
         withTimeoutOrNull(timeout) {
-            httpClient.post("$pdfByggerUrl/produserBrev") {
+            httpClient.post("$pdfByggerUrl/$url") {
                 contentType(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
                 //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client

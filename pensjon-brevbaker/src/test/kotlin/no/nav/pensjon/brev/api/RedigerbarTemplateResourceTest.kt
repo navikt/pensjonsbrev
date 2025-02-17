@@ -23,7 +23,7 @@ class RedigerbarTemplateResourceTest {
     private val pdfInnhold = "generert redigerbar pdf"
     private val base64PDF = Base64.getEncoder().encodeToString(pdfInnhold.toByteArray())
     private val latexMock = mockk<LaTeXCompilerService> {
-        coEvery { producePDF(any()) } returns PDFCompilationOutput(base64PDF)
+        coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(base64PDF)
     }
     private val redigerbar = RedigerbarTemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), latexMock)
 

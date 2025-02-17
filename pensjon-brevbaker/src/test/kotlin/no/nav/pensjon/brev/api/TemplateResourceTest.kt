@@ -7,6 +7,8 @@ import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.Fixtures
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
+import no.nav.pensjon.brev.api.model.FeatureToggle
+import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
@@ -15,6 +17,7 @@ import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.maler.example.Testmaler
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.util.*
@@ -23,7 +26,7 @@ class TemplateResourceTest {
     private val pdfInnhold = "generert pdf"
     private val base64PDF = Base64.getEncoder().encodeToString(pdfInnhold.toByteArray())
     private val latexMock = mockk<LaTeXCompilerService> {
-        coEvery { producePDF(any()) } returns PDFCompilationOutput(base64PDF)
+        coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(base64PDF)
     }
     private val autobrev = AutobrevTemplateResource("autobrev", Testmaler.hentAutobrevmaler(), latexMock)
 
@@ -33,6 +36,15 @@ class TemplateResourceTest {
         Fixtures.fellesAuto,
         LanguageCode.BOKMAL
     )
+
+    @BeforeEach
+    fun setup() {
+        FeatureToggleSingleton.init(
+            object : FeatureToggleService {
+                override fun isEnabled(toggle: FeatureToggle) = true
+            }
+        )
+    }
 
     @Test
     fun `can renderPDF with valid letterData`(): Unit = runBlocking {
