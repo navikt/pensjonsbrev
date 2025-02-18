@@ -4,7 +4,7 @@ import { BodyShort, Button, HStack, VStack } from "@navikt/ds-react";
 const BekreftAvbrytelse = (properties: { onBekreftAvbryt: () => void; onIkkeAvbryt: () => void }) => {
   return (
     <VStack gap="5">
-      <BodyShort size="small">
+      <BodyShort size="medium">
         Infoen du har skrevet inn blir ikke lagret. Du kan ikke angre denne handlingen.{" "}
       </BodyShort>
       <HStack
