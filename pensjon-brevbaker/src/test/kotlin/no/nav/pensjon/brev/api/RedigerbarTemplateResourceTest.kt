@@ -5,6 +5,7 @@ import com.natpryce.hamkrest.containsSubstring
 import io.mockk.coEvery
 import io.mockk.mockk
 import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
@@ -13,7 +14,6 @@ import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.Testmaler
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import org.junit.jupiter.api.Test
@@ -54,7 +54,7 @@ class RedigerbarTemplateResourceTest {
     @Test
     fun `renderHTML redigertBrev uses letterMarkup from argument and includes attachments`() {
         val result = String(redigerbar.renderHTML(validRedigertBrevRequest).file)
-        val anAttachmentTitle = Letter2Markup.renderAttachmentsOnly(
+        val anAttachmentTitle = LetterTestRenderer.renderAttachmentsOnly(
             validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
             EksempelbrevRedigerbart.template
         ).first().title.joinToString { it.text }

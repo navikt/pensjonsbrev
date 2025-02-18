@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template
 
-abstract class LetterRenderer<R : Any> {
+internal abstract class LetterRenderer<R : Any> {
 
     fun render(letter: Letter<*>): R = renderLetter(letter.toScope(), letter.template)
 
