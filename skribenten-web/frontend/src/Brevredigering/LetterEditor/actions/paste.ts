@@ -842,11 +842,6 @@ interface TraversedElement {
   content: (TraversedElement | string)[];
 }
 
-/**
- * noen fun facts om det returnerte arrayet (baserer seg på hva jeg har sett fra innlimt html innhold fra word):
- * - Dersom første elementet i arrayet er en span, vil hele arrayet inneholde kun spans. Disse kan da slås sammen til en enkelt string
- * - LI elementer sin content inneholder kun ren tekst, og ikke andre elementer
- */
 const traverseElement = (el: Element): TraversedElement[] | TraversedElement => {
   switch (el.tagName) {
     case "LI": {
