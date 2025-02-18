@@ -200,6 +200,90 @@ const pasteIntoLiteral = (
   }
 };
 
+const insertSpanElementsIntoStartOfLiteral = (
+  draft: Draft<LetterEditorState>,
+  literalIndex: LiteralIndex,
+  thisBlock: Draft<AnyBlock>,
+  literalToBePastedInto: LiteralValue,
+  traversedElement: TraversedElement,
+) => {
+  const shouldBeItemList = isItemContentIndex(literalIndex);
+  const contentBeforeLiteral = thisBlock.content.slice(0, literalIndex.contentIndex);
+  const contentAfterLiteral = thisBlock.content.slice(literalIndex.contentIndex + 1);
+
+  if (traversedElement.tag !== "SPAN") {
+    throw new Error("Expected traversed element to be a span element to insert at the start of literal");
+  }
+
+  const combinedSpanText = traversedElement.content.join(" ");
+
+  const newLiteralToBePastedIn = newLiteral({
+    ...literalToBePastedInto,
+    editedText: combinedSpanText + (literalToBePastedInto.editedText ?? literalToBePastedInto.text),
+  });
+
+  if (shouldBeItemList) {
+    const theNewItem = newItem({
+      id:
+        thisBlock.content[literalIndex.contentIndex].type === ITEM_LIST
+          ? (thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].id
+          : undefined,
+      content: [
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
+          0,
+          literalIndex.itemContentIndex,
+        ),
+        newLiteralToBePastedIn,
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
+          literalIndex.itemContentIndex + 1,
+        ),
+      ],
+    });
+    const theNewItemList = newItemList({
+      id:
+        thisBlock.content[literalIndex.contentIndex].type === ITEM_LIST
+          ? thisBlock.content[literalIndex.contentIndex].id
+          : undefined,
+      items: [
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemIndex),
+        theNewItem,
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(literalIndex.itemIndex + 1),
+      ],
+    });
+
+    const theNewParagraph = newParagraph({
+      ...thisBlock,
+      content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral],
+    });
+
+    const replaceThisBlockWith = [theNewParagraph];
+
+    const updatedFocus = {
+      ...literalIndex,
+      cursorPosition: combinedSpanText.length,
+      itemContentIndex: literalIndex.itemContentIndex,
+      itemIndex: literalIndex.itemIndex,
+    };
+
+    return { replaceThisBlockWith, updatedFocus };
+  } else {
+    const newContent = [...contentBeforeLiteral, newLiteralToBePastedIn, ...contentAfterLiteral];
+
+    const newThisBlock = newParagraph({
+      ...thisBlock,
+      content: newContent,
+    });
+
+    const replaceThisBlockWith = [newThisBlock];
+    const updatedFocus = {
+      ...literalIndex,
+      cursorPosition: combinedSpanText.length,
+    };
+
+    return { replaceThisBlockWith, updatedFocus };
+  }
+};
+
 const insertTextAtStartOfLiteral = (
   draft: Draft<LetterEditorState>,
   literalIndex: LiteralIndex,
@@ -222,77 +306,18 @@ const insertTextAtStartOfLiteral = (
   const contentAfterLiteral = thisBlock.content.slice(literalIndex.contentIndex + 1);
 
   if (firstCombinedElement.tag === "SPAN") {
-    const combinedSpanText = firstCombinedElement.content.join(" ");
-
-    const newLiteralToBePastedIn = newLiteral({
-      ...literalToBePastedInto,
-      editedText: combinedSpanText + (literalToBePastedInto.editedText ?? literalToBePastedInto.text),
-    });
-
-    if (shouldBeItemList) {
-      const theNewItem = newItem({
-        id:
-          thisBlock.content[literalIndex.contentIndex].type === ITEM_LIST
-            ? (thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].id
-            : undefined,
-        content: [
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
-            0,
-            literalIndex.itemContentIndex,
-          ),
-          newLiteralToBePastedIn,
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
-            literalIndex.itemContentIndex + 1,
-          ),
-        ],
-      });
-      const theNewItemList = newItemList({
-        id:
-          thisBlock.content[literalIndex.contentIndex].type === ITEM_LIST
-            ? thisBlock.content[literalIndex.contentIndex].id
-            : undefined,
-        items: [
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemIndex),
-          theNewItem,
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(literalIndex.itemIndex + 1),
-        ],
-      });
-
-      const theNewParagraph = newParagraph({
-        ...thisBlock,
-        content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral],
-      });
-
-      const replaceThisBlockWith = [theNewParagraph];
-
-      const updatedFocus = {
-        ...literalIndex,
-        cursorPosition: combinedSpanText.length,
-        itemContentIndex: literalIndex.itemContentIndex,
-        itemIndex: literalIndex.itemIndex,
-      };
-
-      return { replaceThisBlockWith, updatedFocus };
-    } else {
-      const newContent = [...contentBeforeLiteral, newLiteralToBePastedIn, ...contentAfterLiteral];
-
-      const newThisBlock = newParagraph({
-        ...thisBlock,
-        content: newContent,
-      });
-
-      const replaceThisBlockWith = [newThisBlock];
-      const updatedFocus = {
-        ...literalIndex,
-        cursorPosition: combinedSpanText.length,
-      };
-
-      return { replaceThisBlockWith, updatedFocus };
-    }
+    return insertSpanElementsIntoStartOfLiteral(
+      draft,
+      literalIndex,
+      thisBlock,
+      literalToBePastedInto,
+      firstCombinedElement,
+    );
   } else {
     if (shouldBeItemList) {
       const traversedElementsAsItemListItems = parsedAndCombinedHtml.flatMap((t) => {
-        return t.content.map((c) => newItem({ content: [newLiteral({ text: c })] }));
+        //
+        return t.content.map((c) => newItem({ content: [newLiteral({ text: c as string })] }));
       });
 
       const theNewItem = newItem({
@@ -378,7 +403,7 @@ const insertTextInTheMiddleOfLiteral = (
     if (shouldBeItemList) {
       const traversedElementsAsItemListItems = parsedAndCombinedHtml
         .flatMap((t) => {
-          return t.content.map((c) => newItem({ content: [newLiteral({ text: c })] }));
+          return t.content.map((c) => newItem({ content: [newLiteral({ text: c as string })] }));
         })
         .slice(1);
 
@@ -473,7 +498,7 @@ const insertTextInTheMiddleOfLiteral = (
       });
       const traversedElementsAsItemListItems = parsedAndCombinedHtml
         .flatMap((t) => {
-          return t.content.map((c) => newItem({ content: [newLiteral({ text: c })] }));
+          return t.content.map((c) => newItem({ content: [newLiteral({ text: c as string })] }));
         })
         .slice(1);
 
@@ -666,7 +691,7 @@ const insertTextAtEndOfLiteral = (
       });
       const traversedElementsAsItemListItems = parsedAndCombinedHtml
         .flatMap((t) => {
-          return t.content.map((c) => newItem({ content: [newLiteral({ text: c })] }));
+          return t.content.map((c) => newItem({ content: [newLiteral({ text: c as string })] }));
         })
         .slice(1);
 
@@ -817,6 +842,11 @@ interface TraversedElement {
   content: (TraversedElement | string)[];
 }
 
+/**
+ * noen fun facts om det returnerte arrayet (baserer seg på hva jeg har sett fra innlimt html innhold fra word):
+ * - Dersom første elementet i arrayet er en span, vil hele arrayet inneholde kun spans. Disse kan da slås sammen til en enkelt string
+ * - LI elementer sin content inneholder kun ren tekst, og ikke andre elementer
+ */
 const traverseElement = (el: Element): TraversedElement[] | TraversedElement => {
   switch (el.tagName) {
     case "LI": {
@@ -943,5 +973,6 @@ const parseAndCombineHTML = (bodyElement: HTMLElement) => {
 };
 
 function log(message: string) {
+  // eslint-disable-next-line no-console
   console.log("Skribenten:pasteHandler: " + message);
 }
