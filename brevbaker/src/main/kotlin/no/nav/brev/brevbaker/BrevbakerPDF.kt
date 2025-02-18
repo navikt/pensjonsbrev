@@ -1,6 +1,5 @@
 package no.nav.brev.brevbaker
 
-import io.ktor.http.ContentType
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
@@ -29,7 +28,7 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
             .let { pdf ->
                 LetterResponse(
                     file = base64Decoder.decode(pdf.base64PDF),
-                    contentType = ContentType.Application.Pdf.toString(),
+                    contentType = ContentTypes.PDF,
                     letterMetadata = letter.template.letterMetadata
                 )
             }

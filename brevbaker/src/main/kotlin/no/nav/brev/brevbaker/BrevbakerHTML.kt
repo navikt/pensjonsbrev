@@ -1,7 +1,5 @@
 package no.nav.brev.brevbaker
 
-import io.ktor.http.ContentType
-import io.ktor.http.withCharset
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.Letter
@@ -18,7 +16,7 @@ internal object BrevbakerHTML {
             .let { html ->
                 LetterResponse(
                     file = html.indexHTML.content.toByteArray(Charsets.UTF_8),
-                    contentType = ContentType.Text.Html.withCharset(Charsets.UTF_8).toString(),
+                    contentType = ContentTypes.TEXT_HTML_UTF8,
                     letterMetadata = letter.template.letterMetadata,
                 )
             }
