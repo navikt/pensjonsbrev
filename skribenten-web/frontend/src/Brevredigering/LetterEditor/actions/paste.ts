@@ -522,7 +522,10 @@ const insertTextInTheMiddleOfLiteral = (
               }),
             ],
       ].flat(),
-      deletedContent: [literalToBePastedInto.id ? [literalToBePastedInto.id] : []].flat(),
+      deletedContent: [
+        literalToBePastedInto.id ? [literalToBePastedInto.id] : [],
+        contentAfterLiteral.map((c) => c.id).filter((i) => i !== null),
+      ].flat(),
     });
 
     const newBlocksAfterThisBlock = restMapped;
