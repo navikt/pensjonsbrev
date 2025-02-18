@@ -512,8 +512,8 @@ describe("LetterEditorActions.paste", () => {
             const clipboard = new MockDataTransfer({ "text/html": "<span>1</span>" });
             const result = Actions.paste(state, index, 7, clipboard);
 
-            expect(text(select<LiteralValue>(result, index))).toEqual("Teksten 1 min");
-            expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 9 });
+            expect(text(select<LiteralValue>(result, index))).toEqual("Teksten1 min");
+            expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 8 });
 
             expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).id).toEqual(10);
             expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toEqual([]);
@@ -527,8 +527,8 @@ describe("LetterEditorActions.paste", () => {
             const first = Actions.paste(state, index, 7, clipboard);
             const second = Actions.paste(first, first.focus, first.focus.cursorPosition!, clipboard);
 
-            expect(text(select<LiteralValue>(second, index))).toEqual("Teksten 1 1 min");
-            expect(second.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 11 });
+            expect(text(select<LiteralValue>(second, index))).toEqual("Teksten11 min");
+            expect(second.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 9 });
 
             expect(select<LiteralValue>(second, { blockIndex: 0, contentIndex: 0 }).id).toEqual(10);
             expect(select<ParagraphBlock>(second, { blockIndex: 0 }).deletedContent).toEqual([]);
@@ -554,12 +554,12 @@ describe("LetterEditorActions.paste", () => {
 
             expect(text(select<LiteralValue>(result, { ...idx, contentIndex: 0 }))).toEqual("første avsnitt");
             expect(text(select<LiteralValue>(result, { ...idx, contentIndex: 1 }))).toEqual("variabel");
-            expect(text(select<LiteralValue>(result, { ...idx, contentIndex: 2 }))).toEqual("andre 1 teksten min");
+            expect(text(select<LiteralValue>(result, { ...idx, contentIndex: 2 }))).toEqual("andre1 teksten min");
             expect(text(select<LiteralValue>(result, { ...idx, contentIndex: 3 }))).toEqual("fritekst");
             expect(text(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }))).toEqual(
               "Bare en ny setning",
             );
-            expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 7 });
+            expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 2, cursorPosition: 6 });
 
             expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 2 }).id).toEqual(12);
             expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toEqual([]);
@@ -586,7 +586,7 @@ describe("LetterEditorActions.paste", () => {
             const result = Actions.paste(state, idx, 5, clipboard);
 
             expect(text(select<LiteralValue>(result, { ...idx, contentIndex: 0 }))).toEqual("første avsnitt");
-            expect(text(select<LiteralValue>(result, { ...idx, contentIndex: 1 }))).toEqual("andre 1 teksten min");
+            expect(text(select<LiteralValue>(result, { ...idx, contentIndex: 1 }))).toEqual("andre1 teksten min");
             expect(
               text(select<LiteralValue>(result, { ...idx, contentIndex: 2, itemIndex: 0, itemContentIndex: 0 })),
             ).toEqual("item 1");
@@ -597,7 +597,7 @@ describe("LetterEditorActions.paste", () => {
             expect(text(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }))).toEqual(
               "Bare en ny setning",
             );
-            expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 7 });
+            expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 1, cursorPosition: 6 });
 
             expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 1 }).id).toEqual(11);
             expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toEqual([]);
@@ -1079,7 +1079,7 @@ describe("LetterEditorActions.paste", () => {
             expect(text(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }))).toEqual(
               "Bare en ny setning",
             );
-            expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 18 });
+            expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 3, cursorPosition: 18 });
 
             expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 3 }).id).toEqual(103);
             expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toEqual([]);
@@ -1117,7 +1117,7 @@ describe("LetterEditorActions.paste", () => {
             expect(text(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }))).toEqual(
               "Bare en ny setning",
             );
-            expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 19 });
+            expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 3, cursorPosition: 19 });
 
             expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 3 }).id).toEqual(103);
             expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toEqual([]);
@@ -2045,8 +2045,8 @@ describe("LetterEditorActions.paste", () => {
             const clipboard = new MockDataTransfer({ "text/html": "<span>1</span>" });
             const result = Actions.paste(state, index, 7, clipboard);
 
-            expect(text(select<LiteralValue>(result, index))).toEqual("Teksten 1 min");
-            expect(result.focus).toEqual({ ...index, cursorPosition: 9 });
+            expect(text(select<LiteralValue>(result, index))).toEqual("Teksten1 min");
+            expect(result.focus).toEqual({ ...index, cursorPosition: 8 });
 
             expect(select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 }).deletedContent).toEqual([]);
             expect(select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 }).id).toEqual(100);
@@ -2069,8 +2069,8 @@ describe("LetterEditorActions.paste", () => {
             const first = Actions.paste(state, index, 7, clipboard);
             const second = Actions.paste(first, first.focus, first.focus.cursorPosition!, clipboard);
 
-            expect(text(select<LiteralValue>(second, index))).toEqual("Teksten 1 1 min");
-            expect(second.focus).toEqual({ ...index, cursorPosition: 11 });
+            expect(text(select<LiteralValue>(second, index))).toEqual("Teksten11 min");
+            expect(second.focus).toEqual({ ...index, cursorPosition: 9 });
 
             expect(select<Item>(second, { blockIndex: 0, contentIndex: 0, itemIndex: 0 }).deletedContent).toEqual([]);
             expect(select<Item>(second, { blockIndex: 0, contentIndex: 0, itemIndex: 0 }).id).toEqual(100);
@@ -2119,7 +2119,7 @@ describe("LetterEditorActions.paste", () => {
               "c1-i1-ic0",
             );
             expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 1, itemContentIndex: 1 }))).toEqual(
-              "c1-i Pasta1-ic1",
+              "c1-iPasta1-ic1",
             );
             expect(text(select<LiteralValue>(result, { ...idx, itemIndex: 1, itemContentIndex: 2 }))).toEqual(
               "c1-i1-ic2",
@@ -2138,7 +2138,7 @@ describe("LetterEditorActions.paste", () => {
             expect(text(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }))).toEqual(
               "Bare en ny setning",
             );
-            expect(result.focus).toEqual({ ...idx, cursorPosition: 10 });
+            expect(result.focus).toEqual({ ...idx, cursorPosition: 9 });
 
             expect(select<Item>(result, { blockIndex: 0, contentIndex: 1, itemIndex: 1 }).deletedContent).toEqual([]);
             expect(select<Item>(result, { blockIndex: 0, contentIndex: 1, itemIndex: 1 }).id).toEqual(111);
