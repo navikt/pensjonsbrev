@@ -33,9 +33,9 @@ export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
   });
 
 export function logPastedClipboard(clipboardData: DataTransfer) {
-  // log("available paste types - " + JSON.stringify(clipboardData.types));
-  // log("pasted html content - " + clipboardData.getData("text/html"));
-  // log("pasted plain content - " + clipboardData.getData("text/plain"));
+  log("available paste types - " + JSON.stringify(clipboardData.types));
+  log("pasted html content - " + clipboardData.getData("text/html"));
+  log("pasted plain content - " + clipboardData.getData("text/plain"));
 }
 
 function insertTextInLetter(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, offset: number, str: string) {
@@ -636,6 +636,7 @@ const insertTextAtEndOfLiteral = (
       });
 
       const theNewParagraph = newParagraph({
+        ...thisBlock,
         content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral],
       });
 
@@ -651,7 +652,7 @@ const insertTextAtEndOfLiteral = (
     }
 
     const newContent = [...contentBeforeLiteral, newLiteralToBePastedIn, ...contentAfterLiteral];
-    const newThisBlock = newParagraph({ content: newContent });
+    const newThisBlock = newParagraph({ ...thisBlock, content: newContent });
 
     const replaceThisBlockWith = [newThisBlock];
 
@@ -669,11 +670,13 @@ const insertTextAtEndOfLiteral = (
     const theNewLiteral =
       firstMapped.content[0].type === "LITERAL"
         ? newLiteral({
+            ...literalToBePastedInto,
             text:
               (literalToBePastedInto.editedText ?? literalToBePastedInto.text) +
               (firstMapped.content[0] as LiteralValue).text,
           })
         : newLiteral({
+            ...literalToBePastedInto,
             text:
               (literalToBePastedInto.editedText ?? literalToBePastedInto.text) +
               (firstMapped.content[0] as ItemList).items[0].content.map((c) => c.text).join(" "),
@@ -708,6 +711,7 @@ const insertTextAtEndOfLiteral = (
       });
 
       const newThisBlock = newParagraph({
+        ...thisBlock,
         content: [contentBeforeLiteral, theNewItemList, contentAfterLiteral].flat(),
       });
 
@@ -728,57 +732,107 @@ const insertTextAtEndOfLiteral = (
 
       return { replaceThisBlockWith, updatedFocus };
     }
-    const textContentIndexes = findAdjoiningContent(
-      literalIndex.contentIndex,
-      thisBlock.content,
-      (v) => isLiteral(v) || isVariable(v),
-    );
+    const shouldConvertToItemList = firstMapped.content[0].type === "ITEM_LIST";
 
-    const adjoiningItemListsIndexes = findAdjoiningContent(literalIndex.contentIndex, thisBlock.content, isItemList);
+    if (shouldConvertToItemList) {
+      const adjoiningItemListsIndexes = findAdjoiningContent(literalIndex.contentIndex, thisBlock.content, isItemList);
 
-    const allItemsBeforeLiteral = (
-      thisBlock.content.slice(adjoiningItemListsIndexes.startIndex, literalIndex.contentIndex) as ItemList[]
-    ).flatMap((i) => i.items);
+      const allItemsBeforeLiteral = (
+        thisBlock.content.slice(adjoiningItemListsIndexes.startIndex, literalIndex.contentIndex) as ItemList[]
+      ).flatMap((i) => i.items);
 
-    const itemListsAfterLiteral = (
-      thisBlock.content.slice(literalIndex.contentIndex + 1, adjoiningItemListsIndexes.endIndex) as ItemList[]
-    ).flatMap((i) => i.items);
+      const itemListsAfterLiteral = (
+        thisBlock.content.slice(literalIndex.contentIndex + 1, adjoiningItemListsIndexes.endIndex) as ItemList[]
+      ).flatMap((i) => i.items);
 
-    const textContentsBeforeLiteral = thisBlock.content.slice(
-      textContentIndexes.startIndex,
-      literalIndex.contentIndex,
-    ) as TextContent[];
-    const textContentsAfterLiteral = thisBlock.content.slice(
-      literalIndex.contentIndex + 1,
-      textContentIndexes.endIndex,
-    ) as TextContent[];
+      const textContentIndexes = findAdjoiningContent(
+        literalIndex.contentIndex,
+        thisBlock.content,
+        (v) => isLiteral(v) || isVariable(v),
+      );
+      const textContentsBeforeLiteral = thisBlock.content.slice(
+        textContentIndexes.startIndex,
+        literalIndex.contentIndex,
+      ) as TextContent[];
+      const textContentsAfterLiteral = thisBlock.content.slice(
+        literalIndex.contentIndex + 1,
+        textContentIndexes.endIndex,
+      ) as TextContent[];
 
-    const newLiteralContent =
-      firstMapped.content[0].type === "LITERAL"
-        ? [theNewLiteral, ...(firstMapped.content.length > 1 ? firstMapped.content.slice(1) : [])]
-        : [
-            newItemList({
-              items: [
-                ...allItemsBeforeLiteral,
-                newItem({
-                  content: [textContentsBeforeLiteral, theNewLiteral, textContentsAfterLiteral].flat(),
-                }),
-                ...(firstMapped.content[0] as ItemList).items.slice(1),
-                ...itemListsAfterLiteral,
-              ],
-            }),
-          ];
+      const newLiteralContent = newItemList({
+        items: [
+          ...allItemsBeforeLiteral,
+          newItem({
+            content: [textContentsBeforeLiteral, theNewLiteral, textContentsAfterLiteral].flat(),
+          }),
+          ...(firstMapped.content[0] as ItemList).items.slice(1),
+          ...itemListsAfterLiteral,
+        ],
+      });
+
+      const newThisBlock = newParagraph({
+        ...thisBlock,
+        content: [
+          thisBlock.content.slice(
+            0,
+            textContentIndexes.count > 1 ? textContentIndexes.startIndex : adjoiningItemListsIndexes.startIndex,
+          ),
+          newLiteralContent,
+        ].flat(),
+        deletedContent: [
+          ...thisBlock.deletedContent,
+          contentBeforeLiteral.map((c) => c.id).filter((i) => i !== null),
+          literalToBePastedInto.id ? [literalToBePastedInto.id] : [],
+          contentAfterLiteral.map((c) => c.id).filter((i) => i !== null),
+        ].flat(),
+      });
+
+      const newBlocksAfterThisBlock = restMapped;
+      const newContentAfterLiteralBlock = newParagraph({ content: contentAfterLiteral });
+      const replaceThisBlockWith = [
+        newThisBlock,
+        ...newBlocksAfterThisBlock,
+        newContentAfterLiteralBlock.content.length > 0 ? newContentAfterLiteralBlock : [],
+      ].flat();
+
+      const newBlockPosition = replaceThisBlockWith.findIndex((b) =>
+        isEqual(b, newBlocksAfterThisBlock.length > 0 ? newBlocksAfterThisBlock.at(-1) : newThisBlock),
+      );
+      const newContentPosition = Math.max(
+        (newBlocksAfterThisBlock.length > 0
+          ? (newBlocksAfterThisBlock.at(-1)?.content.length ?? 0)
+          : (newThisBlock.content.length ?? 0)) - 1,
+        0,
+      );
+
+      const blockToGetCursorPositionFrom =
+        newBlocksAfterThisBlock.length > 0 ? (newBlocksAfterThisBlock.at(-1) ?? newThisBlock) : newThisBlock;
+      const lastContent = blockToGetCursorPositionFrom.content.at(-1) ?? newThisBlock.content.at(-1);
+
+      const newCursorPosition =
+        lastContent?.type === "LITERAL"
+          ? lastContent.text.length
+          : ((lastContent && (lastContent as ItemList).items.at(-1)?.content.at(-1)?.text.length) ?? 0);
+
+      const itemContentIndex = lastContent?.type === "ITEM_LIST" ? 0 : undefined;
+      const itemIndex = lastContent?.type === "ITEM_LIST" ? lastContent.items.length - 1 : undefined;
+
+      const updatedFocus = {
+        blockIndex: draft.focus.blockIndex + newBlockPosition,
+        contentIndex: newContentPosition,
+        cursorPosition: newCursorPosition,
+        itemContentIndex: itemContentIndex,
+        itemIndex: itemIndex,
+      };
+      console.log("roflmao");
+      return { replaceThisBlockWith, updatedFocus };
+    }
+
+    const newLiteralContent = [theNewLiteral, ...(firstMapped.content.length > 1 ? firstMapped.content.slice(1) : [])];
 
     const newThisBlock = newParagraph({
-      content: [
-        firstMapped.content[0].type === "LITERAL"
-          ? contentBeforeLiteral
-          : thisBlock.content.slice(
-              0,
-              textContentIndexes.count > 1 ? textContentIndexes.startIndex : adjoiningItemListsIndexes.startIndex,
-            ),
-        newLiteralContent,
-      ].flat(),
+      ...thisBlock,
+      content: [contentBeforeLiteral, newLiteralContent].flat(),
     });
 
     const newBlocksAfterThisBlock = restMapped;
