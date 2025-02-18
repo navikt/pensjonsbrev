@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
 import java.nio.file.Path
-import java.util.*
 import kotlin.io.path.createTempDirectory
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -24,7 +23,6 @@ internal class LaTeXService(
     private val tmpBaseDir: Path? =  Path.of("/app/tmp")
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
-    private val encoder = Base64.getEncoder()
     private val latexCommand = latexCommand.split(" ").filter { it.isNotBlank() } + "letter.tex"
     private val parallelismSemaphore = latexParallelism.takeIf { it > 0 }?.let { Semaphore(it) }
 
@@ -61,8 +59,7 @@ internal class LaTeXService(
             when (val result: Execution = compile(tmpDir)) {
                 is Execution.Success ->
                     result.pdf.toFile().readBytes()
-                        .let {  encoder.encodeToString(it) }
-                        .let { PDFCompilationResponse.Base64PDF(it) }
+                        .let { PDFCompilationResponse.Bytes(it) }
 
                 is Execution.Failure.Compilation ->
                     PDFCompilationResponse.Failure.Client(reason = "PDF compilation failed", output = result.output, error = result.error)

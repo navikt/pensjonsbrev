@@ -93,7 +93,7 @@ class LaTeXCompilerService(
                 // for some unknown reason, this results in all requests being halted for around 5 minutes.
                 // To test if the bug is present, run 10 simultanious requests to brevbaker and see if it starts producing letters.
                 // The solution is to seemingly do the same, but with creating a objectmapper outside of content-negotiation instead of simply using the following line:
-                // setBody(PdfCompilationInput(latexLetter.base64EncodedFiles()))
+                // setBody(pdfRequest)
                 // this needs further investigation
                 setBody(objectmapper.writeValueAsBytes(pdfRequest))
             }.body()
