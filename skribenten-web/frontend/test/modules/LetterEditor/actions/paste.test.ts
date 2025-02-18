@@ -740,7 +740,7 @@ describe("LetterEditorActions.paste", () => {
             );
             expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 0 });
 
-            expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toEqual([102]);
+            expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toEqual([102, 103]);
             expect(select<ParagraphBlock>(result, { blockIndex: 0 }).id).toEqual(1);
             expect(select<ParagraphBlock>(result, { blockIndex: 1 }).deletedContent).toEqual([]);
             expect(select<ParagraphBlock>(result, { blockIndex: 1 }).id).toEqual(null);
@@ -782,7 +782,7 @@ describe("LetterEditorActions.paste", () => {
             );
             expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 0 });
 
-            expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toEqual([101]);
+            expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toEqual([101, 102, 103]);
             expect(select<ParagraphBlock>(result, { blockIndex: 0 }).id).toEqual(1);
             expect(select<ParagraphBlock>(result, { blockIndex: 1 }).deletedContent).toEqual([]);
             expect(select<ParagraphBlock>(result, { blockIndex: 1 }).id).toEqual(null);
