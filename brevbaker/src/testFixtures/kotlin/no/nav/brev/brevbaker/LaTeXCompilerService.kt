@@ -21,13 +21,7 @@ import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-data class PDFCompilationOutput(val base64PDF: String)
-
-class LatexCompileException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
-class LatexTimeoutException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
-class LatexInvalidException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
-
-class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 30, private val timeout: Duration = 300.seconds) {
+class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 30, private val timeout: Duration = 300.seconds) : PDFByggerService {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val objectmapper = jacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
@@ -35,27 +29,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
             jackson()
         }
         HttpResponseValidator {
-            validateResponse { response ->
-                when (response.status) {
-                    HttpStatusCode.BadRequest -> {
-                        val body = response.body<String>()
-                        logger.warn("Rendered latex is invalid, couldn't compile pdf: $body")
-                        throw LatexInvalidException("Rendered latex is invalid, couldn't compile pdf: $body")
-                    }
-
-                    HttpStatusCode.InternalServerError -> {
-                        val body = response.body<String>()
-                        logger.warn("Couldn't compile latex to pdf due to server error: $body")
-                        throw LatexCompileException("Couldn't compile latex to pdf due to server error: $body")
-                    }
-
-                    HttpStatusCode.ServiceUnavailable -> {
-                        val body = response.body<String>()
-                        logger.warn("Service unavalailable - couldn't compile latex to pdf: $body")
-                        throw LatexCompileException("Service unavalailable - couldn't compile latex to pdf: $body")
-                    }
-                }
-            }
+            validateResponse { validateResponse(HttpStatusCodes(it.status.value, it.status.description), { msg -> logger.warn(msg) }) { it.body<String>() } }
         }
         install(ContentEncoding) {
             gzip()
@@ -92,9 +66,9 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
     }
 
     // TODO: LatexDocumentRenderer-kallet skal over i pdf-bygger-applikasjonen
-    suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput =
+    override suspend fun producePDF(pdfRequest: PDFRequest, path: String): PDFCompilationOutput =
         withTimeoutOrNull(timeout) {
-            httpClient.post("$pdfByggerUrl/produserBrev") {
+            httpClient.post("$pdfByggerUrl/$path") {
                 contentType(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
                 //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
