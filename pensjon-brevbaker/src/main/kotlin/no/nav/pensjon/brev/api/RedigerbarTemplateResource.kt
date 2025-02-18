@@ -7,8 +7,6 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.BrevTemplate
-import no.nav.pensjon.brev.template.render.Letter2Markup
-import no.nav.pensjon.brev.template.toScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>>(
@@ -18,8 +16,9 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
 ) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>(name, templates, laTeXCompilerService) {
 
     fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
-        createLetter(brevbestilling.kode, brevbestilling.letterData, brevbestilling.language, brevbestilling.felles)
-            .let { Letter2Markup.renderLetterOnly(it.toScope(), it.template) }
+        with(brevbestilling) {
+            brevbaker.renderJSON(createLetter(kode, letterData, language, felles))
+        }
 
     override suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =
         with(brevbestilling) {
