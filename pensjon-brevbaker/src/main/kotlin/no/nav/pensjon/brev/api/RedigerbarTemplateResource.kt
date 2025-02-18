@@ -17,7 +17,7 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
 
     fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         with(brevbestilling) {
-            brevbaker.renderJSON(createLetter(kode, letterData, language, felles))
+            brevbaker.renderLetterMarkup(createLetter(kode, letterData, language, felles))
         }
 
     override suspend fun renderPDF(brevbestilling: BestillRedigertBrevRequest<Kode>): LetterResponse =

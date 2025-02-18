@@ -20,5 +20,5 @@ class Brevbaker(pdfByggerService: PDFByggerService) {
     fun renderRedigertBrevHTML(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup): LetterResponse =
         BrevbakerHTML.renderHTML(letter, redigertBrev)
 
-    fun renderJSON(letter: Letter<BrevbakerBrevdata>): LetterMarkup = BrevbakerJSON.renderJSON(letter)
+    fun renderLetterMarkup(letter: Letter<BrevbakerBrevdata>): LetterMarkup = BrevbakerLetterMarkup.renderLetterMarkup(letter)
 }

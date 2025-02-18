@@ -26,7 +26,7 @@ class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brevb
 
     fun renderJSON(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =
         with(brevbestilling) {
-            brevbaker.renderJSON(createLetter(kode, letterData, language, felles))
+            brevbaker.renderLetterMarkup(createLetter(kode, letterData, language, felles))
         }
 
 }
