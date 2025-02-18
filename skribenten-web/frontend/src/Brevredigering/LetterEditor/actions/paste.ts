@@ -316,11 +316,11 @@ const insertTextAtStartOfLiteral = (
   } else {
     if (shouldBeItemList) {
       const traversedElementsAsItemListItems = parsedAndCombinedHtml.flatMap((t) => {
-        //
         return t.content.map((c) => newItem({ content: [newLiteral({ text: c as string })] }));
       });
 
       const theNewItem = newItem({
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex],
         content: [
           ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
             0,
@@ -333,6 +333,7 @@ const insertTextAtStartOfLiteral = (
         ],
       });
       const theNewItemList = newItemList({
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList),
         items: [
           ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemIndex),
           ...traversedElementsAsItemListItems,
@@ -341,7 +342,10 @@ const insertTextAtStartOfLiteral = (
         ],
       });
 
-      const newThisBlock = newParagraph({ content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral] });
+      const newThisBlock = newParagraph({
+        ...thisBlock,
+        content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral],
+      });
 
       const replaceThisBlockWith = [newThisBlock];
 
@@ -616,6 +620,7 @@ const insertTextAtEndOfLiteral = (
 
     if (shouldBeItemList) {
       const theNewItem = newItem({
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex],
         content: [
           ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
             0,
@@ -628,6 +633,7 @@ const insertTextAtEndOfLiteral = (
         ],
       });
       const theNewItemList = newItemList({
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList),
         items: [
           ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemIndex),
           theNewItem,
@@ -684,6 +690,7 @@ const insertTextAtEndOfLiteral = (
 
     if (shouldBeItemList) {
       const theNewItem = newItem({
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex],
         content: [
           ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
             0,
@@ -707,6 +714,7 @@ const insertTextAtEndOfLiteral = (
       );
 
       const theNewItemList = newItemList({
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList),
         items: [...itemsBeforeLiteral, theNewItem, ...traversedElementsAsItemListItems, ...itemsAfterLiteral],
       });
 
@@ -824,7 +832,7 @@ const insertTextAtEndOfLiteral = (
         itemContentIndex: itemContentIndex,
         itemIndex: itemIndex,
       };
-      console.log("roflmao");
+
       return { replaceThisBlockWith, updatedFocus };
     }
 
