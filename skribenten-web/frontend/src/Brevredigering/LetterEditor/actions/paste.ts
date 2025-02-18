@@ -180,6 +180,19 @@ const pasteIntoLiteral = (
     contentIndex: number;
   };
 } => {
+  const isInsertingOnlyWords = parsedAndCombinedHtml[0].tag === "SPAN";
+
+  if (isInsertingOnlyWords) {
+    return insertSpanElementsIntoLiteral(
+      draft,
+      literalIndex,
+      thisBlock,
+      literalToBePastedInto,
+      parsedAndCombinedHtml[0],
+      offset,
+    );
+  }
+
   const appendingToStartOfLiteral = offset === 0;
   const appendingToMiddleOfLiteral =
     offset > 0 && offset < (literalToBePastedInto.editedText?.length ?? literalToBePastedInto.text.length);
@@ -200,50 +213,73 @@ const pasteIntoLiteral = (
   }
 };
 
-const insertSpanElementsIntoStartOfLiteral = (
+const insertSpanElementsIntoLiteral = (
   draft: Draft<LetterEditorState>,
   literalIndex: LiteralIndex,
   thisBlock: Draft<AnyBlock>,
   literalToBePastedInto: LiteralValue,
   traversedElement: TraversedElement,
-) => {
-  const shouldBeItemList = isItemContentIndex(literalIndex);
-  const contentBeforeLiteral = thisBlock.content.slice(0, literalIndex.contentIndex);
-  const contentAfterLiteral = thisBlock.content.slice(literalIndex.contentIndex + 1);
-
+  offset: number,
+): {
+  replaceThisBlockWith: ParagraphBlock[];
+  updatedFocus: {
+    cursorPosition: number;
+    itemContentIndex?: number;
+    itemIndex?: number;
+    blockIndex: number;
+    contentIndex: number;
+  };
+} => {
   if (traversedElement.tag !== "SPAN") {
     throw new Error("Expected traversed element to be a span element to insert at the start of literal");
   }
 
-  const combinedSpanText = traversedElement.content.join(" ");
+  const literalText = literalToBePastedInto.editedText ?? literalToBePastedInto.text;
 
-  const newLiteralToBePastedIn = newLiteral({
+  /*
+(firstCombinedElement.content.length > 1 ? combinedSpanText : ` ${firstCombinedElement.content[0]}`) +
+*/
+
+  const combinedSpanText = traversedElement.content.join(" ");
+  const contentBeforeLiteral = thisBlock.content.slice(0, literalIndex.contentIndex);
+  const contentAfterLiteral = thisBlock.content.slice(literalIndex.contentIndex + 1);
+  const shouldBeItemList = isItemContentIndex(literalIndex);
+
+  const insertingAvStart = offset === 0;
+  const insertingInTheMiddle = offset > 0 && offset < literalText.length;
+
+  const newText = insertingAvStart
+    ? combinedSpanText + literalText
+    : insertingInTheMiddle
+      ? literalText.slice(0, offset) + combinedSpanText + literalText.slice(offset)
+      : literalText + combinedSpanText;
+
+  const theNewLiteral = newLiteral({
     ...literalToBePastedInto,
-    editedText: combinedSpanText + (literalToBePastedInto.editedText ?? literalToBePastedInto.text),
+    editedText: newText,
   });
 
+  const cursorPosition = insertingAvStart
+    ? combinedSpanText.length
+    : insertingInTheMiddle
+      ? offset + combinedSpanText.length
+      : literalText.length + combinedSpanText.length;
+
   if (shouldBeItemList) {
+    const itemList = thisBlock.content[literalIndex.contentIndex] as ItemList;
+    const item = itemList.items[literalIndex.itemIndex];
+
     const theNewItem = newItem({
-      id:
-        thisBlock.content[literalIndex.contentIndex].type === ITEM_LIST
-          ? (thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].id
-          : undefined,
+      id: item.id,
       content: [
-        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
-          0,
-          literalIndex.itemContentIndex,
-        ),
-        newLiteralToBePastedIn,
-        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
-          literalIndex.itemContentIndex + 1,
-        ),
+        ...item.content.slice(0, literalIndex.itemContentIndex),
+        theNewLiteral,
+        ...item.content.slice(literalIndex.itemContentIndex + 1),
       ],
     });
+
     const theNewItemList = newItemList({
-      id:
-        thisBlock.content[literalIndex.contentIndex].type === ITEM_LIST
-          ? thisBlock.content[literalIndex.contentIndex].id
-          : undefined,
+      id: itemList.id,
       items: [
         ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemIndex),
         theNewItem,
@@ -260,28 +296,23 @@ const insertSpanElementsIntoStartOfLiteral = (
 
     const updatedFocus = {
       ...literalIndex,
-      cursorPosition: combinedSpanText.length,
+      cursorPosition: cursorPosition,
       itemContentIndex: literalIndex.itemContentIndex,
       itemIndex: literalIndex.itemIndex,
     };
 
     return { replaceThisBlockWith, updatedFocus };
-  } else {
-    const newContent = [...contentBeforeLiteral, newLiteralToBePastedIn, ...contentAfterLiteral];
-
-    const newThisBlock = newParagraph({
-      ...thisBlock,
-      content: newContent,
-    });
-
-    const replaceThisBlockWith = [newThisBlock];
-    const updatedFocus = {
-      ...literalIndex,
-      cursorPosition: combinedSpanText.length,
-    };
-
-    return { replaceThisBlockWith, updatedFocus };
   }
+
+  const newContent = [...contentBeforeLiteral, theNewLiteral, ...contentAfterLiteral];
+  const newThisBlock = newParagraph({ ...thisBlock, content: newContent });
+  const replaceThisBlockWith = [newThisBlock];
+  const updatedFocus = {
+    ...literalIndex,
+    cursorPosition: cursorPosition,
+  };
+
+  return { replaceThisBlockWith, updatedFocus };
 };
 
 const insertTextAtStartOfLiteral = (
@@ -301,80 +332,69 @@ const insertTextAtStartOfLiteral = (
   };
 } => {
   const shouldBeItemList = isItemContentIndex(literalIndex);
-  const firstCombinedElement = parsedAndCombinedHtml[0];
   const contentBeforeLiteral = thisBlock.content.slice(0, literalIndex.contentIndex);
   const contentAfterLiteral = thisBlock.content.slice(literalIndex.contentIndex + 1);
 
-  if (firstCombinedElement.tag === "SPAN") {
-    return insertSpanElementsIntoStartOfLiteral(
-      draft,
-      literalIndex,
-      thisBlock,
-      literalToBePastedInto,
-      firstCombinedElement,
-    );
+  if (shouldBeItemList) {
+    const traversedElementsAsItemListItems = parsedAndCombinedHtml.flatMap((t) => {
+      return t.content.map((c) => newItem({ content: [newLiteral({ text: c as string })] }));
+    });
+
+    const theNewItem = newItem({
+      ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex],
+      content: [
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
+          0,
+          literalIndex.itemContentIndex,
+        ),
+        literalToBePastedInto,
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
+          literalIndex.itemContentIndex + 1,
+        ),
+      ],
+    });
+    const theNewItemList = newItemList({
+      ...(thisBlock.content[literalIndex.contentIndex] as ItemList),
+      items: [
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemIndex),
+        ...traversedElementsAsItemListItems,
+        theNewItem,
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(literalIndex.itemIndex + 1),
+      ],
+    });
+
+    const newThisBlock = newParagraph({
+      ...thisBlock,
+      content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral],
+    });
+
+    const replaceThisBlockWith = [newThisBlock];
+
+    const updatedFocus = {
+      ...literalIndex,
+      itemContentIndex: 0,
+      itemIndex: theNewItemList.items.findIndex((i) => isEqual(i, theNewItem)),
+      cursorPosition: 0,
+    };
+
+    return { replaceThisBlockWith, updatedFocus };
   } else {
-    if (shouldBeItemList) {
-      const traversedElementsAsItemListItems = parsedAndCombinedHtml.flatMap((t) => {
-        return t.content.map((c) => newItem({ content: [newLiteral({ text: c as string })] }));
-      });
+    const newThisBlock = traversedElementsToBrevbaker(parsedAndCombinedHtml);
+    const newNextBlock = newParagraph({
+      ...thisBlock,
+      content: [contentBeforeLiteral, literalToBePastedInto, contentAfterLiteral].flat(),
+    });
 
-      const theNewItem = newItem({
-        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex],
-        content: [
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
-            0,
-            literalIndex.itemContentIndex,
-          ),
-          literalToBePastedInto,
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
-            literalIndex.itemContentIndex + 1,
-          ),
-        ],
-      });
-      const theNewItemList = newItemList({
-        ...(thisBlock.content[literalIndex.contentIndex] as ItemList),
-        items: [
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemIndex),
-          ...traversedElementsAsItemListItems,
-          theNewItem,
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(literalIndex.itemIndex + 1),
-        ],
-      });
+    const replaceThisBlockWith = [...newThisBlock, newNextBlock].flat();
+    const newBlockPosition = replaceThisBlockWith.indexOf(newNextBlock);
 
-      const newThisBlock = newParagraph({
-        ...thisBlock,
-        content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral],
-      });
+    const updatedFocus = {
+      blockIndex: draft.focus.blockIndex + newBlockPosition,
+      contentIndex: 0,
+      cursorPosition: 0,
+    };
 
-      const replaceThisBlockWith = [newThisBlock];
-
-      const updatedFocus = {
-        ...literalIndex,
-        itemContentIndex: 0,
-        itemIndex: theNewItemList.items.findIndex((i) => isEqual(i, theNewItem)),
-        cursorPosition: 0,
-      };
-
-      return { replaceThisBlockWith, updatedFocus };
-    } else {
-      const newThisBlock = traversedElementsToBrevbaker(parsedAndCombinedHtml);
-      const newNextBlock = newParagraph({
-        ...thisBlock,
-        content: [contentBeforeLiteral, literalToBePastedInto, contentAfterLiteral].flat(),
-      });
-
-      const replaceThisBlockWith = [...newThisBlock, newNextBlock].flat();
-      const newBlockPosition = replaceThisBlockWith.indexOf(newNextBlock);
-
-      const updatedFocus = {
-        blockIndex: draft.focus.blockIndex + newBlockPosition,
-        contentIndex: 0,
-        cursorPosition: 0,
-      };
-
-      return { replaceThisBlockWith, updatedFocus };
-    }
+    return { replaceThisBlockWith, updatedFocus };
   }
 };
 
@@ -387,298 +407,214 @@ const insertTextInTheMiddleOfLiteral = (
   offset: number,
 ) => {
   const shouldBeItemList = isItemContentIndex(literalIndex);
-  const firstCombinedElement = parsedAndCombinedHtml[0];
   const textBeforeOffset = (literalToBePastedInto.editedText ?? literalToBePastedInto.text).slice(0, offset);
   const textAfterOffset = (literalToBePastedInto.editedText ?? literalToBePastedInto.text).slice(offset);
   const contentBeforeLiteral = thisBlock.content.slice(0, literalIndex.contentIndex);
   const contentAfterLiteral = thisBlock.content.slice(literalIndex.contentIndex + 1);
 
-  if (firstCombinedElement.tag === "SPAN") {
-    const combinedSpanText = firstCombinedElement.content.join(" ");
+  const mappedToBrevbaker = traversedElementsToBrevbaker(parsedAndCombinedHtml);
+  const firstMapped = mappedToBrevbaker[0];
+  const restMapped = mappedToBrevbaker.slice(1);
+  const theNewLiteral =
+    firstMapped.content[0].type === "LITERAL"
+      ? newLiteral({
+          editedText: textBeforeOffset + (firstMapped.content[0] as LiteralValue).text,
+          text: textBeforeOffset + (firstMapped.content[0] as LiteralValue).text,
+        })
+      : newLiteral({
+          editedText:
+            textBeforeOffset + (firstMapped.content[0] as ItemList).items[0].content.map((c) => c.text).join(" "),
+          text: textBeforeOffset + (firstMapped.content[0] as ItemList).items[0].content.map((c) => c.text).join(" "),
+        });
 
-    const newLiteralToBePastedIn = newLiteral({
-      ...literalToBePastedInto,
-      editedText:
-        textBeforeOffset +
-        (firstCombinedElement.content.length > 1 ? combinedSpanText : ` ${firstCombinedElement.content[0]}`) +
-        textAfterOffset,
+  if (shouldBeItemList) {
+    const theNewItem = newItem({
+      content: [
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
+          0,
+          literalIndex.itemContentIndex,
+        ),
+        theNewLiteral,
+      ],
+    });
+    const traversedElementsAsItemListItems = parsedAndCombinedHtml
+      .flatMap((t) => {
+        return t.content.map((c) => newItem({ content: [newLiteral({ text: c as string })] }));
+      })
+      .slice(1);
+
+    const newItemAfter = newItem({
+      content: [
+        newLiteral({ text: textAfterOffset }),
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
+          literalIndex.itemContentIndex + 1,
+        ),
+      ],
     });
 
-    if (shouldBeItemList) {
-      const traversedElementsAsItemListItems = parsedAndCombinedHtml
-        .flatMap((t) => {
-          return t.content.map((c) => newItem({ content: [newLiteral({ text: c as string })] }));
-        })
-        .slice(1);
-
-      const theNewItem = newItem({
-        id:
-          thisBlock.content[literalIndex.contentIndex].type === ITEM_LIST
-            ? (thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].id
-            : undefined,
-        content: [
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
-            0,
-            literalIndex.itemContentIndex,
-          ),
-          newLiteralToBePastedIn,
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
-            literalIndex.itemContentIndex + 1,
-          ),
-        ],
-      });
-      const theNewItemList = newItemList({
-        id:
-          thisBlock.content[literalIndex.contentIndex].type === ITEM_LIST
-            ? thisBlock.content[literalIndex.contentIndex].id
-            : undefined,
-        items: [
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemIndex),
-          theNewItem,
-          ...traversedElementsAsItemListItems,
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(literalIndex.itemIndex + 1),
-        ],
-      });
-
-      const newThisBlock = newParagraph({
-        ...thisBlock,
-        content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral],
-      });
-
-      const replaceThisBlockWith = [newThisBlock];
-      const cursorPosition =
-        textBeforeOffset +
-        (firstCombinedElement.content.length > 1 ? combinedSpanText : ` ${firstCombinedElement.content[0]}`);
-
-      const updatedFocus = {
-        ...literalIndex,
-        itemIndex: theNewItemList.items.findIndex((i) => isEqual(i, theNewItem)),
-        cursorPosition: cursorPosition.length,
-      };
-
-      return { replaceThisBlockWith, updatedFocus };
-    } else {
-      const newContent = [...contentBeforeLiteral, newLiteralToBePastedIn, ...contentAfterLiteral];
-      const newBlock = newParagraph({ ...thisBlock, content: newContent });
-      const cursorPosition =
-        textBeforeOffset +
-        (firstCombinedElement.content.length > 1 ? combinedSpanText : ` ${firstCombinedElement.content[0]}`);
-      thisBlock.content = newContent;
-
-      const updatedFocus = {
-        ...draft.focus,
-        cursorPosition: cursorPosition.length,
-      };
-
-      const replaceThisBlockWith = [newBlock].flat();
-
-      return { replaceThisBlockWith, updatedFocus };
-    }
-  } else {
-    const mappedToBrevbaker = traversedElementsToBrevbaker(parsedAndCombinedHtml);
-    const firstMapped = mappedToBrevbaker[0];
-    const restMapped = mappedToBrevbaker.slice(1);
-    const theNewLiteral =
-      firstMapped.content[0].type === "LITERAL"
-        ? newLiteral({
-            editedText: textBeforeOffset + (firstMapped.content[0] as LiteralValue).text,
-            text: textBeforeOffset + (firstMapped.content[0] as LiteralValue).text,
-          })
-        : newLiteral({
-            editedText:
-              textBeforeOffset + (firstMapped.content[0] as ItemList).items[0].content.map((c) => c.text).join(" "),
-            text: textBeforeOffset + (firstMapped.content[0] as ItemList).items[0].content.map((c) => c.text).join(" "),
-          });
-
-    if (shouldBeItemList) {
-      const theNewItem = newItem({
-        content: [
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
-            0,
-            literalIndex.itemContentIndex,
-          ),
-          theNewLiteral,
-        ],
-      });
-      const traversedElementsAsItemListItems = parsedAndCombinedHtml
-        .flatMap((t) => {
-          return t.content.map((c) => newItem({ content: [newLiteral({ text: c as string })] }));
-        })
-        .slice(1);
-
-      const newItemAfter = newItem({
-        content: [
-          newLiteral({ text: textAfterOffset }),
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
-            literalIndex.itemContentIndex + 1,
-          ),
-        ],
-      });
-
-      const theNewItemList = newItemList({
-        ...(thisBlock.content[literalIndex.contentIndex] as ItemList),
-        items: [
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemIndex),
-          theNewItem,
-          ...traversedElementsAsItemListItems,
-          newItemAfter,
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(literalIndex.itemIndex + 1),
-        ],
-        deletedItems: [
-          (thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex]?.id
-            ? [(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].id!]
-            : [],
-        ].flat(),
-      });
-
-      const newThisBlock = newParagraph({
-        ...thisBlock,
-        content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral],
-      });
-
-      const replaceThisBlockWith = [newThisBlock];
-
-      const updatedFocus = {
-        ...literalIndex,
-        itemContentIndex: 0,
-        itemIndex: theNewItemList.items.findIndex((i) => isEqual(i, newItemAfter)),
-        cursorPosition: 0,
-      };
-
-      return { replaceThisBlockWith, updatedFocus };
-    }
-
-    const shouldConvertToItemList = firstMapped.content[0].type === "ITEM_LIST";
-
-    if (shouldConvertToItemList) {
-      const adjoiningItemListsIndexes = findAdjoiningContent(literalIndex.contentIndex, thisBlock.content, isItemList);
-
-      const allItemsBeforeLiteral = (
-        thisBlock.content.slice(adjoiningItemListsIndexes.startIndex, literalIndex.contentIndex) as ItemList[]
-      ).flatMap((i) => i.items);
-
-      const itemListsAfterLiteral = (
-        thisBlock.content.slice(literalIndex.contentIndex + 1, adjoiningItemListsIndexes.endIndex) as ItemList[]
-      ).flatMap((i) => i.items);
-
-      const textContentIndexes = findAdjoiningContent(
-        literalIndex.contentIndex,
-        thisBlock.content,
-        (v) => isLiteral(v) || isVariable(v),
-      );
-      const textContentsBeforeLiteral = thisBlock.content.slice(
-        textContentIndexes.startIndex,
-        literalIndex.contentIndex,
-      ) as TextContent[];
-
-      const newLiteralContent = newItemList({
-        items: [
-          ...allItemsBeforeLiteral,
-          newItem({
-            content: [textContentsBeforeLiteral, theNewLiteral].flat(),
-          }),
-          ...(firstMapped.content[0] as ItemList).items.slice(1),
-          ...itemListsAfterLiteral,
-        ],
-      });
-
-      const newThisBlock = newParagraph({
-        ...thisBlock,
-        content: [
-          thisBlock.content.slice(
-            0,
-            textContentIndexes.count > 1 ? textContentIndexes.startIndex : adjoiningItemListsIndexes.startIndex,
-          ),
-          newLiteralContent,
-        ].flat(),
-        deletedContent: [
-          ...thisBlock.deletedContent,
-          contentBeforeLiteral.map((c) => c.id).filter((i) => i !== null),
-          literalToBePastedInto.id ? [literalToBePastedInto.id] : [],
-          contentAfterLiteral.map((c) => c.id).filter((i) => i !== null),
-        ].flat(),
-      });
-
-      const newBlocksAfterThisBlock = restMapped;
-      const newContentAfterLiteralBlock = newParagraph({
-        content: [newLiteral({ text: textAfterOffset }), ...contentAfterLiteral],
-      });
-      const replaceThisBlockWith = [
-        newThisBlock,
-        ...newBlocksAfterThisBlock,
-        newContentAfterLiteralBlock.content.length > 0 ? newContentAfterLiteralBlock : [],
-      ].flat();
-
-      const newBlockPosition = replaceThisBlockWith.findIndex((b) =>
-        isEqual(b, newBlocksAfterThisBlock.length > 0 ? newBlocksAfterThisBlock.at(-1) : newThisBlock),
-      );
-      const newContentPosition = Math.max(
-        (newBlocksAfterThisBlock.length > 0
-          ? (newBlocksAfterThisBlock.at(-1)?.content.length ?? 0)
-          : (newThisBlock.content.length ?? 0)) - 1,
-        0,
-      );
-
-      const blockToGetCursorPositionFrom =
-        newBlocksAfterThisBlock.length > 0 ? (newBlocksAfterThisBlock.at(-1) ?? newThisBlock) : newThisBlock;
-      const lastContent = blockToGetCursorPositionFrom.content.at(-1) ?? newThisBlock.content.at(-1);
-
-      const newCursorPosition =
-        lastContent?.type === "LITERAL"
-          ? lastContent.text.length
-          : ((lastContent && (lastContent as ItemList).items.at(-1)?.content.at(-1)?.text.length) ?? 0);
-
-      const itemContentIndex = lastContent?.type === "ITEM_LIST" ? 0 : undefined;
-      const itemIndex = lastContent?.type === "ITEM_LIST" ? lastContent.items.length - 1 : undefined;
-
-      const updatedFocus = {
-        blockIndex: draft.focus.blockIndex + newBlockPosition,
-        contentIndex: newContentPosition,
-        cursorPosition: newCursorPosition,
-        itemContentIndex: itemContentIndex,
-        itemIndex: itemIndex,
-      };
-
-      return { replaceThisBlockWith, updatedFocus };
-    }
+    const theNewItemList = newItemList({
+      ...(thisBlock.content[literalIndex.contentIndex] as ItemList),
+      items: [
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemIndex),
+        theNewItem,
+        ...traversedElementsAsItemListItems,
+        newItemAfter,
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(literalIndex.itemIndex + 1),
+      ],
+      deletedItems: [
+        (thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex]?.id
+          ? [(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].id!]
+          : [],
+      ].flat(),
+    });
 
     const newThisBlock = newParagraph({
-      id: thisBlock.id,
+      ...thisBlock,
+      content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral],
+    });
+
+    const replaceThisBlockWith = [newThisBlock];
+
+    const updatedFocus = {
+      ...literalIndex,
+      itemContentIndex: 0,
+      itemIndex: theNewItemList.items.findIndex((i) => isEqual(i, newItemAfter)),
+      cursorPosition: 0,
+    };
+
+    return { replaceThisBlockWith, updatedFocus };
+  }
+
+  const shouldConvertToItemList = firstMapped.content[0].type === "ITEM_LIST";
+
+  if (shouldConvertToItemList) {
+    const adjoiningItemListsIndexes = findAdjoiningContent(literalIndex.contentIndex, thisBlock.content, isItemList);
+
+    const allItemsBeforeLiteral = (
+      thisBlock.content.slice(adjoiningItemListsIndexes.startIndex, literalIndex.contentIndex) as ItemList[]
+    ).flatMap((i) => i.items);
+
+    const itemListsAfterLiteral = (
+      thisBlock.content.slice(literalIndex.contentIndex + 1, adjoiningItemListsIndexes.endIndex) as ItemList[]
+    ).flatMap((i) => i.items);
+
+    const textContentIndexes = findAdjoiningContent(
+      literalIndex.contentIndex,
+      thisBlock.content,
+      (v) => isLiteral(v) || isVariable(v),
+    );
+    const textContentsBeforeLiteral = thisBlock.content.slice(
+      textContentIndexes.startIndex,
+      literalIndex.contentIndex,
+    ) as TextContent[];
+
+    const newLiteralContent = newItemList({
+      items: [
+        ...allItemsBeforeLiteral,
+        newItem({
+          content: [textContentsBeforeLiteral, theNewLiteral].flat(),
+        }),
+        ...(firstMapped.content[0] as ItemList).items.slice(1),
+        ...itemListsAfterLiteral,
+      ],
+    });
+
+    const newThisBlock = newParagraph({
+      ...thisBlock,
       content: [
-        contentBeforeLiteral,
-        firstMapped.content[0].type === "LITERAL"
-          ? [theNewLiteral, ...(firstMapped.content.length > 1 ? firstMapped.content.slice(1) : [])]
-          : [
-              newItemList({
-                items: [newItem({ content: [theNewLiteral] }), ...(firstMapped.content[0] as ItemList).items.slice(1)],
-              }),
-            ],
+        thisBlock.content.slice(
+          0,
+          textContentIndexes.count > 1 ? textContentIndexes.startIndex : adjoiningItemListsIndexes.startIndex,
+        ),
+        newLiteralContent,
       ].flat(),
       deletedContent: [
+        ...thisBlock.deletedContent,
+        contentBeforeLiteral.map((c) => c.id).filter((i) => i !== null),
         literalToBePastedInto.id ? [literalToBePastedInto.id] : [],
         contentAfterLiteral.map((c) => c.id).filter((i) => i !== null),
       ].flat(),
     });
 
     const newBlocksAfterThisBlock = restMapped;
-
-    const restAfterBlock = newParagraph({
-      content: [newLiteral({ text: textAfterOffset }), contentAfterLiteral].flat(),
+    const newContentAfterLiteralBlock = newParagraph({
+      content: [newLiteral({ text: textAfterOffset }), ...contentAfterLiteral],
     });
+    const replaceThisBlockWith = [
+      newThisBlock,
+      ...newBlocksAfterThisBlock,
+      newContentAfterLiteralBlock.content.length > 0 ? newContentAfterLiteralBlock : [],
+    ].flat();
 
-    const replaceThisBlockWith = [newThisBlock, ...newBlocksAfterThisBlock, restAfterBlock].flat();
+    const newBlockPosition = replaceThisBlockWith.findIndex((b) =>
+      isEqual(b, newBlocksAfterThisBlock.length > 0 ? newBlocksAfterThisBlock.at(-1) : newThisBlock),
+    );
+    const newContentPosition = Math.max(
+      (newBlocksAfterThisBlock.length > 0
+        ? (newBlocksAfterThisBlock.at(-1)?.content.length ?? 0)
+        : (newThisBlock.content.length ?? 0)) - 1,
+      0,
+    );
 
-    const newBlockPosition = replaceThisBlockWith.indexOf(restAfterBlock);
-    const newContentPosition = Math.max((newBlocksAfterThisBlock.at(-1)?.content?.length ?? 0) - 1, 0);
+    const blockToGetCursorPositionFrom =
+      newBlocksAfterThisBlock.length > 0 ? (newBlocksAfterThisBlock.at(-1) ?? newThisBlock) : newThisBlock;
+    const lastContent = blockToGetCursorPositionFrom.content.at(-1) ?? newThisBlock.content.at(-1);
+
+    const newCursorPosition =
+      lastContent?.type === "LITERAL"
+        ? lastContent.text.length
+        : ((lastContent && (lastContent as ItemList).items.at(-1)?.content.at(-1)?.text.length) ?? 0);
+
+    const itemContentIndex = lastContent?.type === "ITEM_LIST" ? 0 : undefined;
+    const itemIndex = lastContent?.type === "ITEM_LIST" ? lastContent.items.length - 1 : undefined;
 
     const updatedFocus = {
-      blockIndex: literalIndex.blockIndex + newBlockPosition,
+      blockIndex: draft.focus.blockIndex + newBlockPosition,
       contentIndex: newContentPosition,
-      cursorPosition: 0,
+      cursorPosition: newCursorPosition,
+      itemContentIndex: itemContentIndex,
+      itemIndex: itemIndex,
     };
 
     return { replaceThisBlockWith, updatedFocus };
   }
+
+  const newThisBlock = newParagraph({
+    id: thisBlock.id,
+    content: [
+      contentBeforeLiteral,
+      firstMapped.content[0].type === "LITERAL"
+        ? [theNewLiteral, ...(firstMapped.content.length > 1 ? firstMapped.content.slice(1) : [])]
+        : [
+            newItemList({
+              items: [newItem({ content: [theNewLiteral] }), ...(firstMapped.content[0] as ItemList).items.slice(1)],
+            }),
+          ],
+    ].flat(),
+    deletedContent: [
+      literalToBePastedInto.id ? [literalToBePastedInto.id] : [],
+      contentAfterLiteral.map((c) => c.id).filter((i) => i !== null),
+    ].flat(),
+  });
+
+  const newBlocksAfterThisBlock = restMapped;
+
+  const restAfterBlock = newParagraph({
+    content: [newLiteral({ text: textAfterOffset }), contentAfterLiteral].flat(),
+  });
+
+  const replaceThisBlockWith = [newThisBlock, ...newBlocksAfterThisBlock, restAfterBlock].flat();
+
+  const newBlockPosition = replaceThisBlockWith.indexOf(restAfterBlock);
+  const newContentPosition = Math.max((newBlocksAfterThisBlock.at(-1)?.content?.length ?? 0) - 1, 0);
+
+  const updatedFocus = {
+    blockIndex: literalIndex.blockIndex + newBlockPosition,
+    contentIndex: newContentPosition,
+    cursorPosition: 0,
+  };
+
+  return { replaceThisBlockWith, updatedFocus };
 };
 
 const insertTextAtEndOfLiteral = (
@@ -698,248 +634,135 @@ const insertTextAtEndOfLiteral = (
   };
 } => {
   const shouldBeItemList = isItemContentIndex(literalIndex);
-  const firstCombinedElement = parsedAndCombinedHtml[0];
   const contentBeforeLiteral = thisBlock.content.slice(0, literalIndex.contentIndex);
   const contentAfterLiteral = thisBlock.content.slice(literalIndex.contentIndex + 1);
 
-  if (firstCombinedElement.tag === "SPAN") {
-    const combinedSpanText = firstCombinedElement.content.join(" ");
-    const newLiteralToBePastedIn = newLiteral({
-      ...literalToBePastedInto,
-      editedText: (literalToBePastedInto.editedText ?? literalToBePastedInto.text) + combinedSpanText,
+  const mappedToBrevbaker = traversedElementsToBrevbaker(parsedAndCombinedHtml);
+  const firstMapped = mappedToBrevbaker[0];
+  const restMapped = mappedToBrevbaker.slice(1);
+
+  const theNewLiteral =
+    firstMapped.content[0].type === "LITERAL"
+      ? newLiteral({
+          ...literalToBePastedInto,
+          editedText:
+            (literalToBePastedInto.editedText ?? literalToBePastedInto.text) +
+            (firstMapped.content[0] as LiteralValue).text,
+        })
+      : newLiteral({
+          ...literalToBePastedInto,
+          editedText:
+            (literalToBePastedInto.editedText ?? literalToBePastedInto.text) +
+            (firstMapped.content[0] as ItemList).items[0].content.map((c) => c.text).join(" "),
+        });
+
+  if (shouldBeItemList) {
+    const theNewItem = newItem({
+      ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex],
+      content: [
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
+          0,
+          literalIndex.itemContentIndex,
+        ),
+        theNewLiteral,
+      ],
+    });
+    const traversedElementsAsItemListItems = parsedAndCombinedHtml
+      .flatMap((t) => {
+        return t.content.map((c) => newItem({ content: [newLiteral({ text: c as string })] }));
+      })
+      .slice(1);
+
+    const itemsBeforeLiteral = (thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(
+      0,
+      literalIndex.itemIndex,
+    );
+    const itemsAfterLiteral = (thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(
+      literalIndex.itemIndex + 1,
+    );
+
+    const theNewItemList = newItemList({
+      ...(thisBlock.content[literalIndex.contentIndex] as ItemList),
+      items: [...itemsBeforeLiteral, theNewItem, ...traversedElementsAsItemListItems, ...itemsAfterLiteral],
     });
 
-    const newCursorPosition = ((literalToBePastedInto.editedText ?? literalToBePastedInto.text) + combinedSpanText)
-      .length;
-
-    if (shouldBeItemList) {
-      const theNewItem = newItem({
-        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex],
-        content: [
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
-            0,
-            literalIndex.itemContentIndex,
-          ),
-          newLiteralToBePastedIn,
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
-            literalIndex.itemContentIndex + 1,
-          ),
-        ],
-      });
-      const theNewItemList = newItemList({
-        ...(thisBlock.content[literalIndex.contentIndex] as ItemList),
-        items: [
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemIndex),
-          theNewItem,
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(literalIndex.itemIndex + 1),
-        ],
-      });
-
-      const theNewParagraph = newParagraph({
-        ...thisBlock,
-        content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral],
-      });
-
-      const replaceThisBlockWith = [theNewParagraph];
-      const updatedFocus = {
-        ...literalIndex,
-        cursorPosition: newCursorPosition,
-        itemContentIndex: literalIndex.itemContentIndex,
-        itemIndex: literalIndex.itemIndex,
-      };
-
-      return { replaceThisBlockWith, updatedFocus };
-    }
-
-    const newContent = [...contentBeforeLiteral, newLiteralToBePastedIn, ...contentAfterLiteral];
-    const newThisBlock = newParagraph({ ...thisBlock, content: newContent });
+    const newThisBlock = newParagraph({
+      ...thisBlock,
+      content: [contentBeforeLiteral, theNewItemList, contentAfterLiteral].flat(),
+    });
 
     const replaceThisBlockWith = [newThisBlock];
 
     const updatedFocus = {
-      ...draft.focus,
-      cursorPosition: newCursorPosition,
+      ...literalIndex,
+      itemContentIndex:
+        traversedElementsAsItemListItems.length > 0
+          ? (traversedElementsAsItemListItems.at(-1)?.content.length ?? 0) - 1
+          : literalIndex.itemContentIndex,
+      itemIndex: literalIndex.itemIndex + Math.max(traversedElementsAsItemListItems.length, 0),
+      cursorPosition:
+        traversedElementsAsItemListItems.length > 0
+          ? ((traversedElementsAsItemListItems.at(-1)?.content.at(-1) as LiteralValue).editedText?.length ??
+            traversedElementsAsItemListItems.at(-1)?.content.at(-1)?.text.length ??
+            0)
+          : (theNewLiteral.editedText ?? theNewLiteral.text).length,
     };
 
     return { replaceThisBlockWith, updatedFocus };
-  } else {
-    const mappedToBrevbaker = traversedElementsToBrevbaker(parsedAndCombinedHtml);
-    const firstMapped = mappedToBrevbaker[0];
-    const restMapped = mappedToBrevbaker.slice(1);
+  }
+  const shouldConvertToItemList = firstMapped.content[0].type === "ITEM_LIST";
 
-    const theNewLiteral =
-      firstMapped.content[0].type === "LITERAL"
-        ? newLiteral({
-            ...literalToBePastedInto,
-            editedText:
-              (literalToBePastedInto.editedText ?? literalToBePastedInto.text) +
-              (firstMapped.content[0] as LiteralValue).text,
-          })
-        : newLiteral({
-            ...literalToBePastedInto,
-            editedText:
-              (literalToBePastedInto.editedText ?? literalToBePastedInto.text) +
-              (firstMapped.content[0] as ItemList).items[0].content.map((c) => c.text).join(" "),
-          });
+  if (shouldConvertToItemList) {
+    const adjoiningItemListsIndexes = findAdjoiningContent(literalIndex.contentIndex, thisBlock.content, isItemList);
 
-    if (shouldBeItemList) {
-      const theNewItem = newItem({
-        ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex],
-        content: [
-          ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].content.slice(
-            0,
-            literalIndex.itemContentIndex,
-          ),
-          theNewLiteral,
-        ],
-      });
-      const traversedElementsAsItemListItems = parsedAndCombinedHtml
-        .flatMap((t) => {
-          return t.content.map((c) => newItem({ content: [newLiteral({ text: c as string })] }));
-        })
-        .slice(1);
+    const allItemsBeforeLiteral = (
+      thisBlock.content.slice(adjoiningItemListsIndexes.startIndex, literalIndex.contentIndex) as ItemList[]
+    ).flatMap((i) => i.items);
 
-      const itemsBeforeLiteral = (thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(
-        0,
-        literalIndex.itemIndex,
-      );
-      const itemsAfterLiteral = (thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(
-        literalIndex.itemIndex + 1,
-      );
+    const itemListsAfterLiteral = (
+      thisBlock.content.slice(literalIndex.contentIndex + 1, adjoiningItemListsIndexes.endIndex) as ItemList[]
+    ).flatMap((i) => i.items);
 
-      const theNewItemList = newItemList({
-        ...(thisBlock.content[literalIndex.contentIndex] as ItemList),
-        items: [...itemsBeforeLiteral, theNewItem, ...traversedElementsAsItemListItems, ...itemsAfterLiteral],
-      });
+    const textContentIndexes = findAdjoiningContent(
+      literalIndex.contentIndex,
+      thisBlock.content,
+      (v) => isLiteral(v) || isVariable(v),
+    );
+    const textContentsBeforeLiteral = thisBlock.content.slice(
+      textContentIndexes.startIndex,
+      literalIndex.contentIndex,
+    ) as TextContent[];
+    const textContentsAfterLiteral = thisBlock.content.slice(
+      literalIndex.contentIndex + 1,
+      textContentIndexes.endIndex,
+    ) as TextContent[];
 
-      const newThisBlock = newParagraph({
-        ...thisBlock,
-        content: [contentBeforeLiteral, theNewItemList, contentAfterLiteral].flat(),
-      });
-
-      const replaceThisBlockWith = [newThisBlock];
-
-      const updatedFocus = {
-        ...literalIndex,
-        itemContentIndex:
-          traversedElementsAsItemListItems.length > 0
-            ? (traversedElementsAsItemListItems.at(-1)?.content.length ?? 0) - 1
-            : literalIndex.itemContentIndex,
-        itemIndex: literalIndex.itemIndex + Math.max(traversedElementsAsItemListItems.length, 0),
-        cursorPosition:
-          traversedElementsAsItemListItems.length > 0
-            ? ((traversedElementsAsItemListItems.at(-1)?.content.at(-1) as LiteralValue).editedText?.length ??
-              traversedElementsAsItemListItems.at(-1)?.content.at(-1)?.text.length ??
-              0)
-            : (theNewLiteral.editedText ?? theNewLiteral.text).length,
-      };
-
-      return { replaceThisBlockWith, updatedFocus };
-    }
-    const shouldConvertToItemList = firstMapped.content[0].type === "ITEM_LIST";
-
-    if (shouldConvertToItemList) {
-      const adjoiningItemListsIndexes = findAdjoiningContent(literalIndex.contentIndex, thisBlock.content, isItemList);
-
-      const allItemsBeforeLiteral = (
-        thisBlock.content.slice(adjoiningItemListsIndexes.startIndex, literalIndex.contentIndex) as ItemList[]
-      ).flatMap((i) => i.items);
-
-      const itemListsAfterLiteral = (
-        thisBlock.content.slice(literalIndex.contentIndex + 1, adjoiningItemListsIndexes.endIndex) as ItemList[]
-      ).flatMap((i) => i.items);
-
-      const textContentIndexes = findAdjoiningContent(
-        literalIndex.contentIndex,
-        thisBlock.content,
-        (v) => isLiteral(v) || isVariable(v),
-      );
-      const textContentsBeforeLiteral = thisBlock.content.slice(
-        textContentIndexes.startIndex,
-        literalIndex.contentIndex,
-      ) as TextContent[];
-      const textContentsAfterLiteral = thisBlock.content.slice(
-        literalIndex.contentIndex + 1,
-        textContentIndexes.endIndex,
-      ) as TextContent[];
-
-      const newLiteralContent = newItemList({
-        items: [
-          ...allItemsBeforeLiteral,
-          newItem({
-            content: [textContentsBeforeLiteral, theNewLiteral, textContentsAfterLiteral].flat(),
-          }),
-          ...(firstMapped.content[0] as ItemList).items.slice(1),
-          ...itemListsAfterLiteral,
-        ],
-      });
-
-      const newThisBlock = newParagraph({
-        ...thisBlock,
-        content: [
-          thisBlock.content.slice(
-            0,
-            textContentIndexes.count > 1 ? textContentIndexes.startIndex : adjoiningItemListsIndexes.startIndex,
-          ),
-          newLiteralContent,
-        ].flat(),
-        deletedContent: [
-          ...thisBlock.deletedContent,
-          contentBeforeLiteral.map((c) => c.id).filter((i) => i !== null),
-          literalToBePastedInto.id ? [literalToBePastedInto.id] : [],
-          contentAfterLiteral.map((c) => c.id).filter((i) => i !== null),
-        ].flat(),
-      });
-
-      const newBlocksAfterThisBlock = restMapped;
-      const newContentAfterLiteralBlock = newParagraph({ content: contentAfterLiteral });
-      const replaceThisBlockWith = [
-        newThisBlock,
-        ...newBlocksAfterThisBlock,
-        newContentAfterLiteralBlock.content.length > 0 ? newContentAfterLiteralBlock : [],
-      ].flat();
-
-      const newBlockPosition = replaceThisBlockWith.findIndex((b) =>
-        isEqual(b, newBlocksAfterThisBlock.length > 0 ? newBlocksAfterThisBlock.at(-1) : newThisBlock),
-      );
-      const newContentPosition = Math.max(
-        (newBlocksAfterThisBlock.length > 0
-          ? (newBlocksAfterThisBlock.at(-1)?.content.length ?? 0)
-          : (newThisBlock.content.length ?? 0)) - 1,
-        0,
-      );
-
-      const blockToGetCursorPositionFrom =
-        newBlocksAfterThisBlock.length > 0 ? (newBlocksAfterThisBlock.at(-1) ?? newThisBlock) : newThisBlock;
-      const lastContent = blockToGetCursorPositionFrom.content.at(-1) ?? newThisBlock.content.at(-1);
-
-      const newCursorPosition =
-        lastContent?.type === "LITERAL"
-          ? lastContent.text.length
-          : ((lastContent && (lastContent as ItemList).items.at(-1)?.content.at(-1)?.text.length) ?? 0);
-
-      const itemContentIndex = lastContent?.type === "ITEM_LIST" ? 0 : undefined;
-      const itemIndex = lastContent?.type === "ITEM_LIST" ? lastContent.items.length - 1 : undefined;
-
-      const updatedFocus = {
-        blockIndex: draft.focus.blockIndex + newBlockPosition,
-        contentIndex: newContentPosition,
-        cursorPosition: newCursorPosition,
-        itemContentIndex: itemContentIndex,
-        itemIndex: itemIndex,
-      };
-
-      return { replaceThisBlockWith, updatedFocus };
-    }
-
-    const newThisBlockContent = [
-      theNewLiteral,
-      ...(firstMapped.content.length > 1 ? firstMapped.content.slice(1) : []),
-    ];
+    const newLiteralContent = newItemList({
+      items: [
+        ...allItemsBeforeLiteral,
+        newItem({
+          content: [textContentsBeforeLiteral, theNewLiteral, textContentsAfterLiteral].flat(),
+        }),
+        ...(firstMapped.content[0] as ItemList).items.slice(1),
+        ...itemListsAfterLiteral,
+      ],
+    });
 
     const newThisBlock = newParagraph({
       ...thisBlock,
-      content: [contentBeforeLiteral, newThisBlockContent].flat(),
+      content: [
+        thisBlock.content.slice(
+          0,
+          textContentIndexes.count > 1 ? textContentIndexes.startIndex : adjoiningItemListsIndexes.startIndex,
+        ),
+        newLiteralContent,
+      ].flat(),
+      deletedContent: [
+        ...thisBlock.deletedContent,
+        contentBeforeLiteral.map((c) => c.id).filter((i) => i !== null),
+        literalToBePastedInto.id ? [literalToBePastedInto.id] : [],
+        contentAfterLiteral.map((c) => c.id).filter((i) => i !== null),
+      ].flat(),
     });
 
     const newBlocksAfterThisBlock = restMapped;
@@ -966,39 +789,86 @@ const insertTextAtEndOfLiteral = (
 
     const newCursorPosition =
       lastContent?.type === "LITERAL"
-        ? (lastContent.editedText ?? lastContent.text).length
-        : ((lastContent && ((lastContent as ItemList).items.at(-1)?.content.at(-1) as LiteralValue))?.editedText
-            ?.length ??
-          (lastContent && (lastContent as ItemList).items.at(-1)?.content.at(-1)?.text)?.length ??
-          0);
+        ? lastContent.text.length
+        : ((lastContent && (lastContent as ItemList).items.at(-1)?.content.at(-1)?.text.length) ?? 0);
 
     const itemContentIndex = lastContent?.type === "ITEM_LIST" ? 0 : undefined;
     const itemIndex = lastContent?.type === "ITEM_LIST" ? lastContent.items.length - 1 : undefined;
 
-    /*
+    const updatedFocus = {
+      blockIndex: draft.focus.blockIndex + newBlockPosition,
+      contentIndex: newContentPosition,
+      cursorPosition: newCursorPosition,
+      itemContentIndex: itemContentIndex,
+      itemIndex: itemIndex,
+    };
+
+    return { replaceThisBlockWith, updatedFocus };
+  }
+
+  const newThisBlockContent = [theNewLiteral, ...(firstMapped.content.length > 1 ? firstMapped.content.slice(1) : [])];
+
+  const newThisBlock = newParagraph({
+    ...thisBlock,
+    content: [contentBeforeLiteral, newThisBlockContent].flat(),
+  });
+
+  const newBlocksAfterThisBlock = restMapped;
+  const newContentAfterLiteralBlock = newParagraph({ content: contentAfterLiteral });
+  const replaceThisBlockWith = [
+    newThisBlock,
+    ...newBlocksAfterThisBlock,
+    newContentAfterLiteralBlock.content.length > 0 ? newContentAfterLiteralBlock : [],
+  ].flat();
+
+  const newBlockPosition = replaceThisBlockWith.findIndex((b) =>
+    isEqual(b, newBlocksAfterThisBlock.length > 0 ? newBlocksAfterThisBlock.at(-1) : newThisBlock),
+  );
+  const newContentPosition = Math.max(
+    (newBlocksAfterThisBlock.length > 0
+      ? (newBlocksAfterThisBlock.at(-1)?.content.length ?? 0)
+      : (newThisBlock.content.length ?? 0)) - 1,
+    0,
+  );
+
+  const blockToGetCursorPositionFrom =
+    newBlocksAfterThisBlock.length > 0 ? (newBlocksAfterThisBlock.at(-1) ?? newThisBlock) : newThisBlock;
+  const lastContent = blockToGetCursorPositionFrom.content.at(-1) ?? newThisBlock.content.at(-1);
+
+  const newCursorPosition =
+    lastContent?.type === "LITERAL"
+      ? (lastContent.editedText ?? lastContent.text).length
+      : ((lastContent && ((lastContent as ItemList).items.at(-1)?.content.at(-1) as LiteralValue))?.editedText
+          ?.length ??
+        (lastContent && (lastContent as ItemList).items.at(-1)?.content.at(-1)?.text)?.length ??
+        0);
+
+  const itemContentIndex = lastContent?.type === "ITEM_LIST" ? 0 : undefined;
+  const itemIndex = lastContent?.type === "ITEM_LIST" ? lastContent.items.length - 1 : undefined;
+
+  /*
     Denne var litt vanskelig å finne ut av, har ikke klart å reprodusere for testene
     editoren vil sette markøren på feil posisjon dersom man returnerer itemIndex og itemContentIndex som undefined
     hvis man limer inn 2 p-tags. Siden dem blir satt som undefined, skal det ikke spille noe rolle om 
     dem kommer med i objektet som undefined, eller om dem ikke kommer med i det hele tatt.
     Men pga en bug(?) et eller annet sted, må man faktisk fjerne dem fra objektet for at det skal fungere.
     */
-    const updatedFocus =
-      itemContentIndex !== undefined && itemIndex !== undefined
-        ? {
-            blockIndex: draft.focus.blockIndex + newBlockPosition,
-            contentIndex: newContentPosition,
-            cursorPosition: newCursorPosition,
-            itemContentIndex: itemContentIndex,
-            itemIndex: itemIndex,
-          }
-        : {
-            blockIndex: draft.focus.blockIndex + newBlockPosition,
-            contentIndex: newContentPosition,
-            cursorPosition: newCursorPosition,
-          };
+  const updatedFocus =
+    itemContentIndex !== undefined && itemIndex !== undefined
+      ? {
+          blockIndex: draft.focus.blockIndex + newBlockPosition,
+          contentIndex: newContentPosition,
+          cursorPosition: newCursorPosition,
+          itemContentIndex: itemContentIndex,
+          itemIndex: itemIndex,
+        }
+      : {
+          blockIndex: draft.focus.blockIndex + newBlockPosition,
+          contentIndex: newContentPosition,
+          cursorPosition: newCursorPosition,
+        };
 
-    return { replaceThisBlockWith, updatedFocus };
-  }
+  return { replaceThisBlockWith, updatedFocus };
 };
 
 interface TraversedElement {
