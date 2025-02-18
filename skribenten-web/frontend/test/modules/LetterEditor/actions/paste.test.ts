@@ -839,10 +839,10 @@ describe("LetterEditorActions.paste", () => {
         });
         describe("inserts ul list", () => {
           test("single paste", () => {
-            const index = { blockIndex: 0, contentIndex: 0 };
+            const idx = { blockIndex: 0, contentIndex: 0 };
             const state = letter(newParagraph({ id: 1, content: [literal({ id: 101, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
-            const result = Actions.paste(state, index, 7, clipboard);
+            const result = Actions.paste(state, idx, 7, clipboard);
 
             expect(
               text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0, itemContentIndex: 0, itemIndex: 0 })),
@@ -853,11 +853,9 @@ describe("LetterEditorActions.paste", () => {
             expect(text(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }))).toEqual(" min");
             expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 0 });
 
-            //TODO - hvilken blokk vil vi skal håndtere deleted? Den som blir limt inn eller den som blir flyttet?
-            //selve blokken trenger ikke å bli slettet, men er det noe vi vil sette som slettet?
             expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toEqual([101]);
             expect(select<ParagraphBlock>(result, { blockIndex: 0 }).id).toEqual(1);
-            expect(select<ParagraphBlock>(result, { blockIndex: 1 }).deletedContent).toEqual([101]);
+            expect(select<ParagraphBlock>(result, { blockIndex: 1 }).deletedContent).toEqual([]);
             expect(select<ParagraphBlock>(result, { blockIndex: 1 }).id).toEqual(null);
             expect(result.redigertBrev.deletedBlocks).toEqual([]);
           });
@@ -883,13 +881,11 @@ describe("LetterEditorActions.paste", () => {
             expect(text(select<LiteralValue>(second, { blockIndex: 2, contentIndex: 0 }))).toEqual(" min");
             expect(second.focus).toEqual({ blockIndex: 2, contentIndex: 0, cursorPosition: 0 });
 
-            //TODO - hvilken blokk vil vi skal håndtere deleted? Den som blir limt inn eller den som blir flyttet?
-            //selve blokken trenger ikke å bli slettet, men er det noe vi vil sette som slettet?
             expect(select<ParagraphBlock>(second, { blockIndex: 0 }).deletedContent).toEqual([101]);
             expect(select<ParagraphBlock>(second, { blockIndex: 0 }).id).toEqual(1);
             expect(select<ParagraphBlock>(second, { blockIndex: 1 }).deletedContent).toEqual([]);
             expect(select<ParagraphBlock>(second, { blockIndex: 1 }).id).toEqual(null);
-            expect(select<ParagraphBlock>(second, { blockIndex: 2 }).deletedContent).toEqual([101]);
+            expect(select<ParagraphBlock>(second, { blockIndex: 2 }).deletedContent).toEqual([]);
             expect(select<ParagraphBlock>(second, { blockIndex: 2 }).id).toEqual(null);
             expect(second.redigertBrev.deletedBlocks).toEqual([]);
           });
@@ -911,8 +907,8 @@ describe("LetterEditorActions.paste", () => {
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
             const result = Actions.paste(state, idx, 5, clipboard);
 
-            expect(text(select<LiteralValue>(result, { ...idx, contentIndex: 0 }))).toEqual("første avsnitt");
-            expect(text(select<LiteralValue>(result, { ...idx, contentIndex: 1 }))).toEqual("variabel");
+            expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("første avsnitt");
+            expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 1 }))).toEqual("variabel");
             expect(
               text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 2, itemIndex: 0, itemContentIndex: 0 })),
             ).toEqual("andre1");
@@ -926,11 +922,9 @@ describe("LetterEditorActions.paste", () => {
             );
             expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 0 });
 
-            //TODO - hvilken blokk vil vi skal håndtere deleted? Den som blir limt inn eller den som blir flyttet?
-            //selve blokken trenger ikke å bli slettet, men er det noe vi vil sette som slettet?
             expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toEqual([102]);
             expect(select<ParagraphBlock>(result, { blockIndex: 0 }).id).toEqual(1);
-            expect(select<ParagraphBlock>(result, { blockIndex: 1 }).deletedContent).toEqual([102]);
+            expect(select<ParagraphBlock>(result, { blockIndex: 1 }).deletedContent).toEqual([]);
             expect(select<ParagraphBlock>(result, { blockIndex: 1 }).id).toEqual(null);
             expect(select<ParagraphBlock>(result, { blockIndex: 2 }).deletedContent).toEqual([]);
             expect(select<ParagraphBlock>(result, { blockIndex: 2 }).id).toEqual(2);
@@ -976,11 +970,9 @@ describe("LetterEditorActions.paste", () => {
             );
             expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 0 });
 
-            //TODO - hvilken blokk vil vi skal håndtere deleted? Den som blir limt inn eller den som blir flyttet?
-            //selve blokken trenger ikke å bli slettet, men er det noe vi vil sette som slettet?
             expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toEqual([101]);
             expect(select<ParagraphBlock>(result, { blockIndex: 0 }).id).toEqual(1);
-            expect(select<ParagraphBlock>(result, { blockIndex: 1 }).deletedContent).toEqual([101]);
+            expect(select<ParagraphBlock>(result, { blockIndex: 1 }).deletedContent).toEqual([]);
             expect(select<ParagraphBlock>(result, { blockIndex: 1 }).id).toEqual(null);
             expect(select<ParagraphBlock>(result, { blockIndex: 2 }).deletedContent).toEqual([]);
             expect(select<ParagraphBlock>(result, { blockIndex: 2 }).id).toEqual(2);
@@ -1007,11 +999,9 @@ describe("LetterEditorActions.paste", () => {
             expect(text(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 0 }))).toEqual("lp");
             expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 0 });
 
-            //TODO - hvilken blokk vil vi skal håndtere deleted? Den som blir limt inn eller den som blir flyttet?
-            //selve blokken trenger ikke å bli slettet, men er det noe vi vil sette som slettet?
             expect(select<ParagraphBlock>(result, { blockIndex: 0 }).deletedContent).toEqual([101]);
             expect(select<ParagraphBlock>(result, { blockIndex: 0 }).id).toEqual(1);
-            expect(select<ParagraphBlock>(result, { blockIndex: 1 }).deletedContent).toEqual([101]);
+            expect(select<ParagraphBlock>(result, { blockIndex: 1 }).deletedContent).toEqual([]);
             expect(select<ParagraphBlock>(result, { blockIndex: 1 }).id).toEqual(null);
             expect(result.redigertBrev.deletedBlocks).toEqual([]);
           });
@@ -1041,11 +1031,9 @@ describe("LetterEditorActions.paste", () => {
             expect(text(select<LiteralValue>(second, { blockIndex: 2, contentIndex: 0 }))).toEqual("lp");
             expect(second.focus).toEqual({ blockIndex: 2, contentIndex: 0, cursorPosition: 0 });
 
-            //TODO - hvilken blokk vil vi skal håndtere deleted? Den som blir limt inn eller den som blir flyttet?
-            //selve blokken trenger ikke å bli slettet, men er det noe vi vil sette som slettet?
             expect(select<ParagraphBlock>(second, { blockIndex: 0 }).deletedContent).toEqual([101]);
             expect(select<ParagraphBlock>(second, { blockIndex: 0 }).id).toEqual(1);
-            expect(select<ParagraphBlock>(second, { blockIndex: 1 }).deletedContent).toEqual([101]);
+            expect(select<ParagraphBlock>(second, { blockIndex: 1 }).deletedContent).toEqual([]);
             expect(select<ParagraphBlock>(second, { blockIndex: 1 }).id).toEqual(null);
             expect(second.redigertBrev.deletedBlocks).toEqual([]);
           });
