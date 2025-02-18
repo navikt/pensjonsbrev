@@ -10,7 +10,7 @@ class LatexTimeoutException(msg: String, cause: Throwable? = null) : Exception(m
 class LatexInvalidException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 
 interface PDFByggerService {
-    suspend fun producePDF(pdfRequest: PDFRequest, url: String = PATH): PDFCompilationOutput
+    suspend fun producePDF(pdfRequest: PDFRequest, path: String = PATH): PDFCompilationOutput
 
     suspend fun validateResponse(statusCode: HttpStatusCodes, logWarning: (msg: String) -> Unit, getBody: suspend () -> String) {
         when (statusCode.code) {
