@@ -487,6 +487,7 @@ const insertTextInTheMiddleOfLiteral = (
       });
 
       const theNewItemList = newItemList({
+        ...(thisBlock.content[literalIndex.contentIndex] as ItemList),
         items: [
           ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(0, literalIndex.itemIndex),
           theNewItem,
@@ -494,9 +495,17 @@ const insertTextInTheMiddleOfLiteral = (
           newItemAfter,
           ...(thisBlock.content[literalIndex.contentIndex] as ItemList).items.slice(literalIndex.itemIndex + 1),
         ],
+        deletedItems: [
+          (thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex]?.id
+            ? [(thisBlock.content[literalIndex.contentIndex] as ItemList).items[literalIndex.itemIndex].id!]
+            : [],
+        ].flat(),
       });
 
-      const newThisBlock = newParagraph({ content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral] });
+      const newThisBlock = newParagraph({
+        ...thisBlock,
+        content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral],
+      });
 
       const replaceThisBlockWith = [newThisBlock];
 
