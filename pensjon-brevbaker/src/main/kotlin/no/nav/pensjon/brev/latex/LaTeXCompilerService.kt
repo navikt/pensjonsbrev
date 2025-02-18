@@ -1,19 +1,32 @@
 package no.nav.pensjon.brev.latex
 
-import io.ktor.callid.*
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.network.sockets.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.compression.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.client.utils.*
-import io.ktor.http.*
-import io.ktor.serialization.jackson.*
+import io.ktor.callid.KtorCallIdContextElement
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.network.sockets.ConnectTimeoutException
+import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.HttpRequestTimeoutException
+import io.ktor.client.plugins.HttpResponseValidator
+import io.ktor.client.plugins.HttpSend
+import io.ktor.client.plugins.ServerResponseException
+import io.ktor.client.plugins.compression.ContentEncoding
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.utils.unwrapCancellationException
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
+import io.ktor.http.isSuccess
+import io.ktor.serialization.jackson.jackson
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.io.IOException
+import no.nav.brev.brevbaker.HttpStatusCodes
+import no.nav.brev.brevbaker.LatexTimeoutException
+import no.nav.brev.brevbaker.PDFByggerService
+import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import org.slf4j.LoggerFactory
@@ -22,13 +35,11 @@ import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-data class PDFCompilationOutput(val base64PDF: String)
-
-class LatexCompileException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
-class LatexTimeoutException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
-class LatexInvalidException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
-
-class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 30, private val timeout: Duration = 300.seconds) {
+class LaTeXCompilerService(
+    private val pdfByggerUrl: String,
+    maxRetries: Int = 30,
+    private val timeout: Duration = 300.seconds,
+) : PDFByggerService {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val objectmapper = jacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
@@ -36,27 +47,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
             jackson()
         }
         HttpResponseValidator {
-            validateResponse { response ->
-                when (response.status) {
-                    HttpStatusCode.BadRequest -> {
-                        val body = response.body<String>()
-                        logger.warn("Rendered latex is invalid, couldn't compile pdf: $body")
-                        throw LatexInvalidException("Rendered latex is invalid, couldn't compile pdf: $body")
-                    }
-
-                    HttpStatusCode.InternalServerError -> {
-                        val body = response.body<String>()
-                        logger.warn("Couldn't compile latex to pdf due to server error: $body")
-                        throw LatexCompileException("Couldn't compile latex to pdf due to server error: $body")
-                    }
-
-                    HttpStatusCode.ServiceUnavailable -> {
-                        val body = response.body<String>()
-                        logger.warn("Service unavalailable - couldn't compile latex to pdf: $body")
-                        throw LatexCompileException("Service unavalailable - couldn't compile latex to pdf: $body")
-                    }
-                }
-            }
+            validateResponse { validateResponse(HttpStatusCodes(it.status.value, it.status.description), { msg -> logger.warn(msg) }) { it.body<String>() } }
         }
         install(ContentEncoding) {
             gzip()
@@ -92,9 +83,9 @@ class LaTeXCompilerService(private val pdfByggerUrl: String, maxRetries: Int = 3
         }
     }
 
-    suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput =
+    override suspend fun producePDF(pdfRequest: PDFRequest, path: String): PDFCompilationOutput =
         withTimeoutOrNull(timeout) {
-            httpClient.post("$pdfByggerUrl/produserBrev") {
+            httpClient.post("$pdfByggerUrl/$path") {
                 contentType(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
                 //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
