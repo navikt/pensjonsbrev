@@ -11,12 +11,16 @@ class OmstillingsstoenadInnvilgelseTest {
     fun `lavEllerIngenInntekt brukes som default hvis omsRettUtenTidsbegrensning ikke er satt`() {
         val dto = OmstillingsstoenadInnvilgelseDTO(
             innhold = mockk(),
-            avdoed = mockk(),
             beregning = mockk(),
             innvilgetMindreEnnFireMndEtterDoedsfall = false,
             lavEllerIngenInntekt = true,
             harUtbetaling = false,
-            etterbetaling = mockk()
+            etterbetaling = mockk(),
+            tidligereFamiliepleier = false,
+            bosattUtland = false,
+            avdoed = null,
+            erSluttbehandling = false,
+            datoVedtakOmgjoering = null,
         )
 
         assertEquals(true, dto.omsRettUtenTidsbegrensning)
@@ -26,13 +30,17 @@ class OmstillingsstoenadInnvilgelseTest {
     fun `omsRettUtenTidsbegrensning overstyrer lavEllerIngenInntekt`() {
         val dto = OmstillingsstoenadInnvilgelseDTO(
             innhold = mockk(),
-            avdoed = mockk(),
             beregning = mockk(),
             innvilgetMindreEnnFireMndEtterDoedsfall = false,
-            lavEllerIngenInntekt = null,
+            lavEllerIngenInntekt = true,
             harUtbetaling = false,
             etterbetaling = mockk(),
-            omsRettUtenTidsbegrensning = false
+            omsRettUtenTidsbegrensning = false,
+            tidligereFamiliepleier = false,
+            bosattUtland = false,
+            avdoed = null,
+            erSluttbehandling = false,
+            datoVedtakOmgjoering = null
         )
 
         assertEquals(false, dto.omsRettUtenTidsbegrensning)

@@ -1,14 +1,12 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse
 
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -17,13 +15,17 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.*
+import no.nav.pensjon.etterlatte.maler.Avdoed
+import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
+import no.nav.pensjon.etterlatte.maler.Hovedmal
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetaling
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.avdoed
+import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.datoVedtakOmgjoering
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.erSluttbehandling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.etterbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.harUtbetaling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTOSelectors.informasjonOmOmstillingsstoenadData
@@ -39,15 +41,15 @@ import java.time.LocalDate
 
 data class OmstillingsstoenadInnvilgelseDTO(
     override val innhold: List<Element>,
-    val avdoed: Avdoed?,
-    val beregning: OmstillingsstoenadBeregning,
     val innvilgetMindreEnnFireMndEtterDoedsfall: Boolean,
     val lavEllerIngenInntekt: Boolean?, // TODO: skal fases ut
     val omsRettUtenTidsbegrensning: Boolean = lavEllerIngenInntekt ?: false, // TODO: overtar for lavEllerIngenInntekt
-    val harUtbetaling: Boolean,
     val etterbetaling: OmstillingsstoenadEtterbetaling?,
     val tidligereFamiliepleier: Boolean = false,
     val bosattUtland: Boolean = false,
+    val avdoed: Avdoed?,
+    val harUtbetaling: Boolean,
+    val beregning: OmstillingsstoenadBeregning,
     val erSluttbehandling: Boolean = false,
     val datoVedtakOmgjoering: LocalDate? = null,
 ) : FerdigstillingBrevDTO {
@@ -89,12 +91,6 @@ object OmstillingsstoenadInnvilgelse : EtterlatteTemplate<OmstillingsstoenadInnv
             }
 
             outline {
-                showIf(datoVedtakOmgjoering.isNull()){
-                    includePhrase(
-                        OmstillingsstoenadInnvilgelseFraser.Vedtak(avdoed, beregning, harUtbetaling, tidligereFamiliepleier, erSluttbehandling),
-                    )
-                }
-
                 konverterElementerTilBrevbakerformat(innhold)
 
                 showIf(harUtbetaling) {
