@@ -67,7 +67,7 @@ fun writeTestPDF(pdfFileName: String, pdf: ByteArray, path: Path = Path.of("buil
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
 }
 
-private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
+private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL)
 
 fun renderTestPdfOutline(
     outputFolder: String,
