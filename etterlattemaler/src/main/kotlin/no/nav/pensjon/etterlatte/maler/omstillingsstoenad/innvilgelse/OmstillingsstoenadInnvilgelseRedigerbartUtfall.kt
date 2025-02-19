@@ -62,9 +62,17 @@ object OmstillingsstoenadInnvilgelseRedigerbartUtfall : EtterlatteTemplate<Omsti
             )
         }
         outline {
-            includePhrase(OmstillingsstoenadInnvilgelseFraser.Vedtak(avdoed, beregning, harUtbetaling, tidligereFamiliepleier, erSluttbehandling))
-
-            ifNotNull(datoVedtakOmgjoering) {
+            showIf(datoVedtakOmgjoering.isNull()) {
+                includePhrase(
+                    OmstillingsstoenadInnvilgelseFraser.Vedtak(
+                        avdoed,
+                        beregning,
+                        harUtbetaling,
+                        tidligereFamiliepleier,
+                        erSluttbehandling
+                    )
+                )
+            }.orShow {
                 paragraph {
                     text(
                         Bokmal to
