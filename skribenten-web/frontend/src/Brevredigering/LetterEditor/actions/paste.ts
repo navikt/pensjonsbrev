@@ -33,9 +33,9 @@ export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
   });
 
 export function logPastedClipboard(clipboardData: DataTransfer) {
-  // log("available paste types - " + JSON.stringify(clipboardData.types));
-  // log("pasted html content - " + clipboardData.getData("text/html"));
-  // log("pasted plain content - " + clipboardData.getData("text/plain"));
+  log("available paste types - " + JSON.stringify(clipboardData.types));
+  log("pasted html content - " + clipboardData.getData("text/html"));
+  log("pasted plain content - " + clipboardData.getData("text/plain"));
 }
 
 function insertTextInLetter(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, offset: number, str: string) {
@@ -80,6 +80,9 @@ function insertText(
  * Pasting funksjonalitet skal etterligne hvordan det fungerer i microsoft word.
  * Merk da at det er forskjellige regler hvis man limer inn i start/midten/slutt, på en literal, eller punktliste,
  * og om det kopierte innholdet er bare literal eller punktliste, eller begge.
+ *
+ * TODO - vi har util funksjoner som tar seg hånd om splitting av blokker/content, etc. Vi burde helst bruke disse enn å gjøre
+ * det manuelt som her.
  */
 function insertHtmlClipboardInLetter(
   draft: Draft<LetterEditorState>,
@@ -224,7 +227,7 @@ const insertSpanElementsIntoLiteral = (
   const combinedSpanText = traversedElement.content.join(" ");
   const contentBeforeLiteral = thisBlock.content.slice(0, literalIndex.contentIndex);
   const contentAfterLiteral = thisBlock.content.slice(literalIndex.contentIndex + 1);
-  const shouldBeItemList = isItemContentIndex(literalIndex);
+  const insertingIntoItemList = isItemContentIndex(literalIndex);
 
   const insertingAtStart = offset === 0;
   const insertingInTheMiddle = offset > 0 && offset < literalText.length;
@@ -243,7 +246,7 @@ const insertSpanElementsIntoLiteral = (
       ? offset + combinedSpanText.length
       : literalText.length + combinedSpanText.length;
 
-  if (shouldBeItemList) {
+  if (insertingIntoItemList) {
     const itemList = thisBlock.content[literalIndex.contentIndex] as ItemList;
     const item = itemList.items[literalIndex.itemIndex];
 
@@ -265,13 +268,13 @@ const insertSpanElementsIntoLiteral = (
       ],
     });
 
-    const theNewParagraph = newParagraph({
+    const newThisBlock = newParagraph({
       ...thisBlock,
       content: [...contentBeforeLiteral, theNewItemList, ...contentAfterLiteral],
     });
 
     return {
-      replaceThisBlockWith: [theNewParagraph],
+      replaceThisBlockWith: [newThisBlock],
       updatedFocus: {
         ...literalIndex,
         cursorPosition: cursorPosition,
@@ -283,13 +286,15 @@ const insertSpanElementsIntoLiteral = (
 
   const newContent = [...contentBeforeLiteral, theNewLiteral, ...contentAfterLiteral];
   const newThisBlock = newParagraph({ ...thisBlock, content: newContent });
-  const replaceThisBlockWith = [newThisBlock];
-  const updatedFocus = {
-    ...literalIndex,
-    cursorPosition: cursorPosition,
-  };
 
-  return { replaceThisBlockWith, updatedFocus };
+  return {
+    replaceThisBlockWith: [newThisBlock],
+    ...literalIndex,
+    updatedFocus: {
+      ...literalIndex,
+      cursorPosition: cursorPosition,
+    },
+  };
 };
 
 const insertNonSpanElementsIntoLiteral = (
@@ -431,16 +436,15 @@ const insertNonSpanElementsIntoItemList = (
       content: [...contentBeforeItemList, theNewItemList, ...contentAfterItemList],
     });
 
-    const replaceThisBlockWith = [newThisBlock];
-
-    const updatedFocus = {
-      ...literalIndex,
-      itemContentIndex: 0,
-      itemIndex: theNewItemList.items.findIndex((i) => isEqual(i, newItemAfter)),
-      cursorPosition: 0,
+    return {
+      replaceThisBlockWith: [newThisBlock],
+      updatedFocus: {
+        ...literalIndex,
+        itemContentIndex: 0,
+        itemIndex: theNewItemList.items.findIndex((i) => isEqual(i, newItemAfter)),
+        cursorPosition: 0,
+      },
     };
-
-    return { replaceThisBlockWith, updatedFocus };
   }
 
   const theNewLiteral =
@@ -478,24 +482,23 @@ const insertNonSpanElementsIntoItemList = (
     content: [contentBeforeItemList, theNewItemList, contentAfterItemList].flat(),
   });
 
-  const replaceThisBlockWith = [newThisBlock];
-
-  const updatedFocus = {
-    ...literalIndex,
-    itemContentIndex:
-      traversedElementsAsItemListItems.length > 0
-        ? (traversedElementsAsItemListItems.at(-1)?.content.length ?? 0) - 1
-        : literalIndex.itemContentIndex,
-    itemIndex: literalIndex.itemIndex + Math.max(traversedElementsAsItemListItems.length, 0),
-    cursorPosition:
-      traversedElementsAsItemListItems.length > 0
-        ? ((traversedElementsAsItemListItems.at(-1)?.content.at(-1) as LiteralValue).editedText?.length ??
-          traversedElementsAsItemListItems.at(-1)?.content.at(-1)?.text.length ??
-          0)
-        : (theNewLiteral.editedText ?? theNewLiteral.text).length,
+  return {
+    replaceThisBlockWith: [newThisBlock],
+    updatedFocus: {
+      ...literalIndex,
+      itemContentIndex:
+        traversedElementsAsItemListItems.length > 0
+          ? (traversedElementsAsItemListItems.at(-1)?.content.length ?? 0) - 1
+          : literalIndex.itemContentIndex,
+      itemIndex: literalIndex.itemIndex + Math.max(traversedElementsAsItemListItems.length, 0),
+      cursorPosition:
+        traversedElementsAsItemListItems.length > 0
+          ? ((traversedElementsAsItemListItems.at(-1)?.content.at(-1) as LiteralValue).editedText?.length ??
+            traversedElementsAsItemListItems.at(-1)?.content.at(-1)?.text.length ??
+            0)
+          : (theNewLiteral.editedText ?? theNewLiteral.text).length,
+    },
   };
-
-  return { replaceThisBlockWith, updatedFocus };
 };
 
 const insertTextAtStartOfLiteral = (
@@ -597,13 +600,14 @@ const insertTextInTheMiddleOfLiteral = (
   const newBlockPosition = replaceThisBlockWith.indexOf(restAfterBlock);
   const newContentPosition = Math.max((newBlocksAfterThisBlock.at(-1)?.content?.length ?? 0) - 1, 0);
 
-  const updatedFocus = {
-    blockIndex: literalIndex.blockIndex + newBlockPosition,
-    contentIndex: newContentPosition,
-    cursorPosition: 0,
+  return {
+    replaceThisBlockWith: replaceThisBlockWith,
+    updatedFocus: {
+      blockIndex: literalIndex.blockIndex + newBlockPosition,
+      contentIndex: newContentPosition,
+      cursorPosition: 0,
+    },
   };
-
-  return { replaceThisBlockWith, updatedFocus };
 };
 
 const insertTextAtEndOfLiteral = (
@@ -831,15 +835,16 @@ const convertLiteralAndAdjoiningToItemList = (
   const itemContentIndex = lastContent?.type === "ITEM_LIST" ? 0 : undefined;
   const itemIndex = lastContent?.type === "ITEM_LIST" ? lastContent.items.length - 1 : undefined;
 
-  const updatedFocus = {
-    blockIndex: draft.focus.blockIndex + newBlockPosition,
-    contentIndex: newContentPosition,
-    cursorPosition: newCursorPosition,
-    itemContentIndex: itemContentIndex,
-    itemIndex: itemIndex,
+  return {
+    replaceThisBlockWith: replaceThisBlockWith,
+    updatedFocus: {
+      blockIndex: draft.focus.blockIndex + newBlockPosition,
+      contentIndex: newContentPosition,
+      cursorPosition: newCursorPosition,
+      itemContentIndex: itemContentIndex,
+      itemIndex: itemIndex,
+    },
   };
-
-  return { replaceThisBlockWith, updatedFocus };
 };
 
 /**
