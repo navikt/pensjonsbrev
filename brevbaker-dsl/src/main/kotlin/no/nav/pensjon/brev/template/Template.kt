@@ -92,4 +92,4 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, LetterData : Any> Tem
 }
 
 @DslMarker
-annotation class LetterTemplateMarker
+internal annotation class LetterTemplateMarker
