@@ -58,17 +58,15 @@ function SakLayout() {
   const sakContext = Route.useLoaderData();
 
   return (
-
-    <SendtBrevResultatContextProvider>
-      <FerdigstillResultatContextProvider>
+    <SendtBrevTilAttesteringResultatContext>
+      <SendtBrevResultatContextProvider>
         <MottakerContextProvider>
-          <SakInfoBreadcrumbs sak={sakContext?.sak} />
+          {sakContext && <Subheader sak={sakContext.sak} />}
           <div className="page-margins">
             <Outlet />
           </div>
         </MottakerContextProvider>
-      </FerdigstillResultatContextProvider>
-    </SendtBrevResultatContextProvider>
+      </SendtBrevResultatContextProvider>
     </SendtBrevTilAttesteringResultatContext>
   );
 }
