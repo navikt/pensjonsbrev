@@ -8,9 +8,8 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
+import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import type { BrevResponse } from "~/types/brev";
-
-import { useManagedLetterEditorContext } from "./ManagedLetterEditorContext";
 
 /**
  * Wrapper av <LetterEditor /> som håndterer lagring av brevtekst.

@@ -20,11 +20,11 @@ import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/Sca
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
-import ManagedLetterEditor from "~/components/managedLetterEditor/ManagedLetterEditor";
+import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
   ManagedLetterEditorContextProvider,
   useManagedLetterEditorContext,
-} from "~/components/managedLetterEditor/ManagedLetterEditorContext";
+} from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import TilbakestillBrev from "~/components/TilbakestillBrev";
