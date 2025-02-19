@@ -19,15 +19,14 @@ import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
 import org.slf4j.LoggerFactory
+import java.time.Instant
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.collections.partition
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
 // Consumer will be timed out after 5 minutes if no polls occur
-private val FAILURE_RETRY_INTERVAL_SECONDS = 120.seconds.toJavaDuration()
 private val QUEUE_READ_TIMEOUT = 120.seconds.toJavaDuration()
-private val RETRY_QUEUE_READ_TIMEOUT = 0.seconds.toJavaDuration()
+private val RETRY_QUEUE_READ_TIMEOUT = 1.seconds.toJavaDuration()
 
 class PdfRequestConsumer(
     private val latexCompileService: LatexCompileService,
@@ -84,15 +83,14 @@ class PdfRequestConsumer(
                 if (results.isNotEmpty()) {
                     val (successes, failures) = results.partition { it.pdf != null }
                     val consumedTopic = renderRequests.topic()
-                    val consumerGroupMetadata = renderRequests.groupMetadata()
 
                     if (failures.isEmpty()) {
-                        produceSuccessesForTopic(successes, consumedTopic, consumerGroupMetadata)
+                        produceSuccessesForTopic(successes, consumedTopic, renderRequests.isFromRetryQueue)
                     } else {
                         if (renderRequests.isFromRetryQueue) {
-                            processRetryQueueResults(results, consumerGroupMetadata)
+                            processRetryQueueResults(results)
                         } else {
-                            sendToRetryOrSuccessQueue(results, consumerGroupMetadata)
+                            sendToRetryOrSuccessQueue(results)
                         }
                     }
                     logger.info("Produced ${successes.size} successes and ${failures.size} failures")
@@ -106,11 +104,11 @@ class PdfRequestConsumer(
             }
 
     private fun produceSuccessesForTopic(
-        successes: List<RenderResult>, consumedTopic: String, consumerGroupMetadata: ConsumerGroupMetadata
+        successes: List<RenderResult>, consumedTopic: String, isFromRetryQueue: Boolean
     ) {
         successes.groupBy { it.consumedPartiton }
             .forEach { (partition, results) ->
-                produceSuccessesForTopicAndPartition(partition, results, consumerGroupMetadata, consumedTopic)
+                produceSuccessesForTopicAndPartition(partition, results, isFromRetryQueue, consumedTopic)
             }
     }
 
@@ -124,16 +122,16 @@ class PdfRequestConsumer(
         isFromRetryQueue = true
     )
 
-    private fun sendToRetryOrSuccessQueue(results: List<RenderResult>, groupMetadata: ConsumerGroupMetadata) {
+    private fun sendToRetryOrSuccessQueue(results: List<RenderResult>) {
         results
             .sortedBy { it.consumedOffset } // make sure higher offsets are not committed before lower ones
             .forEach {
                 if (it.pdf != null) {
                     val producer = getOrCreateSuccessProducer(renderTopic, it.consumedPartiton)
-                    sendSingleSynchronous(it, it.renderRequest.replyTopic, it.pdf, producer, groupMetadata)
+                    sendSingleSynchronous(it, it.renderRequest.replyTopic, it.pdf, producer, consumer.groupMetadata())
                 } else {
                     val producer = getOrCreateRetryProducer(it.consumedTopic, it.consumedPartiton)
-                    sendSingleSynchronous(it, retryTopic, it.renderRequest, producer, groupMetadata)
+                    sendSingleSynchronous(it, retryTopic, it.renderRequest, producer, consumer.groupMetadata())
                 }
             }
     }
@@ -153,12 +151,12 @@ class PdfRequestConsumer(
             producer.send(ProducerRecord(topic, result.renderRequest.messageId, value))
             producer.commitTransaction()
         } catch (e: Exception) {
+            logger.error("Failed to commit message to transaction. Aborting transaction.")
             producer.abortTransaction()
-            throw QueueCommitFailure("Failed to commit pdf to reply queue", e)
         }
     }
 
-    private fun processRetryQueueResults(results: List<RenderResult>, groupMetadata: ConsumerGroupMetadata) {
+    private fun processRetryQueueResults(results: List<RenderResult>) {
         results.groupBy { it.consumedPartiton }
             .mapNotNull { (partition, partitionResults) ->
                 val successesBeforeFailure = partitionResults
@@ -166,7 +164,7 @@ class PdfRequestConsumer(
                     .takeWhile { it.pdf != null }
 
                 if (successesBeforeFailure.isNotEmpty()) {
-                    produceSuccessesForTopicAndPartition(partition, successesBeforeFailure, groupMetadata, retryTopic)
+                    produceSuccessesForTopicAndPartition(partition, successesBeforeFailure, true, retryTopic)
                 }
             }
     }
@@ -174,20 +172,31 @@ class PdfRequestConsumer(
     private fun produceSuccessesForTopicAndPartition(
         consumedPartition: Int,
         results: List<RenderResult>,
-        groupMetadata: ConsumerGroupMetadata,
+        isFromRetryQueue: Boolean,
         consumedTopic: String
     ) {
         val successProducer = getOrCreateSuccessProducer(consumedTopic, consumedPartition)
         val consumedFrom = TopicPartition(consumedTopic, consumedPartition)
         val newOffset = OffsetAndMetadata(results.maxOf { it.consumedOffset } + 1)
-
-        successProducer.beginTransaction()
-        successProducer.sendOffsetsToTransaction(mapOf(consumedFrom to newOffset), groupMetadata)
-        results.forEach {
-            successProducer.send(ProducerRecord(it.renderRequest.replyTopic, it.renderRequest.messageId, it.pdf!!))
+        try {
+            successProducer.beginTransaction()
+            successProducer.sendOffsetsToTransaction(
+                mapOf(consumedFrom to newOffset),
+                consumerGroupMetadata(isFromRetryQueue)
+            )
+            results.forEach {
+                successProducer.send(ProducerRecord(it.renderRequest.replyTopic, it.renderRequest.messageId, it.pdf!!))
+            }
+            successProducer.commitTransaction()
+        } catch (e: Exception) {
+            logger.error("Failed to commit message to transaction. Aborting transaction.")
+            successProducer.abortTransaction()
         }
-        successProducer.commitTransaction()
+
     }
+
+    private fun consumerGroupMetadata(isFromRetryQueue: Boolean): ConsumerGroupMetadata? =
+        if (isFromRetryQueue) retryConsumer.groupMetadata() else consumer.groupMetadata()
 
     private suspend fun renderLetters(
         renderRequests: RenderRequests,
@@ -270,12 +279,6 @@ class PdfRequestConsumer(
             renderTopic
         }
 
-    private fun RenderRequests.groupMetadata() =
-        if (isFromRetryQueue) {
-            retryConsumer.groupMetadata()
-        } else {
-            consumer.groupMetadata()
-        }
 }
 
 private class PDFRequestAsyncDeserializer : Deserializer<PDFRequestAsync> {
@@ -310,8 +313,6 @@ private data class RenderResult(
     val consumedOffset: Long,
 )
 
-private class QueueCommitFailure(message: String, e: Throwable) : Exception(message, e)
-
 private fun createKafkaConfig(kafkaConfig: ApplicationConfig): Map<String, String> = mapOf(
     "bootstrap.servers" to kafkaConfig.getProperty("bootstrap.servers"),
     "security.protocol" to "SSL",
@@ -324,17 +325,18 @@ private fun createKafkaConfig(kafkaConfig: ApplicationConfig): Map<String, Strin
     "ssl.truststore.password" to kafkaConfig.getProperty("ssl.truststore.password"),
 )
 
-private fun createKafkaConsumerConfig(kafkaConfig: ApplicationConfig, paralellism: Int) = createKafkaConfig(kafkaConfig).plus(
-    mapOf(
-        "enable.auto.commit" to "false",
-        "group.id" to kafkaConfig.getProperty("group.id"),
-        "auto.offset.reset" to "earliest",
-        "partition.assignment.strategy" to "CooperativeStickyAssignor",
-        "group.protocol" to "CONSUMER",
-        "auto.create.topics.enable" to "false",
-        "max.poll.records" to paralellism.toString(),
+private fun createKafkaConsumerConfig(kafkaConfig: ApplicationConfig, paralellism: Int) =
+    createKafkaConfig(kafkaConfig).plus(
+        mapOf(
+            "enable.auto.commit" to "false",
+            "group.id" to kafkaConfig.getProperty("group.id"),
+            "auto.offset.reset" to "earliest",
+            "auto.create.topics.enable" to "false",
+            "max.poll.records" to paralellism,
+            "session.timeout.ms" to "120000",
+            "heartbeat.interval.ms" to "30000",
+        )
     )
-)
 
 private fun createKafkaProducerConfig(kafkaConfig: ApplicationConfig) = createKafkaConfig(kafkaConfig).plus(
     mapOf(

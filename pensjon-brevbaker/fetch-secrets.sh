@@ -68,10 +68,10 @@ getSecret "$secret_name" azuread
 getSecret pensjon-brevbaker-unleash-api-token unleash
 
 #kafka
-
-#nais aiven create -p nav-dev -e 100 -s aiven-pensjon-brevbaker-q2-local kafka pensjon-brevbaker-lokal pensjonsbrev
+#secret and AivenApplication created with:
+#nais aiven create -p nav-dev -e 999999 -s aiven-pensjon-brevbaker-q2-lokal kafka pensjon-brevbaker-lokal pensjonsbrev
 nais aiven tidy
-nais aiven get kafka aiven-pensjon-brevbaker-q2-local pensjonsbrev
+nais aiven get kafka aiven-pensjon-brevbaker-q2-lokal pensjonsbrev
 rm -rf ./secrets/kafka
 mv /tmp/aiven-secret* ./secrets/kafka
 

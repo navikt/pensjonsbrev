@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# secret ble laget med:
-#nais aiven create -p nav-dev -e 100 -s aiven-pensjon-pdf-bygger-async-q2-local kafka pensjon-pdf-bygger-async-q2 pensjonsbrev
+#secret and AivenApplication created with:
+#nais aiven create -p nav-dev -e 999999 -s aiven-pensjon-pdf-bygger-async-q2-lokal kafka pensjon-pdf-bygger-async-q2-lokal pensjonsbrev
 
 nais aiven tidy
-nais aiven get kafka aiven-pensjon-pdf-bygger-async-q2-local pensjonsbrev
+nais aiven get kafka aiven-pensjon-pdf-bygger-async-q2-lokal pensjonsbrev
 rm -rf ./secrets
 mv /tmp/aiven-secret* ./secrets
 
