@@ -8,6 +8,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
@@ -19,8 +20,6 @@ import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.render.Letter2Markup
-import no.nav.pensjon.brev.template.toScope
 import no.nav.pensjon.brev.testBrevbakerApp
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -47,7 +46,7 @@ class LetterRoutesITest {
         argument = bestillMarkupRequest.letterData,
         language = Language.Bokmal,
         felles = bestillMarkupRequest.felles
-    ).let { Letter2Markup.renderLetterOnly(it.toScope(), it.template) }
+    ).let { LetterTestRenderer.renderLetterOnly(it) }
         .let {
             with(bestillMarkupRequest) {
                 BestillRedigertBrevRequest(kode, letterData, felles, language, it)
