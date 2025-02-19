@@ -134,7 +134,6 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
         tidligereFamiliepleier = false,
         omsRettUtenTidsbegrensning = false,
         bosattUtland = false,
-        avdoed = Avdoed(navn = "", doedsdato = LocalDate.of(2020, 1, 1)),
         erSluttbehandling = false,
     )
 

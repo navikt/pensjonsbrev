@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
@@ -47,7 +46,6 @@ data class OmstillingsstoenadInnvilgelseDTO(
     val etterbetaling: OmstillingsstoenadEtterbetaling?,
     val tidligereFamiliepleier: Boolean = false,
     val bosattUtland: Boolean = false,
-    val avdoed: Avdoed?,
     val harUtbetaling: Boolean,
     val beregning: OmstillingsstoenadBeregning,
     val erSluttbehandling: Boolean = false,

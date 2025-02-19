@@ -18,7 +18,6 @@ class OmstillingsstoenadInnvilgelseTest {
             etterbetaling = mockk(),
             tidligereFamiliepleier = false,
             bosattUtland = false,
-            avdoed = null,
             erSluttbehandling = false,
             datoVedtakOmgjoering = null,
         )
@@ -38,7 +37,6 @@ class OmstillingsstoenadInnvilgelseTest {
             omsRettUtenTidsbegrensning = false,
             tidligereFamiliepleier = false,
             bosattUtland = false,
-            avdoed = null,
             erSluttbehandling = false,
             datoVedtakOmgjoering = null
         )
