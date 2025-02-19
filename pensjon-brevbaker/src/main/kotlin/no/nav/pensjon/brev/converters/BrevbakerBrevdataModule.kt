@@ -12,12 +12,7 @@ object BrevbakerBrevdataModule : SimpleModule() {
 
     private class GenericBrevdata : LinkedHashMap<String, Any>(), BrevbakerBrevdata
 
-    private class GenericRedigerbarBrevdata : LinkedHashMap<String, Any>(), RedigerbarBrevdata<BrevbakerBrevdata, BrevbakerBrevdata> {
-        override val saksbehandlerValg: BrevbakerBrevdata
-            get() = get("saksbehandlerValg") as BrevbakerBrevdata
-        override val pesysData: BrevbakerBrevdata
-            get() = get("pesysData") as BrevbakerBrevdata
-    }
+    private data class GenericRedigerbarBrevdata(override val saksbehandlerValg: GenericBrevdata, override val pesysData: GenericBrevdata) : RedigerbarBrevdata<GenericBrevdata, GenericBrevdata>
 
     init {
         addDeserializer(BrevbakerBrevdata::class.java, BrevdataDeserializer)
@@ -28,8 +23,7 @@ object BrevbakerBrevdataModule : SimpleModule() {
         override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): BrevbakerBrevdata = ctxt.readValue(parser, GenericBrevdata::class.java)
     }
     private object RedigerbarBrevdataDeserializer : JsonDeserializer<RedigerbarBrevdata<*,*>>() {
-        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): RedigerbarBrevdata<*,*> {
-            return ctxt.readValue(parser, GenericRedigerbarBrevdata::class.java)
-        }
+        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): RedigerbarBrevdata<*,*> =
+            ctxt.readValue(parser, GenericRedigerbarBrevdata::class.java)
     }
 }
