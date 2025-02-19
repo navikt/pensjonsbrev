@@ -297,20 +297,20 @@ function RedigerBrev({
     );
   };
 
-  // const reservasjonQuery = useQuery({
-  //   queryKey: getBrevReservasjon.querykey(brev.info.id),
-  //   queryFn: () => getBrevReservasjon.queryFn(brev.info.id),
-  //   refetchInterval: 10_000,
-  // });
+  const reservasjonQuery = useQuery({
+    queryKey: getBrevReservasjon.querykey(brev.info.id),
+    queryFn: () => getBrevReservasjon.queryFn(brev.info.id),
+    refetchInterval: 10_000,
+  });
 
-  // useEffect(() => {
-  //   const timoutId = setTimeout(() => {
-  //     if (editorState.isDirty) {
-  //       brevtekstMutation.mutate({ redigertBrev: editorState.redigertBrev });
-  //     }
-  //   }, 5000);
-  //   return () => clearTimeout(timoutId);
-  // }, [editorState.isDirty, editorState.redigertBrev, brevtekstMutation]);
+  useEffect(() => {
+    const timoutId = setTimeout(() => {
+      if (editorState.isDirty) {
+        brevtekstMutation.mutate({ redigertBrev: editorState.redigertBrev });
+      }
+    }, 5000);
+    return () => clearTimeout(timoutId);
+  }, [editorState.isDirty, editorState.redigertBrev, brevtekstMutation]);
 
   useEffect(() => {
     if (editorState.redigertBrevHash !== brev.redigertBrevHash) {
@@ -351,7 +351,7 @@ function RedigerBrev({
           ),
         )}
       >
-        {/* <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} /> */}
+        <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
         {vilTilbakestilleMal && (
           <TilbakestillMalModal
             brevId={brev.info.id}
