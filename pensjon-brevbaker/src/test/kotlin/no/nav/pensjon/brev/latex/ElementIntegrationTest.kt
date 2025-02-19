@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.latex
 
+import no.nav.brev.brevbaker.PDF_BUILDER_URL
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.brev.brevbaker.renderTestPDF
@@ -12,13 +13,16 @@ import org.junit.jupiter.api.Test
 @Tag(TestTags.INTEGRATION_TEST)
 class ElementIntegrationTest {
 
+    private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
+
+
     @Test
     fun `tom title1 burde ikke feile`() {
         outlineTestTemplate<EmptyBrevdata> {
             title1 { }
             paragraph { text(Bokmal to "Test") }
             title1 { text(Bokmal to "med tekst") }
-        }.renderTestPDF("elementTest tom title1")
+        }.renderTestPDF("elementTest tom title1", pdfByggerService = laTeXCompilerService)
     }
 
     @Test
@@ -27,7 +31,7 @@ class ElementIntegrationTest {
             title2 { }
             paragraph { text(Bokmal to "Test") }
             title2 { text(Bokmal to "med tekst") }
-        }.renderTestPDF("elementTest tom title2")
+        }.renderTestPDF("elementTest tom title2", pdfByggerService = laTeXCompilerService)
     }
 
     @Test
@@ -35,6 +39,6 @@ class ElementIntegrationTest {
         outlineTestTemplate<EmptyBrevdata> {
             title2 { text(Bokmal to "Test") }
             paragraph { }
-        }.renderTestPDF("elementTest tom paragraph")
+        }.renderTestPDF("elementTest tom paragraph", pdfByggerService = laTeXCompilerService)
     }
 }

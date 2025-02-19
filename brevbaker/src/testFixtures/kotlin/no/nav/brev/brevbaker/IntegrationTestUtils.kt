@@ -76,6 +76,7 @@ fun renderTestPdfOutline(
     brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
     attachments: List<AttachmentTemplate<LangBokmal, EmptyBrevdata>> = emptyList(),
     title: String? = null,
+    pdfByggerService: PDFByggerService = laTeXCompilerService,
     outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
 ) {
     val template = createTemplate(
@@ -93,7 +94,7 @@ fun renderTestPdfOutline(
         attachments.forEach { includeAttachment(it) }
     }
     val letter = Letter(template, Unit, Bokmal, felles ?: Fixtures.fellesAuto)
-    letter.renderTestPDF(testName, Path.of("build/$outputFolder"))
+    letter.renderTestPDF(testName, Path.of("build/$outputFolder"), pdfByggerService)
 }
 
 fun renderTestVedleggPdf(
@@ -102,6 +103,7 @@ fun renderTestVedleggPdf(
     includeSakspart: Boolean,
     outputFolder: String,
     felles: Felles? = null,
+    pdfByggerService: PDFByggerService = laTeXCompilerService,
     outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
 ) {
     val vedlegg: AttachmentTemplate<LangBokmal, EmptyBrevdata> = createAttachment<LangBokmal, EmptyBrevdata>(
@@ -112,13 +114,14 @@ fun renderTestVedleggPdf(
     ) {
         outlineInit()
     }
-    renderTestPdfOutline(attachments = listOf(vedlegg), outputFolder = outputFolder, testName = testName, title = title, felles = felles) { }
+    renderTestPdfOutline(attachments = listOf(vedlegg), outputFolder = outputFolder, testName = testName, title = title, felles = felles, pdfByggerService = pdfByggerService) {}
 }
 
 
 fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
     pdfFileName: String,
     path: Path = Path.of("build", "test_pdf"),
+    pdfByggerService: PDFByggerService = laTeXCompilerService
 ): Letter<ParameterType> {
     if (!FeatureToggleSingleton.isInitialized) {
         FeatureToggleSingleton.init(object : FeatureToggleService {
@@ -129,7 +132,7 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
     Letter2Markup.render(this)
         .let {
             runBlocking {
-                laTeXCompilerService.producePDF(
+                pdfByggerService.producePDF(
                     PDFRequest(
                         it.letterMarkup,
                         it.attachments,
@@ -207,8 +210,8 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
         outline(function)
     }
 
-fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = Fixtures.felles) =
-    Letter(this, EmptyBrevdata, Bokmal, felles).renderTestPDF(fileName)
+fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = Fixtures.felles, pdfByggerService: PDFByggerService = laTeXCompilerService) =
+    Letter(this, EmptyBrevdata, Bokmal, felles).renderTestPDF(fileName, pdfByggerService = pdfByggerService)
 
 internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate(
     name = "test",
