@@ -24,7 +24,7 @@ fun Application.brevRouting(
 ) =
     routing {
         val autobrev = AutobrevTemplateResource("autobrev", brevProvider.hentAutobrevmaler(), latexCompilerService, latexAsyncCompilerService)
-        val redigerbareBrev = RedigerbarTemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), latexCompilerService, latexAsyncCompilerService)
+        val redigerbareBrev = RedigerbarTemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), latexCompilerService)
 
         route("/templates") {
             templateRoutes(autobrev)
@@ -37,10 +37,9 @@ fun Application.brevRouting(
                 redigerbarRoutes(redigerbareBrev)
                 if (latexAsyncCompilerService != null) {
                     post<BestillBrevRequestAsync<Brevkode.Automatisk>>("/${autobrev.name}/pdfAsync") { brevbestillingAsync ->
-                        val brevbestilling = brevbestillingAsync.brevRequest
-                        installBrevkodeInCallContext(brevbestilling.kode)
+                        installBrevkodeInCallContext(brevbestillingAsync.kode)
                         autobrev.renderPdfAsync(brevbestillingAsync)
-                        autobrev.countLetter(brevbestilling.kode)
+                        autobrev.countLetter(brevbestillingAsync.kode)
                         call.respond(HttpStatusCode.OK)
                     }
                 }

@@ -11,7 +11,7 @@ import java.util.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-internal data class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
+data class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
 
 internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
     private val languageSettings = pensjonLatexSettings
