@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.InvalidListDeclarationException
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
@@ -135,7 +136,7 @@ class TemplateListTest {
         }
 
         assertThat(
-            Letter2Markup.render(Letter(doc, Unit, Bokmal, Fixtures.felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(doc, Unit, Bokmal, Fixtures.felles)).letterMarkup,
             hasBlocks {
                 title1 { literal("this text should render") }
                 paragraph { }

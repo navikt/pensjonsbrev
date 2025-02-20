@@ -17,11 +17,13 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.InterneDataklasser
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.OutlineElement
 import no.nav.pensjon.brev.template.createAttachment
@@ -93,7 +95,7 @@ fun renderTestPdfOutline(
         outline { outlineInit() }
         attachments.forEach { includeAttachment(it) }
     }
-    val letter = Letter(template, Unit, Bokmal, felles ?: Fixtures.fellesAuto)
+    val letter = LetterTestImpl(template, Unit, Bokmal, felles ?: Fixtures.fellesAuto)
     letter.renderTestPDF(testName, Path.of("build/$outputFolder"), pdfByggerService)
 }
 
@@ -210,8 +212,9 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
         outline(function)
     }
 
+@OptIn(InterneDataklasser::class)
 fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = Fixtures.felles, pdfByggerService: PDFByggerService = laTeXCompilerService) =
-    Letter(this, EmptyBrevdata, Bokmal, felles).renderTestPDF(fileName, pdfByggerService = pdfByggerService)
+    LetterImpl(this, EmptyBrevdata, Bokmal, felles).renderTestPDF(fileName, pdfByggerService = pdfByggerService)
 
 internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate(
     name = "test",

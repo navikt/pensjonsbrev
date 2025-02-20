@@ -64,6 +64,9 @@ kotlin {
 tasks {
     kotlin {
         jvmToolchain(apiModelJavaTarget.toInt())
+        compileTestKotlin {
+            compilerOptions.optIn.add("no.nav.pensjon.brev.template.InterneDataklasser")
+        }
     }
     compileJava {
         targetCompatibility = apiModelJavaTarget

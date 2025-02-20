@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -33,12 +33,12 @@ class LetterTest {
     @Test
     fun `constructor validates that template supports language`() {
         assertThrows<IllegalArgumentException> {
-            Letter(template, TestData("jada"), Language.Nynorsk, felles)
+            LetterImpl(template, TestData("jada"), Language.Nynorsk, felles)
         }
     }
 
     @Test
     fun `can construct letter with supported language`() {
-        Letter(template, TestData("jada"), Language.Bokmal, felles)
+        LetterImpl(template, TestData("jada"), Language.Bokmal, felles)
     }
 }

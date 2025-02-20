@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler
 
+import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
@@ -13,7 +14,7 @@ class UngUfoerAutoITest {
 
     @Test
     fun pdftest() {
-        Letter(
+        LetterTestImpl(
             UngUfoerAuto.template,
             Fixtures.create<UngUfoerAutoDto>(),
             Language.Bokmal,
@@ -23,7 +24,7 @@ class UngUfoerAutoITest {
 
     @Test
     fun testHtml() {
-        Letter(
+        LetterTestImpl(
             UngUfoerAuto.template,
             Fixtures.create<UngUfoerAutoDto>(),
             Language.Nynorsk,
