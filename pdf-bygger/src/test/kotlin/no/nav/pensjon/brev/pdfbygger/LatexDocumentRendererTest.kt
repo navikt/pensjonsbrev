@@ -4,6 +4,7 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
 import com.natpryce.hamkrest.equalTo
 import kotlinx.coroutines.runBlocking
+import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.pdfbygger.Fixtures.felles
@@ -15,7 +16,6 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.DocumentFile
-import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import kotlin.test.Test
@@ -83,7 +83,7 @@ class LatexDocumentRendererTest {
 
         val letter = Letter(EksempelbrevRedigerbart.template, letterData, Language.Bokmal, felles)
 
-        val letterMarkup = Letter2Markup.render(letter)
+        val letterMarkup = LetterTestRenderer.render(letter)
 
         val pdfRequest = PDFRequest(
             letterMarkup = letterMarkup.letterMarkup,
@@ -114,7 +114,7 @@ class LatexDocumentRendererTest {
         )
         runBlocking {
             val markup =
-                Letter2Markup.render(Letter(outlineTestTemplate(outline), EmptyBrevdata, Language.Bokmal, felles))
+                LetterTestRenderer.render(Letter(outlineTestTemplate(outline), EmptyBrevdata, Language.Bokmal, felles))
 
             val latexDocument = LatexDocumentRenderer.render(
                 PDFRequest(

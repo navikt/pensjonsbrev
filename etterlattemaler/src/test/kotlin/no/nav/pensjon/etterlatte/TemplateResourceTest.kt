@@ -1,13 +1,13 @@
 package no.nav.pensjon.etterlatte
 
 import io.ktor.util.reflect.instanceOf
+import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.TestTags.MANUAL_TEST
 import no.nav.brev.brevbaker.jacksonObjectMapper
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.etterlatte.maler.BrevDTO
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
@@ -79,7 +79,7 @@ class TemplateResourceTest {
             fixtures,
             spraak,
             Fixtures.felles,
-        ).let { Letter2Markup.render(it) }
+        ).let { LetterTestRenderer.render(it) }
             .also { json ->
                 Paths.get("build/test_json")
                     .also { Files.createDirectories(it) }

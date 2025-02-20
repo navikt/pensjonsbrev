@@ -32,7 +32,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           </Link>
         </Alert>
         <Alert size="small" variant="info">
-          <BodyShort>
+          <BodyShort size="small">
             Brev sendes til brukers folkeregistrerte adresse eller annen foretrukken kanal. Legg til mottaker dersom
             brev skal sendes til utenlandsk adresse, fullmektig, verge eller dødsbo.
           </BodyShort>

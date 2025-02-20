@@ -14,11 +14,14 @@ import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.util.date.*
+import no.nav.brev.brevbaker.AllTemplates
+import no.nav.brev.brevbaker.LatexCompileException
+import no.nav.brev.brevbaker.LatexInvalidException
+import no.nav.brev.brevbaker.LatexTimeoutException
 import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.converters.LetterResponseFileConverter
-import no.nav.pensjon.brev.latex.*
-import no.nav.brev.brevbaker.AllTemplates
+import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig

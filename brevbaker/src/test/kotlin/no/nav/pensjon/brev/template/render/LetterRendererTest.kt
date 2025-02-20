@@ -39,7 +39,7 @@ class LetterRendererTest {
         felles
     )
 
-    class MockRenderer : LetterRenderer<Document>() {
+    internal class MockRenderer : LetterRenderer<Document>() {
         var letterScope: ExpressionScope<*>? = null
         var template: LetterTemplate<*, *>? = null
 

@@ -12,7 +12,7 @@ data class BestillBrevRequest<T : Brevkode<T>>(
     val letterData: BrevbakerBrevdata,
     val felles: Felles,
     val language: LanguageCode,
-)
+) : BrevRequest<T>
 
 @Suppress("unused")
 data class BestillBrevRequestAsync<T : Brevkode<T>>(
@@ -28,4 +28,6 @@ data class BestillRedigertBrevRequest<T : Brevkode<T>>(
     val felles: Felles,
     val language: LanguageCode,
     val letterMarkup: LetterMarkup,
-)
+) : BrevRequest<T>
+
+interface BrevRequest<T : Brevkode<T>>
