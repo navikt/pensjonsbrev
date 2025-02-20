@@ -12,6 +12,8 @@ data class AvslagUttakFoerNormertPensjonsalderAutoDto(
     val uttaksgrad: Int,
     val normertPensjonsalder: NormertPensjonsalder,
     val virkFom: LocalDate,
+    val totalPensjonMedAFP: Kroner,
+    val afpBruktIBeregning: Boolean
 ) : BrevbakerBrevdata
 
 data class NormertPensjonsalder(
