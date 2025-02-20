@@ -20,11 +20,13 @@ import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
+import java.util.stream.Collectors
+import java.util.stream.Stream
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
 // Consumer will be timed out after 5 minutes if no polls occur
-private val QUEUE_READ_TIMEOUT = 120.seconds.toJavaDuration()
+private val QUEUE_READ_TIMEOUT = 1.seconds.toJavaDuration()
 private val RETRY_QUEUE_READ_TIMEOUT = 1.seconds.toJavaDuration()
 
 class PdfRequestConsumer(
@@ -199,7 +201,7 @@ class PdfRequestConsumer(
             }
             successProducer.commitTransaction()
         } catch (e: Exception) {
-            logger.error("Failed to commit message to transaction. Aborting transaction.")
+            logger.error("Failed to commit message to transaction. Aborting transaction. ")
             successProducer.abortTransaction()
         }
 
@@ -312,12 +314,13 @@ private class RebalanceListener(
     val onAssigned: (MutableCollection<TopicPartition>) -> Unit
 ) : ConsumerRebalanceListener {
     override fun onPartitionsRevoked(partitions: MutableCollection<TopicPartition>?) {
-        partitions?.let { onRevoked(it) }
+        partitions?.let { runBlocking { onRevoked(it) } }
     }
 
     override fun onPartitionsAssigned(partitions: MutableCollection<TopicPartition>?) {
-        partitions?.let { onAssigned(it) }
+        partitions?.let { runBlocking { onAssigned(it) } }
     }
+
 
 }
 
@@ -331,17 +334,19 @@ private class ProducerManager<V>(val producerConfig: Map<String, String>) {
     }
 
     fun createProducersForTopicPartitions(partitions: MutableCollection<TopicPartition>) {
-        partitions.forEach { topicPartition ->
-            val transactionId = transactionId(topicPartition.topic(), topicPartition.partition())
-            producers.getOrPut(transactionId) {
-                KafkaProducer(
-                    producerConfig
-                        .plus("transactional.id" to transactionId),
-                    StringSerializer(),
-                    PDFByggerSerializer<V>(),
-                ).also { it.initTransactions() }
-            }
-        }
+        partitions
+            .parallelStream()
+            .map { topicPartition ->
+                val transactionId = transactionId(topicPartition.topic(), topicPartition.partition())
+                producers.getOrPut(transactionId) {
+                    KafkaProducer(
+                        producerConfig
+                            .plus("transactional.id" to transactionId),
+                        StringSerializer(),
+                        PDFByggerSerializer<V>(),
+                    ).also { it.initTransactions() }
+                }
+            }.collect(Collectors.toList())
     }
 
     fun getProducer(consumedTopic: String, consumedPartition: Int): KafkaProducer<String, V> =
