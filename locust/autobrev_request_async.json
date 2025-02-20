@@ -1,7 +1,6 @@
 {
   "replyTopic": "pensjonsbrev.pdf-bygger-render-success-test-q2",
   "messageId": "TEST_ID",
-  "brevRequest": {
   "kode": "UT_UNG_UFOER_20_AAR_AUTO",
   "language": "BOKMAL",
   "letterData": {
@@ -133,4 +132,4 @@
     },
     "signerendeSaksbehandlere": null
   }
-}}
+}

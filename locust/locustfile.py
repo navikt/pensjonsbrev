@@ -9,7 +9,7 @@ import uuid
 payload = open(os.path.join(os.path.dirname(__file__), 'autobrev_request_async.json'), "r").read()
 
 class BrevbakerLoadTest(FastHttpUser):
-    token = azuread.fetch_token()
+    #token = azuread.fetch_token()
     wait_time = between(0,0)
     @task
     def load_test(self):
@@ -17,13 +17,13 @@ class BrevbakerLoadTest(FastHttpUser):
         #headers = {'Content-Type': 'application/json'}
 
         #Test av asynkront kall lokalt:
-        #headers = {'Content-Type': 'application/json'}
+        headers = {'Content-Type': 'application/json'}
 
         #Test av synkront kall på clusteret:
         #headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token(), 'X-Request-ID': str(uuid.uuid4())}
 
         # Test av async på clusteret:
-        headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token(), 'X-Request-ID': str(uuid.uuid4())}
+        #headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token(), 'X-Request-ID': str(uuid.uuid4())}
         self.client.post("/letter/autobrev/pdfAsync", payload, headers=headers)
 
     def access_token(self):
