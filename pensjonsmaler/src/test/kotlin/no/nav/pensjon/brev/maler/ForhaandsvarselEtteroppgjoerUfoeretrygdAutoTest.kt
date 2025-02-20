@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.maler
 
+import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdDto
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Letter
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 class ForhaandsvarselEtteroppgjoerUfoeretrygdAutoTest {
     @Test
     fun testPdf() {
-        Letter(
+        LetterTestImpl(
             ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
             Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>(),
             Language.English,
@@ -24,7 +24,7 @@ class ForhaandsvarselEtteroppgjoerUfoeretrygdAutoTest {
 
     @Test
     fun testHtml() {
-        Letter(
+        LetterTestImpl(
             ForhaandsvarselEtteroppgjoerUfoeretrygdAuto.template,
             Fixtures.create<ForhaandsvarselEtteroppgjoerUfoeretrygdDto>(),
             Language.Nynorsk,

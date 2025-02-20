@@ -50,6 +50,10 @@ tasks {
     }
 }
 
+tasks.compileTestKotlin {
+    compilerOptions.optIn.add("no.nav.pensjon.brev.template.InterneDataklasser")
+}
+
 tasks {
     test {
         useJUnitPlatform {
