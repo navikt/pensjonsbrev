@@ -64,4 +64,5 @@ spec:
       value: {{kafka.pdf-render-retry-topic}}
     - name: KAFKA_CONSUMER_GROUP_ID
       value: {{kafka.consumer-group-id}}
-    - name: JAVA_TOOL_OPTIONS=-XX:ActiveProcessorCount=4
+    - name: JAVA_TOOL_OPTIONS
+      value: -XX:ActiveProcessorCount=4
