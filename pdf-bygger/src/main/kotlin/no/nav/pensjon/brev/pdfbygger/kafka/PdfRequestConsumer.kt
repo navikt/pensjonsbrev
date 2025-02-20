@@ -36,11 +36,12 @@ class PdfRequestConsumer(
     private val parallelism = Runtime.getRuntime().availableProcessors()
     private val parallelismSemaphore = parallelism.takeIf { it > 0 }?.let { Semaphore(it) }
         ?: throw IllegalStateException("Not enough cores to run async worker")
-    private val retryProducers = ConcurrentHashMap<String, KafkaProducer<String, PDFRequestAsync>>()
-    private val successProducers = ConcurrentHashMap<String, KafkaProducer<String, PDFCompilationResponse.Base64PDF>>()
-    private var shuttingDown = false
+
     private val consumerConfig = createKafkaConsumerConfig(kafkaConfig, parallelism)
     private val producerConfig = createKafkaProducerConfig(kafkaConfig)
+    private val retryProducers = ProducerManager<PDFRequestAsync>(producerConfig)
+    private val successProducers = ProducerManager<PDFCompilationResponse.Base64PDF>(producerConfig)
+    private var shuttingDown = false
     private lateinit var flow: Flow<RenderRequests>
     private lateinit var consumerJob: Job
 
@@ -55,8 +56,18 @@ class PdfRequestConsumer(
         KafkaConsumer(consumerConfig, StringDeserializer(), PDFRequestAsyncDeserializer())
 
     fun start() {
-        consumer.subscribe(listOf(renderTopic))
-        retryConsumer.subscribe(listOf(retryTopic))
+        val rebalanceListener = RebalanceListener(
+            onRevoked = { topicPartitions ->
+                retryProducers.closeProducersForTopicPartitions(topicPartitions)
+                successProducers.closeProducersForTopicPartitions(topicPartitions)
+            },
+            onAssigned = { topicPartitions ->
+                retryProducers.createProducersForTopicPartitions(topicPartitions)
+                successProducers.createProducersForTopicPartitions(topicPartitions)
+            }
+        )
+        consumer.subscribe(listOf(renderTopic), rebalanceListener)
+        retryConsumer.subscribe(listOf(retryTopic), rebalanceListener)
         flow = flow()
         @OptIn(DelicateCoroutinesApi::class)
         consumerJob = flow.launchIn(GlobalScope)
@@ -66,7 +77,7 @@ class PdfRequestConsumer(
         shuttingDown = true
     }
 
-    fun flow() =
+    private fun flow() =
         flow {
             while (true) {
                 logger.info("Polling render retry queue")
@@ -98,8 +109,8 @@ class PdfRequestConsumer(
                 logger.info("Closing consumers and producers")
                 consumer.close()
                 retryConsumer.close()
-                retryProducers.forEach { it.value.close() }
-                successProducers.forEach { it.value.close() }
+                successProducers.closeAll()
+                retryProducers.closeAll()
             }
 
     private fun produceSuccessesForTopic(
@@ -126,10 +137,10 @@ class PdfRequestConsumer(
             .sortedBy { it.consumedOffset } // make sure higher offsets are not committed before lower ones
             .forEach {
                 if (it.pdf != null) {
-                    val producer = getOrCreateSuccessProducer(renderTopic, it.consumedPartiton)
+                    val producer = successProducers.getProducer(renderTopic, it.consumedPartiton)
                     sendSingleSynchronous(it, it.renderRequest.replyTopic, it.pdf, producer, consumer.groupMetadata())
                 } else {
-                    val producer = getOrCreateRetryProducer(it.consumedTopic, it.consumedPartiton)
+                    val producer = retryProducers.getProducer(it.consumedTopic, it.consumedPartiton)
                     sendSingleSynchronous(it, retryTopic, it.renderRequest, producer, consumer.groupMetadata())
                 }
             }
@@ -174,7 +185,7 @@ class PdfRequestConsumer(
         isFromRetryQueue: Boolean,
         consumedTopic: String
     ) {
-        val successProducer = getOrCreateSuccessProducer(consumedTopic, consumedPartition)
+        val successProducer = successProducers.getProducer(consumedTopic, consumedPartition)
         val consumedFrom = TopicPartition(consumedTopic, consumedPartition)
         val newOffset = OffsetAndMetadata(results.maxOf { it.consumedOffset } + 1)
         try {
@@ -230,47 +241,6 @@ class PdfRequestConsumer(
         return null
     }
 
-    private fun getOrCreateRetryProducer(
-        consumedTopic: String,
-        consumedPartition: Int
-    ): KafkaProducer<String, PDFRequestAsync> {
-        val transactionId = transactionId(consumedTopic, consumedPartition)
-        return retryProducers.getOrPut(transactionId) {
-            KafkaProducer(
-                producerConfig
-                    .plus("transactional.id" to transactionId),
-                StringSerializer(),
-                PDFRequestAsyncSerializer(),
-            ).also { it.initTransactions() }
-        }
-    }
-
-    private fun getOrCreateSuccessProducer(
-        consumedTopic: String,
-        consumedPartition: Int
-    ): KafkaProducer<String, PDFCompilationResponse.Base64PDF> {
-        val transactionId = transactionId(consumedTopic, consumedPartition)
-        return successProducers.getOrPut(transactionId) {
-            KafkaProducer(
-                producerConfig
-                    .plus("transactional.id" to transactionId),
-                StringSerializer(),
-                Base64PDFSerializer(),
-            ).also { it.initTransactions() }
-        }
-    }
-
-    private fun transactionId(topic: String, partition: Int) = "$topic-$partition"
-
-    /*
-        private fun cleanUpProducers(topicPartition: MutableCollection<TopicPartition>) {
-            topicPartition.forEach {
-                retryProducers[transactionId(it.topic(), it.partition())]?.close()
-                successProducers[transactionId(it.topic(), it.partition())]?.close()
-            }
-        }
-    */
-
     private fun RenderRequests.topic() =
         if (isFromRetryQueue) {
             retryTopic
@@ -286,23 +256,17 @@ private class PDFRequestAsyncDeserializer : Deserializer<PDFRequestAsync> {
         mapper.readValue(data, PDFRequestAsync::class.java)
 }
 
-private class PDFRequestAsyncSerializer : Serializer<PDFRequestAsync> {
+private class PDFByggerSerializer<T> : Serializer<T> {
     private val mapper = pdfByggerObjectMapper()
-    override fun serialize(topic: String?, data: PDFRequestAsync): ByteArray = mapper.writeValueAsBytes(data)
+    override fun serialize(topic: String?, data: T): ByteArray = mapper.writeValueAsBytes(data)
 }
-
-private class Base64PDFSerializer : Serializer<PDFCompilationResponse.Base64PDF> {
-    private val mapper = pdfByggerObjectMapper()
-    override fun serialize(topic: String?, data: PDFCompilationResponse.Base64PDF): ByteArray =
-        mapper.writeValueAsBytes(data)
-}
-
 
 data class RenderRequests(
     val requests: ConsumerRecords<String, PDFRequestAsync>,
     val isFromRetryQueue: Boolean,
 )
 
+private fun transactionId(topic: String, partition: Int) = "$topic-$partition"
 
 private data class RenderResult(
     val renderRequest: PDFRequestAsync,
@@ -342,3 +306,47 @@ private fun createKafkaProducerConfig(kafkaConfig: ApplicationConfig) = createKa
         "enable.idempotence" to "true"
     )
 )
+
+private class RebalanceListener(
+    val onRevoked: (MutableCollection<TopicPartition>) -> Unit,
+    val onAssigned: (MutableCollection<TopicPartition>) -> Unit
+) : ConsumerRebalanceListener {
+    override fun onPartitionsRevoked(partitions: MutableCollection<TopicPartition>?) {
+        partitions?.let { onRevoked(it) }
+    }
+
+    override fun onPartitionsAssigned(partitions: MutableCollection<TopicPartition>?) {
+        partitions?.let { onAssigned(it) }
+    }
+
+}
+
+private class ProducerManager<V>(val producerConfig: Map<String, String>) {
+
+    val producers = ConcurrentHashMap<String, KafkaProducer<String, V>>()
+    fun closeProducersForTopicPartitions(partitions: MutableCollection<TopicPartition>) {
+        partitions.forEach {
+            producers[transactionId(it.topic(), it.partition())]?.close()
+        }
+    }
+
+    fun createProducersForTopicPartitions(partitions: MutableCollection<TopicPartition>) {
+        partitions.forEach { topicPartition ->
+            val transactionId = transactionId(topicPartition.topic(), topicPartition.partition())
+            producers.getOrPut(transactionId) {
+                KafkaProducer(
+                    producerConfig
+                        .plus("transactional.id" to transactionId),
+                    StringSerializer(),
+                    PDFByggerSerializer<V>(),
+                ).also { it.initTransactions() }
+            }
+        }
+    }
+
+    fun getProducer(consumedTopic: String, consumedPartition: Int): KafkaProducer<String, V> =
+        producers[transactionId(consumedTopic, consumedPartition)]
+            ?: throw IllegalArgumentException("There was no producer found for topic $consumedTopic and partition $consumedPartition")
+
+    fun closeAll() = producers.forEach { it.value.close() }
+}
