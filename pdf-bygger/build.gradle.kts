@@ -62,6 +62,7 @@ dependencies {
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
 
     testImplementation(project(":brevbaker"))
+    testImplementation(testFixtures(project(":brevbaker")))
 }
 
 application {
