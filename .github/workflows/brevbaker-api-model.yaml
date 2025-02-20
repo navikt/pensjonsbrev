@@ -21,6 +21,8 @@ env:
 jobs:
   changes:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       common: ${{ steps.changes.outputs.common }}
       pensjonsbrev: ${{ steps.changes.outputs.pensjonsbrev }}
