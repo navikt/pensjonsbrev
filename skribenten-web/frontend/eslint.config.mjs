@@ -15,65 +15,71 @@ import { FlatCompat } from "@eslint/eslintrc";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
+  baseDirectory: __dirname,
+  recommendedConfig: js.configs.recommended,
+  allConfig: js.configs.all,
 });
 
-export default [{
+export default [
+  {
     ignores: ["src/vite-env.d.ts", "dist", "**/vite.config.ts", "src/routeTree.gen.ts"],
-}, ...fixupConfigRules(compat.extends(
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@tanstack/eslint-plugin-query/recommended",
-    "prettier",
-    "plugin:unicorn/recommended",
-    "plugin:testing-library/react",
-    "plugin:react-hooks/recommended",
-)), {
+  },
+  ...fixupConfigRules(
+    compat.extends(
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@tanstack/eslint-plugin-query/recommended",
+      "prettier",
+      "plugin:unicorn/recommended",
+      "plugin:testing-library/react",
+      "plugin:react-hooks/recommended",
+    ),
+  ),
+  {
     files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
     plugins: {
-        react,
-        prettier,
-        "@typescript-eslint": fixupPluginRules(typescriptEslint),
-        "testing-library": fixupPluginRules(testingLibrary),
-        "react-hooks": fixupPluginRules(reactHooks),
-        "simple-import-sort": simpleImportSort,
+      react,
+      prettier,
+      "@typescript-eslint": fixupPluginRules(typescriptEslint),
+      "testing-library": fixupPluginRules(testingLibrary),
+      "react-hooks": fixupPluginRules(reactHooks),
+      "simple-import-sort": simpleImportSort,
     },
 
     languageOptions: {
-        globals: {
-            ...globals.browser,
-        },
+      globals: {
+        ...globals.browser,
+      },
 
-        parser: tsParser,
-        ecmaVersion: "latest",
-        sourceType: "module",
+      parser: tsParser,
+      ecmaVersion: "latest",
+      sourceType: "module",
 
-        parserOptions: {
-            project: true,
-            tsconfigRootDir: "/Users/mop/IdeaProjects/pensjonsbrev/skribenten-web/frontend",
-        },
+      parserOptions: {
+        project: true,
+        tsconfigRootDir: __dirname,
+      },
     },
 
     rules: {
-        "no-console": "error",
-        "react/jsx-boolean-value": "error",
-        "react/jsx-key": "error",
-        "react/jsx-sort-props": "error",
-        "prettier/prettier": ["error"],
-        "import/prefer-default-export": "off",
-        "simple-import-sort/imports": "error",
-        "simple-import-sort/exports": "error",
-        "testing-library/render-result-naming-convention": "off",
-        "@tanstack/query/exhaustive-deps": "off",
-        "@typescript-eslint/consistent-type-imports": ["warn"],
-        "@typescript-eslint/switch-exhaustiveness-check": "error",
-        "react/no-unused-prop-types": "error",
-        "unicorn/filename-case": "off",
-        "unicorn/no-null": "off",
-        "unicorn/no-useless-undefined": "off",
-        "unicorn/no-array-callback-reference": "off",
-        "unicorn/prevent-abbreviations": "off",
+      "no-console": "error",
+      "react/jsx-boolean-value": "error",
+      "react/jsx-key": "error",
+      "react/jsx-sort-props": "error",
+      "prettier/prettier": ["error"],
+      "import/prefer-default-export": "off",
+      "simple-import-sort/imports": "error",
+      "simple-import-sort/exports": "error",
+      "testing-library/render-result-naming-convention": "off",
+      "@tanstack/query/exhaustive-deps": "off",
+      "@typescript-eslint/consistent-type-imports": ["warn"],
+      "@typescript-eslint/switch-exhaustiveness-check": "error",
+      "react/no-unused-prop-types": "error",
+      "unicorn/filename-case": "off",
+      "unicorn/no-null": "off",
+      "unicorn/no-useless-undefined": "off",
+      "unicorn/no-array-callback-reference": "off",
+      "unicorn/prevent-abbreviations": "off",
     },
-}];
+  },
+];
