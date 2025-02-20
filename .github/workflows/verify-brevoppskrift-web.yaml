@@ -11,6 +11,8 @@ on:
 jobs:
   verify:
     name: Verify tests, lint and typescript errors
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
