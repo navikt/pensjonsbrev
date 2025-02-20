@@ -28,6 +28,10 @@ spec:
     min: 1
     max: {{maxReplicas}}
     cpuThresholdPercentage: 50
+  prometheus:
+    enabled: true
+    path: "/metrics"
+    port: "8080"
   observability:
     autoInstrumentation:
       enabled: true
@@ -42,6 +46,7 @@ spec:
       memory: "1024Mi"
     limits:
       memory: "4096Mi"
+      cpu: "2"
   filesFrom:
     - emptyDir:
         medium: Memory
@@ -59,3 +64,4 @@ spec:
       value: {{kafka.pdf-render-retry-topic}}
     - name: KAFKA_CONSUMER_GROUP_ID
       value: {{kafka.consumer-group-id}}
+    - name: JAVA_TOOL_OPTIONS=-XX:ActiveProcessorCount=4
