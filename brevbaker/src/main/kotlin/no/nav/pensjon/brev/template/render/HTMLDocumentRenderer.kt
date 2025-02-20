@@ -15,7 +15,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import java.time.format.FormatStyle
 import java.util.*
 
-object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
+internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
 
     private val languageSettings = pensjonHTMLSettings
     private val css = getResource("html/style.css").toString(Charsets.UTF_8)
