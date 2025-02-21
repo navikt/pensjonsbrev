@@ -41,7 +41,9 @@ class PdfRequestConsumer(
     private val producerConfig = createKafkaProducerConfig(kafkaConfig)
     private val retryProducers = ProducerManager<PDFRequestAsync>(producerConfig)
     private val successProducers = ProducerManager<PDFCompilationResponse.Base64PDF>(producerConfig)
+    private val retrySuccessProducers = ProducerManager<PDFCompilationResponse.Base64PDF>(producerConfig)
     private var shuttingDown = false
+    private var isHealthy = true
     private lateinit var flow: Flow<RenderRequests>
     private lateinit var consumerJob: Job
 
@@ -56,18 +58,8 @@ class PdfRequestConsumer(
         KafkaConsumer(consumerConfig, StringDeserializer(), PDFRequestAsyncDeserializer())
 
     fun start() {
-        val rebalanceListener = RebalanceListener(
-            onRevoked = { topicPartitions ->
-                retryProducers.closeProducersForTopicPartitions(topicPartitions)
-                successProducers.closeProducersForTopicPartitions(topicPartitions)
-            },
-            onAssigned = { topicPartitions ->
-                retryProducers.createProducersForTopicPartitions(topicPartitions)
-                successProducers.createProducersForTopicPartitions(topicPartitions)
-            }
-        )
-        consumer.subscribe(listOf(renderTopic), rebalanceListener)
-        retryConsumer.subscribe(listOf(retryTopic), rebalanceListener)
+        consumer.subscribe(listOf(renderTopic), RebalanceListener(retryProducers, successProducers))
+        retryConsumer.subscribe(listOf(retryTopic), RebalanceListener(retrySuccessProducers))
         flow = flow()
         @OptIn(DelicateCoroutinesApi::class)
         consumerJob = flow.launchIn(GlobalScope)
@@ -76,6 +68,8 @@ class PdfRequestConsumer(
     fun stop() {
         shuttingDown = true
     }
+
+    fun isHealthy() = isHealthy
 
     private fun flow() =
         flow {
@@ -105,12 +99,18 @@ class PdfRequestConsumer(
                     }
                     logger.info("Produced ${successes.size} successes and ${failures.size} failures")
                 }
-            }.onCompletion {
+            }.onCompletion { exception ->
+                if (exception != null) {
+                    logger.error("Application stopped unexpectedly due to exception ${exception.message}")
+                    isHealthy = false
+                }
                 logger.info("Closing consumers and producers")
                 consumer.close()
                 retryConsumer.close()
                 successProducers.closeAll()
                 retryProducers.closeAll()
+                retrySuccessProducers.closeAll()
+                isHealthy = false
             }
 
     private fun produceSuccessesForTopic(
@@ -137,7 +137,7 @@ class PdfRequestConsumer(
             .sortedBy { it.consumedOffset } // make sure higher offsets are not committed before lower ones
             .forEach {
                 if (it.pdf != null) {
-                    val producer = successProducers.getProducer(renderTopic, it.consumedPartiton)
+                    val producer = retrySuccessProducers.getProducer(renderTopic, it.consumedPartiton)
                     sendSingleSynchronous(it, it.renderRequest.replyTopic, it.pdf, producer, consumer.groupMetadata())
                 } else {
                     val producer = retryProducers.getProducer(it.consumedTopic, it.consumedPartiton)
@@ -185,7 +185,11 @@ class PdfRequestConsumer(
         isFromRetryQueue: Boolean,
         consumedTopic: String
     ) {
-        val successProducer = successProducers.getProducer(consumedTopic, consumedPartition)
+        val successProducer = if (isFromRetryQueue) {
+            retrySuccessProducers.getProducer(consumedTopic, consumedPartition)
+        } else {
+            successProducers.getProducer(consumedTopic, consumedPartition)
+        }
         val consumedFrom = TopicPartition(consumedTopic, consumedPartition)
         val newOffset = OffsetAndMetadata(results.maxOf { it.consumedOffset } + 1)
         try {
@@ -308,15 +312,27 @@ private fun createKafkaProducerConfig(kafkaConfig: ApplicationConfig) = createKa
 )
 
 private class RebalanceListener(
-    val onRevoked: (MutableCollection<TopicPartition>) -> Unit,
-    val onAssigned: (MutableCollection<TopicPartition>) -> Unit
+    private vararg val producerManagers: ProducerManager<*>,
 ) : ConsumerRebalanceListener {
     override fun onPartitionsRevoked(partitions: MutableCollection<TopicPartition>?) {
-        partitions?.let { runBlocking { onRevoked(it) } }
+        if (partitions != null) {
+            producerManagers.forEach {
+                runBlocking {
+                    it.closeProducersForTopicPartitions(partitions)
+                }
+            }
+        }
     }
 
     override fun onPartitionsAssigned(partitions: MutableCollection<TopicPartition>?) {
-        partitions?.let { runBlocking { onAssigned(it) } }
+        if (partitions != null) {
+            producerManagers.forEach {
+                runBlocking {
+                    it.createProducersForTopicPartitions(partitions)
+                }
+            }
+        }
+
     }
 
 
@@ -326,9 +342,9 @@ private class ProducerManager<V>(val producerConfig: Map<String, String>) {
 
     private val logger = LoggerFactory.getLogger(ProducerManager::class.java)
     val producers = ConcurrentHashMap<String, KafkaProducer<String, V>>()
-    fun closeProducersForTopicPartitions(partitions: MutableCollection<TopicPartition>) {
+    suspend fun closeProducersForTopicPartitions(partitions: MutableCollection<TopicPartition>) {
         logger.info("Closing producers")
-        runBlocking {
+        coroutineScope {
             partitions.forEach {
                 launch {
                     producers.remove(transactionId(it.topic(), it.partition()))?.close()
@@ -338,11 +354,12 @@ private class ProducerManager<V>(val producerConfig: Map<String, String>) {
 
     }
 
-    fun createProducersForTopicPartitions(partitions: MutableCollection<TopicPartition>) {
-        runBlocking {
+    suspend fun createProducersForTopicPartitions(partitions: MutableCollection<TopicPartition>) {
+        coroutineScope {
             partitions
-                .forEach { topicPartition ->
-                    launch {
+                .map { topicPartition ->
+                    @OptIn(DelicateCoroutinesApi::class)
+                    GlobalScope.launch {
                         val transactionId = transactionId(topicPartition.topic(), topicPartition.partition())
                         producers.getOrPut(transactionId) {
                             KafkaProducer(
@@ -353,7 +370,7 @@ private class ProducerManager<V>(val producerConfig: Map<String, String>) {
                             ).also { it.initTransactions() }
                         }
                     }
-                }
+                }.joinAll()
 
         }
     }
