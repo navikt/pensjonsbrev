@@ -1,0 +1,10 @@
+package no.nav.brev.brevbaker
+
+import no.nav.pensjon.brevbaker.api.model.NAVEnhet
+import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+
+data class NavEnhetTestImpl(
+    override val nettside: String,
+    override val navn: String,
+    override val telefonnummer: Telefonnummer,
+) : NAVEnhet

@@ -103,11 +103,11 @@ class BrevredigeringServiceTest {
         felles = Felles(
             dokumentDato = LocalDate.now(),
             saksnummer = sak.saksId.toString(),
-            avsenderEnhet = NAVEnhet(
-                nettside = "nav.no",
-                navn = "en fantastisk enhet",
-                telefonnummer = Telefonnummer("12345678")
-            ),
+            avsenderEnhet = object : NAVEnhet {
+                override val nettside = "nav.no"
+                override val navn = "en fantastisk enhet"
+                override val telefonnummer = Telefonnummer("12345678")
+            },
             bruker = Bruker(
                 foedselsnummer = Foedselsnummer("12345678910"),
                 fornavn = "Navn",
