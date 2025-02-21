@@ -8,6 +8,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.BrukerImpl
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.FellesImpl
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.FoedselsnummerImpl
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
@@ -27,6 +29,7 @@ object FellesModule : SimpleModule() {
         addDeserializer(Foedselsnummer::class.java, FoedselsnummerDeserializer)
         addDeserializer(Bruker::class.java, BrukerDeserializer)
         addDeserializer(SignerendeSaksbehandlere::class.java, SignerendeSaksbehandlereDeserializer)
+        addDeserializer(Felles::class.java, FellesobjektetDeserializer)
     }
 
     private object NavEnhetDeserializer : FellesDeserializer<NAVEnhet, NavEnhetImpl>(NavEnhetImpl::class.java)
@@ -43,6 +46,8 @@ object FellesModule : SimpleModule() {
     private object SignerendeSaksbehandlereDeserializer :
         FellesDeserializer<SignerendeSaksbehandlere, SignerendeSaksbehandlereImpl>(SignerendeSaksbehandlereImpl::class.java)
 
+    private object FellesobjektetDeserializer :
+        FellesDeserializer<Felles, FellesImpl>(FellesImpl::class.java)
 
     private abstract class FellesDeserializer<T, V : T>(private val v: Class<V>) : JsonDeserializer<T>() {
         override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): T =

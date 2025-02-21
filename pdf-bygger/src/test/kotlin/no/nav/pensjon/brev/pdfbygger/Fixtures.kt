@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.pdfbygger
 
 import no.nav.brev.brevbaker.BrukerTestImpl
+import no.nav.brev.brevbaker.FellesTestImpl
 import no.nav.brev.brevbaker.FoedselsnummerTestImpl
 import no.nav.brev.brevbaker.NavEnhetTestImpl
 import no.nav.brev.brevbaker.SignerendeSaksbehandlereTestImpl
@@ -18,7 +19,7 @@ import java.time.LocalDate
 
 object Fixtures {
 
-    val felles = Felles(
+    val felles = FellesTestImpl(
         dokumentDato = LocalDate.of(2020, 1, 1),
         saksnummer = "1337123",
         avsenderEnhet = NavEnhetTestImpl(
