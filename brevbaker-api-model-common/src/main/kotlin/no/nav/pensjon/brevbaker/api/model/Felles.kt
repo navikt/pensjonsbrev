@@ -12,7 +12,16 @@ data class Felles(
     val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null,
 )
 
-data class SignerendeSaksbehandlere(val saksbehandler: String, val attesterendeSaksbehandler: String? = null)
+@InterneDataklasser
+data class SignerendeSaksbehandlereImpl(
+    override val saksbehandler: String,
+    override val attesterendeSaksbehandler: String? = null
+) : SignerendeSaksbehandlere
+
+interface SignerendeSaksbehandlere {
+    val saksbehandler: String
+    val attesterendeSaksbehandler: String?
+}
 
 @InterneDataklasser
 data class BrukerImpl(

@@ -110,12 +110,14 @@ class BrevredigeringServiceTest {
                     override val value = "12345678"
                 }
             },
-            bruker = Bruker(
-                foedselsnummer = object : Foedselsnummer { override val value = "12345678910" },
-                fornavn = "Navn",
-                mellomnavn = null,
-                etternavn = "Navnesen"
-            ),
+            bruker = object : Bruker {
+                override val foedselsnummer = object : Foedselsnummer {
+                    override val value = "12345678910"
+                }
+                override val fornavn = "Navn"
+                override val mellomnavn = null
+                override val etternavn = "Navnesen"
+            },
             vergeNavn = null,
             signerendeSaksbehandlere = null,
         ), brevdata = Api.GeneriskBrevdata()

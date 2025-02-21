@@ -20,16 +20,19 @@ object Fixtures {
                 override val value = "55553334"
             }
         },
-        bruker = Bruker(
-            fornavn = "Test",
-            mellomnavn = "\"bruker\"",
-            etternavn = "Testerson",
-            foedselsnummer = object : Foedselsnummer { override val value = "01019878910" },
-        ),
-        signerendeSaksbehandlere = SignerendeSaksbehandlere(
-            saksbehandler = "Ole Saksbehandler",
-            attesterendeSaksbehandler = "Per Attesterende",
-        ),
+        bruker = object : Bruker {
+            override val fornavn = "Test"
+            override val mellomnavn = "\"bruker\""
+            override val etternavn = "Testerson"
+            override val foedselsnummer =
+            object : Foedselsnummer {
+                override val value = "01019878910"
+            }
+        },
+        signerendeSaksbehandlere = object : SignerendeSaksbehandlere {
+            override val saksbehandler = "Ole Saksbehandler"
+            override val attesterendeSaksbehandler = "Per Attesterende"
+        },
         vergeNavn = null,
     )
     val fellesAuto = felles.copy(signerendeSaksbehandlere = null)
