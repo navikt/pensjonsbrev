@@ -100,27 +100,29 @@ class BrevredigeringServiceTest {
     )
 
     private val brevdataResponseData = BrevdataResponse.Data(
-        felles = Felles(
-            dokumentDato = LocalDate.now(),
-            saksnummer = sak.saksId.toString(),
-            avsenderEnhet = object : NAVEnhet {
+        felles = object : Felles {
+            override val dokumentDato = LocalDate.now()
+            override val saksnummer = sak.saksId.toString()
+            override val avsenderEnhet =
+            object : NAVEnhet {
                 override val nettside = "nav.no"
                 override val navn = "en fantastisk enhet"
                 override val telefonnummer = object : Telefonnummer {
                     override val value = "12345678"
                 }
-            },
-            bruker = object : Bruker {
+            }
+            override val bruker =
+            object : Bruker {
                 override val foedselsnummer = object : Foedselsnummer {
                     override val value = "12345678910"
                 }
                 override val fornavn = "Navn"
                 override val mellomnavn = null
                 override val etternavn = "Navnesen"
-            },
-            vergeNavn = null,
-            signerendeSaksbehandlere = null,
-        ), brevdata = Api.GeneriskBrevdata()
+            }
+            override val vergeNavn = null
+            override val signerendeSaksbehandlere = null
+        }, brevdata = Api.GeneriskBrevdata()
     )
     private val penService: PenService = mockk()
     private val navAnsattService = mockk<NavansattService> {
