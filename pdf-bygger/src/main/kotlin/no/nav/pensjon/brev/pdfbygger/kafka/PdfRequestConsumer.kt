@@ -20,8 +20,6 @@ import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
-import java.util.stream.Collectors
-import java.util.stream.Stream
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
@@ -326,27 +324,38 @@ private class RebalanceListener(
 
 private class ProducerManager<V>(val producerConfig: Map<String, String>) {
 
+    private val logger = LoggerFactory.getLogger(ProducerManager::class.java)
     val producers = ConcurrentHashMap<String, KafkaProducer<String, V>>()
     fun closeProducersForTopicPartitions(partitions: MutableCollection<TopicPartition>) {
-        partitions.forEach {
-            producers[transactionId(it.topic(), it.partition())]?.close()
+        logger.info("Closing producers")
+        runBlocking {
+            partitions.forEach {
+                launch {
+                    producers.remove(transactionId(it.topic(), it.partition()))?.close()
+                }
+            }
         }
+
     }
 
     fun createProducersForTopicPartitions(partitions: MutableCollection<TopicPartition>) {
-        partitions
-            .parallelStream()
-            .map { topicPartition ->
-                val transactionId = transactionId(topicPartition.topic(), topicPartition.partition())
-                producers.getOrPut(transactionId) {
-                    KafkaProducer(
-                        producerConfig
-                            .plus("transactional.id" to transactionId),
-                        StringSerializer(),
-                        PDFByggerSerializer<V>(),
-                    ).also { it.initTransactions() }
+        runBlocking {
+            partitions
+                .forEach { topicPartition ->
+                    launch {
+                        val transactionId = transactionId(topicPartition.topic(), topicPartition.partition())
+                        producers.getOrPut(transactionId) {
+                            KafkaProducer(
+                                producerConfig
+                                    .plus("transactional.id" to transactionId),
+                                StringSerializer(),
+                                PDFByggerSerializer<V>(),
+                            ).also { it.initTransactions() }
+                        }
+                    }
                 }
-            }.collect(Collectors.toList())
+
+        }
     }
 
     fun getProducer(consumedTopic: String, consumedPartition: Int): KafkaProducer<String, V> =
