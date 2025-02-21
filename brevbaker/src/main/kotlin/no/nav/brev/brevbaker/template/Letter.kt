@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.brev.brevbaker.InterneDataklasser
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.Felles
 
 // TODO: Look at * projections for LetterTemplate, we have to have it for the API endpoint, but perhaps not for internal usage.
