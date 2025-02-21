@@ -51,7 +51,7 @@ tasks {
 }
 
 tasks.compileTestKotlin {
-    compilerOptions.optIn.add("no.nav.pensjon.brev.template.InterneDataklasser")
+    compilerOptions.optIn.add("no.nav.brev.brevbaker.InterneDataklasser")
 }
 
 tasks {

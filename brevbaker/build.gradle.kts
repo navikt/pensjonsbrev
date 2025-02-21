@@ -65,7 +65,10 @@ tasks {
     kotlin {
         jvmToolchain(apiModelJavaTarget.toInt())
         compileTestKotlin {
-            compilerOptions.optIn.add("no.nav.pensjon.brev.template.InterneDataklasser")
+            compilerOptions.optIn.add("no.nav.brev.brevbaker.InterneDataklasser")
+        }
+        compileTestFixturesKotlin {
+            compilerOptions.optIn.add("no.nav.brev.brevbaker.InterneDataklasser")
         }
     }
     compileJava {

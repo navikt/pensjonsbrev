@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.InterneDataklasser
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -211,7 +210,6 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
         outline(function)
     }
 
-@OptIn(InterneDataklasser::class)
 fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = Fixtures.felles, pdfByggerService: PDFByggerService = laTeXCompilerService) =
     LetterImpl(this, EmptyBrevdata, Bokmal, felles).renderTestPDF(fileName, pdfByggerService = pdfByggerService)
 

@@ -4,6 +4,7 @@ import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.NotFoundException
 import io.micrometer.core.instrument.Tag
 import no.nav.brev.brevbaker.Brevbaker
+import no.nav.brev.brevbaker.InterneDataklasser
 import no.nav.pensjon.brev.Metrics
 import no.nav.pensjon.brev.api.model.BrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -11,7 +12,6 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.BrevTemplate
-import no.nav.pensjon.brev.template.InterneDataklasser
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
