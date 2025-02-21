@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import io.ktor.http.*
 import io.mockk.*
 import kotlinx.coroutines.*
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -99,25 +100,22 @@ class BrevredigeringServiceTest {
         "rabbit"
     )
 
+    @OptIn(InterneDataklasser::class)
     private val brevdataResponseData = BrevdataResponse.Data(
-        felles = Felles(
+        felles = FellesImpl(
             dokumentDato = LocalDate.now(),
             saksnummer = sak.saksId.toString(),
-            avsenderEnhet = object : NAVEnhet {
-                override val nettside = "nav.no"
-                override val navn = "en fantastisk enhet"
-                override val telefonnummer = object : Telefonnummer {
-                    override val value = "12345678"
-                }
-            },
-            bruker = object : Bruker {
-                override val foedselsnummer = object : Foedselsnummer {
-                    override val value = "12345678910"
-                }
-                override val fornavn = "Navn"
-                override val mellomnavn = null
-                override val etternavn = "Navnesen"
-            },
+            avsenderEnhet = NavEnhetImpl(
+                nettside = "nav.no",
+                navn = "en fantastisk enhet",
+                telefonnummer = TelefonnummerImpl("12345678")
+            ),
+            bruker = BrukerImpl(
+                foedselsnummer = FoedselsnummerImpl("12345678910"),
+                fornavn = "Navn",
+                mellomnavn = null,
+                etternavn = "Navnesen"
+            ),
             vergeNavn = null,
             signerendeSaksbehandlere = null,
         ), brevdata = Api.GeneriskBrevdata()
