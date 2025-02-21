@@ -1,5 +1,6 @@
 package no.nav.pensjon.brevbaker.api.model
 
+import no.nav.brev.InterfaceMedSelectors
 import no.nav.brev.InterneDataklasser
 import java.time.LocalDate
 
@@ -28,6 +29,7 @@ data class NavEnhetImpl(
     override val telefonnummer: Telefonnummer,
 ) : NAVEnhet
 
+@InterfaceMedSelectors
 interface NAVEnhet {
     val nettside: String
     val navn: String

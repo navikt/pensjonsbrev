@@ -111,7 +111,7 @@ class BrevredigeringServiceTest {
                 }
             },
             bruker = Bruker(
-                foedselsnummer = Foedselsnummer("12345678910"),
+                foedselsnummer = object : Foedselsnummer { override val value = "12345678910" },
                 fornavn = "Navn",
                 mellomnavn = null,
                 etternavn = "Navnesen"

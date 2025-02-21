@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger
 
+import no.nav.brev.brevbaker.FoedselsnummerTestImpl
 import no.nav.brev.brevbaker.NavEnhetTestImpl
 import no.nav.brev.brevbaker.TelefonnummerTestImpl
 import no.nav.pensjon.brev.template.LangBokmal
@@ -32,7 +33,7 @@ object Fixtures {
             fornavn = "Test",
             mellomnavn = "\"bruker\"",
             etternavn = "Testerson",
-            foedselsnummer = Foedselsnummer("01019878910"),
+            foedselsnummer = FoedselsnummerTestImpl("01019878910"),
         ),
         signerendeSaksbehandlere = SignerendeSaksbehandlere(
             saksbehandler = "Ole Saksbehandler",

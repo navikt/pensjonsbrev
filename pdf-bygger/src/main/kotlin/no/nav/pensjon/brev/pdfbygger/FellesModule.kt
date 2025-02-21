@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.FoedselsnummerImpl
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.NavEnhetImpl
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
@@ -18,6 +20,7 @@ object FellesModule : SimpleModule() {
     init {
         addDeserializer(NAVEnhet::class.java, NavEnhetDeserializer)
         addDeserializer(Telefonnummer::class.java, TelefonnummerDeserializer)
+        addDeserializer(Foedselsnummer::class.java, FoedselsnummerDeserializer)
     }
 
 
@@ -25,6 +28,9 @@ object FellesModule : SimpleModule() {
 
     private object TelefonnummerDeserializer :
         FellesDeserializer<Telefonnummer, TelefonnummerImpl>(TelefonnummerImpl::class.java)
+
+    private object FoedselsnummerDeserializer :
+        FellesDeserializer<Foedselsnummer, FoedselsnummerImpl>(FoedselsnummerImpl::class.java)
 
 
     private abstract class FellesDeserializer<T, V : T>(private val v: Class<V>) : JsonDeserializer<T>() {
