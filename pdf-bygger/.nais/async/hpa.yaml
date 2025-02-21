@@ -1,0 +1,36 @@
+#file: noinspection KubernetesUnknownValues
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{app-name}}
+  namespace: pensjonsbrev
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{app-name}}
+  minReplicas: 1
+  maxReplicas: 20
+  metrics:
+    - type: External
+      external:
+        metric:
+          name: kafka_consumergroup_group_lag
+          selector:
+            matchLabels:
+              topic: {{kafka.pdf-render-topic}}
+              group: {{kafka.pdf-bygger-async-q2}}
+        target:
+          type: AverageValue
+          averageValue: "200"
+    - type: External
+      external:
+        metric:
+          name: kafka_consumergroup_group_lag
+          selector:
+            matchLabels:
+              topic: {{kafka.pdf-render-retry-topic}}
+              group: {{kafka.pdf-bygger-async-q2}}
+        target:
+          type: AverageValue
+          averageValue: "200"

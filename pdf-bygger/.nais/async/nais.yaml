@@ -44,9 +44,6 @@ spec:
     requests:
       cpu: "1"
       memory: "1024Mi"
-    limits:
-      memory: "4096Mi"
-      cpu: "2"
   filesFrom:
     - emptyDir:
         medium: Memory
@@ -64,5 +61,3 @@ spec:
       value: {{kafka.pdf-render-retry-topic}}
     - name: KAFKA_CONSUMER_GROUP_ID
       value: {{kafka.consumer-group-id}}
-    - name: JAVA_TOOL_OPTIONS
-      value: -XX:ActiveProcessorCount=4
