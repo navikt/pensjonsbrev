@@ -18,7 +18,7 @@ object Fixtures {
             navn = "Nav Familie- og pensjonsytelser Porsgrunn",
             telefonnummer = TelefonnummerTestImpl("55553334"),
         ),
-        bruker = Bruker(
+        bruker = BrukerTestImpl(
             fornavn = "Test",
             mellomnavn = "\"bruker\"",
             etternavn = "Testerson",
