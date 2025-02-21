@@ -3,6 +3,7 @@ package no.nav.brev.brevbaker
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 
 data class NavEnhetTestImpl(
@@ -21,3 +22,8 @@ data class BrukerTestImpl(
     override val mellomnavn: String?,
     override val etternavn: String,
 ) : Bruker
+
+data class SignerendeSaksbehandlereTestImpl(
+    override val saksbehandler: String,
+    override val attesterendeSaksbehandler: String? = null
+) : SignerendeSaksbehandlere

@@ -24,7 +24,7 @@ object Fixtures {
             etternavn = "Testerson",
             foedselsnummer = FoedselsnummerTestImpl("01019878910"),
         ),
-        signerendeSaksbehandlere = SignerendeSaksbehandlere(
+        signerendeSaksbehandlere = SignerendeSaksbehandlereTestImpl(
             saksbehandler = "Ole Saksbehandler",
             attesterendeSaksbehandler = "Per Attesterende",
         ),
