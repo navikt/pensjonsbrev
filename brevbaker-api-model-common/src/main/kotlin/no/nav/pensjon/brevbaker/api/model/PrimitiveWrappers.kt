@@ -1,10 +1,17 @@
 package no.nav.pensjon.brevbaker.api.model
 
+import no.nav.brev.InterneDataklasser
+
 interface IntValue {
     val value: Int
 }
 
-data class Telefonnummer(val value: String)
+interface Telefonnummer {
+    val value: String
+}
+
+@InterneDataklasser
+data class TelefonnummerImpl(override val value: String) : Telefonnummer
 
 data class Foedselsnummer(val value: String)
 

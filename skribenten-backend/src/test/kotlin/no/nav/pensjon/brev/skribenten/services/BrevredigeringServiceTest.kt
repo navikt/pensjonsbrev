@@ -106,7 +106,9 @@ class BrevredigeringServiceTest {
             avsenderEnhet = object : NAVEnhet {
                 override val nettside = "nav.no"
                 override val navn = "en fantastisk enhet"
-                override val telefonnummer = Telefonnummer("12345678")
+                override val telefonnummer = object : Telefonnummer {
+                    override val value = "12345678"
+                }
             },
             bruker = Bruker(
                 foedselsnummer = Foedselsnummer("12345678910"),

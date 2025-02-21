@@ -16,7 +16,7 @@ object Fixtures {
         avsenderEnhet = NavEnhetTestImpl(
             nettside = "nav.no",
             navn = "Nav Familie- og pensjonsytelser Porsgrunn",
-            telefonnummer = Telefonnummer("55553334"),
+            telefonnummer = TelefonnummerTestImpl("55553334"),
         ),
         bruker = Bruker(
             fornavn = "Test",
