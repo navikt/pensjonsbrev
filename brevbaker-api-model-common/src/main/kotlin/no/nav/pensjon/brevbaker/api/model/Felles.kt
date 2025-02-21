@@ -3,14 +3,24 @@ package no.nav.pensjon.brevbaker.api.model
 import no.nav.brev.InterneDataklasser
 import java.time.LocalDate
 
-data class Felles(
-    val dokumentDato: LocalDate,
-    val saksnummer: String,
-    val avsenderEnhet: NAVEnhet,
-    val bruker: Bruker,
-    val vergeNavn: String?,
-    val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null,
-)
+@InterneDataklasser
+data class FellesImpl(
+    override val dokumentDato: LocalDate,
+    override val saksnummer: String,
+    override val avsenderEnhet: NAVEnhet,
+    override val bruker: Bruker,
+    override val vergeNavn: String?,
+    override val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null,
+) : Felles
+
+interface Felles {
+    val dokumentDato: LocalDate
+    val saksnummer: String
+    val avsenderEnhet: NAVEnhet
+    val bruker: Bruker
+    val vergeNavn: String?
+    val signerendeSaksbehandlere: SignerendeSaksbehandlere?
+}
 
 @InterneDataklasser
 data class SignerendeSaksbehandlereImpl(

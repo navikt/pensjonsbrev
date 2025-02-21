@@ -1,31 +1,21 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.BrukerTestImpl
+import no.nav.brev.brevbaker.FellesTestImpl
 import no.nav.brev.brevbaker.FoedselsnummerTestImpl
 import no.nav.brev.brevbaker.NavEnhetTestImpl
 import no.nav.brev.brevbaker.SignerendeSaksbehandlereTestImpl
 import no.nav.brev.brevbaker.TelefonnummerTestImpl
 import no.nav.pensjon.brev.template.HasModel
-import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.newText
-import no.nav.pensjon.brevbaker.api.model.Bruker
-import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.NAVEnhet
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
 
 object Fixtures {
 
-    val felles = Felles(
+    val felles = FellesTestImpl(
         dokumentDato = LocalDate.of(2020, 1, 1),
         saksnummer = "1337123",
         avsenderEnhet = NavEnhetTestImpl(

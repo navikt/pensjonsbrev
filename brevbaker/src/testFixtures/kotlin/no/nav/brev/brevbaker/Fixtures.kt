@@ -1,16 +1,10 @@
 package no.nav.brev.brevbaker
 
-import no.nav.pensjon.brevbaker.api.model.Bruker
-import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.NAVEnhet
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
 
 object Fixtures {
 
-    val felles = Felles(
+    val felles = FellesTestImpl(
         dokumentDato = LocalDate.of(2020, 1, 1),
         saksnummer = "1337123",
         avsenderEnhet = NavEnhetTestImpl(
