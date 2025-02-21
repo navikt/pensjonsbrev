@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger
 
+import no.nav.brev.brevbaker.NavEnhetTestImpl
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -21,7 +22,7 @@ object Fixtures {
     val felles = Felles(
         dokumentDato = LocalDate.of(2020, 1, 1),
         saksnummer = "1337123",
-        avsenderEnhet = NAVEnhet(
+        avsenderEnhet = NavEnhetTestImpl(
             nettside = "nav.no",
             navn = "Nav Familie- og pensjonsytelser Porsgrunn",
             telefonnummer = Telefonnummer("55553334"),

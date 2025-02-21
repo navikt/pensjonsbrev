@@ -13,11 +13,11 @@ object Fixtures {
     val felles = Felles(
         dokumentDato = LocalDate.of(2020, 1, 1),
         saksnummer = "1337123",
-        avsenderEnhet = NAVEnhet(
-            nettside = "nav.no",
-            navn = "Nav Familie- og pensjonsytelser Porsgrunn",
-            telefonnummer = Telefonnummer("55553334"),
-        ),
+        avsenderEnhet = object : NAVEnhet {
+            override val nettside = "nav.no"
+            override val navn = "Nav Familie- og pensjonsytelser Porsgrunn"
+            override val telefonnummer = Telefonnummer("55553334")
+        },
         bruker = Bruker(
             fornavn = "Test",
             mellomnavn = "\"bruker\"",

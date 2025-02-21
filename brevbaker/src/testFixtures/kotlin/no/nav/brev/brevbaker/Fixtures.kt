@@ -13,7 +13,7 @@ object Fixtures {
     val felles = Felles(
         dokumentDato = LocalDate.of(2020, 1, 1),
         saksnummer = "1337123",
-        avsenderEnhet = NAVEnhet(
+        avsenderEnhet = NavEnhetTestImpl(
             nettside = "nav.no",
             navn = "Nav Familie- og pensjonsytelser Porsgrunn",
             telefonnummer = Telefonnummer("55553334"),

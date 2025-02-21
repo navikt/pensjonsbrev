@@ -1,5 +1,6 @@
 package no.nav.pensjon.brevbaker.api.model
 
+import no.nav.brev.InterneDataklasser
 import java.time.LocalDate
 
 data class Felles(
@@ -20,8 +21,15 @@ data class Bruker(
     val etternavn: String,
 )
 
-data class NAVEnhet(
-    val nettside: String,
-    val navn: String,
-    val telefonnummer: Telefonnummer,
-)
+@InterneDataklasser
+data class NavEnhetImpl(
+    override val nettside: String,
+    override val navn: String,
+    override val telefonnummer: Telefonnummer,
+) : NAVEnhet
+
+interface NAVEnhet {
+    val nettside: String
+    val navn: String
+    val telefonnummer: Telefonnummer
+}
