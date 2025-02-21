@@ -93,7 +93,7 @@ fun renderTestPdfOutline(
         outline { outlineInit() }
         attachments.forEach { includeAttachment(it) }
     }
-    val letter = LetterTestImpl(template, Unit, Bokmal, felles ?: Fixtures.fellesAuto)
+    val letter = LetterImpl(template, Unit, Bokmal, felles ?: Fixtures.fellesAuto)
     letter.renderTestPDF(testName, Path.of("build/$outputFolder"), pdfByggerService)
 }
 
