@@ -8,3 +8,5 @@ data class NavEnhetTestImpl(
     override val navn: String,
     override val telefonnummer: Telefonnummer,
 ) : NAVEnhet
+
+data class TelefonnummerTestImpl(override val value: String) : Telefonnummer

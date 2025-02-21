@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.NavEnhetTestImpl
+import no.nav.brev.brevbaker.TelefonnummerTestImpl
 import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language
@@ -27,7 +28,7 @@ object Fixtures {
         avsenderEnhet = NavEnhetTestImpl(
             nettside = "nav.no",
             navn = "Nav Familie- og pensjonsytelser Porsgrunn",
-            telefonnummer = Telefonnummer("55553334"),
+            telefonnummer = TelefonnummerTestImpl("55553334"),
         ),
         bruker = Bruker(
             fornavn = "Test",

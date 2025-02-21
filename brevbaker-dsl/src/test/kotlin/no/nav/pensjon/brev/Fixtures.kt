@@ -16,7 +16,9 @@ object Fixtures {
         avsenderEnhet = object : NAVEnhet {
             override val nettside = "nav.no"
             override val navn = "Nav Familie- og pensjonsytelser Porsgrunn"
-            override val telefonnummer = Telefonnummer("55553334")
+            override val telefonnummer = object : Telefonnummer {
+                override val value = "55553334"
+            }
         },
         bruker = Bruker(
             fornavn = "Test",
