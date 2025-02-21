@@ -24,7 +24,7 @@ object Fixtures {
             fornavn = "Test",
             mellomnavn = "\"bruker\"",
             etternavn = "Testerson",
-            foedselsnummer = Foedselsnummer("01019878910"),
+            foedselsnummer = object : Foedselsnummer { override val value = "01019878910" },
         ),
         signerendeSaksbehandlere = SignerendeSaksbehandlere(
             saksbehandler = "Ole Saksbehandler",

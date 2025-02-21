@@ -1,11 +1,13 @@
 package no.nav.pensjon.brevbaker.api.model
 
+import no.nav.brev.InterfaceMedSelectors
 import no.nav.brev.InterneDataklasser
 
 interface IntValue {
     val value: Int
 }
 
+@InterfaceMedSelectors
 interface Telefonnummer {
     val value: String
 }
@@ -13,7 +15,13 @@ interface Telefonnummer {
 @InterneDataklasser
 data class TelefonnummerImpl(override val value: String) : Telefonnummer
 
-data class Foedselsnummer(val value: String)
+@InterneDataklasser
+data class FoedselsnummerImpl(override val value: String) : Foedselsnummer
+
+@InterfaceMedSelectors
+interface Foedselsnummer {
+    val value: String
+}
 
 data class Kroner(override val value: Int) : IntValue
 
