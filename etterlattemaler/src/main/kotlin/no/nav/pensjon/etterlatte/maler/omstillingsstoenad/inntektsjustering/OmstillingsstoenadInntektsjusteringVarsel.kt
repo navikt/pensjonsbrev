@@ -120,9 +120,9 @@ object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<AarligInnte
                 }
                 paragraph {
                     text(
-                        Bokmal to "Meld fra om endringer i inntekten din ved å sende skjema om endring av inntekt neste år. Dette finner du på nav.no/omstillingsstonad#har-inntekt.",
-                        Nynorsk to "Meld frå om endringar i inntekta di ved å sende inn skjemaet om endring av inntekt for neste år. Du finn dette på nav.no/omstillingsstonad#har-inntekt.",
-                        English to "Notify us of changes to your income by submitting the form for change of income next year. This is available from: nav.no/omstillingsstonad#har-inntekt.",
+                        Bokmal to "Meld fra om endringer i inntekten din ved å sende skjema om endring av inntekt neste år. Dette finner du på nav.no/omstillingsstonad#melde.",
+                        Nynorsk to "Meld frå om endringar i inntekta di ved å sende inn skjemaet om endring av inntekt for neste år. Du finn dette på nav.no/omstillingsstonad#melde.",
+                        English to "Notify us of changes to your income by submitting the form for change of income next year. This is available from: nav.no/omstillingsstonad#melde.",
                     )
                 }
                 paragraph {
