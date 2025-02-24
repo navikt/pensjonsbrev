@@ -28,7 +28,7 @@ spec:
           selector:
             matchLabels:
               topic: {{kafka.pdf-render-topic}}
-              group: {{kafka.pdf-bygger-async-q2}}
+              group: {{kafka.consumer-group-id}}
         target:
           type: AverageValue
           averageValue: "50"
@@ -39,7 +39,7 @@ spec:
           selector:
             matchLabels:
               topic: {{kafka.pdf-render-retry-topic}}
-              group: {{kafka.pdf-bygger-async-q2}}
+              group: {{kafka.consumer-group-id}}
         target:
           type: AverageValue
           averageValue: "200"
