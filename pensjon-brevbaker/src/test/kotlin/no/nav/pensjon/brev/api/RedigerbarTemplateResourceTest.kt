@@ -33,7 +33,7 @@ class RedigerbarTemplateResourceTest {
         LanguageCode.BOKMAL,
         LetterMarkup(
             "redigert markup",
-            LetterMarkup.Sakspart(
+            LetterMarkup.SakspartImpl(
                 "gjelder bruker",
                 "123abc",
                 "001",

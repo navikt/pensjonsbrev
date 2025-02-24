@@ -9,7 +9,20 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
         val includeSakspart: Boolean,
     )
 
-    data class Sakspart(val gjelderNavn: String, val gjelderFoedselsnummer: String, val saksnummer: String, val dokumentDato: String)
+    interface Sakspart {
+        val gjelderNavn: String
+        val gjelderFoedselsnummer: String
+        val saksnummer: String
+        val dokumentDato: String
+    }
+
+    data class SakspartImpl(
+        override val gjelderNavn: String,
+        override val gjelderFoedselsnummer: String,
+        override val saksnummer: String,
+        override val dokumentDato: String
+    ) : Sakspart
+
     data class Signatur(
         val hilsenTekst: String,
         val saksbehandlerRolleTekst: String,

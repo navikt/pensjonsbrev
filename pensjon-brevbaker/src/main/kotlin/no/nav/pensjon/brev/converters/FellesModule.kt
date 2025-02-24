@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.deser.AbstractDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.Bruker
@@ -12,6 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.FellesImpl
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.FoedselsnummerImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.NavEnhetImpl
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
@@ -30,6 +32,10 @@ object FellesModule : SimpleModule() {
         addDeserializer(Bruker::class.java, BrukerDeserializer)
         addDeserializer(SignerendeSaksbehandlere::class.java, SignerendeSaksbehandlereDeserializer)
         addDeserializer(Felles::class.java, FellesobjektetDeserializer)
+
+        addDeserializer(LetterMarkup.Sakspart::class.java, object :
+            FellesDeserializer<LetterMarkup.Sakspart, LetterMarkup.SakspartImpl>(LetterMarkup.SakspartImpl::class.java) {}
+        )
     }
 
     private object NavEnhetDeserializer : FellesDeserializer<NAVEnhet, NavEnhetImpl>(NavEnhetImpl::class.java)

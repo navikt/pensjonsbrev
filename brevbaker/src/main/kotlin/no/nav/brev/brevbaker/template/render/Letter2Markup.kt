@@ -25,7 +25,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
     fun renderLetterOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): LetterMarkup =
         LetterMarkup(
             title = renderText(scope, template.title).joinToString(separator = "") { it.text },
-            sakspart = Sakspart(
+            sakspart = SakspartImpl(
                 gjelderNavn = scope.felles.bruker.fulltNavn(),
                 gjelderFoedselsnummer = scope.felles.bruker.foedselsnummer.value,
                 saksnummer = scope.felles.saksnummer,

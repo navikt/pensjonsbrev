@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.pdfbygger
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
@@ -17,6 +18,9 @@ internal object LetterMarkupModule : SimpleModule() {
         addDeserializer(LetterMarkup.Block::class.java, blockDeserializer())
         addDeserializer(LetterMarkup.ParagraphContent::class.java, paragraphContentDeserializer())
         addDeserializer(LetterMarkup.ParagraphContent.Text::class.java, textContentDeserializer())
+        addDeserializer(LetterMarkup.Sakspart::class.java, object :
+            AbstractDeserializer<LetterMarkup.Sakspart, LetterMarkup.SakspartImpl>(LetterMarkup.SakspartImpl::class.java) {}
+        )
     }
 
     private fun blockDeserializer() =
@@ -65,4 +69,10 @@ internal object LetterMarkupModule : SimpleModule() {
                 return p.codec.treeToValue(node, clazz)
             }
         }
+
+
+    private abstract class AbstractDeserializer<T, V : T>(private val v: Class<V>) : JsonDeserializer<T>() {
+        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): T =
+            parser.codec.treeToValue(parser.codec.readTree<JsonNode>(parser), v)
+    }
 }
