@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
 import no.nav.pensjon.brev.maler.redigerbar.*
+import no.nav.pensjon.brev.maler.ufoereBrev.EndretUfoeretrygdPGAInntekt2
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -33,6 +34,7 @@ object ProductionTemplates : AllTemplates {
         AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling,
         EndretBarnetilleggUfoerertrygd,
         EndretUfoeretrygdPGAInntektLegacy,
+        EndretUfoeretrygdPGAInntekt2,
         EtteroppgjoerEtterbetalingAutoLegacy,
         FeilUtsendingAvGjenlevenderett,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
