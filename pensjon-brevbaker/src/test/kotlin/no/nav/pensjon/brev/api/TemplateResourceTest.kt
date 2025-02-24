@@ -20,13 +20,12 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.util.*
 
 class TemplateResourceTest {
     private val pdfInnhold = "generert pdf"
-    private val base64PDF = Base64.getEncoder().encodeToString(pdfInnhold.toByteArray())
+    private val pdf = pdfInnhold.toByteArray()
     private val latexMock = mockk<LaTeXCompilerService> {
-        coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(base64PDF)
+        coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(pdf)
     }
     private val autobrev = AutobrevTemplateResource("autobrev", Testmaler.hentAutobrevmaler(), latexMock, mockk())
 

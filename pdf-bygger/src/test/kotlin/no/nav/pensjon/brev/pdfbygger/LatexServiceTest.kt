@@ -2,9 +2,8 @@ package no.nav.pensjon.brev.pdfbygger
 
 import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
-import io.ktor.util.*
 import kotlinx.coroutines.*
-import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse.Base64PDF
+import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse.Bytes
 import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse.Failure
 import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
@@ -27,7 +26,7 @@ class LatexServiceTest {
 
     @Test
     fun `producePDF compiles two times`() {
-        assertResult<Base64PDF>(producePdf("simpleCompile.sh")) { result ->
+        assertResult<Bytes>(producePdf("simpleCompile.sh")) { result ->
             val compiledOutput = result.decodePlaintext().lines().filter { it.isNotBlank() }
             assertThat(compiledOutput, hasSize(equalTo(2)))
             assertThat(compiledOutput, allElements(equalTo("kompilerer letter.tex")))
@@ -94,7 +93,7 @@ class LatexServiceTest {
 
     @Test
     fun `producePDF writes all inputFiles`() {
-        assertResult<Base64PDF>(
+        assertResult<Bytes>(
             producePdf(
                 "useFilesCompile.sh", files =
                     listOf(
@@ -138,7 +137,7 @@ class LatexServiceTest {
             )
         )
         runBlocking {
-            assertResult<Base64PDF>(service.producePDF(emptyList()))
+            assertResult<Bytes>(service.producePDF(emptyList()))
         }
     }
 
@@ -161,7 +160,7 @@ class LatexServiceTest {
                 }
             }.awaitAll()
 
-            val success = results.filterIsInstance<Base64PDF>()
+            val success = results.filterIsInstance<Bytes>()
             val timedOut = results.filterIsInstance<Failure.QueueTimeout>()
 
             // Because of two runs per compilation we expect each to take ~200ms, and queue wait timeout is less, thus ~2 successes
@@ -233,7 +232,7 @@ class LatexServiceTest {
                 "Expected queued compilation to be completed by LatexService, but was cancelled by timeout in test"
             )
             assertThat(compilationTime, isWithin(200L..800L))
-            assertResult<Base64PDF>(result)
+            assertResult<Bytes>(result)
 
             blockingCompilation.cancel()
         }
@@ -289,7 +288,6 @@ class LatexServiceTest {
             ).producePDF(files)
         }
 
-    private fun Base64PDF.decodePlaintext(): String =
-        base64PDF.decodeBase64String()
+    private fun Bytes.decodePlaintext(): String = String(this.bytes)
 
 }

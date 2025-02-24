@@ -38,7 +38,6 @@ import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.nio.file.Path
-import java.util.Base64
 import kotlin.io.path.Path
 
 val BREVBAKER_URL = System.getenv("BREVBAKER_URL") ?: "http://localhost:8080"
@@ -141,9 +140,9 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
                         template.letterMetadata.brevtype
                     )
                 )
-            }.base64PDF
+            }.bytes
         }
-        .also { writeTestPDF(pdfFileName, Base64.getDecoder().decode(it), path) }
+        .also { writeTestPDF(pdfFileName, it, path) }
     return this
 }
 

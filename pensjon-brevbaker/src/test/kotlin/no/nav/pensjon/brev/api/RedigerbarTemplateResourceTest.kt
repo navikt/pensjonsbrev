@@ -17,13 +17,12 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import org.junit.jupiter.api.Test
-import java.util.Base64
 
 class RedigerbarTemplateResourceTest {
     private val pdfInnhold = "generert redigerbar pdf"
-    private val base64PDF = Base64.getEncoder().encodeToString(pdfInnhold.toByteArray())
+    private val pdf = pdfInnhold.toByteArray()
     private val latexMock = mockk<LaTeXCompilerService> {
-        coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(base64PDF)
+        coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(pdf)
     }
     private val redigerbar = RedigerbarTemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), latexMock)
 
