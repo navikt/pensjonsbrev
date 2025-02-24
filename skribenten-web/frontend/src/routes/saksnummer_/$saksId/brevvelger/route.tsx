@@ -12,6 +12,7 @@ import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { getFavoritter } from "~/api/skribenten-api-endpoints";
 import { BrevbakerIcon, DoksysIcon, ExstreamIcon } from "~/assets/icons";
 import { ApiError } from "~/components/ApiError";
+import { LandDataProvider } from "~/context/LandDataContext";
 import type { LetterMetadata } from "~/types/apiTypes";
 import { BrevSystem } from "~/types/apiTypes";
 import type { BrevInfo } from "~/types/brev";
@@ -62,12 +63,15 @@ export function BrevvelgerPage() {
         background-color: white;
       `}
     >
-      <BrevvelgerMainContent
-        alleSaksbrevQuery={alleSaksbrevQuery}
-        letterTemplates={letterTemplates}
-        saksId={saksId}
-        setOnSubmitClick={setOnSubmitClick}
-      />
+      <LandDataProvider>
+        <BrevvelgerMainContent
+          alleSaksbrevQuery={alleSaksbrevQuery}
+          letterTemplates={letterTemplates}
+          saksId={saksId}
+          setOnSubmitClick={setOnSubmitClick}
+        />
+      </LandDataProvider>
+
       <BrevvelgerFooter
         antallBrevKlarTilSending={alleSaksbrevQuery.data?.filter(erBrevKlar)?.length ?? 0}
         onSubmitClick={onSubmitClick}

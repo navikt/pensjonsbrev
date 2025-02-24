@@ -11,7 +11,6 @@ import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMott
 import LetterTemplateTags from "~/components/LetterTemplateTags";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { SlettBrev } from "~/components/SlettBrev";
-import { LandDataProvider } from "~/context/LandDataContext";
 import { type LetterMetadata } from "~/types/apiTypes";
 import type { BrevInfo } from "~/types/brev";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
@@ -43,14 +42,12 @@ export const BrevmalBrevbakerKladd = (props: {
       {brevQuery.isError && <ApiError error={brevQuery.error} title="Klarte ikke hente brev" />}
       {brevQuery.isSuccess && !brevExists && <BrevIkkeFunnet brevId={props.brevId} />}
       {brevQuery.isSuccess && brevExists && (
-        <LandDataProvider>
-          <Brevmal
-            brev={brev}
-            letterMetadata={letterMetadataForBrev}
-            saksId={props.saksId}
-            setOnFormSubmitClick={props.setOnFormSubmitClick}
-          />
-        </LandDataProvider>
+        <Brevmal
+          brev={brev}
+          letterMetadata={letterMetadataForBrev}
+          saksId={props.saksId}
+          setOnFormSubmitClick={props.setOnFormSubmitClick}
+        />
       )}
     </div>
   );
