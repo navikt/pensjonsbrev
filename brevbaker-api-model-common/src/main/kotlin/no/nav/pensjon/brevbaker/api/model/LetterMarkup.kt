@@ -39,14 +39,24 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
         override val navAvsenderEnhet: String,
     ) : Signatur
 
-    sealed class Block(open val id: Int, open val type: Type, open val editable: Boolean = true) {
+    sealed interface Block {
+        val id: Int
+        val type: Type
+        val editable: Boolean
+
         enum class Type {
             TITLE1, TITLE2, PARAGRAPH,
         }
 
-        data class Title1(override val id: Int, override val editable: Boolean, val content: List<ParagraphContent.Text>) : Block(id, Type.TITLE1, editable)
-        data class Title2(override val id: Int, override val editable: Boolean, val content: List<ParagraphContent.Text>) : Block(id, Type.TITLE2, editable)
-        data class Paragraph(override val id: Int, override val editable: Boolean, val content: List<ParagraphContent>) : Block(id, Type.PARAGRAPH, editable)
+        data class Title1(override val id: Int, override val editable: Boolean = true, val content: List<ParagraphContent.Text>) : Block {
+            override val type = Type.TITLE1
+        }
+        data class Title2(override val id: Int, override val editable: Boolean = true, val content: List<ParagraphContent.Text>) : Block {
+            override val type = Type.TITLE2
+        }
+        data class Paragraph(override val id: Int, override val editable: Boolean = true, val content: List<ParagraphContent>) : Block {
+            override val type = Type.PARAGRAPH
+        }
     }
 
     sealed interface ParagraphContent {
