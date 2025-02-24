@@ -29,14 +29,14 @@ class PdfByggerAppTest {
     private val pdfRequest = PDFRequest(
         letterMarkup = LetterMarkup(
             title = "Tittel 1",
-            sakspart = LetterMarkup.Sakspart(
+            sakspart = LetterMarkup.SakspartImpl(
                 gjelderNavn = "Navn Navnesen",
                 gjelderFoedselsnummer = "12345678901",
                 saksnummer = "123",
                 dokumentDato = LocalDate.of(2025, 1, 1).format(DateTimeFormatter.ISO_LOCAL_DATE)
             ),
             blocks = listOf(),
-            signatur = LetterMarkup.Signatur(
+            signatur = LetterMarkup.SignaturImpl(
                 hilsenTekst = "hilsen",
                 saksbehandlerRolleTekst = "saksbehandler",
                 saksbehandlerNavn = "Saksbehandler Saksbehandlersen",
