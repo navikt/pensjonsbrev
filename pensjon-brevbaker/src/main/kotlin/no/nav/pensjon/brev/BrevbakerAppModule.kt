@@ -138,5 +138,5 @@ private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
     }
 }
 
-private fun ApplicationConfig.booleanProperty(path: String, default: Boolean = false): Boolean = propertyOrNull(path)?.toString()?.toBoolean() ?: default
+private fun ApplicationConfig.booleanProperty(path: String, default: Boolean = false): Boolean = propertyOrNull(path)?.getString()?.toBoolean() ?: default
 private fun ApplicationConfig.stringProperty(path: String): String? = propertyOrNull(path)?.getString()
