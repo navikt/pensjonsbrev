@@ -24,7 +24,7 @@ repositories {
 
 dependencies {
     api(project(":brevbaker-dsl"))
-    kspTestFixtures(project(":template-model-generator"))
+    ksp(project(":template-model-generator"))
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.12.0")
 
     testImplementation(kotlin("test"))
