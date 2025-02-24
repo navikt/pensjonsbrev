@@ -102,13 +102,14 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
             enum class ColumnAlignment { LEFT, RIGHT }
         }
 
-        sealed class Form(override val id: Int, override val type: Type) : ParagraphContent {
-            data class Text(override val id: Int, val prompt: List<ParagraphContent.Text>, val size: Size, val vspace: Boolean) : Form(id, Type.FORM_TEXT) {
+        sealed interface Form : ParagraphContent {
+            data class Text(override val id: Int, val prompt: List<ParagraphContent.Text>, val size: Size, val vspace: Boolean) : Form {
+                override val type = Type.FORM_TEXT
                 enum class Size { NONE, SHORT, LONG }
             }
 
-            data class MultipleChoice(override val id: Int, val prompt: List<ParagraphContent.Text>, val choices: List<Choice>, val vspace: Boolean) :
-                Form(id, Type.FORM_CHOICE) {
+            data class MultipleChoice(override val id: Int, val prompt: List<ParagraphContent.Text>, val choices: List<Choice>, val vspace: Boolean) : Form {
+                override val type = Type.FORM_CHOICE
                 data class Choice(val id: Int, val text: List<ParagraphContent.Text>)
             }
         }
