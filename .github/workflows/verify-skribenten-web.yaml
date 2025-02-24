@@ -11,9 +11,13 @@ on:
 jobs:
   verify-bff:
     name: Verify bff tests, lint and typescript errors
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -39,9 +43,13 @@ jobs:
 
   verify-frontend:
     name: Verify frontend tests, lint and typescript errors
+    permissions:
+      contents: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
