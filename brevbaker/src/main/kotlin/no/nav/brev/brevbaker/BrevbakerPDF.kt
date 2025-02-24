@@ -9,9 +9,6 @@ import no.nav.pensjon.brev.template.render.LetterWithAttachmentsMarkup
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brev.template.toScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import java.util.Base64
-
-private val base64Decoder = Base64.getDecoder()
 
 internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
@@ -27,7 +24,7 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
             )
         }.let { pdf ->
             LetterResponse(
-                file = base64Decoder.decode(pdf.base64PDF),
+                file = pdf.bytes,
                 contentType = ContentTypes.PDF,
                 letterMetadata = letter.template.letterMetadata
             )
