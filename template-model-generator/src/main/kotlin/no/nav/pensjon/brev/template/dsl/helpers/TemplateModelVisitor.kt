@@ -13,7 +13,7 @@ private val SKIPPED_NO_WARN_CLASSES: Set<String> = setOf(
 )
 
 private fun KSPLogger.logSkipped(classDeclaration: KSClassDeclaration) {
-    val message = "Skipping $classDeclaration: can only generate helpers for data classes"
+    val message = "Skipping $classDeclaration: can only generate helpers for classes and interfaces"
 
     if (classDeclaration.packageName.asString() in SKIPPED_NO_WARN_PACKAGES
         || classDeclaration.classKind == ClassKind.ENUM_CLASS
