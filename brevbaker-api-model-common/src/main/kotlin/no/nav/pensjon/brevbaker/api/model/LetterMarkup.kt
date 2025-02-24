@@ -23,13 +23,21 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
         override val dokumentDato: String
     ) : Sakspart
 
-    data class Signatur(
-        val hilsenTekst: String,
-        val saksbehandlerRolleTekst: String,
-        val saksbehandlerNavn: String,
-        val attesterendeSaksbehandlerNavn: String?,
-        val navAvsenderEnhet: String,
-    )
+    interface Signatur {
+        val hilsenTekst: String
+        val saksbehandlerRolleTekst: String
+        val saksbehandlerNavn: String
+        val attesterendeSaksbehandlerNavn: String?
+        val navAvsenderEnhet: String
+    }
+
+    data class SignaturImpl(
+        override val hilsenTekst: String,
+        override val saksbehandlerRolleTekst: String,
+        override val saksbehandlerNavn: String,
+        override val attesterendeSaksbehandlerNavn: String?,
+        override val navAvsenderEnhet: String,
+    ) : Signatur
 
     sealed class Block(open val id: Int, open val type: Type, open val editable: Boolean = true) {
         enum class Type {

@@ -34,7 +34,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             blocks = renderOutline(scope, template.outline),
             // TODO: Attesterende saksbehandler må kunne være null for informasjonsskriv som ikke attesteres
             signatur = scope.felles.signerendeSaksbehandlere.let { sign ->
-                Signatur(
+                SignaturImpl(
                     hilsenTekst = languageSettings.getSetting(scope.language, LanguageSetting.Closing.greeting),
                     saksbehandlerRolleTekst = languageSettings.getSetting(scope.language, LanguageSetting.Closing.saksbehandler),
                     saksbehandlerNavn = sign?.saksbehandler ?: "",

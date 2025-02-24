@@ -40,7 +40,7 @@ class RedigerbarTemplateResourceTest {
                 "en dato"
             ),
             emptyList(),
-            LetterMarkup.Signatur(
+            LetterMarkup.SignaturImpl(
                 "hilsen oss",
                 "en rolle",
                 "Saksbehandlersen",

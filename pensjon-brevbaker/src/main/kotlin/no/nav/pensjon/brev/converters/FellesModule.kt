@@ -36,6 +36,9 @@ object FellesModule : SimpleModule() {
         addDeserializer(LetterMarkup.Sakspart::class.java, object :
             FellesDeserializer<LetterMarkup.Sakspart, LetterMarkup.SakspartImpl>(LetterMarkup.SakspartImpl::class.java) {}
         )
+        addDeserializer(LetterMarkup.Signatur::class.java, object :
+            FellesDeserializer<LetterMarkup.Signatur, LetterMarkup.SignaturImpl>(LetterMarkup.SignaturImpl::class.java) {}
+        )
     }
 
     private object NavEnhetDeserializer : FellesDeserializer<NAVEnhet, NavEnhetImpl>(NavEnhetImpl::class.java)
