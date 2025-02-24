@@ -36,13 +36,13 @@ class UpdateRenderedLetterTest {
         val rendered = letter(Title1(1, true, listOf(Literal(1, "Noe tekst"))))
         val next = rendered.copy(
             title = "ny tittel11",
-            sakspart = Sakspart(
+            sakspart = SakspartImpl(
                 "ny gjelder",
                 "nytt fødselsnummer",
                 "nytt saksnummer",
                 "ny dato"
             ),
-            signatur = Signatur("ny hilsenTekst", "ny saksbehandler rolle tekst", "ny saksbehandlernavn", "ny attesterendenavn", "ny avsenderenhet"),
+            signatur = SignaturImpl("ny hilsenTekst", "ny saksbehandler rolle tekst", "ny saksbehandlernavn", "ny attesterendenavn", "ny avsenderenhet"),
         )
 
         assertEquals(next.toEdit(), rendered.toEdit().copy(deletedBlocks = setOf(-1)).updateEditedLetter(next))

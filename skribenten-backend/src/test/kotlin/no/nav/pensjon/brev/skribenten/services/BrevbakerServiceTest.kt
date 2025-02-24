@@ -15,7 +15,7 @@ class BrevbakerServiceTest {
     fun testJacksonModule() {
         val markup = LetterMarkup(
             title = "the title",
-            sakspart = Sakspart(
+            sakspart = SakspartImpl(
                 gjelderNavn = "about name",
                 gjelderFoedselsnummer = "12345678910",
                 saksnummer = "12345",
@@ -47,7 +47,7 @@ class BrevbakerServiceTest {
                     )
                 ),
             ),
-            signatur = Signatur(
+            signatur = SignaturImpl(
                 hilsenTekst = "Friendly regards",
                 saksbehandlerRolleTekst = "case worker",
                 saksbehandlerNavn = "case worker name",

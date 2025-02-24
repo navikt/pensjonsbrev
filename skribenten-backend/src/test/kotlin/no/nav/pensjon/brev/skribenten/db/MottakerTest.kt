@@ -96,9 +96,9 @@ class MottakerTest {
             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             redigertBrev = Edit.Letter(
                 "a",
-                LetterMarkup.Sakspart("b", "c", "d", "e"),
+                LetterMarkup.SakspartImpl("b", "c", "d", "e"),
                 emptyList(),
-                LetterMarkup.Signatur("f", "g", "h", "i", "j"),
+                LetterMarkup.SignaturImpl("f", "g", "h", "i", "j"),
                 emptySet(),
             )
             sistRedigertAvNavIdent = principal
