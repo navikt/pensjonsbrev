@@ -25,9 +25,7 @@ spec:
     initialDelay: 20
     timeout: 5
   replicas:
-    min: 1
-    max: {{maxReplicas}}
-    cpuThresholdPercentage: 50
+    disableAutoScaling: true
   prometheus:
     enabled: true
     path: "/metrics"
@@ -63,3 +61,5 @@ spec:
       value: {{kafka.pdf-render-retry-topic}}
     - name: KAFKA_CONSUMER_GROUP_ID
       value: {{kafka.consumer-group-id}}
+    - name: JAVA_TOOL_OPTIONS
+      value: -XX:ActiveProcessorCount=4

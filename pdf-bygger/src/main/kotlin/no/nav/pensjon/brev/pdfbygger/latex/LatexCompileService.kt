@@ -40,6 +40,7 @@ class LatexCompileService(
                 is Execution.Success -> {
                     result.pdf.toFile().readBytes()
                         .let { PDFCompilationResponse.Bytes(it) }
+                }
 
                 is Execution.Failure.Compilation ->
                     PDFCompilationResponse.Failure.Client(
@@ -61,59 +62,59 @@ class LatexCompileService(
         }
     }
 
-    private suspend fun compile(executionFolder: Path): Execution {
-        var runs = 0
-        return withTimeoutOrNull(compileTimeout) {
-            var result: Execution = executeCompileProcess(executionFolder)
-            runs++
+private suspend fun compile(executionFolder: Path): Execution {
+    var runs = 0
+    return withTimeoutOrNull(compileTimeout) {
+        var result: Execution = executeCompileProcess(executionFolder)
+        runs++
 
-            repeat(COMPILATION_RUNS - 1) {
-                if (result is Execution.Success) {
-                    result = executeCompileProcess(executionFolder)
-                    runs++
-                } else {
-                    return@repeat
-                }
-            }
-            return@withTimeoutOrNull result
-        } ?: Execution.Failure.Timeout(completedRuns = runs, timeout = compileTimeout)
-    }
-
-    private suspend fun executeCompileProcess(
-        workingDir: Path,
-        texFilename: String = "letter",
-        output: Path = workingDir.resolve("process.out"),
-        error: Path = workingDir.resolve("process.err"),
-    ): Execution {
-        return withContext(Dispatchers.IO) {
-            var process: Process? = null
-            try {
-                process = ProcessBuilder(latexCommand)
-                    .directory(workingDir.toFile())
-                    .redirectOutput(ProcessBuilder.Redirect.appendTo(output.toFile()))
-                    .redirectError(ProcessBuilder.Redirect.appendTo(error.toFile()))
-                    .apply { environment()["TEXINPUTS"] = ".:/app/pensjonsbrev_latex//:" }
-                    .start()
-
-                while (process.isAlive) {
-                    delay(50.milliseconds)
-                }
-
-                if (process.exitValue() == 0) {
-                    Execution.Success(pdf = workingDir.resolve("${File(texFilename).nameWithoutExtension}.pdf"))
-                } else {
-                    Execution.Failure.Compilation(
-                        output = output.toFile().readText(),
-                        error = error.toFile().readText()
-                    )
-                }
-            } catch (e: IOException) {
-                Execution.Failure.Execution(e)
-            } finally {
-                process?.destroyForcibly()
+        repeat(COMPILATION_RUNS - 1) {
+            if (result is Execution.Success) {
+                result = executeCompileProcess(executionFolder)
+                runs++
+            } else {
+                return@repeat
             }
         }
+        return@withTimeoutOrNull result
+    } ?: Execution.Failure.Timeout(completedRuns = runs, timeout = compileTimeout)
+}
+
+private suspend fun executeCompileProcess(
+    workingDir: Path,
+    texFilename: String = "letter",
+    output: Path = workingDir.resolve("process.out"),
+    error: Path = workingDir.resolve("process.err"),
+): Execution {
+    return withContext(Dispatchers.IO) {
+        var process: Process? = null
+        try {
+            process = ProcessBuilder(latexCommand)
+                .directory(workingDir.toFile())
+                .redirectOutput(ProcessBuilder.Redirect.appendTo(output.toFile()))
+                .redirectError(ProcessBuilder.Redirect.appendTo(error.toFile()))
+                .apply { environment()["TEXINPUTS"] = ".:/app/pensjonsbrev_latex//:" }
+                .start()
+
+            while (process.isAlive) {
+                delay(50.milliseconds)
+            }
+
+            if (process.exitValue() == 0) {
+                Execution.Success(pdf = workingDir.resolve("${File(texFilename).nameWithoutExtension}.pdf"))
+            } else {
+                Execution.Failure.Compilation(
+                    output = output.toFile().readText(),
+                    error = error.toFile().readText()
+                )
+            }
+        } catch (e: IOException) {
+            Execution.Failure.Execution(e)
+        } finally {
+            process?.destroyForcibly()
+        }
     }
+}
 }
 
 private sealed class Execution {

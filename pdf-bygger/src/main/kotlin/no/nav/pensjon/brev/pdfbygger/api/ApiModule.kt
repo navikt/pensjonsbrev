@@ -135,7 +135,7 @@ private suspend fun RoutingContext.handleResult(
     logger: Logger,
 ) {
     when (result) {
-        is PDFCompilationResponse.Base64PDF -> call.respond(result)
+        is PDFCompilationResponse.Bytes -> call.respond(result)
         is PDFCompilationResponse.Failure.Client -> {
             logger.info("Client error: ${result.reason}")
             if (result.output?.isNotBlank() == true) {

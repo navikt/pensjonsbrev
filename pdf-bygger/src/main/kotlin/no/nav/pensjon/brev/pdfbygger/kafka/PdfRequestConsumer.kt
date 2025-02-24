@@ -39,9 +39,10 @@ class PdfRequestConsumer(
 
     private val consumerConfig = createKafkaConsumerConfig(kafkaConfig, parallelism)
     private val producerConfig = createKafkaProducerConfig(kafkaConfig)
-    private val retryProducers = ProducerManager<PDFRequestAsync>(producerConfig)
-    private val successProducers = ProducerManager<PDFCompilationResponse.Base64PDF>(producerConfig)
-    private val retrySuccessProducers = ProducerManager<PDFCompilationResponse.Base64PDF>(producerConfig)
+    private val retryProducers = Producers<PDFRequestAsync>(producerConfig)
+    private val successProducers = Producers<ByteArray>(producerConfig)
+    private val retrySuccessProducers = Producers<ByteArray>(producerConfig)
+
     private var shuttingDown = false
     private var isHealthy = true
     private lateinit var flow: Flow<RenderRequests>
@@ -50,8 +51,6 @@ class PdfRequestConsumer(
     private val logger = LoggerFactory.getLogger(PdfRequestConsumer::class.java)
 
     // TODO add message id to logger
-    // TODO housekeeping on repartition and possibly interval
-    // TODO should i close producers when repartitioning occurs? It should in theory just be a waste of threads/ a tiny bit of RAM
     private val consumer = KafkaConsumer(consumerConfig, StringDeserializer(), PDFRequestAsyncDeserializer())
 
     private val retryConsumer =
@@ -74,31 +73,13 @@ class PdfRequestConsumer(
     private fun flow() =
         flow {
             while (true) {
-                logger.info("Polling render retry queue")
                 emit(pollRenderRetryQueue())
-                logger.info("Polling render queue")
                 emit(pollRenderQueue())
             }
         }.takeWhile { !shuttingDown }
             .filter { !it.requests.isEmpty }
             .onEach { renderRequests ->
-                logger.info("rendering ${renderRequests.requests.count()} requests")
-                val results = renderLetters(renderRequests)
-                if (results.isNotEmpty()) {
-                    val (successes, failures) = results.partition { it.pdf != null }
-                    val consumedTopic = renderRequests.topic()
-
-                    if (failures.isEmpty()) {
-                        produceSuccessesForTopic(successes, consumedTopic, renderRequests.isFromRetryQueue)
-                    } else {
-                        if (renderRequests.isFromRetryQueue) {
-                            processRetryQueueResults(results)
-                        } else {
-                            sendToRetryOrSuccessQueue(results)
-                        }
-                    }
-                    logger.info("Produced ${successes.size} successes and ${failures.size} failures")
-                }
+                sendResultsToQueue(renderLetters(renderRequests), renderRequests.isFromRetryQueue)
             }.onCompletion { exception ->
                 if (exception != null) {
                     logger.error("Application stopped unexpectedly due to exception ${exception.message}")
@@ -112,6 +93,27 @@ class PdfRequestConsumer(
                 retrySuccessProducers.closeAll()
                 isHealthy = false
             }
+
+    private fun sendResultsToQueue(
+        results: List<RenderResult>,
+        isFromRetryQueue: Boolean
+    ) {
+        if (results.isNotEmpty()) {
+            val (successes, failures) = results.partition { it.pdf != null }
+            val consumedTopic = if (isFromRetryQueue) { retryTopic } else { renderTopic }
+
+            if (failures.isEmpty()) {
+                produceSuccessesForTopic(successes, consumedTopic, isFromRetryQueue)
+            } else {
+                if (isFromRetryQueue) {
+                    processRetryQueueResults(results)
+                } else {
+                    sendToRetryOrSuccessQueue(results)
+                }
+            }
+            logger.info("Produced ${successes.size} successes and ${failures.size} failures")
+        }
+    }
 
     private fun produceSuccessesForTopic(
         successes: List<RenderResult>, consumedTopic: String, isFromRetryQueue: Boolean
@@ -138,7 +140,7 @@ class PdfRequestConsumer(
             .forEach {
                 if (it.pdf != null) {
                     val producer = retrySuccessProducers.getProducer(renderTopic, it.consumedPartiton)
-                    sendSingleSynchronous(it, it.renderRequest.replyTopic, it.pdf, producer, consumer.groupMetadata())
+                    sendSingleSynchronous(it, it.renderRequest.replyTopic, it.pdf.bytes, producer, consumer.groupMetadata())
                 } else {
                     val producer = retryProducers.getProducer(it.consumedTopic, it.consumedPartiton)
                     sendSingleSynchronous(it, retryTopic, it.renderRequest, producer, consumer.groupMetadata())
@@ -199,7 +201,7 @@ class PdfRequestConsumer(
                 consumerGroupMetadata(isFromRetryQueue)
             )
             results.forEach {
-                successProducer.send(ProducerRecord(it.renderRequest.replyTopic, it.renderRequest.messageId, it.pdf!!))
+                successProducer.send(ProducerRecord(it.renderRequest.replyTopic, it.renderRequest.messageId, it.pdf!!.bytes))
             }
             successProducer.commitTransaction()
         } catch (e: Exception) {
@@ -220,7 +222,7 @@ class PdfRequestConsumer(
                 async {
                     RenderResult(
                         renderRequest = record.value(),
-                        pdf = compile(record.value()),
+                        pdf = compile(record.value()) as? PDFCompilationResponse.Bytes,
                         consumedTopic = record.topic(),
                         consumedPartiton = record.partition(),
                         consumedOffset = record.offset(),
@@ -229,14 +231,14 @@ class PdfRequestConsumer(
             }.awaitAll()
         }
 
-    private suspend fun compile(request: PDFRequestAsync): PDFCompilationResponse.Base64PDF? {
+    private suspend fun compile(request: PDFRequestAsync): PDFCompilationResponse? {
         parallelismSemaphore.acquire()
         val result = LatexDocumentRenderer.render(request.request)
             .let { latexCompileService.createLetter(it.files) }
         parallelismSemaphore.release()
 
         when (result) {
-            is PDFCompilationResponse.Base64PDF -> return result
+            is PDFCompilationResponse.Bytes -> return result
             is PDFCompilationResponse.Failure.Client -> logger.error(result.reason) // TODO better logging
             is PDFCompilationResponse.Failure.QueueTimeout -> logger.error(result.reason)
             is PDFCompilationResponse.Failure.Server -> logger.error(result.reason)
@@ -244,13 +246,6 @@ class PdfRequestConsumer(
         }
         return null
     }
-
-    private fun RenderRequests.topic() =
-        if (isFromRetryQueue) {
-            retryTopic
-        } else {
-            renderTopic
-        }
 
 }
 
@@ -274,7 +269,7 @@ private fun transactionId(topic: String, partition: Int) = "$topic-$partition"
 
 private data class RenderResult(
     val renderRequest: PDFRequestAsync,
-    val pdf: PDFCompilationResponse.Base64PDF?,
+    val pdf: PDFCompilationResponse.Bytes?,
     val consumedTopic: String,
     val consumedPartiton: Int,
     val consumedOffset: Long,
@@ -312,66 +307,69 @@ private fun createKafkaProducerConfig(kafkaConfig: ApplicationConfig) = createKa
 )
 
 private class RebalanceListener(
-    private vararg val producerManagers: ProducerManager<*>,
+    private vararg val producers: Producers<*>,
 ) : ConsumerRebalanceListener {
+    private val logger = LoggerFactory.getLogger(RebalanceListener::class.java)
     override fun onPartitionsRevoked(partitions: MutableCollection<TopicPartition>?) {
         if (partitions != null) {
-            producerManagers.forEach {
+            producers.forEach {
                 runBlocking {
                     it.closeProducersForTopicPartitions(partitions)
                 }
             }
+            logger.info("Revoked ${partitions.size} partitions")
         }
     }
 
     override fun onPartitionsAssigned(partitions: MutableCollection<TopicPartition>?) {
         if (partitions != null) {
-            producerManagers.forEach {
+            producers.forEach {
                 runBlocking {
                     it.createProducersForTopicPartitions(partitions)
                 }
             }
+            logger.info("Assigned ${partitions.size} partitions")
         }
-
     }
 
 
 }
 
-private class ProducerManager<V>(val producerConfig: Map<String, String>) {
+private class Producers<V>(val producerConfig: Map<String, String>) {
 
-    private val logger = LoggerFactory.getLogger(ProducerManager::class.java)
+    private val logger = LoggerFactory.getLogger(Producers::class.java)
     val producers = ConcurrentHashMap<String, KafkaProducer<String, V>>()
     suspend fun closeProducersForTopicPartitions(partitions: MutableCollection<TopicPartition>) {
         logger.info("Closing producers")
         coroutineScope {
-            partitions.forEach {
+            partitions.map {
                 launch {
                     producers.remove(transactionId(it.topic(), it.partition()))?.close()
                 }
-            }
+            }.joinAll()
         }
-
     }
 
     suspend fun createProducersForTopicPartitions(partitions: MutableCollection<TopicPartition>) {
         coroutineScope {
             partitions
-                .map { topicPartition ->
-                    @OptIn(DelicateCoroutinesApi::class)
-                    GlobalScope.launch {
-                        val transactionId = transactionId(topicPartition.topic(), topicPartition.partition())
-                        producers.getOrPut(transactionId) {
-                            KafkaProducer(
-                                producerConfig
-                                    .plus("transactional.id" to transactionId),
-                                StringSerializer(),
-                                PDFByggerSerializer<V>(),
-                            ).also { it.initTransactions() }
+                .chunked(10) // Don't create them too fast, or the cluster won't like you.
+                .forEach { topicPartitions ->
+                    topicPartitions.map {
+                        @OptIn(DelicateCoroutinesApi::class)
+                        GlobalScope.launch {
+                            val transactionId = transactionId(it.topic(), it.partition())
+                            producers.getOrPut(transactionId) {
+                                KafkaProducer(
+                                    producerConfig
+                                        .plus("transactional.id" to transactionId),
+                                    StringSerializer(),
+                                    PDFByggerSerializer<V>(),
+                                ).also { it.initTransactions() }
+                            }
                         }
-                    }
-                }.joinAll()
-
+                    }.joinAll()
+                }
         }
     }
 

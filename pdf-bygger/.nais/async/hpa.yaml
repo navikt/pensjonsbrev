@@ -10,7 +10,16 @@ spec:
     kind: Deployment
     name: {{app-name}}
   minReplicas: 1
-  maxReplicas: 20
+  maxReplicas: 50
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Percent
+          value: 10000
+          periodSeconds: 15
+    scaleDown:
+      stabilizationWindowSeconds: 600
   metrics:
     - type: External
       external:
@@ -22,7 +31,7 @@ spec:
               group: {{kafka.pdf-bygger-async-q2}}
         target:
           type: AverageValue
-          averageValue: "200"
+          averageValue: "50"
     - type: External
       external:
         metric:

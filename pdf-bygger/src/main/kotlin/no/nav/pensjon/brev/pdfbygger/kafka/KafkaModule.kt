@@ -32,5 +32,6 @@ fun Application.kafkaModule(latexCompileService: LatexCompileService) {
         log.info("Shutting down async worker")
         pdfRequestConsumer.stop()
     }
+    log.info("Ferdig med å sette opp applikasjonen")
 
 }

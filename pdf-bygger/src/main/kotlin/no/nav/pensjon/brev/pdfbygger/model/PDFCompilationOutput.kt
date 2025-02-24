@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger.model
 
-internal sealed class PDFCompilationResponse {
+sealed class PDFCompilationResponse {
     data class Bytes(val bytes: ByteArray): PDFCompilationResponse() {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
