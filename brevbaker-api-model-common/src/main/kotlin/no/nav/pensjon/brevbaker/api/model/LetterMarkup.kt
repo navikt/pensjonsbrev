@@ -49,16 +49,20 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
         data class Paragraph(override val id: Int, override val editable: Boolean, val content: List<ParagraphContent>) : Block(id, Type.PARAGRAPH, editable)
     }
 
-    sealed class ParagraphContent(open val id: Int, open val type: Type) {
+    sealed interface ParagraphContent {
+        val id: Int
+        val type: Type
         enum class Type {
             ITEM_LIST, LITERAL, VARIABLE, TABLE, FORM_TEXT, FORM_CHOICE, NEW_LINE
         }
 
-        data class ItemList(override val id: Int, val items: List<Item>) : ParagraphContent(id, Type.ITEM_LIST) {
+        data class ItemList(override val id: Int, val items: List<Item>) : ParagraphContent {
+            override val type = Type.ITEM_LIST
+
             data class Item(val id: Int, val content: List<Text>)
         }
 
-        sealed class Text(id: Int, type: Type) : ParagraphContent(id, type) {
+        sealed class Text(override val id: Int, override val type: Type) : ParagraphContent {
             abstract val text: String
             abstract val fontType: FontType
 
@@ -79,7 +83,9 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
             }
         }
 
-        data class Table(override val id: Int, val rows: List<Row>, val header: Header) : ParagraphContent(id, Type.TABLE) {
+        data class Table(override val id: Int, val rows: List<Row>, val header: Header) : ParagraphContent {
+            override val type = Type.TABLE
+
             data class Row(val id: Int, val cells: List<Cell>)
             data class Cell(val id: Int, val text: List<Text>)
             data class Header(val id: Int, val colSpec: List<ColumnSpec>)
@@ -87,7 +93,7 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
             enum class ColumnAlignment { LEFT, RIGHT }
         }
 
-        sealed class Form(id: Int, type: Type) : ParagraphContent(id, type) {
+        sealed class Form(override val id: Int, override val type: Type) : ParagraphContent {
             data class Text(override val id: Int, val prompt: List<ParagraphContent.Text>, val size: Size, val vspace: Boolean) : Form(id, Type.FORM_TEXT) {
                 enum class Size { NONE, SHORT, LONG }
             }
