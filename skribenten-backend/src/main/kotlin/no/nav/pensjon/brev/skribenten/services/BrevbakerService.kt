@@ -3,7 +3,9 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.deser.AbstractDeserializer
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -125,6 +127,14 @@ object LetterMarkupModule : SimpleModule() {
         addDeserializer(LetterMarkup.Block::class.java, blockDeserializer())
         addDeserializer(LetterMarkup.ParagraphContent::class.java, paragraphContentDeserializer())
         addDeserializer(LetterMarkup.ParagraphContent.Text::class.java, textContentDeserializer())
+
+        addDeserializer(LetterMarkup.Sakspart::class.java, object :
+            AbstractDeserializer<LetterMarkup.Sakspart, LetterMarkup.SakspartImpl>(LetterMarkup.SakspartImpl::class.java) {}
+        )
+
+        addDeserializer(LetterMarkup.Signatur::class.java, object :
+            AbstractDeserializer<LetterMarkup.Signatur, LetterMarkup.SignaturImpl>(LetterMarkup.SignaturImpl::class.java) {}
+        )
     }
 
     private fun blockDeserializer() =
@@ -173,6 +183,11 @@ object LetterMarkupModule : SimpleModule() {
                 return p.codec.treeToValue(node, clazz)
             }
         }
+
+    private abstract class AbstractDeserializer<T, V : T>(private val v: Class<V>) : JsonDeserializer<T>() {
+        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): T =
+            parser.codec.treeToValue(parser.codec.readTree<JsonNode>(parser), v)
+    }
 }
 
 object TemplateModelSpecificationModule : SimpleModule() {

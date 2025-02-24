@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
+import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.dao.LongEntity
@@ -47,6 +48,7 @@ internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
     registerModule(Edit.JacksonModule)
     registerModule(BrevbakerBrevdataModule)
+    registerModule(LetterMarkupModule)
 }
 
 class DatabaseJsonDeserializeException(cause: JacksonException): Exception("Failed to deserialize json-column from database", cause)

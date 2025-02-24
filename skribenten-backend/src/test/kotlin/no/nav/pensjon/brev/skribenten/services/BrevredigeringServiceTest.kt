@@ -29,7 +29,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.apache.commons.codec.binary.Hex
 import org.assertj.core.api.Assertions.assertThat
