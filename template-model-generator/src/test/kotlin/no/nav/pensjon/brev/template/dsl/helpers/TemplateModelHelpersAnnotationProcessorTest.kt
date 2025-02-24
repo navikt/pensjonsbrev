@@ -17,6 +17,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
     // Used in tests
     @Suppress("unused")
     data class AModel(val navn: String)
+    @Suppress("unused")
+    interface AModelInterface{
+        val fornavn: String
+    }
 
     @Test
     fun `can generate helpers`() {
@@ -34,6 +38,25 @@ class TemplateModelHelpersAnnotationProcessorTest {
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
         assertThat(result.generatedFiles, hasSize(greaterThan(2)) and anyElement(has(File::getName, containsSubstring("AModelSelectors"))))
+    }
+
+
+    @Test
+    fun `can generate helpers for interface model`() {
+        val result = SourceFile.kotlin(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
+
+                    @TemplateModelHelpers
+                    object MyClass : HasModel<TemplateModelHelpersAnnotationProcessorTest.AModelInterface> {}
+                    """.trimIndent()
+        ).compile()
+
+        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
+        // If the processor didn't generate code, then we should have two files (MyClass and module file)
+        assertThat(result.generatedFiles, hasSize(greaterThan(2)) and anyElement(has(File::getName, containsSubstring("AModelInterfaceSelectors"))))
     }
 
     @Test
