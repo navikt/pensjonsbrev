@@ -62,9 +62,9 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
             data class Item(val id: Int, val content: List<Text>)
         }
 
-        sealed class Text(override val id: Int, override val type: Type) : ParagraphContent {
-            abstract val text: String
-            abstract val fontType: FontType
+        sealed interface Text : ParagraphContent {
+            val text: String
+            val fontType: FontType
 
             enum class FontType { PLAIN, BOLD, ITALIC }
 
@@ -73,13 +73,22 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
                 override val text: String,
                 override val fontType: FontType = FontType.PLAIN,
                 val tags: Set<ElementTags> = emptySet(),
-            ) : Text(id, Type.LITERAL)
+            ) : Text {
+                override val type = Type.LITERAL
+            }
 
-            data class Variable(override val id: Int, override val text: String, override val fontType: FontType = FontType.PLAIN) : Text(id, Type.VARIABLE)
+            data class Variable(
+                override val id: Int,
+                override val text: String,
+                override val fontType: FontType = FontType.PLAIN
+            ) : Text {
+                override val type = Type.VARIABLE
+            }
 
-            data class NewLine(override val id: Int) : Text(id, Type.NEW_LINE) {
+            data class NewLine(override val id: Int) : Text {
                 override val fontType = FontType.PLAIN
                 override val text: String = ""
+                override val type = Type.NEW_LINE
             }
         }
 
