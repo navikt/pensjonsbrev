@@ -13,6 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Hovedmal
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.inntektsaar
@@ -120,9 +121,9 @@ object OmstillingsstoenadInntektsjusteringVarsel: EtterlatteTemplate<AarligInnte
                 }
                 paragraph {
                     text(
-                        Bokmal to "Meld fra om endringer i inntekten din ved å sende skjema om endring av inntekt neste år. Dette finner du på nav.no/omstillingsstonad#melde.",
-                        Nynorsk to "Meld frå om endringar i inntekta di ved å sende inn skjemaet om endring av inntekt for neste år. Du finn dette på nav.no/omstillingsstonad#melde.",
-                        English to "Notify us of changes to your income by submitting the form for change of income next year. This is available from: nav.no/omstillingsstonad#melde.",
+                        Bokmal to "Meld fra om endringer i inntekten din ved å sende skjema om endring av inntekt neste år. Dette finner du på ${Constants.OMS_MELD_INN_ENDRING_URL}.",
+                        Nynorsk to "Meld frå om endringar i inntekta di ved å sende inn skjemaet om endring av inntekt for neste år. Du finn dette på ${Constants.OMS_MELD_INN_ENDRING_URL}.",
+                        English to "Notify us of changes to your income by submitting the form for change of income next year. This is available from: ${Constants.OMS_MELD_INN_ENDRING_URL}.",
                     )
                 }
                 paragraph {
