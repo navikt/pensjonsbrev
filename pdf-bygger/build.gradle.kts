@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 val javaTarget: String by System.getProperties()
 val ktorVersion: String by System.getProperties()
 val kotlinVersion: String by System.getProperties()
+val commonVersion: String by project
 val hamkrestVersion: String by project
 val logbackVersion: String by project
 val logstashVersion: String by project
@@ -52,6 +53,7 @@ dependencies {
     implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
 
     implementation(project(":brevbaker-dsl"))
+    implementation("no.nav.pensjon.brevbaker:brevbaker-api-model-common:$commonVersion")
 
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version") {
         because("we require deserialization/serialization of java.time.LocalDate")

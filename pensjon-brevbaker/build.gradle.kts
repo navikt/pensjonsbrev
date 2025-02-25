@@ -119,6 +119,7 @@ dependencies {
 
     implementation(project(":pensjonsmaler"))
     implementation(project(":etterlattemaler"))
+    implementation(project(":brevbaker"))
     ksp(project(":template-model-generator"))
 
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version") {

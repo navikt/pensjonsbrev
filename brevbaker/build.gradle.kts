@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelJavaTarget: String by System.getProperties()
 val hamkrestVersion: String by project
+val commonVersion: String by project
 val logstashVersion: String by project
 val ktorVersion: String by System.getProperties()
 val jacksonJsr310Version: String by project
@@ -24,6 +25,7 @@ repositories {
 
 dependencies {
     api(project(":brevbaker-dsl"))
+    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:$commonVersion")
     ksp(project(":template-model-generator"))
     implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.12.0")
 
