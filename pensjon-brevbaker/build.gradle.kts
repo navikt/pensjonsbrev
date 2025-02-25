@@ -32,7 +32,6 @@ ktor {
 }
 
 repositories {
-    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven") }
     mavenLocal()
 }
 
@@ -63,6 +62,7 @@ tasks {
     }
 
     task<Test>("integrationTest") {
+        outputs.doNotCacheIf("Output of this task is pdf from pdf-bygger which is not cached") { true }
         systemProperties["junit.jupiter.execution.parallel.enabled"] = true
         systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
         systemProperties["junit.jupiter.execution.parallel.config.strategy"] = "dynamic"
@@ -116,7 +116,6 @@ dependencies {
     implementation("io.ktor:ktor-server-swagger:$ktorVersion")
     implementation("io.ktor:ktor-client-encoding:$ktorVersion")
     implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.12.0")
 
     implementation(project(":pensjonsmaler"))
     implementation(project(":etterlattemaler"))
@@ -139,5 +138,7 @@ dependencies {
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
     testImplementation("io.mockk:mockk:${mockkVersion}")
+
+    testImplementation(testFixtures(project(":brevbaker")))
 }
 

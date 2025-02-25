@@ -1,11 +1,13 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.TestTags
+import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.PDF_BUILDER_URL
+import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.renderTestPdfOutline
+import no.nav.brev.brevbaker.renderTestVedleggPdf
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.maler.example.lipsums
-import no.nav.pensjon.brev.renderTestPdfOutline
-import no.nav.pensjon.brev.renderTestVedleggPdf
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -23,6 +25,9 @@ import org.junit.jupiter.params.provider.MethodSource
 
 @Tag(TestTags.INTEGRATION_TEST)
 class LatexVisualITest {
+
+    private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
+
     private fun render(
         overrideName: String? = null,
         title: String? = null,
@@ -38,7 +43,8 @@ class LatexVisualITest {
             felles = felles,
             brevtype = brevtype,
             outlineInit = outlineInit,
-            title = title ?: testName
+            title = title ?: testName,
+            pdfByggerService = laTeXCompilerService
         )
     }
 
@@ -54,6 +60,7 @@ class LatexVisualITest {
                 .walk { frames -> frames.skip(2).findFirst().map { it.methodName }.orElse("") },
             includeSakspart = includeSakspart,
             outlineInit = vedleggOutlineInit,
+            pdfByggerService = laTeXCompilerService,
             felles = felles,
         )
     }

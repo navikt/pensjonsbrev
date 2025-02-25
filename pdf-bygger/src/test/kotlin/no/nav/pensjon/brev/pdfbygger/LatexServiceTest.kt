@@ -2,9 +2,8 @@ package no.nav.pensjon.brev.pdfbygger
 
 import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
-import io.ktor.util.*
 import kotlinx.coroutines.*
-import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse.Base64PDF
+import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse.Bytes
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse.Failure
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createTempFile
@@ -23,7 +22,7 @@ class LatexServiceTest {
 
     @Test
     fun `producePDF compiles two times`() {
-        assertResult<Base64PDF>(producePdf("simpleCompile.sh")) { result ->
+        assertResult<Bytes>(producePdf("simpleCompile.sh")) { result ->
             val compiledOutput = result.decodePlaintext().lines().filter { it.isNotBlank() }
             assertThat(compiledOutput, hasSize(equalTo(2)))
             assertThat(compiledOutput, allElements(equalTo("kompilerer letter.tex")))
@@ -88,7 +87,7 @@ class LatexServiceTest {
 
     @Test
     fun `producePDF writes all inputFiles`() {
-        assertResult<Base64PDF>(producePdf("useFilesCompile.sh", files = mapOf("f1.txt" to "file 1".encodeBase64(), "f2.txt" to "file 2".encodeBase64()))) {
+        assertResult<Bytes>(producePdf("useFilesCompile.sh", files = mapOf("f1.txt" to "file 1", "f2.txt" to "file 2"))) {
             val compiledOutput = it.decodePlaintext().lines()
             assertThat(compiledOutput, hasSize(equalTo(2)) and hasElement("file 1") and hasElement("file 2"))
         }
@@ -120,7 +119,7 @@ class LatexServiceTest {
             tmpBaseDir = null,
         )
         runBlocking {
-            assertResult<Base64PDF>(service.producePDF(emptyMap()))
+            assertResult<Bytes>(service.producePDF(emptyMap()))
         }
     }
 
@@ -141,7 +140,7 @@ class LatexServiceTest {
                 }
             }.awaitAll()
 
-            val success = results.filterIsInstance<Base64PDF>()
+            val success = results.filterIsInstance<Bytes>()
             val timedOut = results.filterIsInstance<Failure.QueueTimeout>()
 
             // Because of two runs per compilation we expect each to take ~200ms, and queue wait timeout is less, thus ~2 successes
@@ -203,7 +202,7 @@ class LatexServiceTest {
 
             assertNotNull(compilationTime, "Expected queued compilation to be completed by LatexService, but was cancelled by timeout in test")
             assertThat(compilationTime, isWithin(200L..800L))
-            assertResult<Base64PDF>(result)
+            assertResult<Bytes>(result)
 
             blockingCompilation.cancel()
         }
@@ -242,7 +241,6 @@ class LatexServiceTest {
             LaTeXService(latexCommand = "/usr/bin/env bash ${getScriptPath(scriptName)}", compileTimeout = timeout, queueWaitTimeout = timeout, latexParallelism = 1, tmpBaseDir = null).producePDF(files)
         }
 
-    private fun Base64PDF.decodePlaintext(): String =
-        base64PDF.decodeBase64String()
+    private fun Bytes.decodePlaintext(): String = String(this.bytes)
 
 }

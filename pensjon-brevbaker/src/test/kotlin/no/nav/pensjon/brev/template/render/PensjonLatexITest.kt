@@ -3,7 +3,10 @@ package no.nav.pensjon.brev.template.render
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.isEmpty
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.*
+import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.PDF_BUILDER_URL
+import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -30,6 +33,8 @@ class PensjonLatexITest {
     private val logger = LoggerFactory.getLogger(PensjonLatexITest::class.java)
     private val brevData = TestTemplateDto("Ole")
 
+    private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
+
     @Test
     fun canRender() {
         val template = createTemplate(
@@ -51,7 +56,7 @@ class PensjonLatexITest {
                 }
             }
         }
-        Letter(template, brevData, Bokmal, Fixtures.felles).renderTestPDF("pensjonLatexITest_canRender")
+        Letter(template, brevData, Bokmal, Fixtures.felles).renderTestPDF("pensjonLatexITest_canRender", pdfByggerService = laTeXCompilerService)
     }
 
     @Test
@@ -123,7 +128,7 @@ class PensjonLatexITest {
             }
 
             Letter(testTemplate, brevData, Bokmal, Fixtures.felles)
-                .renderTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar")
+                .renderTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar", pdfByggerService = laTeXCompilerService)
 
             return true
         } catch (e: Throwable) {

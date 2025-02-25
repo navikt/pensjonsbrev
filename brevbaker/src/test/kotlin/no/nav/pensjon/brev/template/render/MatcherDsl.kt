@@ -7,10 +7,10 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 
-fun hasBlocks(matchSize: Boolean = true, builder: BlocksAssert.() -> Unit): Matcher<LetterMarkup> =
+internal fun hasBlocks(matchSize: Boolean = true, builder: BlocksAssert.() -> Unit): Matcher<LetterMarkup> =
     has(LetterMarkup::blocks, BlocksAssert(matchSize).apply(builder).build())
 
-fun hasAttachments(matchSize: Boolean = true, builder: AttachmentsAssert.() -> Unit): Matcher<LetterWithAttachmentsMarkup> =
+internal fun hasAttachments(matchSize: Boolean = true, builder: AttachmentsAssert.() -> Unit): Matcher<LetterWithAttachmentsMarkup> =
     has(LetterWithAttachmentsMarkup::attachments, AttachmentsAssert(matchSize).apply(builder).build())
 
 

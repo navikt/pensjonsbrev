@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 val javaTarget: String by System.getProperties()
 val kotlinVersion: String by System.getProperties()
 val kspVersion: String by System.getProperties()
+val commonVersion: String by project
 val jupiterVersion: String by project
 val hamkrestVersion: String by project
 
@@ -45,7 +46,7 @@ tasks {
 dependencies {
     compileOnly(kotlin("reflect"))
     implementation("com.google.devtools.ksp:symbol-processing-api:$kotlinVersion-$kspVersion")
-    implementation(project(":brevbaker-api-model-common"))
+    implementation("no.nav.pensjon.brevbaker:brevbaker-api-model-common:$commonVersion")
     implementation(project(":brevbaker-dsl"))
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")

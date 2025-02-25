@@ -1,12 +1,13 @@
 package no.nav.pensjon.brev.maler.example
 
-import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.TestTags
+import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.PDF_BUILDER_URL
+import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
-import no.nav.pensjon.brev.renderTestPDF
+import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.testBrevbakerApp
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -14,12 +15,12 @@ import org.junit.jupiter.api.Test
 class LetterExampleTest {
 
     @Test
-    fun test() = testBrevbakerApp {
+    fun test() {
         Letter(
             LetterExample.template,
             createLetterExampleDto(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        ).renderTestPDF("EKSEMPELBREV_BOKMAL")
+        ).renderTestPDF("EKSEMPELBREV_BOKMAL", pdfByggerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0))
     }
 }

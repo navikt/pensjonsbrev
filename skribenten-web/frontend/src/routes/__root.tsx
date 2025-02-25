@@ -30,4 +30,5 @@ export const Route = createRootRouteWithContext<{
       </div>
     </>
   ),
+  notFoundComponent: () => "Finner ikke siden",
 });

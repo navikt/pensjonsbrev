@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev
 
-import io.getunleash.FakeUnleash
 import io.ktor.client.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
@@ -22,23 +21,6 @@ fun testBrevbakerApp(block: suspend ApplicationTestBuilder.(client: HttpClient) 
             contentType(ContentType.Application.Json)
         }
     }
-    settOppFakeUnleash()
 
     block(client)
-}
-
-val fakeUnleash = FakeUnleash()
-
-fun settOppFakeUnleash() = FeatureToggleHandler.configure {
-    unleash = { fakeUnleash }
-}
-
-fun aktiverToggle(toggle: UnleashToggle) {
-    settOppFakeUnleash()
-    fakeUnleash.enable(unleashTogglePrefix + toggle.name)
-}
-
-fun deaktiverToggle(toggle: UnleashToggle) {
-    settOppFakeUnleash()
-    fakeUnleash.disable(unleashTogglePrefix + toggle.name)
 }

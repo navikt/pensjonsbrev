@@ -111,22 +111,9 @@ fun Application.module() {
             val result = activityCounter.count {
                 call.receive<PDFRequest>()
                     .let { LatexDocumentRenderer.render(it) }
-                    // TODO: Dropp base64-enkodinga (og dekodinga inni)
-                    .let { laTeXService.producePDF(it.base64EncodedFiles()) }
+                    .let { laTeXService.producePDF(it.files.associate { it.fileName to it.content }) }
             }
             handleResult(result, call.application.environment.log)
-        }
-
-        // TODO: Slett denne. Ventar med det for å unngå nedetid
-        post("/compile") {
-            val logger = call.application.environment.log
-
-            val input = call.receive<PdfCompilationInput>()
-            val result = activityCounter.count {
-                laTeXService.producePDF(input.files)
-            }
-
-            handleResult(result, logger)
         }
 
         get("/isAlive") {
@@ -155,7 +142,7 @@ private suspend fun RoutingContext.handleResult(
     logger: Logger,
 ) {
     when (result) {
-        is PDFCompilationResponse.Base64PDF -> call.respond(result)
+        is PDFCompilationResponse.Bytes -> call.respond(result)
         is PDFCompilationResponse.Failure.Client -> {
             logger.info("Client error: ${result.reason}")
             if (result.output?.isNotBlank() == true) {

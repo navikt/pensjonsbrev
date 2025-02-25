@@ -19,6 +19,12 @@ data class NestedModelWithRepetition(val name: String, val first: SubModel, val 
 @Suppress("unused")
 data class ModelWithTypeParameters(val name: String, val aList: List<String>, val otherList: List<NestedModel>, val aMap: Map<String, NestedModel>)
 
+@Suppress("unused")
+interface AnInterfaceModel {
+    val name: String
+    val second: NestedModel.SecondModel
+}
+
 class TemplateModelVisitorTest {
 
     @Test
@@ -133,8 +139,39 @@ class TemplateModelVisitorTest {
         assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("ModelOutsideOfTestPackageSelectors"))))
     }
 
+
     @Test
-    fun `ignores model that is not a data class`() {
+    fun `generates helpers for interface models`() {
+        val result = SourceFile.kotlin(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.template.dsl.helpers.AnInterfaceModel
+                    import no.nav.pensjon.brev.template.dsl.helpers.AnInterfaceModelSelectors.name
+                    import no.nav.pensjon.brev.template.dsl.helpers.AnInterfaceModelSelectors.second
+                    import no.nav.pensjon.brev.template.dsl.helpers.NestedModelSelectors.SecondModelSelectors.lastName
+
+                    @TemplateModelHelpers
+                    object MyClass : HasModel<AnInterfaceModel> {
+                        fun doSomething() {
+                            SimpleTemplateScope<AnInterfaceModel>().name
+                            SimpleTemplateScope<AnInterfaceModel>().second.lastName
+                        }
+                    }
+                    """.trimIndent()
+        ).compile()
+
+        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
+        // If the processor didn't generate code, then we should have two files (MyClass and module file)
+        assertThat(result.generatedFiles, hasSize(greaterThan(2)))
+        assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("AnInterfaceModelSelectors"))))
+        assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("NestedModelSelectors"))))
+        assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("SecondModelSelectors"))))
+    }
+
+    @Test
+    fun `ignores model that is from standard library`() {
         val result = SourceFile.kotlin(
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel

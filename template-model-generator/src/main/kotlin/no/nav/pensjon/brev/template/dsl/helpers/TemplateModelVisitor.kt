@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.template.dsl.helpers
 
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.symbol.*
+import com.google.devtools.ksp.symbol.ClassKind.CLASS
+import com.google.devtools.ksp.symbol.ClassKind.INTERFACE
 import com.google.devtools.ksp.visitor.KSDefaultVisitor
 
 private val SKIPPED_NO_WARN_PACKAGES: Set<String> = setOf("kotlin", "java.util", "java.time")
@@ -11,7 +13,7 @@ private val SKIPPED_NO_WARN_CLASSES: Set<String> = setOf(
 )
 
 private fun KSPLogger.logSkipped(classDeclaration: KSClassDeclaration) {
-    val message = "Skipping $classDeclaration: can only generate helpers for data classes"
+    val message = "Skipping $classDeclaration: can only generate helpers for classes and interfaces"
 
     if (classDeclaration.packageName.asString() in SKIPPED_NO_WARN_PACKAGES
         || classDeclaration.classKind == ClassKind.ENUM_CLASS
@@ -33,10 +35,17 @@ internal class TemplateModelVisitor(
         throw MissingImplementation("Couldn't process node $node at: ${node.location}", node)
     }
 
+    private fun KSClassDeclaration.notInPackage(name: String): Boolean {
+        val pkg = this.packageName.asString()
+        val nameWithSeparator = if (name.endsWith(".")) name else "$name."
+
+        return pkg != name && !pkg.startsWith(nameWithSeparator)
+    }
+
     override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: SelectorModels): SelectorModels =
         if (data.isVisited(classDeclaration)) {
             data.withDependency(classDeclaration, dependency)
-        } else if (classDeclaration.classKind == ClassKind.CLASS && classDeclaration.modifiers.contains(Modifier.DATA)) {
+        } else if (classDeclaration.classKind in setOf(CLASS, INTERFACE) && classDeclaration.notInPackage("java") && classDeclaration.notInPackage("kotlin")) {
             classDeclaration.getAllProperties().toList().foldAccept(data.withNeeded(classDeclaration, dependency), this)
         } else {
             logger.logSkipped(classDeclaration)
