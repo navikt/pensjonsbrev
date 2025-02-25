@@ -116,16 +116,13 @@ object Felles {
             }
             paragraph {
                 text(
-                    Bokmal to "Du kan logge deg inn på våre nettsider for å sende oss opplysninger. " +
-                        "Du kan også chatte eller sende melding via ${Constants.SKRIVTILOSS_URL}. " +
+                    Bokmal to "Du kan benytte endringsskjema ved å logge deg på på ${Constants.OMS_MELD_INN_ENDRING_URL}. " +
                         "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside ${Constants.NAV_URL}, " +
                         "kan du kontakte oss på telefon.",
-                    Nynorsk to "Du kan logge deg inn på nettsidene våre for å sende oss opplysningar. " +
-                        "Du kan også chatte eller sende melding via ${Constants.SKRIVTILOSS_URL}. " +
+                    Nynorsk to "Du kan bruke endringsskjema ved å logge på ${Constants.OMS_MELD_INN_ENDRING_URL}. " +
                         "Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår ${Constants.NAV_URL}, " +
                         "kan du kontakte oss på telefon.",
-                    English to "You can log in to our website to submit information. " +
-                        "You can also use ${Constants.Engelsk.SKRIVTILOSS_URL} to chat with us or send us a message. " +
+                    English to "You can log in to our website and use change form on ${Constants.OMS_MELD_INN_ENDRING_URL}. " +
                         "If you do not have BankID or another option to log in to our website, ${Constants.NAV_URL}, " +
                         "you can also call us.",
                 )
