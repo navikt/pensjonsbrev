@@ -3,8 +3,8 @@ package no.nav.pensjon.brev.skribenten.letter
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title1
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList.Item
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemListImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemListImpl.ItemImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
@@ -329,7 +329,7 @@ class UpdateRenderedLetterTest {
                     Literal(1, "Noe tekst "),
                     Variable(2, "med en oppdatert variabel"),
                     Literal(3, " og noe mer tekst"),
-                    ItemList(4, listOf(Item(41, listOf(Literal(411, "en punktliste"))))),
+                    ItemListImpl(4, listOf(ItemImpl(41, listOf(Literal(411, "en punktliste"))))),
                 )
             )
         )
@@ -609,9 +609,9 @@ class UpdateRenderedLetterTest {
                     Literal(13, "Andre"),
                     Variable(14, "andre variabel"),
                     Literal(15, "Tredje"),
-                    ItemList(
+                    ItemListImpl(
                         16, listOf(
-                            Item(160, listOf(Literal(161, "punkt 1"), Literal(162, "punkt 2"), Literal(163, "punkt 3"))),
+                            ItemImpl(160, listOf(Literal(161, "punkt 1"), Literal(162, "punkt 2"), Literal(163, "punkt 3"))),
                         )
                     ),
                 )
@@ -754,10 +754,10 @@ class UpdateRenderedLetterTest {
             Paragraph(
                 1, true,
                 listOf(
-                    ItemList(
+                    ItemListImpl(
                         11, listOf(
-                            Item(111, listOf(Literal(1111, "item 1"))),
-                            Item(112, listOf(Literal(1121, "item 2"))),
+                            ItemImpl(111, listOf(Literal(1111, "item 1"))),
+                            ItemImpl(112, listOf(Literal(1121, "item 2"))),
                         )
                     ),
                 ),
@@ -922,7 +922,7 @@ class UpdateRenderedLetterTest {
                 1, true,
                 listOf(
                     Literal(11, "en literal"),
-                    ItemList(12, listOf(Item(121, listOf(Variable(1211, "oppdatert v1"))))),
+                    ItemListImpl(12, listOf(ItemImpl(121, listOf(Variable(1211, "oppdatert v1"))))),
                 )
             ),
             Paragraph(
@@ -962,7 +962,7 @@ class UpdateRenderedLetterTest {
                 1, true,
                 listOf(
                     Literal(11, "en literal"),
-                    ItemList(12, listOf(Item(121, listOf(Variable(1211, "oppdatert v1"))))),
+                    ItemListImpl(12, listOf(ItemImpl(121, listOf(Variable(1211, "oppdatert v1"))))),
                 )
             )
         )
@@ -1023,7 +1023,7 @@ class UpdateRenderedLetterTest {
                 listOf(
                     Literal(11, "lit1"),
                     Variable(12, "var2"),
-                    ItemList(13, listOf(Item(131, listOf(Literal(1311, "punkt1"))))),
+                    ItemListImpl(13, listOf(ItemImpl(131, listOf(Literal(1311, "punkt1"))))),
                     Literal(14, "lit2"),
                 )
             )
@@ -1051,7 +1051,7 @@ class UpdateRenderedLetterTest {
         val next = letter(
             Paragraph(
                 1, true,
-                listOf(Literal(11, "lit1"), Variable(12, "var2"), ItemList(13, listOf(Item(131, listOf(Literal(1311, "punkt1"))))), Literal(14, "lit2"))
+                listOf(Literal(11, "lit1"), Variable(12, "var2"), ItemListImpl(13, listOf(ItemImpl(131, listOf(Literal(1311, "punkt1"))))), Literal(14, "lit2"))
             )
         )
         val edited = editedLetter(
@@ -1079,7 +1079,7 @@ class UpdateRenderedLetterTest {
                 listOf(
                     Literal(11, "lit1"),
                     Variable(12, "var2"),
-                    ItemList(13, listOf(Item(131, listOf(Literal(1311, "punkt1"))))),
+                    ItemListImpl(13, listOf(ItemImpl(131, listOf(Literal(1311, "punkt1"))))),
                     Literal(14, "lit2"),
                     Table(
                         15,

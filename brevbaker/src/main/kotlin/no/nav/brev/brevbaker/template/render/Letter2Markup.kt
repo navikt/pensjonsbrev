@@ -142,10 +142,10 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
     private fun renderItemList(scope: ExpressionScope<*>, itemList: Element.OutlineContent.ParagraphContent.ItemList<*>): ParagraphContent.ItemList? =
         buildList {
             render(scope, itemList.items) { inner, item ->
-                add(ParagraphContent.ItemList.Item(item.stableHashCode(), renderText(inner, item.text)))
+                add(ParagraphContent.ItemListImpl.ItemImpl(item.stableHashCode(), renderText(inner, item.text)))
             }
         }.takeIf { it.isNotEmpty() }?.let { items ->
-            ParagraphContent.ItemList(itemList.stableHashCode(), items)
+            ParagraphContent.ItemListImpl(itemList.stableHashCode(), items)
         }
 
     private fun renderTextContent(scope: ExpressionScope<*>, element: Element.OutlineContent.ParagraphContent.Text<*>): List<Text> {

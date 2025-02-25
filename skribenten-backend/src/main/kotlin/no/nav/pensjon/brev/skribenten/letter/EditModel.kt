@@ -288,7 +288,7 @@ fun Edit.Block.toMarkup(): Block =
 
 fun Edit.ParagraphContent.toMarkup(): ParagraphContent =
     when (this) {
-        is Edit.ParagraphContent.ItemList -> ParagraphContent.ItemList(id = id ?: 0, items = items.map { it.toMarkup() })
+        is Edit.ParagraphContent.ItemList -> ParagraphContent.ItemListImpl(id = id ?: 0, items = items.map { it.toMarkup() })
         is Edit.ParagraphContent.Table -> ParagraphContent.Table(id = id ?: 0, rows = rows.map { it.toMarkup() }, header = header.toMarkup())
         is Edit.ParagraphContent.Text -> toMarkup()
     }
@@ -319,7 +319,7 @@ fun Edit.ParagraphContent.Text.FontType.toMarkup(): ParagraphContent.Text.FontTy
     }
 
 fun Edit.ParagraphContent.ItemList.Item.toMarkup(): ParagraphContent.ItemList.Item =
-    ParagraphContent.ItemList.Item(id = id ?: 0, content = content.map { it.toMarkup() })
+    ParagraphContent.ItemListImpl.ItemImpl(id = id ?: 0, content = content.map { it.toMarkup() })
 
 fun Edit.ParagraphContent.Table.Header.toMarkup(): ParagraphContent.Table.Header =
     ParagraphContent.Table.Header(id = id ?: 0, colSpec = colSpec.map { it.toMarkup() })

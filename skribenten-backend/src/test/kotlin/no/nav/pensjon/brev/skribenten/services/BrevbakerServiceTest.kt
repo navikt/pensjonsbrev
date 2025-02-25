@@ -24,9 +24,9 @@ class BrevbakerServiceTest {
             blocks = listOf(
                 Block.Paragraph(
                     1, true, listOf(
-                        ItemList(
+                        ItemListImpl(
                             11, listOf(
-                                ItemList.Item(111, listOf(Text.Literal(1111, "item 1", Text.FontType.BOLD)))
+                                ItemListImpl.ItemImpl(111, listOf(Text.Literal(1111, "item 1", Text.FontType.BOLD)))
                             )
                         ),
                         Table(

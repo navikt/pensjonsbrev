@@ -66,10 +66,18 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
             ITEM_LIST, LITERAL, VARIABLE, TABLE, FORM_TEXT, FORM_CHOICE, NEW_LINE
         }
 
-        data class ItemList(override val id: Int, val items: List<Item>) : ParagraphContent {
+        interface ItemList : ParagraphContent {
+            val items: List<Item>
+            interface Item {
+                val id: Int
+                val content: List<Text>
+            }
+        }
+
+        data class ItemListImpl(override val id: Int, override val items: List<ItemList.Item>) : ItemList {
             override val type = Type.ITEM_LIST
 
-            data class Item(val id: Int, val content: List<Text>)
+            data class ItemImpl(override val id: Int, override val content: List<Text>) : ItemList.Item
         }
 
         sealed interface Text : ParagraphContent {

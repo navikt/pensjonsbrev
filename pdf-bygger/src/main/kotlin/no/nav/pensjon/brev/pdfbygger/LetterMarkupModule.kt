@@ -26,6 +26,14 @@ internal object LetterMarkupModule : SimpleModule() {
             AbstractDeserializer<LetterMarkup.Signatur, LetterMarkup.SignaturImpl>(LetterMarkup.SignaturImpl::class.java) {}
         )
 
+        addDeserializer(LetterMarkup.ParagraphContent.ItemList::class.java, object :
+            AbstractDeserializer<LetterMarkup.ParagraphContent.ItemList, LetterMarkup.ParagraphContent.ItemListImpl>(LetterMarkup.ParagraphContent.ItemListImpl::class.java) {}
+        )
+
+        addDeserializer(LetterMarkup.ParagraphContent.ItemList.Item::class.java, object :
+            AbstractDeserializer<LetterMarkup.ParagraphContent.ItemList.Item, LetterMarkup.ParagraphContent.ItemListImpl.ItemImpl>(LetterMarkup.ParagraphContent.ItemListImpl.ItemImpl::class.java) {}
+        )
+
     }
 
     private fun blockDeserializer() =
