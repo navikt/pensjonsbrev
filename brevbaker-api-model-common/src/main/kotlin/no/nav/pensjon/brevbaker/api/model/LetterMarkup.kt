@@ -91,14 +91,19 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
 
             enum class FontType { PLAIN, BOLD, ITALIC }
 
-            data class Literal(
+            interface Literal : Text {
+                val tags: Set<ElementTags>
+                override val type: Type
+                    get() = Type.LITERAL
+            }
+
+            @InterneDataklasser
+            data class LiteralImpl(
                 override val id: Int,
                 override val text: String,
                 override val fontType: FontType = FontType.PLAIN,
-                val tags: Set<ElementTags> = emptySet(),
-            ) : Text {
-                override val type = Type.LITERAL
-            }
+                override val tags: Set<ElementTags> = emptySet(),
+            ) : Literal
 
             data class Variable(
                 override val id: Int,

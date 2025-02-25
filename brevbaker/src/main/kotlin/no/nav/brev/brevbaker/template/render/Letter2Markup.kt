@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
@@ -13,6 +14,7 @@ import kotlin.contracts.contract
 
 internal data class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
 
+@OptIn(InterneDataklasser::class)
 internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
     private val languageSettings = pensjonLatexSettings
 
@@ -153,7 +155,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         return when (element) {
             is Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage -> element.expr(scope.language).toContent(scope, fontType)
             is Element.OutlineContent.ParagraphContent.Text.Expression -> element.expression.toContent(scope, fontType)
-            is Element.OutlineContent.ParagraphContent.Text.Literal -> listOf(Literal(element.stableHashCode(), element.text(scope.language), fontType))
+            is Element.OutlineContent.ParagraphContent.Text.Literal -> listOf(LiteralImpl(element.stableHashCode(), element.text(scope.language), fontType))
             is Element.OutlineContent.ParagraphContent.Text.NewLine -> listOf(NewLine(element.stableHashCode()))
         }
     }
@@ -174,7 +176,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
 
     private fun StringExpression.toContent(scope: ExpressionScope<*>, fontType: FontType): List<Text> =
         if (this is Expression.Literal) {
-            listOf(Literal(stableHashCode(), eval(scope), fontType, tags))
+            listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
         } else if (this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.Concat) {
             // Since we know that operation is Concat, we also know that `first` and `second` are StringExpression.
             @Suppress("UNCHECKED_CAST")
@@ -189,7 +191,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             if (acc.isEmpty()) {
                 listOf(current)
             } else if (canMergeAsLiterals(previous, current)) {
-                acc.subList(0, acc.size - 1) + Literal(Objects.hash(previous.id, current.id), previous.text + current.text, fontType)
+                acc.subList(0, acc.size - 1) + LiteralImpl(Objects.hash(previous.id, current.id), previous.text + current.text, fontType)
             } else {
                 acc + current
             }
