@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.BorMedSivilstand
+/* bruk av dette vedlegget vil blandt annet kreve en faglig gjennomgang av hvordan sivilstand skal brukes.
+
 import no.nav.pensjon.brev.api.model.Institusjon.*
 import no.nav.pensjon.brev.api.model.Sivilstand.*
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.barnetilleggVedvirk_innvilgetBarnetillegFellesbarn
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.barnetilleggVedvirk_innvilgetBarnetilleggSaerkullsbarn
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.bormed_sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.bruker_borINorge
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.bruker_sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDtoSelectors.ektefelletilleggVedvirk_innvilgetEktefelletillegg
@@ -25,7 +25,6 @@ import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.telefonnummer
 
 // Conditional for showing the attachment is: sakstype = ALDER && vedtakResultat = INNVL
-
 @TemplateModelHelpers
 val dineRettigheterOgPlikterAlder =
     createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterAlderDto>(
@@ -54,11 +53,8 @@ val dineRettigheterOgPlikterAlder =
                     eps_borSammenMedBrukerGjeldende
                             and instutisjon_epsInstitusjonGjeldende.isNotAnyOf(INGEN)
                 ) {
-                    ifNotNull(bormed_sivilstand) {
-                        showIf(it.isOneOf(BorMedSivilstand.EKTEFELLE)){
-                            item { includePhrase(VedleggPlikterAP4_002) }
-                        }
-                    }.orShowIf(bruker_sivilstand.isOneOf(GIFT)) {
+
+                    showIf(bruker_sivilstand.isOneOf(GIFT)) {
                         item { includePhrase(VedleggPlikterAP4_002) }
                     }.orShowIf(bruker_sivilstand.isOneOf(PARTNER)) {
                         item { includePhrase(VedleggPlikterAP13_002) }
@@ -190,3 +186,4 @@ val dineRettigheterOgPlikterAlder =
         includePhrase(VedleggHjelpFraAndre)
         includePhrase(VedleggKlagePesys)
     }
+*/
