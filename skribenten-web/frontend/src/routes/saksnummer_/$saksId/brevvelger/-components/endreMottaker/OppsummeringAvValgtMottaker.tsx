@@ -5,7 +5,7 @@ import { Button, HStack, Table, VStack } from "@navikt/ds-react";
 import type { AxiosError } from "axios";
 
 import { ApiError } from "~/components/ApiError";
-import { useLandDataContext } from "~/context/LandDataContext";
+import { useLandData } from "~/hooks/useLandData";
 import type { Adresse } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
 import { getCountryNameByKode } from "~/utils/countryUtils";
@@ -77,7 +77,7 @@ const OppsummeringAvValgtMottaker = (properties: {
 export default OppsummeringAvValgtMottaker;
 
 const OppsummeringAvAdresse = (properties: { type: Nullable<string>; adresse: Adresse }) => {
-  const { data: landData } = useLandDataContext();
+  const { data: landData } = useLandData();
 
   return (
     <Table size="small">

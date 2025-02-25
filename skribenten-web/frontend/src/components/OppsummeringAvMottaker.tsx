@@ -1,13 +1,13 @@
 import { BodyShort, Label, VStack } from "@navikt/ds-react";
 
-import { useLandDataContext } from "~/context/LandDataContext";
+import { useLandData } from "~/hooks/useLandData";
 import HentOgVisAdresse from "~/routes/saksnummer_/$saksId/brevvelger/-components/endreMottaker/HentOgVisAdresse";
 import type { Mottaker } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { getCountryNameByKode } from "~/utils/countryUtils";
 
 const OppsummeringAvMottaker = (props: { saksId: string; mottaker: Nullable<Mottaker>; withTitle: boolean }) => {
-  const { data: landData } = useLandDataContext();
+  const { data: landData } = useLandData();
 
   if (props.mottaker === null || props.mottaker.type === "Samhandler") {
     return (

@@ -4,7 +4,7 @@ import { Alert, BodyShort, Button, Heading, HStack, Link, TextField, UNSAFE_Comb
 import type { Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
 
-import { useLandDataContext } from "~/context/LandDataContext";
+import { useLandData } from "~/hooks/useLandData";
 
 import type { CombinedFormData } from "./EndreMottakerUtils";
 
@@ -13,7 +13,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
   onSubmit: () => void;
   onCloseIntent: () => void;
 }) => {
-  const { data: landData, isLoading, isError, isSuccess } = useLandDataContext();
+  const { data: landData, isLoading, isError, isSuccess } = useLandData();
   return (
     <VStack gap="6">
       <VStack gap="4">
