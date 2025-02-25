@@ -1,3 +1,5 @@
+@file:OptIn(InterneDataklasser::class)
+
 package no.nav.pensjon.brev.skribenten.letter
 
 import com.fasterxml.jackson.annotation.JsonIgnore
@@ -6,6 +8,7 @@ import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
@@ -295,7 +298,7 @@ fun Edit.ParagraphContent.toMarkup(): ParagraphContent =
 
 fun Edit.ParagraphContent.Text.toMarkup(): ParagraphContent.Text =
     when (this) {
-        is Edit.ParagraphContent.Text.Literal -> ParagraphContent.Text.Literal(
+        is Edit.ParagraphContent.Text.Literal -> ParagraphContent.Text.LiteralImpl(
             id = id ?: 0,
             text = editedText ?: text,
             fontType = (editedFontType ?: fontType).toMarkup(),

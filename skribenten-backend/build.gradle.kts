@@ -53,6 +53,11 @@ tasks {
     test {
         useJUnitPlatform()
     }
+    kotlin {
+        compileTestKotlin {
+            compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
+        }
+    }
 }
 
 sourceSets {

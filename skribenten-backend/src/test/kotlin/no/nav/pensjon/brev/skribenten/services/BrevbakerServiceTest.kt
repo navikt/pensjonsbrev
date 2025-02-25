@@ -26,15 +26,15 @@ class BrevbakerServiceTest {
                     1, true, listOf(
                         ItemListImpl(
                             11, listOf(
-                                ItemListImpl.ItemImpl(111, listOf(Text.Literal(1111, "item 1", Text.FontType.BOLD)))
+                                ItemListImpl.ItemImpl(111, listOf(Text.LiteralImpl(1111, "item 1", Text.FontType.BOLD)))
                             )
                         ),
                         Table(
                             12,
-                            listOf(Table.Row(121, listOf(Table.Cell(1211, listOf(Text.Literal(12111, "cell1")))))),
+                            listOf(Table.Row(121, listOf(Table.Cell(1211, listOf(Text.LiteralImpl(12111, "cell1")))))),
                             Table.Header(
                                 122,
-                                listOf(Table.ColumnSpec(1221, Table.Cell(12211, listOf(Text.Literal(122111, "col1"))), Table.ColumnAlignment.RIGHT, 1))
+                                listOf(Table.ColumnSpec(1221, Table.Cell(12211, listOf(Text.LiteralImpl(122111, "col1"))), Table.ColumnAlignment.RIGHT, 1))
                             )
                         )
                     )
@@ -42,7 +42,7 @@ class BrevbakerServiceTest {
                 Block.Title1(2, true, emptyList()),
                 Block.Title2(
                     3, true, listOf(
-                        Text.Literal(31, "a text"),
+                        Text.LiteralImpl(31, "a text"),
                         Text.Variable(32, "another"),
                     )
                 ),

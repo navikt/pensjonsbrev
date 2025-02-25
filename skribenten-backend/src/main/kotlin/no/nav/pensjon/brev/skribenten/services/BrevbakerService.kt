@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.deser.AbstractDeserializer
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -17,6 +16,7 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -120,6 +120,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
 
 }
 
+@OptIn(InterneDataklasser::class)
 object LetterMarkupModule : SimpleModule() {
     private fun readResolve(): Any = LetterMarkupModule
 
@@ -142,6 +143,10 @@ object LetterMarkupModule : SimpleModule() {
 
         addDeserializer(LetterMarkup.ParagraphContent.ItemList.Item::class.java, object :
             AbstractDeserializer<LetterMarkup.ParagraphContent.ItemList.Item, LetterMarkup.ParagraphContent.ItemListImpl.ItemImpl>(LetterMarkup.ParagraphContent.ItemListImpl.ItemImpl::class.java) {}
+        )
+
+        addDeserializer(LetterMarkup.ParagraphContent.Text.Literal::class.java, object :
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Text.Literal, LetterMarkup.ParagraphContent.Text.LiteralImpl>(LetterMarkup.ParagraphContent.Text.LiteralImpl::class.java) {}
         )
     }
 
