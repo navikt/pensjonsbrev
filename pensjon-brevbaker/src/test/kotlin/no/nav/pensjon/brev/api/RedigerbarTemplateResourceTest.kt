@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.maler.example.Testmaler
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import org.junit.jupiter.api.Test
 
 class RedigerbarTemplateResourceTest {
@@ -31,16 +31,16 @@ class RedigerbarTemplateResourceTest {
         createEksempelbrevRedigerbartDto(),
         Fixtures.felles,
         LanguageCode.BOKMAL,
-        LetterMarkup(
+        LetterMarkupImpl(
             "redigert markup",
-            LetterMarkup.SakspartImpl(
+            LetterMarkupImpl.SakspartImpl(
                 "gjelder bruker",
                 "123abc",
                 "001",
                 "en dato"
             ),
             emptyList(),
-            LetterMarkup.SignaturImpl(
+            LetterMarkupImpl.SignaturImpl(
                 "hilsen oss",
                 "en rolle",
                 "Saksbehandlersen",

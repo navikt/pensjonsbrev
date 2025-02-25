@@ -1,24 +1,16 @@
 package no.nav.pensjon.brevbaker.api.model
 
-import no.nav.brev.InterneDataklasser
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Text.Size
-
-@Suppress("unused")
-data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur) {
+interface LetterMarkup {
+    val title: String
+    val sakspart: Sakspart
+    val blocks: List<Block>
+    val signatur: Signatur
 
     interface Attachment {
         val title: List<ParagraphContent.Text>
         val blocks: List<Block>
         val includeSakspart: Boolean
     }
-
-    @InterneDataklasser
-    data class AttachmentImpl(
-        override val title: List<ParagraphContent.Text>,
-        override val blocks: List<Block>,
-        override val includeSakspart: Boolean,
-    ) : Attachment
 
     interface Sakspart {
         val gjelderNavn: String
@@ -27,14 +19,6 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
         val dokumentDato: String
     }
 
-    @InterneDataklasser
-    data class SakspartImpl(
-        override val gjelderNavn: String,
-        override val gjelderFoedselsnummer: String,
-        override val saksnummer: String,
-        override val dokumentDato: String
-    ) : Sakspart
-
     interface Signatur {
         val hilsenTekst: String
         val saksbehandlerRolleTekst: String
@@ -42,15 +26,6 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
         val attesterendeSaksbehandlerNavn: String?
         val navAvsenderEnhet: String
     }
-
-    @InterneDataklasser
-    data class SignaturImpl(
-        override val hilsenTekst: String,
-        override val saksbehandlerRolleTekst: String,
-        override val saksbehandlerNavn: String,
-        override val attesterendeSaksbehandlerNavn: String?,
-        override val navAvsenderEnhet: String,
-    ) : Signatur
 
     sealed interface Block {
         val id: Int
@@ -67,31 +42,16 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
                 get() = Type.TITLE1
         }
 
-        @InterneDataklasser
-        data class Title1Impl(override val id: Int, override val editable: Boolean = true, override val content: List<ParagraphContent.Text>) : Title1 {
-            override val type = Type.TITLE1
-        }
-
         interface Title2 : Block {
             val content: List<ParagraphContent.Text>
             override val type: Type
                 get() = Type.TITLE2
         }
 
-        @InterneDataklasser
-        data class Title2Impl(override val id: Int, override val editable: Boolean = true, override val content: List<ParagraphContent.Text>) : Title2 {
-            override val type = Type.TITLE2
-        }
-
         interface Paragraph : Block {
             val content: List<ParagraphContent>
             override val type: Type
                 get() = Type.PARAGRAPH
-        }
-
-        @InterneDataklasser
-        data class ParagraphImpl(override val id: Int, override val editable: Boolean = true, override val content: List<ParagraphContent>) : Paragraph {
-            override val type = Type.PARAGRAPH
         }
     }
 
@@ -110,13 +70,6 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
             }
         }
 
-        @InterneDataklasser
-        data class ItemListImpl(override val id: Int, override val items: List<ItemList.Item>) : ItemList {
-            override val type = Type.ITEM_LIST
-
-            data class ItemImpl(override val id: Int, override val content: List<Text>) : ItemList.Item
-        }
-
         sealed interface Text : ParagraphContent {
             val text: String
             val fontType: FontType
@@ -129,40 +82,14 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
                     get() = Type.LITERAL
             }
 
-            @InterneDataklasser
-            data class LiteralImpl(
-                override val id: Int,
-                override val text: String,
-                override val fontType: FontType = FontType.PLAIN,
-                override val tags: Set<ElementTags> = emptySet()
-            ) : Literal {
-                override val type: Type = Type.LITERAL
-            }
-
             interface Variable : Text {
                 override val type: Type
                     get() = Type.VARIABLE
             }
 
-            @InterneDataklasser
-            data class VariableImpl(
-                override val id: Int,
-                override val text: String,
-                override val fontType: FontType = FontType.PLAIN
-            ) : Variable {
-                override val type = Type.VARIABLE
-            }
-
             interface NewLine : Text {
                 override val type: Type
                     get() = Type.NEW_LINE
-            }
-
-            @InterneDataklasser
-            data class NewLineImpl(override val id: Int) : NewLine {
-                override val fontType = FontType.PLAIN
-                override val text: String = ""
-                override val type = Type.NEW_LINE
             }
         }
 
@@ -198,20 +125,6 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
             enum class ColumnAlignment { LEFT, RIGHT }
         }
 
-        @InterneDataklasser
-        data class TableImpl(override val id: Int, override val rows: List<Table.Row>, override val header: Table.Header) : Table {
-            override val type = Type.TABLE
-
-            @InterneDataklasser
-            data class RowImpl(override val id: Int, override val cells: List<Table.Cell>) : Table.Row
-            @InterneDataklasser
-            data class CellImpl(override val id: Int, override val text: List<Text>) : Table.Cell
-            @InterneDataklasser
-            data class HeaderImpl(override val id: Int, override val colSpec: List<Table.ColumnSpec>) : Table.Header
-            @InterneDataklasser
-            data class ColumnSpecImpl(override val id: Int, override val headerContent: Table.Cell, override val alignment: Table.ColumnAlignment, override val span: Int) : Table.ColumnSpec
-        }
-
         sealed interface Form : ParagraphContent {
 
             interface Text : Form {
@@ -224,11 +137,6 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
                 enum class Size { NONE, SHORT, LONG }
             }
 
-            @InterneDataklasser
-            data class TextImpl(override val id: Int, override val prompt: List<ParagraphContent.Text>, override val size: Size, override val vspace: Boolean) : Text {
-                override val type = Type.FORM_TEXT
-            }
-
             interface MultipleChoice : Form {
                 val prompt: List<ParagraphContent.Text>
                 val choices: List<Choice>
@@ -236,14 +144,11 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
                 override val type: Type
                     get() = Type.FORM_CHOICE
 
-                data class Choice(val id: Int, val text: List<ParagraphContent.Text>)
+                interface Choice {
+                    val id: Int
+                    val text: List<ParagraphContent.Text>
+                }
             }
-
-            @InterneDataklasser
-            data class MultipleChoiceImpl(override val id: Int, override val prompt: List<ParagraphContent.Text>, override val choices: List<Choice>, override val vspace: Boolean) : MultipleChoice {
-                override val type = Type.FORM_CHOICE
-            }
-
         }
     }
 }

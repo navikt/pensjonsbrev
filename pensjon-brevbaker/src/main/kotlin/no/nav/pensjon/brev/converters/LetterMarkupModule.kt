@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 
 
 @OptIn(InterneDataklasser::class)
@@ -26,9 +27,9 @@ object LetterMarkupModule : SimpleModule() {
             override fun deserialize(p: JsonParser, ctxt: DeserializationContext): LetterMarkup.Block {
                 val node = p.codec.readTree<JsonNode>(p)
                 val type = when (LetterMarkup.Block.Type.valueOf(node.get("type").textValue())) {
-                    LetterMarkup.Block.Type.TITLE1 -> LetterMarkup.Block.Title1Impl::class.java
-                    LetterMarkup.Block.Type.TITLE2 -> LetterMarkup.Block.Title2Impl::class.java
-                    LetterMarkup.Block.Type.PARAGRAPH -> LetterMarkup.Block.ParagraphImpl::class.java
+                    LetterMarkup.Block.Type.TITLE1 -> LetterMarkupImpl.BlockImpl.Title1Impl::class.java
+                    LetterMarkup.Block.Type.TITLE2 -> LetterMarkupImpl.BlockImpl.Title2Impl::class.java
+                    LetterMarkup.Block.Type.PARAGRAPH -> LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java
                 }
                 return p.codec.treeToValue(node, type)
             }
@@ -43,8 +44,8 @@ object LetterMarkupModule : SimpleModule() {
                     LetterMarkup.ParagraphContent.Type.LITERAL -> LetterMarkup.ParagraphContent.Text.Literal::class.java
                     LetterMarkup.ParagraphContent.Type.VARIABLE -> LetterMarkup.ParagraphContent.Text.Variable::class.java
                     LetterMarkup.ParagraphContent.Type.TABLE -> LetterMarkup.ParagraphContent.Table::class.java
-                    LetterMarkup.ParagraphContent.Type.FORM_TEXT -> LetterMarkup.ParagraphContent.Form.TextImpl::class.java
-                    LetterMarkup.ParagraphContent.Type.FORM_CHOICE -> LetterMarkup.ParagraphContent.Form.MultipleChoiceImpl::class.java
+                    LetterMarkup.ParagraphContent.Type.FORM_TEXT -> LetterMarkupImpl.ParagraphContentImpl.Form.TextImpl::class.java
+                    LetterMarkup.ParagraphContent.Type.FORM_CHOICE -> LetterMarkupImpl.ParagraphContentImpl.Form.MultipleChoiceImpl::class.java
                     LetterMarkup.ParagraphContent.Type.NEW_LINE -> LetterMarkup.ParagraphContent.Text.NewLine::class.java
                 }
                 return p.codec.treeToValue(node, type)

@@ -14,6 +14,8 @@ import no.nav.pensjon.brevbaker.api.model.FellesImpl
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.FoedselsnummerImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.NavEnhetImpl
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
@@ -34,51 +36,55 @@ object FellesModule : SimpleModule() {
         addDeserializer(Felles::class.java, FellesobjektetDeserializer)
 
         addDeserializer(LetterMarkup.Sakspart::class.java, object :
-            FellesDeserializer<LetterMarkup.Sakspart, LetterMarkup.SakspartImpl>(LetterMarkup.SakspartImpl::class.java) {}
+            FellesDeserializer<LetterMarkup.Sakspart, LetterMarkupImpl.SakspartImpl>(LetterMarkupImpl.SakspartImpl::class.java) {}
         )
         addDeserializer(LetterMarkup.Signatur::class.java, object :
-            FellesDeserializer<LetterMarkup.Signatur, LetterMarkup.SignaturImpl>(LetterMarkup.SignaturImpl::class.java) {}
+            FellesDeserializer<LetterMarkup.Signatur, LetterMarkupImpl.SignaturImpl>(LetterMarkupImpl.SignaturImpl::class.java) {}
         )
 
         addDeserializer(LetterMarkup.ParagraphContent.ItemList::class.java, object :
-            FellesDeserializer<LetterMarkup.ParagraphContent.ItemList, LetterMarkup.ParagraphContent.ItemListImpl>(LetterMarkup.ParagraphContent.ItemListImpl::class.java) {}
+            FellesDeserializer<LetterMarkup.ParagraphContent.ItemList, ParagraphContentImpl.ItemListImpl>(ParagraphContentImpl.ItemListImpl::class.java) {}
         )
 
         addDeserializer(LetterMarkup.ParagraphContent.ItemList.Item::class.java, object :
-            FellesDeserializer<LetterMarkup.ParagraphContent.ItemList.Item, LetterMarkup.ParagraphContent.ItemListImpl.ItemImpl>(LetterMarkup.ParagraphContent.ItemListImpl.ItemImpl::class.java) {}
+            FellesDeserializer<LetterMarkup.ParagraphContent.ItemList.Item, ParagraphContentImpl.ItemListImpl.ItemImpl>(ParagraphContentImpl.ItemListImpl.ItemImpl::class.java) {}
         )
 
         addDeserializer(LetterMarkup.ParagraphContent.Text.Literal::class.java, object :
-            FellesDeserializer<LetterMarkup.ParagraphContent.Text.Literal, LetterMarkup.ParagraphContent.Text.LiteralImpl>(LetterMarkup.ParagraphContent.Text.LiteralImpl::class.java) {}
+            FellesDeserializer<LetterMarkup.ParagraphContent.Text.Literal, ParagraphContentImpl.TextImpl.LiteralImpl>(ParagraphContentImpl.TextImpl.LiteralImpl::class.java) {}
         )
 
         addDeserializer(LetterMarkup.ParagraphContent.Text.Variable::class.java, object :
-            FellesDeserializer<LetterMarkup.ParagraphContent.Text.Variable, LetterMarkup.ParagraphContent.Text.VariableImpl>(LetterMarkup.ParagraphContent.Text.VariableImpl::class.java) {}
+            FellesDeserializer<LetterMarkup.ParagraphContent.Text.Variable, ParagraphContentImpl.TextImpl.VariableImpl>(ParagraphContentImpl.TextImpl.VariableImpl::class.java) {}
         )
 
         addDeserializer(LetterMarkup.ParagraphContent.Text.NewLine::class.java, object :
-            FellesDeserializer<LetterMarkup.ParagraphContent.Text.NewLine, LetterMarkup.ParagraphContent.Text.NewLineImpl>(LetterMarkup.ParagraphContent.Text.NewLineImpl::class.java) {}
+            FellesDeserializer<LetterMarkup.ParagraphContent.Text.NewLine, ParagraphContentImpl.TextImpl.NewLineImpl>(ParagraphContentImpl.TextImpl.NewLineImpl::class.java) {}
         )
 
         addDeserializer(LetterMarkup.Attachment::class.java, object :
-            FellesDeserializer<LetterMarkup.Attachment, LetterMarkup.AttachmentImpl>(LetterMarkup.AttachmentImpl::class.java) {}
+            FellesDeserializer<LetterMarkup.Attachment, LetterMarkupImpl.AttachmentImpl>(LetterMarkupImpl.AttachmentImpl::class.java) {}
         )
 
 
         addDeserializer(LetterMarkup.ParagraphContent.Table::class.java, object :
-            FellesDeserializer<LetterMarkup.ParagraphContent.Table, LetterMarkup.ParagraphContent.TableImpl>(LetterMarkup.ParagraphContent.TableImpl::class.java) {}
+            FellesDeserializer<LetterMarkup.ParagraphContent.Table, ParagraphContentImpl.TableImpl>(ParagraphContentImpl.TableImpl::class.java) {}
         )
         addDeserializer(LetterMarkup.ParagraphContent.Table.Row::class.java, object :
-            FellesDeserializer<LetterMarkup.ParagraphContent.Table.Row, LetterMarkup.ParagraphContent.TableImpl.RowImpl>(LetterMarkup.ParagraphContent.TableImpl.RowImpl::class.java) {}
+            FellesDeserializer<LetterMarkup.ParagraphContent.Table.Row, ParagraphContentImpl.TableImpl.RowImpl>(ParagraphContentImpl.TableImpl.RowImpl::class.java) {}
         )
         addDeserializer(LetterMarkup.ParagraphContent.Table.Cell::class.java, object :
-            FellesDeserializer<LetterMarkup.ParagraphContent.Table.Cell, LetterMarkup.ParagraphContent.TableImpl.CellImpl>(LetterMarkup.ParagraphContent.TableImpl.CellImpl::class.java) {}
+            FellesDeserializer<LetterMarkup.ParagraphContent.Table.Cell, ParagraphContentImpl.TableImpl.CellImpl>(ParagraphContentImpl.TableImpl.CellImpl::class.java) {}
         )
         addDeserializer(LetterMarkup.ParagraphContent.Table.Header::class.java, object :
-            FellesDeserializer<LetterMarkup.ParagraphContent.Table.Header, LetterMarkup.ParagraphContent.TableImpl.HeaderImpl>(LetterMarkup.ParagraphContent.TableImpl.HeaderImpl::class.java) {}
+            FellesDeserializer<LetterMarkup.ParagraphContent.Table.Header, ParagraphContentImpl.TableImpl.HeaderImpl>(ParagraphContentImpl.TableImpl.HeaderImpl::class.java) {}
         )
         addDeserializer(LetterMarkup.ParagraphContent.Table.ColumnSpec::class.java, object :
-            FellesDeserializer<LetterMarkup.ParagraphContent.Table.ColumnSpec, LetterMarkup.ParagraphContent.TableImpl.ColumnSpecImpl>(LetterMarkup.ParagraphContent.TableImpl.ColumnSpecImpl::class.java) {}
+            FellesDeserializer<LetterMarkup.ParagraphContent.Table.ColumnSpec, ParagraphContentImpl.TableImpl.ColumnSpecImpl>(ParagraphContentImpl.TableImpl.ColumnSpecImpl::class.java) {}
+        )
+
+        addDeserializer(LetterMarkup::class.java, object :
+            FellesDeserializer<LetterMarkup, LetterMarkupImpl>(LetterMarkupImpl::class.java) {}
         )
     }
 

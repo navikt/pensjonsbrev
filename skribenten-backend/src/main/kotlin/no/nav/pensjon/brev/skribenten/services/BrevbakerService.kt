@@ -28,6 +28,8 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.slf4j.LoggerFactory
@@ -130,52 +132,61 @@ object LetterMarkupModule : SimpleModule() {
         addDeserializer(LetterMarkup.ParagraphContent.Text::class.java, textContentDeserializer())
 
         addDeserializer(LetterMarkup.Sakspart::class.java, object :
-            AbstractDeserializer<LetterMarkup.Sakspart, LetterMarkup.SakspartImpl>(LetterMarkup.SakspartImpl::class.java) {}
+            AbstractDeserializer<LetterMarkup.Sakspart, LetterMarkupImpl.SakspartImpl>(LetterMarkupImpl.SakspartImpl::class.java) {}
         )
 
         addDeserializer(LetterMarkup.Signatur::class.java, object :
-            AbstractDeserializer<LetterMarkup.Signatur, LetterMarkup.SignaturImpl>(LetterMarkup.SignaturImpl::class.java) {}
+            AbstractDeserializer<LetterMarkup.Signatur, LetterMarkupImpl.SignaturImpl>(LetterMarkupImpl.SignaturImpl::class.java) {}
         )
 
         addDeserializer(LetterMarkup.ParagraphContent.ItemList::class.java, object :
-            AbstractDeserializer<LetterMarkup.ParagraphContent.ItemList, LetterMarkup.ParagraphContent.ItemListImpl>(LetterMarkup.ParagraphContent.ItemListImpl::class.java) {}
+            AbstractDeserializer<LetterMarkup.ParagraphContent.ItemList, ParagraphContentImpl.ItemListImpl>(
+                ParagraphContentImpl.ItemListImpl::class.java) {}
         )
 
         addDeserializer(LetterMarkup.ParagraphContent.ItemList.Item::class.java, object :
-            AbstractDeserializer<LetterMarkup.ParagraphContent.ItemList.Item, LetterMarkup.ParagraphContent.ItemListImpl.ItemImpl>(LetterMarkup.ParagraphContent.ItemListImpl.ItemImpl::class.java) {}
+            AbstractDeserializer<LetterMarkup.ParagraphContent.ItemList.Item, ParagraphContentImpl.ItemListImpl.ItemImpl>(
+                ParagraphContentImpl.ItemListImpl.ItemImpl::class.java) {}
         )
 
         addDeserializer(LetterMarkup.ParagraphContent.Text.Literal::class.java, object :
-            AbstractDeserializer<LetterMarkup.ParagraphContent.Text.Literal, LetterMarkup.ParagraphContent.Text.LiteralImpl>(LetterMarkup.ParagraphContent.Text.LiteralImpl::class.java) {}
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Text.Literal, ParagraphContentImpl.TextImpl.LiteralImpl>(ParagraphContentImpl.TextImpl.LiteralImpl::class.java) {}
         )
 
         addDeserializer(LetterMarkup.ParagraphContent.Text.Variable::class.java, object :
-            AbstractDeserializer<LetterMarkup.ParagraphContent.Text.Variable, LetterMarkup.ParagraphContent.Text.VariableImpl>(LetterMarkup.ParagraphContent.Text.VariableImpl::class.java) {}
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Text.Variable, ParagraphContentImpl.TextImpl.VariableImpl>(ParagraphContentImpl.TextImpl.VariableImpl::class.java) {}
         )
 
         addDeserializer(LetterMarkup.ParagraphContent.Text.NewLine::class.java, object :
-            AbstractDeserializer<LetterMarkup.ParagraphContent.Text.NewLine, LetterMarkup.ParagraphContent.Text.NewLineImpl>(LetterMarkup.ParagraphContent.Text.NewLineImpl::class.java) {}
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Text.NewLine, ParagraphContentImpl.TextImpl.NewLineImpl>(ParagraphContentImpl.TextImpl.NewLineImpl::class.java) {}
         )
 
         addDeserializer(LetterMarkup.Attachment::class.java, object :
-            AbstractDeserializer<LetterMarkup.Attachment, LetterMarkup.AttachmentImpl>(LetterMarkup.AttachmentImpl::class.java) {}
+            AbstractDeserializer<LetterMarkup.Attachment, LetterMarkupImpl.AttachmentImpl>(LetterMarkupImpl.AttachmentImpl::class.java) {}
         )
 
 
         addDeserializer(LetterMarkup.ParagraphContent.Table::class.java, object :
-            AbstractDeserializer<LetterMarkup.ParagraphContent.Table, LetterMarkup.ParagraphContent.TableImpl>(LetterMarkup.ParagraphContent.TableImpl::class.java) {}
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Table, ParagraphContentImpl.TableImpl>(ParagraphContentImpl.TableImpl::class.java) {}
         )
         addDeserializer(LetterMarkup.ParagraphContent.Table.Row::class.java, object :
-            AbstractDeserializer<LetterMarkup.ParagraphContent.Table.Row, LetterMarkup.ParagraphContent.TableImpl.RowImpl>(LetterMarkup.ParagraphContent.TableImpl.RowImpl::class.java) {}
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Table.Row, ParagraphContentImpl.TableImpl.RowImpl>(ParagraphContentImpl.TableImpl.RowImpl::class.java) {}
         )
         addDeserializer(LetterMarkup.ParagraphContent.Table.Cell::class.java, object :
-            AbstractDeserializer<LetterMarkup.ParagraphContent.Table.Cell, LetterMarkup.ParagraphContent.TableImpl.CellImpl>(LetterMarkup.ParagraphContent.TableImpl.CellImpl::class.java) {}
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Table.Cell, ParagraphContentImpl.TableImpl.CellImpl>(ParagraphContentImpl.TableImpl.CellImpl::class.java) {}
         )
         addDeserializer(LetterMarkup.ParagraphContent.Table.Header::class.java, object :
-            AbstractDeserializer<LetterMarkup.ParagraphContent.Table.Header, LetterMarkup.ParagraphContent.TableImpl.HeaderImpl>(LetterMarkup.ParagraphContent.TableImpl.HeaderImpl::class.java) {}
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Table.Header, ParagraphContentImpl.TableImpl.HeaderImpl>(ParagraphContentImpl.TableImpl.HeaderImpl::class.java) {}
         )
         addDeserializer(LetterMarkup.ParagraphContent.Table.ColumnSpec::class.java, object :
-            AbstractDeserializer<LetterMarkup.ParagraphContent.Table.ColumnSpec, LetterMarkup.ParagraphContent.TableImpl.ColumnSpecImpl>(LetterMarkup.ParagraphContent.TableImpl.ColumnSpecImpl::class.java) {}
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Table.ColumnSpec, ParagraphContentImpl.TableImpl.ColumnSpecImpl>(ParagraphContentImpl.TableImpl.ColumnSpecImpl::class.java) {}
+        )
+        addDeserializer(LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice::class.java, object :
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice, ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl>(ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl::class.java) {}
+        )
+
+        addDeserializer(LetterMarkup::class.java, object :
+            AbstractDeserializer<LetterMarkup, LetterMarkupImpl>(LetterMarkupImpl::class.java) {}
         )
     }
 
@@ -184,9 +195,9 @@ object LetterMarkupModule : SimpleModule() {
             override fun deserialize(p: JsonParser, ctxt: DeserializationContext): LetterMarkup.Block {
                 val node = p.codec.readTree<JsonNode>(p)
                 val type = when (LetterMarkup.Block.Type.valueOf(node.get("type").textValue())) {
-                    LetterMarkup.Block.Type.TITLE1 -> LetterMarkup.Block.Title1Impl::class.java
-                    LetterMarkup.Block.Type.TITLE2 -> LetterMarkup.Block.Title2Impl::class.java
-                    LetterMarkup.Block.Type.PARAGRAPH -> LetterMarkup.Block.ParagraphImpl::class.java
+                    LetterMarkup.Block.Type.TITLE1 -> LetterMarkupImpl.BlockImpl.Title1Impl::class.java
+                    LetterMarkup.Block.Type.TITLE2 -> LetterMarkupImpl.BlockImpl.Title2Impl::class.java
+                    LetterMarkup.Block.Type.PARAGRAPH -> LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java
                 }
                 return p.codec.treeToValue(node, type)
             }
@@ -201,8 +212,8 @@ object LetterMarkupModule : SimpleModule() {
                     LetterMarkup.ParagraphContent.Type.LITERAL -> LetterMarkup.ParagraphContent.Text.Literal::class.java
                     LetterMarkup.ParagraphContent.Type.VARIABLE -> LetterMarkup.ParagraphContent.Text.Variable::class.java
                     LetterMarkup.ParagraphContent.Type.TABLE -> LetterMarkup.ParagraphContent.Table::class.java
-                    LetterMarkup.ParagraphContent.Type.FORM_TEXT -> LetterMarkup.ParagraphContent.Form.TextImpl::class.java
-                    LetterMarkup.ParagraphContent.Type.FORM_CHOICE -> LetterMarkup.ParagraphContent.Form.MultipleChoiceImpl::class.java
+                    LetterMarkup.ParagraphContent.Type.FORM_TEXT -> ParagraphContentImpl.Form.TextImpl::class.java
+                    LetterMarkup.ParagraphContent.Type.FORM_CHOICE -> ParagraphContentImpl.Form.MultipleChoiceImpl::class.java
                     LetterMarkup.ParagraphContent.Type.NEW_LINE -> LetterMarkup.ParagraphContent.Text.NewLine::class.java
                 }
                 return p.codec.treeToValue(node, type)

@@ -1,11 +1,12 @@
 package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 
 
-fun letter(vararg blocks: Block) =
-    LetterMarkup(
+fun letter(vararg blocks: LetterMarkup.Block) =
+    LetterMarkupImpl(
         title = "En tittel",
         sakspart = SakspartImpl("Test Testeson", "1234568910", "1234", "20.12.2022"),
         blocks = blocks.toList(),
