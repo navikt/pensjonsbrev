@@ -121,7 +121,13 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
                 override val type = Type.VARIABLE
             }
 
-            data class NewLine(override val id: Int) : Text {
+            interface NewLine : Text {
+                override val type: Type
+                    get() = Type.NEW_LINE
+            }
+
+            @InterneDataklasser
+            data class NewLineImpl(override val id: Int) : NewLine {
                 override val fontType = FontType.PLAIN
                 override val text: String = ""
                 override val type = Type.NEW_LINE

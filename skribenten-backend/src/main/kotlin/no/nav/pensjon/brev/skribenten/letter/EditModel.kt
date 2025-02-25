@@ -311,7 +311,7 @@ fun Edit.ParagraphContent.Text.toMarkup(): ParagraphContent.Text =
             fontType = fontType.toMarkup()
         )
 
-        is Edit.ParagraphContent.Text.NewLine -> ParagraphContent.Text.NewLine(id = id ?: 0)
+        is Edit.ParagraphContent.Text.NewLine -> ParagraphContent.Text.NewLineImpl(id = id ?: 0)
     }
 
 fun Edit.ParagraphContent.Text.FontType.toMarkup(): ParagraphContent.Text.FontType =

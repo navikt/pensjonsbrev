@@ -156,7 +156,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             is Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage -> element.expr(scope.language).toContent(scope, fontType)
             is Element.OutlineContent.ParagraphContent.Text.Expression -> element.expression.toContent(scope, fontType)
             is Element.OutlineContent.ParagraphContent.Text.Literal -> listOf(LiteralImpl(element.stableHashCode(), element.text(scope.language), fontType))
-            is Element.OutlineContent.ParagraphContent.Text.NewLine -> listOf(NewLine(element.stableHashCode()))
+            is Element.OutlineContent.ParagraphContent.Text.NewLine -> listOf(NewLineImpl(element.stableHashCode()))
         }
     }
 

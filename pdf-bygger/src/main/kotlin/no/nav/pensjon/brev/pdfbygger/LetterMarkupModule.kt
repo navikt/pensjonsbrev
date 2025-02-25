@@ -44,6 +44,10 @@ internal object LetterMarkupModule : SimpleModule() {
             AbstractDeserializer<LetterMarkup.ParagraphContent.Text.Variable, LetterMarkup.ParagraphContent.Text.VariableImpl>(LetterMarkup.ParagraphContent.Text.VariableImpl::class.java) {}
         )
 
+        addDeserializer(LetterMarkup.ParagraphContent.Text.NewLine::class.java, object :
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Text.NewLine, LetterMarkup.ParagraphContent.Text.NewLineImpl>(LetterMarkup.ParagraphContent.Text.NewLineImpl::class.java) {}
+        )
+
     }
 
     private fun blockDeserializer() =
