@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.model
 
 import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.api.model.Sivilstand.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -39,46 +38,6 @@ object FormatBorMedSivilstandTabell : LocalizedFormatter<BorMedSivilstand>() {
 
     override fun stableHashCode(): Int = "FormatBorMedSivilstandTabell".hashCode()
 }
-
-
-@JvmName("formatSivilstandBestemtForm")
-fun Expression<Sivilstand>.bestemtForm() = format(SivilstandEpsBestemt)
-
-@Deprecated("Bruk bormed sivilstand istedenfor")
-object SivilstandEpsBestemt : LocalizedFormatter<Sivilstand>() {
-    override fun apply(first: Sivilstand, second: Language): String = sivilstand(first, second, true)
-    override fun stableHashCode(): Int = "SivilstandEpsBestemt".hashCode()
-}
-
-@Deprecated("bruk bormedSivilstand")
-private fun sivilstand(sivilstand: Sivilstand, language: Language, bestemtForm: Boolean): String =
-    when (sivilstand) {
-        GIFT,
-        GIFT_LEVER_ADSKILT -> when (language) {
-            Bokmal, Nynorsk -> if (bestemtForm) "ektefellen" else "ektefelle"
-            English -> "spouse"
-        }
-
-        PARTNER,
-        PARTNER_LEVER_ADSKILT,
-        SEPARERT_PARTNER -> when (language) {
-            Bokmal -> if (bestemtForm) "partneren" else "partner"
-            Nynorsk -> if (bestemtForm) "partnaren" else "partnar"
-            English -> "partner"
-        }
-
-        SAMBOER1_5, SAMBOER3_2 -> when (language) {
-            Bokmal -> if (bestemtForm) "samboeren" else "samboer"
-            Nynorsk -> if (bestemtForm) "sambuaren" else "sambuar"
-            English -> "cohabitant"
-        }
-
-        //TODO lag en egen SivilstandEps enum slik at vi kan garantere at teksten blir riktig.
-        ENSLIG,
-        ENKE,
-        SEPARERT-> ""
-    }
-
 
 @JvmName("formatBorMedSivilstandBestemtForm")
 fun Expression<BorMedSivilstand>.bestemtForm() = format(formatter = BorMedSivilstandBestemt)
