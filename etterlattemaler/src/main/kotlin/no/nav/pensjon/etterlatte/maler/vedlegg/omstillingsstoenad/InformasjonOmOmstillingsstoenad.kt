@@ -355,7 +355,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
 
     paragraph {
         text(
-            Bokmal to "Du kan gi beskjed om endring på følgende måter:",
+            Bokmal to "Du kan gi beskjed om endringer på følgende måter:",
             Nynorsk to "Du kan melde frå om endringar på følgjande måtar:",
             English to "You can report changes in the following ways:"
         )
