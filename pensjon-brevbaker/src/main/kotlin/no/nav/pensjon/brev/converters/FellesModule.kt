@@ -51,6 +51,10 @@ object FellesModule : SimpleModule() {
         addDeserializer(LetterMarkup.ParagraphContent.Text.Literal::class.java, object :
             FellesDeserializer<LetterMarkup.ParagraphContent.Text.Literal, LetterMarkup.ParagraphContent.Text.LiteralImpl>(LetterMarkup.ParagraphContent.Text.LiteralImpl::class.java) {}
         )
+
+        addDeserializer(LetterMarkup.ParagraphContent.Text.Variable::class.java, object :
+            FellesDeserializer<LetterMarkup.ParagraphContent.Text.Variable, LetterMarkup.ParagraphContent.Text.VariableImpl>(LetterMarkup.ParagraphContent.Text.VariableImpl::class.java) {}
+        )
     }
 
     private object NavEnhetDeserializer : FellesDeserializer<NAVEnhet, NavEnhetImpl>(NavEnhetImpl::class.java)

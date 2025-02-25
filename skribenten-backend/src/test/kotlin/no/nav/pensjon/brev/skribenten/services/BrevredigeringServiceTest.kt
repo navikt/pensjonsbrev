@@ -29,6 +29,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.VariableImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.apache.commons.codec.binary.Hex
@@ -357,7 +358,7 @@ class BrevredigeringServiceTest {
         val original = opprettBrev(saksbehandlerValg = saksbehandlerValg).resultOrNull()!!
 
         val nyeValg = Api.GeneriskBrevdata().apply { put("valg2", true) }
-        val freshRender = letter.copy(blocks = letter.blocks + Paragraph(2, true, listOf(Variable(21, "ny paragraph"))))
+        val freshRender = letter.copy(blocks = letter.blocks + Paragraph(2, true, listOf(VariableImpl(21, "ny paragraph"))))
         coEvery {
             brevbakerMock.renderMarkup(
                 eq(RedigerbarBrevkode(Testbrevkoder.TESTBREV.name)),

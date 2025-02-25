@@ -43,7 +43,7 @@ class BrevbakerServiceTest {
                 Block.Title2(
                     3, true, listOf(
                         Text.LiteralImpl(31, "a text"),
-                        Text.Variable(32, "another"),
+                        Text.VariableImpl(32, "another"),
                     )
                 ),
             ),

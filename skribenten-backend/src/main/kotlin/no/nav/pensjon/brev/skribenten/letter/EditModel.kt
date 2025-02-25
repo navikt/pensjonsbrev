@@ -305,7 +305,7 @@ fun Edit.ParagraphContent.Text.toMarkup(): ParagraphContent.Text =
             tags = tags,
         )
 
-        is Edit.ParagraphContent.Text.Variable -> ParagraphContent.Text.Variable(
+        is Edit.ParagraphContent.Text.Variable -> ParagraphContent.Text.VariableImpl(
             id = id ?: 0,
             text = text,
             fontType = fontType.toMarkup()

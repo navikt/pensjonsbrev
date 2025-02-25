@@ -8,7 +8,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.LiteralImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.VariableImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.InstanceOfAssertFactories
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -54,7 +54,7 @@ class UpdateRenderedLetterTest {
             Title1(
                 1, true, listOf(
                     LiteralImpl(1, "En tittel "),
-                    Variable(2, "for deg "),
+                    VariableImpl(2, "for deg "),
                     LiteralImpl(3, "og meg!")
                 )
             )
@@ -69,7 +69,7 @@ class UpdateRenderedLetterTest {
             Title1(
                 1, true, listOf(
                     LiteralImpl(1, "En tittel "),
-                    Variable(2, "for deg "),
+                    VariableImpl(2, "for deg "),
                     LiteralImpl(3, "og meg!")
                 )
             )
@@ -93,7 +93,7 @@ class UpdateRenderedLetterTest {
             Title1(
                 1, true, listOf(
                     LiteralImpl(1, "En tittel "),
-                    Variable(2, "for de andre "),
+                    VariableImpl(2, "for de andre "),
                     LiteralImpl(3, "og meg!")
                 )
             )
@@ -116,7 +116,7 @@ class UpdateRenderedLetterTest {
         val rendered = letter(
             Title1(
                 1, true, listOf(
-                    Variable(2, "for deg "),
+                    VariableImpl(2, "for deg "),
                 )
             )
         )
@@ -147,7 +147,7 @@ class UpdateRenderedLetterTest {
         val next = letter(
             Title1(
                 1, true, listOf(
-                    Variable(2, "for deg "),
+                    VariableImpl(2, "for deg "),
                     LiteralImpl(3, "og meg!")
                 )
             )
@@ -183,7 +183,7 @@ class UpdateRenderedLetterTest {
         val next = letter(
             Title1(
                 1, true, listOf(
-                    Variable(2, "for deg "),
+                    VariableImpl(2, "for deg "),
                     LiteralImpl(3, "og meg!"),
                     LiteralImpl(4, " pluss noe mer tekst")
                 )
@@ -216,8 +216,8 @@ class UpdateRenderedLetterTest {
         val next = letter(
             Title1(
                 1, true, listOf(
-                    Variable(1, "En tittel "),
-                    Variable(2, "for deg "),
+                    VariableImpl(1, "En tittel "),
+                    VariableImpl(2, "for deg "),
                     LiteralImpl(3, "og meg!")
                 )
             )
@@ -240,8 +240,8 @@ class UpdateRenderedLetterTest {
         val next = letter(
             Title1(
                 1, true, listOf(
-                    Variable(1, "En tittel "),
-                    Variable(2, "for deg "),
+                    VariableImpl(1, "En tittel "),
+                    VariableImpl(2, "for deg "),
                     LiteralImpl(3, "og meg!")
                 )
             )
@@ -265,8 +265,8 @@ class UpdateRenderedLetterTest {
         val next = letter(
             Title1(
                 1, true, listOf(
-                    Variable(1, "En tittel "),
-                    Variable(2, "for deg "),
+                    VariableImpl(1, "En tittel "),
+                    VariableImpl(2, "for deg "),
                     LiteralImpl(3, "og meg!"),
                     LiteralImpl(4, "ny rendered literal"),
                 )
@@ -303,7 +303,7 @@ class UpdateRenderedLetterTest {
             Paragraph(
                 1, true, listOf(
                     LiteralImpl(1, "Noe tekst"),
-                    Variable(2, "en variabel"),
+                    VariableImpl(2, "en variabel"),
                 )
             )
         )
@@ -327,7 +327,7 @@ class UpdateRenderedLetterTest {
             Paragraph(
                 1, true, listOf(
                     LiteralImpl(1, "Noe tekst "),
-                    Variable(2, "med en oppdatert variabel"),
+                    VariableImpl(2, "med en oppdatert variabel"),
                     LiteralImpl(3, " og noe mer tekst"),
                     ItemListImpl(4, listOf(ItemImpl(41, listOf(LiteralImpl(411, "en punktliste"))))),
                 )
@@ -360,7 +360,7 @@ class UpdateRenderedLetterTest {
             Paragraph(
                 1, true, listOf(
                     LiteralImpl(1, "Noe tekst "),
-                    Variable(2, "med en oppdatert variabel"),
+                    VariableImpl(2, "med en oppdatert variabel"),
                     LiteralImpl(3, " og noe mer tekst"),
                     LiteralImpl(4, " pluss noe ny tekst"),
                 )
@@ -394,7 +394,7 @@ class UpdateRenderedLetterTest {
             Title1(
                 1, true, listOf(
                     LiteralImpl(1, "En tittel "),
-                    Variable(2, "for deg "),
+                    VariableImpl(2, "for deg "),
                     LiteralImpl(3, "og meg!")
                 )
             )
@@ -429,7 +429,7 @@ class UpdateRenderedLetterTest {
             Title1(
                 1, true, listOf(
                     LiteralImpl(1, "En tittel "),
-                    Variable(2, "for deg "),
+                    VariableImpl(2, "for deg "),
                     LiteralImpl(3, "og meg!")
                 )
             ),
@@ -483,7 +483,7 @@ class UpdateRenderedLetterTest {
             Title1(
                 1, true, listOf(
                     LiteralImpl(1, "En tittel "),
-                    Variable(2, "for deg "),
+                    VariableImpl(2, "for deg "),
                     LiteralImpl(3, "og meg!")
                 )
             ),
@@ -537,7 +537,7 @@ class UpdateRenderedLetterTest {
             Title1(
                 1, true, listOf(
                     LiteralImpl(1, "En tittel "),
-                    Variable(2, "for deg "),
+                    VariableImpl(2, "for deg "),
                     LiteralImpl(3, "og meg!")
                 )
             ),
@@ -605,9 +605,9 @@ class UpdateRenderedLetterTest {
             Paragraph(
                 1, true, listOf(
                     LiteralImpl(11, "Første"),
-                    Variable(12, "en variabel"),
+                    VariableImpl(12, "en variabel"),
                     LiteralImpl(13, "Andre"),
-                    Variable(14, "andre variabel"),
+                    VariableImpl(14, "andre variabel"),
                     LiteralImpl(15, "Tredje"),
                     ItemListImpl(
                         16, listOf(
@@ -653,7 +653,7 @@ class UpdateRenderedLetterTest {
                 1, true,
                 listOf(
                     LiteralImpl(11, "lit1"),
-                    Variable(12, "var1"),
+                    VariableImpl(12, "var1"),
                     LiteralImpl(13, "rediger til tom streng"),
                 ),
             ),
@@ -822,10 +822,10 @@ class UpdateRenderedLetterTest {
                 1, true,
                 listOf(
                     LiteralImpl(11, "en literal"),
-                    Variable(12, "oppdatert variabel"),
-                    Variable(1311, "oppdatert variabel 2"),
-                    Variable(141111, "oppdatert variabel 3"),
-                    Variable(14211, "oppdatert variabel 4"),
+                    VariableImpl(12, "oppdatert variabel"),
+                    VariableImpl(1311, "oppdatert variabel 2"),
+                    VariableImpl(141111, "oppdatert variabel 3"),
+                    VariableImpl(14211, "oppdatert variabel 4"),
                 )
             )
         )
@@ -901,7 +901,7 @@ class UpdateRenderedLetterTest {
         val edited = editedLetter(
             E_Paragraph(
                 null, true,
-                listOf(E_Literal(11, "en literal",), E_Variable(12, "en variabel"))
+                listOf(E_Literal(11, "en literal"), E_Variable(12, "en variabel"))
             ),
             deleted = setOf(1),
         )
@@ -922,7 +922,7 @@ class UpdateRenderedLetterTest {
                 1, true,
                 listOf(
                     LiteralImpl(11, "en literal"),
-                    ItemListImpl(12, listOf(ItemImpl(121, listOf(Variable(1211, "oppdatert v1"))))),
+                    ItemListImpl(12, listOf(ItemImpl(121, listOf(VariableImpl(1211, "oppdatert v1"))))),
                 )
             ),
             Paragraph(
@@ -962,7 +962,7 @@ class UpdateRenderedLetterTest {
                 1, true,
                 listOf(
                     LiteralImpl(11, "en literal"),
-                    ItemListImpl(12, listOf(ItemImpl(121, listOf(Variable(1211, "oppdatert v1"))))),
+                    ItemListImpl(12, listOf(ItemImpl(121, listOf(VariableImpl(1211, "oppdatert v1"))))),
                 )
             )
         )
@@ -988,7 +988,7 @@ class UpdateRenderedLetterTest {
         val next = letter(
             Paragraph(
                 1, true,
-                listOf(LiteralImpl(11, "en literal"), Variable(12, "oppdatert v1")),
+                listOf(LiteralImpl(11, "en literal"), VariableImpl(12, "oppdatert v1")),
             ),
         )
         val edited = editedLetter(
@@ -1022,7 +1022,7 @@ class UpdateRenderedLetterTest {
                 1, true,
                 listOf(
                     LiteralImpl(11, "lit1"),
-                    Variable(12, "var2"),
+                    VariableImpl(12, "var2"),
                     ItemListImpl(13, listOf(ItemImpl(131, listOf(LiteralImpl(1311, "punkt1"))))),
                     LiteralImpl(14, "lit2"),
                 )
@@ -1051,7 +1051,7 @@ class UpdateRenderedLetterTest {
         val next = letter(
             Paragraph(
                 1, true,
-                listOf(LiteralImpl(11, "lit1"), Variable(12, "var2"), ItemListImpl(13, listOf(ItemImpl(131, listOf(LiteralImpl(1311, "punkt1"))))), LiteralImpl(14, "lit2"))
+                listOf(LiteralImpl(11, "lit1"), VariableImpl(12, "var2"), ItemListImpl(13, listOf(ItemImpl(131, listOf(LiteralImpl(1311, "punkt1"))))), LiteralImpl(14, "lit2"))
             )
         )
         val edited = editedLetter(
@@ -1078,7 +1078,7 @@ class UpdateRenderedLetterTest {
                 1, true,
                 listOf(
                     LiteralImpl(11, "lit1"),
-                    Variable(12, "var2"),
+                    VariableImpl(12, "var2"),
                     ItemListImpl(13, listOf(ItemImpl(131, listOf(LiteralImpl(1311, "punkt1"))))),
                     LiteralImpl(14, "lit2"),
                     Table(

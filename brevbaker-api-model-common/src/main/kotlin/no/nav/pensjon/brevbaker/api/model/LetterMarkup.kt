@@ -102,15 +102,22 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
                 override val id: Int,
                 override val text: String,
                 override val fontType: FontType = FontType.PLAIN,
-                override val tags: Set<ElementTags> = emptySet(),
+                override val tags: Set<ElementTags> = emptySet()
+            ) : Literal {
                 override val type: Type = Type.LITERAL
-            ) : Literal
+            }
 
-            data class Variable(
+            interface Variable : Text {
+                override val type: Type
+                    get() = Type.VARIABLE
+            }
+
+            @InterneDataklasser
+            data class VariableImpl(
                 override val id: Int,
                 override val text: String,
                 override val fontType: FontType = FontType.PLAIN
-            ) : Text {
+            ) : Variable {
                 override val type = Type.VARIABLE
             }
 
