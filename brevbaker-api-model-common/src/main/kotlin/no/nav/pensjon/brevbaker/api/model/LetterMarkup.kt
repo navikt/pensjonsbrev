@@ -1,5 +1,7 @@
 package no.nav.pensjon.brevbaker.api.model
 
+import no.nav.brev.InterneDataklasser
+
 @Suppress("unused")
 data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur) {
 
@@ -16,6 +18,7 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
         val dokumentDato: String
     }
 
+    @InterneDataklasser
     data class SakspartImpl(
         override val gjelderNavn: String,
         override val gjelderFoedselsnummer: String,
@@ -31,6 +34,7 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
         val navAvsenderEnhet: String
     }
 
+    @InterneDataklasser
     data class SignaturImpl(
         override val hilsenTekst: String,
         override val saksbehandlerRolleTekst: String,
@@ -74,6 +78,7 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
             }
         }
 
+        @InterneDataklasser
         data class ItemListImpl(override val id: Int, override val items: List<ItemList.Item>) : ItemList {
             override val type = Type.ITEM_LIST
 
