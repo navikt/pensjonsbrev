@@ -32,7 +32,7 @@ const OppsummeringAvMottaker = (props: { saksId: string; mottaker: Nullable<Mott
         </BodyShort>
       )}
       {props.mottaker.type === "UtenlandskAdresse" && (
-        <BodyShort size="small">{getCountryNameByKode(props.mottaker.landkode, landData)}</BodyShort>
+        <BodyShort size="small">{getCountryNameByKode(props.mottaker.landkode, landData || [])}</BodyShort>
       )}
     </VStack>
   );
