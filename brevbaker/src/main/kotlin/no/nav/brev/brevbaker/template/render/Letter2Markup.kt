@@ -111,7 +111,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
 
     private fun renderTable(scope: ExpressionScope<*>, table: Element.OutlineContent.ParagraphContent.Table<*>): ParagraphContent.Table? =
         renderRows(scope, table.rows).takeIf { it.isNotEmpty() }?.let { rows ->
-            ParagraphContent.Table(
+            ParagraphContent.TableImpl(
                 id = table.stableHashCode(),
                 rows = renderRows(scope, table.rows),
                 header = renderHeader(scope, table.header),
@@ -119,8 +119,8 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         }
 
     private fun renderHeader(scope: ExpressionScope<*>, header: Element.OutlineContent.ParagraphContent.Table.Header<*>): ParagraphContent.Table.Header =
-        ParagraphContent.Table.Header(header.stableHashCode(), header.colSpec.map { columnSpec ->
-            ParagraphContent.Table.ColumnSpec(
+        ParagraphContent.TableImpl.HeaderImpl(header.stableHashCode(), header.colSpec.map { columnSpec ->
+            ParagraphContent.TableImpl.ColumnSpecImpl(
                 id = columnSpec.stableHashCode(),
                 headerContent = renderCell(scope, columnSpec.headerContent),
                 alignment = when (columnSpec.alignment) {
@@ -134,12 +134,12 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
     private fun renderRows(scope: ExpressionScope<*>, rows: List<TableRowElement<*>>): List<ParagraphContent.Table.Row> =
         buildList {
             render(scope, rows) { rowScope, row ->
-                add(ParagraphContent.Table.Row(row.stableHashCode(), row.cells.map { renderCell(rowScope, it) }))
+                add(ParagraphContent.TableImpl.RowImpl(row.stableHashCode(), row.cells.map { renderCell(rowScope, it) }))
             }
         }
 
     private fun renderCell(scope: ExpressionScope<*>, cell: Element.OutlineContent.ParagraphContent.Table.Cell<*>): ParagraphContent.Table.Cell =
-        ParagraphContent.Table.Cell(cell.stableHashCode(), renderText(scope, cell.text))
+        ParagraphContent.TableImpl.CellImpl(cell.stableHashCode(), renderText(scope, cell.text))
 
     private fun renderItemList(scope: ExpressionScope<*>, itemList: Element.OutlineContent.ParagraphContent.ItemList<*>): ParagraphContent.ItemList? =
         buildList {

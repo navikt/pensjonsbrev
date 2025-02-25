@@ -52,6 +52,22 @@ internal object LetterMarkupModule : SimpleModule() {
             AbstractDeserializer<LetterMarkup.Attachment, LetterMarkup.AttachmentImpl>(LetterMarkup.AttachmentImpl::class.java) {}
         )
 
+        addDeserializer(LetterMarkup.ParagraphContent.Table::class.java, object :
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Table, LetterMarkup.ParagraphContent.TableImpl>(LetterMarkup.ParagraphContent.TableImpl::class.java) {}
+        )
+        addDeserializer(LetterMarkup.ParagraphContent.Table.Row::class.java, object :
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Table.Row, LetterMarkup.ParagraphContent.TableImpl.RowImpl>(LetterMarkup.ParagraphContent.TableImpl.RowImpl::class.java) {}
+        )
+        addDeserializer(LetterMarkup.ParagraphContent.Table.Cell::class.java, object :
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Table.Cell, LetterMarkup.ParagraphContent.TableImpl.CellImpl>(LetterMarkup.ParagraphContent.TableImpl.CellImpl::class.java) {}
+        )
+        addDeserializer(LetterMarkup.ParagraphContent.Table.Header::class.java, object :
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Table.Header, LetterMarkup.ParagraphContent.TableImpl.HeaderImpl>(LetterMarkup.ParagraphContent.TableImpl.HeaderImpl::class.java) {}
+        )
+        addDeserializer(LetterMarkup.ParagraphContent.Table.ColumnSpec::class.java, object :
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Table.ColumnSpec, LetterMarkup.ParagraphContent.TableImpl.ColumnSpecImpl>(LetterMarkup.ParagraphContent.TableImpl.ColumnSpecImpl::class.java) {}
+        )
+
     }
 
     private fun blockDeserializer() =

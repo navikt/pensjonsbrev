@@ -284,15 +284,15 @@ fun Edit.Letter.toMarkup(): LetterMarkup =
 
 fun Edit.Block.toMarkup(): Block =
     when (this) {
-        is Edit.Block.Paragraph -> Block.Paragraph(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
-        is Edit.Block.Title1 -> Block.Title1(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
-        is Edit.Block.Title2 -> Block.Title2(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
+        is Edit.Block.Paragraph -> Block.ParagraphImpl(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
+        is Edit.Block.Title1 -> Block.Title1Impl(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
+        is Edit.Block.Title2 -> Block.Title2Impl(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
     }
 
 fun Edit.ParagraphContent.toMarkup(): ParagraphContent =
     when (this) {
         is Edit.ParagraphContent.ItemList -> ParagraphContent.ItemListImpl(id = id ?: 0, items = items.map { it.toMarkup() })
-        is Edit.ParagraphContent.Table -> ParagraphContent.Table(id = id ?: 0, rows = rows.map { it.toMarkup() }, header = header.toMarkup())
+        is Edit.ParagraphContent.Table -> ParagraphContent.TableImpl(id = id ?: 0, rows = rows.map { it.toMarkup() }, header = header.toMarkup())
         is Edit.ParagraphContent.Text -> toMarkup()
     }
 
@@ -325,10 +325,10 @@ fun Edit.ParagraphContent.ItemList.Item.toMarkup(): ParagraphContent.ItemList.It
     ParagraphContent.ItemListImpl.ItemImpl(id = id ?: 0, content = content.map { it.toMarkup() })
 
 fun Edit.ParagraphContent.Table.Header.toMarkup(): ParagraphContent.Table.Header =
-    ParagraphContent.Table.Header(id = id ?: 0, colSpec = colSpec.map { it.toMarkup() })
+    ParagraphContent.TableImpl.HeaderImpl(id = id ?: 0, colSpec = colSpec.map { it.toMarkup() })
 
 fun Edit.ParagraphContent.Table.ColumnSpec.toMarkup(): ParagraphContent.Table.ColumnSpec =
-    ParagraphContent.Table.ColumnSpec(id = id ?: 0, headerContent = headerContent.toMarkup(), alignment = alignment.toMarkup(), span = span)
+    ParagraphContent.TableImpl.ColumnSpecImpl(id = id ?: 0, headerContent = headerContent.toMarkup(), alignment = alignment.toMarkup(), span = span)
 
 fun Edit.ParagraphContent.Table.ColumnAlignment.toMarkup(): ParagraphContent.Table.ColumnAlignment =
     when (this) {
@@ -337,10 +337,10 @@ fun Edit.ParagraphContent.Table.ColumnAlignment.toMarkup(): ParagraphContent.Tab
     }
 
 fun Edit.ParagraphContent.Table.Row.toMarkup(): ParagraphContent.Table.Row =
-    ParagraphContent.Table.Row(id = id ?: 0, cells = cells.map { it.toMarkup() })
+    ParagraphContent.TableImpl.RowImpl(id = id ?: 0, cells = cells.map { it.toMarkup() })
 
 fun Edit.ParagraphContent.Table.Cell.toMarkup(): ParagraphContent.Table.Cell =
-    ParagraphContent.Table.Cell(id = id ?: 0, text = text.map { it.toMarkup() })
+    ParagraphContent.TableImpl.CellImpl(id = id ?: 0, text = text.map { it.toMarkup() })
 
 
 

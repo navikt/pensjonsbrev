@@ -166,14 +166,50 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
             }
         }
 
-        data class Table(override val id: Int, val rows: List<Row>, val header: Header) : ParagraphContent {
+        sealed interface Table : ParagraphContent {
+            val rows: List<Row>
+            val header: Header
+
+            override val type: Type
+                get() = Type.TABLE
+
+            interface Row {
+                val id: Int
+                val cells: List<Cell>
+            }
+
+            interface Cell {
+                val id: Int
+                val text: List<Text>
+            }
+
+            interface Header {
+                val id: Int
+                val colSpec: List<ColumnSpec>
+            }
+
+            interface ColumnSpec {
+                val id: Int
+                val headerContent: Cell
+                val alignment: ColumnAlignment
+                val span: Int
+            }
+
+            enum class ColumnAlignment { LEFT, RIGHT }
+        }
+
+        @InterneDataklasser
+        data class TableImpl(override val id: Int, override val rows: List<Table.Row>, override val header: Table.Header) : Table {
             override val type = Type.TABLE
 
-            data class Row(val id: Int, val cells: List<Cell>)
-            data class Cell(val id: Int, val text: List<Text>)
-            data class Header(val id: Int, val colSpec: List<ColumnSpec>)
-            data class ColumnSpec(val id: Int, val headerContent: Cell, val alignment: ColumnAlignment, val span: Int)
-            enum class ColumnAlignment { LEFT, RIGHT }
+            @InterneDataklasser
+            data class RowImpl(override val id: Int, override val cells: List<Table.Cell>) : Table.Row
+            @InterneDataklasser
+            data class CellImpl(override val id: Int, override val text: List<Text>) : Table.Cell
+            @InterneDataklasser
+            data class HeaderImpl(override val id: Int, override val colSpec: List<Table.ColumnSpec>) : Table.Header
+            @InterneDataklasser
+            data class ColumnSpecImpl(override val id: Int, override val headerContent: Table.Cell, override val alignment: Table.ColumnAlignment, override val span: Int) : Table.ColumnSpec
         }
 
         sealed interface Form : ParagraphContent {

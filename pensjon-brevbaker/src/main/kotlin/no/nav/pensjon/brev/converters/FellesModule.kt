@@ -63,6 +63,23 @@ object FellesModule : SimpleModule() {
         addDeserializer(LetterMarkup.Attachment::class.java, object :
             FellesDeserializer<LetterMarkup.Attachment, LetterMarkup.AttachmentImpl>(LetterMarkup.AttachmentImpl::class.java) {}
         )
+
+
+        addDeserializer(LetterMarkup.ParagraphContent.Table::class.java, object :
+            FellesDeserializer<LetterMarkup.ParagraphContent.Table, LetterMarkup.ParagraphContent.TableImpl>(LetterMarkup.ParagraphContent.TableImpl::class.java) {}
+        )
+        addDeserializer(LetterMarkup.ParagraphContent.Table.Row::class.java, object :
+            FellesDeserializer<LetterMarkup.ParagraphContent.Table.Row, LetterMarkup.ParagraphContent.TableImpl.RowImpl>(LetterMarkup.ParagraphContent.TableImpl.RowImpl::class.java) {}
+        )
+        addDeserializer(LetterMarkup.ParagraphContent.Table.Cell::class.java, object :
+            FellesDeserializer<LetterMarkup.ParagraphContent.Table.Cell, LetterMarkup.ParagraphContent.TableImpl.CellImpl>(LetterMarkup.ParagraphContent.TableImpl.CellImpl::class.java) {}
+        )
+        addDeserializer(LetterMarkup.ParagraphContent.Table.Header::class.java, object :
+            FellesDeserializer<LetterMarkup.ParagraphContent.Table.Header, LetterMarkup.ParagraphContent.TableImpl.HeaderImpl>(LetterMarkup.ParagraphContent.TableImpl.HeaderImpl::class.java) {}
+        )
+        addDeserializer(LetterMarkup.ParagraphContent.Table.ColumnSpec::class.java, object :
+            FellesDeserializer<LetterMarkup.ParagraphContent.Table.ColumnSpec, LetterMarkup.ParagraphContent.TableImpl.ColumnSpecImpl>(LetterMarkup.ParagraphContent.TableImpl.ColumnSpecImpl::class.java) {}
+        )
     }
 
     private object NavEnhetDeserializer : FellesDeserializer<NAVEnhet, NavEnhetImpl>(NavEnhetImpl::class.java)

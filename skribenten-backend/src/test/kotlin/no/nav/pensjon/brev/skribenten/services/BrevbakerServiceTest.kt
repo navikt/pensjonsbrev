@@ -22,25 +22,25 @@ class BrevbakerServiceTest {
                 dokumentDato = "2024-05-16",
             ),
             blocks = listOf(
-                Block.Paragraph(
+                Block.ParagraphImpl(
                     1, true, listOf(
                         ItemListImpl(
                             11, listOf(
                                 ItemListImpl.ItemImpl(111, listOf(Text.LiteralImpl(1111, "item 1", Text.FontType.BOLD)))
                             )
                         ),
-                        Table(
+                        TableImpl(
                             12,
-                            listOf(Table.Row(121, listOf(Table.Cell(1211, listOf(Text.LiteralImpl(12111, "cell1")))))),
-                            Table.Header(
+                            listOf(TableImpl.RowImpl(121, listOf(TableImpl.CellImpl(1211, listOf(Text.LiteralImpl(12111, "cell1")))))),
+                            TableImpl.HeaderImpl(
                                 122,
-                                listOf(Table.ColumnSpec(1221, Table.Cell(12211, listOf(Text.LiteralImpl(122111, "col1"))), Table.ColumnAlignment.RIGHT, 1))
+                                listOf(TableImpl.ColumnSpecImpl(1221, TableImpl.CellImpl(12211, listOf(Text.LiteralImpl(122111, "col1"))), Table.ColumnAlignment.RIGHT, 1))
                             )
                         )
                     )
                 ),
-                Block.Title1(2, true, emptyList()),
-                Block.Title2(
+                Block.Title1Impl(2, true, emptyList()),
+                Block.Title2Impl(
                     3, true, listOf(
                         Text.LiteralImpl(31, "a text"),
                         Text.VariableImpl(32, "another"),
