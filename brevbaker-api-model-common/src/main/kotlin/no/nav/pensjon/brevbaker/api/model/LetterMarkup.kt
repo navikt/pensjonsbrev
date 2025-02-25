@@ -1,6 +1,8 @@
 package no.nav.pensjon.brevbaker.api.model
 
 import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Text.Size
 
 @Suppress("unused")
 data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur) {
@@ -175,15 +177,37 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
         }
 
         sealed interface Form : ParagraphContent {
-            data class Text(override val id: Int, val prompt: List<ParagraphContent.Text>, val size: Size, val vspace: Boolean) : Form {
-                override val type = Type.FORM_TEXT
+
+            interface Text : Form {
+                val prompt: List<ParagraphContent.Text>
+                val size: Size
+                val vspace: Boolean
+                override val type: Type
+                    get() = Type.FORM_TEXT
+
                 enum class Size { NONE, SHORT, LONG }
             }
 
-            data class MultipleChoice(override val id: Int, val prompt: List<ParagraphContent.Text>, val choices: List<Choice>, val vspace: Boolean) : Form {
-                override val type = Type.FORM_CHOICE
+            @InterneDataklasser
+            data class TextImpl(override val id: Int, override val prompt: List<ParagraphContent.Text>, override val size: Size, override val vspace: Boolean) : Text {
+                override val type = Type.FORM_TEXT
+            }
+
+            interface MultipleChoice : Form {
+                val prompt: List<ParagraphContent.Text>
+                val choices: List<Choice>
+                val vspace: Boolean
+                override val type: Type
+                    get() = Type.FORM_CHOICE
+
                 data class Choice(val id: Int, val text: List<ParagraphContent.Text>)
             }
+
+            @InterneDataklasser
+            data class MultipleChoiceImpl(override val id: Int, override val prompt: List<ParagraphContent.Text>, override val choices: List<Choice>, override val vspace: Boolean) : MultipleChoice {
+                override val type = Type.FORM_CHOICE
+            }
+
         }
     }
 }

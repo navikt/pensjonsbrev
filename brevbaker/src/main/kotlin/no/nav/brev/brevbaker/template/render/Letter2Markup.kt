@@ -90,7 +90,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
 
     private fun renderForm(scope: ExpressionScope<*>, form: Element.OutlineContent.ParagraphContent.Form<*>): ParagraphContent.Form =
         when (form) {
-            is Element.OutlineContent.ParagraphContent.Form.Text -> ParagraphContent.Form.Text(
+            is Element.OutlineContent.ParagraphContent.Form.Text -> ParagraphContent.Form.TextImpl(
                 id = form.stableHashCode(),
                 prompt = renderText(scope, listOf(form.prompt)),
                 size = when (form.size) {
@@ -101,7 +101,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
                 vspace = form.vspace,
             )
 
-            is Element.OutlineContent.ParagraphContent.Form.MultipleChoice -> ParagraphContent.Form.MultipleChoice(
+            is Element.OutlineContent.ParagraphContent.Form.MultipleChoice -> ParagraphContent.Form.MultipleChoiceImpl(
                 id = form.stableHashCode(),
                 prompt = renderText(scope, listOf(form.prompt)),
                 choices = form.choices.map { ParagraphContent.Form.MultipleChoice.Choice(it.stableHashCode(), renderTextContent(scope, it)) },
