@@ -71,6 +71,9 @@ internal object LetterMarkupModule : SimpleModule() {
         addDeserializer(LetterMarkup.ParagraphContent.Table.ColumnSpec::class.java, object :
             AbstractDeserializer<LetterMarkup.ParagraphContent.Table.ColumnSpec, ParagraphContentImpl.TableImpl.ColumnSpecImpl>(ParagraphContentImpl.TableImpl.ColumnSpecImpl::class.java) {}
         )
+        addDeserializer(LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice::class.java, object :
+            AbstractDeserializer<LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice, ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl>(ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl::class.java) {}
+        )
 
         addDeserializer(LetterMarkup::class.java, object :
             AbstractDeserializer<LetterMarkup, LetterMarkupImpl>(LetterMarkupImpl::class.java) {}
