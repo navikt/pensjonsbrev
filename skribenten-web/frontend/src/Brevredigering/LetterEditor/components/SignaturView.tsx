@@ -1,3 +1,4 @@
+import type { SerializedStyles } from "@emotion/react";
 import { css } from "@emotion/react";
 
 import type { Signatur } from "~/types/brevbakerTypes";
@@ -21,14 +22,16 @@ const Saksbehandler = ({ rolleTekst, navn }: { rolleTekst: string; navn?: string
   );
 };
 
-export const SignaturView = ({ signatur }: { signatur: Signatur }) => (
+export const SignaturView = ({ signatur, wrapperStyles }: { signatur: Signatur; wrapperStyles?: SerializedStyles }) => (
   <div
     css={css`
       opacity: 0.5;
-      margin-top: var(--a-spacing-8);
       display: flex;
       flex-direction: column;
       gap: var(--a-spacing-6);
+      font-size: 16.5px;
+      line-height: var(--a-font-line-height-heading-xsmall);
+      ${wrapperStyles}
     `}
   >
     <span>{signatur.hilsenTekst}</span>

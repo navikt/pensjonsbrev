@@ -1,16 +1,16 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
+import type { AnyBlock, ItemList } from "~/types/brevbakerTypes";
+
 import {
   addElements,
   getMergeIds,
   newLiteral,
   removeElements,
   text,
-} from "~/Brevredigering/LetterEditor/actions/common";
-import type { AnyBlock, ItemList } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
-
+} from "../../../Brevredigering/LetterEditor/actions/common";
+import { ITEM_LIST, LITERAL, NEW_LINE, VARIABLE } from "../../../types/brevbakerTypes";
 import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem, isTextContent } from "../model/utils";
@@ -27,16 +27,16 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
     const blocks = editedLetter.blocks;
     const block = blocks[literalIndex.blockIndex];
     const previousContentSameBlock = blocks[literalIndex.blockIndex]?.content[literalIndex.contentIndex - 1];
-
-    draft.isDirty = true;
+    const nextContentSameBlock = blocks[literalIndex.blockIndex]?.content[literalIndex.contentIndex + 1];
 
     if ("itemIndex" in literalIndex) {
       mergeFromItemList(draft, literalIndex, target);
+      draft.isDirty = true;
     } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === ITEM_LIST) {
       mergeIntoItemList(draft, previousContentSameBlock, literalIndex);
+      draft.isDirty = true;
     } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === LITERAL) {
       // TODO: må se på denne her.
-      const block = blocks[literalIndex.blockIndex];
       const content = block?.content[literalIndex.contentIndex];
       if (isEmptyContent(content)) {
         removeElements(literalIndex.contentIndex, 1, {
@@ -56,11 +56,39 @@ export const merge: Action<LetterEditorState, [literalIndex: LiteralIndex, targe
           cursorPosition: text(previousContentSameBlock).length,
         };
       }
+      draft.isDirty = true;
     } else if (
       (target === MergeTarget.PREVIOUS && literalIndex.contentIndex === 0) ||
-      (target == MergeTarget.NEXT && isLastIndex(literalIndex.contentIndex, block.content))
+      (target === MergeTarget.NEXT && isLastIndex(literalIndex.contentIndex, block.content))
     ) {
       mergeBlocks(draft, literalIndex, target);
+      draft.isDirty = true;
+    } else if (target === MergeTarget.PREVIOUS && previousContentSameBlock?.type === NEW_LINE) {
+      removeElements(literalIndex.contentIndex - 1, 1, {
+        content: block.content,
+        deletedContent: block.deletedContent,
+        id: block.id,
+      });
+      draft.focus = {
+        blockIndex: literalIndex.blockIndex,
+        contentIndex: literalIndex.contentIndex - 1,
+        cursorPosition: 0,
+      };
+      draft.isDirty = true;
+    } else if (target === MergeTarget.NEXT && nextContentSameBlock?.type === NEW_LINE) {
+      const content = block?.content[literalIndex.contentIndex];
+
+      removeElements(literalIndex.contentIndex + 1, 1, {
+        content: block.content,
+        deletedContent: block.deletedContent,
+        id: block.id,
+      });
+      draft.focus = {
+        blockIndex: literalIndex.blockIndex,
+        contentIndex: literalIndex.contentIndex,
+        cursorPosition: isTextContent(content) ? text(content).length : 0,
+      };
+      draft.isDirty = true;
     }
   },
 );

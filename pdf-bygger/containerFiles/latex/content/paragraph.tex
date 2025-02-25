@@ -1,0 +1,5 @@
+%Used for paragraph{...} element
+
+% only puts par skip between paragraphs, nowhere else. This reduces the possible combinations of spaces between elements.
+% do not split the command with newlines. It will be included in the content.
+\newcommand{\templateparagraph}[1] {\ifdefstring{\previouselement}{paragraph}{\par}{}\setpreviouselement{paragraph}\standardtext#1}

@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelJavaTarget: String by System.getProperties()
+val commonVersion: String by project
 val kotlinVersion: String by System.getProperties()
 
 plugins {
@@ -9,7 +10,6 @@ plugins {
 }
 
 group = "no.nav.pensjon.brev"
-version = "115"
 
 java {
     withSourcesJar()
@@ -18,11 +18,12 @@ java {
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:1.7.0")
+    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:$commonVersion")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
 }
 

@@ -12,10 +12,12 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.template.BrevTemplate
+import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.TemplateModelSpecificationFactory
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
-inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, Kode>> Route.templateRoutes(resource: TemplateResource<Kode, T>) =
+inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, Kode>> Route.templateRoutes(resource: TemplateResource<Kode, T, *>) =
     route("/${resource.name}") {
 
         get {
@@ -47,7 +49,7 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
                     ?.takeIf { it.language.supports(language) }
 
                 if (template != null) {
-                    call.respond(TemplateDocumentationRenderer.render(template, language))
+                    call.respond(TemplateDocumentationRenderer.render(template, language, template.modelSpecification()))
                 } else {
                     call.respond(HttpStatusCode.NotFound)
                 }
@@ -58,7 +60,7 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
                     .let { resource.getTemplate(it)?.template }
 
                 if (template != null) {
-                    call.respond(template.modelSpecification)
+                    call.respond(template.modelSpecification())
                 } else {
                     call.respond(HttpStatusCode.NotFound)
                 }
@@ -66,8 +68,10 @@ inline fun <reified Kode : Brevkode<Kode>, T : BrevTemplate<BrevbakerBrevdata, K
         }
     }
 
+fun LetterTemplate<*, *>.modelSpecification() = TemplateModelSpecificationFactory(this.letterDataType).build()
+
 // TODO: Med riktig typing burde heile denne metoden vera unødvendig
-fun <Kode: Brevkode<Kode>> ApplicationCall.kode(resource: TemplateResource<Kode,*>): Kode = parameters.getOrFail<String>("kode").let {
+fun <Kode: Brevkode<Kode>> ApplicationCall.kode(resource: TemplateResource<Kode,*,*>): Kode = parameters.getOrFail<String>("kode").let {
     if (resource.name == "autobrev") {
         AutomatiskBrevkode(it)
     } else {

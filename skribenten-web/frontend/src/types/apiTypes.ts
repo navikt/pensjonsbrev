@@ -68,6 +68,8 @@ export enum SpraakKode {
   Bokmaal = "NB",
   Engelsk = "EN",
   Nynorsk = "NN",
+  Fransk = "FR",
+  NordSamisk = "SE",
 }
 
 export type BaseLetterRequest = {

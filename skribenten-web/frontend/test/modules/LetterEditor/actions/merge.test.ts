@@ -14,7 +14,7 @@ import type {
 } from "~/types/brevbakerTypes";
 import { LITERAL } from "~/types/brevbakerTypes";
 
-import { asNew, item, itemList, letter, literal, paragraph, select, variable, withDeleted } from "../utils";
+import { asNew, item, itemList, letter, literal, newLine, paragraph, select, variable, withDeleted } from "../utils";
 
 describe("LetterEditorActions.merge", () => {
   describe("at literal", () => {
@@ -583,6 +583,28 @@ describe("LetterEditorActions.merge", () => {
           expect(result.focus).toStrictEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: "before list".length });
         });
       });
+    });
+  });
+
+  describe("at newline", () => {
+    test("newline is previous", () => {
+      const state = letter(paragraph(literal({ text: "l1" }), newLine(), literal({ text: "l2" })));
+      const result = Actions.merge(state, { blockIndex: 0, contentIndex: 2 }, MergeTarget.PREVIOUS);
+
+      expect(result.redigertBrev.blocks[0].content.length).toEqual(2);
+      expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).text).toEqual("l1");
+      expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 1 }).text).toEqual("l2");
+      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 1, cursorPosition: 0 });
+    });
+
+    test("newline is next", () => {
+      const state = letter(paragraph(literal({ text: "l1" }), newLine(), literal({ text: "l2" })));
+      const result = Actions.merge(state, { blockIndex: 0, contentIndex: 0 }, MergeTarget.NEXT);
+
+      expect(result.redigertBrev.blocks[0].content.length).toEqual(2);
+      expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).text).toEqual("l1");
+      expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 1 }).text).toEqual("l2");
+      expect(result.focus).toEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: 2 });
     });
   });
 });

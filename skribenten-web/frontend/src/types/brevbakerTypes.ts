@@ -1,3 +1,5 @@
+import type { Nullable } from "./Nullable";
+
 export type LetterModelSpecification = {
   readonly types: ObjectTypeSpecifications;
   readonly letterModelTypeName: string;
@@ -53,6 +55,8 @@ export type Signatur = {
   readonly navAvsenderEnhet: string;
 };
 
+export type AnyBlock = Title1Block | Title2Block | ParagraphBlock;
+
 export type Identifiable = {
   readonly id: number | null;
   readonly parentId: number | null;
@@ -67,6 +71,8 @@ export type LiteralValue = Identifiable & {
   readonly type: typeof LITERAL;
   readonly text: string;
   readonly editedText: string | null;
+  readonly fontType: FontType;
+  readonly editedFontType: Nullable<FontType>;
   readonly tags: ElementTags[];
 };
 export const VARIABLE = "VARIABLE";
@@ -74,7 +80,19 @@ export type VariableValue = Identifiable & {
   readonly type: typeof VARIABLE;
   readonly name?: string;
   readonly text: string;
+  readonly fontType: FontType;
 };
+export const NEW_LINE = "NEW_LINE";
+export type NewLine = Identifiable & {
+  readonly type: typeof NEW_LINE;
+  readonly text: string;
+};
+
+export enum FontType {
+  PLAIN = "PLAIN",
+  BOLD = "BOLD",
+  ITALIC = "ITALIC",
+}
 
 export const ITEM_LIST = "ITEM_LIST";
 export type ItemList = Identifiable & {
@@ -110,7 +128,7 @@ export type ColumnSpec = Identifiable & {
 };
 export type ColumnAlignment = "LEFT" | "RIGHT";
 
-export type TextContent = LiteralValue | VariableValue;
+export type TextContent = LiteralValue | VariableValue | NewLine;
 export type Content = ItemList | TextContent;
 
 export type Block = Identifiable & {
@@ -138,8 +156,6 @@ export type Title2Block = Block & {
   readonly type: typeof TITLE2;
   readonly content: TextContent[];
 };
-
-export type AnyBlock = Title1Block | Title2Block | ParagraphBlock;
 
 export interface EditedLetter {
   readonly title: string;

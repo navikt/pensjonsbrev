@@ -1,3 +1,5 @@
 app-name: "pensjon-pdf-bygger"
 brevbaker-app: "pensjon-brevbaker"
 minReplicas: 12
+ingresses:
+  - "https://pensjon-pdf-bygger.intern.dev.nav.no"

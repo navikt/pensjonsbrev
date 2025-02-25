@@ -1,0 +1,55 @@
+@startuml
+
+object "pensjon-brevbaker" as brevbaker
+brevbaker : dagens applikasjon
+
+object pensjonsmalene #pink
+pensjonsmalene : - ny modul
+pensjonsmalene : - her ligger malene og malkodene
+
+object "etterlattemaler" as etterlatte #pink
+
+object "pensjon-brevbaker-api-model" as apimodel #pink
+apimodel : som i dag
+
+object "brevbaker-dsl" as dsl
+dsl : - ny modul
+dsl : - det som trengs for å lage en mal
+
+object "brevbaker-bibliotek" as bibliotek
+bibliotek : skal eksponeres
+
+object Gjenny #yellow
+
+object "brevbaker-model" as modelcommon
+modelcommon : - som i dag
+modelcommon : - dagens brevbaker-api-model-common
+
+object "brevbaker-selector-generator" as tmg
+tmg : dagens template-model-generator
+
+object PEN #yellow
+PEN : som i dag
+
+object Skribenten
+Skribenten : som i dag
+
+bibliotek --> dsl
+brevbaker --> pensjonsmalene
+brevbaker --> etterlatte
+pensjonsmalene --> apimodel
+pensjonsmalene -> bibliotek
+etterlatte --> bibliotek
+apimodel --> modelcommon
+dsl --> modelcommon
+tmg --> dsl
+etterlatte ..> tmg
+pensjonsmalene ..> tmg
+bibliotek ..> tmg
+
+PEN --> apimodel
+Gjenny --> modelcommon
+
+Skribenten --> modelcommon
+
+@enduml

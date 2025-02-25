@@ -108,12 +108,12 @@ const BrevvelgerMainContent = (props: {
           width: 720px;
           border-left: 1px solid var(--a-gray-200);
           border-right: 1px solid var(--a-gray-200);
-          padding: var(--a-spacing-6);
+          padding: var(--a-spacing-5) var(--a-spacing-6);
           overflow-y: scroll;
         `}
         gap="6"
       >
-        <Heading level="1" size="small">
+        <Heading level="5" size="small">
           Brevmeny
         </Heading>
         <Brevmaler
@@ -252,9 +252,25 @@ function Brevmaler({
                         });
                       }}
                       title={
-                        <HStack align="center" gap="2">
-                          <BrevSystemIcon brevsystem={template.brevsystem} />{" "}
-                          <BodyShort size="small">{template.name}</BodyShort>
+                        <HStack
+                          align={"center"}
+                          css={css`
+                            overflow: hidden;
+                          `}
+                          gap="2"
+                          wrap={false}
+                        >
+                          <BrevSystemIcon brevsystem={template.brevsystem} />
+                          <BodyShort
+                            css={css`
+                              overflow: hidden;
+                              text-overflow: ellipsis;
+                              max-width: 95%;
+                            `}
+                            size="small"
+                          >
+                            {template.name}
+                          </BodyShort>
                         </HStack>
                       }
                     />
@@ -313,11 +329,28 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; letterTemplates: LetterM
                   });
                 }}
                 title={
-                  <HStack align={"center"} gap="2">
+                  <HStack
+                    align={"center"}
+                    css={css`
+                      overflow: hidden;
+                    `}
+                    gap="2"
+                    wrap={false}
+                  >
                     <BrevSystemIcon
                       brevsystem={props.letterTemplates.find((template) => template.id === brev.brevkode)?.brevsystem}
                     />
-                    <BodyShort size="small">{brev.brevtittel}</BodyShort>
+
+                    <BodyShort
+                      css={css`
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        max-width: 90%;
+                      `}
+                      size="small"
+                    >
+                      {brev.brevtittel}
+                    </BodyShort>
                   </HStack>
                 }
               />
@@ -380,18 +413,9 @@ const BrevmalButton = (props: {
       onClick={props.onClick}
       variant="tertiary"
     >
-      <HStack justify={"space-between"}>
+      <HStack justify={"space-between"} wrap={false}>
         {props.title}
-        {props.description && (
-          <BodyShort
-            css={css`
-              color: var(--a-gray-600);
-            `}
-            size="small"
-          >
-            {props.description}
-          </BodyShort>
-        )}
+        {props.description && <BodyShort size="small">{props.description}</BodyShort>}
       </HStack>
     </Button>
   );

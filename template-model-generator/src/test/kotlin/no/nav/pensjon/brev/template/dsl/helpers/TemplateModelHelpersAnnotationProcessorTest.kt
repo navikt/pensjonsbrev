@@ -17,6 +17,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
     // Used in tests
     @Suppress("unused")
     data class AModel(val navn: String)
+    @Suppress("unused")
+    interface AModelInterface{
+        val fornavn: String
+    }
 
     @Test
     fun `can generate helpers`() {
@@ -34,6 +38,25 @@ class TemplateModelHelpersAnnotationProcessorTest {
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
         // If the processor didn't generate code, then we should have two files (MyClass and module file)
         assertThat(result.generatedFiles, hasSize(greaterThan(2)) and anyElement(has(File::getName, containsSubstring("AModelSelectors"))))
+    }
+
+
+    @Test
+    fun `can generate helpers for interface model`() {
+        val result = SourceFile.kotlin(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
+
+                    @TemplateModelHelpers
+                    object MyClass : HasModel<TemplateModelHelpersAnnotationProcessorTest.AModelInterface> {}
+                    """.trimIndent()
+        ).compile()
+
+        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
+        // If the processor didn't generate code, then we should have two files (MyClass and module file)
+        assertThat(result.generatedFiles, hasSize(greaterThan(2)) and anyElement(has(File::getName, containsSubstring("AModelInterfaceSelectors"))))
     }
 
     @Test
@@ -61,21 +84,21 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import no.nav.pensjon.brev.template.Expression
                     import no.nav.pensjon.brev.template.TemplateModelSelector
                     import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTestSelectors.AModelSelectors.navn
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTestSelectors.AModelSelectors.navnSelector
 
                     @TemplateModelHelpers
                     object MyClass : HasModel<TemplateModelHelpersAnnotationProcessorTest.AModel> {
                         fun someusage() {
-                            val fromScope: Expression<String> = TemplateGlobalScope<TemplateModelHelpersAnnotationProcessorTest.AModel>().navn
+                            val fromScope: Expression<String> = SimpleTemplateScope<TemplateModelHelpersAnnotationProcessorTest.AModel>().navn
                             val fromOtherExpression: Expression<String> = Expression.Literal(TemplateModelHelpersAnnotationProcessorTest.AModel("jadda")).navn
                             val actualSelector: TemplateModelSelector<TemplateModelHelpersAnnotationProcessorTest.AModel, String> = navnSelector
                         }
                     }
-                    """.trimIndent()
+                    """.trimIndent(),
         ).compile()
 
         // We use the generated helpers in MyClass above, with type declarations, so if they are not as expected then compilation will fail.
@@ -265,7 +288,6 @@ class TemplateModelHelpersAnnotationProcessorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
@@ -288,7 +310,6 @@ class TemplateModelHelpersAnnotationProcessorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
                     import FirstSelectors.second
@@ -328,7 +349,6 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import AnotherModelSelectors.age
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
@@ -348,13 +368,12 @@ class TemplateModelHelpersAnnotationProcessorTest {
     }
 
     @Test
-    fun `generates heklpers for additionalModels when target is interface`() {
+    fun `generates helpers for additionalModels when target is interface`() {
         val result = SourceFile.kotlin(
             "MyClass.kt", """
                     import AnotherModelSelectors.age
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
 
@@ -377,7 +396,6 @@ class TemplateModelHelpersAnnotationProcessorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                     import ParentModelSelectors.child
@@ -413,7 +431,6 @@ class TemplateModelHelpersAnnotationProcessorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                     import ParentModelSelectors.child
@@ -448,7 +465,6 @@ class TemplateModelHelpersAnnotationProcessorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                     import ParentModelSelectors.child

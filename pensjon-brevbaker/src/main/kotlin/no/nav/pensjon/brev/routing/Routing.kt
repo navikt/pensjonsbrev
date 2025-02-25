@@ -7,31 +7,30 @@ import io.ktor.server.auth.jwt.*
 import io.ktor.server.plugins.swagger.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.nav.pensjon.brev.api.TemplateResource
+import no.nav.pensjon.brev.api.AutobrevTemplateResource
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.maler.AllTemplates
+import no.nav.brev.brevbaker.AllTemplates
+import no.nav.pensjon.brev.api.RedigerbarTemplateResource
 import no.nav.pensjon.etterlatte.EtterlatteMaler
 
-fun Application.brevRouting(authenticationNames: Array<String>, latexCompilerService: LaTeXCompilerService, brevProvider: AllTemplates) =
+fun Application.brevRouting(authenticationNames: Array<String>?, latexCompilerService: LaTeXCompilerService, brevProvider: AllTemplates) =
     routing {
-        val autobrev = TemplateResource("autobrev", brevProvider.hentAutobrevmaler(), latexCompilerService)
-        val redigerbareBrev = TemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), latexCompilerService)
+        val autobrev = AutobrevTemplateResource("autobrev", brevProvider.hentAutobrevmaler(), latexCompilerService)
+        val redigerbareBrev = RedigerbarTemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), latexCompilerService)
 
         route("/templates") {
             templateRoutes(autobrev)
             templateRoutes(redigerbareBrev)
         }
 
-        authenticate(*authenticationNames, optional = application.developmentMode) {
+        authenticate(authenticationNames) {
             route("/letter") {
-                letterRoutes(autobrev, redigerbareBrev)
+                autobrevRoutes(autobrev)
+                redigerbarRoutes(redigerbareBrev)
             }
 
             route("etterlatte") {
-                letterRoutes(
-                    autobrev = TemplateResource("", EtterlatteMaler.hentAutobrevmaler(), latexCompilerService),
-                    redigerbareBrev = TemplateResource("ikke-i-bruk", EtterlatteMaler.hentRedigerbareMaler(), latexCompilerService)
-                )
+                autobrevRoutes(AutobrevTemplateResource("", EtterlatteMaler.hentAutobrevmaler(), latexCompilerService))
             }
             get("/ping_authorized") {
                 val principal = call.authentication.principal<JWTPrincipal>()
@@ -49,3 +48,11 @@ fun Application.brevRouting(authenticationNames: Array<String>, latexCompilerSer
 
         swaggerUI(path = "swagger", swaggerFile = "openapi/documentation.yaml")
     }
+
+fun Routing.authenticate(names: Array<String>?, build: Route.() -> Unit) {
+    if (names != null) {
+        authenticate(*names, optional = false, build = build)
+    } else {
+        build()
+    }
+}

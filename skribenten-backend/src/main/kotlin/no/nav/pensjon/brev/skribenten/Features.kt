@@ -15,8 +15,6 @@ data class UnleashToggle(val name: String) {
 
 object Features {
     val brevbakerbrev = UnleashToggle("brevbakerbrev")
-    val brevmalUTavslag = UnleashToggle("brevmal_ut_avslag")
-    val brevMedFritekst = UnleashToggle("brevMedFritekst")
     val attestant = UnleashToggle("attestant")
 
     private var unleash: Unleash? = null
@@ -45,4 +43,6 @@ object Features {
         PrincipalInContext.get()
             ?.let { UnleashContext.builder().userId(it.navIdent.id).build() }
             ?: UnleashContext.builder().build()
+
+    fun shutdown() = unleash?.shutdown()
 }

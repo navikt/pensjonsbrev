@@ -8,6 +8,8 @@ jobs:
   cleanup-pdf-bygger:
     name: "Pdf-bygger: Fjern gamle container bilder"
     runs-on: "ubuntu-latest"
+    permissions:
+      packages: write
     steps:
       - uses: actions/delete-package-versions@v5.0.0
         with:

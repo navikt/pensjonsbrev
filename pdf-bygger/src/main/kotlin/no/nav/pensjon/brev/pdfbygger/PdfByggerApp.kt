@@ -1,6 +1,9 @@
 package no.nav.pensjon.brev.pdfbygger
 
 import com.fasterxml.jackson.core.JacksonException
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
@@ -15,9 +18,11 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.date.*
+import io.ktor.util.logging.Logger
 import io.micrometer.core.instrument.Tag
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import no.nav.pensjon.brev.PDFRequest
 import java.nio.file.Path
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -25,15 +30,12 @@ import kotlin.time.Duration.Companion.seconds
 
 fun main(args: Array<String>) = EngineMain.main(args)
 
-private val prometheusMeterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
-
 private fun Application.getProperty(name: String): String? =
     environment.config.propertyOrNull(name)?.getString()
 
 @Suppress("unused")
 fun Application.module() {
     val parallelism = getProperty("pdfBygger.latexParallelism")?.toInt() ?: Runtime.getRuntime().availableProcessors()
-    val activityCounter = ActiveCounter(prometheusMeterRegistry, "pensjonsbrev_pdf_compile_active", listOf(Tag.of("hpa", "value")))
     val laTeXService = LaTeXService(
         compileTimeout = getProperty("pdfBygger.compileTimeout")?.let { Duration.parse(it) } ?: 300.seconds,
         queueWaitTimeout = getProperty("pdfBygger.compileQueueWaitTimeout")?.let { Duration.parse(it) } ?: 4.seconds,
@@ -47,8 +49,15 @@ fun Application.module() {
         it.log.info("Application preparing to shutdown gracefully")
     }
 
+
     install(ContentNegotiation) {
-        jackson()
+        jackson {
+            registerModule(JavaTimeModule())
+            registerModule(LetterMarkupModule)
+            enable(SerializationFeature.INDENT_OUTPUT)
+            disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+        }
     }
 
     install(Compression) {
@@ -67,9 +76,11 @@ fun Application.module() {
         }
     }
 
+    val prometheusMeterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
     install(MicrometerMetrics) {
         registry = prometheusMeterRegistry
     }
+    val activityCounter = ActiveCounter(prometheusMeterRegistry, "pensjonsbrev_pdf_compile_active", listOf(Tag.of("hpa", "value")))
 
     install(CallLogging) {
         callIdMdc("x_correlationId")
@@ -95,42 +106,14 @@ fun Application.module() {
     }
 
     routing {
-        post("/compile") {
-            val logger = call.application.environment.log
 
-            val input = call.receive<PdfCompilationInput>()
+        post("/produserBrev") {
             val result = activityCounter.count {
-                laTeXService.producePDF(input.files)
+                call.receive<PDFRequest>()
+                    .let { LatexDocumentRenderer.render(it) }
+                    .let { laTeXService.producePDF(it.files.associate { it.fileName to it.content }) }
             }
-
-            when (result) {
-                is PDFCompilationResponse.Base64PDF -> call.respond(result)
-                is PDFCompilationResponse.Failure.Client -> {
-                    logger.info("Client error: ${result.reason}")
-                    if (result.output?.isNotBlank() == true) {
-                        logger.info(result.output)
-                    }
-                    if (result.error?.isNotBlank() == true) {
-                        logger.info(result.error)
-                    }
-                    call.respond(HttpStatusCode.InternalServerError, result)
-                }
-
-                is PDFCompilationResponse.Failure.Server -> {
-                    logger.error(result.reason)
-                    call.respond(HttpStatusCode.InternalServerError, result)
-                }
-
-                is PDFCompilationResponse.Failure.Timeout -> {
-                    logger.error(result.reason)
-                    call.respond(HttpStatusCode.InternalServerError, result)
-                }
-
-                is PDFCompilationResponse.Failure.QueueTimeout -> {
-                    logger.warn("Kø-timeout, løses med automatisk oppstart av flere pods: ${result.reason}")
-                    call.respond(HttpStatusCode.ServiceUnavailable, result)
-                }
-            }
+            handleResult(result, call.application.environment.log)
         }
 
         get("/isAlive") {
@@ -150,6 +133,40 @@ fun Application.module() {
 
         get("/metrics") {
             call.respond(prometheusMeterRegistry.scrape())
+        }
+    }
+}
+
+private suspend fun RoutingContext.handleResult(
+    result: PDFCompilationResponse,
+    logger: Logger,
+) {
+    when (result) {
+        is PDFCompilationResponse.Bytes -> call.respond(result)
+        is PDFCompilationResponse.Failure.Client -> {
+            logger.info("Client error: ${result.reason}")
+            if (result.output?.isNotBlank() == true) {
+                logger.info(result.output)
+            }
+            if (result.error?.isNotBlank() == true) {
+                logger.info(result.error)
+            }
+            call.respond(HttpStatusCode.BadRequest, result)
+        }
+
+        is PDFCompilationResponse.Failure.Server -> {
+            logger.error(result.reason)
+            call.respond(HttpStatusCode.InternalServerError, result)
+        }
+
+        is PDFCompilationResponse.Failure.Timeout -> {
+            logger.error(result.reason)
+            call.respond(HttpStatusCode.InternalServerError, result)
+        }
+
+        is PDFCompilationResponse.Failure.QueueTimeout -> {
+            logger.warn("Kø-timeout, løses med automatisk oppstart av flere pods: ${result.reason}")
+            call.respond(HttpStatusCode.ServiceUnavailable, result)
         }
     }
 }

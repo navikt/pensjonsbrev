@@ -44,11 +44,17 @@ export async function createBrev(saksId: string, request: OpprettBrevRequest) {
   return (await axios.post<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev`, request)).data;
 }
 
-export async function updateBrev(saksId: string, brevId: string | number, request: OppdaterBrevRequest) {
-  return (await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, request)).data;
+export async function oppdaterBrev(args: { saksId: number; brevId: number; request: OppdaterBrevRequest }) {
+  return (
+    await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}`, {
+      saksbehandlerValg: args.request.saksbehandlerValg,
+      redigertBrev: args.request.redigertBrev,
+      signatur: args.request.signatur,
+    })
+  ).data;
 }
 
-export async function hurtiglagreBrev(brevId: number, redigertBrev: EditedLetter, frigiReservasjon?: boolean) {
+export async function oppdaterBrevtekst(brevId: number, redigertBrev: EditedLetter, frigiReservasjon?: boolean) {
   return (
     await axios.put<BrevResponse>(
       `${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/redigertBrev?frigiReservasjon=${frigiReservasjon === true}`,
@@ -57,7 +63,7 @@ export async function hurtiglagreBrev(brevId: number, redigertBrev: EditedLetter
   ).data;
 }
 
-export async function hurtiglagreSaksbehandlerValg(brevId: number, saksbehandlerValg: SaksbehandlerValg) {
+export async function oppdaterSaksbehandlerValg(brevId: number, saksbehandlerValg: SaksbehandlerValg) {
   return (
     await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/saksbehandlerValg`, saksbehandlerValg)
   ).data;

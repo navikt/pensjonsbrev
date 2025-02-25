@@ -6,6 +6,10 @@ on:
       - "build.gradle.kts"
       - "gradle.properties"
       - "template-model-generator/**"
+      - "brevbaker/**"
+      - "brevbaker-dsl/**"
+      - "etterlattemaler/**"
+      - "pensjonsmaler/**"
       - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger-brevbaker.yml"
@@ -17,12 +21,18 @@ on:
       - "build.gradle.kts"
       - "gradle.properties"
       - "template-model-generator/**"
+      - "brevbaker/**"
+      - "brevbaker-dsl/**"
+      - "etterlattemaler/**"
+      - "pensjonsmaler/**"
       - "pensjon-brevbaker/**"
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger-brevbaker.yml"
       - "!**/**.md"
 env:
   "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
+  JavaDistribution: "temurin"
+  JavaVersion: 21
 
 jobs:
   "build-brevbaker":
@@ -34,17 +44,17 @@ jobs:
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
     steps:
-      - uses: "actions/checkout@v4"
-      - uses: "gradle/actions/wrapper-validation@v4"
-      - uses: "actions/cache@v4"
+      - uses: actions/checkout@v4
         with:
-          "path": "~/.gradle/caches"
-          "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
-          "restore-keys": "${{ runner.os }}-gradle-"
+          persist-credentials: false
+      - uses: "gradle/actions/wrapper-validation@v4"
+      - name: "Setup Gradle"
+        uses: "gradle/actions/setup-gradle@v4"
       - uses: "actions/setup-java@v4"
         with:
-          "distribution": "temurin"
-          "java-version": "17"
+          "distribution": ${{ env.JavaDistribution }}
+          "java-version": ${{ env.JavaVersion }}
+
       - name: "compile and run tests"
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
@@ -65,9 +75,6 @@ jobs:
           pull: true
           docker_context: ./pensjon-brevbaker
           dockerfile: pensjon-brevbaker/Dockerfile
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-
   "build-pdfbygger":
     name: "build pdfbygger"
     runs-on: "ubuntu-latest"
@@ -77,19 +84,19 @@ jobs:
     outputs:
       image: ${{ steps.docker-push.outputs.image }}
     steps:
-      - uses: "actions/checkout@v4"
-      - uses: "gradle/actions/wrapper-validation@v4"
-      - uses: "actions/cache@v4"
+      - uses: actions/checkout@v4
         with:
-          "path": "~/.gradle/caches"
-          "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
-          "restore-keys": "${{ runner.os }}-gradle-"
+          persist-credentials: false
+      - uses: "gradle/actions/wrapper-validation@v4"
+      - uses: "gradle/actions/setup-gradle@v4"
       - uses: "actions/setup-java@v4"
         with:
-          "distribution": "temurin"
-          "java-version": "17"
+          "distribution": ${{ env.JavaDistribution }}
+          "java-version": ${{ env.JavaVersion }}
       - name: "compile and run tests"
-        run: "./gradlew :pdf-bygger:build"
+        run: |
+          ./gradlew :brevbaker-api-model-common:publishToMavenLocal
+          ./gradlew :pdf-bygger:build
       - name: "Build and publish container image to GAR"
         uses: nais/docker-build-push@v0
         id: docker-push
@@ -101,22 +108,25 @@ jobs:
           pull: true
           docker_context: ./pdf-bygger
           dockerfile: pdf-bygger/Dockerfile
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
       - name: "Publish container image to ghcr.io"
         run: |
           echo $GITHUB_TOKEN | docker login --username $GITHUB_REPOSITORY --password-stdin https://ghcr.io
-          [ -n "${{ steps.docker-push.outputs.image }}" ] && docker pull ${{ steps.docker-push.outputs.image }} && docker tag ${{ steps.docker-push.outputs.image }} ${IMAGE_PDF_BYGGER}  || docker build --pull --tag ${IMAGE_PDF_BYGGER} pdf-bygger
+          [ -n "${OUTPUT_IMAGE}" ] && docker pull ${OUTPUT_IMAGE} && docker tag ${OUTPUT_IMAGE} ${IMAGE_PDF_BYGGER}  || docker build --pull --tag ${IMAGE_PDF_BYGGER} pdf-bygger
           docker push ${IMAGE_PDF_BYGGER}
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
+          OUTPUT_IMAGE: ${{ steps.docker-push.outputs.image }}
 
   changes:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       latex: ${{ steps.changes.outputs.latex }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: dorny/paths-filter@v3
         id: changes
         with:
@@ -137,23 +147,21 @@ jobs:
         credentials:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-16-cores
     permissions:
       statuses: write
       checks: write
       pull-requests: write
       packages: write
     steps:
-      - uses: "actions/checkout@v4"
-      - uses: "actions/cache@v4"
+      - uses: actions/checkout@v4
         with:
-          "path": "~/.gradle/caches"
-          "key": "${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle.kts') }}"
-          "restore-keys": "${{ runner.os }}-gradle-"
+          persist-credentials: false
+      - uses: "gradle/actions/setup-gradle@v4"
       - uses: "actions/setup-java@v4"
         with:
-          "distribution": "temurin"
-          "java-version": "17"
+          "distribution": ${{ env.JavaDistribution }}
+          "java-version": ${{ env.JavaVersion }}
       - name: "run integration tests"
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
@@ -170,21 +178,22 @@ jobs:
           report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
       - name: Convert visual-test pdfs
         uses: routsi/ImageMagick-action@v1.1.1
-        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
+        if: ${{ (needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main') && github.event_name != 'workflow_dispatch' }}
         with:
-          command: mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 300 -quality 85 pensjon-brevbaker/build/test_visual/pdf/*.pdf
+          command: mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 pensjon-brevbaker/build/test_visual/pdf/*.pdf
       - uses: actions/setup-node@v4
-        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
+        if: ${{ (needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main') && github.event_name != 'workflow_dispatch' }}
         with:
           node-version: '20'
       - run: npm install --save-dev @percy/cli
-        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
+        if: ${{ (needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main') && github.event_name != 'workflow_dispatch' }}
       - name: Publish visual-tests to percy
-        if: ${{ needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main' }}
+        if: ${{ (needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main') && github.event_name != 'workflow_dispatch' }}
         run: |
           npx percy upload pensjon-brevbaker/build/test_visual/ > percy.log
           cat percy.log
-          cat percy.log | grep -e "build #[0-9]\+:" | sed 's/^.*build #[0-9]\+: //g' > percy-build-url
+          URL=$(cat percy.log | grep -e "build #[0-9]\+:" | sed 's/^.*build #[0-9]\+: //g')
+          if [[ $URL ]]; then echo $URL > percy-build-url;else echo "Percy upload feilet" > percy-build-url;fi
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
       - name: Comment percy review link
@@ -203,7 +212,9 @@ jobs:
     needs: ["runIntegrationTests", "build-brevbaker"]
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: "Deploy to DEV"
         uses: "nais/deploy/actions/deploy@v2"
         env:
@@ -222,7 +233,9 @@ jobs:
     needs: ["runIntegrationTests", "build-pdfbygger"]
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: "Deploy to DEV"
         uses: "nais/deploy/actions/deploy@v2"
         env:
@@ -241,7 +254,9 @@ jobs:
     needs: ["runIntegrationTests", "build-brevbaker"]
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: "Deploy to production"
         uses: "nais/deploy/actions/deploy@v2"
         env:
@@ -260,7 +275,9 @@ jobs:
     needs: ["runIntegrationTests", "build-pdfbygger"]
     runs-on: "ubuntu-latest"
     steps:
-      - uses: "actions/checkout@v4"
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: "Deploy to production"
         uses: "nais/deploy/actions/deploy@v2"
         env:

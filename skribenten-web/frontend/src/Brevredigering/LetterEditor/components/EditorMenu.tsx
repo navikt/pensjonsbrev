@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { CheckmarkCircleFillIcon, ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
-import { HStack, Loader, Select } from "@navikt/ds-react";
+import { BodyShort, HStack, Loader, Select } from "@navikt/ds-react";
 import { format, isToday } from "date-fns";
 import { memo, useEffect, useRef, useState } from "react";
 
@@ -17,6 +17,7 @@ import { getCursorOffset } from "../services/caretUtils";
 import type { Typography } from "../utils";
 import { TypographyToText } from "../utils";
 import EditorBulletList from "./EditorBulletList";
+import EditorFonts from "./EditorFonts";
 
 const SelectTypography = (props: {
   editorState: LetterEditorState;
@@ -73,6 +74,8 @@ export const EditorMenu = () => {
       `}
     >
       <HStack gap="5">
+        <EditorFonts editorState={editorState} setEditorState={setEditorState} />
+        <VerticalDivider />
         <EditorBulletList editorState={editorState} setEditorState={setEditorState} />
         <VerticalDivider />
         <SelectTypography editorState={editorState} setEditorState={setEditorState} />
@@ -128,7 +131,7 @@ const LagringSuccess = memo((properties: { dateTime: string }) => {
   return (
     <HStack gap="1">
       {ikon}
-      {tekst}
+      <BodyShort size="small">{tekst}</BodyShort>
     </HStack>
   );
 });

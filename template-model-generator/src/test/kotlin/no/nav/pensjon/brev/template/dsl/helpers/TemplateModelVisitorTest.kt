@@ -19,6 +19,12 @@ data class NestedModelWithRepetition(val name: String, val first: SubModel, val 
 @Suppress("unused")
 data class ModelWithTypeParameters(val name: String, val aList: List<String>, val otherList: List<NestedModel>, val aMap: Map<String, NestedModel>)
 
+@Suppress("unused")
+interface AnInterfaceModel {
+    val name: String
+    val second: NestedModel.SecondModel
+}
+
 class TemplateModelVisitorTest {
 
     @Test
@@ -26,7 +32,7 @@ class TemplateModelVisitorTest {
         val result = SourceFile.kotlin(
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.NestedModel
                     import no.nav.pensjon.brev.template.dsl.helpers.NestedModelSelectors.second
@@ -35,7 +41,7 @@ class TemplateModelVisitorTest {
                     @TemplateModelHelpers
                     object MyClass : HasModel<NestedModel> {
                         fun doSomething() {
-                            TemplateGlobalScope<NestedModel>().second.lastName
+                            SimpleTemplateScope<NestedModel>().second.lastName
                         }
                     }
                     """.trimIndent()
@@ -53,7 +59,7 @@ class TemplateModelVisitorTest {
         val result = SourceFile.kotlin(
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.NestedModelWithRepetition
                     import no.nav.pensjon.brev.template.dsl.helpers.NestedModelWithRepetitionSelectors.second
@@ -62,7 +68,7 @@ class TemplateModelVisitorTest {
                     @TemplateModelHelpers
                     object MyClass : HasModel<NestedModelWithRepetition> {
                         fun doSomething() {
-                            TemplateGlobalScope<NestedModelWithRepetition>().second.lastName
+                            SimpleTemplateScope<NestedModelWithRepetition>().second.lastName
                         }
                     }
                     """.trimIndent()
@@ -81,7 +87,7 @@ class TemplateModelVisitorTest {
             "MyClass.kt", """
                 import no.nav.pensjon.brev.template.HasModel
                 import no.nav.pensjon.brev.template.Expression
-                import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                 import no.nav.pensjon.brev.template.dsl.helpers.ModelWithTypeParameters
                 import no.nav.pensjon.brev.template.dsl.helpers.ModelWithTypeParametersSelectors.otherList
@@ -90,7 +96,7 @@ class TemplateModelVisitorTest {
                 @TemplateModelHelpers
                 object MyClass : HasModel<ModelWithTypeParameters> {
                     fun doSomething() {
-                        val list: Expression<List<NestedModel>> = TemplateGlobalScope<ModelWithTypeParameters>().otherList
+                        val list: Expression<List<NestedModel>> = SimpleTemplateScope<ModelWithTypeParameters>().otherList
                     }
                 }
             """.trimIndent()
@@ -109,8 +115,9 @@ class TemplateModelVisitorTest {
             "MyClass.kt", """
                 import no.nav.pensjon.brev.template.HasModel
                 import no.nav.pensjon.brev.template.Expression
-                import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                import no.nav.pensjon.brev.template.LangBokmal
                 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                 import no.nav.pensjon.brev.template.somepkg.ModelOutsideOfTestPackage
                 import no.nav.pensjon.brev.template.somepkg.ModelOutsideOfTestPackageSelectors.thing
                 import no.nav.pensjon.brev.template.otherpkg.TypeParameterModel
@@ -120,7 +127,7 @@ class TemplateModelVisitorTest {
                 @TemplateModelHelpers
                 object MyClass : HasModel<ModelOutsideOfTestPackage> {
                     fun doSomething() {
-                        val list: Expression<TypeParameterModel<OtherWithTypeParameter<SimpleModel>>> = TemplateGlobalScope<ModelOutsideOfTestPackage>().thing
+                        val list: Expression<TypeParameterModel<OtherWithTypeParameter<SimpleModel>>> = SimpleTemplateScope<ModelOutsideOfTestPackage>().thing
                     }
                 }
             """.trimIndent()
@@ -132,8 +139,39 @@ class TemplateModelVisitorTest {
         assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("ModelOutsideOfTestPackageSelectors"))))
     }
 
+
     @Test
-    fun `ignores model that is not a data class`() {
+    fun `generates helpers for interface models`() {
+        val result = SourceFile.kotlin(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.template.dsl.helpers.AnInterfaceModel
+                    import no.nav.pensjon.brev.template.dsl.helpers.AnInterfaceModelSelectors.name
+                    import no.nav.pensjon.brev.template.dsl.helpers.AnInterfaceModelSelectors.second
+                    import no.nav.pensjon.brev.template.dsl.helpers.NestedModelSelectors.SecondModelSelectors.lastName
+
+                    @TemplateModelHelpers
+                    object MyClass : HasModel<AnInterfaceModel> {
+                        fun doSomething() {
+                            SimpleTemplateScope<AnInterfaceModel>().name
+                            SimpleTemplateScope<AnInterfaceModel>().second.lastName
+                        }
+                    }
+                    """.trimIndent()
+        ).compile()
+
+        assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.OK))
+        // If the processor didn't generate code, then we should have two files (MyClass and module file)
+        assertThat(result.generatedFiles, hasSize(greaterThan(2)))
+        assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("AnInterfaceModelSelectors"))))
+        assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("NestedModelSelectors"))))
+        assertThat(result.generatedFiles, anyElement(has(File::getName, containsSubstring("SecondModelSelectors"))))
+    }
+
+    @Test
+    fun `ignores model that is from standard library`() {
         val result = SourceFile.kotlin(
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
@@ -156,7 +194,7 @@ class TemplateModelVisitorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
@@ -181,7 +219,7 @@ class TemplateModelVisitorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                     import ANameSelectors.first
@@ -211,7 +249,7 @@ class TemplateModelVisitorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
-                    import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                    import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                     import ANameSelectors.first

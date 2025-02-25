@@ -6,6 +6,10 @@ on:
     # At 05:30 on every day-of-week from Monday through Friday.
     - cron: "30 5 * * 1-5"
 
+env:
+  JavaDistribution: "temurin"
+  JavaVersion: 21
+
 jobs:
   analyze-java:
     name: Analyze Java (Kotlin)
@@ -19,6 +23,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
@@ -30,8 +36,8 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: temurin
-          java-version: 17
+          distribution: ${{ env.JavaDistribution }}
+          java-version: ${{ env.JavaVersion }}
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -74,6 +80,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL

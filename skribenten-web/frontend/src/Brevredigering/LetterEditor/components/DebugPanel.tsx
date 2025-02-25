@@ -103,6 +103,9 @@ function findEditsContent(content: Content): { contentIndex: number; itemIndex?:
     case "LITERAL": {
       return content.editedText ? [{ contentIndex: content.id ?? -1 }] : [];
     }
+    case "NEW_LINE": {
+      return content?.id === null ? [] : [{ contentIndex: content.id }];
+    }
   }
 }
 
