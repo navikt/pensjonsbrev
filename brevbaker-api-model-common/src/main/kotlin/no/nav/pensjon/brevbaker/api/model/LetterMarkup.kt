@@ -5,11 +5,18 @@ import no.nav.brev.InterneDataklasser
 @Suppress("unused")
 data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur) {
 
-    data class Attachment(
-        val title: List<ParagraphContent.Text>,
-        val blocks: List<Block>,
-        val includeSakspart: Boolean,
-    )
+    interface Attachment {
+        val title: List<ParagraphContent.Text>
+        val blocks: List<Block>
+        val includeSakspart: Boolean
+    }
+
+    @InterneDataklasser
+    data class AttachmentImpl(
+        override val title: List<ParagraphContent.Text>,
+        override val blocks: List<Block>,
+        override val includeSakspart: Boolean,
+    ) : Attachment
 
     interface Sakspart {
         val gjelderNavn: String

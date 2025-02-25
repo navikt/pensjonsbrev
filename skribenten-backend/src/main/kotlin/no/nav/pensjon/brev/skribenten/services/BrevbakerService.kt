@@ -156,6 +156,10 @@ object LetterMarkupModule : SimpleModule() {
         addDeserializer(LetterMarkup.ParagraphContent.Text.NewLine::class.java, object :
             AbstractDeserializer<LetterMarkup.ParagraphContent.Text.NewLine, LetterMarkup.ParagraphContent.Text.NewLineImpl>(LetterMarkup.ParagraphContent.Text.NewLineImpl::class.java) {}
         )
+
+        addDeserializer(LetterMarkup.Attachment::class.java, object :
+            AbstractDeserializer<LetterMarkup.Attachment, LetterMarkup.AttachmentImpl>(LetterMarkup.AttachmentImpl::class.java) {}
+        )
     }
 
     private fun blockDeserializer() =

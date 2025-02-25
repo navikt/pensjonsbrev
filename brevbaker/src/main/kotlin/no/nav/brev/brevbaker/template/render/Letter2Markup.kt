@@ -46,10 +46,10 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             }
         )
 
-    fun renderAttachmentsOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>) = buildList {
+    fun renderAttachmentsOnly(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): List<Attachment> = buildList {
         render(scope, template.attachments) { scope, _, attachment ->
             add(
-                Attachment(
+                AttachmentImpl(
                     renderText(scope, listOf(attachment.title)),
                     renderOutline(scope, attachment.outline),
                     attachment.includeSakspart,
