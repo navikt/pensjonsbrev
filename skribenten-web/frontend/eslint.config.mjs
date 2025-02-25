@@ -62,7 +62,7 @@ export default [
     },
 
     rules: {
-      "no-console": "warn",
+      "no-console": "error",
       "react/jsx-boolean-value": "error",
       "react/jsx-key": "error",
       "react/jsx-sort-props": "error",
