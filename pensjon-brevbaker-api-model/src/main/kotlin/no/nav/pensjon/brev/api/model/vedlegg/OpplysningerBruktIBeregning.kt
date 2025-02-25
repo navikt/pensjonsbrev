@@ -97,8 +97,6 @@ data class OpplysningerBruktIBeregningUTDto(
 
     data class BeregnetUTPerManedGjeldende(
         val brukerErFlyktning: Boolean,
-        @Deprecated("Bruk borMedSivilstand og sivilstand i OpplysningerBruktIBeregningUTDto(topp-nivaa)")
-        val brukersSivilstand: Sivilstand,
         val grunnbeloep: Kroner,
         val virkDatoFom: LocalDate,
     )

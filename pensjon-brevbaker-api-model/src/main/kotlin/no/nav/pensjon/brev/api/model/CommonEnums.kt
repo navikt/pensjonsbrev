@@ -7,13 +7,9 @@ enum class Sivilstand {
     ENSLIG,
     ENKE,
     GIFT,
-    GIFT_LEVER_ADSKILT, //TODO depricate, replace with BorMedSivilstand and remove after testing OpphoerBarnetilleggAuto - HH
     SEPARERT,
     PARTNER,
-    PARTNER_LEVER_ADSKILT, //TODO depricate, replace with BorMedSivilstand and remove after testing OpphoerBarnetilleggAuto - HH
     SEPARERT_PARTNER,
-    SAMBOER1_5, //TODO depricate, replace with BorMedSivilstand and remove after testing OpphoerBarnetilleggAuto - HH
-    SAMBOER3_2, //TODO depricate, replace with BorMedSivilstand and remove after testing OpphoerBarnetilleggAuto - HH
 }
 
 enum class SivilstandAvdoed {
