@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 
+@OptIn(InterneDataklasser::class)
 object LetterMarkupModule : SimpleModule() {
     private fun readResolve(): Any = LetterMarkupModule
 
@@ -24,9 +26,9 @@ object LetterMarkupModule : SimpleModule() {
             override fun deserialize(p: JsonParser, ctxt: DeserializationContext): LetterMarkup.Block {
                 val node = p.codec.readTree<JsonNode>(p)
                 val type = when (LetterMarkup.Block.Type.valueOf(node.get("type").textValue())) {
-                    LetterMarkup.Block.Type.TITLE1 -> LetterMarkup.Block.Title1::class.java
-                    LetterMarkup.Block.Type.TITLE2 -> LetterMarkup.Block.Title2::class.java
-                    LetterMarkup.Block.Type.PARAGRAPH -> LetterMarkup.Block.Paragraph::class.java
+                    LetterMarkup.Block.Type.TITLE1 -> LetterMarkup.Block.Title1Impl::class.java
+                    LetterMarkup.Block.Type.TITLE2 -> LetterMarkup.Block.Title2Impl::class.java
+                    LetterMarkup.Block.Type.PARAGRAPH -> LetterMarkup.Block.ParagraphImpl::class.java
                 }
                 return p.codec.treeToValue(node, type)
             }

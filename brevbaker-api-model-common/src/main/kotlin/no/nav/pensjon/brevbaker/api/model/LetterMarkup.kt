@@ -59,13 +59,36 @@ data class LetterMarkup(val title: String, val sakspart: Sakspart, val blocks: L
             TITLE1, TITLE2, PARAGRAPH,
         }
 
-        data class Title1(override val id: Int, override val editable: Boolean = true, val content: List<ParagraphContent.Text>) : Block {
+        interface Title1 : Block {
+            val content: List<ParagraphContent.Text>
+            override val type: Type
+                get() = Type.TITLE1
+        }
+
+        @InterneDataklasser
+        data class Title1Impl(override val id: Int, override val editable: Boolean = true, override val content: List<ParagraphContent.Text>) : Title1 {
             override val type = Type.TITLE1
         }
-        data class Title2(override val id: Int, override val editable: Boolean = true, val content: List<ParagraphContent.Text>) : Block {
+
+        interface Title2 : Block {
+            val content: List<ParagraphContent.Text>
+            override val type: Type
+                get() = Type.TITLE2
+        }
+
+        @InterneDataklasser
+        data class Title2Impl(override val id: Int, override val editable: Boolean = true, override val content: List<ParagraphContent.Text>) : Title2 {
             override val type = Type.TITLE2
         }
-        data class Paragraph(override val id: Int, override val editable: Boolean = true, val content: List<ParagraphContent>) : Block {
+
+        interface Paragraph : Block {
+            val content: List<ParagraphContent>
+            override val type: Type
+                get() = Type.PARAGRAPH
+        }
+
+        @InterneDataklasser
+        data class ParagraphImpl(override val id: Int, override val editable: Boolean = true, override val content: List<ParagraphContent>) : Paragraph {
             override val type = Type.PARAGRAPH
         }
     }

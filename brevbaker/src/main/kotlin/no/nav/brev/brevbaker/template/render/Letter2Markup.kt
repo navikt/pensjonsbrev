@@ -69,12 +69,12 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
     private fun renderOutlineContent(scope: ExpressionScope<*>, element: Element.OutlineContent<*>): Block =
         when (element) {
             is Element.OutlineContent.Paragraph -> renderParagraph(scope, element)
-            is Element.OutlineContent.Title1 -> Block.Title1(element.stableHashCode(), true, renderText(scope, element.text))
-            is Element.OutlineContent.Title2 -> Block.Title2(element.stableHashCode(), true, renderText(scope, element.text))
+            is Element.OutlineContent.Title1 -> Block.Title1Impl(element.stableHashCode(), true, renderText(scope, element.text))
+            is Element.OutlineContent.Title2 -> Block.Title2Impl(element.stableHashCode(), true, renderText(scope, element.text))
         }
 
     private fun renderParagraph(scope: ExpressionScope<*>, paragraph: Element.OutlineContent.Paragraph<*>): Paragraph =
-        Paragraph(paragraph.stableHashCode(), true, buildList {
+        Block.ParagraphImpl(paragraph.stableHashCode(), true, buildList {
             render(scope, paragraph.paragraph) { pScope, element ->
                 addAll(renderParagraphContent(pScope, element))
             }
