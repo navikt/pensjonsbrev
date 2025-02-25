@@ -8,13 +8,12 @@ import java.time.LocalDate
 fun createAvslagUttakFoerNormertPensjonsalderAutoDto() =
     AvslagUttakFoerNormertPensjonsalderAutoDto(
         minstePensjonssats = Kroner(215000),
-        dinPensjonsutbetaling = Kroner(190000),
         uttaksgrad = 80,
         normertPensjonsalder = NormertPensjonsalder(
             aar = 67,
             maaneder = 2
         ),
         virkFom = LocalDate.of(2025, 2, 1),
-        totalPensjonMedAFP = Kroner(200000),
+        totalPensjon = Kroner(200000),
         afpBruktIBeregning = true
     )

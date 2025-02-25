@@ -8,11 +8,10 @@ import java.time.LocalDate
 @Suppress("unused")
 data class AvslagUttakFoerNormertPensjonsalderAutoDto(
     val minstePensjonssats: Kroner,
-    val dinPensjonsutbetaling: Kroner,
     val uttaksgrad: Int,
     val normertPensjonsalder: NormertPensjonsalder,
     val virkFom: LocalDate,
-    val totalPensjonMedAFP: Kroner,
+    val totalPensjon: Kroner,
     val afpBruktIBeregning: Boolean
 ) : BrevbakerBrevdata
 
