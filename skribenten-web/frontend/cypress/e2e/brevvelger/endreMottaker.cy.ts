@@ -249,14 +249,14 @@ describe("Endrer på mottaker", () => {
     cy.contains("Adresselinjen").should("be.visible");
     cy.contains("0000").should("be.visible");
     cy.contains("Poststedet").should("be.visible");
-    cy.get("td:contains('Se')").should("be.visible");
+    cy.get("td:contains('Sverige')").should("be.visible");
     cy.getDataCy("bekreft-ny-mottaker").click();
 
     cy.contains("Fornavn Etternavnsen").should("be.visible");
     cy.contains("Adresselinjen").should("be.visible");
     cy.contains("0000").should("be.visible");
     cy.contains("Poststedet").should("be.visible");
-    cy.contains("SE").should("be.visible");
+    cy.contains("Sverige").should("be.visible");
     cy.contains("Tilbakestill mottaker").should("be.visible");
   });
 

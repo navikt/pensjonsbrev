@@ -68,6 +68,7 @@ export function BrevvelgerPage() {
         saksId={saksId}
         setOnSubmitClick={setOnSubmitClick}
       />
+
       <BrevvelgerFooter
         antallBrevKlarTilSending={alleSaksbrevQuery.data?.filter(erBrevKlar)?.length ?? 0}
         onSubmitClick={onSubmitClick}

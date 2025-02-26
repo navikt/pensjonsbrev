@@ -1,11 +1,10 @@
 import { css } from "@emotion/react";
 import { ExternalLinkIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Button, Heading, HStack, Link, TextField, UNSAFE_Combobox, VStack } from "@navikt/ds-react";
-import { useQuery } from "@tanstack/react-query";
 import type { Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
 
-import { hentLandForManuellUtfyllingAvAdresse } from "~/api/skribenten-api-endpoints";
+import { useLandData } from "~/hooks/useLandData";
 
 import type { CombinedFormData } from "./EndreMottakerUtils";
 
@@ -14,11 +13,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
   onSubmit: () => void;
   onCloseIntent: () => void;
 }) => {
-  const hentLand = useQuery({
-    queryKey: hentLandForManuellUtfyllingAvAdresse.queryKey,
-    queryFn: () => hentLandForManuellUtfyllingAvAdresse.queryFn(),
-  });
-
+  const { data: landData, isLoading, isError, isSuccess } = useLandData();
   return (
     <VStack gap="6">
       <VStack gap="4">
@@ -96,18 +91,17 @@ const UtfyllingAvManuellAdresseForm = (properties: {
         </HStack>
 
         <div>
-          {hentLand.isLoading && <BodyShort size="small">Laster inn land...</BodyShort>}
+          {isLoading && <BodyShort size="small">Laster inn land...</BodyShort>}
           {/* TODO - hvis en eller annen feil skjer, vil vi gi dem et input felt der dem kan skrive in koden selv? */}
-          {hentLand.isError && <BodyShort size="small">Kunne ikke laste inn land</BodyShort>}
-          {hentLand.isSuccess && (
+          {isError && <BodyShort size="small">Kunne ikke laste inn land</BodyShort>}
+          {isSuccess && (
             <Controller
               control={properties.control}
               name="manuellAdresse.adresse.land"
               render={({ field, fieldState }) => {
-                const options = hentLand.data
+                const options = landData
                   .toSorted((a, b) => (a.navn > b.navn ? 1 : -1))
                   .map((land) => ({ label: land.navn, value: land.kode }));
-
                 return (
                   <UNSAFE_Combobox
                     css={css`
