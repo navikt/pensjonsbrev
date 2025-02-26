@@ -1,4 +1,4 @@
 * @navikt/pensjonsbrev
 /etterlattemaler @navikt/etterlatte @navikt/pensjonsbrev
-/pensjonsmaler @navikt/pensjon-ufore @navikt/pensjonsbrev
-/pensjon-brevbaker-api-model @navikt/pensjon-ufore @navikt/pensjonsbrev
+/pensjonsmaler @navikt/pensjon-ufore @navikt/pensjon-alder @navikt/pensjonsbrev
+/pensjon-brevbaker-api-model @navikt/pensjon-ufore @navikt/pensjon-alder @navikt/pensjonsbrev
