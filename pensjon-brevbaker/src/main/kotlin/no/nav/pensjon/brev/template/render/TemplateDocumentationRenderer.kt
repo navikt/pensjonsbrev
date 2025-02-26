@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.BinaryOperation.Documentation
 import no.nav.pensjon.brev.template.dsl.expression.intValueSelector
+import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression.*
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression.Invoke.Operation
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
@@ -30,13 +31,13 @@ object TemplateDocumentationRenderer {
 
     private fun <T : Element<*>, R : TemplateDocumentation.Element> renderContentOrStructure(
         contentOrStructure: List<ContentOrControlStructure<*, T>>,
-        mapper: (T) -> List<R>
+        mapper: (T) -> List<R>,
     ): List<TemplateDocumentation.ContentOrControlStructure<R>> =
         contentOrStructure.flatMap { el -> renderContentOrStructure(el) { mapper(it) } }
 
     private fun <T : Element<*>, R : TemplateDocumentation.Element> renderContentOrStructure(
         contentOrStructure: ContentOrControlStructure<*, T>,
-        mapper: (T) -> List<R>
+        mapper: (T) -> List<R>,
     ): List<TemplateDocumentation.ContentOrControlStructure<R>> =
         when (contentOrStructure) {
             is ContentOrControlStructure.Content -> mapper(contentOrStructure.content).map { TemplateDocumentation.ContentOrControlStructure.Content(it) }
@@ -63,7 +64,7 @@ object TemplateDocumentationRenderer {
 
     private fun <T : Element<*>, R : TemplateDocumentation.Element> liftNestedIfElse(
         showElse: List<ContentOrControlStructure<*, T>>,
-        mapper: (T) -> List<R>
+        mapper: (T) -> List<R>,
     ): Pair<List<TemplateDocumentation.ContentOrControlStructure.Conditional.ElseIf<R>>, List<TemplateDocumentation.ContentOrControlStructure<R>>> {
         val first = showElse.firstOrNull()
         return if (showElse.size == 1 && first is ContentOrControlStructure.Conditional) {
@@ -82,7 +83,7 @@ object TemplateDocumentationRenderer {
 
     private fun renderOutline(
         outline: List<OutlineElement<*>>,
-        lang: Language
+        lang: Language,
     ): List<TemplateDocumentation.ContentOrControlStructure<TemplateDocumentation.Element.OutlineContent>> =
         renderContentOrStructure(outline) { listOf(renderOutline(it, lang)) }
 
@@ -99,7 +100,7 @@ object TemplateDocumentationRenderer {
 
     private fun renderParagraphContent(
         element: Element.OutlineContent.ParagraphContent<*>,
-        lang: Language
+        lang: Language,
     ): List<TemplateDocumentation.Element.ParagraphContent> =
         when (element) {
             is Element.OutlineContent.ParagraphContent.Form -> listOf(TemplateDocumentation.Element.ParagraphContent.Text.Literal("## missing documentation ##"))
@@ -122,7 +123,7 @@ object TemplateDocumentationRenderer {
 
     private fun renderRow(
         cells: List<Element.OutlineContent.ParagraphContent.Table.Cell<*>>,
-        lang: Language
+        lang: Language,
     ): TemplateDocumentation.Element.ParagraphContent.Table.Row =
         TemplateDocumentation.Element.ParagraphContent.Table.Row(cells.map {
             TemplateDocumentation.Element.ParagraphContent.Table.Cell(
@@ -135,13 +136,13 @@ object TemplateDocumentationRenderer {
 
     private fun renderText(
         text: List<TextElement<*>>,
-        lang: Language
+        lang: Language,
     ): List<TemplateDocumentation.ContentOrControlStructure<TemplateDocumentation.Element.ParagraphContent.Text>> =
         renderContentOrStructure(text) { renderText(it, lang) }
 
     private fun renderText(
         element: Element.OutlineContent.ParagraphContent.Text<*>,
-        lang: Language
+        lang: Language,
     ): List<TemplateDocumentation.Element.ParagraphContent.Text> =
         when (element) {
             is Element.OutlineContent.ParagraphContent.Text.Literal -> listOf(TemplateDocumentation.Element.ParagraphContent.Text.Literal(element.text(lang)))
@@ -152,7 +153,7 @@ object TemplateDocumentationRenderer {
 
     private fun renderItem(
         item: Element.OutlineContent.ParagraphContent.ItemList.Item<*>,
-        lang: Language
+        lang: Language,
     ): TemplateDocumentation.Element.ParagraphContent.ItemList.Item =
         TemplateDocumentation.Element.ParagraphContent.ItemList.Item(renderText(item.text, lang))
 
@@ -169,12 +170,12 @@ object TemplateDocumentationRenderer {
 
     private fun renderExpression(expr: Expression<*>): TemplateDocumentation.Expression =
         when (expr) {
-            is Expression.BinaryInvoke<*, *, *> ->renderBinaryInvoke(expr)
-            is Expression.FromScope.Language -> TemplateDocumentation.Expression.LetterData("language")
-            is Expression.FromScope.Felles -> TemplateDocumentation.Expression.LetterData("felles")
-            is Expression.FromScope.Argument -> TemplateDocumentation.Expression.LetterData("argument")
-            is Expression.FromScope.Assigned -> TemplateDocumentation.Expression.LetterData("forEach_item")
-            is Expression.Literal -> TemplateDocumentation.Expression.Literal(expr.value.toString())
+            is Expression.BinaryInvoke<*, *, *> -> renderBinaryInvoke(expr)
+            is Expression.FromScope.Language -> LetterData("language")
+            is Expression.FromScope.Felles -> LetterData("felles")
+            is Expression.FromScope.Argument -> LetterData("argument")
+            is Expression.FromScope.Assigned -> LetterData("forEach_item")
+            is Expression.Literal -> Literal(expr.value.toString())
             is Expression.UnaryInvoke<*, *> -> renderUnaryInvoke(expr)
         }
 
@@ -182,16 +183,17 @@ object TemplateDocumentationRenderer {
         when (expr.operation) {
             is LocalizedFormatter<*> -> renderExpression(expr.first)
             is BinaryOperation.IfNull<*> ->
-               if (expr.second is Expression.Literal && (expr.second as Expression.Literal<Any?>).value == false) {
-                   renderExpression(expr.first)
-               } else {
-                   renderAnyBinaryInvoke(expr)
-               }
+                if (expr.second is Expression.Literal && (expr.second as Expression.Literal<Any?>).value == false) {
+                    renderExpression(expr.first)
+                } else {
+                    renderAnyBinaryInvoke(expr)
+                }
+
             else -> renderAnyBinaryInvoke(expr)
         }
 
     private fun renderAnyBinaryInvoke(expr: Expression.BinaryInvoke<*, *, *>) =
-        TemplateDocumentation.Expression.Invoke(
+        Invoke(
             renderOperation(expr.operation),
             renderExpression(expr.first),
             renderExpression(expr.second),
@@ -200,68 +202,70 @@ object TemplateDocumentationRenderer {
 
     private fun renderUnaryInvoke(expr: Expression.UnaryInvoke<*, *>): TemplateDocumentation.Expression =
         when (expr.operation) {
-            is UnaryOperation.AbsoluteValue -> TemplateDocumentation.Expression.Invoke(
+            is UnaryOperation.AbsoluteValue -> Invoke(
                 operator = Operation("abs", Documentation.Notation.FUNCTION),
                 first = renderExpression(expr.value),
             )
 
-            is UnaryOperation.AbsoluteValueKroner -> TemplateDocumentation.Expression.Invoke(
+            is UnaryOperation.AbsoluteValueKroner -> Invoke(
                 operator = Operation("abs", Documentation.Notation.FUNCTION),
                 first = renderExpression(expr.value)
             )
 
             is UnaryOperation.MapCollection<*, *> -> TODO()
             is UnaryOperation.Not -> if (expr.value is Expression.BinaryInvoke<*, *, *> && (expr.value as Expression.BinaryInvoke<*, *, *>).operation is BinaryOperation.Equal<*>) {
-                TemplateDocumentation.Expression.Invoke(
+                Invoke(
                     operator = Operation("!=", Documentation.Notation.INFIX),
                     first = renderExpression((expr.value as Expression.BinaryInvoke<*, *, *>).first),
                     second = renderExpression((expr.value as Expression.BinaryInvoke<*, *, *>).second),
                 )
-            } else TemplateDocumentation.Expression.Invoke(
+            } else Invoke(
                 operator = Operation("!", Documentation.Notation.PREFIX),
                 first = renderExpression(expr.value),
             )
 
-            is UnaryOperation.SafeCall -> TemplateDocumentation.Expression.Invoke(
+            is UnaryOperation.SafeCall -> Invoke(
                 operator = Operation("?.${(expr.operation as UnaryOperation.SafeCall<out Any, Any>).selector.propertyName}", Documentation.Notation.POSTFIX),
                 first = renderExpression(expr.value),
                 type = (expr.operation as UnaryOperation.SafeCall<out Any, Any>).selector.propertyType,
             )
 
-            is UnaryOperation.Select -> if ((expr.operation as UnaryOperation.Select<out Any, Any?>).selector != intValueSelector) {
-                TemplateDocumentation.Expression.Invoke(
-                    operator = Operation(".${(expr.operation as UnaryOperation.Select<out Any, Any?>).selector.propertyName}", Documentation.Notation.POSTFIX),
+            is UnaryOperation.Select -> if ((expr.operation as UnaryOperation.Select<*, *>).selector != intValueSelector) {
+                Invoke(
+                    operator = Operation(".${(expr.operation as UnaryOperation.Select<*, *>).selector.propertyName}", Documentation.Notation.POSTFIX),
                     first = renderExpression(expr.value),
-                    type = (expr.operation as UnaryOperation.Select<out Any, Any?>).selector.propertyType,
+                    type = (expr.operation as UnaryOperation.Select<*, *>).selector.propertyType,
                 )
             } else {
                 renderExpression(expr.value)
             }
 
-            is UnaryOperation.SizeOf -> TemplateDocumentation.Expression.Invoke(
+            is UnaryOperation.SizeOf -> Invoke(
                 operator = Operation("size", Documentation.Notation.POSTFIX),
                 first = renderExpression(expr.value),
             )
 
-            is UnaryOperation.ToString -> TemplateDocumentation.Expression.Invoke(
+            is UnaryOperation.ToString -> Invoke(
                 operator = Operation("str", Documentation.Notation.FUNCTION),
                 first = renderExpression(expr.value),
             )
 
-            is UnaryOperation.IsEmpty -> TemplateDocumentation.Expression.Invoke(
+            is UnaryOperation.IsEmpty -> Invoke(
                 operator = Operation(text = "isEmpty", Documentation.Notation.FUNCTION),
                 first = renderExpression(expr.value)
             )
 
-            is UnaryOperation.FunksjonsbryterEnabled -> TemplateDocumentation.Expression.Invoke(
+            is UnaryOperation.FunksjonsbryterEnabled -> Invoke(
                 operator = Operation(text = "enabled", Documentation.Notation.FUNCTION),
                 first = renderExpression(expr.value)
             )
 
-            is UnaryOperation.BrukerFulltNavn -> TemplateDocumentation.Expression.Invoke(
+            is UnaryOperation.BrukerFulltNavn -> Invoke(
                 operator = Operation("fulltNavn", Documentation.Notation.FUNCTION),
                 first = renderExpression(expr.value),
             )
+
+            is UnaryOperation.MapValue<*, *> -> renderExpression(expr.value)
         }
 
     private fun renderOperation(operation: BinaryOperation<*, *, *>): Operation =
@@ -334,7 +338,7 @@ data class TemplateDocumentation(
 
         data class ForEach<E : Element>(
             val items: Expression,
-            val body: List<ContentOrControlStructure<E>>
+            val body: List<ContentOrControlStructure<E>>,
         ) : ContentOrControlStructure<E>()
     }
 
