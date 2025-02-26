@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.model.Api.NavAnsatt
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 class Dto2ApiService(
     private val brevbakerService: BrevbakerService,
@@ -36,7 +37,13 @@ class Dto2ApiService(
             brevtittel = template?.metadata?.displayTitle ?: info.brevkode.kode(),
             status = when {
                 info.journalpostId != null -> BrevStatus.Arkivert
-                info.laastForRedigering -> BrevStatus.Klar
+                info.attestertAv != null -> BrevStatus.Klar(attestertAv = hentNavAnsatt(info.attestertAv))
+                info.laastForRedigering ->
+                    if (info.vedtaksId != null && template?.metadata?.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
+                        BrevStatus.Attestering
+                    } else {
+                        BrevStatus.Klar()
+                    }
                 info.redigeresAv != null -> BrevStatus.UnderRedigering(hentNavAnsatt(info.redigeresAv))
                 else -> BrevStatus.Kladd
             },
