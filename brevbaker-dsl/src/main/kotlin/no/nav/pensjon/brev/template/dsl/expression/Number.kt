@@ -37,13 +37,28 @@ fun Expression<Double>.format(): Expression<String> = format(formatter = Localiz
 @JvmName("formatInt")
 fun Expression<Int>.format(): Expression<String> = format(formatter = LocalizedFormatter.IntFormat)
 
-
-operator fun Expression<Kroner>.plus(other: Expression<Kroner>): Expression<Kroner> =
+operator fun Expression<Int>.plus(other: Expression<Int>): Expression<Int> =
     Expression.BinaryInvoke(
         this,
         other,
-        BinaryOperation.IntPlus(::Kroner),
+        BinaryOperation.IntPlus
     )
+@JvmName("kronerPlus")
+operator fun Expression<Kroner>.plus(other: Expression<Kroner>): Expression<Kroner> = (this.value + other.value).toKroner()
+@JvmName("yearPlus")
+operator fun Expression<Year>.plus(other: Expression<Year>): Expression<Year> = (this.value + other.value).toYear()
+
+operator fun Expression<Int>.minus(other: Expression<Int>): Expression<Int> =
+    Expression.BinaryInvoke(
+        this,
+        other,
+        BinaryOperation.IntMinus
+    )
+@JvmName("kronerMinus")
+operator fun Expression<Kroner>.minus(other: Expression<Kroner>): Expression<Kroner> = (this.value - other.value).toKroner()
+@JvmName("yearMinus")
+operator fun Expression<Year>.minus(other: Expression<Year>): Expression<Year> = (this.value - other.value).toYear()
+
 
 infix fun <T: Comparable<T>> Expression<T>.greaterThan(compareTo: Expression<T>): Expression<Boolean> =
     Expression.BinaryInvoke(

@@ -269,17 +269,15 @@ object TemplateDocumentationRenderer {
         }
 
     private fun renderOperation(operation: BinaryOperation<*, *, *>): Operation =
-        if (operation.doc != null) {
+        operation.doc?.let {
             Operation(
-                text = operation.doc!!.name,
-                syntax = operation.doc!!.syntax,
+                text = it.name,
+                syntax = it.syntax,
             )
-        } else {
-            Operation(
-                text = operation::class.simpleName ?: "undocumentedOperation",
-                syntax = Documentation.Notation.FUNCTION
-            )
-        }
+        } ?: Operation(
+            text = operation::class.simpleName ?: "undocumentedOperation",
+            syntax = Documentation.Notation.FUNCTION
+        )
 
     fun StringExpression.flattenLiteralConcat(): List<StringExpression> =
         if (this is Expression.Literal) {
@@ -381,9 +379,9 @@ data class TemplateDocumentation(
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
     @JsonSubTypes(
-        JsonSubTypes.Type(Expression.Literal::class, name = "LITERAL"),
-        JsonSubTypes.Type(Expression.LetterData::class, name = "LETTER_DATA"),
-        JsonSubTypes.Type(Expression.Invoke::class, name = "INVOKE"),
+        JsonSubTypes.Type(Literal::class, name = "LITERAL"),
+        JsonSubTypes.Type(LetterData::class, name = "LETTER_DATA"),
+        JsonSubTypes.Type(Invoke::class, name = "INVOKE"),
     )
     sealed class Expression {
         data class Literal(val value: String) : Expression()

@@ -5,7 +5,6 @@ import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.template.expression.ExpressionMapper
-import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import kotlin.math.absoluteValue
 
@@ -124,8 +123,12 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun apply(first: String, second: String): String = first + second
     }
 
-    class IntPlus<T : IntValue>(val constructor: (Int) -> T) : BinaryOperation<T, T, T>(), StableHash by StableHash.of("BinaryOperation.IntPlus") {
-        override fun apply(first: T, second: T): T = constructor(first.value + second.value)
+    object IntMinus : BinaryOperation<Int, Int, Int>(Documentation("-", Documentation.Notation.INFIX)), StableHash by StableHash.of("BinaryOperation.IntMinus") {
+        override fun apply(first: Int, second: Int): Int = first - second
+    }
+
+    object IntPlus : BinaryOperation<Int, Int, Int>(Documentation("+", Documentation.Notation.INFIX)), StableHash by StableHash.of("BinaryOperation.IntPlus") {
+        override fun apply(first: Int, second: Int): Int = first + second
     }
 
     class IfNull<T : Any> : BinaryOperation<T?, T, T>(Documentation("?:", Documentation.Notation.INFIX)),
