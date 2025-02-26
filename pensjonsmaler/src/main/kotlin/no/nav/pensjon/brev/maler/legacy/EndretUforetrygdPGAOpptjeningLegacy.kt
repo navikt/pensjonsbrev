@@ -168,7 +168,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
                     }
                     item {
                         text(
-                            Bokmal to "Omsorgspoeng",
+                            Bokmal to "Omsorgsopptjening",
                         )
                     }
                     item {
