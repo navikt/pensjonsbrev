@@ -49,21 +49,29 @@ data class LetterMarkupImpl(
 
         @InterneDataklasser
         data class Title1Impl(override val id: Int, override val editable: Boolean = true, override val content: List<ParagraphContent.Text>) :
-            Title1
+            Title1 {
+            override val type = Type.TITLE1
+        }
 
         @InterneDataklasser
         data class Title2Impl(override val id: Int, override val editable: Boolean = true, override val content: List<ParagraphContent.Text>) :
-            Title2
+            Title2 {
+            override val type = Type.TITLE2
+        }
 
         @InterneDataklasser
         data class ParagraphImpl(override val id: Int, override val editable: Boolean = true, override val content: List<ParagraphContent>) :
-            Paragraph
+            Paragraph {
+            override val type = Type.PARAGRAPH
+        }
 
     }
 
     object ParagraphContentImpl {
         @InterneDataklasser
         data class ItemListImpl(override val id: Int, override val items: List<ItemList.Item>) : ItemList {
+            override val type = ParagraphContent.Type.ITEM_LIST
+
             data class ItemImpl(override val id: Int, override val content: List<ParagraphContent.Text>) : ItemList.Item
         }
 
@@ -74,24 +82,31 @@ data class LetterMarkupImpl(
                 override val text: String,
                 override val fontType: FontType = FontType.PLAIN,
                 override val tags: Set<ElementTags> = emptySet()
-            ) : ParagraphContent.Text.Literal
+            ) : ParagraphContent.Text.Literal {
+                override val type: ParagraphContent.Type = ParagraphContent.Type.LITERAL
+            }
 
             @InterneDataklasser
             data class VariableImpl(
                 override val id: Int,
                 override val text: String,
                 override val fontType: FontType = FontType.PLAIN
-            ) : ParagraphContent.Text.Variable
+            ) : ParagraphContent.Text.Variable {
+                override val type = ParagraphContent.Type.VARIABLE
+            }
 
             @InterneDataklasser
             data class NewLineImpl(override val id: Int) : ParagraphContent.Text.NewLine {
                 override val fontType = FontType.PLAIN
                 override val text: String = ""
+                override val type = ParagraphContent.Type.NEW_LINE
             }
         }
 
         @InterneDataklasser
         data class TableImpl(override val id: Int, override val rows: List<Table.Row>, override val header: Table.Header) : Table {
+            override val type = ParagraphContent.Type.TABLE
+
             @InterneDataklasser
             data class RowImpl(override val id: Int, override val cells: List<Table.Cell>) : Table.Row
             @InterneDataklasser
@@ -105,10 +120,15 @@ data class LetterMarkupImpl(
         sealed interface Form : ParagraphContent {
 
             @InterneDataklasser
-            data class TextImpl(override val id: Int, override val prompt: List<ParagraphContent.Text>, override val size: ParagraphContent.Form.Text.Size, override val vspace: Boolean) : ParagraphContent.Form.Text
+            data class TextImpl(override val id: Int, override val prompt: List<ParagraphContent.Text>, override val size: ParagraphContent.Form.Text.Size, override val vspace: Boolean) : ParagraphContent.Form.Text {
+                override val type = ParagraphContent.Type.FORM_TEXT
+            }
 
             @InterneDataklasser
             data class MultipleChoiceImpl(override val id: Int, override val prompt: List<ParagraphContent.Text>, override val choices: List<MultipleChoice.Choice>, override val vspace: Boolean) : MultipleChoice {
+                override val type = ParagraphContent.Type.FORM_CHOICE
+
+
                 data class ChoiceImpl(override val id: Int, override val text: List<ParagraphContent.Text>) : MultipleChoice.Choice
             }
         }

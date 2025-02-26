@@ -63,8 +63,6 @@ interface LetterMarkup {
         }
 
         interface ItemList : ParagraphContent {
-            override val type: Type
-                get() = Type.ITEM_LIST
             val items: List<Item>
             interface Item {
                 val id: Int
