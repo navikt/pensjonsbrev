@@ -35,6 +35,9 @@ Cypress.Commands.add("setupSakStubs", () => {
   cy.intercept("GET", "/bff/skribenten-backend/sak/123456/adresse", { fixture: "adresse.json" }).as("adresse");
   cy.intercept("GET", "/bff/skribenten-backend/kodeverk/avtaleland", { fixture: "avtaleland.json" }).as("avtaleland");
   cy.intercept("GET", "/bff/skribenten-backend/me/enheter", { fixture: "enheter.json" }).as("enheter");
+  cy.intercept("GET", "/bff/skribenten-backend/land", (request) => {
+    request.reply([]);
+  });
   cy.intercept("GET", "/bff/skribenten-backend/sak/123456/foretrukketSpraak", {
     fixture: "foretrukketSpraak.json",
   }).as("foretrukketSpraak");

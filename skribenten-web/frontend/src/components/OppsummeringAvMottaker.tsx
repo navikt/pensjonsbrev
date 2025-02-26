@@ -1,10 +1,14 @@
 import { BodyShort, Label, VStack } from "@navikt/ds-react";
 
+import { useLandData } from "~/hooks/useLandData";
 import HentOgVisAdresse from "~/routes/saksnummer_/$saksId/brevvelger/-components/endreMottaker/HentOgVisAdresse";
 import type { Mottaker } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
+import { getCountryNameByKode } from "~/utils/countryUtils";
 
 const OppsummeringAvMottaker = (props: { saksId: string; mottaker: Nullable<Mottaker>; withTitle: boolean }) => {
+  const { data: landData } = useLandData();
+
   if (props.mottaker === null || props.mottaker.type === "Samhandler") {
     return (
       <HentOgVisAdresse
@@ -27,7 +31,9 @@ const OppsummeringAvMottaker = (props: { saksId: string; mottaker: Nullable<Mott
           {props.mottaker.postnummer ?? ""} {props.mottaker.poststed ?? ""}
         </BodyShort>
       )}
-      {props.mottaker.type === "UtenlandskAdresse" && <BodyShort size="small">{props.mottaker.landkode}</BodyShort>}
+      {props.mottaker.type === "UtenlandskAdresse" && (
+        <BodyShort size="small">{getCountryNameByKode(props.mottaker.landkode, landData || [])}</BodyShort>
+      )}
     </VStack>
   );
 };
