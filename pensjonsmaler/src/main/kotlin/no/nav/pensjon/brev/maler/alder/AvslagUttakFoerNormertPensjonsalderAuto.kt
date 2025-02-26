@@ -8,6 +8,8 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.virkFom
+import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
+import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
@@ -177,7 +179,7 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
 
             title2 {
                 text(
-                    Bokmal to "Du har rett til å klage ",
+                    Bokmal to "Du har rett til å klage",
                     Nynorsk to "",
                     English to ""
                 )
@@ -209,6 +211,33 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
 
 
             includePhrase(Felles.HarDuSpoersmaal.alder)
+
+            paragraph {
+                text(
+                    Bokmal to "Vedlegg:",
+                    Nynorsk to "",
+                    English to ""
+                )
+                list {
+                    item {
+                        text(
+                            Bokmal to "Vedlegg 1: Dine rettigheter og mulighet til å klage",
+                            Nynorsk to "",
+                            English to ""
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "Vedlegg 2: Opplysninger brukt i beregningen",
+                            Nynorsk to "",
+                            English to ""
+                        )
+                    }
+                }
+            }
         }
+
+        includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
+        includeAttachment(opplysningerBruktIBeregningenAP, opplysningerBruktIBeregningenAP)
     }
 }
