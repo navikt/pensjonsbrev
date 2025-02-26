@@ -33,7 +33,6 @@ import no.nav.pensjon.brev.maler.legacy.fraser.TBU1286_2_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1286_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1288_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU1296_Generated
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2222_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2223_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2251_Generated
 import no.nav.pensjon.brev.maler.legacy.fraser.TBU2261_Generated
@@ -115,11 +114,6 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
                         )
                     }
                 }
-            }
-
-            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert = false) THEN      INCLUDE ENDIF
-            showIf((not(pe.vedtaksdata_beregningsdata_beregningufore_belopokt()) and not(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()))){
-                includePhrase(TBU2222_Generated)
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false) THEN      INCLUDE ENDIF
