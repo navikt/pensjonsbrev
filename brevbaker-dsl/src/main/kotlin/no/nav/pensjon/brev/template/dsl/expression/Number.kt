@@ -1,8 +1,11 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.expression.IntToKroner
+import no.nav.pensjon.brev.template.expression.IntToYear
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.Year
 
 val intValueSelector = object : TemplateModelSelector<IntValue, Int> {
     override val className: String = "no.nav.pensjon.brev.api.model.IntValue"
@@ -17,18 +20,45 @@ private val Expression<IntValue>.value: Expression<Int>
         UnaryOperation.Select(intValueSelector)
     )
 
+fun Expression<Int>.toKroner(): Expression<Kroner> =
+    Expression.UnaryInvoke(
+        this,
+        UnaryOperation.MapValue(IntToKroner)
+    )
+
+fun Expression<Int>.toYear(): Expression<Year> =
+    Expression.UnaryInvoke(
+        this,
+        UnaryOperation.MapValue(IntToYear)
+    )
+
 fun Expression<Double>.format(): Expression<String> = format(formatter = LocalizedFormatter.DoubleFormat)
 
 @JvmName("formatInt")
 fun Expression<Int>.format(): Expression<String> = format(formatter = LocalizedFormatter.IntFormat)
 
-
-operator fun Expression<Kroner>.plus(other: Expression<Kroner>): Expression<Kroner> =
+operator fun Expression<Int>.plus(other: Expression<Int>): Expression<Int> =
     Expression.BinaryInvoke(
         this,
         other,
-        BinaryOperation.IntPlus(::Kroner),
+        BinaryOperation.IntPlus
     )
+@JvmName("kronerPlus")
+operator fun Expression<Kroner>.plus(other: Expression<Kroner>): Expression<Kroner> = (this.value + other.value).toKroner()
+@JvmName("yearPlus")
+operator fun Expression<Year>.plus(other: Expression<Year>): Expression<Year> = (this.value + other.value).toYear()
+
+operator fun Expression<Int>.minus(other: Expression<Int>): Expression<Int> =
+    Expression.BinaryInvoke(
+        this,
+        other,
+        BinaryOperation.IntMinus
+    )
+@JvmName("kronerMinus")
+operator fun Expression<Kroner>.minus(other: Expression<Kroner>): Expression<Kroner> = (this.value - other.value).toKroner()
+@JvmName("yearMinus")
+operator fun Expression<Year>.minus(other: Expression<Year>): Expression<Year> = (this.value - other.value).toYear()
+
 
 infix fun <T: Comparable<T>> Expression<T>.greaterThan(compareTo: Expression<T>): Expression<Boolean> =
     Expression.BinaryInvoke(

@@ -137,7 +137,8 @@ class BrevredigeringService(
         brevId: Long,
         nyeSaksbehandlerValg: SaksbehandlerValg?,
         nyttRedigertbrev: Edit.Letter?,
-        signatur: String?,
+        signatur: String? = null,
+        signaturAttestant: String? = null,
         frigiReservasjon: Boolean = false,
     ): ServiceResult<Dto.Brevredigering>? =
         hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
@@ -148,6 +149,7 @@ class BrevredigeringService(
                 brev = brevDto,
                 saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg,
                 signaturSignerende = signatur ?: brevDto.info.signaturSignerende,
+                signaturAttestant = signaturAttestant ?: brevDto.info.signaturAttestant,
             ).map { rendretBrev ->
                 val principal = PrincipalInContext.require()
                 transaction {
@@ -157,6 +159,7 @@ class BrevredigeringService(
                         saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
                         sistRedigertAvNavIdent = principal.navIdent
                         signatur?.also { signaturSignerende = it }
+                        signaturAttestant?.also { this.signaturAttestant = it }
                         if (frigiReservasjon) {
                             redigeresAvNavIdent = null
                         }
