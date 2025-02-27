@@ -5,6 +5,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.TemplateDescriptionImpl
 import no.nav.pensjon.brev.skribenten.EksempelRedigerbartDto
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -28,7 +29,7 @@ class Dto2ApiServiceTest {
     private val samhandlerService = mockk<SamhandlerService>()
     private val dto2ApiService = Dto2ApiService(
         brevbakerService = mockk {
-            coEvery { getRedigerbarTemplate(eq(Testbrevkoder.TESTBREV)) } returns TemplateDescription.Redigerbar(
+            coEvery { getRedigerbarTemplate(eq(Testbrevkoder.TESTBREV)) } returns TemplateDescriptionImpl.RedigerbarImpl(
                 name = Testbrevkoder.TESTBREV.name,
                 letterDataClass = EksempelRedigerbartDto::class.java.name,
                 languages = listOf(LanguageCode.BOKMAL),

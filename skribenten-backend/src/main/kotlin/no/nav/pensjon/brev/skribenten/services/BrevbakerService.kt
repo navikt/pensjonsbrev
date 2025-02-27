@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.TemplateDescriptionImpl
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Cache
@@ -49,6 +50,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
                 registerModule(JavaTimeModule())
                 registerModule(LetterMarkupModule)
                 registerModule(TemplateModelSpecificationModule)
+                registerModule(TemplateDescriptionModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
@@ -236,11 +238,6 @@ object LetterMarkupModule : SimpleModule() {
                 return p.codec.treeToValue(node, clazz)
             }
         }
-
-    private abstract class AbstractDeserializer<T, V : T>(private val v: Class<V>) : JsonDeserializer<T>() {
-        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): T =
-            parser.codec.treeToValue(parser.codec.readTree<JsonNode>(parser), v)
-    }
 }
 
 object TemplateModelSpecificationModule : SimpleModule() {
@@ -264,4 +261,26 @@ object TemplateModelSpecificationModule : SimpleModule() {
             }
         }
 
+}
+
+@OptIn(InterneDataklasser::class)
+object TemplateDescriptionModule : SimpleModule() {
+    private fun readResolve(): Any = TemplateDescriptionModule
+
+    init {
+        addDeserializer(TemplateDescription.Autobrev::class.java, TemplateDescriptionAutobrevDeserializer)
+        addDeserializer(TemplateDescription.Redigerbar::class.java, TemplateDescriptionRedigerbarDeserializer)
+    }
+
+    private object TemplateDescriptionAutobrevDeserializer :
+        AbstractDeserializer<TemplateDescription.Autobrev, TemplateDescriptionImpl.AutobrevImpl>(TemplateDescriptionImpl.AutobrevImpl::class.java)
+
+    private object TemplateDescriptionRedigerbarDeserializer :
+        AbstractDeserializer<TemplateDescription.Redigerbar, TemplateDescriptionImpl.RedigerbarImpl>(
+            TemplateDescriptionImpl.RedigerbarImpl::class.java)
+}
+
+abstract class AbstractDeserializer<T, V : T>(private val v: Class<V>) : JsonDeserializer<T>() {
+    override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): T =
+        parser.codec.treeToValue(parser.codec.readTree<JsonNode>(parser), v)
 }

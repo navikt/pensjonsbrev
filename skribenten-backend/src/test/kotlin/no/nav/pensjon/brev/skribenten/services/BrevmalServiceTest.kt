@@ -5,6 +5,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.TemplateDescriptionImpl
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -23,7 +24,7 @@ const val TEST_VEDTAKS_ID = "1234"
 
 class BrevmalServiceTest {
     private val brevbakerbrev = listOf(
-        TemplateDescription.Redigerbar(
+        TemplateDescriptionImpl.RedigerbarImpl(
             name = "brevbaker mal",
             letterDataClass = EmptyRedigerbarBrevdata::class.java.name,
             languages = listOf(LanguageCode.BOKMAL),

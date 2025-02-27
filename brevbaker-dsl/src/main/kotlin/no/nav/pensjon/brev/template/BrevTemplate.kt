@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.TemplateDescriptionImpl
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -21,8 +23,9 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevda
     val brevkontekst: TemplateDescription.Brevkontekst
     val sakstyper: Set<Sakstype>
 
+    @OptIn(InterneDataklasser::class)
     override fun description(): TemplateDescription.Redigerbar =
-        TemplateDescription.Redigerbar(
+        TemplateDescriptionImpl.RedigerbarImpl(
             name = template.name,
             letterDataClass = template.letterDataType.java.name,
             languages = template.language.all().map { it.toCode() },
@@ -40,8 +43,9 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevda
 }
 
 interface AutobrevTemplate<out LetterData : BrevbakerBrevdata> : BrevTemplate<LetterData, Brevkode.Automatisk> {
+    @OptIn(InterneDataklasser::class)
     override fun description(): TemplateDescription.Autobrev =
-        TemplateDescription.Autobrev(
+        TemplateDescriptionImpl.AutobrevImpl(
             name = template.name,
             letterDataClass = template.letterDataType.java.name,
             languages = template.language.all().map { it.toCode() },

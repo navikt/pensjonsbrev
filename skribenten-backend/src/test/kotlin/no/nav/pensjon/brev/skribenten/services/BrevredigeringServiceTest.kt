@@ -7,6 +7,7 @@ import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.TemplateDescriptionImpl
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.Features
@@ -72,7 +73,7 @@ class BrevredigeringServiceTest {
         brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
     )
     private val letterResponse = LetterResponse(file = stagetPDF, contentType = "pdf", letterMetadata = lettermetadata)
-    private val templateDescription = TemplateDescription.Redigerbar(
+    private val templateDescription = TemplateDescriptionImpl.RedigerbarImpl(
         name = "template name",
         letterDataClass = "template letter data class",
         languages = listOf(LanguageCode.ENGLISH),
