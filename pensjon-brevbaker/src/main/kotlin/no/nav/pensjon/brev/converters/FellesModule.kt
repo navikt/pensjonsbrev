@@ -48,9 +48,9 @@ object FellesModule : SimpleModule() {
 
     private object FellesobjektetDeserializer :
         FellesDeserializer<Felles, FellesImpl>(FellesImpl::class.java)
+}
 
-    private abstract class FellesDeserializer<T, V : T>(private val v: Class<V>) : JsonDeserializer<T>() {
-        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): T =
-            parser.codec.treeToValue(parser.codec.readTree<JsonNode>(parser), v)
-    }
+abstract class FellesDeserializer<T, V : T>(private val v: Class<V>) : JsonDeserializer<T>() {
+    override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): T =
+        parser.codec.treeToValue(parser.codec.readTree<JsonNode>(parser), v)
 }

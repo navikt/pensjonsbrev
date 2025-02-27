@@ -6,6 +6,8 @@ import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.PDFRequestImpl
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.BrukerImpl
 import no.nav.pensjon.brevbaker.api.model.Felles
@@ -48,9 +50,9 @@ object FellesModule : SimpleModule() {
 
     private object FellesobjektetDeserializer :
         FellesDeserializer<Felles, FellesImpl>(FellesImpl::class.java)
+}
 
-    private abstract class FellesDeserializer<T, V : T>(private val v: Class<V>) : JsonDeserializer<T>() {
-        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): T =
-            parser.codec.treeToValue(parser.codec.readTree<JsonNode>(parser), v)
-    }
+abstract class FellesDeserializer<T, V : T>(private val v: Class<V>) : JsonDeserializer<T>() {
+    override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): T =
+        parser.codec.treeToValue(parser.codec.readTree<JsonNode>(parser), v)
 }

@@ -4,9 +4,10 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
 import com.natpryce.hamkrest.equalTo
 import kotlinx.coroutines.runBlocking
+import no.nav.brev.InterneDataklasser
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.LetterTestRenderer
-import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.PDFRequestImpl
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.pdfbygger.Fixtures.felles
 import no.nav.pensjon.brev.template.LangBokmal
@@ -19,6 +20,7 @@ import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import kotlin.test.Test
 
+@OptIn(InterneDataklasser::class)
 class LatexDocumentRendererTest {
     @Test
     fun `paragraph is split in two using lists`() {
@@ -84,7 +86,7 @@ class LatexDocumentRendererTest {
 
         val letterMarkup = LetterTestRenderer.render(letter)
 
-        val pdfRequest = PDFRequest(
+        val pdfRequest = PDFRequestImpl(
             letterMarkup = letterMarkup.letterMarkup,
             attachments = letterMarkup.attachments,
             language = LanguageCode.BOKMAL,
@@ -116,7 +118,7 @@ class LatexDocumentRendererTest {
                 LetterTestRenderer.render(LetterTestImpl(outlineTestTemplate(outline), EmptyBrevdata, Language.Bokmal, felles))
 
             val latexDocument = LatexDocumentRenderer.render(
-                PDFRequest(
+                PDFRequestImpl(
                     letterMarkup = markup.letterMarkup,
                     attachments = markup.attachments,
                     language = letter.language.toCode(),

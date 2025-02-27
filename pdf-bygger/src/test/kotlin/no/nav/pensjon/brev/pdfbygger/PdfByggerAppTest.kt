@@ -14,9 +14,8 @@ import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.*
 import no.nav.brev.InterneDataklasser
-import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.PDFRequestImpl
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.Test
@@ -27,9 +26,9 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@OptIn(InterneDataklasser::class)
 class PdfByggerAppTest {
-    @OptIn(InterneDataklasser::class)
-    private val pdfRequest = PDFRequest(
+    private val pdfRequest = PDFRequestImpl(
         letterMarkup = LetterMarkupImpl(
             title = "Tittel 1",
             sakspart = LetterMarkupImpl.SakspartImpl(

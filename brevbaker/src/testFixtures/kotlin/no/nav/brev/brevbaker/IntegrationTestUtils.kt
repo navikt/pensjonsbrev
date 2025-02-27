@@ -8,6 +8,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.PDFRequestImpl
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
@@ -133,7 +134,7 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
         .let {
             runBlocking {
                 pdfByggerService.producePDF(
-                    PDFRequest(
+                    PDFRequestImpl(
                         it.letterMarkup,
                         it.attachments,
                         language.toCode(),
