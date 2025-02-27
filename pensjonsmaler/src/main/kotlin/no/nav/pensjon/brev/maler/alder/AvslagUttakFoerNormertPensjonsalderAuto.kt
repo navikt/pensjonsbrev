@@ -5,9 +5,10 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.afpBruktIBeregning
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.minstePensjonssats
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.normertPensjonsalder
+import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.opplysningerBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.virkFom
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
@@ -61,7 +62,7 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
             }
             paragraph {
                 textExpr(
-                    Bokmal to "Du har for lav pensjonsopptjening til at du kan ta ut ".expr() + uttaksgrad.format() +
+                    Bokmal to "Du har for lav pensjonsopptjening til at du kan ta ut ".expr() + opplysningerBruktIBeregningen.uttaksgrad.format() +
                             " prosent pensjon fra " + virkFom.format() + ". Derfor har vi avslått søknaden din.",
                     Nynorsk to "".expr(),
                     English to "".expr()
@@ -83,7 +84,7 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
                 )
             }
             paragraph {
-                showIf(uttaksgrad.equalTo(100)) {
+                showIf(opplysningerBruktIBeregningen.uttaksgrad.equalTo(100)) {
                     list {
                         item {
                             textExpr(
@@ -95,7 +96,7 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
                         }
                         item {
                             textExpr(
-                                Bokmal to "Dersom du hadde tatt ut ".expr() + uttaksgrad.format() + " prosent alderspensjon fra "
+                                Bokmal to "Dersom du hadde tatt ut ".expr() + opplysningerBruktIBeregningen.uttaksgrad.format() + " prosent alderspensjon fra "
                                         + virkFom.format() + ", ville du fått ".expr() + totalPensjon.format() + " kroner årlig i pensjon. ",
                                 Nynorsk to "".expr(),
                                 English to "".expr()
@@ -124,7 +125,7 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
 
                         item {
                             textExpr(
-                                Bokmal to "Hvis du hadde tatt ut ".expr() + uttaksgrad.format() + " prosent alderspensjon fra " + virkFom.format() +
+                                Bokmal to "Hvis du hadde tatt ut ".expr() + opplysningerBruktIBeregningen.uttaksgrad.format() + " prosent alderspensjon fra " + virkFom.format() +
                                         " ville du fått ".expr() + totalPensjon.format() + " kroner årlig i full pensjon når du blir ".expr() +
                                         normertPensjonsalder.aarOgMaanederFormattert() + ". ",
                                 Nynorsk to "".expr(),
@@ -238,6 +239,6 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
         }
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
-        includeAttachment(opplysningerBruktIBeregningenAP, opplysningerBruktIBeregningenAP)
+        includeAttachment(opplysningerBruktIBeregningenAP, opplysningerBruktIBeregningen)
     }
 }
