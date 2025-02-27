@@ -36,9 +36,16 @@ val opplysningerBruktIBeregningenAP =
                 English to "".expr()
             )
         }
+
         paragraph {
             table(header = {
-                column {}
+                column {
+                    text(
+                        Bokmal to "Opplysning",
+                        Nynorsk to "",
+                        English to "",
+                    )
+                }
                 column {}
             }) {
                 row {
