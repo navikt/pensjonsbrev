@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.AutobrevTemplate
 
-private val BREV_KODE = AttributeKey<String>("CallStartTime")
+private val BREV_KODE = AttributeKey<String>("BrevKode")
 fun <T : Brevkode<T>> RoutingContext.installBrevkodeInCallContext(kode: Brevkode<T>) {
     call.attributes.put(BREV_KODE, kode.kode())
 }

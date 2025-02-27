@@ -352,30 +352,43 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
             English to "How do I report changes",
         )
     }
+
     paragraph {
         text(
-            Bokmal to "Du kan gi beskjed om endringer i inntekten din ved å sende",
-            Nynorsk to "Du kan gi beskjed om endringar i inntekta di ved å sende",
-            English to "You can notify us about changes in your income by submitting",
+            Bokmal to "Du kan gi beskjed om endringer på følgende måter:",
+            Nynorsk to "Du kan melde frå om endringar på følgjande måtar:",
+            English to "You can report changes in the following ways:"
         )
-
-        val postadresse = ifElse(bosattUtland, Constants.Utland.POSTADRESSE, Constants.POSTADRESSE)
 
         list {
             item {
                 text(
-                    Bokmal to "beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her får du ikke lagt ved dokumentasjon)",
-                    Nynorsk to "ein beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her kan du ikkje leggje ved dokumentasjon)",
-                    English to "a message online: ${Constants.Engelsk.BESKJED_TIL_NAV_URL} (you cannot attach documentation from this page)",
+                    Bokmal to "benytte endringsskjema på ${Constants.OMS_MELD_INN_ENDRING_URL}",
+                    Nynorsk to "bruk endringsskjema på ${Constants.OMS_MELD_INN_ENDRING_URL}",
+                    English to "use the change form on ${Constants.OMS_MELD_INN_ENDRING_URL}"
                 )
             }
             item {
-                textExpr(
-                    Bokmal to "brev til ".expr() + postadresse,
-                    Nynorsk to "brev til ".expr() + postadresse,
-                    English to "send a letter to ".expr() + postadresse,
+                text(
+                    Bokmal to "ettersende dokumentasjon angående omstillingsstønad ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}",
+                    Nynorsk to "ettersend dokumentasjon angåande omstillingsstønad ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}",
+                    English to "send more documentation regarding adjustment allowance by going to: ${Constants.ETTERSENDE_OMS_URL}"
                 )
             }
+        }
+
+        showIf(bosattUtland) {
+            text(
+                Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, må du sende brev til ${Constants.Utland.POSTADRESSE}.",
+                Nynorsk to "Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår nav.no, må du sende dokumentasjon per post til ${Constants.Utland.POSTADRESSE}.",
+                English to "Please send documentation as normal post if you do not use BankID or another login option. Send to ${Constants.Utland.POSTADRESSE}."
+            )
+        }.orShow {
+            text(
+                Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, må du sende brev til ${Constants.POSTADRESSE}.",
+                Nynorsk to "Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår nav.no, må du sende dokumentasjon per post til ${Constants.POSTADRESSE}.",
+                English to "Please send documentation as normal post if you do not use BankID or another login option. Send to ${Constants.POSTADRESSE}."
+            )
         }
     }
 }

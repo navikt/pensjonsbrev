@@ -18,8 +18,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.Instant
 
-class ApiServiceTest {
+
+class Dto2ApiServiceTest {
     private val saksbehandler = NavIdent("Z123")
+    private val attestant = NavIdent("A 456")
 
     private val navansattService = mockk<NavansattService>()
     private val norg2Service = mockk<Norg2Service>()
@@ -49,6 +51,7 @@ class ApiServiceTest {
     @BeforeEach
     fun stage() {
         stageAnsatt(saksbehandler, "Saksbehandler", "Saksbehandlersen")
+        stageAnsatt(attestant, "Peder", "AAs")
     }
 
     @Test
@@ -60,7 +63,7 @@ class ApiServiceTest {
     @Test
     fun `status er Klar om brev er laast`(): Unit = runBlocking {
         val brev = createBrev(laastForRedigering = true)
-        assertThat(dto2ApiService.toApi(brev).status).isEqualTo(Api.BrevStatus.Klar)
+        assertThat(dto2ApiService.toApi(brev).status).isEqualTo(Api.BrevStatus.Klar())
     }
 
     @Test
@@ -70,10 +73,7 @@ class ApiServiceTest {
         stageAnsatt(redigeresAv, "Annen", "Saksbehandler")
         assertThat(dto2ApiService.toApi(brev).status).isEqualTo(
             Api.BrevStatus.UnderRedigering(
-                Api.NavAnsatt(
-                    redigeresAv ,
-                    "Annen Saksbehandler"
-                )
+                Api.NavAnsatt(redigeresAv,"Annen Saksbehandler")
             )
         )
     }
@@ -118,6 +118,7 @@ class ApiServiceTest {
         laastForRedigering: Boolean = false,
         avsenderEnhetId: String? = null,
         mottaker: Dto.Mottaker? = null,
+        attestertAv: NavIdent? = null,
     ) = Dto.BrevInfo(
         id = 1,
         saksId = 11,
@@ -136,7 +137,7 @@ class ApiServiceTest {
         spraak = LanguageCode.BOKMAL,
         signaturSignerende = "Z 123",
         journalpostId = null,
-        attestertAv = NavIdent("A 456"),
+        attestertAv = attestertAv,
         signaturAttestant = "Peder Ås",
     )
 

@@ -72,21 +72,17 @@ object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<Omstillingss
                     list {
                         item {
                             text(
-                                Bokmal to "sende en beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her får du ikke lagt ved dokumentasjon)",
-                                Nynorsk to "send ein beskjed på ${Constants.BESKJED_TIL_NAV_URL} (her kan du ikkje leggje ved dokumentasjon)",
-                                English to
-                                    "send us a message online: ${Constants.Engelsk.BESKJED_TIL_NAV_URL} (you cannot attach documentation from this page)",
+                                Bokmal to "benytte endringsskjema på ${Constants.OMS_MELD_INN_ENDRING_URL}",
+                                Nynorsk to "bruke endringsskjema på ${Constants.OMS_MELD_INN_ENDRING_URL}",
+                                English to "use the change form on ${Constants.OMS_MELD_INN_ENDRING_URL}",
                             )
                         }
                         item {
                             text(
-                                Bokmal to "ettersende dokumentasjon fra søknad om omstillingsstønad. " +
-                                    "Dette gjør du ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}",
-                                Nynorsk to "ettersend dokumentasjon frå søknad om omstillingsstønad. " +
-                                    "Dette gjer du ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}.",
+                                Bokmal to "ettersende dokumentasjon angående omstillingsstønad ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}",
+                                Nynorsk to "ettersend dokumentasjon angående omstillingsstønad ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}.",
                                 English to
-                                        "submit additional documentation on the application for adjustment allowance. " +
-                                        "You can do this by going to ${Constants.Engelsk.ETTERSENDE_OMS_URL}.",
+                                        "submit additional documentation regarding adjustment allowance by going to: ${Constants.Engelsk.ETTERSENDE_OMS_URL}.",
                             )
                         }
                         item {

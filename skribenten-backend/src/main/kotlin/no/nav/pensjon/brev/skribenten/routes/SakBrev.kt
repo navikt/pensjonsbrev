@@ -131,6 +131,27 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevredigeringService: Brevred
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
 
+        route("/{brevId}/attestering") {
+            post<Api.OppdaterAttesteringRequest> { request ->
+                val brevId = call.parameters.getOrFail<Long>("brevId")
+                val sak: Pen.SakSelection = call.attributes[SakKey]
+
+                brevredigeringService.oppdaterBrev(
+                    saksId = sak.saksId,
+                    brevId = brevId,
+                    nyeSaksbehandlerValg = request.saksbehandlerValg,
+                    nyttRedigertbrev = request.redigertBrev,
+                    signaturAttestant = request.signaturAttestant,
+                )?.onOk { brev -> call.respond(HttpStatusCode.OK, dto2ApiService.toApi(brev)) }
+                    ?.onError { message, statusCode ->
+                        logger.error("$statusCode - Feil ved oppdatering av attestering ${brevId}: $message")
+                        call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av attestering.")
+                    }
+                    ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
+            }
+        }
+
+        // TODO: Flytt inn under /attestering
         post("/{brevId}/attester") {
             brevredigeringService.attester(brevId = call.parameters.getOrFail<Long>("brevId"), saksId = call.attributes[SakKey].saksId)
                 ?.onOk { call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.OK) }
