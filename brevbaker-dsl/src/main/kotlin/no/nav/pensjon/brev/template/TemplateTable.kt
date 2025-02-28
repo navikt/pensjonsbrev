@@ -18,8 +18,8 @@ class TableScope<Lang : LanguageSupport, LetterData : Any>(
 
     fun row(create: TableRowScope<Lang, LetterData>.() -> Unit) {
         TableRowScope<Lang, LetterData>().apply(create)
-            .let { Element.OutlineContent.ParagraphContent.Table.Row(it.elements, colSpec) }
-            .let { ContentOrControlStructure.Content(it) }
+            .let { ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl.RowImpl(it.elements, colSpec) }
+            .let { ContentOrControlStructureImpl.ContentImpl(it) }
             .also { children.add(it) }
     }
 
@@ -34,7 +34,7 @@ class TableRowScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalSc
 
     fun cell(init: TextOnlyScope<Lang, LetterData>.() -> Unit) {
         children.add(
-            Element.OutlineContent.ParagraphContent.Table.Cell(
+            ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl.CellImpl(
                 TextOnlyScope<Lang, LetterData>().apply(init).elements
             )
         )
@@ -54,8 +54,8 @@ class TableHeaderScope<Lang : LanguageSupport, LetterData : Any> : TemplateGloba
     ) {
 
         children.add(
-            Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
-                Element.OutlineContent.ParagraphContent.Table.Cell(PlainTextOnlyScope<Lang, LetterData>().apply(init).elements),
+            ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl.ColumnSpecImpl(
+                ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl.CellImpl(PlainTextOnlyScope<Lang, LetterData>().apply(init).elements),
                 alignment,
                 columnSpan
             )

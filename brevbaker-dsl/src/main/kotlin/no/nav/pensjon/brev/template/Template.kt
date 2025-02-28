@@ -1,5 +1,8 @@
+@file:OptIn(InterneDataklasser::class)
+
 package no.nav.pensjon.brev.template.dsl
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -7,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.*
 import kotlin.reflect.KClass
 
+@OptIn(InterneDataklasser::class)
 fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
     name: String,
     letterDataType: KClass<LetterData>,
@@ -15,7 +19,7 @@ fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
     init: TemplateRootScope<Lang, LetterData>.() -> Unit
 ): LetterTemplate<Lang, LetterData> =
     with(TemplateRootScope<Lang, LetterData>().apply(init)) {
-        return LetterTemplate(name, title, letterDataType, languages, outline, attachments, letterMetadata)
+        return LetterTemplateImpl(name, title, letterDataType, languages, outline, attachments, letterMetadata)
     }
 
 @LetterTemplateMarker
@@ -67,11 +71,12 @@ class TemplateFormChoiceScope<Lang : LanguageSupport, LetterData : Any>(
     val choices: MutableList<Element.OutlineContent.ParagraphContent.Text<Lang>> = mutableListOf()
 ) : TemplateGlobalScope<LetterData>
 
+@OptIn(InterneDataklasser::class)
 fun <Lang1 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageSupport.Single<Lang1>, LetterData>.choice(
     lang1: Pair<Lang1, String>,
     fontType: FontType = FontType.PLAIN
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, fontType).also { choices.add(it) }
+    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(lang1, fontType).also { choices.add(it) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageSupport.Double<Lang1, Lang2>, LetterData>.choice(
@@ -79,7 +84,7 @@ fun <Lang1 : Language, Lang2 : Language, LetterData : Any> TemplateFormChoiceSco
     lang2: Pair<Lang2, String>,
     fontType: FontType = FontType.PLAIN,
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, lang2, fontType).also { choices.add(it) }
+    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(lang1, lang2, fontType).also { choices.add(it) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, LetterData>.choice(
@@ -88,7 +93,7 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, LetterData : Any> Tem
     lang3: Pair<Lang3, String>,
     fontType: FontType = FontType.PLAIN,
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, lang2, lang3, fontType).also { choices.add(it) }
+    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(lang1, lang2, lang3, fontType).also { choices.add(it) }
 }
 
 @DslMarker

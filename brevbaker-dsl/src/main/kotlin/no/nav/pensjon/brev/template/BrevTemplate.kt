@@ -35,11 +35,12 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevda
             sakstyper = sakstyper,
         )
 
+    @OptIn(InterneDataklasser::class)
     fun TextScope<*, *>.fritekst(beskrivelse: String): Expression<String> =
-        Expression.Literal(beskrivelse, setOf(ElementTags.FRITEKST))
+        ExpressionImpl.LiteralImpl(beskrivelse, setOf(ElementTags.FRITEKST))
 
     fun PlainTextScope<*, *>.fritekst(beskrivelse: String): Expression<String> =
-        Expression.Literal(beskrivelse, setOf(ElementTags.FRITEKST))
+        ExpressionImpl.LiteralImpl(beskrivelse, setOf(ElementTags.FRITEKST))
 }
 
 interface AutobrevTemplate<out LetterData : BrevbakerBrevdata> : BrevTemplate<LetterData, Brevkode.Automatisk> {

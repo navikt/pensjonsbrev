@@ -2,6 +2,7 @@
 
 package no.nav.pensjon.brev.maler.legacy
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev_safe
@@ -34,6 +35,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.virkningstidpunkt_safe
 import no.nav.pensjon.brev.maler.legacy.aarstall_trygdetid
 import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.ExpressionImpl
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk

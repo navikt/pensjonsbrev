@@ -17,8 +17,8 @@ class ListScope<Lang : LanguageSupport, LetterData : Any> : ControlStructureScop
 
     fun item(create: TextOnlyScope<Lang, LetterData>.() -> Unit) {
         TextOnlyScope<Lang, LetterData>().apply(create)
-            .let { Element.OutlineContent.ParagraphContent.ItemList.Item(it.elements) }
-            .let { ContentOrControlStructure.Content(it) }
+            .let { ElementImpl.OutlineContentImpl.ParagraphContentImpl.ItemListImpl.ItemImpl(it.elements) }
+            .let { ContentOrControlStructureImpl.ContentImpl(it) }
             .also { children.add(it) }
     }
 

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -138,8 +139,9 @@ object Felles {
         }
     }
 
+    @OptIn(InterneDataklasser::class)
     fun Expression<Bruker>.fulltNavn(): Expression<String> =
-        Expression.UnaryInvoke(
+        ExpressionImpl.UnaryInvokeImpl(
             value = this,
             operation = UnaryOperation.BrukerFulltNavn
         )

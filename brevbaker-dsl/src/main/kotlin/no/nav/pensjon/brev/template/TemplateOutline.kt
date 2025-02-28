@@ -30,23 +30,23 @@ interface OutlineScope<Lang : LanguageSupport, LetterData : Any> {
 
     fun title1(create: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
         PlainTextOnlyScope<Lang, LetterData>().apply(create)
-            .let { Element.OutlineContent.Title1(it.elements) }
-            .let { ContentOrControlStructure.Content(it) }
+            .let { ElementImpl.OutlineContentImpl.Title1Impl(it.elements) }
+            .let { ContentOrControlStructureImpl.ContentImpl(it) }
             .also { addOutlineContent(it) }
     }
 
     fun title2(create: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
         PlainTextOnlyScope<Lang, LetterData>().apply(create)
-            .let { Element.OutlineContent.Title2(it.elements) }
-            .let { ContentOrControlStructure.Content(it) }
+            .let { ElementImpl.OutlineContentImpl.Title2Impl(it.elements) }
+            .let { ContentOrControlStructureImpl.ContentImpl(it) }
             .also { addOutlineContent(it) }
     }
 
 
     fun paragraph(create: ParagraphOnlyScope<Lang, LetterData>.() -> Unit) {
         ParagraphOnlyScope<Lang, LetterData>().apply(create)
-            .let { Element.OutlineContent.Paragraph(it.elements) }
-            .let { ContentOrControlStructure.Content(it) }
+            .let { ElementImpl.OutlineContentImpl.ParagraphImpl(it.elements) }
+            .let { ContentOrControlStructureImpl.ContentImpl(it) }
             .also { addOutlineContent(it) }
     }
 }

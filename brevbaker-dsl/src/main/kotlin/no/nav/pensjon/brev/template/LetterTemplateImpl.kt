@@ -73,12 +73,6 @@ object ExpressionImpl {
         }
 
         @InterneDataklasser
-        object LanguageImpl : FromScope.Language {
-            override fun eval(scope: ExpressionScope<*>) = scope.language
-            override fun stableHashCode(): Int = "FromScope.Language".hashCode()
-        }
-
-        @InterneDataklasser
         class ArgumentImpl<out Out> : FromScope.Argument<Out> {
             @Suppress("UNCHECKED_CAST")
             override fun eval(scope: ExpressionScope<*>) = scope.argument as Out

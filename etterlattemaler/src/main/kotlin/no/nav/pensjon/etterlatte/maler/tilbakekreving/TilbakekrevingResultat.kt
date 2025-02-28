@@ -1,6 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.ExpressionImpl
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.StringExpression
@@ -45,8 +47,9 @@ object TilbakekrevingResultatFormatter : LocalizedFormatter<TilbakekrevingResult
 	override fun stableHashCode(): Int = "TilbakekrevingResultatFormatter".hashCode()
 }
 
+@OptIn(InterneDataklasser::class)
 fun Expression<TilbakekrevingResultat>.format(formatter: LocalizedFormatter<TilbakekrevingResultat> = TilbakekrevingResultatFormatter): StringExpression =
-	Expression.BinaryInvoke(
+	ExpressionImpl.BinaryInvokeImpl(
 		first = this,
 		second = Expression.FromScope.Language,
 		operation = formatter,

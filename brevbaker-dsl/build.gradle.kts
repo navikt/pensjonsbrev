@@ -54,4 +54,9 @@ tasks {
     compileTestJava {
         targetCompatibility = apiModelJavaTarget
     }
+    kotlin {
+        compileKotlin {
+            compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
+        }
+    }
 }

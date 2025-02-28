@@ -27,7 +27,11 @@ sealed interface Expression<out Out> : StableHash {
     sealed interface FromScope<out Out> : Expression<Out> {
         interface Felles : FromScope<no.nav.pensjon.brevbaker.api.model.Felles>
 
-        interface Language : FromScope<no.nav.pensjon.brev.template.Language>
+
+        object Language : FromScope<no.nav.pensjon.brev.template.Language> {
+            override fun eval(scope: ExpressionScope<*>) = scope.language
+            override fun stableHashCode(): Int = "FromScope.Language".hashCode()
+        }
 
         interface Argument<out Out> : FromScope<Out> {
             @Suppress("UNCHECKED_CAST")

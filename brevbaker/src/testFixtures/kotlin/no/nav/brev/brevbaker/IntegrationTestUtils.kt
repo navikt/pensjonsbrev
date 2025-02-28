@@ -7,7 +7,6 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.PDFRequestImpl
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
@@ -25,6 +24,7 @@ import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.LetterTemplateImpl
 import no.nav.pensjon.brev.template.OutlineElement
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -214,7 +214,7 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
 fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = Fixtures.felles, pdfByggerService: PDFByggerService = laTeXCompilerService) =
     LetterImpl(this, EmptyBrevdata, Bokmal, felles).renderTestPDF(fileName, pdfByggerService = pdfByggerService)
 
-internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate(
+internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplateImpl(
     name = "test",
     title = listOf(bokmalTittel),
     letterDataType = Unit::class,
