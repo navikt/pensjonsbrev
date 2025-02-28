@@ -356,12 +356,14 @@ object ElementImpl {
 
             @InterneDataklasser
             object FormImpl {
+                @InterneDataklasser
                 data class TextImpl<out Lang : LanguageSupport>(
                     override val prompt: TextElement<Lang>,
                     override val size: Form.Text.Size,
                     override val vspace: Boolean = true,
                 ) : Form.Text<Lang>, StableHash by StableHash.of(prompt, StableHash.of(size), StableHash.of(vspace))
 
+                @InterneDataklasser
                 data class MultipleChoiceImpl<out Lang : LanguageSupport>(
                     // TODO: Denne bør ikke være TextElement, bør være Element.OutlineContent.ParagraphContent.Text
                     override val prompt: TextElement<Lang>,

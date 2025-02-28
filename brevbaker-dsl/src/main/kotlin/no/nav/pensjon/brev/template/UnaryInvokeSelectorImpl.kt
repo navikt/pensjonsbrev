@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brev.template.Expression.FromScope
 import no.nav.pensjon.brev.template.ExpressionImpl.FromScopeImpl.ArgumentImpl
 
+// TODO: Vurder denne som vanleg class
 data class UnaryInvokeSelectorImpl<In, Out>(
     override val value: Expression<In>,
     override val operation: UnaryOperation<In, Out>,

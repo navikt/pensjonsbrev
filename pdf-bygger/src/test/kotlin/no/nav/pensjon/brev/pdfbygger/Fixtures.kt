@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadataImpl
 import java.time.LocalDate
 
 object Fixtures {
@@ -57,7 +58,7 @@ internal inline fun <reified LetterData : Any> outlineTestTemplate(noinline func
 
 internal val bokmalTittel = newText(Language.Bokmal to "test brev")
 internal val nynorskTittel = newText(Language.Nynorsk to "test brev")
-internal val testLetterMetadata = LetterMetadata(
+internal val testLetterMetadata = LetterMetadataImpl(
     displayTitle = "En fin display tittel",
     isSensitiv = false,
     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,

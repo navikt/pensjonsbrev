@@ -6,7 +6,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import no.nav.brev.brevbaker.Fixtures
 import no.nav.brev.brevbaker.LetterTestRenderer
-import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.brev.brevbaker.PDFCompilationOutputImpl
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
@@ -22,7 +22,7 @@ class RedigerbarTemplateResourceTest {
     private val pdfInnhold = "generert redigerbar pdf"
     private val pdf = pdfInnhold.toByteArray()
     private val latexMock = mockk<LaTeXCompilerService> {
-        coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(pdf)
+        coEvery { producePDF(any(), any()) } returns PDFCompilationOutputImpl(pdf)
     }
     private val redigerbar = RedigerbarTemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), latexMock)
 

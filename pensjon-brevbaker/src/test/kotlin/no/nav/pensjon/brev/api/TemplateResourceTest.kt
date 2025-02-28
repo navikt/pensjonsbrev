@@ -5,7 +5,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.Fixtures
-import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.brev.brevbaker.PDFCompilationOutputImpl
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
@@ -25,7 +25,7 @@ class TemplateResourceTest {
     private val pdfInnhold = "generert pdf"
     private val pdf = pdfInnhold.toByteArray()
     private val latexMock = mockk<LaTeXCompilerService> {
-        coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(pdf)
+        coEvery { producePDF(any(), any()) } returns PDFCompilationOutputImpl(pdf)
     }
     private val autobrev = AutobrevTemplateResource("autobrev", Testmaler.hentAutobrevmaler(), latexMock)
 

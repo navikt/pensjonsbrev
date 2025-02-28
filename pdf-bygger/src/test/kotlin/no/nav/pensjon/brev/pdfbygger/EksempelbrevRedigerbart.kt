@@ -22,6 +22,7 @@ import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.fornavn
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadataImpl
 import java.time.LocalDate
 
 enum class EksempelbrevRedigerbartBrevkode : Brevkode.Redigerbart {
@@ -42,7 +43,7 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
         name = "EKSEMPEL_REDIGERBART_BREV", //Letter ID
         letterDataType = EksempelRedigerbartDto::class, // Data class containing the required data of this letter
         languages = languages(Bokmal, Nynorsk),
-        letterMetadata = LetterMetadata(
+        letterMetadata = LetterMetadataImpl(
             displayTitle = "Dette er et redigerbart eksempel-brev", // Display title for external systems
             isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, // Brukes ved distribusjon av brevet
