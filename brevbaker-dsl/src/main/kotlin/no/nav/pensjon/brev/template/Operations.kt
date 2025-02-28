@@ -10,71 +10,58 @@ import kotlin.math.absoluteValue
 
 interface Operation : StableHash
 
-abstract class AbstractOperation : Operation {
-    // Since most operations don't have fields, and hence can't be data classes,
-    // we override equals+hashCode to compare by class.
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-        return true
-    }
+sealed interface UnaryOperation<In, out Out> : Operation {
+    fun apply(input: In): Out
 
-    override fun hashCode(): Int = stableHashCode()
-    override fun toString(): String = "${this::class.simpleName}"
-}
-
-sealed class UnaryOperation<In, out Out> : AbstractOperation() {
-    abstract fun apply(input: In): Out
-
-    object AbsoluteValue : UnaryOperation<Int, Int>(), StableHash by StableHash.of("UnaryOperation.AbsoluteValue") {
+    object AbsoluteValue : UnaryOperation<Int, Int>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.AbsoluteValue") {
         override fun apply(input: Int): Int = input.absoluteValue
     }
 
-    object AbsoluteValueKroner : UnaryOperation<Kroner, Kroner>(), StableHash by StableHash.of("UnaryOperation.AbsoluteValueKroner") {
+    object AbsoluteValueKroner : UnaryOperation<Kroner, Kroner>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.AbsoluteValueKroner") {
         override fun apply(input: Kroner): Kroner = Kroner(input.value.absoluteValue)
     }
 
-    object BrukerFulltNavn : UnaryOperation<Bruker, String>(), StableHash by StableHash.of("UnaryOperation.BrukerFulltNavn") {
+    object BrukerFulltNavn : UnaryOperation<Bruker, String>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.BrukerFulltNavn") {
         override fun apply(input: Bruker): String = input.fulltNavn()
     }
 
-    object FunksjonsbryterEnabled : UnaryOperation<FeatureToggle, Boolean>(), StableHash by StableHash.of("UnaryOperation.Enabled") {
+    object FunksjonsbryterEnabled : UnaryOperation<FeatureToggle, Boolean>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.Enabled") {
         override fun apply(input: FeatureToggle): Boolean = FeatureToggleSingleton.isEnabled(input)
     }
 
-    object IsEmpty : UnaryOperation<Collection<*>, Boolean>(), StableHash by StableHash.of("UnaryOperation.IsEmpty") {
+    object IsEmpty : UnaryOperation<Collection<*>, Boolean>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.IsEmpty") {
         override fun apply(input: Collection<*>): Boolean = input.isEmpty()
     }
 
-    data class MapValue<In, Out>(val mapper: ExpressionMapper<In, Out>) : UnaryOperation<In, Out>(), StableHash {
+    data class MapValue<In, Out>(val mapper: ExpressionMapper<In, Out>) : UnaryOperation<In, Out>, AbstractOperation(), StableHash {
         override fun apply(input: In): Out = mapper.apply(input)
         override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.MapValue"), mapper).stableHashCode()
     }
 
-    data class MapCollection<In, Out>(val mapper: UnaryOperation<In, Out>) : UnaryOperation<Collection<In>, Collection<Out>>() {
+    data class MapCollection<In, Out>(val mapper: UnaryOperation<In, Out>) : UnaryOperation<Collection<In>, Collection<Out>>, AbstractOperation() {
         override fun apply(input: Collection<In>): Collection<Out> = input.map { mapper.apply(it) }
         override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.MapCollection"), mapper).stableHashCode()
     }
 
-    object Not : UnaryOperation<Boolean, Boolean>(), StableHash by StableHash.of("UnaryOperation.Not") {
+    object Not : UnaryOperation<Boolean, Boolean>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.Not") {
         override fun apply(input: Boolean): Boolean = input.not()
     }
 
-    class SafeCall<In : Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In?, Out?>() {
+    class SafeCall<In : Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In?, Out?>, AbstractOperation() {
         override fun apply(input: In?): Out? = input?.let { selector.selector(it) }
         override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.SafeCall"), selector).stableHashCode()
     }
 
-    class Select<In : Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In, Out>() {
+    class Select<In : Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In, Out>, AbstractOperation() {
         override fun apply(input: In): Out = selector.selector(input)
         override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.Select"), StableHash.of(selector)).stableHashCode()
     }
 
-    object SizeOf : UnaryOperation<Collection<*>, Int>(), StableHash by StableHash.of("UnaryOperation.SizeOf") {
+    object SizeOf : UnaryOperation<Collection<*>, Int>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.SizeOf") {
         override fun apply(input: Collection<*>): Int = input.size
     }
 
-    object ToString : UnaryOperation<Any, String>(), StableHash by StableHash.of("UnaryOperation.ToString") {
+    object ToString : UnaryOperation<Any, String>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.ToString") {
         override fun apply(input: Any): String = input.toString()
     }
 }
