@@ -8,7 +8,9 @@ import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import kotlin.math.absoluteValue
 
-abstract class Operation : StableHash {
+interface Operation : StableHash
+
+abstract class AbstractOperation : Operation {
     // Since most operations don't have fields, and hence can't be data classes,
     // we override equals+hashCode to compare by class.
     override fun equals(other: Any?): Boolean {
@@ -21,7 +23,7 @@ abstract class Operation : StableHash {
     override fun toString(): String = "${this::class.simpleName}"
 }
 
-sealed class UnaryOperation<In, out Out> : Operation() {
+sealed class UnaryOperation<In, out Out> : AbstractOperation() {
     abstract fun apply(input: In): Out
 
     object AbsoluteValue : UnaryOperation<Int, Int>(), StableHash by StableHash.of("UnaryOperation.AbsoluteValue") {
@@ -77,7 +79,7 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     }
 }
 
-abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? = null) : Operation() {
+abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? = null) : AbstractOperation() {
     data class Documentation(val name: String, val syntax: Notation) {
         enum class Notation { PREFIX, INFIX, POSTFIX, FUNCTION }
     }
