@@ -82,6 +82,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
         val result = SourceFile.kotlin(
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.ExpressionImpl
                     import no.nav.pensjon.brev.template.TemplateModelSelector
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
@@ -89,12 +90,14 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTestSelectors.AModelSelectors.navn
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTestSelectors.AModelSelectors.navnSelector
+                    import no.nav.brev.InterneDataklasser
 
                     @TemplateModelHelpers
+                    @OptIn(InterneDataklasser::class)
                     object MyClass : HasModel<TemplateModelHelpersAnnotationProcessorTest.AModel> {
                         fun someusage() {
                             val fromScope: Expression<String> = SimpleTemplateScope<TemplateModelHelpersAnnotationProcessorTest.AModel>().navn
-                            val fromOtherExpression: Expression<String> = Expression.Literal(TemplateModelHelpersAnnotationProcessorTest.AModel("jadda")).navn
+                            val fromOtherExpression: Expression<String> = ExpressionImpl.LiteralImpl(TemplateModelHelpersAnnotationProcessorTest.AModel("jadda")).navn
                             val actualSelector: TemplateModelSelector<TemplateModelHelpersAnnotationProcessorTest.AModel, String> = navnSelector
                         }
                     }
@@ -288,14 +291,17 @@ class TemplateModelHelpersAnnotationProcessorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.ExpressionImpl
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModelSelectors.name
+                    import no.nav.brev.InterneDataklasser
 
                     @TemplateModelHelpers
+                    @OptIn(InterneDataklasser::class)
                     object MyClass : HasModel<List<SimpleModel>> {
-                        val x: Expression<String> = Expression.Literal(SimpleModel("et navn")).name
+                        val x: Expression<String> = ExpressionImpl.LiteralImpl(SimpleModel("et navn")).name
                     }
                     """.trimIndent()
         ).compile()
@@ -310,12 +316,14 @@ class TemplateModelHelpersAnnotationProcessorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.ExpressionImpl
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
                     import FirstSelectors.second
                     import SecondSelectors.third
                     import ThirdSelectors.fourth
                     import FourthSelectors.value
+                    import no.nav.brev.InterneDataklasser
     
                     data class First(val second: Second)
                     data class Second(val third: Third)
@@ -323,8 +331,9 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     data class Fourth(val value: Int)
 
                     @TemplateModelHelpers
+                    @OptIn(InterneDataklasser::class)
                     object MyClass : HasModel<First> {
-                        val expr: Expression<First> = Expression.Literal(First(Second(Third(Fourth(99)))))
+                        val expr: Expression<First> = ExpressionImpl.LiteralImpl(First(Second(Third(Fourth(99)))))
                         val value: Expression<Int> = expr.second.third.fourth.value
                     }
                     """.trimIndent()
@@ -349,16 +358,19 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import AnotherModelSelectors.age
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.ExpressionImpl
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModelSelectors.name
+                    import no.nav.brev.InterneDataklasser
 
                     data class AnotherModel(val age: Int)
 
                     @TemplateModelHelpers([AnotherModel::class])
+                    @OptIn(InterneDataklasser::class)
                     object MyClass : HasModel<List<SimpleModel>> {
-                        val x: Expression<Int> = Expression.Literal(AnotherModel(35)).age
+                        val x: Expression<Int> = ExpressionImpl.LiteralImpl(AnotherModel(35)).age
                     }
                     """.trimIndent()
         ).compile()
@@ -374,14 +386,18 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import AnotherModelSelectors.age
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.ExpressionImpl
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
+                    import no.nav.brev.InterneDataklasser
 
                     data class AnotherModel(val age: Int)
 
                     @TemplateModelHelpers([AnotherModel::class])
-                    interface MyInterface 
-                    val x: Expression<Int> = Expression.Literal(AnotherModel(35)).age
+                    interface MyInterface
+
+                    @OptIn(InterneDataklasser::class)
+                    val x: Expression<Int> = ExpressionImpl.LiteralImpl(AnotherModel(35)).age
                     """.trimIndent()
         ).compile()
 
@@ -396,11 +412,13 @@ class TemplateModelHelpersAnnotationProcessorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.ExpressionImpl
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                     import ParentModelSelectors.child
                     import ParentModelSelectors.ChildModelSelectors.uncle
                     import UncleModelSelectors.name
+                    import no.nav.brev.InterneDataklasser
                     
                     data class UncleModel(val name: String)
             
@@ -409,8 +427,9 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     }
 
                     @TemplateModelHelpers
+                    @OptIn(InterneDataklasser::class)
                     object MyClass : HasModel<ParentModel> {
-                        val data: Expression<ParentModel> = Expression.Literal(ParentModel(ParentModel.ChildModel(UncleModel("Scrooge"))))
+                        val data: Expression<ParentModel> = ExpressionImpl.LiteralImpl(ParentModel(ParentModel.ChildModel(UncleModel("Scrooge"))))
                         val child: Expression<ParentModel.ChildModel> = data.child
                         val uncleName: Expression<String> = child.uncle.name
                     }
@@ -431,11 +450,13 @@ class TemplateModelHelpersAnnotationProcessorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.ExpressionImpl
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                     import ParentModelSelectors.child
                     import ParentModelSelectors.ChildModelSelectors.uncle
                     import UncleModelSelectors.name
+                    import no.nav.brev.InterneDataklasser
                     
                     data class UncleModel(val name: String)
             
@@ -444,14 +465,16 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     }
 
                     @TemplateModelHelpers
+                    @OptIn(InterneDataklasser::class)
                     object MyClass : HasModel<ParentModel> {
-                        val data: Expression<ParentModel> = Expression.Literal(ParentModel(ParentModel.ChildModel(UncleModel("Scrooge"))))
+                        val data: Expression<ParentModel> = ExpressionImpl.LiteralImpl(ParentModel(ParentModel.ChildModel(UncleModel("Scrooge"))))
                         val child: Expression<ParentModel.ChildModel> = data.child
                         val uncleName: Expression<String> = child.uncle.name
                     }
                     @TemplateModelHelpers
+                    @OptIn(InterneDataklasser::class)
                     object ReUse : HasModel<UncleModel> {
-                        val uncleName: Expression<String> = Expression.Literal(UncleModel("Scrooge")).name
+                        val uncleName: Expression<String> = ExpressionImpl.LiteralImpl(UncleModel("Scrooge")).name
                     }
                     """.trimIndent()
         ).compile()
@@ -465,11 +488,13 @@ class TemplateModelHelpersAnnotationProcessorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.ExpressionImpl
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                     import ParentModelSelectors.child
                     import ParentModelSelectors.ChildModelSelectors.uncle
                     import AMotherSelectors.UncleModelSelectors.name
+                    import no.nav.brev.InterneDataklasser
                     
                     data class AMother(val child: UncleModel) {
                         data class UncleModel(val name: String)
@@ -480,14 +505,16 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     }
 
                     @TemplateModelHelpers
+                    @OptIn(InterneDataklasser::class)
                     object MyClass : HasModel<ParentModel> {
-                        val data: Expression<ParentModel> = Expression.Literal(ParentModel(ParentModel.ChildModel(AMother.UncleModel("Scrooge"))))
+                        val data: Expression<ParentModel> = ExpressionImpl.LiteralImpl(ParentModel(ParentModel.ChildModel(AMother.UncleModel("Scrooge"))))
                         val child: Expression<ParentModel.ChildModel> = data.child
                         val uncleName: Expression<String> = child.uncle.name
                     }
                     @TemplateModelHelpers
+                    @OptIn(InterneDataklasser::class)
                     object ReUse : HasModel<AMother.UncleModel> {
-                        val uncleName: Expression<String> = Expression.Literal(AMother.UncleModel("Scrooge")).name
+                        val uncleName: Expression<String> = ExpressionImpl.LiteralImpl(AMother.UncleModel("Scrooge")).name
                     }
                     """.trimIndent()
         ).compile()

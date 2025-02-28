@@ -194,6 +194,7 @@ class TemplateModelVisitorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.ExpressionImpl
                     import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
@@ -201,10 +202,12 @@ class TemplateModelVisitorTest {
                     import no.nav.pensjon.brev.template.thirdpkg.ModelWithNullable
                     import no.nav.pensjon.brev.template.thirdpkg.ModelWithNullableSelectors.simpleModel
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModelSelectors.name_safe
+                    import no.nav.brev.InterneDataklasser
 
                     @TemplateModelHelpers
+                    @OptIn(InterneDataklasser::class)
                     object MyClass : HasModel<ModelWithNullable> {
-                        val x: Expression<String?> = Expression.Literal(ModelWithNullable(SimpleModel("et navn"), 28)).simpleModel.name_safe
+                        val x: Expression<String?> = ExpressionImpl.LiteralImpl(ModelWithNullable(SimpleModel("et navn"), 28)).simpleModel.name_safe
                     }
                     """.trimIndent()
         ).compile()
@@ -219,20 +222,23 @@ class TemplateModelVisitorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.ExpressionImpl
                     import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                     import ANameSelectors.first
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModelSelectors.name
+                    import no.nav.brev.InterneDataklasser
                     
             
                     data class AName(val first: String, val second: String)
                     data class ModelWithList(val theList: List<SimpleModel>, val theCollection: Collection<AName>)
 
                     @TemplateModelHelpers
+                    @OptIn(InterneDataklasser::class)
                     object MyClass : HasModel<ModelWithList> {
-                        val aName: Expression<String> = Expression.Literal(AName("firstname", "secondname")).first
-                        val simple: Expression<String> = Expression.Literal(SimpleModel("hello")).name
+                        val aName: Expression<String> = ExpressionImpl.LiteralImpl(AName("firstname", "secondname")).first
+                        val simple: Expression<String> = ExpressionImpl.LiteralImpl(SimpleModel("hello")).name
                     }
                     """.trimIndent()
         ).compile()
@@ -249,20 +255,23 @@ class TemplateModelVisitorTest {
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.ExpressionImpl
                     import no.nav.pensjon.brev.template.dsl.helpers.SimpleTemplateScope
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                     import ANameSelectors.first
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModelSelectors.name
+                    import no.nav.brev.InterneDataklasser
                     
             
                     data class AName(val first: String, val second: String)
                     data class ModelWithList(val theList: List<SimpleModel>?, val theCollection: Collection<AName>?)
 
                     @TemplateModelHelpers
+                    @OptIn(InterneDataklasser::class)
                     object MyClass : HasModel<ModelWithList> {
-                        val aName: Expression<String> = Expression.Literal(AName("firstname", "secondname")).first
-                        val simple: Expression<String> = Expression.Literal(SimpleModel("hello")).name
+                        val aName: Expression<String> = ExpressionImpl.LiteralImpl(AName("firstname", "secondname")).first
+                        val simple: Expression<String> = ExpressionImpl.LiteralImpl(SimpleModel("hello")).name
                     }
                     """.trimIndent()
         ).compile()
