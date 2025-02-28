@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.maler.legacy.fraser.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.model.LetterMetadataPensjon
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -37,7 +38,7 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
         name = kode.name,
         letterDataType = EndretUfoeretrygdPGAInntektDto::class,
         languages = languages(Bokmal, Nynorsk),
-        letterMetadata = LetterMetadata(
+        letterMetadata = LetterMetadataPensjon(
             displayTitle = "Vedtak - endring av uføretrygd på grunn av inntekt (automatisk)",
             isSensitiv = false,
             distribusjonstype = VEDTAK,

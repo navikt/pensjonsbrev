@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.LetterMetadataEtterlatte
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTOSelectors.innhold
@@ -21,7 +22,7 @@ object OmstillingsstoenadVarsel : EtterlatteTemplate<ManueltBrevMedTittelDTO>, H
         name = kode.name,
         letterDataType = ManueltBrevMedTittelDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        letterMetadata = LetterMetadata(
+        letterMetadata = LetterMetadataEtterlatte(
             displayTitle = "Varselbrev omstillingsstønad",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,

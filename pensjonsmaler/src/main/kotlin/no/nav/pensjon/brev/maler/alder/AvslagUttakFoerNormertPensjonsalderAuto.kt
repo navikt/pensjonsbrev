@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.model.LetterMetadataPensjon
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
@@ -34,7 +35,7 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
         name = kode.name,
         letterDataType = AvslagUttakFoerNormertPensjonsalderAutoDto::class,
         languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
+        letterMetadata = LetterMetadataPensjon(
             displayTitle = "Nav har avslått søknaden din om alderspensjon før normert pensjonsalder",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,

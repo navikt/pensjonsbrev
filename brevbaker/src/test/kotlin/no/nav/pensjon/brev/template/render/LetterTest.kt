@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.Fixtures.felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadataImpl
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -18,7 +19,7 @@ class LetterTest {
         name = "test",
         letterDataType = TestData::class,
         languages = languages(Language.Bokmal),
-        letterMetadata = LetterMetadata(
+        letterMetadata = LetterMetadataImpl(
             "Test",
             false,
             LetterMetadata.Distribusjonstype.ANNET,

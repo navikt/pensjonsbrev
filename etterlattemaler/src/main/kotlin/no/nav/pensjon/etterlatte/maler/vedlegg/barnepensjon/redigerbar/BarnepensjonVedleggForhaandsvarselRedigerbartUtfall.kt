@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.LetterMetadataEtterlatte
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.Vedlegg
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonForhaandsvarselFraser
@@ -23,7 +24,7 @@ object BarnepensjonVedleggForhaandsvarselRedigerbartUtfall : EtterlatteTemplate<
         name = kode.name,
         letterDataType = ManueltBrevDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
+        letterMetadata = LetterMetadataEtterlatte(
             displayTitle = "Utfall forhåndsvarsel",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,

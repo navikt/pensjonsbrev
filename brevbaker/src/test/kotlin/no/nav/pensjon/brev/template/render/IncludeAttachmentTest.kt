@@ -7,7 +7,7 @@ import com.natpryce.hamkrest.isEmpty
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.ExpressionImpl
 import no.nav.pensjon.brev.template.HasModel
-import no.nav.pensjon.brev.template.IncludeAttachment
+import no.nav.pensjon.brev.template.IncludeAttachmentImpl
 import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterImpl
@@ -45,7 +45,7 @@ class IncludeAttachmentTest {
             language = languages(Nynorsk),
             outline = emptyList(),
             attachments = listOf(
-                IncludeAttachment(Unit.expr(), testVedlegg, false.expr())
+                IncludeAttachmentImpl(Unit.expr(), testVedlegg, false.expr())
             ),
             letterMetadata = testLetterMetadata
         )
@@ -106,7 +106,7 @@ class IncludeAttachmentTest {
                 language = languages(Nynorsk),
                 outline = emptyList(),
                 attachments = listOf(
-                    IncludeAttachment(selector as Expression<String>, testVedlegg, selector.notNull())
+                    IncludeAttachmentImpl(selector as Expression<String>, testVedlegg, selector.notNull())
                 ), letterMetadata = testLetterMetadata
             )
             assertThat(testTemplate, equalTo(expected))

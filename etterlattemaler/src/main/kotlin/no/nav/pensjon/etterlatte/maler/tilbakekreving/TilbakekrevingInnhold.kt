@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.LetterMetadataEtterlatte
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 
@@ -23,7 +24,7 @@ object TilbakekrevingInnhold: EtterlatteTemplate<TilbakekrevingRedigerbartBrevDT
 		name = kode.name,
 		letterDataType = TilbakekrevingRedigerbartBrevDTO::class,
 		languages = languages(Bokmal, Nynorsk, English),
-		letterMetadata = LetterMetadata(
+		letterMetadata = LetterMetadataEtterlatte(
 			displayTitle = "Vedtak - Tilbakekreving",
 			isSensitiv = true,
 			distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,

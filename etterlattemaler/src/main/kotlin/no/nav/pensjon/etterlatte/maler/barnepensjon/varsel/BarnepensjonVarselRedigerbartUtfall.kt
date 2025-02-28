@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.LetterMetadataEtterlatte
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfallDTOSelectors.automatiskBehandla
@@ -33,7 +34,7 @@ object BarnepensjonVarselRedigerbartUtfall : EtterlatteTemplate<BarnepensjonVars
         name = kode.name,
         letterDataType = BarnepensjonVarselRedigerbartUtfallDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
+        letterMetadata = LetterMetadataEtterlatte(
             displayTitle = "Varsel",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,

@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.totaltAvvik
 import no.nav.pensjon.brev.maler.fraser.ufoer.*
 import no.nav.pensjon.brev.maler.vedlegg.*
+import no.nav.pensjon.brev.model.LetterMetadataPensjon
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -34,7 +35,7 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
             name = kode.name,
             letterDataType = ForhaandsvarselEtteroppgjoerUfoeretrygdDto::class,
             languages = languages(Bokmal, Nynorsk, English),
-            letterMetadata = LetterMetadata(
+            letterMetadata = LetterMetadataPensjon(
                 displayTitle = "Varsel - etteroppgjør av uføretrygd ved feilutbetaling (automatisk)",
                 isSensitiv = false,
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,

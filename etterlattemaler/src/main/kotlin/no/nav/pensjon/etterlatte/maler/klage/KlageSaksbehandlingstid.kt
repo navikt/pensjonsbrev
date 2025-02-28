@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.LetterMetadataEtterlatte
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.SAKSBEHANDLINGSTIDER_BP
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.SAKSBEHANDLINGSTIDER_OMS
@@ -45,7 +46,7 @@ object KlageSaksbehandlingstid : EtterlatteTemplate<KlageSaksbehandlingstidDTO> 
             letterDataType = KlageSaksbehandlingstidDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
-            LetterMetadata(
+            LetterMetadataEtterlatte(
                 displayTitle = "Klagebehandlingstid",
                 isSensitiv = false,
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,

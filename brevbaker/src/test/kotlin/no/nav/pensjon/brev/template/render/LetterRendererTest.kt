@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.ExpressionImpl
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.IncludeAttachment
+import no.nav.pensjon.brev.template.IncludeAttachmentImpl
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
@@ -210,8 +211,8 @@ class LetterRendererTest {
             paragraph { text(Bokmal to "Attachment #2") }
         }
         val attachments = listOf(
-            IncludeAttachment(Unit.expr(), attachment1, true.expr()),
-            IncludeAttachment(Unit.expr(), attachment2, false.expr())
+            IncludeAttachmentImpl(Unit.expr(), attachment1, true.expr()),
+            IncludeAttachmentImpl(Unit.expr(), attachment2, false.expr())
         )
 
         val actualAttachments = mutableListOf<AttachmentTemplate<*, *>>()
@@ -249,7 +250,7 @@ class LetterRendererTest {
         var evaluatedAttachmentScopedExpr: String? = null
         MockRenderer().publicRenderAttachments(
             ExpressionScope(letterData, felles, Bokmal),
-            listOf(IncludeAttachment(vedleggDataExpr, attachment1, true.expr()))
+            listOf(IncludeAttachmentImpl(vedleggDataExpr, attachment1, true.expr()))
         ) { scope, _, _ ->
             evaluatedAttachmentScopedExpr = attachmentScopedExpr?.eval(scope)
         }

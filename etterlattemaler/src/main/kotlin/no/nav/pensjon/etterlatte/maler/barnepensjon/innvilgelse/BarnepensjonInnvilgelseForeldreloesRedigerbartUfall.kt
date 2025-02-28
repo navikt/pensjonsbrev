@@ -9,6 +9,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.LetterMetadataEtterlatte
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.ForskjelligAvdoedPeriode
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
@@ -46,7 +47,7 @@ object BarnepensjonInnvilgelseForeldreloesRedigerbartUfall :
         name = kode.name,
         letterDataType = BarnepensjonForeldreloesRedigerbarDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        letterMetadata = LetterMetadata(
+        letterMetadata = LetterMetadataEtterlatte(
             displayTitle = "Vedtak - innvilgelse - Foreldreløs",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,

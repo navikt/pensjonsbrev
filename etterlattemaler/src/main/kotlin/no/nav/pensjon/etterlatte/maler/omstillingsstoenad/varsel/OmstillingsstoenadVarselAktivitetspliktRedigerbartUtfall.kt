@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
+import no.nav.pensjon.etterlatte.LetterMetadataEtterlatte
 import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTOSelectors.er12MndVarsel
 
@@ -26,7 +27,7 @@ object OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfall :
             letterDataType = OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
-                LetterMetadata(
+                LetterMetadataEtterlatte(
                     displayTitle = "Varselbrev - stans om ikke akt.plikt oppfylt",
                     isSensitiv = true,
                     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,

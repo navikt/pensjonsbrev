@@ -47,6 +47,7 @@ import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadataImpl
 import java.time.LocalDate
 
 enum class LetterExampleBrevkode : Brevkode.Automatisk {
@@ -64,7 +65,7 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
         name = "EKSEMPEL_BREV", //Letter ID
         letterDataType = LetterExampleDto::class, // Data class containing the required data of this letter
         languages = languages(Bokmal, Nynorsk),
-        letterMetadata = LetterMetadata(
+        letterMetadata = LetterMetadataImpl(
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
             isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, // Brukes ved distribusjon av brevet

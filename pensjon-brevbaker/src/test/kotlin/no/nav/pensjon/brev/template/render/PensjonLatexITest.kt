@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.render.TestTemplateDtoSelectors.etNavn
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadataImpl
 import org.junit.jupiter.api.*
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -41,7 +42,7 @@ class PensjonLatexITest {
             name = "test-template",
             letterDataType = TestTemplateDto::class,
             languages = languages(Bokmal),
-            letterMetadata = LetterMetadata(
+            letterMetadata = LetterMetadataImpl(
                 displayTitle = "En fin display tittel",
                 isSensitiv = false,
                 distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
@@ -111,7 +112,7 @@ class PensjonLatexITest {
                 name = "test-template",
                 letterDataType = TestTemplateDto::class,
                 languages = languages(Bokmal),
-                letterMetadata = LetterMetadata(
+                letterMetadata = LetterMetadataImpl(
                     displayTitle = "En fin display tittel",
                     isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
