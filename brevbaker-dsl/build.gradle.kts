@@ -58,5 +58,8 @@ tasks {
         compileKotlin {
             compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
         }
+        compileTestKotlin {
+            compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
+        }
     }
 }

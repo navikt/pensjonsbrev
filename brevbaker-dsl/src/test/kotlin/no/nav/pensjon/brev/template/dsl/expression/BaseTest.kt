@@ -10,9 +10,9 @@ class BaseTest {
     @Test
     fun `ifElse creates a BinaryInvoke with branches as a tuple`() {
         val actual = ifElse(true.expr(), "hei".expr(), "hade bra".expr())
-        val expected = Expression.BinaryInvoke(
+        val expected = ExpressionImpl.BinaryInvokeImpl(
             first = true.expr(),
-            second = Expression.BinaryInvoke("hei".expr(), "hade bra".expr(), BinaryOperation.Tuple()),
+            second = ExpressionImpl.BinaryInvokeImpl("hei".expr(), "hade bra".expr(), BinaryOperation.Tuple()),
             operation = BinaryOperation.IfElse()
         )
 
@@ -21,7 +21,7 @@ class BaseTest {
 
     @Test
     fun `ifElse expression evaluates to correct branch`() {
-        val expr = ifElse(Expression.FromScope.Argument<Int>() equalTo 2, "hei", "hade bra")
+        val expr = ifElse(ExpressionImpl.FromScopeImpl.ArgumentImpl<Int>() equalTo 2, "hei", "hade bra")
 
         val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
 

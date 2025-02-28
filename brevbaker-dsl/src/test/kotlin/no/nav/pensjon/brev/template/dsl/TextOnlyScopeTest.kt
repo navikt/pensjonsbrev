@@ -4,6 +4,7 @@ import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
+import no.nav.pensjon.brev.template.ContentOrControlStructureImpl.ContentImpl
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import org.junit.jupiter.api.Assertions.*
@@ -30,7 +31,7 @@ class TextOnlyScopeTest {
     fun `includePhrase with arg adds elements`() {
         val actual = TextOnlyScope<LangBokmal, Unit>().apply { includePhrase(TextPhraseWithArg("hei".expr())) }
 
-        assertEquals(listOf(Content(Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(Bokmal to "hei".expr()))), actual.elements)
+        assertEquals(listOf(ContentImpl(ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.ExpressionImpl.ByLanguageImpl.create(Bokmal to "hei".expr()))), actual.elements)
     }
 
     @Test
@@ -46,7 +47,7 @@ class TextOnlyScopeTest {
     fun `eval adds expression`() {
         val actual = TextOnlyScope<LangBokmal, Unit>().apply { eval("expr".expr()) }
 
-        assertEquals(listOf(Content(Element.OutlineContent.ParagraphContent.Text.Expression<LangBokmal>("expr".expr()))), actual.elements)
+        assertEquals(listOf(ContentImpl(ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.ExpressionImpl<LangBokmal>("expr".expr()))), actual.elements)
     }
 
     @Test

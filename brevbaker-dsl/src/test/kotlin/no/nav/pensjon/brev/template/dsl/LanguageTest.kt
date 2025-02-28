@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template.dsl
 
-import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.ElementImpl
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSettings
 import org.junit.jupiter.api.Assertions
@@ -19,7 +19,7 @@ class LanguageTest {
 
         val expected = LanguageSettings(
             mapOf(
-                name to Element.OutlineContent.ParagraphContent.Text.Literal.create(
+                name to ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(
                     Language.Bokmal to "123",
                     Language.Nynorsk to "234",
                     Language.English to "345",
@@ -29,7 +29,7 @@ class LanguageTest {
 
         val actual = languageSettings {
             setting(name) {
-                Element.OutlineContent.ParagraphContent.Text.Literal.create(
+                ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(
                     Language.Bokmal to "123",
                     Language.Nynorsk to "234",
                     Language.English to "345",
@@ -44,7 +44,7 @@ class LanguageTest {
     fun `languageSettings_setting adds element to name`() {
         val name = "greeting"
 
-        val element = Element.OutlineContent.ParagraphContent.Text.Literal.create(
+        val element = ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(
             Language.Bokmal to "123",
             Language.Nynorsk to "234",
             Language.English to "345",

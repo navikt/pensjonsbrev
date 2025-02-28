@@ -11,8 +11,8 @@ class ExpressionTest {
 
     @Test
     fun `format creates a binaryinvoke with dateformatting by letter language`() {
-        val expr = Expression.Literal(LocalDate.of(2020,1,1))
-        val expected = Expression.BinaryInvoke(
+        val expr = ExpressionImpl.LiteralImpl(LocalDate.of(2020,1,1))
+        val expected = ExpressionImpl.BinaryInvokeImpl(
             first = expr,
             second = Expression.FromScope.Language,
             operation = LocalizedFormatter.DateFormat
@@ -24,14 +24,14 @@ class ExpressionTest {
     @Test
     fun `expr wraps value in ExpressionLiteral`() {
         val value = "hei"
-        assertEquals(Expression.Literal(value), value.expr())
+        assertEquals(ExpressionImpl.LiteralImpl(value), value.expr())
     }
 
     @Test
     fun `plus creates a concat expression of expression operands`() {
         val op1 = "hei".expr()
         val op2 = " du".expr()
-        val expected = Expression.BinaryInvoke(op1, op2, BinaryOperation.Concat)
+        val expected = ExpressionImpl.BinaryInvokeImpl(op1, op2, BinaryOperation.Concat)
 
         assertEquals(expected, op1 + op2)
     }
@@ -40,7 +40,7 @@ class ExpressionTest {
     fun `plus creates a concat expression of expression plus string`() {
         val op1 = "hei".expr()
         val op2 = " du"
-        val expected = Expression.BinaryInvoke(op1, Expression.Literal(op2), BinaryOperation.Concat)
+        val expected = ExpressionImpl.BinaryInvokeImpl(op1, ExpressionImpl.LiteralImpl(op2), BinaryOperation.Concat)
 
         assertEquals(expected, op1 + op2)
     }
@@ -109,6 +109,6 @@ class ExpressionTest {
 
     @Test
     fun `Assigned expression has a stableHashCode`() {
-        assertEquals(Expression.FromScope.Assigned<String>(listOf(1, 2, 3).hashCode()).stableHashCode(), Expression.FromScope.Assigned<String>(listOf(1, 2, 3).hashCode()).stableHashCode())
+        assertEquals(ExpressionImpl.FromScopeImpl.AssignedImpl<String>(listOf(1, 2, 3).hashCode()).stableHashCode(), ExpressionImpl.FromScopeImpl.AssignedImpl<String>(listOf(1, 2, 3).hashCode()).stableHashCode())
     }
 }
