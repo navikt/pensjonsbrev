@@ -25,8 +25,8 @@ data class OpplysningerBruktIBeregningen(
     val uttaksgrad: Int,
     val trygdetid: Int,
     val pensjonsbeholdning: Kroner,
-    val delingstallVedUttak: Int,
-    val delingstallVedNormertPensjonsalder: Int?,
+    val delingstallVedUttak: Double,
+    val delingstallVedNormertPensjonsalder: Double?,
     val normertPensjonsalder: NormertPensjonsalder,
     val sisteOpptjeningsAar: Int?,
 )
