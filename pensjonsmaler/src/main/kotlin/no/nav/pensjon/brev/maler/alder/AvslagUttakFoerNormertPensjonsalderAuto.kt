@@ -46,7 +46,7 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
     ) {
         title {
             textExpr(
-                Bokmal to "Nav har avslått søknaden din om alderspensjon før du blir ".expr() + normertPensjonsalder.aarOgMaanederFormattert(),
+                Bokmal to "Nav har avslått søknaden din om alderspensjon fra ".expr() + virkFom.format(),
                 Nynorsk to "".expr(),
                 English to "".expr()
             )
@@ -96,7 +96,7 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
                         }
                         item {
                             textExpr(
-                                Bokmal to "Dersom du hadde tatt ut ".expr() + opplysningerBruktIBeregningen.uttaksgrad.format() + " prosent alderspensjon fra "
+                                Bokmal to "Hvis du hadde tatt ut ".expr() + opplysningerBruktIBeregningen.uttaksgrad.format() + " prosent alderspensjon fra "
                                         + virkFom.format() + ", ville du fått ".expr() + totalPensjon.format() + " kroner årlig i pensjon. ",
                                 Nynorsk to "".expr(),
                                 English to "".expr()
@@ -126,7 +126,7 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
                         item {
                             textExpr(
                                 Bokmal to "Hvis du hadde tatt ut ".expr() + opplysningerBruktIBeregningen.uttaksgrad.format() + " prosent alderspensjon fra " + virkFom.format() +
-                                        " ville du fått ".expr() + totalPensjon.format() + " kroner årlig i full pensjon når du blir ".expr() +
+                                        ", ville du fått ".expr() + totalPensjon.format() + " kroner årlig i full pensjon når du blir ".expr() +
                                         normertPensjonsalder.aarOgMaanederFormattert() + ". ",
                                 Nynorsk to "".expr(),
                                 English to "".expr()
@@ -145,16 +145,16 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
 
             paragraph {
                 text(
-                    Bokmal to "Beregningen er uavhengig av din faktisk sivilstand.",
+                    Bokmal to "Beregningen er uavhengig av sivilstanden din.",
                     Nynorsk to "",
                     English to ""
                 )
             }
             title2 {
-                textExpr(
-                    Bokmal to "Du kan fremdeles ha mulighet til å ta ut alderspensjon før du fyller ".expr() + normertPensjonsalder.aarOgMaanederFormattert(),
-                    Nynorsk to "".expr(),
-                    English to "".expr()
+                text(
+                    Bokmal to "Se når du kan ta ut alderspensjon",
+                    Nynorsk to "",
+                    English to ""
                 )
             }
             paragraph {
@@ -162,7 +162,7 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
                     Bokmal to "Selv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før du fyller ".expr() +
                             normertPensjonsalder.aarOgMaanederFormattert() + ". " +
                             "Da må du kunne velge en lavere uttaksgrad eller ta ut pensjonen senere. " +
-                            "I Din pensjon på nav.no/dinpensjon kan du sjekke når du tidligst kan ta ut alderspensjon. " +
+                            "På nav.no/dinpensjon kan du sjekke når du tidligst kan ta ut alderspensjon. " +
                             "Du kan også se hva pensjonen din blir, avhengig av når og hvor mye du tar ut.",
                     Nynorsk to "".expr(),
                     English to "".expr()
