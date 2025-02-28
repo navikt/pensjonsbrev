@@ -1,69 +1,46 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brev.api.model.FeatureToggle
-import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import kotlin.math.absoluteValue
 
 interface Operation : StableHash
 
 sealed interface UnaryOperation<In, out Out> : Operation {
     fun apply(input: In): Out
 
-    object AbsoluteValue : UnaryOperation<Int, Int>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.AbsoluteValue") {
-        override fun apply(input: Int): Int = input.absoluteValue
+    interface AbsoluteValue : UnaryOperation<Int, Int>
+
+    interface AbsoluteValueKroner : UnaryOperation<Kroner, Kroner>
+
+    interface BrukerFulltNavn : UnaryOperation<Bruker, String>
+
+    interface FunksjonsbryterEnabled : UnaryOperation<FeatureToggle, Boolean>
+
+    interface IsEmpty : UnaryOperation<Collection<*>, Boolean>
+
+    interface MapValue<In, Out> : UnaryOperation<In, Out> {
+        val mapper: ExpressionMapper<In, Out>
     }
 
-    object AbsoluteValueKroner : UnaryOperation<Kroner, Kroner>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.AbsoluteValueKroner") {
-        override fun apply(input: Kroner): Kroner = Kroner(input.value.absoluteValue)
+    interface MapCollection<In, Out> : UnaryOperation<Collection<In>, Collection<Out>> {
+        val mapper: UnaryOperation<In, Out>
     }
 
-    object BrukerFulltNavn : UnaryOperation<Bruker, String>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.BrukerFulltNavn") {
-        override fun apply(input: Bruker): String = input.fulltNavn()
+    interface Not : UnaryOperation<Boolean, Boolean>
+
+    interface SafeCall<In : Any, Out> : UnaryOperation<In?, Out?> {
+        val selector: TemplateModelSelector<In, Out>
     }
 
-    object FunksjonsbryterEnabled : UnaryOperation<FeatureToggle, Boolean>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.Enabled") {
-        override fun apply(input: FeatureToggle): Boolean = FeatureToggleSingleton.isEnabled(input)
+    interface Select<In : Any, Out> : UnaryOperation<In, Out> {
+        val selector: TemplateModelSelector<In, Out>
     }
 
-    object IsEmpty : UnaryOperation<Collection<*>, Boolean>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.IsEmpty") {
-        override fun apply(input: Collection<*>): Boolean = input.isEmpty()
-    }
+    interface SizeOf : UnaryOperation<Collection<*>, Int>
 
-    data class MapValue<In, Out>(val mapper: ExpressionMapper<In, Out>) : UnaryOperation<In, Out>, AbstractOperation(), StableHash {
-        override fun apply(input: In): Out = mapper.apply(input)
-        override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.MapValue"), mapper).stableHashCode()
-    }
-
-    data class MapCollection<In, Out>(val mapper: UnaryOperation<In, Out>) : UnaryOperation<Collection<In>, Collection<Out>>, AbstractOperation() {
-        override fun apply(input: Collection<In>): Collection<Out> = input.map { mapper.apply(it) }
-        override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.MapCollection"), mapper).stableHashCode()
-    }
-
-    object Not : UnaryOperation<Boolean, Boolean>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.Not") {
-        override fun apply(input: Boolean): Boolean = input.not()
-    }
-
-    class SafeCall<In : Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In?, Out?>, AbstractOperation() {
-        override fun apply(input: In?): Out? = input?.let { selector.selector(it) }
-        override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.SafeCall"), selector).stableHashCode()
-    }
-
-    class Select<In : Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In, Out>, AbstractOperation() {
-        override fun apply(input: In): Out = selector.selector(input)
-        override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.Select"), StableHash.of(selector)).stableHashCode()
-    }
-
-    object SizeOf : UnaryOperation<Collection<*>, Int>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.SizeOf") {
-        override fun apply(input: Collection<*>): Int = input.size
-    }
-
-    object ToString : UnaryOperation<Any, String>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.ToString") {
-        override fun apply(input: Any): String = input.toString()
-    }
+    interface ToString : UnaryOperation<Any, String>
 }
 
 abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? = null) : AbstractOperation() {
