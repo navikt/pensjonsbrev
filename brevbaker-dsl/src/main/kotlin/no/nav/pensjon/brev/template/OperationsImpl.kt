@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
+import no.nav.pensjon.brev.template.BinaryOperation.Documentation
 import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.Bruker
@@ -88,4 +89,9 @@ sealed class UnaryOperationImpl<In, out Out> : UnaryOperation<In, Out>, Abstract
     object ToString : UnaryOperation.ToString, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.ToString") {
         override fun apply(input: Any): String = input.toString()
     }
+}
+
+@InterneDataklasser
+abstract class BinaryOperationImpl<in In1, in In2, out Out>(val doc: Documentation? = null) : AbstractOperation() {
+
 }
