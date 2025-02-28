@@ -76,8 +76,8 @@ object ExpressionImpl {
         class ArgumentImpl<out Out> : FromScope.Argument<Out> {
             @Suppress("UNCHECKED_CAST")
             override fun eval(scope: ExpressionScope<*>) = scope.argument as Out
-            override fun equals(other: Any?): Boolean = other is ArgumentImpl<*>
-            override fun hashCode(): Int = javaClass.hashCode()
+            override fun equals(other: Any?): Boolean = other is FromScope.Argument<*>
+            override fun hashCode(): Int = FromScope.Argument::class.java.hashCode()
             override fun stableHashCode(): Int = "FromScope.Argument".hashCode()
 
             override fun toString(): String {
@@ -113,6 +113,12 @@ object ExpressionImpl {
         override fun toString(): String {
             throw PreventToStringForExpressionException()
         }
+
+        override fun equals(other: Any?): Boolean {
+            return other is Expression.UnaryInvoke<*, *> && (value == other.value && operation == other.operation)
+        }
+        override fun hashCode(): Int = stableHashCode()
+        override fun stableHashCode(): Int = "UnaryInvoke".hashCode()
     }
 
     @InterneDataklasser

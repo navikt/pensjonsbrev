@@ -7,21 +7,27 @@ data class UnaryInvokeSelectorImpl<In, Out>(
     override val value: Expression<In>,
     override val operation: UnaryOperation<In, Out>,
 ) : Expression.UnaryInvoke<In, Out>, StableHash by StableHash.of(value, operation) {
-    override fun eval(scope: ExpressionScope<*>): Out = operation.apply(value.eval(scope))
 
-    override fun toString(): String {
-        throw PreventToStringForExpressionException()
-    }
+    private val impl = ExpressionImpl.UnaryInvokeImpl(value, operation)
+
+    override fun eval(scope: ExpressionScope<*>): Out = impl.eval(scope)
+
+    override fun toString() = impl.toString()
+
+    override fun equals(other: Any?): Boolean = impl.equals(other)
+    override fun hashCode(): Int = impl.hashCode()
+    override fun stableHashCode(): Int = impl.stableHashCode()
 }
 
 class ArgumentSelectorImpl<out Out> : FromScope.Argument<Out> {
-    @Suppress("UNCHECKED_CAST")
-    override fun eval(scope: ExpressionScope<*>) = scope.argument as Out
-    override fun equals(other: Any?): Boolean = other is ArgumentImpl<*>
-    override fun hashCode(): Int = javaClass.hashCode()
-    override fun stableHashCode(): Int = "FromScope.Argument".hashCode()
 
-    override fun toString(): String {
-        throw PreventToStringForExpressionException()
-    }
+    private val impl = ArgumentImpl<Out>()
+
+    @Suppress("UNCHECKED_CAST")
+    override fun eval(scope: ExpressionScope<*>) = impl.eval(scope)
+    override fun equals(other: Any?): Boolean = impl.equals(other)
+    override fun hashCode(): Int = impl.hashCode()
+    override fun stableHashCode(): Int = impl.stableHashCode()
+
+    override fun toString() = impl.toString()
 }
