@@ -1,9 +1,11 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.template.AttachmentTemplate
-import no.nav.pensjon.brev.template.ContentOrControlStructure
+import no.nav.pensjon.brev.template.ContentOrControlStructureImpl
 import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.ElementImpl
 import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.ExpressionImpl
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.LangBokmal
@@ -77,28 +79,28 @@ class LetterRendererTest {
     fun `render will pass each element of Content and letterScope to block`() {
         val expectedScope = letter.toScope()
         val expectedElements = listOf(
-            Element.OutlineContent.Paragraph(
+            ElementImpl.OutlineContentImpl.ParagraphImpl(
                 listOf(
-                    ContentOrControlStructure.Content(
-                        Element.OutlineContent.ParagraphContent.Text.Literal.create(
+                    ContentOrControlStructureImpl.ContentImpl(
+                        ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(
                             Bokmal to "hei"
                         )
                     ),
-                    ContentOrControlStructure.Content(
-                        Element.OutlineContent.ParagraphContent.Text.Literal.create(
+                    ContentOrControlStructureImpl.ContentImpl(
+                        ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(
                             Bokmal to "jadda"
                         )
                     ),
                 )
             ),
-            Element.OutlineContent.Title1(emptyList()),
+            ElementImpl.OutlineContentImpl.Title1Impl(emptyList()),
         )
 
         val actualElements = mutableListOf<Element.OutlineContent<*>>()
         val actualScopes = mutableListOf<ExpressionScope<*>>()
         MockRenderer().publicRender(
             expectedScope,
-            expectedElements.map { ContentOrControlStructure.Content(it) }) { scope, element ->
+            expectedElements.map { ContentOrControlStructureImpl.ContentImpl(it) }) { scope, element ->
             actualElements.add(element)
             actualScopes.add(scope)
         }
@@ -121,8 +123,8 @@ class LetterRendererTest {
             }
         }
         val expectedElements = listOf(
-            Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(Bokmal to nextExpression + " person"),
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "jadda")
+            ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.ExpressionImpl.ByLanguageImpl.create(Bokmal to nextExpression + " person"),
+            ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(Bokmal to "jadda")
         )
 
         val actualElements = mutableListOf<Element.OutlineContent.ParagraphContent<*>>()
@@ -152,8 +154,8 @@ class LetterRendererTest {
 
         val expectedScope = ExpressionScope(Unit, felles, Bokmal)
         val expectedElements = listOf(
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "hei "),
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "person"),
+            ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(Bokmal to "hei "),
+            ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(Bokmal to "person"),
         )
 
         val actualScopes = mutableListOf<ExpressionScope<*>>()
@@ -182,8 +184,8 @@ class LetterRendererTest {
 
         val expectedScope = ExpressionScope(Unit, felles, Bokmal)
         val expectedElements = listOf(
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "hei "),
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "person"),
+            ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(Bokmal to "hei "),
+            ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(Bokmal to "person"),
         )
 
         val actualScopes = mutableListOf<ExpressionScope<*>>()
@@ -242,7 +244,7 @@ class LetterRendererTest {
             override val propertyType = "TestVedleggDto"
             override val selector = LetterData::vedlegg
         }
-        val vedleggDataExpr = Expression.FromScope.Argument<LetterData>().select(vedleggDataSelector)
+        val vedleggDataExpr = ExpressionImpl.FromScopeImpl.ArgumentImpl<LetterData>().select(vedleggDataSelector)
 
         var evaluatedAttachmentScopedExpr: String? = null
         MockRenderer().publicRenderAttachments(

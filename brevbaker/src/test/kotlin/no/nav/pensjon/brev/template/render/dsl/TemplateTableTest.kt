@@ -2,12 +2,12 @@ package no.nav.pensjon.brev.template.render.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.brev.brevbaker.outlineTestTemplate
-import no.nav.pensjon.brev.template.ContentOrControlStructure.Conditional
-import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
+import no.nav.pensjon.brev.template.ContentOrControlStructureImpl.ConditionalImpl
+import no.nav.pensjon.brev.template.ContentOrControlStructureImpl.ContentImpl
 import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.ElementImpl
 import no.nav.pensjon.brev.template.InvalidTableDeclarationException
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.newText
@@ -41,24 +41,24 @@ class TemplateTableTest {
         }
 
         val colSpec = listOf(
-            Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
-                Element.OutlineContent.ParagraphContent.Table.Cell(
+            ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl.ColumnSpecImpl(
+                ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl.CellImpl(
                     listOf(newText(Bokmal to "header"))
                 ), Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
             )
         )
         val expected = outlineTestLetter(
-            Content(
-                Element.OutlineContent.Paragraph(
+            ContentImpl(
+                ElementImpl.OutlineContentImpl.ParagraphImpl(
                     listOf(
-                        Content(
-                            Element.OutlineContent.ParagraphContent.Table(
-                                header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec),
+                        ContentImpl(
+                            ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl(
+                                header = ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl.HeaderImpl(colSpec),
                                 rows = listOf(
-                                    Content(
-                                        Element.OutlineContent.ParagraphContent.Table.Row(
+                                    ContentImpl(
+                                        ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl.RowImpl(
                                             listOf(
-                                                Element.OutlineContent.ParagraphContent.Table.Cell(
+                                                ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl.CellImpl(
                                                     listOf(newText(Bokmal to "joda"))
                                                 )
                                             ), colSpec
@@ -153,41 +153,41 @@ class TemplateTableTest {
             }
         }
         val colSpec = listOf(
-            Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
-                Element.OutlineContent.ParagraphContent.Table.Cell(
+            ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl.ColumnSpecImpl(
+                ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl.CellImpl(
                     listOf(newText(Bokmal to "header"))
                 ), Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
             )
         )
         val expected = outlineTestLetter(
-            Content(
-                Element.OutlineContent.Paragraph(
+            ContentImpl(
+                ElementImpl.OutlineContentImpl.ParagraphImpl(
                     listOf(
-                        Content(
-                            Element.OutlineContent.ParagraphContent.Table(
+                        ContentImpl(
+                            ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl(
                                 rows = listOf(
-                                    Conditional(
+                                    ConditionalImpl(
                                         true.expr(),
                                         listOf(
-                                            Element.OutlineContent.ParagraphContent.Table.Row(
+                                            ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl.RowImpl(
                                                 listOf(
-                                                    Element.OutlineContent.ParagraphContent.Table.Cell(
+                                                    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl.CellImpl(
                                                         listOf(newText(Bokmal to "hei"))
                                                     )
                                                 ),
                                                 colSpec = colSpec
                                             ),
-                                            Element.OutlineContent.ParagraphContent.Table.Row(
+                                            ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl.RowImpl(
                                                 listOf(
-                                                    Element.OutlineContent.ParagraphContent.Table.Cell(
+                                                    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl.CellImpl(
                                                         listOf(newText(Bokmal to "heihå"))
                                                     )
                                                 ), colSpec = colSpec
                                             )
-                                        ).map { Content(it) }, emptyList()
+                                        ).map { ContentImpl(it) }, emptyList()
                                     )
                                 ),
-                                header = Element.OutlineContent.ParagraphContent.Table.Header(colSpec)
+                                header = ElementImpl.OutlineContentImpl.ParagraphContentImpl.TableImpl.HeaderImpl(colSpec)
                             )
                         )
                     )
