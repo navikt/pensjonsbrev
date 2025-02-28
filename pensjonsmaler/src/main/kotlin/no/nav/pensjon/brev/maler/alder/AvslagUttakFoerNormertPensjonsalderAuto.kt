@@ -210,32 +210,7 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
                 )
             }
 
-
             includePhrase(Felles.HarDuSpoersmaal.alder)
-
-            paragraph {
-                text(
-                    Bokmal to "Vedlegg:",
-                    Nynorsk to "",
-                    English to ""
-                )
-                list {
-                    item {
-                        text(
-                            Bokmal to "Vedlegg 1: Dine rettigheter og mulighet til å klage",
-                            Nynorsk to "",
-                            English to ""
-                        )
-                    }
-                    item {
-                        text(
-                            Bokmal to "Vedlegg 2: Opplysninger brukt i beregningen",
-                            Nynorsk to "",
-                            English to ""
-                        )
-                    }
-                }
-            }
         }
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
