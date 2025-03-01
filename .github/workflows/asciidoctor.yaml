@@ -45,7 +45,7 @@ jobs:
         path: "${{ github.workspace }}/build"
 
     - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4.7.2
+      uses: JamesIves/github-pages-deploy-action@v4.7.3
       with:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         FOLDER: "build"
