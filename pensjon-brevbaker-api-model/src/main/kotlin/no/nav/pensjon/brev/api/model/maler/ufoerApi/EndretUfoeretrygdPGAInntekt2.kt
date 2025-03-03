@@ -7,9 +7,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import java.time.LocalDate
 
 @Suppress("unused")
-data class EndretUfoeretrygdPGAInntektDto(
-
-
+data class EndretUfoeretrygdPGAInntektDto2(
     val gammeltBelop: Int?,
     val nyttBelop: Int?,
     val virkningFom: LocalDate,
@@ -17,9 +15,7 @@ data class EndretUfoeretrygdPGAInntektDto(
     val utbetalingsgrad: Int?,
     val uforegrad: Int,
     val vilFylle67IlaVirkningFomAr: Boolean,
-    // Todo: fjerne?
-    val innvilgetET: Boolean,
-    val innvilgetGJT: Boolean,
+    val gjenlevendetillegg: Gjenlevendetillegg?,
     val instoppholdType: String?,
     val totalNetto: Int,
     val avkortningInntektsgrense: Int,
@@ -36,37 +32,9 @@ data class EndretUfoeretrygdPGAInntektDto(
     val brukerBorINorge: Boolean,
     val ettArForVirkningstidspunkt: Int,
     val borMed: String?,
-
-    // Barnetillegg fellesbarn
-    val innvilgetBTFB: Boolean,
-    val gammeltBelopBTFB: Int?,
-    val nyttBelopBTFB: Int?,
-    val inntektBruktIAvkortningAvBTFB: Int?,
-    val periodisertInntektBTFB: Boolean,
-    val periodisertFribelopBTFB: Boolean,
-    val brukersInntektBruktIAvkortningAvBTFB: Int?,
-    val inntektAnnenForelderBTFB: Int?,
-    val belopFratrukketAnnenForeldersInntektBTFB: Int?,
-    val justeringsbelopPerArBTFB: Int?,
-    val nettoBTFB: Int?,
-    val fribelopBTFB: Int?,
-    val avkortningInntektstakBTFB: Int?,
-    val arligAvkortningsbelopBTFB: Int?,
-    val antallBarnBTFB: Int,
-
-    // Barnetillegg saerkullsbarn
-    val innvilgetBTSB: Boolean,
-    val gammeltBelopBTSB: Int?,
-    val nyttBelopBTSB: Int?,
-    val inntektBruktIAvkortningAvBTSB: Int?,
-    val periodisertInntektBTSB: Boolean,
-    val periodisertFribelopBTSB: Boolean,
-    val nettoBTSB: Int?,
-    val justeringsbelopPerArBTSB: Int?,
-    val fribelopBTSB: Int?,
-    val avkortningInntektstakBTSB: Int?,
-    val arligAvkortningsbelopBTSB: Int?,
-    val antallBarnBTSB: Int,
+    val barnetilleggFellesbarn: BarnetilleggFellesbarn?,
+    val barnetilleggSaerkullsbarn: BarnetilleggSaerkullsbarn?,
+    val endretBT: Boolean,
 
     // Trengs for vedlegg. Husk å fjerne når vedleggene er konvertert
     val pe: PE,
@@ -74,3 +42,40 @@ data class EndretUfoeretrygdPGAInntektDto(
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 ) : BrevbakerBrevdata
 
+
+data class Gjenlevendetillegg (
+    val belop: Int,
+)
+
+data class BarnetilleggFellesbarn (
+    val endret: Boolean,
+    val gammeltBelop: Int,
+    val nyttBelop: Int,
+    val inntektBruktIAvkortningAv: Int?,
+    val periodisertInntekt: Boolean,
+    val periodisertFribelop: Boolean,
+    val brukersInntektBruktIAvkortningAv: Int?,
+    val inntektAnnenForelder: Int?,
+    val belopFratrukketAnnenForeldersInntekt: Int?,
+    val justeringsbelopPerAr: Int?,
+    val netto: Int,
+    val fribelop: Int,
+    val avkortningInntektstak: Int,
+    val arligAvkortningsbelop: Int,
+    val antallBarn: Int,
+)
+
+data class BarnetilleggSaerkullsbarn(
+    val endret: Boolean,
+    val gammeltBelop: Int,
+    val nyttBelop: Int,
+    val inntektBruktIAvkortningAv: Int?,
+    val periodisertInntekt: Boolean,
+    val periodisertFribelop: Boolean,
+    val netto: Int,
+    val justeringsbelopPerAr: Int?,
+    val fribelop: Int,
+    val avkortningInntektstak: Int,
+    val arligAvkortningsbelop: Int,
+    val antallBarn: Int,
+)
