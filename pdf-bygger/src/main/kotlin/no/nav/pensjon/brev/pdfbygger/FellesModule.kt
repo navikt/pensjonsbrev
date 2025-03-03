@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.brev.InterneDataklasser
+
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.BrukerImpl
 import no.nav.pensjon.brevbaker.api.model.Felles
@@ -24,30 +25,16 @@ object FellesModule : SimpleModule() {
     private fun readResolve(): Any = FellesModule
 
     init {
-        addDeserializer(NAVEnhet::class.java, NavEnhetDeserializer)
-        addDeserializer(Telefonnummer::class.java, TelefonnummerDeserializer)
-        addDeserializer(Foedselsnummer::class.java, FoedselsnummerDeserializer)
-        addDeserializer(Bruker::class.java, BrukerDeserializer)
-        addDeserializer(SignerendeSaksbehandlere::class.java, SignerendeSaksbehandlereDeserializer)
-        addDeserializer(Felles::class.java, FellesobjektetDeserializer)
+        addInterfaceDeserializer<NAVEnhet, NavEnhetImpl>()
+        addInterfaceDeserializer<Telefonnummer, TelefonnummerImpl>()
+        addInterfaceDeserializer<Foedselsnummer, FoedselsnummerImpl>()
+        addInterfaceDeserializer<Bruker, BrukerImpl>()
+        addInterfaceDeserializer<SignerendeSaksbehandlere, SignerendeSaksbehandlereImpl>()
+        addInterfaceDeserializer<Felles, FellesImpl>()
     }
 
-    private object NavEnhetDeserializer : FellesDeserializer<NAVEnhet, NavEnhetImpl>(NavEnhetImpl::class.java)
-
-    private object TelefonnummerDeserializer :
-        FellesDeserializer<Telefonnummer, TelefonnummerImpl>(TelefonnummerImpl::class.java)
-
-    private object FoedselsnummerDeserializer :
-        FellesDeserializer<Foedselsnummer, FoedselsnummerImpl>(FoedselsnummerImpl::class.java)
-
-    private object BrukerDeserializer :
-        FellesDeserializer<Bruker, BrukerImpl>(BrukerImpl::class.java)
-
-    private object SignerendeSaksbehandlereDeserializer :
-        FellesDeserializer<SignerendeSaksbehandlere, SignerendeSaksbehandlereImpl>(SignerendeSaksbehandlereImpl::class.java)
-
-    private object FellesobjektetDeserializer :
-        FellesDeserializer<Felles, FellesImpl>(FellesImpl::class.java)
+    private inline fun <reified T, reified V : T> SimpleModule.addInterfaceDeserializer() =
+        addDeserializer(T::class.java, object : FellesDeserializer<T, V>(V::class.java) {})
 
     private abstract class FellesDeserializer<T, V : T>(private val v: Class<V>) : JsonDeserializer<T>() {
         override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): T =
