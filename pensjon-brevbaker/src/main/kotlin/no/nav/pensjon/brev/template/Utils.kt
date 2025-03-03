@@ -5,11 +5,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import no.nav.pensjon.brev.converters.BrevbakerBrevdataModule
 import no.nav.pensjon.brev.converters.BrevkodeModule
 import no.nav.pensjon.brev.converters.LetterMarkupModule
+import no.nav.pensjon.brev.converters.PDFCompilationOutputModule
 import no.nav.pensjon.brev.converters.PDFRequestModule
 import no.nav.pensjon.brev.converters.TemplateModelSpecificationModule
 import no.nav.pensjon.brev.pdfbygger.FellesModule
-import java.time.format.*
-import kotlin.reflect.KClass
 
 fun ObjectMapper.brevbakerConfig() {
     registerModule(JavaTimeModule())
@@ -18,6 +17,7 @@ fun ObjectMapper.brevbakerConfig() {
     registerModule(LetterMarkupModule)
     registerModule(FellesModule)
     registerModule(PDFRequestModule)
+    registerModule(PDFCompilationOutputModule)
     registerModule(TemplateModelSpecificationModule)
     enable(SerializationFeature.INDENT_OUTPUT)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

@@ -17,7 +17,9 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) : PDFByggerService 
     private val objectmapper = jacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
-            jackson()
+            jackson {
+                registerModule(PDFCompilationOutputDeserializer)
+            }
         }
         HttpResponseValidator {
             validateResponse {

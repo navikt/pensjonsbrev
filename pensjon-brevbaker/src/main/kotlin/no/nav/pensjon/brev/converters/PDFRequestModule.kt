@@ -2,8 +2,6 @@ package no.nav.pensjon.brev.converters
 
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.brev.InterneDataklasser
-import no.nav.brev.brevbaker.PDFCompilationOutput
-import no.nav.brev.brevbaker.PDFCompilationOutputImpl
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.PDFRequestImpl
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -23,7 +21,6 @@ object PDFRequestModule : SimpleModule() {
         addDeserializer(TemplateDescription.Autobrev::class.java, TemplateDescriptionAutobrevDeserializer)
         addDeserializer(TemplateDescription.Redigerbar::class.java, TemplateDescriptionRedigerbarDeserializer)
         addDeserializer(LetterMetadata::class.java, LetterMetadataDeserializer)
-        addDeserializer(PDFCompilationOutput::class.java, PDFCompilationOutputDeserializer)
     }
 
     private object TemplateDescriptionAutobrevDeserializer :
@@ -35,7 +32,4 @@ object PDFRequestModule : SimpleModule() {
 
     private object LetterMetadataDeserializer :
             FellesDeserializer<LetterMetadata, LetterMetadataImpl>(LetterMetadataImpl::class.java)
-
-    private object PDFCompilationOutputDeserializer :
-            FellesDeserializer<PDFCompilationOutput, PDFCompilationOutputImpl>(PDFCompilationOutputImpl::class.java)
 }

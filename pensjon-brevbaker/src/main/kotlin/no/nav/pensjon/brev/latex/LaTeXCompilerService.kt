@@ -27,6 +27,7 @@ import no.nav.brev.brevbaker.LatexTimeoutException
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.converters.PDFCompilationOutputModule
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import org.slf4j.LoggerFactory
 import kotlin.math.pow
@@ -43,7 +44,9 @@ class LaTeXCompilerService(
     private val objectmapper = jacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
-            jackson()
+            jackson {
+                registerModule(PDFCompilationOutputModule)
+            }
         }
         HttpResponseValidator {
             validateResponse { validateResponse(it.status.value, { msg -> logger.warn(msg) }) { it.body<String>() } }

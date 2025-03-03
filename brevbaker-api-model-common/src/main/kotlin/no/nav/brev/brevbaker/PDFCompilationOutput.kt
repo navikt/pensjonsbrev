@@ -12,7 +12,7 @@ data class PDFCompilationOutputImpl(override val bytes: ByteArray) : PDFCompilat
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as PDFCompilationOutput
+        other as PDFCompilationOutputImpl
 
         return bytes.contentEquals(other.bytes)
     }
