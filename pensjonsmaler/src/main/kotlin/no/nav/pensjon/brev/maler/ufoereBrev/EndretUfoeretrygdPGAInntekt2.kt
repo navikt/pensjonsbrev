@@ -1,74 +1,26 @@
 package no.nav.pensjon.brev.maler.ufoereBrev
 
-import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.arligAvkortningsbelopBTFB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.arligAvkortningsbelopBTSB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.avkortningInntektsgrense
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.avkortningInntektstak
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.avkortningInntektstakBTFB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.avkortningInntektstakBTSB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.avkortningsbelopPerAr
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.belopFratrukketAnnenForeldersInntektBTFB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.belopOkt
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.belopRedusert
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.brukerBorINorge
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.brukersInntektBruktIAvkortningAvBTFB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.ettArForVirkningstidspunkt
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.forventetInntekt
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.fribelopBTFB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.borMed
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.fribelopBTSB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.gammeltBelop
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.antallBarnBTFB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.antallBarnBTSB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.gammeltBelopBTFB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.gammeltBelopBTSB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.grunnbelop
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.inntektAnnenForelderBTFB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.inntektBruktIAvkortningAvBTFB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.inntektBruktIAvkortningAvBTSB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.innvilgetBTFB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.innvilgetBTSB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.innvilgetET
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.innvilgetGJT
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.instoppholdType
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.justeringsbelopPerArBTFB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.justeringsbelopPerArBTSB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.kravarsaksType
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.maanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.nettoAkk
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.nettoBTFB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.nettoBTSB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.nettoPerManed
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.nyttBelop
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.nyttBelopBTFB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.nyttBelopBTSB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.orienteringOmRettigheterUfoere
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.periodisertFribelopBTFB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.periodisertFribelopBTSB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.periodisertInntektBTFB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.periodisertInntektBTSB
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.regelverktypeBT
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.totalNetto
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.totalNettoForAr
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.uforegrad
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.utbetalingsgrad
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.vilFylle67IlaVirkningFomAr
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.virkningFom
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
-import no.nav.pensjon.brev.maler.legacy.fraser.TBU2278_Generated
-import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.gammeltBelop
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.endretBT
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.gjenlevendetillegg
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.GjenlevendetilleggSelectors.belop
+
+
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggFellesbarnSelectors.gammeltBelop
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.barnetilleggFellesbarn
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.barnetilleggSaerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggSaerkullsbarnSelectors.gammeltBelop
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.nyttBelop
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggFellesbarnSelectors.nyttBelop
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggSaerkullsbarnSelectors.nyttBelop
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.totalNetto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.virkningFom
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -77,17 +29,16 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
-import java.time.LocalDate
 
 @TemplateModelHelpers
-object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInntektDto> {
+object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInntektDto2> {
 
     // PE_UT_05_100
     override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_INNTEKT_2
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = EndretUfoeretrygdPGAInntektDto::class,
+        letterDataType = EndretUfoeretrygdPGAInntektDto2::class,
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av uføretrygd på grunn av inntekt (automatisk)",
@@ -98,11 +49,9 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
     ) {
         val virkningFomErForsteDagIAaret = virkningFom.month.equalTo(1) and virkningFom.day.equalTo(1)
         val endretUT = gammeltBelop.ifNull(0).notEqualTo(nyttBelop.ifNull(0))
-        val endretBT = gammeltBelopBTFB.notEqualTo(nyttBelopBTFB) or gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)
-        val endretBTFB = gammeltBelopBTFB.notEqualTo(nyttBelopBTFB)
-        val endretBTSB = gammeltBelopBTSB.notEqualTo(nyttBelopBTSB)
-        val reduksjonBT = gammeltBelopBTFB.ifNull(0).greaterThan(nyttBelopBTFB.ifNull(0)) or gammeltBelopBTSB.ifNull(0).greaterThan(nyttBelopBTSB.ifNull(0))
-        val nyBTStorreEnnNull = nyttBelopBTFB.ifNull(0).greaterThan(0) or nyttBelopBTSB.ifNull(0).greaterThan(0)
+        val reduksjonBT = gammeltBelop.ifNull(0).greaterThan(nyttBelop.ifNull(0)) or gammeltBelop.ifNull(0).greaterThan(nyttBelop.ifNull(0))
+        val nyBTStorreEnnNull = nyttBelop.ifNull(0).greaterThan(0) or nyttBelop.ifNull(0).greaterThan(0)
+
 
         title {
             showIf(endretUT and not(endretBT)) {
@@ -112,9 +61,9 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
                 )
 
             }.orShowIf(endretUT and endretBT) {
-                showIf(innvilgetBTSB and innvilgetBTFB) {
+                showIf(barnetilleggFellesbarn.notNull() and barnetilleggSaerkullsbarn.notNull()) {
                     text(
-                        Bokmal to "Nav har endret utbetalingen av uføretrygden din og barnetilleggene dine",
+                        Bokmal to "Nav har endret utbetalingen av uføretrygden din og barnetilleggene dine" ,
                         Nynorsk to "Nav har endra utbetalinga av uføretrygda di og barnetillegga dine",
                     )
                 }.orShow {
@@ -124,7 +73,7 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
                     )
                 }
             }.orShow {
-                showIf(innvilgetBTSB and innvilgetBTFB) {
+                showIf(barnetilleggFellesbarn.notNull() and barnetilleggSaerkullsbarn.notNull()) {
                     text(
                         Bokmal to "Nav har endret utbetalingen av barnetilleggene i uføretrygden din",
                         Nynorsk to "Nav har endra utbetalinga av barnetillegga i uføretrygda di",
@@ -138,7 +87,131 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
             }
         }
 
+        // Vi bruker dette som inntektsplanlegger-brevet
+        // TODO: om inntekt er for høy, avsnitt om det
         outline {
+            paragraph {
+                // TODO: favne bedre - kan komme fra flere steder
+                textExpr(
+                    Bokmal to "Vi har nå behandlet din melding om endring av inntekt. Ny utbetalingen gjelder fra ".expr() + virkningFom.format() + ". ",
+                    Nynorsk to "".expr()
+                )
+            }
+            paragraph {
+                // TODO: bruttto er avkorta ikke skatt
+                showIf((barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()) and gjenlevendetillegg.notNull()) {
+                    textExpr(
+                        Bokmal to "Du får ".expr() + totalNetto.format() + " i uføretrygd, barne- og gjenlevendetillegg per måned før skatt. " +
+                                "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned. ",
+                        Nynorsk to "".expr()
+                    )
+                }.orShowIf((barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()) and gjenlevendetillegg.isNull()) {
+                    textExpr(
+                        Bokmal to "Du får ".expr() + totalNetto.format() + " i uføretrygd og barnetillegg per måned før skatt. " +
+                                "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned. ",
+                        Nynorsk to "".expr()
+                    )
+                }.orShowIf(not(barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()) and gjenlevendetillegg.notNull()) {
+                    textExpr(
+                        Bokmal to "Du får ".expr() + (totalNetto).format() + " i uføretrygd og gjenlevendetillegg per måned før skatt. " +
+                                "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned. ",
+                        Nynorsk to "".expr()
+                    )
+                }.orShow {
+                    textExpr(
+                        Bokmal to "Du får ".expr() + totalNetto.format() + " i uføretrygd per måned før skatt. " +
+                                "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned. ",
+                        Nynorsk to "".expr()
+                    )
+                }
+            }
+
+            title2 {
+                textExpr(
+                    Bokmal to "Din månedlige utbetaling fra ".expr() + virkningFom.format(),
+                    Nynorsk to "".expr(),
+                )
+            }
+
+            paragraph {
+                table(
+                    header = {
+                        column(1) {}
+                        column(columnSpan = 1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                            text(
+                                Bokmal to "Beløp før skatt per måned",
+                                Nynorsk to "",
+                            )
+                        }
+                    }
+                ) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Uføretrygd",
+                                Nynorsk to "",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to nyttBelop.ifNull(0).format(),
+                                Nynorsk to "".expr(),
+                            )
+                        }
+                    }
+                    ifNotNull(barnetilleggSaerkullsbarn) { barnetilleggSaerkullsbarn ->
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Barnetillegg særkullsbarn",
+                                    Nynorsk to "",
+                                )
+                            }
+                            cell {
+                                textExpr(
+                                    Bokmal to barnetilleggSaerkullsbarn.nyttBelop.format(),
+                                    Nynorsk to "".expr(),
+                                )
+                            }
+                        }
+                    }
+                    ifNotNull(barnetilleggFellesbarn) { barnetilleggFellesbarn ->
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Barnetillegg fellesbarn",
+                                    Nynorsk to "",
+                                )
+                            }
+                            cell {
+                                textExpr(
+                                    Bokmal to barnetilleggFellesbarn.nyttBelop.format(),
+                                    Nynorsk to "".expr(),
+                                )
+                            }
+                        }
+                    }
+                    ifNotNull(gjenlevendetillegg) { gjenlevendetillegg ->
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Gjenlevendetillegg",
+                                    Nynorsk to "",
+                                )
+                            }
+                            cell {
+                                textExpr(
+                                    Bokmal to gjenlevendetillegg.belop.format(),
+                                    Nynorsk to "".expr(),
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+       /* outline {
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
             includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
@@ -151,5 +224,5 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pe, pe.inkluderopplysningerbruktiberegningen())
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
-    }
+   */ }
 }
