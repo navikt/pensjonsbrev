@@ -34,7 +34,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) : PDFByggerService 
         }
     }
 
-    override suspend fun producePDF(pdfRequest: PDFRequest, path: String): PDFCompilationOutput =
+    override suspend fun producePDF(pdfRequest: PDFRequest, path: String): PDFCompilationOutputImpl =
             httpClient.post("$pdfByggerUrl/$path") {
                 contentType(ContentType.Application.Json)
                 setBody(objectmapper.writeValueAsBytes(pdfRequest))
