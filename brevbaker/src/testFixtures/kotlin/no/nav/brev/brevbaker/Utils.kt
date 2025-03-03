@@ -11,7 +11,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 
 fun ObjectMapper.brevbakerConfig() {
     registerModule(JavaTimeModule())
-    registerModule(PDFCompilationOutputDeserializer)
     enable(SerializationFeature.INDENT_OUTPUT)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
