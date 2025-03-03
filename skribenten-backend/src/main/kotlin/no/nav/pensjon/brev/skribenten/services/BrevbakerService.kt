@@ -61,6 +61,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
             jackson {
                 registerModule(JavaTimeModule())
                 registerModule(LetterMarkupModule)
+                registerModule(FellesModule)
                 registerModule(TemplateModelSpecificationModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
@@ -161,13 +162,6 @@ object LetterMarkupModule : SimpleModule() {
         addInterfaceDeserializer<LetterMarkup.ParagraphContent.Form.MultipleChoice, ParagraphContentImpl.Form.MultipleChoiceImpl>()
         addInterfaceDeserializer<LetterMarkup.ParagraphContent.Form.Text, ParagraphContentImpl.Form.TextImpl>()
         addInterfaceDeserializer<LetterMarkup, LetterMarkupImpl>()
-
-        addInterfaceDeserializer<NAVEnhet, NavEnhetImpl>()
-        addInterfaceDeserializer<Telefonnummer, TelefonnummerImpl>()
-        addInterfaceDeserializer<Foedselsnummer, FoedselsnummerImpl>()
-        addInterfaceDeserializer<Bruker, BrukerImpl>()
-        addInterfaceDeserializer<SignerendeSaksbehandlere, SignerendeSaksbehandlereImpl>()
-        addInterfaceDeserializer<Felles, FellesImpl>()
     }
 
     private fun blockDeserializer() =

@@ -35,6 +35,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
+                registerModule(FellesModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
