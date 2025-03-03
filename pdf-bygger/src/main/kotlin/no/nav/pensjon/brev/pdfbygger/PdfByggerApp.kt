@@ -22,6 +22,7 @@ import io.ktor.util.logging.Logger
 import io.micrometer.core.instrument.Tag
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
 import java.nio.file.Path
 import kotlin.time.Duration
@@ -143,7 +144,7 @@ private suspend fun RoutingContext.handleResult(
     logger: Logger,
 ) {
     when (result) {
-        is PDFCompilationResponse.Bytes -> call.respond(result)
+        is PDFCompilationResponse.Bytes -> call.respond(PDFCompilationOutput(result.bytes))
         is PDFCompilationResponse.Failure.Client -> {
             logger.info("Client error: ${result.reason}")
             if (result.output?.isNotBlank() == true) {
