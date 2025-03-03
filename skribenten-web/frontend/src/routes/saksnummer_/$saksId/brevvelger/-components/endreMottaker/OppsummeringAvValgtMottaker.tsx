@@ -5,8 +5,10 @@ import { Button, HStack, Table, VStack } from "@navikt/ds-react";
 import type { AxiosError } from "axios";
 
 import { ApiError } from "~/components/ApiError";
+import { useLandData } from "~/hooks/useLandData";
 import type { Adresse } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
+import { getCountryNameByKode } from "~/utils/countryUtils";
 import { humanizeName } from "~/utils/stringUtils";
 
 const BackButton = (properties: { icon: React.ReactNode; text: string; onClick: () => void }) => {
@@ -75,6 +77,8 @@ const OppsummeringAvValgtMottaker = (properties: {
 export default OppsummeringAvValgtMottaker;
 
 const OppsummeringAvAdresse = (properties: { type: Nullable<string>; adresse: Adresse }) => {
+  const { data: landData } = useLandData();
+
   return (
     <Table size="small">
       <Table.Body>
@@ -85,7 +89,7 @@ const OppsummeringAvAdresse = (properties: { type: Nullable<string>; adresse: Ad
         <InversedTableRow label="Adresselinje 3" value={properties.adresse.linje3} />
         <InversedTableRow label="Postnummer" value={properties.adresse.postnr} />
         <InversedTableRow label="Poststed" value={properties.adresse.poststed} />
-        <InversedTableRow label="Land" value={properties.adresse.land} />
+        <InversedTableRow label="Land" value={getCountryNameByKode(properties.adresse.land, landData || [])} />
       </Table.Body>
     </Table>
   );

@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
-import no.nav.pensjon.brevbaker.api.model.IntValue
+import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import kotlin.math.absoluteValue
 
@@ -24,14 +24,6 @@ abstract class Operation : StableHash {
 sealed class UnaryOperation<In, out Out> : Operation() {
     abstract fun apply(input: In): Out
 
-    object ToString : UnaryOperation<Any, String>(), StableHash by StableHash.of("UnaryOperation.ToString") {
-        override fun apply(input: Any): String = input.toString()
-    }
-
-    object SizeOf : UnaryOperation<Collection<*>, Int>(), StableHash by StableHash.of("UnaryOperation.SizeOf") {
-        override fun apply(input: Collection<*>): Int = input.size
-    }
-
     object AbsoluteValue : UnaryOperation<Int, Int>(), StableHash by StableHash.of("UnaryOperation.AbsoluteValue") {
         override fun apply(input: Int): Int = input.absoluteValue
     }
@@ -40,35 +32,48 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: Kroner): Kroner = Kroner(input.value.absoluteValue)
     }
 
-    class Select<In : Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In, Out>() {
-        override fun apply(input: In): Out = selector.selector(input)
-        override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.Select"), StableHash.of(selector)).stableHashCode()
-    }
-
-    class SafeCall<In : Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In?, Out?>() {
-        override fun apply(input: In?): Out? = input?.let { selector.selector(it) }
-        override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.SafeCall"), StableHash.of(selector)).stableHashCode()
-    }
-
-    object Not : UnaryOperation<Boolean, Boolean>(), StableHash by StableHash.of("UnaryOperation.Not") {
-        override fun apply(input: Boolean): Boolean = input.not()
-    }
-
-    data class MapCollection<In, Out>(val mapper: UnaryOperation<In, Out>) : UnaryOperation<Collection<In>, Collection<Out>>() {
-        override fun apply(input: Collection<In>): Collection<Out> = input.map { mapper.apply(it) }
-        override fun stableHashCode(): Int = hashCode()
-    }
-
-    object IsEmpty : UnaryOperation<Collection<*>, Boolean>(), StableHash by StableHash.of("UnaryOperation.IsEmpty") {
-        override fun apply(input: Collection<*>): Boolean = input.isEmpty()
+    object BrukerFulltNavn : UnaryOperation<Bruker, String>(), StableHash by StableHash.of("UnaryOperation.BrukerFulltNavn") {
+        override fun apply(input: Bruker): String = input.fulltNavn()
     }
 
     object FunksjonsbryterEnabled : UnaryOperation<FeatureToggle, Boolean>(), StableHash by StableHash.of("UnaryOperation.Enabled") {
         override fun apply(input: FeatureToggle): Boolean = FeatureToggleSingleton.isEnabled(input)
     }
 
-    object BrukerFulltNavn: UnaryOperation<Bruker, String>(), StableHash by StableHash.of("UnaryOperation.BrukerFulltNavn") {
-        override fun apply(input: Bruker): String = input.fulltNavn()
+    object IsEmpty : UnaryOperation<Collection<*>, Boolean>(), StableHash by StableHash.of("UnaryOperation.IsEmpty") {
+        override fun apply(input: Collection<*>): Boolean = input.isEmpty()
+    }
+
+    data class MapValue<In, Out>(val mapper: ExpressionMapper<In, Out>) : UnaryOperation<In, Out>(), StableHash {
+        override fun apply(input: In): Out = mapper.apply(input)
+        override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.MapValue"), mapper).stableHashCode()
+    }
+
+    data class MapCollection<In, Out>(val mapper: UnaryOperation<In, Out>) : UnaryOperation<Collection<In>, Collection<Out>>() {
+        override fun apply(input: Collection<In>): Collection<Out> = input.map { mapper.apply(it) }
+        override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.MapCollection"), mapper).stableHashCode()
+    }
+
+    object Not : UnaryOperation<Boolean, Boolean>(), StableHash by StableHash.of("UnaryOperation.Not") {
+        override fun apply(input: Boolean): Boolean = input.not()
+    }
+
+    class SafeCall<In : Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In?, Out?>() {
+        override fun apply(input: In?): Out? = input?.let { selector.selector(it) }
+        override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.SafeCall"), selector).stableHashCode()
+    }
+
+    class Select<In : Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In, Out>() {
+        override fun apply(input: In): Out = selector.selector(input)
+        override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.Select"), StableHash.of(selector)).stableHashCode()
+    }
+
+    object SizeOf : UnaryOperation<Collection<*>, Int>(), StableHash by StableHash.of("UnaryOperation.SizeOf") {
+        override fun apply(input: Collection<*>): Int = input.size
+    }
+
+    object ToString : UnaryOperation<Any, String>(), StableHash by StableHash.of("UnaryOperation.ToString") {
+        override fun apply(input: Any): String = input.toString()
     }
 }
 
@@ -118,8 +123,12 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun apply(first: String, second: String): String = first + second
     }
 
-    class IntPlus<T : IntValue>(val constructor: (Int) -> T) : BinaryOperation<T, T, T>(), StableHash by StableHash.of("BinaryOperation.IntPlus") {
-        override fun apply(first: T, second: T): T = constructor(first.value + second.value)
+    object IntMinus : BinaryOperation<Int, Int, Int>(Documentation("-", Documentation.Notation.INFIX)), StableHash by StableHash.of("BinaryOperation.IntMinus") {
+        override fun apply(first: Int, second: Int): Int = first - second
+    }
+
+    object IntPlus : BinaryOperation<Int, Int, Int>(Documentation("+", Documentation.Notation.INFIX)), StableHash by StableHash.of("BinaryOperation.IntPlus") {
+        override fun apply(first: Int, second: Int): Int = first + second
     }
 
     class IfNull<T : Any> : BinaryOperation<T?, T, T>(Documentation("?:", Documentation.Notation.INFIX)),
@@ -159,7 +168,7 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
                 operation.apply(first, second)
             } else null
 
-        override fun stableHashCode(): Int = StableHash.hash(StableHash.of("BinaryOperation.SafeCall" ), operation)
+        override fun stableHashCode(): Int = StableHash.hash(StableHash.of("BinaryOperation.SafeCall"), operation)
     }
 
 }

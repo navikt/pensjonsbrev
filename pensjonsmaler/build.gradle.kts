@@ -1,7 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val apiModelVersion = 128
+val apiModelVersion = 130
 
 val apiModelJavaTarget: String by System.getProperties()
 val jupiterVersion: String by project
@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    api(project(":brevbaker"))
+    implementation(project(":brevbaker"))
     ksp(project(":template-model-generator"))
     api("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
 
