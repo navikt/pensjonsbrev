@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.BinaryOperation.Documentation
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.text.NumberFormat
 import java.time.LocalDate
@@ -9,7 +10,7 @@ import java.time.format.FormatStyle
 
 const val NON_BREAKING_SPACE = '\u00A0'
 
-abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOperation<T, Language, String>(doc) {
+abstract class LocalizedFormatter<in T>(override val doc: Documentation? = null) : BinaryOperation<T, Language, String> {
     object ShortDateFormat : LocalizedFormatter<LocalDate>() {
         override fun stableHashCode(): Int = "ShortDateFormat".hashCode()
         override fun apply(first: LocalDate, second: Language): String =

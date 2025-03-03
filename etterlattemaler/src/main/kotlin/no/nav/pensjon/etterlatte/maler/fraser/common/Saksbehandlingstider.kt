@@ -14,7 +14,7 @@ fun saksbehandlingstiderUrl(sakType: Expression<SakType>) : Expression<String> =
         operation = Saksbehandlingstider,
     )
 
-object Saksbehandlingstider: BinaryOperation<SakType, Language, String>() {
+object Saksbehandlingstider: BinaryOperation<SakType, Language, String> {
     override fun apply(first: SakType, second: Language): String {
         return if (first == SakType.BARNEPENSJON)
             when(second) {

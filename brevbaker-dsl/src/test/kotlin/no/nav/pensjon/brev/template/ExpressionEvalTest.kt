@@ -19,7 +19,7 @@ class ExpressionEvalTest {
     }
 
     private val Expression<SomeDto>.name
-        get() = ExpressionImpl.UnaryInvokeImpl(this, UnaryOperation.Select(nameSelector))
+        get() = ExpressionImpl.UnaryInvokeImpl(this, UnaryOperationImpl.Select(nameSelector))
 
     private val kortNavnSelector = object : TemplateModelSelector<SomeDto, String?> {
         override val className = "FakeKortNavnSelector"
@@ -28,7 +28,7 @@ class ExpressionEvalTest {
         override val selector = SomeDto::kortNavn
     }
     private val Expression<SomeDto>.kortNavn
-        get() = ExpressionImpl.UnaryInvokeImpl(this, UnaryOperation.Select(kortNavnSelector))
+        get() = ExpressionImpl.UnaryInvokeImpl(this, UnaryOperationImpl.Select(kortNavnSelector))
 
     private val saksnummerSelector = object : TemplateModelSelector<Felles, String> {
         override val className = "FakeFellesSelector"
@@ -38,7 +38,7 @@ class ExpressionEvalTest {
     }
 
     private val Expression<Felles>.saksnummer
-        get() = ExpressionImpl.UnaryInvokeImpl(this, UnaryOperation.Select(saksnummerSelector))
+        get() = ExpressionImpl.UnaryInvokeImpl(this, UnaryOperationImpl.Select(saksnummerSelector))
 
     private val scope = ExpressionScope(SomeDto("Ole", null), Fixtures.felles, Language.Bokmal)
     private val argumentExpr = ExpressionImpl.FromScopeImpl.ArgumentImpl<SomeDto>()
@@ -86,7 +86,7 @@ class ExpressionEvalTest {
         val evaluated: String = ExpressionImpl.BinaryInvokeImpl(
             ExpressionImpl.LiteralImpl("h"),
             ExpressionImpl.LiteralImpl("ei"),
-            BinaryOperation.Concat
+            BinaryOperationImpl.Concat
         ).eval(scope)
 
         assertEquals("hei", evaluated)
@@ -96,7 +96,7 @@ class ExpressionEvalTest {
     fun `eval UnaryInvoke returns expected value`() {
         val evaluated: String = ExpressionImpl.UnaryInvokeImpl(
             ExpressionImpl.LiteralImpl(4),
-            UnaryOperation.ToString
+            UnaryOperationImpl.ToString
         ).eval(scope)
 
         assertEquals("4", evaluated)

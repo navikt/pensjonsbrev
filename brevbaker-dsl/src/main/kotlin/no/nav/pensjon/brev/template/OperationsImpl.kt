@@ -27,12 +27,12 @@ abstract class AbstractOperation : Operation {
 sealed class UnaryOperationImpl<In, out Out> : UnaryOperation<In, Out>, AbstractOperation() {
 
     @InterneDataklasser
-    object AbsoluteValueImpl : UnaryOperation.AbsoluteValue, StableHash by StableHash.of("UnaryOperation.AbsoluteValue") {
+    object AbsoluteValueImpl : UnaryOperation.AbsoluteValue, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.AbsoluteValue") {
         override fun apply(input: Int): Int = input.absoluteValue
     }
 
     @InterneDataklasser
-    object AbsoluteValueKronerImpl : UnaryOperation.AbsoluteValueKroner, StableHash by StableHash.of("UnaryOperation.AbsoluteValueKroner") {
+    object AbsoluteValueKronerImpl : UnaryOperation.AbsoluteValueKroner, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.AbsoluteValueKroner") {
         override fun apply(input: Kroner): Kroner = Kroner(input.value.absoluteValue)
     }
 
@@ -64,7 +64,7 @@ sealed class UnaryOperationImpl<In, out Out> : UnaryOperation<In, Out>, Abstract
     }
 
     @InterneDataklasser
-    object Not : UnaryOperation<Boolean, Boolean>, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.Not") {
+    object Not : UnaryOperation.Not, AbstractOperation(), StableHash by StableHash.of("UnaryOperation.Not") {
         override fun apply(input: Boolean): Boolean = input.not()
     }
 

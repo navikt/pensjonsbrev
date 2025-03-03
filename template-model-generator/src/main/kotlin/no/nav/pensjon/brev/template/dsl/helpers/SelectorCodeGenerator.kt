@@ -76,19 +76,19 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
             |val TemplateGlobalScope<$dataClassName>.$propertyName: Expression<$type>
             |   get() = UnaryInvokeSelectorImpl(
             |       ArgumentSelectorImpl(),
-            |       UnaryOperation.Select($selectorName)
+            |       UnaryOperationSelectorSelect($selectorName)
             |   )
             |
             |val Expression<$dataClassName>.$propertyName: Expression<$type>
             |   get() = UnaryInvokeSelectorImpl(
             |       this,
-            |       UnaryOperation.Select($selectorName)
+            |       UnaryOperationSelectorSelect($selectorName)
             |   )
             |
             |val Expression<$dataClassName?>.${propertyName}_safe: Expression<${nullable(type)}>
             |   get() = UnaryInvokeSelectorImpl(
             |       this,
-            |       UnaryOperation.SafeCall($selectorName)
+            |       UnaryOperationSelectorSafeCall($selectorName)
             |   )
             |
             """.replaceIndentByMargin(indent)
@@ -110,6 +110,8 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
                 import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
                 import no.nav.pensjon.brev.template.ArgumentSelectorImpl
                 import no.nav.pensjon.brev.template.UnaryInvokeSelectorImpl
+                import no.nav.pensjon.brev.template.UnaryOperationSelectorSafeCall
+                import no.nav.pensjon.brev.template.UnaryOperationSelectorSelect
                 import no.nav.pensjon.brev.template.ExpressionScope
 
                 """.trimIndent()

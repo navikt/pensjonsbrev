@@ -7,32 +7,32 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 fun <T> Expression<Collection<T>>.isEmpty(): Expression<Boolean> =
     ExpressionImpl.UnaryInvokeImpl(
         value = this,
-        operation = UnaryOperation.IsEmpty,
+        operation = UnaryOperationImpl.IsEmptyImpl,
     )
 
 fun <T> Expression<Collection<T>>.size(): Expression<Int> =
-    ExpressionImpl.UnaryInvokeImpl(value = this, operation = UnaryOperation.SizeOf)
+    ExpressionImpl.UnaryInvokeImpl(value = this, operation = UnaryOperationImpl.SizeOf)
 
 fun Expression<Int>.absoluteValue(): Expression<Int> =
-    ExpressionImpl.UnaryInvokeImpl(value = this, operation = UnaryOperation.AbsoluteValue)
+    ExpressionImpl.UnaryInvokeImpl(value = this, operation = UnaryOperationImpl.AbsoluteValueImpl)
 
 fun Expression<FeatureToggle>.enabled(): Expression<Boolean> =
-    ExpressionImpl.UnaryInvokeImpl(value = this, operation = UnaryOperation.FunksjonsbryterEnabled)
+    ExpressionImpl.UnaryInvokeImpl(value = this, operation = UnaryOperationImpl.FunksjonsbryterEnabledImpl)
 
 @JvmName("absoluteValueKroner")
 fun Expression<Kroner>.absoluteValue(): Expression<Kroner> =
-    ExpressionImpl.UnaryInvokeImpl(value = this, operation = UnaryOperation.AbsoluteValueKroner)
+    ExpressionImpl.UnaryInvokeImpl(value = this, operation = UnaryOperationImpl.AbsoluteValueKronerImpl)
 
 fun <T> Expression<Collection<T>>.isNotEmpty(): Expression<Boolean> =
     not(this.isEmpty())
 
 fun <T : Any, R> Expression<Collection<T>>.map(selector: TemplateModelSelector<T, R>): Expression<Collection<R>> =
-    map(UnaryOperation.Select(selector))
+    map(UnaryOperationImpl.Select(selector))
 
 fun <T, R> Expression<Collection<T>>.map(mapper: UnaryOperation<T, R>): Expression<Collection<R>> =
     ExpressionImpl.UnaryInvokeImpl(
         value = this,
-        operation = UnaryOperation.MapCollection(mapper),
+        operation = UnaryOperationImpl.MapCollectionImpl(mapper),
     )
 
 fun <In1, In2, Out> Expression<Collection<In1>>.map(
@@ -42,7 +42,7 @@ fun <In1, In2, Out> Expression<Collection<In1>>.map(
     ExpressionImpl.BinaryInvokeImpl(
         first = this,
         second = second,
-        operation = BinaryOperation.MapCollection(mapper)
+        operation = BinaryOperationImpl.MapCollection(mapper)
     )
 
 fun <In1, In2, Out> Expression<Collection<In2>>.map(
@@ -52,7 +52,7 @@ fun <In1, In2, Out> Expression<Collection<In2>>.map(
     ExpressionImpl.BinaryInvokeImpl(
         first = this,
         second = first,
-        operation = BinaryOperation.MapCollection(BinaryOperation.Flip(mapper))
+        operation = BinaryOperationImpl.MapCollection(BinaryOperationImpl.Flip(mapper))
     )
 
 fun <In> Expression<Collection<In>>.map(mapper: BinaryOperation<In, Language, String>): Expression<Collection<String>> =

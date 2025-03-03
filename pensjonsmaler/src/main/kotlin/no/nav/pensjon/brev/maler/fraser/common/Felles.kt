@@ -1,15 +1,12 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
 import no.nav.brev.InterneDataklasser
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
 
 
@@ -143,7 +140,7 @@ object Felles {
     fun Expression<Bruker>.fulltNavn(): Expression<String> =
         ExpressionImpl.UnaryInvokeImpl(
             value = this,
-            operation = UnaryOperation.BrukerFulltNavn
+            operation = UnaryOperationImpl.BrukerFulltNavnImpl
         )
 
     object ReturTilEtterstadOslo : OutlinePhrase<LangBokmalNynorskEnglish>() {

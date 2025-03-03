@@ -31,7 +31,7 @@ class ExpressionTest {
     fun `plus creates a concat expression of expression operands`() {
         val op1 = "hei".expr()
         val op2 = " du".expr()
-        val expected = ExpressionImpl.BinaryInvokeImpl(op1, op2, BinaryOperation.Concat)
+        val expected = ExpressionImpl.BinaryInvokeImpl(op1, op2, BinaryOperationImpl.Concat)
 
         assertEquals(expected, op1 + op2)
     }
@@ -40,7 +40,7 @@ class ExpressionTest {
     fun `plus creates a concat expression of expression plus string`() {
         val op1 = "hei".expr()
         val op2 = " du"
-        val expected = ExpressionImpl.BinaryInvokeImpl(op1, ExpressionImpl.LiteralImpl(op2), BinaryOperation.Concat)
+        val expected = ExpressionImpl.BinaryInvokeImpl(op1, ExpressionImpl.LiteralImpl(op2), BinaryOperationImpl.Concat)
 
         assertEquals(expected, op1 + op2)
     }

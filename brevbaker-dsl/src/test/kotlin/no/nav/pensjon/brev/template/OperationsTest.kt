@@ -13,12 +13,12 @@ class OperationsTest {
 
     @Test
     fun `an operation without fields are considered equal based on class`() {
-        assertEquals(UnaryOperation.ToString, UnaryOperation.ToString)
+        assertEquals(UnaryOperationImpl.ToString, UnaryOperationImpl.ToString)
     }
 
     @Test
     fun `different operations are not considered equal`() {
-        assertNotEquals(BinaryOperation.Equal<Int>(), UnaryOperation.ToString)
+        assertNotEquals(BinaryOperationImpl.EqualImpl<Int>(), UnaryOperationImpl.ToString)
     }
 
     @Test

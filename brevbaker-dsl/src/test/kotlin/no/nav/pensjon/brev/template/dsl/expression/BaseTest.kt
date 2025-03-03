@@ -12,8 +12,8 @@ class BaseTest {
         val actual = ifElse(true.expr(), "hei".expr(), "hade bra".expr())
         val expected = ExpressionImpl.BinaryInvokeImpl(
             first = true.expr(),
-            second = ExpressionImpl.BinaryInvokeImpl("hei".expr(), "hade bra".expr(), BinaryOperation.Tuple()),
-            operation = BinaryOperation.IfElse()
+            second = ExpressionImpl.BinaryInvokeImpl("hei".expr(), "hade bra".expr(), BinaryOperationImpl.Tuple()),
+            operation = BinaryOperationImpl.IfElse()
         )
 
         assertEquals(expected, actual)

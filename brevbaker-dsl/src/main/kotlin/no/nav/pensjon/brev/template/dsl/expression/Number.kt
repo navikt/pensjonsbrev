@@ -17,19 +17,19 @@ val intValueSelector = object : TemplateModelSelector<IntValue, Int> {
 private val Expression<IntValue>.value: Expression<Int>
     get() = ExpressionImpl.UnaryInvokeImpl(
         this,
-        UnaryOperation.Select(intValueSelector)
+        UnaryOperationImpl.Select(intValueSelector)
     )
 
 fun Expression<Int>.toKroner(): Expression<Kroner> =
     ExpressionImpl.UnaryInvokeImpl(
         this,
-        UnaryOperation.MapValue(IntToKroner)
+        UnaryOperationImpl.MapValueImpl(IntToKroner)
     )
 
 fun Expression<Int>.toYear(): Expression<Year> =
     ExpressionImpl.UnaryInvokeImpl(
         this,
-        UnaryOperation.MapValue(IntToYear)
+        UnaryOperationImpl.MapValueImpl(IntToYear)
     )
 
 fun Expression<Double>.format(): Expression<String> = format(formatter = LocalizedFormatter.DoubleFormat)
@@ -41,7 +41,7 @@ operator fun Expression<Int>.plus(other: Expression<Int>): Expression<Int> =
     ExpressionImpl.BinaryInvokeImpl(
         this,
         other,
-        BinaryOperation.IntPlus
+        BinaryOperationImpl.IntPlus
     )
 @JvmName("kronerPlus")
 operator fun Expression<Kroner>.plus(other: Expression<Kroner>): Expression<Kroner> = (this.value + other.value).toKroner()
@@ -52,7 +52,7 @@ operator fun Expression<Int>.minus(other: Expression<Int>): Expression<Int> =
     ExpressionImpl.BinaryInvokeImpl(
         this,
         other,
-        BinaryOperation.IntMinus
+        BinaryOperationImpl.IntMinus
     )
 @JvmName("kronerMinus")
 operator fun Expression<Kroner>.minus(other: Expression<Kroner>): Expression<Kroner> = (this.value - other.value).toKroner()
@@ -64,28 +64,28 @@ infix fun <T: Comparable<T>> Expression<T>.greaterThan(compareTo: Expression<T>)
     ExpressionImpl.BinaryInvokeImpl(
         first = this,
         second = compareTo,
-        operation = BinaryOperation.GreaterThan(),
+        operation = BinaryOperationImpl.GreaterThan(),
     )
 
 infix fun <T: Comparable<T>> Expression<T>.greaterThanOrEqual(compareTo: Expression<T>): Expression<Boolean> =
     ExpressionImpl.BinaryInvokeImpl(
         first = this,
         second = compareTo,
-        operation = BinaryOperation.GreaterThanOrEqual(),
+        operation = BinaryOperationImpl.GreaterThanOrEqual(),
     )
 
 infix fun <T: Comparable<T>> Expression<T>.lessThanOrEqual(compareTo: Expression<T>): Expression<Boolean> =
     ExpressionImpl.BinaryInvokeImpl(
         first = this,
         second = compareTo,
-        operation = BinaryOperation.LessThanOrEqual(),
+        operation = BinaryOperationImpl.LessThanOrEqual(),
     )
 
 infix fun <T: Comparable<T>> Expression<T>.lessThan(compareTo: Expression<T>): Expression<Boolean> =
     ExpressionImpl.BinaryInvokeImpl(
         first = this,
         second = compareTo,
-        operation = BinaryOperation.LessThan(),
+        operation = BinaryOperationImpl.LessThan(),
     )
 
 // Literal compareTo value

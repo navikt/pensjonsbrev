@@ -114,9 +114,8 @@ object ExpressionImpl {
             throw PreventToStringForExpressionException()
         }
 
-        override fun equals(other: Any?): Boolean {
-            return other is Expression.UnaryInvoke<*, *> && (value == other.value && operation == other.operation)
-        }
+        override fun equals(other: Any?): Boolean =
+            other is Expression.UnaryInvoke<*, *> && (value == other.value && operation.stableHashCode() == other.operation.stableHashCode())
         override fun hashCode(): Int = stableHashCode()
         override fun stableHashCode(): Int = "UnaryInvoke".hashCode()
     }
