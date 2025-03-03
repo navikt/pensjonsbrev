@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.example
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
@@ -34,6 +35,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.fornavn
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadataImpl
 import java.time.LocalDate
 
 enum class EksempelbrevRedigerbartBrevkode : Brevkode.Redigerbart {
@@ -50,11 +52,12 @@ object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<Sakstype> = Sakstype.all
 
+    @OptIn(InterneDataklasser::class)
     override val template = createTemplate(
         name = "EKSEMPEL_REDIGERBART_BREV", //Letter ID
         letterDataType = EksempelRedigerbartDto::class, // Data class containing the required data of this letter
         languages = languages(Bokmal, Nynorsk),
-        letterMetadata = LetterMetadata(
+        letterMetadata = LetterMetadataImpl(
             displayTitle = "Dette er et redigerbart eksempel-brev", // Display title for external systems
             isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, // Brukes ved distribusjon av brevet

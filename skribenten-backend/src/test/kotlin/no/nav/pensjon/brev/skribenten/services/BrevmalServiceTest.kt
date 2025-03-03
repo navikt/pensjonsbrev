@@ -28,7 +28,7 @@ class BrevmalServiceTest {
             name = "brevbaker mal",
             letterDataClass = EmptyRedigerbarBrevdata::class.java.name,
             languages = listOf(LanguageCode.BOKMAL),
-            metadata = no.nav.pensjon.brevbaker.api.model.LetterMetadata(
+            metadata = no.nav.pensjon.brevbaker.api.model.LetterMetadataImpl(
                 "brevbaker brev",
                 false,
                 no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG,

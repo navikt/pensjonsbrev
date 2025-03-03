@@ -7,6 +7,9 @@ import no.nav.pensjon.brev.PDFRequestImpl
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescriptionImpl
 import no.nav.pensjon.brev.pdfbygger.FellesDeserializer
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadataImpl
 
 @OptIn(InterneDataklasser::class)
 object PDFRequestModule : SimpleModule() {
@@ -18,6 +21,7 @@ object PDFRequestModule : SimpleModule() {
             object : FellesDeserializer<PDFRequest, PDFRequestImpl>(PDFRequestImpl::class.java) {})
         addDeserializer(TemplateDescription.Autobrev::class.java, TemplateDescriptionAutobrevDeserializer)
         addDeserializer(TemplateDescription.Redigerbar::class.java, TemplateDescriptionRedigerbarDeserializer)
+        addDeserializer(LetterMetadata::class.java, LetterMetadataDeserializer)
     }
 
     private object TemplateDescriptionAutobrevDeserializer :
@@ -26,4 +30,7 @@ object PDFRequestModule : SimpleModule() {
     private object TemplateDescriptionRedigerbarDeserializer :
         FellesDeserializer<TemplateDescription.Redigerbar, TemplateDescriptionImpl.RedigerbarImpl>(
             TemplateDescriptionImpl.RedigerbarImpl::class.java)
+
+    private object LetterMetadataDeserializer :
+            FellesDeserializer<LetterMetadata, LetterMetadataImpl>(LetterMetadataImpl::class.java)
 }
