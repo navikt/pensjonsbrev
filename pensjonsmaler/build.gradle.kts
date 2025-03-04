@@ -1,13 +1,14 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val apiModelVersion = 134
+val apiModelVersion = 135
 
 val apiModelJavaTarget: String by System.getProperties()
+val jupiterVersion: String by project
 
 plugins {
     kotlin("jvm")
-    alias(libs.plugins.ksp) apply true
+    id("com.google.devtools.ksp")
 }
 
 group = "no.nav.pensjon.brev"
@@ -25,7 +26,9 @@ dependencies {
     api("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
 
 
-    testImplementation(libs.bundles.junit)
+    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation(testFixtures(project(":brevbaker")))
 }
 
