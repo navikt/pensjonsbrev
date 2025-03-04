@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.Fixtures
 import no.nav.brev.brevbaker.PDF_BUILDER_URL
-import no.nav.brev.brevbaker.SignerendeSaksbehandlereTestImpl
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.copy
 import no.nav.brev.brevbaker.renderTestPdfOutline
 import no.nav.brev.brevbaker.renderTestVedleggPdf
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlereImpl
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -198,7 +199,7 @@ class LatexVisualITest {
     fun `brev med saksbehandler underskrift`() {
         render(
             felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlereTestImpl(
+                signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(
                     saksbehandler = "Ole Saksbehandler"
                 )
             )
@@ -211,7 +212,7 @@ class LatexVisualITest {
     fun `brev med saksbehandler og attestant underskrift`() {
         render(
             felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlereTestImpl(
+                signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Saksbehandler"
                 )
@@ -225,7 +226,7 @@ class LatexVisualITest {
     fun `test av ulike `() {
         render(
             felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlereTestImpl(
+                signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Saksbehandler"
                 )
@@ -239,7 +240,7 @@ class LatexVisualITest {
     fun `vedtaksbrev med saksbehandler underskrift`() {
         render(
             felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlereTestImpl(
+                signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Attesterende"
                 )

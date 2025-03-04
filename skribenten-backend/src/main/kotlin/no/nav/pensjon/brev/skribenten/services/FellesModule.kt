@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.converters
+package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.brev.InterneDataklasser

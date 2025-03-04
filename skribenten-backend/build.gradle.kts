@@ -101,7 +101,7 @@ dependencies {
     implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
 
     // Unleash
-    implementation("io.getunleash:unleash-client-java:10.0.0")
+    implementation("io.getunleash:unleash-client-java:10.0.2")
 
     // Domenemodell
     implementation("no.nav.pensjon.brevbaker:brevbaker-api-model-common:$commonVersion")
@@ -129,6 +129,6 @@ dependencies {
     testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
     testImplementation("io.mockk:mockk:${mockkVersion}")
     testImplementation("org.assertj:assertj-core:3.27.3")
-    testImplementation("org.testcontainers:postgresql:1.20.4")
+    testImplementation("org.testcontainers:postgresql:1.20.5")
 
 }

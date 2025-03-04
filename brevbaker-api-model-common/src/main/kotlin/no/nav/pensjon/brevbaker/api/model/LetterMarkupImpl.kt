@@ -117,8 +117,7 @@ data class LetterMarkupImpl(
             data class ColumnSpecImpl(override val id: Int, override val headerContent: Table.Cell, override val alignment: Table.ColumnAlignment, override val span: Int) : Table.ColumnSpec
         }
 
-        sealed interface Form : ParagraphContent {
-
+        object Form {
             @InterneDataklasser
             data class TextImpl(override val id: Int, override val prompt: List<ParagraphContent.Text>, override val size: ParagraphContent.Form.Text.Size, override val vspace: Boolean) : ParagraphContent.Form.Text {
                 override val type = ParagraphContent.Type.FORM_TEXT

@@ -1,11 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger
 
-import no.nav.brev.brevbaker.BrukerTestImpl
-import no.nav.brev.brevbaker.FellesTestImpl
-import no.nav.brev.brevbaker.FoedselsnummerTestImpl
-import no.nav.brev.brevbaker.NavEnhetTestImpl
-import no.nav.brev.brevbaker.SignerendeSaksbehandlereTestImpl
-import no.nav.brev.brevbaker.TelefonnummerTestImpl
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -13,35 +8,42 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brevbaker.api.model.BrukerImpl
 import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.FellesImpl
+import no.nav.pensjon.brevbaker.api.model.FoedselsnummerImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.NavEnhetImpl
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlereImpl
+import no.nav.pensjon.brevbaker.api.model.TelefonnummerImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadataImpl
 import java.time.LocalDate
 
+@OptIn(InterneDataklasser::class)
 object Fixtures {
 
-    val felles = FellesTestImpl(
+    val felles: Felles = FellesImpl(
         dokumentDato = LocalDate.of(2020, 1, 1),
         saksnummer = "1337123",
-        avsenderEnhet = NavEnhetTestImpl(
+        avsenderEnhet = NavEnhetImpl(
             nettside = "nav.no",
             navn = "Nav Familie- og pensjonsytelser Porsgrunn",
-            telefonnummer = TelefonnummerTestImpl("55553334"),
+            telefonnummer = TelefonnummerImpl("55553334"),
         ),
-        bruker = BrukerTestImpl(
+        bruker = BrukerImpl(
             fornavn = "Test",
             mellomnavn = "\"bruker\"",
             etternavn = "Testerson",
-            foedselsnummer = FoedselsnummerTestImpl("01019878910"),
+            foedselsnummer = FoedselsnummerImpl("01019878910"),
         ),
-        signerendeSaksbehandlere = SignerendeSaksbehandlereTestImpl(
+        signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(
             saksbehandler = "Ole Saksbehandler",
             attesterendeSaksbehandler = "Per Attesterende",
         ),
         vergeNavn = null,
     )
 
-    val fellesAuto = felles.copy(signerendeSaksbehandlere = null)
+    val fellesAuto: Felles = (felles as FellesImpl).copy(signerendeSaksbehandlere = null)
 }
 
 

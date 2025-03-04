@@ -93,7 +93,7 @@ interface LetterMarkup {
             }
         }
 
-        sealed interface Table : ParagraphContent {
+        interface Table : ParagraphContent {
             val rows: List<Row>
             val header: Header
 
