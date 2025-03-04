@@ -6,10 +6,12 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggSaerkullsbarnSelectors.endringsbelop_safe
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggSaerkullsbarnSelectors.netto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.totalNetto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.sokerMottarApIlaAret
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.datoForNormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.barnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.barnetilleggSaerkullsbarn
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.gjenlevendetillegg
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.totalNetto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.uforetrygd
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.virkningFom
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.GjenlevendetilleggSelectors.belop
@@ -47,6 +49,7 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
         )
     ) {
         val endretUt = uforetrygd.endringsbelop.notEqualTo(0)
+        //TODO: Fikse bug, barnetillegg vises uansett
         val endretBt = barnetilleggFellesbarn.endringsbelop_safe.notEqualTo(0).ifNull(false) and
                 barnetilleggSaerkullsbarn.endringsbelop_safe.notEqualTo(0).ifNull(false)
 
@@ -73,9 +76,22 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
         // TODO: om inntekt er for høy, avsnitt om det
         outline {
             paragraph {
-                // TODO: favne bedre - kan komme fra flere steder
+                // TODO: Endre EPS til
+                showIf(barnetilleggFellesbarn.notNull() and barnetilleggFellesbarn.endringsbelop_safe.notEqualTo(0)) {
+                    text(
+                        Bokmal to "Vi har mottatt nye opplysninger om inntekten til deg eller din EPS. Inntekten til din EPS har kun betydning for størrelsen på barnetillegget ditt. ",
+                        Nynorsk to ""
+                    )
+                }.orShow {
+                    text(
+                        Bokmal to "Vi har mottatt nye opplysninger om inntekten din som gjør at din utbetaling endres. ",
+                        Nynorsk to ""
+                    )
+                }
+            }
+            paragraph {
                 textExpr(
-                    Bokmal to "Vi har nå behandlet din melding om endring av inntekt. Ny utbetalingen gjelder fra ".expr() + virkningFom.format() + ". ",
+                    Bokmal to "Ny utbetaling gjelder fra ".expr() + virkningFom.format() + ". ",
                     Nynorsk to "".expr()
                 )
             }
@@ -104,6 +120,15 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
                         Bokmal to "Du får ".expr() + totalNetto.format() + " i uføretrygd per måned før skatt. " +
                                 "Uføretrygden blir fortsatt utbetalt senest den 20. hver måned. ",
                         Nynorsk to "".expr()
+                    )
+                }
+            }
+
+            showIf(sokerMottarApIlaAret) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Fordi du får alderspensjon fra ".expr() + datoForNormertPensjonsalder.format() +", er inntekten justert i forhold til antall måneder du får uføretrygd. ",
+                    Nynorsk to "".expr()
                     )
                 }
             }
@@ -189,6 +214,19 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
                             }
                         }
                     }
+                    row {
+                        cell {
+                            text(Bokmal to "Sum før skatt",
+                                Nynorsk to "",
+                                Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to totalNetto.format(),
+                                Nynorsk to "".expr(),
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -197,7 +235,7 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
              includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
              includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
              includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
-             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
+             includePhrase(Ufoeretrygd.SjekkUtbetalingene)†
              includePhrase(Ufoeretrygd.Skattekort)
              includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(brukerBorINorge))
              includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)

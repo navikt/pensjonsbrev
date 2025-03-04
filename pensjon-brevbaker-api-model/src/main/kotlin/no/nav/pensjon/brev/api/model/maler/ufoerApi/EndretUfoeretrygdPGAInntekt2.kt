@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt
 
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
@@ -16,6 +17,8 @@ data class EndretUfoeretrygdPGAInntektDto2(
     val forventetInntekt: Int?,
     val virkningFom: LocalDate,
     val totalNetto: Int,
+    val datoForNormertPensjonsalder: LocalDate,
+    val sokerMottarApIlaAret: Boolean,
 
 ) : BrevbakerBrevdata
 
