@@ -62,7 +62,9 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
             }
             paragraph {
                 textExpr(
-                    Bokmal to "Du har for lav pensjonsopptjening til at du kan ta ut ".expr() + opplysningerBruktIBeregningen.uttaksgrad.format() +
+                    Bokmal to
+                            "For å ta ut alderspensjon før du er ".expr() + normertPensjonsalder.aarOgMaanederFormattert() + ", må du ha høy nok pensjonsopptjening. " +
+                            "Du har for lav pensjonsopptjening til at du kan ta ut ".expr() + opplysningerBruktIBeregningen.uttaksgrad.format() +
                             " prosent pensjon fra " + virkFom.format() + ". Derfor har vi avslått søknaden din.",
                     Nynorsk to "".expr(),
                     English to "".expr()
@@ -70,7 +72,7 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
             }
             paragraph {
                 text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven § 20-15.",
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-15 og 22-13.",
                     Nynorsk to "",
                     English to ""
                 )
