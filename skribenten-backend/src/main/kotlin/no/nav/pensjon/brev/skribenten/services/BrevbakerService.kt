@@ -241,8 +241,3 @@ object TemplateDescriptionModule : SimpleModule() {
         AbstractDeserializer<TemplateDescription.Redigerbar, TemplateDescriptionImpl.RedigerbarImpl>(
             TemplateDescriptionImpl.RedigerbarImpl::class.java)
 }
-
-abstract class AbstractDeserializer<T, V : T>(private val v: Class<V>) : JsonDeserializer<T>() {
-    override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): T =
-        parser.codec.treeToValue(parser.codec.readTree<JsonNode>(parser), v)
-}

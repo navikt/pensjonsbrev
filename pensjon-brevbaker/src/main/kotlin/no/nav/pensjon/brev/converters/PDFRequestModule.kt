@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.PDFRequestImpl
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescriptionImpl
-import no.nav.pensjon.brev.pdfbygger.FellesDeserializer
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadataImpl
 

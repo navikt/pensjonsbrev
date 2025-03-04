@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFCompilationOutputImpl
-import no.nav.pensjon.brev.pdfbygger.FellesDeserializer
 
 @OptIn(InterneDataklasser::class)
 object PDFCompilationOutputModule : SimpleModule() {
