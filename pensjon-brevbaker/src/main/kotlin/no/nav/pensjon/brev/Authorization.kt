@@ -9,6 +9,7 @@ import io.ktor.server.config.*
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import org.slf4j.LoggerFactory
 import java.net.URL
+import java.net.URI
 
 private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.Authorization")
 
@@ -44,7 +45,7 @@ data class PreAuthorizedApp(val name: String, val clientId: String)
 fun AuthenticationConfig.brevbakerJwt(config: JwtConfig) =
     jwt(config.name) {
         realm = "brevbaker-latex-$name"
-        verifier(JwkProviderBuilder(URL(config.jwksUrl)).build(), config.issuer) {
+        verifier(JwkProviderBuilder(URI(config.jwksUrl).toURL()).build(), config.issuer) {
             withAnyOfAudience(*config.audience.toTypedArray())
             withIssuer(config.issuer)
 
