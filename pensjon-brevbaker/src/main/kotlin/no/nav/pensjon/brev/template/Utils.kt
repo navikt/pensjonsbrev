@@ -4,11 +4,9 @@ import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import no.nav.pensjon.brev.converters.BrevbakerBrevdataModule
 import no.nav.pensjon.brev.converters.BrevkodeModule
+import no.nav.pensjon.brev.converters.FellesModule
 import no.nav.pensjon.brev.converters.LetterMarkupModule
 import no.nav.pensjon.brev.converters.TemplateModelSpecificationModule
-import no.nav.pensjon.brev.pdfbygger.FellesModule
-import java.time.format.*
-import kotlin.reflect.KClass
 
 fun ObjectMapper.brevbakerConfig() {
     registerModule(JavaTimeModule())

@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.converters
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
@@ -93,12 +92,5 @@ object LetterMarkupModule : SimpleModule() {
         addInterfaceDeserializer<LetterMarkup.ParagraphContent.Form.MultipleChoice, ParagraphContentImpl.Form.MultipleChoiceImpl>()
         addInterfaceDeserializer<LetterMarkup.ParagraphContent.Form.Text, ParagraphContentImpl.Form.TextImpl>()
         addInterfaceDeserializer<LetterMarkup, LetterMarkupImpl>()
-    }
-
-    private inline fun <reified T, reified V : T> SimpleModule.addInterfaceDeserializer() = addDeserializer(T::class.java, object : FellesDeserializer<T, V>(V::class.java) {})
-
-    private abstract class FellesDeserializer<T, V : T>(private val v: Class<V>) : JsonDeserializer<T>() {
-        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): T =
-            parser.codec.treeToValue(parser.codec.readTree<JsonNode>(parser), v)
     }
 }
