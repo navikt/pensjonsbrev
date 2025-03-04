@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.ufoere
 
+import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
@@ -14,7 +15,7 @@ class VarselSaksbehandlingstidTest {
 
     @Test
     fun pdftest() {
-        Letter(
+        LetterTestImpl(
             VarselSaksbehandlingstidAuto.template,
             Fixtures.create<VarselSaksbehandlingstidAutoDto>(),
             Language.Bokmal,
@@ -24,7 +25,7 @@ class VarselSaksbehandlingstidTest {
 
     @Test
     fun testHtml() {
-        Letter(
+        LetterTestImpl(
             VarselSaksbehandlingstidAuto.template,
             Fixtures.create<VarselSaksbehandlingstidAutoDto>(),
             Language.Bokmal,

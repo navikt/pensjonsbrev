@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.InvalidTableDeclarationException
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
@@ -223,7 +224,7 @@ class TemplateTableTest {
             }
         }
 
-        val actual = Letter2Markup.render(Letter(doc, Unit, Bokmal, Fixtures.felles)).letterMarkup
+        val actual = Letter2Markup.render(LetterImpl(doc, Unit, Bokmal, Fixtures.felles)).letterMarkup
         assertThat(
             actual,
             hasBlocks {
@@ -260,7 +261,7 @@ class TemplateTableTest {
         }
 
         assertThat(
-            Letter2Markup.render(Letter(doc, Unit, Bokmal, Fixtures.felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(doc, Unit, Bokmal, Fixtures.felles)).letterMarkup,
             hasBlocks {
                 paragraph {
                     table {

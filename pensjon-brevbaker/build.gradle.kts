@@ -50,6 +50,10 @@ tasks {
     }
 }
 
+tasks.compileTestKotlin {
+    compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
+}
+
 tasks {
     test {
         useJUnitPlatform {

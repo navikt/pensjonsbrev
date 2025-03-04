@@ -183,7 +183,7 @@ class ShowIfTest {
     @Test
     fun `showIf renders when condition evaluates to true`() {
         assertThat(
-            Letter2Markup.render(Letter(showIfTemplate, SomeDto("showIf", false), Language.Bokmal, felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(showIfTemplate, SomeDto("showIf", false), Language.Bokmal, felles)).letterMarkup,
             hasBlocks {
                 paragraph {
                     literal("showIf tekst")
@@ -195,7 +195,7 @@ class ShowIfTest {
     @Test
     fun `orShowIf renders when condition evaluates to true`() {
         assertThat(
-            Letter2Markup.render(Letter(showIfTemplate, SomeDto("orShowIf", false), Language.Bokmal, felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(showIfTemplate, SomeDto("orShowIf", false), Language.Bokmal, felles)).letterMarkup,
             hasBlocks {
                 paragraph {
                     literal("orShowIf tekst")
@@ -207,7 +207,7 @@ class ShowIfTest {
     @Test
     fun `orShow renders when condition evaluates to true`() {
         assertThat(
-            Letter2Markup.render(Letter(showIfTemplate, SomeDto("orShow", false), Language.Bokmal, felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(showIfTemplate, SomeDto("orShow", false), Language.Bokmal, felles)).letterMarkup,
             hasBlocks {
                 paragraph {
                     literal("orShow tekst")
