@@ -113,6 +113,7 @@ dependencies {
     // Test
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.ktor.client.mock)
     testImplementation(libs.mockk)

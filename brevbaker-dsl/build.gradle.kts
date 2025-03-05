@@ -28,6 +28,7 @@ dependencies {
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.hamkrest)
     testImplementation(kotlin("reflect"))
+    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 kotlin {

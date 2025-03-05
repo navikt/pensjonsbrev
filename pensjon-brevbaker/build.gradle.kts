@@ -132,6 +132,7 @@ dependencies {
     // JUnit 5
     testImplementation(platform(libs.junit.bom))
     testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
     testImplementation(libs.hamkrest)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(libs.mockk)

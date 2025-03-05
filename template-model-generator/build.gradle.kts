@@ -44,6 +44,7 @@ dependencies {
     implementation(project(":brevbaker-dsl"))
 
     testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.platform.launcher)
     // Byttet til fork som støtter kotlin > 2.0
     //    testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.6.0")
     testImplementation(libs.ksp.kotlin.compile.testing)
