@@ -21,6 +21,10 @@ exposedVersion = "0.58.0"
 flywayVersion = "11.2.0"
 unleashVersion = "10.0.2"
 
+[plugins]
+ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKspVersion" }
+
 [libraries]
 brevbaker-common = { module = "no.nav.pensjon.brevbaker:brevbaker-api-model-common", version.ref = "commonVersion" }
 commons-codec = { module = "commons-codec:commons-codec", version.ref = "commonsCodecVersion" }

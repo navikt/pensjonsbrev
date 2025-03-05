@@ -6,8 +6,8 @@ val javaTarget: String by System.getProperties()
 plugins {
     application
     kotlin("jvm")
-    id("com.google.devtools.ksp")
-    id("io.ktor.plugin")
+    alias(libs.plugins.ksp) apply true
+    alias(libs.plugins.ktor) apply true
 }
 
 group = "no.nav.pensjon.brev"

@@ -8,7 +8,7 @@ val javaTarget: String by System.getProperties()
 plugins {
 	application
 	kotlin("jvm")
-	id("io.ktor.plugin")
+	alias(libs.plugins.ktor) apply true
 }
 
 group = "no.nav.pensjon.brev.tjenestebuss"

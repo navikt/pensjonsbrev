@@ -4,7 +4,6 @@ val apiModelJavaTarget: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
-    id("com.google.devtools.ksp")
 }
 
 group = "no.nav.pensjon.brevbaker"
@@ -34,11 +33,6 @@ dependencies {
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.fromTarget(apiModelJavaTarget))
-    }
-    sourceSets {
-        test {
-            kotlin.srcDir("build/generated/ksp/test/kotlin")
-        }
     }
 }
 tasks {

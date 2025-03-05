@@ -6,7 +6,7 @@ plugins {
     kotlin("jvm")
     id("java-library")
     id("java-test-fixtures")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.ksp) apply true
 }
 
 group = "no.nav.brev.brevbaker"

@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm") version libs.versions.kotlinVersion apply false
-    id("com.google.devtools.ksp") version libs.versions.kotlinKspVersion apply false
-    id("io.ktor.plugin") version libs.versions.ktorVersion apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.ktor) apply false
 }
 
 allprojects {

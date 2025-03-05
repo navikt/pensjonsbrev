@@ -7,7 +7,7 @@ val apiModelJavaTarget: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.ksp) apply true
 }
 
 group = "no.nav.pensjon.brev"
