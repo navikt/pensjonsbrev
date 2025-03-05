@@ -1,7 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val apiModelVersion = 131
+val apiModelVersion = 132
 
 val apiModelJavaTarget: String by System.getProperties()
 val jupiterVersion: String by project
@@ -28,6 +28,7 @@ dependencies {
 
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation(testFixtures(project(":brevbaker")))
 }
 
