@@ -1,5 +1,3 @@
-@file:OptIn(InterneDataklasser::class)
-
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.brev.InterneDataklasser
