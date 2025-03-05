@@ -1,16 +1,21 @@
 package no.nav.pensjon.brev.maler.ufoereBrev
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggFellesbarn
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggFellesbarnSelectors.endringsbelop
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggFellesbarnSelectors.endringsbelop_safe
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggFellesbarnSelectors.netto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggSaerkullsbarnSelectors.endringsbelop_safe
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggSaerkullsbarnSelectors.netto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.totalNetto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.sokerMottarApIlaAret
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.datoForNormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.barnetilleggFellesbarn
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.barnetilleggSaerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.btfbEndret
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.btsbEndret
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.gjenlevendetillegg
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.uforetrygd
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.virkningFom
@@ -49,17 +54,15 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
         )
     ) {
         val endretUt = uforetrygd.endringsbelop.notEqualTo(0)
-        //TODO: Fikse bug, barnetillegg vises uansett
-        val endretBt = barnetilleggFellesbarn.endringsbelop_safe.notEqualTo(0).ifNull(false) and
-                barnetilleggSaerkullsbarn.endringsbelop_safe.notEqualTo(0).ifNull(false)
 
         title {
-            showIf(endretUt and not(endretBt)) {
+
+            showIf(endretUt and not(btfbEndret or btsbEndret)) {
                 text(
                     Bokmal to "Nav har endret utbetalingen av uføretrygden din",
                     Nynorsk to "Nav har endra utbetalinga av uføretrygda di",
                 )
-            }.orShowIf(endretUt and endretBt) {
+            }.orShowIf(endretUt and (btfbEndret or btsbEndret)) {
                 text(
                     Bokmal to "Nav har endret utbetalingen av uføretrygden din og barnetillegget ditt",
                     Nynorsk to "Nav har endret utbetalingen av uføretrygden din og barnetillegget ditt",
@@ -76,7 +79,7 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
         // TODO: om inntekt er for høy, avsnitt om det
         outline {
             paragraph {
-                // TODO: Endre EPS til
+                // TODO: Endre EPS til ektefelle, samboer eller partner basert på faktisk sivilstand
                 showIf(barnetilleggFellesbarn.notNull() and barnetilleggFellesbarn.endringsbelop_safe.notEqualTo(0)) {
                     text(
                         Bokmal to "Vi har mottatt nye opplysninger om inntekten til deg eller din EPS. Inntekten til din EPS har kun betydning for størrelsen på barnetillegget ditt. ",
