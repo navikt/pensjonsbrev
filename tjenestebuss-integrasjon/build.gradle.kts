@@ -4,13 +4,6 @@ import com.github.jengelman.gradle.plugins.shadow.transformers.AppendingTransfor
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val javaTarget: String by System.getProperties()
-val kotlinVersion: String by System.getProperties()
-val ktorVersion: String by System.getProperties()
-val hamkrestVersion: String by project
-val logbackVersion: String by project
-val logstashVersion: String by project
-val micrometerVersion: String by project
-val jupiterVersion: String by project
 
 plugins {
 	application
@@ -41,19 +34,19 @@ ktor {
 val cxfVersion = "3.6.3"
 val tjenestespesifikasjonerVersion = "1.858e92e"
 dependencies {
-	implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
-	implementation("io.ktor:ktor-server-call-id:$ktorVersion")
-	implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
-	implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
-	implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
-	implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
-	implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
-	implementation("io.ktor:ktor-client-auth:$ktorVersion")
-	implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
-	implementation("io.ktor:ktor-client-cio:$ktorVersion")
-	implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-	implementation("ch.qos.logback:logback-classic:$logbackVersion")
-	implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
+	implementation(libs.ktor.serialization.jackson)
+	implementation(libs.ktor.server.call.id)
+	implementation(libs.ktor.server.call.logging)
+	implementation(libs.ktor.server.content.negotiation)
+	implementation(libs.ktor.server.core.jvm)
+	implementation(libs.ktor.server.netty.jvm)
+	implementation(libs.ktor.server.status.pages)
+	implementation(libs.ktor.client.auth)
+	implementation(libs.ktor.server.auth.jwt)
+	implementation(libs.ktor.client.cio)
+	implementation(libs.ktor.client.content.negotiation)
+	implementation(libs.logback.classic)
+	implementation(libs.logback.encoder)
 
 	implementation("no.nav.tjenestespesifikasjoner:samhandler-tjenestespesifikasjon:$tjenestespesifikasjonerVersion")
 
@@ -67,19 +60,19 @@ dependencies {
 	implementation("org.apache.cxf:cxf-rt-transports-http:$cxfVersion")
 
 	// Metrics
-	implementation("io.ktor:ktor-server-metrics:$ktorVersion")
-	implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
-	implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
+	implementation(libs.ktor.server.metrics)
+	implementation(libs.ktor.server.metrics.micrometer)
+	implementation(libs.micrometer.prometheus)
 
 
 	// Test
-	testImplementation("org.junit.jupiter:junit-jupiter")
-	testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
-	testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
-	testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
+	testImplementation(libs.junit.jupiter)
+	testImplementation(libs.kotlin.test.junit)
+	testImplementation(platform(libs.junit.bom))
+	testImplementation(libs.ktor.server.test.host)
 	testImplementation("com.sun.xml.bind:jaxb-core:2.2.11")
 	testImplementation("org.apache.cxf:cxf-rt-transports-http-jetty:$cxfVersion")
-	testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
+	testImplementation(libs.hamkrest)
 }
 
 repositories {

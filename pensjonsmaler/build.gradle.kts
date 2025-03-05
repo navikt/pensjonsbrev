@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 val apiModelVersion = 132
 
 val apiModelJavaTarget: String by System.getProperties()
-val jupiterVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -26,9 +25,8 @@ dependencies {
     api("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
 
 
-    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
     testImplementation(testFixtures(project(":brevbaker")))
 }
 

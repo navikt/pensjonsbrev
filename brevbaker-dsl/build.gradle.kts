@@ -1,9 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelJavaTarget: String by System.getProperties()
-val commonVersion: String by project
-val hamkrestVersion: String by project
-val jupiterVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -25,13 +22,12 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("no.nav.pensjon.brevbaker:brevbaker-api-model-common:$commonVersion")
+    implementation(libs.brevbaker.common)
 
     // JUnit 5
-    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
+    testImplementation(platform(libs.junit.bom))
+    testImplementation(libs.junit.jupiter)
+    testImplementation(libs.hamkrest)
     testImplementation(kotlin("reflect"))
 }
 
