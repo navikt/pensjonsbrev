@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregninge
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -164,7 +165,7 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
                     Bokmal to "Selv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før du fyller ".expr() +
                             normertPensjonsalder.aarOgMaanederFormattert() + ". " +
                             "Da må du kunne velge en lavere uttaksgrad eller ta ut pensjonen senere. " +
-                            "På nav.no/dinpensjon kan du sjekke når du tidligst kan ta ut alderspensjon. " +
+                            "På ${Constants.DIN_PENSJON_URL} kan du sjekke når du tidligst kan ta ut alderspensjon. " +
                             "Du kan også se hva pensjonen din blir, avhengig av når og hvor mye du tar ut.",
                     Nynorsk to "".expr(),
                     English to "".expr()
@@ -190,7 +191,7 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
             paragraph {
                 text(
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. " +
-                            "Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage. " +
+                            "Klagen skal være skriftlig. Du finner skjema og informasjon på ${Constants.KLAGE_URL}. " +
                             "I vedlegget får du vite mer om hvordan du går fram.",
                     Nynorsk to "",
                     English to ""
