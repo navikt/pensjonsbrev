@@ -41,18 +41,19 @@ postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresqlVe
 unleash = { module = "io.getunleash:unleash-client-java", version.ref = "unleashVersion" }
 
 # Ktor
-ktor-serialization-jackson = { module = "io.ktor:ktor-serialization-jackson", version.ref = "ktorVersion" }
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorVersion" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorVersion" }
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorVersion" }
 ktor-client-encoding = { module = "io.ktor:ktor-client-encoding", version.ref = "ktorVersion" }
 ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktorVersion" }
+ktor-serialization-jackson = { module = "io.ktor:ktor-serialization-jackson", version.ref = "ktorVersion" }
 ktor-server-auth = { module = "io.ktor:ktor-server-auth", version.ref = "ktorVersion" }
 ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt", version.ref = "ktorVersion" }
 ktor-server-caching-headers = { module = "io.ktor:ktor-server-caching-headers", version.ref = "ktorVersion" }
 ktor-server-caching-headers-jvm = { module = "io.ktor:ktor-server-caching-headers-jvm", version.ref = "ktorVersion"}
 ktor-server-call-id = { module = "io.ktor:ktor-server-call-id", version.ref = "ktorVersion" }
 ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktorVersion" }
+ktor-server-compression-jvm = { module = "io.ktor:ktor-server-compression-jvm", version.ref = "ktorVersion" }
 ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktorVersion" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktorVersion" }
 ktor-server-core-jvm = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktorVersion" }
@@ -64,7 +65,6 @@ ktor-server-netty-jvm = { module = "io.ktor:ktor-server-netty-jvm", version.ref 
 ktor-server-request-validation = { module = "io.ktor:ktor-server-auth", version.ref = "ktorVersion" }
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktorVersion" }
 ktor-server-swagger = { module = "io.ktor:ktor-server-swagger", version.ref = "ktorVersion" }
-ktor-server-compression-jvm = { module = "io.ktor:ktor-server-compression-jvm", version.ref = "ktorVersion" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktorVersion" }
 
 # Exposed
