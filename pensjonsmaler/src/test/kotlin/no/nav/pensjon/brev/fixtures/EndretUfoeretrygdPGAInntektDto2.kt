@@ -20,5 +20,7 @@ fun createEndretUfoeretrygdPGAInntektDto2() =
         virkningFom = LocalDate.now(),
         totalNetto = 1,
         datoForNormertPensjonsalder = LocalDate.now(),
-        sokerMottarApIlaAret = false
+        sokerMottarApIlaAret = false,
+        btfbEndret = false,
+        btsbEndret = false
     )
