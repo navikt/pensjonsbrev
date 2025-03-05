@@ -81,7 +81,7 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-15 og 22-13.",
                     Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-15 og 22-13.",
-                    English to "This decision was made pursuant to the provisions of §§ 20-15 and 22-13 of the National Insurance Act"
+                    English to "This decision was made pursuant to the provisions of §§ 20-15 and 22-13 of the National Insurance Act."
                 )
             }
 
