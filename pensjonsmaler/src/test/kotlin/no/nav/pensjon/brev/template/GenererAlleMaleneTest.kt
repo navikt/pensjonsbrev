@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
@@ -38,7 +39,7 @@ class GenererAlleMaleneTest {
             println("Mal ${template.name} fins ikke på språk $spraak, tester ikke denne")
             return
         }
-        val letter = Letter(template, fixtures, spraak, Fixtures.felles)
+        val letter = LetterTestImpl(template, fixtures, spraak, Fixtures.felles)
 
         letter.renderTestPDF(filnavn(brevkode, spraak))
     }
@@ -55,7 +56,7 @@ class GenererAlleMaleneTest {
             println("Mal ${template.name} fins ikke på språk ${spraak.javaClass.simpleName}, tester ikke denne")
             return
         }
-        Letter(
+        LetterTestImpl(
             template,
             fixtures,
             spraak,

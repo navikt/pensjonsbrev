@@ -20,7 +20,7 @@ import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.testBrevbakerApp
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -42,7 +42,7 @@ class LetterRoutesITest {
         felles = Fixtures.felles,
         language = LanguageCode.BOKMAL,
     )
-    private val redigertBestilling = Letter(
+    private val redigertBestilling = LetterImpl(
         template = EksempelbrevRedigerbart.template,
         argument = bestillMarkupRequest.letterData,
         language = Language.Bokmal,

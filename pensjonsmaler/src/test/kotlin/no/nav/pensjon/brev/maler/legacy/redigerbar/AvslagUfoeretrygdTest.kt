@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.maler.legacy.redigerbar
 
+import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDto
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Letter
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -15,7 +15,7 @@ class AvslagUfoeretrygdTest {
 
     @Test
     fun testPdf() {
-        Letter(
+        LetterTestImpl(
             AvslagUfoeretrygd.template,
             Fixtures.create<AvslagUfoeretrygdDto>(),
             Language.Bokmal,
@@ -25,7 +25,7 @@ class AvslagUfoeretrygdTest {
 
     @Test
     fun testHtml() {
-        Letter(
+        LetterTestImpl(
             AvslagUfoeretrygd.template,
             Fixtures.create<AvslagUfoeretrygdDto>(),
             Language.Nynorsk,

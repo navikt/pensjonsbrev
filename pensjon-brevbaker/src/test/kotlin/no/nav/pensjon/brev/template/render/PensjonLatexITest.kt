@@ -56,7 +56,7 @@ class PensjonLatexITest {
                 }
             }
         }
-        Letter(template, brevData, Bokmal, Fixtures.felles).renderTestPDF("pensjonLatexITest_canRender", pdfByggerService = laTeXCompilerService)
+        LetterImpl(template, brevData, Bokmal, Fixtures.felles).renderTestPDF("pensjonLatexITest_canRender", pdfByggerService = laTeXCompilerService)
     }
 
     @Test
@@ -127,7 +127,7 @@ class PensjonLatexITest {
                 }
             }
 
-            Letter(testTemplate, brevData, Bokmal, Fixtures.felles)
+            LetterImpl(testTemplate, brevData, Bokmal, Fixtures.felles)
                 .renderTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar", pdfByggerService = laTeXCompilerService)
 
             return true

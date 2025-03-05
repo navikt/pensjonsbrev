@@ -7,7 +7,7 @@ import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.LetterImpl
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -16,7 +16,7 @@ class LetterExampleTest {
 
     @Test
     fun test() {
-        Letter(
+        LetterImpl(
             LetterExample.template,
             createLetterExampleDto(),
             Language.Bokmal,

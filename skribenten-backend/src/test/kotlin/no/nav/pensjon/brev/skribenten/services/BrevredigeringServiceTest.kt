@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import io.ktor.http.*
 import io.mockk.*
 import kotlinx.coroutines.*
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -24,11 +25,10 @@ import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brevbaker.api.model.*
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.apache.commons.codec.binary.Hex
 import org.assertj.core.api.Assertions.assertThat
@@ -67,7 +67,7 @@ class BrevredigeringServiceTest {
         postgres.stop()
     }
 
-    private val letter = letter(Paragraph(1, true, listOf(Literal(1, "red pill"))))
+    private val letter = letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"))))
     private val stagetPDF = "nesten en pdf".encodeToByteArray()
     private val lettermetadata = LetterMetadata(
         displayTitle = "displayTitle",
@@ -103,17 +103,18 @@ class BrevredigeringServiceTest {
         "rabbit"
     )
 
+    @OptIn(InterneDataklasser::class)
     private val brevdataResponseData = BrevdataResponse.Data(
-        felles = Felles(
+        felles = FellesImpl(
             dokumentDato = LocalDate.now(),
             saksnummer = sak.saksId.toString(),
-            avsenderEnhet = NAVEnhet(
+            avsenderEnhet = NavEnhetImpl(
                 nettside = "nav.no",
                 navn = "en fantastisk enhet",
-                telefonnummer = Telefonnummer("12345678")
+                telefonnummer = TelefonnummerImpl("12345678")
             ),
-            bruker = Bruker(
-                foedselsnummer = Foedselsnummer("12345678910"),
+            bruker = BrukerImpl(
+                foedselsnummer = FoedselsnummerImpl("12345678910"),
                 fornavn = "Navn",
                 mellomnavn = null,
                 etternavn = "Navnesen"
@@ -359,7 +360,7 @@ class BrevredigeringServiceTest {
         val original = opprettBrev(saksbehandlerValg = saksbehandlerValg).resultOrNull()!!
 
         val nyeValg = Api.GeneriskBrevdata().apply { put("valg2", true) }
-        val freshRender = letter.copy(blocks = letter.blocks + Paragraph(2, true, listOf(Variable(21, "ny paragraph"))))
+        val freshRender = letter.copy(blocks = letter.blocks + ParagraphImpl(2, true, listOf(VariableImpl(21, "ny paragraph"))))
         coEvery {
             brevbakerMock.renderMarkup(
                 eq(RedigerbarBrevkode(Testbrevkoder.TESTBREV.name)),
@@ -529,7 +530,7 @@ class BrevredigeringServiceTest {
 
         transaction {
             Brevredigering[brev.info.id].redigertBrev =
-                letter(Paragraph(1, true, listOf(Literal(1, "blue pill")))).toEdit()
+                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
         }
         brevredigeringService.hentEllerOpprettPdf(sak.saksId, brev.info.id)
         val secondHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
@@ -554,7 +555,7 @@ class BrevredigeringServiceTest {
 
         transaction {
             Brevredigering[brev.info.id].redigertBrev =
-                letter(Paragraph(1, true, listOf(Literal(1, "blue pill")))).toEdit()
+                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
         }
 
         stagePdf("min andre pdf".encodeToByteArray())
@@ -865,7 +866,7 @@ class BrevredigeringServiceTest {
                     saksId = sak.saksId,
                     brevId = brev.info.id,
                     nyeSaksbehandlerValg = brev.saksbehandlerValg,
-                    nyttRedigertbrev = letter(Paragraph(1, true, listOf(Literal(1, "blue pill")))).toEdit(),
+                    nyttRedigertbrev = letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit(),
                     signatur = brev.info.signaturSignerende,
                 )
             }
@@ -900,7 +901,7 @@ class BrevredigeringServiceTest {
                     saksId = brev.info.saksId,
                     brevId = brev.info.id,
                     nyeSaksbehandlerValg = null,
-                    nyttRedigertbrev = letter(Paragraph(1, true, listOf(Literal(1, "blue pill")))).toEdit(),
+                    nyttRedigertbrev = letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit(),
                     signatur = brev.info.signaturSignerende,
                 )
             }
@@ -1033,7 +1034,7 @@ class BrevredigeringServiceTest {
 
         transaction {
             Brevredigering[brev.info.id].redigertBrev =
-                letter(Paragraph(1, true, listOf(Literal(1, "blue pill")))).toEdit()
+                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
         }
 
         val hash2 = transaction { Brevredigering[brev.info.id].redigertBrevHash }
@@ -1184,10 +1185,10 @@ class BrevredigeringServiceTest {
             )
         } returns ServiceResult.Ok(
             letter(
-                Paragraph(
+                ParagraphImpl(
                     1,
                     true,
-                    listOf(Literal(12, "Vi har "), Literal(13, "dato", tags = setOf(ElementTags.FRITEKST)), Literal(14, " mottatt søknad."))
+                    listOf(LiteralImpl(12, "Vi har "), LiteralImpl(13, "dato", tags = setOf(ElementTags.FRITEKST)), LiteralImpl(14, " mottatt søknad."))
                 )
             )
         )
@@ -1214,10 +1215,10 @@ class BrevredigeringServiceTest {
             )
         } returns ServiceResult.Ok(
             letter(
-                Paragraph(
+                ParagraphImpl(
                     1,
                     true,
-                    listOf(Literal(12, "Vi har "), Literal(13, "dato", tags = setOf(ElementTags.FRITEKST)), Literal(14, " mottatt søknad."))
+                    listOf(LiteralImpl(12, "Vi har "), LiteralImpl(13, "dato", tags = setOf(ElementTags.FRITEKST)), LiteralImpl(14, " mottatt søknad."))
                 )
             )
         )

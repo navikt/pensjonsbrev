@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.maler.legacy
 
+import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Letter
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -14,7 +14,7 @@ class EndretUforetrygdPGAOpptjeningLegacyTest {
 
     @Test
     fun testPdf() {
-        Letter(
+        LetterTestImpl(
             EndretUforetrygdPGAOpptjeningLegacy.template,
             Fixtures.create<EndretUforetrygdPGAOpptjeningLegacy>(),
             Language.Nynorsk,
@@ -24,7 +24,7 @@ class EndretUforetrygdPGAOpptjeningLegacyTest {
 
     @Test
     fun testHtml() {
-        Letter(
+        LetterTestImpl(
             EndretUforetrygdPGAOpptjeningLegacy.template,
             Fixtures.create<EndretUforetrygdPGAOpptjeningLegacy>(),
             Language.Nynorsk,

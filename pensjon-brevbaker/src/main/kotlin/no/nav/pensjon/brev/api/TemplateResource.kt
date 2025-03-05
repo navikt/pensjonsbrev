@@ -4,6 +4,7 @@ import io.ktor.server.plugins.BadRequestException
 import io.ktor.server.plugins.NotFoundException
 import io.micrometer.core.instrument.Tag
 import no.nav.brev.brevbaker.Brevbaker
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.Metrics
 import no.nav.pensjon.brev.api.model.BrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -12,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.jacksonObjectMapper
 import no.nav.pensjon.brevbaker.api.model.Felles
@@ -56,7 +58,8 @@ abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brev
             throw BadRequestException("Template '${brevkode}' doesn't support language: ${template.language}")
         }
 
-        return Letter(
+        @OptIn(InterneDataklasser::class)
+        return LetterImpl(
             template = template,
             argument = parseArgument(brevdata, template),
             language = language,

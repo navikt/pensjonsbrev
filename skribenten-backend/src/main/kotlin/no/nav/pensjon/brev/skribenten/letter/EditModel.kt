@@ -1,3 +1,5 @@
+@file:OptIn(InterneDataklasser::class)
+
 package no.nav.pensjon.brev.skribenten.letter
 
 import com.fasterxml.jackson.annotation.JsonIgnore
@@ -6,12 +8,16 @@ import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Sakspart
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Signatur
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl
 
 object Edit {
     data class Letter(val title: String, val sakspart: Sakspart, val blocks: List<Block>, val signatur: Signatur, val deletedBlocks: Set<Int>)
@@ -277,38 +283,38 @@ fun ParagraphContent.Table.ColumnAlignment.toEdit(): Edit.ParagraphContent.Table
     }
 
 fun Edit.Letter.toMarkup(): LetterMarkup =
-    LetterMarkup(title = title, sakspart = sakspart, blocks = blocks.map { it.toMarkup() }, signatur = signatur)
+    LetterMarkupImpl(title = title, sakspart = sakspart, blocks = blocks.map { it.toMarkup() }, signatur = signatur)
 
 fun Edit.Block.toMarkup(): Block =
     when (this) {
-        is Edit.Block.Paragraph -> Block.Paragraph(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
-        is Edit.Block.Title1 -> Block.Title1(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
-        is Edit.Block.Title2 -> Block.Title2(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
+        is Edit.Block.Paragraph -> BlockImpl.ParagraphImpl(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
+        is Edit.Block.Title1 -> BlockImpl.Title1Impl(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
+        is Edit.Block.Title2 -> BlockImpl.Title2Impl(id = id ?: 0, editable = editable, content = content.map { it.toMarkup() })
     }
 
 fun Edit.ParagraphContent.toMarkup(): ParagraphContent =
     when (this) {
-        is Edit.ParagraphContent.ItemList -> ParagraphContent.ItemList(id = id ?: 0, items = items.map { it.toMarkup() })
-        is Edit.ParagraphContent.Table -> ParagraphContent.Table(id = id ?: 0, rows = rows.map { it.toMarkup() }, header = header.toMarkup())
+        is Edit.ParagraphContent.ItemList -> ParagraphContentImpl.ItemListImpl(id = id ?: 0, items = items.map { it.toMarkup() })
+        is Edit.ParagraphContent.Table -> ParagraphContentImpl.TableImpl(id = id ?: 0, rows = rows.map { it.toMarkup() }, header = header.toMarkup())
         is Edit.ParagraphContent.Text -> toMarkup()
     }
 
 fun Edit.ParagraphContent.Text.toMarkup(): ParagraphContent.Text =
     when (this) {
-        is Edit.ParagraphContent.Text.Literal -> ParagraphContent.Text.Literal(
+        is Edit.ParagraphContent.Text.Literal -> ParagraphContentImpl.TextImpl.LiteralImpl(
             id = id ?: 0,
             text = editedText ?: text,
             fontType = (editedFontType ?: fontType).toMarkup(),
             tags = tags,
         )
 
-        is Edit.ParagraphContent.Text.Variable -> ParagraphContent.Text.Variable(
+        is Edit.ParagraphContent.Text.Variable -> ParagraphContentImpl.TextImpl.VariableImpl(
             id = id ?: 0,
             text = text,
             fontType = fontType.toMarkup()
         )
 
-        is Edit.ParagraphContent.Text.NewLine -> ParagraphContent.Text.NewLine(id = id ?: 0)
+        is Edit.ParagraphContent.Text.NewLine -> ParagraphContentImpl.TextImpl.NewLineImpl(id = id ?: 0)
     }
 
 fun Edit.ParagraphContent.Text.FontType.toMarkup(): ParagraphContent.Text.FontType =
@@ -319,13 +325,13 @@ fun Edit.ParagraphContent.Text.FontType.toMarkup(): ParagraphContent.Text.FontTy
     }
 
 fun Edit.ParagraphContent.ItemList.Item.toMarkup(): ParagraphContent.ItemList.Item =
-    ParagraphContent.ItemList.Item(id = id ?: 0, content = content.map { it.toMarkup() })
+    ParagraphContentImpl.ItemListImpl.ItemImpl(id = id ?: 0, content = content.map { it.toMarkup() })
 
 fun Edit.ParagraphContent.Table.Header.toMarkup(): ParagraphContent.Table.Header =
-    ParagraphContent.Table.Header(id = id ?: 0, colSpec = colSpec.map { it.toMarkup() })
+    ParagraphContentImpl.TableImpl.HeaderImpl(id = id ?: 0, colSpec = colSpec.map { it.toMarkup() })
 
 fun Edit.ParagraphContent.Table.ColumnSpec.toMarkup(): ParagraphContent.Table.ColumnSpec =
-    ParagraphContent.Table.ColumnSpec(id = id ?: 0, headerContent = headerContent.toMarkup(), alignment = alignment.toMarkup(), span = span)
+    ParagraphContentImpl.TableImpl.ColumnSpecImpl(id = id ?: 0, headerContent = headerContent.toMarkup(), alignment = alignment.toMarkup(), span = span)
 
 fun Edit.ParagraphContent.Table.ColumnAlignment.toMarkup(): ParagraphContent.Table.ColumnAlignment =
     when (this) {
@@ -334,10 +340,10 @@ fun Edit.ParagraphContent.Table.ColumnAlignment.toMarkup(): ParagraphContent.Tab
     }
 
 fun Edit.ParagraphContent.Table.Row.toMarkup(): ParagraphContent.Table.Row =
-    ParagraphContent.Table.Row(id = id ?: 0, cells = cells.map { it.toMarkup() })
+    ParagraphContentImpl.TableImpl.RowImpl(id = id ?: 0, cells = cells.map { it.toMarkup() })
 
 fun Edit.ParagraphContent.Table.Cell.toMarkup(): ParagraphContent.Table.Cell =
-    ParagraphContent.Table.Cell(id = id ?: 0, text = text.map { it.toMarkup() })
+    ParagraphContentImpl.TableImpl.CellImpl(id = id ?: 0, text = text.map { it.toMarkup() })
 
 
 

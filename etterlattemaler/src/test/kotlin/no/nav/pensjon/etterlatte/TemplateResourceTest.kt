@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte
 
 import io.ktor.util.reflect.instanceOf
+import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.TestTags.MANUAL_TEST
 import no.nav.brev.brevbaker.jacksonObjectMapper
@@ -32,7 +33,7 @@ class TemplateResourceTest {
         fixtures: T,
         spraak: Language,
     ) {
-        val letter = Letter(template, fixtures, spraak, Fixtures.felles)
+        val letter = LetterTestImpl(template, fixtures, spraak, Fixtures.felles)
 
         letter.renderTestPDF(filnavn(etterlatteBrevKode, spraak))
     }
@@ -45,7 +46,7 @@ class TemplateResourceTest {
         fixtures: T,
         spraak: Language,
     ) {
-        Letter(
+        LetterTestImpl(
             template,
             fixtures,
             spraak,
@@ -74,7 +75,7 @@ class TemplateResourceTest {
         if (erHovedmal) {
             return
         }
-        Letter(
+        LetterTestImpl(
             template,
             fixtures,
             spraak,

@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.OutlineElement
 import no.nav.pensjon.brev.template.createAttachment
@@ -92,7 +93,7 @@ fun renderTestPdfOutline(
         outline { outlineInit() }
         attachments.forEach { includeAttachment(it) }
     }
-    val letter = Letter(template, Unit, Bokmal, felles ?: Fixtures.fellesAuto)
+    val letter = LetterImpl(template, Unit, Bokmal, felles ?: Fixtures.fellesAuto)
     letter.renderTestPDF(testName, Path.of("build/$outputFolder"), pdfByggerService)
 }
 
@@ -210,7 +211,7 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
     }
 
 fun LetterTemplate<LangBokmal, EmptyBrevdata>.renderTestPDF(fileName: String, felles: Felles = Fixtures.felles, pdfByggerService: PDFByggerService = laTeXCompilerService) =
-    Letter(this, EmptyBrevdata, Bokmal, felles).renderTestPDF(fileName, pdfByggerService = pdfByggerService)
+    LetterImpl(this, EmptyBrevdata, Bokmal, felles).renderTestPDF(fileName, pdfByggerService = pdfByggerService)
 
 internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = LetterTemplate(
     name = "test",
