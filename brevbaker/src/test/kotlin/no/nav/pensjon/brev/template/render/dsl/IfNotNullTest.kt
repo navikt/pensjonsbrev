@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template.render.dsl
 import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.pensjon.brev.template.render.Fixtures.felles
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.ContentOrControlStructureImpl.ConditionalImpl
 import no.nav.pensjon.brev.template.ContentOrControlStructureImpl.ContentImpl
 import no.nav.pensjon.brev.template.Language.*
@@ -18,7 +19,6 @@ import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test1
 import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test2
 import no.nav.pensjon.brev.template.render.hasBlocks
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.LetterMetadataImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -36,7 +36,7 @@ class IfNotNullTest {
         name = "NULL_BREV",
         letterDataType = NullBrevDto::class,
         languages = languages(Bokmal),
-        letterMetadata = LetterMetadataImpl(
+        letterMetadata = LetterMetadata(
             "Jadda",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,

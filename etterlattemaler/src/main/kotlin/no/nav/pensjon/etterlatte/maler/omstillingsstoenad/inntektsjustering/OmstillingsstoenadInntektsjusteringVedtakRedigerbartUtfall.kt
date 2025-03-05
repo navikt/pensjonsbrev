@@ -15,7 +15,6 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.LetterMetadataEtterlatte
 import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.inntektsaar
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.inntektsbeloep
@@ -36,7 +35,7 @@ object OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall : EtterlatteTe
             letterDataType = OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
-            LetterMetadataEtterlatte(
+            LetterMetadata(
                 displayTitle = "Vedtaksbrev - inntektsjustering",
                 isSensitiv = true,
                 distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,

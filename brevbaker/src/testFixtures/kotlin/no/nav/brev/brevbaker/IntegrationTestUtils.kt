@@ -39,7 +39,6 @@ import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.LetterMetadataImpl
 import java.nio.file.Path
 import kotlin.io.path.Path
 
@@ -82,7 +81,7 @@ fun renderTestPdfOutline(
     outlineInit: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit,
 ) {
     val template = createTemplate(
-        testName, EmptyBrevdata::class, languages(Bokmal), LetterMetadataImpl(
+        testName, EmptyBrevdata::class, languages(Bokmal), LetterMetadata(
             testName,
             false,
             LetterMetadata.Distribusjonstype.VEDTAK,
@@ -183,7 +182,7 @@ fun <AttachmentData : Any, Lang : LanguageSupport> createVedleggTestTemplate(
     name = "test-template",
     letterDataType = Unit::class,
     languages = languages,
-    letterMetadata = LetterMetadataImpl(
+    letterMetadata = LetterMetadata(
         "test mal",
         isSensitiv = false,
         distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
@@ -226,7 +225,7 @@ internal fun outlineTestLetter(vararg elements: OutlineElement<LangBokmal>) = Le
 
 val bokmalTittel = newText(Language.Bokmal to "test brev")
 
-val testLetterMetadata = LetterMetadataImpl(
+val testLetterMetadata = LetterMetadata(
     displayTitle = "En fin display tittel",
     isSensitiv = false,
     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,

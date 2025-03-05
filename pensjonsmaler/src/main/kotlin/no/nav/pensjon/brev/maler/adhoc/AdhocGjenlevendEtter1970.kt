@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
-import no.nav.pensjon.brev.model.LetterMetadataPensjon
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -20,7 +19,7 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
         name = kode.name,
         letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadataPensjon(
+        letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - gjenlevendepensjonen din opphører fra 1. januar 2027",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,

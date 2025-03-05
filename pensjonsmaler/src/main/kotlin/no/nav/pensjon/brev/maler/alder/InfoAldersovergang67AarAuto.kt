@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67A
 import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDtoSelectors.ytelseForAldersovergang
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.model.LetterMetadataPensjon
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -26,7 +25,7 @@ object InfoAldersovergang67AarAuto : AutobrevTemplate<InfoAlderspensjonOvergang6
         name = kode.name,
         letterDataType = InfoAlderspensjonOvergang67AarAutoDto::class,
         languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadataPensjon(
+        letterMetadata = LetterMetadata(
             displayTitle = "Informasjon til deg som snart fyller 67 år",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,

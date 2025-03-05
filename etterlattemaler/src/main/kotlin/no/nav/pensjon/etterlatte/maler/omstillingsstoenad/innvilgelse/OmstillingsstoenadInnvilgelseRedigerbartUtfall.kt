@@ -12,7 +12,6 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.LetterMetadataEtterlatte
 import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
@@ -49,7 +48,7 @@ object OmstillingsstoenadInnvilgelseRedigerbartUtfall : EtterlatteTemplate<Omsti
         name = kode.name,
         letterDataType = OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadataEtterlatte(
+        letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - begrunnelse for innvilgelse",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,

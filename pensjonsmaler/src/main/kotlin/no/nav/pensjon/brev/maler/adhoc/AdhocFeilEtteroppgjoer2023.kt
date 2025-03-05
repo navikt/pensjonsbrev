@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.model.LetterMetadataPensjon
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -18,7 +17,7 @@ object AdhocFeilEtteroppgjoer2023 : AutobrevTemplate<EmptyBrevdata> {
         name = kode.name,
         letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal),
-        letterMetadata = LetterMetadataPensjon(
+        letterMetadata = LetterMetadata(
             displayTitle = "Feil i etteroppgjørsbrev fra Nav",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,

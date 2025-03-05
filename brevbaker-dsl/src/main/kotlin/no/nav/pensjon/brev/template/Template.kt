@@ -38,7 +38,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
     }
 
     fun includeAttachment(template: AttachmentTemplate<Lang, EmptyBrevdata>) {
-        attachments.add(IncludeAttachmentImpl(EmptyBrevdata.expr(), template, true.expr()))
+        attachments.add(IncludeAttachment(EmptyBrevdata.expr(), template, true.expr()))
     }
 
     fun <AttachmentData : Any> includeAttachment(
@@ -46,14 +46,14 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
         attachmentData: Expression<AttachmentData>,
         predicate: Expression<Boolean> = true.expr(),
     ) {
-        attachments.add(IncludeAttachmentImpl(attachmentData, template, predicate))
+        attachments.add(IncludeAttachment(attachmentData, template, predicate))
     }
 
     fun includeAttachment(
         template: AttachmentTemplate<Lang, Unit>,
         predicate: Expression<Boolean> = true.expr(),
     ) {
-        attachments.add(IncludeAttachmentImpl(Unit.expr(), template, predicate))
+        attachments.add(IncludeAttachment(Unit.expr(), template, predicate))
     }
 
     fun <AttachmentData : Any> includeAttachmentIfNotNull(
@@ -61,7 +61,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
         attachmentData: Expression<AttachmentData?>,
     ) {
         @Suppress("UNCHECKED_CAST")
-        attachments.add(IncludeAttachmentImpl(attachmentData as Expression<AttachmentData>, template, attachmentData.notNull()))
+        attachments.add(IncludeAttachment(attachmentData as Expression<AttachmentData>, template, attachmentData.notNull()))
     }
 }
 

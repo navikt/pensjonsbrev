@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.LetterMetadataEtterlatte
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadAktivitetspliktFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
@@ -43,7 +42,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
         letterDataType = OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata =
-        LetterMetadataEtterlatte(
+        LetterMetadata(
             displayTitle = "Informasjon om omstillingsstønaden din",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,

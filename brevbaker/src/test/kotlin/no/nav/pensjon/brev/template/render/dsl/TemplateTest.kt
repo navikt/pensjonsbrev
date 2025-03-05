@@ -94,7 +94,7 @@ class TemplateTest {
                 language = languages(Language.Bokmal),
                 outline = emptyList(),
                 attachments = listOf(
-                    IncludeAttachmentImpl(
+                    IncludeAttachment(
                         ExpressionImpl.LiteralImpl(Unit),
                         attachment
                     )

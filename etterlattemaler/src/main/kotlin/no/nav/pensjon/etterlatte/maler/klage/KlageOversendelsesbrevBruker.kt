@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.LetterMetadataEtterlatte
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
@@ -57,7 +56,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
         name = kode.name,
         letterDataType = KlageOversendelseBrukerDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
-        letterMetadata = LetterMetadataEtterlatte(
+        letterMetadata = LetterMetadata(
             displayTitle = "Vi har sendt klagen din tiil Nav klageinstans Vest",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,

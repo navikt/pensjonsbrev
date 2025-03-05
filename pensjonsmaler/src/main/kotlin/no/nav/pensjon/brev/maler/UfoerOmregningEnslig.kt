@@ -46,7 +46,6 @@ import no.nav.pensjon.brev.maler.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.*
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.vedlegg.*
-import no.nav.pensjon.brev.model.LetterMetadataPensjon
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
@@ -65,7 +64,7 @@ object UfoerOmregningEnslig : AutobrevTemplate<UfoerOmregningEnsligDto> {
         name = kode.name,
         letterDataType = UfoerOmregningEnsligDto::class,
         languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadataPensjon(
+        letterMetadata = LetterMetadata(
             displayTitle = "Vedtak – omregning til enslig uføretrygdet (automatisk)",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,

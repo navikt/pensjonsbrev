@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDtoSelectors.egenerklae
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.vedlegg.egenerklaeringPleieOgOmsorgsarbeid
-import no.nav.pensjon.brev.model.LetterMetadataPensjon
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
@@ -30,7 +29,7 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
         name = kode.name,
         letterDataType = OmsorgEgenAutoDto::class,
         languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadataPensjon(
+        letterMetadata = LetterMetadata(
             displayTitle = "Egenerklæring godskriving omsorgspoeng",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,

@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.adhoc
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants
-import no.nav.pensjon.brev.model.LetterMetadataPensjon
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*
@@ -21,7 +20,7 @@ object AdhocUfoeretrygdEtterbetalingDagpenger : AutobrevTemplate<EmptyBrevdata> 
         name = kode.name,
         letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal),
-        letterMetadata = LetterMetadataPensjon(
+        letterMetadata = LetterMetadata(
             displayTitle = "Ny informasjon om etterbetaling av dagpenger og betydningen for uføretrygd",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,

@@ -20,7 +20,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.*
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.vedlegg.*
-import no.nav.pensjon.brev.model.LetterMetadataPensjon
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
@@ -38,7 +37,7 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
         name = kode.name,
         letterDataType = UngUfoerAutoDto::class,
         languages = languages(Bokmal, Nynorsk),
-        letterMetadata = LetterMetadataPensjon(
+        letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av uføretrygd fordi du fyller 20 år",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,

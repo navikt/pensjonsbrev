@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.LetterMetadataEtterlatte
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
@@ -38,7 +37,7 @@ object OmstillingsstoenadAvslagRedigerbartUtfall :
             letterDataType = OmstillingstoenadAvslagRedigerbartUtfallDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
-            LetterMetadataEtterlatte(
+            LetterMetadata(
                 displayTitle = "Vedtak - begrunnelse for avslag",
                 isSensitiv = true,
                 distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,

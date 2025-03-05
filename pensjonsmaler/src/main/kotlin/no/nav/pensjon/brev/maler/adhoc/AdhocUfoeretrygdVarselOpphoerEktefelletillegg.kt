@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.model.LetterMetadataPensjon
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -17,7 +16,7 @@ object AdhocUfoeretrygdVarselOpphoerEktefelletillegg : AutobrevTemplate<EmptyBre
         name = kode.name,
         letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal),
-        letterMetadata = LetterMetadataPensjon(
+        letterMetadata = LetterMetadata(
             displayTitle = "Varsel om opphør av ektefelletillegg til uføretrygd",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,

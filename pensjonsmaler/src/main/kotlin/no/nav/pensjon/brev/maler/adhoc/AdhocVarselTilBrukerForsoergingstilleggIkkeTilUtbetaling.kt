@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.FORSOERGINGSTILLEGG_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
-import no.nav.pensjon.brev.model.LetterMetadataPensjon
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -22,7 +21,7 @@ object AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling : AutobrevTempla
         name = kode.name,
         letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadataPensjon(
+        letterMetadata = LetterMetadata(
             displayTitle = "Forsørgingstillegg til alderspensjon blir faset ut",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,

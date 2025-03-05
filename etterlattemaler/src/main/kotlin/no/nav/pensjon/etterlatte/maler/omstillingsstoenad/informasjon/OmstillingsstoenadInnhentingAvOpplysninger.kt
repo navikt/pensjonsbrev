@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.LetterMetadataEtterlatte
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
@@ -30,7 +29,7 @@ object OmstillingsstoenadInnhentingAvOpplysninger : EtterlatteTemplate<Omstillin
             letterDataType = OmstillingsstoenadInnhentingAvOpplysningerDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
-                LetterMetadataEtterlatte(
+                LetterMetadata(
                     displayTitle = "Du må sende oss flere opplysninger",
                     isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,

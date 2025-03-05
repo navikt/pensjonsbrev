@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.LetterMetadataEtterlatte
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTOSelectors.innhold
@@ -26,7 +25,7 @@ object TomMalInformasjonsbrev : EtterlatteTemplate<ManueltBrevMedTittelDTO>, Hov
         name = kode.name,
         letterDataType = ManueltBrevMedTittelDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadataEtterlatte(
+        letterMetadata = LetterMetadata(
             displayTitle = "Infomasjonsbrev",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,

@@ -8,7 +8,7 @@ fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
     title: TextElement<Lang>,
     includeSakspart: Boolean = false,
     outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit
-): AttachmentTemplate<Lang, LetterData> = AttachmentTemplateImpl(
+) = AttachmentTemplate<Lang, LetterData>(
     title,
     OutlineOnlyScope<Lang, LetterData>().apply(outline).elements,
     includeSakspart
@@ -20,14 +20,14 @@ fun TextScope<BaseLanguages, *>.namedReference(attachment: AttachmentTemplate<Ba
     text(Language.Bokmal to "»", Language.Nynorsk to "»", Language.English to "”")
 }
 
-interface IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any> : StableHash {
-    val data: Expression<AttachmentData>
-    val template: AttachmentTemplate<Lang, AttachmentData>
-    val predicate: Expression<Boolean>
-}
+data class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any>(
+    val data: Expression<AttachmentData>,
+    val template: AttachmentTemplate<Lang, AttachmentData>,
+    val predicate: Expression<Boolean> = ExpressionImpl.LiteralImpl(true),
+): StableHash by StableHash.of(data, template, predicate)
 
-interface AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any> : HasModel<AttachmentData>, StableHash {
-    val title: TextElement<Lang>
-    val outline: List<OutlineElement<Lang>>
-    val includeSakspart: Boolean
-}
+data class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any>(
+    val title: TextElement<Lang>,
+    val outline: List<OutlineElement<Lang>>,
+    val includeSakspart: Boolean = false,
+): HasModel<AttachmentData>, StableHash by StableHash.of(title, StableHash.of(outline), StableHash.of(includeSakspart))

@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.LetterMetadataEtterlatte
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInnhentingAvOpplysningerDTOSelectors.borIUtlandet
 import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInnhentingAvOpplysningerDTOSelectors.erOver18aar
@@ -33,7 +32,7 @@ object BarnepensjonInnhentingAvOpplysninger : EtterlatteTemplate<BarnepensjonInn
             letterDataType = BarnepensjonInnhentingAvOpplysningerDTO::class,
             languages = languages(Bokmal, Nynorsk, English),
             letterMetadata =
-                LetterMetadataEtterlatte(
+                LetterMetadata(
                     displayTitle = "Du må sende oss flere opplysninger",
                     isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
