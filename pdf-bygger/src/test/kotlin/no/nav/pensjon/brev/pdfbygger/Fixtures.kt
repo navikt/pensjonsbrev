@@ -16,7 +16,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.NavEnhetImpl
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlereImpl
 import no.nav.pensjon.brevbaker.api.model.TelefonnummerImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMetadataImpl
 import java.time.LocalDate
 
 @OptIn(InterneDataklasser::class)
@@ -60,7 +59,7 @@ internal inline fun <reified LetterData : Any> outlineTestTemplate(noinline func
 
 internal val bokmalTittel = newText(Language.Bokmal to "test brev")
 internal val nynorskTittel = newText(Language.Nynorsk to "test brev")
-internal val testLetterMetadata = LetterMetadataImpl(
+internal val testLetterMetadata = LetterMetadata(
     displayTitle = "En fin display tittel",
     isSensitiv = false,
     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,

@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_KODE
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_VIRK0101_KODE
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_VIRK0102_KODE
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ListAssert
 import org.junit.jupiter.api.Test
@@ -28,11 +29,11 @@ class BrevmalServiceTest {
             name = "brevbaker mal",
             letterDataClass = EmptyRedigerbarBrevdata::class.java.name,
             languages = listOf(LanguageCode.BOKMAL),
-            metadata = no.nav.pensjon.brevbaker.api.model.LetterMetadataImpl(
+            metadata = LetterMetadata(
                 "brevbaker brev",
                 false,
-                no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG,
-                no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
+                LetterMetadata.Distribusjonstype.VIKTIG,
+                LetterMetadata.Brevtype.INFORMASJONSBREV
             ),
             kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
             brevkontekst = TemplateDescription.Brevkontekst.ALLE,

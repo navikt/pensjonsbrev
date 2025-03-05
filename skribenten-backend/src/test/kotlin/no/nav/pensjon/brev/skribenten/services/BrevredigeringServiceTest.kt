@@ -66,7 +66,7 @@ class BrevredigeringServiceTest {
 
     private val letter = letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"))))
     private val stagetPDF = "nesten en pdf".encodeToByteArray()
-    private val lettermetadata = LetterMetadataImpl(
+    private val lettermetadata = LetterMetadata(
         displayTitle = "displayTitle",
         isSensitiv = false,
         distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
@@ -1266,7 +1266,7 @@ class BrevredigeringServiceTest {
             LetterResponse(
                 file = pdf,
                 contentType = ContentType.Application.Pdf.toString(),
-                letterMetadata = LetterMetadataImpl(
+                letterMetadata = LetterMetadata(
                     displayTitle = "En fin tittel",
                     isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,

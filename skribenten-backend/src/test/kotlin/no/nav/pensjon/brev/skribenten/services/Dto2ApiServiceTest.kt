@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.LetterMetadataImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -34,7 +33,7 @@ class Dto2ApiServiceTest {
                 name = Testbrevkoder.TESTBREV.name,
                 letterDataClass = EksempelRedigerbartDto::class.java.name,
                 languages = listOf(LanguageCode.BOKMAL),
-                metadata = LetterMetadataImpl(
+                metadata = LetterMetadata(
                     "Redigerbart eksempelbrev",
                     false,
                     LetterMetadata.Distribusjonstype.VIKTIG,
