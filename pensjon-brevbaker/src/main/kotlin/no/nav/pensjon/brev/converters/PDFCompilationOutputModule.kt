@@ -10,9 +10,6 @@ object PDFCompilationOutputModule : SimpleModule() {
     private fun readResolve(): Any = PDFCompilationOutputModule
 
     init {
-        addDeserializer(PDFCompilationOutput::class.java, PDFCompilationOutputDeserializer)
+        addInterfaceDeserializer<PDFCompilationOutput, PDFCompilationOutputImpl>()
     }
-
-    private object PDFCompilationOutputDeserializer :
-        FellesDeserializer<PDFCompilationOutput, PDFCompilationOutputImpl>(PDFCompilationOutputImpl::class.java)
 }

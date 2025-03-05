@@ -230,14 +230,7 @@ object TemplateDescriptionModule : SimpleModule() {
     private fun readResolve(): Any = TemplateDescriptionModule
 
     init {
-        addDeserializer(TemplateDescription.Autobrev::class.java, TemplateDescriptionAutobrevDeserializer)
-        addDeserializer(TemplateDescription.Redigerbar::class.java, TemplateDescriptionRedigerbarDeserializer)
+        addInterfaceDeserializer<TemplateDescription.Autobrev, TemplateDescriptionImpl.AutobrevImpl>()
+        addInterfaceDeserializer<TemplateDescription.Redigerbar, TemplateDescriptionImpl.RedigerbarImpl>()
     }
-
-    private object TemplateDescriptionAutobrevDeserializer :
-        AbstractDeserializer<TemplateDescription.Autobrev, TemplateDescriptionImpl.AutobrevImpl>(TemplateDescriptionImpl.AutobrevImpl::class.java)
-
-    private object TemplateDescriptionRedigerbarDeserializer :
-        AbstractDeserializer<TemplateDescription.Redigerbar, TemplateDescriptionImpl.RedigerbarImpl>(
-            TemplateDescriptionImpl.RedigerbarImpl::class.java)
 }

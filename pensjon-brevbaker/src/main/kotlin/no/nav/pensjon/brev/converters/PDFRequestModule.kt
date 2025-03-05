@@ -14,21 +14,9 @@ object PDFRequestModule : SimpleModule() {
     private fun readResolve(): Any = PDFRequestModule
 
     init {
-        addDeserializer(
-            PDFRequest::class.java,
-            object : FellesDeserializer<PDFRequest, PDFRequestImpl>(PDFRequestImpl::class.java) {})
-        addDeserializer(TemplateDescription.Autobrev::class.java, TemplateDescriptionAutobrevDeserializer)
-        addDeserializer(TemplateDescription.Redigerbar::class.java, TemplateDescriptionRedigerbarDeserializer)
-        addDeserializer(LetterMetadata::class.java, LetterMetadataDeserializer)
+        addInterfaceDeserializer<PDFRequest, PDFRequestImpl>()
+        addInterfaceDeserializer<TemplateDescription.Autobrev, TemplateDescriptionImpl.AutobrevImpl>()
+        addInterfaceDeserializer<TemplateDescription.Redigerbar, TemplateDescriptionImpl.RedigerbarImpl>()
+        addInterfaceDeserializer<LetterMetadata, LetterMetadataImpl>()
     }
-
-    private object TemplateDescriptionAutobrevDeserializer :
-        FellesDeserializer<TemplateDescription.Autobrev, TemplateDescriptionImpl.AutobrevImpl>(TemplateDescriptionImpl.AutobrevImpl::class.java)
-
-    private object TemplateDescriptionRedigerbarDeserializer :
-        FellesDeserializer<TemplateDescription.Redigerbar, TemplateDescriptionImpl.RedigerbarImpl>(
-            TemplateDescriptionImpl.RedigerbarImpl::class.java)
-
-    private object LetterMetadataDeserializer :
-            FellesDeserializer<LetterMetadata, LetterMetadataImpl>(LetterMetadataImpl::class.java)
 }
