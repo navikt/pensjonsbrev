@@ -59,11 +59,7 @@ dependencies {
 	implementation("org.apache.cxf:cxf-rt-ws-policy:$cxfVersion")
 	implementation("org.apache.cxf:cxf-rt-transports-http:$cxfVersion")
 
-	// Metrics
-	implementation(libs.ktor.server.metrics)
-	implementation(libs.ktor.server.metrics.micrometer)
-	implementation(libs.micrometer.prometheus)
-
+	implementation(libs.bundles.metrics)
 
 	// Test
 	testImplementation(libs.junit.jupiter)

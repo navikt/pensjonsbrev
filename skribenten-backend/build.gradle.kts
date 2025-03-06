@@ -105,9 +105,7 @@ dependencies {
     implementation(libs.commons.codec)
 
     // Metrics
-    implementation(libs.ktor.server.metrics)
-    implementation(libs.ktor.server.metrics.micrometer)
-    implementation(libs.micrometer.prometheus)
+    implementation(libs.bundles.metrics)
     implementation(libs.ktor.server.caching.headers.jvm)
 
     // Test

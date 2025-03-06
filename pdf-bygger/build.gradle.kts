@@ -39,10 +39,7 @@ dependencies {
     implementation(libs.logback.encoder)
     implementation(libs.ktor.server.compression.jvm)
 
-    // Metrics
-    implementation(libs.ktor.server.metrics)
-    implementation(libs.ktor.server.metrics.micrometer)
-    implementation(libs.micrometer.prometheus)
+    implementation(libs.bundles.metrics)
 
     implementation(project(":brevbaker-dsl"))
     implementation(libs.brevbaker.common)

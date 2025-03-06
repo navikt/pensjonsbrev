@@ -124,10 +124,7 @@ dependencies {
 
     implementation(libs.unleash)
 
-    // Metrics
-    implementation(libs.ktor.server.metrics)
-    implementation(libs.ktor.server.metrics.micrometer)
-    implementation(libs.micrometer.prometheus)
+    implementation(libs.bundles.metrics)
 
     // JUnit 5
     testImplementation(libs.bundles.junit)
