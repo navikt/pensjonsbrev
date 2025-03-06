@@ -31,7 +31,7 @@ ktor {
 	}
 }
 
-val cxfVersion = "3.6.3"
+val cxfVersion = "4.1.0"
 val tjenestespesifikasjonerVersion = "1.858e92e"
 dependencies {
 	implementation(libs.ktor.serialization.jackson)
