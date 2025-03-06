@@ -4,6 +4,7 @@ kotlinKspVersion = "2.1.20-2.0.0"
 ktorVersion = "3.1.2"
 
 assertJVersion = "3.27.3"
+binaryCompatibilityValidatorVersion = "0.17.0"
 classGraphVersion = "4.8.179"
 commonsCodecVersion = "1.18.0"
 commonVersion = "1.9.3"
@@ -25,6 +26,7 @@ unleashVersion = "10.2.2"
 [plugins]
 ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKspVersion" }
+binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref="binaryCompatibilityValidatorVersion" }
 
 [libraries]
 brevbaker-common = { module = "no.nav.pensjon.brevbaker:brevbaker-api-model-common", version.ref = "commonVersion" }
