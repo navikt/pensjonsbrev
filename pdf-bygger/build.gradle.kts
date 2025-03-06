@@ -28,7 +28,7 @@ tasks {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation(libs.logback.classic)
+    implementation(libs.bundles.logging)
     implementation(libs.ktor.serialization.jackson)
     implementation(libs.ktor.server.call.id)
     implementation(libs.ktor.server.call.logging)
@@ -36,7 +36,6 @@ dependencies {
     implementation(libs.ktor.server.core)
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.status.pages)
-    implementation(libs.logback.encoder)
     implementation(libs.ktor.server.compression.jvm)
 
     implementation(libs.bundles.metrics)

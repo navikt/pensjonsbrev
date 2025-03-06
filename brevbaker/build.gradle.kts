@@ -33,7 +33,7 @@ dependencies {
     testFixturesImplementation(libs.ktor.client.encoding)
     testFixturesImplementation(libs.ktor.server.call.id)
 
-    testFixturesImplementation(libs.logback.encoder)
+    testFixturesImplementation(libs.bundles.logging)
 
     testFixturesImplementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")

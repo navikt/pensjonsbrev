@@ -97,7 +97,7 @@ kotlin {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation(libs.logback.classic)
+    implementation(libs.bundles.logging)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.jackson)
@@ -111,7 +111,6 @@ dependencies {
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.swagger)
     implementation(libs.ktor.client.encoding)
-    implementation(libs.logback.encoder)
 
     implementation(project(":pensjonsmaler"))
     implementation(project(":etterlattemaler"))

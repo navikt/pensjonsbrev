@@ -94,9 +94,7 @@ dependencies {
     // Domenemodell
     implementation(libs.brevbaker.common)
 
-    // Logging
-    implementation(libs.logback.classic)
-    implementation(libs.logback.encoder)
+    implementation(libs.bundles.logging)
 
     // Necessary for java.time.LocalDate
     implementation(libs.jackson.datatype.jsr310)

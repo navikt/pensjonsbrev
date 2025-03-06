@@ -45,8 +45,7 @@ dependencies {
 	implementation(libs.ktor.server.auth.jwt)
 	implementation(libs.ktor.client.cio)
 	implementation(libs.ktor.client.content.negotiation)
-	implementation(libs.logback.classic)
-	implementation(libs.logback.encoder)
+	implementation(libs.bundles.logging)
 
 	implementation("no.nav.tjenestespesifikasjoner:samhandler-tjenestespesifikasjon:$tjenestespesifikasjonerVersion")
 
