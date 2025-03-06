@@ -7,7 +7,6 @@ import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescriptionImpl
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.Features
@@ -35,8 +34,12 @@ import org.apache.commons.codec.binary.Hex
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Condition
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.testcontainers.containers.PostgreSQLContainer
 import java.time.Instant
 import java.time.LocalDate
@@ -73,7 +76,7 @@ class BrevredigeringServiceTest {
         brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
     )
     private val letterResponse = LetterResponse(file = stagetPDF, contentType = "pdf", letterMetadata = lettermetadata)
-    private val templateDescription = TemplateDescriptionImpl.RedigerbarImpl(
+    private val templateDescription = TemplateDescription.Redigerbar(
         name = "template name",
         letterDataClass = "template letter data class",
         languages = listOf(LanguageCode.ENGLISH),
@@ -1280,3 +1283,12 @@ class BrevredigeringServiceTest {
         Condition(predicate, description)
 }
 
+fun TemplateDescription.Redigerbar.copy(metadata: LetterMetadata) = TemplateDescription.Redigerbar(
+    name = this.name,
+    letterDataClass = this.letterDataClass,
+    languages = this.languages,
+    metadata = metadata,
+    kategori = this.kategori,
+    brevkontekst = this.brevkontekst,
+    sakstyper = this.sakstyper
+)
