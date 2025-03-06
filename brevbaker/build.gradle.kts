@@ -31,7 +31,7 @@ dependencies {
     testFixturesImplementation(libs.ktor.client.cio)
     testFixturesImplementation(libs.ktor.client.content.negotiation)
     testFixturesImplementation(libs.ktor.client.encoding)
-    testFixturesImplementation(libs.ktor.server.call.id)
+    testFixturesImplementation(libs.ktor.server.callId)
 
     testFixturesImplementation(libs.bundles.logging)
 

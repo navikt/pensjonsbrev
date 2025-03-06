@@ -31,7 +31,7 @@ dependencies {
     testImplementation(libs.mockk)
 
     testImplementation(testFixtures(project(":brevbaker")))
-    testImplementation(libs.ktor.server.call.id)
+    testImplementation(libs.ktor.server.callId)
 }
 
 tasks.test {

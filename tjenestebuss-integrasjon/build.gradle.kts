@@ -35,8 +35,8 @@ val cxfVersion = "3.6.3"
 val tjenestespesifikasjonerVersion = "1.858e92e"
 dependencies {
 	implementation(libs.ktor.serialization.jackson)
-	implementation(libs.ktor.server.call.id)
-	implementation(libs.ktor.server.call.logging)
+	implementation(libs.ktor.server.callId)
+	implementation(libs.ktor.server.callLogging)
 	implementation(libs.ktor.server.content.negotiation)
 	implementation(libs.ktor.server.core.jvm)
 	implementation(libs.ktor.server.netty.jvm)
