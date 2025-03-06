@@ -28,6 +28,7 @@ dependencies {
 
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation(testFixtures(project(":brevbaker")))
 }
 

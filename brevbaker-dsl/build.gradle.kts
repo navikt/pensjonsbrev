@@ -30,6 +30,7 @@ dependencies {
     // JUnit 5
     testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
     testImplementation(kotlin("reflect"))
 }

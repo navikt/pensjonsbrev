@@ -47,10 +47,12 @@ dependencies {
     implementation("com.google.devtools.ksp:symbol-processing-api:$kotlinVersion-$kspVersion")
     implementation(project(":brevbaker-dsl"))
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
     // Byttet til fork som støtter kotlin > 2.0
     //    testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.6.0")
     testImplementation("dev.zacsweers.kctfork:ksp:0.7.0")
     testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jupiterVersion")
+
+    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
