@@ -5,6 +5,7 @@ val apiModelJavaTarget: String by System.getProperties()
 plugins {
     kotlin("jvm")
     `maven-publish`
+    alias(libs.plugins.binary.compatibility.validator) apply true
 }
 
 group = "no.nav.pensjon.brevbaker"

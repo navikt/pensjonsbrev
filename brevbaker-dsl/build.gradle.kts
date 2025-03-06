@@ -4,6 +4,7 @@ val apiModelJavaTarget: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
+    alias(libs.plugins.binary.compatibility.validator) apply true
     id("java-library")
     id("java-test-fixtures")
 }
