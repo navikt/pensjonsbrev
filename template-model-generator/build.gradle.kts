@@ -43,11 +43,9 @@ dependencies {
     implementation(libs.ksp.symbol.processing.api)
     implementation(project(":brevbaker-dsl"))
 
-    testImplementation(libs.junit.jupiter.api)
-    testRuntimeOnly(libs.junit.platform.launcher)
+    testImplementation(libs.bundles.junit)
     // Byttet til fork som støtter kotlin > 2.0
     //    testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.6.0")
     testImplementation(libs.ksp.kotlin.compile.testing)
     testImplementation(libs.hamkrest)
-    testRuntimeOnly(libs.junit.jupiter.engine)
 }

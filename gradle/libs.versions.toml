@@ -11,7 +11,6 @@ flywayVersion = "11.3.4"
 hamkrestVersion = "1.8.0.1"
 hikariVersion = "6.2.1"
 jacksonJsr310Version = "2.18.3"
-junitPlatformVersion = "1.12.0"
 jupiterVersion = "5.12.0"
 kotlinxHtmlVersion = "0.12.0"
 kspKctVersion = "0.7.0"
@@ -82,13 +81,12 @@ flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql
 # Test
 assertJ = { module = "org.assertj:assertj-core", version.ref = "assertJVersion" }
 hamkrest = { module = "com.natpryce:hamkrest", version.ref = "hamkrestVersion" }
-junit-bom = { module = "org.junit:junit-bom", version.ref = "jupiterVersion" }
-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "jupiterVersion" }
-junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "jupiterVersion" }
-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "jupiterVersion" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junitPlatformVersion" }
+junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "jupiterVersion" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter",  version.ref = "jupiterVersion" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "1.12.0" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlinVersion" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockkVersion" }
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainersPostgresqlVersion"}
 
 [bundles]
+junit = ["junit-jupiter", "junit-platform-launcher"]
