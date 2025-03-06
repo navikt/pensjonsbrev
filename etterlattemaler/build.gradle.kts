@@ -21,11 +21,6 @@ dependencies {
     implementation(project(":brevbaker"))
     ksp(project(":template-model-generator"))
 
-
-    implementation(libs.jackson.datatype.jsr310) {
-        because("we require deserialization/serialization of java.time.LocalDate")
-    }
-
     // JUnit 5
     testImplementation(libs.bundles.junit)
     testImplementation(libs.mockk)
