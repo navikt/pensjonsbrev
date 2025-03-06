@@ -4,6 +4,8 @@ import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.pensjon.brev.template.render.Fixtures.felles
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
+import no.nav.pensjon.brev.template.ContentOrControlStructureImpl.ConditionalImpl
+import no.nav.pensjon.brev.template.ContentOrControlStructureImpl.ContentImpl
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -62,31 +64,31 @@ class IfNotNullTest {
 
     @Test
     fun `ifNotNull and orIfNotNull adds a conditional checks`() {
-        val navn = Expression.FromScope.Argument<NullBrevDto>().test1
-        val noegreier = Expression.FromScope.Argument<NullBrevDto>().test2
+        val navn = ExpressionImpl.FromScopeImpl.ArgumentImpl<NullBrevDto>().test1
+        val noegreier = ExpressionImpl.FromScopeImpl.ArgumentImpl<NullBrevDto>().test2
 
         @Suppress("UNCHECKED_CAST") // (navn as Expression<String>)
-        val expected = template.copy(
+        val expected = (template as LetterTemplateImpl).copy(
             outline = listOf(
-                Content(
-                    Element.OutlineContent.Paragraph(
+                ContentImpl(
+                    ElementImpl.OutlineContentImpl.ParagraphImpl(
                         listOf(
                             newText(Bokmal to "alltid med"),
-                            Conditional(
+                            ConditionalImpl(
                                 predicate = navn.notNull(),
                                 showIf = listOf(
-                                    Content(
-                                        Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
+                                    ContentImpl(
+                                        ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.ExpressionImpl.ByLanguageImpl.create(
                                             Bokmal to "hei: ".expr() + (navn as Expression<String>)
                                         )
                                     )
                                 ),
                                 showElse = listOf(
-                                    Conditional(
+                                    ConditionalImpl(
                                         predicate = noegreier.notNull(),
                                         showIf = listOf(
-                                            Content(
-                                                Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
+                                            ContentImpl(
+                                                ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.ExpressionImpl.ByLanguageImpl.create(
                                                     Bokmal to "tall: ".expr() + (noegreier as Expression<String>)
                                                 )
                                             )

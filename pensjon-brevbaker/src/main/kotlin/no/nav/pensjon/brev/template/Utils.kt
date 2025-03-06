@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.converters.BrevbakerBrevdataModule
 import no.nav.pensjon.brev.converters.BrevkodeModule
 import no.nav.pensjon.brev.converters.FellesModule
 import no.nav.pensjon.brev.converters.LetterMarkupModule
+import no.nav.pensjon.brev.converters.PDFRequestModule
 import no.nav.pensjon.brev.converters.TemplateModelSpecificationModule
 
 fun ObjectMapper.brevbakerConfig() {
@@ -14,6 +15,7 @@ fun ObjectMapper.brevbakerConfig() {
     registerModule(BrevkodeModule)
     registerModule(LetterMarkupModule)
     registerModule(FellesModule)
+    registerModule(PDFRequestModule)
     registerModule(TemplateModelSpecificationModule)
     enable(SerializationFeature.INDENT_OUTPUT)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

@@ -74,21 +74,21 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
             |}
             |
             |val TemplateGlobalScope<$dataClassName>.$propertyName: Expression<$type>
-            |   get() = Expression.UnaryInvoke(
-            |       Expression.FromScope.Argument(),
-            |       UnaryOperation.Select($selectorName)
+            |   get() = UnaryInvokeSelectorImpl(
+            |       ArgumentSelectorImpl(),
+            |       UnaryOperationSelectorSelect($selectorName)
             |   )
             |
             |val Expression<$dataClassName>.$propertyName: Expression<$type>
-            |   get() = Expression.UnaryInvoke(
+            |   get() = UnaryInvokeSelectorImpl(
             |       this,
-            |       UnaryOperation.Select($selectorName)
+            |       UnaryOperationSelectorSelect($selectorName)
             |   )
             |
             |val Expression<$dataClassName?>.${propertyName}_safe: Expression<${nullable(type)}>
-            |   get() = Expression.UnaryInvoke(
+            |   get() = UnaryInvokeSelectorImpl(
             |       this,
-            |       UnaryOperation.SafeCall($selectorName)
+            |       UnaryOperationSelectorSafeCall($selectorName)
             |   )
             |
             """.replaceIndentByMargin(indent)
@@ -108,8 +108,14 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
                 import no.nav.pensjon.brev.template.Expression
                 import no.nav.pensjon.brev.template.UnaryOperation
                 import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
+                import no.nav.pensjon.brev.template.ArgumentSelectorImpl
+                import no.nav.pensjon.brev.template.UnaryInvokeSelectorImpl
+                import no.nav.pensjon.brev.template.UnaryOperationSelectorSafeCall
+                import no.nav.pensjon.brev.template.UnaryOperationSelectorSelect
                 import no.nav.pensjon.brev.template.ExpressionScope
-
+                import no.nav.pensjon.brev.template.SelectorImpl
+                
+                @OptIn(SelectorImpl::class)
                 """.trimIndent()
                 )
                 useBlock(writer)

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.BinaryOperation.Documentation
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.intValueSelector
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression.*
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression.Invoke.Operation
@@ -295,7 +296,7 @@ object TemplateDocumentationRenderer {
             if (acc.isEmpty()) {
                 listOf(current)
             } else if (previous is Expression.Literal<String> && current is Expression.Literal<String>) {
-                acc.subList(0, acc.size - 1) + Expression.Literal(previous.value + current.value)
+                acc.subList(0, acc.size - 1) + (previous.value + current.value).expr()
             } else {
                 acc + current
             }

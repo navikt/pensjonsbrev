@@ -163,17 +163,17 @@ class ForEachViewTest {
             }
         }
 
-        val itemsExpr = Expression.FromScope.Argument<ListArgument>().select(listeSelector)
-        val expectedNext = Expression.FromScope.Assigned<String>(itemsExpr.stableHashCode())
+        val itemsExpr = ExpressionImpl.FromScopeImpl.ArgumentImpl<ListArgument>().select(listeSelector)
+        val expectedNext = ExpressionImpl.FromScopeImpl.AssignedImpl<String>(itemsExpr.stableHashCode())
 
-        val expected = ContentOrControlStructure.Content(
-            Element.OutlineContent.Paragraph(
+        val expected = ContentOrControlStructureImpl.ContentImpl(
+            ElementImpl.OutlineContentImpl.ParagraphImpl(
                 listOf(
-                    ContentOrControlStructure.ForEach(
+                    ContentOrControlStructureImpl.ForEachImpl(
                         itemsExpr,
                         listOf(
-                            ContentOrControlStructure.Content(
-                                Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(Language.Bokmal to expectedNext)
+                            ContentOrControlStructureImpl.ContentImpl(
+                                ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.ExpressionImpl.ByLanguageImpl.create(Language.Bokmal to expectedNext)
                             ),
                         ),
                         expectedNext

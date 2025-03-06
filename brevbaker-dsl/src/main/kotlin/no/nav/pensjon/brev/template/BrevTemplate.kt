@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
@@ -32,11 +33,13 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out BrevbakerBrevda
             sakstyper = sakstyper,
         )
 
+    @OptIn(InterneDataklasser::class)
     fun TextScope<*, *>.fritekst(beskrivelse: String): Expression<String> =
-        Expression.Literal(beskrivelse, setOf(ElementTags.FRITEKST))
+        ExpressionImpl.LiteralImpl(beskrivelse, setOf(ElementTags.FRITEKST))
 
+    @OptIn(InterneDataklasser::class)
     fun PlainTextScope<*, *>.fritekst(beskrivelse: String): Expression<String> =
-        Expression.Literal(beskrivelse, setOf(ElementTags.FRITEKST))
+        ExpressionImpl.LiteralImpl(beskrivelse, setOf(ElementTags.FRITEKST))
 }
 
 interface AutobrevTemplate<out LetterData : BrevbakerBrevdata> : BrevTemplate<LetterData, Brevkode.Automatisk> {

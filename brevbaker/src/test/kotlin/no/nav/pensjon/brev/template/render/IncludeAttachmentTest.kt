@@ -5,12 +5,13 @@ import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.has
 import com.natpryce.hamkrest.isEmpty
 import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.ExpressionImpl
 import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterImpl
-import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.LetterTemplateImpl
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -37,7 +38,7 @@ class IncludeAttachmentTest {
             }
         }
 
-        val expected = LetterTemplate(
+        val expected = LetterTemplateImpl(
             name = "test",
             title = listOf(newText(Nynorsk to "tittel")),
             letterDataType = SomeDto::class,
@@ -94,11 +95,11 @@ class IncludeAttachmentTest {
 
         @Test
         fun `attachment is included with notnull condition`() {
-            val selector: Expression<String?> = Expression.FromScope.Argument<NullData>().test
+            val selector: Expression<String?> = ExpressionImpl.FromScopeImpl.ArgumentImpl<NullData>().test
 
 
             @Suppress("UNCHECKED_CAST")
-            val expected = LetterTemplate(
+            val expected = LetterTemplateImpl(
                 name = "test",
                 title = listOf(newText(Nynorsk to "tittel")),
                 letterDataType = NullData::class,

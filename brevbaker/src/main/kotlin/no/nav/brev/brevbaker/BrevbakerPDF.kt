@@ -1,6 +1,7 @@
 package no.nav.brev.brevbaker
 
-import no.nav.pensjon.brev.PDFRequest
+import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brev.PDFRequestImpl
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.Letter
@@ -11,10 +12,11 @@ import no.nav.pensjon.brev.template.toScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
+    @OptIn(InterneDataklasser::class)
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev).let {
             pdfByggerService.producePDF(
-                PDFRequest(
+                PDFRequestImpl(
                     letterMarkup = it.letterMarkup,
                     attachments = it.attachments,
                     language = letter.language.toCode(),

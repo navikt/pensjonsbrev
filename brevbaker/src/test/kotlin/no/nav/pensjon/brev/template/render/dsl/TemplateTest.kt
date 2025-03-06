@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template.render.dsl
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.ContentOrControlStructure.*
+import no.nav.pensjon.brev.template.ContentOrControlStructureImpl.ContentImpl
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
@@ -35,17 +35,17 @@ class TemplateTest {
         }
 
         assertEquals(
-            LetterTemplate(
+            LetterTemplateImpl(
                 name = "test",
                 title = listOf(bokmalTittel),
                 letterDataType = Unit::class,
                 language = languages(Language.Bokmal),
                 outline = listOf(
-                    Content(
-                        Element.OutlineContent.Title1(
+                    ContentImpl(
+                        ElementImpl.OutlineContentImpl.Title1Impl(
                             listOf(
-                                Content(
-                                    Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "Heisann. ")
+                                ContentImpl(
+                                    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(Language.Bokmal to "Heisann. ")
                                 ),
                             )
                         )
@@ -83,11 +83,11 @@ class TemplateTest {
             letterMetadata = testLetterMetadata,
         ) {
             title.add(bokmalTittel)
-            includeAttachment(attachment, Expression.Literal(Unit))
+            includeAttachment(attachment, ExpressionImpl.LiteralImpl(Unit))
         }
 
         assertEquals(
-            LetterTemplate(
+            LetterTemplateImpl(
                 name = "test",
                 title = listOf(bokmalTittel),
                 letterDataType = SomeDto::class,
@@ -95,7 +95,7 @@ class TemplateTest {
                 outline = emptyList(),
                 attachments = listOf(
                     IncludeAttachment(
-                        Expression.Literal(Unit),
+                        ExpressionImpl.LiteralImpl(Unit),
                         attachment
                     )
                 ),
@@ -111,9 +111,9 @@ class TemplateTest {
             eval(name)
         }.elements.first()
 
-        val expected = Content(
-            Element.OutlineContent.ParagraphContent.Text.Expression<LangBokmal>(
-                Expression.FromScope.Argument<SomeDto>().name
+        val expected = ContentImpl(
+            ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.ExpressionImpl<LangBokmal>(
+                ExpressionImpl.FromScopeImpl.ArgumentImpl<SomeDto>().name
             )
         )
 
@@ -135,17 +135,17 @@ class TemplateTest {
         }
 
         assertEquals(
-            LetterTemplate(
+            LetterTemplateImpl(
                 name = "test",
                 title = listOf(bokmalTittel),
                 letterDataType = Unit::class,
                 language = languages(Language.Bokmal),
                 outline = listOf(
-                    Content(
-                        Element.OutlineContent.Title1(
+                    ContentImpl(
+                        ElementImpl.OutlineContentImpl.Title1Impl(
                             listOf(
-                                Content(
-                                    Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "jadda")
+                                ContentImpl(
+                                    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(Language.Bokmal to "jadda")
                                 )
                             )
                         )
@@ -174,15 +174,15 @@ class TemplateTest {
         }
 
         assertEquals(
-            LetterTemplate(
+            LetterTemplateImpl(
                 name = "test",
                 title = listOf(bokmalTittel),
                 letterDataType = Unit::class,
                 language = languages(Language.Bokmal),
                 outline = listOf(
-                    Element.OutlineContent.Title1(listOf(Content(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "Tittel")))),
-                    Element.OutlineContent.Paragraph(listOf(Content(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "Dette er tekst som kun brukes i dette brevet."))))
-                ).map { Content(it) },
+                    ElementImpl.OutlineContentImpl.Title1Impl(listOf(ContentImpl(ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(Language.Bokmal to "Tittel")))),
+                    ElementImpl.OutlineContentImpl.ParagraphImpl(listOf(ContentImpl(ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(Language.Bokmal to "Dette er tekst som kun brukes i dette brevet."))))
+                ).map { ContentImpl(it) },
                 letterMetadata = testLetterMetadata
             ),
             doc
@@ -196,7 +196,7 @@ class TemplateTest {
             formText(Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT, prompt)
         }.elements.first()
 
-        val expected = Content(Element.OutlineContent.ParagraphContent.Form.Text(prompt, Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT))
+        val expected = ContentImpl(ElementImpl.OutlineContentImpl.ParagraphContentImpl.FormImpl.TextImpl(prompt, Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT))
 
         assertEquals(expected, element)
     }
@@ -211,14 +211,14 @@ class TemplateTest {
             }
         }.elements.first()
 
-        val expected = Content(Element.OutlineContent.ParagraphContent.Form.MultipleChoice(prompt, listOf(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "velg denne"))))
+        val expected = ContentImpl(ElementImpl.OutlineContentImpl.ParagraphContentImpl.FormImpl.MultipleChoiceImpl(prompt, listOf(ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(Language.Bokmal to "velg denne"))))
 
         assertEquals(expected, element)
     }
 
     @Test
     fun `TemplateContainerScope_includePhrase adds phrase`() {
-        val argument = Expression.Literal("jadda")
+        val argument = ExpressionImpl.LiteralImpl("jadda")
         val actual = OutlineOnlyScope<LangBokmal, SomeDto>().apply {
             includePhrase(TestFrase(argument))
         }.elements

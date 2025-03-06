@@ -19,7 +19,7 @@ class ExpressionEvalTest {
     }
 
     private val Expression<SomeDto>.name
-        get() = Expression.UnaryInvoke(this, UnaryOperation.Select(nameSelector))
+        get() = ExpressionImpl.UnaryInvokeImpl(this, UnaryOperationImpl.Select(nameSelector))
 
     private val kortNavnSelector = object : TemplateModelSelector<SomeDto, String?> {
         override val className = "FakeKortNavnSelector"
@@ -28,7 +28,7 @@ class ExpressionEvalTest {
         override val selector = SomeDto::kortNavn
     }
     private val Expression<SomeDto>.kortNavn
-        get() = Expression.UnaryInvoke(this, UnaryOperation.Select(kortNavnSelector))
+        get() = ExpressionImpl.UnaryInvokeImpl(this, UnaryOperationImpl.Select(kortNavnSelector))
 
     private val saksnummerSelector = object : TemplateModelSelector<Felles, String> {
         override val className = "FakeFellesSelector"
@@ -38,15 +38,15 @@ class ExpressionEvalTest {
     }
 
     private val Expression<Felles>.saksnummer
-        get() = Expression.UnaryInvoke(this, UnaryOperation.Select(saksnummerSelector))
+        get() = ExpressionImpl.UnaryInvokeImpl(this, UnaryOperationImpl.Select(saksnummerSelector))
 
     private val scope = ExpressionScope(SomeDto("Ole", null), Fixtures.felles, Language.Bokmal)
-    private val argumentExpr = Expression.FromScope.Argument<SomeDto>()
-    private val fellesExpr = Expression.FromScope.Felles
+    private val argumentExpr = ExpressionImpl.FromScopeImpl.ArgumentImpl<SomeDto>()
+    private val fellesExpr = ExpressionImpl.FromScopeImpl.FellesImpl
 
     @Test
     fun `eval Literal returns literal`() {
-        val evaluated: Int = Expression.Literal(5).eval(scope)
+        val evaluated: Int = ExpressionImpl.LiteralImpl(5).eval(scope)
 
         assertEquals(5, evaluated)
     }
@@ -83,10 +83,10 @@ class ExpressionEvalTest {
 
     @Test
     fun `eval BinaryInvoke returns expected value`() {
-        val evaluated: String = Expression.BinaryInvoke(
-            Expression.Literal("h"),
-            Expression.Literal("ei"),
-            BinaryOperation.Concat
+        val evaluated: String = ExpressionImpl.BinaryInvokeImpl(
+            ExpressionImpl.LiteralImpl("h"),
+            ExpressionImpl.LiteralImpl("ei"),
+            BinaryOperationImpl.Concat
         ).eval(scope)
 
         assertEquals("hei", evaluated)
@@ -94,9 +94,9 @@ class ExpressionEvalTest {
 
     @Test
     fun `eval UnaryInvoke returns expected value`() {
-        val evaluated: String = Expression.UnaryInvoke(
-            Expression.Literal(4),
-            UnaryOperation.ToString
+        val evaluated: String = ExpressionImpl.UnaryInvokeImpl(
+            ExpressionImpl.LiteralImpl(4),
+            UnaryOperationImpl.ToString
         ).eval(scope)
 
         assertEquals("4", evaluated)

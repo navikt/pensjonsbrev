@@ -32,6 +32,9 @@ tasks {
     compileTestJava {
         targetCompatibility = javaTarget
     }
+    compileTestKotlin {
+        compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
+    }
 }
 
 dependencies {

@@ -22,6 +22,8 @@ import io.ktor.util.logging.Logger
 import io.micrometer.core.instrument.Tag
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import no.nav.brev.InterneDataklasser
+import no.nav.brev.brevbaker.PDFCompilationOutputImpl
 import no.nav.pensjon.brev.PDFRequest
 import java.nio.file.Path
 import kotlin.time.Duration
@@ -55,6 +57,7 @@ fun Application.module() {
             registerModule(JavaTimeModule())
             registerModule(LetterMarkupModule)
             registerModule(FellesModule)
+            registerModule(PDFRequestModule)
             enable(SerializationFeature.INDENT_OUTPUT)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
@@ -138,12 +141,13 @@ fun Application.module() {
     }
 }
 
+@OptIn(InterneDataklasser::class)
 private suspend fun RoutingContext.handleResult(
     result: PDFCompilationResponse,
     logger: Logger,
 ) {
     when (result) {
-        is PDFCompilationResponse.Bytes -> call.respond(result)
+        is PDFCompilationResponse.Bytes -> call.respond(PDFCompilationOutputImpl(result.bytes))
         is PDFCompilationResponse.Failure.Client -> {
             logger.info("Client error: ${result.reason}")
             if (result.output?.isNotBlank() == true) {

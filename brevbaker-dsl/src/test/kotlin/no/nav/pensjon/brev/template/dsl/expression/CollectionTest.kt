@@ -30,7 +30,7 @@ class CollectionTest {
     fun `map transforms collection items`() {
         val fnrs = listOf(1, 5, 6, 2, 4, 7).map { FoedselsnummerImpl(it.toString()) }
 
-        assertEquals(fnrs.map { it.value }, fnrs.expr().map(UnaryOperation.Select(selector)).eval(emptyScope))
+        assertEquals(fnrs.map { it.value }, fnrs.expr().map(UnaryOperationImpl.Select(selector)).eval(emptyScope))
         assertEquals(fnrs.map { it.value }, fnrs.expr().map(selector).eval(emptyScope))
     }
 

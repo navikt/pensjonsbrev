@@ -4,8 +4,9 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
-import no.nav.pensjon.brev.template.Element.OutlineContent.Paragraph
+import no.nav.pensjon.brev.template.ContentOrControlStructureImpl.ConditionalImpl
+import no.nav.pensjon.brev.template.ContentOrControlStructureImpl.ContentImpl
+import no.nav.pensjon.brev.template.ElementImpl.OutlineContentImpl.ParagraphImpl
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.languages
@@ -21,17 +22,17 @@ import org.junit.jupiter.api.Test
 class ShowIfTest {
     @Test
     fun `createTemplate adds showIf`() {
-        val expected = LetterTemplate(
+        val expected = LetterTemplateImpl(
             name = "test",
             title = listOf(nynorskTittel),
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
             outline = listOf(
-                Content(
-                    Paragraph(
+                ContentImpl(
+                    ParagraphImpl(
                         listOf(
-                            ContentOrControlStructure.Conditional(
-                                predicate = Expression.FromScope.Argument<SomeDto>().pensjonInnvilget,
+                            ConditionalImpl(
+                                predicate = ExpressionImpl.FromScopeImpl.ArgumentImpl<SomeDto>().pensjonInnvilget,
                                 showIf = listOf(newText(Language.Nynorsk to "jadda")),
                                 showElse = listOf(newText(Language.Nynorsk to "neida"))
                             )
@@ -66,21 +67,21 @@ class ShowIfTest {
 
     @Test
     fun `orShowIf adds a conditional element as else`() {
-        val exprScope = Expression.FromScope.Argument<SomeDto>()
-        val expected = LetterTemplate(
+        val exprScope = ExpressionImpl.FromScopeImpl.ArgumentImpl<SomeDto>()
+        val expected = LetterTemplateImpl(
             name = "test",
             title = listOf(nynorskTittel),
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
             outline = listOf(
-                Content(
-                    Paragraph(
+                ContentImpl(
+                    ParagraphImpl(
                         listOf(
-                            ContentOrControlStructure.Conditional(
+                            ConditionalImpl(
                                 predicate = exprScope.pensjonInnvilget,
                                 showIf = listOf(newText(Language.Nynorsk to "jadda")),
                                 showElse = listOf(
-                                    ContentOrControlStructure.Conditional(
+                                    ConditionalImpl(
                                         predicate = exprScope.name equalTo "Test",
                                         showIf = listOf(newText(Language.Nynorsk to "neidaJoda")),
                                         showElse = emptyList()
@@ -117,21 +118,21 @@ class ShowIfTest {
 
     @Test
     fun `final orShow nests as showOr in inner-most conditional element`() {
-        val exprScope = Expression.FromScope.Argument<SomeDto>()
-        val expected = LetterTemplate(
+        val exprScope = ExpressionImpl.FromScopeImpl.ArgumentImpl<SomeDto>()
+        val expected = LetterTemplateImpl(
             name = "test",
             title = listOf(nynorskTittel),
             letterDataType = SomeDto::class,
             language = languages(Language.Nynorsk),
             outline = listOf(
-                Content(
-                    Paragraph(
+                ContentImpl(
+                    ParagraphImpl(
                         listOf(
-                            ContentOrControlStructure.Conditional(
+                            ConditionalImpl(
                                 predicate = exprScope.pensjonInnvilget,
                                 showIf = listOf(newText(Language.Nynorsk to "jadda")),
                                 showElse = listOf(
-                                    ContentOrControlStructure.Conditional(
+                                    ConditionalImpl(
                                         predicate = exprScope.name equalTo "Test",
                                         showIf = listOf(newText(Language.Nynorsk to "neidaJoda")),
                                         showElse = listOf(newText(Language.Nynorsk to "neida")),

@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.Literal
+import no.nav.pensjon.brev.template.ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.languageSettings
 
@@ -28,7 +28,7 @@ object LanguageSetting {
 
 val pensjonLatexSettings = languageSettings {
     setting(LanguageSetting.Sakspart.navn) {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "Navn:",
             Nynorsk to "Namn:",
             English to "Name:",
@@ -36,7 +36,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting(LanguageSetting.Sakspart.vergenavn) {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "Verge:",
             Nynorsk to "Verje:",
             English to "Guardian:",
@@ -44,7 +44,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting(LanguageSetting.Sakspart.vedleggGjelderNavn) {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "Vedlegget gjelder:",
             Nynorsk to "Vedlegget gjeld:",
             English to "Attachment regarding:",
@@ -52,7 +52,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting(LanguageSetting.Sakspart.gjelderNavn) {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "Saken gjelder:",
             Nynorsk to "Saka gjeld:",
             English to "Case regarding:",
@@ -60,7 +60,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting(LanguageSetting.Sakspart.saksnummer) {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "Saksnummer:",
             Nynorsk to "Saksnummer:",
             English to "Case number:",
@@ -68,7 +68,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting(LanguageSetting.Sakspart.foedselsnummer) {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "Fødselsnummer:",
             Nynorsk to "Fødselsnummer:",
             English to "National identity number:",
@@ -76,7 +76,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting("sidesaksnummerprefix") {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "Saksnummer: ",
             Nynorsk to "Saksnummer: ",
             English to "Case number: ",
@@ -84,7 +84,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting("sideprefix") {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "side",
             Nynorsk to "side",
             English to "page",
@@ -92,7 +92,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting("sideinfix") {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "av",
             Nynorsk to "av",
             English to "of",
@@ -100,7 +100,7 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting(LanguageSetting.Closing.greeting) {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "Med vennlig hilsen",
             Nynorsk to "Med vennleg helsing",
             English to "Yours sincerely",
@@ -108,42 +108,42 @@ val pensjonLatexSettings = languageSettings {
     }
 
     setting(LanguageSetting.Closing.saksbehandler) {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "Saksbehandler",
             Nynorsk to "Saksbehandlar",
             English to "Caseworker",
         )
     }
     setting(LanguageSetting.Closing.automatiskInformasjonsbrev) {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "Brevet er produsert automatisk og derfor ikke underskrevet av saksbehandler.",
             Nynorsk to "Brevet er produsert automatisk og er difor ikkje underskrive av saksbehandler.",
             English to "This letter has been processed automatically and is therefore not signed by an assessor.",
         )
     }
     setting(LanguageSetting.Closing.automatiskVedtaksbrev) {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "Saken har blitt automatisk saksbehandlet. Vedtaksbrevet er derfor ikke underskrevet av saksbehandler.",
             Nynorsk to "Saken har blitt automatisk saksbehandla. Vedtaksbrevet er derfor ikkje underskriven av saksbehandlar.",
             English to "Your case has been processed automatically. The decision letter has therefore not been signed by an assessor.",
         )
     }
     setting("closingvedleggprefix") {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "Vedlegg:",
             Nynorsk to "Vedlegg:",
             English to "Attachments:",
         )
     }
     setting("tablenextpagecontinuation") {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "Tabellen fortsetter på neste side",
             Nynorsk to "Tabellen fortsett på neste side",
             English to "Continued on next page",
         )
     }
     setting("tablecontinuedfrompreviouspage") {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "Fortsettelse fra forrige side",
             Nynorsk to "Fortsetjing frå førre side",
             English to "Continuation from previous page",
@@ -153,7 +153,7 @@ val pensjonLatexSettings = languageSettings {
 
 val pensjonHTMLSettings = languageSettings(pensjonLatexSettings) {
     setting(LanguageSetting.HTML.altTextLogo) {
-        Literal.create(
+        LiteralImpl.create(
             Bokmal to "Nav logo",
             Nynorsk to "Nav logo",
             English to "Nav logo",

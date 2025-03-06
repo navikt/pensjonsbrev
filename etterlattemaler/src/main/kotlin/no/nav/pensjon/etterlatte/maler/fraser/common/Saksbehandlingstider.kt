@@ -1,17 +1,20 @@
 package no.nav.pensjon.etterlatte.maler.fraser.common
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.BinaryOperation
 import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.ExpressionImpl
 import no.nav.pensjon.brev.template.Language
 
+@OptIn(InterneDataklasser::class)
 fun saksbehandlingstiderUrl(sakType: Expression<SakType>) : Expression<String> =
-    Expression.BinaryInvoke(
+    ExpressionImpl.BinaryInvokeImpl(
         first = sakType,
         second = Expression.FromScope.Language,
         operation = Saksbehandlingstider,
     )
 
-object Saksbehandlingstider: BinaryOperation<SakType, Language, String>() {
+object Saksbehandlingstider: BinaryOperation<SakType, Language, String> {
     override fun apply(first: SakType, second: Language): String {
         return if (first == SakType.BARNEPENSJON)
             when(second) {

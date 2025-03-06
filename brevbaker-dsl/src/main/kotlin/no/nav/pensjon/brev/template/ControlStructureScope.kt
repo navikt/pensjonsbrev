@@ -12,7 +12,7 @@ interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : El
     fun showIf(predicate: Expression<Boolean>, showIf: Scope.() -> Unit): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(::scopeFactory).also { elseScope ->
             addControlStructure(
-                ContentOrControlStructure.Conditional(
+                ContentOrControlStructureImpl.ConditionalImpl(
                     predicate,
                     scopeFactory().apply(showIf).elements,
                     elseScope.scope.elements,
@@ -26,7 +26,7 @@ interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : El
     ): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(::scopeFactory).also { elseScope ->
             addControlStructure(
-                ContentOrControlStructure.Conditional(
+                ContentOrControlStructureImpl.ConditionalImpl(
                     expr1.notNull(),
                     scopeFactory().apply {
                         // Følgende er en trygg cast fordi `elements` blir kun brukt om `expr1.notNull()` evaluerer til true.
@@ -45,7 +45,7 @@ interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : El
     ): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(::scopeFactory).also { elseScope ->
             addControlStructure(
-                ContentOrControlStructure.Conditional(
+                ContentOrControlStructureImpl.ConditionalImpl(
                     expr1.notNull() and expr2.notNull(),
                     scopeFactory().apply {
                         // Følgende er en trygg cast fordi `elements` blir kun brukt om `expr1.notNull() and expr2.notNull()` evaluerer til true.
@@ -65,7 +65,7 @@ interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : El
     ): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(::scopeFactory).also { elseScope ->
             addControlStructure(
-                ContentOrControlStructure.Conditional(
+                ContentOrControlStructureImpl.ConditionalImpl(
                     expr1.notNull() and expr2.notNull() and expr3.notNull(),
                     scopeFactory().apply {
                         // Følgende er en trygg cast fordi `elements` blir kun brukt om `expr1.notNull() and expr2.notNull() and expr3.notNull()` evaluerer til true.
@@ -78,7 +78,7 @@ interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : El
         }
 
     fun <Item : Any> forEach(items: Expression<Collection<Item>>, body: Scope.(item: Expression<Item>) -> Unit) {
-        val nextExpr = Expression.FromScope.Assigned<Item>(items.stableHashCode())
-        addControlStructure(ContentOrControlStructure.ForEach(items, scopeFactory().apply { body(nextExpr) }.elements, nextExpr))
+        val nextExpr = ExpressionImpl.FromScopeImpl.AssignedImpl<Item>(items.stableHashCode())
+        addControlStructure(ContentOrControlStructureImpl.ForEachImpl(items, scopeFactory().apply { body(nextExpr) }.elements, nextExpr))
     }
 }

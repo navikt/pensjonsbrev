@@ -23,7 +23,7 @@ fun TextScope<BaseLanguages, *>.namedReference(attachment: AttachmentTemplate<Ba
 data class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any>(
     val data: Expression<AttachmentData>,
     val template: AttachmentTemplate<Lang, AttachmentData>,
-    val predicate: Expression<Boolean> = Expression.Literal(true),
+    val predicate: Expression<Boolean> = ExpressionImpl.LiteralImpl(true),
 ): StableHash by StableHash.of(data, template, predicate)
 
 data class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any>(

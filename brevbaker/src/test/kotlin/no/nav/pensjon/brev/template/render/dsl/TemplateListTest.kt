@@ -2,12 +2,11 @@ package no.nav.pensjon.brev.template.render.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.brev.brevbaker.outlineTestTemplate
-import no.nav.pensjon.brev.template.ContentOrControlStructure
-import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
-import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.ContentOrControlStructureImpl
+import no.nav.pensjon.brev.template.ContentOrControlStructureImpl.ContentImpl
+import no.nav.pensjon.brev.template.ElementImpl
 import no.nav.pensjon.brev.template.InvalidListDeclarationException
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.newText
@@ -33,14 +32,14 @@ class TemplateListTest {
         }
 
         val expected = outlineTestLetter(
-            Content(
-                Element.OutlineContent.Paragraph(
+            ContentImpl(
+                ElementImpl.OutlineContentImpl.ParagraphImpl(
                     listOf(
-                        Content(
-                            Element.OutlineContent.ParagraphContent.ItemList(
+                        ContentImpl(
+                            ElementImpl.OutlineContentImpl.ParagraphContentImpl.ItemListImpl(
                                 listOf(
-                                    Content(
-                                        Element.OutlineContent.ParagraphContent.ItemList.Item(listOf(newText(Bokmal to "Test")))
+                                    ContentImpl(
+                                        ElementImpl.OutlineContentImpl.ParagraphContentImpl.ItemListImpl.ItemImpl(listOf(newText(Bokmal to "Test")))
                                     )
                                 )
                             )
@@ -95,17 +94,17 @@ class TemplateListTest {
         }
 
         val expected = outlineTestLetter(
-            Content(
-                Element.OutlineContent.Paragraph(
+            ContentImpl(
+                ElementImpl.OutlineContentImpl.ParagraphImpl(
                     listOf(
-                        Content(
-                            Element.OutlineContent.ParagraphContent.ItemList(
+                        ContentImpl(
+                            ElementImpl.OutlineContentImpl.ParagraphContentImpl.ItemListImpl(
                                 listOf(
-                                    ContentOrControlStructure.Conditional(
+                                    ContentOrControlStructureImpl.ConditionalImpl(
                                         true.expr(),
                                         listOf(
-                                            Content(
-                                                Element.OutlineContent.ParagraphContent.ItemList.Item(
+                                            ContentImpl(
+                                                ElementImpl.OutlineContentImpl.ParagraphContentImpl.ItemListImpl.ItemImpl(
                                                     listOf(newText(Bokmal to "Test"))
                                                 )
                                             )

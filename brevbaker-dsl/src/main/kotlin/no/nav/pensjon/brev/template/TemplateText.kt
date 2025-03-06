@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
+import no.nav.pensjon.brev.template.ContentOrControlStructureImpl.ContentImpl
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 
 @LetterTemplateMarker
@@ -21,7 +22,7 @@ class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, 
     }
 
     override fun newline() {
-        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.NewLine(children.size)))
+        addTextContent(ContentImpl(ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.NewLineImpl(children.size)))
     }
 
     fun includePhrase(phrase: TextOnlyPhrase<out Lang>) {
@@ -50,7 +51,7 @@ class PlainTextOnlyScope<Lang : LanguageSupport, LetterData : Any> : PlainTextSc
 interface PlainTextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
     fun addTextContent(e: TextElement<Lang>)
     fun eval(expression: StringExpression) {
-        addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.Expression(expression, FontType.PLAIN)))
+        addTextContent(ContentImpl(ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.ExpressionImpl(expression, FontType.PLAIN)))
     }
 }
 
@@ -61,7 +62,7 @@ fun <Lang1 : Language, ParameterType : Any> TextScope<LanguageSupport.Single<Lan
     lang1: Pair<Lang1, String>,
     fontType: FontType = FontType.PLAIN,
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, fontType).also { addTextContent(Content(it)) }
+    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(lang1, fontType).also { addTextContent(ContentImpl(it)) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.text(
@@ -69,7 +70,7 @@ fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextScope<Language
     lang2: Pair<Lang2, String>,
     fontType: FontType = FontType.PLAIN,
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, lang2, fontType).also { addTextContent(Content(it)) }
+    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(lang1, lang2, fontType).also { addTextContent(ContentImpl(it)) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.text(
@@ -78,7 +79,7 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     lang3: Pair<Lang3, String>,
     fontType: FontType = FontType.PLAIN,
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, lang2, lang3, fontType).also { addTextContent(Content(it)) }
+    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(lang1, lang2, lang3, fontType).also { addTextContent(ContentImpl(it)) }
 }
 
 // TextScope.textExpr()
@@ -88,7 +89,7 @@ fun <Lang1 : Language, ParameterType : Any> TextScope<LanguageSupport.Single<Lan
     lang1: Pair<Lang1, StringExpression>,
     fontType: FontType = FontType.PLAIN,
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, fontType).also { addTextContent(Content(it)) }
+    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.ExpressionImpl.ByLanguageImpl.create(lang1, fontType).also { addTextContent(ContentImpl(it)) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.textExpr(
@@ -96,7 +97,7 @@ fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> TextScope<Language
     lang2: Pair<Lang2, StringExpression>,
     fontType: FontType = FontType.PLAIN,
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, fontType).also { addTextContent(Content(it)) }
+    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.ExpressionImpl.ByLanguageImpl.create(lang1, lang2, fontType).also { addTextContent(ContentImpl(it)) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> TextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.textExpr(
@@ -105,7 +106,7 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     lang3: Pair<Lang3, StringExpression>,
     fontType: FontType = FontType.PLAIN,
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, lang3, fontType).also { addTextContent(Content(it)) }
+    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.ExpressionImpl.ByLanguageImpl.create(lang1, lang2, lang3, fontType).also { addTextContent(ContentImpl(it)) }
 }
 
 
@@ -115,14 +116,14 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
 fun <Lang1 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Single<Lang1>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1).also { addTextContent(Content(it)) }
+    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(lang1).also { addTextContent(ContentImpl(it)) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.text(
     lang1: Pair<Lang1, String>,
     lang2: Pair<Lang2, String>,
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, lang2).also { addTextContent(Content(it)) }
+    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(lang1, lang2).also { addTextContent(ContentImpl(it)) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.text(
@@ -130,7 +131,7 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     lang2: Pair<Lang2, String>,
     lang3: Pair<Lang3, String>,
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, lang2, lang3).also { addTextContent(Content(it)) }
+    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.LiteralImpl.create(lang1, lang2, lang3).also { addTextContent(ContentImpl(it)) }
 }
 
 // PlainTextScope.textExpr()
@@ -139,14 +140,14 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
 fun <Lang1 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Single<Lang1>, ParameterType>.textExpr(
     lang1: Pair<Lang1, StringExpression>,
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1).also { addTextContent(Content(it)) }
+    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.ExpressionImpl.ByLanguageImpl.create(lang1).also { addTextContent(ContentImpl(it)) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Double<Lang1, Lang2>, ParameterType>.textExpr(
     lang1: Pair<Lang1, StringExpression>,
     lang2: Pair<Lang2, StringExpression>,
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2).also { addTextContent(Content(it)) }
+    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.ExpressionImpl.ByLanguageImpl.create(lang1, lang2).also { addTextContent(ContentImpl(it)) }
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> PlainTextScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, ParameterType>.textExpr(
@@ -154,5 +155,5 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, ParameterType : Any> 
     lang2: Pair<Lang2, StringExpression>,
     lang3: Pair<Lang3, StringExpression>,
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, lang2, lang3).also { addTextContent(Content(it)) }
+    ElementImpl.OutlineContentImpl.ParagraphContentImpl.TextImpl.ExpressionImpl.ByLanguageImpl.create(lang1, lang2, lang3).also { addTextContent(ContentImpl(it)) }
 }

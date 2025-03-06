@@ -1,6 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.fraser.common
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.ExpressionImpl
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.StringExpression
@@ -29,8 +31,9 @@ object SaktypeFormatter : LocalizedFormatter<SakType>() {
 }
 
 
+@OptIn(InterneDataklasser::class)
 fun Expression<SakType>.format(formatter: LocalizedFormatter<SakType> = SaktypeFormatter): StringExpression =
-    Expression.BinaryInvoke(
+    ExpressionImpl.BinaryInvokeImpl(
         first = this,
         second = Expression.FromScope.Language,
         operation = formatter,

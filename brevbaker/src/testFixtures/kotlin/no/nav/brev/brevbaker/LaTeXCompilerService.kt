@@ -17,12 +17,13 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) : PDFByggerService 
     private val objectmapper = jacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
-            jackson()
+            jackson {
+                registerModule(PDFCompilationOutputDeserializer)
+            }
         }
         HttpResponseValidator {
             validateResponse {
-                validateResponse(
-                    HttpStatusCodes(it.status.value, it.status.description),
+                validateResponse(it.status.value,
                     { msg -> println(msg) }) { it.body<String>() }
             }
         }
@@ -35,7 +36,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) : PDFByggerService 
         }
     }
 
-    override suspend fun producePDF(pdfRequest: PDFRequest, path: String): PDFCompilationOutput =
+    override suspend fun producePDF(pdfRequest: PDFRequest, path: String): PDFCompilationOutputImpl =
             httpClient.post("$pdfByggerUrl/$path") {
                 contentType(ContentType.Application.Json)
                 setBody(objectmapper.writeValueAsBytes(pdfRequest))

@@ -18,7 +18,7 @@ class ShowElseScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>,
         body: Scope.() -> Unit
     ): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(scopeFactory).also { showElse ->
-            scope.addControlStructure(ContentOrControlStructure.Conditional(predicate, scopeFactory().apply(body).elements, showElse.scope.elements))
+            scope.addControlStructure(ContentOrControlStructureImpl.ConditionalImpl(predicate, scopeFactory().apply(body).elements, showElse.scope.elements))
         }
 
     fun <E1 : Any> orIfNotNull(
@@ -27,7 +27,7 @@ class ShowElseScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>,
     ): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(scopeFactory).also { elseScope ->
             scope.addControlStructure(
-                ContentOrControlStructure.Conditional(
+                ContentOrControlStructureImpl.ConditionalImpl(
                     expr1.notNull(),
                     scopeFactory().apply {
                         // Følgende er en trygg cast fordi `elements` blir kun brukt om `expr1.notNull()` evaluerer til true.
@@ -46,7 +46,7 @@ class ShowElseScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>,
     ): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(scopeFactory).also { elseScope ->
             scope.addControlStructure(
-                ContentOrControlStructure.Conditional(
+                ContentOrControlStructureImpl.ConditionalImpl(
                     expr1.notNull() and expr2.notNull(),
                     scopeFactory().apply {
                         // Følgende er en trygg cast fordi `elements` blir kun brukt om `expr1.notNull() and expr2.notNull()` evaluerer til true.
@@ -66,7 +66,7 @@ class ShowElseScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>,
     ): ShowElseScope<Lang, LetterData, C, Scope> =
         ShowElseScope(scopeFactory).also { elseScope ->
             scope.addControlStructure(
-                ContentOrControlStructure.Conditional(
+                ContentOrControlStructureImpl.ConditionalImpl(
                     expr1.notNull() and expr2.notNull() and expr3.notNull(),
                     scopeFactory().apply {
                         // Følgende er en trygg cast fordi `elements` blir kun brukt om `expr1.notNull() and expr2.notNull() and expr3.notNull()` evaluerer til true.
