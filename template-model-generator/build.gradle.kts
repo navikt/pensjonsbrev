@@ -2,10 +2,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 val javaTarget: String by System.getProperties()
-val kotlinVersion: String by System.getProperties()
-val kspVersion: String by System.getProperties()
-val jupiterVersion: String by project
-val hamkrestVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -44,15 +40,12 @@ tasks {
 
 dependencies {
     compileOnly(kotlin("reflect"))
-    implementation("com.google.devtools.ksp:symbol-processing-api:$kotlinVersion-$kspVersion")
+    implementation(libs.ksp.symbol.processing.api)
     implementation(project(":brevbaker-dsl"))
 
+    testImplementation(libs.bundles.junit)
     // Byttet til fork som støtter kotlin > 2.0
     //    testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.6.0")
-    testImplementation("dev.zacsweers.kctfork:ksp:0.7.0")
-    testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
-
-    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation(libs.ksp.kotlin.compile.testing)
+    testImplementation(libs.hamkrest)
 }

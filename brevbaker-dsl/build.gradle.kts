@@ -1,13 +1,9 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelJavaTarget: String by System.getProperties()
-val commonVersion: String by project
-val hamkrestVersion: String by project
-val jupiterVersion: String by project
 
 plugins {
     kotlin("jvm")
-    id("com.google.devtools.ksp")
 }
 
 group = "no.nav.pensjon.brevbaker"
@@ -25,24 +21,17 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("no.nav.pensjon.brevbaker:brevbaker-api-model-common:$commonVersion")
+    implementation(libs.brevbaker.common)
 
     // JUnit 5
-    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
+    testImplementation(libs.bundles.junit)
+    testImplementation(libs.hamkrest)
     testImplementation(kotlin("reflect"))
 }
 
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.fromTarget(apiModelJavaTarget))
-    }
-    sourceSets {
-        test {
-            kotlin.srcDir("build/generated/ksp/test/kotlin")
-        }
     }
 }
 tasks {
