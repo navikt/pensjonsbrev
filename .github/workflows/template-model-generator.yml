@@ -5,6 +5,7 @@ on:
     paths:
       - "build.gradle.kts"
       - "gradle.properties"
+      - "gradle/libs.versions.toml"
       - "template-model-generator/**"
       - ".github/workflows/template-model-generator.yml"
 env:
