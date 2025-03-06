@@ -5,6 +5,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import no.nav.brev.brevbaker.PDFCompilationOutput
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
@@ -59,7 +60,7 @@ internal class LaTeXService(
             when (val result: Execution = compile(tmpDir)) {
                 is Execution.Success ->
                     result.pdf.toFile().readBytes()
-                        .let { PDFCompilationResponse.Bytes(it) }
+                        .let { PDFCompilationResponse.Success(PDFCompilationOutput(it)) }
 
                 is Execution.Failure.Compilation ->
                     PDFCompilationResponse.Failure.Client(reason = "PDF compilation failed", output = result.output, error = result.error)
