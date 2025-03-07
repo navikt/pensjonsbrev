@@ -25,8 +25,8 @@ val opplysningerBruktIBeregningenAP =
     createAttachment(
         title = newText(
             Bokmal to "Opplysninger brukt i beregningen",
-            Nynorsk to "",
-            English to ""
+            Nynorsk to "Opplysningar brukt i berekninga",
+            English to "Information about your calculation"
         ),
     ) {
         title2 {
