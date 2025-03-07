@@ -61,11 +61,16 @@ kotlin {
 tasks {
     kotlin {
         jvmToolchain(apiModelJavaTarget.toInt())
+        compileKotlin {
+            compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")
+        }
         compileTestKotlin {
             compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
+            compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")
         }
         compileTestFixturesKotlin {
             compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
+            compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")
         }
     }
     compileJava {

@@ -29,8 +29,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
+                    import no.nav.brev.InternKonstruktoer
 
                     @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
                     object MyClass : HasModel<TemplateModelHelpersAnnotationProcessorTest.AModel> {}
                     """.trimIndent()
         ).compile()
@@ -48,8 +50,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
+                    import no.nav.brev.InternKonstruktoer
 
                     @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
                     object MyClass : HasModel<TemplateModelHelpersAnnotationProcessorTest.AModelInterface> {}
                     """.trimIndent()
         ).compile()
@@ -66,8 +70,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
+                    import no.nav.brev.InternKonstruktoer
 
                     @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
                     object MyClass : HasModel<DefaultPackageModel> {}
                     """.trimIndent()
         ).compile()
@@ -89,8 +95,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTestSelectors.AModelSelectors.navn
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTestSelectors.AModelSelectors.navnSelector
+                    import no.nav.brev.InternKonstruktoer
 
                     @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
                     object MyClass : HasModel<TemplateModelHelpersAnnotationProcessorTest.AModel> {
                         fun someusage() {
                             val fromScope: Expression<String> = SimpleTemplateScope<TemplateModelHelpersAnnotationProcessorTest.AModel>().navn
@@ -111,8 +119,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
         val result = SourceFile.kotlin(
             "MyClass.kt", """
                 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                import no.nav.brev.InternKonstruktoer
 
                 @TemplateModelHelpers
+                @OptIn(InternKonstruktoer::class)
                 class MyClass {}
                 """.trimIndent()
         ).compile()
@@ -129,8 +139,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
         val result = SourceFile.kotlin(
             "MyClass.kt", """
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.brev.InternKonstruktoer
 
                     @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
                     object MyClass {}
                 """.trimIndent()
         ).compile()
@@ -146,11 +158,13 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
+                    import no.nav.brev.InternKonstruktoer
         
                     interface AnotherInterface<Model2: Any> : HasModel<Model2>
 
 
                     @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
                     object MyClass : AnotherInterface<TemplateModelHelpersAnnotationProcessorTest.AModel> {}
                     """.trimIndent()
         ).compile()
@@ -167,8 +181,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
+                    import no.nav.brev.InternKonstruktoer
         
                     @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
                     object MyClass : HasModel<TemplateModelHelpersAnnotationProcessorTest.AModel> {}
                     """.trimIndent()
         ).compile()
@@ -185,12 +201,14 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
-        
+                    import no.nav.brev.InternKonstruktoer
+
                     interface AnotherInterface<Model2: Any, Unused> : HasModel<Model2>
                     interface AThirdInterface<Unused2, Model3: Any>: AnotherInterface<Model3, String>
 
 
                     @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
                     object MyClass : AThirdInterface<Int, TemplateModelHelpersAnnotationProcessorTest.AModel> {}
                     """.trimIndent()
         ).compile()
@@ -207,12 +225,14 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import no.nav.pensjon.brev.template.HasModel
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
+                    import no.nav.brev.InternKonstruktoer
         
                     interface AnotherInterface<Model2: Any, Unused> : HasModel<Model2>
                     interface AThirdInterface<Unused2>: AnotherInterface<TemplateModelHelpersAnnotationProcessorTest.AModel, Unused2>
 
 
                     @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
                     object MyClass : AThirdInterface<Int> {}
                     """.trimIndent()
         ).compile()
@@ -229,10 +249,12 @@ class TemplateModelHelpersAnnotationProcessorTest {
                 import no.nav.pensjon.brev.template.HasModel
                 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                 import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
-                
+                import no.nav.brev.InternKonstruktoer
+
                 interface SimpleAttachment<T: Any>: HasModel<T>
 
                 @TemplateModelHelpers
+                @OptIn(InternKonstruktoer::class)
                 val anAttachment: SimpleAttachment<SimpleModel> = object : SimpleAttachment<SimpleModel> {}
             """.trimIndent()
         ).compile()
@@ -250,11 +272,13 @@ class TemplateModelHelpersAnnotationProcessorTest {
                 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
                 import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
+                import no.nav.brev.InternKonstruktoer
 
                 interface AnotherInterface<Model2: Any, Unused> : HasModel<Model2>
                 interface AThirdInterface<Unused2>: AnotherInterface<TemplateModelHelpersAnnotationProcessorTest.AModel, Unused2>
 
                 @TemplateModelHelpers
+                @OptIn(InternKonstruktoer::class)
                 val anAttachment: AThirdInterface<String> = object : AThirdInterface<String> {}
             """.trimIndent()
         ).compile()
@@ -271,8 +295,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
                 import no.nav.pensjon.brev.template.HasModel
                 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                 import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
+                import no.nav.brev.InternKonstruktoer
                 
                 @TemplateModelHelpers
+                @OptIn(InternKonstruktoer::class)
                 val anAttachment: HasModel<SimpleModel> = object : HasModel<SimpleModel> {}
             """.trimIndent()
         ).compile()
@@ -292,8 +318,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModelSelectors.name
+                    import no.nav.brev.InternKonstruktoer
 
                     @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
                     object MyClass : HasModel<List<SimpleModel>> {
                         val x: Expression<String> = Expression.Literal(SimpleModel("et navn")).name
                     }
@@ -316,6 +344,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import SecondSelectors.third
                     import ThirdSelectors.fourth
                     import FourthSelectors.value
+                    import no.nav.brev.InternKonstruktoer
     
                     data class First(val second: Second)
                     data class Second(val third: Third)
@@ -323,6 +352,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     data class Fourth(val value: Int)
 
                     @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
                     object MyClass : HasModel<First> {
                         val expr: Expression<First> = Expression.Literal(First(Second(Third(Fourth(99)))))
                         val value: Expression<Int> = expr.second.third.fourth.value
@@ -353,10 +383,12 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
                     import no.nav.pensjon.brev.template.thirdpkg.SimpleModelSelectors.name
+                    import no.nav.brev.InternKonstruktoer
 
                     data class AnotherModel(val age: Int)
 
                     @TemplateModelHelpers([AnotherModel::class])
+                    @OptIn(InternKonstruktoer::class)
                     object MyClass : HasModel<List<SimpleModel>> {
                         val x: Expression<Int> = Expression.Literal(AnotherModel(35)).age
                     }
@@ -376,11 +408,14 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import no.nav.pensjon.brev.template.Expression
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
                     import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpersAnnotationProcessorTest
+                    import no.nav.brev.InternKonstruktoer
 
                     data class AnotherModel(val age: Int)
 
                     @TemplateModelHelpers([AnotherModel::class])
+                    @OptIn(InternKonstruktoer::class)
                     interface MyInterface 
+                    @OptIn(InternKonstruktoer::class)
                     val x: Expression<Int> = Expression.Literal(AnotherModel(35)).age
                     """.trimIndent()
         ).compile()
@@ -401,6 +436,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import ParentModelSelectors.child
                     import ParentModelSelectors.ChildModelSelectors.uncle
                     import UncleModelSelectors.name
+                    import no.nav.brev.InternKonstruktoer
                     
                     data class UncleModel(val name: String)
             
@@ -409,6 +445,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     }
 
                     @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
                     object MyClass : HasModel<ParentModel> {
                         val data: Expression<ParentModel> = Expression.Literal(ParentModel(ParentModel.ChildModel(UncleModel("Scrooge"))))
                         val child: Expression<ParentModel.ChildModel> = data.child
@@ -436,7 +473,8 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import ParentModelSelectors.child
                     import ParentModelSelectors.ChildModelSelectors.uncle
                     import UncleModelSelectors.name
-                    
+                    import no.nav.brev.InternKonstruktoer
+
                     data class UncleModel(val name: String)
             
                     data class ParentModel(val child: ChildModel) {
@@ -444,12 +482,14 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     }
 
                     @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
                     object MyClass : HasModel<ParentModel> {
                         val data: Expression<ParentModel> = Expression.Literal(ParentModel(ParentModel.ChildModel(UncleModel("Scrooge"))))
                         val child: Expression<ParentModel.ChildModel> = data.child
                         val uncleName: Expression<String> = child.uncle.name
                     }
                     @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
                     object ReUse : HasModel<UncleModel> {
                         val uncleName: Expression<String> = Expression.Literal(UncleModel("Scrooge")).name
                     }
@@ -470,6 +510,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import ParentModelSelectors.child
                     import ParentModelSelectors.ChildModelSelectors.uncle
                     import AMotherSelectors.UncleModelSelectors.name
+                    import no.nav.brev.InternKonstruktoer
                     
                     data class AMother(val child: UncleModel) {
                         data class UncleModel(val name: String)
@@ -480,12 +521,14 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     }
 
                     @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
                     object MyClass : HasModel<ParentModel> {
                         val data: Expression<ParentModel> = Expression.Literal(ParentModel(ParentModel.ChildModel(AMother.UncleModel("Scrooge"))))
                         val child: Expression<ParentModel.ChildModel> = data.child
                         val uncleName: Expression<String> = child.uncle.name
                     }
                     @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
                     object ReUse : HasModel<AMother.UncleModel> {
                         val uncleName: Expression<String> = Expression.Literal(AMother.UncleModel("Scrooge")).name
                     }

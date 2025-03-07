@@ -1,11 +1,13 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import java.util.Objects
 import kotlin.math.absoluteValue
 
 abstract class Operation : StableHash {
@@ -44,14 +46,27 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: Collection<*>): Boolean = input.isEmpty()
     }
 
-    data class MapValue<In, Out>(val mapper: ExpressionMapper<In, Out>) : UnaryOperation<In, Out>(), StableHash {
+    class MapValue<In, Out> @InternKonstruktoer constructor(val mapper: ExpressionMapper<In, Out>) : UnaryOperation<In, Out>(), StableHash {
         override fun apply(input: In): Out = mapper.apply(input)
         override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.MapValue"), mapper).stableHashCode()
+        override fun equals(other: Any?): Boolean {
+            if (other !is MapValue<*, *>) return false
+            return mapper == other.mapper && super.equals(other)
+        }
+        override fun hashCode() = Objects.hash(mapper, super.hashCode())
+        override fun toString() = "MapValue(mapper=$mapper)"
     }
 
-    data class MapCollection<In, Out>(val mapper: UnaryOperation<In, Out>) : UnaryOperation<Collection<In>, Collection<Out>>() {
+    class MapCollection<In, Out> @InternKonstruktoer constructor(val mapper: UnaryOperation<In, Out>) : UnaryOperation<Collection<In>, Collection<Out>>() {
         override fun apply(input: Collection<In>): Collection<Out> = input.map { mapper.apply(it) }
         override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.MapCollection"), mapper).stableHashCode()
+
+        override fun equals(other: Any?): Boolean {
+            if (other !is MapCollection<*,*>) return false
+            return mapper == other.mapper && super.equals(other)
+        }
+        override fun hashCode() = Objects.hash(mapper, super.hashCode())
+        override fun toString() = "MapCollection(mapper=$mapper)"
     }
 
     object Not : UnaryOperation<Boolean, Boolean>(), StableHash by StableHash.of("UnaryOperation.Not") {
@@ -78,8 +93,15 @@ sealed class UnaryOperation<In, out Out> : Operation() {
 }
 
 abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? = null) : Operation() {
-    data class Documentation(val name: String, val syntax: Notation) {
+    class Documentation @InternKonstruktoer constructor(val name: String, val syntax: Notation) {
         enum class Notation { PREFIX, INFIX, POSTFIX, FUNCTION }
+
+        override fun equals(other: Any?): Boolean {
+            if (other !is Documentation) return false
+            return name == other.name && syntax == other.syntax && super.equals(other)
+        }
+        override fun hashCode() = Objects.hash(name, syntax, super.hashCode())
+        override fun toString() = "Documentation(name='$name', syntax=$syntax)"
     }
 
     abstract fun apply(first: In1, second: In2): Out
@@ -136,9 +158,16 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun apply(first: T?, second: T): T = first ?: second
     }
 
-    data class MapCollection<In1, In2, Out>(val mapper: BinaryOperation<In1, In2, Out>) : BinaryOperation<Collection<In1>, In2, Collection<Out>>() {
+    class MapCollection<In1, In2, Out> @InternKonstruktoer constructor(val mapper: BinaryOperation<In1, In2, Out>) : BinaryOperation<Collection<In1>, In2, Collection<Out>>() {
         override fun apply(first: Collection<In1>, second: In2): Collection<Out> = first.map { mapper.apply(it, second) }
         override fun stableHashCode(): Int = hashCode()
+
+        override fun equals(other: Any?): Boolean {
+            if (other !is MapCollection<*, *, *>) return false
+            return mapper == other.mapper && doc == other.doc
+        }
+        override fun hashCode() = Objects.hash(mapper, doc)
+        override fun toString() = "MapCollection(mapper=$mapper,doc=$doc)"
     }
 
     class EnumInList<EnumType : Enum<*>> : BinaryOperation<EnumType, List<EnumType>, Boolean>(), StableHash by StableHash.of("BinaryOperation.EnumInList") {
@@ -157,18 +186,33 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun apply(first: Out, second: Out): Pair<Out, Out> = first to second
     }
 
-    data class Flip<In1, In2, Out>(val operation: BinaryOperation<In2, In1, Out>) : BinaryOperation<In1, In2, Out>() {
+    class Flip<In1, In2, Out> @InternKonstruktoer constructor(val operation: BinaryOperation<In2, In1, Out>) : BinaryOperation<In1, In2, Out>() {
         override fun apply(first: In1, second: In2): Out = operation.apply(second, first)
         override fun stableHashCode(): Int = hashCode()
+
+        override fun equals(other: Any?): Boolean {
+            if (other !is Flip<*, *, *>) return false
+            return operation == other.operation && doc == other.doc
+        }
+        override fun hashCode() = Objects.hash(operation, doc)
+        override fun toString() = "Flip(operation=$operation,doc=$doc)"
     }
 
-    data class SafeCall<In1, In2, Out>(val operation: BinaryOperation<In1 & Any, In2 & Any, Out>) : BinaryOperation<In1, In2, Out?>() {
+    class SafeCall<In1, In2, Out> @InternKonstruktoer constructor(val operation: BinaryOperation<In1 & Any, In2 & Any, Out>) : BinaryOperation<In1, In2, Out?>() {
         override fun apply(first: In1, second: In2): Out? =
             if (first != null && second != null) {
                 operation.apply(first, second)
             } else null
 
         override fun stableHashCode(): Int = StableHash.hash(StableHash.of("BinaryOperation.SafeCall"), operation)
+
+        override fun equals(other: Any?): Boolean {
+            if (other !is SafeCall<*, *, *>) return false
+            return operation == other.operation && doc == other.doc
+        }
+        override fun hashCode() = Objects.hash(operation, doc)
+        override fun toString(): String = "SafeCall(operation=$operation,doc=$doc)"
+
     }
 
 }
