@@ -6,7 +6,7 @@ import java.time.LocalDate
 
 
 @Suppress("unused")
-data class AvslagFoer67AarAP2016Dto(
+data class AvslagFoer67AarAP2016(
     val avtalelandErEOSLand: Boolean,
     val avtalelandNavn: String?,
     val brukerBorINorge: Boolean,
