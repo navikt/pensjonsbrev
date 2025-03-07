@@ -3,20 +3,20 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.amerikansSocialSecurityNumber
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.bankOpplysninger
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.boOgArbeidsperioder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.bosattEOSLandSedEOSBlanketter
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.eps60aarOgInntektUnder1G
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.eps62aarOgInntektUnder1GBoddArbeidUtland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.epsInntektUnder2G
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.forsorgerEpsBosattIUtlandet
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.inntektsopplysninger
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.manglendeOpptjening
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.registreringAvSivilstand
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.tidspunktForUttak
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.amerikansSocialSecurityNumber
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.bankOpplysninger
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.boOgArbeidsperioder
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.bosattEOSLandSedEOSBlanketter
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.eps60aarOgInntektUnder1G
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.eps62aarOgInntektUnder1GBoddArbeidUtland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.epsInntektUnder2G
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.forsorgerEpsBosattIUtlandet
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.inntektsopplysninger
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.manglendeOpptjening
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.registreringAvSivilstand
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.tidspunktForUttak
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Alderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
@@ -35,14 +35,14 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingOpplysningerFraBrukerAlderDto> {
+object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjonFraBrukerDto> {
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_INNHENTING_INFORMASJON_FRA_BRUKER     //MF_000133
-    override val template: LetterTemplate<*, InnhentingOpplysningerFraBrukerAlderDto> = createTemplate(
+    override val template: LetterTemplate<*, InnhentingInformasjonFraBrukerDto> = createTemplate(
         name = kode.name,
-        letterDataType = InnhentingOpplysningerFraBrukerAlderDto::class,
+        letterDataType = InnhentingInformasjonFraBrukerDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Innhenting av opplysninger/dokumentasjon",
@@ -586,14 +586,14 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingOpplysninge
                     )
                 }
                 paragraph {
-                    text(
-                        Bokmal to "Du har ikke oppgitt hvilken uttaksgrad av alderspensjon du ønsker. " +
+                    textExpr(
+                        Bokmal to "Du har ikke oppgitt hvilken uttaksgrad av alderspensjon du ønsker. ".expr() +
                                 fritekst("Vi kan ikke behandle søknaden din før vi får svar fra deg om dette. / Dersom du ikke sender oss informasjon om uttaksgraden, setter vi den til 100 prosent."),
 
-                        Nynorsk to "Du har ikkje oppgitt kva uttaksgrad av alderspensjon du ønskjer å ta ut. " +
+                        Nynorsk to "Du har ikkje oppgitt kva uttaksgrad av alderspensjon du ønskjer å ta ut. ".expr() +
                                 fritekst("Vi kan ikkje behandle søknaden din før vi får svar frå deg om dette. / Dersom du ikkje sender oss informasjon om uttaksgraden, set vi den til 100 prosent."),
 
-                        English to "You have not stated what percentage of your retirement pension you want to draw. " +
+                        English to "You have not stated what percentage of your retirement pension you want to draw. ".expr() +
                                 fritekst("We cannot process your application until we receive a response from you. / If you do not send us information about what withdrawal percentage you want, the percentage will be set to 100 percent."),
                     )
                 }
@@ -647,21 +647,20 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingOpplysninge
                 )
             }
             paragraph {
-                text(
-                    Bokmal to "Saken vil bli behandlet innen " + fritekst("antall dager/uker/måneder") + " etter at vi har mottatt nødvendige opplysninger/dokumentasjon. Hvis saken ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss.",
-                    Nynorsk to "Saka vil bli behandla innan " + fritekst("talet på dagar / veker / månader") + " etter at vi har fått nødvendige opplysningar/dokumentasjon. Dersom saka ikkje blir avgjord i løpet av denne tida, vil du høyre nærare frå oss.",
-                    English to "Your case will be processed within " + fritekst("antall days / weeks / months") + " after we have received the necessary information and/or documentation. If your case has not been decided within this time, you will hear from us.",
+                textExpr(
+                    Bokmal to "Saken vil bli behandlet innen ".expr() + fritekst("antall dager/uker/måneder") + " etter at vi har mottatt nødvendige opplysninger/dokumentasjon. Hvis saken ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss.",
+                    Nynorsk to "Saka vil bli behandla innan ".expr() + fritekst("talet på dagar / veker / månader") + " etter at vi har fått nødvendige opplysningar/dokumentasjon. Dersom saka ikkje blir avgjord i løpet av denne tida, vil du høyre nærare frå oss.",
+                    English to "Your case will be processed within ".expr() + fritekst("antall days / weeks / months") + " after we have received the necessary information and/or documentation. If your case has not been decided within this time, you will hear from us.",
                 )
             }
-
 
             includePhrase(Felles.MeldeFraEndringer)
 
             paragraph {
                 text(
-                    Bokmal to "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til [_Value NAV_].",
-                    Nynorsk to "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til [_Value NAV_].",
-                    English to "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to [_Value NAV_].",
+                    Bokmal to "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav.",
+                    Nynorsk to "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til Nav.",
+                    English to "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav.",
                 )
             }
 
