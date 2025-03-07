@@ -16,5 +16,6 @@ fun hentMuligOverstyrtMal(kode: String) = when {
 fun isEnabled(kode: String) = when (kode) {
     Pesysbrevkoder.Redigerbar.PE_OVERSETTELSE_AV_DOKUMENTER.kode() -> FeatureToggles.brevMedFritekst
     Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD.kode() -> FeatureToggles.brevmalUtAvslag
+    Pesysbrevkoder.Redigerbar.PE_AP_INNHENTING_INFORMASJON_FRA_BRUKER.kode() -> FeatureToggles.innhentingAvInformasjonFraBruker
     else -> null
 }?.let { FeatureToggleSingleton.isEnabled(it) } ?: true
