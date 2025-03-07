@@ -24,9 +24,8 @@ interface TemplateDescription {
         }
 
         override fun hashCode() = Objects.hash(name, letterDataClass, languages, metadata)
-        override fun toString(): String {
-            return "Autobrev(name='$name', letterDataClass='$letterDataClass', languages=$languages, metadata=$metadata)"
-        }
+        override fun toString(): String =
+            "Autobrev(name='$name', letterDataClass='$letterDataClass', languages=$languages, metadata=$metadata)"
     }
 
     class Redigerbar(
@@ -45,9 +44,8 @@ interface TemplateDescription {
         }
 
         override fun hashCode() = Objects.hash(name, letterDataClass, languages, metadata, kategori, brevkontekst, sakstyper)
-        override fun toString(): String {
-            return "Redigerbar(name='$name', letterDataClass='$letterDataClass', languages=$languages, metadata=$metadata, kategori=$kategori, brevkontekst=$brevkontekst, sakstyper=$sakstyper)"
-        }
+        override fun toString(): String =
+            "Redigerbar(name='$name', letterDataClass='$letterDataClass', languages=$languages, metadata=$metadata, kategori=$kategori, brevkontekst=$brevkontekst, sakstyper=$sakstyper)"
     }
 
     enum class Brevkontekst { ALLE, SAK, VEDTAK }

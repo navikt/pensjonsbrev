@@ -7,11 +7,7 @@ class PDFCompilationOutput(val bytes: ByteArray) {
         return bytes.contentEquals(other.bytes)
     }
 
-    override fun hashCode(): Int {
-        return bytes.contentHashCode()
-    }
+    override fun hashCode() = bytes.contentHashCode()
 
-    override fun toString(): String {
-        return "PDFCompilationOutput(bytes=... Totalt antall bytes: ${bytes.size})"
-    }
+    override fun toString() = "PDFCompilationOutput(bytes=... Totalt antall bytes: ${bytes.size})"
 }
