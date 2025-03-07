@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraB
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.amerikansSocialSecurityNumber
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.bankOpplysninger
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.boOgArbeidsperioder
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.bosattEOSLandSedEOSBlanketter
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.eps60aarOgInntektUnder1G
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.eps62aarOgInntektUnder1GBoddArbeidUtland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.epsInntektUnder2G
@@ -14,8 +15,13 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraB
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.inntektsopplysninger
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.manglendeOpptjening
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.registreringAvSivilstand
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.SaksbehandlerValgSelectors.tidspunktForUttak
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingOpplysningerFraBrukerAlderDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.Alderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -290,9 +296,15 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingOpplysninge
                 }
                 paragraph {
                     textExpr(
-                        Bokmal to "Alderspensjonen din er beregnet med en særskilt sats for minste pensjonsnivå fordi du forsørger ".expr() + fritekst("ektefelle/partner/samboer") + " over 60 år. ",
-                        Nynorsk to "Alderspensjonen din er berekna med ein særskilt sats for minste pensjonsnivå fordi du forsørgjer ".expr() + fritekst("ektefelle/partnar/sambuar") + " over 60 år. ",
-                        English to "Your retirement pension is calculated according to a special rate which gives you the minimum pension level, because you provide for your ".expr() + fritekst("spouse/partner/cohabitant") + " who is over the age of 60. ",
+                        Bokmal to "Alderspensjonen din er beregnet med en særskilt sats for minste pensjonsnivå fordi du forsørger ".expr() + fritekst(
+                            "ektefelle/partner/samboer"
+                        ) + " over 60 år. ",
+                        Nynorsk to "Alderspensjonen din er berekna med ein særskilt sats for minste pensjonsnivå fordi du forsørgjer ".expr() + fritekst(
+                            "ektefelle/partnar/sambuar"
+                        ) + " over 60 år. ",
+                        English to "Your retirement pension is calculated according to a special rate which gives you the minimum pension level, because you provide for your ".expr() + fritekst(
+                            "spouse/partner/cohabitant"
+                        ) + " who is over the age of 60. ",
                     )
                 }
                 paragraph {
@@ -354,7 +366,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingOpplysninge
                 }
             }
 
-            showIf(saksbehandlerValg.epsInntektUnder2G){
+            showIf(saksbehandlerValg.epsInntektUnder2G) {
                 title1 {
                     text(
                         Bokmal to "Dokumentasjon på din ektefelle/partner/samboer sin inntekt",
@@ -472,7 +484,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingOpplysninge
                 }
             }
 
-            showIf(saksbehandlerValg.forsorgerEpsBosattIUtlandet){
+            showIf(saksbehandlerValg.forsorgerEpsBosattIUtlandet) {
                 title1 {
                     textExpr(
                         Bokmal to "Dokumentasjon på at du forsørger ".expr() + fritekst("ektefellen/partneren/samboeren") + " din",
@@ -489,7 +501,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingOpplysninge
                 }
             }
 
-            showIf(saksbehandlerValg.manglendeOpptjening){
+            showIf(saksbehandlerValg.manglendeOpptjening) {
                 title1 {
 
                     text(
@@ -514,7 +526,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingOpplysninge
                 }
             }
 
-            showIf(saksbehandlerValg.boOgArbeidsperioder){
+            showIf(saksbehandlerValg.boOgArbeidsperioder) {
                 title1 {
                     text(
                         Bokmal to "Bo- og arbeidsperioder i Norge",
@@ -531,15 +543,134 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingOpplysninge
                 }
             }
 
+            showIf(saksbehandlerValg.bosattEOSLandSedEOSBlanketter) {
+                title1 {
+                    text(
+                        Bokmal to "Søknad fra EØS-land",
+                        Nynorsk to "Søknad frå EØS-land",
+                        English to "Application from an EEA country ",
+                    )
+                }
+                paragraph {
+                    // TODO rar tekst. Samsvarer ikke på engelsk. + hva gjør jeg med tomt fritekst felt? kan vi kalle den for noe?
+                    textExpr(
+                        Bokmal to "Dersom man er bosatt i et EØS-land, og har opparbeidet seg pensjonsrettigheter i dette landet, følger det av EØS-reglementet at man skal søke om pensjon fra annet EØS-land gjennom bostedslandets nasjonale myndigheter. Vi ber derfor om at du kontakter ".expr() + fritekst(
+                            "trygdemyndighet"
+                        ) + " trygdemyndigheter for oversendelse av SED-dokumentene P2000, P5000 og P4000, eventuelt EØS-blankettene E202, E205 og E207.",
+                        Nynorsk to "Dersom man bur i eit EØS-land, og har opparbeida seg pensjonsrettighetar i dette landet, følgjer det av EØS-reglementet at man skal søkje om pensjon frå anna EØS-land gjennom bustadslandet sine nasjonale myndigheiter. Vi ber derfor om at du kontaktar ".expr() + fritekst(
+                            "trygdemyndighet"
+                        ) + " trygdemyndigheiter for oversendelse av SED-dokumenta P2000, P5000 og P4000, eventuelt EØS-blankettane E202, E205 og E207.",
+                        English to "According to the EEA agreement, a resident of an EEA country has to forward his/her claim for benefits in another EEA country through the national authorities in the country of residence. In order for us to process your claim for retirement pension from the Norwegian National Insurance Scheme, you must contact your local authorities.".expr(),
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Din søknad kan ikke bli behandlet før vi mottar disse blankettene.",
+                        Nynorsk to "Din søknad kan ikkje bli behandla før vi mottar desse blankettane.",
+                        English to "No decision will be made until the SED-documents P2000, P5000 and P4000, or the forms E202, E205 and E207 are provided.",
+                    )
+                }
+            }
+            showIf(saksbehandlerValg.tidspunktForUttak) {
+                title1 {
+                    text(
+                        Bokmal to "Tidspunkt for uttak / ønsket uttaksgrad",
+                        Nynorsk to "Tidspunkt for uttak/ønska uttaksgrad ",
+                        English to "Statement for your pension ",
+                    )
+                }
+                paragraph {
+                    val dato = fritekst("dato")
+                    textExpr(
+                        Bokmal to "Du har ikke oppgitt når du ønsker å ta ut pensjon. Du må derfor fylle ut skjemaet du får sammen med dette brevet. Dersom du ikke sender oss informasjon om når du ønsker å ta ut pensjon, tar vi utgangspunkt i datoen du sendte søknaden til ".expr() +
+                                fritekst("oss / trygdemyndighetene i bostedslandet ditt") + ". Det vil si " + dato,
+                        Nynorsk to "Du har ikkje oppgitt når du ønskjer å ta ut pensjon. Du må derfor fylle ut skjemaet du får saman med dette brevet. Dersom du ikkje sender oss informasjon om når du ønskjer å ta ut pensjon, vil vi ta utgangspunkt i datoen då du sende søknaden til ".expr() +
+                                fritekst("oss / trygdeorganet i bustadslandet ditt") + ". Det vil seie " + dato,
+                        English to "You have not stated when you want to start drawing your pension. Therefore, you must fill out the form enclosed with this letter. If you do not send us information about when you want to start drawing your pension, we will use the date you submitted the application to ".expr() +
+                                fritekst("us, / the National Insurance authorities in your country of residence,") + " i.e. " + dato,
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Du har ikke oppgitt hvilken uttaksgrad av alderspensjon du ønsker. " +
+                                fritekst("Vi kan ikke behandle søknaden din før vi får svar fra deg om dette. / Dersom du ikke sender oss informasjon om uttaksgraden, setter vi den til 100 prosent."),
 
+                        Nynorsk to "Du har ikkje oppgitt kva uttaksgrad av alderspensjon du ønskjer å ta ut. " +
+                                fritekst("Vi kan ikkje behandle søknaden din før vi får svar frå deg om dette. / Dersom du ikkje sender oss informasjon om uttaksgraden, set vi den til 100 prosent."),
+
+                        English to "You have not stated what percentage of your retirement pension you want to draw. " +
+                                fritekst("We cannot process your application until we receive a response from you. / If you do not send us information about what withdrawal percentage you want, the percentage will be set to 100 percent."),
+                    )
+                }
+            }
 
             paragraph {
                 text(
-                    Bokmal to "",
-                    Nynorsk to "",
-                    English to "",
+                    Bokmal to "Du kan gi tilbakemelding via nav sin nettside $DITT_NAV. Velg «Send beskjed til nav», tema «Beskjed – pensjon».",
+                    Nynorsk to "Du kan gi tilbakemelding via nav si nettside $DITT_NAV. Vel «Send beskjed til nav», tema «Beskjed – pensjon».",
+                    English to "Feel free to contact us and give us the required information at nav’s online service $DITT_NAV. Select «Send beskjed til nav» and the theme «Beskjed – pensjon».",
                 )
             }
+            paragraph {
+                val svarfristDato = fritekst("dato svarfrist")
+                textExpr(
+                    Bokmal to "Skriftlig tilbakemelding per post og eventuell dokumentasjon må du sende innen ".expr()
+                            + svarfristDato + " til følgende adresse:",
+                    Nynorsk to "Skriftleg tilbakemelding per post og eventuell dokumentasjon må du sende innan ".expr()
+                            + svarfristDato + " til følgande adresse:",
+                    English to "Please send the required documentation within ".expr()
+                            + svarfristDato + " to the address below:",
+                )
+            }
+            includePhrase(Alderspensjon.Returadresse)
+            paragraph {
+                text(
+                    Bokmal to "Dersom vi ikke mottar nødvendig dokumentasjonen innen fristen, vil saken bli avgjort med de opplysninger som foreligger. Hvis vi ikke har nok opplysninger til å behandle søknaden din, kan saken bli avslått.",
+                    Nynorsk to "Dersom vi ikkje mottar nødvendig dokumentasjon innan fristen, vil saka bli avgjord med de opplysningane som foreligg. Hvis vi ikkje har nok opplysningar til å behandle saka di, kan saka di bli avslått.",
+                    English to "If we do not receive the necessary documentation or an explanation within the deadline, your application will either be processed using the information available to us or postponed until we have received the information we need. If we do not receive the necessary information, we will not have enough information to process your case, and your application may be declined.",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Dette går fram av folketrygdloven §§ 21-3 og 21-7.",
+                    Nynorsk to "Dette går fram av folketrygdlova §§ 21-3 og 21-7.",
+                    English to "This follows from sections 21-3 and 21-7 of the National Insurance Act.",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du kan finne mer informasjon om regelverket på $NAV_URL",
+                    Nynorsk to "Du kan finne meir informasjon om regelverket på $NAV_URL",
+                    English to "You can find more information about the regulations at $NAV_URL",
+                )
+            }
+            title1 {
+                text(
+                    Bokmal to "Svartid",
+                    Nynorsk to "Svartid",
+                    English to "Response time",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Saken vil bli behandlet innen " + fritekst("antall dager/uker/måneder") + " etter at vi har mottatt nødvendige opplysninger/dokumentasjon. Hvis saken ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss.",
+                    Nynorsk to "Saka vil bli behandla innan " + fritekst("talet på dagar / veker / månader") + " etter at vi har fått nødvendige opplysningar/dokumentasjon. Dersom saka ikkje blir avgjord i løpet av denne tida, vil du høyre nærare frå oss.",
+                    English to "Your case will be processed within " + fritekst("antall days / weeks / months") + " after we have received the necessary information and/or documentation. If your case has not been decided within this time, you will hear from us.",
+                )
+            }
+
+
+            includePhrase(Felles.MeldeFraEndringer)
+
+            paragraph {
+                text(
+                    Bokmal to "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til [_Value NAV_].",
+                    Nynorsk to "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til [_Value NAV_].",
+                    English to "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to [_Value NAV_].",
+                )
+            }
+
+            includePhrase(Felles.HarDuSpoersmaal.alder)
         }
     }
 
