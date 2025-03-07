@@ -1,6 +1,9 @@
 package no.nav.pensjon.brev.template
 
-data class LanguageSettings(val settings: Map<String, Element.OutlineContent.ParagraphContent.Text.Literal<BaseLanguages>>) {
+import no.nav.brev.InternKonstruktoer
+import java.util.Objects
+
+class LanguageSettings @InternKonstruktoer constructor(val settings: Map<String, Element.OutlineContent.ParagraphContent.Text.Literal<BaseLanguages>>) {
     class MissingLanguageSettingException(msg: String) : Exception(msg)
 
     fun writeLanguageSettings(language: Language, writeSetting: (name: String, value: String) -> Unit): Unit =
@@ -9,4 +12,11 @@ data class LanguageSettings(val settings: Map<String, Element.OutlineContent.Par
     fun getSetting(language: Language, setting: String): String =
         settings[setting]?.text(language)
             ?: throw MissingLanguageSettingException(setting)
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is LanguageSettings) return false
+        return settings == other.settings
+    }
+    override fun hashCode(): Int = Objects.hash(settings)
+    override fun toString() = "LanguageSettings(settings=$settings)"
 }

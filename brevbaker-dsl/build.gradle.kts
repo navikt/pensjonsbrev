@@ -44,4 +44,10 @@ tasks {
     compileTestJava {
         targetCompatibility = apiModelJavaTarget
     }
+    compileKotlin {
+        compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")
+    }
+    compileTestKotlin {
+        compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")
+    }
 }

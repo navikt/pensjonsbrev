@@ -1,8 +1,10 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextScope
 import no.nav.pensjon.brev.template.dsl.text
+import java.util.Objects
 
 fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
     title: TextElement<Lang>,
@@ -20,14 +22,29 @@ fun TextScope<BaseLanguages, *>.namedReference(attachment: AttachmentTemplate<Ba
     text(Language.Bokmal to "»", Language.Nynorsk to "»", Language.English to "”")
 }
 
-data class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any>(
+class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any> @InternKonstruktoer constructor(
     val data: Expression<AttachmentData>,
     val template: AttachmentTemplate<Lang, AttachmentData>,
     val predicate: Expression<Boolean> = Expression.Literal(true),
-): StableHash by StableHash.of(data, template, predicate)
+): StableHash by StableHash.of(data, template, predicate) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is IncludeAttachment<*, *>) return false
+        return data == other.data && template == other.template && predicate == other.predicate
+    }
+    override fun hashCode() = Objects.hash(data, template, predicate)
+    override fun toString() = "IncludeAttachment(data=$data, template=$template, predicate=$predicate)"
+}
 
-data class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any>(
+class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any> @InternKonstruktoer constructor(
     val title: TextElement<Lang>,
     val outline: List<OutlineElement<Lang>>,
     val includeSakspart: Boolean = false,
-): HasModel<AttachmentData>, StableHash by StableHash.of(title, StableHash.of(outline), StableHash.of(includeSakspart))
+): HasModel<AttachmentData>, StableHash by StableHash.of(title, StableHash.of(outline), StableHash.of(includeSakspart)) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is AttachmentTemplate<*, *>) return false
+        return title == other.title && outline == other.outline && includeSakspart == other.includeSakspart
+    }
+    override fun hashCode() = Objects.hash(title, outline, includeSakspart)
+    override fun toString() = "AttachmentTemplate(title=$title, outline=$outline, includeSakspart=$includeSakspart)"
+
+}

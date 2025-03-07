@@ -109,7 +109,9 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
                 import no.nav.pensjon.brev.template.UnaryOperation
                 import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
                 import no.nav.pensjon.brev.template.ExpressionScope
+                import no.nav.brev.InternKonstruktoer
 
+                @OptIn(InternKonstruktoer::class)
                 """.trimIndent()
                 )
                 useBlock(writer)

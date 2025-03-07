@@ -175,3 +175,13 @@ class IfNotNullTest {
     }
 
 }
+
+fun <Lang : LanguageSupport, LetterData : Any> LetterTemplate<Lang, LetterData>.copy(outline: List<OutlineElement<Lang>>) = LetterTemplate(
+    name = this.name,
+    title = this.title,
+    letterDataType = this.letterDataType,
+    language = this.language,
+    outline = outline,
+    attachments = this.attachments,
+    letterMetadata = this.letterMetadata
+)
