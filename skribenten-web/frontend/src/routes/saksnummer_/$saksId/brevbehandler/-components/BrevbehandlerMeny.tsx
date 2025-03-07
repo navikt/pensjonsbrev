@@ -21,7 +21,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useMemo, useState } from "react";
 
-import type { UserInfo } from "~/api/bff-endpoints";
+import { type UserInfo } from "~/api/bff-endpoints";
 import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { getNavn } from "~/api/skribenten-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
@@ -29,7 +29,7 @@ import { useUserInfo } from "~/hooks/useUserInfo";
 import type { BrevStatus, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
-import { erBrevArkivert, erBrevKlar } from "~/utils/brevUtils";
+import { erBrevArkivert, erBrevKlar, erBrevTilAttestering, skalBrevAttesteres } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 import { humanizeName } from "~/utils/stringUtils";
 
@@ -121,7 +121,11 @@ const BrevItem = (properties: {
       <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>
         <Accordion.Header>
           <VStack gap="2">
-            <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
+            <Brevtilstand
+              attesteres={erBrevTilAttestering(properties.brev)}
+              gjeldendeBruker={gjeldendeBruker}
+              status={properties.brev.status}
+            />
             <Label size="small">{properties.brev.brevtittel}</Label>
           </VStack>
         </Accordion.Header>
@@ -255,12 +259,11 @@ const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
 
         <Switch
           checked={erLåst}
-          // TODO - finn en måte å gi feedback på dersom kallet gir error. Jeg antar at switcehn ikke blir endret dersom det er en error
           loading={låsForRedigeringMutation.isPending}
           onChange={(event) => låsForRedigeringMutation.mutate(event.target.checked)}
           size="small"
         >
-          Brevet er klart for sending
+          {skalBrevAttesteres(props.brev) ? "Brevet er klart for attestering" : "Brevet er klart for sending"}
         </Switch>
 
         {låsForRedigeringMutation.isError && (
@@ -335,8 +338,16 @@ const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
   );
 };
 
-const Brevtilstand = ({ status, gjeldendeBruker }: { status: BrevStatus; gjeldendeBruker?: UserInfo }) => {
-  const { variant, text } = brevStatusTypeToTextAndTagVariant(status, gjeldendeBruker);
+const Brevtilstand = ({
+  status,
+  attesteres,
+  gjeldendeBruker,
+}: {
+  status: BrevStatus;
+  attesteres: boolean;
+  gjeldendeBruker?: UserInfo;
+}) => {
+  const { variant, text } = brevStatusTypeToTextAndTagVariant(status, attesteres, gjeldendeBruker);
 
   return (
     <Tag

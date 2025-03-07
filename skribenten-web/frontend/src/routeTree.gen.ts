@@ -18,6 +18,9 @@ import { Route as SaksnummerSaksIdKvitteringRouteImport } from './routes/saksnum
 import { Route as SaksnummerSaksIdBrevvelgerRouteImport } from './routes/saksnummer_/$saksId/brevvelger/route'
 import { Route as SaksnummerSaksIdBrevbehandlerRouteImport } from './routes/saksnummer_/$saksId/brevbehandler/route'
 import { Route as SaksnummerSaksIdBrevBrevIdImport } from './routes/saksnummer_/$saksId/brev.$brevId'
+import { Route as SaksnummerSaksIdVedtakBrevIdRedigeringRouteImport } from './routes/saksnummer_/$saksId/vedtak.$brevId/redigering/route'
+import { Route as SaksnummerSaksIdVedtakBrevIdKvitteringRouteImport } from './routes/saksnummer_/$saksId/vedtak.$brevId/kvittering/route'
+import { Route as SaksnummerSaksIdVedtakBrevIdForhandsvisningRouteImport } from './routes/saksnummer_/$saksId/vedtak.$brevId/forhandsvisning/route'
 
 // Create/Update Routes
 
@@ -61,6 +64,24 @@ const SaksnummerSaksIdBrevBrevIdRoute = SaksnummerSaksIdBrevBrevIdImport.update(
   } as any,
 )
 
+const SaksnummerSaksIdVedtakBrevIdRedigeringRouteRoute =
+  SaksnummerSaksIdVedtakBrevIdRedigeringRouteImport.update({
+    path: '/vedtak/$brevId/redigering',
+    getParentRoute: () => SaksnummerSaksIdRouteRoute,
+  } as any)
+
+const SaksnummerSaksIdVedtakBrevIdKvitteringRouteRoute =
+  SaksnummerSaksIdVedtakBrevIdKvitteringRouteImport.update({
+    path: '/vedtak/$brevId/kvittering',
+    getParentRoute: () => SaksnummerSaksIdRouteRoute,
+  } as any)
+
+const SaksnummerSaksIdVedtakBrevIdForhandsvisningRouteRoute =
+  SaksnummerSaksIdVedtakBrevIdForhandsvisningRouteImport.update({
+    path: '/vedtak/$brevId/forhandsvisning',
+    getParentRoute: () => SaksnummerSaksIdRouteRoute,
+  } as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -93,6 +114,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SaksnummerSaksIdBrevBrevIdImport
       parentRoute: typeof SaksnummerSaksIdRouteImport
     }
+    '/saksnummer/$saksId/vedtak/$brevId/forhandsvisning': {
+      preLoaderRoute: typeof SaksnummerSaksIdVedtakBrevIdForhandsvisningRouteImport
+      parentRoute: typeof SaksnummerSaksIdRouteImport
+    }
+    '/saksnummer/$saksId/vedtak/$brevId/kvittering': {
+      preLoaderRoute: typeof SaksnummerSaksIdVedtakBrevIdKvitteringRouteImport
+      parentRoute: typeof SaksnummerSaksIdRouteImport
+    }
+    '/saksnummer/$saksId/vedtak/$brevId/redigering': {
+      preLoaderRoute: typeof SaksnummerSaksIdVedtakBrevIdRedigeringRouteImport
+      parentRoute: typeof SaksnummerSaksIdRouteImport
+    }
   }
 }
 
@@ -105,6 +138,9 @@ export const routeTree = rootRoute.addChildren([
     SaksnummerSaksIdBrevvelgerRouteRoute,
     SaksnummerSaksIdKvitteringRouteRoute,
     SaksnummerSaksIdBrevBrevIdRoute,
+    SaksnummerSaksIdVedtakBrevIdForhandsvisningRouteRoute,
+    SaksnummerSaksIdVedtakBrevIdKvitteringRouteRoute,
+    SaksnummerSaksIdVedtakBrevIdRedigeringRouteRoute,
   ]),
   SaksnummerIndexRoute,
 ])

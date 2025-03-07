@@ -2,13 +2,19 @@ import type { UserInfo } from "~/api/bff-endpoints";
 import type { BrevInfo } from "~/types/brev";
 import { type BrevStatus, type NavAnsatt } from "~/types/brev";
 
-export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus, gjeldendeBruker?: UserInfo) => {
+export const brevStatusTypeToTextAndTagVariant = (
+  status: BrevStatus,
+  attesteres: boolean,
+  gjeldendeBruker?: UserInfo,
+) => {
   switch (status.type) {
     case "Kladd": {
       return { variant: "warning" as const, text: "Kladd" };
     }
     case "Klar": {
-      return { variant: "success" as const, text: "Klar til sending" };
+      return attesteres
+        ? { variant: "alt2" as const, text: "Attesteres" }
+        : { variant: "success" as const, text: "Klar til sending" };
     }
 
     case "UnderRedigering": {

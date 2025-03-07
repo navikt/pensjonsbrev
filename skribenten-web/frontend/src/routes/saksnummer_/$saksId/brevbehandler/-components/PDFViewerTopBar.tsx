@@ -18,6 +18,7 @@ const PDFViewerTopBar = (properties: {
   setScale: (n: number) => void;
   currentPageNumber: number;
   setCurrentPageNumber: (n: number) => void;
+  utenSlettKnapp?: boolean;
 }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   return (
@@ -26,7 +27,7 @@ const PDFViewerTopBar = (properties: {
       css={css`
         background-color: white;
         border-bottom: 1px solid var(--a-gray-200);
-        padding: 0 1rem;
+        padding: var(--a-spacing-2) var(--a-spacing-4);
         height: 48px;
         position: sticky;
         top: 0;
@@ -43,14 +44,16 @@ const PDFViewerTopBar = (properties: {
         <VerticalDivider />
         <TopBarZoom scale={properties.scale} setScale={properties.setScale} />
       </HStack>
-      <SlettBrev
-        brevId={properties.brevId}
-        buttonText="Slett"
-        onSlettSuccess={() =>
-          navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId: properties.sakId } })
-        }
-        sakId={properties.sakId}
-      />
+      {!properties.utenSlettKnapp && (
+        <SlettBrev
+          brevId={properties.brevId}
+          buttonText="Slett"
+          onSlettSuccess={() =>
+            navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId: properties.sakId } })
+          }
+          sakId={properties.sakId}
+        />
+      )}
     </HStack>
   );
 };
