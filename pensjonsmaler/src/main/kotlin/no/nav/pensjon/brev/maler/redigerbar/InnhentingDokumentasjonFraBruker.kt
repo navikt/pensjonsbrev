@@ -26,7 +26,7 @@ object InnhentingDokumentasjonFraBruker : RedigerbarTemplate<EmptyRedigerbarBrev
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_INNHENTING_DOKUMENTASJON_FRA_BRUKER
     override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
-    override val sakstyper: Set<Sakstype> = Sakstype.all
+    override val sakstyper: Set<Sakstype> = Sakstype.all.minus(Sakstype.ALDER)
 
     override val template = createTemplate(
         name = kode.name,
