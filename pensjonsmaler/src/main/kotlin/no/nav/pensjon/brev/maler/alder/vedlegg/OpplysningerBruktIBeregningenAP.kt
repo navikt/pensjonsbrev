@@ -26,14 +26,14 @@ val opplysningerBruktIBeregningenAP =
         title = newText(
             Bokmal to "Opplysninger brukt i beregningen",
             Nynorsk to "Opplysningar brukt i berekninga",
-            English to "Information about your calculation"
+            English to "Information used in the calculation"
         ),
     ) {
         title2 {
             textExpr(
                 Bokmal to "Opplysninger som ligger til grunn for beregningen per ".expr() + virkFom.format(),
                 Nynorsk to "".expr(),
-                English to "".expr()
+                English to "Information that provides the basis for the calculation as of ".expr() + virkFom.format()
             )
         }
 
@@ -43,7 +43,7 @@ val opplysningerBruktIBeregningenAP =
                     text(
                         Bokmal to "Opplysning",
                         Nynorsk to "",
-                        English to "",
+                        English to "Information",
                     )
                 }
                 column {}
@@ -53,14 +53,14 @@ val opplysningerBruktIBeregningenAP =
                         text(
                             Bokmal to "Trygdetid",
                             Nynorsk to "",
-                            English to ""
+                            English to "National insurance coverage"
                         )
                     }
                     cell {
                         textExpr(
                             Bokmal to trygdetid.format() + " år".expr(),
                             Nynorsk to "".expr(),
-                            English to "".expr()
+                            English to trygdetid.format() + " years".expr()
                         )
                     }
                 }
@@ -69,14 +69,14 @@ val opplysningerBruktIBeregningenAP =
                         text(
                             Bokmal to "Pensjonsbeholdning",
                             Nynorsk to "",
-                            English to ""
+                            English to "Accumulated pension capital"
                         )
                     }
                     cell {
                         textExpr(
                             Bokmal to pensjonsbeholdning.format() + " kr".expr(),
                             Nynorsk to "".expr(),
-                            English to "".expr()
+                            English to pensjonsbeholdning.format() + " NOK".expr()
                         )
                     }
                 }
@@ -85,14 +85,14 @@ val opplysningerBruktIBeregningenAP =
                         text(
                             Bokmal to "Ønsket uttaksgrad",
                             Nynorsk to "",
-                            English to ""
+                            English to "Pension level applied for"
                         )
                     }
                     cell {
                         textExpr(
                             Bokmal to uttaksgrad.format() + " %",
                             Nynorsk to "".expr(),
-                            English to "".expr()
+                            English to uttaksgrad.format() + " %"
                         )
                     }
                 }
@@ -101,14 +101,14 @@ val opplysningerBruktIBeregningenAP =
                         text(
                             Bokmal to "Delingstall ved uttak",
                             Nynorsk to "",
-                            English to ""
+                            English to "Ratio for life expectancy adjustment"
                         )
                     }
                     cell {
                         textExpr(
                             Bokmal to delingstallVedUttak.format(),
                             Nynorsk to "".expr(),
-                            English to "".expr()
+                            English to delingstallVedUttak.format()
                         )
                     }
                 }
@@ -119,14 +119,14 @@ val opplysningerBruktIBeregningenAP =
                                 text(
                                     Bokmal to "Delingstall ved 67 år",
                                     Nynorsk to "",
-                                    English to ""
+                                    English to "Ratio for life expectancy adjustment at age 67"
                                 )
                             }
                             cell {
                                 textExpr(
                                     Bokmal to delingstall.format(),
                                     Nynorsk to "".expr(),
-                                    English to "".expr()
+                                    English to delingstall.format()
                                 )
                             }
                         }
@@ -139,8 +139,8 @@ val opplysningerBruktIBeregningenAP =
             paragraph {
                 textExpr(
                     Bokmal to "Pensjonsopptjening og trygdetid tas med i beregningen av alderspensjon fra og med året etter at skatteoppgjøret er klart. ".expr() +
-                            "Dette gjelder selv om skatteoppgjøret ditt er klart tidligere. " +
-                            "I beregningen er det derfor brukt pensjonsopptjening til og med " + sisteAar.format() + ".",
+                                "Dette gjelder selv om skatteoppgjøret ditt er klart tidligere. " +
+                                "I beregningen er det derfor brukt pensjonsopptjening til og med " + sisteAar.format() + ".",
                     Nynorsk to "".expr(),
                     English to "".expr()
                 )
@@ -151,7 +151,7 @@ val opplysningerBruktIBeregningenAP =
             text(
                 Bokmal to "På ${Constants.PENSJON_URL} kan du lese mer om regelverket for alderspensjon og hvordan disse tallene har betydning for beregningen. I nettjenesten Din pensjon på ${Constants.DIN_PENSJON_URL} kan du se hvilke inntekter og opplysninger om opptjening som vi har registrert.",
                 Nynorsk to "",
-                English to ""
+                English to "Go to ${Constants.PENSJON_URL} to read more about these regulations that apply to retirement pension and how these affect your calculation. Logon to our online service \"Din pensjon\" at ${Constants.DIN_PENSJON_URL} to see your income and accumulated pension capital."
             )
         }
     }
