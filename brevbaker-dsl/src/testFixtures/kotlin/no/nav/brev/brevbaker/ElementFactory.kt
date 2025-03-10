@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.ParagraphContentElement
 import no.nav.pensjon.brev.template.TextElement
+import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 
 fun <Lang : LanguageSupport> createParagraph(paragraph: List<ParagraphContentElement<Lang>>) =
@@ -27,3 +28,4 @@ fun <Lang : LanguageSupport, AttachmentData : Any> createIncludeAttachment(
 @OptIn(InternKonstruktoer::class)
 fun <Out> createExpressionLiteral(value: Out, tags: Set<ElementTags> = emptySet()) = Expression.Literal(value, tags)
 
+fun <Lang : LanguageSupport, LetterData : Any> createTextOnlyScope() = TextOnlyScope<Lang, LetterData>()

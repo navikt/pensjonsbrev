@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 
 @LetterTemplateMarker
-class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Text<Lang>, TextOnlyScope<Lang, LetterData>> {
+class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> internal constructor(): TextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Text<Lang>, TextOnlyScope<Lang, LetterData>> {
     private val children = mutableListOf<TextElement<Lang>>()
     override val elements: List<TextElement<Lang>>
         get() = children

@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template.render
 import no.nav.brev.brevbaker.createContent
 import no.nav.brev.brevbaker.createIncludeAttachment
 import no.nav.brev.brevbaker.createParagraph
+import no.nav.brev.brevbaker.createTextOnlyScope
 import no.nav.brev.brevbaker.createTitle1
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Element
@@ -18,7 +19,6 @@ import no.nav.pensjon.brev.template.OutlineElement
 import no.nav.pensjon.brev.template.ParagraphContentElement
 import no.nav.pensjon.brev.template.TemplateModelSelector
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.select
@@ -116,7 +116,7 @@ class LetterRendererTest {
         var nextExpression: Expression<String> = "hei".expr() // Will be changed to actual nextExpression below
         val itemsExpr = listOf("hei", "hallo", "Hi")
 
-        val content = TextOnlyScope<LangBokmal, Unit>().apply {
+        val content = createTextOnlyScope<LangBokmal, Unit>().apply {
             forEach(itemsExpr.expr()) {
                 textExpr(Bokmal to it + " person")
                 text(Bokmal to "jadda")
@@ -144,7 +144,7 @@ class LetterRendererTest {
 
     @Test
     fun `render Conditional will pass showIf elements to block when predicate is true`() {
-        val content = TextOnlyScope<LangBokmal, Unit>().apply {
+        val content = createTextOnlyScope<LangBokmal, Unit>().apply {
             showIf(true.expr()) {
                 text(Bokmal to "hei ")
                 text(Bokmal to "person")
@@ -174,7 +174,7 @@ class LetterRendererTest {
 
     @Test
     fun `render Conditional will pass showElse elements to block when predicate is false`() {
-        val content = TextOnlyScope<LangBokmal, Unit>().apply {
+        val content = createTextOnlyScope<LangBokmal, Unit>().apply {
             showIf(false.expr()) {
                 text(Bokmal to "should not be rendered")
             } orShow {
