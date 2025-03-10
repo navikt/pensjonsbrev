@@ -16,7 +16,6 @@ fun testBrevbakerApp(
     environment {
         config = ApplicationConfig("application.conf").mergeWith(
             MapApplicationConfig(
-                "brevbaker.unleash.useFakeUnleash" to "$enableAllToggles",
                 "brevbaker.unleash.fakeUnleashEnableAll" to "$enableAllToggles",
             )
         )
