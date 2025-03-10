@@ -142,7 +142,7 @@ sealed class Expression<out Out> : StableHash {
 typealias StringExpression = Expression<String>
 
 sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Element<Lang>> : StableHash {
-    class Content<out Lang : LanguageSupport, C : Element<Lang>> @InternKonstruktoer constructor(
+    class Content<out Lang : LanguageSupport, C : Element<Lang>> internal constructor(
         val content: C,
     ) : ContentOrControlStructure<Lang, C>(), StableHash by StableHash.of(content) {
         override fun equals(other: Any?): Boolean {
@@ -189,7 +189,7 @@ typealias OutlineElement<Lang> = ContentOrControlStructure<Lang, Element.Outline
 sealed class Element<out Lang : LanguageSupport> : StableHash {
 
     sealed class OutlineContent<out Lang : LanguageSupport> : Element<Lang>() {
-        class Title1<out Lang : LanguageSupport> @InternKonstruktoer constructor(val text: List<TextElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(text) {
+        class Title1<out Lang : LanguageSupport> internal constructor(val text: List<TextElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(text) {
             override fun equals(other: Any?): Boolean {
                 if (other !is Title1<*>) return false
                 return text == other.text
@@ -207,7 +207,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
             override fun toString(): String = "Title2(text=$text)"
         }
 
-        class Paragraph<out Lang : LanguageSupport> @InternKonstruktoer constructor(val paragraph: List<ParagraphContentElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(paragraph) {
+        class Paragraph<out Lang : LanguageSupport> internal constructor(val paragraph: List<ParagraphContentElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(paragraph) {
             override fun equals(other: Any?): Boolean {
                 if (other !is Paragraph<*>) return false
                 return paragraph == other.paragraph

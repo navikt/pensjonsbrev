@@ -4,6 +4,8 @@ val apiModelJavaTarget: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
+    id("java-library")
+    id("java-test-fixtures")
 }
 
 group = "no.nav.pensjon.brevbaker"

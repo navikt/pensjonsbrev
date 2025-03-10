@@ -22,7 +22,7 @@ fun TextScope<BaseLanguages, *>.namedReference(attachment: AttachmentTemplate<Ba
     text(Language.Bokmal to "»", Language.Nynorsk to "»", Language.English to "”")
 }
 
-class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any> @InternKonstruktoer constructor(
+class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any> internal constructor(
     val data: Expression<AttachmentData>,
     val template: AttachmentTemplate<Lang, AttachmentData>,
     val predicate: Expression<Boolean> = Expression.Literal(true),
@@ -35,7 +35,7 @@ class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any> @Inter
     override fun toString() = "IncludeAttachment(data=$data, template=$template, predicate=$predicate)"
 }
 
-class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any> @InternKonstruktoer constructor(
+class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any> internal constructor(
     val title: TextElement<Lang>,
     val outline: List<OutlineElement<Lang>>,
     val includeSakspart: Boolean = false,
