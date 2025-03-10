@@ -14,11 +14,12 @@ fun testBrevbakerApp(
     block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit
 ): Unit = testApplication {
     environment {
-        if(enableAllToggles){
-            config = ApplicationConfig("application-unleash-all-on.conf")
-        } else {
-            config = ApplicationConfig("application.conf")
-        }
+        config = ApplicationConfig("application.conf").mergeWith(
+            MapApplicationConfig(
+                "brevbaker.unleash.useFakeUnleash" to "$enableAllToggles",
+                "brevbaker.unleash.fakeUnleashEnableAll" to "$enableAllToggles",
+            )
+        )
     }
     val client = createClient {
         install(ContentNegotiation) {
