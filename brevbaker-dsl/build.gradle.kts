@@ -29,6 +29,8 @@ dependencies {
     testImplementation(libs.bundles.junit)
     testImplementation(libs.hamkrest)
     testImplementation(kotlin("reflect"))
+
+    testFixturesImplementation(libs.brevbaker.common)
 }
 
 kotlin {

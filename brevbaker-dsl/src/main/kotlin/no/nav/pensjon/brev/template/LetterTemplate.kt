@@ -9,7 +9,7 @@ import java.time.LocalDate
 import java.util.Objects
 import kotlin.reflect.KClass
 
-class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> @InternKonstruktoer constructor(
+class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal constructor(
     val name: String,
     val title: List<TextElement<Lang>>,
     val letterDataType: KClass<out LetterData>,
