@@ -27,7 +27,7 @@ class TableScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
 
 
 @LetterTemplateMarker
-class TableRowScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
+class TableRowScope<Lang : LanguageSupport, LetterData : Any> internal constructor(): TemplateGlobalScope<LetterData> {
     private val children: MutableList<Element.OutlineContent.ParagraphContent.Table.Cell<Lang>> = mutableListOf()
     val elements: List<Element.OutlineContent.ParagraphContent.Table.Cell<Lang>>
         get() = children

@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextScope
 import no.nav.pensjon.brev.template.dsl.text
