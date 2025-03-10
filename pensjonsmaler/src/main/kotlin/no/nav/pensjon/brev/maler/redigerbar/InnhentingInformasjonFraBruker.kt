@@ -417,8 +417,8 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                         }
                         item {
                             text(
-                                Bokmal to "ytelser fra NAV, blant annet sykepenger og arbeidsavklaringspenger (AAP)",
-                                Nynorsk to "ytingar frå NAV, blant anna sjukepengar og arbeidsavklaringspengar (AAP)",
+                                Bokmal to "ytelser fra Nav, blant annet sykepenger og arbeidsavklaringspenger (AAP)",
+                                Nynorsk to "ytingar frå Nav, blant anna sjukepengar og arbeidsavklaringspengar (AAP)",
                                 English to "other national insurance benefits, for example sickness benefits and work assessment allowance (AAP)",
                             )
                         }
