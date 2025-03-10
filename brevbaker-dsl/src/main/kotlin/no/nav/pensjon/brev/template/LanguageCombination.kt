@@ -4,7 +4,7 @@ import java.util.Objects
 
 internal sealed class LanguageCombination {
 
-    class Single<Lang : Language>(val first: Lang) : LanguageCombination(), LanguageSupport.Single<Lang>, StableHash by StableHash.of(first) {
+    class Single<Lang : Language> internal constructor(val first: Lang) : LanguageCombination(), LanguageSupport.Single<Lang>, StableHash by StableHash.of(first) {
         override fun supports(language: Language): Boolean = language == first
         override fun all(): Set<Language> = setOf(first)
 
@@ -17,7 +17,7 @@ internal sealed class LanguageCombination {
 
     }
 
-    class Double<Lang1 : Language, Lang2 : Language>(
+    class Double<Lang1 : Language, Lang2 : Language> internal constructor(
         val first: Lang1,
         val second: Lang2,
     ) : LanguageCombination(), LanguageSupport.Double<Lang1, Lang2>, StableHash by StableHash.of(first, second) {
@@ -33,7 +33,7 @@ internal sealed class LanguageCombination {
 
     }
 
-    class Triple<Lang1 : Language, Lang2 : Language, Lang3 : Language>(
+    class Triple<Lang1 : Language, Lang2 : Language, Lang3 : Language> internal constructor(
         val first: Lang1,
         val second: Lang2,
         val third: Lang3

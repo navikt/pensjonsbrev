@@ -1,9 +1,8 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.brev.InternKonstruktoer
 import java.util.Objects
 
-class LanguageSettings @InternKonstruktoer constructor(val settings: Map<String, Element.OutlineContent.ParagraphContent.Text.Literal<BaseLanguages>>) {
+class LanguageSettings internal constructor(val settings: Map<String, Element.OutlineContent.ParagraphContent.Text.Literal<BaseLanguages>>) {
     class MissingLanguageSettingException(msg: String) : Exception(msg)
 
     fun writeLanguageSettings(language: Language, writeSetting: (name: String, value: String) -> Unit): Unit =
