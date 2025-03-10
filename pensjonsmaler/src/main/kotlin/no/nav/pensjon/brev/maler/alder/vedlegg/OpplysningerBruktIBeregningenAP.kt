@@ -32,7 +32,7 @@ val opplysningerBruktIBeregningenAP =
         title2 {
             textExpr(
                 Bokmal to "Opplysninger som ligger til grunn for beregningen per ".expr() + virkFom.format(),
-                Nynorsk to "".expr(),
+                Nynorsk to "Opplysningar som ligg til grunn for berekninga per ".expr() + virkFom.format(),
                 English to "Information that provides the basis for the calculation as of ".expr() + virkFom.format()
             )
         }
@@ -42,7 +42,7 @@ val opplysningerBruktIBeregningenAP =
                 column {
                     text(
                         Bokmal to "Opplysning",
-                        Nynorsk to "",
+                        Nynorsk to "Opplysning",
                         English to "Information",
                     )
                 }
@@ -52,14 +52,14 @@ val opplysningerBruktIBeregningenAP =
                     cell {
                         text(
                             Bokmal to "Trygdetid",
-                            Nynorsk to "",
+                            Nynorsk to "Trygdetid",
                             English to "National insurance coverage"
                         )
                     }
                     cell {
                         textExpr(
                             Bokmal to trygdetid.format() + " år".expr(),
-                            Nynorsk to "".expr(),
+                            Nynorsk to trygdetid.format() + " år".expr(),
                             English to trygdetid.format() + " years".expr()
                         )
                     }
@@ -68,14 +68,14 @@ val opplysningerBruktIBeregningenAP =
                     cell {
                         text(
                             Bokmal to "Pensjonsbeholdning",
-                            Nynorsk to "",
+                            Nynorsk to "Pensjonsbeholdning",
                             English to "Accumulated pension capital"
                         )
                     }
                     cell {
                         textExpr(
                             Bokmal to pensjonsbeholdning.format() + " kr".expr(),
-                            Nynorsk to "".expr(),
+                            Nynorsk to pensjonsbeholdning.format() + " kr".expr(),
                             English to pensjonsbeholdning.format() + " NOK".expr()
                         )
                     }
@@ -84,14 +84,14 @@ val opplysningerBruktIBeregningenAP =
                     cell {
                         text(
                             Bokmal to "Ønsket uttaksgrad",
-                            Nynorsk to "",
+                            Nynorsk to "Ønska uttaksgrad",
                             English to "Pension level applied for"
                         )
                     }
                     cell {
                         textExpr(
                             Bokmal to uttaksgrad.format() + " %",
-                            Nynorsk to "".expr(),
+                            Nynorsk to uttaksgrad.format() + " %",
                             English to uttaksgrad.format() + " %"
                         )
                     }
@@ -100,14 +100,14 @@ val opplysningerBruktIBeregningenAP =
                     cell {
                         text(
                             Bokmal to "Delingstall ved uttak",
-                            Nynorsk to "",
+                            Nynorsk to "Delingstal ved levealdersjustering",
                             English to "Ratio for life expectancy adjustment"
                         )
                     }
                     cell {
                         textExpr(
                             Bokmal to delingstallVedUttak.format(),
-                            Nynorsk to "".expr(),
+                            Nynorsk to delingstallVedUttak.format(),
                             English to delingstallVedUttak.format()
                         )
                     }
@@ -118,14 +118,14 @@ val opplysningerBruktIBeregningenAP =
                             cell {
                                 text(
                                     Bokmal to "Delingstall ved 67 år",
-                                    Nynorsk to "",
+                                    Nynorsk to "Delingstal ved 67 år",
                                     English to "Ratio for life expectancy adjustment at age 67"
                                 )
                             }
                             cell {
                                 textExpr(
                                     Bokmal to delingstall.format(),
-                                    Nynorsk to "".expr(),
+                                    Nynorsk to delingstall.format(),
                                     English to delingstall.format()
                                 )
                             }
@@ -150,7 +150,7 @@ val opplysningerBruktIBeregningenAP =
         paragraph {
             text(
                 Bokmal to "På ${Constants.PENSJON_URL} kan du lese mer om regelverket for alderspensjon og hvordan disse tallene har betydning for beregningen. I nettjenesten Din pensjon på ${Constants.DIN_PENSJON_URL} kan du se hvilke inntekter og opplysninger om opptjening som vi har registrert.",
-                Nynorsk to "",
+                Nynorsk to "På ${Constants.PENSJON_URL} kan du lese meir om regelverket for alderspensjon og kva desse tala har å seie for berekninga. I nettenesta Din pensjon på ${Constants.DIN_PENSJON_URL} kan du sjå kva inntekter og opplysningar om opptening som vi har registrert.",
                 English to "Go to ${Constants.PENSJON_URL} to read more about these regulations that apply to retirement pension and how these affect your calculation. Logon to our online service \"Din pensjon\" at ${Constants.DIN_PENSJON_URL} to see your income and accumulated pension capital."
             )
         }
