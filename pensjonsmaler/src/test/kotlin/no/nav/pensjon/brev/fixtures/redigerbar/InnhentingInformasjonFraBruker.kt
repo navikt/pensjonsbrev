@@ -6,10 +6,10 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBr
 fun createInnhentingInformasjonFraBrukerDto() =
     InnhentingInformasjonFraBrukerDto(
         saksbehandlerValg = InnhentingInformasjonFraBrukerDto.SaksbehandlerValg(
-            bosattIEosLandSedErEOSBlanketter = true,
+            bosattIEosLandSedErEosBlanketter = true,
             inntektsopplysninger = true,
             bankOpplysninger = true,
-            amerikansSocialSecurityNumber = true,
+            amerikanskSocialSecurityNumber = true,
             registreringAvSivilstand = true,
             eps60aarOgInntektUnder1G = true,
             eps62aarOgInntektUnder1GBoddArbeidUtland = true,

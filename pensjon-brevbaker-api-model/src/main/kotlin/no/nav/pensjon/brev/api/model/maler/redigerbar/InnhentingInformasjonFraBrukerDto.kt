@@ -10,10 +10,10 @@ data class InnhentingInformasjonFraBrukerDto(
     override val pesysData: EmptyBrevdata
 ) : RedigerbarBrevdata<InnhentingInformasjonFraBrukerDto.SaksbehandlerValg, EmptyBrevdata> {
     data class SaksbehandlerValg(
-        val bosattIEosLandSedErEOSBlanketter: Boolean, //Bosatt i EØS-land. SED-er/EØS-blanketter
+        val bosattIEosLandSedErEosBlanketter: Boolean, //Bosatt i EØS-land. SED-er/EØS-blanketter
         val inntektsopplysninger: Boolean,
         val bankOpplysninger: Boolean,
-        val amerikansSocialSecurityNumber: Boolean,
+        val amerikanskSocialSecurityNumber: Boolean,
         val registreringAvSivilstand: Boolean,
         val eps60aarOgInntektUnder1G: Boolean, //Ektefelle/partner/samboer 60 år og inntekt under 1G
         val eps62aarOgInntektUnder1GBoddArbeidUtland: Boolean, //Ektefelle/partner/samboer 62 år og bodd og/eller arbeidet i utlandet
