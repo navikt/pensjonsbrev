@@ -86,7 +86,7 @@ sealed class Expression<out Out> : StableHash {
             override fun stableHashCode(): Int = "FromScope.Argument".hashCode()
         }
 
-        class Assigned<out Out> @InternKonstruktoer constructor(val id: Int) : FromScope<Out>() {
+        class Assigned<out Out> internal constructor(val id: Int) : FromScope<Out>() {
             override fun eval(scope: ExpressionScope<*>): Out =
                 if (scope is ExpressionScope.WithAssignment<*, *>) {
                     @Suppress("UNCHECKED_CAST")
