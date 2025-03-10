@@ -163,7 +163,8 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                     textExpr(
                         Bokmal to "Personnummer/ID for ".expr() + fritekst("ektefellen/partneren/samboeren") + " din",
                         Nynorsk to "Personnummer/ID for ".expr() + fritekst("ektefellen/partnaren/sambuaren") + " din",
-                        English to "Personal identity number".expr(),
+                        English to "Personal identity number for your".expr() + fritekst("spouse/partner/cohabiting partner")
+                        ,
                     )
                 }
 
@@ -317,13 +318,13 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
 
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi mangler opplysninger om din ".expr() + fritekst("ektefelle / partner / samboer")
+                        Bokmal to "Vi mangler opplysninger om din ".expr() + fritekst("ektefelle/partner/samboer")
                                 + " har bodd og/eller arbeidet i andre land enn Norge. ",
 
-                        Nynorsk to "Vi manglar opplysningar om din ".expr() + fritekst("ektefelle / partnar / sambuar")
+                        Nynorsk to "Vi manglar opplysningar om din ".expr() + fritekst("ektefelle/partnar/sambuar")
                                 + " har budd og/eller arbeida i andre land enn Noreg.",
 
-                        English to "We do not have any information on whether your ".expr() + fritekst("spouse / partner / cohabitant")
+                        English to "We do not have any information on whether your ".expr() + fritekst("spouse/partner/cohabitant")
                                 + " has lived and/or worked in other countries than Norway. ",
                     )
                 }
@@ -569,7 +570,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
             showIf(saksbehandlerValg.tidspunktForUttak) {
                 title1 {
                     text(
-                        Bokmal to "Tidspunkt for uttak / ønsket uttaksgrad",
+                        Bokmal to "Tidspunkt for uttak/ønsket uttaksgrad",
                         Nynorsk to "Tidspunkt for uttak/ønska uttaksgrad ",
                         English to "Statement for your pension ",
                     )
@@ -578,23 +579,23 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                     val dato = fritekst("dato")
                     textExpr(
                         Bokmal to "Du har ikke oppgitt når du ønsker å ta ut pensjon. Du må derfor fylle ut skjemaet du får sammen med dette brevet. Dersom du ikke sender oss informasjon om når du ønsker å ta ut pensjon, tar vi utgangspunkt i datoen du sendte søknaden til ".expr() +
-                                fritekst("oss / trygdemyndighetene i bostedslandet ditt") + ". Det vil si " + dato,
+                                fritekst("oss/trygdemyndighetene i bostedslandet ditt") + ". Det vil si " + dato,
                         Nynorsk to "Du har ikkje oppgitt når du ønskjer å ta ut pensjon. Du må derfor fylle ut skjemaet du får saman med dette brevet. Dersom du ikkje sender oss informasjon om når du ønskjer å ta ut pensjon, vil vi ta utgangspunkt i datoen då du sende søknaden til ".expr() +
-                                fritekst("oss / trygdeorganet i bustadslandet ditt") + ". Det vil seie " + dato,
+                                fritekst("oss/trygdeorganet i bustadslandet ditt") + ". Det vil seie " + dato,
                         English to "You have not stated when you want to start drawing your pension. Therefore, you must fill out the form enclosed with this letter. If you do not send us information about when you want to start drawing your pension, we will use the date you submitted the application to ".expr() +
-                                fritekst("us, / the National Insurance authorities in your country of residence,") + " i.e. " + dato,
+                                fritekst("us,/the National Insurance authorities in your country of residence,") + " i.e. " + dato,
                     )
                 }
                 paragraph {
                     textExpr(
                         Bokmal to "Du har ikke oppgitt hvilken uttaksgrad av alderspensjon du ønsker. ".expr() +
-                                fritekst("Vi kan ikke behandle søknaden din før vi får svar fra deg om dette. / Dersom du ikke sender oss informasjon om uttaksgraden, setter vi den til 100 prosent."),
+                                fritekst("Vi kan ikke behandle søknaden din før vi får svar fra deg om dette./Dersom du ikke sender oss informasjon om uttaksgraden, setter vi den til 100 prosent."),
 
                         Nynorsk to "Du har ikkje oppgitt kva uttaksgrad av alderspensjon du ønskjer å ta ut. ".expr() +
-                                fritekst("Vi kan ikkje behandle søknaden din før vi får svar frå deg om dette. / Dersom du ikkje sender oss informasjon om uttaksgraden, set vi den til 100 prosent."),
+                                fritekst("Vi kan ikkje behandle søknaden din før vi får svar frå deg om dette./Dersom du ikkje sender oss informasjon om uttaksgraden, set vi den til 100 prosent."),
 
                         English to "You have not stated what percentage of your retirement pension you want to draw. ".expr() +
-                                fritekst("We cannot process your application until we receive a response from you. / If you do not send us information about what withdrawal percentage you want, the percentage will be set to 100 percent."),
+                                fritekst("We cannot process your application until we receive a response from you./If you do not send us information about what withdrawal percentage you want, the percentage will be set to 100 percent."),
                     )
                 }
             }
@@ -649,8 +650,8 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
             paragraph {
                 textExpr(
                     Bokmal to "Saken vil bli behandlet innen ".expr() + fritekst("antall dager/uker/måneder") + " etter at vi har mottatt nødvendige opplysninger/dokumentasjon. Hvis saken ikke blir avgjort i løpet av denne tiden, vil du høre nærmere fra oss.",
-                    Nynorsk to "Saka vil bli behandla innan ".expr() + fritekst("talet på dagar / veker / månader") + " etter at vi har fått nødvendige opplysningar/dokumentasjon. Dersom saka ikkje blir avgjord i løpet av denne tida, vil du høyre nærare frå oss.",
-                    English to "Your case will be processed within ".expr() + fritekst("antall days / weeks / months") + " after we have received the necessary information and/or documentation. If your case has not been decided within this time, you will hear from us.",
+                    Nynorsk to "Saka vil bli behandla innan ".expr() + fritekst("talet på dagar/veker/månader") + " etter at vi har fått nødvendige opplysningar/dokumentasjon. Dersom saka ikkje blir avgjord i løpet av denne tida, vil du høyre nærare frå oss.",
+                    English to "Your case will be processed within ".expr() + fritekst("antall days/weeks/months") + " after we have received the necessary information and/or documentation. If your case has not been decided within this time, you will hear from us.",
                 )
             }
 
