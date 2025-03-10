@@ -7,11 +7,11 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBr
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.amerikanskSocialSecurityNumber
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.bankOpplysninger
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.boOgArbeidsperioder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.bosattEOSLandSedEOSBlanketter
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.bosattEoesLandSedEoesBlanketter
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.eps60aarOgInntektUnder1G
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.eps62aarOgInntektUnder1GBoddArbeidUtland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.epsInntektUnder2G
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.forsorgerEpsBosattIUtlandet
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.forsoergerEpsBosattIUtlandet
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.inntektsopplysninger
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.manglendeOpptjening
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.registreringAvSivilstand
@@ -258,8 +258,8 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                         }
                         item {
                             text(
-                                Bokmal to "ytelser fra NAV, blant annet sykepenger og arbeidsavklaringspenger (APP)",
-                                Nynorsk to "ytingar frå NAV, blant anna sjukepengar og arbeidsavklaringspengar (APP)",
+                                Bokmal to "ytelser fra Nav, blant annet sykepenger og arbeidsavklaringspenger (AAP)",
+                                Nynorsk to "ytingar frå Nav, blant anna sjukepengar og arbeidsavklaringspengar (AAP)",
                                 English to "other national insurance benefits, for example sickness benefits and work assessment allowance (AAP)",
                             )
                         }
@@ -416,8 +416,8 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                         }
                         item {
                             text(
-                                Bokmal to "ytelser fra NAV, blant annet sykepenger og arbeidsavklaringspenger (APP)",
-                                Nynorsk to "ytingar frå NAV, blant anna sjukepengar og arbeidsavklaringspengar (APP)",
+                                Bokmal to "ytelser fra NAV, blant annet sykepenger og arbeidsavklaringspenger (AAP)",
+                                Nynorsk to "ytingar frå NAV, blant anna sjukepengar og arbeidsavklaringspengar (AAP)",
                                 English to "other national insurance benefits, for example sickness benefits and work assessment allowance (AAP)",
                             )
                         }
@@ -484,7 +484,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.forsorgerEpsBosattIUtlandet) {
+            showIf(saksbehandlerValg.forsoergerEpsBosattIUtlandet) {
                 title1 {
                     textExpr(
                         Bokmal to "Dokumentasjon på at du forsørger ".expr() + fritekst("ektefellen/partneren/samboeren") + " din",
@@ -543,7 +543,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.bosattEOSLandSedEOSBlanketter) {
+            showIf(saksbehandlerValg.bosattEoesLandSedEoesBlanketter) {
                 title1 {
                     text(
                         Bokmal to "Søknad fra EØS-land",
