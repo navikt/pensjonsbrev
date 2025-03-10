@@ -602,9 +602,9 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
 
             paragraph {
                 text(
-                    Bokmal to "Du kan gi tilbakemelding via nav sin nettside $DITT_NAV. Velg «Send beskjed til nav», tema «Beskjed – pensjon».",
-                    Nynorsk to "Du kan gi tilbakemelding via nav si nettside $DITT_NAV. Vel «Send beskjed til nav», tema «Beskjed – pensjon».",
-                    English to "Feel free to contact us and give us the required information at nav’s online service $DITT_NAV. Select «Send beskjed til nav» and the theme «Beskjed – pensjon».",
+                    Bokmal to "Du kan gi tilbakemelding via Nav sin nettside $DITT_NAV. Velg «Send beskjed til Nav», tema «Beskjed – pensjon».",
+                    Nynorsk to "Du kan gi tilbakemelding via Nav si nettside $DITT_NAV. Vel «Send beskjed til Nav», tema «Beskjed – pensjon».",
+                    English to "Feel free to contact us and give us the required information at Nav’s online service $DITT_NAV. Select «Send beskjed til Nav» and the theme «Beskjed – pensjon».",
                 )
             }
             paragraph {
