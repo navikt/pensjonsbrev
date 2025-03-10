@@ -77,8 +77,8 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
             }
             paragraph {
                 text(
-                    Bokmal to "For at vi skal kunne behandle saken din ferdig, må du sende oss følgende opplysninger/ dokumentasjon:",
-                    Nynorsk to "For at vi skal kunne behandle saka di ferdig, må du sende oss følgande opplysningar / dokumentasjon:",
+                    Bokmal to "For at vi skal kunne behandle saken din ferdig, må du sende oss følgende opplysninger/dokumentasjon:",
+                    Nynorsk to "For at vi skal kunne behandle saka di ferdig, må du sende oss følgande opplysningar/dokumentasjon:",
                     English to "In order for us to be able to finish processing your case, you need to send us following information and/or documentation:",
                 )
 
