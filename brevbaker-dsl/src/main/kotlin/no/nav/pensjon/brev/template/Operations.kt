@@ -93,7 +93,7 @@ sealed class UnaryOperation<In, out Out> : Operation() {
 }
 
 abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? = null) : Operation() {
-    class Documentation @InternKonstruktoer constructor(val name: String, val syntax: Notation) {
+    class Documentation(val name: String, val syntax: Notation) {
         enum class Notation { PREFIX, INFIX, POSTFIX, FUNCTION }
 
         override fun equals(other: Any?): Boolean {
