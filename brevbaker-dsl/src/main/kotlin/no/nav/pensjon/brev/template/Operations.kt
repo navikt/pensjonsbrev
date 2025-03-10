@@ -46,7 +46,7 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: Collection<*>): Boolean = input.isEmpty()
     }
 
-    class MapValue<In, Out> @InternKonstruktoer constructor(val mapper: ExpressionMapper<In, Out>) : UnaryOperation<In, Out>(), StableHash {
+    class MapValue<In, Out> internal constructor(val mapper: ExpressionMapper<In, Out>) : UnaryOperation<In, Out>(), StableHash {
         override fun apply(input: In): Out = mapper.apply(input)
         override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.MapValue"), mapper).stableHashCode()
         override fun equals(other: Any?): Boolean {
@@ -57,7 +57,7 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun toString() = "MapValue(mapper=$mapper)"
     }
 
-    class MapCollection<In, Out> @InternKonstruktoer constructor(val mapper: UnaryOperation<In, Out>) : UnaryOperation<Collection<In>, Collection<Out>>() {
+    class MapCollection<In, Out> internal constructor(val mapper: UnaryOperation<In, Out>) : UnaryOperation<Collection<In>, Collection<Out>>() {
         override fun apply(input: Collection<In>): Collection<Out> = input.map { mapper.apply(it) }
         override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.MapCollection"), mapper).stableHashCode()
 
@@ -106,27 +106,27 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
 
     abstract fun apply(first: In1, second: In2): Out
 
-    class Equal<In> : BinaryOperation<In, In, Boolean>(Documentation("==", Documentation.Notation.INFIX)),
+    class Equal<In> internal constructor(): BinaryOperation<In, In, Boolean>(Documentation("==", Documentation.Notation.INFIX)),
         StableHash by StableHash.of("BinaryOperation.Equal") {
         override fun apply(first: In, second: In): Boolean = first == second
     }
 
-    class GreaterThan<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>(Documentation(">", Documentation.Notation.INFIX)),
+    class GreaterThan<in T : Comparable<T>> internal constructor(): BinaryOperation<T, T, Boolean>(Documentation(">", Documentation.Notation.INFIX)),
         StableHash by StableHash.of("BinaryOperation.GreaterThan") {
         override fun apply(first: T, second: T): Boolean = first > second
     }
 
-    class GreaterThanOrEqual<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>(Documentation(">=", Documentation.Notation.INFIX)),
+    class GreaterThanOrEqual<in T : Comparable<T>> internal constructor(): BinaryOperation<T, T, Boolean>(Documentation(">=", Documentation.Notation.INFIX)),
         StableHash by StableHash.of("BinaryOperation.GreaterThanOrEqual") {
         override fun apply(first: T, second: T): Boolean = first >= second
     }
 
-    class LessThanOrEqual<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>(Documentation("<=", Documentation.Notation.INFIX)),
+    class LessThanOrEqual<in T : Comparable<T>> internal constructor(): BinaryOperation<T, T, Boolean>(Documentation("<=", Documentation.Notation.INFIX)),
         StableHash by StableHash.of("BinaryOperation.LessThanOrEqual") {
         override fun apply(first: T, second: T): Boolean = first <= second
     }
 
-    class LessThan<in T : Comparable<T>> : BinaryOperation<T, T, Boolean>(Documentation("<", Documentation.Notation.INFIX)),
+    class LessThan<in T : Comparable<T>> internal constructor(): BinaryOperation<T, T, Boolean>(Documentation("<", Documentation.Notation.INFIX)),
         StableHash by StableHash.of("BinaryOperation.LessThan") {
         override fun apply(first: T, second: T): Boolean = first < second
     }
@@ -153,12 +153,12 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun apply(first: Int, second: Int): Int = first + second
     }
 
-    class IfNull<T : Any> : BinaryOperation<T?, T, T>(Documentation("?:", Documentation.Notation.INFIX)),
+    class IfNull<T : Any> internal constructor(): BinaryOperation<T?, T, T>(Documentation("?:", Documentation.Notation.INFIX)),
         StableHash by StableHash.of("BinaryOperation.IfNull") {
         override fun apply(first: T?, second: T): T = first ?: second
     }
 
-    class MapCollection<In1, In2, Out> @InternKonstruktoer constructor(val mapper: BinaryOperation<In1, In2, Out>) : BinaryOperation<Collection<In1>, In2, Collection<Out>>() {
+    class MapCollection<In1, In2, Out> internal constructor(val mapper: BinaryOperation<In1, In2, Out>) : BinaryOperation<Collection<In1>, In2, Collection<Out>>() {
         override fun apply(first: Collection<In1>, second: In2): Collection<Out> = first.map { mapper.apply(it, second) }
         override fun stableHashCode(): Int = hashCode()
 
@@ -170,23 +170,23 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun toString() = "MapCollection(mapper=$mapper,doc=$doc)"
     }
 
-    class EnumInList<EnumType : Enum<*>> : BinaryOperation<EnumType, List<EnumType>, Boolean>(), StableHash by StableHash.of("BinaryOperation.EnumInList") {
+    class EnumInList<EnumType : Enum<*>> internal constructor(): BinaryOperation<EnumType, List<EnumType>, Boolean>(), StableHash by StableHash.of("BinaryOperation.EnumInList") {
         override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
     }
 
-    class GetElementOrNull<ListType> : BinaryOperation<List<ListType>?, Int, ListType?>(), StableHash by StableHash.of("BinaryOperation.GetElementOrNull") {
+    class GetElementOrNull<ListType> internal constructor(): BinaryOperation<List<ListType>?, Int, ListType?>(), StableHash by StableHash.of("BinaryOperation.GetElementOrNull") {
         override fun apply(first: List<ListType>?, second: Int): ListType? = first?.getOrNull(second)
     }
 
-    class IfElse<Out> : BinaryOperation<Boolean, Pair<Out, Out>, Out>(), StableHash by StableHash.of("BinaryOperation.IfElse") {
+    class IfElse<Out> internal constructor(): BinaryOperation<Boolean, Pair<Out, Out>, Out>(), StableHash by StableHash.of("BinaryOperation.IfElse") {
         override fun apply(first: Boolean, second: Pair<Out, Out>): Out = if (first) second.first else second.second
     }
 
-    class Tuple<Out> : BinaryOperation<Out, Out, Pair<Out, Out>>(), StableHash by StableHash.of("BinaryOperation.Tuple") {
+    class Tuple<Out> internal constructor(): BinaryOperation<Out, Out, Pair<Out, Out>>(), StableHash by StableHash.of("BinaryOperation.Tuple") {
         override fun apply(first: Out, second: Out): Pair<Out, Out> = first to second
     }
 
-    class Flip<In1, In2, Out> @InternKonstruktoer constructor(val operation: BinaryOperation<In2, In1, Out>) : BinaryOperation<In1, In2, Out>() {
+    class Flip<In1, In2, Out> internal constructor(val operation: BinaryOperation<In2, In1, Out>) : BinaryOperation<In1, In2, Out>() {
         override fun apply(first: In1, second: In2): Out = operation.apply(second, first)
         override fun stableHashCode(): Int = hashCode()
 
@@ -198,7 +198,7 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun toString() = "Flip(operation=$operation,doc=$doc)"
     }
 
-    class SafeCall<In1, In2, Out> @InternKonstruktoer constructor(val operation: BinaryOperation<In1 & Any, In2 & Any, Out>) : BinaryOperation<In1, In2, Out?>() {
+    class SafeCall<In1, In2, Out> internal constructor(val operation: BinaryOperation<In1 & Any, In2 & Any, Out>) : BinaryOperation<In1, In2, Out?>() {
         override fun apply(first: In1, second: In2): Out? =
             if (first != null && second != null) {
                 operation.apply(first, second)
