@@ -185,7 +185,6 @@ UnderRedigering : redigeresAv : NavIdent
 state Kladd
 state Attestering
 state Klar
-Klar : PDF
 Klar : attestertAv : NavIdent?
 
 state isVedtaksbrev <<choice>>
@@ -195,16 +194,15 @@ UnderRedigering --> UnderRedigering : Forny lås (1m)
 UnderRedigering --> Kladd : Fortsett (knapp)
 
 Kladd --> UnderRedigering : Åpne
-Kladd : PDF
 Kladd --> isVedtaksbrev : Lås brev
 
-isVedtaksbrev --> Klar : [isVedtaksbrev]
-isVedtaksbrev --> Attestering : [not isVedtaksbrev]
+isVedtaksbrev --> Klar : [not isVedtaksbrev]
+isVedtaksbrev --> Attestering : [isVedtaksbrev]
 
 Attestering --> Klar
 
-Klar --> Kladd
-Attestering --> Kladd
+Klar --> Kladd : Lås opp brev
+Attestering --> Kladd : Lås opp brev
 
 Klar --> [*] : Ferdigstill (arkiver+distribuer)
 ....
