@@ -6,7 +6,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useState } from "react";
 
-import { getBrev } from "~/api/brev-queries";
+import { brevKeys, getBrev } from "~/api/brev-queries";
 import { sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
@@ -15,7 +15,6 @@ import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
 
-import { nyBrevResponse } from "../../../../../../cypress/utils/brevredigeringTestUtils";
 import BrevForhåndsvisning from "../../brevbehandler/-components/BrevForhåndsvisning";
 import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 
@@ -137,10 +136,13 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
   const queryClient = useQueryClient();
   const { setResultat } = useSendtBrevResultatContext();
   const navigate = useNavigate({ from: Route.fullPath });
-  const brevResponse = queryClient.getQueryData<BrevResponse>(["vedtak", 1]) ?? nyBrevResponse({});
+  //TODO: Hånter feil hvis brev ikke eksisterer isteden for none-null-assertion.
+  const brevResponse = queryClient.getQueryData<BrevResponse>([brevKeys.id, Number.parseInt(props.brevId)])!;
 
   const sendBrevMutation = useMutation({
-    mutationFn: () => sendBrev(props.saksId, props.brevId),
+    mutationFn: () => {
+      return sendBrev(props.saksId, props.brevId);
+    },
     onError: (error: AxiosError) => setResultat([{ status: "error", brevInfo: brevResponse.info, error: error }]),
     onSuccess: (res) => setResultat([{ status: "success", brevInfo: brevResponse.info, response: res }]),
     //settled trigges etter success/error
