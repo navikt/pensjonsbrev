@@ -20,6 +20,7 @@ const KvitterteBrev = (properties: { sakId: string; kvitterteBrev: KvittertBrev[
       css={css`
         /* fastsetter bredden slik at innholdet ikke 'hopper' når man åpner/lukker. Dette skjer når parent container er flex */
         width: 350px;
+        justify-self: center;
       `}
     >
       {sorted.map((kvittertBrev, index) => {

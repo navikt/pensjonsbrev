@@ -51,9 +51,17 @@ function Kvittering() {
         background: var(--a-white);
       `}
     >
+      <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={saksId} />
+      <div
+        // This is a vertical line
+        css={css`
+          background: var(--a-gray-200);
+          width: 1px;
+        `}
+      ></div>
       <VStack
         css={css`
-          justify-self: flex-end;
+          justify-self: anchor-center;
         `}
         gap="4"
       >
@@ -92,14 +100,6 @@ function Kvittering() {
           Gå til brevbehandler
         </Button>
       </VStack>
-      <div
-        // This is a vertical line
-        css={css`
-          background: var(--a-gray-200);
-          width: 1px;
-        `}
-      ></div>
-      <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={saksId} />
     </div>
   );
 }
