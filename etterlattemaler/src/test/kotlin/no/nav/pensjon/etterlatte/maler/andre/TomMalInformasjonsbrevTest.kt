@@ -1,10 +1,10 @@
 package no.nav.pensjon.etterlatte.maler.andre
 
+import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
@@ -16,7 +16,7 @@ internal class TomMalInformasjonsbrevTest {
 
     @Test
     fun pdftest() {
-        val letter = Letter(
+        val letter = LetterTestImpl(
             TomMalInformasjonsbrev.template,
             Fixtures.create<ManueltBrevMedTittelDTO>(),
             Language.Bokmal,
@@ -27,7 +27,7 @@ internal class TomMalInformasjonsbrevTest {
 
     @Test
     fun testHtml() {
-        Letter(
+        LetterTestImpl(
             TomMalInformasjonsbrev.template,
             Fixtures.create<ManueltBrevMedTittelDTO>(),
             Language.Bokmal,

@@ -1,18 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val exposedVersion: String by project
-val commonVersion: String by project
-val jacksonJsr310Version: String by project
 val javaTarget: String by System.getProperties()
-val jupiterVersion: String by project
-val kotlinVersion: String by System.getProperties()
-val ktorVersion: String by System.getProperties()
-val logbackVersion: String by project
-val logstashVersion: String by project
-val micrometerVersion: String by project
-val mockkVersion: String by project
-val flywayVersion: String by project
 
 plugins {
     application
@@ -53,6 +42,11 @@ tasks {
     test {
         useJUnitPlatform()
     }
+    kotlin {
+        compileTestKotlin {
+            compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
+        }
+    }
 }
 
 sourceSets {
@@ -65,65 +59,59 @@ sourceSets {
 
 dependencies {
     // Ktor
-    implementation("io.ktor:ktor-client-auth:$ktorVersion")
-    implementation("io.ktor:ktor-client-cio:$ktorVersion")
-    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
-    implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
-    implementation("io.ktor:ktor-server-auth:$ktorVersion")
-    implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
-    implementation("io.ktor:ktor-server-call-id:$ktorVersion")
-    implementation("io.ktor:ktor-server-call-logging:$ktorVersion")
-    implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
-    implementation("io.ktor:ktor-server-core-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-server-cors:$ktorVersion")
-    implementation("io.ktor:ktor-server-netty-jvm:$ktorVersion")
-    implementation("io.ktor:ktor-server-status-pages:$ktorVersion")
-    implementation("io.ktor:ktor-server-caching-headers:$ktorVersion")
-    implementation("io.ktor:ktor-server-request-validation:$ktorVersion")
+    implementation(libs.ktor.client.auth)
+    implementation(libs.ktor.client.cio)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.jackson)
+    implementation(libs.ktor.server.auth)
+    implementation(libs.ktor.server.auth.jwt)
+    implementation(libs.ktor.server.callId)
+    implementation(libs.ktor.server.callLogging)
+    implementation(libs.ktor.server.content.negotiation)
+    implementation(libs.ktor.server.core.jvm)
+    implementation(libs.ktor.server.cors)
+    implementation(libs.ktor.server.netty.jvm)
+    implementation(libs.ktor.server.status.pages)
+    implementation(libs.ktor.server.caching.headers)
+    implementation(libs.ktor.server.request.validation)
 
     // Exposed
-    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
-    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
-    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
-    implementation("org.jetbrains.exposed:exposed-json:$exposedVersion")
-    implementation("org.jetbrains.exposed:exposed-java-time:$exposedVersion")
-    implementation("org.postgresql:postgresql:42.7.3")
-    implementation("com.zaxxer:HikariCP:6.2.1")
-
+    implementation(libs.exposed.core)
+    implementation(libs.exposed.dao)
+    implementation(libs.exposed.jdbc)
+    implementation(libs.exposed.json)
+    implementation(libs.exposed.java.time)
+    implementation(libs.postgresql)
+    implementation(libs.hikari.cp)
 
     // Databasemigrering
-    implementation("org.flywaydb:flyway-core:$flywayVersion")
-    implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
+    implementation(libs.flyway.core)
+    implementation(libs.flyway.database.postgresql)
 
     // Unleash
-    implementation("io.getunleash:unleash-client-java:10.0.2")
+    implementation(libs.unleash)
 
     // Domenemodell
-    implementation("no.nav.pensjon.brevbaker:brevbaker-api-model-common:$commonVersion")
+    implementation(libs.brevbaker.common)
 
-    // Logging
-    implementation("ch.qos.logback:logback-classic:$logbackVersion")
-    implementation("net.logstash.logback:logstash-logback-encoder:$logstashVersion")
+    implementation(libs.bundles.logging)
 
     // Necessary for java.time.LocalDate
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version")
+    implementation(libs.jackson.datatype.jsr310)
 
     // Hashing
-    implementation("commons-codec:commons-codec:1.18.0")
+    implementation(libs.commons.codec)
 
     // Metrics
-    implementation("io.ktor:ktor-server-metrics:$ktorVersion")
-    implementation("io.ktor:ktor-server-metrics-micrometer:$ktorVersion")
-    implementation("io.micrometer:micrometer-registry-prometheus:$micrometerVersion")
-    implementation("io.ktor:ktor-server-caching-headers-jvm:$ktorVersion")
+    implementation(libs.bundles.metrics)
+    implementation(libs.ktor.server.caching.headers.jvm)
 
     // Test
-    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("io.ktor:ktor-server-test-host:$ktorVersion")
-    testImplementation("io.ktor:ktor-client-mock:$ktorVersion")
-    testImplementation("io.mockk:mockk:${mockkVersion}")
-    testImplementation("org.assertj:assertj-core:3.27.3")
-    testImplementation("org.testcontainers:postgresql:1.20.5")
+    testImplementation(libs.bundles.junit)
+    testImplementation(libs.ktor.server.test.host)
+    testImplementation(libs.ktor.client.mock)
+    testImplementation(libs.mockk)
+    testImplementation(libs.assertJ)
+    testImplementation(libs.testcontainers.postgresql)
 
 }

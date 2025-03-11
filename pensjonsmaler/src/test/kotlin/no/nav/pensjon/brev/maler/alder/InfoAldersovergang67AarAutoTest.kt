@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.alder
 
+import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
@@ -13,7 +14,7 @@ class InfoAldersovergang67AarAutoTest {
 
     @Test
     fun testPdfNB() {
-        Letter(
+        LetterTestImpl(
             InfoAldersovergang67AarAuto.template,
             Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
             Language.Bokmal,
@@ -23,7 +24,7 @@ class InfoAldersovergang67AarAutoTest {
 
     @Test
     fun testPdfNN() {
-        Letter(
+        LetterTestImpl(
             InfoAldersovergang67AarAuto.template,
             Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
             Language.Nynorsk,
@@ -33,7 +34,7 @@ class InfoAldersovergang67AarAutoTest {
 
     @Test
     fun testPdfEN() {
-        Letter(
+        LetterTestImpl(
             InfoAldersovergang67AarAuto.template,
             Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
             Language.English,
@@ -44,7 +45,7 @@ class InfoAldersovergang67AarAutoTest {
 
     @Test
     fun testHtml() {
-        Letter(
+        LetterTestImpl(
             InfoAldersovergang67AarAuto.template,
             Fixtures.create<InfoAlderspensjonOvergang67AarAutoDto>(),
             Language.Bokmal,

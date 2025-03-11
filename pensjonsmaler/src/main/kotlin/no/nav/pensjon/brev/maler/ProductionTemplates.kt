@@ -55,9 +55,10 @@ object ProductionTemplates : AllTemplates {
         ForhaandsvarselVedTilbakekreving,
         InformasjonOmSaksbehandlingstid,
         InformasjonOmSaksbehandlingstidUT,
-        OrienteringOmSaksbehandlingstid,
-        InnhentingOpplysningerFraBruker,
         InnhentingDokumentasjonFraBruker,
+        InnhentingInformasjonFraBruker,
+        InnhentingOpplysningerFraBruker,
+        OrienteringOmSaksbehandlingstid,
         VarselOmMuligAvslag,
     )
 

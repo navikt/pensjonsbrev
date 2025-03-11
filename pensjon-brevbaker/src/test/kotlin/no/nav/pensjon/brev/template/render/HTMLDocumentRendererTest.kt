@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 class HTMLDocumentRendererTest {
     @Test
     fun renderDesignReference() {
-        Letter(
+        LetterImpl(
             LetterExample.template,
             createLetterExampleDto(),
             Language.Bokmal,

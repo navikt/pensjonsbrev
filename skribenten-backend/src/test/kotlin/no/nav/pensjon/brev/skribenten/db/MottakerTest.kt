@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterAll
@@ -96,9 +96,9 @@ class MottakerTest {
             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             redigertBrev = Edit.Letter(
                 "a",
-                LetterMarkup.Sakspart("b", "c", "d", "e"),
+                LetterMarkupImpl.SakspartImpl("b", "c", "d", "e"),
                 emptyList(),
-                LetterMarkup.Signatur("f", "g", "h", "i", "j"),
+                LetterMarkupImpl.SignaturImpl("f", "g", "h", "i", "j"),
                 emptySet(),
             )
             sistRedigertAvNavIdent = principal

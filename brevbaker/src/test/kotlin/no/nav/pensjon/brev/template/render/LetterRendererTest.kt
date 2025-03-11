@@ -7,9 +7,8 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.LangBokmal
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterRenderer
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.OutlineElement
@@ -32,7 +31,7 @@ import org.junit.jupiter.api.Test
 
 class LetterRendererTest {
 
-    val letter = Letter(
+    val letter = LetterImpl(
         LetterExample.template,
         createLetterExampleDto(),
         Bokmal,

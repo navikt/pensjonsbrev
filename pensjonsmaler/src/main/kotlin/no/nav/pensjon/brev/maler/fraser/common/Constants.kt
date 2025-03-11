@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
+import no.nav.pensjon.brev.model.TelefonnummerImpl
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 
 object Constants {
     const val NAV_URL = "nav.no"
@@ -30,7 +30,7 @@ object Constants {
     const val KONTAKT_ENG_URL = "$NAV_URL/contact"
     const val NAV_KONTAKTSENTER_AAPNINGSTID = "09:00-15:00"
     const val NAV_KONTAKTSENTER_TELEFON = "55 55 33 33"
-    val navKontaktsenterPensjon = Telefonnummer("55553334")
+    val navKontaktsenterPensjon = TelefonnummerImpl("55553334")
     val NAV_KONTAKTSENTER_TELEFON_PENSJON = navKontaktsenterPensjon.format()
     const val OMSORGSOPPTJENING_URL = "$NAV_URL/omsorgsopptjening"
     const val PENSJON_ENDRING_URL = "$NAV_URL/pensjon-endring"

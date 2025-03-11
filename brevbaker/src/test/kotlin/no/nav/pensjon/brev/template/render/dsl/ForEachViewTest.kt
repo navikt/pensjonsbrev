@@ -39,7 +39,7 @@ class ForEachViewTest {
         }
 
         assertThat(
-            Letter2Markup.render(Letter(actual, Unit, Language.Bokmal, felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(actual, Unit, Language.Bokmal, felles)).letterMarkup,
             hasBlocks {
                 paragraph {
                     listen.forEach { variable(it) }
@@ -67,7 +67,7 @@ class ForEachViewTest {
         }
 
         assertThat(
-            Letter2Markup.render(Letter(actual, Unit, Language.Bokmal, felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(actual, Unit, Language.Bokmal, felles)).letterMarkup,
             hasBlocks {
                 paragraph {
                     listen.forEach { nestedList ->
@@ -102,7 +102,7 @@ class ForEachViewTest {
             }
         }
 
-        val render = Letter2Markup.render(Letter(actual, Argument("Tja:"), Language.Bokmal, felles))
+        val render = Letter2Markup.render(LetterImpl(actual, Argument("Tja:"), Language.Bokmal, felles))
         assertThat(
             render.letterMarkup,
             hasBlocks {
@@ -132,7 +132,7 @@ class ForEachViewTest {
         val expected = "1,1;1,2;2,1;2,2;"
 
         assertThat(
-            Letter2Markup.render(Letter(template, Unit, Language.Bokmal, felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(template, Unit, Language.Bokmal, felles)).letterMarkup,
             hasBlocks {
                 paragraph {
                     list.forEach { outer ->
