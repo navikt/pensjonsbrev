@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagFoer67AarAP2016Dto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagFoer67AarDto
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -14,15 +14,15 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
 @TemplateModelHelpers
-object AvslagFoer67AarAP2016 : RedigerbarTemplate<AvslagFoer67AarAP2016Dto> {
-    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_FOER_67_AAR_AP2016
+object AvslagFoer67Aar : RedigerbarTemplate<AvslagFoer67AarDto> {
+    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_FOER_67_AAR
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = AvslagFoer67AarAP2016Dto::class,
+        letterDataType = AvslagFoer67AarDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag på søknad om uttak av alderspensjon før 67 år (AP2016)",
