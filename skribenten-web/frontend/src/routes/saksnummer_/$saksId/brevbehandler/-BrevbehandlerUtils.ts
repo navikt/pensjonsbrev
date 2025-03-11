@@ -23,6 +23,9 @@ export const brevStatusTypeToTextAndTagVariant = (
         text: `Redigeres av ${forkortetSaksbehandlernavn(status.redigeresAv, gjeldendeBruker)}`,
       };
     }
+    case "Attestering": {
+      return { variant: "alt2" as const, text: "Klar til Attestering" };
+    }
     case "Arkivert": {
       return { variant: "error" as const, text: "Kunne ikke sende brev" };
     }
@@ -33,7 +36,7 @@ export const forkortetSaksbehandlernavn = (navAnsatt: NavAnsatt, gjeldendeBruker
   return navAnsatt.id === gjeldendeBruker?.navident ? "deg" : (navAnsatt.navn ?? navAnsatt.id);
 };
 
-const sorteringsRekkefølge = { Arkivert: 1, Kladd: 2, UnderRedigering: 3, Klar: 4 };
+const sorteringsRekkefølge = { Arkivert: 1, Kladd: 2, UnderRedigering: 3, Klar: 4, Attestering: 5 };
 
 export const sortBrevmeny = (brev: BrevInfo[]): BrevInfo[] =>
   brev.toSorted((a, b) => {
