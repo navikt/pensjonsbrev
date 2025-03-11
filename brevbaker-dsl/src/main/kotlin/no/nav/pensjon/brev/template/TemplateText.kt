@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 
 @LetterTemplateMarker
-class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Text<Lang>, TextOnlyScope<Lang, LetterData>> {
+class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> internal constructor(): TextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Text<Lang>, TextOnlyScope<Lang, LetterData>> {
     private val children = mutableListOf<TextElement<Lang>>()
     override val elements: List<TextElement<Lang>>
         get() = children
@@ -30,7 +30,7 @@ class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, 
 }
 
 @LetterTemplateMarker
-class PlainTextOnlyScope<Lang : LanguageSupport, LetterData : Any> : PlainTextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Text<Lang>, PlainTextOnlyScope<Lang, LetterData>> {
+class PlainTextOnlyScope<Lang : LanguageSupport, LetterData : Any> internal constructor(): PlainTextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Text<Lang>, PlainTextOnlyScope<Lang, LetterData>> {
     private val children = mutableListOf<TextElement<Lang>>()
     override val elements: List<TextElement<Lang>>
         get() = children
@@ -47,7 +47,7 @@ class PlainTextOnlyScope<Lang : LanguageSupport, LetterData : Any> : PlainTextSc
 
 }
 
-interface PlainTextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
+sealed interface PlainTextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
     fun addTextContent(e: TextElement<Lang>)
     fun eval(expression: StringExpression) {
         addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.Expression(expression, FontType.PLAIN)))

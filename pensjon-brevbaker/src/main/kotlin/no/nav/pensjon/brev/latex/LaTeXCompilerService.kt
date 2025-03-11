@@ -23,7 +23,6 @@ import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.io.IOException
-import no.nav.brev.brevbaker.HttpStatusCodes
 import no.nav.brev.brevbaker.LatexTimeoutException
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
@@ -47,7 +46,7 @@ class LaTeXCompilerService(
             jackson()
         }
         HttpResponseValidator {
-            validateResponse { validateResponse(HttpStatusCodes(it.status.value, it.status.description), { msg -> logger.warn(msg) }) { it.body<String>() } }
+            validateResponse { validateResponse(it.status.value, { msg -> logger.warn(msg) }) { it.body<String>() } }
         }
         install(ContentEncoding) {
             gzip()

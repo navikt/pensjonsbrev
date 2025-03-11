@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.template.*
 
 
 @LetterTemplateMarker
-class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> : OutlineScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent<Lang>, OutlineOnlyScope<Lang, LetterData>> {
+class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> internal constructor(): OutlineScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent<Lang>, OutlineOnlyScope<Lang, LetterData>> {
     private val children = mutableListOf<OutlineElement<Lang>>()
     override val elements: List<OutlineElement<Lang>>
         get() = children
@@ -25,7 +25,7 @@ class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> : OutlineScope<
 
 }
 
-interface OutlineScope<Lang : LanguageSupport, LetterData : Any> {
+sealed interface OutlineScope<Lang : LanguageSupport, LetterData : Any> {
     fun addOutlineContent(e: OutlineElement<Lang>)
 
     fun title1(create: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {

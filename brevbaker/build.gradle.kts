@@ -27,6 +27,8 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(libs.hamkrest)
 
+    testImplementation(testFixtures(project(":brevbaker-dsl")))
+
     testFixturesImplementation(libs.ktor.serialization.jackson)
     testFixturesImplementation(libs.ktor.client.cio)
     testFixturesImplementation(libs.ktor.client.content.negotiation)
@@ -61,11 +63,16 @@ kotlin {
 tasks {
     kotlin {
         jvmToolchain(apiModelJavaTarget.toInt())
+        compileKotlin {
+            compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")
+        }
         compileTestKotlin {
             compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
+            compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")
         }
         compileTestFixturesKotlin {
             compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
+            compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")
         }
     }
     compileJava {

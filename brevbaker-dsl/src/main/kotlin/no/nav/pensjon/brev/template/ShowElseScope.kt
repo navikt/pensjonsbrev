@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 
-class ShowElseScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>, Scope : ControlStructureScope<Lang, LetterData, C, Scope>>(
+class ShowElseScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>, Scope : ControlStructureScope<Lang, LetterData, C, Scope>> internal constructor(
     private val scopeFactory: () -> Scope,
 ) {
     val scope: Scope = scopeFactory()

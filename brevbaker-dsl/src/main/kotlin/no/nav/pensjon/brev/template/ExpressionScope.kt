@@ -4,7 +4,7 @@ import no.nav.pensjon.brevbaker.api.model.Felles
 
 open class ExpressionScope<Argument : Any>(val argument: Argument, val felles: Felles, val language: Language) {
 
-    class WithAssignment<Argument: Any, Var>(
+    class WithAssignment<Argument: Any, Var> internal constructor(
         val value: Var,
         val expr: Expression.FromScope.Assigned<Var>,
         private val parent: ExpressionScope<Argument>
