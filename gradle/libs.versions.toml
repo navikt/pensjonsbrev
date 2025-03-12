@@ -18,6 +18,7 @@ logbackVersion = "1.5.17"
 logstashVersion = "8.0"
 micrometerVersion = "1.14.4"
 mockkVersion = "1.13.17"
+pdfboxVersion = "2.0.33"
 postgresqlVersion = "42.7.3"
 testcontainersPostgresqlVersion = "1.20.5"
 unleashVersion = "10.0.2"
@@ -37,6 +38,7 @@ logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "lo
 logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstashVersion" }
 jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jacksonJsr310Version" }
 micrometer-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "micrometerVersion" }
+pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfboxVersion" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresqlVersion" }
 unleash = { module = "io.getunleash:unleash-client-java", version.ref = "unleashVersion" }
 
