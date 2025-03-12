@@ -23,6 +23,7 @@ import io.micrometer.core.instrument.Tag
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import java.nio.file.Path
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -109,17 +110,13 @@ fun Application.module() {
     routing {
 
         post("/produserBrev") {
+            val pdfRequest = call.receive<PDFRequest>()
             val result = activityCounter.count {
-                val pdfRequest = call.receive<PDFRequest>()
-                val pdf = pdfRequest
+                pdfRequest
                     .let { LatexDocumentRenderer.render(it) }
                     .let { laTeXService.producePDF(it.files.associate { it.fileName to it.content }) }
-                if (pdfRequest.attachments.isNotEmpty()) {
-                    return@count pdf // TODO hekt på pdfbox her
-                }
-                pdf
             }
-            handleResult(result, call.application.environment.log)
+            handleResult(result, pdfRequest.pdfVedlegg, call.application.environment.log)
         }
 
         get("/isAlive") {
@@ -145,10 +142,16 @@ fun Application.module() {
 
 private suspend fun RoutingContext.handleResult(
     result: PDFCompilationResponse,
+    pdfvedlegg: List<PDFVedlegg>,
     logger: Logger,
 ) {
     when (result) {
-        is PDFCompilationResponse.Bytes -> call.respond(result)
+        is PDFCompilationResponse.Bytes -> {
+            if (pdfvedlegg.isNotEmpty()) {
+                call.respond(PDFVedleggAppender.leggPaaVedlegg(result, pdfvedlegg))
+            }
+            call.respond(result)
+        }
         is PDFCompilationResponse.Failure.Client -> {
             logger.info("Client error: ${result.reason}")
             if (result.output?.isNotBlank() == true) {
