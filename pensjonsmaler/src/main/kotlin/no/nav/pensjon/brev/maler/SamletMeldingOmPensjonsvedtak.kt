@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.holderSelector
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.sakstype
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -31,14 +30,25 @@ object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsv
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         ),
-        pdfVedlegg = listOf(PDFVedlegg(PDFVedleggType.P1, mapOf(
-            "fornavn" to "Marte",
-            "etternavn" to "Kirkerud"
-        )))
+        pdfVedlegg = listOf(
+            PDFVedlegg(
+                PDFVedleggType.P1, mapOf(
+                    "holder" to mapOf(
+                        "fornavn" to "Peder",
+                        "etternavn" to "Ås",
+                        "etternavn_foedsel" to "Holm",
+                        "gateadresse" to "Fyrstikkalleen 1",
+                        "landkode" to "DK",
+                        "postkode" to "1000",
+                        "by" to "Helsfyr"
+                    )
+                )
+            )
+        )
     ) {
         title {
             text(
-            Bokmal to "Samlet melding om pensjonsvedtak",
+                Bokmal to "Samlet melding om pensjonsvedtak",
                 English to "Summary of Pension Decisions"
             )
         }
@@ -65,7 +75,7 @@ object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsv
                         English to "old age pension"
                     )
                 }.orShowIf(sakstype.equalTo(Sakstype.GJENLEV)) {
-                    text (
+                    text(
                         Bokmal to "etterlattepensjon",
                         English to "survivors pension"
                     )
@@ -105,7 +115,7 @@ object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsv
                         English to ""
                     )
                 }.orShowIf(sakstype.equalTo(Sakstype.GJENLEV)) {
-                    text (
+                    text(
                         Bokmal to "etterlattepensjon",
                         English to ""
                     )

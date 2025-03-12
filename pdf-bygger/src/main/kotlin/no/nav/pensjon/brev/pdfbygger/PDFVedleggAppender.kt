@@ -28,17 +28,18 @@ internal object PDFVedleggAppender {
 
         val pdf1 = PDDocument.load(javaClass.getResourceAsStream("/P1-side1.pdf"))
 
-        val values = mapOf(
-            "fornavn" to data["fornavn"].toString(),
-            "etternavn" to data["etternavn"].toString(),
-            "etternavn_foedsel" to "Holm",
-            "gateadresse" to "Lillevik Torg",
-            "landkode" to "NO",
-            "postkode" to "4321",
-            "by" to "Lillevik"
+        val holderData = data["holder"] as Map<*, *>
+        val holder = mapOf(
+            "fornavn" to holderData["fornavn"].toString(),
+            "etternavn" to holderData["etternavn"].toString(),
+            "etternavn_foedsel" to holderData["etternavn_foedselsdato"]?.toString(),
+            "gateadresse" to holderData["gateadresse"].toString(),
+            "landkode" to holderData["landkode"].toString(),
+            "postkode" to holderData["postkode"].toString(),
+            "by" to holderData["by"].toString()
         )
         pdf1.documentCatalog.acroForm.setValues(
-            values
+            holder
         )
         val innvilgedePensjoner = (0..25 step 5).map { it.toString() }
         val side2 = innvilgedePensjoner.map { i ->
@@ -63,7 +64,7 @@ internal object PDFVedleggAppender {
 
     }
 
-    private fun PDAcroForm.setValues(values: Map<String, String>) = values.forEach { entry ->
-        fields.first { it.fullyQualifiedName == entry.key }.setValue(entry.value)
+    private fun PDAcroForm.setValues(values: Map<String, String?>) = values.forEach { entry ->
+        fields.firstOrNull() { it.fullyQualifiedName == entry.key }?.setValue(entry.value)
     }
 }
