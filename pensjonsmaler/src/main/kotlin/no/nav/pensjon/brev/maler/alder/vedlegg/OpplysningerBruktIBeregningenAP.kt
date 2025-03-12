@@ -139,10 +139,14 @@ val opplysningerBruktIBeregningenAP =
             paragraph {
                 textExpr(
                     Bokmal to "Pensjonsopptjening og trygdetid tas med i beregningen av alderspensjon fra og med året etter at skatteoppgjøret er klart. ".expr() +
-                                "Dette gjelder selv om skatteoppgjøret ditt er klart tidligere. " +
-                                "I beregningen er det derfor brukt pensjonsopptjening til og med " + sisteAar.format() + ".",
-                    Nynorsk to "".expr(),
-                    English to "".expr()
+                            "Dette gjelder selv om skatteoppgjøret ditt er klart tidligere. " +
+                            "I beregningen er det derfor brukt pensjonsopptjening til og med " + sisteAar.format() + ".",
+                    Nynorsk to "Pensjonsopptening og trygdetid blir tatt med i berekninga av alderspensjon frå og med året etter at skatteoppgjeret er klart. ".expr() +
+                            "Dette gjeld sjølv om skatteoppgjeret ditt er klart tidlegare. " +
+                            "I berekninga er det derfor brukt pensjonsopptening til og med " + sisteAar.format() + ".",
+                    English to "Pension accrual and periods of National Insurance Scheme coverage are included in the calculation of retirement pension from the year after the tax settlement is ready. ".expr() +
+                            "This applies even if your tax settlement is ready earlier. " +
+                            "Therefore, the calculation considers pension accrual up to and including " + sisteAar.format() + "."
                 )
             }
         }

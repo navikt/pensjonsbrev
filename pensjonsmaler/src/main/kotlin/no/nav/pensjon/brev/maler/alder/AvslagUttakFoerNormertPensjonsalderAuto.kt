@@ -40,7 +40,7 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Nav har avslått søknaden din om alderspensjon før normert pensjonsalder",
-            isSensitiv = false,
+            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = VEDTAKSBREV,
         )
