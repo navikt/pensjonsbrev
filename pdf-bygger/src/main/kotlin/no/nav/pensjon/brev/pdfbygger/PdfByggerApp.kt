@@ -110,9 +110,14 @@ fun Application.module() {
 
         post("/produserBrev") {
             val result = activityCounter.count {
-                call.receive<PDFRequest>()
+                val pdfRequest = call.receive<PDFRequest>()
+                val pdf = pdfRequest
                     .let { LatexDocumentRenderer.render(it) }
                     .let { laTeXService.producePDF(it.files.associate { it.fileName to it.content }) }
+                if (pdfRequest.attachments.isNotEmpty()) {
+                    return@count pdf // TODO hekt på pdfbox her
+                }
+                pdf
             }
             handleResult(result, call.application.environment.log)
         }

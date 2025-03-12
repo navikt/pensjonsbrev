@@ -19,7 +19,8 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
                     attachments = it.attachments,
                     language = letter.language.toCode(),
                     felles = letter.felles,
-                    brevtype = letter.template.letterMetadata.brevtype
+                    brevtype = letter.template.letterMetadata.brevtype,
+                    pdfVedlegg = letter.template.pdfAttachments
                 )
             )
         }.let { pdf ->

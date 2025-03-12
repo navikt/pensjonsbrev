@@ -4,6 +4,7 @@ import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 
 @Suppress("unused")
 data class PDFRequest(
@@ -12,4 +13,5 @@ data class PDFRequest(
     val language: LanguageCode,
     val felles: Felles,
     val brevtype: LetterMetadata.Brevtype,
+    val pdfVedlegg: List<PDFVedlegg> = emptyList()
 )
