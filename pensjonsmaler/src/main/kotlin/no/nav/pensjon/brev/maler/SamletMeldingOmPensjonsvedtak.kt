@@ -32,52 +32,52 @@ object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsv
         title {
             text(
             Bokmal to "Samlet melding om pensjonsvedtak",
-                English to "TODO"
+                English to "Summary of Pension Decisions"
             )
         }
         outline {
             title1 {
                 text(
                     Bokmal to "P1 – Samlet melding om pensjonsvedtak",
-                    English to "TODO"
+                    English to "P1 – Summary of Pension Decisions"
                 )
             }
             paragraph {
                 text(
                     Bokmal to "I forbindelse med din søknad om ",
-                    English to "TODO"
+                    English to "Your application for "
                 )
                 showIf(sakstype.equalTo(Sakstype.UFOREP)) {
                     text(
                         Bokmal to "uføretrygd",
-                        English to "TODO"
+                        English to "invalidity pension"
                     )
                 }.orShowIf(sakstype.equalTo(Sakstype.ALDER)) {
                     text(
                         Bokmal to "alderspensjon",
-                        English to "TODO"
+                        English to "old age pension"
                     )
                 }.orShowIf(sakstype.equalTo(Sakstype.GJENLEV)) {
                     text (
                         Bokmal to "etterlattepensjon",
-                        English to "TODO"
+                        English to "survivors pension"
                     )
                 }
                 text(
                     Bokmal to " fra EUs og EØS medlemsland legger vi ved",
-                    English to "TODO"
+                    English to " from EU/EEA member countries, we enclose:"
                 )
                 list {
                     item {
                         text(
                             Bokmal to "P1 – Samlet melding om pensjonsvedtak",
-                            English to "TODO"
+                            English to "P1 – Summary of Pension Decisions"
                         )
                     }
                     item {
                         text(
                             Bokmal to "Informasjon om skjemaet P1 og hvordan det brukes",
-                            English to "TODO"
+                            English to "Information about the P1 form and its use"
                         )
                     }
                 }
@@ -85,27 +85,27 @@ object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsv
             paragraph {
                 text(
                     Bokmal to "P1 gir deg oversikt over pensjonsvedtak fattet av trygdemyndigheter som har behandlet din søknad om ",
-                    English to "TODO"
+                    English to "The P1 form provides an overview of the decisions taken in your case by the various institutions in the EU/EEA member countries."
                 )
                 showIf(sakstype.equalTo(Sakstype.UFOREP)) {
                     text(
                         Bokmal to "uføretrygd",
-                        English to "TODO"
+                        English to ""
                     )
                 }.orShowIf(sakstype.equalTo(Sakstype.ALDER)) {
                     text(
                         Bokmal to "alderspensjon",
-                        English to "TODO"
+                        English to ""
                     )
                 }.orShowIf(sakstype.equalTo(Sakstype.GJENLEV)) {
                     text (
                         Bokmal to "etterlattepensjon",
-                        English to "TODO"
+                        English to ""
                     )
                 }
                 text(
                     Bokmal to ".",
-                    English to "TODO"
+                    English to ""
                 )
             }
         }
