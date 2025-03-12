@@ -129,6 +129,7 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
         })
     }
 
+    val pdfVedlegg = template.pdfAttachments
     Letter2Markup.render(this)
         .let {
             runBlocking {
@@ -138,7 +139,8 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
                         it.attachments,
                         language.toCode(),
                         felles,
-                        template.letterMetadata.brevtype
+                        template.letterMetadata.brevtype,
+                        pdfVedlegg = pdfVedlegg
                     )
                 )
             }.bytes

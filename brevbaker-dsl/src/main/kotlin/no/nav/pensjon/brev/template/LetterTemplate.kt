@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
 import kotlin.reflect.KClass
@@ -14,6 +15,7 @@ data class LetterTemplate<Lang : LanguageSupport, out LetterData : Any>(
     val language: Lang,
     val outline: List<OutlineElement<Lang>>,
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
+    val pdfAttachments: List<PDFVedlegg> = emptyList(),
     val letterMetadata: LetterMetadata,
 ) {
     init {
