@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 
 @TemplateModelHelpers
 object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsvedtakDto> {
@@ -27,7 +28,8 @@ object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsv
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
-        )
+        ),
+        pdfVedlegg = listOf(PDFVedlegg.P1)
     ) {
         title {
             text(

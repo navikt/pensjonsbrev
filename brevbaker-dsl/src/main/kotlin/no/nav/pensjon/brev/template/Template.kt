@@ -12,10 +12,11 @@ fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
     letterDataType: KClass<LetterData>,
     languages: Lang,
     letterMetadata: LetterMetadata,
+    pdfVedlegg: List<PDFVedlegg> = emptyList(),
     init: TemplateRootScope<Lang, LetterData>.() -> Unit
 ): LetterTemplate<Lang, LetterData> =
     with(TemplateRootScope<Lang, LetterData>().apply(init)) {
-        return LetterTemplate(name, title, letterDataType, languages, outline, attachments, letterMetadata)
+        return LetterTemplate(name, title, letterDataType, languages, outline, attachments, pdfVedlegg, letterMetadata)
     }
 
 @LetterTemplateMarker
