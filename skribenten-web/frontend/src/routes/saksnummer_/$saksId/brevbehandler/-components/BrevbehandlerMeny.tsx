@@ -29,7 +29,7 @@ import { useUserInfo } from "~/hooks/useUserInfo";
 import type { BrevStatus, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
-import { erBrevArkivert, erBrevKlar, erBrevTilAttestering, skalBrevAttesteres } from "~/utils/brevUtils";
+import { erBrevArkivert, erBrevLaastForRedigering, skalBrevAttesteres } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 import { humanizeName } from "~/utils/stringUtils";
 
@@ -121,11 +121,7 @@ const BrevItem = (properties: {
       <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>
         <Accordion.Header>
           <VStack gap="2">
-            <Brevtilstand
-              attesteres={erBrevTilAttestering(properties.brev)}
-              gjeldendeBruker={gjeldendeBruker}
-              status={properties.brev.status}
-            />
+            <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
             <Label size="small">{properties.brev.brevtittel}</Label>
           </VStack>
         </Accordion.Header>
@@ -225,7 +221,7 @@ const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
     },
   });
 
-  const erLåst = useMemo(() => erBrevKlar(props.brev), [props.brev]);
+  const erLåst = useMemo(() => erBrevLaastForRedigering(props.brev), [props.brev]);
 
   return (
     <div>
@@ -338,16 +334,8 @@ const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
   );
 };
 
-const Brevtilstand = ({
-  status,
-  attesteres,
-  gjeldendeBruker,
-}: {
-  status: BrevStatus;
-  attesteres: boolean;
-  gjeldendeBruker?: UserInfo;
-}) => {
-  const { variant, text } = brevStatusTypeToTextAndTagVariant(status, attesteres, gjeldendeBruker);
+const Brevtilstand = ({ status, gjeldendeBruker }: { status: BrevStatus; gjeldendeBruker?: UserInfo }) => {
+  const { variant, text } = brevStatusTypeToTextAndTagVariant(status, gjeldendeBruker);
 
   return (
     <Tag

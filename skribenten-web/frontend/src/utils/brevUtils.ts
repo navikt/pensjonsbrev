@@ -9,5 +9,7 @@ export const erBrevKladdEllerUnderRedigering = (brev: BrevInfo) => erBrevKladd(b
 export const erBrevArkivert = (brev: BrevInfo): boolean => brev.status.type === "Arkivert";
 
 export const skalBrevAttesteres = (b: BrevInfo) => b.vedtaksId !== null;
-export const erBrevTilAttestering = (b: BrevInfo) => b.vedtaksId !== null;
 export const erBrevKlarTilAttestering = (brev: BrevInfo) => brev.status.type === "Attestering";
+
+export const erBrevLaastForRedigering = (brev: BrevInfo) =>
+  brev.status.type === "Attestering" || brev.status.type === "Klar";
