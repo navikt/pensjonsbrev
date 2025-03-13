@@ -8,7 +8,7 @@ internal object P1VedleggAppender {
 
     internal fun leggPaaP1(data: Map<String, Any>): PDDocument {
         val unwrapped = data["data"] as Map<*, *>
-        val pdf1 = settOppSide1(unwrapped)
+
         val innvilgedePensjoner = unwrapped["innvilgedePensjoner"] as List<*>
         val side2 = (0..innvilgedePensjoner.size step 5).map {
             PDDocument.load(javaClass.getResourceAsStream("/P1-side2.pdf"))
@@ -18,17 +18,15 @@ internal object P1VedleggAppender {
         val side3 = (0..avslaattePensjoner.size step 5).map {
             PDDocument.load(javaClass.getResourceAsStream("/P1-side3.pdf"))
         }
-        val pdf4 = PDDocument.load(javaClass.getResourceAsStream("/P1-side4.pdf"))
 
         val target = PDDocument()
         val merger = PDFMergerUtility()
-        merger.appendDocument(target, pdf1)
+        merger.appendDocument(target, settOppSide1(unwrapped))
         side2.forEach { merger.appendDocument(target, it) }
         side3.forEach { merger.appendDocument(target, it) }
-        merger.appendDocument(target, pdf4)
+        merger.appendDocument(target, PDDocument.load(javaClass.getResourceAsStream("/P1-side4.pdf")))
 
         return target
-
     }
 
     private fun settOppSide1(unwrapped: Map<*, *>): PDDocument {
