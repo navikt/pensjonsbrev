@@ -7,6 +7,7 @@ data class SamletMeldingOmPensjonsvedtakDto(
     val insuredPerson: P1Person,
     val sakstype: Sakstype,
     val innvilgedePensjoner: List<InnvilgetPensjon>,
+    val avslaattePensjoner: List<AvslaattPensjon>,
 ) : BrevbakerBrevdata
 
 data class P1Person(
@@ -28,6 +29,10 @@ data class InnvilgetPensjon(
     val reduksjonsgrunnlag: Reduksjonsgrunnlag?,
     val vurderingsperiode: String,
     val adresseNyVurdering: Adresse,
+)
+
+data class AvslaattPensjon(
+    val s: String
 )
 
 data class Landkode(val landkode: String) {

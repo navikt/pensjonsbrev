@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextScope
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggType
 
 fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
     title: TextElement<Lang>,
@@ -31,3 +32,8 @@ data class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any>(
     val outline: List<OutlineElement<Lang>>,
     val includeSakspart: Boolean = false,
 ): HasModel<AttachmentData>, StableHash by StableHash.of(title, StableHash.of(outline), StableHash.of(includeSakspart))
+
+data class PDFTemplate<AttachmentData : Any>(
+    val type: PDFVedleggType,
+    val data: Expression<AttachmentData>
+) : StableHash by StableHash.of(StableHash.of(type), data)

@@ -19,7 +19,7 @@ import org.junit.jupiter.params.provider.MethodSource
 
 class GenererAlleMaleneTest {
 
-    private val filterForPDF = listOf<String>("67")
+    private val filterForPDF = listOf<String>("SAMLET")
 
     @Tag(TestTags.MANUAL_TEST)
     @ParameterizedTest(name = "{1}, {3}")

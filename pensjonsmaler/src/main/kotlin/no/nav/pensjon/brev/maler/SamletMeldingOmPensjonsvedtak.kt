@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggType
 
 @TemplateModelHelpers
@@ -29,21 +28,6 @@ object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsv
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
-        ),
-        pdfVedlegg = listOf(
-            PDFVedlegg(
-                PDFVedleggType.P1, mapOf(
-                    "holder" to mapOf(
-                        "fornavn" to "Peder",
-                        "etternavn" to "Ås",
-                        "etternavn_foedsel" to "Holm",
-                        "gateadresse" to "Fyrstikkalleen 1",
-                        "landkode" to "DK",
-                        "postkode" to "1000",
-                        "by" to "Helsfyr"
-                    )
-                )
-            )
         )
     ) {
         title {
@@ -126,6 +110,6 @@ object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsv
                 )
             }
         }
-
+        includeAttachment(PDFVedleggType.P1, argument)
     }
 }

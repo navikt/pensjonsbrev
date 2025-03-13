@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AttachmentTemplate
@@ -36,8 +37,11 @@ import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.toCode
+import no.nav.pensjon.brev.template.toScope
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggType
 import java.nio.file.Path
 import kotlin.io.path.Path
 
@@ -129,6 +133,7 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
         })
     }
 
+    val letter: Letter<ParameterType> = this
     val pdfVedlegg = template.pdfAttachments
     Letter2Markup.render(this)
         .let {
@@ -140,13 +145,27 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
                         language.toCode(),
                         felles,
                         template.letterMetadata.brevtype,
-                        pdfVedlegg = pdfVedlegg
+                        pdfVedlegg = renderPDFAttachments(letter)
                     )
                 )
             }.bytes
         }
         .also { writeTestPDF(pdfFileName, it, path) }
     return this
+}
+
+private fun renderPDFAttachments(letter: Letter<*>): List<PDFVedlegg> {
+    val pdfAttachments = letter.template.pdfAttachments
+    if (pdfAttachments.isEmpty()) return emptyList()
+
+    val scope = letter.toScope()
+    val mapped: List<Pair<PDFVedleggType, Any>> = pdfAttachments
+        .map { it.type to it.data.eval(scope) }
+    val pdfVedlegg: List<PDFVedlegg> = mapped.map {
+        it.first to
+                mapOf("data" to it.second)
+    }.map { PDFVedlegg(it.first, it.second) }
+    return pdfVedlegg
 }
 
 fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: String = "test_html") {

@@ -15,7 +15,7 @@ data class LetterTemplate<Lang : LanguageSupport, out LetterData : Any>(
     val language: Lang,
     val outline: List<OutlineElement<Lang>>,
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
-    val pdfAttachments: List<PDFVedlegg> = emptyList(),
+    val pdfAttachments: List<PDFTemplate<*>> = emptyList(),
     val letterMetadata: LetterMetadata,
 ) {
     init {

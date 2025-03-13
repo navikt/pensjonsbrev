@@ -27,4 +27,5 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
         ),
         sakstype = Sakstype.ALDER,
         innvilgedePensjoner = listOf(),
+        avslaattePensjoner = listOf(),
     )
