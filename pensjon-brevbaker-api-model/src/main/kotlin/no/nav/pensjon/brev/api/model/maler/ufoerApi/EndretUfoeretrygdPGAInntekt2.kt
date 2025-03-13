@@ -21,6 +21,7 @@ data class EndretUfoeretrygdPGAInntektDto2(
     val totalNetto: Int,
     val datoForNormertPensjonsalder: LocalDate,
     val sokerMottarApIlaAret: Boolean,
+    val settingAvInntektForNesteAar: Boolean,
 
 ) : BrevbakerBrevdata
 
