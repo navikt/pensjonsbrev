@@ -6,5 +6,5 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjo
 fun createAvslagUttakFoerNormertPensjonsalderDto() =
     AvslagUttakFoerNormertPensjonsalderDto(
         saksbehandlerValg = EmptyBrevdata,
-        pesysData = AvslagUttakFoerNormertPensjonsalderDto.PesysData(createAvslagUttakFoerNormertPensjonsalderAutoDto())
+        pesysData = createAvslagUttakFoerNormertPensjonsalderAutoDto()
     )
