@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.pdfbygger.vedlegg
 
-import no.nav.pensjon.brev.pdfbygger.setValues
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
 
