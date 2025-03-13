@@ -32,7 +32,7 @@ internal object LatexDocumentRenderer {
     )
 
     @OptIn(InterneDataklasser::class)
-    private fun List<PDFVedlegg>.somAttachment() = this.map {
+    private fun List<PDFVedlegg>.somAttachment(): List<LetterMarkup.Attachment> = this.map {
         LetterMarkupImpl.AttachmentImpl(
             title = listOf(
                 LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
@@ -45,7 +45,6 @@ internal object LatexDocumentRenderer {
         )
     }
 
-    @OptIn(InterneDataklasser::class)
     private fun render(
         letter: LetterMarkup,
         attachments: List<LetterMarkup.Attachment>,
