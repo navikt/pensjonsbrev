@@ -89,7 +89,7 @@ const BrevmalBrevbaker = (props: {
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   const formRef = useRef<HTMLFormElement>(null);
   const [åpnerNyttBrevOgHarKladd, setÅpnerNyttBrevOgHarKladd] = useState<boolean>(false);
-  const { vedtaksId } = Route.useSearch();
+  const { vedtaksId, enhetsId } = Route.useSearch();
 
   const alleSaksbrevQuery = useQuery({
     queryKey: hentAlleBrevForSak.queryKey(props.saksId.toString()),
@@ -128,7 +128,7 @@ const BrevmalBrevbaker = (props: {
 
   const form = useForm<BrevbakerFormData>({
     defaultValues: {
-      enhetsId: props.defaultValues.enhetsId,
+      enhetsId: enhetsId || props.defaultValues.enhetsId || "",
       spraak: props.defaultValues.spraak,
       mottaker: null,
       saksbehandlerValg: {},
