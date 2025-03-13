@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AttachmentTemplate
@@ -131,7 +132,7 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
         })
     }
 
-    val letter: Letter<ParameterType> = this
+    val letter = this
     Letter2Markup.render(this)
         .let {
             runBlocking {
@@ -150,11 +151,6 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
         .also { writeTestPDF(pdfFileName, it, path) }
     return this
 }
-
-private fun renderPDFAttachments(letter: Letter<*>) =
-    letter.template.pdfAttachments
-        .map { it.type to it.data.eval(letter.toScope()) }
-        .map { PDFVedlegg(it.first, mapOf("data" to it.second)) }
 
 fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: String = "test_html") {
     val dir = Path("build/$buildSubDir/$letterName")

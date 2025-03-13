@@ -32,11 +32,6 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
             )
         }
 
-    private fun renderPDFAttachments(letter: Letter<BrevbakerBrevdata>) =
-        letter.template.pdfAttachments
-            .map { it.type to it.data.eval(letter.toScope()) }
-            .map { PDFVedlegg(it.first, mapOf("data" to it.second)) }
-
     private fun renderCompleteMarkup(
         letter: Letter<BrevbakerBrevdata>,
         redigertBrev: LetterMarkup? = null,
@@ -47,3 +42,8 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
         )
     }
 }
+
+internal fun renderPDFAttachments(letter: Letter<*>) =
+    letter.template.pdfAttachments
+        .map { it.type to it.data.eval(letter.toScope()) }
+        .map { PDFVedlegg(it.first, mapOf("data" to it.second)) }
