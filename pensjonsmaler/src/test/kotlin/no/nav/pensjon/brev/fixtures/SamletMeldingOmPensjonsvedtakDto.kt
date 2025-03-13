@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.maler.Landkode
 import no.nav.pensjon.brev.api.model.maler.P1Person
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
 
@@ -14,7 +13,7 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             adresselinje = "Lillevik Torg",
             poststed = "Lillevik",
             postnummer = "4321",
-            landkode = Landkode(landkode = "NO"),
+            landkode = "NO",
         ),
         insuredPerson = P1Person(
             fornavn = "Lars",
@@ -23,7 +22,7 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             adresselinje = "Storgata 1",
             poststed = "Lillevik vestre",
             postnummer = "4320",
-            landkode = Landkode(landkode = "NO"),
+            landkode = "NO",
         ),
         sakstype = Sakstype.ALDER,
         innvilgedePensjoner = listOf(),

@@ -17,8 +17,12 @@ data class P1Person(
     val adresselinje: String,
     val poststed: String,
     val postnummer: String,
-    val landkode: Landkode,
-)
+    val landkode: String,
+) {
+    init {
+        require(landkode.length == 2)
+    }
+}
 
 data class InnvilgetPensjon(
     val institusjon: String,
@@ -35,12 +39,6 @@ data class AvslaattPensjon(
     val s: String
 )
 
-data class Landkode(val landkode: String) {
-    init {
-        require(landkode.length == 2)
-    }
-}
-
 enum class GrunnlagInnvilget(val nummer: Int) {
     NationalLegislation(4),
     ProRata(5),
@@ -56,7 +54,11 @@ data class Adresse(
     val adresselinje1: String,
     val adresselinje2: String?,
     val adresselinje3: String?,
-    val landkode: Landkode,
+    val landkode: String,
     val postnummer: String,
     val poststed: String,
-)
+) {
+    init {
+        require(landkode.length == 2)
+    }
+}
