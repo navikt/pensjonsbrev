@@ -10,12 +10,12 @@ internal object P1VedleggAppender {
         val unwrapped = data["data"] as Map<*, *>
         val pdf1 = settOppSide1(unwrapped)
         val innvilgedePensjoner = unwrapped["innvilgedePensjoner"] as List<*>
-        val side2 = (0..innvilgedePensjoner.size / 5).map {
+        val side2 = (0..innvilgedePensjoner.size step 5).map {
             PDDocument.load(javaClass.getResourceAsStream("/P1-side2.pdf"))
         }
 
         val avslaattePensjoner = unwrapped["avslaattePensjoner"] as List<*>
-        val side3 = (0..avslaattePensjoner.size / 5).map {
+        val side3 = (0..avslaattePensjoner.size step 5).map {
             PDDocument.load(javaClass.getResourceAsStream("/P1-side3.pdf"))
         }
         val pdf4 = PDDocument.load(javaClass.getResourceAsStream("/P1-side4.pdf"))
