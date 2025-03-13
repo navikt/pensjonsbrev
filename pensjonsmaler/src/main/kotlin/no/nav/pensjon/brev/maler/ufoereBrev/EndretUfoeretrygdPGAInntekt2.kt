@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.btfbEndret
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.btsbEndret
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.gjenlevendetillegg
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.settingAvInntektForNesteAar
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.uforetrygd
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.virkningFom
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.GjenlevendetilleggSelectors.belop
@@ -79,15 +80,27 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
         // TODO: om inntekt er for høy, avsnitt om det
         outline {
             paragraph {
+                showIf(settingAvInntektForNesteAar) {
+                    textExpr(Bokmal to "Du får dette automatiske brevet fordi vi har fått opplysninger om endring" +
+                            " i inntekt. Vi kan ha fått opplysningene fra deg eller automatisk fra Skatteetaten. " +
+                            "Hvis du mener inntekten vi har brukt i denne beregningen er feil, kan du selv legge inn " +
+                            "ny forventet inntekt på nav.no/inntektsplanleggeren eller kontakte oss på 55 55 33 33. " +
+                            "Gjør du ingen endring, er det beregningen i dette brevet som gjelder. ".expr(),
+                        Nynorsk to "".expr(),
+                }
+            }
+
+
+            paragraph {
                 // TODO: Endre EPS til ektefelle, samboer eller partner basert på faktisk sivilstand
                 showIf(barnetilleggFellesbarn.notNull() and barnetilleggFellesbarn.endringsbelop_safe.notEqualTo(0)) {
                     text(
-                        Bokmal to "Vi har mottatt nye opplysninger om inntekten til deg eller din EPS. Inntekten til din EPS har kun betydning for størrelsen på barnetillegget ditt. ",
+                        Bokmal to "Vi har fått nye opplysninger om inntekten til deg eller din EPS. Inntekten til din EPS har kun betydning for størrelsen på barnetillegget ditt. ",
                         Nynorsk to ""
                     )
                 }.orShow {
                     text(
-                        Bokmal to "Vi har mottatt nye opplysninger om inntekten din som gjør at din utbetaling endres. ",
+                        Bokmal to "Vi har fått nye opplysninger om inntekten din som gjør at din utbetaling endres. ",
                         Nynorsk to ""
                     )
                 }

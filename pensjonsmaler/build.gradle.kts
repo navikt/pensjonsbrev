@@ -1,7 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val apiModelVersion = 135
+val apiModelVersion = "135-inntektsendring-poc"
 
 val apiModelJavaTarget: String by System.getProperties()
 val jupiterVersion: String by project
@@ -26,7 +26,7 @@ dependencies {
     api("no.nav.pensjon.brev:pensjon-brevbaker-api-model:$apiModelVersion")
 
 
-    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
+    testImplementation(platform("org.junit:junit-bom:5.12.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation(testFixtures(project(":brevbaker")))
