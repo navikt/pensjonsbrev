@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.model.format
@@ -27,18 +28,29 @@ internal object LatexDocumentRenderer {
         language = pdfRequest.language.toLanguage(),
         felles = pdfRequest.felles,
         brevtype = pdfRequest.brevtype,
+        pdfVedlegg = pdfRequest.pdfVedlegg,
     )
 
+    @OptIn(InterneDataklasser::class)
     private fun render(
         letter: LetterMarkup,
         attachments: List<LetterMarkup.Attachment>,
         language: Language,
         felles: Felles,
         brevtype: LetterMetadata.Brevtype,
+        pdfVedlegg: List<PDFVedlegg>,
     ): LatexDocument =
         LatexDocument().apply {
             newLatexFile("params.tex") {
-                appendMasterTemplateParameters(attachments, brevtype, felles, language)
+                val allAttachments = attachments.map { it.title } + pdfVedlegg.map {
+                    listOf(
+                        LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
+                            id = it.hashCode(),
+                            text = it.type.tittel,
+                        )
+                    )
+                }
+                appendMasterTemplateParameters(allAttachments, brevtype, felles, language)
             }
             newLatexFile("letter.xmpdata") { appendXmpData(letter, language, felles) }
             newLatexFile("letter.tex") { renderLetterTemplate(letter, attachments) }
@@ -48,7 +60,7 @@ internal object LatexDocumentRenderer {
         }
 
     private fun LatexAppendable.appendMasterTemplateParameters(
-        attachments: List<LetterMarkup.Attachment>,
+        attachments: List<List<Text>>,
         brevtype: LetterMetadata.Brevtype,
         felles: Felles,
         language: Language,
@@ -169,14 +181,14 @@ internal object LatexDocumentRenderer {
         return "D:${formattedTime.replace(":", "'")}'"
     }
 
-    private fun LatexAppendable.vedleggCommand(attachments: List<LetterMarkup.Attachment>) {
+    private fun LatexAppendable.vedleggCommand(attachments: List<List<Text>>) {
         appendNewCmd("feltclosingvedlegg") {
             if (attachments.isNotEmpty()) {
                 appendCmd("begin", "attachmentList")
 
                 attachments.forEach { attachment ->
                     append("""\item """, escape = false)
-                    renderText(attachment.title)
+                    renderText(attachment)
                 }
                 appendCmd("end", "attachmentList")
             }

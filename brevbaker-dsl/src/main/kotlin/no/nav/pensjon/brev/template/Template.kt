@@ -54,6 +54,12 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
     }
 
     fun includeAttachment(
+        type: PDFVedleggType
+    ) {
+        pdfAttachments.add(PDFTemplate(type, Unit.expr()))
+    }
+
+    fun includeAttachment(
         template: AttachmentTemplate<Lang, Unit>,
         predicate: Expression<Boolean> = true.expr(),
     ) {

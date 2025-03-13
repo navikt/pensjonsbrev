@@ -1,28 +1,60 @@
 package no.nav.pensjon.brev.pdfbygger
 
 import no.nav.pensjon.brev.pdfbygger.vedlegg.P1VedleggAppender.leggPaaP1
+import no.nav.pensjon.brev.pdfbygger.vedlegg.P1VedleggAppender.leggPaaP1Vedlegg
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggType
+import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm
 import java.io.ByteArrayOutputStream
 
 internal object PDFVedleggAppender {
 
-    internal fun leggPaaVedlegg(pdfCompilationResponse: PDFCompilationResponse.Bytes, attachments: List<PDFVedlegg>) : PDFCompilationResponse.Bytes =
-        attachments.map { leggPaaVedlegg(pdfCompilationResponse, it) }
-            .firstOrNull()
-            ?.let {
-                // TODO: Vi bør sleppe denne om vi flyttar merginga til litt tidlegare i flyten
-                val outputstream = ByteArrayOutputStream()
-                it.save(outputstream)
-                PDFCompilationResponse.Bytes(outputstream.toByteArray())
-        } ?: pdfCompilationResponse
-
-    private fun leggPaaVedlegg(pdfCompilationResponse: PDFCompilationResponse.Bytes, attachment: PDFVedlegg) : PDDocument =
-        when (attachment.type) {
-            PDFVedleggType.P1 -> leggPaaP1(pdfCompilationResponse, attachment.data)
+    internal fun leggPaaVedlegg(
+        pdfCompilationResponse: PDFCompilationResponse.Bytes,
+        attachments: List<PDFVedlegg>,
+    ): PDFCompilationResponse.Bytes {
+        /* Ikke strengt nødvendig å returnere her, det vil fungere uten, men optimalisering.
+        De aller, aller fleste brevene har ikke PDF-vedlegg, så de trenger ikke gå gjennom denne løypa
+         */
+        if (attachments.isEmpty()) {
+            return pdfCompilationResponse
         }
+
+        val merger = PDFMergerUtility()
+        val target = PDDocument()
+        val originaltDokument = pdfCompilationResponse.bytes.let { PDDocument.load(it) }
+        merger.appendDocument(target, originaltDokument)
+        leggPaaBlankPartallsside(originaltDokument, merger, target)
+        attachments.map { leggPaaVedlegg(it) }.forEach {
+            leggPaaBlankPartallsside(it, merger, target)
+            merger.appendDocument(target, it)
+        }
+        return tilByteArray(target)
+    }
+
+    private fun leggPaaVedlegg(attachment: PDFVedlegg): PDDocument =
+        when (attachment.type) {
+            PDFVedleggType.P1 -> leggPaaP1(attachment.data)
+            PDFVedleggType.InformasjonOmP1 -> leggPaaP1Vedlegg()
+        }
+
+    private fun leggPaaBlankPartallsside(
+        originaltDokument: PDDocument,
+        merger: PDFMergerUtility,
+        target: PDDocument,
+    ) {
+        if (originaltDokument.pages.count % 2 == 1) {
+            merger.appendDocument(target, PDDocument.load(javaClass.getResourceAsStream("/tom.pdf")))
+        }
+    }
+
+    private fun tilByteArray(target: PDDocument): PDFCompilationResponse.Bytes {
+        val outputStream = ByteArrayOutputStream()
+        target.save(outputStream)
+        return PDFCompilationResponse.Bytes(outputStream.toByteArray())
+    }
 }
 
 internal fun PDAcroForm.setValues(values: Map<String, String?>) = values.forEach { entry ->
