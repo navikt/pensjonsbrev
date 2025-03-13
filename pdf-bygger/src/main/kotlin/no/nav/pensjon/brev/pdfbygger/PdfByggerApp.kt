@@ -23,6 +23,7 @@ import io.micrometer.core.instrument.Tag
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.pdfbygger.vedlegg.PDFVedleggAppender
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import java.nio.file.Path
 import kotlin.time.Duration

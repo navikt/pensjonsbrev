@@ -1,5 +1,6 @@
-package no.nav.pensjon.brev.pdfbygger
+package no.nav.pensjon.brev.pdfbygger.vedlegg
 
+import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brev.pdfbygger.vedlegg.P1VedleggAppender.leggPaaP1
 import no.nav.pensjon.brev.pdfbygger.vedlegg.P1VedleggAppender.leggPaaP1Vedlegg
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
