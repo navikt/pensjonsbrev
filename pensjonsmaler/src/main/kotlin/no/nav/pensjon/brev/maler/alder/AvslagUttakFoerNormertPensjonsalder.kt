@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderDtoSelectors.PesysDataSelectors.avslagUttakData
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP
@@ -44,31 +43,29 @@ object AvslagUttakFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUttakFoerN
             brevtype = VEDTAKSBREV,
         )
     ) {
-        val avslagData = pesysData.avslagUttakData
-
         title {
             textExpr(
-                Bokmal to "Nav har avslått søknaden din om alderspensjon fra ".expr() + avslagData.virkFom.format(),
-                Nynorsk to "Nav har avslått søknaden din om alderspensjon frå ".expr() + avslagData.virkFom.format(),
-                English to "Nav has declined your application for retirement pension from ".expr() + avslagData.virkFom.format(),
+                Bokmal to "Nav har avslått søknaden din om alderspensjon fra ".expr() + pesysData.virkFom.format(),
+                Nynorsk to "Nav har avslått søknaden din om alderspensjon frå ".expr() + pesysData.virkFom.format(),
+                English to "Nav has declined your application for retirement pension from ".expr() + pesysData.virkFom.format(),
             )
         }
 
         outline {
             includePhrase(
                 AvslagUttakFoerNormertPensjonsalderFelles(
-                    afpBruktIBeregning = avslagData.afpBruktIBeregning,
-                    normertPensjonsalder = avslagData.normertPensjonsalder,
-                    opplysningerBruktIBeregningen = avslagData.opplysningerBruktIBeregningen,
-                    virkFom = avslagData.virkFom,
-                    minstePensjonssats = avslagData.minstePensjonssats,
-                    totalPensjon = avslagData.totalPensjon
+                    afpBruktIBeregning = pesysData.afpBruktIBeregning,
+                    normertPensjonsalder = pesysData.normertPensjonsalder,
+                    opplysningerBruktIBeregningen = pesysData.opplysningerBruktIBeregningen,
+                    virkFom = pesysData.virkFom,
+                    minstePensjonssats = pesysData.minstePensjonssats,
+                    totalPensjon = pesysData.totalPensjon
                 )
             )
         }
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
-        includeAttachment(opplysningerBruktIBeregningenAP, avslagData.opplysningerBruktIBeregningen)
+        includeAttachment(opplysningerBruktIBeregningenAP, pesysData.opplysningerBruktIBeregningen)
     }
 
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
