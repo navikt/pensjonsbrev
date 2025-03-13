@@ -125,7 +125,6 @@ dependencies {
 
     implementation(libs.bundles.metrics)
 
-    testImplementation(libs.pdfbox)
     // JUnit 5
     testImplementation(libs.bundles.junit)
     testImplementation(libs.hamkrest)
