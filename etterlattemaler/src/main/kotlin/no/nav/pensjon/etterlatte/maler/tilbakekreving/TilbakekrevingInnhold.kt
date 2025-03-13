@@ -20,15 +20,15 @@ object TilbakekrevingInnhold: EtterlatteTemplate<TilbakekrevingRedigerbartBrevDT
 	override val kode: EtterlatteBrevKode = EtterlatteBrevKode.TILBAKEKREVING_INNHOLD
 
 	override val template = createTemplate(
-        name = kode.name,
-        letterDataType = TilbakekrevingRedigerbartBrevDTO::class,
-        languages = languages(Bokmal, Nynorsk, English),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - Tilbakekreving",
-            isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
+		name = kode.name,
+		letterDataType = TilbakekrevingRedigerbartBrevDTO::class,
+		languages = languages(Bokmal, Nynorsk, English),
+		letterMetadata = LetterMetadata(
+			displayTitle = "Vedtak - Tilbakekreving",
+			isSensitiv = true,
+			distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+			brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+		),
 	) {
 		title {
 			text(
