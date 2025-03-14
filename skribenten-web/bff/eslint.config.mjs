@@ -8,6 +8,7 @@ import tsParser from "@typescript-eslint/parser";
 import prettier from "eslint-plugin-prettier";
 import react from "eslint-plugin-react";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
+import unicorn from "eslint-plugin-unicorn";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,12 +22,8 @@ export default [
   {
     ignores: ["**/dist/"],
   },
-  ...compat.extends(
-    "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
-    "prettier",
-    "plugin:unicorn/recommended",
-  ),
+  ...compat.extends("eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"),
+  unicorn.configs.flat.recommended,
   {
     plugins: {
       react,
