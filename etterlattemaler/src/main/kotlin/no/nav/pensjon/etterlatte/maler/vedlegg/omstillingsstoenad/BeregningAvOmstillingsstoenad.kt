@@ -607,6 +607,23 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                     " years, and the proportional fraction of " + trygdetid.prorataBroek.formatBroek() + ".",
             )
         }
+
+        showIf(trygdetid.mindreEnnFireFemtedelerAvOpptjeningstiden) {
+            paragraph {
+                text(
+                    Bokmal to "Siden avdøde har vært medlem i et EØS-land i mindre enn 4/5 av tiden mellom fylte " +
+                            "16 år og dødsfallstidspunktet (opptjeningstiden), blir den framtidige trygdetiden redusert. " +
+                            "Denne reduksjonen skjer før prorata-beregningen utføres. ",
+                    Nynorsk to "Sidan avdøde har vært medlem i eit EØS-land i mindre enn 4/5 av tiden mellom fylte " +
+                            "16 år og dødsfallstidspunktet (oppteningstida), blir den framtidige trygdetida redusert. " +
+                            "Reduksjonen skjer før utrekning av prorata. ",
+                    English to "Since the deceased has been a member of the National Insurance Scheme for less " +
+                            "than 4/5 of the period between the age of 16 and the time of death (qualifying period), " +
+                            "the future social contribution time is reduced to 40 years minus 4/5 of the qualifying " +
+                            "period. This reduction takes place before the pro rata calculation is performed. ",
+                )
+            }
+        }
     }
     showIf(trygdetid.beregningsMetodeFraGrunnlag.equalTo(BeregningsMetode.BEST)) {
         paragraph {

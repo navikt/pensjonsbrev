@@ -1,8 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelJavaTarget: String by System.getProperties()
-val commonVersion: String by project
-val kotlinVersion: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
@@ -23,8 +21,8 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    api("no.nav.pensjon.brevbaker:brevbaker-api-model-common:$commonVersion")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
+    api(libs.brevbaker.common)
+    testImplementation(libs.kotlin.test.junit)
 }
 
 publishing {

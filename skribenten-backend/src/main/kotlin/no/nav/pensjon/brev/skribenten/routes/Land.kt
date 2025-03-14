@@ -1,14 +1,14 @@
 package no.nav.pensjon.brev.skribenten.routes
 
-import io.ktor.server.application.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import java.util.*
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.get
+import java.util.Locale
 
-internal val norskBokmål: Locale = Locale("NB", "NO")
+internal val norskBokmål: Locale = Locale.of("NB", "NO")
 internal val landKoder: Set<String> = Locale.getISOCountries(Locale.IsoCountryCode.PART1_ALPHA2)
 internal val land = landKoder.map {
-    LandJson(it, Locale("", it).getDisplayCountry(norskBokmål))
+    LandJson(it, Locale.of("", it).getDisplayCountry(norskBokmål))
 }
 
 internal data class LandJson(

@@ -180,19 +180,29 @@ Web --> Saksbehandler : Slettet brev
 
 [plantuml, target=img/brevredigering-state, format=svg]
 ....
-state "Under redigering" as Redigering
-Redigering : redigeresAv : NavIdent
+state UnderRedigering
+UnderRedigering : redigeresAv : NavIdent
+state Kladd
+state Attestering
+state Klar
+Klar : attestertAv : NavIdent?
 
-[*] --> Redigering : Åpne brev (fra brevmeny)
-Redigering --> Redigering : Forny lås (1m)
-Redigering --> Kladd : Fortsett (knapp)
+state isVedtaksbrev <<choice>>
 
-Kladd --> Redigering : Åpne
-Kladd : PDF
-Kladd --> Klar : Lås brev for redigering (toggle)
+[*] --> UnderRedigering : Åpne brev (fra brevmeny)
+UnderRedigering --> UnderRedigering : Forny lås (1m)
+UnderRedigering --> Kladd : Fortsett (knapp)
 
-Klar --> Kladd : Lås brev for redigering (untoggle)
-Klar : PDF
+Kladd --> UnderRedigering : Åpne
+Kladd --> isVedtaksbrev : Lås brev
 
-Klar --> [*] : Ferdigstill
+isVedtaksbrev --> Klar : [not isVedtaksbrev]
+isVedtaksbrev --> Attestering : [isVedtaksbrev]
+
+Attestering --> Klar
+
+Klar --> Kladd : Lås opp brev
+Attestering --> Kladd : Lås opp brev
+
+Klar --> [*] : Ferdigstill (arkiver+distribuer)
 ....

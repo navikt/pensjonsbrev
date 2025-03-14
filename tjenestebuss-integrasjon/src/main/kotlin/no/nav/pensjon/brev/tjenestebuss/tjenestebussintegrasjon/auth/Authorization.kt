@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory
 import java.net.ProxySelector
 import java.net.InetSocketAddress
 import java.net.URI
-import java.net.URL
 
 private const val jwtAzureAdName = "AZURE_AD"
 private val logger =
@@ -41,7 +40,7 @@ fun AuthenticationConfig.tjenestebusJwt(config: JwtConfig) =
     jwt(config.name) {
         realm = "tjenestebuss-integrasjon$name"
         val proxyUri: URI? = System.getenv("HTTP_PROXY")?.let { URI.create(it) }
-        val jwkBuilder = JwkProviderBuilder(URL(config.jwksUrl))
+        val jwkBuilder = JwkProviderBuilder(URI(config.jwksUrl).toURL())
             .apply {
                 if(proxyUri != null) {
                     proxied(ProxySelector.of(InetSocketAddress(proxyUri.host, proxyUri.port)).select(URI(config.jwksUrl)).first())

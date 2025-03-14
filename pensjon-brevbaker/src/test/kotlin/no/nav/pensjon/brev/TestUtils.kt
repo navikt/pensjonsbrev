@@ -9,9 +9,16 @@ import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import no.nav.pensjon.brev.template.brevbakerConfig
 
-fun testBrevbakerApp(block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit): Unit = testApplication {
+fun testBrevbakerApp(
+    enableAllToggles: Boolean = false,
+    block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit
+): Unit = testApplication {
     environment {
-        config = ApplicationConfig("application.conf")
+        config = ApplicationConfig("application.conf").mergeWith(
+            MapApplicationConfig(
+                "brevbaker.unleash.fakeUnleashEnableAll" to "$enableAllToggles",
+            )
+        )
     }
     val client = createClient {
         install(ContentNegotiation) {
@@ -21,6 +28,5 @@ fun testBrevbakerApp(block: suspend ApplicationTestBuilder.(client: HttpClient) 
             contentType(ContentType.Application.Json)
         }
     }
-
     block(client)
 }
