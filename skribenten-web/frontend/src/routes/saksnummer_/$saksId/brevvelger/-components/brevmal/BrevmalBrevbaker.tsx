@@ -135,6 +135,12 @@ const BrevmalBrevbaker = (props: {
     },
   });
 
+  useEffect(() => {
+    if (enhetsId && enhetsId !== form.getValues("enhetsId")) {
+      form.setValue("enhetsId", enhetsId);
+    }
+  }, [enhetsId, form]);
+
   const { setOnFormSubmitClick } = props;
   useEffect(() => {
     if (harEksisterendeKladd) {
