@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.model.Distribusjonstype.SENTRALPRINT
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brevbaker.api.model.*
@@ -160,6 +161,8 @@ class BrevredigeringServiceTest {
         penService = penService,
     )
 
+    private val bestillBrevresponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
+
     @BeforeEach
     fun clearMocks() {
         clearMocks(brevbakerMock, penService)
@@ -182,7 +185,7 @@ class BrevredigeringServiceTest {
                 any()
             )
         } returns ServiceResult.Ok(brevdataResponseData)
-        coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
+        coEvery { penService.sendbrev(any(), any()) } returns bestillBrevresponse
     }
 
     @Test
@@ -604,10 +607,10 @@ class BrevredigeringServiceTest {
                 saksId = sak.saksId,
                 brevId = brev.info.id,
                 laastForRedigering = true,
-                distribusjonstype = Distribusjonstype.SENTRALPRINT
+                distribusjonstype = SENTRALPRINT
             )
             brevredigeringService.hentEllerOpprettPdf(sak.saksId, brev.info.id)!!
-            brevredigeringService.attester(sak.saksId, brev.info.id)
+            brevredigeringService.attester(sak.saksId, brev.info.id, null, null, null, true)
         }
 
         coVerify {
@@ -646,16 +649,63 @@ class BrevredigeringServiceTest {
                 saksId = sak.saksId,
                 brevId = brev.info.id,
                 laastForRedigering = true,
-                distribusjonstype = Distribusjonstype.SENTRALPRINT
+                distribusjonstype = SENTRALPRINT
             )
             brevredigeringService.hentEllerOpprettPdf(sak.saksId, brev.info.id)!!
             assertThrows<HarIkkeAttestantrolleException> {
-                brevredigeringService.attester(sak.saksId, brev.info.id)
+                brevredigeringService.attester(sak.saksId, brev.info.id, null, null, null, true)
             }
         }
 
         coVerify {
             penService.hentPesysBrevdata(any(), any(), any(), any())
+        }
+    }
+
+    @Test
+    fun `kan ikke distribuere vedtaksbrev som ikke er attestert`(): Unit = runBlocking {
+        Features.override(Features.attestant, true)
+
+        val meta = templateDescription.copy(metadata = lettermetadata.copy(brevtype = LetterMetadata.Brevtype.VEDTAKSBREV))
+        coEvery { brevbakerMock.getRedigerbarTemplate(any()) } returns meta
+
+        val brev = opprettBrev(
+            reserverForRedigering = false,
+            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
+            vedtaksId = 1
+        ).resultOrNull()!!
+        withPrincipal(principalMock()) {
+            brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
+            brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true, distribusjonstype = SENTRALPRINT)
+
+            assertThrows<BrevIkkeKlartTilSendingException> {
+                brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
+            }
+        }
+    }
+
+    @Test
+    fun `kan distribuere vedtaksbrev som er attestert`(): Unit = runBlocking {
+        Features.override(Features.attestant, true)
+
+        val meta = templateDescription.copy(metadata = lettermetadata.copy(brevtype = LetterMetadata.Brevtype.VEDTAKSBREV))
+        coEvery { brevbakerMock.getRedigerbarTemplate(any()) } returns meta
+
+        val brev = opprettBrev(
+            reserverForRedigering = false,
+            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
+            vedtaksId = 1
+        ).resultOrNull()!!
+        withPrincipal(principalMock()) {
+            brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
+            brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true, distribusjonstype = SENTRALPRINT)
+        }
+
+        ADGroups.init(lesInnADGrupper())
+        val attestantIdent = NavIdent("A12345")
+        withPrincipal(MockPrincipal(attestantIdent, "Peder Ås", mutableSetOf(ADGroups.attestant))) {
+            brevredigeringService.attester(sak.saksId, brev.info.id, null, null, null, true)
+            assertThat(brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)).isEqualTo(bestillBrevresponse)
         }
     }
 
@@ -680,7 +730,7 @@ class BrevredigeringServiceTest {
                 saksId = sak.saksId,
                 brevId = brev.info.id,
                 laastForRedigering = true,
-                distribusjonstype = Distribusjonstype.SENTRALPRINT
+                distribusjonstype = SENTRALPRINT
             )
             brevredigeringService.hentEllerOpprettPdf(sak.saksId, brev.info.id)!!
             brevredigeringService.sendBrev(sak.saksId, brev.info.id)
@@ -1197,7 +1247,7 @@ class BrevredigeringServiceTest {
         // sjekk at delvis oppdatering fungerer uten å sette brevet til låst
         withPrincipal(principalMock()) {
             brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = false)
-            brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, distribusjonstype = Distribusjonstype.SENTRALPRINT)
+            brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, distribusjonstype = SENTRALPRINT)
         }
 
         assertThrows<BrevIkkeKlartTilSendingException> {
@@ -1226,7 +1276,8 @@ class BrevredigeringServiceTest {
 
         withPrincipal(principalMock()) {
             brevredigeringService.oppdaterBrev(
-                brev.info.saksId, brev.info.id, nyeSaksbehandlerValg = null, nyttRedigertbrev = brev.redigertBrev.copy(
+                brev.info.saksId, brev.info.id, nyeSaksbehandlerValg = null,
+                nyttRedigertbrev = brev.redigertBrev.copy(
                     blocks = listOf(
                         E_Paragraph(
                             1,
