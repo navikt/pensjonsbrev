@@ -39,6 +39,7 @@ object Pesysbrevkoder {
 
     enum class Redigerbar : Redigerbart {
         INFORMASJON_OM_SAKSBEHANDLINGSTID,
+        PE_AP_AVSLAG_UTTAK_FOER_NORMERT_PENSJONSALDER,
         PE_AP_INNHENTING_DOKUMENTASJON_FRA_BRUKER,
         PE_AP_INNHENTING_INFORMASJON_FRA_BRUKER,
         PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER,
@@ -57,3 +58,4 @@ object Pesysbrevkoder {
         override fun kode(): String = this.name
     }
 }
+
