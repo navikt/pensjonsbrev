@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata.saksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.SaksbehandlerValgSelectors.revurderingAvRett
@@ -17,6 +16,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -46,20 +46,171 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
         title {
             showIf(saksbehandlerValg.revurderingAvRett) {
                 text(
-                    Bokmal to "Vi vurderer om du forsatt har rett til <sakTypeKode>",
-                    Nynorsk to "",
-                    English to "",
+                    Bokmal to "Vi vurderer om du fortsatt har rett til ",
+                    Nynorsk to "Vi vurderer om du framleis har rett til ",
+                    English to "We are considering if you are still entitled to "
                 )
-            }
-            showIf(saksbehandlerValg.revurderingReduksjon) {
+                showIf(sakstype.isOneOf(Sakstype.AFP)) {
+                    text(
+                        Bokmal to "AFP",
+                        Nynorsk to "AFP",
+                        English to "contractual pension (AFP)",
+                    )
+                }.orShowIf(sakstype.isOneOf(Sakstype.AFP_PRIVAT)) {
+                    text(
+                        Bokmal to "AFP i privat sektor",
+                        Nynorsk to "AFP i privat sektor",
+                        English to "contractual pension (AFP) in the private sector",
+                    )
+                }.orShowIf(sakstype.isOneOf(Sakstype.ALDER)) {
+                    text(
+                        Bokmal to "alderspensjon",
+                        Nynorsk to "alderspensjon",
+                        English to "retirement pension",
+                    )
+                }.orShowIf(sakstype.isOneOf(Sakstype.BARNEP)) {
+                    text(
+                        Bokmal to "barnepensjon",
+                        Nynorsk to "barnepensjon",
+                        English to "children's pension",
+                    )
+                }.orShowIf(sakstype.isOneOf(Sakstype.GJENLEV)) {
+                    text(
+                        Bokmal to "gjenlevendepensjon",
+                        Nynorsk to "attlevandepensjon",
+                        English to "survivor's pension",
+                    )
+                }.orShowIf(sakstype.isOneOf(Sakstype.FAM_PL)) {
+                    text(
+                        Bokmal to "familiepleier",
+                        Nynorsk to "familiepleiarar",
+                        English to "family carers benefits",
+                    )
+                }.orShow {
+                    text(
+                        Bokmal to "<fritekst: ytelse>",
+                        Nynorsk to "<fritekst: ytelse>",
+                        English to "<fritekst: ytelse>",
+                    )
+                }
+            }.orShowIf(saksbehandlerValg.revurderingReduksjon) {
                 text(
                     Bokmal to "Vi vurderer om pensjonen din skal reduseres",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "Vi vurderer om pensjonen din skal reduserast",
+                    English to "We are considering a reduction in your pension",
                 )
             }
         }
         outline {
+            showIf(saksbehandlerValg.revurderingAvRett) {
+                paragraph {
+                    text(
+                        Bokmal to "Dette er et varsel om at vi vurderer om du fortsatt har rett til ",
+                        Nynorsk to "Dette er eit varsel om at vi vurderer om du framleis har rett til ",
+                        English to "This letter is a notification that we are considering if you are still entitled to receive ",
+                    )
+                    showIf(sakstype.isOneOf(Sakstype.AFP)) {
+                        text(
+                            Bokmal to "AFP",
+                            Nynorsk to "AFP",
+                            English to "contractual pension (AFP)",
+                        )
+                    }.orShowIf(sakstype.isOneOf(Sakstype.AFP_PRIVAT)) {
+                        text(
+                            Bokmal to "AFP i privat sektor",
+                            Nynorsk to "AFP i privat sektor",
+                            English to "contractual pension (AFP) in the private sector",
+                        )
+                    }.orShowIf(sakstype.isOneOf(Sakstype.ALDER)) {
+                        text(
+                            Bokmal to "alderspensjon",
+                            Nynorsk to "alderspensjon",
+                            English to "retirement pension",
+                        )
+                    }.orShowIf(sakstype.isOneOf(Sakstype.BARNEP)) {
+                        text(
+                            Bokmal to "barnepensjon",
+                            Nynorsk to "barnepensjon",
+                            English to "children's pension",
+                        )
+                    }.orShowIf(sakstype.isOneOf(Sakstype.GJENLEV)) {
+                        text(
+                            Bokmal to "gjenlevendepensjon",
+                            Nynorsk to "attlevandepensjon",
+                            English to "survivor's pension",
+                        )
+                    }.orShowIf(sakstype.isOneOf(Sakstype.FAM_PL)) {
+                        text(
+                            Bokmal to "familiepleier",
+                            Nynorsk to "familiepleiarar",
+                            English to "family carers benefits",
+                        )
+                    }.orShow {
+                        text(
+                            Bokmal to "<fritekst: ytelse>",
+                            Nynorsk to "<fritekst: ytelse>",
+                            English to "<fritekst: ytelse>",
+                        )
+                    }
+                }
+            }
+            showIf(saksbehandlerValg.revurderingReduksjon) {
+                paragraph {
+                    text(
+                        Bokmal to "Dette er et varsel om at vi vurderer om din ",
+                        Nynorsk to "Dette er eit varsel om at vi vurderer om din ",
+                        English to "This letter is a notification that we are considering if your ",
+                    )
+                    showIf(sakstype.isOneOf(Sakstype.AFP)) {
+                        text(
+                            Bokmal to "AFP",
+                            Nynorsk to "AFP",
+                            English to "contractual pension (AFP)",
+                        )
+                    }.orShowIf(sakstype.isOneOf(Sakstype.AFP_PRIVAT)) {
+                        text(
+                            Bokmal to "AFP i privat sektor",
+                            Nynorsk to "AFP i privat sektor",
+                            English to "contractual pension (AFP) in the private sector",
+                        )
+                    }.orShowIf(sakstype.isOneOf(Sakstype.ALDER)) {
+                        text(
+                            Bokmal to "alderspensjon",
+                            Nynorsk to "alderspensjon",
+                            English to "retirement pension",
+                        )
+                    }.orShowIf(sakstype.isOneOf(Sakstype.BARNEP)) {
+                        text(
+                            Bokmal to "barnepensjon",
+                            Nynorsk to "barnepensjon",
+                            English to "children's pension",
+                        )
+                    }.orShowIf(sakstype.isOneOf(Sakstype.GJENLEV)) {
+                        text(
+                            Bokmal to "gjenlevendepensjon",
+                            Nynorsk to "attlevandepensjon",
+                            English to "survivor's pension",
+                        )
+                    }.orShowIf(sakstype.isOneOf(Sakstype.FAM_PL)) {
+                        text(
+                            Bokmal to "familiepleier",
+                            Nynorsk to "familiepleiarar",
+                            English to "family carers benefits",
+                        )
+                    }.orShow {
+                        text(
+                            Bokmal to "<fritekst: ytelse>",
+                            Nynorsk to "<fritekst: ytelse>",
+                            English to "<fritekst: ytelse>",
+                        )
+                    }
+                    text(
+                        Bokmal to "skal beregnes på nytt på grunn av nye opplysninger.",
+                        Nynorsk to "skal bli berekna på nytt på grunn av nye opplysningar",
+                        English to "will be recalculated based on new information.",
+                    )
+                }
+            }
             paragraph {
                 text(
                     Bokmal to "Før vi fatter et vedtak i saken, har du rett til å uttale deg. Dette må du gjøre innen 14 dager etter at du har fått dette varselet.",
@@ -118,3 +269,4 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
         }
     }
 }
+

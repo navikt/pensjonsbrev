@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -7,7 +8,8 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 @Suppress("unused")
 data class VarselRevurderingAvPensjonDto(
     override val saksbehandlerValg: SaksbehandlerValg,
-    override val pesysData: EmptyBrevdata
+    override val pesysData: EmptyBrevdata,
+    val sakstype: Sakstype,
 ) : RedigerbarBrevdata<VarselRevurderingAvPensjonDto.SaksbehandlerValg, EmptyBrevdata> {
     data class SaksbehandlerValg(
         val revurderingAvRett: Boolean = false,
