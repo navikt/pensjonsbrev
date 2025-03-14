@@ -25,11 +25,12 @@ import BrevvelgerFooter from "./-components/BrevvelgerFooter";
 export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
   validateSearch: (
     search: Record<string, unknown>,
-  ): { idTSSEkstern?: string; brevId?: string; templateId?: string; enhetsId?: string } => ({
+  ): { idTSSEkstern?: string; brevId?: string; templateId?: string; enhetsId?: string; vedtaksId?: string } => ({
     idTSSEkstern: search.idTSSEkstern?.toString(),
     brevId: search.brevId?.toString(),
     templateId: search.templateId?.toString(),
     enhetsId: search.enhetsId?.toString(),
+    vedtaksId: search.vedtaksId ? search.vedtaksId.toString() : undefined,
   }),
   loaderDeps: ({ search: { vedtaksId } }) => ({ includeVedtak: !!vedtaksId }),
   loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
