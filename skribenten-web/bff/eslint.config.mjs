@@ -23,13 +23,14 @@ export default [
     ignores: ["**/dist/"],
   },
   ...compat.extends("eslint:recommended", "plugin:@typescript-eslint/recommended", "prettier"),
-  unicorn.configs.flat.recommended,
+
   {
     plugins: {
       react,
       prettier,
       "@typescript-eslint": typescriptEslint,
       "simple-import-sort": simpleImportSort,
+      unicorn,
     },
 
     languageOptions: {
@@ -45,6 +46,18 @@ export default [
       "simple-import-sort/imports": "error",
       "simple-import-sort/exports": "error",
       "unicorn/filename-case": "off",
+      "unicorn/better-regex": "error",
+      "unicorn/catch-error-name": "error",
+      "unicorn/consistent-destructuring": "error",
+      "unicorn/explicit-length-check": "error",
+      "unicorn/import-style": "error",
+      "unicorn/new-for-builtins": "error",
+      "unicorn/prefer-default-parameters": "error",
+      "unicorn/prefer-array-flat": "error",
+      "unicorn/prefer-array-flat-map": "error",
+      "unicorn/prefer-global-this": "error",
+      "unicorn/prefer-regexp-test": "error",
+      "unicorn/throw-new-error": "error",
     },
   },
 ];
