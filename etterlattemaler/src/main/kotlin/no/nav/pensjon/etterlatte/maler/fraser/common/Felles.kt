@@ -2,7 +2,6 @@ package no.nav.pensjon.etterlatte.maler.fraser.common
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -53,7 +52,7 @@ object Felles {
         }
     }
 
-    object SlikUttalerDuDeg : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object SlikUttalerDuDegOmstillingsstoenad : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
@@ -73,6 +72,31 @@ object Felles {
                     English to "You can send us a statement regarding the matter by logging in to: " +
                             "${Constants.Engelsk.BESKJED_TIL_NAV_URL}. You can also " +
                             "send us your statement by post. The address can be found at: ${Constants.Engelsk.ETTERSENDELSE_URL}.",
+                )
+            }
+        }
+    }
+
+    object SlikUttalerDuDegBarnepensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Bokmal to "Slik uttaler du deg",
+                    Nynorsk to "Slik uttaler du deg",
+                    English to "How to provide a statement",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på " +
+                            "${Constants.BESKJED_TIL_NAV_URL}. Du kan også sende " +
+                            "uttalelsen din til oss i posten. Adressen finner du på ${Constants.BP_MELDE}.",
+                    Nynorsk to "Du kan sende svar til oss ved å logge inn på " +
+                            "${Constants.BESKJED_TIL_NAV_URL}. Alternativt kan du " +
+                            "sende oss svar i posten. Adressa finn du på ${Constants.BP_MELDE}.",
+                    English to "You can send us a statement regarding the matter by logging in to: " +
+                            "${Constants.Engelsk.BESKJED_TIL_NAV_URL}. You can also " +
+                            "send us your statement by post. The address can be found at: ${Constants.BP_MELDE}.",
                 )
             }
         }

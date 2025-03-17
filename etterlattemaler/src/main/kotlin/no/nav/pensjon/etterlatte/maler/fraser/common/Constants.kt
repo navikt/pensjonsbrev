@@ -22,6 +22,7 @@ object Constants {
     const val BESKJED_TIL_NAV_URL = "$NAV_URL/send-beskjed"
     const val BP_SKATTETREKK = "$NAV_URL/barnepensjon#skattetrekk"
     const val BP_SKATTEETATEN = "skatteetaten.no/barnepensjon"
+    const val BP_MELDE = "$NAV_URL/barnepensjon#melde"
     const val SKATTETREKK_ETTERBETALING_URL = "$NAV_URL/skattetrekk#etterbetaling"
     const val SKATTETREKK_KILDESKATT_URL = "$NAV_URL/skattetrekk#kildeskatt"
     const val OMS_ETTEROPPGJOER_URL = "$NAV_URL/omstillingsstonad#etteroppgjor"

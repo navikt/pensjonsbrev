@@ -24,7 +24,7 @@ val forhaandsvarselFeilutbetalingBarnepensjonRevurdering = createAttachment(
 
     konverterElementerTilBrevbakerformat(innholdForhaansvarselRevurdering)
 
-    includePhrase(Felles.SlikUttalerDuDeg)
+    includePhrase(Felles.SlikUttalerDuDegBarnepensjon)
     includePhrase(Felles.HvaSkjerVidereIDinSak)
 }
 
@@ -40,6 +40,6 @@ val forhaandsvarselFeilutbetalingBarnepensjonOpphoer = createAttachment(
 
     konverterElementerTilBrevbakerformat(innholdForhaansvarselOpphoer)
 
-    includePhrase(Felles.SlikUttalerDuDeg)
+    includePhrase(Felles.SlikUttalerDuDegBarnepensjon)
     includePhrase(Felles.HvaSkjerVidereIDinSak)
 }
