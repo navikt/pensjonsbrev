@@ -24,7 +24,7 @@ val forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering = createAttachmen
 
     konverterElementerTilBrevbakerformat(innholdForhaansvarselRevurdering)
 
-    includePhrase(Felles.SlikUttalerDuDeg)
+    includePhrase(Felles.SlikUttalerDuDegOmstillingsstoenad)
     includePhrase(Felles.HvaSkjerVidereIDinSak)
 }
 
@@ -40,6 +40,6 @@ val forhaandsvarselFeilutbetalingOmstillingsstoenadOpphoer = createAttachment(
 
     konverterElementerTilBrevbakerformat(innholdForhaandsvarselOpphoer)
 
-    includePhrase(Felles.SlikUttalerDuDeg)
+    includePhrase(Felles.SlikUttalerDuDegOmstillingsstoenad)
     includePhrase(Felles.HvaSkjerVidereIDinSak)
 }
