@@ -4,10 +4,11 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.PesysDataSelectors.sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.SaksbehandlerValgSelectors.revurderingAvRett
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.SaksbehandlerValgSelectors.revurderingReduksjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.sakstype
 import no.nav.pensjon.brev.maler.fraser.common.Constants.BESKJED_TIL_NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ETTERSENDELSE_URL
@@ -20,6 +21,7 @@ import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -43,6 +45,7 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
+        val sakstype = pesysData.sakstype
         title {
             showIf(saksbehandlerValg.revurderingAvRett) {
                 text(
@@ -68,29 +71,12 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                         Nynorsk to "alderspensjon",
                         English to "retirement pension",
                     )
-                }.orShowIf(sakstype.isOneOf(Sakstype.BARNEP)) {
-                    text(
-                        Bokmal to "barnepensjon",
-                        Nynorsk to "barnepensjon",
-                        English to "children's pension",
-                    )
-                }.orShowIf(sakstype.isOneOf(Sakstype.GJENLEV)) {
-                    text(
-                        Bokmal to "gjenlevendepensjon",
-                        Nynorsk to "attlevandepensjon",
-                        English to "survivor's pension",
-                    )
-                }.orShowIf(sakstype.isOneOf(Sakstype.FAM_PL)) {
-                    text(
-                        Bokmal to "familiepleier",
-                        Nynorsk to "familiepleiarar",
-                        English to "family carers benefits",
-                    )
                 }.orShow {
-                    text(
-                        Bokmal to "<fritekst: ytelse>",
-                        Nynorsk to "<fritekst: ytelse>",
-                        English to "<fritekst: ytelse>",
+                    val ytelse = fritekst("ytelse")
+                    textExpr(
+                        Bokmal to ytelse,
+                        Nynorsk to ytelse,
+                        English to ytelse,
                     )
                 }
             }.orShowIf(saksbehandlerValg.revurderingReduksjon) {
@@ -101,6 +87,7 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                 )
             }
         }
+
         outline {
             showIf(saksbehandlerValg.revurderingAvRett) {
                 paragraph {
@@ -127,29 +114,12 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                             Nynorsk to "alderspensjon",
                             English to "retirement pension",
                         )
-                    }.orShowIf(sakstype.isOneOf(Sakstype.BARNEP)) {
-                        text(
-                            Bokmal to "barnepensjon",
-                            Nynorsk to "barnepensjon",
-                            English to "children's pension",
-                        )
-                    }.orShowIf(sakstype.isOneOf(Sakstype.GJENLEV)) {
-                        text(
-                            Bokmal to "gjenlevendepensjon",
-                            Nynorsk to "attlevandepensjon",
-                            English to "survivor's pension",
-                        )
-                    }.orShowIf(sakstype.isOneOf(Sakstype.FAM_PL)) {
-                        text(
-                            Bokmal to "familiepleier",
-                            Nynorsk to "familiepleiarar",
-                            English to "family carers benefits",
-                        )
                     }.orShow {
-                        text(
-                            Bokmal to "<fritekst: ytelse>",
-                            Nynorsk to "<fritekst: ytelse>",
-                            English to "<fritekst: ytelse>",
+                        val ytelse = fritekst("ytelse")
+                        textExpr(
+                            Bokmal to ytelse,
+                            Nynorsk to ytelse,
+                            English to ytelse,
                         )
                     }
                 }
@@ -179,29 +149,12 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                             Nynorsk to "alderspensjon",
                             English to "retirement pension",
                         )
-                    }.orShowIf(sakstype.isOneOf(Sakstype.BARNEP)) {
-                        text(
-                            Bokmal to "barnepensjon",
-                            Nynorsk to "barnepensjon",
-                            English to "children's pension",
-                        )
-                    }.orShowIf(sakstype.isOneOf(Sakstype.GJENLEV)) {
-                        text(
-                            Bokmal to "gjenlevendepensjon",
-                            Nynorsk to "attlevandepensjon",
-                            English to "survivor's pension",
-                        )
-                    }.orShowIf(sakstype.isOneOf(Sakstype.FAM_PL)) {
-                        text(
-                            Bokmal to "familiepleier",
-                            Nynorsk to "familiepleiarar",
-                            English to "family carers benefits",
-                        )
                     }.orShow {
-                        text(
-                            Bokmal to "<fritekst: ytelse>",
-                            Nynorsk to "<fritekst: ytelse>",
-                            English to "<fritekst: ytelse>",
+                        val ytelse = fritekst("ytelse")
+                        textExpr(
+                            Bokmal to ytelse,
+                            Nynorsk to ytelse,
+                            English to ytelse,
                         )
                     }
                     text(
@@ -226,6 +179,7 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                 )
             }
             paragraph {
+                val beskrivelse = fritekst("Fritekst felt - beskriv hva som har skjedd i saken/ årsaken til revurderingen")
                 text(
                     Bokmal to "<Fritekstfelt - beskriv hva som har skjedd i saken/ årsaken til revurderingen>",
                     Nynorsk to "<Fritekstfelt - beskriv hva som har skjedd i saken/ årsaken til revurderingen>",
