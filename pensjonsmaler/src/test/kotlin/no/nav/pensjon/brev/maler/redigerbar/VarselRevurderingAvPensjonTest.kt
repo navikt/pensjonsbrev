@@ -2,11 +2,13 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto
 import no.nav.pensjon.brev.api.toLanguage
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -20,7 +22,7 @@ class VarselRevurderingAvPensjonTest {
             revurderingReduksjon = false,
         ),
         pesysData = VarselRevurderingAvPensjonDto.PesysData(sakstype = Sakstype.ALDER)
-    )
+        )
 
     @Test
     fun `med revurdering av rett`() {
@@ -47,6 +49,16 @@ class VarselRevurderingAvPensjonTest {
                 Fixtures.felles
             ).renderTestPDF("000130-$testNavn-${lang.name}")
         }
+    }
+
+    @Test
+    fun testHtml() {
+        LetterTestImpl(
+            VarselRevurderingAvPensjon.template,
+            Fixtures.create(),
+            Language.Bokmal,
+            Fixtures.felles
+        ).renderTestHtml(VarselRevurderingAvPensjon.kode.name)
     }
 
 }
