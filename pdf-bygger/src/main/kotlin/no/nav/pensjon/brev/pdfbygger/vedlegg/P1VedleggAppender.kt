@@ -51,16 +51,16 @@ internal object P1VedleggAppender {
         }
     }.forEach { merger.appendDocument(target, it) }
 
-    private fun flettInnInnvilgetPensjon(radnummer: Int, pensjon: Map<String, Any>) = mapOf(
-        "$radnummer-institusjon" to pensjon["institusjon"].toString(),
-        "$radnummer-type" to pensjon["type"].toString(),
-        "$radnummer-datoFoersteUtbetaling" to pensjon["datoFoersteUtbetaling"].toString(),
-        "$radnummer-bruttobeloep" to pensjon["bruttobeloep"].toString(),
-        "$radnummer-grunnlagInnvilget" to pensjon["grunnlagInnvilget"].toString(),
-        "$radnummer-reduksjonsgrunnlag" to pensjon["reduksjonsgrunnlag"].toString(),
-        "$radnummer-vurderingsperiode" to pensjon["vurderingsperiode"].toString(),
-        "$radnummer-adresseNyVurdering" to pensjon["adresseNyVurdering"].toString(),
-    )
+    private fun flettInnInnvilgetPensjon(radnummer: Int, pensjon: Map<String, Any>) = listOf(
+        "institusjon",
+        "type",
+        "datoFoersteUtbetaling",
+        "bruttobeloep",
+        "grunnlagInnvilget",
+        "reduksjonsgrunnlag",
+        "vurderingsperiode",
+        "adresseNyVurdering"
+    ).associate { "$radnummer-$it" to pensjon[it].toString() }
 
     internal fun leggPaaP1Vedlegg() = lesInnPDF("/P1-vedlegg.pdf")
 
