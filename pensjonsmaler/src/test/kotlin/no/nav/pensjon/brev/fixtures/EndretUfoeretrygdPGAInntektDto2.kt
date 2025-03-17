@@ -11,7 +11,8 @@ fun createEndretUfoeretrygdPGAInntektDto2() =
             endringsbelop = 1,
             uforegrad = 100,
             inntektstak = 1,
-            inntektsgrense = 1
+            inntektsgrense = 1,
+            inntektBruktIAvkortning = 0
         ),
         barnetilleggFellesbarn = null,
         barnetilleggSaerkullsbarn = null,
@@ -22,5 +23,6 @@ fun createEndretUfoeretrygdPGAInntektDto2() =
         datoForNormertPensjonsalder = LocalDate.now(),
         sokerMottarApIlaAret = false,
         btfbEndret = false,
-        btsbEndret = false
+        btsbEndret = false,
+        settingAvInntektForNesteAar = false,
     )

@@ -28,6 +28,7 @@ data class EndretUfoeretrygdPGAInntektDto2(
 data class Uforetrygd(
     val netto: Int,
     val endringsbelop: Int,
+    val inntektBruktIAvkortning: Int,
     val uforegrad: Int,
     val inntektstak: Int,
     val inntektsgrense: Int,
@@ -40,7 +41,7 @@ data class Gjenlevendetillegg (
 data class BarnetilleggFellesbarn (
     val netto: Int,
     val endringsbelop: Int,
-    val inntektBruktIAvkortning: Int?,
+    val inntektBruktIAvkortning: Int,
     val fribelop: Int,
     val inntektstak: Int,
     val antallBarn: Int,
@@ -50,7 +51,7 @@ data class BarnetilleggSaerkullsbarn(
 
     val netto: Int,
     val endringsbelop: Int,
-    val inntektBruktIAvkortning: Int?,
+    val inntektBruktIAvkortning: Int,
     val fribelop: Int,
     val inntektstak: Int,
     val antallBarn: Int,
