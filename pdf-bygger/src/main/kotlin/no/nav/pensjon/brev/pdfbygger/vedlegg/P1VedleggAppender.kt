@@ -13,7 +13,7 @@ internal object P1VedleggAppender {
         merger.appendDocument(target, settOppSide1(unwrapped))
         settOppSide2(merger, target, unwrapped["innvilgedePensjoner"] as List<Map<String, Any>>)
         settOppSide3(unwrapped["avslaattePensjoner"] as List<Map<String, Any>>, merger, target)
-        merger.appendDocument(target, lesInnPDF("/P1-side4.pdf"))
+        settOppSide4(unwrapped["institution"] as Map<String, Any>, merger, target)
 
         return target
     }
@@ -75,7 +75,6 @@ internal object P1VedleggAppender {
         }
     }.forEach { merger.appendDocument(target, it) }
 
-
     private fun flettInnAvslaattPensjon(radnummer: Int, pensjon: Map<String, Any>) = listOf(
         "institusjon",
         "type",
@@ -83,6 +82,31 @@ internal object P1VedleggAppender {
         "vurderingsperiode",
         "adresseNyVurdering"
     ).associate { "$radnummer-$it" to pensjon[it].toString() }
+
+
+    private fun settOppSide4(
+        institution: Map<String, Any>,
+        merger: PDFMergerUtility,
+        target: PDDocument,
+    ) =
+        lesInnPDF("/P1-side4.pdf")
+            .also {
+                it.setValues(
+                    listOf(
+                        "name",
+                        "street",
+                        "town",
+                        "postcode",
+                        "countryCode",
+                        "institutionID",
+                        "officeFax",
+                        "officePhone",
+                        "email",
+                        "date",
+                        "signature",
+                    ).associateWith { key -> institution[key]?.toString() }
+                )
+            }.also { merger.appendDocument(target, it) }
 
     internal fun leggPaaP1Vedlegg() = lesInnPDF("/P1-vedlegg.pdf")
 
