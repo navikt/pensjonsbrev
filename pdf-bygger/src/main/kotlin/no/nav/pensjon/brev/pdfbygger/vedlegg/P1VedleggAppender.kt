@@ -8,14 +8,11 @@ internal object P1VedleggAppender {
     internal fun leggPaaP1(data: Map<String, Any>): PDDocument {
         val unwrapped = data["data"] as Map<*, *>
 
-        val avslaattePensjoner = unwrapped["avslaattePensjoner"] as List<*>
-        val side3 = (0..avslaattePensjoner.size step 5).map { lesInnPDF("/P1-side3.pdf") }
-
         val target = PDDocument()
         val merger = PDFMergerUtility()
         merger.appendDocument(target, settOppSide1(unwrapped))
         settOppSide2(merger, target, unwrapped["innvilgedePensjoner"] as List<Map<String, Any>>)
-        side3.forEach { merger.appendDocument(target, it) }
+        settOppSide3(unwrapped["avslaattePensjoner"] as List<Map<String, Any>>, merger, target)
         merger.appendDocument(target, lesInnPDF("/P1-side4.pdf"))
 
         return target
@@ -58,6 +55,31 @@ internal object P1VedleggAppender {
         "bruttobeloep",
         "grunnlagInnvilget",
         "reduksjonsgrunnlag",
+        "vurderingsperiode",
+        "adresseNyVurdering"
+    ).associate { "$radnummer-$it" to pensjon[it].toString() }
+
+    private fun settOppSide3(
+        avslaattePensjoner: List<Map<String, Any>>,
+        merger: PDFMergerUtility,
+        target: PDDocument,
+    ) = (0..<Math.ceilDiv(avslaattePensjoner.size, 5)).map { it * 5 }.map { index ->
+        (index..index + 4).map { radnummer ->
+            avslaattePensjoner.getOrNull(radnummer)
+                ?.let { pensjon -> flettInnAvslaattPensjon(radnummer + 1, pensjon) }
+                ?: emptyMap()
+        }.let { flettefelt ->
+            lesInnPDF("/P1-side3.pdf").also {
+                it.setValues(flettefelt.flatMap { it.entries }.associate { it.key to it.value })
+            }
+        }
+    }.forEach { merger.appendDocument(target, it) }
+
+
+    private fun flettInnAvslaattPensjon(radnummer: Int, pensjon: Map<String, Any>) = listOf(
+        "institusjon",
+        "type",
+        "avslagsbegrunnelse",
         "vurderingsperiode",
         "adresseNyVurdering"
     ).associate { "$radnummer-$it" to pensjon[it].toString() }

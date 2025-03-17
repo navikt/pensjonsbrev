@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.Adresse
+import no.nav.pensjon.brev.api.model.maler.AvslaattPensjon
+import no.nav.pensjon.brev.api.model.maler.Avslagsbegrunnelse
 import no.nav.pensjon.brev.api.model.maler.GrunnlagInnvilget
 import no.nav.pensjon.brev.api.model.maler.InnvilgetPensjon
 import no.nav.pensjon.brev.api.model.maler.P1Person
@@ -65,5 +67,34 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
                 ),
             )
         ),
-        avslaattePensjoner = listOf(),
+        avslaattePensjoner = listOf(
+            AvslaattPensjon(
+                institusjon = "NAY 3",
+                type = Sakstype.ALDER,
+                avslagsbegrunnelse = Avslagsbegrunnelse.IncomeCeilingIsExceeded,
+                vurderingsperiode = "Januar 2023",
+                adresseNyVurdering = Adresse(
+                    adresselinje1 = "Lillevik Torgvei 2",
+                    adresselinje2 = null,
+                    adresselinje3 = null,
+                    landkode = "DK",
+                    postnummer = "4324",
+                    poststed = "Lillevik Vestre"
+                )
+            ),
+            AvslaattPensjon(
+                institusjon = "NAY 4",
+                type = Sakstype.GJENLEV,
+                avslagsbegrunnelse = Avslagsbegrunnelse.InsurancePeriodsLessThanOneYear,
+                vurderingsperiode = "Mars 2025",
+                adresseNyVurdering = Adresse(
+                    adresselinje1 = "Lillevik Torgvei 1",
+                    adresselinje2 = null,
+                    adresselinje3 = null,
+                    landkode = "FI",
+                    postnummer = "4321",
+                    poststed = "Lillevik Østre"
+                )
+            )
+        ),
     )

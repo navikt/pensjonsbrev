@@ -36,7 +36,11 @@ data class InnvilgetPensjon(
 )
 
 data class AvslaattPensjon(
-    val s: String
+    val institusjon: String,
+    val type: Sakstype,
+    val avslagsbegrunnelse: Avslagsbegrunnelse,
+    val vurderingsperiode: String,
+    val adresseNyVurdering: Adresse,
 )
 
 enum class GrunnlagInnvilget(val nummer: Int) {
@@ -48,6 +52,16 @@ enum class GrunnlagInnvilget(val nummer: Int) {
 enum class Reduksjonsgrunnlag(val nummer: Int) {
     InViewOfAnotherBenefitOrIncome(7),
     InViewOfOverlappingOfCreditedPeriods(8)
+}
+
+enum class Avslagsbegrunnelse(val nummer: Int) {
+    NoInsurancePeriods(4),
+    InsurancePeriodsLessThanOneYear(5),
+    QualifyingPeriodNotCompletedOrEligibilityRequirementsNotMet(6),
+    NoPartialDisabilityOrInvalidityWasFound(7),
+    IncomeCeilingIsExceeded(8),
+    PensionAgeNotYetReached(9),
+    OtherReasons(10)
 }
 
 data class Adresse(
