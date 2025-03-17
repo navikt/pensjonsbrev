@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.Sakstype
+import java.time.LocalDate
 
 data class SamletMeldingOmPensjonsvedtakDto(
     val holder: P1Person,
@@ -8,6 +9,7 @@ data class SamletMeldingOmPensjonsvedtakDto(
     val sakstype: Sakstype,
     val innvilgedePensjoner: List<InnvilgetPensjon>,
     val avslaattePensjoner: List<AvslaattPensjon>,
+    val institution: Institution,
 ) : BrevbakerBrevdata
 
 data class P1Person(
@@ -76,3 +78,17 @@ data class Adresse(
         require(landkode.length == 2)
     }
 }
+
+data class Institution(
+    val name: String,
+    val street: String,
+    val town: String,
+    val postcode: String,
+    val countryCode: String,
+    val institutionID: String,
+    val officeFax: String?,
+    val officePhone: String?,
+    val email: String,
+    val date: LocalDate,
+    val signature: String,
+)

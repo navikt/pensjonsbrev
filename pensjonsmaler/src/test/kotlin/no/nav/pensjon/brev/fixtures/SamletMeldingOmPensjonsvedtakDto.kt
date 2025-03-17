@@ -6,9 +6,11 @@ import no.nav.pensjon.brev.api.model.maler.AvslaattPensjon
 import no.nav.pensjon.brev.api.model.maler.Avslagsbegrunnelse
 import no.nav.pensjon.brev.api.model.maler.GrunnlagInnvilget
 import no.nav.pensjon.brev.api.model.maler.InnvilgetPensjon
+import no.nav.pensjon.brev.api.model.maler.Institution
 import no.nav.pensjon.brev.api.model.maler.P1Person
 import no.nav.pensjon.brev.api.model.maler.Reduksjonsgrunnlag
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
+import java.time.LocalDate
 
 fun createSamletMeldingOmPensjonsvedtakDto() =
     SamletMeldingOmPensjonsvedtakDto(
@@ -97,4 +99,17 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
                 )
             )
         ),
+        institution = Institution(
+            name = "NFP",
+            street = "Lilleviksgrenda",
+            town = "Lillevik",
+            postcode = "4322",
+            countryCode = "NO",
+            institutionID = "NFPL1",
+            officeFax = null,
+            officePhone = "+123 45678901",
+            email = "lars.holm@tøys.nfp.no",
+            date = LocalDate.now(),
+            signature = "Lars Holm, saksbehandler",
+        )
     )
