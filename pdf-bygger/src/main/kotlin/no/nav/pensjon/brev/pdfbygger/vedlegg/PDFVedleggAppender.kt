@@ -58,6 +58,6 @@ internal object PDFVedleggAppender {
     }
 }
 
-internal fun PDAcroForm.setValues(values: Map<String, String?>) = values.forEach { entry ->
-    fields.firstOrNull { it.fullyQualifiedName == entry.key }?.setValue(entry.value)
+internal fun PDDocument.setValues(values: Map<String, String?>) = values.forEach { entry ->
+    documentCatalog?.acroForm?.fields?.firstOrNull { it.fullyQualifiedName == entry.key }?.setValue(entry.value)
 }
