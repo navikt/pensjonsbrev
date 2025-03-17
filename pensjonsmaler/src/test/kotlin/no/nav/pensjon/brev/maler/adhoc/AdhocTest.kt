@@ -139,4 +139,13 @@ class AdhocTest {
             English
         )
     }
+
+    @Test
+    fun `testAdhocAlderspensjonGjtVarselBrev pdf`() {
+        testAdhocPdf(
+            AdhocAlderspensjonGjtVarselBrev.template,
+            pdfName = AdhocAlderspensjonGjtVarselBrev.kode.name,
+            Bokmal, Nynorsk, English
+        )
+    }
 }
