@@ -11,7 +11,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
-import * as unicorn from "eslint-plugin-unicorn";
+import unicorn from "eslint-plugin-unicorn";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
