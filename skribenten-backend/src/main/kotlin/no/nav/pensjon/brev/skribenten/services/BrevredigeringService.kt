@@ -313,7 +313,7 @@ class BrevredigeringService(
 
             val signaturAttestant = signaturAttestant
                 ?: brevDto.info.signaturAttestant
-                ?: principal.navIdent.let { navansattService.hentNavansatt(it.id)?.navn }
+                ?: navansattService.hentNavansatt(principal.navIdent.id)?.let { "${it.fornavn} ${it.etternavn}" }
                 ?: principal.fullName
 
             rendreBrev(
