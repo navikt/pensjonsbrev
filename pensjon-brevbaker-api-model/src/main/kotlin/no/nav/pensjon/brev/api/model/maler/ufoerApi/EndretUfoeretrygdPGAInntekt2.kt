@@ -1,10 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt
 
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
-import no.nav.pensjon.brev.api.model.maler.legacy.PE
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import java.time.LocalDate
 
 data class EndretUfoeretrygdPGAInntektDto2(
@@ -41,7 +37,9 @@ data class Gjenlevendetillegg (
 data class BarnetilleggFellesbarn (
     val netto: Int,
     val endringsbelop: Int,
-    val inntektBruktIAvkortning: Int,
+    val totalInntektBruktIAvkortning: Int,
+    val inntektBruker: Int,
+    val inntektAnnenForelder: Int,
     val fribelop: Int,
     val inntektstak: Int,
     val antallBarn: Int,

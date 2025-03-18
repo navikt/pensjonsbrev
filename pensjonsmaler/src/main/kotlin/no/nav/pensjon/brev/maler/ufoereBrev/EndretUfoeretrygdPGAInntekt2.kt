@@ -2,7 +2,10 @@ package no.nav.pensjon.brev.maler.ufoereBrev
 
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggFellesbarnSelectors.inntektAnnenForelder
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggFellesbarnSelectors.inntektBruker
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggFellesbarnSelectors.netto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggSaerkullsbarnSelectors.inntektBruktIAvkortning
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.BarnetilleggSaerkullsbarnSelectors.netto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto2Selectors.barnetilleggFellesbarn
@@ -268,12 +271,8 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
                 paragraph {
                     textExpr(
                         Bokmal to "Uføretrygden din endres fordi vi har fått opplysninger om endringer i din inntekt. ".expr() +
-                                "Den årlige inntekten vi har brukt i beregningen er " + uforetrygd.inntektBruktIAvkortning.format(
-                            CurrencyFormat
-                        ) +
-                                " kroner, det gir deg rett til en årlig utbetaling av uføretrygd " + uforetrygd.netto.format(
-                            CurrencyFormat
-                        ) + ". ",
+                                "Den årlige inntekten vi har brukt i beregningen er " + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) +
+                                " kroner, det gir deg rett til en årlig utbetaling av uføretrygd " + uforetrygd.netto.format(CurrencyFormat) + ". ",
                         Nynorsk to "".expr()
                     )
                 }
@@ -304,9 +303,7 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
                 }
                 paragraph {
                     textExpr(
-                        Bokmal to "Du får ikke utbetalt uføretrygd fordi inntekten din er høyere enn".expr() + uforetrygd.inntektstak.format(
-                            CurrencyFormat
-                        ) +
+                        Bokmal to "Du får ikke utbetalt uføretrygd fordi inntekten din er høyere enn".expr() + uforetrygd.inntektstak.format(CurrencyFormat) +
                                 " kroner, som er 80 prosent av den oppjusterte inntekten du hadde før du ble ufør. Inntekten vi har brukt i " +
                                 "beregningen er " + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) + "kroner, du vil derfor ikke få utbetalt uføretrygd resten av året.",
                         Nynorsk to "".expr()
@@ -361,21 +358,239 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
                     )
                 }
             }
+            ifNotNull(barnetilleggFellesbarn) { btfb ->
+                title2 {
+                    text(
+                        Bokmal to "Barnetillegg for barn som bor med begge foreldre ",
+                        Nynorsk to "",
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vi har endret barnetillegget ut fra din personinntekt på ".expr() + btfb.inntektBruker.format(CurrencyFormat) +
+                                " kroner og personinntekten til din EPS på " + btfb.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
+                                "Når vi beregner nytt barnetillegg, tar vi hensyn til hvor mye du har fått utbetalt i barnetillegg hittil i år. " +
+                                "Du får derfor en utbetaling av barnetillegg på kroner " + btfb.netto.format(CurrencyFormat) +
+                                " kroner per måned fra neste måned. ",
+                        Nynorsk to "".expr()
+                    )
+                }
+            }
+
+            ifNotNull(barnetilleggSaerkullsbarn) { btsb ->
+                title2 {
+                    text(
+                        Bokmal to "Barnetillegg for barn som bor med en forelder ",
+                        Nynorsk to "",
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vi har endret barnetillegget ut fra din personinntekt på ".expr() + btsb.inntektBruktIAvkortning.format(CurrencyFormat) +
+                                " kroner. Når vi beregner nytt barnetillegg, tar vi hensyn til hvor mye du har fått utbetalt i barnetillegg hittil i år. " +
+                                "Du får derfor en utbetaling av barnetillegg på kroner " + btsb.netto.format(CurrencyFormat) + " kroner per måned fra neste måned.",
+                        Nynorsk to "".expr()
+                    )
+                }
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "Du kan melde inn forventet inntekt i Inntektsplanleggeren på nav.no/inntektsplanleggeren ",
+                    Nynorsk to ""
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Alle andre endringer kan du melde inn på nav.no/uforetrygd#melde ",
+                    Nynorsk to ""
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Les mer om dette i vedlegget \"Dine rettigheter og plikter”. ",
+                    Nynorsk to ""
+                )
+            }
+
+            title1 {
+                text(
+                    Bokmal to "Etteroppgjør ",
+                    Nynorsk to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Hvert år sjekker vi inntektsopplysningene i skatteoppgjøret ditt for å se om du har fått utbetalt riktig beløp i uføretrygd og tillegg året før.",
+                    Nynorsk to ""
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Viser skatteoppgjøret at du har hatt en annen inntekt enn den inntekten vi brukte da vi beregnet utbetalingene dine, vil vi gjøre en ny beregning. Dette kalles etteroppgjør.",
+                    Nynorsk to ""
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Hvis du har fått for lite utbetalt, får du en etterbetaling fra oss. Har du fått for mye utbetalt, må du betale tilbake. ",
+                    Nynorsk to ""
+                )
+            }
+
+            title1 {
+                text(
+                    Bokmal to "Inntekter som ikke skal gi lavere utbetaling av uføretrygden ",
+                    Nynorsk to ""
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Det gjelder hvis du har fått utbetalt erstatning for inntektstap ved: ",
+                    Nynorsk to ""
+                )
+                list {
+                    item {
+                        text(
+                            Bokmal to "Skade (Skadeerstatningsloven § 3-1)",
+                            Nynorsk to ""
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "Yrkesskade (Yrkesskadeforsikringsloven § 13)  ",
+                            Nynorsk to ""
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "Pasientskade (Pasientskadeloven § 4 første ledd) ",
+                            Nynorsk to ""
+                        )
+                    }
+                }
+            }
+            paragraph {
+                text(
+                    Bokmal to " Inntekt fra arbeid eller virksomhet som ble helt avsluttet før du fikk innvilget uføretrygd, for eksempel: ",
+                    Nynorsk to ""
+                )
+                list {
+                    item {
+                        text(
+                            Bokmal to "Utbetalte feriepenger for et arbeidsforhold som er avsluttet ",
+                            Nynorsk to ""
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "• Inntekter fra salg av produksjonsmidler i forbindelse med opphør av virksomheten ",
+                            Nynorsk to ""
+                        )
+                    }
+                    item {
+                        text(
+                            Bokmal to "• Produksjonstillegg og andre overføringer til gårdbrukere ",
+                            Nynorsk to ""
+                        )
+                    }
+                }
+            }
+            paragraph {
+                text(
+                    Bokmal to "Dette kan også gjelde store etterbetalinger og pengestøtte fra Nav, hvis pengestøtten er pensjonsgivende og etterbetalingen har skjedd i 2024 eller senere. ",
+                    Nynorsk to ""
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Hvis du sender oss dokumentasjon som viser at du har en slik inntekt, kan vi gjøre en ny beregning av uføretrygden din. ",
+                    Nynorsk to ""
+                )
+            }
+
+            title1 {
+                text(
+                    Bokmal to "Du har rett til å klage ",
+                    Nynorsk to ""
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du fikk vedtaket. " +
+                            "I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på nav.no/klage. ",
+                    Nynorsk to ""
+                )
+            }
+
+            title1 {
+                text(
+                    Bokmal to "Du har rett til innsyn ",
+                    Nynorsk to ""
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram. ",
+                    Nynorsk to ""
+                )
+            }
+
+            title1 {
+                text(
+                    Bokmal to "Sjekk utbetalingene dine ",
+                    Nynorsk to ""
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. Du kan se alle utbetalingene du har mottatt på nav.no/dittnav. Her kan du også endre kontonummeret ditt. ",
+                    Nynorsk to ""
+                )
+            }
+
+            title1 {
+                text(
+                    Bokmal to "Skattekort ",
+                    Nynorsk to ""
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Uføretrygd skattlegges som lønnsinntekt. Du trenger ikke levere skattekortet ditt til oss, " +
+                            "vi får skatteopplysningene dine elektronisk fra Skatteetaten. Du bør likevel sjekke at skattekortet ditt er " +
+                            "riktig. Skattekortet kan du endre på skatteetaten.no. Du kan også få hjelp av Skatteetaten hvis du har spørsmål om skatt.  ",
+                    Nynorsk to ""
+                )
+            }
+
+            title1 {
+                text(
+                    Bokmal to "Har du spørsmål? ",
+                    Nynorsk to ""
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du finner mer informasjon på nav.no/uforetrygd. På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 33, hverdager kl. 09:00-15:00. ",
+                    Nynorsk to ""
+                )
+            }
         }
 
-            /* outline {
-                 includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-                 includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
-                 includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
-                 includePhrase(Ufoeretrygd.SjekkUtbetalingene)†
-                 includePhrase(Ufoeretrygd.Skattekort)
-                 includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(brukerBorINorge))
-                 includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
-             }
+        /* outline {
+             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+             includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
+             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
+             includePhrase(Ufoeretrygd.SjekkUtbetalingene)†
+             includePhrase(Ufoeretrygd.Skattekort)
+             includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(brukerBorINorge))
+             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
+         }
 
-             includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
-             includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pe, pe.inkluderopplysningerbruktiberegningen())
-             includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
-        */
-        }
+         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
+         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pe, pe.inkluderopplysningerbruktiberegningen())
+         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
+    */
     }
+}
