@@ -477,13 +477,6 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
                 English to "Read more at ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} or contact the Norwegian Tax Administration by phone at ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} from abroad."
             )
         }
-        paragraph {
-            text(
-                Bokmal to "Omstillingsstønaden er pensjonsgivende inntekt. Den gir ikke opptjening av feriepenger.",
-                Nynorsk to "Omstillingsstønaden er pensjonsgivande inntekt. Den gir ikkje opptening av feriepengar.",
-                English to "Adjustment allowance are considered pensionable income. They do not earn you holiday pay.",
-            )
-        }
     }.orShow {
         paragraph {
             text(
@@ -510,13 +503,13 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
                         Constants.Utland.KONTAKTTELEFON_SKATT + ".",
             )
         }
-        paragraph {
-            text(
-                Bokmal to "Omstillingsstønaden er pensjonsgivende inntekt. Den gir ikke opptjening av feriepenger.",
-                Nynorsk to "Omstillingsstønaden er pensjonsgivande inntekt. Den gir ikkje opptening av feriepengar.",
-                English to "Adjustment allowance are considered pensionable income. They do not earn you holiday pay.",
-            )
-        }
+    }
+    paragraph {
+        text(
+            Bokmal to "Omstillingsstønaden er pensjonsgivende inntekt. Den gir ikke opptjening av feriepenger.",
+            Nynorsk to "Omstillingsstønaden er pensjonsgivande inntekt. Den gir ikkje opptening av feriepengar.",
+            English to "Adjustment allowance are considered pensionable income. They do not earn you holiday pay.",
+        )
     }
 
 }
