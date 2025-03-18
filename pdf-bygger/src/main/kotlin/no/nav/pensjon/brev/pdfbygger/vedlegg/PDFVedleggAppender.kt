@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.pdfbygger.vedlegg
 
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
-import no.nav.pensjon.brev.pdfbygger.vedlegg.P1VedleggAppender.leggPaaP1
-import no.nav.pensjon.brev.pdfbygger.vedlegg.P1VedleggAppender.leggPaaP1Vedlegg
+import no.nav.pensjon.brev.pdfbygger.vedlegg.P1VedleggAppender.lesInnP1
+import no.nav.pensjon.brev.pdfbygger.vedlegg.P1VedleggAppender.lesInnP1Vedlegg
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggType
 import org.apache.pdfbox.multipdf.PDFMergerUtility
@@ -27,17 +27,17 @@ internal object PDFVedleggAppender {
         val originaltDokument = pdfCompilationResponse.bytes.let { PDDocument.load(it) }
         merger.appendDocument(target, originaltDokument)
         leggPaaBlankPartallsside(originaltDokument, merger, target)
-        attachments.map { leggPaaVedlegg(it) }.forEach {
+        attachments.map { lesInnVedlegg(it) }.forEach {
             leggPaaBlankPartallsside(it, merger, target)
             merger.appendDocument(target, it)
         }
         return tilByteArray(target)
     }
 
-    private fun leggPaaVedlegg(attachment: PDFVedlegg): PDDocument =
+    private fun lesInnVedlegg(attachment: PDFVedlegg): PDDocument =
         when (attachment.type) {
-            PDFVedleggType.P1 -> leggPaaP1(attachment.data)
-            PDFVedleggType.InformasjonOmP1 -> leggPaaP1Vedlegg()
+            PDFVedleggType.P1 -> lesInnP1(attachment.data)
+            PDFVedleggType.InformasjonOmP1 -> lesInnP1Vedlegg()
         }
 
     private fun leggPaaBlankPartallsside(

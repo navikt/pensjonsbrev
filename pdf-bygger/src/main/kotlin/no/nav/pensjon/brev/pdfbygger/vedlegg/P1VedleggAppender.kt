@@ -7,7 +7,7 @@ internal object P1VedleggAppender {
 
     private const val RADER_PER_SIDE = 5
 
-    internal fun leggPaaP1(data: Map<String, Any>): PDDocument {
+    internal fun lesInnP1(data: Map<String, Any>): PDDocument {
         val unwrapped = data["data"] as Map<*, *>
 
         val target = PDDocument()
@@ -124,7 +124,7 @@ internal object P1VedleggAppender {
                 )
             }.also { merger.appendDocument(target, it) }
 
-    internal fun leggPaaP1Vedlegg() = lesInnPDF("/P1-vedlegg.pdf")
+    internal fun lesInnP1Vedlegg() = lesInnPDF("/P1-vedlegg.pdf")
 
     private fun lesInnPDF(filnavn: String): PDDocument = PDDocument.load(javaClass.getResourceAsStream(filnavn))
 }
