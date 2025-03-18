@@ -7,7 +7,6 @@ import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggType
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
-import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm
 import java.io.ByteArrayOutputStream
 
 internal object PDFVedleggAppender {
