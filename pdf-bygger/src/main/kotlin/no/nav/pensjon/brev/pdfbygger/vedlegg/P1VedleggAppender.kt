@@ -55,8 +55,8 @@ internal object P1VedleggAppender {
         innvilgedePensjoner: List<Map<String, Any>>,
         antallSide2: Int,
         totaltAntallSider: Int,
-    ) = (0..<antallSide2).map { it * 5 }.map { index ->
-        (index..index + 4).map { radnummer ->
+    ) = (0..<antallSide2).map { index ->
+        ((index*5)..(index*5) + 4).map { radnummer ->
             innvilgedePensjoner.getOrNull(radnummer)
                 ?.let { pensjon -> flettInnInnvilgetPensjon((radnummer%5)+1, pensjon) }
                 ?: emptyMap()
