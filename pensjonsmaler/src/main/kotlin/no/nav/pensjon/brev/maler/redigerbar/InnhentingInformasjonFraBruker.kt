@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBr
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.amerikanskSocialSecurityNumber
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.bankOpplysninger
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.boOgArbeidsperioder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.bosattEoesLandSedEoesBlanketter
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.bosattIEoesLandSedErEoesBlanketter
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.eps60aarOgInntektUnder1g
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.eps62aarOgInntektUnder1gBoddArbeidUtland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.epsInntektUnder2g
@@ -159,12 +159,11 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
 
 
             showIf(saksbehandlerValg.registreringAvSivilstand) {
-                paragraph {
+                title1 {
                     textExpr(
                         Bokmal to "Personnummer/ID for ".expr() + fritekst("ektefellen/partneren/samboeren") + " din",
                         Nynorsk to "Personnummer/ID for ".expr() + fritekst("ektefellen/partnaren/sambuaren") + " din",
-                        English to "Personal identity number for your".expr() + fritekst("spouse/partner/cohabiting partner")
-                        ,
+                        English to "Personal identity number for your".expr() + fritekst("spouse/partner/cohabiting partner"),
                     )
                 }
 
@@ -544,7 +543,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.bosattEoesLandSedEoesBlanketter) {
+            showIf(saksbehandlerValg.bosattIEoesLandSedErEoesBlanketter) {
                 title1 {
                     text(
                         Bokmal to "Søknad fra EØS-land",

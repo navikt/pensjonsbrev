@@ -23,6 +23,5 @@ data class InnhentingInformasjonFraBrukerDto(
         val tidspunktForUttak: Boolean, //Tidspunkt for uttak / ønsket uttaksgrad
         val manglendeOpptjening: Boolean, //Manglende opptjening
         val boOgArbeidsperioder: Boolean, //Bo- og arbeidsperioder
-        val bosattEoesLandSedEoesBlanketter: Boolean, //Bosatt i EØS-land. SED-er/EØS-blanketter
     ) : BrevbakerBrevdata
 }

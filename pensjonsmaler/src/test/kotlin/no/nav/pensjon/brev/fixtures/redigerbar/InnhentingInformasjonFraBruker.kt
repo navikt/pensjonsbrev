@@ -18,7 +18,6 @@ fun createInnhentingInformasjonFraBrukerDto() =
             tidspunktForUttak = true,
             manglendeOpptjening = true,
             boOgArbeidsperioder = true,
-            bosattEoesLandSedEoesBlanketter = true
         ),
         pesysData = EmptyBrevdata
     )
