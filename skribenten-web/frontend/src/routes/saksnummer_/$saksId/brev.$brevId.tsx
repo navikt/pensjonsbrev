@@ -32,7 +32,7 @@ import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, Saksbehand
 import { type EditedLetter } from "~/types/brevbakerTypes";
 import { queryFold } from "~/utils/tanstackUtils";
 
-export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
+export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
   parseParams: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
   component: RedigerBrevPage,
 });

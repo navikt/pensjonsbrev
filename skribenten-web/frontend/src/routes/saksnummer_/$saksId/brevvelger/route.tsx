@@ -22,7 +22,7 @@ import { formatStringDate } from "~/utils/dateUtils";
 import BrevmalPanel from "./-components/BrevmalPanel";
 import BrevvelgerFooter from "./-components/BrevvelgerFooter";
 
-export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
+export const Route = createFileRoute("/saksnummer_/$saksId/brevvelger")({
   validateSearch: (
     search: Record<string, unknown>,
   ): { idTSSEkstern?: string; brevId?: string; templateId?: string; enhetsId?: string } => ({
