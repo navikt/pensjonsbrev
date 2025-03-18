@@ -19,7 +19,7 @@ internal object P1VedleggAppender {
         val totaltAntallSider = 1 + antallSide2 + antallSide3 + 1
 
         merger.appendDocument(target, settOppSide1(unwrapped, totaltAntallSider))
-        settOppSide2(merger, target, innvilgedePensjoner, antallSide2, totaltAntallSider)
+        settOppSide2(merger, target, innvilgedePensjoner, antallSide2 = antallSide2, totaltAntallSider = totaltAntallSider)
         settOppSide3(
             avslaattePensjoner,
             merger,
@@ -76,7 +76,7 @@ internal object P1VedleggAppender {
     ) = (0..<antallSide2).map { index ->
         ((index * RADER_PER_SIDE)..(index * RADER_PER_SIDE) + 4).map { radnummer ->
             innvilgedePensjoner.getOrNull(radnummer)
-                .letOrEmpty { pensjon -> flettInnInnvilgetPensjon((radnummer % RADER_PER_SIDE) + 1, pensjon) }
+                .letOrEmpty { flettInnInnvilgetPensjon((radnummer % RADER_PER_SIDE) + 1, it) }
         }.let { flettefelt ->
             lesInnPDF("/P1-side2.pdf").also {
                 it.setValues(
