@@ -430,49 +430,53 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
         paragraph {
             text(
                 Bokmal to "Skattereglene for omstillingsstønad avhenger av om du er skattemessig bosatt i Norge.",
-                Nynorsk to "",
+                Nynorsk to "Skattereglar for omstillingsstønad avheng av om du er skattemessig busett i Noreg.",
                 English to ""
             )
         }
         paragraph {
             text(
                 Bokmal to "Skattemessig bosatt i Norge:",
-                Nynorsk to "",
+                Nynorsk to "Skattemessig busett i Noreg:",
                 English to ""
             )
             text(
                 Bokmal to "Hvis du er skattemessig bosatt i Norge, skal du betale skatt på all inntekt og formue. " +
                         "Husk å kontrollere skattekortet ditt på ${Constants.SKATTEETATEN_ENDRE_URL}. Ønsker du å avslutte skatteplikten, " +
                         "kan du søke om skattemessig emigrasjon",
-                Nynorsk to "",
+                Nynorsk to "Viss du er skattemessig busett i Norge, skal du betale skatt for all inntekt og formue. " +
+                        "Husk å sjekke skattekortet ditt på ${Constants.SKATTEETATEN_ENDRE_URL}. Ønskjer du å avslutte skatteplikta, " +
+                        "kan du søkje om skattemessig emigrasjon.",
                 English to ""
             )
         }
         paragraph {
             text(
                 Bokmal to "Ikke skattemessig bosatt i Norge:",
-                Nynorsk to "",
+                Nynorsk to "Ikkje skattemessig busett i Noreg:",
                 English to ""
             )
             text(
                 Bokmal to "Er du ikke skattemessig bosatt i Norge, skal du betale 15 prosent kildeskatt på brutto omstillingsstønad." +
                         "Bor du i et land med skatteavtale med Norge, kan du ha rett til fritak fra kildeskatt. Bor du i et land med skatteavtale med Norge, " +
                         "kan du ha rett til fritak fra kildeskatt. Hvis du bor i et EU- eller EØS-land, kan du bli skatteberegnet som bosatt i Norge.",
-                Nynorsk to "",
+                Nynorsk to "Er du ikkje skattemessig busett i Noreg, skal du betale 15 prosent kjeldeskatt av brutto omstillingsstønad. " +
+                        "Bur du i eit land som Noreg har skatteavtale med, kan du ha rett til fritak frå kjeldeskatt. Viss du bur i eit EU- eller EØS-land, " +
+                        "kan du bli skatteberekna som busett i Noreg.",
                 English to ""
             )
         }
         paragraph {
             text(
                 Bokmal to "Les mer på ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} eller kontakt Skatteetaten på telefon ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} fra utlandet",
-                Nynorsk to "",
+                Nynorsk to "Les meir på ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} eller kontakt Skatteetaten på telefon ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} frå utlandet.",
                 English to ""
             )
         }
         paragraph {
             text(
                 Bokmal to "Omstillingsstønaden er pensjonsgivende inntekt. Den gir ikke opptjening av feriepenger.",
-                Nynorsk to "Omstillingsstønaden er pensjonsgivande inntekt. Han gir ikkje opptening av feriepengar.",
+                Nynorsk to "Omstillingsstønaden er pensjonsgivande inntekt. Den gir ikkje opptening av feriepengar.",
                 English to "Adjustment allowance are considered pensionable income. They do not earn you holiday pay.",
             )
         }
@@ -505,7 +509,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
         paragraph {
             text(
                 Bokmal to "Omstillingsstønaden er pensjonsgivende inntekt. Den gir ikke opptjening av feriepenger.",
-                Nynorsk to "Omstillingsstønaden er pensjonsgivande inntekt. Han gir ikkje opptening av feriepengar.",
+                Nynorsk to "Omstillingsstønaden er pensjonsgivande inntekt. Den gir ikkje opptening av feriepengar.",
                 English to "Adjustment allowance are considered pensionable income. They do not earn you holiday pay.",
             )
         }
