@@ -185,10 +185,10 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
             }
             paragraph {
                 val beskrivelse = fritekst("Fritekst felt - beskriv hva som har skjedd i saken/ årsaken til revurderingen")
-                text(
-                    Bokmal to "<Fritekstfelt - beskriv hva som har skjedd i saken/ årsaken til revurderingen>",
-                    Nynorsk to "<Fritekstfelt - beskriv hva som har skjedd i saken/ årsaken til revurderingen>",
-                    English to "<Fritekstfelt - beskriv hva som har skjedd i saken/årsaken til revurderingen>",
+                textExpr(
+                    Bokmal to beskrivelse,
+                    Nynorsk to beskrivelse,
+                    English to beskrivelse,
                 )
             }
             title1 {
