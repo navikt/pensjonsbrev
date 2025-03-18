@@ -38,7 +38,7 @@ fun informasjonOmOmstillingsstoenad(): AttachmentTemplate<LangBokmalNynorskEngli
         hvilkenInntektReduseresEtter()
         hvordanMeldeEndringer(argument.bosattUtland)
         utbetalingTilKontonummer()
-        skatt()
+        skatt(argument.bosattUtland)
     }
 }
 
@@ -417,7 +417,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.skatt() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.skatt(bosattUtland: Expression<Boolean>) {
     title2 {
         text(
             Bokmal to "Skatt",
@@ -425,36 +425,62 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
             English to "Tax",
         )
     }
-    paragraph {
-        text(
-            Bokmal to "Omstillingsstønaden er skattepliktig. Du trenger ikke levere skattekortet til Nav " +
-                    "fordi skatteopplysningene dine sendes elektronisk fra Skatteetaten.",
-            Nynorsk to "Omstillingsstønaden er skattepliktig. Du treng ikkje levere skattekortet til Nav, " +
-                    "då skatteopplysningane dine blir sende elektronisk frå Skatteetaten.",
-            English to "Adjustment allowance are taxable. You do not need to submit your tax deduction " +
-                    "card to Nav because your tax information is sent to Nav electronically from the " +
-                    "Norwegian Tax Administration.",
-        )
+
+    showIf(bosattUtland) {
+        paragraph {
+            text(
+                Bokmal to "Skattereglene for omstillingsstønad avhenger av om du er skattemessig bosatt i Norge.",
+                Nynorsk to "",
+                English to ""
+            )
+        }
+
+        paragraph {
+            text(
+                Bokmal to "Skattemessig bosatt i Norge:",
+                Nynorsk to "",
+                English to ""
+            )
+            text(
+                Bokmal to "Hvis du er skattemessig bosatt i Norge, skal du betale skatt på all inntekt og formue. Husk å kontrollere skattekortet ditt på ${Constants.SKATTEETATEN_URL}. Ønsker du å avslutte skatteplikten, kan du søke om skattemessig emigrasjon",
+                Nynorsk to "",
+                English to ""
+            )
+        }
+
+    }.orShow {
+        paragraph {
+            text(
+                Bokmal to "Omstillingsstønaden er skattepliktig. Du trenger ikke levere skattekortet til Nav " +
+                        "fordi skatteopplysningene dine sendes elektronisk fra Skatteetaten.",
+                Nynorsk to "Omstillingsstønaden er skattepliktig. Du treng ikkje levere skattekortet til Nav, " +
+                        "då skatteopplysningane dine blir sende elektronisk frå Skatteetaten.",
+                English to "Adjustment allowance are taxable. You do not need to submit your tax deduction " +
+                        "card to Nav because your tax information is sent to Nav electronically from the " +
+                        "Norwegian Tax Administration.",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Endring av skattekort gjøres enklest på Skatteetatens nettsider www.skatteetaten.no. " +
+                        "Har du spørsmål kan du ringe Skatteetaten på telefon " + Constants.KONTAKTTELEFON_SKATT + ". " +
+                        "Fra utlandet ringer du " + Constants.Utland.KONTAKTTELEFON_SKATT + ".",
+                Nynorsk to "Skattekortet endrar du enklast frå nettsidene til Skatteetaten, www.skatteetaten.no. " +
+                        "Viss du har spørsmål, kan du ringje Skatteetaten på telefon " + Constants.KONTAKTTELEFON_SKATT + ". " +
+                        "Frå utlandet ringjer du " + Constants.Utland.KONTAKTTELEFON_SKATT + ".",
+                English to "The easiest way to change your tax deduction card is done on the Tax Administration's " +
+                        "website: www.skatteetaten.no. If you have any questions, please call the Tax Administration " +
+                        "by phone: " + Constants.KONTAKTTELEFON_SKATT + ". For calls from abroad: " +
+                        Constants.Utland.KONTAKTTELEFON_SKATT + ".",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Omstillingsstønaden er pensjonsgivende inntekt. Den gir ikke opptjening av feriepenger.",
+                Nynorsk to "Omstillingsstønaden er pensjonsgivande inntekt. Han gir ikkje opptening av feriepengar.",
+                English to "Adjustment allowance are considered pensionable income. They do not earn you holiday pay.",
+            )
+        }
     }
-    paragraph {
-        text(
-            Bokmal to "Endring av skattekort gjøres enklest på Skatteetatens nettsider www.skatteetaten.no. " +
-                    "Har du spørsmål kan du ringe Skatteetaten på telefon " + Constants.KONTAKTTELEFON_SKATT + ". " +
-                    "Fra utlandet ringer du " + Constants.Utland.KONTAKTTELEFON_SKATT + ".",
-            Nynorsk to "Skattekortet endrar du enklast frå nettsidene til Skatteetaten, www.skatteetaten.no. " +
-                    "Viss du har spørsmål, kan du ringje Skatteetaten på telefon " + Constants.KONTAKTTELEFON_SKATT + ". " +
-                    "Frå utlandet ringjer du " + Constants.Utland.KONTAKTTELEFON_SKATT + ".",
-            English to "The easiest way to change your tax deduction card is done on the Tax Administration's " +
-                    "website: www.skatteetaten.no. If you have any questions, please call the Tax Administration " +
-                    "by phone: " + Constants.KONTAKTTELEFON_SKATT + ". For calls from abroad: " +
-                    Constants.Utland.KONTAKTTELEFON_SKATT + ".",
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "Omstillingsstønaden er pensjonsgivende inntekt. Den gir ikke opptjening av feriepenger.",
-            Nynorsk to "Omstillingsstønaden er pensjonsgivande inntekt. Han gir ikkje opptening av feriepengar.",
-            English to "Adjustment allowance are considered pensionable income. They do not earn you holiday pay.",
-        )
-    }
+
 }
