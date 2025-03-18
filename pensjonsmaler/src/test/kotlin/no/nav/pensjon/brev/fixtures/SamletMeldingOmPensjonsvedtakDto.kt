@@ -18,6 +18,7 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             fornavn = "Peder",
             etternavn = "Ås",
             etternavnVedFoedsel = "Aas",
+            dateOfBirth = null,
             adresselinje = "Lillevik Torg",
             poststed = "Lillevik",
             postnummer = "4321",
@@ -27,6 +28,7 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             fornavn = "Lars",
             etternavn = "Holm",
             etternavnVedFoedsel = "Kirkerud",
+            dateOfBirth = "01.03.1990",
             adresselinje = "Storgata 1",
             poststed = "Lillevik vestre",
             postnummer = "4320",
@@ -69,36 +71,8 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
                 ),
             )
         ),
-        avslaattePensjoner = listOf(
-            AvslaattPensjon(
-                institusjon = "NAY 3",
-                type = Sakstype.ALDER,
-                avslagsbegrunnelse = Avslagsbegrunnelse.IncomeCeilingIsExceeded,
-                vurderingsperiode = "Januar 2023",
-                adresseNyVurdering = Adresse(
-                    adresselinje1 = "Lillevik Torgvei 2",
-                    adresselinje2 = null,
-                    adresselinje3 = null,
-                    landkode = "DK",
-                    postnummer = "4324",
-                    poststed = "Lillevik Vestre"
-                )
-            ),
-            AvslaattPensjon(
-                institusjon = "NAY 4",
-                type = Sakstype.GJENLEV,
-                avslagsbegrunnelse = Avslagsbegrunnelse.InsurancePeriodsLessThanOneYear,
-                vurderingsperiode = "Mars 2025",
-                adresseNyVurdering = Adresse(
-                    adresselinje1 = "Lillevik Torgvei 1",
-                    adresselinje2 = null,
-                    adresselinje3 = null,
-                    landkode = "FI",
-                    postnummer = "4321",
-                    poststed = "Lillevik Østre"
-                )
-            )
-        ),
+        avslaattePensjoner =
+            (0..<11).map { avslaattPensjon() },
         institution = Institution(
             name = "NFP",
             street = "Lilleviksgrenda",
@@ -106,10 +80,25 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             postcode = "4322",
             countryCode = "NO",
             institutionID = "NFPL1",
-            officeFax = null,
+            officeFax = "12134412",
             officePhone = "+123 45678901",
             email = "lars.holm@tøys.nfp.no",
             date = LocalDate.now(),
             signature = "Lars Holm, saksbehandler",
         )
     )
+
+private fun avslaattPensjon() = AvslaattPensjon(
+    institusjon = "NAY 4",
+    type = Sakstype.GJENLEV,
+    avslagsbegrunnelse = Avslagsbegrunnelse.InsurancePeriodsLessThanOneYear,
+    vurderingsperiode = "Mars 2025",
+    adresseNyVurdering = Adresse(
+        adresselinje1 = "Lillevik Torgvei 1",
+        adresselinje2 = null,
+        adresselinje3 = null,
+        landkode = "FI",
+        postnummer = "4321",
+        poststed = "Lillevik Østre"
+    )
+)

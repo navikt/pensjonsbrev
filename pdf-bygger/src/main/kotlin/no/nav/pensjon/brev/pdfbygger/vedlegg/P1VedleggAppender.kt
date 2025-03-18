@@ -10,15 +10,21 @@ internal object P1VedleggAppender {
 
         val target = PDDocument()
         val merger = PDFMergerUtility()
-        merger.appendDocument(target, settOppSide1(unwrapped))
-        settOppSide2(merger, target, unwrapped["innvilgedePensjoner"] as List<Map<String, Any>>)
-        settOppSide3(unwrapped["avslaattePensjoner"] as List<Map<String, Any>>, merger, target)
-        settOppSide4(unwrapped["institution"] as Map<String, Any>, merger, target)
+        val innvilgedePensjoner = unwrapped["innvilgedePensjoner"] as List<Map<String, Any>>
+        val avslaattePensjoner = unwrapped["avslaattePensjoner"] as List<Map<String, Any>>
+        val antallSide2 = Math.ceilDiv(innvilgedePensjoner.size, 5)
+        val antallSide3 = Math.ceilDiv(avslaattePensjoner.size, 5)
+        val totaltAntallSider = 1 + antallSide2 + antallSide3 + 1
+
+        merger.appendDocument(target, settOppSide1(unwrapped, totaltAntallSider))
+        settOppSide2(merger, target, innvilgedePensjoner, antallSide2, totaltAntallSider)
+        settOppSide3(avslaattePensjoner, merger, target, startSide3 = 1+antallSide2, antallSide3 = antallSide3, totaltAntallSider = totaltAntallSider)
+        settOppSide4(unwrapped["institution"] as Map<String, Any>, merger, target, totaltAntallSider = totaltAntallSider)
 
         return target
     }
 
-    private fun settOppSide1(unwrapped: Map<*, *>): PDDocument {
+    private fun settOppSide1(unwrapped: Map<*, *>, totaltAntallSider: Int): PDDocument {
         val holderData = unwrapped["holder"] as Map<*, *>
         val holder = mapOf(
             "fornavn" to holderData["fornavn"].toString(),
@@ -29,21 +35,35 @@ internal object P1VedleggAppender {
             "postkode" to holderData["postnummer"].toString(),
             "by" to holderData["poststed"].toString()
         )
-        return lesInnPDF("/P1-side1.pdf").also { it.setValues(holder) }
+        val insuredData = unwrapped["insuredPerson"] as Map<*, *>
+        val insured = mapOf(
+            "insured-surname" to insuredData["fornavn"].toString(),
+            "insured-forename" to insuredData["etternavn"].toString(),
+            "insured-surenameAtBirth" to insuredData["etternavnVedFoedsel"].toString(),
+            "insured-dateOfBirth" to insuredData["dateOfBirth"]?.toString(),
+            "insured-street" to insuredData["adresselinje"].toString(),
+            "insured-town" to insuredData["poststed"].toString(),
+            "insured-postcode" to insuredData["postnummer"].toString(),
+            "insured-countryCode" to insuredData["landkode"].toString()
+        )
+        return lesInnPDF("/P1-side1.pdf").also { it.setValues(holder.plus(insured).plus("page" to "1/$totaltAntallSider")) }
     }
 
     private fun settOppSide2(
         merger: PDFMergerUtility,
         target: PDDocument,
         innvilgedePensjoner: List<Map<String, Any>>,
-    ) = (0..<Math.ceilDiv(innvilgedePensjoner.size, 5)).map { it * 5 }.map { index ->
+        antallSide2: Int,
+        totaltAntallSider: Int,
+    ) = (0..<antallSide2).map { it * 5 }.map { index ->
         (index..index + 4).map { radnummer ->
             innvilgedePensjoner.getOrNull(radnummer)
-                ?.let { pensjon -> flettInnInnvilgetPensjon(radnummer + 1, pensjon) }
+                ?.let { pensjon -> flettInnInnvilgetPensjon((radnummer%5)+1, pensjon) }
                 ?: emptyMap()
         }.let { flettefelt ->
             lesInnPDF("/P1-side2.pdf").also {
-                it.setValues(flettefelt.flatMap { it.entries }.associate { it.key to it.value })
+                it.setValues(flettefelt.flatMap { it.entries }.associate { it.key to it.value }
+                    .plus("page" to "${1 + index + 1}/$totaltAntallSider"))
             }
         }
     }.forEach { merger.appendDocument(target, it) }
@@ -63,14 +83,20 @@ internal object P1VedleggAppender {
         avslaattePensjoner: List<Map<String, Any>>,
         merger: PDFMergerUtility,
         target: PDDocument,
-    ) = (0..<Math.ceilDiv(avslaattePensjoner.size, 5)).map { it * 5 }.map { index ->
-        (index..index + 4).map { radnummer ->
+        startSide3: Int,
+        antallSide3: Int,
+        totaltAntallSider: Int,
+    ) = (0..<antallSide3).map { index ->
+        ((index*5)..(index*5) + 4).map { radnummer ->
             avslaattePensjoner.getOrNull(radnummer)
-                ?.let { pensjon -> flettInnAvslaattPensjon(radnummer + 1, pensjon) }
+                ?.let { pensjon -> flettInnAvslaattPensjon((radnummer%5)+1, pensjon) }
                 ?: emptyMap()
         }.let { flettefelt ->
             lesInnPDF("/P1-side3.pdf").also {
-                it.setValues(flettefelt.flatMap { it.entries }.associate { it.key to it.value })
+                it.setValues(
+                    flettefelt.flatMap { it.entries }.associate { it.key to it.value }
+                        .plus("page" to "${startSide3 + index + 1}/$totaltAntallSider")
+                )
             }
         }
     }.forEach { merger.appendDocument(target, it) }
@@ -88,6 +114,7 @@ internal object P1VedleggAppender {
         institution: Map<String, Any>,
         merger: PDFMergerUtility,
         target: PDDocument,
+        totaltAntallSider: Int,
     ) =
         lesInnPDF("/P1-side4.pdf")
             .also {
@@ -105,6 +132,7 @@ internal object P1VedleggAppender {
                         "date",
                         "signature",
                     ).associateWith { key -> institution[key]?.toString() }
+                        .plus("page" to "${totaltAntallSider}/${totaltAntallSider}")
                 )
             }.also { merger.appendDocument(target, it) }
 
