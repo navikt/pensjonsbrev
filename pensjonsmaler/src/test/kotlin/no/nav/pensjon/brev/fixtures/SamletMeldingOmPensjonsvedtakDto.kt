@@ -14,7 +14,7 @@ import java.time.LocalDate
 
 fun createSamletMeldingOmPensjonsvedtakDto() =
     SamletMeldingOmPensjonsvedtakDto(
-        holder = P1Person(
+        innehaver = P1Person(
             fornavn = "Peder",
             etternavn = "Ås",
             etternavnVedFoedsel = "Aas",
@@ -24,7 +24,7 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             postnummer = "4321",
             landkode = "NO",
         ),
-        insuredPerson = P1Person(
+        forsikrede = P1Person(
             fornavn = "Lars",
             etternavn = "Holm",
             etternavnVedFoedsel = "Kirkerud",

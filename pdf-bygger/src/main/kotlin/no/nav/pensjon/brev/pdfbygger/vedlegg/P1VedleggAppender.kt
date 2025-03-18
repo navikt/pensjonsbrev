@@ -45,13 +45,13 @@ internal object P1VedleggAppender {
     }
 
     private fun settOppSide1(unwrapped: Map<*, *>, totaltAntallSider: Int): PDDocument {
-        val holder = (unwrapped["holder"] as Map<String, Any?>)
-            .let { map -> feltSide1Holder.associate { "holder-$it" to map[it]?.toString() } }
-        val insured = (unwrapped["insuredPerson"] as Map<String, Any?>)
-            .let { map -> feltSide1InsuredPerson.associate { "insured-$it" to map[it]?.toString() } }
+        val innehaver = (unwrapped["innehaver"] as Map<String, Any?>)
+            .let { map -> feltSide1Innehaver.associate { "holder-$it" to map[it]?.toString() } }
+        val forsikrede = (unwrapped["forsikrede"] as Map<String, Any?>)
+            .let { map -> feltSide1Forsikrede.associate { "insured-$it" to map[it]?.toString() } }
         return lesInnPDF("/P1-side1.pdf").also {
             it.setValues(
-                holder.plus(insured).plus("page" to "1/$totaltAntallSider")
+                innehaver.plus(forsikrede).plus("page" to "1/$totaltAntallSider")
             )
         }
     }
@@ -123,7 +123,7 @@ internal fun List<Map<String, String>>.flatten() = this.flatMap { it.entries }.a
 private fun Map<String, Any>?.letOrEmpty(block: (Map<String, Any>) -> Map<String, String>): Map<String, String> =
     this?.let { block(it) } ?: emptyMap()
 
-private val feltSide1Holder = listOf(
+private val feltSide1Innehaver = listOf(
     "fornavn",
     "etternavn",
     "etternavnVedFoedsel",
@@ -133,7 +133,7 @@ private val feltSide1Holder = listOf(
     "poststed",
 )
 
-private val feltSide1InsuredPerson = listOf(
+private val feltSide1Forsikrede = listOf(
     "fornavn",
     "etternavn",
     "etternavnVedFoedsel",

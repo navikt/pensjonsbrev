@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import java.time.LocalDate
 
 data class SamletMeldingOmPensjonsvedtakDto(
-    val holder: P1Person,
-    val insuredPerson: P1Person,
+    val innehaver: P1Person,
+    val forsikrede: P1Person,
     val sakstype: Sakstype,
     val innvilgedePensjoner: List<InnvilgetPensjon>,
     val avslaattePensjoner: List<AvslaattPensjon>,
