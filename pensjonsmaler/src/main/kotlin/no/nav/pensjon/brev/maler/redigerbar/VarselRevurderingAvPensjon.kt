@@ -122,6 +122,11 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                             English to ytelse,
                         )
                     }
+                    text(
+                        Bokmal to ".",
+                        Nynorsk to ".",
+                        English to ".",
+                    )
                 }
             }
             showIf(saksbehandlerValg.revurderingReduksjon) {
@@ -158,9 +163,9 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                         )
                     }
                     text(
-                        Bokmal to "skal beregnes på nytt på grunn av nye opplysninger.",
-                        Nynorsk to "skal bli berekna på nytt på grunn av nye opplysningar",
-                        English to "will be recalculated based on new information.",
+                        Bokmal to " skal beregnes på nytt på grunn av nye opplysninger.",
+                        Nynorsk to " skal bli berekna på nytt på grunn av nye opplysningar.",
+                        English to " will be recalculated based on new information.",
                     )
                 }
             }

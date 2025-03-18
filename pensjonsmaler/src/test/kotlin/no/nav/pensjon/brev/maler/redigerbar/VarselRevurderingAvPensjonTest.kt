@@ -21,7 +21,7 @@ class VarselRevurderingAvPensjonTest {
             revurderingAvRett = false,
             revurderingReduksjon = false,
         ),
-        pesysData = VarselRevurderingAvPensjonDto.PesysData(sakstype = Sakstype.ALDER)
+        pesysData = VarselRevurderingAvPensjonDto.PesysData(sakstype = Sakstype.FAM_PL)
         )
 
     @Test
