@@ -431,14 +431,14 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
             text(
                 Bokmal to "Skattereglene for omstillingsstønad avhenger av om du er skattemessig bosatt i Norge.",
                 Nynorsk to "Skattereglar for omstillingsstønad avheng av om du er skattemessig busett i Noreg.",
-                English to ""
+                English to "The tax rules for the adjustment allowance vary depending on whether or not you are a tax resident in Norway."
             )
         }
         paragraph {
             text(
                 Bokmal to "Skattemessig bosatt i Norge:",
                 Nynorsk to "Skattemessig busett i Noreg:",
-                English to ""
+                English to "Tax reident in Norway:"
             )
             text(
                 Bokmal to "Hvis du er skattemessig bosatt i Norge, skal du betale skatt på all inntekt og formue. " +
@@ -447,14 +447,16 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
                 Nynorsk to "Viss du er skattemessig busett i Norge, skal du betale skatt for all inntekt og formue. " +
                         "Husk å sjekke skattekortet ditt på ${Constants.SKATTEETATEN_ENDRE_URL}. Ønskjer du å avslutte skatteplikta, " +
                         "kan du søkje om skattemessig emigrasjon.",
-                English to ""
+                English to "If you are resident in Norway for tax purposes, you must pay tax on all income and wealth. " +
+                        "Remember to check your tax deduction card at ${Constants.Engelsk.SKATTEETATEN_ENDRE_URL}. If you wish to terminate your tax liability, " +
+                        "you can apply for tax emigration."
             )
         }
         paragraph {
             text(
                 Bokmal to "Ikke skattemessig bosatt i Norge:",
                 Nynorsk to "Ikkje skattemessig busett i Noreg:",
-                English to ""
+                English to "Non-tax resident in Norway:"
             )
             text(
                 Bokmal to "Er du ikke skattemessig bosatt i Norge, skal du betale 15 prosent kildeskatt på brutto omstillingsstønad." +
@@ -463,14 +465,16 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
                 Nynorsk to "Er du ikkje skattemessig busett i Noreg, skal du betale 15 prosent kjeldeskatt av brutto omstillingsstønad. " +
                         "Bur du i eit land som Noreg har skatteavtale med, kan du ha rett til fritak frå kjeldeskatt. Viss du bur i eit EU- eller EØS-land, " +
                         "kan du bli skatteberekna som busett i Noreg.",
-                English to ""
+                English to "If you are not resident in Norway for tax purposes, you must pay 15 per cent withholding tax on your adjustment allowance. " +
+                        "If you are resident in a country Norway has a tax treaty with, you may be entitled to an exemption from withholding tax on certain benefits. " +
+                        "If you live in an EU/EEA country, you may qualify to be considered as resident in Norway for tax purposes."
             )
         }
         paragraph {
             text(
                 Bokmal to "Les mer på ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} eller kontakt Skatteetaten på telefon ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} fra utlandet",
                 Nynorsk to "Les meir på ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} eller kontakt Skatteetaten på telefon ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} frå utlandet.",
-                English to ""
+                English to "Read more at ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} or contact the Norwegian Tax Administration by phone at ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} from abroad."
             )
         }
         paragraph {

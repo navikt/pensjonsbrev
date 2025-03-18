@@ -56,6 +56,7 @@ object Constants {
         const val SAKSBEHANDLINGSTIDER_URL = "${Constants.SAKSBEHANDLINGSTIDER_URL}/en"
         const val SAKSBEHANDLINGSTIDER_BP = "$SAKSBEHANDLINGSTIDER_URL#childrens-pension"
         const val SAKSBEHANDLINGSTIDER_OMS = "$SAKSBEHANDLINGSTIDER_URL#adjustment-allowance"
+        const val SKATTEETATEN_ENDRE_URL = "$SKATTEETATEN_URL/change"
     }
 
     object Utland {
