@@ -865,6 +865,7 @@ const traverseElement = (el: Element): TraversedElement[] | TraversedElement => 
         const content = [...el.children].flatMap(traverseElement).filter((el) => el.content !== null);
 
         const mapped = content.flatMap((el) => {
+          // TODO Burde det være el.content?
           if (typeof el === "string") {
             return el;
           }
