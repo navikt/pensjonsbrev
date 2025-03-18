@@ -16,7 +16,7 @@ data class P1Person(
     val fornavn: String,
     val etternavn: String,
     val etternavnVedFoedsel: String?,
-    val dateOfBirth: String?,
+    val foedselsdato: String?,
     val adresselinje: String,
     val poststed: String,
     val postnummer: String,

@@ -19,7 +19,13 @@ internal object P1VedleggAppender {
         val totaltAntallSider = 1 + antallSide2 + antallSide3 + 1
 
         merger.appendDocument(target, settOppSide1(unwrapped, totaltAntallSider))
-        settOppSide2(merger, target, innvilgedePensjoner, antallSide2 = antallSide2, totaltAntallSider = totaltAntallSider)
+        settOppSide2(
+            merger,
+            target,
+            innvilgedePensjoner,
+            antallSide2 = antallSide2,
+            totaltAntallSider = totaltAntallSider
+        )
         settOppSide3(
             avslaattePensjoner,
             merger,
@@ -39,27 +45,10 @@ internal object P1VedleggAppender {
     }
 
     private fun settOppSide1(unwrapped: Map<*, *>, totaltAntallSider: Int): PDDocument {
-        val holderData = unwrapped["holder"] as Map<*, *>
-        val holder = mapOf(
-            "fornavn" to holderData["fornavn"].toString(),
-            "etternavn" to holderData["etternavn"].toString(),
-            "etternavn_foedsel" to holderData["etternavnVedFoedsel"]?.toString(),
-            "gateadresse" to holderData["adresselinje"].toString(),
-            "landkode" to holderData["landkode"].toString(),
-            "postkode" to holderData["postnummer"].toString(),
-            "by" to holderData["poststed"].toString()
-        )
-        val insuredData = unwrapped["insuredPerson"] as Map<*, *>
-        val insured = mapOf(
-            "insured-surname" to insuredData["fornavn"].toString(),
-            "insured-forename" to insuredData["etternavn"].toString(),
-            "insured-surenameAtBirth" to insuredData["etternavnVedFoedsel"].toString(),
-            "insured-dateOfBirth" to insuredData["dateOfBirth"]?.toString(),
-            "insured-street" to insuredData["adresselinje"].toString(),
-            "insured-town" to insuredData["poststed"].toString(),
-            "insured-postcode" to insuredData["postnummer"].toString(),
-            "insured-countryCode" to insuredData["landkode"].toString()
-        )
+        val holder = (unwrapped["holder"] as Map<String, Any?>)
+            .let { map -> feltSide1Holder.associate { "holder-$it" to map[it]?.toString() } }
+        val insured = (unwrapped["insuredPerson"] as Map<String, Any?>)
+            .let { map -> feltSide1InsuredPerson.associate { "insured-$it" to map[it]?.toString() } }
         return lesInnPDF("/P1-side1.pdf").also {
             it.setValues(
                 holder.plus(insured).plus("page" to "1/$totaltAntallSider")
@@ -133,6 +122,27 @@ internal fun List<Map<String, String>>.flatten() = this.flatMap { it.entries }.a
 
 private fun Map<String, Any>?.letOrEmpty(block: (Map<String, Any>) -> Map<String, String>): Map<String, String> =
     this?.let { block(it) } ?: emptyMap()
+
+private val feltSide1Holder = listOf(
+    "fornavn",
+    "etternavn",
+    "etternavnVedFoedsel",
+    "adresselinje",
+    "landkode",
+    "postnummer",
+    "poststed",
+)
+
+private val feltSide1InsuredPerson = listOf(
+    "fornavn",
+    "etternavn",
+    "etternavnVedFoedsel",
+    "foedselsdato",
+    "adresselinje",
+    "poststed",
+    "postnummer",
+    "landkode",
+)
 
 private val feltSide2 = listOf(
     "institusjon",
