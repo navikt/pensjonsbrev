@@ -1,15 +1,15 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.maler.Adresse
-import no.nav.pensjon.brev.api.model.maler.AvslaattPensjon
-import no.nav.pensjon.brev.api.model.maler.Avslagsbegrunnelse
-import no.nav.pensjon.brev.api.model.maler.GrunnlagInnvilget
-import no.nav.pensjon.brev.api.model.maler.InnvilgetPensjon
-import no.nav.pensjon.brev.api.model.maler.Institution
-import no.nav.pensjon.brev.api.model.maler.P1Person
-import no.nav.pensjon.brev.api.model.maler.Reduksjonsgrunnlag
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
+import no.nav.pensjon.brev.api.model.maler.Samlet.Adresse
+import no.nav.pensjon.brev.api.model.maler.Samlet.AvslaattPensjon
+import no.nav.pensjon.brev.api.model.maler.Samlet.Avslagsbegrunnelse
+import no.nav.pensjon.brev.api.model.maler.Samlet.GrunnlagInnvilget
+import no.nav.pensjon.brev.api.model.maler.Samlet.InnvilgetPensjon
+import no.nav.pensjon.brev.api.model.maler.Samlet.Institusjon
+import no.nav.pensjon.brev.api.model.maler.Samlet.P1Person
+import no.nav.pensjon.brev.api.model.maler.Samlet.Reduksjonsgrunnlag
+import no.nav.pensjon.brev.api.model.maler.Samlet.SamletMeldingOmPensjonsvedtakDto
 import java.time.LocalDate
 
 fun createSamletMeldingOmPensjonsvedtakDto() =
@@ -39,11 +39,11 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
         innvilgedePensjoner = listOf(
             InnvilgetPensjon(
                 institusjon = "NAY",
-                type = Sakstype.ALDER,
+                pensjonstype = Sakstype.ALDER,
                 datoFoersteUtbetaling = "1. januar 2025",
                 bruttobeloep = "1000 NOK",
-                grunnlagInnvilget = GrunnlagInnvilget.NationalLegislation,
-                reduksjonsgrunnlag = Reduksjonsgrunnlag.InViewOfAnotherBenefitOrIncome,
+                grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
+                reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode = "Eviglang",
                 adresseNyVurdering = Adresse(
                     adresselinje1 = "Lillevik Torgvei 1",
@@ -56,11 +56,11 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             ),
             InnvilgetPensjon(
                 institusjon = "NAY2",
-                type = Sakstype.UFOREP,
+                pensjonstype = Sakstype.UFOREP,
                 datoFoersteUtbetaling = "31. januar 2020",
                 bruttobeloep = "2000 NOK",
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
-                reduksjonsgrunnlag = Reduksjonsgrunnlag.InViewOfOverlappingOfCreditedPeriods,
+                reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "Ikke så lang",
                 adresseNyVurdering = Adresse(
                     adresselinje1 = "Lillevik Torgvei 2",
@@ -73,11 +73,11 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             ),
             InnvilgetPensjon(
                 institusjon = "NAY",
-                type = Sakstype.ALDER,
+                pensjonstype = Sakstype.ALDER,
                 datoFoersteUtbetaling = "1. januar 2025",
                 bruttobeloep = "1000 NOK",
-                grunnlagInnvilget = GrunnlagInnvilget.NationalLegislation,
-                reduksjonsgrunnlag = Reduksjonsgrunnlag.InViewOfAnotherBenefitOrIncome,
+                grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
+                reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode = "Eviglang",
                 adresseNyVurdering = Adresse(
                     adresselinje1 = "Lillevik Torgvei 1",
@@ -90,11 +90,11 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             ),
             InnvilgetPensjon(
                 institusjon = "NAY2",
-                type = Sakstype.UFOREP,
+                pensjonstype = Sakstype.UFOREP,
                 datoFoersteUtbetaling = "31. januar 2020",
                 bruttobeloep = "2000 NOK",
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
-                reduksjonsgrunnlag = Reduksjonsgrunnlag.InViewOfOverlappingOfCreditedPeriods,
+                reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "Ikke så lang",
                 adresseNyVurdering = Adresse(
                     adresselinje1 = "Lillevik Torgvei 2",
@@ -107,11 +107,11 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             ),
             InnvilgetPensjon(
                 institusjon = "NAY",
-                type = Sakstype.ALDER,
+                pensjonstype = Sakstype.ALDER,
                 datoFoersteUtbetaling = "1. januar 2025",
                 bruttobeloep = "1000 NOK",
-                grunnlagInnvilget = GrunnlagInnvilget.NationalLegislation,
-                reduksjonsgrunnlag = Reduksjonsgrunnlag.InViewOfAnotherBenefitOrIncome,
+                grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
+                reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode = "Eviglang",
                 adresseNyVurdering = Adresse(
                     adresselinje1 = "Lillevik Torgvei 1",
@@ -124,11 +124,11 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             ),
             InnvilgetPensjon(
                 institusjon = "NAY2",
-                type = Sakstype.UFOREP,
+                pensjonstype = Sakstype.UFOREP,
                 datoFoersteUtbetaling = "31. januar 2020",
                 bruttobeloep = "2000 NOK",
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
-                reduksjonsgrunnlag = Reduksjonsgrunnlag.InViewOfOverlappingOfCreditedPeriods,
+                reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "Ikke så lang",
                 adresseNyVurdering = Adresse(
                     adresselinje1 = "Lillevik Torgvei 2",
@@ -142,11 +142,11 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
 
             InnvilgetPensjon(
                 institusjon = "NAY",
-                type = Sakstype.ALDER,
+                pensjonstype = Sakstype.ALDER,
                 datoFoersteUtbetaling = "1. januar 2025",
                 bruttobeloep = "1000 NOK",
-                grunnlagInnvilget = GrunnlagInnvilget.NationalLegislation,
-                reduksjonsgrunnlag = Reduksjonsgrunnlag.InViewOfAnotherBenefitOrIncome,
+                grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
+                reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode = "Eviglang",
                 adresseNyVurdering = Adresse(
                     adresselinje1 = "Lillevik Torgvei 1",
@@ -159,11 +159,11 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             ),
             InnvilgetPensjon(
                 institusjon = "NAY2",
-                type = Sakstype.UFOREP,
+                pensjonstype = Sakstype.UFOREP,
                 datoFoersteUtbetaling = "31. januar 2020",
                 bruttobeloep = "2000 NOK",
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
-                reduksjonsgrunnlag = Reduksjonsgrunnlag.InViewOfOverlappingOfCreditedPeriods,
+                reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "Ikke så lang",
                 adresseNyVurdering = Adresse(
                     adresselinje1 = "Lillevik Torgvei 2",
@@ -176,11 +176,11 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             ),
             InnvilgetPensjon(
                 institusjon = "NAY",
-                type = Sakstype.ALDER,
+                pensjonstype = Sakstype.ALDER,
                 datoFoersteUtbetaling = "1. januar 2025",
                 bruttobeloep = "1000 NOK",
-                grunnlagInnvilget = GrunnlagInnvilget.NationalLegislation,
-                reduksjonsgrunnlag = Reduksjonsgrunnlag.InViewOfAnotherBenefitOrIncome,
+                grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
+                reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode = "Eviglang",
                 adresseNyVurdering = Adresse(
                     adresselinje1 = "Lillevik Torgvei 1",
@@ -193,11 +193,11 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             ),
             InnvilgetPensjon(
                 institusjon = "NAY2",
-                type = Sakstype.UFOREP,
+                pensjonstype = Sakstype.UFOREP,
                 datoFoersteUtbetaling = "31. januar 2020",
                 bruttobeloep = "2000 NOK",
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
-                reduksjonsgrunnlag = Reduksjonsgrunnlag.InViewOfOverlappingOfCreditedPeriods,
+                reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "Ikke så lang",
                 adresseNyVurdering = Adresse(
                     adresselinje1 = "Lillevik Torgvei 2",
@@ -210,11 +210,11 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             ),
             InnvilgetPensjon(
                 institusjon = "NAY",
-                type = Sakstype.ALDER,
+                pensjonstype = Sakstype.ALDER,
                 datoFoersteUtbetaling = "1. januar 2025",
                 bruttobeloep = "1000 NOK",
-                grunnlagInnvilget = GrunnlagInnvilget.NationalLegislation,
-                reduksjonsgrunnlag = Reduksjonsgrunnlag.InViewOfAnotherBenefitOrIncome,
+                grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
+                reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode = "Eviglang",
                 adresseNyVurdering = Adresse(
                     adresselinje1 = "Lillevik Torgvei 1",
@@ -227,11 +227,11 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             ),
             InnvilgetPensjon(
                 institusjon = "NAY2",
-                type = Sakstype.UFOREP,
+                pensjonstype = Sakstype.UFOREP,
                 datoFoersteUtbetaling = "31. januar 2020",
                 bruttobeloep = "2000 NOK",
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
-                reduksjonsgrunnlag = Reduksjonsgrunnlag.InViewOfOverlappingOfCreditedPeriods,
+                reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "Ikke så lang",
                 adresseNyVurdering = Adresse(
                     adresselinje1 = "Lillevik Torgvei 2",
@@ -244,11 +244,11 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             ),
             InnvilgetPensjon(
                 institusjon = "NAY",
-                type = Sakstype.ALDER,
+                pensjonstype = Sakstype.ALDER,
                 datoFoersteUtbetaling = "1. januar 2025",
                 bruttobeloep = "1000 NOK",
-                grunnlagInnvilget = GrunnlagInnvilget.NationalLegislation,
-                reduksjonsgrunnlag = Reduksjonsgrunnlag.InViewOfAnotherBenefitOrIncome,
+                grunnlagInnvilget = GrunnlagInnvilget.IHenholdTilNasjonalLovgivning,
+                reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvAndreYtelserEllerAnnenInntekt,
                 vurderingsperiode = "Eviglang",
                 adresseNyVurdering = Adresse(
                     adresselinje1 = "Lillevik Torgvei 1",
@@ -261,11 +261,11 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             ),
             InnvilgetPensjon(
                 institusjon = "NAY2",
-                type = Sakstype.UFOREP,
+                pensjonstype = Sakstype.UFOREP,
                 datoFoersteUtbetaling = "31. januar 2020",
                 bruttobeloep = "2000 NOK",
                 grunnlagInnvilget = GrunnlagInnvilget.ProRata,
-                reduksjonsgrunnlag = Reduksjonsgrunnlag.InViewOfOverlappingOfCreditedPeriods,
+                reduksjonsgrunnlag = Reduksjonsgrunnlag.PaaGrunnAvOverlappendeGodskrevnePerioder,
                 vurderingsperiode = "Ikke så lang",
                 adresseNyVurdering = Adresse(
                     adresselinje1 = "Lillevik Torgvei 2",
@@ -279,25 +279,25 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
         ),
         avslaattePensjoner =
             (0..<11).map { avslaattPensjon() },
-        institution = Institution(
-            name = "NFP",
-            street = "Lilleviksgrenda",
-            town = "Lillevik",
-            postcode = "4322",
-            countryCode = "NO",
-            institutionID = "NFPL1",
-            officeFax = "12134412",
-            officePhone = "+123 45678901",
-            email = "lars.holm@tøys.nfp.no",
-            date = LocalDate.now(),
-            signature = "Lars Holm, saksbehandler",
+        institusjon = Institusjon(
+            navn = "NFP",
+            adresselinje = "Lilleviksgrenda",
+            poststed = "Lillevik",
+            postnummer = "4322",
+            landkode = "NO",
+            institusjonsID = "NFPL1",
+            faksnummer = "12134412",
+            telefonnummer = "+123 45678901",
+            epost = "lars.holm@tøys.nfp.no",
+            dato = LocalDate.now(),
+            underskrift = "Lars Holm, saksbehandler",
         )
     )
 
 private fun avslaattPensjon() = AvslaattPensjon(
     institusjon = "NAY 4",
-    type = Sakstype.GJENLEV,
-    avslagsbegrunnelse = Avslagsbegrunnelse.InsurancePeriodsLessThanOneYear,
+    pensjonstype = Sakstype.GJENLEV,
+    avslagsbegrunnelse = Avslagsbegrunnelse.OpptjeningsperiodePaaMindreEnnEttAar,
     vurderingsperiode = "Mars 2025",
     adresseNyVurdering = Adresse(
         adresselinje1 = "Lillevik Torgvei 1",

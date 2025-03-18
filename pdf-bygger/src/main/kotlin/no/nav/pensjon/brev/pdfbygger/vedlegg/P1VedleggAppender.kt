@@ -35,7 +35,7 @@ internal object P1VedleggAppender {
             totaltAntallSider = totaltAntallSider
         )
         settOppSide4(
-            unwrapped["institution"] as Map<String, Any>,
+            unwrapped["institusjon"] as Map<String, Any>,
             merger,
             target,
             totaltAntallSider = totaltAntallSider
@@ -51,7 +51,11 @@ internal object P1VedleggAppender {
             .let { map -> feltSide1Forsikrede.associate { "insured-$it" to map[it]?.toString() } }
         return lesInnPDF("/P1-side1.pdf").also {
             it.setValues(
-                innehaver.plus(forsikrede).plus("page" to "1/$totaltAntallSider")
+                innehaver
+                    .plus(forsikrede)
+                    .plus("kravMottattDato" to unwrapped["kravMottattDato"].toString())
+                    .plus("sakstype" to unwrapped["sakstype"].toString())
+                    .plus("page" to "1/$totaltAntallSider")
             )
         }
     }
@@ -146,7 +150,7 @@ private val feltSide1Forsikrede = listOf(
 
 private val feltSide2 = listOf(
     "institusjon",
-    "type",
+    "pensjonstype",
     "datoFoersteUtbetaling",
     "bruttobeloep",
     "grunnlagInnvilget",
@@ -157,22 +161,22 @@ private val feltSide2 = listOf(
 
 private val feltSide3 = listOf(
     "institusjon",
-    "type",
+    "pensjonstype",
     "avslagsbegrunnelse",
     "vurderingsperiode",
     "adresseNyVurdering"
 )
 
 private val feltSide4 = listOf(
-    "name",
-    "street",
-    "town",
-    "postcode",
-    "countryCode",
-    "institutionID",
-    "officeFax",
-    "officePhone",
-    "email",
-    "date",
-    "signature",
+    "navn",
+    "adresselinje",
+    "poststed",
+    "postnummer",
+    "landkode",
+    "institusjonsID",
+    "faksnummer",
+    "telefonnummer",
+    "epost",
+    "dato",
+    "underskrift",
 )
