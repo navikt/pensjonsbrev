@@ -5,6 +5,8 @@ import org.apache.pdfbox.pdmodel.PDDocument
 
 internal object P1VedleggAppender {
 
+    private const val RADER_PER_SIDE = 5
+
     internal fun leggPaaP1(data: Map<String, Any>): PDDocument {
         val unwrapped = data["data"] as Map<*, *>
 
@@ -12,8 +14,8 @@ internal object P1VedleggAppender {
         val merger = PDFMergerUtility()
         val innvilgedePensjoner = unwrapped["innvilgedePensjoner"] as List<Map<String, Any>>
         val avslaattePensjoner = unwrapped["avslaattePensjoner"] as List<Map<String, Any>>
-        val antallSide2 = Math.ceilDiv(innvilgedePensjoner.size, 5)
-        val antallSide3 = Math.ceilDiv(avslaattePensjoner.size, 5)
+        val antallSide2 = Math.ceilDiv(innvilgedePensjoner.size, RADER_PER_SIDE)
+        val antallSide3 = Math.ceilDiv(avslaattePensjoner.size, RADER_PER_SIDE)
         val totaltAntallSider = 1 + antallSide2 + antallSide3 + 1
 
         merger.appendDocument(target, settOppSide1(unwrapped, totaltAntallSider))
@@ -56,10 +58,9 @@ internal object P1VedleggAppender {
         antallSide2: Int,
         totaltAntallSider: Int,
     ) = (0..<antallSide2).map { index ->
-        ((index*5)..(index*5) + 4).map { radnummer ->
+        ((index* RADER_PER_SIDE)..(index* RADER_PER_SIDE) + 4).map { radnummer ->
             innvilgedePensjoner.getOrNull(radnummer)
-                ?.let { pensjon -> flettInnInnvilgetPensjon((radnummer%5)+1, pensjon) }
-                ?: emptyMap()
+                .letOrEmpty { pensjon -> flettInnInnvilgetPensjon((radnummer% RADER_PER_SIDE)+1, pensjon) }
         }.let { flettefelt ->
             lesInnPDF("/P1-side2.pdf").also {
                 it.setValues(flettefelt.flatMap { it.entries }.associate { it.key to it.value }
@@ -87,10 +88,9 @@ internal object P1VedleggAppender {
         antallSide3: Int,
         totaltAntallSider: Int,
     ) = (0..<antallSide3).map { index ->
-        ((index*5)..(index*5) + 4).map { radnummer ->
+        ((index* RADER_PER_SIDE)..(index* RADER_PER_SIDE) + 4).map { radnummer ->
             avslaattePensjoner.getOrNull(radnummer)
-                ?.let { pensjon -> flettInnAvslaattPensjon((radnummer%5)+1, pensjon) }
-                ?: emptyMap()
+                .letOrEmpty { pensjon -> flettInnAvslaattPensjon((radnummer% RADER_PER_SIDE)+1, pensjon) }
         }.let { flettefelt ->
             lesInnPDF("/P1-side3.pdf").also {
                 it.setValues(
@@ -100,6 +100,8 @@ internal object P1VedleggAppender {
             }
         }
     }.forEach { merger.appendDocument(target, it) }
+
+    private fun Map<String, Any>?.letOrEmpty(block: (Map<String, Any>) -> Map<String, String>): Map<String, String> = this?.let { block(it) } ?: emptyMap()
 
     private fun flettInnAvslaattPensjon(radnummer: Int, pensjon: Map<String, Any>) = listOf(
         "institusjon",
