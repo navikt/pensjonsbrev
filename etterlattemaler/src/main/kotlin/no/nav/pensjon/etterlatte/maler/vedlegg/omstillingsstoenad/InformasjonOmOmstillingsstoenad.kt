@@ -434,7 +434,6 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
                 English to ""
             )
         }
-
         paragraph {
             text(
                 Bokmal to "Skattemessig bosatt i Norge:",
@@ -442,12 +441,41 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
                 English to ""
             )
             text(
-                Bokmal to "Hvis du er skattemessig bosatt i Norge, skal du betale skatt på all inntekt og formue. Husk å kontrollere skattekortet ditt på ${Constants.SKATTEETATEN_URL}. Ønsker du å avslutte skatteplikten, kan du søke om skattemessig emigrasjon",
+                Bokmal to "Hvis du er skattemessig bosatt i Norge, skal du betale skatt på all inntekt og formue. " +
+                        "Husk å kontrollere skattekortet ditt på ${Constants.SKATTEETATEN_ENDRE_URL}. Ønsker du å avslutte skatteplikten, " +
+                        "kan du søke om skattemessig emigrasjon",
                 Nynorsk to "",
                 English to ""
             )
         }
-
+        paragraph {
+            text(
+                Bokmal to "Ikke skattemessig bosatt i Norge:",
+                Nynorsk to "",
+                English to ""
+            )
+            text(
+                Bokmal to "Er du ikke skattemessig bosatt i Norge, skal du betale 15 prosent kildeskatt på brutto omstillingsstønad." +
+                        "Bor du i et land med skatteavtale med Norge, kan du ha rett til fritak fra kildeskatt. Bor du i et land med skatteavtale med Norge, " +
+                        "kan du ha rett til fritak fra kildeskatt. Hvis du bor i et EU- eller EØS-land, kan du bli skatteberegnet som bosatt i Norge.",
+                Nynorsk to "",
+                English to ""
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Les mer på ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} eller kontakt Skatteetaten på telefon ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} fra utlandet",
+                Nynorsk to "",
+                English to ""
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Omstillingsstønaden er pensjonsgivende inntekt. Den gir ikke opptjening av feriepenger.",
+                Nynorsk to "Omstillingsstønaden er pensjonsgivande inntekt. Han gir ikkje opptening av feriepengar.",
+                English to "Adjustment allowance are considered pensionable income. They do not earn you holiday pay.",
+            )
+        }
     }.orShow {
         paragraph {
             text(
