@@ -7,6 +7,7 @@ data class SamletMeldingOmPensjonsvedtakDto(
     val innehaver: P1Person,
     val forsikrede: P1Person,
     val sakstype: Sakstype,
+    val kravMottattDato: String,
     val innvilgedePensjoner: List<InnvilgetPensjon>,
     val avslaattePensjoner: List<AvslaattPensjon>,
     val institution: Institution,

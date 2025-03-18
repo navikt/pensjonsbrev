@@ -35,6 +35,7 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             landkode = "NO",
         ),
         sakstype = Sakstype.ALDER,
+        kravMottattDato = "1.2.1983",
         innvilgedePensjoner = listOf(
             InnvilgetPensjon(
                 institusjon = "NAY",
