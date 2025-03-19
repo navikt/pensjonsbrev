@@ -102,13 +102,13 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 title1 {
                     text(
                         Bokmal to "Inntektsopplysninger",
-                        Nynorsk to "Inntektsopplysningar ",
+                        Nynorsk to "Inntektsopplysningar",
                         English to "Income information",
                     )
                 }
                 paragraph {
                     text(
-                        Bokmal to "Som dokumentasjon på inntekta, både person- og kapitalinntekta, kan du for eksempel sende kopi av likninga, kopiar av lønnsslippar frå dei tre siste månadene, stadfesting frå arbeidsgivaren, kopiar av lønns- og trekkoppgåver, stadfesting frå rekneskapsførar eller årsoppgåve frå banken.",
+                        Bokmal to "Som dokumentasjon for inntekten, både person- og kapitalinntekten, kan du for eksempel sende kopi av ligningen, kopier av lønnsslipper fra de tre siste månedene, bekreftelse fra arbeidsgiveren, kopier av lønns- og trekkoppgaver, bekreftelse fra regnskapsfører eller årsoppgave fra banken.",
                         Nynorsk to "Som dokumentasjon på inntekta, både person- og kapitalinntekta, kan du for eksempel sende kopi av likninga, kopiar av lønnsslippar frå dei tre siste månadene, stadfesting frå arbeidsgivaren, kopiar av lønns- og trekkoppgåver, stadfesting frå rekneskapsførar eller årsoppgåve frå banken.",
                         English to "Examples of documentation of your income (both your personal income and capital income) include your annual tax assessment, pay slips from the last three months, confirmation from your employer, certificates of pay and tax deducted, confirmation from your accountant and year-end statements from your bank.",
                     )
