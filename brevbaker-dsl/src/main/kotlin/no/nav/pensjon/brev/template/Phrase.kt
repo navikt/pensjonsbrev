@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
+import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 
 abstract class TextOnlyPhrase<Lang : LanguageSupport> {
