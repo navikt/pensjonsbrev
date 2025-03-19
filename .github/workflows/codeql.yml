@@ -22,7 +22,7 @@ jobs:
       security-events: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
 
@@ -34,13 +34,13 @@ jobs:
           queries: security-and-quality
 
       - name: Setup Java
-        uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
+        uses: actions/setup-java@v4
         with:
           distribution: ${{ env.JavaDistribution }}
           java-version: ${{ env.JavaVersion }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@94baf225fe0a508e581a564467443d0e2379123b
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Assemble
         run: ./gradlew assemble -Dorg.gradle.jvmargs="-Dkotlin.daemon.jvmargs=-Xmx16g"
@@ -62,7 +62,7 @@ jobs:
           output: sarif-results/java.sarif
 
       - name: Upload SARIF
-        uses: github/codeql-action/upload-sarif@70df9def86d22bf0ea4e7f8b956e7b92e7c1ea22
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: sarif-results/java.sarif
           category: "/language:java"
@@ -79,7 +79,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@v4
         with:
           persist-credentials: false
 
@@ -105,7 +105,7 @@ jobs:
           output: sarif-results/javascript.sarif
 
       - name: Upload SARIF
-        uses: github/codeql-action/upload-sarif@70df9def86d22bf0ea4e7f8b956e7b92e7c1ea22
+        uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: sarif-results/javascript.sarif
           category: "/language:javascript"
