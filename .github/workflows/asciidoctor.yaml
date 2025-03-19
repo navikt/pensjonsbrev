@@ -18,14 +18,14 @@ jobs:
         shell: bash
         working-directory: "docs"
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       with:
         persist-credentials: false
-    - uses: actions/setup-java@v4
+    - uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12
       with:
         distribution: 'adopt'
         java-version: '11'
-    - uses: ruby/setup-ruby@v1
+    - uses: ruby/setup-ruby@1a615958ad9d422dd932dc1d5823942ee002799f
       with:
         ruby-version: '2.6'
     - name: Install plantuml
@@ -39,13 +39,13 @@ jobs:
     - name: Print working directory for test
       run: "pwd"
     - name: Upload generated site
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1
       with:
         name: site
         path: "${{ github.workspace }}/build"
 
     - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4.7.3
+      uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8
       with:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         FOLDER: "build"
