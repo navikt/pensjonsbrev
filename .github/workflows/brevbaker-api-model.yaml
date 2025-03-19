@@ -92,6 +92,6 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: "Release maven manually"
         if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'
-        run: ./gradlew -Pversion="$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)" :pensjon-brevbaker-api-model:publish
+        run: ./gradlew -Pversion="$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)-SNAPSHOT" :pensjon-brevbaker-api-model:publish
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
