@@ -52,7 +52,7 @@ jobs:
         run: npm run build
 
       - name: Build and push Docker container
-        uses: nais/docker-build-push@v0
+        uses: nais/docker-build-push@791ebb6f74b82849c742a9bc9c97abe44c6c111f
         id: docker-build-push
         with:
           team: pensjonsbrev
@@ -74,7 +74,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Deploy to DEV
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@a8718ab86a0c9bd63c6e3c8bbae747f62500c272
         env:
           CLUSTER: dev-gcp
           RESOURCE: skribenten-web/bff/.nais/nais.yaml
@@ -94,7 +94,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Deploy to PROD
-        uses: nais/deploy/actions/deploy@v2
+        uses: nais/deploy/actions/deploy@a8718ab86a0c9bd63c6e3c8bbae747f62500c272
         env:
           CLUSTER: prod-gcp
           RESOURCE: skribenten-web/bff/.nais/nais.yaml

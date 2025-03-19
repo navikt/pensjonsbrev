@@ -65,7 +65,7 @@ jobs:
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
       - name: "Build and publish container image to GAR"
-        uses: nais/docker-build-push@v0
+        uses: nais/docker-build-push@791ebb6f74b82849c742a9bc9c97abe44c6c111f
         env:
           TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
         id: docker-push
@@ -100,7 +100,7 @@ jobs:
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal
           ./gradlew :pdf-bygger:build
       - name: "Build and publish container image to GAR"
-        uses: nais/docker-build-push@v0
+        uses: nais/docker-build-push@791ebb6f74b82849c742a9bc9c97abe44c6c111f
         id: docker-push
         if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
         with:
@@ -218,7 +218,7 @@ jobs:
         with:
           persist-credentials: false
       - name: "Deploy to DEV"
-        uses: "nais/deploy/actions/deploy@v2"
+        uses: "nais/deploy/actions/deploy@a8718ab86a0c9bd63c6e3c8bbae747f62500c272"
         env:
           "ENVIRONMENT": "dev-gcp:brevbaker"
           "CLUSTER": "dev-gcp"
@@ -239,7 +239,7 @@ jobs:
         with:
           persist-credentials: false
       - name: "Deploy to DEV"
-        uses: "nais/deploy/actions/deploy@v2"
+        uses: "nais/deploy/actions/deploy@a8718ab86a0c9bd63c6e3c8bbae747f62500c272"
         env:
           "ENVIRONMENT": "dev-gcp:pdf-bygger"
           "CLUSTER": "dev-gcp"
@@ -260,7 +260,7 @@ jobs:
         with:
           persist-credentials: false
       - name: "Deploy to production"
-        uses: "nais/deploy/actions/deploy@v2"
+        uses: "nais/deploy/actions/deploy@a8718ab86a0c9bd63c6e3c8bbae747f62500c272"
         env:
           "ENVIRONMENT": "prod-gcp:brevbaker"
           "CLUSTER": "prod-gcp"
@@ -281,7 +281,7 @@ jobs:
         with:
           persist-credentials: false
       - name: "Deploy to production"
-        uses: "nais/deploy/actions/deploy@v2"
+        uses: "nais/deploy/actions/deploy@a8718ab86a0c9bd63c6e3c8bbae747f62500c272"
         env:
           "ENVIRONMENT": "prod-gcp:pdf-bygger"
           "CLUSTER": "prod-gcp"
