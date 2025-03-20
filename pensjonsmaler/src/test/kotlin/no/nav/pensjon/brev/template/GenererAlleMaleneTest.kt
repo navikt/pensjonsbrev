@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
@@ -18,7 +19,7 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
 
-val filterForPDF = listOf("SAMLET")
+val filterForPDF = listOf(Pesysbrevkoder.AutoBrev.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK)
 
 class GenererAlleMaleneTest {
 
@@ -71,7 +72,7 @@ class GenererAlleMaleneTest {
         fun alleMalene(): List<Arguments> = finnMaler(listOf())
 
         @JvmStatic
-        fun finnMaler(filter: List<String> = listOf()): List<Arguments> {
+        fun finnMaler(filter: List<Brevkode<*>> = listOf()): List<Arguments> {
             FeatureToggleSingleton.init(FeatureToggleDummy)
             return listOf(Language.Nynorsk, Language.Bokmal, Language.English).flatMap { spraak ->
                 (ProductionTemplates.hentAutobrevmaler() +
@@ -80,7 +81,7 @@ class GenererAlleMaleneTest {
                         + EksempelbrevRedigerbart
                         ).filter {
                         filter.isEmpty() || filter.any { f ->
-                            it.template.name.lowercase().contains(f.lowercase())
+                            it.kode.kode() == f.kode()
                         }
                     }
                     .map { Arguments.of(it.template, it.kode, Fixtures.create(it.template.letterDataType), spraak) }
