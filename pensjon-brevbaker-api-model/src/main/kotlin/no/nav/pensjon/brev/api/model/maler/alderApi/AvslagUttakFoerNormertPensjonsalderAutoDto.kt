@@ -13,6 +13,7 @@ data class AvslagUttakFoerNormertPensjonsalderAutoDto(
     val totalPensjon: Kroner,
     val afpBruktIBeregning: Boolean,
     val opplysningerBruktIBeregningen: OpplysningerBruktIBeregningen,
+    val borINorge: Boolean,
 ) : BrevbakerBrevdata
 
 data class NormertPensjonsalder(
@@ -29,4 +30,5 @@ data class OpplysningerBruktIBeregningen(
     val delingstallVedNormertPensjonsalder: Double?,
     val normertPensjonsalder: NormertPensjonsalder,
     val sisteOpptjeningsAar: Int?,
+    val prorataBruktIBeregningen: Boolean,
 )

@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.alder
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.afpBruktIBeregning
+import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.borINorge
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.minstePensjonssats
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.normertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.opplysningerBruktIBeregningen
@@ -55,7 +56,8 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
                 opplysningerBruktIBeregningen = opplysningerBruktIBeregningen,
                 virkFom = virkFom,
                 minstePensjonssats = minstePensjonssats,
-                totalPensjon = totalPensjon
+                totalPensjon = totalPensjon,
+                borINorge = borINorge,
             ))
         }
 

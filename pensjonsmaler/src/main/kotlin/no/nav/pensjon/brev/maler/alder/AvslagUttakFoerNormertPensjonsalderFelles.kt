@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.alder
 
 import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningen
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
 import no.nav.pensjon.brev.maler.fraser.common.Constants
@@ -29,8 +30,9 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
     val opplysningerBruktIBeregningen: Expression<OpplysningerBruktIBeregningen>,
     val virkFom: Expression<LocalDate>,
     val minstePensjonssats: Expression<Kroner>,
-    val totalPensjon: Expression<Kroner>
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    val totalPensjon: Expression<Kroner>,
+    val borINorge: Expression<Boolean>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title2 {
             text(
@@ -83,6 +85,15 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                             English to "For you to be eligible for retirement pension before the age of ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
                                     ", your retirement pension must be, at minimum, NOK ".expr() + minstePensjonssats.format() + " a year.",
                         )
+
+                        showIf(opplysningerBruktIBeregningen.prorataBruktIBeregningen) {
+                            text (
+                                Bokmal to " Vi har tatt hensyn til at du også har trygdetid fra land som Norge har trygdeavtale med.",
+                                Nynorsk to " Vi har tatt omsyn til at du også har trygdetid frå land som Noreg har trygdeavtale med.",
+                                English to " We have taken into account any periods of national insurance coverage" +
+                                        " that you may have in countries with which Norway has a social security agreement."
+                            )
+                        }
                     }
                     item {
                         textExpr(
@@ -90,7 +101,7 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                                     + virkFom.format() + ", ville du fått ".expr() + totalPensjon.format() + " kroner årlig i pensjon. ",
                             Nynorsk to "Om du hadde tatt ut ".expr() + opplysningerBruktIBeregningen.uttaksgrad.format() + " prosent alderspensjon frå "
                                     + virkFom.format() + ", ville du fått ".expr() + totalPensjon.format() + " kroner årleg i pensjon. ",
-                            English to "•If you draw a retirement pension of ".expr() + opplysningerBruktIBeregningen.uttaksgrad.format() + " percent from "
+                            English to "If you draw a retirement pension of ".expr() + opplysningerBruktIBeregningen.uttaksgrad.format() + " percent from "
                                     + virkFom.format() + ", your retirement pension is calculated to be NOK " + totalPensjon.format() + " a year. ",
                         )
                         showIf(afpBruktIBeregning) {
@@ -167,23 +178,50 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
             )
         }
         paragraph {
-            textExpr(
-                Bokmal to "Selv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før du fyller ".expr() +
-                        normertPensjonsalder.aarOgMaanederFormattert() + ". " +
-                        "Da må du kunne velge en lavere uttaksgrad eller ta ut pensjonen senere. " +
-                        "På ${Constants.DIN_PENSJON_URL} kan du sjekke når du tidligst kan ta ut alderspensjon. " +
-                        "Du kan også se hva pensjonen din blir, avhengig av når og hvor mye du tar ut.",
-                Nynorsk to "Sjølv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før du fyller ".expr() +
-                        normertPensjonsalder.aarOgMaanederFormattert() + ". " +
-                        "Då må du kunne velje ein lågare uttaksgrad eller ta ut pensjonen seinare. " +
-                        "På ${Constants.DIN_PENSJON_URL} kan du sjekke når du tidlegast kan ta ut alderspensjon. " +
-                        "Du kan også sjå kva pensjonen din blir, avhengig av når og kor mykje du tar ut.",
-                English to "Even though we have rejected this application, you may still be eligible to withdraw your retirement pension before you turn ".expr() +
-                        normertPensjonsalder.aarOgMaanederFormattert() + " old. " +
-                        "You must then be able to choose a lower withdrawal rate or take out the pension later. " +
-                        "In \"Din Pensjon\" at ${Constants.DIN_PENSJON_URL}, you can check when you can earliest withdraw your retirement pension. " +
-                        "You can also see what your pension will be, depending on when and how much you withdraw.",
-            )
+            showIf(borINorge) {
+                textExpr(
+                    Bokmal to "Selv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før du fyller ".expr() +
+                            normertPensjonsalder.aarOgMaanederFormattert() + ". " +
+                            "Da må du kunne velge en lavere uttaksgrad eller ta ut pensjonen senere. " +
+                            "På ${Constants.DIN_PENSJON_URL} kan du sjekke når du tidligst kan ta ut alderspensjon. " +
+                            "Du kan også se hva pensjonen din blir, avhengig av når og hvor mye du tar ut.",
+                    Nynorsk to "Sjølv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før du fyller ".expr() +
+                            normertPensjonsalder.aarOgMaanederFormattert() + ". " +
+                            "Då må du kunne velje ein lågare uttaksgrad eller ta ut pensjonen seinare. " +
+                            "På ${Constants.DIN_PENSJON_URL} kan du sjekke når du tidlegast kan ta ut alderspensjon. " +
+                            "Du kan også sjå kva pensjonen din blir, avhengig av når og kor mykje du tar ut.",
+                    English to "Even though we have rejected this application, you may still be eligible to withdraw your retirement pension before you turn ".expr() +
+                            normertPensjonsalder.aarOgMaanederFormattert() + " old. " +
+                            "You must then be able to choose a lower withdrawal rate or take out the pension later. " +
+                            "In \"Din Pensjon\" at ${Constants.DIN_PENSJON_URL}, you can check when you can earliest withdraw your retirement pension. " +
+                            "You can also see what your pension will be, depending on when and how much you withdraw.",
+                )
+            }.orShow {
+                textExpr(
+                    Bokmal to "I Din pensjon på ${Constants.DIN_PENSJON_URL} kan du sjekke når du tidligst kan ta ut alderspensjon. ".expr() +
+                            "Der kan du også se hva pensjonen din blir avhengig av når og hvor mye du tar ut. Du kan " +
+                            "logge inn med BankID, Buypass eller Commfides. Kontakt oss gjerne på telefon" +
+                            " ${Constants.NAV_KONTAKTSENTER_TELEFON} hvis du trenger hjelp til dette. ",
+                    Nynorsk to "I Din pensjon på ${Constants.DIN_PENSJON_URL} kan du sjekke når du tidlegast kan ta ut ".expr() +
+                            "alderspensjon. Der kan du også sjå kva pensjonen din blir, avhengig av når og kor mykje du " +
+                            "tek ut. Du kan logge inn med BankID, Buypass eller Commfides. Kontakt oss gjerne på telefon " +
+                            "${Constants.NAV_KONTAKTSENTER_TELEFON} hvis du treng hjelp til dette. ",
+                    English to "You may still be eligible for retirement pension before you turn ".expr() +
+                            normertPensjonsalder.aarOgMaanederFormattert() + " old, provided your accumulated pension capital is sufficiently high. " +
+                            "Log on to \"Din Pensjon\" at ${Constants.DIN_PENSJON_URL} to find out more about your pension payments and how it changes " +
+                            "depending on when you start drawing a retirement pension and what retirement percentage you choose. The service also offers " +
+                            "information about when you become eligible for retirement pension.",
+                )
+                textExpr(
+                    Bokmal to "Selv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før ".expr() +
+                            "du fyller " + normertPensjonsalder.aarOgMaanederFormattert() + ". Da må du velge en lavere " +
+                            "uttaksgrad eller ta ut pensjonen på et senere tidspunkt.",
+                    Nynorsk to "Sjølv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon ".expr() +
+                            "før du fyller " + normertPensjonsalder.aarOgMaanederFormattert() + ". Da må du velje ei lågare " +
+                            "uttaksgrad eller ta ut pensjonen på eit seinare tidspunkt.",
+                    English to "".expr(),
+                )
+            }
         }
 
         paragraph {

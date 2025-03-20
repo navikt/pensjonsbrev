@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.afpBruktIBeregning
+import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.borINorge
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.minstePensjonssats
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.normertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.opplysningerBruktIBeregningen
@@ -59,7 +60,8 @@ object AvslagUttakFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUttakFoerN
                     opplysningerBruktIBeregningen = pesysData.opplysningerBruktIBeregningen,
                     virkFom = pesysData.virkFom,
                     minstePensjonssats = pesysData.minstePensjonssats,
-                    totalPensjon = pesysData.totalPensjon
+                    totalPensjon = pesysData.totalPensjon,
+                    borINorge = pesysData.borINorge,
                 )
             )
         }

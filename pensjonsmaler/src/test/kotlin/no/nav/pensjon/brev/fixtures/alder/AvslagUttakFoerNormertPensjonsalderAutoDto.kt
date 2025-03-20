@@ -17,7 +17,7 @@ fun createAvslagUttakFoerNormertPensjonsalderAutoDto() =
         totalPensjon = Kroner(200000),
         afpBruktIBeregning = true,
         opplysningerBruktIBeregningen = OpplysningerBruktIBeregningen(
-            uttaksgrad = 80,
+            uttaksgrad = 100,
             trygdetid = 40,
             pensjonsbeholdning = Kroner(1200000),
             delingstallVedUttak = 12.0,
@@ -28,5 +28,7 @@ fun createAvslagUttakFoerNormertPensjonsalderAutoDto() =
             ),
             sisteOpptjeningsAar = 2024,
             virkFom = LocalDate.of(2025, 2, 1),
-        )
+            prorataBruktIBeregningen = true,
+        ),
+        borINorge = false,
     )
