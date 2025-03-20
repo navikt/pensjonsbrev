@@ -150,8 +150,9 @@ private suspend fun RoutingContext.handleResult(
         is PDFCompilationResponse.Bytes -> {
             if (pdfvedlegg.isNotEmpty()) {
                 call.respond(PDFVedleggAppender.leggPaaVedlegg(result, pdfvedlegg))
+            } else {
+                call.respond(result)
             }
-            call.respond(result)
         }
         is PDFCompilationResponse.Failure.Client -> {
             logger.info("Client error: ${result.reason}")
