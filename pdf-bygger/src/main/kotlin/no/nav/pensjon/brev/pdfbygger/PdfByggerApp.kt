@@ -154,7 +154,6 @@ private suspend fun RoutingContext.handleResult(
     when (result) {
         is PDFCompilationResponse.Bytes -> {
             if (pdfvedlegg.isNotEmpty()) {
-                val spraak = LanguageCode.ENGLISH // TODO ta bort denne og bruk språk direkte, når vi har laga også bokmålsversjon
                 call.respond(PDFVedleggAppender.leggPaaVedlegg(result, pdfvedlegg, spraak))
             } else {
                 call.respond(result)
