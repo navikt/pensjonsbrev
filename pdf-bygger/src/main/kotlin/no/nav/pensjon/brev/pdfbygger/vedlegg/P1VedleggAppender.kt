@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger.vedlegg
 
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
@@ -47,7 +48,7 @@ internal object P1VedleggAppender {
     }
 
     private fun settOppSide1(
-        unwrapped: SamletMeldingOmPensjonsvedtakDto, totaltAntallSider: Int, spraak: LanguageCode
+        unwrapped: SamletMeldingOmPensjonsvedtakDto, totaltAntallSider: Int, spraak: LanguageCode,
     ): PDDocument {
         val innehaver = mapOf(
             "holder-fornavn" to unwrapped.innehaver.fornavn,
@@ -108,13 +109,13 @@ internal object P1VedleggAppender {
     private fun flettInnInnvilgetPensjon(radnummer: Int, pensjon: SamletMeldingOmPensjonsvedtakDto.InnvilgetPensjon) =
         mapOf(
             "$radnummer-institusjon" to pensjon.institusjon,
-            "$radnummer-pensjonstype" to pensjon.pensjonstype.name,
+            "$radnummer-pensjonstype" to pensjon.pensjonstype.formater(),
             "$radnummer-datoFoersteUtbetaling" to pensjon.datoFoersteUtbetaling,
             "$radnummer-bruttobeloep" to pensjon.bruttobeloep,
             "$radnummer-grunnlagInnvilget" to pensjon.grunnlagInnvilget.nummer,
             "$radnummer-reduksjonsgrunnlag" to pensjon.reduksjonsgrunnlag?.nummer,
             "$radnummer-vurderingsperiode" to pensjon.vurderingsperiode,
-            "$radnummer-adresseNyVurdering" to pensjon.adresseNyVurdering,
+            "$radnummer-adresseNyVurdering" to pensjon.adresseNyVurdering.formater(),
         )
 
     private fun settOppSide3(
@@ -140,10 +141,10 @@ internal object P1VedleggAppender {
     private fun flettInnAvslaattPensjon(radnummer: Int, pensjon: SamletMeldingOmPensjonsvedtakDto.AvslaattPensjon) =
         mapOf(
             "$radnummer-institusjon" to pensjon.institusjon,
-            "$radnummer-pensjonstype" to pensjon.pensjonstype.name,
+            "$radnummer-pensjonstype" to pensjon.pensjonstype.formater(),
             "$radnummer-avslagsbegrunnelse" to pensjon.avslagsbegrunnelse.nummer,
             "$radnummer-vurderingsperiode" to pensjon.vurderingsperiode,
-            "$radnummer-adresseNyVurdering" to pensjon.adresseNyVurdering,
+            "$radnummer-adresseNyVurdering" to pensjon.adresseNyVurdering.formater(),
         )
 
     private fun settOppSide4(
@@ -175,7 +176,19 @@ internal object P1VedleggAppender {
 
     internal fun lesInnP1Vedlegg(spraak: LanguageCode) = lesInnPDF("P1-vedlegg.pdf", spraak)
 
-    private fun lesInnPDF(filnavn: String, spraak: LanguageCode): PDDocument = PDDocument.load(javaClass.getResourceAsStream("/vedlegg/P1/${spraak.name}/$filnavn"))
+    private fun lesInnPDF(filnavn: String, spraak: LanguageCode): PDDocument =
+        PDDocument.load(javaClass.getResourceAsStream("/vedlegg/P1/${spraak.name}/$filnavn"))
+
+    private fun Sakstype.formater() = when (this) {
+        Sakstype.ALDER -> 1
+        Sakstype.UFOREP -> 2
+        Sakstype.GJENLEV -> 3
+        else -> throw NotImplementedError("Denne malen forventa ikke sakstype ${this.name}")
+    }
+
+    private fun SamletMeldingOmPensjonsvedtakDto.Adresse.formater() =
+        listOfNotNull(adresselinje1, adresselinje2, adresselinje3).joinToString(System.lineSeparator()) +
+                System.lineSeparator() + "$postnummer $poststed" + System.lineSeparator() + landkode
 }
 
 internal fun List<Map<String, Any?>>.flatten(): Map<String, String?> =
