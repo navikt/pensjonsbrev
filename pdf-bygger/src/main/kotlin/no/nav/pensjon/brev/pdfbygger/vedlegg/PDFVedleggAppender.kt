@@ -7,6 +7,7 @@ import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggType
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
+import org.apache.pdfbox.pdmodel.PDPage
 import java.io.ByteArrayOutputStream
 
 internal object PDFVedleggAppender {
@@ -46,7 +47,7 @@ internal object PDFVedleggAppender {
         target: PDDocument,
     ) {
         if (originaltDokument.pages.count % 2 == 1) {
-            merger.leggTilSide(target, PDDocument.load(javaClass.getResourceAsStream("/tom.pdf")))
+            PDDocument().also { it.addPage(PDPage()) }.also { merger.leggTilSide(target, it) }.also { it.close() }
         }
     }
 
