@@ -18,7 +18,7 @@ internal object P1VedleggAppender {
         val antallSide3 = Math.ceilDiv(avslaattePensjoner.size, RADER_PER_SIDE)
         val totaltAntallSider = 1 + antallSide2 + antallSide3 + 1
 
-        merger.appendDocument(target, settOppSide1(unwrapped, totaltAntallSider))
+        merger.leggTilSide(target, settOppSide1(unwrapped, totaltAntallSider))
         settOppSide2(
             merger,
             target,
@@ -77,7 +77,7 @@ internal object P1VedleggAppender {
                 )
             }
         }
-    }.forEach { merger.appendDocument(target, it) }
+    }.forEach { merger.leggTilSide(target, it) }
 
     private fun flettInnInnvilgetPensjon(radnummer: Int, pensjon: Map<String, Any>) =
         feltSide2.associate { "$radnummer-$it" to pensjon[it].toString() }
@@ -98,7 +98,7 @@ internal object P1VedleggAppender {
                 it.setValues(flettefelt.flatten().plus("page" to "${startSide3 + index + 1}/$totaltAntallSider"))
             }
         }
-    }.forEach { merger.appendDocument(target, it) }
+    }.forEach { merger.leggTilSide(target, it) }
 
     private fun flettInnAvslaattPensjon(radnummer: Int, pensjon: Map<String, Any>) =
         feltSide3.associate { "$radnummer-$it" to pensjon[it].toString() }
@@ -115,7 +115,7 @@ internal object P1VedleggAppender {
                     feltSide4.associateWith { key -> institution[key]?.toString() }
                         .plus("page" to "${totaltAntallSider}/${totaltAntallSider}")
                 )
-            }.also { merger.appendDocument(target, it) }
+            }.also { merger.leggTilSide(target, it) }
 
     internal fun lesInnP1Vedlegg() = lesInnPDF("/P1-vedlegg.pdf")
 

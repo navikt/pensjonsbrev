@@ -25,13 +25,13 @@ internal object PDFVedleggAppender {
         val merger = PDFMergerUtility()
         val target = PDDocument()
         val originaltDokument = pdfCompilationResponse.bytes.let { PDDocument.load(it) }
-        merger.appendDocument(target, originaltDokument)
+        merger.leggTilSide(target, originaltDokument)
         leggPaaBlankPartallsside(originaltDokument, merger, target)
         attachments.map { lesInnVedlegg(it) }.forEach {
             leggPaaBlankPartallsside(it, merger, target)
-            merger.appendDocument(target, it)
+            merger.leggTilSide(target, it)
         }
-        return tilByteArray(target)
+        return tilByteArray(target).also { target.close() }
     }
 
     private fun lesInnVedlegg(attachment: PDFVedlegg): PDDocument =
@@ -46,7 +46,7 @@ internal object PDFVedleggAppender {
         target: PDDocument,
     ) {
         if (originaltDokument.pages.count % 2 == 1) {
-            merger.appendDocument(target, PDDocument.load(javaClass.getResourceAsStream("/tom.pdf")))
+            merger.leggTilSide(target, PDDocument.load(javaClass.getResourceAsStream("/tom.pdf")))
         }
     }
 
@@ -60,3 +60,6 @@ internal object PDFVedleggAppender {
 internal fun PDDocument.setValues(values: Map<String, String?>) = values.forEach { entry ->
     documentCatalog?.acroForm?.fields?.firstOrNull { it.fullyQualifiedName == entry.key }?.setValue(entry.value)
 }
+
+internal fun PDFMergerUtility.leggTilSide(destionation: PDDocument, source: PDDocument) =
+    appendDocument(destionation, source).also { source.close() }
