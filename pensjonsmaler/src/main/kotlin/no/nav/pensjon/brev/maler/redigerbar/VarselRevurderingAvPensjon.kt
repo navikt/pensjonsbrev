@@ -5,8 +5,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.PesysDataSelectors.sakstype
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.SaksbehandlerValgSelectors.revurderingAvRett
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.SaksbehandlerValgSelectors.revurderingReduksjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.SaksbehandlerValgSelectors.tittelValg
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.common.Constants.BESKJED_TIL_NAV_URL
@@ -47,7 +46,7 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
     ) {
         val sakstype = pesysData.sakstype
         title {
-            showIf(saksbehandlerValg.revurderingAvRett) {
+            showIf(saksbehandlerValg.tittelValg.isOneOf(VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett)) {
                 text(
                     Bokmal to "Vi vurderer om du fortsatt har rett til ",
                     Nynorsk to "Vi vurderer om du framleis har rett til ",
@@ -79,7 +78,7 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                         English to ytelse,
                     )
                 }
-            }.orShowIf(saksbehandlerValg.revurderingReduksjon) {
+            }.orShowIf(saksbehandlerValg.tittelValg.isOneOf(VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon)) {
                 text(
                     Bokmal to "Vi vurderer om pensjonen din skal reduseres",
                     Nynorsk to "Vi vurderer om pensjonen din skal reduserast",
@@ -89,7 +88,7 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
         }
 
         outline {
-            showIf(saksbehandlerValg.revurderingAvRett) {
+            showIf(saksbehandlerValg.tittelValg.isOneOf(VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett)) {
                 paragraph {
                     text(
                         Bokmal to "Dette er et varsel om at vi vurderer om du fortsatt har rett til ",
@@ -129,7 +128,7 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                     )
                 }
             }
-            showIf(saksbehandlerValg.revurderingReduksjon) {
+            showIf(saksbehandlerValg.tittelValg.isOneOf(VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon)) {
                 paragraph {
                     text(
                         Bokmal to "Dette er et varsel om at vi vurderer om din ",

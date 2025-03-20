@@ -18,8 +18,7 @@ class VarselRevurderingAvPensjonTest {
 
     private val data = VarselRevurderingAvPensjonDto(
         saksbehandlerValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg(
-            revurderingAvRett = false,
-            revurderingReduksjon = false,
+            tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett
         ),
         pesysData = VarselRevurderingAvPensjonDto.PesysData(sakstype = Sakstype.FAM_PL)
         )
@@ -28,7 +27,7 @@ class VarselRevurderingAvPensjonTest {
     fun `med revurdering av rett`() {
         writeAllLanguages(
             "revurdering av rett",
-            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(revurderingAvRett = true))
+            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett))
         )
     }
 
@@ -36,7 +35,7 @@ class VarselRevurderingAvPensjonTest {
     fun `med revurdering av reduksjon`() {
         writeAllLanguages(
             "revurdering reduksjon",
-            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(revurderingReduksjon = true))
+            data.copy(saksbehandlerValg = data.saksbehandlerValg.copy(tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon))
         )
     }
 

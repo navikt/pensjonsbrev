@@ -60,7 +60,7 @@ jobs:
         run: npm ci
 
       - name: Cypress run e2e tests
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@108b8684ae52e735ff7891524cbffbcd4be5b19f
         with:
           working-directory: skribenten-web/frontend
           install: false
@@ -69,7 +69,7 @@ jobs:
           start: npm run dev
 
       - name: Cypress run component tests
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@108b8684ae52e735ff7891524cbffbcd4be5b19f
         with:
           working-directory: skribenten-web/frontend
           install: false

@@ -11,7 +11,7 @@ jobs:
     permissions:
       packages: write
     steps:
-      - uses: actions/delete-package-versions@v5.0.0
+      - uses: actions/delete-package-versions@v5
         with:
           package-name: pensjonsbrev/pdf-bygger
           package-type: container
