@@ -33,7 +33,7 @@ class GenererAlleMaleneTest {
         spraak: Language,
     ) {
         if (!template.language.supports(spraak)) {
-            println("Mal ${template.name} fins ikke på språk $spraak, tester ikke denne")
+            println("Mal ${template.name} fins ikke på språk ${spraak.javaClass.simpleName}, tester ikke denne")
             return
         }
         val letter = LetterTestImpl(template, fixtures, spraak, Fixtures.felles)

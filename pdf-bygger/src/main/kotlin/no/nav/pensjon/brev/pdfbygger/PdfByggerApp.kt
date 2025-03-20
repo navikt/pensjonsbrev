@@ -25,6 +25,8 @@ import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.vedlegg.PDFVedleggAppender
 import no.nav.pensjon.brev.pdfbygger.vedlegg.VedleggModule
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import java.nio.file.Path
 import kotlin.time.Duration
@@ -119,7 +121,7 @@ fun Application.module() {
                     .let { LatexDocumentRenderer.render(it) }
                     .let { laTeXService.producePDF(it.files.associate { it.fileName to it.content }) }
             }
-            handleResult(result, pdfRequest.pdfVedlegg, call.application.environment.log)
+            handleResult(result, pdfRequest.pdfVedlegg, call.application.environment.log, pdfRequest.language)
         }
 
         get("/isAlive") {
@@ -147,11 +149,13 @@ private suspend fun RoutingContext.handleResult(
     result: PDFCompilationResponse,
     pdfvedlegg: List<PDFVedlegg>,
     logger: Logger,
+    spraak: LanguageCode,
 ) {
     when (result) {
         is PDFCompilationResponse.Bytes -> {
             if (pdfvedlegg.isNotEmpty()) {
-                call.respond(PDFVedleggAppender.leggPaaVedlegg(result, pdfvedlegg))
+                val spraak = LanguageCode.ENGLISH // TODO ta bort denne og bruk språk direkte, når vi har laga også bokmålsversjon
+                call.respond(PDFVedleggAppender.leggPaaVedlegg(result, pdfvedlegg, spraak))
             } else {
                 call.respond(result)
             }

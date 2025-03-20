@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.pdfbygger.vedlegg
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brev.pdfbygger.vedlegg.P1VedleggAppender.lesInnP1
 import no.nav.pensjon.brev.pdfbygger.vedlegg.P1VedleggAppender.lesInnP1Vedlegg
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggType
 import org.apache.pdfbox.multipdf.PDFMergerUtility
@@ -15,6 +16,7 @@ internal object PDFVedleggAppender {
     internal fun leggPaaVedlegg(
         pdfCompilationResponse: PDFCompilationResponse.Bytes,
         attachments: List<PDFVedlegg>,
+        spraak: LanguageCode,
     ): PDFCompilationResponse.Bytes {
         /* Ikke strengt nødvendig å returnere her, det vil fungere uten, men optimalisering.
         De aller, aller fleste brevene har ikke PDF-vedlegg, så de trenger ikke gå gjennom denne løypa
@@ -28,17 +30,17 @@ internal object PDFVedleggAppender {
         val originaltDokument = pdfCompilationResponse.bytes.let { PDDocument.load(it) }
         merger.leggTilSide(target, originaltDokument)
         leggPaaBlankPartallsside(originaltDokument, merger, target)
-        attachments.map { lesInnVedlegg(it) }.forEach {
+        attachments.map { lesInnVedlegg(it, spraak) }.forEach {
             leggPaaBlankPartallsside(it, merger, target)
             merger.leggTilSide(target, it)
         }
         return tilByteArray(target).also { target.close() }
     }
 
-    private fun lesInnVedlegg(attachment: PDFVedlegg): PDDocument =
+    private fun lesInnVedlegg(attachment: PDFVedlegg, spraak: LanguageCode): PDDocument =
         when (attachment.type) {
-            PDFVedleggType.P1 -> lesInnP1(attachment.data as SamletMeldingOmPensjonsvedtakDto)
-            PDFVedleggType.InformasjonOmP1 -> lesInnP1Vedlegg()
+            PDFVedleggType.P1 -> lesInnP1(attachment.data as SamletMeldingOmPensjonsvedtakDto, spraak)
+            PDFVedleggType.InformasjonOmP1 -> lesInnP1Vedlegg(spraak)
         }
 
     private fun leggPaaBlankPartallsside(

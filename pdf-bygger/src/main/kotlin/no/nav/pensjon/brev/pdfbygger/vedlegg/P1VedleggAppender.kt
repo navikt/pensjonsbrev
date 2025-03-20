@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger.vedlegg
 
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
 
@@ -7,7 +8,7 @@ internal object P1VedleggAppender {
 
     private const val RADER_PER_SIDE = 5
 
-    internal fun lesInnP1(unwrapped: SamletMeldingOmPensjonsvedtakDto): PDDocument {
+    internal fun lesInnP1(unwrapped: SamletMeldingOmPensjonsvedtakDto, spraak: LanguageCode): PDDocument {
         val target = PDDocument()
         val merger = PDFMergerUtility()
         val innvilgedePensjoner = unwrapped.innvilgedePensjoner
@@ -16,13 +17,14 @@ internal object P1VedleggAppender {
         val antallSide3 = Math.ceilDiv(avslaattePensjoner.size, RADER_PER_SIDE)
         val totaltAntallSider = 1 + antallSide2 + antallSide3 + 1
 
-        merger.leggTilSide(target, settOppSide1(unwrapped, totaltAntallSider))
+        merger.leggTilSide(target, settOppSide1(unwrapped, totaltAntallSider, spraak))
         settOppSide2(
             merger,
             target,
             innvilgedePensjoner,
             antallSide2 = antallSide2,
-            totaltAntallSider = totaltAntallSider
+            totaltAntallSider = totaltAntallSider,
+            spraak
         )
         settOppSide3(
             avslaattePensjoner,
@@ -30,19 +32,23 @@ internal object P1VedleggAppender {
             target,
             startSide3 = 1 + antallSide2,
             antallSide3 = antallSide3,
-            totaltAntallSider = totaltAntallSider
+            totaltAntallSider = totaltAntallSider,
+            spraak
         )
         settOppSide4(
             unwrapped.institusjon,
             merger,
             target,
-            totaltAntallSider = totaltAntallSider
+            totaltAntallSider = totaltAntallSider,
+            spraak
         )
 
         return target
     }
 
-    private fun settOppSide1(unwrapped: SamletMeldingOmPensjonsvedtakDto, totaltAntallSider: Int): PDDocument {
+    private fun settOppSide1(
+        unwrapped: SamletMeldingOmPensjonsvedtakDto, totaltAntallSider: Int, spraak: LanguageCode
+    ): PDDocument {
         val innehaver = mapOf(
             "holder-fornavn" to unwrapped.innehaver.fornavn,
             "holder-etternavn" to unwrapped.innehaver.etternavn,
@@ -67,7 +73,7 @@ internal object P1VedleggAppender {
         )
 
 
-        return lesInnPDF("/P1-side1.pdf").also {
+        return lesInnPDF("P1-side1.pdf", spraak).also {
             it.setValues(
                 innehaver
                     .plus(forsikrede)
@@ -84,13 +90,14 @@ internal object P1VedleggAppender {
         innvilgedePensjoner: List<SamletMeldingOmPensjonsvedtakDto.InnvilgetPensjon>,
         antallSide2: Int,
         totaltAntallSider: Int,
+        spraak: LanguageCode,
     ) = (0..<antallSide2).map { index ->
         ((index * RADER_PER_SIDE)..(index * RADER_PER_SIDE) + 4).map { radnummer ->
             innvilgedePensjoner.getOrNull(radnummer)
                 ?.let { flettInnInnvilgetPensjon((radnummer % RADER_PER_SIDE) + 1, it) }
                 ?: emptyMap()
         }.let { flettefelt ->
-            lesInnPDF("/P1-side2.pdf").also {
+            lesInnPDF("P1-side2.pdf", spraak).also {
                 it.setValues(
                     flettefelt.flatten().plus("page" to "${1 + index + 1}/$totaltAntallSider")
                 )
@@ -117,13 +124,14 @@ internal object P1VedleggAppender {
         startSide3: Int,
         antallSide3: Int,
         totaltAntallSider: Int,
+        spraak: LanguageCode,
     ) = (0..<antallSide3).map { index ->
         ((index * RADER_PER_SIDE)..(index * RADER_PER_SIDE) + 4).map { radnummer ->
             avslaattePensjoner.getOrNull(radnummer)
                 ?.let { pensjon -> flettInnAvslaattPensjon((radnummer % RADER_PER_SIDE) + 1, pensjon) }
                 ?: emptyMap()
         }.let { flettefelt ->
-            lesInnPDF("/P1-side3.pdf").also {
+            lesInnPDF("P1-side3.pdf", spraak).also {
                 it.setValues(flettefelt.flatten().plus("page" to "${startSide3 + index + 1}/$totaltAntallSider"))
             }
         }
@@ -143,8 +151,9 @@ internal object P1VedleggAppender {
         merger: PDFMergerUtility,
         target: PDDocument,
         totaltAntallSider: Int,
+        spraak: LanguageCode,
     ) =
-        lesInnPDF("/P1-side4.pdf")
+        lesInnPDF("P1-side4.pdf", spraak)
             .also {
                 it.setValues(
                     mapOf(
@@ -164,9 +173,9 @@ internal object P1VedleggAppender {
                 )
             }.also { merger.leggTilSide(target, it) }
 
-    internal fun lesInnP1Vedlegg() = lesInnPDF("/P1-vedlegg.pdf")
+    internal fun lesInnP1Vedlegg(spraak: LanguageCode) = lesInnPDF("P1-vedlegg.pdf", spraak)
 
-    private fun lesInnPDF(filnavn: String): PDDocument = PDDocument.load(javaClass.getResourceAsStream(filnavn))
+    private fun lesInnPDF(filnavn: String, spraak: LanguageCode): PDDocument = PDDocument.load(javaClass.getResourceAsStream("/vedlegg/P1/${spraak.name}/$filnavn"))
 }
 
 internal fun List<Map<String, Any?>>.flatten(): Map<String, String?> =
