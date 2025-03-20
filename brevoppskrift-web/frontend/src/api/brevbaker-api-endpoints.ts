@@ -14,37 +14,39 @@ const BREVBAKER_API_BASE_PATH = "/brevbaker";
 
 export const templateDescriptionKeys = {
   all: ["TEMPLATE_DESCRIPTION"] as const,
-  id: (templateId: string) => [...templateDescriptionKeys.all, templateId] as const,
+  id: (malType: MalType, templateId: string) => [...templateDescriptionKeys.all, malType, templateId] as const,
 };
+
+export type MalType = 'redigerbar'|'autobrev'
 
 export const templateDocumentationKeys = {
   all: ["TEMPLATE_DOCUMENTATION"] as const,
-  id: (templateId: string) => [...templateDocumentationKeys.all, templateId] as const,
-  idWithLanguage: (templateId: string, language: string) =>
-    [...templateDocumentationKeys.all, templateId, language] as const,
+  idWithLanguage: (malType: MalType, templateId: string, language: string) =>
+    [...templateDocumentationKeys.all, malType, templateId, language] as const,
 };
 
 export const brevkoderKeys = {
   all: ["BREVKODER"] as const,
+  malType: (malType: MalType) => [...brevkoderKeys.all, malType] as const,
 };
 
 export const getTemplateDescription = {
   queryKey: templateDescriptionKeys.id,
-  queryFn: async (templateId: string) =>
-    (await axios.get<TemplateDescription>(`${BREVBAKER_API_BASE_PATH}/templates/autobrev/${templateId}`)).data,
+  queryFn: async (type: MalType, templateId: string) =>
+    (await axios.get<TemplateDescription>(`${BREVBAKER_API_BASE_PATH}/templates/${type}/${templateId}`)).data,
 };
 
 export const getTemplateDocumentation = {
   queryKey: templateDocumentationKeys.idWithLanguage,
-  queryFn: async (templateId: string, language: string) =>
+  queryFn: async (type: MalType, templateId: string, language: string) =>
     (
       await axios.get<TemplateDocumentation>(
-        `${BREVBAKER_API_BASE_PATH}/templates/autobrev/${templateId}/doc/${language}`,
+        `${BREVBAKER_API_BASE_PATH}/templates/${type}/${templateId}/doc/${language}`,
       )
     ).data,
 };
 
-export const getAllBrevkoder = {
-  queryKey: brevkoderKeys.all,
-  queryFn: async () => (await axios.get<string[]>(`${BREVBAKER_API_BASE_PATH}/templates/autobrev`)).data,
+export const getBrevkoder = {
+  queryKey: brevkoderKeys.malType,
+  queryFn: async (malType: MalType) => (await axios.get<string[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}`)).data,
 };

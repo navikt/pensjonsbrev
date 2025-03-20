@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { BodyLong, Heading, Select, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 
-import { getAllBrevkoder, getTemplateDescription, getTemplateDocumentation } from "~/api/brevbaker-api-endpoints";
+import { getBrevkoder, getTemplateDescription, getTemplateDocumentation, MalType } from "~/api/brevbaker-api-endpoints";
 import type {
   Attachment,
   Conditional,
@@ -16,17 +16,21 @@ import type {
 import { ContentOrControlStructureType, ElementType } from "~/api/brevbakerTypes";
 import { DataClasses, trimClassName } from "~/components/DataClasses";
 
-export const Route = createFileRoute("/template/$templateId")({
+export const Route = createFileRoute("/template/$malType/$templateId")({
   loaderDeps: ({ search: { language } }) => ({ language }),
+  parseParams: (raw: Record<string, string>) => ({
+    templateId: raw.templateId,
+    malType: raw.malType as MalType,
+  }),
   loader: async ({ context, navigate, deps, params, preload }) => {
     await context.queryClient.ensureQueryData({
-      queryKey: getAllBrevkoder.queryKey,
-      queryFn: () => getAllBrevkoder.queryFn(),
+      queryKey: getBrevkoder.queryKey(params.malType),
+      queryFn: () => getBrevkoder.queryFn(params.malType),
     });
 
     const description = await context.queryClient.ensureQueryData({
-      queryKey: getTemplateDescription.queryKey(params.templateId),
-      queryFn: () => getTemplateDescription.queryFn(params.templateId),
+      queryKey: getTemplateDescription.queryKey(params.malType, params.templateId),
+      queryFn: () => getTemplateDescription.queryFn(params.malType, params.templateId),
     });
 
     const defaultLanguage = description.languages[0];
@@ -46,8 +50,8 @@ export const Route = createFileRoute("/template/$templateId")({
     const language = deps.language ?? defaultLanguage;
 
     const documentation = await context.queryClient.ensureQueryData({
-      queryKey: getTemplateDocumentation.queryKey(params.templateId, language),
-      queryFn: () => getTemplateDocumentation.queryFn(params.templateId, language),
+      queryKey: getTemplateDocumentation.queryKey(params.malType, params.templateId, language),
+      queryFn: () => getTemplateDocumentation.queryFn(params.malType, params.templateId, language),
     });
 
     return { documentation, description };
@@ -210,6 +214,7 @@ function ContentComponent({ content }: { content: Element }) {
             }
 
             /* Indent cells that are conditional to an expression */
+
             .expression + .cell {
               padding-left: var(--a-spacing-4);
             }
