@@ -24,6 +24,7 @@ import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.vedlegg.PDFVedleggAppender
+import no.nav.pensjon.brev.pdfbygger.vedlegg.VedleggModule
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import java.nio.file.Path
 import kotlin.time.Duration
@@ -56,6 +57,7 @@ fun Application.module() {
         jackson {
             registerModule(JavaTimeModule())
             registerModule(LetterMarkupModule)
+            registerModule(VedleggModule)
             registerModule(FellesModule)
             enable(SerializationFeature.INDENT_OUTPUT)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

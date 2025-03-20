@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.dsl
 
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -46,7 +47,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
         attachments.add(IncludeAttachment(attachmentData, template, predicate))
     }
 
-    fun <AttachmentData : Any> includeAttachment(
+    fun <AttachmentData : BrevbakerBrevdata> includeAttachment(
         type: PDFVedleggType,
         attachmentData: Expression<AttachmentData>
     ) {
@@ -56,7 +57,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
     fun includeAttachment(
         type: PDFVedleggType
     ) {
-        pdfAttachments.add(PDFTemplate(type, Unit.expr()))
+        pdfAttachments.add(PDFTemplate(type, EmptyBrevdata.expr()))
     }
 
     fun includeAttachment(

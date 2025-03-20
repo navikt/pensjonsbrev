@@ -37,7 +37,7 @@ internal object PDFVedleggAppender {
 
     private fun lesInnVedlegg(attachment: PDFVedlegg): PDDocument =
         when (attachment.type) {
-            PDFVedleggType.P1 -> lesInnP1(attachment.data)
+            PDFVedleggType.P1 -> lesInnP1(attachment.data as SamletMeldingOmPensjonsvedtakDto)
             PDFVedleggType.InformasjonOmP1 -> lesInnP1Vedlegg()
         }
 

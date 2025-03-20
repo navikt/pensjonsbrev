@@ -1,6 +1,7 @@
-package no.nav.pensjon.brev.api.model.maler
+package no.nav.pensjon.brev.pdfbygger.vedlegg
 
 import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import java.time.LocalDate
 
 data class SamletMeldingOmPensjonsvedtakDto(

@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
 import kotlin.reflect.KClass

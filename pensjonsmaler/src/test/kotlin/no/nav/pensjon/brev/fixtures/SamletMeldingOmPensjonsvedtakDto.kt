@@ -1,15 +1,15 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.maler.Samlet.Adresse
-import no.nav.pensjon.brev.api.model.maler.Samlet.AvslaattPensjon
-import no.nav.pensjon.brev.api.model.maler.Samlet.Avslagsbegrunnelse
-import no.nav.pensjon.brev.api.model.maler.Samlet.GrunnlagInnvilget
-import no.nav.pensjon.brev.api.model.maler.Samlet.InnvilgetPensjon
-import no.nav.pensjon.brev.api.model.maler.Samlet.Institusjon
-import no.nav.pensjon.brev.api.model.maler.Samlet.P1Person
-import no.nav.pensjon.brev.api.model.maler.Samlet.Reduksjonsgrunnlag
-import no.nav.pensjon.brev.api.model.maler.Samlet.SamletMeldingOmPensjonsvedtakDto
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.Adresse
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.AvslaattPensjon
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.Avslagsbegrunnelse
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.GrunnlagInnvilget
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.InnvilgetPensjon
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.Institusjon
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.P1Person
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.Reduksjonsgrunnlag
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
 import java.time.LocalDate
 
 fun createSamletMeldingOmPensjonsvedtakDto() =

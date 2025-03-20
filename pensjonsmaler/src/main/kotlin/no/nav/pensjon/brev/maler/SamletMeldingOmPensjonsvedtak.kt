@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.maler
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.Samlet
-import no.nav.pensjon.brev.api.model.maler.SamletSelectors.SamletMeldingOmPensjonsvedtakDtoSelectors.sakstype
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.sakstype
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -16,12 +16,12 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggType
 
 @TemplateModelHelpers
-object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<Samlet.SamletMeldingOmPensjonsvedtakDto> {
+object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsvedtakDto> {
     override val kode = Pesysbrevkoder.AutoBrev.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK // 000090
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = Samlet.SamletMeldingOmPensjonsvedtakDto::class,
+        letterDataType = SamletMeldingOmPensjonsvedtakDto::class,
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Samlet melding om pensjonsvedtak",
