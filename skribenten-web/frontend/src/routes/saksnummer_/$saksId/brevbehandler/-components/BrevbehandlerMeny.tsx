@@ -284,7 +284,7 @@ const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
               as={Link}
               params={{ saksId: props.saksId, brevId: props.brev.id }}
               size="small"
-              to="/saksnummer_/$saksId/brev/$brevId"
+              to="/saksnummer/$saksId/brev/$brevId"
               variant="secondary-neutral"
             >
               Fortsett redigering
