@@ -9,6 +9,11 @@ data class VarselTilbakekrevingAvFeilutbetaltBeloepDto(
     override val saksbehandlerValg: SaksbehandlerValg,
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<VarselTilbakekrevingAvFeilutbetaltBeloepDto.SaksbehandlerValg, VarselTilbakekrevingAvFeilutbetaltBeloepDto.PesysData> {
-    data class SaksbehandlerValg(val hvisAktueltAaIleggeRentetillegg: Boolean) : BrevbakerBrevdata
+
+    data class SaksbehandlerValg(
+        val hvisAktueltAaIleggeRentetillegg: Boolean,
+        val hvisGjenlevendepensjonOgForsoergningstillegg: Boolean
+    ) : BrevbakerBrevdata
+
     data class PesysData(val sakstype: Sakstype) : BrevbakerBrevdata
 }

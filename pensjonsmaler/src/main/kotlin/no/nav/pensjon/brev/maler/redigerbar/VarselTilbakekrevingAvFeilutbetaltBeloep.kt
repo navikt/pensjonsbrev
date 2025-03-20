@@ -11,6 +11,9 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselTilbakekrevingAvFeil
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselTilbakekrevingAvFeilutbetaltBeloepDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselTilbakekrevingAvFeilutbetaltBeloepDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.common.Constants.BESKJED_TIL_NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.ETTERSENDELSE_URL
+import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.vedlegg.vedleggVarselTilbakekreving
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -208,17 +211,43 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
             showIf(pesysData.sakstype.equalTo(Sakstype.ALDER)) {
                 paragraph {
                     text(
-                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på Din Pensjon og velge «Kontakt Nav om pensjon», eller logge deg inn på $BESKJED_TIL_NAV_URL og velge «Send beskjed til Nav». Du kan også sende uttalelsen din til oss i posten. Adressen finner du på [_Value URL_ettersendelse_].",
-                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på Din Pensjon og velje «Kontakt Nav om pensjon», eller logge deg inn på $BESKJED_TIL_NAV_URL og velje «Send beskjed til Nav». Du kan også sende uttalen din til oss i posten. Adressa finn du på [_Value URL_ettersendelse_].",
-                        English to "You can submit your statement by logging in to your personal “Din Pensjon” pension page and selecting “Kontakt Nav”, or by logging in to $BESKJED_TIL_NAV_URL and selecting “Send beskjed til Nav”. You can also send us your statement by post. You can find the address at [_Value URL_ettersendelse_].",
+                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på Din Pensjon og velge «Kontakt Nav om pensjon», eller logge deg inn på $BESKJED_TIL_NAV_URL og velge «Send beskjed til Nav». Du kan også sende uttalelsen din til oss i posten. Adressen finner du på $ETTERSENDELSE_URL.",
+                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på Din Pensjon og velje «Kontakt Nav om pensjon», eller logge deg inn på $BESKJED_TIL_NAV_URL og velje «Send beskjed til Nav». Du kan også sende uttalen din til oss i posten. Adressa finn du på $ETTERSENDELSE_URL.",
+                        English to "You can submit your statement by logging in to your personal “Din Pensjon” pension page and selecting “Kontakt Nav”, or by logging in to $BESKJED_TIL_NAV_URL and selecting “Send beskjed til Nav”. You can also send us your statement by post. You can find the address at $ETTERSENDELSE_URL.",
                     )
                 }
             }.orShow {
-
+                paragraph {
+                    text(
+                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velge «Send beskjed til Nav». Du kan også sende uttalelsen din til oss i posten. Adressen finner du på $ETTERSENDELSE_URL.",
+                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velje «Send beskjed til Nav». Du kan også sende uttalen din til oss i posten. Adressa finn du på $ETTERSENDELSE_URL.",
+                        English to "You can submit your statement by logging in to $BESKJED_TIL_NAV_URL and selecting “Send beskjed til Nav”. You can also send us your statement by post. You can find the address at $ETTERSENDELSE_URL.",
+                    )
+                }
             }
 
+            title1 {
+                text(
+                    Bokmal to "Hva skjer videre i din sak",
+                    Nynorsk to "Kva skjer vidare i saka di",
+                    English to "What happens next in your case",
+                )
+            }
+            
+            paragraph {
+                text(
+                    Bokmal to "Vi vil vurdere saken og sende deg et vedtak. Dersom du må betale hele eller deler av beløpet, vil du få beskjed om hvordan du betaler tilbake i vedtaket.",
+                    Nynorsk to "Vi vil vurdere saka og sende deg eit vedtak. Dersom du må betale heile eller delar av beløpet, vil du få melding om korleis du betaler tilbake, i vedtaket.",
+                    English to "We will consider your case and send you a decision. If you have to repay all or part of the overpaid amount, you will be notified about how to make the repayment in the decision.",
+                )
+            }
 
+            // TODO teksten er litt manglende i originalen. Er det greit å få med setningen "Du har rett til å se dokumentene i saken din." her?
+            includePhrase(Felles.RettTilInnsynRedigerbarebrev)
+            includePhrase(Felles.HarDuSpoersmaal.alder)
         }
+
+        includeAttachment(vedleggVarselTilbakekreving, argument)
     }
 
 }

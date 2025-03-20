@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.StringExpression
 import no.nav.pensjon.brev.template.TextElement
+import no.nav.pensjon.brev.template.dsl.expression.expr
 
 interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
 
@@ -13,6 +14,10 @@ interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalSc
 
     fun eval(expression: StringExpression, fontType: FontType = FontType.PLAIN) {
         addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.Expression(expression, fontType)))
+    }
+
+    fun eval(literal: String, fontType: FontType = FontType.PLAIN) {
+        eval(literal.expr(), fontType)
     }
 
     fun newline()

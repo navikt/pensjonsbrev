@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template.dsl
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
+import no.nav.pensjon.brev.template.dsl.expression.expr
 
 @LetterTemplateMarker
 class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Text<Lang>, TextOnlyScope<Lang, LetterData>> {
