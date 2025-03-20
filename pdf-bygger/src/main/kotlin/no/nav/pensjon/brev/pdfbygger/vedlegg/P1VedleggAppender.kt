@@ -104,8 +104,8 @@ internal object P1VedleggAppender {
             "$radnummer-pensjonstype" to pensjon.pensjonstype.name,
             "$radnummer-datoFoersteUtbetaling" to pensjon.datoFoersteUtbetaling,
             "$radnummer-bruttobeloep" to pensjon.bruttobeloep,
-            "$radnummer-grunnlagInnvilget" to pensjon.grunnlagInnvilget,
-            "$radnummer-reduksjonsgrunnlag" to pensjon.reduksjonsgrunnlag,
+            "$radnummer-grunnlagInnvilget" to pensjon.grunnlagInnvilget.nummer,
+            "$radnummer-reduksjonsgrunnlag" to pensjon.reduksjonsgrunnlag?.nummer,
             "$radnummer-vurderingsperiode" to pensjon.vurderingsperiode,
             "$radnummer-adresseNyVurdering" to pensjon.adresseNyVurdering,
         )
@@ -133,7 +133,7 @@ internal object P1VedleggAppender {
         mapOf(
             "$radnummer-institusjon" to pensjon.institusjon,
             "$radnummer-pensjonstype" to pensjon.pensjonstype.name,
-            "$radnummer-avslagsbegrunnelse" to pensjon.avslagsbegrunnelse,
+            "$radnummer-avslagsbegrunnelse" to pensjon.avslagsbegrunnelse.nummer,
             "$radnummer-vurderingsperiode" to pensjon.vurderingsperiode,
             "$radnummer-adresseNyVurdering" to pensjon.adresseNyVurdering,
         )
