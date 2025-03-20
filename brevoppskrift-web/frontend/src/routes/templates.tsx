@@ -1,8 +1,9 @@
+import { css } from "@emotion/react";
 import { Heading, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import { getBrevkoder, MalType } from "~/api/brevbaker-api-endpoints";
-import {css} from "@emotion/react";
+import type { MalType } from "~/api/brevbaker-api-endpoints";
+import { getBrevkoder } from "~/api/brevbaker-api-endpoints";
 
 export const Route = createFileRoute("/templates")({
   loader: async ({ context }) => {
@@ -21,7 +22,6 @@ export const Route = createFileRoute("/templates")({
 });
 
 function TemplateList({ templates, malType }: { templates: string[]; malType: MalType }) {
-  console.log(templates);
   return (
     <VStack gap="2">
       {templates.map((templateId) => (
@@ -38,20 +38,28 @@ function AllTemplates() {
 
   return (
     <div>
-      <Heading level="2" size="large" css={css`
+      <Heading
+        css={css`
           margin-top: 28px;
           margin-bottom: 10px;
-      `}>
+        `}
+        level="2"
+        size="large"
+      >
         Automatiske brev
       </Heading>
-      <TemplateList templates={templates.autobrev} malType={"autobrev"} />
-      <Heading level="2" size="large" css={css`
+      <TemplateList malType={"autobrev"} templates={templates.autobrev} />
+      <Heading
+        css={css`
           margin-top: 28px;
           margin-bottom: 10px;
-      `}>
+        `}
+        level="2"
+        size="large"
+      >
         Redigerbare brev
       </Heading>
-      <TemplateList templates={templates.redigerbar} malType={"redigerbar"} />
+      <TemplateList malType={"redigerbar"} templates={templates.redigerbar} />
     </div>
   );
 }

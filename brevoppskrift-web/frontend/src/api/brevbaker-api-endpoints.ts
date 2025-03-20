@@ -17,7 +17,7 @@ export const templateDescriptionKeys = {
   id: (malType: MalType, templateId: string) => [...templateDescriptionKeys.all, malType, templateId] as const,
 };
 
-export type MalType = 'redigerbar'|'autobrev'
+export type MalType = "redigerbar" | "autobrev";
 
 export const templateDocumentationKeys = {
   all: ["TEMPLATE_DOCUMENTATION"] as const,
@@ -48,5 +48,6 @@ export const getTemplateDocumentation = {
 
 export const getBrevkoder = {
   queryKey: brevkoderKeys.malType,
-  queryFn: async (malType: MalType) => (await axios.get<string[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}`)).data,
+  queryFn: async (malType: MalType) =>
+    (await axios.get<string[]>(`${BREVBAKER_API_BASE_PATH}/templates/${malType}`)).data,
 };

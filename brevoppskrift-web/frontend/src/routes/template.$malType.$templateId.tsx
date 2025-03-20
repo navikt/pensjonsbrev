@@ -2,7 +2,8 @@ import { css } from "@emotion/react";
 import { BodyLong, Heading, Select, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 
-import { getBrevkoder, getTemplateDescription, getTemplateDocumentation, MalType } from "~/api/brevbaker-api-endpoints";
+import type { MalType } from "~/api/brevbaker-api-endpoints";
+import { getBrevkoder, getTemplateDescription, getTemplateDocumentation } from "~/api/brevbaker-api-endpoints";
 import type {
   Attachment,
   Conditional,
