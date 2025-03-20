@@ -48,14 +48,14 @@ const EndreMottaker = (properties: {
             if (typeof bekreftetMottaker === "string") {
               properties.onManuellAdresseBekreft?.(null);
               navigate({
-                search: (s) => ({ ...s, idTSSEkstern: bekreftetMottaker }),
+                search: (s: Record<string, unknown>) => ({ ...s, idTSSEkstern: bekreftetMottaker }),
                 replace: true,
               });
             } else {
               //hvis mottaker er en adresse, betyr det at det er en manuell adresse
               properties.onManuellAdresseBekreft?.(bekreftetMottaker);
               navigate({
-                search: (s) => ({ ...s, idTSSEkstern: undefined }),
+                search: (s: Record<string, unknown>) => ({ ...s, idTSSEkstern: undefined }),
                 replace: true,
               });
             }
@@ -80,7 +80,7 @@ const EndreMottaker = (properties: {
           <Button
             onClick={() =>
               navigate({
-                search: (s) => ({ ...s, idTSSEkstern: undefined }),
+                search: (s: Record<string, unknown>) => ({ ...s, idTSSEkstern: undefined }),
                 replace: true,
               })
             }

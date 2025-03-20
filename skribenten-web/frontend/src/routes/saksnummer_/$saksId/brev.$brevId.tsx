@@ -417,7 +417,7 @@ function RedigerBrev({
                   navigate({
                     to: "/saksnummer/$saksId/brevvelger",
                     params: { saksId: saksId },
-                    search: (s) => ({ ...s, brevId: brev.info.id.toString() }),
+                    search: (s: Record<string, unknown>) => ({ ...s, brevId: brev.info.id.toString() }),
                   });
                 }}
                 size="small"

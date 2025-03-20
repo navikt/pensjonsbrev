@@ -26,6 +26,7 @@ import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints"
 import { getNavn } from "~/api/skribenten-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import { useUserInfo } from "~/hooks/useUserInfo";
+import type { SakContextDto } from "~/types/apiTypes";
 import type { BrevStatus, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
@@ -58,14 +59,14 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
       navigate({
         to: "/saksnummer/$saksId/brevbehandler",
         params: { saksId: properties.saksId },
-        search: (s) => ({ ...s, brevId: brevId }),
+        search: (s: Record<string, unknown>) => ({ ...s, brevId: brevId }),
         replace: true,
       });
     } else {
       navigate({
         to: "/saksnummer/$saksId/brevbehandler",
         params: { saksId: properties.saksId },
-        search: (s) => ({ ...s, brevId: undefined }),
+        search: (s: Record<string, unknown>) => ({ ...s, brevId: undefined }),
         replace: true,
       });
     }
@@ -150,7 +151,8 @@ const BrevItem = (properties: {
 };
 
 const ArkivertBrev = (props: { brev: BrevInfo }) => {
-  const sakContext = Route.useLoaderData();
+  const sakContext: SakContextDto = Route.useLoaderData();
+
   const { data: navn } = useQuery({
     queryKey: getNavn.queryKey(sakContext.sak.foedselsnr as string),
     queryFn: () => getNavn.queryFn(sakContext.sak.saksId),
@@ -186,7 +188,7 @@ const ArkivertBrev = (props: { brev: BrevInfo }) => {
 
 const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const queryClient = useQueryClient();
-  const sakContext = Route.useLoaderData();
+  const sakContext: SakContextDto = Route.useLoaderData();
 
   const { data: navn } = useQuery({
     queryKey: getNavn.queryKey(sakContext.sak.foedselsnr as string),
@@ -282,7 +284,7 @@ const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
               as={Link}
               params={{ saksId: props.saksId, brevId: props.brev.id }}
               size="small"
-              to="/saksnummer/$saksId/brev/$brevId"
+              to="/saksnummer_/$saksId/brev/$brevId"
               variant="secondary-neutral"
             >
               Fortsett redigering
