@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.template.dsl
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.dsl.expression.expr
 
 @LetterTemplateMarker
 class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Text<Lang>, TextOnlyScope<Lang, LetterData>> {
@@ -28,6 +27,10 @@ class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, 
     fun includePhrase(phrase: TextOnlyPhrase<out Lang>) {
         phrase.apply(this)
     }
+
+    fun includePhrase(phrase: PlainTextOnlyPhrase<out Lang>) {
+        phrase.applyToTextScope(this)
+    }
 }
 
 @LetterTemplateMarker
@@ -44,6 +47,10 @@ class PlainTextOnlyScope<Lang : LanguageSupport, LetterData : Any> : PlainTextSc
 
     override fun addTextContent(e: TextElement<Lang>) {
         children.add(e)
+    }
+
+    fun includePhrase(phrase: PlainTextOnlyPhrase<out Lang>) {
+        phrase.apply(this)
     }
 
 }

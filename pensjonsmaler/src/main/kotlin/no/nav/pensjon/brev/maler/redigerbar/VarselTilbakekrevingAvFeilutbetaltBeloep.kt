@@ -13,15 +13,12 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselTilbakekrevingAvFeil
 import no.nav.pensjon.brev.maler.fraser.common.Constants.BESKJED_TIL_NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ETTERSENDELSE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.Redigerbar.SaksType
 import no.nav.pensjon.brev.maler.fraser.vedlegg.vedleggVarselTilbakekreving
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -35,7 +32,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTI
 object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilbakekrevingAvFeilutbetaltBeloepDto> {
     override val kategori: TemplateDescription.Brevkategori = VARSEL
     override val brevkontekst: TemplateDescription.Brevkontekst = ALLE
-    override val sakstyper: Set<Sakstype> = Sakstype.all // TODO er det faktisk alle sakstyper?
+    override val sakstyper: Set<Sakstype> = Sakstype.all
     override val kode = Pesysbrevkoder.Redigerbar.PE_VARSEL_OM_TILBAKEKREVING_FEILUTBETALT_BELOEP
     override val template = createTemplate(
         name = kode.name,
@@ -49,35 +46,40 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
         )
     ) {
         title {
-            textExpr(
-                Bokmal to "Vi vurderer om du må betale tilbake ".expr() + pesysData.sakstype.format(),
-                Nynorsk to "Vi vurderer om du må betale tilbake ".expr() + pesysData.sakstype.format(),
-                English to "We are considering demanding repayment of incorrectly paid ".expr() + pesysData.sakstype.format(),
+            text(
+                Bokmal to "Vi vurderer om du må betale tilbake ",
+                Nynorsk to "Vi vurderer om du må betale tilbake ",
+                English to "We are considering demanding repayment of incorrectly paid ",
             )
+            includePhrase(SaksType(pesysData.sakstype))
         }
         outline {
-            // TODO hvorfor settes denne til dagens dato?! Det er jo ikke sikkert det er riktig. Kan forsåvidt redigeres...
             paragraph {
                 textExpr(
                     Bokmal to "Vi viser til vedtaket vårt ".expr()
                             + felles.dokumentDato.format() +
                             ". Du har fått " + fritekst("beløp") +
-                            " kroner for mye utbetalt i " + pesysData.sakstype.format()
-                            + " fra og med " + fritekst("dato") + " til og med " +
-                            fritekst("dato") + ".",
+                            " kroner for mye utbetalt i ",
 
                     Nynorsk to "Vi viser til vedtaket vårt ".expr()
                             + felles.dokumentDato.format() +
                             ". Du har fått " + fritekst("beløp") +
-                            " kroner for mykje utbetalt i " + pesysData.sakstype.format()
-                            + " frå og med " + fritekst("dato") + " til og med " +
-                            fritekst("dato") + ".",
+                            " kroner for mykje utbetalt i ",
 
                     English to "We refer to our decision dated ".expr()
                             + felles.dokumentDato.format() +
                             ". You have received NOK " + fritekst("beløp") +
-                            " too much in " + pesysData.sakstype.format()
-                            + " starting from " + fritekst("dato") + " up to and including " +
+                            " too much in ",
+                )
+
+                includePhrase(SaksType(pesysData.sakstype))
+
+                textExpr(
+                    Bokmal to " fra og med ".expr() + fritekst("dato") + " til og med " +
+                            fritekst("dato") + ".",
+                    Nynorsk to " frå og med ".expr() + fritekst("dato") + " til og med " +
+                            fritekst("dato") + ".",
+                    English to " starting from ".expr() + fritekst("dato") + " up to and including " +
                             fritekst("dato") + ".",
                 )
             }
@@ -233,7 +235,7 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
                     English to "What happens next in your case",
                 )
             }
-            
+
             paragraph {
                 text(
                     Bokmal to "Vi vil vurdere saken og sende deg et vedtak. Dersom du må betale hele eller deler av beløpet, vil du få beskjed om hvordan du betaler tilbake i vedtaket.",
@@ -242,7 +244,6 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
                 )
             }
 
-            // TODO teksten er litt manglende i originalen. Er det greit å få med setningen "Du har rett til å se dokumentene i saken din." her?
             includePhrase(Felles.RettTilInnsynRedigerbarebrev)
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }

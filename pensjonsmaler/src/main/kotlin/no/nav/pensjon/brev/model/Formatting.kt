@@ -8,62 +8,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 @JvmName("formatBormedSivilstandTabell")
 fun Expression<BorMedSivilstand>.tableFormat() = format(formatter = FormatBorMedSivilstandTabell)
 
-@JvmName("formatterSakstype")
-fun Expression<Sakstype>.format() = format(formatter = FormatterSakstype)
-
-object FormatterSakstype : LocalizedFormatter<Sakstype>() {
-    override fun apply(first: Sakstype, second: Language): String {
-        return when (first) {
-            Sakstype.AFP -> "AFP"
-            Sakstype.AFP_PRIVAT -> when (second) {
-                Bokmal -> "AFP i privat sektor"
-                Nynorsk -> "AFP i privat sektor"
-                English -> "contractual pension (AFP) in the private sector"
-            }
-
-            Sakstype.ALDER -> when (second) {
-                Bokmal -> "alderspensjon"
-                Nynorsk -> "alderspensjon"
-                English -> "retirement pension"
-            }
-
-            Sakstype.BARNEP -> when (second) {
-                Bokmal -> "barnepensjon"
-                Nynorsk -> "barnepensjon"
-                English -> "children’s pension"
-            }
-
-            Sakstype.FAM_PL -> when (second) {
-                Bokmal ->"ytelse til tidligere familiepleier"
-                Nynorsk ->"yting til tidligare familiepleiarar"
-                English ->"previous family carers benefits"
-            }
-
-            Sakstype.GJENLEV -> when (second) {
-                Bokmal -> "gjenlevendepensjon"
-                Nynorsk -> "attlevandepensjon"
-                English -> "survivor's pension"
-            }
-
-            Sakstype.UFOREP -> when (second) {
-                Bokmal -> "uføretrygd"
-                Nynorsk -> "uføretrygd"
-                English -> "disability benefit"
-            }
-
-            Sakstype.GAM_YRK -> TODO()
-            Sakstype.GENRL -> TODO()
-            Sakstype.GRBL -> TODO()
-            Sakstype.KRIGSP -> TODO()
-            Sakstype.OMSORG -> TODO()
-        }
-    }
-
-    override fun stableHashCode(): Int = "FormatterSakstype".hashCode()
-
-
-}
-
 object FormatBorMedSivilstandTabell : LocalizedFormatter<BorMedSivilstand>() {
     override fun apply(first: BorMedSivilstand, second: Language): String =
         when (first) {
@@ -110,7 +54,6 @@ object BorMedSivilstandBestemt : LocalizedFormatter<BorMedSivilstand>() {
     override fun apply(first: BorMedSivilstand, second: Language): String = borMedSivilstand(first, second, true)
     override fun stableHashCode(): Int = "BorMedSivilstandBestemt".hashCode()
 }
-
 private fun borMedSivilstand(sivilstand: BorMedSivilstand, language: Language, bestemtForm: Boolean): String =
     when (sivilstand) {
         BorMedSivilstand.EKTEFELLE,
