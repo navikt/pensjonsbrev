@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
+import no.nav.pensjon.brev.api.model.KonteringType
 import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.TilbakekrevingResultat
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -17,29 +19,41 @@ data class TilbakekrevingAvFeilutbetaltBeloepDto(
 
     data class PesysData(
         val sakstype: Sakstype,
-        val tilbakekrevingTotal: TilbakekrevingTotalDto,
+        val tilbakekrevingAvFeilUtbetaltBeloep: TilbakekrevingAvFeilutbetaltBeloepDto,
     ) : BrevbakerBrevdata
 
-    data class TilbakekrevingTotalDto(
-        val startPeriodeForTilbakekreving: LocalDate,
+    data class TilbakekrevingAvFeilUtbetaltBeloepDto(
+        val bruttoBeloepTilbakekrevdTotalBeloep: Kroner,
+        val feilutbetaltTotalBeloep: Kroner,
+        val nettoBeloepUtenRenterTilbakekrevdTotalBeloep: Kroner,
+        val rentetilleggSomInnkrevesTotalBeloep: Kroner,
+        val resultatAvVurderingenForTotalBeloep: TilbakekrevingResultat,
+        val skattefradragSomInnkrevesTotalBeloep: Kroner,
         val sluttPeriodeForTilbakekreving: LocalDate,
-        val feilutbetaltBeloep: Kroner,
-        val ResultatAvVurderingen: ResultatType,
-        val sumTilInnkreving: Kroner,
-        val hjemmelForTilbakekreving: HjemmelType,
-        val bruttoBeloepTilbakekrevd: Kroner,
-        val skatteFradragSomInnkreves: Kroner,
-        val nettoBeloepUtenRenterTilbakekrevd: Kroner,
-        val rentetilleggSomInnkreves: Kroner,
-        val tilbakekrevingPerAarListe: tilbakekrevingPerAarListeDto
+        val startPeriodeForTilbakekreving: LocalDate,
+        val sumTilInnkrevingTotalBeloep: Kroner,
+        val tilbakekrevingPerAar: TilbakekrevingPerAar,
+        val tilbakekrevingPerMaaned: TilbakekrevingPerManed,
     ) : BrevbakerBrevdata
 
-    data class TilbakekrevingPerAarListeDto(
+    // For hvert år med innslag, skal en liste over tilbakekreving genereres
+    data class TilbakekrevingPerAar(
         val Aar: String,
-        val tilbakekrevingPerManedListe: TilbakekrevingPerManedListeDto
+        val tilbakekrevingPerAarListe: List<TilbakekrevingListe>,
     ) : BrevbakerBrevdata
 
-    data class TilbakekrevingPerManedListeDto(
+    // For hvert måned med innslag, skal en liste over tilbakekreving generes
+    data class TilbakekrevingPerManed(
+        val maaned: String,
+        val tilbakekrevingPerMaanedListe: List<TilbakekrevingListe>,
+        ) : BrevbakerBrevdata
 
-    )
+    data class TilbakekrevingListe(
+        val bruttoBeloepTilbakekrevd: Kroner,
+        val feilutbetaltBeloep: Kroner,
+        val nettoBeloepUtenRenterTilbakekrevd: Kroner,
+        val resultatAvVurderingen: TilbakekrevingResultat,
+        val skattefradragSomInnkreves: Kroner,
+        val ytelsenMedFeilutbetaling: KonteringType,
+        ) : BrevbakerBrevdata
 }
