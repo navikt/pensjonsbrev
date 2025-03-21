@@ -7,14 +7,14 @@ import { Outlet } from "@tanstack/react-router";
 import { getFavoritter, getKontaktAdresse, getNavn, getPreferredLanguage } from "~/api/skribenten-api-endpoints";
 import { getSakContext } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { SakDto } from "~/types/apiTypes";
+import type { SakContextDto, SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 import { queryFold } from "~/utils/tanstackUtils";
 
 import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
 import { FerdigstillResultatContextProvider } from "./kvittering/-components/FerdigstillResultatContext";
 
-export const Route = createFileRoute("/saksnummer/$saksId")({
+export const Route = createFileRoute("/saksnummer_/$saksId")({
   beforeLoad: ({ params: { saksId }, search: { vedtaksId } }) => {
     const getSakContextQueryOptions = {
       ...getSakContext,
@@ -54,8 +54,7 @@ export const Route = createFileRoute("/saksnummer/$saksId")({
 });
 
 function SakLayout() {
-  const sakContext = Route.useLoaderData();
-
+  const sakContext: SakContextDto = Route.useLoaderData();
   return (
     <FerdigstillResultatContextProvider>
       <MottakerContextProvider>

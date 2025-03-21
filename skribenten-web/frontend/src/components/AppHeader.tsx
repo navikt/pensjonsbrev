@@ -19,6 +19,8 @@ export function AppHeader() {
             color: inherit;
             text-decoration: inherit;
           `}
+          params={(current) => current}
+          search={(current) => current}
           to="/"
         >
           Skribenten

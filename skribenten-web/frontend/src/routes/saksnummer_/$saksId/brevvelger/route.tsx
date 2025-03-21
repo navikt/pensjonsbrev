@@ -22,7 +22,7 @@ import { formatStringDate } from "~/utils/dateUtils";
 import BrevmalPanel from "./-components/BrevmalPanel";
 import BrevvelgerFooter from "./-components/BrevvelgerFooter";
 
-export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
+export const Route = createFileRoute("/saksnummer_/$saksId/brevvelger")({
   validateSearch: (
     search: Record<string, unknown>,
   ): { idTSSEkstern?: string; brevId?: string; templateId?: string; enhetsId?: string } => ({
@@ -45,7 +45,8 @@ export interface SubmitTemplateOptions {
 }
 
 export function BrevvelgerPage() {
-  const { saksId, letterTemplates } = Route.useLoaderData();
+  const { saksId, letterTemplates } = Route.useLoaderData() as { saksId: number; letterTemplates: LetterMetadata[] };
+
   const [onSubmitClick, setOnSubmitClick] = useState<Nullable<SubmitTemplateOptions>>(null);
 
   const alleSaksbrevQuery = useQuery({
@@ -249,7 +250,11 @@ function Brevmaler({
                       onClick={() => {
                         navigate({
                           to: "/saksnummer/$saksId/brevvelger",
-                          search: (s) => ({ ...s, templateId: template.id, brevId: undefined }),
+                          search: (s: Record<string, string | undefined>) => ({
+                            ...s,
+                            templateId: template.id,
+                            brevId: undefined,
+                          }),
                         });
                       }}
                       title={
@@ -326,7 +331,11 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; letterTemplates: LetterM
                 onClick={() => {
                   navigate({
                     to: "/saksnummer/$saksId/brevvelger",
-                    search: (s) => ({ ...s, brevId: brev.id.toString(), templateId: undefined }),
+                    search: (s: Record<string, string | undefined>) => ({
+                      ...s,
+                      brevId: brev.id.toString(),
+                      templateId: undefined,
+                    }),
                   });
                 }}
                 title={

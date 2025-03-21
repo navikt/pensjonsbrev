@@ -5,7 +5,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useFerdigstillResultatContext } from "./-components/FerdigstillResultatContext";
 import KvitterteBrev from "./-components/KvitterteBrev";
 
-export const Route = createFileRoute("/saksnummer/$saksId/kvittering")({
+export const Route = createFileRoute("/saksnummer_/$saksId/kvittering")({
   component: Kvittering,
 });
 

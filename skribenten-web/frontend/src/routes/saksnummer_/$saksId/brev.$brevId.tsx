@@ -32,7 +32,7 @@ import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, Saksbehand
 import { type EditedLetter } from "~/types/brevbakerTypes";
 import { queryFold } from "~/utils/tanstackUtils";
 
-export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
+export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
   parseParams: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
   component: RedigerBrevPage,
 });
@@ -84,9 +84,8 @@ function RedigerBrevPage() {
                 css={css`
                   padding: 4px 0;
                 `}
-                params={{ saksId: saksId }}
                 size="small"
-                to="/saksnummer/$saksId/brevbehandler"
+                to={`/saksnummer/${saksId}/brevbehandler`}
                 variant="tertiary"
               >
                 Gå til brevbehandler
@@ -417,7 +416,7 @@ function RedigerBrev({
                   navigate({
                     to: "/saksnummer/$saksId/brevvelger",
                     params: { saksId: saksId },
-                    search: (s) => ({ ...s, brevId: brev.info.id.toString() }),
+                    search: (s: Record<string, unknown>) => ({ ...s, brevId: brev.info.id.toString() }),
                   });
                 }}
                 size="small"

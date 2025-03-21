@@ -86,7 +86,7 @@ describe("updateContent", () => {
   test("text changes are propagated", async () => {
     const { user } = setup();
     await user.click(screen.getByText(content[0].text));
-    await user.keyboard(" person");
+    await user.keyboard("{End} person");
     expect(setEditorState).toHaveBeenCalled();
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
       Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text + " person"),
@@ -95,7 +95,7 @@ describe("updateContent", () => {
   test("enter is not propagated as br-element", async () => {
     const { user } = setup();
     await user.click(screen.getByText(content[0].text));
-    await user.keyboard("{Enter}asd");
+    await user.keyboard("{End}{Enter}asd");
 
     // Enter does cause a splitAction-event, but we're only rendering the original block, so the focus is still in the span we clicked.
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
@@ -105,7 +105,7 @@ describe("updateContent", () => {
   test("space is not propagated as nbsp-entity", async () => {
     const { user } = setup();
     await user.click(screen.getByText(content[0].text));
-    await user.keyboard("  asd");
+    await user.keyboard("{End}  asd");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
       Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text + "  asd"),
@@ -118,7 +118,7 @@ describe("deleteHandler", () => {
     const { user } = setup();
 
     await user.click(screen.getByText(content[1].text));
-    await user.keyboard("{Delete}");
+    await user.keyboard("{End}{Delete}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
       Actions.merge(editorState, { blockIndex: 0, contentIndex: 1 }, MergeTarget.NEXT),
@@ -322,7 +322,7 @@ describe("ArrowRight will move focus to next editable content", () => {
       contentIndex: 1,
     });
 
-    await user.keyboard("{ArrowRight}");
+    await user.keyboard("{End}{ArrowRight}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
@@ -355,7 +355,7 @@ describe("ArrowRight will move focus to next editable content", () => {
       itemContentIndex: 0,
     });
 
-    await user.keyboard("{ArrowRight}");
+    await user.keyboard("{End}{ArrowRight}");
 
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 3,
@@ -421,7 +421,7 @@ describe("onFocusHandler", () => {
     await user.tab();
     const selection = globalThis.getSelection();
     expect(selection).not.toBeNull();
-    expect(selection?.toString()).toBe("andre literal");
+    expect(selection?.focusNode?.textContent).toBe("andre literal");
   });
   test("tabbing through a fritkest variable that has been edited should not be focused", async () => {
     const state = letter(
@@ -442,6 +442,6 @@ describe("onFocusHandler", () => {
     await user.tab();
     const selection = globalThis.getSelection();
     expect(selection).not.toBeNull();
-    expect(selection?.toString()).toBe("tredje literal");
+    expect(selection?.focusNode?.textContent).toBe("tredje literal");
   });
 });
