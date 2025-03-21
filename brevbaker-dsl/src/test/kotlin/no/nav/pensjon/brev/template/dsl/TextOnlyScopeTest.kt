@@ -33,6 +33,17 @@ class TextOnlyScopeTest {
         assertEquals(listOf(Content(Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(Bokmal to "hei".expr()))), actual.elements)
     }
 
+    object TestPlainTextOnlyPhrase : PlainTextOnlyPhrase<LangBokmal>() {
+        override fun PlainTextOnlyScope<LangBokmal, Unit>.template() = text(Bokmal to "hei")
+    }
+
+    @Test
+    fun `includePhrase adds elements from plain text only phrase`() {
+        val actual = TextOnlyScope<LangBokmal, Unit>().apply { includePhrase(TestPlainTextOnlyPhrase) }
+
+        assertEquals(listOf(Content(Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "hei"))), actual.elements)
+    }
+
     @Test
     fun `includePhrase can use langcombo with more languages`() {
         val phrase = object : TextOnlyPhrase<LangBokmalNynorsk>() {

@@ -31,6 +31,14 @@ class ParagraphOnlyScope<Lang : LanguageSupport, LetterData : Any> : ParagraphSc
     fun includePhrase(phrase: ParagraphPhrase<out Lang>) {
         phrase.apply(this)
     }
+
+    fun includePhrase(phrase: TextOnlyPhrase<out Lang>) {
+        phrase.applyToParagraphScope(this)
+    }
+
+    fun includePhrase(phrase: PlainTextOnlyPhrase<out Lang>) {
+        phrase.applyToParagraphScope(this)
+    }
 }
 
 interface ParagraphScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, LetterData> {
