@@ -117,24 +117,20 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
                     Nynorsk to "".expr()
                 )
             }
-
             paragraph {
-                textExpr(
-                    Bokmal to "Du får ".expr() + totalNetto.format(CurrencyFormat) + " kroner i ",
-                    Nynorsk to "".expr()
-                )
-                showIf(uforetrygd.netto.notEqualTo(0)) {
-                    text(Bokmal to "uføretrygd ", Nynorsk to "")
-                }
                 showIf(barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull() or gjenlevendetillegg.notNull()) {
-                    showIf(uforetrygd.netto.notEqualTo(0)) { text(Bokmal to "og ", Nynorsk to "") }
-                    text(Bokmal to "tilleggsytelser ", Nynorsk to "")
+                    textExpr(
+                        Bokmal to "Du får ".expr() + totalNetto.format(CurrencyFormat) + " kroner i uføretrygd og tilleggsytelser per måned før skatt ",
+                        Nynorsk to "".expr()
+                    )
+                }.orShow {
+                    showIf(uforetrygd.netto.notEqualTo(0)) {
+                        textExpr(
+                            Bokmal to "Du får ".expr() + totalNetto.format(CurrencyFormat) + " kroner i uføretrygd per måned før skatt ",
+                            Nynorsk to "".expr()
+                        )
+                    }
                 }
-
-                text(
-                    Bokmal to "per måned før skatt. ",
-                    Nynorsk to "",
-                )
             }
 
             paragraph {
@@ -193,7 +189,7 @@ object EndretUfoeretrygdPGAInntekt2 : AutobrevTemplate<EndretUfoeretrygdPGAInnte
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Barnetillegg for barn som bor med en forelder ",
+                                    Bokmal to "Barnetillegg for barn som bor med én forelder ",
                                     Nynorsk to "",
                                 )
                             }
