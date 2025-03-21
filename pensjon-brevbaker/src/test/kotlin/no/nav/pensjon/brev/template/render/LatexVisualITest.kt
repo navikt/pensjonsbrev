@@ -116,6 +116,17 @@ class LatexVisualITest {
     }
 
     @Test
+    fun `title should not be put on a separate page`() {
+        render {
+            repeat(14) {
+                paragraph { text(Bokmal to "Padding") }
+            }
+            title1 { text(Bokmal to "Title 1") }
+            title2 { text(Bokmal to "Title 2") }
+        }
+    }
+
+    @Test
     fun `form choice uten vspace`() {
         render {
             title1 { text(Bokmal to "Form choice uten vspace") }
