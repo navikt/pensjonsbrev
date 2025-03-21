@@ -84,9 +84,8 @@ function RedigerBrevPage() {
                 css={css`
                   padding: 4px 0;
                 `}
-                params={{ saksId: saksId }}
                 size="small"
-                to="/saksnummer/$saksId/brevbehandler"
+                to={`/saksnummer/${saksId}/brevbehandler`}
                 variant="tertiary"
               >
                 Gå til brevbehandler

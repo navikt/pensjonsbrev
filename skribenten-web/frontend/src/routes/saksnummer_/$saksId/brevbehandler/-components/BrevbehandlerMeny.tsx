@@ -282,9 +282,8 @@ const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
           >
             <Button
               as={Link}
-              params={{ saksId: props.saksId, brevId: props.brev.id }}
               size="small"
-              to="/saksnummer/$saksId/brev/$brevId"
+              to={`/saksnummer/${props.saksId}/brev/${props.brev.id}`}
               variant="secondary-neutral"
             >
               Fortsett redigering
