@@ -57,7 +57,6 @@ object Pesysbrevkoder {
         UT_INFORMASJON_OM_SAKSBEHANDLINGSTID,
         UT_ORIENTERING_OM_SAKSBEHANDLINGSTID;
 
-
         override fun kode(): String = this.name
     }
 }
