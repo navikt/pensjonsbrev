@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.model.format
@@ -27,7 +28,22 @@ internal object LatexDocumentRenderer {
         language = pdfRequest.language.toLanguage(),
         felles = pdfRequest.felles,
         brevtype = pdfRequest.brevtype,
+        pdfVedlegg = pdfRequest.pdfVedlegg,
     )
+
+    @OptIn(InterneDataklasser::class)
+    private fun List<PDFVedlegg>.somAttachment(): List<LetterMarkup.Attachment> = this.map {
+        LetterMarkupImpl.AttachmentImpl(
+            title = listOf(
+                LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
+                    id = it.hashCode(),
+                    text = it.type.tittel,
+                )
+            ),
+            blocks = listOf(),
+            includeSakspart = false
+        )
+    }
 
     private fun render(
         letter: LetterMarkup,
@@ -35,10 +51,11 @@ internal object LatexDocumentRenderer {
         language: Language,
         felles: Felles,
         brevtype: LetterMetadata.Brevtype,
+        pdfVedlegg: List<PDFVedlegg>,
     ): LatexDocument =
         LatexDocument().apply {
             newLatexFile("params.tex") {
-                appendMasterTemplateParameters(attachments, brevtype, felles, language)
+                appendMasterTemplateParameters(attachments + pdfVedlegg.somAttachment(), brevtype, felles, language)
             }
             newLatexFile("letter.xmpdata") { appendXmpData(letter, language, felles) }
             newLatexFile("letter.tex") { renderLetterTemplate(letter, attachments) }

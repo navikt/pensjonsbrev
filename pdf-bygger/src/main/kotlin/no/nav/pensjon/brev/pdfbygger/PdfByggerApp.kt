@@ -23,6 +23,11 @@ import io.micrometer.core.instrument.Tag
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.pdfbygger.vedlegg.PDFVedleggAppender
+import no.nav.pensjon.brev.pdfbygger.vedlegg.VedleggModule
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import java.nio.file.Path
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -54,6 +59,7 @@ fun Application.module() {
         jackson {
             registerModule(JavaTimeModule())
             registerModule(LetterMarkupModule)
+            registerModule(VedleggModule)
             registerModule(FellesModule)
             enable(SerializationFeature.INDENT_OUTPUT)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
@@ -109,12 +115,13 @@ fun Application.module() {
     routing {
 
         post("/produserBrev") {
+            val pdfRequest = call.receive<PDFRequest>()
             val result = activityCounter.count {
-                call.receive<PDFRequest>()
+                pdfRequest
                     .let { LatexDocumentRenderer.render(it) }
                     .let { laTeXService.producePDF(it.files.associate { it.fileName to it.content }) }
             }
-            handleResult(result, call.application.environment.log)
+            handleResult(result, pdfRequest.pdfVedlegg, call.application.environment.log, pdfRequest.language)
         }
 
         get("/isAlive") {
@@ -140,10 +147,18 @@ fun Application.module() {
 
 private suspend fun RoutingContext.handleResult(
     result: PDFCompilationResponse,
+    pdfvedlegg: List<PDFVedlegg>,
     logger: Logger,
+    spraak: LanguageCode,
 ) {
     when (result) {
-        is PDFCompilationResponse.Bytes -> call.respond(result)
+        is PDFCompilationResponse.Bytes -> {
+            if (pdfvedlegg.isNotEmpty()) {
+                call.respond(PDFVedleggAppender.leggPaaVedlegg(result, pdfvedlegg, spraak))
+            } else {
+                call.respond(result)
+            }
+        }
         is PDFCompilationResponse.Failure.Client -> {
             logger.info("Client error: ${result.reason}")
             if (result.output?.isNotBlank() == true) {

@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.AttachmentTemplate
@@ -36,8 +37,10 @@ import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.toCode
+import no.nav.pensjon.brev.template.toScope
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import java.nio.file.Path
 import kotlin.io.path.Path
 
@@ -138,7 +141,8 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
                         it.attachments,
                         language.toCode(),
                         felles,
-                        template.letterMetadata.brevtype
+                        template.letterMetadata.brevtype,
+                        pdfVedlegg = renderPDFAttachments(this@renderTestPDF)
                     )
                 )
             }.bytes

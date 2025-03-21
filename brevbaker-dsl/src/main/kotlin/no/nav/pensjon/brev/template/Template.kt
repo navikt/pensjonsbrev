@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.dsl
 
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -15,7 +16,7 @@ fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
     init: TemplateRootScope<Lang, LetterData>.() -> Unit
 ): LetterTemplate<Lang, LetterData> =
     with(TemplateRootScope<Lang, LetterData>().apply(init)) {
-        return LetterTemplate(name, title, letterDataType, languages, outline, attachments, letterMetadata)
+        return LetterTemplate(name, title, letterDataType, languages, outline, attachments, pdfAttachments, letterMetadata)
     }
 
 @LetterTemplateMarker
@@ -23,6 +24,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
     val title: MutableList<TextElement<Lang>> = mutableListOf(),
     val outline: MutableList<OutlineElement<Lang>> = mutableListOf(),
     val attachments: MutableList<IncludeAttachment<Lang, *>> = mutableListOf(),
+    val pdfAttachments: MutableList<PDFTemplate<*>> = mutableListOf(),
 ) : TemplateGlobalScope<LetterData> {
 
     fun title(init: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {
@@ -43,6 +45,19 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
         predicate: Expression<Boolean> = true.expr(),
     ) {
         attachments.add(IncludeAttachment(attachmentData, template, predicate))
+    }
+
+    fun <AttachmentData : BrevbakerBrevdata> includeAttachment(
+        type: PDFVedleggType,
+        attachmentData: Expression<AttachmentData>
+    ) {
+        pdfAttachments.add(PDFTemplate(type, attachmentData))
+    }
+
+    fun includeAttachment(
+        type: PDFVedleggType
+    ) {
+        pdfAttachments.add(PDFTemplate(type, EmptyBrevdata.expr()))
     }
 
     fun includeAttachment(
