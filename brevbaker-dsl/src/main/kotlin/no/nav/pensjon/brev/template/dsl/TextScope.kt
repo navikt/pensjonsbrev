@@ -16,9 +16,5 @@ interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalSc
         addTextContent(Content(Element.OutlineContent.ParagraphContent.Text.Expression(expression, fontType)))
     }
 
-    fun eval(literal: String, fontType: FontType = FontType.PLAIN) {
-        eval(literal.expr(), fontType)
-    }
-
     fun newline()
 }
