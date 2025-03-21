@@ -49,6 +49,9 @@ class PlainTextOnlyScope<Lang : LanguageSupport, LetterData : Any> : PlainTextSc
         children.add(e)
     }
 
+    fun includePhrase(phrase: PlainTextOnlyPhrase<out Lang>) {
+        phrase.apply(this)
+    }
 }
 
 interface PlainTextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
