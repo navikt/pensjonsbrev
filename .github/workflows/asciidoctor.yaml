@@ -25,7 +25,7 @@ jobs:
       with:
         distribution: 'adopt'
         java-version: '11'
-    - uses: ruby/setup-ruby@v1
+    - uses: ruby/setup-ruby@1a615958ad9d422dd932dc1d5823942ee002799f
       with:
         ruby-version: '2.6'
     - name: Install plantuml
@@ -45,7 +45,7 @@ jobs:
         path: "${{ github.workspace }}/build"
 
     - name: Deploy to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@v4.7.3
+      uses: JamesIves/github-pages-deploy-action@6c2d9db40f9296374acc17b90404b6e8864128c8
       with:
         GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         FOLDER: "build"

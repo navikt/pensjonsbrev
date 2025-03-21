@@ -37,7 +37,7 @@ function DataView({
   name: string;
   objectTypeSpecification: ObjectTypeSpecification;
 }) {
-  const { highlightedDataClass } = useSearch({ from: "/template/$templateId" });
+  const { highlightedDataClass } = useSearch({ from: "/template/$malType/$templateId" });
   const reference = useRef<HTMLSpanElement>(null);
 
   const isHighlighted = highlightedDataClass === trimClassName(name);
@@ -66,7 +66,7 @@ function DataView({
 }
 
 function DataField({ name, fieldType }: { name: string; fieldType: FieldType }) {
-  const { highlightedDataField } = useSearch({ from: "/template/$templateId" });
+  const { highlightedDataField } = useSearch({ from: "/template/$malType/$templateId" });
   const reference = useRef<HTMLSpanElement>(null);
 
   const isHighlighted = highlightedDataField === name;
@@ -127,7 +127,7 @@ function Type({ fieldType }: { fieldType: FieldType }) {
     case "object": {
       return (
         <Link
-          from="/template/$templateId"
+          from="/template/$malType/$templateId"
           preload={false}
           replace
           search={(s) => ({ ...s, highlightedDataClass: trimClassName(fieldType.typeName).replace("?", "") })}
