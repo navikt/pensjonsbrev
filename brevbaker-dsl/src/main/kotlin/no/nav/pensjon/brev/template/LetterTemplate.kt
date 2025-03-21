@@ -105,7 +105,6 @@ sealed class Expression<out Out> : StableHash {
         }
     }
 
-    // TODO: Vurder intern konstruktør
     class UnaryInvoke<In, Out>(
         val value: Expression<In>,
         val operation: UnaryOperation<In, Out>,
@@ -119,7 +118,6 @@ sealed class Expression<out Out> : StableHash {
         override fun hashCode() = Objects.hash(value, operation)
     }
 
-    // TODO: Vurder intern konstruktør
     class BinaryInvoke<In1, In2, out Out>(
         val first: Expression<In1>,
         val second: Expression<In2>,
