@@ -19,7 +19,7 @@ fun <Lang : LanguageSupport, LetterData : Any> createTemplate(
     }
 
 @LetterTemplateMarker
-class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
+class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
     val title: MutableList<TextElement<Lang>> = mutableListOf(),
     val outline: MutableList<OutlineElement<Lang>> = mutableListOf(),
     val attachments: MutableList<IncludeAttachment<Lang, *>> = mutableListOf(),
@@ -63,7 +63,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any>(
 
 
 @LetterTemplateMarker
-class TemplateFormChoiceScope<Lang : LanguageSupport, LetterData : Any>(
+class TemplateFormChoiceScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
     val choices: MutableList<Element.OutlineContent.ParagraphContent.Text<Lang>> = mutableListOf()
 ) : TemplateGlobalScope<LetterData>
 

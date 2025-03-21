@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api.model
 
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.template.StableHash
+import java.util.Objects
 
 object FeatureToggleSingleton {
     private lateinit var featureToggleService: FeatureToggleService
@@ -20,6 +21,13 @@ object FeatureToggleSingleton {
 
 }
 
-data class FeatureToggle(val name: String) : StableHash by StableHash.of("Toggle: $name") {
+class FeatureToggle(val name: String) : StableHash by StableHash.of("Toggle: $name") {
     fun key(): String = name
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is FeatureToggle) return false
+        return name == other.name
+    }
+    override fun hashCode() = Objects.hash(name)
+    override fun toString() = "FeatureToggle(name='$name')"
 }
