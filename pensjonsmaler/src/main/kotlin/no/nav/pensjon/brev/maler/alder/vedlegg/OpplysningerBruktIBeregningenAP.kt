@@ -3,18 +3,23 @@ package no.nav.pensjon.brev.maler.alder.vedlegg
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.delingstallVedNormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.delingstallVedUttak
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.pensjonsbeholdning
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.redusertTrygdetid
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.sisteOpptjeningsAar
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.trygdeperioderUtland
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.trygdeperioderNorge
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.trygdetid
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.virkFom
+import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeNorgeSelectors.fom
+import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeNorgeSelectors.tom
+import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors.fom
+import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors.land
+import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors.tom
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
@@ -157,5 +162,117 @@ val opplysningerBruktIBeregningenAP =
                 Nynorsk to "På ${Constants.PENSJON_URL} kan du lese meir om regelverket for alderspensjon og kva desse tala har å seie for berekninga. I nettenesta Din pensjon på ${Constants.DIN_PENSJON_URL} kan du sjå kva inntekter og opplysningar om opptening som vi har registrert.",
                 English to "Go to ${Constants.PENSJON_URL} to read more about these regulations that apply to retirement pension and how these affect your calculation. Logon to our online service \"Din pensjon\" at ${Constants.DIN_PENSJON_URL} to see your income and accumulated pension capital."
             )
+        }
+
+        showIf(redusertTrygdetid){
+            paragraph {
+                text(
+                    Bokmal to "Trygdetid baserer seg på perioder du har bodd og/eller arbeidet i Norge, og har betydning for beregning avpensjonen din. Full trygdetid er 40 år.",
+                    Nynorsk to "Trygdetid baserer seg på periodar du har budd og/eller arbeidd i Noreg, og har betydning for berekning avpensjonen din. Full trygdetid er 40 år.",
+                    English to "The period of national insurance coverage is based on periods you have lived and/or worked in Norway, and these years affect pension eligibility. Full pension eligibility is 40 years."
+                )
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "Tabellen nedenfor viser perioder vi har registrert at du har bodd og/eller arbeidet i Norge. Disse opplysningene er brukt for å fastsette din norske trygdetid.",
+                    Nynorsk to "Tabellen nedanfor viser periodar vi har registrertat du har budd og/eller arbeidd i Noreg. Desse opplysningane er brukte for å fastsetje den norske trygdetida di.",
+                    English to "The table below shows the time periods when you have been registered as living and/or working in Norway. This information has been used to establish your Norwegian national insurance coverage."
+                )
+            }
+            paragraph {
+                table(header = {
+                    column {
+                        text(
+                            Bokmal to "Fra og med",
+                            Nynorsk to "Frå og med",
+                            English to "Start date",
+                        )
+                    }
+                    column {
+                        text(
+                        Bokmal to "Til og med",
+                        Nynorsk to "Til og med",
+                        English to "End date"
+                    )}
+                }) {
+                    forEach(trygdeperioderNorge) { periode ->
+                        row {
+                            cell {
+                                textExpr(
+                                    Bokmal to periode.fom.formatMonthYear(),
+                                    Nynorsk to periode.fom.formatMonthYear(),
+                                    English to periode.fom.formatMonthYear()
+                                )
+                            }
+                            cell {
+                                textExpr(
+                                    Bokmal to periode.tom.formatMonthYear(),
+                                    Nynorsk to periode.tom.formatMonthYear(),
+                                    English to periode.tom.formatMonthYear()
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "Tabellen nedenfor viser perioder du har bodd og/eller arbeidet i land som Norge har trygdeavtale med. Disse periodene er brukt i vurderingen av retten til alderspensjon før fylte 67 år.",
+                    Nynorsk to "Tabellen nedanfor viser periodar du har budd og/eller arbeidd i land som Noreg har trygdeavtale med. Desse periodane er brukt i vurderinga av retten til alderspensjon før fylte 67 år.",
+                    English to "The table below shows your insurance coverage in countries with which Norway has a social security agreement. These periods has been used to assess whether you are eligible for retirement pension before the age of 67.",
+                )
+            }
+
+            paragraph {
+                table(header = {
+                    column {
+                        text(
+                            Bokmal to "Land",
+                            Nynorsk to "Land",
+                            English to "Country"
+                        )}
+                    column {
+                        text(
+                            Bokmal to "Fra og med",
+                            Nynorsk to "Frå og med",
+                            English to "Start date",
+                        )
+                    }
+                    column {
+                        text(
+                            Bokmal to "Til og med",
+                            Nynorsk to "Til og med",
+                            English to "End date"
+                        )}
+                }) {
+                    forEach(trygdeperioderUtland) { utlandPeriode ->
+                        row {
+                            cell {
+                                textExpr(
+                                    Bokmal to utlandPeriode.land,
+                                    Nynorsk to utlandPeriode.land,
+                                    English to utlandPeriode.land
+                                )
+                            }
+                            cell {
+                                textExpr(
+                                    Bokmal to utlandPeriode.fom.formatMonthYear(),
+                                    Nynorsk to utlandPeriode.fom.formatMonthYear(),
+                                    English to utlandPeriode.fom.formatMonthYear()
+                                )
+                            }
+                            cell {
+                                textExpr(
+                                    Bokmal to utlandPeriode.tom.formatMonthYear(),
+                                    Nynorsk to utlandPeriode.tom.formatMonthYear(),
+                                    English to utlandPeriode.tom.formatMonthYear()
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
     }

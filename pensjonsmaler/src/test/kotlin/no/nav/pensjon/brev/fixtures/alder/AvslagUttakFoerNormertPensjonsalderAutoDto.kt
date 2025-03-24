@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.fixtures.alder
 
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
-import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningen
+import no.nav.pensjon.brev.api.model.maler.alderApi.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -29,6 +27,9 @@ fun createAvslagUttakFoerNormertPensjonsalderAutoDto() =
             sisteOpptjeningsAar = 2024,
             virkFom = LocalDate.of(2025, 2, 1),
             prorataBruktIBeregningen = true,
+            trygdeperioderNorge = listOf(TrygdeperiodeNorge(fom = LocalDate.now(), tom = LocalDate.now()),TrygdeperiodeNorge(fom = LocalDate.now(), tom = LocalDate.now())),
+            trygdeperioderUtland = listOf(TrygdeperiodeUtland(land="Sverige", fom = LocalDate.now(), tom = LocalDate.now()),TrygdeperiodeUtland(land="Danmark", fom = LocalDate.now(), tom = LocalDate.now())),
+            redusertTrygdetid = true
         ),
         borINorge = false,
     )

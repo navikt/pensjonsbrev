@@ -21,6 +21,17 @@ data class NormertPensjonsalder(
     val maaneder: Int,
 )
 
+data class TrygdeperiodeNorge(
+    val fom: LocalDate,
+    val tom: LocalDate
+)
+
+data class TrygdeperiodeUtland(
+    val fom: LocalDate,
+    val tom: LocalDate,
+    val land: String
+)
+
 data class OpplysningerBruktIBeregningen(
     val virkFom: LocalDate,
     val uttaksgrad: Int,
@@ -31,4 +42,7 @@ data class OpplysningerBruktIBeregningen(
     val normertPensjonsalder: NormertPensjonsalder,
     val sisteOpptjeningsAar: Int?,
     val prorataBruktIBeregningen: Boolean,
+    val redusertTrygdetid: Boolean,
+    val trygdeperioderNorge: List<TrygdeperiodeNorge>,
+    val trygdeperioderUtland: List<TrygdeperiodeUtland>
 )
