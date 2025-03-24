@@ -127,3 +127,23 @@ enum class KonteringType {
     UT_TSB,
     VT
 }
+
+enum class AlderspensjonRegelverkstype {
+    AP1967,
+    AP2011,
+    AP2016,
+    AP2025,
+}
+
+enum class AlderspensjonBeregnetEtter {
+    EGEN,
+    AVDOD,
+}
+
+// Brukes kun for konverterte brev. For nytt innhold, bruk brukersSivilstand eller bormedSivilstand
+enum class MetaforceSivilstand {
+    EKTEFELLE, ENKE, ENSLIG,
+    FELLES_BARN, FORELDER, GIFT, GLAD_EKT, GLAD_PART, PARTNER, SAMBOER,
+    SAMBOER_1_5,
+    SAMBOER_3_2, SEPARERT, SEPARERT_PARTNER, UKJENT;
+}
