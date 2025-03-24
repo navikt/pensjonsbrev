@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test
 class Letter2MarkupTest {
 
     private inline fun <reified LetterData : Any> renderTemplate(data: LetterData, noinline template: OutlineOnlyScope<LangBokmal, LetterData>.() -> Unit) =
-        Letter2Markup.render(Letter(outlineTestTemplate(template), data, Bokmal, felles))
+        Letter2Markup.render(LetterImpl(outlineTestTemplate(template), data, Bokmal, felles))
 
     @Test
     fun `outline root elements are rendered in same order`() {
@@ -132,7 +132,7 @@ class Letter2MarkupTest {
                 paragraph { }
             }
         }
-        val result = Letter2Markup.render(Letter(template, EmptyBrevdata, Bokmal, felles))
+        val result = Letter2Markup.render(LetterImpl(template, EmptyBrevdata, Bokmal, felles))
 
         assertThat(
             result.letterMarkup.title,

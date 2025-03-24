@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -174,7 +175,7 @@ object Felles {
                 text(
                     Bokmal to "Meld fra om endringer",
                     Nynorsk to "Meld frå om endringar",
-                    Language.English to "Duty to report changes"
+                    English to "Duty to report changes"
                 )
             }
             paragraph {
@@ -183,11 +184,28 @@ object Felles {
                             + "for eksempel ved endring av sivilstand eller ved flytting.",
                     Nynorsk to "Du må melde frå til oss med ein gong dersom det skjer endringar som kan ha noko å seie for saka din, "
                             + "for eksempel ved endring av sivilstand eller ved flytting.",
-                    Language.English to "You must notify us immediately if there are any changes that may affect your case, "
+                    English to "You must notify us immediately if there are any changes that may affect your case, "
                             + "such as a change in your marital status or if you move."
                 )
             }
         }
     }
-
+    object RettTilInnsynRedigerbarebrev : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 {
+                text(
+                    Bokmal to "Du har rett til innsyn",
+                    Nynorsk to "Du har rett til innsyn",
+                    English to "You have the right to access your file",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du har rett til å se dokumentene i saken din. Du kan logge deg inn via $NAV_URL for å se dokumenter i saken din.",
+                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Du kan logge deg inn via $NAV_URL for å sjå dokumenta i saka di.",
+                    English to "You are entitled to see your case documents. You can log in via $NAV_URL to view documents related to your case."
+                )
+            }
+        }
+    }
 }

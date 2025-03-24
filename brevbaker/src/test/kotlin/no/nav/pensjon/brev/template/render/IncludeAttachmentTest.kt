@@ -8,9 +8,8 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.IncludeAttachment
 import no.nav.pensjon.brev.template.LangNynorsk
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.Letter
+import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -114,7 +113,7 @@ class IncludeAttachmentTest {
         @Test
         fun `attachment is not included when using includeAttachmentIfNotNull and attachmentData is null`(){
             assertThat(
-                Letter2Markup.render(Letter(testTemplate, NullData(null), Nynorsk, Fixtures.felles)),
+                Letter2Markup.render(LetterImpl(testTemplate, NullData(null), Nynorsk, Fixtures.felles)),
                 has(LetterWithAttachmentsMarkup::attachments, isEmpty)
             )
         }
@@ -122,7 +121,7 @@ class IncludeAttachmentTest {
         @Test
         fun `attachment is included when using includeAttachmentIfNotNull and attachmentData is not null`(){
             assertThat(
-                Letter2Markup.render(Letter(testTemplate, NullData("testtekst"), Nynorsk, Fixtures.felles)),
+                Letter2Markup.render(LetterImpl(testTemplate, NullData("testtekst"), Nynorsk, Fixtures.felles)),
                 hasAttachments {
                     attachment {
                         title { literal("Test vedlegg") }

@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.maler.adhoc
 
+import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -15,13 +15,13 @@ import org.junit.jupiter.api.Test
 class AdhocTest {
     fun testHtml(template: LetterTemplate<*, *>, htmlName: String, vararg language: Language) {
         language.forEach {
-            Letter(template, Unit, it, Fixtures.fellesAuto).renderTestHtml(htmlName + "_${it}")
+            LetterTestImpl(template, Unit, it, Fixtures.fellesAuto).renderTestHtml(htmlName + "_${it}")
         }
     }
 
     fun testAdhocPdf(template: LetterTemplate<*, *>, pdfName: String, vararg language: Language) {
         language.forEach {
-            Letter(template, Unit, it, Fixtures.fellesAuto).renderTestPDF(pdfName + "_${it}")
+            LetterTestImpl(template, Unit, it, Fixtures.fellesAuto).renderTestPDF(pdfName + "_${it}")
         }
     }
 
@@ -137,6 +137,15 @@ class AdhocTest {
             Bokmal,
             Nynorsk,
             English
+        )
+    }
+
+    @Test
+    fun `testAdhocAlderspensjonGjtVarselBrev pdf`() {
+        testAdhocPdf(
+            AdhocAlderspensjonGjtVarselBrev.template,
+            pdfName = AdhocAlderspensjonGjtVarselBrev.kode.name,
+            Bokmal, Nynorsk, English
         )
     }
 }

@@ -13,9 +13,11 @@ import io.ktor.http.*
 import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.*
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.Test
 import java.time.LocalDate
@@ -26,17 +28,18 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 class PdfByggerAppTest {
+    @OptIn(InterneDataklasser::class)
     private val pdfRequest = PDFRequest(
-        letterMarkup = LetterMarkup(
+        letterMarkup = LetterMarkupImpl(
             title = "Tittel 1",
-            sakspart = LetterMarkup.Sakspart(
+            sakspart = LetterMarkupImpl.SakspartImpl(
                 gjelderNavn = "Navn Navnesen",
                 gjelderFoedselsnummer = "12345678901",
                 saksnummer = "123",
                 dokumentDato = LocalDate.of(2025, 1, 1).format(DateTimeFormatter.ISO_LOCAL_DATE)
             ),
             blocks = listOf(),
-            signatur = LetterMarkup.Signatur(
+            signatur = LetterMarkupImpl.SignaturImpl(
                 hilsenTekst = "hilsen",
                 saksbehandlerRolleTekst = "saksbehandler",
                 saksbehandlerNavn = "Saksbehandler Saksbehandlersen",

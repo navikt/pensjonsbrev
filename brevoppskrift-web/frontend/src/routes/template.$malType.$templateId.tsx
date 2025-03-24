@@ -2,7 +2,8 @@ import { css } from "@emotion/react";
 import { BodyLong, Heading, Select, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 
-import { getAllBrevkoder, getTemplateDescription, getTemplateDocumentation } from "~/api/brevbaker-api-endpoints";
+import type { MalType } from "~/api/brevbaker-api-endpoints";
+import { getBrevkoder, getTemplateDescription, getTemplateDocumentation } from "~/api/brevbaker-api-endpoints";
 import type {
   Attachment,
   Conditional,
@@ -11,28 +12,26 @@ import type {
   ElseIf,
   Expression,
   ForEach,
-  TemplateDescription,
   TemplateDocumentation,
 } from "~/api/brevbakerTypes";
 import { ContentOrControlStructureType, ElementType } from "~/api/brevbakerTypes";
 import { DataClasses, trimClassName } from "~/components/DataClasses";
 
-interface TemplateLoaderData {
-  documentation: TemplateDocumentation;
-  description: TemplateDescription;
-}
-
-export const Route = createFileRoute("/template/$templateId")({
+export const Route = createFileRoute("/template/$malType/$templateId")({
   loaderDeps: ({ search: { language } }) => ({ language }),
+  parseParams: (raw: Record<string, string>) => ({
+    templateId: raw.templateId,
+    malType: raw.malType as MalType,
+  }),
   loader: async ({ context, navigate, deps, params, preload }) => {
     await context.queryClient.ensureQueryData({
-      queryKey: getAllBrevkoder.queryKey,
-      queryFn: () => getAllBrevkoder.queryFn(),
+      queryKey: getBrevkoder.queryKey(params.malType),
+      queryFn: () => getBrevkoder.queryFn(params.malType),
     });
 
     const description = await context.queryClient.ensureQueryData({
-      queryKey: getTemplateDescription.queryKey(params.templateId),
-      queryFn: () => getTemplateDescription.queryFn(params.templateId),
+      queryKey: getTemplateDescription.queryKey(params.malType, params.templateId),
+      queryFn: () => getTemplateDescription.queryFn(params.malType, params.templateId),
     });
 
     const defaultLanguage = description.languages[0];
@@ -52,8 +51,8 @@ export const Route = createFileRoute("/template/$templateId")({
     const language = deps.language ?? defaultLanguage;
 
     const documentation = await context.queryClient.ensureQueryData({
-      queryKey: getTemplateDocumentation.queryKey(params.templateId, language),
-      queryFn: () => getTemplateDocumentation.queryFn(params.templateId, language),
+      queryKey: getTemplateDocumentation.queryKey(params.malType, params.templateId, language),
+      queryFn: () => getTemplateDocumentation.queryFn(params.malType, params.templateId, language),
     });
 
     return { documentation, description };
@@ -69,7 +68,7 @@ export const Route = createFileRoute("/template/$templateId")({
 });
 
 function TemplateExplorer() {
-  const { documentation } = Route.useLoaderData() as TemplateLoaderData;
+  const { documentation } = Route.useLoaderData();
   const { templateId } = Route.useParams();
 
   return (
@@ -90,7 +89,7 @@ function TemplateExplorer() {
 }
 
 function SelectLanguage() {
-  const { description } = Route.useLoaderData() as TemplateLoaderData;
+  const { description } = Route.useLoaderData();
   const { language } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
 
@@ -216,6 +215,7 @@ function ContentComponent({ content }: { content: Element }) {
             }
 
             /* Indent cells that are conditional to an expression */
+
             .expression + .cell {
               padding-left: var(--a-spacing-4);
             }
