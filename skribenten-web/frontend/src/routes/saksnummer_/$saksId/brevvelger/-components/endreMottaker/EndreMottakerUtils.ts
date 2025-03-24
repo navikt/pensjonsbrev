@@ -237,34 +237,42 @@ export const combinedFormSchema = z.object({
 
 export type CombinedFormData = z.infer<typeof combinedFormSchema>;
 
-export const createSamhandlerValidationSchema = (tab: "samhandler" | "manuellAdresse" | "oppsummering") => {
-  return combinedFormSchema.superRefine((data, ctx) => {
-    if (tab === "samhandler") {
-      const parsed = finnSamhandlerFormDataSchema.safeParse(data.finnSamhandler);
-      if (!parsed.success) {
-        for (const issue of parsed.error.issues) {
-          ctx.addIssue({
-            ...issue,
-            path: ["finnSamhandler", ...issue.path],
-          });
-        }
-      }
-    }
-
-    if (tab === "manuellAdresse") {
-      const parsed = leggTilManuellSamhandlerFormDataSchema.safeParse(data.manuellAdresse);
-      if (!parsed.success) {
-        for (const issue of parsed.error.issues) {
-          ctx.addIssue({
-            ...issue,
-            path: ["manuellAdresse", ...issue.path],
-          });
-        }
-      }
-    }
+export const createSamhandlerValidationSchema = (tabToValidate: "samhandler" | "manuellAdresse" | "oppsummering") => {
+  return z.object({
+    finnSamhandler:
+      tabToValidate === "samhandler"
+        ? finnSamhandlerFormDataSchema
+        : z.object({
+            søketype: z.nullable(z.nativeEnum(Søketype)),
+            samhandlerType: z.nullable(z.nativeEnum(SamhandlerTypeCode)),
+            direkteOppslag: z.object({
+              identtype: z.nullable(z.nativeEnum(Identtype)),
+              id: z.string(),
+            }),
+            organisasjonsnavn: z.object({
+              innOgUtland: z.nativeEnum(InnOgUtland),
+              navn: z.string(),
+            }),
+            personnavn: z.object({
+              fornavn: z.string(),
+              etternavn: z.string(),
+            }),
+          }),
+    manuellAdresse:
+      tabToValidate === "manuellAdresse"
+        ? leggTilManuellSamhandlerFormDataSchema
+        : z.object({
+            adresse: z.object({
+              navn: z.string(),
+              linje1: z.string(),
+              linje2: z.string(),
+              postnr: z.string(),
+              poststed: z.string(),
+              land: z.string(),
+            }),
+          }),
   });
 };
-
 export const erAdresseEnVanligAdresse = (adresse: Adresse | KontaktAdresseResponse): adresse is Adresse =>
   "linje1" in adresse && "linje2" in adresse && "postnr" in adresse && "poststed" in adresse && "land" in adresse;
 
