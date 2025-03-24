@@ -11,10 +11,16 @@ import type {
   ElseIf,
   Expression,
   ForEach,
+  TemplateDescription,
   TemplateDocumentation,
 } from "~/api/brevbakerTypes";
 import { ContentOrControlStructureType, ElementType } from "~/api/brevbakerTypes";
 import { DataClasses, trimClassName } from "~/components/DataClasses";
+
+interface TemplateLoaderData {
+  documentation: TemplateDocumentation;
+  description: TemplateDescription;
+}
 
 export const Route = createFileRoute("/template/$templateId")({
   loaderDeps: ({ search: { language } }) => ({ language }),
@@ -63,7 +69,7 @@ export const Route = createFileRoute("/template/$templateId")({
 });
 
 function TemplateExplorer() {
-  const { documentation } = Route.useLoaderData();
+  const { documentation } = Route.useLoaderData() as TemplateLoaderData;
   const { templateId } = Route.useParams();
 
   return (
@@ -84,7 +90,7 @@ function TemplateExplorer() {
 }
 
 function SelectLanguage() {
-  const { description } = Route.useLoaderData();
+  const { description } = Route.useLoaderData() as TemplateLoaderData;
   const { language } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
 
