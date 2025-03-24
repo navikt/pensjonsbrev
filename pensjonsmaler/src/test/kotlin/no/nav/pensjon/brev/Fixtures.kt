@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.*
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2
 import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
@@ -32,6 +33,7 @@ import no.nav.pensjon.brev.fixtures.createEgenerklaeringOmsorgsarbeidDto
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.fixtures.createEndretBarnetilleggUfoeretrygdDto
 import no.nav.pensjon.brev.fixtures.createEndretUfoeretrygdPGAInntektDto
+import no.nav.pensjon.brev.fixtures.createEndretUTPgaInntektDtoV2
 import no.nav.pensjon.brev.fixtures.createEndretUforetrygdPGAOpptjeningLegacyDto
 import no.nav.pensjon.brev.fixtures.createEtteroppgjoerEtterbetalingAuto
 import no.nav.pensjon.brev.fixtures.createForespoerselOmDokumentasjonAvBotidINorgeDto
@@ -65,7 +67,6 @@ import no.nav.pensjon.brev.fixtures.redigerbar.createVarselRevurderingAvPensjonD
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
-import no.nav.pensjon.brev.maler.redigerbar.VarselRevurderingAvPensjon
 import no.nav.pensjon.brevbaker.api.model.Year
 import kotlin.reflect.KClass
 
@@ -89,6 +90,7 @@ object Fixtures {
             EmptyRedigerbarBrevdata::class -> EmptyRedigerbarBrevdata as T
             EndretBarnetilleggUfoeretrygdDto::class -> createEndretBarnetilleggUfoeretrygdDto() as T
             EndretUfoeretrygdPGAInntektDto::class -> createEndretUfoeretrygdPGAInntektDto() as T
+            EndretUTPgaInntektDtoV2::class -> createEndretUTPgaInntektDtoV2() as T
             EndretUforetrygdPGAOpptjeningLegacyDto::class -> createEndretUforetrygdPGAOpptjeningLegacyDto() as T
             EtteroppgjoerEtterbetalingAutoDto::class -> createEtteroppgjoerEtterbetalingAuto() as T
             ForespoerselOmDokumentasjonAvBotidINorgeDto::class -> createForespoerselOmDokumentasjonAvBotidINorgeDto() as T
