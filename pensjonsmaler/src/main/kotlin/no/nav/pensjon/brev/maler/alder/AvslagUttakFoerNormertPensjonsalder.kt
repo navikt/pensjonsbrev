@@ -38,7 +38,7 @@ object AvslagUttakFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUttakFoerN
         letterDataType = AvslagUttakFoerNormertPensjonsalderDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Nav har avslått søknaden din om alderspensjon før normert pensjonsalder",
+            displayTitle = "Vedtak - avslag tidlig uttak av alderspensjon - AP2025",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = VEDTAKSBREV,
