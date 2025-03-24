@@ -6,8 +6,8 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjon
 
 fun createVarselRevurderingAvPensjonDto() = VarselRevurderingAvPensjonDto(
     saksbehandlerValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg(
-        revurderingAvRett = false,
-        revurderingReduksjon = false
+        tittelValg = VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett,
+
     ),
     pesysData = VarselRevurderingAvPensjonDto.PesysData(sakstype = Sakstype.ALDER),
 )
