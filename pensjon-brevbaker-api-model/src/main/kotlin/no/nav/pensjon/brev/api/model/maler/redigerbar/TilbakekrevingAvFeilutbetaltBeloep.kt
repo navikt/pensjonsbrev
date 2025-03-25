@@ -15,7 +15,7 @@ data class TilbakekrevingAvFeilutbetaltBeloepDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<TilbakekrevingAvFeilutbetaltBeloepDto.SaksbehandlerValg, TilbakekrevingAvFeilutbetaltBeloepDto.PesysData> {
     data class SaksbehandlerValg(
-        val fritekst: Boolean,
+        val harMotregning: Boolean
     ) : BrevbakerBrevdata
 
     data class PesysData(
