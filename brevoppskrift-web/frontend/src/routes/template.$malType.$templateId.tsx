@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 import { BodyLong, Heading, Select, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { redirect } from "@tanstack/react-router";
 
 import type { MalType } from "~/api/brevbaker-api-endpoints";
 import { getBrevkoder, getTemplateDescription, getTemplateDocumentation } from "~/api/brevbaker-api-endpoints";
@@ -23,7 +24,7 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     templateId: raw.templateId,
     malType: raw.malType as MalType,
   }),
-  loader: async ({ context, navigate, deps, params, preload }) => {
+  loader: async ({ context, deps, params, preload }) => {
     await context.queryClient.ensureQueryData({
       queryKey: getBrevkoder.queryKey(params.malType),
       queryFn: () => getBrevkoder.queryFn(params.malType),
@@ -40,11 +41,9 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     }
 
     if (!deps.language && !preload) {
-      navigate({
+      return redirect({
+        href: `/template/${params.malType}/${params.templateId}?language=${defaultLanguage}`,
         replace: true,
-        search: () => ({
-          language: defaultLanguage,
-        }),
       });
     }
 
