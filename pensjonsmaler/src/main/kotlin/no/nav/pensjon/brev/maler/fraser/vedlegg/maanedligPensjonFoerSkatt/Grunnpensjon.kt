@@ -1,13 +1,44 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt
 
+import no.nav.pensjon.brev.api.model.AlderspensjonBeregnetEtter
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.*
+import no.nav.pensjon.brev.api.model.MetaforceSivilstand
+import no.nav.pensjon.brev.api.model.MetaforceSivilstand.*
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.erEksportberegnet
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.grunnpensjonSats
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.regelverkstype
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.foedselsDato
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.sivilstand
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.borSammenMedBruker_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.harInntektOver2G_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.mottarPensjon_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.avdodFlyktningstatusErBrukt
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.beregnetEtter_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.flyktningstatusErBrukt
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.fullTrygdetid
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.grunnbeloep
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.grunnpensjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.aldersEllerSykehjem_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.ensligPaInst_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.epsPaInstitusjon_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.fengsel_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.helseinstitusjon_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.alderspensjonGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.bruker
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.epsGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.gjeldendeBeregnetPensjonPerManed
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.institusjonsoppholdGjeldende
+import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap19
+import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap19og20
+import no.nav.pensjon.brev.model.bestemtForm
+import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.OutlinePhrase
-import no.nav.pensjon.brev.template.ParagraphPhrase
-import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
-import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 
 private object GrunnpensjonBold : ParagraphPhrase<LangBokmalNynorskEnglish>() {
     override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -21,10 +52,28 @@ private object GrunnpensjonBold : ParagraphPhrase<LangBokmalNynorskEnglish>() {
 }
 
 data class MaanedligPensjonFoerSkattGrunnpensjon(
-    val test: Boolean
+    val gjeldendeBeregnetPensjonPerManed: Expression<MaanedligPensjonFoerSkattDto.GjeldendeBeregnetPensjon>,
+    val epsGjeldende: Expression<MaanedligPensjonFoerSkattDto.EPSgjeldende?>,
+    val alderspensjonGjeldende: Expression<MaanedligPensjonFoerSkattDto.AlderspensjonGjeldende>,
+    val institusjonsoppholdGjeldende: Expression<MaanedligPensjonFoerSkattDto.InstitusjonsoppholdGjeldende?>,
+    val bruker: Expression<MaanedligPensjonFoerSkattDto.Bruker>,
+    val beregnetSomEnsligPgaInstopphold: Expression<Boolean>,
 ): OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        val epsBorSammenMedBruker = epsGjeldende.borSammenMedBruker_safe.ifNull(false)
+        val epsMottarPensjon = epsGjeldende.mottarPensjon_safe.ifNull(false)
+        val epsHarInntektOver2G = epsGjeldende.harInntektOver2G_safe.ifNull(false)
 
+        val beregnetEtterEgen =
+            gjeldendeBeregnetPensjonPerManed.beregnetEtter_safe.ifNull(AlderspensjonBeregnetEtter.AVDOD)
+                .isOneOf(AlderspensjonBeregnetEtter.EGEN)
+        val beregnetEtterAvdod =
+            gjeldendeBeregnetPensjonPerManed.beregnetEtter_safe.ifNull(AlderspensjonBeregnetEtter.EGEN)
+                .isOneOf(AlderspensjonBeregnetEtter.AVDOD)
+
+        val grunnbeloep = gjeldendeBeregnetPensjonPerManed.grunnbeloep.format()
+
+        val grunnpensjonSats = alderspensjonGjeldende.grunnpensjonSats.format()
         ifNotNull(
             gjeldendeBeregnetPensjonPerManed.grunnpensjon
         ) { grunnpensjon ->
@@ -424,7 +473,6 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                     }
                 }
             }
-
 
         }
 

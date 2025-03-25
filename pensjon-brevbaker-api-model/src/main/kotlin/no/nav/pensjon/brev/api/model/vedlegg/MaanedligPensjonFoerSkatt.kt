@@ -40,6 +40,7 @@ data class MaanedligPensjonFoerSkattDto(
     data class TilleggspensjonGjeldende(
         val erRedusert: Boolean,
         val kombinertMedAvdod: Boolean,
+        val pgaYrkesskade: Boolean,
     )
     data class GjeldendeBeregnetPensjon(
         val virkDatoFom: LocalDate,
