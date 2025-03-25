@@ -1,7 +1,7 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val apiModelVersion = 142
+val apiModelVersion = 143
 
 val apiModelJavaTarget: String by System.getProperties()
 
