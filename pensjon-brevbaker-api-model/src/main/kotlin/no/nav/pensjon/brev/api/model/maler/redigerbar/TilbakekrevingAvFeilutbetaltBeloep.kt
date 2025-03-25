@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.TilbakekrevingResultat
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.LocalDate
 
 @Suppress("unused")
@@ -19,13 +20,9 @@ data class TilbakekrevingAvFeilutbetaltBeloepDto(
 
     data class PesysData(
         val sakstype: Sakstype,
-        val tilbakekrevingAvFeilUtbetaltBeloep: TilbakekrevingAvFeilutbetaltBeloepDto,
-    ) : BrevbakerBrevdata
-
-    data class TilbakekrevingAvFeilUtbetaltBeloepDto(
-        val bruttoBeloepTilbakekrevdTotalBeloep: Kroner,
+        val bruttoTilbakekrevdTotalBeloep: Kroner,
         val feilutbetaltTotalBeloep: Kroner,
-        val nettoBeloepUtenRenterTilbakekrevdTotalBeloep: Kroner,
+        val nettoUtenRenterTilbakekrevdTotalBeloep: Kroner,
         val rentetilleggSomInnkrevesTotalBeloep: Kroner,
         val resultatAvVurderingenForTotalBeloep: TilbakekrevingResultat,
         val skattefradragSomInnkrevesTotalBeloep: Kroner,
@@ -36,24 +33,22 @@ data class TilbakekrevingAvFeilutbetaltBeloepDto(
         val tilbakekrevingPerMaaned: TilbakekrevingPerManed,
     ) : BrevbakerBrevdata
 
-    // For hvert år med innslag, skal en liste over tilbakekreving genereres
     data class TilbakekrevingPerAar(
-        val Aar: String,
-        val tilbakekrevingPerAarListe: List<TilbakekrevingListe>,
-    ) : BrevbakerBrevdata
+        val aar: Year,
+        val tilbakekrevingPerMaaned: List<Tilbakekreving>,
+    )
 
-    // For hvert måned med innslag, skal en liste over tilbakekreving generes
     data class TilbakekrevingPerManed(
         val maaned: String,
-        val tilbakekrevingPerMaanedListe: List<TilbakekrevingListe>,
-        ) : BrevbakerBrevdata
+        val tilbakekrevinger: List<Tilbakekreving>,
+        )
 
-    data class TilbakekrevingListe(
+    data class Tilbakekreving(
         val bruttoBeloepTilbakekrevd: Kroner,
         val feilutbetaltBeloep: Kroner,
         val nettoBeloepUtenRenterTilbakekrevd: Kroner,
         val resultatAvVurderingen: TilbakekrevingResultat,
         val skattefradragSomInnkreves: Kroner,
         val ytelsenMedFeilutbetaling: KonteringType,
-        ) : BrevbakerBrevdata
+        )
 }
