@@ -201,16 +201,16 @@ val opplysningerBruktIBeregningenAP =
                         row {
                             cell {
                                 textExpr(
-                                    Bokmal to periode.fom.formatMonthYear(),
-                                    Nynorsk to periode.fom.formatMonthYear(),
-                                    English to periode.fom.formatMonthYear()
+                                    Bokmal to periode.fom.format(),
+                                    Nynorsk to periode.fom.format(),
+                                    English to periode.fom.format()
                                 )
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to periode.tom.formatMonthYear(),
-                                    Nynorsk to periode.tom.formatMonthYear(),
-                                    English to periode.tom.formatMonthYear()
+                                    Bokmal to periode.tom.format(),
+                                    Nynorsk to periode.tom.format(),
+                                    English to periode.tom.format()
                                 )
                             }
                         }
@@ -261,16 +261,16 @@ val opplysningerBruktIBeregningenAP =
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to utlandPeriode.fom.formatMonthYear(),
-                                    Nynorsk to utlandPeriode.fom.formatMonthYear(),
-                                    English to utlandPeriode.fom.formatMonthYear()
+                                    Bokmal to utlandPeriode.fom.format(),
+                                    Nynorsk to utlandPeriode.fom.format(),
+                                    English to utlandPeriode.fom.format()
                                 )
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to utlandPeriode.tom.formatMonthYear(),
-                                    Nynorsk to utlandPeriode.tom.formatMonthYear(),
-                                    English to utlandPeriode.tom.formatMonthYear()
+                                    Bokmal to utlandPeriode.tom.format(),
+                                    Nynorsk to utlandPeriode.tom.format(),
+                                    English to utlandPeriode.tom.format()
                                 )
                             }
                         }
