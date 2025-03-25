@@ -13,14 +13,14 @@ data class MaanedligPensjonFoerSkattDto(
     val alderspensjonGjeldende: AlderspensjonGjeldende,
     val institusjonsoppholdGjeldende: InstitusjonsoppholdGjeldende?,
     val epsGjeldende: EPSgjeldende?,
-    val erBeregnetSomEnsligEllerEnke: Boolean, // TODO flytt forretningslogikk inn i pesys (script_vedleggBeregnGiftLeverAdskilt)
-    val erBeregnetSomEnsligPartner: Boolean, // TODO flytt forretningslogikk inn i pesys (script_vedleggBeregnPartnerLeverAdskilt)
+    val tilleggspensjonGjeldende: TilleggspensjonGjeldende?,
     val bruker: Bruker,
 ) : BrevbakerBrevdata {
 
     data class EPSgjeldende(
         val mottarPensjon: Boolean,
         val borSammenMedBruker: Boolean,
+        val harInntektOver2G: Boolean,
     )
     data class InstitusjonsoppholdGjeldende(
         val ensligPaInst: Boolean,
@@ -31,9 +31,15 @@ data class MaanedligPensjonFoerSkattDto(
     )
     data class AlderspensjonGjeldende(
         val regelverkstype: AlderspensjonRegelverkstype,
+        val erEksportberegnet: Boolean,
         val andelKap19: Int,
         val andelKap20: Int,
         val grunnpensjonSats: Int,
+    )
+
+    data class TilleggspensjonGjeldende(
+        val erRedusert: Boolean,
+        val kombinertMedAvdod: Boolean,
     )
     data class GjeldendeBeregnetPensjon(
         val virkDatoFom: LocalDate,
@@ -59,6 +65,8 @@ data class MaanedligPensjonFoerSkattDto(
         val garantitillegg: Kroner?,
         val gjenlevendetillegg: Kroner?,
         val totalPensjon: Kroner,
+        val flyktningstatusErBrukt: Boolean,
+        val avdodFlyktningstatusErBrukt: Boolean,
     )
 
     data class Bruker(
