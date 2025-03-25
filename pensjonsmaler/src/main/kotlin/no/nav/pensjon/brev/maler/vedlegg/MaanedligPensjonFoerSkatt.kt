@@ -1,11 +1,8 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.AlderspensjonBeregnetEtter
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.*
-import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.erEksportberegnet
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.grunnpensjonSats
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.regelverkstype
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.foedselsDato
@@ -13,12 +10,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelecto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.borSammenMedBruker_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.harInntektOver2G_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.mottarPensjon_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.avdodFlyktningstatusErBrukt
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.beregnetEtter_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.flyktningstatusErBrukt
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.fullTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.grunnbeloep
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.grunnpensjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.saertillegg_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.tilleggspensjon
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.aldersEllerSykehjem_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.ensligPaInst_safe
@@ -27,6 +20,9 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelecto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.helseinstitusjon_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.erRedusert_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.kombinertMedAvdod_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUforeAvdod_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUfore_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaYrkesskade_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.alderspensjonGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.bruker
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.epsGjeldende
@@ -34,10 +30,9 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelecto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.institusjonsoppholdGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.tilleggspensjonGjeldende
 import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.MaanedligPensjonFoerSkattGrunnpensjon
+import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.MaanedligPensjonFoerSkattTilleggsPensjon
 import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap19
 import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap19og20
-import no.nav.pensjon.brev.model.bestemtForm
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*
@@ -59,6 +54,9 @@ val maanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish, Maane
 
 
         val regelverkstype = alderspensjonGjeldende.regelverkstype
+        val epsBorSammenMedBruker = epsGjeldende.borSammenMedBruker_safe.ifNull(false)
+        val epsMottarPensjon = epsGjeldende.mottarPensjon_safe.ifNull(false)
+        val epsHarInntektOver2G = epsGjeldende.harInntektOver2G_safe.ifNull(false)
         showIf(
             regelverkstype.isOneOf(
                 AP1967,
@@ -84,11 +82,17 @@ val maanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish, Maane
             )
         }
 
-        val beregnetSomEnsligPgaInstopphold = (institusjonsoppholdGjeldende.aldersEllerSykehjem_safe.ifNull(false)
-                or institusjonsoppholdGjeldende.ensligPaInst_safe.ifNull(false)
-                or institusjonsoppholdGjeldende.epsPaInstitusjon_safe.ifNull(false)
-                or institusjonsoppholdGjeldende.fengsel_safe.ifNull(false)
-                or institusjonsoppholdGjeldende.helseinstitusjon_safe.ifNull(false))
+        val grunnpensjonSats = alderspensjonGjeldende.grunnpensjonSats.format()
+        val aldersEllerSykehjemInstOpphold = institusjonsoppholdGjeldende.aldersEllerSykehjem_safe.ifNull(false)
+        val ensligPgaInstitusjonsopphold = institusjonsoppholdGjeldende.ensligPaInst_safe.ifNull(false)
+        val epsErpaaInstitusjon = institusjonsoppholdGjeldende.epsPaInstitusjon_safe.ifNull(false)
+        val erPaaFengselsInstitusjon = institusjonsoppholdGjeldende.fengsel_safe.ifNull(false)
+        val erPaahelseInstitusjon = institusjonsoppholdGjeldende.helseinstitusjon_safe.ifNull(false)
+        val beregnetSomEnsligPgaInstopphold = (aldersEllerSykehjemInstOpphold
+                or ensligPgaInstitusjonsopphold
+                or epsErpaaInstitusjon
+                or erPaaFengselsInstitusjon
+                or erPaahelseInstitusjon)
 
         showIf(
             bruker.sivilstand.isOneOf(GLAD_EKT, SEPARERT) or
@@ -127,64 +131,157 @@ val maanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish, Maane
             )
         )
 
-        val tilleggsPensjonKombinertMedAvdoed = tilleggspensjonGjeldende.kombinertMedAvdod_safe.ifNull(false)
-        val tilleggsPenssjonErRedusert = tilleggspensjonGjeldende.erRedusert_safe.ifNull(false)
+        includePhrase(
+            MaanedligPensjonFoerSkattTilleggsPensjon(
+                tilleggspensjonGjeldende = tilleggspensjonGjeldende,
+                gjeldendeBeregnetPensjonPerManed = gjeldendeBeregnetPensjonPerManed,
+                regelverkstype = regelverkstype
+            )
+        )
+
         val harTilleggspensjon = gjeldendeBeregnetPensjonPerManed.tilleggspensjon.ifNull(Kroner(0)).greaterThan(0)
-        //vedleggBelopFullTP_001
+
+        // TODO erstatt alle values
+        //vedleggBelopST_002
         showIf(
-            (
-                    not(tilleggsPenssjonErRedusert)
-                            and not(tilleggsPensjonKombinertMedAvdoed)
-                            and regelverkstype.isOneOf(AP2011, AP2016)
+            bruker.sivilstand.isOneOf(ENSLIG, ENKE, GLAD_EKT, GLAD_PART, SEPARERT, SEPARERT_PARTNER, GIFT, PARTNER)
+                    and (
+                    aldersEllerSykehjemInstOpphold
+                            or erPaahelseInstitusjon
+                            or erPaaFengselsInstitusjon
+                            or epsErpaaInstitusjon
                     )
-                    or (harTilleggspensjon and regelverkstype.isOneOf(AP1967))
         ) {
             paragraph {
-                includePhrase(TilleggspensjonenBold)
-                text(
-                    Bokmal to "din avhenger av antall år med pensjonspoeng og størrelsen på pensjonspoengene. Du får pensjonspoeng for år med inntekt over folketrygdens grunnbeløp.",
-                    Nynorsk to "din er avhengig av kor mange år du har hatt med pensjonspoeng, og storleiken på pensjonspoenga. Du får pensjonspoeng for år med inntekt over grunnbeløpet i folketrygda.",
-                    English to "depends on the number of years you earned pension points and how many pension points you earned. You receive pension points for years when you had an income greater than the National Insurance basic amount (G).",
+                includePhrase(SaerTilleggetBold)
+                textExpr(
+                    Bokmal to "skal sikre et visst minstenivå på pensjonen. Du får særtillegg etter ordinær sats som utgjør ".expr() +
+                            grunnpensjonSats + " prosent av grunnbeløpet. Denne gis til enslige pensjonister som ikke har rett til tilleggspensjon eller som har en tilleggspensjon som er mindre enn særtillegget.",
+
+                    Nynorsk to "skal sikre eit visst minstenivå på pensjonen. Du får særtillegg etter ordinær sats som utgjer ".expr() +
+                            grunnpensjonSats + " prosent av grunnbeløpet. Denne gis til einslege pensjonistar som ikkje har rett til tilleggspensjon eller som har ein tilleggspensjon som er lågare enn særtillegget.",
+
+                    English to "is granted to ensure a certain minimum level of pension. You will receive special supplement calculated to ".expr() +
+                            grunnpensjonSats + " percent of the National Insurance basic amount (G). This is given to single pensioners who are not entitled to supplementary pension, or receive supplementary pension that is lower than the special supplement.",
                 )
             }
         }
 
-        //veldeggBelopRedusTP_001
-        showIf(tilleggsPenssjonErRedusert and regelverkstype.isOneOf(AP2011, AP2016)) {
+        val harSaertillegg = gjeldendeBeregnetPensjonPerManed.saertillegg_safe.ifNull(Kroner(0)).greaterThan(0)
+        // vedleggBelopSTEktefeller_001
+        showIf(
+            harSaertillegg
+                    and bruker.sivilstand.isOneOf(GIFT)
+                    and epsBorSammenMedBruker
+                    and not(beregnetSomEnsligPgaInstopphold)
+        ) {
             paragraph {
-                includePhrase(TilleggspensjonenBold)
+                includePhrase(SaerTilleggetBold)
                 text(
-                    Bokmal to "din avhenger av antall år med pensjonspoeng og størrelsen på pensjonspoengene. Du får pensjonspoeng for år med inntekt over folketrygdens grunnbeløp. Du får ikke full tilleggspensjon fordi du har opptjent pensjonspoeng i mindre enn 40 år.",
-                    Nynorsk to "din er avhengig av kor mange år du har hatt med pensjonspoeng, og storleiken på pensjonspoenga. Du får pensjonspoeng for år med inntekt over grunnbeløpet i folketrygda. Du får ikkje full tilleggspensjon fordi du har tent opp pensjonspoeng i mindre enn 40 år.",
-                    English to "depends on the number of years you earned pension points and how many pension points you earned. You receive pension points for years when you had an income greater than the National Insurance basic amount (G). You do not qualify for a full supplementary pension because you have earned pension points for less than 40 years.",
+                    Bokmal to "skal sikre et visst minstenivå på pensjonen. Størrelsen på særtillegget varierer ut fra om ektefellen du bor sammen med har tilleggspensjon eller ikke.",
+                    Nynorsk to "skal sikre eit visst minstenivå på pensjonen. Storleiken på særtillegget varierer ut frå om ektefellen du bur saman med har tilleggspensjon eller ikkje.",
+                    English to "is granted to ensure a certain minimum level of pension. The amount of the special supplement depends on whether your spouse, with whom you live, is receiving supplementary pension or not.",
                 )
             }
         }
 
-        //vedleggBelopTPAvdod_001
-        showIf(tilleggsPensjonKombinertMedAvdoed and regelverkstype.isOneOf(AP2011, AP2016, AP1967)) {
+        //vedleggBelopSTPartner_001
+        showIf(
+            harSaertillegg
+                    and bruker.sivilstand.isOneOf(PARTNER)
+                    and epsBorSammenMedBruker
+                    and not(beregnetSomEnsligPgaInstopphold)
+        ) {
             paragraph {
-                includePhrase(TilleggspensjonenBold)
+                includePhrase(SaerTilleggetBold)
                 text(
-                    Bokmal to "til en gjenlevende alderspensjonist kan enten bestå av pensjonistens egen tilleggspensjon eller 55 prosent av summen av pensjonistens egen tilleggspensjon og den avdødes tilleggspensjon. Tilleggspensjonen din er gitt etter det siste alternativet, da dette gir det høyeste beløpet for deg.",
-                    Nynorsk to "til ein attlevande alderspensjonist kan anten bestå av pensjonistens eigen tilleggspensjon eller 55 prosent av summen av pensjonistens eigen tilleggspensjon og tilleggspensjonen til den avdøde. Tilleggspensjonen din er gitt etter det siste alternativet då det gir det høgaste beløpet for deg.",
-                    English to "for a widowed old age pensioner can be calculated either as the pensioner's own supplementary pension or as 55 percent of the sum of the pensioner's own supplementary pension and the deceased's supplementary pension. Your supplementary pension has been calculated using the latter method, as this is more beneficial for you.",
+                    Bokmal to "skal sikre et visst minstenivå på pensjonen. Størrelsen på særtillegget varierer ut fra om partner du bor sammen med har tilleggspensjon eller ikke. ",
+                    Nynorsk to "skal sikre eit visst minstenivå på pensjonen. Storleiken på særtillegget varierer ut frå om partnaren du bur saman med har tilleggspensjon eller ikkje.",
+                    English to "is granted to ensure a certain minimum level of pension. The amount of the special supplement depends on whether your partner, with whom you live, is receiving supplementary pension or not.",
                 )
             }
         }
 
-        
+        //vedleggBelopSTSamboer1-5_001
+        showIf(bruker.sivilstand.isOneOf(SAMBOER_1_5) and harSaertillegg) {
+            paragraph {
+                includePhrase(SaerTilleggetBold)
+                text(
+                    Bokmal to "skal sikre et visst minstenivå på pensjonen. Størrelsen på særtillegget varierer ut fra om samboeren din har tilleggspensjon eller ikke.",
+                    Nynorsk to "skal sikre eit visst minstenivå på pensjonen. Storleiken på særtillegget varierer ut frå om sambuaren din har tilleggspensjon eller ikkje.",
+                    English to "is granted to ensure a certain minimum level of pension. The amount of the special supplement depends on whether your cohabitant is receiving supplementary pension or not.",
+                )
+            }
+        }
+
+        //vedleggBelopSTSamboer3-2
+        showIf(bruker.sivilstand.isOneOf(SAMBOER_3_2) and harSaertillegg) {
+            paragraph {
+                includePhrase(SaerTilleggetBold)
+                textExpr(
+                    Bokmal to "skal sikre et visst minstenivå på pensjonen. Du får særtillegg etter ordinær sats som utgjør ".expr() +
+                            grunnpensjonSats + " prosent av grunnbeløpet.",
+
+                    Nynorsk to "skal sikre eit visst minstenivå på pensjonen. Du får særtillegg etter ordinær sats som utgjer ".expr() +
+                            grunnpensjonSats + " prosent av grunnbeløpet.",
+
+                    English to "is granted to ensure a certain minimum level of pension. You will receive special supplement calculated to ".expr() +
+                            grunnpensjonSats + " percent of the National Insurance basic amount (G).",
+                )
+            }
+        }
+
+        //vedleggBelopSTAvkortetTP
+        showIf(harSaertillegg and harTilleggspensjon and regelverkstype.isOneOf(AP1967)) {
+            paragraph {
+                text(
+                    Bokmal to "Vi har avkortet særtillegget ditt mot tilleggspensjonen, slik at du får utbetalt differansen.",
+                    Nynorsk to "Vi har avkorta særtillegget mot din tilleggspensjon, slik at du får utbetalt differansen.",
+                    English to "The supplementary pension will be deducted from the special supplement so that you will be paid the difference.",
+                )
+            }
+        }
+
+        //vedleggBelopSTAvkortetTPogRedusertTT_001
+        showIf(
+            harSaertillegg
+                    and harTilleggspensjon
+                    and regelverkstype.isOneOf(AP1967)
+                    and not(gjeldendeBeregnetPensjonPerManed.fullTrygdetid)
+        ) {
+            paragraph {
+                text(
+                    Bokmal to "Vi har avkortet særtillegget ditt mot tilleggspensjonen, slik at du får utbetalt differansen. Det avkortes også mot trygdetid på samme måte som for grunnpensjonen.",
+                    Nynorsk to "Vi har avkorta særtillegget mot din tilleggspensjon, slik at du får utbetalt differansen. Det blir også avkorta mot trygdetid på same måte som for grunnpensjonen.",
+                    English to "The supplementary pension will be deducted from the special supplement so that you will be paid the difference. It is also calculated on the same period of national insurance cover as the basic pension.",
+                )
+            }
+        }
+
+        //vedleggBelopSTAvkortetRedusertTT_001
+        showIf(
+            harSaertillegg and regelverkstype.isOneOf(AP1967) and not(gjeldendeBeregnetPensjonPerManed.fullTrygdetid)
+        ) {
+            paragraph {
+                text(
+                    Bokmal to "Vi har avkortet særtillegget ditt mot trygdetid på samme måte som for grunnpensjonen.",
+                    Nynorsk to "Vi har avkorta særtillegget ditt mot trygdetid på same måte som for grunnpensjonen.",
+                    English to "Special supplement is calculated on the same period of national insurance cover as the basic pension.",
+                )
+            }
+        }
 
 
     }
 )
 
-private object TilleggspensjonenBold: ParagraphPhrase<LangBokmalNynorskEnglish>(){
+
+private object SaerTilleggetBold : ParagraphPhrase<LangBokmalNynorskEnglish>() {
     override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         text(
-            Bokmal to "Tilleggspensjonen ",
-            Nynorsk to "Tilleggspensjonen ",
-            English to "Your supplementary pension ",
+            Bokmal to "Særtillegget ",
+            Nynorsk to "Særtillegget ",
+            English to "Special supplement ",
             FontType.BOLD
         )
     }
