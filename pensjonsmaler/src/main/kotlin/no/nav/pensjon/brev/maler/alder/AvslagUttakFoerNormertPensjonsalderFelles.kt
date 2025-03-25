@@ -10,9 +10,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
@@ -32,7 +30,7 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
     val minstePensjonssats: Expression<Kroner>,
     val totalPensjon: Expression<Kroner>,
     val borINorge: Expression<Boolean>,
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title2 {
             text(
@@ -87,7 +85,7 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                         )
 
                         showIf(opplysningerBruktIBeregningen.prorataBruktIBeregningen) {
-                            text (
+                            text(
                                 Bokmal to " Vi har tatt hensyn til at du også har trygdetid fra land som Norge har trygdeavtale med.",
                                 Nynorsk to " Vi har tatt omsyn til at du også har trygdetid frå land som Noreg har trygdeavtale med.",
                                 English to " We have taken into account any periods of national insurance coverage" +

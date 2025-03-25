@@ -164,7 +164,7 @@ val opplysningerBruktIBeregningenAP =
             )
         }
 
-        showIf(redusertTrygdetid){
+        showIf(redusertTrygdetid) {
             paragraph {
                 text(
                     Bokmal to "Trygdetid baserer seg på perioder du har bodd og/eller arbeidet i Norge, og har betydning for beregning avpensjonen din. Full trygdetid er 40 år.",
@@ -191,10 +191,11 @@ val opplysningerBruktIBeregningenAP =
                     }
                     column {
                         text(
-                        Bokmal to "Til og med",
-                        Nynorsk to "Til og med",
-                        English to "End date"
-                    )}
+                            Bokmal to "Til og med",
+                            Nynorsk to "Til og med",
+                            English to "End date"
+                        )
+                    }
                 }) {
                     forEach(trygdeperioderNorge) { periode ->
                         row {
@@ -232,7 +233,8 @@ val opplysningerBruktIBeregningenAP =
                             Bokmal to "Land",
                             Nynorsk to "Land",
                             English to "Country"
-                        )}
+                        )
+                    }
                     column {
                         text(
                             Bokmal to "Fra og med",
@@ -245,7 +247,8 @@ val opplysningerBruktIBeregningenAP =
                             Bokmal to "Til og med",
                             Nynorsk to "Til og med",
                             English to "End date"
-                        )}
+                        )
+                    }
                 }) {
                     forEach(trygdeperioderUtland) { utlandPeriode ->
                         row {

@@ -50,15 +50,17 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
         }
 
         outline {
-            includePhrase(AvslagUttakFoerNormertPensjonsalderFelles(
-                afpBruktIBeregning = afpBruktIBeregning,
-                normertPensjonsalder = normertPensjonsalder,
-                opplysningerBruktIBeregningen = opplysningerBruktIBeregningen,
-                virkFom = virkFom,
-                minstePensjonssats = minstePensjonssats,
-                totalPensjon = totalPensjon,
-                borINorge = borINorge,
-            ))
+            includePhrase(
+                AvslagUttakFoerNormertPensjonsalderFelles(
+                    afpBruktIBeregning = afpBruktIBeregning,
+                    normertPensjonsalder = normertPensjonsalder,
+                    opplysningerBruktIBeregningen = opplysningerBruktIBeregningen,
+                    virkFom = virkFom,
+                    minstePensjonssats = minstePensjonssats,
+                    totalPensjon = totalPensjon,
+                    borINorge = borINorge,
+                )
+            )
         }
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
