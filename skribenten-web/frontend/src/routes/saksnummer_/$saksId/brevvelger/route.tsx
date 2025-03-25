@@ -45,8 +45,7 @@ export interface SubmitTemplateOptions {
 }
 
 export function BrevvelgerPage() {
-  const { saksId, letterTemplates } = Route.useLoaderData() as { saksId: number; letterTemplates: LetterMetadata[] };
-
+  const { saksId, letterTemplates } = Route.useLoaderData();
   const [onSubmitClick, setOnSubmitClick] = useState<Nullable<SubmitTemplateOptions>>(null);
 
   const alleSaksbrevQuery = useQuery({
@@ -247,16 +246,16 @@ function Brevmaler({
                           : undefined
                       }
                       key={template.id}
-                      onClick={() => {
+                      onClick={() =>
                         navigate({
                           to: "/saksnummer/$saksId/brevvelger",
-                          search: (s: Record<string, string | undefined>) => ({
+                          search: (s) => ({
                             ...s,
                             templateId: template.id,
                             brevId: undefined,
                           }),
-                        });
-                      }}
+                        })
+                      }
                       title={
                         <HStack
                           align={"center"}
@@ -328,16 +327,16 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; letterTemplates: LetterM
                     : undefined
                 }
                 key={brev.id}
-                onClick={() => {
+                onClick={() =>
                   navigate({
                     to: "/saksnummer/$saksId/brevvelger",
-                    search: (s: Record<string, string | undefined>) => ({
+                    search: (s) => ({
                       ...s,
                       brevId: brev.id.toString(),
                       templateId: undefined,
                     }),
-                  });
-                }}
+                  })
+                }
                 title={
                   <HStack
                     align={"center"}

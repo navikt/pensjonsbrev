@@ -55,17 +55,17 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
     setÅpenBrevItem(isOpen ? brevId : null);
 
     if (isOpen) {
-      navigate({
+      return navigate({
         to: "/saksnummer/$saksId/brevbehandler",
         params: { saksId: properties.saksId },
-        search: (s: Record<string, unknown>) => ({ ...s, brevId: brevId }),
+        search: (s) => ({ ...s, brevId: brevId }),
         replace: true,
       });
     } else {
-      navigate({
+      return navigate({
         to: "/saksnummer/$saksId/brevbehandler",
         params: { saksId: properties.saksId },
-        search: (s: Record<string, unknown>) => ({ ...s, brevId: undefined }),
+        search: (s) => ({ ...s, brevId: undefined }),
         replace: true,
       });
     }
@@ -150,7 +150,7 @@ const BrevItem = (properties: {
 };
 
 const ArkivertBrev = (props: { brev: BrevInfo }) => {
-  const sakContext: SakContextDto = Route.useLoaderData();
+  const sakContext = Route.useLoaderData();
 
   const { data: navn } = useQuery({
     queryKey: getNavn.queryKey(sakContext.sak.foedselsnr as string),
@@ -187,7 +187,7 @@ const ArkivertBrev = (props: { brev: BrevInfo }) => {
 
 const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const queryClient = useQueryClient();
-  const sakContext: SakContextDto = Route.useLoaderData();
+  const sakContext = Route.useLoaderData();
 
   const { data: navn } = useQuery({
     queryKey: getNavn.queryKey(sakContext.sak.foedselsnr as string),

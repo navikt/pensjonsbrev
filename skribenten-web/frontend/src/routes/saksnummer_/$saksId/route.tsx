@@ -7,7 +7,7 @@ import { Outlet } from "@tanstack/react-router";
 import { getFavoritter, getKontaktAdresse, getNavn, getPreferredLanguage } from "~/api/skribenten-api-endpoints";
 import { getSakContext } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { SakContextDto, SakDto } from "~/types/apiTypes";
+import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 import { queryFold } from "~/utils/tanstackUtils";
 
@@ -54,7 +54,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId")({
 });
 
 function SakLayout() {
-  const sakContext: SakContextDto = Route.useLoaderData();
+  const sakContext = Route.useLoaderData();
   return (
     <FerdigstillResultatContextProvider>
       <MottakerContextProvider>

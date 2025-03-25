@@ -87,7 +87,7 @@ export enum InnOgUtland {
   ALLE = "ALLE",
 }
 
-export const leggTilManuellSamhandlerFormDataSchema = z.object({
+export const leggTilManuellAdresseFormDataSchema = z.object({
   /**
    * manuell adresse har 2 krav for utfylling:
    * For norske adresser (der land er "NO") - kreves navn, postnummer, og poststed.
@@ -128,6 +128,17 @@ export const leggTilManuellSamhandlerFormDataSchema = z.object({
         }
       }
     }),
+});
+
+const leggTilManuellAdresseTabNotSelectedSchema = z.object({
+  adresse: z.object({
+    navn: z.string(),
+    linje1: z.string(),
+    linje2: z.string(),
+    postnr: z.string(),
+    poststed: z.string(),
+    land: z.string(),
+  }),
 });
 
 export const finnSamhandlerFormDataSchema = z
@@ -227,11 +238,28 @@ export const finnSamhandlerFormDataSchema = z
     return refinementContext;
   });
 
-export type ManuellAdresseUtfyllingFormData = z.infer<typeof leggTilManuellSamhandlerFormDataSchema>;
+const finnSamhandlerTabNotSelectedSchema = z.object({
+  søketype: z.nullable(z.nativeEnum(Søketype)),
+  samhandlerType: z.nullable(z.nativeEnum(SamhandlerTypeCode)),
+  direkteOppslag: z.object({
+    identtype: z.nullable(z.nativeEnum(Identtype)),
+    id: z.string(),
+  }),
+  organisasjonsnavn: z.object({
+    innOgUtland: z.nativeEnum(InnOgUtland),
+    navn: z.string(),
+  }),
+  personnavn: z.object({
+    fornavn: z.string(),
+    etternavn: z.string(),
+  }),
+});
+
+export type ManuellAdresseUtfyllingFormData = z.infer<typeof leggTilManuellAdresseFormDataSchema>;
 export type FinnSamhandlerFormData = z.infer<typeof finnSamhandlerFormDataSchema>;
 
 export const combinedFormSchema = z.object({
-  manuellAdresse: leggTilManuellSamhandlerFormDataSchema,
+  manuellAdresse: leggTilManuellAdresseFormDataSchema,
   finnSamhandler: finnSamhandlerFormDataSchema,
 });
 
@@ -239,38 +267,11 @@ export type CombinedFormData = z.infer<typeof combinedFormSchema>;
 
 export const createSamhandlerValidationSchema = (tabToValidate: "samhandler" | "manuellAdresse" | "oppsummering") => {
   return z.object({
-    finnSamhandler:
-      tabToValidate === "samhandler"
-        ? finnSamhandlerFormDataSchema
-        : z.object({
-            søketype: z.nullable(z.nativeEnum(Søketype)),
-            samhandlerType: z.nullable(z.nativeEnum(SamhandlerTypeCode)),
-            direkteOppslag: z.object({
-              identtype: z.nullable(z.nativeEnum(Identtype)),
-              id: z.string(),
-            }),
-            organisasjonsnavn: z.object({
-              innOgUtland: z.nativeEnum(InnOgUtland),
-              navn: z.string(),
-            }),
-            personnavn: z.object({
-              fornavn: z.string(),
-              etternavn: z.string(),
-            }),
-          }),
+    finnSamhandler: tabToValidate === "samhandler" ? finnSamhandlerFormDataSchema : finnSamhandlerTabNotSelectedSchema,
     manuellAdresse:
       tabToValidate === "manuellAdresse"
-        ? leggTilManuellSamhandlerFormDataSchema
-        : z.object({
-            adresse: z.object({
-              navn: z.string(),
-              linje1: z.string(),
-              linje2: z.string(),
-              postnr: z.string(),
-              poststed: z.string(),
-              land: z.string(),
-            }),
-          }),
+        ? leggTilManuellAdresseFormDataSchema
+        : leggTilManuellAdresseTabNotSelectedSchema,
   });
 };
 export const erAdresseEnVanligAdresse = (adresse: Adresse | KontaktAdresseResponse): adresse is Adresse =>
