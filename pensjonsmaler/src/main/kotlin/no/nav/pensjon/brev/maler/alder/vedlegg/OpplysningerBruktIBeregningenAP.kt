@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors
 import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors.tom
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -54,7 +55,7 @@ val opplysningerBruktIBeregningenAP =
                         English to "Information",
                     )
                 }
-                column {}
+                column(alignment = RIGHT) {}
             }) {
                 row {
                     cell {
@@ -192,7 +193,7 @@ val opplysningerBruktIBeregningenAP =
                             English to "Start date",
                         )
                     }
-                    column {
+                    column(alignment = RIGHT) {
                         text(
                             Bokmal to "Til og med",
                             Nynorsk to "Til og med",
@@ -238,14 +239,14 @@ val opplysningerBruktIBeregningenAP =
                             English to "Country"
                         )
                     }
-                    column {
+                    column(alignment = RIGHT) {
                         text(
                             Bokmal to "Fra og med",
                             Nynorsk to "Frå og med",
                             English to "Start date",
                         )
                     }
-                    column {
+                    column(alignment = RIGHT) {
                         text(
                             Bokmal to "Til og med",
                             Nynorsk to "Til og med",
