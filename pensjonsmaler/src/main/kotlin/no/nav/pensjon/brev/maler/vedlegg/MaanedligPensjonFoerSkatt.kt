@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelecto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.regelverkstype
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.foedselsDato
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.sivilstand
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.mottarPensjon_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.beregnetEtter
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.fullTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.grunnbeloep
@@ -19,6 +20,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelecto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.helseinstitusjon_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.alderspensjonGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.bruker
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.epsGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.erBeregnetSomEnsligEllerEnke
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.erBeregnetSomEnsligPartner
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.gjeldendeBeregnetPensjonPerManed
@@ -132,6 +134,24 @@ val maanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish, Maane
                             Bokmal to "Du får full grunnpensjon fordi du er enslig pensjonist. Det utgjør ".expr() + alderspensjonGjeldende.grunnpensjonSats.format() + " prosent av grunnbeløpet.",
                             Nynorsk to "Du får full grunnpensjon fordi du er einsleg pensjonist. Det utgjer ".expr() + alderspensjonGjeldende.grunnpensjonSats.format() + " prosent av grunnbeløpet.",
                             English to "As a single pensioner you will receive full basic pension. This is equivalent to ".expr() + alderspensjonGjeldende.grunnpensjonSats.format() + " percent of the National Insurance basic amount.",
+                        )
+                    }
+                }
+
+                showIf(epsGjeldende.mottarPensjon_safe.ifNull(false)
+                    and epsGjeldende.mottarPensjon_safe.ifNull(false)
+                    and not(beregnetSomEnsligPgaInstopphold)
+                ){
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Grunnpensjonen er justert til ".expr() +
+                                    alderspensjonGjeldende.grunnpensjonSats.format() + " prosent av beløpet fordi [_Script Script_Tekst_002_] din mottar uføretrygd, pensjon eller omstillingsstønad fra folketrygden eller AFP som det godskrives pensjonspoeng for.",
+
+                            Nynorsk to "Grunnpensjonen er justert til ".expr() +
+                                    alderspensjonGjeldende.grunnpensjonSats.format() + " prosent av beløpet fordi [_Script Script_Tekst_002_] din mottar uføretrygd, pensjon eller omstillingsstønad frå folketrygda eller AFP som det blir godskrive pensjonspoeng for.",
+
+                            English to "The basic pension is adjusted to ".expr() +
+                                    alderspensjonGjeldende.grunnpensjonSats.format() + " percent of this amount because your [_Script Script_Tekst_002_] is receiving disability benefit, a national insurance pension or adjustment allowance, or contractual early retirement pension (AFP) which earns pension points.",
                         )
                     }
                 }

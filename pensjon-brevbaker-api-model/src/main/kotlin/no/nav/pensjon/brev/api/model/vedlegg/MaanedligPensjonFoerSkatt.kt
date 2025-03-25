@@ -12,7 +12,7 @@ data class MaanedligPensjonFoerSkattDto(
     val gjeldendeBeregnetPensjonPerManed: GjeldendeBeregnetPensjon,
     val alderspensjonGjeldende: AlderspensjonGjeldende,
     val institusjonsoppholdGjeldende: InstitusjonsoppholdGjeldende?,
-    val epsGjeldende: EPSgjeldende,
+    val epsGjeldende: EPSgjeldende?,
     val erBeregnetSomEnsligEllerEnke: Boolean, // TODO flytt forretningslogikk inn i pesys (script_vedleggBeregnGiftLeverAdskilt)
     val erBeregnetSomEnsligPartner: Boolean, // TODO flytt forretningslogikk inn i pesys (script_vedleggBeregnPartnerLeverAdskilt)
     val bruker: Bruker,
