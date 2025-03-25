@@ -46,6 +46,11 @@ export default [
       "react-hooks": fixupPluginRules(reactHooks),
       "simple-import-sort": simpleImportSort,
     },
+    settings: {
+      react: {
+        version: "detect",
+      },
+    },
 
     languageOptions: {
       globals: {

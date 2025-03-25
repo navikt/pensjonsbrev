@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { ArrowCirclepathIcon, ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyLong, Box, Button, Heading, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { type Dispatch, type SetStateAction, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -33,7 +33,14 @@ import { type EditedLetter } from "~/types/brevbakerTypes";
 import { queryFold } from "~/utils/tanstackUtils";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
-  parseParams: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
+  params: {
+    parse: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
+  },
+  validateSearch: (search: Record<string, string>): { debug: boolean } => {
+    return {
+      debug: search.debug === "true",
+    };
+  },
   component: RedigerBrevPage,
 });
 
@@ -209,10 +216,7 @@ function RedigerBrev({
     select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brev.info.brevkode),
   });
 
-  const showDebug = useSearch({
-    strict: false,
-    select: (search: { debug?: string | boolean }) => search?.["debug"] === "true" || search?.["debug"] === true,
-  });
+  const { debug: showDebug } = Route.useSearch();
 
   const saksbehandlerValgMutation = useHurtiglagreMutation(brev.info.id, setEditorState, oppdaterSaksbehandlerValg);
   const signaturMutation = useHurtiglagreMutation(brev.info.id, setEditorState, oppdaterSignatur);

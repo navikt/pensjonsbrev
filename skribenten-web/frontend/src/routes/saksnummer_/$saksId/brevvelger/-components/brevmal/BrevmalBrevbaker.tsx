@@ -57,9 +57,10 @@ const EksisterendeKladdModal = (props: {
           </Button>
           <Button
             onClick={() => {
-              navigate({
+              return navigate({
                 to: "/saksnummer/$saksId/brev/$brevId",
                 params: { brevId: props.sisteEksisterendeKladdId },
+                search: { debug: false },
               });
             }}
             type="button"
@@ -122,6 +123,7 @@ const BrevmalBrevbaker = (props: {
       return navigate({
         to: "/saksnummer/$saksId/brev/$brevId",
         params: { brevId: response.info.id },
+        search: { debug: false },
       });
     },
   });

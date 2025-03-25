@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { css } from "@emotion/react";
 import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import {
@@ -131,7 +130,7 @@ const BrevItem = (properties: {
             {erBrevArkivert(properties.brev) ? (
               <ArkivertBrev brev={properties.brev} />
             ) : (
-              <ÅpentBrev brev={properties.brev} saksId={properties.saksId} />
+              <ActiveBrev brev={properties.brev} saksId={properties.saksId} />
             )}
             <div>
               <Detail textColor="subtle">
@@ -186,7 +185,7 @@ const ArkivertBrev = (props: { brev: BrevInfo }) => {
   );
 };
 
-const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
+const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const queryClient = useQueryClient();
   const sakContext: SakContextDto = Route.useLoaderData();
 
