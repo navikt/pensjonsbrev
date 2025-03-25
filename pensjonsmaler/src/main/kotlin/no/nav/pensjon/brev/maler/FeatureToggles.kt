@@ -12,5 +12,6 @@ object FeatureToggles {
     val brevmalUtAvslag = FeatureToggle("brevmalUtAvslag")
     val innhentingAvInformasjonFraBruker = FeatureToggle("innhentingAvInformasjonFraBruker")
     val apAvslagNormertPensjonsalder = FeatureToggle("pensjonsbrev.brev.ap_avslag_norm_auto")
+    val apAvslagGradsendringNormertPensjonsalder = FeatureToggle("ap_avslag_gradsendring_norm_auto")
     val varselRevurderingAvPensjon = FeatureToggle("varselRevideringAvPensjon")
 }

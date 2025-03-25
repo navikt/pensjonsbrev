@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAuto
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalder
 import no.nav.pensjon.brev.maler.alder.InfoAldersovergang67AarAuto
+import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
@@ -53,6 +54,7 @@ object ProductionTemplates : AllTemplates {
     )
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AvslagUfoeretrygd,
+        AvslagGradsendringFoerNormertPensjonsalder,
         AvslagUttakFoerNormertPensjonsalder,
         BekreftelsePaaFlyktningstatus,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,

@@ -15,6 +15,7 @@ data class AvslagUttakFoerNormertPensjonsalderAutoDto(
     val opplysningerBruktIBeregningen: OpplysningerBruktIBeregningen,
     val borINorge: Boolean,
     val harEOSLand: Boolean,
+    val vedtakBegrunnelseLavOpptjening: Boolean,
 ) : BrevbakerBrevdata
 
 data class NormertPensjonsalder(
