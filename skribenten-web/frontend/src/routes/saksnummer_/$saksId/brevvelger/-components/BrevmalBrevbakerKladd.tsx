@@ -83,7 +83,6 @@ const Brevmal = (props: {
           return navigate({
             to: "/saksnummer/$saksId/brev/$brevId",
             params: { saksId: saksId, brevId: brev.id },
-            search: { debug: false },
           });
         }
       },
