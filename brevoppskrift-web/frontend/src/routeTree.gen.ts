@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as TemplatesImport } from './routes/templates'
 import { Route as IndexImport } from './routes/index'
+import { Route as TestNavnImport } from './routes/test.$navn'
 import { Route as TemplateMalTypeTemplateIdImport } from './routes/template.$malType.$templateId'
 
 // Create/Update Routes
@@ -26,6 +27,12 @@ const TemplatesRoute = TemplatesImport.update({
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const TestNavnRoute = TestNavnImport.update({
+  id: '/test/$navn',
+  path: '/test/$navn',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -53,6 +60,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TemplatesImport
       parentRoute: typeof rootRoute
     }
+    '/test/$navn': {
+      id: '/test/$navn'
+      path: '/test/$navn'
+      fullPath: '/test/$navn'
+      preLoaderRoute: typeof TestNavnImport
+      parentRoute: typeof rootRoute
+    }
     '/template/$malType/$templateId': {
       id: '/template/$malType/$templateId'
       path: '/template/$malType/$templateId'
@@ -68,12 +82,14 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/templates': typeof TemplatesRoute
+  '/test/$navn': typeof TestNavnRoute
   '/template/$malType/$templateId': typeof TemplateMalTypeTemplateIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/templates': typeof TemplatesRoute
+  '/test/$navn': typeof TestNavnRoute
   '/template/$malType/$templateId': typeof TemplateMalTypeTemplateIdRoute
 }
 
@@ -81,27 +97,39 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/templates': typeof TemplatesRoute
+  '/test/$navn': typeof TestNavnRoute
   '/template/$malType/$templateId': typeof TemplateMalTypeTemplateIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/templates' | '/template/$malType/$templateId'
+  fullPaths:
+    | '/'
+    | '/templates'
+    | '/test/$navn'
+    | '/template/$malType/$templateId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/templates' | '/template/$malType/$templateId'
-  id: '__root__' | '/' | '/templates' | '/template/$malType/$templateId'
+  to: '/' | '/templates' | '/test/$navn' | '/template/$malType/$templateId'
+  id:
+    | '__root__'
+    | '/'
+    | '/templates'
+    | '/test/$navn'
+    | '/template/$malType/$templateId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   TemplatesRoute: typeof TemplatesRoute
+  TestNavnRoute: typeof TestNavnRoute
   TemplateMalTypeTemplateIdRoute: typeof TemplateMalTypeTemplateIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   TemplatesRoute: TemplatesRoute,
+  TestNavnRoute: TestNavnRoute,
   TemplateMalTypeTemplateIdRoute: TemplateMalTypeTemplateIdRoute,
 }
 
@@ -117,6 +145,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/templates",
+        "/test/$navn",
         "/template/$malType/$templateId"
       ]
     },
@@ -125,6 +154,9 @@ export const routeTree = rootRoute
     },
     "/templates": {
       "filePath": "templates.tsx"
+    },
+    "/test/$navn": {
+      "filePath": "test.$navn.tsx"
     },
     "/template/$malType/$templateId": {
       "filePath": "template.$malType.$templateId.tsx"

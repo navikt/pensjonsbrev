@@ -20,10 +20,12 @@ import { DataClasses, trimClassName } from "~/components/DataClasses";
 
 export const Route = createFileRoute("/template/$malType/$templateId")({
   loaderDeps: ({ search: { language } }) => ({ language }),
-  parseParams: (raw: Record<string, string>) => ({
-    templateId: raw.templateId,
-    malType: raw.malType as MalType,
-  }),
+  params: {
+    parse: (raw: Record<string, string>) => ({
+      templateId: raw.templateId,
+      malType: raw.malType as MalType,
+    }),
+  },
   loader: async ({ context, deps, params, preload }) => {
     await context.queryClient.ensureQueryData({
       queryKey: getBrevkoder.queryKey(params.malType),
@@ -41,9 +43,10 @@ export const Route = createFileRoute("/template/$malType/$templateId")({
     }
 
     if (!deps.language && !preload) {
-      return redirect({
-        href: `/template/${params.malType}/${params.templateId}?language=${defaultLanguage}`,
-        replace: true,
+      redirect({
+        to: "/template/$malType/$templateId",
+        search: { language: defaultLanguage },
+        params,
       });
     }
 
