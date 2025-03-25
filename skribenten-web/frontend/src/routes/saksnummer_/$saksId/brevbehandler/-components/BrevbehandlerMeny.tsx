@@ -25,7 +25,6 @@ import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints"
 import { getNavn } from "~/api/skribenten-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import { useUserInfo } from "~/hooks/useUserInfo";
-import type { SakContextDto } from "~/types/apiTypes";
 import type { BrevStatus, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
