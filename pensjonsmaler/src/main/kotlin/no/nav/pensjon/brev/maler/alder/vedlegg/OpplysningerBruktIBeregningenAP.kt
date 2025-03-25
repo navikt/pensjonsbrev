@@ -5,8 +5,8 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregninge
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.pensjonsbeholdning
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.redusertTrygdetid
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.sisteOpptjeningsAar
-import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.trygdeperioderUtland
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.trygdeperioderNorge
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.trygdeperioderUtland
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.trygdetid
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.virkFom
@@ -19,7 +19,10 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
@@ -201,16 +204,16 @@ val opplysningerBruktIBeregningenAP =
                         row {
                             cell {
                                 textExpr(
-                                    Bokmal to periode.fom.format(),
-                                    Nynorsk to periode.fom.format(),
-                                    English to periode.fom.format()
+                                    Bokmal to periode.fom.format(short = true),
+                                    Nynorsk to periode.fom.format(short = true),
+                                    English to periode.fom.format(short = true)
                                 )
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to periode.tom.format(),
-                                    Nynorsk to periode.tom.format(),
-                                    English to periode.tom.format()
+                                    Bokmal to periode.tom.format(short = true),
+                                    Nynorsk to periode.tom.format(short = true),
+                                    English to periode.tom.format(short = true)
                                 )
                             }
                         }
@@ -261,16 +264,16 @@ val opplysningerBruktIBeregningenAP =
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to utlandPeriode.fom.format(),
-                                    Nynorsk to utlandPeriode.fom.format(),
-                                    English to utlandPeriode.fom.format()
+                                    Bokmal to utlandPeriode.fom.format(short = true),
+                                    Nynorsk to utlandPeriode.fom.format(short = true),
+                                    English to utlandPeriode.fom.format(short = true)
                                 )
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to utlandPeriode.tom.format(),
-                                    Nynorsk to utlandPeriode.tom.format(),
-                                    English to utlandPeriode.tom.format()
+                                    Bokmal to utlandPeriode.tom.format(short = true),
+                                    Nynorsk to utlandPeriode.tom.format(short = true),
+                                    English to utlandPeriode.tom.format(short = true)
                                 )
                             }
                         }
