@@ -38,6 +38,8 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.Omstil
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon6mndInnhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslag
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslagRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVarselTilbakekreving
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVarselTilbakekrevingInnhold
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInformasjonDoedsfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysninger
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknad
@@ -108,6 +110,10 @@ object EtterlatteMaler : AllTemplates {
             OmstillingsstoenadInntektsjusteringVedtak,
             OmstillingsstoenadInntektsjusteringVarsel,
             OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall,
+
+            // Etteroppgjør
+            EtteroppgjoerVarselTilbakekreving,
+            EtteroppgjoerVarselTilbakekrevingInnhold,
 
             // Tilbakekreving
             TilbakekrevingInnhold,
