@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
+import no.nav.pensjon.brev.maler.redigerbar.InnhentingInformasjonFraBruker.fritekst
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -69,10 +70,11 @@ data class InnholdLavOpptjening(
 
         showIf(harEOSLand.not() and opplysningerBruktIBeregningen.prorataBruktIBeregningen) {
             paragraph {
-                text(
-                    Bokmal to "Vedtaket er også gjort etter artikkel<FRITEKST; Legg inn aktuelle artikler om sammenlegging og eksport> itrygdeavtalen med <avtaleland.navn>.", //TODO
-                    Nynorsk to "",
-                    English to "",
+                textExpr(
+                    Bokmal to "Vedtaket er også gjort etter artikkel ".expr() + fritekst("legg inn aktuelle artikler om sammenlegging og eksport") +
+                            " i trygdeavtalen med " + fritekst("avtaleland") + ".",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
                 )
             }
         }
