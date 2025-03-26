@@ -153,9 +153,9 @@ private suspend fun RoutingContext.handleResult(
     when (result) {
         is PDFCompilationResponse.Success -> {
             if (pdfvedlegg.isNotEmpty()) {
-                call.respond(PDFVedleggAppender.leggPaaVedlegg(result, pdfvedlegg, spraak))
+                call.respond(PDFVedleggAppender.leggPaaVedlegg(result, pdfvedlegg, spraak).pdfCompilationOutput)
             } else {
-                call.respond(result)
+                call.respond(result.pdfCompilationOutput)
             }
         }
         is PDFCompilationResponse.Failure.Client -> {
