@@ -1,34 +1,38 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.*
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.erEksportberegnet
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.gjenlevendetilleggInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.gjenlevendetilleggKap19Innvilget
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.grunnpensjonSats
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.regelverkstype
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BarnetilleggGjeldendeSelectors.innvilgetBarnetilleggFB_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BarnetilleggGjeldendeSelectors.innvilgetBarnetilleggSB_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.barnetilleggFBbrutto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.barnetilleggSBbrutto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.foedselsDato
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.borSammenMedBruker_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.harInntektOver2G_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.mottarPensjon_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.brukersSivilstand
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.ektefelletillegg
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.flyktningstatusErBrukt
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.fribelopET
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.fribelopFB
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.fribelopSB
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.fullTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.garantipensjon
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.garantitillegg
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.gjenlevendetillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.gjenlevendetilleggKap19
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.gjenlevendetilleggKap19_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.inntektBruktIavkortningET
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.inntektBruktIavkortningFB
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.inntektBruktIavkortningSB
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.inntektspensjon
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.minstenivaIndividuell
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.minstenivaPensjonistPar
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.pensjonstillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.saertillegg_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.skjermingstillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.tilleggspensjon
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EktefelletilleggGjeldendeSelectors.innvilgetEktefelletillegg_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.aldersEllerSykehjem_safe
@@ -37,12 +41,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelecto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.fengsel_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.helseinstitusjon_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.SaerskiltSatsGjeldendeSelectors.saerskiltSatsErBrukt_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.erRedusert_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.kombinertMedAvdod_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUforeAvdod_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUfore_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaYrkesskade_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.alderspensjonGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.barnetilleggGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.bruker
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.epsGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.beregnetPensjonPerManedGjeldende
@@ -50,10 +50,11 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelecto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.institusjonsoppholdGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.saerskiltSatsGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.tilleggspensjonGjeldende
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.*
 import no.nav.pensjon.brev.model.bestemtForm
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
@@ -436,8 +437,9 @@ val maanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish, Maane
         }
 
         //vedleggETAP_001
+        val beregningVirkningsaar = beregnetPensjonPerManedGjeldende.virkDatoFom.year
         showIf(
-            beregnetPensjonPerManedGjeldende.virkDatoFom.year.lessThan(2025)
+            beregningVirkningsaar.lessThan(2025)
                     and ektefelletilleggGjeldende.innvilgetEktefelletillegg_safe.ifNull(false)
         ) {
             paragraph {
@@ -445,9 +447,250 @@ val maanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish, Maane
                     Bokmal to "Ektefelletillegg ",
                     Nynorsk to "Ektefelletillegg ",
                     English to "Spouse supplement ",
+                    BOLD
+                )
+
+                text(
+                    Bokmal to "er et inntektsprøvd tillegg til alderspensjon. Fullt ektefelletillegg fastsettes som en prosent av høy sats for minste pensjonsnivå. Til og med 31. desember 2022 tilsvarte dette 25 prosent. ",
+                    Nynorsk to "er eit inntektsprøvd tillegg til alderspensjon. Fullt ektefelletillegg blir fastsett som ein prosent av høg sats for minste pensjonsnivå. Til og med 31. desember 2022 svarte dette til 25 prosent. ",
+                    English to "is a means-test supplement to the retirement pension.  er eit inntektsprøvd tillegg til alderspensjon. Fullt ektefelletillegg blir fastsett som ein prosent av høg sats for minste pensjonsnivå. Til og med 31. desember 2022 svarte dette til 25 prosent. ",
+                )
+
+                showIf(beregnetPensjonPerManedGjeldende.virkDatoFom.year.lessThan(2024)) {
+                    text(
+                        Bokmal to "Fra 1. januar 2023 reduseres fullt ektefelletillegg til 67 prosent av dette beløpet.",
+                        Nynorsk to "Frå 1. januar 2023 blir fullt ektefelletillegg redusert til 67 prosent av dette beløpet.",
+                        English to "From 1 January 2023, the full spouse supplement will be reduced to 67 percent of this amount.",
+                    )
+                }.orShow {
+                    text(
+                        Bokmal to "Fra 1. januar 2024 reduseres fullt ektefelletillegg til 33 prosent av dette beløpet.",
+                        Nynorsk to "Frå 1. januar 2024 blir fullt ektefelletillegg redusert til 33 prosent av dette beløpet.",
+                        English to "From 1 January 2024, the full spouse supplement will be reduced to 33 percent of this amount.",
+                    )
+                }
+            }
+
+            ifNotNull(beregnetPensjonPerManedGjeldende.ektefelletillegg) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Før eventuell justering på grunn av inntekt, utgjør tillegget ditt ".expr() +
+                                it.format() + " kroner hver måned. Beløpet er beregnet med samme trygdetid som for grunnpensjonen.",
+
+                        Nynorsk to "Før eventuell justering på grunn av inntekt, utgjer tillegget ditt ".expr() +
+                                it.format() + " kroner kvar månad. Beløpet er berekna med same trygdetid som for grunnpensjonen.",
+
+                        English to "Before any adjustment according to your income, your supplement is calculated to NOK ".expr() +
+                                it.format() + " each month. The amount is calculated on the same period of national insurance cover as the basic pension.",
+                    )
+                }
+            }
+
+            ifNotNull(beregnetPensjonPerManedGjeldende.inntektBruktIavkortningET) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Ektefelletillegget ditt er deretter beregnet på grunnlag av din samlede inntekt på ".expr() + it.format() + " kroner.",
+                        Nynorsk to "Ektefelletillegget ditt er deretter berekna på grunnlag av din samla inntekt på ".expr() + it.format() + " kroner.",
+                        English to "The spouse supplement is then adjusted according to your total income of NOK ".expr() + it.format() + ".",
+                    )
+                }
+            }
+            ifNotNull(beregnetPensjonPerManedGjeldende.fribelopET) {
+                paragraph {
+                    text(
+                        Bokmal to "Fribeløp",
+                        Nynorsk to "Fribeløp",
+                        English to "The exemption amount",
+                        BOLD
+                    )
+                    textExpr(
+                        Bokmal to " er et fastsatt beløp som benyttes ved inntektsprøving av ektefelletillegg. Fribeløpet er ".expr() +
+                                it.format() + " kroner. Tillegget ditt reduseres med 50 prosent av den samlede inntekten som overstiger fribeløpet.",
+                        Nynorsk to " er eit fastsett beløp vi bruker ved inntektsprøving av ektefelletillegg. Fribeløpet er for tida ".expr() +
+                                it.format() + " kroner. Tillegget ditt blir redusert med 50 prosent av den samla inntekta som overstig fribeløpet.",
+                        English to " is a fixed figure that is used in income testing in connection with calculating spouse supplement. The exemption amount is NOK ".expr() +
+                                it.format() + ". The supplement will be reduced by 50 percent of your total income in excess of the exemption amount.",
+                    )
+                }
+            }
+        }
+
+        val innvilgetBarnetilleggFellesBarn = barnetilleggGjeldende.innvilgetBarnetilleggFB_safe.ifNull(false)
+        val innvilgetBarnetilleggSaerkullesbarn = barnetilleggGjeldende.innvilgetBarnetilleggSB_safe.ifNull(false)
+        val innvilgetBarnetillegg = innvilgetBarnetilleggFellesBarn or innvilgetBarnetilleggSaerkullesbarn
+
+        //vedleggBTAP_001
+        showIf(
+            beregningVirkningsaar.lessThan(2025)
+                    and innvilgetBarnetillegg
+        ) {
+            paragraph {
+                text(
+                    Bokmal to "Barnetillegg ",
+                    Nynorsk to "Barnetillegg ",
+                    English to "Child supplement ",
+                    BOLD
+                )
+                text(
+                    Bokmal to " gis som et inntektsprøvd tillegg til alderspensjonen. Fullt barnetillegg for hvert barn fastsettes som en prosent av høy sats for minste pensjonsnivå. Til og med 31. desember 2022 tilsvarte dette 20 prosent.",
+                    Nynorsk to " blir gitt som eit inntektsprøvd tillegg til alderspensjonen. Fullt barnetillegg for kvart barn blir fastsett som ein prosent av høg sats for minste pensjonsnivå. Til og med 31. desember 2022 svarte dette til 20 prosent.",
+                    English to " is paid as a means-test supplement to the retirement pension. Up to and including 31 December 2022, the full child supplement corresponded to 25 percent of the minimum pension level at the high rate.",
+                )
+
+                showIf(beregningVirkningsaar.lessThan(2024)) {
+                    text(
+                        Bokmal to "Fra 1. januar 2023 reduseres fullt barnetillegg til 67 prosent av dette beløpet.",
+                        Nynorsk to "Frå 1. januar 2023 blir fullt barnetillegg redusert til 67 prosent av dette beløpet.",
+                        English to "From 1 January 2023, the full child supplement will be reduced to 67 percent of this amount.",
+                    )
+                }.orShow {
+                    text(
+                        Bokmal to "Fra 1. januar 2024 reduseres fullt barnetillegg til 33 prosent av dette beløpet.",
+                        Nynorsk to "Frå 1. januar 2024 blir fullt barnetillegg redusert til 33 prosent av dette beløpet.",
+                        English to "From 1 January 2024, the full child supplement will be reduced to 33 percent of this amount.",
+                    )
+                }
+
+            }
+        }
+
+        //vedleggBTFBAP_001
+        showIf(innvilgetBarnetilleggSaerkullesbarn and beregningVirkningsaar.lessThan(2025)) {
+            ifNotNull(beregnetPensjonPerManedGjeldende.barnetilleggFBbrutto) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Før eventuell justering på grunn av inntekt, utgjør barnetillegget ditt for fellesbarn ".expr() +
+                                it.format() + " kroner hver måned. Beløpet er avkortet mot trygdetid på samme måte som for grunnpensjonen.",
+
+                        Nynorsk to "Før eventuell justering på grunn av inntekt, utgjer barnetillegget ditt for fellesbarn ".expr() +
+                                it.format() + " kroner kvar månad. Beløpet er avkorta mot trygdetid på same måte som for grunnpensjonen.",
+
+                        English to "Before any adjustment according to your income, your child supplement is calculated to NOK ".expr() +
+                                it.format() + " each month. The amount is calculated on the same period of national insurance cover as the basic pension.",
+                    )
+                }
+            }
+            ifNotNull(beregnetPensjonPerManedGjeldende.inntektBruktIavkortningFB) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "For barn som bor sammen med begge foreldrene (fellesbarn) tar vi hensyn til begge foreldrenes inntekter når vi fastsetter samlet inntekt. Barnetillegget ditt er beregnet på grunnlag av en samlet inntekt på ".expr() +
+                                it.format() + " kroner.",
+                        Nynorsk to "For barn som bur samen med begge foreldra (fellesbarn) tek vi omsyn til begge foreldras inntekter når vi fastset samla inntekt. Barnetillegget ditt er berekna på grunnlag av ei samla inntekt på ".expr() +
+                                it.format() + " kroner.",
+                        English to "For children who live with both their parents, we take the sum total of both parents' income into account. The supplement is therefore adjusted according to your total income of NOK ".expr() +
+                                it.format() + ".",
+                    )
+                }
+            }
+            ifNotNull(beregnetPensjonPerManedGjeldende.fribelopFB) {
+                paragraph {
+                    text(
+                        Bokmal to "Fribeløp ",
+                        Nynorsk to "Fribeløp ",
+                        English to "The exemption amount ",
+                        BOLD
+                    )
+                    textExpr(
+                        Bokmal to "er et fastsatt beløp som benyttes ved inntektsprøving av barnetillegg. Fribeløpet er ".expr() +
+                                it.format() + " kroner. Tillegget ditt reduseres med 50 prosent av den samlede inntekten som overstiger fribeløpet.",
+
+                        Nynorsk to "Fribeløp er eit fastsett beløp vi bruker ved inntektsprøving av barnetillegg. Fribeløpet er ".expr() +
+                                it.format() + " kroner. Tillegget ditt blir redusert med 50 prosent av den samla inntekta som overstig fribeløpet.",
+
+                        English to "is a fixed figure that is used in income testing in connection with calculating child supplement. The exemption amount is NOK ".expr() +
+                                it.format() + ". The supplement will be reduced by 50 percent of your total income in excess of the exemption amount.",
+                    )
+                }
+            }
+        }
+
+        showIf(innvilgetBarnetilleggSaerkullesbarn and beregningVirkningsaar.lessThan(2025)) {
+            ifNotNull(beregnetPensjonPerManedGjeldende.barnetilleggSBbrutto) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Før eventuell justering på grunn av inntekt, utgjør barnetillegget ditt for særkullsbarn ".expr() +
+                                it.format() + " kroner hver måned. Beløpet er avkortet mot trygdetid på samme måte som for grunnpensjonen.",
+
+                        Nynorsk to "Før eventuell justering på grunn av inntekt, utgjer barnetillegget ditt for særkullsbarn ".expr() +
+                                it.format() + " kroner kvar månad. Beløpet er avkorta mot trygdetid på same måte som for grunnpensjonen.",
+
+                        English to "Before any adjustment according to your income, your child supplement for a child/children from a previous relationship, is calculated to NOK ".expr() +
+                                it.format() + " each month. The amount is calculated on the same period of national insurance cover as the basic pension.",
+                    )
+                }
+            }
+
+            ifNotNull(beregnetPensjonPerManedGjeldende.inntektBruktIavkortningSB) {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Barnetillegget ditt er deretter beregnet på grunnlag av din samlede inntekt på ".expr() + it.format() + " kroner.",
+                        Nynorsk to "Barnetillegget ditt er deretter berekna på grunnlag av di samla inntekt på ".expr() + it.format() + " kroner.",
+                        English to "The child supplement is then adjusted according to your total income of NOK ".expr() + it.format() + ".",
+                    )
+                }
+            }
+            ifNotNull(beregnetPensjonPerManedGjeldende.fribelopSB) {
+                paragraph {
+                    text(
+                        Bokmal to "Fribeløp ",
+                        Nynorsk to "Fribeløp ",
+                        English to "The exemption amount ",
+                        BOLD
+                    )
+                    textExpr(
+                        Bokmal to " er et fastsatt beløp som benyttes ved inntektsprøving av barnetillegg. Fribeløpet er ".expr() +
+                                it.format() + " kroner. Tillegget reduseres med 50 prosent av den samlede inntekten som overstiger fribeløpet.",
+
+                        Nynorsk to " er eit fastsett beløp vi bruker ved inntektsprøving av barnetillegg. Fribeløpet er ".expr() +
+                                it.format() + " kroner. Tillegget ditt blir redusert med 50 prosent av den samla inntekta som overstig fribeløpet.",
+
+                        English to " is a fixed figure that is used in income testing in connection with calculating child supplement. The exemption amount is NOK ".expr() +
+                                it.format() + ". The supplement will be reduced by 50 percent of your total income in excess of the exemption amount.",
+                    )
+                }
+            }
+        }
+
+        //vedleggBelopLonnsvekstRegOverskrift
+        showIf(regelverkstype.isOneOf(AP1967)) {
+            title1 {
+                text(
+                    Bokmal to "Regulering av alderspensjon under utbetaling",
+                    Nynorsk to "Regulering av alderspensjon under utbetaling",
+                    English to "Regulation of retirement pension during payment",
+                )
+            }
+
+            //vedleggBelopLonnsvekstReg
+            paragraph {
+                text(
+                    Bokmal to "Reguleringen skjer med virkning fra 1. mai og selve økningen blir vanligvis etterbetalt i juni. Du får informasjon om dette på utbetalingsmeldingen din. På $NAV_URL kan du lese mer om hvordan pensjonene blir regulert.",
+                    Nynorsk to "Reguleringa skjer med verknad frå 1. mai, og sjølve auken blir vanlegvis etterbetalt i juni. Du får informasjon om dette på utbetalingsmeldinga di. På $NAV_URL kan du lese meir om korleis pensjonane blir regulerte.",
+                    English to "The pension amount will be adjusted with effect from 1 May, and the actual increase is usually paid retroactively in June. You will be informed about this on your payment notice. You can read more about how pensions are adjusted at $NAV_URL",
                 )
             }
         }
+
+        showIf(regelverkstype.isOneOf(AP2011, AP2016)) {
+            title1 {
+                text(
+                    Bokmal to "Alderspensjonen din er levealdersjustert",
+                    Nynorsk to "Alderspensjonen din er levealdersjustert",
+                    English to "Your retirement pension has been adjusted for life expectancy",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Pensjonen er justert i forhold til forventet levealder for ditt årskull. Levealdersjustering er en mekanisme som tar høyde for økt levealder i befolkningen og er innført for å sikre at pensjonssystemet forblir bærekraftig. Hver enkelt del av pensjonen din har blitt levealdersjustert.",
+                    Nynorsk to "Pensjonen er justert i forhold til forventa levealder for årskullet ditt. Levealdersjustering er ein mekanisme som tek høgde for auka levealder i befolkninga og er innført for å sikre at pensjonssystemet blir verande berekraftig. Kvar enkelt del av pensjonen din har blitt levealdersjustert.",
+                    English to "Your pension has been adjusted in accordance with the life expectancy for people born in the same year as you. Life expectancy adjustments take into account increased life expectancy in the population and have been implemented to ensure that our pension scheme remains sustainable. Each individual component of your pension has been adjusted for life expectancy.",
+                )
+            }
+        }
+
+
+
+
 
 
     }

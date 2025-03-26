@@ -16,9 +16,14 @@ data class MaanedligPensjonFoerSkattDto(
     val ektefelletilleggGjeldende: EktefelletilleggGjeldende?,
     val tilleggspensjonGjeldende: TilleggspensjonGjeldende?,
     val saerskiltSatsGjeldende: SaerskiltSatsGjeldende?,
+    val barnetilleggGjeldende: BarnetilleggGjeldende?,
     val bruker: Bruker,
 ) : BrevbakerBrevdata {
 
+    data class BarnetilleggGjeldende(
+        val innvilgetBarnetilleggFB: Boolean,
+        val innvilgetBarnetilleggSB: Boolean,
+    )
     data class EktefelletilleggGjeldende(
         val innvilgetEktefelletillegg: Boolean,
     )
@@ -69,8 +74,16 @@ data class MaanedligPensjonFoerSkattDto(
         val grunnbeloep: Kroner,
         val ektefelletillegg: Kroner?,
         val barnetilleggSB: Kroner?,
+        val barnetilleggSBbrutto: Kroner?,
         val barnetilleggFB: Kroner?,
+        val barnetilleggFBbrutto: Kroner?,
         val inntektspensjon: Kroner?,
+        val inntektBruktIavkortningET: Kroner?,
+        val inntektBruktIavkortningSB: Kroner?,
+        val inntektBruktIavkortningFB: Kroner?,
+        val fribelopET: Kroner?,
+        val fribelopFB: Kroner?,
+        val fribelopSB: Kroner?,
         val garantipensjon: Kroner?,
         val garantitillegg: Kroner?,
         val gjenlevendetillegg: Kroner?,
