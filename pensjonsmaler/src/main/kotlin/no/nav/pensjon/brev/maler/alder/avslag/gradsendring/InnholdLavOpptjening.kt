@@ -38,7 +38,7 @@ data class InnholdLavOpptjening(
             textExpr(
                 Bokmal to
                         "Du har for lav pensjonsopptjening til at du kan ta ut ".expr() + opplysningerBruktIBeregningen.uttaksgrad.format() +
-                        " prosent fra " + virkFom.format() + ". Derfor har vi avslått søknaden din.",
+                        " prosent fra " + virkFom.format() + ". Derfor har vi avslått søknaden din og uttaksgraden blir som før.",
                 Nynorsk to
                         "For å ta ut alderspensjon før du er ".expr() + normertPensjonsalder.aarOgMaanederFormattert() + ", må du ha høg nok pensjonsopptjening. " +
                         "Du har for låg pensjonsopptening til at du kan ta ut ".expr() + opplysningerBruktIBeregningen.uttaksgrad.format() +
@@ -62,8 +62,8 @@ data class InnholdLavOpptjening(
             paragraph {
                 text(
                     Bokmal to "Vedtaket er også gjort etter EØS-avtalens regler i forordning 883/2004, artikkel 6.",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "Vedtaket er også gjort etter reglane i EØS-avtalen i forordning 883/2004, artikkel 6.",
+                    English to "This decision was also made pursuant to the provisions of Regulation (EC) 883/2004, article 6.",
                 )
             }
         }
@@ -74,7 +74,8 @@ data class InnholdLavOpptjening(
                     Bokmal to "Vedtaket er også gjort etter artikkel ".expr() + fritekst("legg inn aktuelle artikler om sammenlegging og eksport") +
                             " i trygdeavtalen med " + fritekst("avtaleland") + ".",
                     Nynorsk to "".expr(),
-                    English to "".expr(),
+                    English to "This decision was also made pursuant to the provisions of Article".expr() + fritekst("legg inn aktuelle artikler om sammenlegging og eksport") +
+                            " i trygdeavtalen med " + fritekst("avtaleland") + ".",
                 )
             }
         }
@@ -104,6 +105,15 @@ data class InnholdLavOpptjening(
                             Nynorsk to " Vi har tatt omsyn til at du også har trygdetid frå land som Noreg har trygdeavtale med.",
                             English to " We have taken into account any periods of national insurance coverage" +
                                     " that you may have in countries with which Norway has a social security agreement."
+                        )
+                    }
+
+                    showIf(opplysningerBruktIBeregningen.uttaksgrad.notEqualTo(100)) {
+                        textExpr(
+                            Bokmal to " Vi beregner den delen du ønsker å ta ut nå og hva du ville ha fått hvis du tar ut resten av pensjonen ved ".expr() + normertPensjonsalder.aarOgMaanederFormattert() + ".",
+                            Nynorsk to " Vi bereknar den delen du ynskjer å ta ut nå og kva du ville ha fått dersom du tar resten av pensjonen ved ".expr() + normertPensjonsalder.aarOgMaanederFormattert() + ".",
+                            English to "We calculate the part you wish to withdraw now and what you would have received".expr() +
+                                    " if you take the rest of the pension at the age of " + normertPensjonsalder.aarOgMaanederFormattert() + "."
                         )
                     }
                 }
