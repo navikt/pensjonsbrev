@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger.vedlegg
 
+import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brev.pdfbygger.vedlegg.P1VedleggAppender.lesInnP1
 import no.nav.pensjon.brev.pdfbygger.vedlegg.P1VedleggAppender.lesInnP1Vedlegg
@@ -14,10 +15,10 @@ import java.io.ByteArrayOutputStream
 internal object PDFVedleggAppender {
 
     internal fun leggPaaVedlegg(
-        pdfCompilationResponse: PDFCompilationResponse.Bytes,
+        pdfCompilationResponse: PDFCompilationResponse.Success,
         attachments: List<PDFVedlegg>,
         spraak: LanguageCode,
-    ): PDFCompilationResponse.Bytes {
+    ): PDFCompilationResponse.Success {
         /* Ikke strengt nødvendig å returnere her, det vil fungere uten, men optimalisering.
         De aller, aller fleste brevene har ikke PDF-vedlegg, så de trenger ikke gå gjennom denne løypa
          */
@@ -27,7 +28,7 @@ internal object PDFVedleggAppender {
 
         val merger = PDFMergerUtility()
         val target = PDDocument()
-        val originaltDokument = pdfCompilationResponse.bytes.let { PDDocument.load(it) }
+        val originaltDokument = pdfCompilationResponse.pdfCompilationOutput.bytes.let { PDDocument.load(it) }
         merger.leggTilSide(target, originaltDokument)
         leggPaaBlankPartallsside(originaltDokument, merger, target)
         attachments.map { lesInnVedlegg(it, spraak) }.forEach {
@@ -53,10 +54,10 @@ internal object PDFVedleggAppender {
         }
     }
 
-    private fun tilByteArray(target: PDDocument): PDFCompilationResponse.Bytes {
+    private fun tilByteArray(target: PDDocument): PDFCompilationResponse.Success {
         val outputStream = ByteArrayOutputStream()
         target.save(outputStream)
-        return PDFCompilationResponse.Bytes(outputStream.toByteArray())
+        return PDFCompilationResponse.Success(PDFCompilationOutput(outputStream.toByteArray()))
     }
 }
 

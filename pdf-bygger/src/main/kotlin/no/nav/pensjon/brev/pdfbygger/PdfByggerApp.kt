@@ -22,11 +22,9 @@ import io.ktor.util.logging.Logger
 import io.micrometer.core.instrument.Tag
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
-import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.vedlegg.PDFVedleggAppender
 import no.nav.pensjon.brev.pdfbygger.vedlegg.VedleggModule
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import java.nio.file.Path

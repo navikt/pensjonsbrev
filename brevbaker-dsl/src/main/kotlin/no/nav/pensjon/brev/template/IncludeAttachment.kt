@@ -50,7 +50,14 @@ class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any> inter
 
 }
 
-data class PDFTemplate<AttachmentData : BrevbakerBrevdata>(
+class PDFTemplate<AttachmentData : BrevbakerBrevdata>(
     val type: PDFVedleggType,
     val data: Expression<AttachmentData>
-) : StableHash by StableHash.of(StableHash.of(type), data)
+) : StableHash by StableHash.of(StableHash.of(type), data) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is PDFTemplate<*>) return false
+        return type == other.type && data == other.data
+    }
+    override fun hashCode() = Objects.hash(type, data)
+    override fun toString() = "PDFTemplate(type=$type, data=$data)"
+}
