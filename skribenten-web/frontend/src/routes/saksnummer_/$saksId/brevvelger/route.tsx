@@ -22,7 +22,7 @@ import { formatStringDate } from "~/utils/dateUtils";
 import BrevmalPanel from "./-components/BrevmalPanel";
 import BrevvelgerFooter from "./-components/BrevvelgerFooter";
 
-export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
+export const Route = createFileRoute("/saksnummer_/$saksId/brevvelger")({
   validateSearch: (
     search: Record<string, unknown>,
   ): { idTSSEkstern?: string; brevId?: string; templateId?: string; enhetsId?: string } => ({
@@ -246,12 +246,16 @@ function Brevmaler({
                           : undefined
                       }
                       key={template.id}
-                      onClick={() => {
+                      onClick={() =>
                         navigate({
                           to: "/saksnummer/$saksId/brevvelger",
-                          search: (s) => ({ ...s, templateId: template.id, brevId: undefined }),
-                        });
-                      }}
+                          search: (s) => ({
+                            ...s,
+                            templateId: template.id,
+                            brevId: undefined,
+                          }),
+                        })
+                      }
                       title={
                         <HStack
                           align={"center"}
@@ -323,12 +327,16 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; letterTemplates: LetterM
                     : undefined
                 }
                 key={brev.id}
-                onClick={() => {
+                onClick={() =>
                   navigate({
                     to: "/saksnummer/$saksId/brevvelger",
-                    search: (s) => ({ ...s, brevId: brev.id.toString(), templateId: undefined }),
-                  });
-                }}
+                    search: (s) => ({
+                      ...s,
+                      brevId: brev.id.toString(),
+                      templateId: undefined,
+                    }),
+                  })
+                }
                 title={
                   <HStack
                     align={"center"}

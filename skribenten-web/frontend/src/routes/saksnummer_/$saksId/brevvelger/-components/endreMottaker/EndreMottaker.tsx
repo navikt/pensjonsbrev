@@ -47,14 +47,14 @@ const EndreMottaker = (properties: {
             //hvis mottaker er en string, betyr det at det er en samhandler
             if (typeof bekreftetMottaker === "string") {
               properties.onManuellAdresseBekreft?.(null);
-              navigate({
+              return navigate({
                 search: (s) => ({ ...s, idTSSEkstern: bekreftetMottaker }),
                 replace: true,
               });
             } else {
               //hvis mottaker er en adresse, betyr det at det er en manuell adresse
               properties.onManuellAdresseBekreft?.(bekreftetMottaker);
-              navigate({
+              return navigate({
                 search: (s) => ({ ...s, idTSSEkstern: undefined }),
                 replace: true,
               });

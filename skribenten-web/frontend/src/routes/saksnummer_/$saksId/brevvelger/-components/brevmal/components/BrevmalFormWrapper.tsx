@@ -1,12 +1,13 @@
 import { css } from "@emotion/react";
 import { Alert, Heading, Link } from "@navikt/ds-react";
 import type { AxiosError } from "axios";
+import React from "react";
 
 import { ApiError } from "~/components/ApiError";
 
 const BrevmalFormWrapper = (props: {
   onSubmit: () => void;
-  formRef: React.RefObject<HTMLFormElement>;
+  formRef: React.RefObject<HTMLFormElement | null>;
   children: React.ReactNode;
 }) => {
   return (
