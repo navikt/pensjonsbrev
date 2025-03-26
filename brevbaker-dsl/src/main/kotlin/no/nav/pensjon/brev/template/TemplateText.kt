@@ -29,7 +29,7 @@ class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> internal construct
     }
 
     fun includePhrase(phrase: PlainTextOnlyPhrase<out Lang>) {
-        phrase.applyToTextScope(this)
+        phrase.apply(this)
     }
 }
 

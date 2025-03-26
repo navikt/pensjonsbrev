@@ -33,11 +33,11 @@ class ParagraphOnlyScope<Lang : LanguageSupport, LetterData : Any> internal cons
     }
 
     fun includePhrase(phrase: TextOnlyPhrase<out Lang>) {
-        phrase.applyToParagraphScope(this)
+        phrase.apply(this)
     }
 
     fun includePhrase(phrase: PlainTextOnlyPhrase<out Lang>) {
-        phrase.applyToParagraphScope(this)
+        phrase.apply(this)
     }
 }
 

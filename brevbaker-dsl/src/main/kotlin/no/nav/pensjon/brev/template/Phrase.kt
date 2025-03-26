@@ -9,7 +9,7 @@ abstract class TextOnlyPhrase<Lang : LanguageSupport> {
             .forEach { scope.addTextContent(it) }
     }
 
-    fun applyToParagraphScope(scope: ParagraphScope<in Lang, *>) {
+    fun apply(scope: ParagraphScope<in Lang, *>) {
         TextOnlyScope<Lang, Unit>().apply { template() }.elements
             .forEach { scope.addTextContent(it) }
     }
@@ -23,11 +23,11 @@ abstract class PlainTextOnlyPhrase<Lang : LanguageSupport> {
         applyPlainTextScope().forEach { scope.addTextContent(it) }
     }
 
-    fun applyToTextScope(scope: TextOnlyScope<in Lang, *>) {
+    fun apply(scope: TextOnlyScope<in Lang, *>) {
         applyPlainTextScope().forEach { scope.addTextContent(it) }
     }
 
-    fun applyToParagraphScope(scope: ParagraphOnlyScope<in Lang, *>) {
+    fun apply(scope: ParagraphOnlyScope<in Lang, *>) {
         applyPlainTextScope().forEach { scope.addTextContent(it) }
     }
 
