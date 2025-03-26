@@ -4,6 +4,8 @@ val apiModelJavaTarget: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
+    id("java-library")
+    id("java-test-fixtures")
 }
 
 group = "no.nav.pensjon.brevbaker"
@@ -27,6 +29,8 @@ dependencies {
     testImplementation(libs.bundles.junit)
     testImplementation(libs.hamkrest)
     testImplementation(kotlin("reflect"))
+
+    testFixturesImplementation(libs.brevbaker.common)
 }
 
 kotlin {
@@ -43,5 +47,11 @@ tasks {
     }
     compileTestJava {
         targetCompatibility = apiModelJavaTarget
+    }
+    compileKotlin {
+        compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")
+    }
+    compileTestKotlin {
+        compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")
     }
 }
