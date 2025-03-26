@@ -27,6 +27,10 @@ class TextOnlyScope<Lang : LanguageSupport, LetterData : Any> internal construct
     fun includePhrase(phrase: TextOnlyPhrase<out Lang>) {
         phrase.apply(this)
     }
+
+    fun includePhrase(phrase: PlainTextOnlyPhrase<out Lang>) {
+        phrase.apply(this)
+    }
 }
 
 @LetterTemplateMarker
@@ -45,6 +49,9 @@ class PlainTextOnlyScope<Lang : LanguageSupport, LetterData : Any> internal cons
         children.add(e)
     }
 
+    fun includePhrase(phrase: PlainTextOnlyPhrase<out Lang>) {
+        phrase.apply(this)
+    }
 }
 
 sealed interface PlainTextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
