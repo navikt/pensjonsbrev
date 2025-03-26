@@ -2,43 +2,38 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt
 
 import no.nav.pensjon.brev.api.model.AlderspensjonBeregnetEtter
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.*
-import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.erEksportberegnet
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.grunnpensjonSats
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.regelverkstype
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.foedselsDato
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.avdodFlyktningstatusErBrukt
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.beregnetEtter_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.flyktningstatusErBrukt
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.fullTrygdetid
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.grunnbeloep
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.grunnpensjon
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.borSammenMedBruker_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.harInntektOver2G_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.mottarPensjon_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.avdodFlyktningstatusErBrukt
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.beregnetEtter_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.flyktningstatusErBrukt
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.fullTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.grunnbeloep
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.grunnpensjon
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.aldersEllerSykehjem_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.ensligPaInst_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.epsPaInstitusjon_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.fengsel_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.helseinstitusjon_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.alderspensjonGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.bruker
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.epsGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.gjeldendeBeregnetPensjonPerManed
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.institusjonsoppholdGjeldende
-import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap19
-import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap19og20
 import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.ParagraphPhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 private object GrunnpensjonBold : ParagraphPhrase<LangBokmalNynorskEnglish>() {
     override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -52,7 +47,7 @@ private object GrunnpensjonBold : ParagraphPhrase<LangBokmalNynorskEnglish>() {
 }
 
 data class MaanedligPensjonFoerSkattGrunnpensjon(
-    val gjeldendeBeregnetPensjonPerManed: Expression<MaanedligPensjonFoerSkattDto.GjeldendeBeregnetPensjon>,
+    val beregnetPensjonPerManedGjeldende: Expression<MaanedligPensjonFoerSkattDto.BeregnetPensjonGjeldende>,
     val epsGjeldende: Expression<MaanedligPensjonFoerSkattDto.EPSgjeldende?>,
     val alderspensjonGjeldende: Expression<MaanedligPensjonFoerSkattDto.AlderspensjonGjeldende>,
     val institusjonsoppholdGjeldende: Expression<MaanedligPensjonFoerSkattDto.InstitusjonsoppholdGjeldende?>,
@@ -65,19 +60,19 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
         val epsHarInntektOver2G = epsGjeldende.harInntektOver2G_safe.ifNull(false)
 
         val beregnetEtterEgen =
-            gjeldendeBeregnetPensjonPerManed.beregnetEtter_safe.ifNull(AlderspensjonBeregnetEtter.AVDOD)
+            beregnetPensjonPerManedGjeldende.beregnetEtter_safe.ifNull(AlderspensjonBeregnetEtter.AVDOD)
                 .isOneOf(AlderspensjonBeregnetEtter.EGEN)
         val beregnetEtterAvdod =
-            gjeldendeBeregnetPensjonPerManed.beregnetEtter_safe.ifNull(AlderspensjonBeregnetEtter.EGEN)
+            beregnetPensjonPerManedGjeldende.beregnetEtter_safe.ifNull(AlderspensjonBeregnetEtter.EGEN)
                 .isOneOf(AlderspensjonBeregnetEtter.AVDOD)
 
-        val grunnbeloep = gjeldendeBeregnetPensjonPerManed.grunnbeloep.format()
+        val grunnbeloep = beregnetPensjonPerManedGjeldende.grunnbeloep.format()
 
         val grunnpensjonSats = alderspensjonGjeldende.grunnpensjonSats.format()
         ifNotNull(
-            gjeldendeBeregnetPensjonPerManed.grunnpensjon
+            beregnetPensjonPerManedGjeldende.grunnpensjon
         ) { grunnpensjon ->
-            showIf(gjeldendeBeregnetPensjonPerManed.fullTrygdetid and beregnetEtterEgen) {
+            showIf(beregnetPensjonPerManedGjeldende.fullTrygdetid and beregnetEtterEgen) {
 
                 // TODO er ikke regelverkstype sjekk redundant?
                 showIf(alderspensjonGjeldende.regelverkstype.isOneOf(AP1967, AP2011, AP2016)) {
@@ -189,10 +184,10 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
         }
         // Text 68 vedleggBelopGPFlyktning_001
         showIf(
-            gjeldendeBeregnetPensjonPerManed.flyktningstatusErBrukt
+            beregnetPensjonPerManedGjeldende.flyktningstatusErBrukt
                     and (alderspensjonGjeldende.regelverkstype.isOneOf(AP2011, AP2016))
                     and beregnetEtterEgen
-                    and gjeldendeBeregnetPensjonPerManed.fullTrygdetid
+                    and beregnetPensjonPerManedGjeldende.fullTrygdetid
         ) {
             paragraph {
                 text(
@@ -205,7 +200,7 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
 
         showIf(
             beregnetEtterAvdod
-                    and gjeldendeBeregnetPensjonPerManed.fullTrygdetid
+                    and beregnetPensjonPerManedGjeldende.fullTrygdetid
                     and (alderspensjonGjeldende.regelverkstype.isOneOf(AP1967, AP2011, AP2016))
         ) {
             showIf(beregnetEtterAvdod and not(bruker.sivilstand.isOneOf(SAMBOER_3_2))) {
@@ -295,9 +290,9 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
         }
 
         showIf(
-            gjeldendeBeregnetPensjonPerManed.avdodFlyktningstatusErBrukt
+            beregnetPensjonPerManedGjeldende.avdodFlyktningstatusErBrukt
                     and beregnetEtterAvdod
-                    and gjeldendeBeregnetPensjonPerManed.fullTrygdetid
+                    and beregnetPensjonPerManedGjeldende.fullTrygdetid
                     and alderspensjonGjeldende.regelverkstype.isOneOf(AP1967, AP2011, AP2016)
         ) {
             paragraph {
@@ -310,12 +305,12 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
         }
 
         showIf(
-            not(gjeldendeBeregnetPensjonPerManed.fullTrygdetid)
+            not(beregnetPensjonPerManedGjeldende.fullTrygdetid)
                     and (alderspensjonGjeldende.regelverkstype.isOneOf(AP1967)
                     or (
                     alderspensjonGjeldende.regelverkstype.isOneOf(AP2011, AP2016)
                             and beregnetEtterEgen
-                            and gjeldendeBeregnetPensjonPerManed.grunnpensjon.isNull()
+                            and beregnetPensjonPerManedGjeldende.grunnpensjon.isNull()
                     ))
         ) {
             showIf(alderspensjonGjeldende.erEksportberegnet) {
@@ -391,7 +386,7 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
         }
 
         showIf(
-            not(gjeldendeBeregnetPensjonPerManed.fullTrygdetid)
+            not(beregnetPensjonPerManedGjeldende.fullTrygdetid)
                     and beregnetEtterAvdod
                     and alderspensjonGjeldende.regelverkstype.isOneOf(AP1967, AP2011, AP2016)
         ) {

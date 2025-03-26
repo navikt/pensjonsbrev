@@ -9,14 +9,19 @@ import java.time.LocalDate
 
 @Suppress("unused")
 data class MaanedligPensjonFoerSkattDto(
-    val gjeldendeBeregnetPensjonPerManed: GjeldendeBeregnetPensjon,
+    val beregnetPensjonPerManedGjeldende: BeregnetPensjonGjeldende,
     val alderspensjonGjeldende: AlderspensjonGjeldende,
     val institusjonsoppholdGjeldende: InstitusjonsoppholdGjeldende?,
     val epsGjeldende: EPSgjeldende?,
+    val ektefelletilleggGjeldende: EktefelletilleggGjeldende?,
     val tilleggspensjonGjeldende: TilleggspensjonGjeldende?,
+    val saerskiltSatsGjeldende: SaerskiltSatsGjeldende?,
     val bruker: Bruker,
 ) : BrevbakerBrevdata {
 
+    data class EktefelletilleggGjeldende(
+        val innvilgetEktefelletillegg: Boolean,
+    )
     data class EPSgjeldende(
         val mottarPensjon: Boolean,
         val borSammenMedBruker: Boolean,
@@ -35,6 +40,8 @@ data class MaanedligPensjonFoerSkattDto(
         val andelKap19: Int,
         val andelKap20: Int,
         val grunnpensjonSats: Int,
+        val gjenlevendetilleggKap19Innvilget: Boolean,
+        val gjenlevendetilleggInnvilget: Boolean,
     )
 
     data class TilleggspensjonGjeldende(
@@ -44,7 +51,7 @@ data class MaanedligPensjonFoerSkattDto(
         val pgaUngUfore: Boolean,
         val pgaUngUforeAvdod: Boolean,
     )
-    data class GjeldendeBeregnetPensjon(
+    data class BeregnetPensjonGjeldende(
         val virkDatoFom: LocalDate,
         val virkDatoTom: LocalDate?,
         val grunnpensjon: Kroner?,
@@ -70,10 +77,15 @@ data class MaanedligPensjonFoerSkattDto(
         val totalPensjon: Kroner,
         val flyktningstatusErBrukt: Boolean,
         val avdodFlyktningstatusErBrukt: Boolean,
+        val brukersSivilstand: MetaforceSivilstand,
     )
 
     data class Bruker(
         val foedselsDato: LocalDate,
         val sivilstand: MetaforceSivilstand
+    )
+
+    data class SaerskiltSatsGjeldende(
+        val saerskiltSatsErBrukt: Boolean,
     )
 }

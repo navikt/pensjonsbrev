@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.*
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.GjeldendeBeregnetPensjonSelectors.tilleggspensjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.tilleggspensjon
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.erRedusert_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.kombinertMedAvdod_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUforeAvdod_safe
@@ -31,7 +31,7 @@ private object TilleggspensjonenBold : ParagraphPhrase<LangBokmalNynorskEnglish>
 
 data class MaanedligPensjonFoerSkattTilleggsPensjon(
     val tilleggspensjonGjeldende: Expression<MaanedligPensjonFoerSkattDto.TilleggspensjonGjeldende?>,
-    val gjeldendeBeregnetPensjonPerManed: Expression<MaanedligPensjonFoerSkattDto.GjeldendeBeregnetPensjon>,
+    val beregnetPensjonPerManedGjeldende: Expression<MaanedligPensjonFoerSkattDto.BeregnetPensjonGjeldende>,
     val regelverkstype: Expression<AlderspensjonRegelverkstype>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>(){
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -41,7 +41,7 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
         val tilleggsPensjonErPgaYrkesskade = tilleggspensjonGjeldende.pgaYrkesskade_safe.ifNull(false)
         val tilleggsPensjonErPgaUngUfoer = tilleggspensjonGjeldende.pgaUngUfore_safe.ifNull(false)
         val tilleggsPensjonErPgaUngUforeAvdoed = tilleggspensjonGjeldende.pgaUngUforeAvdod_safe.ifNull(false)
-        val harTilleggspensjon = gjeldendeBeregnetPensjonPerManed.tilleggspensjon.ifNull(Kroner(0)).greaterThan(0)
+        val harTilleggspensjon = beregnetPensjonPerManedGjeldende.tilleggspensjon.ifNull(Kroner(0)).greaterThan(0)
         //vedleggBelopFullTP_001
         showIf(
             (
