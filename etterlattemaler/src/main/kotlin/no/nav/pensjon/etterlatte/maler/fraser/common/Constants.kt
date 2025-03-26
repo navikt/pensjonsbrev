@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte.maler.fraser.common
 
 object Constants {
     const val NAV_URL = "nav.no"
+    const val SKATTEETATEN_URL = "skatteetaten.no"
     const val ARBEID_URL = "$NAV_URL/arbeid"
     const val SAKSBEHANDLINGSTIDER_URL = "$NAV_URL/saksbehandlingstider"
     const val BARNEPENSJON_URL = "$NAV_URL/barnepensjon"
@@ -21,7 +22,11 @@ object Constants {
     const val OMS_MELD_INN_ENDRING_URL = "$NAV_URL/omstillingsstonad#melde"
     const val BESKJED_TIL_NAV_URL = "$NAV_URL/send-beskjed"
     const val BP_SKATTETREKK = "$NAV_URL/barnepensjon#skattetrekk"
-    const val BP_SKATTEETATEN = "skatteetaten.no/barnepensjon"
+    const val BP_SKATTEETATEN = "$SKATTEETATEN_URL/barnepensjon"
+    const val BP_MELDE = "$NAV_URL/barnepensjon#melde"
+    const val SKATTEETATEN_ENDRE_URL = "$SKATTEETATEN_URL/endre"
+    const val SKATTEETATEN_KILDESKATTPENSJON_URL = "$SKATTEETATEN_URL/kildeskattpensjon"
+    const val SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE = "(+47) 22 07 70 00"
     const val SKATTETREKK_ETTERBETALING_URL = "$NAV_URL/skattetrekk#etterbetaling"
     const val SKATTETREKK_KILDESKATT_URL = "$NAV_URL/skattetrekk#kildeskatt"
     const val OMS_ETTEROPPGJOER_URL = "$NAV_URL/omstillingsstonad#etteroppgjor"
@@ -51,6 +56,7 @@ object Constants {
         const val SAKSBEHANDLINGSTIDER_URL = "${Constants.SAKSBEHANDLINGSTIDER_URL}/en"
         const val SAKSBEHANDLINGSTIDER_BP = "$SAKSBEHANDLINGSTIDER_URL#childrens-pension"
         const val SAKSBEHANDLINGSTIDER_OMS = "$SAKSBEHANDLINGSTIDER_URL#adjustment-allowance"
+        const val SKATTEETATEN_ENDRE_URL = "$SKATTEETATEN_URL/change"
     }
 
     object Utland {

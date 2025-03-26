@@ -20,9 +20,10 @@ export default defineConfig(() => ({
   },
   server: {
     origin: "http://localhost:5173",
+    cors: true,
   },
   test: {
-    environment: 'jsdom',
-    globals: true // Enables Vitest to automatically cleanup after each test
+    environment: "jsdom",
+    globals: true, // Enables Vitest to automatically cleanup after each test
   },
 }));

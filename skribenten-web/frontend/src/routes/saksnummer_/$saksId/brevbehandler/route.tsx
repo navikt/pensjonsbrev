@@ -14,7 +14,7 @@ import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
 import BrevForhåndsvisning from "./-components/BrevForhåndsvisning";
 import { FerdigstillOgSendBrevButton, FerdigstillOgSendBrevModal } from "./-components/FerdigstillBrev";
 
-export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler")({
+export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
   component: Brevbehandler,
   loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
     const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);

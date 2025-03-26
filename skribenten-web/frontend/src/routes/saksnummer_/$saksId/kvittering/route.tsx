@@ -9,7 +9,7 @@ import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 import { useSendBrevAttesteringContext } from "./-components/SendBrevTilAttesteringResultatContext";
 import { useSendtBrevResultatContext } from "./-components/SendtBrevResultatContext";
 
-export const Route = createFileRoute("/saksnummer/$saksId/kvittering")({
+export const Route = createFileRoute("/saksnummer_/$saksId/kvittering")({
   component: Kvittering,
 });
 

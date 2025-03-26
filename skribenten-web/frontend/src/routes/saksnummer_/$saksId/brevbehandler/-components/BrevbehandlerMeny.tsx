@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { css } from "@emotion/react";
 import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import {
@@ -55,14 +54,14 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
     setÅpenBrevItem(isOpen ? brevId : null);
 
     if (isOpen) {
-      navigate({
+      return navigate({
         to: "/saksnummer/$saksId/brevbehandler",
         params: { saksId: properties.saksId },
         search: (s) => ({ ...s, brevId: brevId }),
         replace: true,
       });
     } else {
-      navigate({
+      return navigate({
         to: "/saksnummer/$saksId/brevbehandler",
         params: { saksId: properties.saksId },
         search: (s) => ({ ...s, brevId: undefined }),
@@ -130,7 +129,7 @@ const BrevItem = (properties: {
             {erBrevArkivert(properties.brev) ? (
               <ArkivertBrev brev={properties.brev} />
             ) : (
-              <ÅpentBrev brev={properties.brev} saksId={properties.saksId} />
+              <ActiveBrev brev={properties.brev} saksId={properties.saksId} />
             )}
             <div>
               <Detail textColor="subtle">
@@ -151,6 +150,7 @@ const BrevItem = (properties: {
 
 const ArkivertBrev = (props: { brev: BrevInfo }) => {
   const sakContext = Route.useLoaderData();
+
   const { data: navn } = useQuery({
     queryKey: getNavn.queryKey(sakContext.sak.foedselsnr as string),
     queryFn: () => getNavn.queryFn(sakContext.sak.saksId),
@@ -184,7 +184,7 @@ const ArkivertBrev = (props: { brev: BrevInfo }) => {
   );
 };
 
-const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
+const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const queryClient = useQueryClient();
   const sakContext = Route.useLoaderData();
 
@@ -279,9 +279,8 @@ const ÅpentBrev = (props: { saksId: string; brev: BrevInfo }) => {
           >
             <Button
               as={Link}
-              params={{ saksId: props.saksId, brevId: props.brev.id }}
               size="small"
-              to="/saksnummer/$saksId/brev/$brevId"
+              to={`/saksnummer/${props.saksId}/brev/${props.brev.id}`}
               variant="secondary-neutral"
             >
               Fortsett redigering

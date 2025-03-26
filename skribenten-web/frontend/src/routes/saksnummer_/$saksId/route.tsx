@@ -15,7 +15,7 @@ import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/
 import { SendtBrevTilAttesteringResultatContext } from "./kvittering/-components/SendBrevTilAttesteringResultatContext";
 import { SendtBrevResultatContextProvider } from "./kvittering/-components/SendtBrevResultatContext";
 
-export const Route = createFileRoute("/saksnummer/$saksId")({
+export const Route = createFileRoute("/saksnummer_/$saksId")({
   beforeLoad: ({ params: { saksId }, search: { vedtaksId } }) => {
     const getSakContextQueryOptions = {
       ...getSakContext,
@@ -56,7 +56,6 @@ export const Route = createFileRoute("/saksnummer/$saksId")({
 
 function SakLayout() {
   const sakContext = Route.useLoaderData();
-
   return (
     <SendtBrevTilAttesteringResultatContext>
       <SendtBrevResultatContextProvider>

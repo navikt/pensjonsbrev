@@ -18,7 +18,7 @@ import { queryFold } from "~/utils/tanstackUtils";
 import BrevForhåndsvisning from "../../brevbehandler/-components/BrevForhåndsvisning";
 import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 
-export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$brevId/forhandsvisning")({
+export const Route = createFileRoute("/saksnummer_/$saksId/vedtak/$brevId/forhandsvisning")({
   component: () => <VedtakForhåndsvisningWrapper />,
 });
 

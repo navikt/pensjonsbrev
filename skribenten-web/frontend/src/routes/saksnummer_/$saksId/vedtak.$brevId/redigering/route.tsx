@@ -25,7 +25,7 @@ import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
 
-export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$brevId/redigering")({
+export const Route = createFileRoute("/saksnummer_/$saksId/vedtak/$brevId/redigering")({
   component: () => <VedtakWrapper />,
 });
 

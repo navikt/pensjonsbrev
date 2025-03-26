@@ -61,6 +61,7 @@ describe("<LetterEditor />", () => {
     it("ArrowUp works within sibling contenteditables", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
       cy.contains("CP1-3").click();
+      move("{end}", 1);
       move("{leftArrow}", 10);
       move("{upArrow}", 1);
       assertCaret("[CP1-2]", 22);
@@ -101,6 +102,7 @@ describe("<LetterEditor />", () => {
     it("ArrowDown moves between paragraphs and to the nearest side of a variable [LEFT]", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
       cy.contains("CP2-1").click();
+      move("{end}", 1);
       move("{leftArrow}", 20);
       move("{downArrow}", 1);
       assertCaret("[CP2-2]", 17);

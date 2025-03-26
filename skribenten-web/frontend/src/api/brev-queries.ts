@@ -1,5 +1,3 @@
-/* eslint-disable unicorn/no-await-expression-member*/
-
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosResponse } from "axios";
 import axios from "axios";

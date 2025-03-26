@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAuto
+import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalder
 import no.nav.pensjon.brev.maler.alder.InfoAldersovergang67AarAuto
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
@@ -12,6 +13,7 @@ import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
 import no.nav.pensjon.brev.maler.redigerbar.*
+import no.nav.pensjon.brev.maler.ufoereBrev.EndretUfoeretrygdPGAInntektV2
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -21,6 +23,7 @@ object ProductionTemplates : AllTemplates {
         AdhocAFPInformasjonOekningToleransebeloep,
         AdhocAlderspensjonFraFolketrygden,
         AdhocAlderspensjonFraFolketrygden2,
+        AdhocAlderspensjonGjtVarselBrev,
         AdhocFeilEtteroppgjoer2023,
         AdhocGjenlevendEtter1970,
         AdhocInformasjonHvilendeRett4Aar,
@@ -34,6 +37,7 @@ object ProductionTemplates : AllTemplates {
         AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling,
         EndretBarnetilleggUfoerertrygd,
         EndretUfoeretrygdPGAInntektLegacy,
+        EndretUfoeretrygdPGAInntektV2,
         EtteroppgjoerEtterbetalingAutoLegacy,
         FeilUtsendingAvGjenlevenderett,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
@@ -49,6 +53,7 @@ object ProductionTemplates : AllTemplates {
     )
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AvslagUfoeretrygd,
+        AvslagUttakFoerNormertPensjonsalder,
         BekreftelsePaaFlyktningstatus,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
@@ -60,6 +65,7 @@ object ProductionTemplates : AllTemplates {
         InnhentingOpplysningerFraBruker,
         OrienteringOmSaksbehandlingstid,
         VarselOmMuligAvslag,
+        VarselRevurderingAvPensjon,
     )
 
     override fun hentAutobrevmaler() = autobrev

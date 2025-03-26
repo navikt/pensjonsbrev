@@ -7,7 +7,7 @@ import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 
 import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 
-export const Route = createFileRoute("/saksnummer/$saksId/vedtak/$brevId/kvittering")({
+export const Route = createFileRoute("/saksnummer_/$saksId/vedtak/$brevId/kvittering")({
   component: () => <Kvittering />,
 });
 

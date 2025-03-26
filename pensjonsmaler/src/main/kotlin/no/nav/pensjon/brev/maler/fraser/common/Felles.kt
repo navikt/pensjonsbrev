@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -189,5 +190,22 @@ object Felles {
             }
         }
     }
-
+    object RettTilInnsynRedigerbarebrev : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 {
+                text(
+                    Bokmal to "Du har rett til innsyn",
+                    Nynorsk to "Du har rett til innsyn",
+                    English to "You have the right to access your file",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du har rett til å se dokumentene i saken din. Du kan logge deg inn via $NAV_URL for å se dokumenter i saken din.",
+                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Du kan logge deg inn via $NAV_URL for å sjå dokumenta i saka di.",
+                    English to "You are entitled to see your case documents. You can log in via $NAV_URL to view documents related to your case."
+                )
+            }
+        }
+    }
 }

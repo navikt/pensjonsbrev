@@ -42,7 +42,7 @@ object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrev
             text(
                 Bokmal to "Varsel om at Nav vurderer å kreve tilbake feilutbetalt beløp",
                 Nynorsk to "Varsel om at Nav vurderer å krevje tilbake feilutbetalt beløp",
-                English to "Notification that Nav is considering demanding repayment of incorrectly paid beløp"
+                English to "Notification that Nav is considering demanding repayment of incorrectly paid amount"
             )
         }
         outline {

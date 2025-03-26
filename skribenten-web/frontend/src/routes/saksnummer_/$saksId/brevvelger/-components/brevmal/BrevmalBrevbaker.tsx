@@ -57,7 +57,7 @@ const EksisterendeKladdModal = (props: {
           </Button>
           <Button
             onClick={() => {
-              navigate({
+              return navigate({
                 to: "/saksnummer/$saksId/brev/$brevId",
                 params: { brevId: props.sisteEksisterendeKladdId },
               });
