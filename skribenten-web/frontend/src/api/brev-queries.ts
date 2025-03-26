@@ -34,8 +34,11 @@ export const getModelSpecification = {
 export const getBrev = {
   queryKey: brevKeys.id,
   queryFn: async (saksId: string, brevId: number, reserver: boolean = true) =>
-    (await axios.get<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}?reserver=${reserver}`))
-      .data,
+    (
+      await axios.get<BrevResponse>(
+        `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/attestering?reserver=${reserver}`,
+      )
+    ).data,
 };
 
 export async function createBrev(saksId: string, request: OpprettBrevRequest) {

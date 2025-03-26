@@ -85,14 +85,21 @@ export const sendBrevTilAttestering = async (args: { saksId: string; brevId: str
   });
 };
 
-export const attesterBrev = async (args: { saksId: string; brevId: string | number; request: OppdaterBrevRequest }) =>
-  (
-    await axios.post<Blob>(
-      `${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}/attester`,
+export const attesterBrev = async (args: {
+  saksId: string;
+  brevId: string | number;
+  frigiReservasjon?: boolean;
+  request: OppdaterBrevRequest;
+}) => {
+  const frigiReservasjon = args.frigiReservasjon ?? true;
+
+  return (
+    await axios.put<Blob>(
+      `${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}/attestering?frigiReservasjon=${frigiReservasjon}`,
       {
         saksbehandlerValg: args.request.saksbehandlerValg,
         redigertBrev: args.request.redigertBrev,
-        signatur: args.request.signatur,
+        signaturAttestant: args.request.signatur,
       },
       {
         responseType: "blob",
@@ -100,3 +107,4 @@ export const attesterBrev = async (args: { saksId: string; brevId: string | numb
       },
     )
   ).data;
+};
