@@ -14,7 +14,7 @@ import { queryFold } from "~/utils/tanstackUtils";
 import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
 import { FerdigstillResultatContextProvider } from "./kvittering/-components/FerdigstillResultatContext";
 
-export const Route = createFileRoute("/saksnummer/$saksId")({
+export const Route = createFileRoute("/saksnummer_/$saksId")({
   beforeLoad: ({ params: { saksId }, search: { vedtaksId } }) => {
     const getSakContextQueryOptions = {
       ...getSakContext,
@@ -55,7 +55,6 @@ export const Route = createFileRoute("/saksnummer/$saksId")({
 
 function SakLayout() {
   const sakContext = Route.useLoaderData();
-
   return (
     <FerdigstillResultatContextProvider>
       <MottakerContextProvider>

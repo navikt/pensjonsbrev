@@ -22,6 +22,7 @@ import io.ktor.util.logging.Logger
 import io.micrometer.core.instrument.Tag
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.vedlegg.PDFVedleggAppender
 import no.nav.pensjon.brev.pdfbygger.vedlegg.VedleggModule
@@ -152,7 +153,7 @@ private suspend fun RoutingContext.handleResult(
     spraak: LanguageCode,
 ) {
     when (result) {
-        is PDFCompilationResponse.Bytes -> {
+        is PDFCompilationResponse.Success -> {
             if (pdfvedlegg.isNotEmpty()) {
                 call.respond(PDFVedleggAppender.leggPaaVedlegg(result, pdfvedlegg, spraak))
             } else {

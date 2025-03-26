@@ -1334,3 +1334,13 @@ class BrevredigeringServiceTest {
         Condition(predicate, description)
 }
 
+
+fun TemplateDescription.Redigerbar.copy(metadata: LetterMetadata) = TemplateDescription.Redigerbar(
+    name = this.name,
+    letterDataClass = this.letterDataClass,
+    languages = this.languages,
+    metadata = metadata,
+    kategori = this.kategori,
+    brevkontekst = this.brevkontekst,
+    sakstyper = this.sakstyper
+)
