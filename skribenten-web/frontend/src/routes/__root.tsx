@@ -11,7 +11,7 @@ const TanStackRouterDevtools =
     ? () => null // Render nothing in production
     : React.lazy(() =>
         // Lazy load in development
-        import("@tanstack/router-devtools").then((response) => ({
+        import("@tanstack/react-router-devtools").then((response) => ({
           default: response.TanStackRouterDevtools,
         })),
       );

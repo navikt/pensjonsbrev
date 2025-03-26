@@ -8,9 +8,7 @@ import java.time.LocalDate
 
 @Suppress("unused")
 data class EndretUfoeretrygdPGAInntektDto(
-    val pe: PE,
-    val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
-    val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
+
 
     val gammeltBelop: Int?,
     val nyttBelop: Int?,
@@ -19,6 +17,7 @@ data class EndretUfoeretrygdPGAInntektDto(
     val utbetalingsgrad: Int?,
     val uforegrad: Int,
     val vilFylle67IlaVirkningFomAr: Boolean,
+    // Todo: fjerne?
     val innvilgetET: Boolean,
     val innvilgetGJT: Boolean,
     val instoppholdType: String?,
@@ -68,5 +67,10 @@ data class EndretUfoeretrygdPGAInntektDto(
     val avkortningInntektstakBTSB: Int?,
     val arligAvkortningsbelopBTSB: Int?,
     val antallBarnBTSB: Int,
+
+    // Trengs for vedlegg. Husk å fjerne når vedleggene er konvertert
+    val pe: PE,
+    val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
+    val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 ) : BrevbakerBrevdata
 
