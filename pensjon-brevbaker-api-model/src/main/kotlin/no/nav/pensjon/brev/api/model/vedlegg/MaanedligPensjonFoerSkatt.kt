@@ -91,6 +91,7 @@ data class MaanedligPensjonFoerSkattDto(
         val flyktningstatusErBrukt: Boolean,
         val avdodFlyktningstatusErBrukt: Boolean,
         val brukersSivilstand: MetaforceSivilstand,
+        val antallBeregningsperioderPensjon: Int,
     )
 
     data class Bruker(

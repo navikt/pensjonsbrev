@@ -689,6 +689,7 @@ val maanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish, Maane
         }
 
 
+        // vedlegg del 2
 
 
 
