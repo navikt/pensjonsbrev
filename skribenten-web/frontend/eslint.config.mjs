@@ -11,6 +11,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
 import { FlatCompat } from "@eslint/eslintrc";
+import unicorn from "eslint-plugin-unicorn";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,7 +31,6 @@ export default [
       "plugin:@typescript-eslint/recommended",
       "plugin:@tanstack/eslint-plugin-query/recommended",
       "prettier",
-      "plugin:unicorn/recommended",
       "plugin:testing-library/react",
       "plugin:react-hooks/recommended",
     ),
@@ -40,10 +40,16 @@ export default [
     plugins: {
       react,
       prettier,
+      unicorn,
       "@typescript-eslint": fixupPluginRules(typescriptEslint),
       "testing-library": fixupPluginRules(testingLibrary),
       "react-hooks": fixupPluginRules(reactHooks),
       "simple-import-sort": simpleImportSort,
+    },
+    settings: {
+      react: {
+        version: "detect",
+      },
     },
 
     languageOptions: {
@@ -80,6 +86,16 @@ export default [
       "unicorn/no-useless-undefined": "off",
       "unicorn/no-array-callback-reference": "off",
       "unicorn/prevent-abbreviations": "off",
+      "unicorn/catch-error-name": "error",
+      "unicorn/explicit-length-check": "error",
+      "unicorn/import-style": "error",
+      "unicorn/new-for-builtins": "error",
+      "unicorn/prefer-default-parameters": "error",
+      "unicorn/prefer-array-flat": "error",
+      "unicorn/prefer-array-flat-map": "error",
+      "unicorn/prefer-global-this": "error",
+      "unicorn/prefer-regexp-test": "error",
+      "unicorn/throw-new-error": "error",
     },
   },
 ];

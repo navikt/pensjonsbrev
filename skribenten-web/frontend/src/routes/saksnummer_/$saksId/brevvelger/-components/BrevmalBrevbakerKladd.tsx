@@ -74,13 +74,13 @@ const Brevmal = (props: {
     setOnFormSubmitClick({
       onClick: () => {
         if (erBrevArkivert(brev)) {
-          navigate({
+          return navigate({
             to: "/saksnummer/$saksId/brevbehandler",
             params: { saksId: saksId },
             search: { brevId: brev.id },
           });
         } else {
-          navigate({
+          return navigate({
             to: "/saksnummer/$saksId/brev/$brevId",
             params: { saksId: saksId, brevId: brev.id },
           });

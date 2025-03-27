@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.StringExpression
 import no.nav.pensjon.brev.template.TextElement
+import no.nav.pensjon.brev.template.dsl.expression.expr
 
 interface TextScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
 

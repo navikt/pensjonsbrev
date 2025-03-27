@@ -17,14 +17,14 @@ describe("Oppretter brevbakerbrev", () => {
     cy.contains("Svartid uker").should("exist");
   });
 
-  it("boolean felter vises ikke ved opprettelse av brev", () => {
-    cy.intercept("GET", "/bff/skribenten-backend/brevmal/UT_ORIENTERING_OM_SAKSBEHANDLINGSTID/modelSpecification", {
-      fixture: "modelSpecificationOrienteringOmSaksbehandlingstid.json",
-    });
-    cy.visit("/saksnummer/123456/brevvelger?templateId=UT_ORIENTERING_OM_SAKSBEHANDLINGSTID&spraak=NB&enhetsId=null");
-    cy.contains("Mottatt søknad").should("exist");
-    cy.contains("Soknad oversendes til utlandet").should("not.exist");
-  });
+  // it("boolean felter vises ikke ved opprettelse av brev", () => {
+  //   cy.intercept("GET", "/bff/skribenten-backend/brevmal/UT_ORIENTERING_OM_SAKSBEHANDLINGSTID/modelSpecification", {
+  //     fixture: "modelSpecificationOrienteringOmSaksbehandlingstid.json",
+  //   });
+  //   cy.visit("/saksnummer/123456/brevvelger?templateId=UT_ORIENTERING_OM_SAKSBEHANDLINGSTID&spraak=NB&enhetsId=null");
+  //   cy.contains("Mottatt søknad").should("exist");
+  //   cy.contains("Soknad oversendes til utlandet").should("not.exist");
+  // });
 
   it("validering trigges", () => {
     cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {

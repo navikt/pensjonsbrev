@@ -32,8 +32,10 @@ import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, Saksbehand
 import { type EditedLetter } from "~/types/brevbakerTypes";
 import { queryFold } from "~/utils/tanstackUtils";
 
-export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
-  parseParams: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
+export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
+  params: {
+    parse: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
+  },
   component: RedigerBrevPage,
 });
 
@@ -84,9 +86,8 @@ function RedigerBrevPage() {
                 css={css`
                   padding: 4px 0;
                 `}
-                params={{ saksId: saksId }}
                 size="small"
-                to="/saksnummer/$saksId/brevbehandler"
+                to={`/saksnummer/${saksId}/brevbehandler`}
                 variant="tertiary"
               >
                 Gå til brevbehandler
@@ -212,7 +213,7 @@ function RedigerBrev({
 
   const showDebug = useSearch({
     strict: false,
-    select: (search: { debug?: string | boolean }) => search?.["debug"] === "true" || search?.["debug"] === true,
+    select: (search: Record<string, unknown>) => search?.["debug"] === "true" || search?.["debug"] === true,
   });
 
   const saksbehandlerValgMutation = useHurtiglagreMutation(brev.info.id, setEditorState, oppdaterSaksbehandlerValg);
@@ -383,7 +384,7 @@ function RedigerBrev({
               error={error}
               freeze={freeze}
               setEditorState={setEditorState}
-              showDebug={showDebug}
+              showDebug={showDebug ?? false}
             />
           </div>
           <HStack
@@ -413,13 +414,13 @@ function RedigerBrev({
             </Button>
             <HStack gap="2" justify={"end"}>
               <Button
-                onClick={() => {
+                onClick={() =>
                   navigate({
                     to: "/saksnummer/$saksId/brevvelger",
                     params: { saksId: saksId },
                     search: (s) => ({ ...s, brevId: brev.info.id.toString() }),
-                  });
-                }}
+                  })
+                }
                 size="small"
                 type="button"
                 variant="tertiary"

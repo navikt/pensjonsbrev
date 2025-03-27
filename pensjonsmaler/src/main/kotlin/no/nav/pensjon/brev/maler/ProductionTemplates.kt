@@ -54,6 +54,7 @@ object ProductionTemplates : AllTemplates {
         AvslagUttakFoerNormertPensjonsalderAuto,
         AvslagGradsendringFoerNormertPensjonsalderAuto,
     )
+
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AvslagUfoeretrygd,
         AvslagGradsendringFoerNormertPensjonsalder,
@@ -70,6 +71,7 @@ object ProductionTemplates : AllTemplates {
         OrienteringOmSaksbehandlingstid,
         VarselOmMuligAvslag,
         VarselRevurderingAvPensjon,
+        VarselTilbakekrevingAvFeilutbetaltBeloep,
     )
 
     override fun hentAutobrevmaler() = autobrev

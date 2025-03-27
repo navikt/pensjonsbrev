@@ -1,5 +1,6 @@
 import type { UseQueryResult } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import type { JSX } from "react";
 
 export function queryFold<TData, TError>(args: {
   query: UseQueryResult<TData, TError>;
