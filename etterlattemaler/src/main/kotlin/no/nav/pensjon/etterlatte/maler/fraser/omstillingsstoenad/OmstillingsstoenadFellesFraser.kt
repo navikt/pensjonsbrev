@@ -188,17 +188,17 @@ object OmstillingsstoenadFellesFraser {
                 text(
                     Bokmal to "Hver høst sjekker Nav inntektsopplysningene i skatteoppgjøret ditt for å se " +
                             "om du har fått utbetalt riktig beløp i omstillingsstønad året før. Hvis du har fått " +
-                            "for lite utbetalt, får du en etterbetaling. Har du fått for mye utbetalt, må du betale " +
+                            "for lite utbetalt, kan du få en etterbetaling. Har du fått for mye utbetalt, kan du måtte betale " +
                             "tilbake. Du kan finne mer informasjon om etteroppgjør på " +
                             "${Constants.OMS_ETTEROPPGJOER_URL}.",
                     Nynorsk to "Kvar haust sjekkar Nav inntektsopplysningane i skatteoppgjeret ditt for å sjå " +
                             "om du fekk utbetalt rett beløp i omstillingsstønad året før. Dersom du fekk utbetalt " +
-                            "for lite, får du ei etterbetaling. Dersom du fekk utbetalt meir enn du hadde rett på, " +
-                            "må du betale tilbake. Du kan lese meir om etteroppgjer på " +
+                            "for lite, kan du få ei etterbetaling. Dersom du fekk utbetalt meir enn du hadde rett på, " +
+                            "kan du betale tilbake. Du kan lese meir om etteroppgjer på " +
                             "${Constants.OMS_ETTEROPPGJOER_URL}.",
                     English to "Each autumn, Nav checks income data from your tax return to verify the correct " +
                             "amount of adjustment allowance for the previous year. If you received less than you " +
-                            "are owed, you will receive Back Pay. If you received more than you were owed, you must " +
+                            "are owed, you may receive Back Pay. If you received more than you were owed, you may have to " +
                             "repay the excess to Nav. You can find more information about final settlements online: " +
                             "${Constants.OMS_ETTEROPPGJOER_URL}.",
                 )

@@ -14,4 +14,8 @@ npm run dev
 Da vil Vite sin dev-server kjøre på `localhost:5173`. 
 For at API-kall skal fungere lokalt, anbefaler vi at du kjører via BFF.
 
-Se i [BFF sin README](../bff/README.md) for veien videre
+Kjør docker compose med skribenten profilen for å kjøre opp BFF:
+```bash
+docker compose --profile skribenten up -d --build
+```
+Åpne http://localhost:8088/vite-on 

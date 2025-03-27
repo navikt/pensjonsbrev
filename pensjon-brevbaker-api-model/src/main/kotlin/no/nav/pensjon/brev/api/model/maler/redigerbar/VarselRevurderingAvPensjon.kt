@@ -10,9 +10,12 @@ data class VarselRevurderingAvPensjonDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<VarselRevurderingAvPensjonDto.SaksbehandlerValg, VarselRevurderingAvPensjonDto.PesysData> {
     data class SaksbehandlerValg(
-        val revurderingAvRett: Boolean,
-        val revurderingReduksjon: Boolean,
-    ) : BrevbakerBrevdata
+      val tittelValg: TittelValg
+    ) : BrevbakerBrevdata{
+        enum class TittelValg{
+            RevurderingAvRett, RevurderingReduksjon
+        }
+    }
 
     data class PesysData(val sakstype: Sakstype) : BrevbakerBrevdata
 }
