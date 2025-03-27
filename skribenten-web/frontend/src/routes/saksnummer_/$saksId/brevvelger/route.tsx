@@ -9,7 +9,7 @@ import { groupBy, partition, sortBy } from "lodash";
 import { useState } from "react";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getFavoritter } from "~/api/skribenten-api-endpoints";
+import { getFavoritter, getSakContext } from "~/api/skribenten-api-endpoints";
 import { BrevbakerIcon, DoksysIcon, ExstreamIcon } from "~/assets/icons";
 import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
@@ -22,7 +22,7 @@ import { formatStringDate } from "~/utils/dateUtils";
 import BrevmalPanel from "./-components/BrevmalPanel";
 import BrevvelgerFooter from "./-components/BrevvelgerFooter";
 
-export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
+export const Route = createFileRoute("/saksnummer_/$saksId/brevvelger")({
   validateSearch: (
     search: Record<string, unknown>,
   ): { idTSSEkstern?: string; brevId?: string; templateId?: string; enhetsId?: string } => ({
@@ -31,9 +31,15 @@ export const Route = createFileRoute("/saksnummer/$saksId/brevvelger")({
     templateId: search.templateId?.toString(),
     enhetsId: search.enhetsId?.toString(),
   }),
-  loaderDeps: ({ search: { vedtaksId } }) => ({ includeVedtak: !!vedtaksId }),
-  loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
-    const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
+  loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId }),
+  loader: async ({ context: { queryClient, getSakContextQueryOptions }, params: { saksId }, deps: { vedtaksId } }) => {
+    // TODO: Dette er en work-around fordi getSakContextQueryOptions av en eller annen grunn er undefined når brukeren redirectes pga. encoding av search-parameters.
+    const queryOptions = getSakContextQueryOptions ?? {
+      ...getSakContext,
+      queryKey: getSakContext.queryKey(saksId, vedtaksId),
+      queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
+    };
+    const sakContext = await queryClient.ensureQueryData(queryOptions);
     return { saksId: sakContext.sak.saksId, letterTemplates: sakContext.brevMetadata };
   },
   errorComponent: ({ error }) => <ApiError error={error} title="Klarte ikke hente brevmaler for saken." />,
@@ -246,12 +252,16 @@ function Brevmaler({
                           : undefined
                       }
                       key={template.id}
-                      onClick={() => {
+                      onClick={() =>
                         navigate({
                           to: "/saksnummer/$saksId/brevvelger",
-                          search: (s) => ({ ...s, templateId: template.id, brevId: undefined }),
-                        });
-                      }}
+                          search: (s) => ({
+                            ...s,
+                            templateId: template.id,
+                            brevId: undefined,
+                          }),
+                        })
+                      }
                       title={
                         <HStack
                           align={"center"}
@@ -323,12 +333,16 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; letterTemplates: LetterM
                     : undefined
                 }
                 key={brev.id}
-                onClick={() => {
+                onClick={() =>
                   navigate({
                     to: "/saksnummer/$saksId/brevvelger",
-                    search: (s) => ({ ...s, brevId: brev.id.toString(), templateId: undefined }),
-                  });
-                }}
+                    search: (s) => ({
+                      ...s,
+                      brevId: brev.id.toString(),
+                      templateId: undefined,
+                    }),
+                  })
+                }
                 title={
                   <HStack
                     align={"center"}

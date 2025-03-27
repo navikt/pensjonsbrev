@@ -14,7 +14,7 @@ import { queryFold } from "~/utils/tanstackUtils";
 import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
 import { FerdigstillResultatContextProvider } from "./kvittering/-components/FerdigstillResultatContext";
 
-export const Route = createFileRoute("/saksnummer/$saksId")({
+export const Route = createFileRoute("/saksnummer_/$saksId")({
   beforeLoad: ({ params: { saksId }, search: { vedtaksId } }) => {
     const getSakContextQueryOptions = {
       ...getSakContext,
@@ -24,22 +24,27 @@ export const Route = createFileRoute("/saksnummer/$saksId")({
 
     return { getSakContextQueryOptions };
   },
-  loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
-    const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
-
+  loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId }),
+  loader: async ({ context: { queryClient, getSakContextQueryOptions }, params: { saksId }, deps: { vedtaksId } }) => {
     // Adresse is a slow query that will be needed later, therefore we prefetch it here as early as possible.
     queryClient.prefetchQuery({
-      queryKey: getKontaktAdresse.queryKey(sakContext.sak.saksId.toString()),
-      queryFn: () => getKontaktAdresse.queryFn(sakContext.sak.saksId.toString()),
+      queryKey: getKontaktAdresse.queryKey(saksId.toString()),
+      queryFn: () => getKontaktAdresse.queryFn(saksId.toString()),
     });
 
     queryClient.prefetchQuery(getFavoritter);
     queryClient.prefetchQuery({
-      queryKey: getPreferredLanguage.queryKey(sakContext.sak.saksId.toString()),
-      queryFn: () => getPreferredLanguage.queryFn(sakContext.sak.saksId.toString()),
+      queryKey: getPreferredLanguage.queryKey(saksId.toString()),
+      queryFn: () => getPreferredLanguage.queryFn(saksId.toString()),
     });
 
-    return sakContext;
+    // TODO: Dette er en work-around fordi getSakContextQueryOptions av en eller annen grunn er undefined når brukeren redirectes pga. encoding av search-parameters.
+    const queryOptions = getSakContextQueryOptions ?? {
+      ...getSakContext,
+      queryKey: getSakContext.queryKey(saksId, vedtaksId),
+      queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
+    };
+    return await queryClient.ensureQueryData(queryOptions);
   },
   errorComponent: ({ error }) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -55,7 +60,6 @@ export const Route = createFileRoute("/saksnummer/$saksId")({
 
 function SakLayout() {
   const sakContext = Route.useLoaderData();
-
   return (
     <FerdigstillResultatContextProvider>
       <MottakerContextProvider>
