@@ -1,8 +1,13 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.PesysDataSelectors.returadresse
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.SaksbehandlerValgSelectors.aarEgenerklaringOmsorgspoeng
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDto
 import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDtoSelectors.aarEgenerklaringOmsorgspoeng
 import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDtoSelectors.returadresse
+import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresse
 import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.adresseLinje1
 import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.postNr
 import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.postSted
@@ -27,6 +32,24 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
     ),
     includeSakspart = true
 ) {
+    vedlegg(returadresse) { aarEgenerklaringOmsorgspoeng.format() }
+}
+
+
+
+@TemplateModelHelpers
+val egenerklaeringPleieOgOmsorgsarbeidManuell = createAttachment(
+    title = newText(
+        Bokmal to "Egenerklæring om pleie- og omsorgsarbeid",
+        Nynorsk to "Eigenmelding om pleie- og omsorgsarbeid",
+        English to "Personal declaration that nursing and care work has been provided",
+    ),
+    includeSakspart = true
+) {
+    vedlegg(pesysData.returadresse) { saksbehandlerValg.aarEgenerklaringOmsorgspoeng.format() }
+}
+
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: Expression<ReturAdresse>, aarEgenerklaering: (TextScope<*,*>) -> Expression<String>) {
     paragraph {
         val dokDato = felles.dokumentDato.format()
         textExpr(
@@ -38,9 +61,9 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
 
     paragraph {
         textExpr(
-            Bokmal to "I ".expr() + aarEgenerklaringOmsorgspoeng.format() + " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)",
-            Nynorsk to "I ".expr() + aarEgenerklaringOmsorgspoeng.format() + " har eg utført pleie- og omsorgsarbeid på minst 22 timar i veka. (Inkludert opptil ein halv time reisetid per besøk.)",
-            English to "In ".expr() + aarEgenerklaringOmsorgspoeng.format() + " I have provided care work that has amounted to at least 22 hours per week. (Travelling time up to 30 minutes per visit may be included.)",
+            Bokmal to "I ".expr() + aarEgenerklaering(this) + " år har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)",
+            Nynorsk to "I ".expr() + aarEgenerklaering(this) + " år har eg utført pleie- og omsorgsarbeid på minst 22 timar i veka. (Inkludert opptil ein halv time reisetid per besøk.)",
+            English to "In ".expr() + aarEgenerklaering(this) + " years I have provided care work that has amounted to at least 22 hours per week. (Travelling time up to 30 minutes per visit may be included.)",
         )
     }
 
@@ -80,7 +103,7 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
             English to "If care work has ceased during the year:",
         )
     }
-    paragraph{
+    paragraph {
         formText(
             size = Size.SHORT,
             vspace = false,

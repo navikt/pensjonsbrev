@@ -68,6 +68,7 @@ object ProductionTemplates : AllTemplates {
         InnhentingDokumentasjonFraBruker,
         InnhentingInformasjonFraBruker,
         InnhentingOpplysningerFraBruker,
+        OmsorgEgenManuell,
         OrienteringOmSaksbehandlingstid,
         VarselOmMuligAvslag,
         VarselRevurderingAvPensjon,
