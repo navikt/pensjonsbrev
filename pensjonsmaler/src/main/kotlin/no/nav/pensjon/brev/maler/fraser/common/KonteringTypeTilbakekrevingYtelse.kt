@@ -14,13 +14,7 @@ data class KonteringTypeTilbakekrevingYtelse(
     val ytelsenMedFeilutbetaling: Expression<KonteringType>
 ) : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.AAP)) {
-            text(
-                Bokmal to "Arbeidsavklaringspenger",
-                Nynorsk to "Arbeidsavklaringspenger",
-                English to "Work assessment allowance"
-            )
-        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.AFP_KOMP_TILLEGG)) {
+        showIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.AFP_KOMP_TILLEGG)) {
             text(
                 Bokmal to "AFP kompensasjonstillegg",
                 Nynorsk to "AFP kompensasjonstillegg",
@@ -44,12 +38,6 @@ data class KonteringTypeTilbakekrevingYtelse(
                 Nynorsk to "AFP-tillegg",
                 English to "AFP supplement"
             )
-        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.ANNET)) {
-            text(
-                Bokmal to "Annet",
-                Nynorsk to "Annet",
-                English to "Other"
-            )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.BARNETILSYN)) {
             text(
                 Bokmal to "Barnetillegg",
@@ -67,18 +55,6 @@ data class KonteringTypeTilbakekrevingYtelse(
                 Bokmal to "Familietillegg",
                 Nynorsk to "Familietillegg",
                 English to "Family supplement"
-            )
-        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.FAST_UTGIFT_T)) {
-            text(
-                Bokmal to "Tillegg faste utgifter",
-                Nynorsk to "Tillegg faste utgifter",
-                English to "Supplement for regular expenses"
-            )
-        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.FEILKONTO)) {
-            text(
-                Bokmal to "Feilkonto",
-                Nynorsk to "Feilkonto",
-                English to "Incorrect account"
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.GAP)) {
             text(
@@ -98,8 +74,91 @@ data class KonteringTypeTilbakekrevingYtelse(
                 Nynorsk to "Attlevandetillegg",
                 English to "Survivor's supplement"
             )
-        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.GP)) {}
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.GP)) {
+            text(
+                Bokmal to "Grunnpensjon",
+                Nynorsk to "Grunnpensjon",
+                English to "Basic pension"
+            )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.IP)) {
+            text(
+                Bokmal to "Inntektspensjon",
+                Nynorsk to "Inntektspensjon",
+                English to "Income pensjon"
+            )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.KRIG_GY)) {
+            text(
+                Bokmal to "Krigspensjon / gammel yrkesskade",
+                Nynorsk to "Krigspensjon / gammel yrkesskade",
+                English to "War pension / old work injury"
 
+            )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.MIN_NIVA_TILL_INDV)) {
+            text(
+                Bokmal to "Minstenivåtillegg individuelt",
+                Nynorsk to "Minstenivåtillegg individuelt",
+                English to "Minimum supplement individual",
+            )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.MIN_NIVA_TILL_PPAR)) {
+            text(
+                Bokmal to "Minstenivåtillegg pensjonistpar",
+                Nynorsk to "Minstenivåtillegg pensjonistpar",
+                English to "Minimum supplement couple"
+            )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.MISK)) {
+            text(
+                Bokmal to "Militær skadekur",
+                Nynorsk to "Militær skadekur",
+                English to "Military injury treatment"
+            )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.PT)) {
+            text(
+                Bokmal to "Pensjonstillegg",
+                Nynorsk to "Pensjonstillegg",
+                English to "Pension supplement"
+            )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.SKATT_F_GP)) {
+            text(
+                Bokmal to "Skattefri grunnpensjon",
+                Nynorsk to "Skattefri grunnpensjon",
+                English to "Tax free basic pension"
+            )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.SKJERMT)) {
+            text(
+                Bokmal to "Skjermingstillegg",
+                Nynorsk to "Skjermingstillegg",
+                English to "Supplement for the disabled"
+            )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.ST)) {
+            text(
+                Bokmal to "Særtillegg",
+                Nynorsk to "Særtillegg",
+                English to "Special supplement"
+            )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.TFB)) {
+            text(
+                Bokmal to "Barnetillegg fellesbarn",
+                Nynorsk to "Barnetillegg fellesbarn",
+                English to "Child supplement"
+            )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.TJENESTEPENSJON)) {
+            text(
+                Bokmal to "Tjenestepensjon",
+                Nynorsk to "Tjenestepensjon",
+                English to "Occupational pension"
+            )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.TP)) {
+            text(
+                Bokmal to "Tilleggspensjon",
+                Nynorsk to "Tilleggspensjon",
+                English to "Supplementary pension"
+            )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.TSB)) {
+            text(
+                Bokmal to "Barnetillegg særkullsbarn",
+                Nynorsk to "Barnetillegg særkullsbarn",
+                English to "Child supplement"
+            )
+        }
     }
-
 }
