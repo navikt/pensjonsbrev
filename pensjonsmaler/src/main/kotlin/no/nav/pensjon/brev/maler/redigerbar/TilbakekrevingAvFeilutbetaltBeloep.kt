@@ -6,14 +6,13 @@ import no.nav.pensjon.brev.api.model.TilbakekrevingResultat
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.feilutbetaltTotalBeloep
+import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.harMotregning
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.resultatAvVurderingenForTotalBeloep
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.sluttPeriodeForTilbakekreving
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.startPeriodeForTilbakekreving
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.sumTilInnkrevingTotalBeloep
-import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.SaksbehandlerValgSelectors.harMotregning
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
@@ -41,7 +40,7 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
     override val sakstyper = Sakstype.pensjon
 
     override val template = createTemplate(
-        name = TilbakekrevingAvFeilutbetaltBeloep.kode.name,
+        name = kode.name,
         letterDataType = TilbakekrevingAvFeilutbetaltBeloepDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
@@ -51,12 +50,14 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
-        val sakstype = pesysData.sakstype
-        val startPeriodeForTilbakekreving = pesysData.startPeriodeForTilbakekreving
-        val sluttPeriodeForTilbakekreving = pesysData.sluttPeriodeForTilbakekreving
         val feilutbetaltTotalBeloep = pesysData.feilutbetaltTotalBeloep
-        val sumTilInnkrevingTotalBeloep = pesysData.sumTilInnkrevingTotalBeloep
+        val harMotregning = pesysData.harMotregning
         val resultatAvVurderingenForTotalBeloep = pesysData.resultatAvVurderingenForTotalBeloep
+        val sakstype = pesysData.sakstype
+        val sluttPeriodeForTilbakekreving = pesysData.sluttPeriodeForTilbakekreving
+        val startPeriodeForTilbakekreving = pesysData.startPeriodeForTilbakekreving
+        val sumTilInnkrevingTotalBeloep = pesysData.sumTilInnkrevingTotalBeloep
+
         title {
             text(
                 Bokmal to "Du må betale tilbake ",
@@ -122,7 +123,7 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                     Nynorsk to "Dette er ".expr() + feilutbetaltTotalBeloep.format() + " kroner inkludert skatt.",
                     English to "This amounts to NOK ".expr() + feilutbetaltTotalBeloep.format() + " including tax."
 
-                    )
+                )
             }
             showIf(resultatAvVurderingenForTotalBeloep.isOneOf(TilbakekrevingResultat.FULL_TILBAKEKREV)) {
                 paragraph {
@@ -149,11 +150,11 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                     English to "Nav will collect the tax amount from the Norwegian Tax Administration."
                 )
             }
-            showIf(saksbehandlerValg.harMotregning) {
+            showIf(harMotregning) {
                 paragraph {
                     text(
                         Bokmal to "Du har i samme periode fått utbetalt for lite ",
-                        Nynorsk to "Du har i same perioden fått utbetalt forlite ",
+                        Nynorsk to "Du har i same perioden fått utbetalt for lite ",
                         English to "In the same period, you have received too little "
                     )
                     showIf(sakstype.isOneOf(Sakstype.AFP)) {
@@ -198,7 +199,11 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                 )
             }
             title1 {
-                text(Bokmal to "Betydning for skatteoppgjøret", Nynorsk to "Betydning for skatteoppgjeret", English to "Impact on your tax settlement")
+                text(
+                    Bokmal to "Betydning for skatteoppgjøret",
+                    Nynorsk to "Betydning for skatteoppgjeret",
+                    English to "Impact on your tax settlement"
+                )
             }
             paragraph {
                 text(
@@ -208,16 +213,20 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                 )
             }
             title1 {
-                text(Bokmal to "Du har rett til å klage", Nynorsk to "Du har rett til å klage", English to "You have the right to appeal")
+                text(
+                    Bokmal to "Du har rett til å klage",
+                    Nynorsk to "Du har rett til å klage",
+                    English to "You have the right to appeal"
+                )
             }
             paragraph {
                 text(
-                Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. " +
-                        "Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage. I vedlegget får du vite mer om hvordan du går fram.",
-                Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. " +
-                        "Klaga skal vera skriftleg. Du finn skjema og informasjon på nav.no/klage. I vedlegget får du vite meir om korleis du går fram.",
-                English to "If you think the decision is wrong, you may appeal the decision within six weeks of the date on which you received notice of the decision. " +
-                        "Your appeal must be made in writing. You will find a form and information about this at nav.no/klage. The appendix includes information on how to proceed."
+                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. " +
+                            "Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage. I vedlegget får du vite mer om hvordan du går fram.",
+                    Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. " +
+                            "Klaga skal vera skriftleg. Du finn skjema og informasjon på nav.no/klage. I vedlegget får du vite meir om korleis du går fram.",
+                    English to "If you think the decision is wrong, you may appeal the decision within six weeks of the date on which you received notice of the decision. " +
+                            "Your appeal must be made in writing. You will find a form and information about this at nav.no/klage. The appendix includes information on how to proceed."
                 )
             }
             paragraph {
@@ -235,7 +244,7 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                     Nynorsk to "Vi kan utsetje tilbakekrevjinga til klaga er behandla, for eksempel dersom det er sannsynleg at vedtaket blir gjort om. " +
                             "Du kan også søkje om utsetjing av tilbakebetalinga, men vi kan ikkje ta omsyn til den økonomiske situasjonen din når vi vurderer om du kan utsetje å betale tilbake.",
                     English to "We may postpone sending you the claim for repayment until your appeal has been processed; for example, if it seems likely that the decision will be overturned. " +
-                    "You can also apply for deferral of the repayment, but we cannot take your financial situation into account when assessing whether you qualify for a deferral."
+                            "You can also apply for deferral of the repayment, but we cannot take your financial situation into account when assessing whether you qualify for a deferral."
                 )
             }
             includePhrase(Felles.RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
