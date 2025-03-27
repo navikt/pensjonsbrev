@@ -19,12 +19,9 @@ import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
 
@@ -45,10 +42,10 @@ object AvslagGradsendringFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUtt
         )
     ) {
         title {
-            textExpr(
-                Bokmal to "Nav har avslått søknaden din om alderspensjon fra ".expr() + pesysData.virkFom.format(),
-                Nynorsk to "Nav har avslått søknaden din om alderspensjon frå ".expr() + pesysData.virkFom.format(),
-                English to "Nav has declined your application for retirement pension from ".expr() + pesysData.virkFom.format(),
+            text(
+                Bokmal to "Nav har avslått søknaden din om endring av alderspensjonen",
+                Nynorsk to "Nav har avslått søknaden din om endring av alderspensjonen",
+                English to "Your application to change your retirement pension has been declined",
             )
         }
 
@@ -76,7 +73,8 @@ object AvslagGradsendringFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUtt
         )
     }
 
-    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori: TemplateDescription.Brevkategori =
+        TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
 

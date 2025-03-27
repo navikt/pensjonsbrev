@@ -16,12 +16,9 @@ import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
@@ -42,10 +39,10 @@ object AvslagGradsendringFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagU
         )
     ) {
         title {
-            textExpr(
-                Bokmal to "Nav har avslått søknaden din om alderspensjon fra ".expr() + virkFom.format(),
-                Nynorsk to "Nav har avslått søknaden din om alderspensjon frå ".expr() + virkFom.format(),
-                English to "Nav has declined your application for retirement pension from ".expr() + virkFom.format(),
+            text(
+                Bokmal to "Nav har avslått søknaden din om endring av alderspensjonen",
+                Nynorsk to "Nav har avslått søknaden din om endring av alderspensjonen",
+                English to "Your application to change your retirement pension has been declined",
             )
         }
 
