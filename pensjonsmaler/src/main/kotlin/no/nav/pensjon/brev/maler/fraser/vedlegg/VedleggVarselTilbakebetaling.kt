@@ -104,7 +104,7 @@ val vedleggVarselTilbakekreving =
         }
 
         paragraph {
-            universalText("Ved tilbakekreving etter § 22-15 a beregnes et rentetillegg på 10 prosent av det beløp som kreves tilbake. Ved betaling etter fastsatt betalingsfrist kreves det renter fra fristens utløp inntil tilbakebetaling skjer, beregnet på grunnlag av tilbakebetalingsbeløpet tillagt rentetillegg etter første punktum. Rentesatsen etter forsinkelsesrenteloven1 legges til grunn.")
+            universalText("Ved tilbakekreving etter § 22-15 a beregnes et rentetillegg på 10 prosent av det beløp som kreves tilbake. Ved betaling etter fastsatt betalingsfrist kreves det renter fra fristens utløp inntil tilbakebetaling skjer, beregnet på grunnlag av tilbakebetalingsbeløpet tillagt rentetillegg etter første punktum. Rentesatsen etter forsinkelsesrenteloven legges til grunn.")
         }
     }
 
