@@ -72,7 +72,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: 
         formText(
             Size.LONG, newText(
                 Bokmal to "Navn på pleietrengende:",
-                Nynorsk to "Navn på pleietrengende:",
+                Nynorsk to "Namn på pleietrengande:",
                 English to "I have provided care work for:",
             )
         )
