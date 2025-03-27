@@ -70,7 +70,6 @@ enum class TilbakekrevingResultat  {
 }
 
 enum class KonteringType {
-    // 8_5_1_T,
     AAP,
     AFP_KOMP_TILLEGG,
     AFP_KRONETILLEGG,
