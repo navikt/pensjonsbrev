@@ -3,51 +3,53 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.*
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.andelKap19
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.andelKap20
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.gjenlevendetilleggInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.gjenlevendetilleggKap19Innvilget
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.regelverkstype
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BarnetilleggGjeldendeSelectors.innvilgetBarnetilleggFB_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BarnetilleggGjeldendeSelectors.innvilgetBarnetilleggSB_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.barnetilleggFBbrutto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.barnetilleggSBbrutto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.barnetilleggFBbrutto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.barnetilleggSBbrutto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.foedselsDato
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.borSammenMedBruker_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.harInntektOver2G_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.mottarPensjon_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.brukersSivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.ektefelletillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.flyktningstatusErBrukt
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.fribelopET
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.fribelopFB
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.fribelopSB
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.fullTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.garantipensjon
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.garantitillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.gjenlevendetillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.gjenlevendetilleggKap19_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.inntektBruktIavkortningET
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.inntektBruktIavkortningFB
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.inntektBruktIavkortningSB
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.inntektspensjon
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.minstenivaIndividuell
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.minstenivaPensjonistPar
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.skjermingstillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.virkDatoFom
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.brukersSivilstand
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.ektefelletillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.flyktningstatusErBrukt
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.fribelopET
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.fribelopFB
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.fribelopSB
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.fullTrygdetid
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.garantipensjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.garantitillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.gjenlevendetillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.gjenlevendetilleggKap19_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.inntektBruktIavkortningET
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.inntektBruktIavkortningFB
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.inntektBruktIavkortningSB
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.inntektspensjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.minstenivaIndividuell
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.minstenivaPensjonistPar
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.skjermingstillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EktefelletilleggGjeldendeSelectors.innvilgetEktefelletillegg_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.aldersEllerSykehjem_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.ensligPaInst_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.epsPaInstitusjon_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.fengsel_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.helseinstitusjon_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.KravSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.SaerskiltSatsGjeldendeSelectors.saerskiltSatsErBrukt_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.alderspensjonGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.alderspensjonPerManed
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.barnetilleggGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.bruker
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.epsGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.beregnetPensjonPerManedGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.ektefelletilleggGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.institusjonsoppholdGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.krav
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.saerskiltSatsGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.tilleggspensjonGjeldende
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
@@ -64,7 +66,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
 @TemplateModelHelpers
-val maanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish, MaanedligPensjonFoerSkattDto>(
+val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish, MaanedligPensjonFoerSkattDto>(
     title = newText(
         Bokmal to "Dette er din månedlige pensjon før skatt",
         Nynorsk to "Dette er den månadlege pensjonen din før skatt",
@@ -76,24 +78,33 @@ val maanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish, Maane
 
         val regelverkstype = alderspensjonGjeldende.regelverkstype
 
-        val epsBorSammenMedBruker = epsGjeldende.borSammenMedBruker_safe.ifNull(false)
-        val epsMottarPensjon = epsGjeldende.mottarPensjon_safe.ifNull(false)
-        val epsHarInntektOver2G = epsGjeldende.harInntektOver2G_safe.ifNull(false)
-        showIf(
-            regelverkstype.isOneOf(
-                AP1967,
-                AP2011
-            )
-        ) {
+        showIf(regelverkstype.isOneOf(AP1967, AP2011)) {
             includePhrase(TabellMaanedligPensjonKap19(beregnetPensjonPerManedGjeldende))
         }.orShowIf(regelverkstype.isOneOf(AP2016)) {
-            includePhrase(
-                TabellMaanedligPensjonKap19og20(
-                    beregnetPensjon = beregnetPensjonPerManedGjeldende,
-                    brukersFoedselsdato = bruker.foedselsDato,
-                    alderspensjonGjeldende = alderspensjonGjeldende
+
+            val foedselsaar = bruker.foedselsDato.year.toYear().format()
+            val andelKap19 = alderspensjonGjeldende.andelKap19.format()
+            val andelKap20 = alderspensjonGjeldende.andelKap20.format()
+            paragraph {
+                textExpr(
+                    Bokmal to "De som er født i perioden 1954–1962 får en kombinasjon av alderspensjon etter gamle og nye regler i folketrygdloven (kapittel 19 og 20). Fordi du er født i ".expr() +
+                            foedselsaar + " får du beregnet "
+                            + andelKap19 + "/10 av pensjonen etter gamle regler, og " +
+                            andelKap20 + "/10 etter nye regler.",
+
+                    Nynorsk to "Dei som er fødde i perioden 1954–1962 får ein kombinasjon av alderspensjon etter gamle og nye reglar i folketrygdlova (kapittel 19 og 20). Fordi du er fødd i ".expr() +
+                            foedselsaar + ", får du rekna ut "
+                            + andelKap19 + "/10 av pensjonen etter gamle reglar, og " +
+                            andelKap20 + "/10 etter nye reglar.",
+
+                    English to "Individuals born between 1954 and 1962 will receive a combination of retirement pension calculated on the basis of both old and new provisions in the National Insurance Act (Chapters 19 and 20). Because you are born in ".expr() +
+                            foedselsaar + ", "
+                            + andelKap19 + "/10 of your pension is calculated on the basis of the old provisions, and " +
+                            andelKap20 + "/10 is calculated on the basis of new provisions.",
                 )
-            )
+            }
+
+            includePhrase(TabellMaanedligPensjonKap19og20(beregnetPensjon = beregnetPensjonPerManedGjeldende))
         }
 
         title1 {
@@ -691,8 +702,33 @@ val maanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish, Maane
 
         // vedlegg del 2
 
+        // TODO erstatt med faktisk liste-lengde
+        showIf(alderspensjonPerManed.size().greaterThan(1)) {
+            //vedleggBelopFlerePerioderTittel_001
+            title1 {
+                textExpr(
+                    Bokmal to "Oversikt over pensjonen fra ".expr() + krav.virkDatoFom.format(),
+                    Nynorsk to "Oversikt over pensjonen frå ".expr() + krav.virkDatoFom.format(),
+                    English to "Pension specifications as of ".expr() + krav.virkDatoFom.format(),
+                )
+            }
 
+            // veldeggBelopFlerePerioder_001
+            paragraph {
+                text(
+                    Bokmal to "Hvis det har vært endringer i noen av opplysningene som ligger til grunn for beregningen eller pensjonen har vært regulert, kan dette føre til en endring i hvor mye du får utbetalt. Nedenfor følger en oversikt over de månedlige pensjonsbeløpene dine.",
+                    Nynorsk to "Dersom det har vore endringar i nokre av opplysningane som ligg til grunn for utrekninga eller pensjonen har vore regulert, kan det føre til ei endring i kor mykje du får utbetalt. Nedanfor fylgjer ei oversikt over dei månadlege pensjonsbeløpa dine.",
+                    English to "If there have been changes affecting how your pension is calculated in the period or amendments in the National Insurance basic amount, your pension may be adjusted accordingly. Below is a list of your monthly pension payments.",
+                )
+            }
 
-
+            forEach(alderspensjonPerManed) { alderspensjon ->
+                showIf(regelverkstype.isOneOf(AP1967, AP2011)) {
+                    includePhrase(TabellMaanedligPensjonKap19(alderspensjon))
+                }.orShowIf(regelverkstype.isOneOf(AP2016)) {
+                    includePhrase(TabellMaanedligPensjonKap19og20(alderspensjon))
+                }
+            }
+        }
     }
 )

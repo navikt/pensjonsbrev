@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.*
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.tilleggspensjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.erRedusert_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.kombinertMedAvdod_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUforeAvdod_safe
@@ -31,7 +31,7 @@ private object TilleggspensjonenBold : ParagraphPhrase<LangBokmalNynorskEnglish>
 
 data class MaanedligPensjonFoerSkattTilleggsPensjon(
     val tilleggspensjonGjeldende: Expression<MaanedligPensjonFoerSkattDto.TilleggspensjonGjeldende?>,
-    val beregnetPensjonPerManedGjeldende: Expression<MaanedligPensjonFoerSkattDto.BeregnetPensjonGjeldende>,
+    val beregnetPensjonPerManedGjeldende: Expression<MaanedligPensjonFoerSkattDto.AlderspensjonPerManed>,
     val regelverkstype: Expression<AlderspensjonRegelverkstype>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>(){
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

@@ -1,45 +1,43 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt
 
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto.BeregnetPensjonGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.andelKap19
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.andelKap20
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.barnetilleggFB
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.barnetilleggSB
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.ektefelletillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.familieTillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.fasteUtgifter
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.garantipensjon
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.garantitillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.gjenlevendetillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.gjenlevendetilleggKap19
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.grunnpensjon
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.inntektspensjon
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.minstenivaIndividuell
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.minstenivaPensjonistPar
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.pensjonstillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.saertillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.skjermingstillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.tilleggspensjon
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.virkDatoTom
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto.AlderspensjonPerManed
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.barnetilleggFB
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.barnetilleggSB
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.ektefelletillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.familieTillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.fasteUtgifter
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.garantipensjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.garantitillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.gjenlevendetillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.gjenlevendetilleggKap19
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.grunnpensjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.inntektspensjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.minstenivaIndividuell
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.minstenivaPensjonistPar
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.pensjonstillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.saertillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.skjermingstillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.totalPensjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.virkDatoFom
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.virkDatoTom
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
 data class TabellMaanedligPensjonKap19(
-    val beregnetPensjon: Expression<BeregnetPensjonGjeldende>,
+    val beregnetPensjon: Expression<AlderspensjonPerManed>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
@@ -52,13 +50,11 @@ data class TabellMaanedligPensjonKap19(
 
         paragraph {
             table(header = {
-                column(columnSpan = 4) {
+                column(columnSpan = 3) {
                     text(Bokmal to "", Nynorsk to "", English to "")
                 }
                 column(alignment = RIGHT, columnSpan = 1) {
-                    text(
-                        Bokmal to "Pensjon per måned", Nynorsk to "Pensjon per månad", English to "Pension per month"
-                    )
+                    includePhrase(PensjonPerMaaned)
                 }
             }) {
                 ifNotNull(beregnetPensjon.grunnpensjon) {
@@ -266,57 +262,36 @@ private data class TabellOverskrift(val virkFom: Expression<LocalDate>, val virk
                 )
             }
         }
+    }
+}
 
+private object PensjonPerMaaned : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        text(
+            Bokmal to "Pensjon per måned", Nynorsk to "Pensjon per månad", English to "Pension per month"
+        )
     }
 
 }
 
 data class TabellMaanedligPensjonKap19og20(
-    val beregnetPensjon: Expression<BeregnetPensjonGjeldende>,
-    val brukersFoedselsdato: Expression<LocalDate>,
-    val alderspensjonGjeldende: Expression<MaanedligPensjonFoerSkattDto.AlderspensjonGjeldende>,
+    val beregnetPensjon: Expression<AlderspensjonPerManed>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         includePhrase(
-            TabellOverskrift(
-                virkFom = beregnetPensjon.virkDatoFom, virkTom = beregnetPensjon.virkDatoTom
-            )
+            TabellOverskrift(virkFom = beregnetPensjon.virkDatoFom, virkTom = beregnetPensjon.virkDatoTom)
         )
         paragraph {
-
-            val foedselsaar = brukersFoedselsdato.year.toYear().format()
-            val andelKap19 = alderspensjonGjeldende.andelKap19.format()
-            val andelKap20 = alderspensjonGjeldende.andelKap20.format()
-            textExpr(
-                Bokmal to "De som er født i perioden 1954–1962 får en kombinasjon av alderspensjon etter gamle og nye regler i folketrygdloven (kapittel 19 og 20). Fordi du er født i ".expr() +
-                        foedselsaar + " får du beregnet "
-                        + andelKap19 + "/10 av pensjonen etter gamle regler, og " +
-                        andelKap20 + "/10 etter nye regler.",
-
-                Nynorsk to "Dei som er fødde i perioden 1954–1962 får ein kombinasjon av alderspensjon etter gamle og nye reglar i folketrygdlova (kapittel 19 og 20). Fordi du er fødd i ".expr() +
-                        foedselsaar + ", får du rekna ut "
-                        + andelKap19 + "/10 av pensjonen etter gamle reglar, og " +
-                        andelKap20 + "/10 etter nye reglar.",
-
-                English to "Individuals born between 1954 and 1962 will receive a combination of retirement pension calculated on the basis of both old and new provisions in the National Insurance Act (Chapters 19 and 20). Because you are born in ".expr() +
-                        foedselsaar + ", "
-                        + andelKap19 + "/10 of your pension is calculated on the basis of the old provisions, and " +
-                        andelKap20 + "/10 is calculated on the basis of new provisions.",
-            )
-
-
             table(header = {
-                column(columnSpan = 4) {
+                column(columnSpan = 3) {
                     text(
                         Bokmal to "Dette får du utbetalt etter gamle regler (kapittel 19)",
                         Nynorsk to "Dette får du utbetalt etter gamle reglar (kapittel 19)",
-                        English to "Your pension pursuant to the provisions in Chapter 19 of the National Insurance Act"
+                        English to "Your pension pursuant to the provisions in Chapter 19 of the National Insurance Act",
                     )
                 }
                 column(alignment = RIGHT, columnSpan = 1) {
-                    text(
-                        Bokmal to "Pensjon per måned", Nynorsk to "Pensjon per månad", English to "Pension per month"
-                    )
+                    includePhrase(PensjonPerMaaned)
                 }
             }) {
                 ifNotNull(beregnetPensjon.grunnpensjon) {
@@ -409,26 +384,20 @@ data class TabellMaanedligPensjonKap19og20(
                         cell { includePhrase(KronerText(it)) }
                     }
                 }
+            }
 
-                row {
-                    cell {
-                        text(
-                            Bokmal to "Dette får du utbetalt etter nye regler (kapittel 20)",
-                            Nynorsk to "Dette får du utbetalt etter nye reglar (kapittel 20)",
-                            English to "Your pension pursuant to the provisions in Chapter 20 of the National Insurance Act",
-                            FontType.BOLD
-                        )
-                    }
-
-                    cell {
-                        text(
-                            Bokmal to "Pensjon per måned",
-                            Nynorsk to "Pensjon per månad",
-                            English to "Pension per month",
-                            FontType.BOLD
-                        )
-                    }
+            table(header = {
+                column(columnSpan = 3) {
+                    text(
+                        Bokmal to "Dette får du utbetalt etter nye regler (kapittel 20)",
+                        Nynorsk to "Dette får du utbetalt etter nye reglar (kapittel 20)",
+                        English to "Your pension pursuant to the provisions in Chapter 20 of the National Insurance Act",
+                    )
                 }
+                column(alignment = RIGHT, columnSpan = 1) {
+                    includePhrase(PensjonPerMaaned)
+                }
+            }) {
 
                 ifNotNull(beregnetPensjon.inntektspensjon) {
                     row {
@@ -482,77 +451,61 @@ data class TabellMaanedligPensjonKap19og20(
                         cell { includePhrase(KronerText(it)) }
                     }
                 }
+            }
 
-                ifNotNull(
-                    beregnetPensjon.minstenivaPensjonistPar,
-                    beregnetPensjon.minstenivaIndividuell
-                ) { minstenivaPensjonistPar, minstenivaIndividuell ->
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Dette får du som minstenivåtillegg",
-                                Nynorsk to "Dette får du som minstenivåtillegg",
-                                English to "Your minimum pension supplement",
-                                FontType.BOLD
-                            )
-                        }
-
-                        cell {
-                            text(
-                                Bokmal to "Pensjon per måned",
-                                Nynorsk to "Pensjon per månad",
-                                English to "Pension per month",
-                                FontType.BOLD
-                            )
+            showIf(beregnetPensjon.minstenivaPensjonistPar.notNull() or beregnetPensjon.minstenivaIndividuell.notNull()) {
+                table(header = {
+                    column(columnSpan = 3) {
+                        text(
+                            Bokmal to "Dette får du som minstenivåtillegg",
+                            Nynorsk to "Dette får du som minstenivåtillegg",
+                            English to "Your minimum pension supplement",
+                        )
+                    }
+                    column(alignment = RIGHT, columnSpan = 1) {
+                        includePhrase(PensjonPerMaaned)
+                    }
+                }) {
+                    ifNotNull(beregnetPensjon.minstenivaPensjonistPar) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Minstenivåtillegg pensjonistpar",
+                                    Nynorsk to "Minstenivåtillegg pensjonistpar",
+                                    English to "Minimum supplement for pensioner couples",
+                                )
+                            }
+                            cell { includePhrase(KronerText(it)) }
                         }
                     }
 
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Minstenivåtillegg pensjonistpar",
-                                Nynorsk to "Minstenivåtillegg pensjonistpar",
-                                English to "Minimum supplement for pensioner couples",
-                            )
+                    ifNotNull(beregnetPensjon.minstenivaIndividuell) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Minstenivåtillegg individuelt",
+                                    Nynorsk to "Minstenivåtillegg individuelt",
+                                    English to "Minimum pension supplement",
+                                )
+                            }
+                            cell { includePhrase(KronerText(it)) }
                         }
-                        cell { includePhrase(KronerText(minstenivaPensjonistPar)) }
                     }
-
-
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Minstenivåtillegg individuelt",
-                                Nynorsk to "Minstenivåtillegg individuelt",
-                                English to "Minimum pension supplement",
-                            )
-                        }
-                        cell { includePhrase(KronerText(minstenivaIndividuell)) }
-                    }
-
                 }
-
-                showIf(beregnetPensjon.ektefelletillegg.notNull() or beregnetPensjon.barnetilleggSB.notNull() or beregnetPensjon.barnetilleggFB.notNull()) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Dette får du som forsørgingstillegg",
-                                Nynorsk to "Dette får du som forsørgingstillegg",
-                                English to "Your dependant supplement",
-                                FontType.BOLD
-                            )
-                        }
-
-                        cell {
-                            text(
-                                Bokmal to "Pensjon per måned",
-                                Nynorsk to "Pensjon per månad",
-                                English to "Pension per month",
-                                FontType.BOLD
-                            )
-                        }
+            }
+            showIf(beregnetPensjon.ektefelletillegg.notNull() or beregnetPensjon.barnetilleggSB.notNull() or beregnetPensjon.barnetilleggFB.notNull()) {
+                table(header = {
+                    column(columnSpan = 3) {
+                        text(
+                            Bokmal to "Dette får du som forsørgingstillegg",
+                            Nynorsk to "Dette får du som forsørgingstillegg",
+                            English to "Your dependant supplement",
+                        )
                     }
-
+                    column(alignment = RIGHT, columnSpan = 1) {
+                        includePhrase(PensjonPerMaaned)
+                    }
+                }) {
                     ifNotNull(beregnetPensjon.ektefelletillegg) {
                         row {
                             cell {
@@ -592,19 +545,15 @@ data class TabellMaanedligPensjonKap19og20(
                         }
                     }
                 }
-
-                row {
-                    cell {
-                        text(
-                            Bokmal to "Sum pensjon før skatt",
-                            Nynorsk to "Sum pensjon før skatt",
-                            English to "Total pension before tax",
-                            FontType.BOLD
-                        )
-                    }
-                    cell { includePhrase(KronerText(beregnetPensjon.totalPensjon, FontType.BOLD)) }
-                }
             }
+
+            text(
+                Bokmal to "Sum pensjon før skatt: ",
+                Nynorsk to "Sum pensjon før skatt: ",
+                English to "Total pension before tax: ",
+                FontType.BOLD
+            )
+            includePhrase(KronerText(beregnetPensjon.totalPensjon, FontType.BOLD))
         }
     }
 }

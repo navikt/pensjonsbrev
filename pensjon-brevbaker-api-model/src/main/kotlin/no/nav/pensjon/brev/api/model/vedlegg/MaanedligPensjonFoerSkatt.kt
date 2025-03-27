@@ -9,7 +9,7 @@ import java.time.LocalDate
 
 @Suppress("unused")
 data class MaanedligPensjonFoerSkattDto(
-    val beregnetPensjonPerManedGjeldende: BeregnetPensjonGjeldende,
+    val beregnetPensjonPerManedGjeldende: AlderspensjonPerManed,
     val alderspensjonGjeldende: AlderspensjonGjeldende,
     val institusjonsoppholdGjeldende: InstitusjonsoppholdGjeldende?,
     val epsGjeldende: EPSgjeldende?,
@@ -18,20 +18,29 @@ data class MaanedligPensjonFoerSkattDto(
     val saerskiltSatsGjeldende: SaerskiltSatsGjeldende?,
     val barnetilleggGjeldende: BarnetilleggGjeldende?,
     val bruker: Bruker,
+    val krav: Krav,
+    val alderspensjonPerManed: List<AlderspensjonPerManed>,
 ) : BrevbakerBrevdata {
+
+    data class Krav(
+        val virkDatoFom: LocalDate,
+    )
 
     data class BarnetilleggGjeldende(
         val innvilgetBarnetilleggFB: Boolean,
         val innvilgetBarnetilleggSB: Boolean,
     )
+
     data class EktefelletilleggGjeldende(
         val innvilgetEktefelletillegg: Boolean,
     )
+
     data class EPSgjeldende(
         val mottarPensjon: Boolean,
         val borSammenMedBruker: Boolean,
         val harInntektOver2G: Boolean,
     )
+
     data class InstitusjonsoppholdGjeldende(
         val ensligPaInst: Boolean,
         val aldersEllerSykehjem: Boolean,
@@ -39,6 +48,7 @@ data class MaanedligPensjonFoerSkattDto(
         val fengsel : Boolean,
         val helseinstitusjon : Boolean,
     )
+
     data class AlderspensjonGjeldende(
         val regelverkstype: AlderspensjonRegelverkstype,
         val erEksportberegnet: Boolean,
@@ -56,7 +66,8 @@ data class MaanedligPensjonFoerSkattDto(
         val pgaUngUfore: Boolean,
         val pgaUngUforeAvdod: Boolean,
     )
-    data class BeregnetPensjonGjeldende(
+
+    data class AlderspensjonPerManed(
         val virkDatoFom: LocalDate,
         val virkDatoTom: LocalDate?,
         val grunnpensjon: Kroner?,
@@ -91,7 +102,6 @@ data class MaanedligPensjonFoerSkattDto(
         val flyktningstatusErBrukt: Boolean,
         val avdodFlyktningstatusErBrukt: Boolean,
         val brukersSivilstand: MetaforceSivilstand,
-        val antallBeregningsperioderPensjon: Int,
     )
 
     data class Bruker(

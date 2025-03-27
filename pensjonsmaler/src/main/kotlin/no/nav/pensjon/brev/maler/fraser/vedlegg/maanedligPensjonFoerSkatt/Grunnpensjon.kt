@@ -7,12 +7,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.erEksportberegnet
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.grunnpensjonSats
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.regelverkstype
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.avdodFlyktningstatusErBrukt
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.beregnetEtter_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.flyktningstatusErBrukt
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.fullTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.grunnbeloep
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BeregnetPensjonGjeldendeSelectors.grunnpensjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.avdodFlyktningstatusErBrukt
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.beregnetEtter_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.flyktningstatusErBrukt
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.fullTrygdetid
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.grunnbeloep
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.grunnpensjon
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.borSammenMedBruker_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EPSgjeldendeSelectors.harInntektOver2G_safe
@@ -47,7 +47,7 @@ private object GrunnpensjonBold : ParagraphPhrase<LangBokmalNynorskEnglish>() {
 }
 
 data class MaanedligPensjonFoerSkattGrunnpensjon(
-    val beregnetPensjonPerManedGjeldende: Expression<MaanedligPensjonFoerSkattDto.BeregnetPensjonGjeldende>,
+    val beregnetPensjonPerManedGjeldende: Expression<MaanedligPensjonFoerSkattDto.AlderspensjonPerManed>,
     val epsGjeldende: Expression<MaanedligPensjonFoerSkattDto.EPSgjeldende?>,
     val alderspensjonGjeldende: Expression<MaanedligPensjonFoerSkattDto.AlderspensjonGjeldende>,
     val institusjonsoppholdGjeldende: Expression<MaanedligPensjonFoerSkattDto.InstitusjonsoppholdGjeldende?>,
@@ -140,17 +140,17 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                         textExpr(
                             Bokmal to "Grunnpensjonen er justert til ".expr() +
                                     grunnpensjonSats +
-                                    "prosent av beløpet fordi " + bruker.sivilstand.bestemtForm() +
+                                    " prosent av beløpet fordi " + bruker.sivilstand.bestemtForm() +
                                     " din har årlig inntekt over to ganger grunnbeløpet.",
 
                             Nynorsk to "Grunnpensjonen er justert til ".expr() +
                                     grunnpensjonSats +
-                                    "prosent av beløpet fordi " + bruker.sivilstand.bestemtForm() +
+                                    " prosent av beløpet fordi " + bruker.sivilstand.bestemtForm() +
                                     " din har årleg inntekt over to gonger grunnbeløpet.",
 
                             English to "The basic pension is adjusted to ".expr() +
                                     grunnpensjonSats +
-                                    "percent of this amount because your " + bruker.sivilstand.bestemtForm() +
+                                    " percent of this amount because your " + bruker.sivilstand.bestemtForm() +
                                     " has an annual income that exceeds twice the national insurance basic amount.",
                         )
                     }
@@ -206,14 +206,14 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
             showIf(beregnetEtterAvdod and not(bruker.sivilstand.isOneOf(SAMBOER_3_2))) {
                 paragraph {
                     includePhrase(GrunnpensjonBold)
-                    text(
-                        Bokmal to "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er " + grunnbeloep +
+                    textExpr(
+                        Bokmal to "fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er ".expr() + grunnbeloep +
                                 " kroner. Grunnpensjonen til en gjenlevende alderspensjonist kan enten gis på grunnlag av egen eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av avdødes trygdetid da dette gir det høyeste beløpet for deg.",
 
-                        Nynorsk to "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er " + grunnbeloep +
+                        Nynorsk to "blir fastsett med utgangspunkt i grunnbeløpet i folketrygda, som for tida er ".expr() + grunnbeloep +
                                 " kroner. Grunnpensjonen til ein attlevande alderspensjonist kan bli gitt på grunnlag av anten eiga eller avdødes trygdetid. Grunnpensjonen din er gitt på grunnlag av trygdetida til avdøde då det gir det høgaste beløpet for deg.",
 
-                        English to "is calculated on the basis of the National Insurance basic amount (G), which is currently NOK " + grunnbeloep +
+                        English to "is calculated on the basis of the National Insurance basic amount (G), which is currently NOK ".expr() + grunnbeloep +
                                 ". When you have rights as a surviving spouse the basic pension can be calculated on the basis of the pensioner’s own or the deceased’s period of national insurance coverage. Your basic pension has been calculated on the basis of the deceased's period of national insurance cover as this is more beneficial for you.",
                     )
                 }
