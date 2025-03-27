@@ -5,6 +5,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.util.Objects
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 
 @Suppress("unused")
 class PDFRequest(
@@ -13,6 +14,7 @@ class PDFRequest(
     val language: LanguageCode,
     val felles: Felles,
     val brevtype: LetterMetadata.Brevtype,
+    val pdfVedlegg: List<PDFVedlegg> = emptyList()
 ) {
     override fun equals(other: Any?): Boolean {
         if (other !is PDFRequest) return false
@@ -21,10 +23,11 @@ class PDFRequest(
                 && language == other.language
                 && felles == other.felles
                 && brevtype == other.brevtype
+                && pdfVedlegg == other.pdfVedlegg
     }
 
-    override fun hashCode() = Objects.hash(letterMarkup, language, felles, attachments, language, brevtype)
+    override fun hashCode() = Objects.hash(letterMarkup, language, felles, attachments, language, brevtype, pdfVedlegg)
     override fun toString(): String {
-        return "PDFRequest(letterMarkup=$letterMarkup, attachments=$attachments, language=$language, felles=$felles, brevtype=$brevtype)"
+        return "PDFRequest(letterMarkup=$letterMarkup, attachments=$attachments, language=$language, felles=$felles, brevtype=$brevtype, pdfVedlegg=$pdfVedlegg)"
     }
 }
