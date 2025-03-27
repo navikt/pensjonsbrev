@@ -702,7 +702,6 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
 
         // vedlegg del 2
 
-        // TODO erstatt med faktisk liste-lengde
         showIf(alderspensjonPerManed.size().greaterThan(1)) {
             //vedleggBelopFlerePerioderTittel_001
             title1 {
