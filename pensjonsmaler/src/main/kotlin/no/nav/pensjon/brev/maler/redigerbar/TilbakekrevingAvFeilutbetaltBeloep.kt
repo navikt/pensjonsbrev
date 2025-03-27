@@ -38,7 +38,7 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
     override val kode = Pesysbrevkoder.Redigerbar.PE_TILBAKEKREVING_AV_FEILUTBETALT_BELØP
     override val kategori = TemplateDescription.Brevkategori.FEILUTBETALING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
-    override val sakstyper = Sakstype.all
+    override val sakstyper = Sakstype.pensjon
 
     override val template = createTemplate(
         name = TilbakekrevingAvFeilutbetaltBeloep.kode.name,
@@ -75,9 +75,6 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
             }
             showIf(sakstype.isOneOf(Sakstype.ALDER)) {
                 text(Bokmal to "alderspensjon", Nynorsk to "alderspensjon", English to "retirement pension")
-            }
-            showIf(sakstype.isOneOf(Sakstype.UFOREP)) {
-                text(Bokmal to "uføretrygd", Nynorsk to "uføretrygd", English to "disability benefit")
             }.orShow {
                 val ytelse = fritekst("ytelse")
                 textExpr(Bokmal to ytelse, Nynorsk to ytelse, English to ytelse)
@@ -111,9 +108,6 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                 }
                 showIf(sakstype.isOneOf(Sakstype.ALDER)) {
                     text(Bokmal to "alderspensjon", Nynorsk to "alderspensjon", English to "retirement pension")
-                }
-                showIf(sakstype.isOneOf(Sakstype.UFOREP)) {
-                    text(Bokmal to "uføretrygd", Nynorsk to "uføretrygd", English to "disability benefit")
                 }.orShow {
                     val ytelse = fritekst("ytelse")
                     textExpr(Bokmal to ytelse, Nynorsk to ytelse, English to ytelse)
@@ -178,9 +172,6 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                             Nynorsk to "alderspensjon. ",
                             English to "retirement pension. "
                         )
-                    }
-                    showIf(sakstype.isOneOf(Sakstype.UFOREP)) {
-                        text(Bokmal to "uføretrygd. ", Nynorsk to "uføretrygd. ", English to "disability benefit. ")
                     }.orShow {
                         val ytelse = fritekst("ytelse. ")
                         textExpr(Bokmal to ytelse, Nynorsk to ytelse, English to ytelse)
