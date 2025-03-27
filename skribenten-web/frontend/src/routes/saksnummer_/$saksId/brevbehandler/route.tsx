@@ -33,7 +33,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
 
 function Brevbehandler() {
   const { saksId } = Route.useParams();
-  const { brevId } = Route.useSearch();
+  const { brevId, enhetsId, vedtaksId } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
 
@@ -105,9 +105,13 @@ function Brevbehandler() {
           justify="space-between"
         >
           <Button
-            onClick={() => {
-              navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId: saksId } });
-            }}
+            onClick={() =>
+              navigate({
+                to: "/saksnummer/$saksId/brevvelger",
+                params: { saksId: saksId },
+                search: { enhetsId, vedtaksId },
+              })
+            }
             size="small"
             type="button"
             variant="secondary"

@@ -16,7 +16,7 @@ import {
   VStack,
 } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useMemo, useState } from "react";
 
@@ -186,7 +186,9 @@ const ArkivertBrev = (props: { brev: BrevInfo }) => {
 
 const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const queryClient = useQueryClient();
+  const navigate = Route.useNavigate();
   const sakContext = Route.useLoaderData();
+  const { enhetsId, vedtaksId } = Route.useSearch();
 
   const { data: navn } = useQuery({
     queryKey: getNavn.queryKey(sakContext.sak.foedselsnr as string),
@@ -279,9 +281,14 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
             gap="4"
           >
             <Button
-              as={Link}
+              onClick={() =>
+                navigate({
+                  to: "/saksnummer/$saksId/brev/$brevId",
+                  params: { brevId: props.brev.id, saksId: props.saksId },
+                  search: { enhetsId, vedtaksId },
+                })
+              }
               size="small"
-              to={`/saksnummer/${props.saksId}/brev/${props.brev.id}`}
               variant="secondary-neutral"
             >
               Fortsett redigering

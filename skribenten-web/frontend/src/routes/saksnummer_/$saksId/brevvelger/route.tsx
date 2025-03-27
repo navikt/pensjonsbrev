@@ -3,13 +3,12 @@ import { css } from "@emotion/react";
 import { Accordion, Alert, BodyShort, Button, Heading, HStack, Label, Search, VStack } from "@navikt/ds-react";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { groupBy, partition, sortBy } from "lodash";
 import { useState } from "react";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getFavoritter, getSakContext } from "~/api/skribenten-api-endpoints";
+import { getFavoritter } from "~/api/skribenten-api-endpoints";
 import { BrevbakerIcon, DoksysIcon, ExstreamIcon } from "~/assets/icons";
 import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
@@ -22,24 +21,21 @@ import { formatStringDate } from "~/utils/dateUtils";
 import BrevmalPanel from "./-components/BrevmalPanel";
 import BrevvelgerFooter from "./-components/BrevvelgerFooter";
 
+type BrevvelgerSearch = {
+  brevId?: string;
+  idTSSEkstern?: string;
+  templateId?: string;
+};
+
 export const Route = createFileRoute("/saksnummer_/$saksId/brevvelger")({
-  validateSearch: (
-    search: Record<string, unknown>,
-  ): { idTSSEkstern?: string; brevId?: string; templateId?: string; enhetsId?: string } => ({
-    idTSSEkstern: search.idTSSEkstern?.toString(),
-    brevId: search.brevId?.toString(),
-    templateId: search.templateId?.toString(),
-    enhetsId: search.enhetsId?.toString(),
+  validateSearch: (search: Record<string, unknown>): BrevvelgerSearch => ({
+    brevId: search.brevId as string,
+    idTSSEkstern: search.idTSSEkstern as string,
+    templateId: search.templateId as string,
   }),
   loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId }),
-  loader: async ({ context: { queryClient, getSakContextQueryOptions }, params: { saksId }, deps: { vedtaksId } }) => {
-    // TODO: Dette er en work-around fordi getSakContextQueryOptions av en eller annen grunn er undefined når brukeren redirectes pga. encoding av search-parameters.
-    const queryOptions = getSakContextQueryOptions ?? {
-      ...getSakContext,
-      queryKey: getSakContext.queryKey(saksId, vedtaksId),
-      queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
-    };
-    const sakContext = await queryClient.ensureQueryData(queryOptions);
+  loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
+    const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
     return { saksId: sakContext.sak.saksId, letterTemplates: sakContext.brevMetadata };
   },
   errorComponent: ({ error }) => <ApiError error={error} title="Klarte ikke hente brevmaler for saken." />,

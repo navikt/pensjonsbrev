@@ -11,7 +11,10 @@ import { getSakContext } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SakContextDto } from "~/types/apiTypes";
 
+type RootSearch = { enhetsId: string | undefined };
+
 export const Route = createFileRoute("/saksnummer/")({
+  validateSearch: (search: Record<string, unknown>): RootSearch => ({ enhetsId: search.enhetsId as string }),
   component: SaksnummerPage,
 });
 
@@ -23,14 +26,16 @@ function SaksnummerPage() {
       saksnummer: "",
     },
   });
+  const search = Route.useSearch();
 
   const hentSakContextMutation = useMutation<SakContextDto, AxiosError<unknown>, { saksnummer: string }>({
     mutationFn: (values) => getSakContext.queryFn(values.saksnummer, undefined),
     onSuccess: (sakContext, values) => {
       queryClient.setQueryData(getSakContext.queryKey(values.saksnummer, undefined), sakContext);
-      navigate({
+      return navigate({
         to: "/saksnummer/$saksId/brevvelger",
         params: { saksId: sakContext.sak.saksId.toString() },
+        search: { ...search, vedtaksId: undefined },
       });
     },
   });

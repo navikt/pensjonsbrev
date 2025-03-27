@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { ArrowCirclepathIcon, ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyLong, Box, Button, Heading, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { type Dispatch, type SetStateAction, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -41,6 +41,8 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
 
 function RedigerBrevPage() {
   const { brevId, saksId } = Route.useParams();
+  const { enhetsId, vedtaksId } = Route.useSearch();
+  const navigate = Route.useNavigate();
   const brevQuery = useQuery({
     queryKey: getBrev.queryKey(brevId),
     queryFn: () => getBrev.queryFn(saksId, brevId),
@@ -82,12 +84,17 @@ function RedigerBrevPage() {
             <VStack align="start" gap="2">
               <Label size="small">Brevet er arkivert, og kan derfor ikke redigeres.</Label>
               <Button
-                as={Link}
                 css={css`
                   padding: 4px 0;
                 `}
+                onClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevbehandler",
+                    params: { saksId },
+                    search: { enhetsId, vedtaksId },
+                  })
+                }
                 size="small"
-                to={`/saksnummer/${saksId}/brevbehandler`}
                 variant="tertiary"
               >
                 Gå til brevbehandler
@@ -98,12 +105,13 @@ function RedigerBrevPage() {
       }
       return <ApiError error={error} title={"En feil skjedde ved henting av brev"} />;
     },
-    success: (data) => <RedigerBrev brev={data} doReload={brevQuery.refetch} saksId={saksId} vedtaksId={undefined} />,
+    success: (data) => <RedigerBrev brev={data} doReload={brevQuery.refetch} saksId={saksId} vedtaksId={vedtaksId} />,
   });
 }
 
 const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: ReservasjonResponse; doRetry: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
+  const { enhetsId, vedtaksId } = Route.useSearch();
   if (reservasjon) {
     return (
       <Modal
@@ -122,7 +130,11 @@ const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: Reservasjo
           <Button onClick={doRetry} type="button">
             Ja, åpne på nytt
           </Button>
-          <Button onClick={() => navigate({ to: BrevvelgerRoute.fullPath })} type="button" variant="tertiary">
+          <Button
+            onClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
+            type="button"
+            variant="tertiary"
+          >
             Nei, gå til brevbehandler
           </Button>
         </Modal.Footer>
@@ -202,6 +214,7 @@ function RedigerBrev({
 }) {
   const queryClient = useQueryClient();
   const navigate = useNavigate({ from: Route.fullPath });
+  const { enhetsId } = Route.useSearch();
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brev));
 
@@ -334,7 +347,7 @@ function RedigerBrev({
             navigate({
               to: "/saksnummer/$saksId/brevbehandler",
               params: { saksId },
-              search: { brevId: brev.info.id },
+              search: { brevId: brev.info.id, enhetsId, vedtaksId },
             }),
           ),
         )}
