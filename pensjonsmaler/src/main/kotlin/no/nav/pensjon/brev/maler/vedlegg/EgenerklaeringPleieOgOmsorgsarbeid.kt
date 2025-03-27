@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.PesysDataSelectors.returadresse
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.SaksbehandlerValgSelectors.aarEgenerklaringOmsorgspoeng
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.pesysData
@@ -38,7 +39,7 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
 
 
 @TemplateModelHelpers
-val egenerklaeringPleieOgOmsorgsarbeidManuell = createAttachment(
+val egenerklaeringPleieOgOmsorgsarbeidManuell = createAttachment<LangBokmalNynorskEnglish, OmsorgEgenManuellDto>(
     title = newText(
         Bokmal to "Egenerklæring om pleie- og omsorgsarbeid",
         Nynorsk to "Eigenmelding om pleie- og omsorgsarbeid",
