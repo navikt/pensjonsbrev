@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
-import { getPreferredLanguage } from "~/api/skribenten-api-endpoints";
+import { getPreferredLanguageQuery } from "~/api/skribenten-api-endpoints";
 import type { LetterMetadata } from "~/types/apiTypes";
 import type { SpraakKode } from "~/types/apiTypes";
 import { BrevSystem } from "~/types/apiTypes";
@@ -24,11 +24,7 @@ export const TemplateLoader = (props: {
   enhetsId: string;
   onAddFavorittSuccess?: (templateId: string) => void;
 }) => {
-  const preferredLanguage =
-    useQuery({
-      queryKey: getPreferredLanguage.queryKey(props.saksId.toString()),
-      queryFn: () => getPreferredLanguage.queryFn(props.saksId.toString()),
-    })?.data?.spraakKode ?? null;
+  const preferredLanguage = useQuery(getPreferredLanguageQuery(props.saksId.toString()))?.data?.spraakKode ?? null;
 
   return (
     <div

@@ -20,6 +20,7 @@ const PDFViewerTopBar = (properties: {
   setCurrentPageNumber: (n: number) => void;
 }) => {
   const navigate = useNavigate({ from: Route.fullPath });
+  const { enhetsId, vedtaksId } = Route.useSearch();
   return (
     <HStack
       align="center"
@@ -47,7 +48,11 @@ const PDFViewerTopBar = (properties: {
         brevId={properties.brevId}
         buttonText="Slett"
         onSlettSuccess={() =>
-          navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId: properties.sakId } })
+          navigate({
+            to: "/saksnummer/$saksId/brevbehandler",
+            params: { saksId: properties.sakId },
+            search: { enhetsId, vedtaksId },
+          })
         }
         sakId={properties.sakId}
       />
