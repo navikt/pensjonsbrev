@@ -7,8 +7,8 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.SaksbehandlerValgSelectors.aarEgenerklaringOmsorgspoeng
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.SaksbehandlerValgSelectors.aarInnvilgetOmsorgspoeng
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.maler.fraser.omsorgEgenerklaeringOutline
-import no.nav.pensjon.brev.maler.fraser.omsorgEgenerklaeringTittel
+import no.nav.pensjon.brev.maler.fraser.OmsorgEgenerklaeringOutline
+import no.nav.pensjon.brev.maler.fraser.OmsorgEgenerklaeringTittel
 import no.nav.pensjon.brev.maler.vedlegg.egenerklaeringPleieOgOmsorgsarbeidManuell
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
@@ -25,7 +25,7 @@ object OmsorgEgenManuell : RedigerbarTemplate<OmsorgEgenManuellDto> {
 
     override val kategori = TemplateDescription.Brevkategori.BREV_MED_SKJEMA
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
-    override val sakstyper: Set<Sakstype> = Sakstype.all // TODO stemmer dette?
+    override val sakstyper: Set<Sakstype> = Sakstype.all
     override val template = createTemplate(
         name = kode.name,
         letterDataType = OmsorgEgenManuellDto::class,
@@ -37,11 +37,17 @@ object OmsorgEgenManuell : RedigerbarTemplate<OmsorgEgenManuellDto> {
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
-        omsorgEgenerklaeringTittel()
-        omsorgEgenerklaeringOutline(
-            aarEgenerklaringOmsorgspoeng = saksbehandlerValg.aarEgenerklaringOmsorgspoeng.format(),
-            aarInnvilgetOmsorgspoeng = saksbehandlerValg.aarInnvilgetOmsorgspoeng.format(),
-        )
+        title {
+            includePhrase(OmsorgEgenerklaeringTittel)
+        }
+        outline {
+            includePhrase(
+                OmsorgEgenerklaeringOutline(
+                    aarEgenerklaringOmsorgspoeng = saksbehandlerValg.aarEgenerklaringOmsorgspoeng.format(),
+                    aarInnvilgetOmsorgspoeng = saksbehandlerValg.aarInnvilgetOmsorgspoeng.format(),
+                )
+            )
+        }
         includeAttachment(egenerklaeringPleieOgOmsorgsarbeidManuell, argument)
     }
 }
