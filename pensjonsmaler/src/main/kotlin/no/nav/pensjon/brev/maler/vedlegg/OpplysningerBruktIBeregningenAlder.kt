@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlder
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 
 val vedleggOpplysningerBruktIBeregningenAlder =
-    createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningenAlder>(
+    createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningenAlderDto>(
         title = newText(
             Bokmal to "Opplysninger brukt i beregningen",
             Nynorsk to "Opplysningar brukte i berekninga",
@@ -31,5 +31,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                     English to "Civil status",
                 )
             }
+
+
         }
     )
