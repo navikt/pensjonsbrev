@@ -34,8 +34,11 @@ export const getModelSpecification = {
 export const getBrev = {
   queryKey: brevKeys.id,
   queryFn: async (saksId: string, brevId: number, reserver: boolean = true) =>
-    (await axios.get<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}?reserver=${reserver}`))
-      .data,
+    (
+      await axios.get<BrevResponse>(
+        `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/attestering?reserver=${reserver}`,
+      )
+    ).data,
 };
 
 export async function createBrev(saksId: string, request: OpprettBrevRequest) {
@@ -70,6 +73,14 @@ export async function oppdaterSaksbehandlerValg(brevId: number, saksbehandlerVal
 export const oppdaterSignatur = async (brevId: number | string, signatur: string) =>
   (
     await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/signatur`, signatur, {
+      //sendes som form-data hvis man ikke setter content-type til text/plain
+      headers: { "Content-Type": "text/plain" },
+    })
+  ).data;
+
+export const oppdaterAttestantSignatur = async (brevId: number | string, signatur: string) =>
+  (
+    await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/attestant`, signatur, {
       //sendes som form-data hvis man ikke setter content-type til text/plain
       headers: { "Content-Type": "text/plain" },
     })

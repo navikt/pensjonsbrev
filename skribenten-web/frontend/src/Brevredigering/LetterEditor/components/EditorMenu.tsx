@@ -81,12 +81,7 @@ export const EditorMenu = () => {
         <SelectTypography editorState={editorState} setEditorState={setEditorState} />
       </HStack>
 
-      <LagretTidspunkt
-        datetime={editorState.info.sistredigert}
-        error={error}
-        freeze={freeze}
-        isDirty={editorState.isDirty}
-      />
+      <LagretTidspunkt datetime={editorState.info.sistredigert} error={error} freeze={freeze} />
     </div>
   );
 };
@@ -136,30 +131,28 @@ const LagringSuccess = memo((properties: { dateTime: string }) => {
   );
 });
 
-const LagretTidspunkt = memo(
-  ({ freeze, error, datetime, isDirty }: { freeze: boolean; error: boolean; datetime: string; isDirty: boolean }) => {
-    if (freeze) {
+const LagretTidspunkt = memo(({ freeze, error, datetime }: { freeze: boolean; error: boolean; datetime: string }) => {
+  if (freeze) {
+    return (
+      <HStack gap="1">
+        <Loader title="Lagrer..." />
+        Lagrer...
+      </HStack>
+    );
+  } else {
+    if (error) {
+      const tekst = isToday(datetime)
+        ? `Klarte ikke lagre kl ${formatTime(datetime)}`
+        : `Klarte ikke lagre ${format(datetime, "dd.MM.yyyy HH:mm")}`;
+
       return (
         <HStack gap="1">
-          <Loader title="Lagrer..." />
-          Lagrer...
+          <ExclamationmarkTriangleFillIcon color="#FF9100" fontSize="1.5rem" title="error-ikon" />
+          {tekst}
         </HStack>
       );
-    } else {
-      if (isDirty && error) {
-        const tekst = isToday(datetime)
-          ? `Klarte ikke lagre kl ${formatTime(datetime)}`
-          : `Klarte ikke lagre ${format(datetime, "dd.MM.yyyy HH:mm")}`;
-
-        return (
-          <HStack gap="1">
-            <ExclamationmarkTriangleFillIcon color="#FF9100" fontSize="1.5rem" title="error-ikon" />
-            {tekst}
-          </HStack>
-        );
-      }
-
-      return <LagringSuccess dateTime={datetime} />;
     }
-  },
-);
+
+    return <LagringSuccess dateTime={datetime} />;
+  }
+});
