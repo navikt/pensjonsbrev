@@ -36,24 +36,24 @@ data class OmsorgEgenerklaeringOutline(
                 Bokmal to
                         "Vi trenger en bekreftelse på at du har utført pleie- og omsorgsarbeid i ".expr()
                         + aarEgenerklaringOmsorgspoeng
-                        + " år. Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.",
+                        + ".Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.",
 
                 Nynorsk to
                         "Vi treng ei stadfesting på at du har utført pleie- og omsorgsarbeid i ".expr()
                         + aarEgenerklaringOmsorgspoeng
-                        + " år. Du må difor nytte det vedlagde skjemaet og sende til oss innan fire veker.",
+                        + ". Du må difor nytte det vedlagde skjemaet og sende til oss innan fire veker.",
 
                 English to
                         "We need you to confirm that you have provided nursing and care work in ".expr()
                         + aarEgenerklaringOmsorgspoeng
-                        + " years. Therefore, it is required that you complete the enclosed form and return it to Nav within four weeks.",
+                        + ". Therefore, it is required that you complete the enclosed form and return it to Nav within four weeks.",
             )
         }
         paragraph {
             textExpr(
-                Bokmal to "Du har fått godkjent pensjonsopptjening for ".expr() + aarInnvilgetOmsorgspoeng + " år.",
-                Nynorsk to "Du har fått godkjend pensjonsopptening for ".expr() + aarInnvilgetOmsorgspoeng + " år.",
-                English to "You have accumulated pensionable earnings for ".expr() + aarInnvilgetOmsorgspoeng + " years.",
+                Bokmal to "Du har fått godkjent pensjonsopptjening for ".expr() + aarInnvilgetOmsorgspoeng + ".",
+                Nynorsk to "Du har fått godkjend pensjonsopptening for ".expr() + aarInnvilgetOmsorgspoeng + ".",
+                English to "You have accumulated pensionable earnings for ".expr() + aarInnvilgetOmsorgspoeng + ".",
             )
         }
         includePhrase(Felles.HarDuSpoersmaal.omsorg)
