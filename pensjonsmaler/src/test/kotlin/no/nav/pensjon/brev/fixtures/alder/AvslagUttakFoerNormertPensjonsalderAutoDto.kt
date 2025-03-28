@@ -27,9 +27,20 @@ fun createAvslagUttakFoerNormertPensjonsalderAutoDto() =
             sisteOpptjeningsAar = 2024,
             virkFom = LocalDate.of(2025, 2, 1),
             prorataBruktIBeregningen = true,
-            trygdeperioderNorge = listOf(TrygdeperiodeNorge(fom = LocalDate.now(), tom = LocalDate.now()),TrygdeperiodeNorge(fom = LocalDate.now(), tom = LocalDate.now())),
-            trygdeperioderUtland = listOf(TrygdeperiodeUtland(land="Sverige", fom = LocalDate.now(), tom = LocalDate.now()),TrygdeperiodeUtland(land="Danmark", fom = LocalDate.now(), tom = LocalDate.now())),
+            trygdeperioderNorge = listOf(
+                TrygdeperiodeNorge(fom = LocalDate.now(), tom = LocalDate.now()),
+                TrygdeperiodeNorge(fom = LocalDate.now(), tom = LocalDate.now())
+            ),
+            trygdeperioderUtland = listOf(
+                TrygdeperiodeUtland(
+                    land = "Sverige",
+                    fom = LocalDate.now(),
+                    tom = LocalDate.now()
+                ), TrygdeperiodeUtland(land = "Danmark", fom = LocalDate.now(), tom = LocalDate.now())
+            ),
             redusertTrygdetid = true
         ),
         borINorge = false,
+        harEOSLand = true,
+        vedtakBegrunnelseLavOpptjening = true,
     )
