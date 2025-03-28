@@ -101,10 +101,6 @@ export const attesterBrev = async (args: {
         redigertBrev: args.request.redigertBrev,
         signaturAttestant: args.request.signatur,
       },
-      {
-        responseType: "blob",
-        headers: { Accept: "application/pdf" },
-      },
     )
   ).data;
 };
