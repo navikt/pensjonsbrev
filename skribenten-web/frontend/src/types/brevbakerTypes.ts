@@ -36,7 +36,7 @@ export type TObject = {
   readonly typeName: string;
 };
 
-export type ScalarKind = "NUMBER" | "DOUBLE" | "STRING" | "BOOLEAN" | "DATE";
+export type ScalarKind = "NUMBER" | "DOUBLE" | "STRING" | "BOOLEAN" | "DATE" | "YEAR";
 
 export type LanguageCode = "BOKMAL" | "NYNORSK" | "ENGLISH";
 

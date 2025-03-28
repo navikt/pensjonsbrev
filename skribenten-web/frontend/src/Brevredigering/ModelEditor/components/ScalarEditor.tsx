@@ -65,6 +65,19 @@ export const ScalarEditor = ({
         <ControlledDatePicker field={field} fieldType={fieldType} onSubmit={submitOnChange} prependName={prependName} />
       );
     }
+    case "YEAR": {
+      return (
+        <AutoSavingTextField
+          field={field}
+          fieldType={fieldType}
+          onSubmit={submitOnChange}
+          prependName={prependName}
+          step={1}
+          timeoutTimer={2000}
+          type={"number"}
+        />
+      );
+    }
   }
 };
 
