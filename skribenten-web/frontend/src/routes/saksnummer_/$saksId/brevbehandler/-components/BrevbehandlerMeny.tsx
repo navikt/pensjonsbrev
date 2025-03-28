@@ -22,7 +22,7 @@ import { useMemo, useState } from "react";
 
 import type { UserInfo } from "~/api/bff-endpoints";
 import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getNavn } from "~/api/skribenten-api-endpoints";
+import { getNavnQuery } from "~/api/skribenten-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import { useUserInfo } from "~/hooks/useUserInfo";
 import type { BrevStatus, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
@@ -151,10 +151,7 @@ const BrevItem = (properties: {
 const ArkivertBrev = (props: { brev: BrevInfo }) => {
   const sakContext = Route.useLoaderData();
 
-  const { data: navn } = useQuery({
-    queryKey: getNavn.queryKey(sakContext.sak.foedselsnr as string),
-    queryFn: () => getNavn.queryFn(sakContext.sak.saksId),
-  });
+  const { data: navn } = useQuery(getNavnQuery(sakContext.sak.saksId.toString()));
 
   return (
     <VStack
@@ -190,10 +187,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const sakContext = Route.useLoaderData();
   const { enhetsId, vedtaksId } = Route.useSearch();
 
-  const { data: navn } = useQuery({
-    queryKey: getNavn.queryKey(sakContext.sak.foedselsnr as string),
-    queryFn: () => getNavn.queryFn(sakContext.sak.saksId),
-  });
+  const { data: navn } = useQuery(getNavnQuery(sakContext.sak.saksId.toString()));
 
   const låsForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
     mutationFn: (låst) =>

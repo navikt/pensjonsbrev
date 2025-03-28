@@ -18,7 +18,7 @@ import {
   tilbakestillBrev,
 } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
-import { getSakContext } from "~/api/skribenten-api-endpoints";
+import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -219,8 +219,7 @@ function RedigerBrev({
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brev));
 
   const brevmal = useQuery({
-    queryKey: getSakContext.queryKey(saksId, vedtaksId),
-    queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
+    ...getSakContextQuery(saksId, vedtaksId),
     select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brev.info.brevkode),
   });
 

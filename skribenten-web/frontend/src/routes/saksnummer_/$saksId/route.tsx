@@ -4,11 +4,11 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 import {
-  getFavoritter,
-  getKontaktAdresse,
-  getNavn,
-  getPreferredLanguage,
-  getSakContext,
+  getFavoritterQuery,
+  getKontaktAdresseQuery,
+  getNavnQuery,
+  getPreferredLanguageQuery,
+  getSakContextQuery,
 } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
@@ -22,27 +22,14 @@ import { FerdigstillResultatContextProvider } from "./kvittering/-components/Fer
 type SaksnummerSearch = { vedtaksId: string | undefined; enhetsId: string | undefined };
 
 export const Route = createFileRoute("/saksnummer_/$saksId")({
-  beforeLoad: ({ params: { saksId }, search: { vedtaksId } }) => {
-    const getSakContextQueryOptions = {
-      ...getSakContext,
-      queryKey: getSakContext.queryKey(saksId, vedtaksId),
-      queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
-    };
-
-    return { getSakContextQueryOptions };
-  },
-  loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId }),
+  beforeLoad: ({ params: { saksId }, search: { vedtaksId } }) => ({
+    getSakContextQueryOptions: getSakContextQuery(saksId, vedtaksId),
+  }),
   loader: async ({ context: { queryClient, getSakContextQueryOptions }, params: { saksId } }) => {
     // Adresse is a slow query that will be needed later, therefore we prefetch it here as early as possible.
-    queryClient.prefetchQuery({
-      queryKey: getKontaktAdresse.queryKey(saksId),
-      queryFn: () => getKontaktAdresse.queryFn(saksId),
-    });
-    queryClient.prefetchQuery(getFavoritter);
-    queryClient.prefetchQuery({
-      queryKey: getPreferredLanguage.queryKey(saksId),
-      queryFn: () => getPreferredLanguage.queryFn(saksId),
-    });
+    queryClient.prefetchQuery(getKontaktAdresseQuery(saksId));
+    queryClient.prefetchQuery(getFavoritterQuery);
+    queryClient.prefetchQuery(getPreferredLanguageQuery(saksId));
 
     return await queryClient.ensureQueryData(getSakContextQueryOptions);
   },
@@ -74,11 +61,7 @@ function SakLayout() {
 
 function Subheader({ sak }: { sak: SakDto }) {
   const { fødselsdato, personnummer } = splitFødselsnummer(sak.foedselsnr);
-  const hentNavnQuery = useQuery({
-    queryKey: getNavn.queryKey(sak?.foedselsnr as string),
-    queryFn: () => getNavn.queryFn(sak?.saksId?.toString() as string),
-    enabled: !!sak,
-  });
+  const hentNavnQuery = useQuery(getNavnQuery(sak.saksId.toString()));
 
   return (
     <div

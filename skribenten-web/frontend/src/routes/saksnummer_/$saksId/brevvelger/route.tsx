@@ -8,7 +8,7 @@ import { groupBy, partition, sortBy } from "lodash";
 import { useState } from "react";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getFavoritter } from "~/api/skribenten-api-endpoints";
+import { getFavoritterQuery } from "~/api/skribenten-api-endpoints";
 import { BrevbakerIcon, DoksysIcon, ExstreamIcon } from "~/assets/icons";
 import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
@@ -155,7 +155,7 @@ function Brevmaler({
   const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger" });
   const { templateId } = Route.useSearch();
   const [searchTerm, setSearchTerm] = useState("");
-  const favoritter = useQuery(getFavoritter).data ?? [];
+  const favoritter = useQuery(getFavoritterQuery).data ?? [];
 
   const brevmalerMatchingSearchTerm = sortBy(
     letterTemplates.filter((template) => template.name.toLowerCase().includes(searchTerm.toLowerCase())),

@@ -2,7 +2,7 @@ import { Skeleton, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 
-import { hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
+import { hentSamhandlerAdresseQuery } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SamhandlerTypeCode } from "~/types/apiTypes";
 import { SAMHANDLER_ENUM_TO_TEXT } from "~/types/nameMappings";
@@ -22,12 +22,9 @@ const HentOgVisSamhandlerAdresse = (properties: {
   isPending: Nullable<boolean>;
   onCloseIntent: () => void;
 }) => {
-  const hentSamhandlerAdresseQuery = useQuery({
-    queryKey: hentSamhandlerAdresse.queryKey(properties.id),
-    queryFn: () => hentSamhandlerAdresse.queryFn({ idTSSEkstern: properties.id }),
-  });
+  const samhandlerAdresse = useQuery(hentSamhandlerAdresseQuery(properties.id));
 
-  if (hentSamhandlerAdresseQuery.isPending) {
+  if (samhandlerAdresse.isPending) {
     return (
       <VStack gap="4">
         <Skeleton height={30} variant="rectangle" width="100%" />
@@ -39,21 +36,21 @@ const HentOgVisSamhandlerAdresse = (properties: {
     );
   }
 
-  if (hentSamhandlerAdresseQuery.isError) {
-    return <ApiError error={hentSamhandlerAdresseQuery.error} title="Fant ikke samhandleradresse" />;
+  if (samhandlerAdresse.isError) {
+    return <ApiError error={samhandlerAdresse.error} title="Fant ikke samhandleradresse" />;
   }
 
   return (
     <VStack gap="4">
       <OppsummeringAvValgtMottaker
         adresse={{
-          navn: hentSamhandlerAdresseQuery.data?.navn,
-          linje1: hentSamhandlerAdresseQuery.data?.linje1,
-          linje2: hentSamhandlerAdresseQuery.data?.linje2,
-          linje3: hentSamhandlerAdresseQuery.data?.linje3,
-          postnr: hentSamhandlerAdresseQuery.data?.postnr,
-          poststed: hentSamhandlerAdresseQuery.data?.poststed,
-          land: hentSamhandlerAdresseQuery.data?.land,
+          navn: samhandlerAdresse.data?.navn,
+          linje1: samhandlerAdresse.data?.linje1,
+          linje2: samhandlerAdresse.data?.linje2,
+          linje3: samhandlerAdresse.data?.linje3,
+          postnr: samhandlerAdresse.data?.postnr,
+          poststed: samhandlerAdresse.data?.poststed,
+          land: samhandlerAdresse.data?.land,
         }}
         error={properties.error}
         isPending={properties.isPending}

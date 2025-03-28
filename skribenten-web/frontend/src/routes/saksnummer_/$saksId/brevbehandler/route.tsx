@@ -7,7 +7,7 @@ import { useRef, useState } from "react";
 import { z } from "zod";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getNavn } from "~/api/skribenten-api-endpoints";
+import { getNavnQuery } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
@@ -19,10 +19,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
   loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
     const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
 
-    queryClient.prefetchQuery({
-      queryKey: getNavn.queryKey(sakContext.sak.saksId.toString()),
-      queryFn: () => getNavn.queryFn(sakContext.sak.saksId.toString()),
-    });
+    queryClient.prefetchQuery(getNavnQuery(sakContext.sak.saksId.toString()));
 
     return sakContext;
   },
