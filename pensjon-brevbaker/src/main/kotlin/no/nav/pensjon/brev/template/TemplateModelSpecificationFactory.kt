@@ -86,6 +86,9 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
                 "java.time.LocalDate" ->
                     FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DATE)
 
+                "no.nav.pensjon.brevbaker.api.model.Year" ->
+                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.YEAR)
+
                 "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata" -> {
                     toProcess.add(theClassifier)
                     FieldType.Object(isMarkedNullable, qname)

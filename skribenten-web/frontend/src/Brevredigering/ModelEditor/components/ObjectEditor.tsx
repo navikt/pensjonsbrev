@@ -65,17 +65,6 @@ export type ObjectEditorProperties = {
   submitOnChange?: () => void;
 };
 
-function parseType(typeName: string, fieldType: FieldType): FieldType {
-  if (typeName === "no.nav.pensjon.brevbaker.api.model.Year") {
-    return {
-      ...fieldType,
-      kind: "YEAR",
-    } as TScalar;
-  } else {
-    return fieldType;
-  }
-}
-
 function parseFieldName(typeName: string, fieldName: string): string {
   if (typeName === "no.nav.pensjon.brevbaker.api.model.Year") {
     const end = fieldName.lastIndexOf(".value");
@@ -98,7 +87,7 @@ export const ObjectEditor = ({ brevkode, typeName, parentFieldName, submitOnChan
             <FieldEditor
               brevkode={brevkode}
               field={parseFieldName(typeName, fieldName)}
-              fieldType={parseType(typeName, fieldType)}
+              fieldType={fieldType}
               key={field}
               submitOnChange={submitOnChange}
             />

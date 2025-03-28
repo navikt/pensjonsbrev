@@ -10,7 +10,7 @@ data class TemplateModelSpecification(val types: Map<String, ObjectTypeSpecifica
         data class Scalar(override val nullable: Boolean, val kind: Kind) : FieldType() {
             override val type = "scalar"
 
-            enum class Kind { NUMBER, DOUBLE, STRING, BOOLEAN, DATE }
+            enum class Kind { NUMBER, DOUBLE, STRING, BOOLEAN, DATE, YEAR }
         }
 
         data class Enum(override val nullable: Boolean, val values: Set<String>) : FieldType() {
