@@ -51,13 +51,13 @@ import no.nav.pensjon.brev.model.tableFormat
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.formatTwoDecimals
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
@@ -233,7 +233,7 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            val kompensasjonsgrad = ufoeretrygdGjeldende.kompensasjonsgrad.format()
+                            val kompensasjonsgrad = ufoeretrygdGjeldende.kompensasjonsgrad.formatTwoDecimals()
                             textExpr(
                                 Bokmal to kompensasjonsgrad + " %",
                                 Nynorsk to kompensasjonsgrad + " %",

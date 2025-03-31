@@ -23,6 +23,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.formatTwoDecimals
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -116,9 +117,9 @@ val opplysningerBruktIBeregningenAP =
                     }
                     cell {
                         textExpr(
-                            Bokmal to delingstallVedUttak.format(),
-                            Nynorsk to delingstallVedUttak.format(),
-                            English to delingstallVedUttak.format()
+                            Bokmal to delingstallVedUttak.formatTwoDecimals(),
+                            Nynorsk to delingstallVedUttak.formatTwoDecimals(),
+                            English to delingstallVedUttak.formatTwoDecimals()
                         )
                     }
                 }
@@ -134,9 +135,9 @@ val opplysningerBruktIBeregningenAP =
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to delingstall.format(),
-                                    Nynorsk to delingstall.format(),
-                                    English to delingstall.format()
+                                    Bokmal to delingstall.formatTwoDecimals(),
+                                    Nynorsk to delingstall.formatTwoDecimals(),
+                                    English to delingstall.formatTwoDecimals()
                                 )
                             }
                         }
