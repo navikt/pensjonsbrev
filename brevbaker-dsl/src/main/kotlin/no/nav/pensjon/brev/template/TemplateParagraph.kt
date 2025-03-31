@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
 
 
 @LetterTemplateMarker
-class ParagraphOnlyScope<Lang : LanguageSupport, LetterData : Any> : ParagraphScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent<Lang>, ParagraphOnlyScope<Lang, LetterData>> {
+class ParagraphOnlyScope<Lang : LanguageSupport, LetterData : Any> internal constructor(): ParagraphScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent<Lang>, ParagraphOnlyScope<Lang, LetterData>> {
     private val children = mutableListOf<ParagraphContentElement<Lang>>()
     override val elements: List<ParagraphContentElement<Lang>>
         get() = children
@@ -31,9 +31,17 @@ class ParagraphOnlyScope<Lang : LanguageSupport, LetterData : Any> : ParagraphSc
     fun includePhrase(phrase: ParagraphPhrase<out Lang>) {
         phrase.apply(this)
     }
+
+    fun includePhrase(phrase: TextOnlyPhrase<out Lang>) {
+        phrase.apply(this)
+    }
+
+    fun includePhrase(phrase: PlainTextOnlyPhrase<out Lang>) {
+        phrase.apply(this)
+    }
 }
 
-interface ParagraphScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, LetterData> {
+sealed interface ParagraphScope<Lang : LanguageSupport, LetterData : Any> : TextScope<Lang, LetterData> {
     fun addParagraphContent(e: ParagraphContentElement<Lang>)
 
     fun list(create: ListScope<Lang, LetterData>.() -> Unit) {

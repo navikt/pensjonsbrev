@@ -152,7 +152,7 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                     )
                 }
 
-                    includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(Expression.Literal(false), borIutland))
+                    includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(false.expr(), borIutland))
             }
         }
 }

@@ -69,6 +69,7 @@ const Brevmal = (props: {
 }) => {
   const { saksId, brev, setOnFormSubmitClick } = props;
   const navigate = useNavigate({ from: Route.fullPath });
+  const { enhetsId, vedtaksId } = Route.useSearch();
 
   useEffect(() => {
     setOnFormSubmitClick({
@@ -77,17 +78,18 @@ const Brevmal = (props: {
           return navigate({
             to: "/saksnummer/$saksId/brevbehandler",
             params: { saksId: saksId },
-            search: { brevId: brev.id },
+            search: { brevId: brev.id, enhetsId, vedtaksId },
           });
         } else {
           return navigate({
             to: "/saksnummer/$saksId/brev/$brevId",
             params: { saksId: saksId, brevId: brev.id },
+            search: { enhetsId, vedtaksId },
           });
         }
       },
     });
-  }, [setOnFormSubmitClick, saksId, brev, navigate]);
+  }, [setOnFormSubmitClick, saksId, brev, navigate, enhetsId, vedtaksId]);
 
   return (
     <div
@@ -110,7 +112,11 @@ const Brevmal = (props: {
                 buttonNo: "Nei, behold kladden",
               }}
               onSlettSuccess={() =>
-                navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId: props.saksId } })
+                navigate({
+                  to: "/saksnummer/$saksId/brevvelger",
+                  params: { saksId: props.saksId },
+                  search: { enhetsId, vedtaksId },
+                })
               }
               sakId={props.saksId}
             />

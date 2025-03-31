@@ -20,10 +20,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
@@ -222,60 +219,62 @@ val opplysningerBruktIBeregningenAP =
                 }
             }
 
-            paragraph {
-                text(
-                    Bokmal to "Tabellen nedenfor viser perioder du har bodd og/eller arbeidet i land som Norge har trygdeavtale med. Disse periodene er brukt i vurderingen av retten til alderspensjon før fylte 67 år.",
-                    Nynorsk to "Tabellen nedanfor viser periodar du har budd og/eller arbeidd i land som Noreg har trygdeavtale med. Desse periodane er brukt i vurderinga av retten til alderspensjon før fylte 67 år.",
-                    English to "The table below shows your insurance coverage in countries with which Norway has a social security agreement. These periods has been used to assess whether you are eligible for retirement pension before the age of 67.",
-                )
-            }
+            showIf(trygdeperioderUtland.isNotEmpty()) {
+                paragraph {
+                    text(
+                        Bokmal to "Tabellen nedenfor viser perioder du har bodd og/eller arbeidet i land som Norge har trygdeavtale med. Disse periodene er brukt i vurderingen av retten til alderspensjon før fylte 67 år.",
+                        Nynorsk to "Tabellen nedanfor viser periodar du har budd og/eller arbeidd i land som Noreg har trygdeavtale med. Desse periodane er brukt i vurderinga av retten til alderspensjon før fylte 67 år.",
+                        English to "The table below shows your insurance coverage in countries with which Norway has a social security agreement. These periods has been used to assess whether you are eligible for retirement pension before the age of 67.",
+                    )
+                }
 
-            paragraph {
-                table(header = {
-                    column {
-                        text(
-                            Bokmal to "Land",
-                            Nynorsk to "Land",
-                            English to "Country"
-                        )
-                    }
-                    column(alignment = RIGHT) {
-                        text(
-                            Bokmal to "Fra og med",
-                            Nynorsk to "Frå og med",
-                            English to "Start date",
-                        )
-                    }
-                    column(alignment = RIGHT) {
-                        text(
-                            Bokmal to "Til og med",
-                            Nynorsk to "Til og med",
-                            English to "End date"
-                        )
-                    }
-                }) {
-                    forEach(trygdeperioderUtland) { utlandPeriode ->
-                        row {
-                            cell {
-                                textExpr(
-                                    Bokmal to utlandPeriode.land,
-                                    Nynorsk to utlandPeriode.land,
-                                    English to utlandPeriode.land
-                                )
-                            }
-                            cell {
-                                textExpr(
-                                    Bokmal to utlandPeriode.fom.format(short = true),
-                                    Nynorsk to utlandPeriode.fom.format(short = true),
-                                    English to utlandPeriode.fom.format(short = true)
-                                )
-                            }
-                            cell {
-                                textExpr(
-                                    Bokmal to utlandPeriode.tom.format(short = true),
-                                    Nynorsk to utlandPeriode.tom.format(short = true),
-                                    English to utlandPeriode.tom.format(short = true)
-                                )
+                paragraph {
+                    table(header = {
+                        column {
+                            text(
+                                Bokmal to "Land",
+                                Nynorsk to "Land",
+                                English to "Country"
+                            )
+                        }
+                        column(alignment = RIGHT) {
+                            text(
+                                Bokmal to "Fra og med",
+                                Nynorsk to "Frå og med",
+                                English to "Start date",
+                            )
+                        }
+                        column(alignment = RIGHT) {
+                            text(
+                                Bokmal to "Til og med",
+                                Nynorsk to "Til og med",
+                                English to "End date"
+                            )
+                        }
+                    }) {
+                        forEach(trygdeperioderUtland) { utlandPeriode ->
+                            row {
+                                cell {
+                                    textExpr(
+                                        Bokmal to utlandPeriode.land,
+                                        Nynorsk to utlandPeriode.land,
+                                        English to utlandPeriode.land
+                                    )
+                                }
+                                cell {
+                                    textExpr(
+                                        Bokmal to utlandPeriode.fom.format(short = true),
+                                        Nynorsk to utlandPeriode.fom.format(short = true),
+                                        English to utlandPeriode.fom.format(short = true)
+                                    )
+                                }
+                                cell {
+                                    textExpr(
+                                        Bokmal to utlandPeriode.tom.format(short = true),
+                                        Nynorsk to utlandPeriode.tom.format(short = true),
+                                        English to utlandPeriode.tom.format(short = true)
+                                    )
+                                }
                             }
                         }
                     }

@@ -40,6 +40,7 @@ object Constants {
     const val KONTAKTTELEFON_SKATT = "800 80 000"
     const val SAKSBEHANDLINGSTIDER_BP = "$SAKSBEHANDLINGSTIDER_URL#barnepensjon"
     const val SAKSBEHANDLINGSTIDER_OMS = "$SAKSBEHANDLINGSTIDER_URL#omstillingsstonad"
+    const val REGISTRER_ARBEIDSSOKER = "$NAV_URL/registrer-arbeidssoker"
 
     object Engelsk {
         const val BARNEPENSJON_URL = "${Constants.BARNEPENSJON_URL}/en"
@@ -57,6 +58,7 @@ object Constants {
         const val SAKSBEHANDLINGSTIDER_BP = "$SAKSBEHANDLINGSTIDER_URL#childrens-pension"
         const val SAKSBEHANDLINGSTIDER_OMS = "$SAKSBEHANDLINGSTIDER_URL#adjustment-allowance"
         const val SKATTEETATEN_ENDRE_URL = "$SKATTEETATEN_URL/change"
+        const val REGISTRER_ARBEIDSSOKER = "${Constants.REGISTRER_ARBEIDSSOKER}/en"
     }
 
     object Utland {

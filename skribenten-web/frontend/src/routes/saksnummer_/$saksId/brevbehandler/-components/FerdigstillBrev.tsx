@@ -113,6 +113,7 @@ const validationSchema = z
 export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: boolean; onClose: () => void }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate({ from: Route.fullPath });
+  const { enhetsId, vedtaksId } = Route.useSearch();
   const ferdigstillBrevContext = useSendtBrevResultatContext();
   const attesteringContext = useSendBrevAttesteringContext();
 
@@ -217,7 +218,11 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
           return brev.id === brevSomSkalErstattesDetSomFinnes?.id ? brevSomSkalErstattesDetSomFinnes : brev;
         }),
     );
-    navigate({ to: "/saksnummer/$saksId/kvittering", params: { saksId: properties.sakId } });
+    return navigate({
+      to: "/saksnummer/$saksId/kvittering",
+      params: { saksId: properties.sakId },
+      search: { enhetsId, vedtaksId },
+    });
   };
 
   return (

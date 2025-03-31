@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.template.dsl
 import no.nav.pensjon.brev.template.*
 
 @LetterTemplateMarker
-class TableScope<Lang : LanguageSupport, LetterData : Any>(
+class TableScope<Lang : LanguageSupport, LetterData : Any> internal constructor(
     private val colSpec: List<Element.OutlineContent.ParagraphContent.Table.ColumnSpec<Lang>>,
 ) : ControlStructureScope<Lang, LetterData, Element.OutlineContent.ParagraphContent.Table.Row<Lang>, TableScope<Lang,LetterData>>{
     private val children = mutableListOf<TableRowElement<Lang>>()
@@ -27,7 +27,7 @@ class TableScope<Lang : LanguageSupport, LetterData : Any>(
 
 
 @LetterTemplateMarker
-class TableRowScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
+class TableRowScope<Lang : LanguageSupport, LetterData : Any> internal constructor(): TemplateGlobalScope<LetterData> {
     private val children: MutableList<Element.OutlineContent.ParagraphContent.Table.Cell<Lang>> = mutableListOf()
     val elements: List<Element.OutlineContent.ParagraphContent.Table.Cell<Lang>>
         get() = children
@@ -42,7 +42,7 @@ class TableRowScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalSc
 }
 
 @LetterTemplateMarker
-class TableHeaderScope<Lang : LanguageSupport, LetterData : Any> : TemplateGlobalScope<LetterData> {
+class TableHeaderScope<Lang : LanguageSupport, LetterData : Any> internal constructor(): TemplateGlobalScope<LetterData> {
     private val children: MutableList<Element.OutlineContent.ParagraphContent.Table.ColumnSpec<Lang>> = mutableListOf()
     val elements: List<Element.OutlineContent.ParagraphContent.Table.ColumnSpec<Lang>>
         get() = children
