@@ -45,13 +45,22 @@ export async function createBrev(saksId: string, request: OpprettBrevRequest) {
   return (await axios.post<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev`, request)).data;
 }
 
-export async function oppdaterBrev(args: { saksId: number; brevId: number; request: OppdaterBrevRequest }) {
+export async function oppdaterBrev(args: {
+  saksId: number;
+  brevId: number;
+  request: OppdaterBrevRequest;
+  frigiReservasjon?: boolean;
+}) {
+  const frigiReservasjon = args.frigiReservasjon ?? true;
   return (
-    await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}`, {
-      saksbehandlerValg: args.request.saksbehandlerValg,
-      redigertBrev: args.request.redigertBrev,
-      signatur: args.request.signatur,
-    })
+    await axios.put<BrevResponse>(
+      `${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}?frigiReservasjon=${frigiReservasjon}`,
+      {
+        saksbehandlerValg: args.request.saksbehandlerValg,
+        redigertBrev: args.request.redigertBrev,
+        signatur: args.request.signatur,
+      },
+    )
   ).data;
 }
 
