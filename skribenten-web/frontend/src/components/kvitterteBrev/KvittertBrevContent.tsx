@@ -2,7 +2,7 @@ import { Accordion, BodyShort, Button, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { hentPdfForJournalpostQuery, sendBrev, sendBrevTilAttestering } from "~/api/sak-api-endpoints";
-import { getNavn } from "~/api/skribenten-api-endpoints";
+import { getNavnQuery } from "~/api/skribenten-api-endpoints";
 import Oppsummeringspar from "~/routes/saksnummer_/$saksId/kvittering/-components/Oppsummeringspar";
 import type { BestillBrevResponse, BrevInfo, Mottaker } from "~/types/brev";
 import { Distribusjonstype } from "~/types/brev";
@@ -92,10 +92,7 @@ const AccordionContentSuccess = (props: {
     onSuccess: (pdf) => window.open(URL.createObjectURL(pdf), "_blank"),
   });
 
-  const hentNavnQuery = useQuery({
-    queryKey: getNavn.queryKey(props.saksId),
-    queryFn: () => getNavn.queryFn(props.saksId),
-  });
+  const hentNavnQuery = useQuery(getNavnQuery(props.saksId.toString()));
 
   return (
     <Accordion.Content>
