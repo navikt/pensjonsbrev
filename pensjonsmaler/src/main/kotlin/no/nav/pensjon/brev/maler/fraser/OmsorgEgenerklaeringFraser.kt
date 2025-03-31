@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -27,33 +28,33 @@ object OmsorgEgenerklaeringTittel : PlainTextOnlyPhrase<LangBokmalNynorskEnglish
 }
 
 data class OmsorgEgenerklaeringOutline(
-    val aarEgenerklaringOmsorgspoeng: Expression<String>,
-    val aarInnvilgetOmsorgspoeng: Expression<String>,
+    val aarEgenerklaringOmsorgspoeng: (ParagraphOnlyScope<*,*>) -> Expression<String>,
+    val aarInnvilgetOmsorgspoeng: (ParagraphOnlyScope<*,*>) -> Expression<String>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             textExpr(
                 Bokmal to
                         "Vi trenger en bekreftelse på at du har utført pleie- og omsorgsarbeid i ".expr()
-                        + aarEgenerklaringOmsorgspoeng
+                        + aarEgenerklaringOmsorgspoeng(this)
                         + ".Derfor må du fylle ut det vedlagte skjemaet og sende det til oss innen fire uker.",
 
                 Nynorsk to
                         "Vi treng ei stadfesting på at du har utført pleie- og omsorgsarbeid i ".expr()
-                        + aarEgenerklaringOmsorgspoeng
+                        + aarEgenerklaringOmsorgspoeng(this)
                         + ". Du må difor nytte det vedlagde skjemaet og sende til oss innan fire veker.",
 
                 English to
                         "We need you to confirm that you have provided nursing and care work in ".expr()
-                        + aarEgenerklaringOmsorgspoeng
+                        + aarEgenerklaringOmsorgspoeng(this)
                         + ". Therefore, it is required that you complete the enclosed form and return it to Nav within four weeks.",
             )
         }
         paragraph {
             textExpr(
-                Bokmal to "Du har fått godkjent pensjonsopptjening for ".expr() + aarInnvilgetOmsorgspoeng + ".",
-                Nynorsk to "Du har fått godkjend pensjonsopptening for ".expr() + aarInnvilgetOmsorgspoeng + ".",
-                English to "You have accumulated pensionable earnings for ".expr() + aarInnvilgetOmsorgspoeng + ".",
+                Bokmal to "Du har fått godkjent pensjonsopptjening for ".expr() + aarInnvilgetOmsorgspoeng(this) + ".",
+                Nynorsk to "Du har fått godkjend pensjonsopptening for ".expr() + aarInnvilgetOmsorgspoeng(this) + ".",
+                English to "You have accumulated pensionable earnings for ".expr() + aarInnvilgetOmsorgspoeng(this) + ".",
             )
         }
         includePhrase(Felles.HarDuSpoersmaal.omsorg)
