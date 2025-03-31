@@ -154,7 +154,7 @@ export const AutoSavingTextField = (props: {
           autoComplete="off"
           error={fieldState.error?.message}
           inputMode={props.type === "number" ? "numeric" : undefined}
-          label={convertFieldToReadableLabel(fieldName)}
+          label={props.fieldType.displayText ?? convertFieldToReadableLabel(fieldName)}
           onChange={(e) => (e.target.value ? field.onChange(e.target.value) : field.onChange(null))}
           size="small"
           step={props.step}
