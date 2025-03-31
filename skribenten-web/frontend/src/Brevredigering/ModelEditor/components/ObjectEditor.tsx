@@ -11,7 +11,7 @@ import {
   getFieldDefaultValue,
   isFieldNullableOrBoolean,
 } from "~/Brevredigering/ModelEditor/components/utils";
-import type { FieldType, TScalar } from "~/types/brevbakerTypes";
+import type { FieldType } from "~/types/brevbakerTypes";
 
 export const FieldEditor = ({
   prependedName,
@@ -65,15 +65,6 @@ export type ObjectEditorProperties = {
   submitOnChange?: () => void;
 };
 
-function parseFieldName(typeName: string, fieldName: string): string {
-  if (typeName === "no.nav.pensjon.brevbaker.api.model.Year") {
-    const end = fieldName.lastIndexOf(".value");
-    return fieldName.substring(0, end);
-  } else {
-    return fieldName;
-  }
-}
-
 export const ObjectEditor = ({ brevkode, typeName, parentFieldName, submitOnChange }: ObjectEditorProperties) => {
   const { specification: objectTypeSpecification } = useModelSpecification(brevkode, (s) => s.types[typeName]);
 
@@ -86,7 +77,7 @@ export const ObjectEditor = ({ brevkode, typeName, parentFieldName, submitOnChan
           return (
             <FieldEditor
               brevkode={brevkode}
-              field={parseFieldName(typeName, fieldName)}
+              field={fieldName}
               fieldType={fieldType}
               key={field}
               submitOnChange={submitOnChange}
