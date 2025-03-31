@@ -6,6 +6,7 @@ import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.ObjectTypeSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
+import no.nav.pensjon.brevbaker.api.model.Year
 import kotlin.reflect.*
 import kotlin.reflect.full.primaryConstructor
 
@@ -88,7 +89,7 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
                 "java.time.LocalDate" ->
                     FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DATE, displayText = displayText.firstOrNull())
 
-                "no.nav.pensjon.brevbaker.api.model.Year" ->
+                Year::class.qualifiedName ->
                     FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.YEAR, displayText = displayText.firstOrNull())
 
                 "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata" -> {
