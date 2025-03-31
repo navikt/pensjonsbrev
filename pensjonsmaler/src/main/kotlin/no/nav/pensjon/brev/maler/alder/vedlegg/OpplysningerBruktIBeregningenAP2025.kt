@@ -27,7 +27,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 @TemplateModelHelpers
-val opplysningerBruktIBeregningenAP =
+val opplysningerBruktIBeregningenAP2025 =
     createAttachment(
         title = newText(
             Bokmal to "Opplysninger brukt i beregningen",

@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
-import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP
+import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.redigerbar.InnhentingInformasjonFraBruker.fritekst
@@ -141,7 +141,7 @@ data class InnholdLavOpptjening(
                 Nynorsk to "I vedlegg ",
                 English to "Appendix "
             )
-            namedReference(opplysningerBruktIBeregningenAP)
+            namedReference(opplysningerBruktIBeregningenAP2025)
             text(
                 Bokmal to " finner du en tabell som viser opplysninger brukt i beregningen.",
                 Nynorsk to " finn du ein tabell som viser opplysningar brukt i berekninga.",
