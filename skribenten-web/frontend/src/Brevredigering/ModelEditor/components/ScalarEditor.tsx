@@ -66,7 +66,6 @@ export const ScalarEditor = ({
       );
     }
     case "YEAR": {
-      // TODO: Denne representasjonen bør vi tilpasse når vi startar å bruke han
       return (
         <AutoSavingTextField
           field={field}
