@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.PesysDataSelectors.returadresse
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.SaksbehandlerValgSelectors.aarEgenerklaringOmsorgspoeng
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDto
@@ -11,7 +12,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresse
 import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.adresseLinje1
 import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.postNr
 import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.postSted
-import no.nav.pensjon.brev.maler.redigerbar.InnhentingDokumentasjonFraBruker.fritekst
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
@@ -33,7 +33,7 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
     ),
     includeSakspart = true
 ) {
-    vedlegg(returadresse) { aarEgenerklaringOmsorgspoeng.format() }
+    vedlegg(returadresse, aarEgenerklaringOmsorgspoeng.format())
 }
 
 
@@ -47,10 +47,10 @@ val egenerklaeringPleieOgOmsorgsarbeidManuell = createAttachment<LangBokmalNynor
     ),
     includeSakspart = true
 ) {
-    vedlegg(pesysData.returadresse, { it.fritekst("år egenerklæring omsorgspoeng") } )
+    vedlegg(pesysData.returadresse, saksbehandlerValg.aarEgenerklaringOmsorgspoeng.format())
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: Expression<ReturAdresse>, aarEgenerklaering: (ParagraphOnlyScope<*,*>) -> Expression<String>) {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: Expression<ReturAdresse>, aarEgenerklaering: Expression<String>) {
     paragraph {
         val dokDato = felles.dokumentDato.format()
         textExpr(
@@ -62,9 +62,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: 
 
     paragraph {
         textExpr(
-            Bokmal to "I ".expr() + aarEgenerklaering(this) + " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)",
-            Nynorsk to "I ".expr() + aarEgenerklaering(this) + " har eg utført pleie- og omsorgsarbeid på minst 22 timar i veka. (Inkludert opptil ein halv time reisetid per besøk.)",
-            English to "In ".expr() + aarEgenerklaering(this) + " I have provided care work that has amounted to at least 22 hours per week. (Travelling time up to 30 minutes per visit may be included.)",
+            Bokmal to "I ".expr() + aarEgenerklaering + " har jeg utført pleie og omsorgsarbeid på minst 22 timer i uken. (Inkludert opptil en halv time reisetid per besøk.)",
+            Nynorsk to "I ".expr() + aarEgenerklaering + " har eg utført pleie- og omsorgsarbeid på minst 22 timar i veka. (Inkludert opptil ein halv time reisetid per besøk.)",
+            English to "In ".expr() + aarEgenerklaering + " I have provided care work that has amounted to at least 22 hours per week. (Travelling time up to 30 minutes per visit may be included.)",
         )
     }
 

@@ -42,8 +42,8 @@ object OmsorgEgenAuto : AutobrevTemplate<OmsorgEgenAutoDto> {
         outline {
             includePhrase(
                 OmsorgEgenerklaeringOutline(
-                    aarEgenerklaringOmsorgspoeng = { aarEgenerklaringOmsorgspoeng.format() },
-                    aarInnvilgetOmsorgspoeng = { aarInnvilgetOmsorgspoeng.format() }
+                    aarEgenerklaringOmsorgspoeng = aarEgenerklaringOmsorgspoeng.format(),
+                    aarInnvilgetOmsorgspoeng = aarInnvilgetOmsorgspoeng.format()
                 )
             )
         }
