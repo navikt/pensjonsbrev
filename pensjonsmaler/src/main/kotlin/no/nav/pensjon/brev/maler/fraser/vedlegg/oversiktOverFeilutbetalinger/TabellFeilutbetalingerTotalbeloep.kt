@@ -98,7 +98,7 @@ data class TabellFeilutbetalingerTotalbeloep(
                         textExpr(
                             Bokmal to rentetilleggSomInnkrevesBeloep.format() + " Kr",
                             Nynorsk to rentetilleggSomInnkrevesBeloep.format() + " Kr",
-                            English to rentetilleggSomInnkrevesBeloep.format() + " Kr"
+                            English to rentetilleggSomInnkrevesBeloep.format() + " NOK"
                         )
                     }
                 }
