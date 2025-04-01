@@ -24,11 +24,6 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
-enum class Regelverk {
-    AP2016, AP2025
-}
-
-
 data class AvslagUttakFoerNormertPensjonsalderFelles(
     val afpBruktIBeregning: Expression<Boolean>,
     val normertPensjonsalder: Expression<NormertPensjonsalder>,
