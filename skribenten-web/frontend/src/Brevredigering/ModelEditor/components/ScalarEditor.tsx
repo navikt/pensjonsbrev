@@ -164,17 +164,39 @@ export const AutoSavingTextField = (props: {
       )}
       rules={{
         required: props.fieldType.nullable ? false : "Må oppgis",
-        pattern:
-          props.fieldType.kind === "NUMBER"
-            ? {
-                value: /^\d+$/,
-                message: "Må være et tall",
-              }
-            : undefined,
+        pattern: valideringsmoenster(props),
       }}
     />
   );
 };
+
+function valideringsmoenster(props: {
+  prependName?: string;
+  field: string;
+  fieldType: TScalar;
+  type: "number" | "text";
+  step?: number;
+  timeoutTimer: number;
+  onSubmit?: () => void;
+}) {
+  switch (props.fieldType.kind) {
+    case "NUMBER":
+      return {
+        value: /^\d+$/,
+        message: "Må være et tall",
+      };
+    case "DOUBLE":
+    case "STRING":
+    case "BOOLEAN":
+    case "DATE":
+      return undefined;
+    case "YEAR":
+      return {
+        value: /^\d{4}$/,
+        message: "Må være et årstall, fire siffer",
+      };
+  }
+}
 
 /**
  * Componenten har mulighet til å autolagre endringer i feltet etter en gitt timeout dersom onSubmit sendes med.
