@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype
+import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.Beregningsmetode.*
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
@@ -11,14 +12,10 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.andelKap20_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.forholdstallLevealder
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.poengAar
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.poengArTeller
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.poengAre91
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.poengArf92
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.poengarNevner
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.redusertTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.sluttpoengtall
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.nyOpptjening_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.redusertTrygdetid_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BrukerSelectors.foedselsdato
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.borSammenMedBruker_safe
@@ -29,14 +26,15 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.epsPaInstitusjon_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.fengsel_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.helseinstitusjon_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TilleggspensjonVedVirkSelectors.pgaUngUfore_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.anvendtTT
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.nevnerProRata
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.nevnerTTEOS
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.tellerProRata
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.tellerTTEOS
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.YrkesskadeDetaljerVedVirkSelectors.yrkesskadeUforegrad
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.KravSelectors.erForstegangsbehandling
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.beregningsmetode
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.beregningsmetode_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.nevnerProRata_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.nevnerTTEOS
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.tellerProRata_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.tellerTTEOS
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregnetPensjonPerManedVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregningKap19VedVirk
@@ -44,10 +42,14 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.bruker
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.epsVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.institusjonsoppholdVedVirk
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.krav
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.tilleggspensjonVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidsdetaljerKap19VedVirk
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidsdetaljerKap20VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.yrkesskadeDetaljerVedVirk
 import no.nav.pensjon.brev.maler.fraser.common.AntallAarText
+import no.nav.pensjon.brev.maler.fraser.common.KronerText
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregingTabellKap19
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -357,357 +359,157 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                 }
             }
 
-            paragraph {
-                val harTilleggspensjon = tilleggspensjonVedVirk.notNull()
-                table(
-                    header = {
-                        column(columnSpan = 4) {
-                            textExpr(
-                                Bokmal to "Opplysninger brukt i beregningen per ".expr() + beregnetPensjonPerManedVedVirk.virkDatoFom.format(),
-                                Nynorsk to "Opplysningar brukte i berekninga frå ".expr() + beregnetPensjonPerManedVedVirk.virkDatoFom.format(),
-                                English to "Information used to calculate as of ".expr() + beregnetPensjonPerManedVedVirk.virkDatoFom.format(),
-                            )
-                        }
-                        column(alignment = RIGHT) { }
-                    }
-                ) {
+            includePhrase(
+                OpplysningerBruktIBeregingTabellKap19(
+                    trygdetidsdetaljerKap19VedVirk = trygdetidsdetaljerKap19VedVirk,
+                    tilleggspensjonVedVirk = tilleggspensjonVedVirk,
+                    beregnetPensjonPerManedVedVirk = beregnetPensjonPerManedVedVirk,
+                    beregningKap19VedVirk = beregningKap19VedVirk,
+                    beregningKap20VedVirk = beregningKap20VedVirk,
+                    yrkesskadeDetaljerVedVirk = yrkesskadeDetaljerVedVirk,
+                    alderspensjonVedVirk = alderspensjonVedVirk,
+                )
+            )
 
-                    showIf(
-                        beregnetPensjonPerManedVedVirk.flyktningstatusErBrukt
-                                and not(beregningKap19VedVirk.redusertTrygdetid)
-                                and not(beregningKap20VedVirk.redusertTrygdetid_safe.ifNull(false))
+            showIf(regelverkstype.isOneOf(AlderspensjonRegelverkstype.AP2016)) {
+                paragraph {
+                    text(
+                        Bokmal to "For den delen av pensjonen din som er beregnet etter nye regler (kapittel 20) har vi brukt disse opplysningene i beregningen vår:",
+                        Nynorsk to "For den delen av pensjonen din som er berekna etter nye reglar (kapittel 20), har vi brukt desse opplysningane i berekninga vår:",
+                        English to "We have used the following information to calculate the part of your pension that comes under the new provisions (Chapter 20):",
+                    )
+
+                    table(
+                        header = {
+                            //vedleggBeregnTabellOverskrift_001
+                            column(columnSpan = 4) {
+                                textExpr(
+                                    Bokmal to "Opplysninger brukt i beregningen per ".expr() + beregnetPensjonPerManedVedVirk.virkDatoFom.format(),
+                                    Nynorsk to "Opplysningar brukte i berekninga frå ".expr() + beregnetPensjonPerManedVedVirk.virkDatoFom.format(),
+                                    English to "Information used to calculate as of ".expr() + beregnetPensjonPerManedVedVirk.virkDatoFom.format(),
+                                )
+                            }
+                            column(alignment = RIGHT) { }
+                        }
                     ) {
-                        //tabellFlyktningstatus_002
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Du er innvilget flyktningstatus fra UDI",
-                                    Nynorsk to "Du er innvilga flyktningstatus frå UDI",
-                                    English to "You are registered with the status of a refugee granted by the UDI",
-                                )
-                            }
-                            cell { text(Bokmal to "Ja", Nynorsk to "Ja", English to "Yes") }
-                        }
-                    }
-
-                    val beregningsmetodeKap19 = trygdetidsdetaljerKap19VedVirk.beregningsmetode
-                    showIf(beregningsmetodeKap19.isOneOf(FOLKETRYGD, NORDISK)) {
-                        //tabellTT_002
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Trygdetid",
-                                    Nynorsk to "Trygdetid",
-                                    English to "National insurance coverage",
-                                )
-                            }
-                            cell { includePhrase(AntallAarText(trygdetidsdetaljerKap19VedVirk.anvendtTT)) }
-                        }
-
-                        showIf(tilleggspensjonVedVirk.notNull()) {
-                            //vedleggTabellKap19Sluttpoengtall_001
-                            ifNotNull(beregningKap19VedVirk.sluttpoengtall) {
-                                row {
-                                    cell {
-                                        text(
-                                            Bokmal to "Sluttpoengtall",
-                                            Nynorsk to "Sluttpoengtall",
-                                            English to "Final pension point score",
-                                        )
-                                    }
-                                    cell { eval(it.formatTwoDecimals()) }
-                                }
-                            }
-
-                            //vedleggTabellKap19PoengAr_001
-                            showIf(beregningsmetodeKap19.isOneOf(FOLKETRYGD)) {
-                                row {
-                                    cell {
-                                        text(
-                                            Bokmal to "Antall poengår",
-                                            Nynorsk to "Talet på poengår",
-                                            English to "Number of pension point earning years",
-                                        )
-                                    }
-                                    cell { includePhrase(AntallAarText(beregningKap19VedVirk.poengAar)) }
-                                }
-                            }
-
-                            //vedleggTabellKap19PoengArf92_001
-                            ifNotNull(beregningKap19VedVirk.poengArf92) {
-                                row {
-                                    cell {
-                                        text(
-                                            Bokmal to "Antall år med pensjonsprosent 45",
-                                            Nynorsk to "Talet på år med pensjonsprosent 45",
-                                            English to "Number of years calculated with pension percentage 45",
-                                        )
-                                    }
-                                    cell {
-                                        includePhrase(AntallAarText(it))
-                                    }
-                                }
-                            }
-
-                            ifNotNull(beregningKap19VedVirk.poengAre91) {
-                                row {
-                                    cell {
-                                        text(
-                                            Bokmal to "Antall år med pensjonsprosent 42",
-                                            Nynorsk to "Talet på år med pensjonsprosent 42",
-                                            English to "Number of years calculated with pension percentage 42",
-                                        )
-                                    }
-                                    cell {
-                                        includePhrase(AntallAarText(it))
-                                    }
-                                }
-                            }
-                        }
-                    }.orShowIf(beregningsmetodeKap19.isOneOf(EOS)) {
-                        //tabellTTNorgeEOS_001
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Samlet trygdetid i Norge og andre EØS-land",
-                                    Nynorsk to "Samla trygdetid i Noreg og andre EØS-land",
-                                    English to "Total national insurance coverage in Norway and other EEA countries",
-                                )
-                            }
-                            cell { includePhrase(AntallAarText(trygdetidsdetaljerKap19VedVirk.anvendtTT)) }
-                        }
-
-                        //tabellFaktiskTTBrokNorgeEOS_001
-                        ifNotNull(
-                            trygdetidsdetaljerKap19VedVirk.nevnerTTEOS,
-                            trygdetidsdetaljerKap19VedVirk.tellerTTEOS
-                        ) { teller, nevner ->
-
+                        showIf(
+                            beregnetPensjonPerManedVedVirk.flyktningstatusErBrukt
+                                    and not(beregningKap19VedVirk.redusertTrygdetid)
+                                    and not(beregningKap20VedVirk.redusertTrygdetid_safe.ifNull(false))
+                        ) {
+                            //tabellFlyktningstatus_002
                             row {
                                 cell {
                                     text(
-                                        Bokmal to "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og andre EØS-land",
-                                        Nynorsk to "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og andre EØS-land",
-                                        English to "The ratio between national insurance coverage in Norway and total insurance coverage in all EEA countries",
+                                        Bokmal to "Du er innvilget flyktningstatus fra UDI",
+                                        Nynorsk to "Du er innvilga flyktningstatus frå UDI",
+                                        English to "You are registered with the status of a refugee granted by the UDI",
                                     )
                                 }
-                                cell { eval(teller.format() + "/" + nevner.format()) }
+                                cell { text(Bokmal to "Ja", Nynorsk to "Ja", English to "Yes") }
                             }
                         }
-
-                        //vedleggTabellKap19SluttpoengtallEOS_001
-                        showIf(harTilleggspensjon) {
-                            ifNotNull(beregningKap19VedVirk.sluttpoengtall) {
-                                row {
-                                    cell {
-                                        text(
-                                            Bokmal to "Sluttpoengtall (EØS)",
-                                            Nynorsk to "Sluttpoengtal (EØS)",
-                                            English to "Final pension point score (EEA)",
-                                        )
-                                    }
-                                    cell { eval(it.formatTwoDecimals()) }
-                                }
-                            }
-                        }
-
-                        //vedleggTabellKap19PoengArf92EOS_001
-                        ifNotNull(beregningKap19VedVirk.poengArf92) {
+                        ifNotNull(trygdetidsdetaljerKap20VedVirk) { trygdetidsdetaljer ->
+                            //vedleggTabellKap20Trygdetid_001
                             row {
                                 cell {
                                     text(
-                                        Bokmal to "Antall år med pensjonsprosent 45 (EØS)",
-                                        Nynorsk to "Talet på år med pensjonsprosent 45 (EØS)",
-                                        English to "Number of years calculated with pension percentage 45 (EEA)",
+                                        Bokmal to "Trygdetid etter kapittel 20",
+                                        Nynorsk to "Trygdetid etter kapittel 20",
+                                        English to "National insurance coverage pursuant to Chapter 20",
                                     )
                                 }
-                                cell { includePhrase(AntallAarText(it)) }
+                                cell { includePhrase(AntallAarText(trygdetidsdetaljer.anvendtTT)) }
+                            }
+
+                            ifNotNull(trygdetidsdetaljer.beregningsmetode) { beregningsmetode ->
+
+                                //tabellFaktiskTTBrokNorgeEOS_001
+                                ifNotNull(
+                                    trygdetidsdetaljer.tellerTTEOS,
+                                    trygdetidsdetaljer.nevnerTTEOS
+                                ) { tellerTTEOS, nevnerTTEOS ->
+                                    showIf(beregningsmetode.isOneOf(EOS)) {
+                                        row {
+                                            cell {
+                                                text(
+                                                    Bokmal to "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og andre EØS-land",
+                                                    Nynorsk to "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og andre EØS-land",
+                                                    English to "The ratio between national insurance coverage in Norway and total insurance coverage in all EEA countries",
+                                                )
+                                            }
+                                            cell { eval(tellerTTEOS.format() + "/" + nevnerTTEOS.format()) }
+                                        }
+                                    }
+                                }
+
+                                //tabellTTBrokNorgeAvtaleland_001
+                                ifNotNull(
+                                    trygdetidsdetaljer.tellerProRata_safe,
+                                    trygdetidsdetaljer.nevnerProRata_safe
+                                ) { tellerProRata, nevnerProRata ->
+                                    showIf(beregningsmetode.isNotAnyOf(EOS, NORDISK, FOLKETRYGD)) {
+                                        row {
+                                            cell {
+                                                text(
+                                                    Bokmal to "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og avtaleland",
+                                                    Nynorsk to "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og avtaleland",
+                                                    English to "Ratio between actual period of national insurance coverage in Norway and period of national insurance coverage in Norway and countries with social security agreement",
+                                                )
+                                            }
+                                            cell { eval(tellerProRata.format() + "/" + nevnerProRata.format()) }
+                                        }
+                                    }
+                                }
                             }
                         }
 
-                        //vedleggTabellKap19PoengAre91EOS_001
-                        ifNotNull(beregningKap19VedVirk.poengAre91) {
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Antall år med pensjonsprosent 42 (EØS)",
-                                        Nynorsk to "Talet på år med pensjonsprosent 42 (EØS)",
-                                        English to "Number of years calculated with pension percentage 42 (EEA)",
-                                    )
+                        ifNotNull(beregningKap20VedVirk) { beregningKap20VedVirk ->
+                            //tabellBeholdningForForsteUttak_001
+                            showIf(krav.erForstegangsbehandling) {
+                                ifNotNull(beregningKap20VedVirk.beholdningForForsteUttak_safe) {
+                                    row {
+                                        cell {
+                                            text(
+                                                Bokmal to "Pensjonsbeholdning før førstegangsuttak",
+                                                Nynorsk to "Pensjonsbehaldning før førstegangsuttak",
+                                                English to "Accumulated pension capital before initial withdrawal",
+                                            )
+                                        }
+                                        cell { includePhrase(KronerText(it)) }
+                                    }
                                 }
-                                cell { includePhrase(AntallAarText(it)) }
                             }
-                        }
 
-                        //tabellPoengArBrokNorgeEOS_001
-                        ifNotNull(
-                            beregningKap19VedVirk.poengArTeller,
-                            beregningKap19VedVirk.poengarNevner
-                        ) { teller, nevner ->
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Forholdet mellom antall poengår i Norge og antall poengår i Norge og annet EØS-land",
-                                        Nynorsk to "Forholdet mellom talet på poengår i Noreg og talet på poengår i Noreg og anna EØS-land",
-                                        English to "The ratio between point earning years in Norway and total point earning years in all EEA countries",
-                                    )
-                                }
-                                cell { eval(teller.format() + "/" + nevner.format()) }
-                            }
-                        }
-                    }.orShow {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Samlet trygdetid i Norge og avtaleland",
-                                    Nynorsk to "Samla trygdetid i Noreg og avtaleland",
-                                    English to "Total period of national insurance coverage in Norway and countries with social security agreement",
-                                )
-                            }
-                            cell {
-                                includePhrase(AntallAarText(trygdetidsdetaljerKap19VedVirk.anvendtTT))
-                            }
-                        }
-
-                        ifNotNull(
-                            trygdetidsdetaljerKap19VedVirk.tellerProRata,
-                            trygdetidsdetaljerKap19VedVirk.nevnerProRata
-                        ) { teller, nevner ->
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og avtaleland",
-                                        Nynorsk to "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og avtaleland",
-                                        English to "Ratio between actual period of national insurance coverage in Norway and period of national insurance coverage in Norway and countries with social security agreement",
-                                    )
-                                }
-                                cell { eval(teller.format() + "/" + nevner.format()) }
-                            }
-                        }
-
-                        showIf(harTilleggspensjon) {
-                            //vedleggTabellKap19Sluttpoengtall Avtaleland_001
-                            ifNotNull(beregningKap19VedVirk.sluttpoengtall) {
+                            //vedleggTabellKap20NyOpptjening_001
+                            ifNotNull(beregningKap20VedVirk.nyOpptjening_safe) {
                                 row {
                                     cell {
                                         text(
-                                            Bokmal to "Sluttpoengtall (avtaleland)",
-                                            Nynorsk to "Sluttpoengtal (avtaleland)",
-                                            English to "Final pension point score (Norway and countries with social security agreement)",
+                                            Bokmal to "Ny opptjening",
+                                            Nynorsk to "Ny opptening",
+                                            English to "New accumulated pension capital",
                                         )
                                     }
-                                    cell {
-                                        eval(it.formatTwoDecimals())
-                                    }
+                                    cell { includePhrase(KronerText(it)) }
                                 }
                             }
 
-                            //vedleggTabellKap19PoengArf92Avtaleland_001
-                            ifNotNull(beregningKap19VedVirk.poengArf92) {
+                            showIf(beregningKap20VedVirk.delingstallLevealder.greaterThan(0.0)) {
                                 row {
                                     cell {
                                         text(
-                                            Bokmal to "Antall år med pensjonsprosent 45 (Norge og avtaleland)",
-                                            Nynorsk to "Talet på år med pensjonsprosent 45 (Noreg og avtaleland) ",
-                                            English to "Number of years calculated with pension percentage 45 (Norway and countries with social security agreement)",
+                                            Bokmal to "Delingstall ved levealdersjustering",
+                                            Nynorsk to "Delingstal ved levealdersjustering",
+                                            English to "Ratio for life expectancy adjustment",
                                         )
                                     }
-                                    cell {
-                                        includePhrase(AntallAarText(it))
-                                    }
-                                }
-                            }
-
-                            //vedleggTabellKap19PoengAre91Avtaleland_001
-                            ifNotNull(beregningKap19VedVirk.poengAre91) {
-                                row {
-                                    cell {
-                                        text(
-                                            Bokmal to "Antall år med pensjonsprosent 42 (Norge og avtaleland)",
-                                            Nynorsk to "Talet på år med pensjonsprosent 42 (Noreg og avtaleland)",
-                                            English to "Number of years calculated with pension percentage 42 (Norway and countries with social security agreement)",
-                                        )
-                                    }
-                                    cell {
-                                        includePhrase(AntallAarText(it))
-                                    }
-                                }
-                            }
-
-                            //tabellPoengArBrokNorgeAvtaleland_001
-                            ifNotNull(
-                                beregningKap19VedVirk.poengArTeller,
-                                beregningKap19VedVirk.poengarNevner
-                            ) { teller, nevner ->
-                                row {
-                                    cell {
-                                        text(
-                                            Bokmal to "Forholdet mellom antall poengår i Norge og antall poengår i Norge og avtaleland",
-                                            Nynorsk to "Forholdet mellom talet på poengår i Noreg og talet på poengår i Noreg og avtaleland ",
-                                            English to "Ratio between the number of point earning years in Norway and the number of point earning years in Norway and countries with social security agreement",
-                                        )
-                                    }
-                                    cell { eval(teller.format() + "/" + nevner.format()) }
+                                    cell { eval(beregningKap20VedVirk.delingstallLevealder.formatTwoDecimals()) }
                                 }
                             }
                         }
                     }
-
-                    //vedleggTabellKap19Forholdstall_001
-                    showIf(beregningKap19VedVirk.forholdstallLevealder.greaterThan(0.0)) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Forholdstall ved levealdersjustering",
-                                    Nynorsk to "Forholdstal ved levealdersjustering",
-                                    English to "Ratio for life expectancy adjustment",
-                                )
-                            }
-                            cell { eval(beregningKap19VedVirk.forholdstallLevealder.formatThreeDecimals()) }
-                        }
-                    }
-
-                    //tabellUngUfor_002
-                    showIf(tilleggspensjonVedVirk.pgaUngUfore_safe.ifNull(false)) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Ung ufør",
-                                    Nynorsk to "Ung ufør",
-                                    English to "Young disabled person",
-                                )
-                            }
-                            cell { text(Bokmal to "Ja", Nynorsk to "Ja", English to "Yes") }
-                        }
-                    }
-
-                    //tabellYrkesskadeUforegrad_001
-                    ifNotNull(yrkesskadeDetaljerVedVirk) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Yrkesskade uføregrad",
-                                    Nynorsk to "Yrkesskade uføregrad",
-                                    English to "Occupational injury - degree of disability",
-                                )
-                            }
-                            cell { eval(it.yrkesskadeUforegrad.format() + " %") }
-                        }
-                        
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Sluttpoengtall ved yrkesskade",
-                                    Nynorsk to "Sluttpoengtal ved yrkesskade",
-                                    English to "Final pension point score on occupational injury",
-                                )
-                            }
-                        }
-                    }
-
                 }
             }
-
-
         }
     )

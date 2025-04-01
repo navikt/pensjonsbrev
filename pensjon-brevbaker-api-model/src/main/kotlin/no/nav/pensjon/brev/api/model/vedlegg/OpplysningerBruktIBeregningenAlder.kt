@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 @Suppress("unused")
@@ -12,17 +13,22 @@ data class OpplysningerBruktIBeregningenAlderDto(
     val institusjonsoppholdVedVirk: InstitusjonsoppholdVedVirk?,
     val alderspensjonVedVirk: AlderspensjonVedVirk,
     val trygdetidsdetaljerKap19VedVirk: TrygdetidsdetaljerKap19VedVirk,
+    val trygdetidsdetaljerKap20VedVirk: TrygdetidsdetaljerKap20VedVirk?,
     val beregningKap19VedVirk: BeregningKap19VedVirk,
     val beregningKap20VedVirk: BeregningKap20VedVirk?,
     val tilleggspensjonVedVirk: TilleggspensjonVedVirk?,
     val yrkesskadeDetaljerVedVirk: YrkesskadeDetaljerVedVirk?,
     val epsVedVirk: EPSvedVirk?,
     val bruker: Bruker,
+    val krav: Krav,
 ) : BrevbakerBrevdata {
 
+    data class Krav(
+        val erForstegangsbehandling: Boolean,
+    )
     data class YrkesskadeDetaljerVedVirk(
         val yrkesskadeUforegrad: Int,
-        val sluttpoengtall: Int,
+        val sluttpoengtall: Double,
         val poengAr: Int,
         val poengArf92: Int,
         val poengAre91: Int,
@@ -39,10 +45,16 @@ data class OpplysningerBruktIBeregningenAlderDto(
         val poengAre91: Int?,
         val poengarNevner: Int?,
         val poengArTeller: Int?,
+        val skjermingsgrad: Int,
+        val forholdstall67Soeker: Double,
+        val uforegradVed67: Int,
         val forholdstallLevealder: Double,
     )
     data class BeregningKap20VedVirk(
         val redusertTrygdetid: Boolean,
+        val beholdningForForsteUttak: Kroner?,
+        val delingstallLevealder: Double,
+        val nyOpptjening: Kroner?,
     )
     data class TrygdetidsdetaljerKap19VedVirk(
         val beregningsmetode: Beregningsmetode,
@@ -51,6 +63,16 @@ data class OpplysningerBruktIBeregningenAlderDto(
         val nevnerTTEOS : Int?,
         val tellerProRata : Int?,
         val nevnerProRata : Int?,
+
+    )
+    data class TrygdetidsdetaljerKap20VedVirk(
+        val anvendtTT: Int,
+        val tellerTTEOS : Int?,
+        val nevnerTTEOS : Int?,
+        val tellerProRata : Int?,
+        val nevnerProRata : Int?,
+
+        val beregningsmetode: Beregningsmetode?,
 
     )
     data class Bruker(
@@ -62,6 +84,7 @@ data class OpplysningerBruktIBeregningenAlderDto(
         val andelKap19: Int?,
         val andelKap20: Int?,
         val uttaksgrad: Int,
+        val skjermingstilleggInnvilget : Boolean,
     )
     data class EPSvedVirk(
         val borSammenMedBruker: Boolean,
