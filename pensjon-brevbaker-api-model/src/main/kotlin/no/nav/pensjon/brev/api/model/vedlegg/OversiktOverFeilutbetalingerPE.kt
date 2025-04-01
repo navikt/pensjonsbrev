@@ -9,7 +9,7 @@ import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.LocalDate
 
 
-data class OversiktOverFeilutbetalingDto(
+data class OversiktOverFeilutbetalingPEDto(
     val sakstype: Sakstype,
     val bruttoTilbakekrevdTotalBeloep: Kroner,
     val feilutbetaltTotalBeloep: Kroner,
@@ -30,7 +30,7 @@ data class TilbakekrevingPerAar(
 )
 
 data class TilbakekrevingPerManed(
-    val maaned: String,
+    val maaned: Int,
     val tilbakekrevinger: List<Tilbakekreving>,
 )
 
