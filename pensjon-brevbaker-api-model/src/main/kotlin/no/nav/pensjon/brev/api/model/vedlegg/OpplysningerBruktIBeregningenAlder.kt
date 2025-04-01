@@ -15,12 +15,21 @@ data class OpplysningerBruktIBeregningenAlderDto(
     val beregningKap19VedVirk: BeregningKap19VedVirk,
     val beregningKap20VedVirk: BeregningKap20VedVirk?,
     val tilleggspensjonVedVirk: TilleggspensjonVedVirk?,
+    val yrkesskadeDetaljerVedVirk: YrkesskadeDetaljerVedVirk?,
     val epsVedVirk: EPSvedVirk?,
     val bruker: Bruker,
 ) : BrevbakerBrevdata {
 
+    data class YrkesskadeDetaljerVedVirk(
+        val yrkesskadeUforegrad: Int,
+        val sluttpoengtall: Int,
+        val poengAr: Int,
+        val poengArf92: Int,
+        val poengAre91: Int,
+    )
+
     data class TilleggspensjonVedVirk(
-        val test: Boolean, // TODO
+        val pgaUngUfore: Boolean,
     )
     data class BeregningKap19VedVirk(
         val redusertTrygdetid: Boolean,

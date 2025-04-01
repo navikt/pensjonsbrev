@@ -29,12 +29,14 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.epsPaInstitusjon_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.fengsel_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.helseinstitusjon_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TilleggspensjonVedVirkSelectors.pgaUngUfore_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.nevnerProRata
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.nevnerTTEOS
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.tellerProRata
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.tellerTTEOS
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.YrkesskadeDetaljerVedVirkSelectors.yrkesskadeUforegrad
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregnetPensjonPerManedVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregningKap19VedVirk
@@ -44,6 +46,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.institusjonsoppholdVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.tilleggspensjonVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidsdetaljerKap19VedVirk
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.yrkesskadeDetaljerVedVirk
 import no.nav.pensjon.brev.maler.fraser.common.AntallAarText
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -353,8 +356,6 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                     )
                 }
             }
-            title1 {
-            }
 
             paragraph {
                 val harTilleggspensjon = tilleggspensjonVedVirk.notNull()
@@ -520,7 +521,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                                         English to "Number of years calculated with pension percentage 45 (EEA)",
                                     )
                                 }
-                                cell { includePhrase(AntallAarText(it))}
+                                cell { includePhrase(AntallAarText(it)) }
                             }
                         }
 
@@ -534,13 +535,15 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                                         English to "Number of years calculated with pension percentage 42 (EEA)",
                                     )
                                 }
-                                cell { includePhrase(AntallAarText(it))}
+                                cell { includePhrase(AntallAarText(it)) }
                             }
                         }
 
                         //tabellPoengArBrokNorgeEOS_001
-                        ifNotNull(beregningKap19VedVirk.poengArTeller, beregningKap19VedVirk.poengarNevner) {
-                            teller, nevner ->
+                        ifNotNull(
+                            beregningKap19VedVirk.poengArTeller,
+                            beregningKap19VedVirk.poengarNevner
+                        ) { teller, nevner ->
                             row {
                                 cell {
                                     text(
@@ -566,8 +569,10 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                             }
                         }
 
-                        ifNotNull(trygdetidsdetaljerKap19VedVirk.tellerProRata, trygdetidsdetaljerKap19VedVirk.nevnerProRata) {
-                                teller, nevner ->
+                        ifNotNull(
+                            trygdetidsdetaljerKap19VedVirk.tellerProRata,
+                            trygdetidsdetaljerKap19VedVirk.nevnerProRata
+                        ) { teller, nevner ->
                             row {
                                 cell {
                                     text(
@@ -630,8 +635,10 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                             }
 
                             //tabellPoengArBrokNorgeAvtaleland_001
-                            ifNotNull(beregningKap19VedVirk.poengArTeller, beregningKap19VedVirk.poengarNevner) {
-                                    teller, nevner ->
+                            ifNotNull(
+                                beregningKap19VedVirk.poengArTeller,
+                                beregningKap19VedVirk.poengarNevner
+                            ) { teller, nevner ->
                                 row {
                                     cell {
                                         text(
@@ -656,9 +663,48 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                                     English to "Ratio for life expectancy adjustment",
                                 )
                             }
-                            cell { eval (beregningKap19VedVirk.forholdstallLevealder.formatThreeDecimals())}
+                            cell { eval(beregningKap19VedVirk.forholdstallLevealder.formatThreeDecimals()) }
                         }
                     }
+
+                    //tabellUngUfor_002
+                    showIf(tilleggspensjonVedVirk.pgaUngUfore_safe.ifNull(false)) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Ung ufør",
+                                    Nynorsk to "Ung ufør",
+                                    English to "Young disabled person",
+                                )
+                            }
+                            cell { text(Bokmal to "Ja", Nynorsk to "Ja", English to "Yes") }
+                        }
+                    }
+
+                    //tabellYrkesskadeUforegrad_001
+                    ifNotNull(yrkesskadeDetaljerVedVirk) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Yrkesskade uføregrad",
+                                    Nynorsk to "Yrkesskade uføregrad",
+                                    English to "Occupational injury - degree of disability",
+                                )
+                            }
+                            cell { eval(it.yrkesskadeUforegrad.format() + " %") }
+                        }
+                        
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Sluttpoengtall ved yrkesskade",
+                                    Nynorsk to "Sluttpoengtal ved yrkesskade",
+                                    English to "Final pension point score on occupational injury",
+                                )
+                            }
+                        }
+                    }
+
                 }
             }
 
