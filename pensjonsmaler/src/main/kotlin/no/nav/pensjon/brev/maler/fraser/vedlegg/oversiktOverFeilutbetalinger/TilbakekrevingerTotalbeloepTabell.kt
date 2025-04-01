@@ -1,25 +1,21 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalinger
 
-import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
-@TemplateModelHelpers
 
-data class TabellFeilutbetalingerTotalbeloep(
-    val bruttoTilbakekrevdTotalBeloep: Expression<Kroner>,
-    val nettoTilbakekrevdTotalBeloep: Expression<Kroner>,
-    val rentetilleggSomInnkrevesBeloep: Expression<Kroner>,
-    val skattefradragSomInnkrevesBeloep: Expression<Kroner>
+data class TilbakekrevingerTotalbeloepTabell(
+    val bruttoTilbakekrevdTotalbeloep: Expression<Kroner>,
+    val nettoTilbakekrevdTotalbeloep: Expression<Kroner>,
+    val rentetilleggSomInnkrevesBeloep: Expression<Kroner?>,
+    val skattefradragSomInnkrevesTotalbeloep: Expression<Kroner?>
 ): OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
@@ -45,11 +41,7 @@ data class TabellFeilutbetalingerTotalbeloep(
                         )
                     }
                     cell {
-                        textExpr(
-                            Bokmal to bruttoTilbakekrevdTotalBeloep.format() + " Kr",
-                            Nynorsk to bruttoTilbakekrevdTotalBeloep.format() + " Kr",
-                            English to bruttoTilbakekrevdTotalBeloep.format() + " NOK"
-                        )
+                        includePhrase(KronerText(bruttoTilbakekrevdTotalbeloep))
                     }
                 }
                 row {
@@ -61,13 +53,10 @@ data class TabellFeilutbetalingerTotalbeloep(
                         )
                     }
                     cell {
-                        textExpr(
-                            Bokmal to "- ".expr() + skattefradragSomInnkrevesBeloep.format() + " Kr",
-                            Nynorsk to "- ".expr() + skattefradragSomInnkrevesBeloep.format() + " Kr",
-                            English to "- ".expr() + skattefradragSomInnkrevesBeloep.format() + " NOK"
-                        )
+                            includePhrase(KronerText(skattefradragSomInnkrevesTotalbeloep.ifNull(Kroner(0))))
+                        }
                     }
-                }
+
                 row {
                     cell {
                         text(
@@ -78,12 +67,7 @@ data class TabellFeilutbetalingerTotalbeloep(
                         )
                     }
                     cell {
-                        textExpr(
-                            Bokmal to nettoTilbakekrevdTotalBeloep.format() + " Kr",
-                            Nynorsk to nettoTilbakekrevdTotalBeloep.format() + " Kr",
-                            English to nettoTilbakekrevdTotalBeloep.format() + " NOK",
-                            fontType = FontType.BOLD,
-                        )
+                        includePhrase(KronerText(nettoTilbakekrevdTotalbeloep))
                     }
                 }
                 row {
@@ -95,11 +79,7 @@ data class TabellFeilutbetalingerTotalbeloep(
                         )
                     }
                     cell {
-                        textExpr(
-                            Bokmal to rentetilleggSomInnkrevesBeloep.format() + " Kr",
-                            Nynorsk to rentetilleggSomInnkrevesBeloep.format() + " Kr",
-                            English to rentetilleggSomInnkrevesBeloep.format() + " NOK"
-                        )
+                        includePhrase(KronerText(rentetilleggSomInnkrevesBeloep.ifNull(Kroner(0))))
                     }
                 }
             }
