@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.alder
 
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
@@ -16,11 +17,17 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
+
+enum class Regelverk {
+    AP2016, AP2025
+}
+
 
 data class AvslagUttakFoerNormertPensjonsalderFelles(
     val afpBruktIBeregning: Expression<Boolean>,
@@ -30,6 +37,7 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
     val minstePensjonssats: Expression<Kroner>,
     val totalPensjon: Expression<Kroner>,
     val borINorge: Expression<Boolean>,
+    val regelverkType: Expression<AlderspensjonRegelverkType>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title2 {
@@ -56,12 +64,22 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
             )
         }
 
-        paragraph {
-            text(
-                Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-15 og 22-13.",
-                Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-15 og 22-13.",
-                English to "This decision was made pursuant to the provisions of §§ 20-15 and 22-13 of the National Insurance Act."
-            )
+        showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2025)) {
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-15 og 22-13.",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-15 og 22-13.",
+                    English to "This decision was made pursuant to the provisions of §§ 20-15 and 22-13 of the National Insurance Act."
+                )
+            }
+        }.orShowIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2016)) {
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-11, 19-15, 20-15 og 20-19.",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-11, 19-15, 20-15 og 20-19.",
+                    English to "This decision was made pursuant to the provisions of §§ 19-11, 19-15, 20-15 and 20-19 of the National Insurance Act."
+                )
+            }
         }
 
         title2 {

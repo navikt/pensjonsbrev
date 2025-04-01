@@ -60,3 +60,10 @@ enum class YtelseForAldersovergangKode {
     UT_AP_GRAD,
     UT_GRAD,
 }
+
+enum class AlderspensjonRegelverkType {
+    AP1967,
+    AP2011,
+    AP2016,
+    AP2025,
+}

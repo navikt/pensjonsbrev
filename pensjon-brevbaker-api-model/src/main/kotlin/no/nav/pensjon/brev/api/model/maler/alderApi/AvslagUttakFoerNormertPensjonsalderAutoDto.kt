@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.api.model.maler.alderApi
 
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
-
 
 @Suppress("unused")
 data class AvslagUttakFoerNormertPensjonsalderAutoDto(
@@ -16,6 +16,21 @@ data class AvslagUttakFoerNormertPensjonsalderAutoDto(
     val borINorge: Boolean,
     val harEOSLand: Boolean,
     val vedtakBegrunnelseLavOpptjening: Boolean,
+    val regelverkType: AlderspensjonRegelverkType = AlderspensjonRegelverkType.AP2025
+) : BrevbakerBrevdata
+
+@Suppress("unused")
+data class AvslagUttakFoerNormertPensjonsalderAP2016AutoDto(
+    val minstePensjonssats: Kroner,
+    val normertPensjonsalder: NormertPensjonsalder,
+    val virkFom: LocalDate,
+    val totalPensjon: Kroner,
+    val afpBruktIBeregning: Boolean,
+    val opplysningerBruktIBeregningen: OpplysningerBruktIBeregningen,
+    val borINorge: Boolean,
+    val harEOSLand: Boolean,
+    val vedtakBegrunnelseLavOpptjening: Boolean,
+    val regelverkType: AlderspensjonRegelverkType = AlderspensjonRegelverkType.AP2016
 ) : BrevbakerBrevdata
 
 data class NormertPensjonsalder(
