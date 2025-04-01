@@ -37,6 +37,7 @@ interface VedtakSidemenyFormData {
 const VedtakWrapper = () => {
   const { saksId, brevId } = Route.useParams();
   const navigate = useNavigate({ from: Route.fullPath });
+  const { vedtaksId, enhetsId } = Route.useSearch();
 
   const hentBrevQuery = useQuery({
     queryKey: getBrev.queryKey(Number.parseInt(brevId)),
@@ -69,7 +70,13 @@ const VedtakWrapper = () => {
         return (
           <ReservertBrevError
             doRetry={hentBrevQuery.refetch}
-            onNeiClick={() => navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId } })}
+            onNeiClick={() =>
+              navigate({
+                to: "/saksnummer/$saksId/brevbehandler",
+                params: { saksId },
+                search: { vedtaksId, enhetsId },
+              })
+            }
             reservasjon={err.response.data as ReservasjonResponse}
           />
         );
@@ -164,6 +171,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           navigate({
             to: "/saksnummer/$saksId/vedtak/$brevId/forhandsvisning",
             params: { saksId: props.saksId, brevId: props.brev.info.id.toString() },
+            search: { vedtaksId: undefined, enhetsId: props.brev.info.avsenderEnhet?.enhetNr?.toString() },
           }),
         ),
       )}
@@ -222,6 +230,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 navigate({
                   to: "/saksnummer/$saksId/brevbehandler",
                   params: { saksId: props.saksId },
+                  search: { vedtaksId: undefined, enhetsId: undefined },
                 })
               }
               reservasjon={reservasjonQuery.data}

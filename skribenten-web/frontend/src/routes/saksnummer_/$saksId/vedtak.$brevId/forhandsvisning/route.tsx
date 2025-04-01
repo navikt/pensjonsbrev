@@ -90,6 +90,10 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
                 navigate({
                   to: "/saksnummer/$saksId/vedtak/$brevId/redigering",
                   params: { saksId: props.saksId, brevId: props.brev.info.id.toString() },
+                  search: {
+                    vedtaksId: props.brev.info.vedtaksId?.toString() ?? undefined,
+                    enhetsId: props.brev.info.avsenderEnhet?.enhetNr.toString() ?? undefined,
+                  },
                 })
               }
               size="small"
@@ -150,6 +154,10 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
       navigate({
         to: "/saksnummer/$saksId/vedtak/$brevId/kvittering",
         params: { saksId: props.saksId, brevId: props.brevId },
+        search: {
+          vedtaksId: brevResponse.info.vedtaksId?.toString() ?? undefined,
+          enhetsId: brevResponse.info.avsenderEnhet?.enhetNr.toString() ?? undefined,
+        },
       }),
   });
 

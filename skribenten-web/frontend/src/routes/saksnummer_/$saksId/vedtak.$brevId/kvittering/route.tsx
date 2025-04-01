@@ -14,6 +14,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId/vedtak/$brevId/kvitte
 const Kvittering = () => {
   const isProd = import.meta.env.PROD;
   const { saksId, brevId } = Route.useParams();
+  const { vedtaksId, enhetsId } = Route.useSearch();
   const { resultat } = useSendtBrevResultatContext();
 
   const brukeroversiktQ2Url = `https://pensjon-psak-q2.dev.adeo.no/psak/bruker/brukeroversikt.jsf?sakId=${saksId}`;
@@ -58,7 +59,11 @@ const Kvittering = () => {
           </VStack>
         </VStack>
         <BodyShort>Ingen informasjon om brevsending</BodyShort>
-        <Link params={{ saksId, brevId }} to={"/saksnummer/$saksId/vedtak/$brevId/forhandsvisning"}>
+        <Link
+          params={{ saksId, brevId }}
+          search={{ vedtaksId, enhetsId }}
+          to={"/saksnummer/$saksId/vedtak/$brevId/forhandsvisning"}
+        >
           Tilbake til forhåndsvisning
         </Link>
       </Box>
