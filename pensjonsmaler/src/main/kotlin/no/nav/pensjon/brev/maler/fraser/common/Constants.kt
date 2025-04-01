@@ -33,6 +33,7 @@ object Constants {
     val navKontaktsenterPensjon = TelefonnummerImpl("55553334")
     val NAV_KONTAKTSENTER_TELEFON_PENSJON = navKontaktsenterPensjon.format()
     const val OMSORGSOPPTJENING_URL = "$NAV_URL/omsorgsopptjening"
+    const val OMSTILLINGSSTOENAD_URL = "$NAV_URL/omstillingsstonad"
     const val PENSJON_ENDRING_URL = "$NAV_URL/pensjon-endring"
     const val GRUNNBELOEP_URL = "$NAV_URL/grunnbelop"
     const val REGULERING_ALDERSPENSJON_URL = "$NAV_URL/reguleringalderspensjon"
