@@ -21,6 +21,8 @@ data class OpplysningerBruktIBeregningenAlderDto(
     val inngangOgEksportVurdering: InngangOgEksportVurdering?,
     val epsVedVirk: EPSvedVirk?,
     val trygdetidNorge: List<Trygdetid>,
+    val trygdetidEOS: List<Trygdetid>,
+    val trygdetidAvtaleland: List<Trygdetid>,
     val bruker: Bruker,
     val krav: Krav,
 ) : BrevbakerBrevdata {
@@ -28,6 +30,7 @@ data class OpplysningerBruktIBeregningenAlderDto(
     data class Trygdetid(
         val fom: LocalDate?,
         val tom: LocalDate?,
+        val land: String?,
     )
     data class InngangOgEksportVurdering(
         val eksportBeregnetUtenGarantipensjon: Boolean,

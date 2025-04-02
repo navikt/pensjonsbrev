@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.AP2011
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.AP2016
 import no.nav.pensjon.brev.api.model.Beregningsmetode
+import no.nav.pensjon.brev.api.model.Beregningsmetode.*
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.brukersSivilstand
@@ -25,6 +26,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.fengsel_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.helseinstitusjon_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidSelectors.fom
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidSelectors.land
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidSelectors.tom
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.beregningsmetode_safe
@@ -38,12 +40,15 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.institusjonsoppholdVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.krav
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.tilleggspensjonVedVirk
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidAvtaleland
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidEOS
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidNorge
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidsdetaljerKap19VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidsdetaljerKap20VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.yrkesskadeDetaljerVedVirk
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregingTabellKap19
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningTabellKap20
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
@@ -382,8 +387,8 @@ val vedleggOpplysningerBruktIBeregningenAlder =
             // ReturnValue("3");
 
             showIf(
-                (trygdetidsdetaljerKap19VedVirk.beregningsmetode.notEqualTo(Beregningsmetode.FOLKETRYGD)
-                        and trygdetidsdetaljerKap20VedVirk.beregningsmetode_safe.notEqualTo(Beregningsmetode.FOLKETRYGD))
+                (trygdetidsdetaljerKap19VedVirk.beregningsmetode.notEqualTo(FOLKETRYGD)
+                        and trygdetidsdetaljerKap20VedVirk.beregningsmetode_safe.notEqualTo(FOLKETRYGD))
                         or beregningKap19VedVirk.redusertTrygdetid
                         or beregningKap20VedVirk.redusertTrygdetid_safe.ifNull(false)
             ) {
@@ -442,51 +447,40 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                             Nynorsk to "Tabellen nedanfor viser periodar vi har registrert at du har budd og/eller arbeidd i Noreg. Desse opplysningane er brukte for å fastsetje den norske trygdetida di.",
                             English to "The table below shows the time periods when you have been registered as living and/or working in Norway. This information has been used to establish your Norwegian national insurance coverage.",
                         )
-                        table(
-                            {
-                                column {
-                                    text(
-                                        Bokmal to "Fra og med",
-                                        Nynorsk to "Frå og med",
-                                        English to "Start date",
-                                    )
-                                }
-                                column {
-                                    text(
-                                        Bokmal to "Til og med",
-                                        Nynorsk to "Til og med",
-                                        English to "End date",
-                                    )
-                                }
-                            }
-                        ) {
-                            forEach(trygdetidNorge) { trygedtid ->
-                                row {
-                                    cell {
-                                        ifNotNull(trygedtid.fom) {
-                                            eval(it.format(short = true))
-                                        }
-                                    }
-                                    cell {
-                                        ifNotNull(trygedtid.tom) {
-                                            eval(it.format(short = true))
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     }
+                    includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetid(trygdetidNorge))
                 }
             }
 
 
-            //
             showIf(
-                trygdetidsdetaljerKap19VedVirk.beregningsmetode.equals(Beregningsmetode.EOS)
-                    or trygdetidsdetaljerKap20VedVirk.beregningsmetode_safe.equals(Beregningsmetode.EOS)
+                trygdetidEOS.size().greaterThan(0)
+                        and (trygdetidsdetaljerKap19VedVirk.beregningsmetode.equalTo(EOS)
+                        or trygdetidsdetaljerKap20VedVirk.beregningsmetode_safe.equalTo(EOS))
             ) {
+                paragraph {
+                    text(
+                        Bokmal to "Tabellen nedenfor viser perioder du har bodd og/eller arbeidet i øvrige EØS-land. Disse periodene er brukt i vurderingen av retten til alderspensjon før fylte 67 år.",
+                        Nynorsk to "Tabellen nedanfor viser periodar du har budd og/eller arbeidd i øvrige EØS-land. Desse periodane er brukt i vurderinga av retten til alderspensjon før fylte 67 år.",
+                        English to "The table below shows your National Insurance coverage in other EEC-countries. These periods have been used to assess whether you are eligible for retirement pension before the age of 67.",
+                    )
+                }
 
+                includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.UtenlandskTrygdetid(trygdetidEOS))
+            }
 
+            showIf(
+                trygdetidsdetaljerKap19VedVirk.beregningsmetode.isNotAnyOf(EOS, FOLKETRYGD, NORDISK)
+                and trygdetidsdetaljerKap20VedVirk.beregningsmetode_safe.ifNull(EOS).isNotAnyOf(EOS, FOLKETRYGD, NORDISK)
+            ) {
+                paragraph {
+                    text(
+                        Bokmal to "Trygdetiden din i avtaleland er fastsatt på grunnlag av følgende perioder:",
+                        Nynorsk to "Trygdetida di i avtaleland er fastsett på grunnlag av følgjande periodar:",
+                        English to "Your period of national insurance coverage in a signatory country is based on the following periods:",
+                    )
+                }
+                includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.UtenlandskTrygdetid(trygdetidAvtaleland))
             }
 
 
