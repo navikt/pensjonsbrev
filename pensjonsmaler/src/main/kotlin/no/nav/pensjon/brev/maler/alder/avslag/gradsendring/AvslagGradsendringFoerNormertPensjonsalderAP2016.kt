@@ -1,42 +1,45 @@
 package no.nav.pensjon.brev.maler.alder.avslag.gradsendring
 
+import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.afpBruktIBeregning
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.borINorge
+import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.harEOSLand
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.minstePensjonssats
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.normertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.opplysningerBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.virkFom
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.harEOSLand
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.vedtakBegrunnelseLavOpptjening
+import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.virkFom
+import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016Dto
+import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016DtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP
-import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
 
 @TemplateModelHelpers
-object AvslagGradsendringFoerNormertPensjonsalder2016Auto : AutobrevTemplate<AvslagUttakFoerNormertPensjonsalderAP2016AutoDto> {
+object AvslagGradsendringFoerNormertPensjonsalderAP2016 : RedigerbarTemplate<AvslagUttakFoerNormertPensjonsalderAP2016Dto> {
 
-    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_AVSLAG_GRAD_FOER_NORMERT_PENSJONSALDER_AP2016_AUTO
+    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORMERT_PENSJONSALDER_AP2016
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = AvslagUttakFoerNormertPensjonsalderAP2016AutoDto::class,
+        letterDataType = AvslagUttakFoerNormertPensjonsalderAP2016Dto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag endring av uttaksgrad - AP2016",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-            brevtype = VEDTAKSBREV,
+            brevtype = INFORMASJONSBREV, // todo: skal være vedtaksbrev (når attestering er ferdig)
         )
     ) {
         title {
@@ -50,16 +53,16 @@ object AvslagGradsendringFoerNormertPensjonsalder2016Auto : AutobrevTemplate<Avs
         outline {
             includePhrase(
                 AvslagGradsendringFoerNormertPensjonsalderFelles(
-                    afpBruktIBeregning = afpBruktIBeregning,
-                    normertPensjonsalder = normertPensjonsalder,
-                    opplysningerBruktIBeregningen = opplysningerBruktIBeregningen,
-                    virkFom = virkFom,
-                    minstePensjonssats = minstePensjonssats,
-                    totalPensjon = totalPensjon,
-                    borINorge = borINorge,
-                    harEOSLand = harEOSLand,
-                    vedtakBegrunnelseLavOpptjening = vedtakBegrunnelseLavOpptjening,
-                    regelverkType = regelverkType
+                    afpBruktIBeregning = pesysData.afpBruktIBeregning,
+                    normertPensjonsalder = pesysData.normertPensjonsalder,
+                    opplysningerBruktIBeregningen = pesysData.opplysningerBruktIBeregningen,
+                    virkFom = pesysData.virkFom,
+                    minstePensjonssats = pesysData.minstePensjonssats,
+                    totalPensjon = pesysData.totalPensjon,
+                    borINorge = pesysData.borINorge,
+                    harEOSLand = pesysData.harEOSLand,
+                    vedtakBegrunnelseLavOpptjening = pesysData.vedtakBegrunnelseLavOpptjening,
+                    regelverkType = pesysData.regelverkType,
                 )
             )
         }
@@ -67,8 +70,15 @@ object AvslagGradsendringFoerNormertPensjonsalder2016Auto : AutobrevTemplate<Avs
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
         includeAttachment(
             template = opplysningerBruktIBeregningenAP,
-            attachmentData = opplysningerBruktIBeregningen,
-            predicate = vedtakBegrunnelseLavOpptjening
+            attachmentData = pesysData.opplysningerBruktIBeregningen,
+            predicate = pesysData.vedtakBegrunnelseLavOpptjening
         )
     }
+
+    override val kategori: TemplateDescription.Brevkategori =
+        TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+
+    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
+
+    override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
 }
