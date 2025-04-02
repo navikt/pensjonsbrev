@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.alder.avslag.gradsendring
 
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningen
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
@@ -24,6 +25,7 @@ data class AvslagGradsendringFoerNormertPensjonsalderFelles(
     val borINorge: Expression<Boolean>,
     val harEOSLand: Expression<Boolean>,
     val vedtakBegrunnelseLavOpptjening: Expression<Boolean>,
+    val regelverkType: Expression<AlderspensjonRegelverkType>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title2 {
@@ -44,10 +46,15 @@ data class AvslagGradsendringFoerNormertPensjonsalderFelles(
                     totalPensjon = totalPensjon,
                     borINorge = borINorge,
                     harEOSLand = harEOSLand,
+                    regelverkType = regelverkType
                 )
             )
         }.orShow {
-            includePhrase(InnholdSoeknadFoerEttAar)
+            includePhrase(
+                InnholdSoeknadFoerEttAar(
+                    regelverkType = regelverkType
+                )
+            )
         }
 
         includePhrase(Felles.RettTilAAKlage(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
