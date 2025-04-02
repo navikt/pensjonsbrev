@@ -1,12 +1,24 @@
 package no.nav.pensjon.brev.maler.alder.vedlegg
 
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.andelGammeltRegelverk
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.andelNyttRegelverk
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.avslattKap19
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.delingstallVedNormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.delingstallVedUttak
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.fodselsAar
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.forholdstall
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.forholdstallVed67
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.innvilgetTillegspensjon
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.kravAarsak
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.normertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.pensjonsbeholdning
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.poengAar
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.poengAarE91
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.poengAarF92
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.redusertTrygdetidKap19
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.redusertTrygdetidKap20
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.sisteOpptjeningsAar
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.sluttpoengTall
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.trygdeperioderNorge
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.trygdeperioderUtland
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.trygdetid
@@ -21,7 +33,9 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -30,7 +44,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 @TemplateModelHelpers
-val opplysningerBruktIBeregningenAP2025 =
+val opplysningerBruktIBeregningenAP2016 =
     createAttachment(
         title = newText(
             Bokmal to "Opplysninger brukt i beregningen",
@@ -38,11 +52,190 @@ val opplysningerBruktIBeregningenAP2025 =
             English to "Information used in the calculation"
         ),
     ) {
+        showIf(avslattKap19.not()) {
+            paragraph {
+                textExpr(
+                    Bokmal to "Du som er født i perioden 1954 - 1962 får en kombinasjon av alderspensjon etter gamle ".expr() +
+                            "og nye regler i folketrygdloven (kapittel 19 og 20). Fordi du er født i " + fodselsAar.format() + " får du " +
+                            "beregnet " + andelGammeltRegelverk.format() + "/10 av pensjonen etter gamle regler, og " + andelNyttRegelverk.format() + "/10 etter nye regler.",
+                    Nynorsk to "Du som er fødd i perioden 1954-1962 får ein kombinasjon av alderspensjon etter gamle ".expr() +
+                            "og nye reglar i folketrygdlova (kapittel 19 og 20). Fordi du er fødd i " + fodselsAar.format() + ", får du " +
+                            "berekna " + andelGammeltRegelverk.format() + "/10 av pensjonen etter gamle reglar, og " + andelNyttRegelverk.format() + "/10 etter nye reglar.",
+                    English to "Individuals born between 1954 and 1962 will receive a combination of retirement pension calculated on the basis of both old ".expr() +
+                            "and new provisions in the National Insurance Act (Chapters 19 and 20). Because you are born in " + fodselsAar.format() +
+                            ", " + andelGammeltRegelverk.format() + "/10 of your pension is calculated on the basis of the old provisions, " +
+                            "and " + andelNyttRegelverk.format() + "/10 is calculated on the basis of new provisions.",
+                )
+            }
+
+            title2 {
+                textExpr(
+                    Bokmal to "Opplysninger til grunn for beregning etter gamle regler (kapittel 19) per ".expr() + virkFom.format(),
+                    Nynorsk to "Opplysningar til grunn for berekning etter gamle reglar (kapittel 19) per ".expr() + virkFom.format(),
+                    English to "Information used in the calculation on the basis of the old provisions (Chapter 19) as of ".expr() + virkFom.format()
+                )
+            }
+
+            paragraph {
+                table(header = {
+                    column {
+                        text(
+                            Bokmal to "Opplysning",
+                            Nynorsk to "Opplysning",
+                            English to "Information",
+                        )
+                    }
+                    column(alignment = RIGHT) {}
+                }) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Trygdetid etter kapittel 19",
+                                Nynorsk to "Trygdetid etter kapittel 19",
+                                English to "National insurance coverage pursuant to Chapter 19"
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to trygdetid.format() + " år".expr(),
+                                Nynorsk to trygdetid.format() + " år".expr(),
+                                English to trygdetid.format() + " years".expr()
+                            )
+                        }
+                    }
+                    showIf(innvilgetTillegspensjon.equalTo(true)) {
+                        ifNotNull(sluttpoengTall) { sluttpoeng ->
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Sluttpoengtall",
+                                        Nynorsk to "Sluttpoengtal",
+                                        English to "Final pension point score"
+                                    )
+                                }
+                                cell {
+                                    textExpr(
+                                        Bokmal to sluttpoeng.format() + " år".expr(),
+                                        Nynorsk to sluttpoeng.format() + " år".expr(),
+                                        English to sluttpoeng.format() + " years".expr()
+                                    )
+                                }
+                            }
+                        }
+                        ifNotNull(poengAar) { antallPoengAar ->
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Antall poengår",
+                                        Nynorsk to "Talet på poengår",
+                                        English to "Number of pension point earning years"
+                                    )
+                                }
+                                cell {
+                                    textExpr(
+                                        Bokmal to antallPoengAar.format() + " år".expr(),
+                                        Nynorsk to antallPoengAar.format() + " år".expr(),
+                                        English to antallPoengAar.format() + " years".expr()
+                                    )
+                                }
+                            }
+                        }
+                        ifNotNull(poengAarF92) { antallPoengAar ->
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Antall år med pensjonsprosent 45",
+                                        Nynorsk to "Talet på år med pensjonsprosent 45",
+                                        English to "Number of years calculated with pension percentage 45"
+                                    )
+                                }
+                                cell {
+                                    textExpr(
+                                        Bokmal to antallPoengAar.format() + " år".expr(),
+                                        Nynorsk to antallPoengAar.format() + " år".expr(),
+                                        English to antallPoengAar.format() + " years".expr()
+                                    )
+                                }
+                            }
+                        }
+                        ifNotNull(poengAarE91) { antallPoengAar ->
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Antall år med pensjonsprosent 42",
+                                        Nynorsk to "Talet på år med pensjonsprosent 42",
+                                        English to "Number of years calculated with pension percentage 42"
+                                    )
+                                }
+                                cell {
+                                    textExpr(
+                                        Bokmal to antallPoengAar.format() + " år".expr(),
+                                        Nynorsk to antallPoengAar.format() + " år".expr(),
+                                        English to antallPoengAar.format() + " years".expr()
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Ønsket uttaksgrad",
+                                Nynorsk to "Ønska uttaksgrad",
+                                English to "Pension level applied for"
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to uttaksgrad.format() + " %",
+                                Nynorsk to uttaksgrad.format() + " %",
+                                English to uttaksgrad.format() + " %"
+                            )
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Forholdstall ved uttak",
+                                Nynorsk to "Forholdstal ved uttak",
+                                English to "Ratio at withdrawal"
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to forholdstall.format(ForholdstallFormat),
+                                Nynorsk to forholdstall.format(ForholdstallFormat),
+                                English to forholdstall.format(ForholdstallFormat),
+                            )
+                        }
+                    }
+                    showIf(uttaksgrad.lessThan(100)) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Forholdstall ved 67 år",
+                                    Nynorsk to "Forholdstal ved 67 år",
+                                    English to "Ratio adjustment at age 67"
+                                )
+                            }
+                            cell {
+                                textExpr(
+                                    Bokmal to forholdstallVed67.format(ForholdstallFormat),
+                                    Nynorsk to forholdstallVed67.format(ForholdstallFormat),
+                                    English to forholdstallVed67.format(ForholdstallFormat)
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         title2 {
             textExpr(
-                Bokmal to "Opplysninger som ligger til grunn for beregningen per ".expr() + virkFom.format(),
-                Nynorsk to "Opplysningar som ligg til grunn for berekninga per ".expr() + virkFom.format(),
-                English to "Information that provides the basis for the calculation as of ".expr() + virkFom.format()
+                Bokmal to "Opplysninger til grunn for beregning etter nye regler (kapittel 20) per ".expr() + virkFom.format(),
+                Nynorsk to "Opplysningar til grunn for berekning etter nye reglar (kapittel 20) per ".expr() + virkFom.format(),
+                English to "Information used in the calculation on the basis of the new provisions (Chapter 20) as of ".expr() + virkFom.format()
             )
         }
 
@@ -57,20 +250,22 @@ val opplysningerBruktIBeregningenAP2025 =
                 }
                 column(alignment = RIGHT) {}
             }) {
-                row {
-                    cell {
-                        text(
-                            Bokmal to "Trygdetid",
-                            Nynorsk to "Trygdetid",
-                            English to "National insurance coverage"
-                        )
-                    }
-                    cell {
-                        textExpr(
-                            Bokmal to trygdetid.format() + " år".expr(),
-                            Nynorsk to trygdetid.format() + " år".expr(),
-                            English to trygdetid.format() + " years".expr()
-                        )
+                showIf(avslattKap19.not()) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Trygdetid",
+                                Nynorsk to "Trygdetid",
+                                English to "National insurance coverage"
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to trygdetid.format() + " år".expr(),
+                                Nynorsk to trygdetid.format() + " år".expr(),
+                                English to trygdetid.format() + " years".expr()
+                            )
+                        }
                     }
                 }
                 row {
@@ -121,7 +316,7 @@ val opplysningerBruktIBeregningenAP2025 =
                         )
                     }
                 }
-                showIf(uttaksgrad.notEqualTo(100)) {
+                showIf(uttaksgrad.lessThan(100)) {
                     ifNotNull(delingstallVedNormertPensjonsalder) { delingstall ->
                         row {
                             cell {
@@ -182,12 +377,20 @@ val opplysningerBruktIBeregningenAP2025 =
             )
         }
 
-        showIf(redusertTrygdetidKap20) {
+        showIf((redusertTrygdetidKap19 or redusertTrygdetidKap20) and avslattKap19.not()) {
             paragraph {
                 text(
                     Bokmal to "Trygdetid baserer seg på perioder du har bodd og/eller arbeidet i Norge, og har betydning for beregning avpensjonen din. Full trygdetid er 40 år.",
                     Nynorsk to "Trygdetid baserer seg på periodar du har budd og/eller arbeidd i Noreg, og har betydning for berekning avpensjonen din. Full trygdetid er 40 år.",
                     English to "The period of national insurance coverage is based on periods you have lived and/or worked in Norway, and these years affect pension eligibility. Full pension eligibility is 40 years."
+                )
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "scott copy",
+                    Nynorsk to "scott copy",
+                    English to "scott copy",
                 )
             }
 
@@ -299,3 +502,9 @@ val opplysningerBruktIBeregningenAP2025 =
             }
         }
     }
+
+private object ForholdstallFormat : LocalizedFormatter<Double>() {
+    override fun stableHashCode(): Int = "ForholdstallFormat".hashCode()
+    override fun apply(first: Double, second: Language): String =
+        String.format(second.locale(), "%.3f", first)
+}
