@@ -363,6 +363,9 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                 )
             }
 
+            // TODO en sjekk som kanskje ikke gir mening:
+            //
+
 
         }
     )
