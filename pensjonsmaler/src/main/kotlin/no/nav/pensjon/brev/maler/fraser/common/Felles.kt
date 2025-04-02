@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
-import java.awt.SystemColor.text
 
 
 object Felles {

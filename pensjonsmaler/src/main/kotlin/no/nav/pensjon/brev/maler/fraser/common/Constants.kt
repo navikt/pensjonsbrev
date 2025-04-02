@@ -10,6 +10,7 @@ object Constants {
     const val ALDERSPENSJON_GJENLEVENDE_URL = "$NAV_URL/alderspensjon-gjenlevende"
     const val AFP_OFFENTLIG_URL = "$NAV_URL/afp-offentlig"
     const val ARBEID_URL= "$NAV_URL/arbeid"
+    const val BARNEPENSJON_URL = "$NAV_URL/barnepensjon"
     const val BESKJED_TIL_NAV_URL = "$NAV_URL/beskjedtilnav"
     const val DIN_UFOERETRYGD_URL = "$NAV_URL/dinuføretrygd"
     const val DIN_PENSJON_URL = "$NAV_URL/dinpensjon"
