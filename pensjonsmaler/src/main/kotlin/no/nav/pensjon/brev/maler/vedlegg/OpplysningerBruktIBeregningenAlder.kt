@@ -1,31 +1,44 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.AP2011
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.AP2016
+import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.brukersSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.andelKap19_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.andelKap20_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.erEksportberegnet
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.redusertTrygdetid
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.redusertTrygdetid_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BrukerSelectors.foedselsdato
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.borSammenMedBruker_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.harInntektOver2G_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.mottarPensjon_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InngangOgEksportVurderingSelectors.eksportBeregnetUtenGarantipensjon_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.aldersEllerSykehjem_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.ensligPgaInst_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.epsPaInstitusjon_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.fengsel_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.helseinstitusjon_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidSelectors.fom
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidSelectors.tom
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.beregningsmetode_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregnetPensjonPerManedVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregningKap19VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregningKap20VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.bruker
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.epsVedVirk
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.inngangOgEksportVurdering
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.institusjonsoppholdVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.krav
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.tilleggspensjonVedVirk
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidNorge
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidsdetaljerKap19VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidsdetaljerKap20VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.yrkesskadeDetaljerVedVirk
@@ -300,7 +313,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
             }
 
             val foedselsaar = bruker.foedselsdato.year
-            showIf(regelverkstype.isOneOf(AlderspensjonRegelverkstype.AP2016)) {
+            showIf(regelverkstype.isOneOf(AP2016)) {
                 val andelKap19orZero = alderspensjonVedVirk.andelKap19_safe.ifNull(0)
                 val andelKap20orZero = alderspensjonVedVirk.andelKap20_safe.ifNull(0)
                 //vedleggBelopAP2016Oversikt_001
@@ -329,7 +342,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                 )
             }
 
-            showIf(regelverkstype.isOneOf(AlderspensjonRegelverkstype.AP2016)) {
+            showIf(regelverkstype.isOneOf(AP2016)) {
                 paragraph {
                     text(
                         Bokmal to "For den delen av pensjonen din som er beregnet etter regler i kapittel 19 har vi brukt disse opplysningene i beregningen vår:",
@@ -351,7 +364,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                 )
             )
 
-            showIf(regelverkstype.isOneOf(AlderspensjonRegelverkstype.AP2016)) {
+            showIf(regelverkstype.isOneOf(AP2016)) {
                 includePhrase(
                     OpplysningerBruktIBeregningTabellKap20(
                         beregnetPensjonPerManedVedVirk = beregnetPensjonPerManedVedVirk,
@@ -364,7 +377,117 @@ val vedleggOpplysningerBruktIBeregningenAlder =
             }
 
             // TODO en sjekk som kanskje ikke gir mening:
+            //kategori = GetValue("fag=aldersovergangKategoriListe=aldersovergangKategori=kategori");
+            // if (kategori == "")
+            // ReturnValue("3");
+
+            showIf(
+                (trygdetidsdetaljerKap19VedVirk.beregningsmetode.notEqualTo(Beregningsmetode.FOLKETRYGD)
+                        and trygdetidsdetaljerKap20VedVirk.beregningsmetode_safe.notEqualTo(Beregningsmetode.FOLKETRYGD))
+                        or beregningKap19VedVirk.redusertTrygdetid
+                        or beregningKap20VedVirk.redusertTrygdetid_safe.ifNull(false)
+            ) {
+                //trygdetidOverskrift_001
+                title1 {
+                    text(
+                        Bokmal to "Trygdetid",
+                        Nynorsk to "Trygdetid",
+                        English to "Period of national insurance coverage",
+                    )
+                }
+                //norskTTInfoGenerell_001
+                paragraph {
+                    text(
+                        Bokmal to "Trygdetid er perioder du har vært medlem i folketrygden. Som hovedregel er dette perioder du har bodd eller arbeidet i Norge. Trygdetid har betydning for beregning av pensjonen din. Full trygdetid er 40 år.",
+                        Nynorsk to "Trygdetid er periodar du har vore medlem i folketrygda. Som hovudregel er dette periodar du har budd eller arbeidd i Noreg. Trygdetid har betydning for berekninga av pensjonen din. Full trygdetid er 40 år.",
+                        English to "The period of national insurance coverage is the periods in which you have been a member of the Norwegian National Insurance Scheme. As a general rule, these are periods when you have been registered as living or working in Norway. The period of national insurance coverage affects the calculation of your pension. The full insurance period is 40 years.",
+                    )
+                }
+                //norskTTAP2016_002
+                showIf(regelverkstype.isOneOf(AP2016)) {
+                    paragraph {
+                        text(
+                            Bokmal to "Reglene for fastsetting av trygdetid er litt ulike i kapittel 19 og kapittel 20 i folketrygdloven. Du kan få trygdetid for perioder fra fylte 16 til 67 år som du har vært medlem i folketrygden. Etter kapittel 19 kan du i tillegg få trygdetid for år med pensjonspoeng, også fra fylte 67 til 75 år. Trygdetiden etter kapittel 19 kan derfor være høyere enn trygdetid etter kapittel 20 i enkelte tilfeller.",
+                            Nynorsk to "Reglane for fastsetjing av trygdetid er ulike i kapittel 19 og kapittel 20 i folketrygdlova. Du kan få trygdetid for periodar frå fylte 16 til 67 år, som du har vore medlem i folketrygda. Etter kapittel 19 kan du i tillegg få trygdetid for år med pensjonspoeng, også frå fylte 67 til 75 år. Trygdetida etter kapittel 19 kan derfor være høgare enn trygdetida etter kapittel 20 i enkelte tilfelle.",
+                            English to "The provisions pertaining to accumulated pension rights differ in Chapters 19 and 20 in the National Insurance Act. In general, the period of national insurance coverage is the periods in which you have been a member of the Norwegian National Insurance Scheme between the ages of 16 and 67. In addition, you accumulate national insurance coverage by earning pension points, until the year you turn 75, pursuant to Chapter 19. Consequently, national insurance coverage pursuant to Chapter 19 may, in some cases, be higher than years pursuant to Chapter 20.",
+                        )
+                    }
+                }
+                //norskTTAP2011Botid_001
+                showIf(alderspensjonVedVirk.erEksportberegnet and regelverkstype.isOneOf(AP2011)) {
+                    paragraph {
+                        text(
+                            Bokmal to "Har du vært medlem i folketrygden i mindre enn 20 år skal trygdetiden etter kapittel 19 fastsettes til antall år med pensjonspoeng. Du har mindre enn 20 års medlemstid og trygdetiden din etter kapittel 19 er derfor fastsatt til antall år med pensjonspoeng.",
+                            Nynorsk to "Har du vore medlem i folketrygda i mindre enn 20 år skal trygdetida etter kapittel 19 fastsetjast til antal år med pensjonspoeng. Du har mindre enn 20 års medlemstid og trygdetida di etter kapitel 19 er difor fastsett til antal år med pensjonspoeng.",
+                            English to "If you have been a member of the Norwegian National Insurance Scheme for less than 20 years in total, your national insurance coverage pursuant to chapter 19 will be the same as number of years you have accumulated pensionable earnings. You have been a member for less than 20 years in total and your period of national insurance coverage pursuant to chapter 19 is the same as number of years you have accumulated pensionable earnings.",
+                        )
+                    }
+                }
+
+                //norskTTAP2016Eksport_001
+                showIf(inngangOgEksportVurdering.eksportBeregnetUtenGarantipensjon_safe.ifNull(false)) {
+                    paragraph {
+                        text(
+                            Bokmal to "Hvis du har mindre enn 20 års medlemstid, har du ikke rett på garantipensjon når du er bosatt i utlandet.",
+                            Nynorsk to "Dersom du har mindre enn 20 års medlemstid, har du ikkje rett på garantipensjon når du bur i utlandet.",
+                            English to "If you have been a member of the Norwegian National Insurance Scheme for less than 20 years in total, you are not eligible for any guaranteed pension when you live abroad.",
+                        )
+                    }
+                }
+
+                showIf(trygdetidNorge.size().greaterThan(0)) {
+                    paragraph {
+                        text(
+                            Bokmal to "Tabellen nedenfor viser perioder vi har registrert at du har bodd og/eller arbeidet i Norge. Disse opplysningene er brukt for å fastsette din norske trygdetid.",
+                            Nynorsk to "Tabellen nedanfor viser periodar vi har registrert at du har budd og/eller arbeidd i Noreg. Desse opplysningane er brukte for å fastsetje den norske trygdetida di.",
+                            English to "The table below shows the time periods when you have been registered as living and/or working in Norway. This information has been used to establish your Norwegian national insurance coverage.",
+                        )
+                        table(
+                            {
+                                column {
+                                    text(
+                                        Bokmal to "Fra og med",
+                                        Nynorsk to "Frå og med",
+                                        English to "Start date",
+                                    )
+                                }
+                                column {
+                                    text(
+                                        Bokmal to "Til og med",
+                                        Nynorsk to "Til og med",
+                                        English to "End date",
+                                    )
+                                }
+                            }
+                        ) {
+                            forEach(trygdetidNorge) { trygedtid ->
+                                row {
+                                    cell {
+                                        ifNotNull(trygedtid.fom) {
+                                            eval(it.format(short = true))
+                                        }
+                                    }
+                                    cell {
+                                        ifNotNull(trygedtid.tom) {
+                                            eval(it.format(short = true))
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
             //
+            showIf(
+                trygdetidsdetaljerKap19VedVirk.beregningsmetode.equals(Beregningsmetode.EOS)
+                    or trygdetidsdetaljerKap20VedVirk.beregningsmetode_safe.equals(Beregningsmetode.EOS)
+            ) {
+
+
+            }
 
 
         }

@@ -18,11 +18,20 @@ data class OpplysningerBruktIBeregningenAlderDto(
     val beregningKap20VedVirk: BeregningKap20VedVirk?,
     val tilleggspensjonVedVirk: TilleggspensjonVedVirk?,
     val yrkesskadeDetaljerVedVirk: YrkesskadeDetaljerVedVirk?,
+    val inngangOgEksportVurdering: InngangOgEksportVurdering?,
     val epsVedVirk: EPSvedVirk?,
+    val trygdetidNorge: List<Trygdetid>,
     val bruker: Bruker,
     val krav: Krav,
 ) : BrevbakerBrevdata {
 
+    data class Trygdetid(
+        val fom: LocalDate?,
+        val tom: LocalDate?,
+    )
+    data class InngangOgEksportVurdering(
+        val eksportBeregnetUtenGarantipensjon: Boolean,
+    )
     data class Krav(
         val erForstegangsbehandling: Boolean,
     )
@@ -85,7 +94,9 @@ data class OpplysningerBruktIBeregningenAlderDto(
         val andelKap20: Int?,
         val uttaksgrad: Int,
         val skjermingstilleggInnvilget : Boolean,
+        val erEksportberegnet : Boolean,
     )
+
     data class EPSvedVirk(
         val borSammenMedBruker: Boolean,
         val mottarPensjon: Boolean,
