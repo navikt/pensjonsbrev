@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalinger
+package no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalingerTabeller
 
 import no.nav.pensjon.brev.api.model.KonteringType
 import no.nav.pensjon.brev.api.model.TilbakekrevingResultat

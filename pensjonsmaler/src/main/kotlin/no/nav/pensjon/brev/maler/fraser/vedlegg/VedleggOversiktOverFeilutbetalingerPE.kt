@@ -5,8 +5,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSele
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.nettoUtenRenterTilbakekrevdTotalbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.rentetilleggSomInnkrevesTotalbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.skattefradragSomInnkrevesTotalbeloep
-import no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalinger.TilbakekrevingerTabell
-import no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalinger.TilbakekrevingerTotalbeloepTabell
+import no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalingerTabeller.TilbakekrevingerTabell
+import no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalingerTabeller.TilbakekrevingerTotalbeloepTabell
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.Language.*

@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalinger
+package no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalingerTabeller
 
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
