@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Language.*
 
 
-data class KonteringTypeTilbakekrevingYtelse(
+data class KonteringTypeYtelseTextMappingStorBokstav(
     val ytelsenMedFeilutbetaling: Expression<KonteringType>
 ) : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
