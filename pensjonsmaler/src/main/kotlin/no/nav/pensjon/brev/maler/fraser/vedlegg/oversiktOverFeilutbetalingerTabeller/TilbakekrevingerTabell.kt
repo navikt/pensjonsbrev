@@ -1,13 +1,13 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalingerTabeller
 
-import no.nav.pensjon.brev.api.model.KonteringType
-import no.nav.pensjon.brev.api.model.TilbakekrevingResultat
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.bruttobeloepTilbakekrevd
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.feilutbetaltBeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.maanedOgAar
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.nettobeloepUtenRenterTilbakekrevd
+import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.resultatAvVurderingen
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.skattefradragSomInnkreves
+import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.ytelsenMedFeilutbetaling
 import no.nav.pensjon.brev.maler.fraser.common.KonteringTypeYtelseTextMappingStorBokstav
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.maler.fraser.common.ResultatAvVurderingenTextMappingStorBokstav
@@ -26,8 +26,6 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 
 data class TilbakekrevingerTabell(
     val tilbakekreving: Expression<List<OversiktOverFeilutbetalingPEDto.Tilbakekreving>>,
-    val ytelsenMedFeilutbetaling: Expression<KonteringType>,
-    val resultatAvVurderingen: Expression<TilbakekrevingResultat>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         forEach(tilbakekreving) { tilbakekreves ->
@@ -42,7 +40,7 @@ data class TilbakekrevingerTabell(
                             )
                             includePhrase(
                                 KonteringTypeYtelseTextMappingStorBokstav(
-                                    ytelsenMedFeilutbetaling = ytelsenMedFeilutbetaling
+                                    ytelsenMedFeilutbetaling = tilbakekreves.ytelsenMedFeilutbetaling
                                 )
                             )
                             text(
@@ -52,7 +50,7 @@ data class TilbakekrevingerTabell(
                             )
                             includePhrase(
                                 ResultatAvVurderingenTextMappingStorBokstav(
-                                    resultatAvVurderingen = resultatAvVurderingen
+                                    resultatAvVurderingen = tilbakekreves.resultatAvVurderingen
                                 )
                             )
 

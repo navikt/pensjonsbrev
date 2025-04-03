@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.feilutbetaltTotalBeloep
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.harMotregning
+import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.oversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.resultatAvVurderingenForTotalBeloep
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.sluttPeriodeForTilbakekreving
@@ -14,6 +15,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbeta
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.sumTilInnkrevingTotalBeloep
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalingerPE
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -26,7 +28,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-// Conditional for inclusion is if incorrect payment is to be repaid, in full or in part -> TilbakekrevingResultat = FULL_TILBAKEKREV || DELVIS_TILBAKEKREV
+// Conditional for inclusion is if an incorrect pension benefit payment is to be repaid, in full or in part -> TilbakekrevingResultat = FULL_TILBAKEKREV || DELVIS_TILBAKEKREV
 object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvFeilutbetaltBeloepDto> {
 
     // MF_000190
@@ -247,6 +249,8 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
             includePhrase(Felles.HarDuSpoersmaal.alder)
             // vedlegg: oversiktOverFeilutbetalingerPE
             // vedlegg: Dine rettigheter og mulighet til å klage
+
         }
+        includeAttachment(oversiktOverFeilutbetalingerPE, pesysData.oversiktOverFeilutbetalingPEDto)
     }
 }

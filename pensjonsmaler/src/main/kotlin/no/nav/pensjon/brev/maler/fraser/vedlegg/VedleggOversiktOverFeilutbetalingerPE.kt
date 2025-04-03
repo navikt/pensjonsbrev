@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSele
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.nettoUtenRenterTilbakekrevdTotalbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.rentetilleggSomInnkrevesTotalbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.skattefradragSomInnkrevesTotalbeloep
+import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.tilbakekrevingPerMaaned
 import no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalingerTabeller.TilbakekrevingerTabell
 import no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalingerTabeller.TilbakekrevingerTotalbeloepTabell
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -33,9 +34,7 @@ val oversiktOverFeilutbetalingerPE = createAttachment<LangBokmalNynorskEnglish, 
     )
     includePhrase(
         TilbakekrevingerTabell(
-            tilbakekreving = tilbakekreving,
-            ytelsenMedFeilutbetaling = ytelsenMedFeilutbetaling,
-            resultatAvVurderingen = resultatAvVurderingen
+            tilbakekreving = tilbakekrevingPerMaaned
         )
     )
 }
