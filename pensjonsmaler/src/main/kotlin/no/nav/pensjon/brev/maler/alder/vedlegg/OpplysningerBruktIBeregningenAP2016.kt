@@ -380,17 +380,23 @@ val opplysningerBruktIBeregningenAP2016 =
         showIf((redusertTrygdetidKap19 or redusertTrygdetidKap20) and avslattKap19.not()) {
             paragraph {
                 text(
-                    Bokmal to "Trygdetid baserer seg på perioder du har bodd og/eller arbeidet i Norge, og har betydning for beregning avpensjonen din. Full trygdetid er 40 år.",
-                    Nynorsk to "Trygdetid baserer seg på periodar du har budd og/eller arbeidd i Noreg, og har betydning for berekning avpensjonen din. Full trygdetid er 40 år.",
-                    English to "The period of national insurance coverage is based on periods you have lived and/or worked in Norway, and these years affect pension eligibility. Full pension eligibility is 40 years."
+                    Bokmal to "Trygdetid baserer seg på perioder du har bodd og/eller arbeidet i Norge, og har betydning for beregning avpensjonen din. Full trygdetid er 40 år." +
+                    " Unntaket kan være hvis du har pensjonsopptjening fra et land Norge har trygdeavtale med.",
+                    Nynorsk to "Trygdetid baserer seg på periodar du har budd og/eller arbeidd i Noreg, og har betydning for berekning avpensjonen din. Full trygdetid er 40 år." +
+                    " Unntaket kan vere om du har pensjonsopptening frå eit land Noreg har trygdeavtale med.",
+                    English to "The period of national insurance coverage is based on periods you have lived and/or worked in Norway, and these years affect pension eligibility. Full pension eligibility is 40 years." +
+                            " The exception may be if you have pension accrual from a country that Norway has a social security agreement with."
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "scott copy",
-                    Nynorsk to "scott copy",
-                    English to "scott copy",
+                    Bokmal to "Reglene for fastsetting av trygdetid er litt ulike i kapittel 19 og kapittel 20 i folketrygdloven. " +
+                            "Derfor kan trygdetid etter kapittel 19 i enkelte tilfeller være høyere enn trygdetid etter kapittel 20.",
+                    Nynorsk to "Reglane for fastsetjing av trygdetid er ulike i kapittel 19 og kapittel 20 i folketrygdlova. " +
+                            "Derfor kan trygdetid etter kapittel 19 i enkelte tilfelle vere høgare enn trygdetid etter kapittel 20.",
+                    English to "The provisions pertaining to accumulated pension rights differ in Chapters 19 and 20 in the National Insurance Act. " +
+                            "Consequently, national insurance coverage pursuant to Chapter 19 may, in some cases, be higher than years pursuant to Chapter 20.",
                 )
             }
 
