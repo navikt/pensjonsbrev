@@ -77,7 +77,7 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                     item {
                         textExpr(
                             Bokmal to "For å kunne ta ut alderspensjon før du fyller ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
-                                    ", må pensjonen din minst utgjøre ".expr() + minstePensjonssats.format() + " kroner i året.",
+                                    ", må pensjonen din minst være ".expr() + minstePensjonssats.format() + " kroner i året.",
                             Nynorsk to "For å kunne ta ut alderspensjon før du fyller ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
                                     ", må pensjonen din minst vere ".expr() + minstePensjonssats.format() + " kroner i året.",
                             English to "For you to be eligible for retirement pension before the age of ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
@@ -163,9 +163,9 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
         }
         paragraph {
             text(
-                Bokmal to "I vedlegg 2 finner du en tabell som viser opplysninger brukt i beregningen.",
-                Nynorsk to "I vedlegg 2 finn du ein tabell som viser opplysningar brukt i berekninga.",
-                English to "Appendix 2 includes a table with information about how your pension is calculated."
+                Bokmal to "I vedlegget «Opplysninger brukt i beregningen» finner du en tabell som viser hvilke opplysninger vi har brukt.",
+                Nynorsk to "I vedlegget «Opplysningar brukt i berekninga» finn du ein tabell som viser kva opplysningar vi har brukt.",
+                English to "In the appendix «Information used in the calculation» you will find a table showing the data we have used."
             )
         }
         title2 {
