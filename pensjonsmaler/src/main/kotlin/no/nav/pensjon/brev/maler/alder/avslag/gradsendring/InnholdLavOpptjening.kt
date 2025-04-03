@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.alder.avslag.gradsendring
 
 
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
@@ -31,6 +32,7 @@ data class InnholdLavOpptjening(
     val totalPensjon: Expression<Kroner>,
     val borINorge: Expression<Boolean>,
     val harEOSLand: Expression<Boolean>,
+    val regelverkType : Expression<AlderspensjonRegelverkType>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -46,13 +48,22 @@ data class InnholdLavOpptjening(
                         " percent from ".expr() + virkFom.format() + ". Therefore, we have declined your application.",
             )
         }
-
-        paragraph {
-            text(
-                Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-15 og 22-13.",
-                Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-15 og 22-13.",
-                English to "This decision was made pursuant to the provisions of §§ 20-15 and 22-13 of the National Insurance Act."
-            )
+        showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2025)) {
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-15 og 22-13.",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-15 og 22-13.",
+                    English to "This decision was made pursuant to the provisions of §§ 20-15 and 22-13 of the National Insurance Act."
+                )
+            }
+        }.orShowIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2016)) {
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-11, 19-15, 20-15 og 20-19.",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-11, 19-15, 20-15 og 20-19.",
+                    English to "This decision was made pursuant to the provisions of §§ 19-11, 19-15, 20-15 og 20-19 of the National Insurance Act."
+                )
+            }
         }
 
         showIf(harEOSLand and opplysningerBruktIBeregningen.prorataBruktIBeregningen) {
