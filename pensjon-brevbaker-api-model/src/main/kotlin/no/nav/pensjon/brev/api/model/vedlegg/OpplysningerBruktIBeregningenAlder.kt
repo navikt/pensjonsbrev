@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.vedlegg
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
+import no.nav.pensjon.brev.api.model.PoengTallsType
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -25,8 +26,22 @@ data class OpplysningerBruktIBeregningenAlderDto(
     val trygdetidAvtaleland: List<Trygdetid>,
     val bruker: Bruker,
     val krav: Krav,
+    val poengrekkeVedVirk: PoengrekkeVedVirk?,
 ) : BrevbakerBrevdata {
 
+    data class PoengrekkeVedVirk(
+        val erPopulert: Boolean,
+        val inneholderOmsorgspoeng: Boolean,
+        val pensjonspoeng: List<Pensjonspoeng>,
+    ) {
+        data class Pensjonspoeng(
+            val pensjonsgivendeinntekt: Kroner,
+            val grunnbelopVeiet: Kroner,
+            val arstall: Int,
+            val pensjonspoeng: Double,
+            val poengtallstype: PoengTallsType,
+        )
+    }
     data class Trygdetid(
         val fom: LocalDate?,
         val tom: LocalDate?,
@@ -118,6 +133,7 @@ data class OpplysningerBruktIBeregningenAlderDto(
         val virkDatoFom: LocalDate,
         val brukersSivilstand: MetaforceSivilstand,
         val flyktningstatusErBrukt: Boolean,
+        val tilleggspensjon: Kroner?,
     )
 
 }
