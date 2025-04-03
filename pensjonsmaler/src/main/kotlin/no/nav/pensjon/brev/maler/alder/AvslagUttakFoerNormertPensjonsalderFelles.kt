@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
+import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -19,6 +20,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -163,9 +165,15 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
         }
         paragraph {
             text(
-                Bokmal to "I vedlegget «Opplysninger brukt i beregningen» finner du en tabell som viser hvilke opplysninger vi har brukt.",
-                Nynorsk to "I vedlegget «Opplysningar brukt i berekninga» finn du ein tabell som viser kva opplysningar vi har brukt.",
-                English to "In the appendix «Information used in the calculation» you will find a table showing the data we have used."
+                Bokmal to "I vedlegget ",
+                Nynorsk to "I vedlegget ",
+                English to "In the appendix "
+            )
+            namedReference(opplysningerBruktIBeregningenAP)
+            text(
+                Bokmal to " finner du en tabell som viser hvilke opplysninger vi har brukt.",
+                Nynorsk to " finn du ein tabell som viser kva opplysningar vi har brukt.",
+                English to " you will find a table showing the data we have used."
             )
         }
         title2 {
