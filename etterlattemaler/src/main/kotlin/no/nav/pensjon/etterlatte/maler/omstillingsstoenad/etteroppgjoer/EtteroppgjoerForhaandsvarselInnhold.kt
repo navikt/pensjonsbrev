@@ -15,29 +15,22 @@ import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 
-
 data class EtteroppgjoerVarselData(
     val type: String
 )
 
-data class EtteroppgjoerVarselDTO(
-    override val innhold: List<Element>,
-    val data: EtteroppgjoerVarselData,
-) : FerdigstillingBrevDTO
-
-data class EtteroppgjoerVarselRedigerbartBrevDTO(val type: String) : RedigerbartUtfallBrevDTO
-
+data class EtteroppgjoerForhaandsvarselRedigerbartBrevDTO(val type: String) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
-object EtteroppgjoerVarselTilbakekrevingInnhold : EtterlatteTemplate<EtteroppgjoerVarselRedigerbartBrevDTO>, Delmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_EO_VARSEL_TILBAKEKREVING_INNHOLD
+object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerForhaandsvarselRedigerbartBrevDTO>, Delmal {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_EO_FORHAANDSVARSEL_INNHOLD
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = EtteroppgjoerVarselRedigerbartBrevDTO::class,
+        letterDataType = EtteroppgjoerForhaandsvarselRedigerbartBrevDTO::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Varsel tilbakekreving etteroppgjør innhold",
+            displayTitle = "Etteroppgjør Forhåndsvarsel Innhold",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
