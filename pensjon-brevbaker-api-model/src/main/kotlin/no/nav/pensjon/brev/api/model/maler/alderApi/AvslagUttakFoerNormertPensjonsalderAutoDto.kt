@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.alderApi
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.LocalDate
 
 @Suppress("unused")
@@ -59,7 +60,22 @@ data class OpplysningerBruktIBeregningen(
     val normertPensjonsalder: NormertPensjonsalder,
     val sisteOpptjeningsAar: Int?,
     val prorataBruktIBeregningen: Boolean,
-    val redusertTrygdetid: Boolean,
+    val redusertTrygdetidKap20: Boolean,
     val trygdeperioderNorge: List<TrygdeperiodeNorge>,
-    val trygdeperioderUtland: List<TrygdeperiodeUtland>
+    val trygdeperioderUtland: List<TrygdeperiodeUtland>,
+
+    // nye felter
+    val fodselsAar: Year,
+    val andelNyttRegelverk: Int,
+    val andelGammeltRegelverk: Int,
+    val avslattKap19: Boolean,
+    val sluttpoengTall: Int?,
+    val innvilgetTillegspensjon: Boolean?,
+    val poengAar: Int?,
+    val poengAarF92: Int?,
+    val poengAarE91: Int?,
+    val forholdstall: Double,
+    val forholdstallVed67: Double,
+    val kravAarsak: String?,
+    val redusertTrygdetidKap19: Boolean,
 )
