@@ -13,7 +13,7 @@ data class AvslagUttakFoerNormertPensjonsalderAutoDto(
     val virkFom: LocalDate,
     val totalPensjon: Kroner,
     val afpBruktIBeregning: Boolean,
-    val opplysningerBruktIBeregningen: OpplysningerBruktIBeregningen,
+    val opplysningerBruktIBeregningenAP2025: OpplysningerBruktIBeregningenAP2025,
     val borINorge: Boolean,
     val harEOSLand: Boolean,
     val vedtakBegrunnelseLavOpptjening: Boolean,
@@ -27,7 +27,7 @@ data class AvslagUttakFoerNormertPensjonsalderAP2016AutoDto(
     val virkFom: LocalDate,
     val totalPensjon: Kroner,
     val afpBruktIBeregning: Boolean,
-    val opplysningerBruktIBeregningen: OpplysningerBruktIBeregningen,
+    val opplysningerBruktIBeregningen: OpplysningerBruktIBeregningenAP2016,
     val borINorge: Boolean,
     val harEOSLand: Boolean,
     val vedtakBegrunnelseLavOpptjening: Boolean,
@@ -50,7 +50,23 @@ data class TrygdeperiodeUtland(
     val land: String
 )
 
-data class OpplysningerBruktIBeregningen(
+data class OpplysningerBruktIBeregningenAP2025(
+    val virkFom: LocalDate,
+    val uttaksgrad: Int,
+    val trygdetid: Int,
+    val pensjonsbeholdning: Kroner,
+    val delingstallVedUttak: Double,
+    val delingstallVedNormertPensjonsalder: Double?,
+    val normertPensjonsalder: NormertPensjonsalder,
+    val sisteOpptjeningsAar: Int?,
+    val prorataBruktIBeregningen: Boolean,
+    val redusertTrygdetidKap20: Boolean,
+    val trygdeperioderNorge: List<TrygdeperiodeNorge>,
+    val trygdeperioderUtland: List<TrygdeperiodeUtland>,
+)
+
+
+data class OpplysningerBruktIBeregningenAP2016(
     val virkFom: LocalDate,
     val uttaksgrad: Int,
     val trygdetid: Int,

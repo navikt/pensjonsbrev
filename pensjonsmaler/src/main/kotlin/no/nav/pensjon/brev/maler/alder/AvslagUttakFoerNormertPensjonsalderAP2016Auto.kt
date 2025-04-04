@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
-import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP
+import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2016
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -66,6 +66,6 @@ object AvslagUttakFoerNormertPensjonsalderAP2016Auto : AutobrevTemplate<AvslagUt
         }
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
-        includeAttachment(opplysningerBruktIBeregningenAP, opplysningerBruktIBeregningen)
+        includeAttachment(opplysningerBruktIBeregningenAP2016, opplysningerBruktIBeregningen)
     }
 }

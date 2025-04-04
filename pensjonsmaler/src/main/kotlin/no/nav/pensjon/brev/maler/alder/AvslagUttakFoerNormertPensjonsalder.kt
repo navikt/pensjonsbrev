@@ -71,7 +71,6 @@ object AvslagUttakFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUttakFoerN
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
         includeAttachment(opplysningerBruktIBeregningenAP2025, pesysData.opplysningerBruktIBeregningen)
-        includeAttachment(opplysningerBruktIBeregningenAP2016, pesysData.opplysningerBruktIBeregningen)
     }
 
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
