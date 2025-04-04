@@ -76,7 +76,8 @@ internal fun createMaanedligPensjonFoerSkatt() = MaanedligPensjonFoerSkattDto(
         kombinertMedAvdod = true,
         pgaYrkesskade = true,
         pgaUngUfore = true,
-        pgaUngUforeAvdod = true
+        pgaUngUforeAvdod = true,
+        pgaYrkesskadeAvdod = true,
     ),
     saerskiltSatsGjeldende = MaanedligPensjonFoerSkattDto.SaerskiltSatsGjeldende(
         saerskiltSatsErBrukt = true
