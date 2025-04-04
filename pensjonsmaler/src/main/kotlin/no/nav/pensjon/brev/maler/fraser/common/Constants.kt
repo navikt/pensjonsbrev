@@ -10,6 +10,7 @@ object Constants {
     const val ALDERSPENSJON_GJENLEVENDE_URL = "$NAV_URL/alderspensjon-gjenlevende"
     const val AFP_OFFENTLIG_URL = "$NAV_URL/afp-offentlig"
     const val ARBEID_URL= "$NAV_URL/arbeid"
+    const val BARNEPENSJON_URL = "$NAV_URL/barnepensjon"
     const val BESKJED_TIL_NAV_URL = "$NAV_URL/beskjedtilnav"
     const val DIN_UFOERETRYGD_URL = "$NAV_URL/dinuføretrygd"
     const val DIN_PENSJON_URL = "$NAV_URL/dinpensjon"
@@ -33,6 +34,7 @@ object Constants {
     val navKontaktsenterPensjon = TelefonnummerImpl("55553334")
     val NAV_KONTAKTSENTER_TELEFON_PENSJON = navKontaktsenterPensjon.format()
     const val OMSORGSOPPTJENING_URL = "$NAV_URL/omsorgsopptjening"
+    const val OMSTILLINGSSTOENAD_URL = "$NAV_URL/omstillingsstonad"
     const val PENSJON_ENDRING_URL = "$NAV_URL/pensjon-endring"
     const val GRUNNBELOEP_URL = "$NAV_URL/grunnbelop"
     const val REGULERING_ALDERSPENSJON_URL = "$NAV_URL/reguleringalderspensjon"
