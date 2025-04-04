@@ -7,7 +7,12 @@ import type { AxiosError } from "axios";
 import { useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { getBrev, getBrevReservasjon, oppdaterAttestantSignatur, oppdaterSaksbehandlerValg } from "~/api/brev-queries";
+import {
+  getBrevAttestering,
+  getBrevReservasjon,
+  oppdaterAttestantSignatur,
+  oppdaterSaksbehandlerValg,
+} from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
 import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
 import { ApiError } from "~/components/ApiError";
@@ -40,8 +45,8 @@ const VedtakWrapper = () => {
   const { vedtaksId, enhetsId } = Route.useSearch();
 
   const hentBrevQuery = useQuery({
-    queryKey: getBrev.queryKey(Number.parseInt(brevId)),
-    queryFn: () => getBrev.queryFn(saksId, Number.parseInt(brevId)),
+    queryKey: getBrevAttestering.queryKey(Number.parseInt(brevId)),
+    queryFn: () => getBrevAttestering.queryFn(saksId, Number.parseInt(brevId)),
     staleTime: Number.POSITIVE_INFINITY,
   });
 

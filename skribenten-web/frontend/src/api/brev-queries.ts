@@ -24,6 +24,12 @@ export const brevKeys = {
   reservasjon: (brevId: number) => [...brevKeys.id(brevId), "RESERVASJON"] as const,
 };
 
+export const attesteringBrevKeys = {
+  all: ["BREV"] as const,
+  id: (brevId: number) => [...brevKeys.all, brevId] as const,
+  reservasjon: (brevId: number) => [...brevKeys.id(brevId), "ATTESTERING"] as const,
+};
+
 export const getModelSpecification = {
   queryKey: brevmalKeys.modelSpecification,
   queryFn: async (brevkode: string) =>
@@ -31,14 +37,21 @@ export const getModelSpecification = {
       .data,
 };
 
-export const getBrev = {
-  queryKey: brevKeys.id,
+export const getBrevAttestering = {
+  queryKey: attesteringBrevKeys.id,
   queryFn: async (saksId: string, brevId: number, reserver: boolean = true) =>
     (
       await axios.get<BrevResponse>(
         `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/attestering?reserver=${reserver}`,
       )
     ).data,
+};
+
+export const getBrev = {
+  queryKey: brevKeys.id,
+  queryFn: async (saksId: string, brevId: number, reserver: boolean = true) =>
+    (await axios.get<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}?reserver=${reserver}`))
+      .data,
 };
 
 export async function createBrev(saksId: string, request: OpprettBrevRequest) {
