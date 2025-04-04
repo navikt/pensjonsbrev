@@ -82,7 +82,25 @@ export const ScalarEditor = ({
 };
 
 const SwitchField = (props: { prependName?: string; field: string; fieldType: TScalar; onSubmit?: () => void }) => {
+  const { getFieldState, formState } = useFormContext();
   const fieldName = props.prependName ? `${props.prependName}.${props.field}` : props.field;
+  const fieldState = getFieldState(fieldName, formState);
+
+  /**
+   * useEffekten er brukt kun i forbindelse med autolagring
+   *
+   * Vi gjør en submit ved onChange, og prøver på nytt hver 3 sekund dersom kallet feilet.
+   */
+  useEffect(() => {
+    if (fieldState.isDirty && props.onSubmit !== undefined) {
+      const timeout = setTimeout(() => {
+        props.onSubmit!();
+      }, 3000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [fieldState.isDirty, props.onSubmit]);
+
   return (
     <div>
       <Controller
@@ -96,6 +114,7 @@ const SwitchField = (props: { prependName?: string; field: string; fieldType: TS
               field.onChange(v.target.checked);
               props.onSubmit?.();
             }}
+            size="small"
           >
             {convertFieldToReadableLabel(props.field)}
           </Switch>
@@ -117,6 +136,8 @@ export const AutoSavingTextField = (props: {
   step?: number;
   timeoutTimer: number;
   onSubmit?: () => void;
+  label?: string;
+  autocomplete?: string;
 }) => {
   const { getFieldState, watch, formState } = useFormContext();
 
@@ -151,10 +172,10 @@ export const AutoSavingTextField = (props: {
       render={({ field, fieldState }) => (
         <TextField
           {...field}
-          autoComplete="off"
+          autoComplete={props.autocomplete ?? "off"}
           error={fieldState.error?.message}
           inputMode={props.type === "number" ? "numeric" : undefined}
-          label={props.fieldType.displayText ?? convertFieldToReadableLabel(fieldName)}
+          label={props.fieldType.displayText ?? props.label ?? convertFieldToReadableLabel(fieldName)}
           onChange={(e) => (e.target.value ? field.onChange(e.target.value) : field.onChange(null))}
           size="small"
           step={props.step}
