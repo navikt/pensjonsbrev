@@ -98,8 +98,6 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                         GLAD_PART,
                         SEPARERT,
                         SEPARERT_PARTNER,
-                        GIFT,
-                        PARTNER
                     ) or (bruker.sivilstand.isOneOf(GIFT, PARTNER) and beregnetSomEnsligPgaInstopphold)
                 ) {
                     paragraph {
