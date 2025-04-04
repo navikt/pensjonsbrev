@@ -493,7 +493,6 @@ data class TabellMaanedligPensjonKap19og20(
                     }
                 }
             }
-            // TODO blir ikke det feil å bruke gjeldende her?
             showIf(
                 beregnetPensjon.ektefelletillegg.notNull() or beregnetPensjon.barnetilleggSB.notNull() or beregnetPensjon.barnetilleggFB.notNull()
                         and beregnetPensjon.virkDatoFom.year.lessThan(2025)
