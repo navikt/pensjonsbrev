@@ -19,7 +19,7 @@ class TilbakekrevingAvFeilutbetaltBeloepTest {
         LetterTestImpl(
             TilbakekrevingAvFeilutbetaltBeloep.template,
             Fixtures.create<TilbakekrevingAvFeilutbetaltBeloepDto>(),
-            Language.Bokmal,
+            Language.English,
             Fixtures.felles
         ).renderTestPDF(TilbakekrevingAvFeilutbetaltBeloep.kode.name)
     }

@@ -32,7 +32,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvFeilutbetaltBeloepDto> {
 
     // MF_000190
-    override val kode = Pesysbrevkoder.Redigerbar.PE_TILBAKEKREVING_AV_FEILUTBETALT_BELØP
+    override val kode = Pesysbrevkoder.Redigerbar.PE_VARSEL_OM_TILBAKEKREVING_FEILUTBETALT_BELOEP
     override val kategori = TemplateDescription.Brevkategori.FEILUTBETALING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = Sakstype.pensjon
@@ -85,9 +85,10 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                 text(
                     Bokmal to "Vi viser til forhåndsvarselet vårt ",
                     Nynorsk to "Vi viser til førehandsvarselet vårt ",
-                    English to "This is in reference to our advancenotification dated"
+                    English to "This is in reference to our advance notification dated "
                 )
                 textExpr(Bokmal to dato, Nynorsk to dato, English to dato)
+                text(Bokmal to ".", Nynorsk to ".", English to ".")
             }
             paragraph {
                 text(
@@ -144,7 +145,7 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
             paragraph {
                 text(
                     Bokmal to "Beløpet som er trukket i skatt vil Nav få tilbake av Skatteetaten.",
-                    Nynorsk to "Beløpet som er trekt i skatt vil Nav få tilbakeav Skatteetaten.",
+                    Nynorsk to "Beløpet som er trekt i skatt vil Nav få tilbake av Skatteetaten.",
                     English to "Nav will collect the tax amount from the Norwegian Tax Administration."
                 )
             }
@@ -192,8 +193,8 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
             paragraph {
                 text(
                     Bokmal to "I vedlegget finner du en oversikt over periodene med feilutbetalinger og beløpet du må betale tilbake.",
-                    Nynorsk to "I vedlegget finn du ei oversikt overperiodane med feilutbetalingar og beløpet du må betale tilbake.",
-                    English to "The attachment contains an overview ofthe periods with payments in error and the amounts you must repay"
+                    Nynorsk to "I vedlegget finn du ei oversikt over periodane med feilutbetalingar og beløpet du må betale tilbake.",
+                    English to "The attachment titled 'Overview of Incorrect Payments' provides details on the periods with payment errors and the amounts that need to be repaid."
                 )
             }
             title1 {
@@ -206,7 +207,7 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
             paragraph {
                 text(
                     Bokmal to "Vi rapporterer endringen til Skatteetaten. De vil korrigere skatteoppgjøret ditt ut fra denne endringen.",
-                    Nynorsk to "Vi rapporterer endringa til Skatteetaten. Dei vil korrigere skatteoppgjeretditt ut frå denne endringa.",
+                    Nynorsk to "Vi rapporterer endringa til Skatteetaten. Dei vil korrigere skatteoppgjeret ditt ut frå denne endringa.",
                     English to "We will report the change to the Norwegian Tax Administration. They will correct your tax settlement in view of this change.",
                 )
             }
@@ -224,7 +225,7 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                     Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. " +
                             "Klaga skal vera skriftleg. Du finn skjema og informasjon på nav.no/klage. I vedlegget får du vite meir om korleis du går fram.",
                     English to "If you think the decision is wrong, you may appeal the decision within six weeks of the date on which you received notice of the decision. " +
-                            "Your appeal must be made in writing. You will find a form and information about this at nav.no/klage. The appendix includes information on how to proceed."
+                            "Your appeal must be made in writing. You will find a form and information about this at nav.no/klage. The attachment 'Your rights and how to appeal' includes information on how to proceed."
                 )
             }
             paragraph {
@@ -238,7 +239,7 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
             paragraph {
                 text(
                     Bokmal to "Vi kan utsette tilbakekrevingen til klagen er behandlet, for eksempel hvis det er sannsynlig at vedtaket blir omgjort. " +
-                            "Du kan også søke om utsettelse av tilbakebetaling, men vi kan ikke ta hensyn til den økonomiske situasjonen din når vi vurderer om du kan utsette og betale tilbake",
+                            "Du kan også søke om utsettelse av tilbakebetaling, men vi kan ikke ta hensyn til den økonomiske situasjonen din når vi vurderer om du kan utsette og betale tilbake.",
                     Nynorsk to "Vi kan utsetje tilbakekrevjinga til klaga er behandla, for eksempel dersom det er sannsynleg at vedtaket blir gjort om. " +
                             "Du kan også søkje om utsetjing av tilbakebetalinga, men vi kan ikkje ta omsyn til den økonomiske situasjonen din når vi vurderer om du kan utsetje å betale tilbake.",
                     English to "We may postpone sending you the claim for repayment until your appeal has been processed; for example, if it seems likely that the decision will be overturned. " +
@@ -247,10 +248,8 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
             }
             includePhrase(Felles.RettTilInnsynRedigerbarebrev)
             includePhrase(Felles.HarDuSpoersmaal.alder)
-            // vedlegg: oversiktOverFeilutbetalingerPE
-            // vedlegg: Dine rettigheter og mulighet til å klage
-
         }
         includeAttachment(oversiktOverFeilutbetalingerPE, pesysData.oversiktOverFeilutbetalingPEDto)
+        // vedlegg: Dine rettigheter og mulighet til å klage
     }
 }

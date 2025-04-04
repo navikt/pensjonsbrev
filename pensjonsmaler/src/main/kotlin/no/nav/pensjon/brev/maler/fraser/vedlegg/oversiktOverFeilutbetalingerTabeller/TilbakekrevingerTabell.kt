@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
@@ -34,9 +35,9 @@ data class TilbakekrevingerTabell(
                     header = {
                         column(columnSpan = 2) {
                             textExpr(
-                                Bokmal to tilbakekreves.maanedOgAar.format() + " - ",
-                                Nynorsk to tilbakekreves.maanedOgAar.format() + " - ",
-                                English to tilbakekreves.maanedOgAar.format() + " - "
+                                Bokmal to tilbakekreves.maanedOgAar.formatMonthYear() + " - ",
+                                Nynorsk to tilbakekreves.maanedOgAar.formatMonthYear() + " - ",
+                                English to tilbakekreves.maanedOgAar.formatMonthYear() + " - "
                             )
                             includePhrase(
                                 KonteringTypeYtelseTextMappingStorBokstav(
@@ -58,54 +59,52 @@ data class TilbakekrevingerTabell(
                         column(columnSpan = 0) {}
                     }
                 ) {
-                    forEach(tilbakekreving) { tilbakekreves ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Feilutbetalt beløp",
-                                    Nynorsk to "Feilutbetalt beløp",
-                                    English to "Incorrect payment"
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(tilbakekreves.feilutbetaltBeloep))
-                            }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Feilutbetalt beløp",
+                                Nynorsk to "Feilutbetalt beløp",
+                                English to "Incorrect payment"
+                            )
                         }
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Brutto tilbakekreving",
-                                    Nynorsk to "Brutto tilbakekrevjing",
-                                    English to "Gross repayment amount"
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(tilbakekreves.bruttobeloepTilbakekrevd.ifNull(Kroner(0))))
-                            }
+                        cell {
+                            includePhrase(KronerText(tilbakekreves.feilutbetaltBeloep))
                         }
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Fradrag skatt",
-                                    Nynorsk to "Frådrag skatt",
-                                    English to "Tax deduction"
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(tilbakekreves.skattefradragSomInnkreves.ifNull(Kroner(0))))
-                            }
+                    }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Brutto tilbakekreving",
+                                Nynorsk to "Brutto tilbakekrevjing",
+                                English to "Gross repayment amount"
+                            )
                         }
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Netto tilbakekreving",
-                                    Nynorsk to "Netto tilbakekrevjing",
-                                    English to "Net repayment amount"
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(tilbakekreves.nettobeloepUtenRenterTilbakekrevd))
-                            }
+                        cell {
+                            includePhrase(KronerText(tilbakekreves.bruttobeloepTilbakekrevd.ifNull(Kroner(0))))
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Fradrag skatt",
+                                Nynorsk to "Frådrag skatt",
+                                English to "Tax deduction"
+                            )
+                        }
+                        cell {
+                            includePhrase(KronerText(tilbakekreves.skattefradragSomInnkreves.ifNull(Kroner(0))))
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Netto tilbakekreving",
+                                Nynorsk to "Netto tilbakekrevjing",
+                                English to "Net repayment amount"
+                            )
+                        }
+                        cell {
+                            includePhrase(KronerText(tilbakekreves.nettobeloepUtenRenterTilbakekrevd))
                         }
                     }
                 }
@@ -113,3 +112,4 @@ data class TilbakekrevingerTabell(
         }
     }
 }
+
