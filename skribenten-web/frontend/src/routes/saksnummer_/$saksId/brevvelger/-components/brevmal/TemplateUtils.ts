@@ -80,7 +80,7 @@ export const byggEBlankettOnSubmitRequest = (argz: {
 export const createValidationSchema = (template: LetterMetadata) => {
   return z
     .object({
-      enhetsId: z.string().min(1, "Obligatorisk"),
+      enhetsId: z.coerce.string().min(1, "Obligatorisk"),
 
       //disse valideres gjennom superRefine
       isSensitive: z.boolean({ required_error: "Obligatorisk" }).optional(),

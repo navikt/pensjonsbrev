@@ -26,6 +26,7 @@ import no.nav.pensjon.brev.fixtures.alder.createAvslagUttakFoerNormertPensjonsal
 import no.nav.pensjon.brev.fixtures.alder.createAvslagUttakFoerNormertPensjonsalderAutoDto
 import no.nav.pensjon.brev.fixtures.alder.createInfoAlderspensjonOvergang67AarAutoDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnhentingInformasjonFraBrukerDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createOmsorgManuellDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createOrienteringOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createVarselRevurderingAvPensjonDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createVarselTilbakekrevingAvFeilutbetaltBeloep
@@ -68,6 +69,7 @@ object Fixtures {
             MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned::class -> createMaanedligUfoeretrygdFoerSkattDtoUfoeretrygdPerMaaned() as T
             MaanedligUfoeretrygdFoerSkattDto::class -> createMaanedligUfoeretrygdFoerSkattDto() as T
             OmsorgEgenAutoDto::class -> createOmsorgEgenAutoDto() as T
+            OmsorgEgenManuellDto::class -> createOmsorgManuellDto() as T
             OpphoerBarnetilleggAutoDto::class -> createOpphoerBarnetilleggAutoDto() as T
             OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Fellesbarn::class -> createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn() as T
             OpplysningerBruktIBeregningUTDto.BarnetilleggGjeldende.Saerkullsbarn::class -> createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeSaerkullsbarn() as T
