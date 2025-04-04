@@ -4,6 +4,7 @@ package no.nav.pensjon.brev.template
 
 import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
+import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType.Scalar.Kind
 import org.junit.jupiter.api.*
@@ -15,6 +16,7 @@ class TemplateModelSpecificationFactoryTest {
         val etTall: Int,
         val etDesimal: Double,
         val enBool: Boolean,
+        @DisplayText("viktig dato")
         val dato: LocalDate,
         val tall: List<Int>,
         val strenger: List<String>,
@@ -43,6 +45,11 @@ class TemplateModelSpecificationFactoryTest {
     }
 
     @Test
+    fun `handles display text`() {
+        assertThat(aModelSpec["dato"], equalTo(FieldType.Scalar(false, Kind.DATE, "viktig dato")))
+    }
+
+    @Test
     fun `int is a scalar value with type`() {
         assertThat(aModelSpec["etTall"], equalTo(FieldType.Scalar(false, Kind.NUMBER)))
     }
@@ -59,7 +66,7 @@ class TemplateModelSpecificationFactoryTest {
 
     @Test
     fun `date is a scalar value with type`() {
-        assertThat(aModelSpec["dato"], equalTo(FieldType.Scalar(false, Kind.DATE)))
+        assertThat(aModelSpec["dato"], equalTo(FieldType.Scalar(false, Kind.DATE, "viktig dato")))
     }
 
     @Test

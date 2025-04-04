@@ -531,6 +531,7 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
             type: "scalar",
             nullable: false,
             kind: "STRING",
+            displayText: null,
           }}
           onSubmit={props.submitOnChange}
           timeoutTimer={2500}
@@ -561,6 +562,7 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
             type: "scalar",
             nullable: false,
             kind: "STRING",
+            displayText: null,
           }}
           onSubmit={props.submitOnChange}
           timeoutTimer={2500}
