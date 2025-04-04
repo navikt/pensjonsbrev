@@ -72,7 +72,7 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
         Nynorsk to "Dette er den månadlege pensjonen din før skatt",
         English to "This is your monthly pension before tax",
     ),
-    includeSakspart = false, // TODO skal den ha saksinfo med?
+    includeSakspart = false,
     outline = {
 
 
@@ -566,7 +566,7 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
         }
 
         //vedleggBTFBAP_001
-        showIf(innvilgetBarnetilleggSaerkullesbarn and beregningVirkningsaar.lessThan(2025)) {
+        showIf(innvilgetBarnetilleggFellesBarn and beregningVirkningsaar.lessThan(2025)) {
             ifNotNull(beregnetPensjonPerManedGjeldende.barnetilleggFBbrutto) {
                 paragraph {
                     textExpr(
