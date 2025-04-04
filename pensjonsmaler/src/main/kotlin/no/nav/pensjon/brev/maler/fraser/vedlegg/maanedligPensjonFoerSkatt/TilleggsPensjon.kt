@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelecto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.kombinertMedAvdod_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUforeAvdod_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUfore_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaYrkesskadeAvdod_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaYrkesskade_safe
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
@@ -39,8 +40,9 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
         val tilleggsPensjonKombinertMedAvdoed = tilleggspensjonGjeldende.kombinertMedAvdod_safe.ifNull(false)
         val tilleggsPensjonErRedusert = tilleggspensjonGjeldende.erRedusert_safe.ifNull(false)
         val tilleggsPensjonErPgaYrkesskade = tilleggspensjonGjeldende.pgaYrkesskade_safe.ifNull(false)
+        val tilleggsPensjonErPgaYrkesskadeAvdod = tilleggspensjonGjeldende.pgaYrkesskadeAvdod_safe.ifNull(false)
         val tilleggsPensjonErPgaUngUfoer = tilleggspensjonGjeldende.pgaUngUfore_safe.ifNull(false)
-        val tilleggsPensjonErPgaUngUforeAvdoed = tilleggspensjonGjeldende.pgaUngUforeAvdod_safe.ifNull(false)
+        val tilleggsPensjonErPgaUngUfoereAvdoed = tilleggspensjonGjeldende.pgaUngUforeAvdod_safe.ifNull(false)
         val harTilleggspensjon = beregnetPensjonPerManedGjeldende.tilleggspensjon.ifNull(Kroner(0)).greaterThan(0)
         //vedleggBelopFullTP_001
         showIf(
@@ -97,7 +99,7 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
         }
 
         //vedleggBelopTPYSAvdod_001
-        showIf(tilleggsPensjonErPgaYrkesskade and regelverkstype.isOneOf(AP2011, AP2016, AP1967)) {
+        showIf(tilleggsPensjonErPgaYrkesskadeAvdod and regelverkstype.isOneOf(AP2011, AP2016, AP1967)) {
             paragraph {
                 text(
                     Bokmal to "Tilleggspensjonen etter avdøde er beregnet etter egne regler for yrkesskade. Dette gir deg en høyere tilleggspensjon.",
@@ -126,7 +128,7 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
         }
 
         //vedleggBelopTPUngUforAvdod_001
-        showIf(tilleggsPensjonErPgaUngUforeAvdoed and regelverkstype.isOneOf(AP2011, AP2016, AP1967)) {
+        showIf(tilleggsPensjonErPgaUngUfoereAvdoed and regelverkstype.isOneOf(AP2011, AP2016, AP1967)) {
             paragraph {
                 text(
                     Bokmal to "Tilleggspensjonen etter avdøde er beregnet etter spesielle bestemmelser for unge uføre, som er mer gunstig enn ordinære bestemmelser.",

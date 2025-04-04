@@ -60,21 +60,20 @@ data class MaanedligPensjonFoerSkattPensjonstillegg(
                 }
             }
 
-            showIf(alderspensjonGjeldende.erEksportberegnet) {
+            showIf(not(beregnetPensjonPerManedGjeldende.fullTrygdetid)) {
                 paragraph {
-                    // vedleggBelopPenTAvkortetRedusertTT_001
-                    showIf(beregnetPensjonPerManedGjeldende.fullTrygdetid) {
-                        text(
-                            Bokmal to "Vi har avkortet pensjonstillegget ditt mot trygdetid på samme måte som for grunnpensjonen.",
-                            Nynorsk to "Vi har avkorta pensjonstillegget ditt mot trygdetid på same måte som for grunnpensjonen.",
-                            English to "Your pension supplement is calculated on the same period of national insurance cover as the basic pension.",
-                        )
-                    }.orShow {
+                    showIf(alderspensjonGjeldende.erEksportberegnet) {
                         // vedleggBelopPenTAvkorterRedusertTTEksport_001
                         text(
                             Bokmal to "Pensjonstillegget ditt er beregnet etter antall år med pensjonspoeng på samme måte som grunnpensjonen.",
                             Nynorsk to "Pensjonstillegget ditt er berekna etter talet på år med pensjonspoeng på same måte som grunnpensjonen.",
                             English to "Your pension supplement is calculated on your number of pension point earning years in the same way as the basic pension.",
+                        )
+                    }.orShow {
+                        text(
+                            Bokmal to "Vi har avkortet pensjonstillegget ditt mot trygdetid på samme måte som for grunnpensjonen.",
+                            Nynorsk to "Vi har avkorta pensjonstillegget ditt mot trygdetid på same måte som for grunnpensjonen.",
+                            English to "Your pension supplement is calculated on the same period of national insurance cover as the basic pension.",
                         )
                     }
                 }

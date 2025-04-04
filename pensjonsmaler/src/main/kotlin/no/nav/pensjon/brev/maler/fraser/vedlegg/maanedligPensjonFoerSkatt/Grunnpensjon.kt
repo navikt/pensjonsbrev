@@ -133,7 +133,7 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                     }
                 }
 
-                showIf(epsBorSammenMedBruker and epsHarInntektOver2G and epsMottarPensjon) {
+                showIf(epsBorSammenMedBruker and epsHarInntektOver2G and not(epsMottarPensjon)) {
                     paragraph {
                         textExpr(
                             Bokmal to "Grunnpensjonen er justert til ".expr() +
@@ -308,7 +308,7 @@ data class MaanedligPensjonFoerSkattGrunnpensjon(
                     or (
                     alderspensjonGjeldende.regelverkstype.isOneOf(AP2011, AP2016)
                             and beregnetEtterEgen
-                            and beregnetPensjonPerManedGjeldende.grunnpensjon.isNull()
+                            and beregnetPensjonPerManedGjeldende.grunnpensjon.notNull()
                     ))
         ) {
             showIf(alderspensjonGjeldende.erEksportberegnet) {

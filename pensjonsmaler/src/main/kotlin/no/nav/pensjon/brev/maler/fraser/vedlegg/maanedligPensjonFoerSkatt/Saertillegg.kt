@@ -67,7 +67,6 @@ data class MaanedligPensjonFoerSkattSaertillegg(
 
         val harSaertillegg = beregnetPensjonPerManedGjeldende.saertillegg_safe.ifNull(Kroner(0)).greaterThan(0)
 
-        // TODO erstatt alle values
         //vedleggBelopST_002
         showIf(
             brukersSivilstand.isOneOf(ENSLIG, ENKE, GLAD_EKT, GLAD_PART, SEPARERT, SEPARERT_PARTNER, GIFT, PARTNER)

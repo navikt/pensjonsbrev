@@ -65,6 +65,7 @@ data class MaanedligPensjonFoerSkattDto(
         val pgaYrkesskade: Boolean,
         val pgaUngUfore: Boolean,
         val pgaUngUforeAvdod: Boolean,
+        val pgaYrkesskadeAvdod: Boolean,
     )
 
     data class AlderspensjonPerManed(
