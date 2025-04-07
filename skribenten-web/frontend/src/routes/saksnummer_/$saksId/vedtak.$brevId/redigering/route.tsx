@@ -171,15 +171,18 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   return (
     <form
-      onSubmit={form.handleSubmit((v) =>
-        onSubmit(v, () =>
+      onSubmit={form.handleSubmit((v) => {
+        onSubmit(v, () => {
           navigate({
             to: "/saksnummer/$saksId/vedtak/$brevId/forhandsvisning",
             params: { saksId: props.saksId, brevId: props.brev.info.id.toString() },
-            search: { vedtaksId: undefined, enhetsId: props.brev.info.avsenderEnhet?.enhetNr?.toString() },
-          }),
-        ),
-      )}
+            search: {
+              vedtaksId: props.brev.info?.vedtaksId?.toString(),
+              enhetsId: props.brev.info.avsenderEnhet?.enhetNr?.toString(),
+            },
+          });
+        });
+      })}
     >
       <ThreeSectionLayout
         bottom={
@@ -235,7 +238,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 navigate({
                   to: "/saksnummer/$saksId/brevbehandler",
                   params: { saksId: props.saksId },
-                  search: { vedtaksId: undefined, enhetsId: undefined },
+                  search: {
+                    vedtaksId: props.brev.info?.vedtaksId?.toString(),
+                    enhetsId: props.brev.info.avsenderEnhet?.enhetNr?.toString(),
+                  },
                 })
               }
               reservasjon={reservasjonQuery.data}
