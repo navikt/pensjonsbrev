@@ -11,7 +11,8 @@ data class OrienteringOmRettigheterOgPlikterDto(
     val sivilstand: MetaforceSivilstand,
     val borSammenMedBruker: Boolean,
     val epsPaInstitusjon: Boolean,
-    val epsOpphold: EpsOpphold?
+    val epsOpphold: EpsOpphold?,
+    val harBarnetillegg: Boolean?,
 )
 
 

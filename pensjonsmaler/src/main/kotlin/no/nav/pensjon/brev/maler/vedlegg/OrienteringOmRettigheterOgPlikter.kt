@@ -12,10 +12,23 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDt
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.brukerBorINorge
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.epsOpphold
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.epsPaInstitusjon
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.harBarnetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.institusjonsoppholdGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.sakstype
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.sivilstand
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikter
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP2
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT1
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT10
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT11
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT12
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT2
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT3
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT4
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT5
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT7
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT8
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT9
 import no.nav.pensjon.brev.model.ubestemtForm
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -25,6 +38,7 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
@@ -50,10 +64,10 @@ val vedleggOrienteringOmRettigheterOgPlikter =
         ),
         includeSakspart = false
     ) {
+        val erIkkeInstitusjon = institusjonsoppholdGjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
         showIf(sakstype.equalTo(Sakstype.ALDER)) {
             includePhrase(VedleggPlikter)
             paragraph {
-                val erIkkeInstitusjon = institusjonsoppholdGjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
                 list {
                     showIf(brukerBorINorge and erIkkeInstitusjon) {
                         item {
@@ -249,12 +263,82 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                     }
                 }
             }
-            paragraph {
+            paragraph { // vedleggPlikterHvorforMeldeAP_001
                 text(
                     Bokmal to "Skjer det endringer, kan det få betydning for hvor mye du kan få utbetalt i alderspensjon. Derfor er det viktig at du gir oss beskjed så raskt som mulig.",
                     Nynorsk to "Skjer det endringar, kan det få betydning for kor mykje du kan få utbetalt i alderspensjon. Derfor er det viktig at du gir oss beskjed så raskt som mogleg.",
                     English to "To make sure you get the right amount of retirement pension, you need to report any changes in your circumstances that can influence the assessment of the supplement you receive. It is important that you notify any change to us as soon as possible.",
                 )
+            }
+        }
+        showIf(sakstype.equalTo(Sakstype.UFOREP)) {
+            title1 {
+                text(
+                    Bokmal to "Plikt til å opplyse om endringer - folketrygdloven § 21-3",
+                    Nynorsk to "Plikt til å opplyse om endringar - folketrygdlova § 21-3",
+                    English to "Duty to inform of changes - Section 21-3 of the National Insurance Act"
+                )
+            }
+            paragraph { // TODO: Denne verkar veldig lik VedleggPlikter, og kan kanskje erstattast med den?
+                text(
+                    Bokmal to "Du må melde fra til Nav hvis",
+                    Nynorsk to "Du må melde frå til Nav om",
+                    English to "You must notify Nav if",
+                )
+            }
+            paragraph {
+                list {
+                    item {
+                        includePhrase(VedleggPlikterUT1)
+                    }
+                    item {
+                        includePhrase(VedleggPlikterUT2)
+                    }
+                    showIf(brukerBorINorge and erIkkeInstitusjon) {
+                        item {
+                            includePhrase(VedleggPlikterUT3)
+                        }
+                        item {
+                            includePhrase(VedleggPlikterUT4)
+                        }
+                    }
+                    item {
+                        includePhrase(VedleggPlikterUT5)
+                    }
+                    showIf(sivilstand.isOneOf(ENSLIG, ENKE) or sivilstand.isNull()) {
+                        item { // vedleggPlikterUT6_001
+                            text(
+                                Bokmal to "du gifter deg eller inngår samboerskap",
+                                Nynorsk to "du giftar deg eller inngår sambuarskap",
+                                English to "you get married or get a cohabitant"
+                            )
+                        }
+                    }
+                    showIf(harBarnetillegg.ifNull(false)) {
+                        item { // vedleggPlikterUT7_001
+                            text(
+                                Bokmal to "barn du forsørger får en inntekt over folketrygdens grunnbeløp, eller det skjer endringer i omsorgsituasjonen",
+                                Nynorsk to "barn du forsørgjer får ei samla inntekt over grunnbeløpet i folketrygda, eller det skjer endringar av omsorgsituasjonen",
+                                English to "the child(ren) in your care earn an income exceeding the National Insurance basic amount or there are changes in the care situation",
+                            )
+                        }
+                    }
+                    item {
+                        includePhrase(VedleggPlikterUT8)
+                    }
+                    item {
+                        includePhrase(VedleggPlikterUT9)
+                    }
+                    item {
+                        includePhrase(VedleggPlikterUT10)
+                    }
+                    item {
+                        includePhrase(VedleggPlikterUT11)
+                    }
+                    item {
+                        includePhrase(VedleggPlikterUT12)
+                    }
+                }
             }
         }
     }
