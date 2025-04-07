@@ -7,7 +7,7 @@ import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 
 import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 
-export const Route = createFileRoute("/saksnummer_/$saksId/vedtak/$brevId/kvittering")({
+export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/kvittering")({
   component: () => <Kvittering />,
 });
 
@@ -62,7 +62,7 @@ const Kvittering = () => {
         <Link
           params={{ saksId, brevId }}
           search={{ vedtaksId, enhetsId }}
-          to={"/saksnummer/$saksId/vedtak/$brevId/forhandsvisning"}
+          to={"/saksnummer/$saksId/attester/$brevId/forhandsvisning"}
         >
           Tilbake til forhåndsvisning
         </Link>

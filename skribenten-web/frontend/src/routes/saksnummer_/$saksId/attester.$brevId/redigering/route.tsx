@@ -30,7 +30,7 @@ import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
 
-export const Route = createFileRoute("/saksnummer_/$saksId/vedtak/$brevId/redigering")({
+export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/redigering")({
   component: () => <VedtakWrapper />,
 });
 
@@ -174,7 +174,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       onSubmit={form.handleSubmit((v) => {
         onSubmit(v, () => {
           navigate({
-            to: "/saksnummer/$saksId/vedtak/$brevId/forhandsvisning",
+            to: "/saksnummer/$saksId/attester/$brevId/forhandsvisning",
             params: { saksId: props.saksId, brevId: props.brev.info.id.toString() },
             search: {
               vedtaksId: props.brev.info?.vedtaksId?.toString(),

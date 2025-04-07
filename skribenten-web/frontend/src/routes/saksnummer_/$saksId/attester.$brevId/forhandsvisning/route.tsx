@@ -6,7 +6,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useState } from "react";
 
-import { brevKeys, getBrevAttestering } from "~/api/brev-queries";
+import { brevKeys, getBrev } from "~/api/brev-queries";
 import { sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
@@ -18,15 +18,15 @@ import { queryFold } from "~/utils/tanstackUtils";
 import BrevForhåndsvisning from "../../brevbehandler/-components/BrevForhåndsvisning";
 import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 
-export const Route = createFileRoute("/saksnummer_/$saksId/vedtak/$brevId/forhandsvisning")({
+export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/forhandsvisning")({
   component: () => <VedtakForhåndsvisningWrapper />,
 });
 
 const VedtakForhåndsvisningWrapper = () => {
   const { saksId, brevId } = Route.useParams();
   const hentBrevQuery = useQuery({
-    queryKey: getBrevAttestering.queryKey(Number.parseInt(brevId)),
-    queryFn: () => getBrevAttestering.queryFn(saksId, Number.parseInt(brevId)),
+    queryKey: getBrev.queryKey(Number.parseInt(brevId)),
+    queryFn: () => getBrev.queryFn(saksId, Number.parseInt(brevId)),
   });
 
   return queryFold({
@@ -88,7 +88,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
               icon={<ArrowLeftIcon />}
               onClick={() =>
                 navigate({
-                  to: "/saksnummer/$saksId/vedtak/$brevId/redigering",
+                  to: "/saksnummer/$saksId/attester/$brevId/redigering",
                   params: { saksId: props.saksId, brevId: props.brev.info.id.toString() },
                   search: {
                     vedtaksId: props.brev.info.vedtaksId?.toString() ?? undefined,
@@ -152,7 +152,7 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
     //settled trigges etter success/error
     onSettled: () =>
       navigate({
-        to: "/saksnummer/$saksId/vedtak/$brevId/kvittering",
+        to: "/saksnummer/$saksId/attester/$brevId/kvittering",
         params: { saksId: props.saksId, brevId: props.brevId },
         search: {
           vedtaksId: brevResponse.info.vedtaksId?.toString() ?? undefined,
