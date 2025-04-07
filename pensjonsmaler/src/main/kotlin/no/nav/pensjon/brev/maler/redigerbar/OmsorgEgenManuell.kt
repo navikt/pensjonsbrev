@@ -25,7 +25,7 @@ object OmsorgEgenManuell : RedigerbarTemplate<OmsorgEgenManuellDto> {
 
     override val kategori = TemplateDescription.Brevkategori.BREV_MED_SKJEMA
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
-    override val sakstyper: Set<Sakstype> = Sakstype.all
+    override val sakstyper: Set<Sakstype> = setOf(Sakstype.OMSORG)
     override val template = createTemplate(
         name = kode.name,
         letterDataType = OmsorgEgenManuellDto::class,

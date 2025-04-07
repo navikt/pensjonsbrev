@@ -23,6 +23,7 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.VarselSaksbehandlingstidAuto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2
 import no.nav.pensjon.brev.api.model.vedlegg.EgenerklaeringOmsorgsarbeidDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto
@@ -36,8 +37,8 @@ import no.nav.pensjon.brev.fixtures.createAvslagUfoeretrygdDto
 import no.nav.pensjon.brev.fixtures.createEgenerklaeringOmsorgsarbeidDto
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.fixtures.createEndretBarnetilleggUfoeretrygdDto
-import no.nav.pensjon.brev.fixtures.createEndretUfoeretrygdPGAInntektDto
 import no.nav.pensjon.brev.fixtures.createEndretUTPgaInntektDtoV2
+import no.nav.pensjon.brev.fixtures.createEndretUfoeretrygdPGAInntektDto
 import no.nav.pensjon.brev.fixtures.createEndretUforetrygdPGAOpptjeningLegacyDto
 import no.nav.pensjon.brev.fixtures.createEtteroppgjoerEtterbetalingAuto
 import no.nav.pensjon.brev.fixtures.createForespoerselOmDokumentasjonAvBotidINorgeDto
@@ -46,6 +47,7 @@ import no.nav.pensjon.brev.fixtures.createForhaandsvarselEtteroppgjoerUfoeretryg
 import no.nav.pensjon.brev.fixtures.createInformasjonOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.fixtures.createInformasjonOmSaksbehandlingstidUtDto
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
+import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.fixtures.createMaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.fixtures.createMaanedligUfoeretrygdFoerSkattDtoUfoeretrygdPerMaaned
 import no.nav.pensjon.brev.fixtures.createOmsorgEgenAutoDto
@@ -71,7 +73,6 @@ import no.nav.pensjon.brev.fixtures.redigerbar.createOrienteringOmSaksbehandling
 import no.nav.pensjon.brev.fixtures.redigerbar.createVarselRevurderingAvPensjonDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createVarselTilbakekrevingAvFeilutbetaltBeloep
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
-import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAP2016
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
 import no.nav.pensjon.brevbaker.api.model.Year
@@ -130,6 +131,7 @@ object Fixtures {
             OrienteringOmRettigheterUfoereDto::class -> createOrienteringOmRettigheterUfoereDto() as T
             OrienteringOmSaksbehandlingstidDto::class -> createOrienteringOmSaksbehandlingstidDto() as T
             VarselTilbakekrevingAvFeilutbetaltBeloepDto::class -> createVarselTilbakekrevingAvFeilutbetaltBeloep() as T
+            MaanedligPensjonFoerSkattDto::class -> createMaanedligPensjonFoerSkatt() as T
             PE::class -> createPE() as T
             UfoerOmregningEnsligDto::class -> createUfoerOmregningEnsligDto() as T
             UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T
