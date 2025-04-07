@@ -17,7 +17,11 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDt
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.sakstype
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.sivilstand
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikter
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP1
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP2
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP3
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP4
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT1
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT10
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT11
@@ -337,6 +341,27 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                     }
                     item {
                         includePhrase(VedleggPlikterUT12)
+                    }
+                }
+            }
+        }
+        showIf(sakstype.equalTo(Sakstype.AFP)) {
+            includePhrase(VedleggPlikterAFP)
+            paragraph {
+                list {
+                    item { includePhrase(VedleggPlikterAFP1) }
+                    showIf(sivilstand.isOneOf(ENSLIG, ENKE) or sivilstand.isNull()) {
+                        item { includePhrase(VedleggPlikterAFP2) }
+                    }
+                    showIf(brukerBorINorge and erIkkeInstitusjon) {
+                        item {
+                            includePhrase(VedleggPlikterAFP3)
+                        }
+                    }
+                    showIf(not(brukerBorINorge) and erIkkeInstitusjon) {
+                        item {
+                            includePhrase(VedleggPlikterAFP4)
+                        }
                     }
                 }
             }
