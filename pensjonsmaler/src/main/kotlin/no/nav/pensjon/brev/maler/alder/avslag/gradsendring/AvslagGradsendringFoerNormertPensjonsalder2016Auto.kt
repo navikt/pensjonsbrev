@@ -28,7 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 @TemplateModelHelpers
 object AvslagGradsendringFoerNormertPensjonsalder2016Auto : AutobrevTemplate<AvslagUttakFoerNormertPensjonsalderAP2016AutoDto> {
 
-    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_AVSLAG_GRAD_FOER_NORMERT_PENSJONSALDER_AP2016_AUTO
+    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_AP2016_AUTO
 
     override val template = createTemplate(
         name = kode.name,

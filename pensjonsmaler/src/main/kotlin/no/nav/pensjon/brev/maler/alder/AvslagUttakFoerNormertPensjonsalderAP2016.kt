@@ -35,7 +35,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBR
 @TemplateModelHelpers
 object AvslagUttakFoerNormertPensjonsalderAP2016 : RedigerbarTemplate<AvslagUttakFoerNormertPensjonsalderAP2016Dto> {
 
-    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORMERT_PENSJONSALDER_AP2016
+    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER_AP2016
 
     override val template = createTemplate(
         name = kode.name,
