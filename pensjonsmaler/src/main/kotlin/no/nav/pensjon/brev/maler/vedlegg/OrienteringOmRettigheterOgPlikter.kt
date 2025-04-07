@@ -30,9 +30,9 @@ import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT2
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT3
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT4
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT5
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT7
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT8
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT9
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggVeiledning
 import no.nav.pensjon.brev.model.ubestemtForm
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -46,7 +46,6 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.isOneOfOrNull
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.notNull
@@ -91,7 +90,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                             )
                         }
                     }
-                    showIf((sivilstand.isNull() or sivilstand.isOneOfOrNull(ENKE, ENSLIG)) and erIkkeInstitusjon) {
+                    showIf((sivilstand.isNull() or sivilstand.isOneOf(ENKE, ENSLIG)) and erIkkeInstitusjon) {
                         item {
                             text(
                                 Bokmal to "du gifter deg eller inngår samboerskap",
@@ -365,5 +364,9 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                     }
                 }
             }
+        }
+        includePhrase(VedleggVeiledning)
+        showIf(sakstype.notEqualTo(Sakstype.UFOREP)) {
+
         }
     }
