@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.AP2016
+import no.nav.pensjon.brev.api.model.PoengTallsType
+import no.nav.pensjon.brev.api.model.PoengTallsType.*
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.andelKap19_safe
@@ -9,9 +11,15 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BrukerSelectors.foedselsdato
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.erPopulert_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.inneholderOmsorgspoeng
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.PensjonspoengSelectors.arstall
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.PensjonspoengSelectors.bruktIBeregningen
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.PensjonspoengSelectors.grunnbelopVeiet
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.PensjonspoengSelectors.pensjonsgivendeinntekt
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.PensjonspoengSelectors.pensjonspoeng
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.PensjonspoengSelectors.poengtallstype
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.inneholderOmsorgspoeng_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.pensjonspoeng
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.pensjonspoeng_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregnetPensjonPerManedVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregningKap19VedVirk
@@ -34,9 +42,13 @@ import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenald
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningTabellKap20
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenSivilstand
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
@@ -52,7 +64,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
             Nynorsk to "Opplysningar brukte i berekninga",
             English to "Information about your calculation",
         ),
-        includeSakspart = true,
+        includeSakspart = false,
         outline = {
 
             //vedleggBeregnInnledn_001
@@ -163,7 +175,8 @@ val vedleggOpplysningerBruktIBeregningenAlder =
             )
 
             showIf(
-                (regelverkstype.isOneOf(AP2016) and poengrekkeVedVirk.erPopulert_safe.ifNull(false))
+                (regelverkstype.isOneOf(AP2016) and poengrekkeVedVirk.pensjonspoeng_safe.ifNull(emptyList()).size()
+                    .greaterThan(0))
                         or (regelverkstype.isOneOf(AlderspensjonRegelverkstype.AP2011)
                         and beregnetPensjonPerManedVedVirk.tilleggspensjon.ifNull(Kroner(0)).greaterThan(0))
             ) {
@@ -274,41 +287,108 @@ val vedleggOpplysningerBruktIBeregningenAlder =
 
                 paragraph {
                     table({
-                        column { text(Bokmal to "År", Nynorsk to "År", English to "Year") }
-                        column {
+                        column(alignment = RIGHT, columnSpan = 1) {
+                            text(
+                                Bokmal to "År",
+                                Nynorsk to "År",
+                                English to "Year"
+                            )
+                        }
+                        column(alignment = RIGHT, columnSpan = 1) {
                             text(
                                 Bokmal to "Pensjonsgivende inntekt (kr)",
                                 Nynorsk to "Pensjonsgivande inntekt (kr)",
                                 English to "Pensionable income (NOK)"
                             )
                         }
-                        column {
+                        column(alignment = RIGHT, columnSpan = 1) {
                             text(
                                 Bokmal to "Gj.snittlig G (kr)",
                                 Nynorsk to "Gj.snittlig G (kr)",
                                 English to "Average G (NOK)"
                             )
                         }
-                        column {
+                        column(alignment = RIGHT, columnSpan = 1) {
                             text(
                                 Bokmal to "Pensjonspoeng",
                                 Nynorsk to "Pensjonspoeng",
                                 English to "Pension points"
                             )
                         }
-                        column { text(Bokmal to "Merknad", Nynorsk to "Merknad", English to "Notes") }
+                        column(columnSpan = 2) { text(Bokmal to "Merknad", Nynorsk to "Merknad", English to "Notes") }
                     }) {
+                        forEach(poengrekkeVedVirk.pensjonspoeng) {
+                            val bruktIBeregningen = it.bruktIBeregningen
+                            row {
+                                cell {
+                                    showIf(bruktIBeregningen) {
+                                        eval(it.arstall.format(), BOLD)
+                                    }.orShow {
+                                        eval(it.arstall.format())
+                                    }
+                                }
 
-                        row {
-                            cell {
+                                cell {
+                                    showIf(bruktIBeregningen) {
+                                        eval(it.pensjonsgivendeinntekt.format(), BOLD)
+                                    }.orShow {
+                                        eval(it.pensjonsgivendeinntekt.format())
+                                    }
+                                }
 
+                                cell {
+                                    showIf(bruktIBeregningen) {
+                                        eval(it.grunnbelopVeiet.format(), BOLD)
+                                    }.orShow {
+                                        eval(it.grunnbelopVeiet.format())
+                                    }
+                                }
+
+                                cell {
+                                    showIf(bruktIBeregningen) {
+                                        eval(it.pensjonspoeng.formatTwoDecimals(), BOLD)
+                                    }.orShow {
+                                        eval(it.pensjonspoeng.formatTwoDecimals())
+                                    }
+                                }
+                                cell {
+                                    ifNotNull(it.poengtallstype) { poengtallstype ->
+                                        showIf(bruktIBeregningen) {
+                                            includePhrase(PoengTallsTypeMerknad(poengtallstype, BOLD))
+                                        }.orShow {
+                                            includePhrase(PoengTallsTypeMerknad(poengtallstype))
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                 }
-
-
             }
 
         }
     )
+
+private data class PoengTallsTypeMerknad(
+    val poengTallsType: Expression<PoengTallsType>,
+    val fontType: Element.OutlineContent.ParagraphContent.Text.FontType = PLAIN
+) :
+    TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(poengTallsType.isOneOf(G, H, J, K, L)) {
+            text(
+                Bokmal to "Omsorgspoeng er godskrevet",
+                Nynorsk to "Omsorgspoeng er godskrevet",
+                English to "Points for care work are credited",
+                fontType
+            )
+        }.orShowIf(poengTallsType.isOneOf(FPP)) {
+            text(
+                Bokmal to "Framtidig pensjonspoeng",
+                Nynorsk to "Framtidig pensjonspoeng",
+                English to "Pension point earning year",
+                fontType
+            )
+        }
+    }
+}

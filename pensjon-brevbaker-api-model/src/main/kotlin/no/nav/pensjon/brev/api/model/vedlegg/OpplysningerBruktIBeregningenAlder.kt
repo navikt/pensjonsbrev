@@ -26,11 +26,10 @@ data class OpplysningerBruktIBeregningenAlderDto(
     val trygdetidAvtaleland: List<Trygdetid>,
     val bruker: Bruker,
     val krav: Krav,
-    val poengrekkeVedVirk: PoengrekkeVedVirk?,
+    val poengrekkeVedVirk: PoengrekkeVedVirk,
 ) : BrevbakerBrevdata {
 
     data class PoengrekkeVedVirk(
-        val erPopulert: Boolean,
         val inneholderOmsorgspoeng: Boolean,
         val pensjonspoeng: List<Pensjonspoeng>,
     ) {
@@ -39,7 +38,8 @@ data class OpplysningerBruktIBeregningenAlderDto(
             val grunnbelopVeiet: Kroner,
             val arstall: Int,
             val pensjonspoeng: Double,
-            val poengtallstype: PoengTallsType,
+            val poengtallstype: PoengTallsType?,
+            val bruktIBeregningen: Boolean,
         )
     }
     data class Trygdetid(
