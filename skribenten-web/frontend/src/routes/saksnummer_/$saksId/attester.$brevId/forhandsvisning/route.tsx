@@ -6,7 +6,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useState } from "react";
 
-import { brevKeys, getBrev } from "~/api/brev-queries";
+import { brevKeys, getBrevAttestering } from "~/api/brev-queries";
 import { sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
@@ -25,8 +25,8 @@ export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/forh
 const VedtakForhåndsvisningWrapper = () => {
   const { saksId, brevId } = Route.useParams();
   const hentBrevQuery = useQuery({
-    queryKey: getBrev.queryKey(Number.parseInt(brevId)),
-    queryFn: () => getBrev.queryFn(saksId, Number.parseInt(brevId)),
+    queryKey: getBrevAttestering.queryKey(Number.parseInt(brevId)),
+    queryFn: () => getBrevAttestering.queryFn(saksId, Number.parseInt(brevId)),
   });
 
   return queryFold({
