@@ -4,6 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.PesysDataSelectors.avdoedNavn
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.PesysDataSelectors.avdoedNavn_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.PesysDataSelectors.gjenlevendesAlder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.PesysDataSelectors.sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.pesysData
@@ -17,8 +19,10 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -56,18 +60,27 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                 text(
                     Bokmal to "Informasjon om barnepensjon",
                     Nynorsk to "Informasjon om barnepensjon",
-                    English to "Information about survivor's rights",
+                    English to "Information about children's pension",
                 )
             }
         }
         outline {
             showIf(pesysData.sakstype.isOneOf(Sakstype.GJENLEV, Sakstype.UFOREP, Sakstype.ALDER)) {
                 paragraph {
-                    val fritekst = fritekst("avdød navn")
-                    textExpr(
-                        Bokmal to "Vi skriver til deg fordi vi har mottatt melding om at ".expr() + fritekst + " er død, og du kan ha rettigheter etter avdøde.",
-                        Nynorsk to "Vi skriv til deg fordi vi har fått melding om at ".expr() + fritekst + " er død, og du kan ha rettar etter avdøde.",
-                        English to "We are writing to you because we have received notice that ".expr() + fritekst + " has died ,and you may have rights as a surviving spouse."
+                    text(
+                        Bokmal to "Vi skriver til deg fordi vi har mottatt melding om at ",
+                        Nynorsk to "Vi skriv til deg fordi vi har fått melding om at ",
+                        English to "We are writing to you because we have received notice that "
+                    )
+                    ifNotNull(pesysData.avdoedNavn) {
+                        eval(it)
+                    }.orShow {
+                        eval(fritekst("avdød navn"))
+                    }
+                    text(
+                        Bokmal to " er død, og du kan ha rettigheter etter avdøde.",
+                        Nynorsk to " er død, og du kan ha rettar etter avdøde.",
+                        English to " has died ,and you may have rights as a surviving spouse."
                     )
                 }
             }
@@ -83,10 +96,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
             }
             showIf(pesysData.sakstype.isOneOf(Sakstype.ALDER, Sakstype.UFOREP)) {
                 paragraph {
-                    val fritekst = fritekst("Opplysninger/forhold du vil informere bruker om i saken")
-                    textExpr(
-                        Bokmal to fritekst, Nynorsk to fritekst, English to fritekst
-                    )
+                    eval(fritekst("Opplysninger/forhold du vil informere bruker om i saken"))
                 }
             }
             showIf(pesysData.sakstype.isOneOf(Sakstype.GJENLEV, Sakstype.ALDER)) {
@@ -160,8 +170,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     )
                 }
                 paragraph {
-                    val fritekst = fritekst("fyll ut mer informasjon knyttet til forsørget av bidrag fra den avdøde")
-                    textExpr(Bokmal to fritekst, Nynorsk to fritekst, English to fritekst)
+                    eval(fritekst("fyll ut mer informasjon knyttet til forsørget av bidrag fra den avdøde"))
                 }
                 includePhrase(Felles.DuKanLeseMer)
             }
