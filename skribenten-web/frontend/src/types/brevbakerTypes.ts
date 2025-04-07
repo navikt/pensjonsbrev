@@ -19,24 +19,28 @@ export type TScalar = {
   readonly type: "scalar";
   readonly nullable: boolean;
   readonly kind: ScalarKind;
+  readonly displayText: Nullable<string>;
 };
 export type TEnum = {
   readonly type: "enum";
   readonly nullable: boolean;
   readonly values: string[];
+  readonly displayText: Nullable<string>;
 };
 export type TArray = {
   readonly type: "array";
   readonly nullable: boolean;
   readonly items: FieldType;
+  readonly displayText: Nullable<string>;
 };
 export type TObject = {
   readonly type: "object";
   readonly nullable: boolean;
   readonly typeName: string;
+  readonly displayText: Nullable<string>;
 };
 
-export type ScalarKind = "NUMBER" | "DOUBLE" | "STRING" | "BOOLEAN" | "DATE";
+export type ScalarKind = "NUMBER" | "DOUBLE" | "STRING" | "BOOLEAN" | "DATE" | "YEAR";
 
 export type LanguageCode = "BOKMAL" | "NYNORSK" | "ENGLISH";
 
