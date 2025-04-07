@@ -13,6 +13,7 @@ data class OrienteringOmRettigheterOgPlikterDto(
     val epsPaInstitusjon: Boolean,
     val epsOpphold: EpsOpphold?,
     val harBarnetillegg: Boolean?,
+    val brukerUnder18Aar: Boolean?,
 )
 
 

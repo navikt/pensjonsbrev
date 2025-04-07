@@ -10,12 +10,18 @@ import no.nav.pensjon.brev.api.model.vedlegg.EpsOpphold
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.borSammenMedBruker
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.brukerBorINorge
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.brukerUnder18Aar
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.epsOpphold
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.epsPaInstitusjon
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.harBarnetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.institusjonsoppholdGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.sakstype
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.sivilstand
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggHjelpFraAndre
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggInnsynSakPensjon
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggInnsynSakUfoeretrygdPesysNoenDokumenter
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggInnsynSakUnder18
+import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggKlagePaaVedtaket
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikter
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP
 import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP1
@@ -55,6 +61,9 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.nettside
+import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.telefonnummer
 
 // V00002 i metaforce
 @TemplateModelHelpers
@@ -367,6 +376,14 @@ val vedleggOrienteringOmRettigheterOgPlikter =
         }
         includePhrase(VedleggVeiledning)
         showIf(sakstype.notEqualTo(Sakstype.UFOREP)) {
-
+            includePhrase(VedleggInnsynSakPensjon(felles.avsenderEnhet.telefonnummer, felles.avsenderEnhet.nettside))
         }
+        showIf(sakstype.equalTo(Sakstype.BARNEP) and brukerUnder18Aar.ifNull(false)) {
+            includePhrase(VedleggInnsynSakUnder18)
+        }
+        showIf(sakstype.equalTo(Sakstype.UFOREP)) {
+            includePhrase(VedleggInnsynSakUfoeretrygdPesysNoenDokumenter)
+        }
+        includePhrase(VedleggHjelpFraAndre)
+        includePhrase(VedleggKlagePaaVedtaket(felles.avsenderEnhet.telefonnummer))
     }

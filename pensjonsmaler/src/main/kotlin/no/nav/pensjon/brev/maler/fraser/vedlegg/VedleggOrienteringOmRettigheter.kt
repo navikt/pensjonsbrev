@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg
 
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.FULLMAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
@@ -11,6 +12,8 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.telefonnummer
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 
 
@@ -339,6 +342,27 @@ object VedleggInnsynSakUfoeretrygdPesys : OutlinePhrase<LangBokmalNynorskEnglish
                 Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn via $NAV_URL for å sjå dokumenter i saka di. Du kan også ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON.",
                 English to "With some exceptions, you are entitled to access the documents relating to your case. Log on to $NAV_URL to review the documents in connection with your case. You can also call us at telephone +47 $NAV_KONTAKTSENTER_TELEFON.",
             )
+        }
+    }
+}
+
+// TODO: Dette er formuleringa brukt for VedleggInnsynSakUTPesys_001 i vedlegg 1 og vedlegg 2 i doksys
+// Denne bør eigentleg samkøyrast med den over, dei er _nesten_ like, men ikkje heilt.
+object VedleggInnsynSakUfoeretrygdPesysNoenDokumenter : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Innsyn i saken din - forvaltningsloven § 18",
+                Nynorsk to "Innsyn i saka di - forvaltningslova § 18",
+                English to "Access to your case - Section 18 of the Public Administration Act"
+            )
+        }
+        paragraph {
+            textExpr(
+                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan se noen dokumenter på ${Constants.DITT_NAV}. Du kan også ringe oss på telefon ".expr() + felles.avsenderEnhet.telefonnummer.format() + ".",
+                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan sjå nokre dokument på ${Constants.DITT_NAV}. Du kan også ringe oss på telefon ".expr() + felles.avsenderEnhet.telefonnummer.format() + ".",
+                English to "With some exceptions, you are entitled to access all the documents pertaining to your case. You can read some of the documents at ${Constants.DITT_NAV}. You can also call us at tel.: ".expr() + felles.avsenderEnhet.telefonnummer.format() + ".",
+                )
         }
     }
 }
