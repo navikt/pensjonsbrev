@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
+import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -13,12 +14,10 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -30,6 +29,7 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
     val minstePensjonssats: Expression<Kroner>,
     val totalPensjon: Expression<Kroner>,
     val borINorge: Expression<Boolean>,
+    val harEOSLand: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title2 {
@@ -64,6 +64,16 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
             )
         }
 
+        showIf(harEOSLand and opplysningerBruktIBeregningen.prorataBruktIBeregningen) {
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er også gjort etter EØS-avtalens regler i forordning 883/2004, artikkel 6.",
+                    Nynorsk to "Vedtaket er også gjort etter reglane i EØS-avtalen i forordning 883/2004, artikkel 6.",
+                    English to "This decision was also made pursuant to the provisions of Regulation (EC) 883/2004, article 6.",
+                )
+            }
+        }
+
         title2 {
             text(
                 Bokmal to "Slik har vi beregnet",
@@ -77,7 +87,7 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                     item {
                         textExpr(
                             Bokmal to "For å kunne ta ut alderspensjon før du fyller ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
-                                    ", må pensjonen din minst utgjøre ".expr() + minstePensjonssats.format() + " kroner i året.",
+                                    ", må pensjonen din minst være ".expr() + minstePensjonssats.format() + " kroner i året.",
                             Nynorsk to "For å kunne ta ut alderspensjon før du fyller ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
                                     ", må pensjonen din minst vere ".expr() + minstePensjonssats.format() + " kroner i året.",
                             English to "For you to be eligible for retirement pension before the age of ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
@@ -128,6 +138,15 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                                     "We calculate the part you wish to withdraw now and what you would have received if you take the rest of the pension at age ".expr() +
                                     normertPensjonsalder.aarOgMaanederFormattert() + ".",
                         )
+
+                        showIf(opplysningerBruktIBeregningen.prorataBruktIBeregningen) {
+                            text(
+                                Bokmal to " Vi har tatt hensyn til at du også har trygdetid fra land som Norge har trygdeavtale med.",
+                                Nynorsk to " Vi har tatt omsyn til at du også har trygdetid frå land som Noreg har trygdeavtale med.",
+                                English to " We have taken into account any periods of national insurance coverage" +
+                                        " that you may have in countries with which Norway has a social security agreement."
+                            )
+                        }
                     }
 
                     item {
@@ -163,9 +182,15 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
         }
         paragraph {
             text(
-                Bokmal to "I vedlegg 2 finner du en tabell som viser opplysninger brukt i beregningen.",
-                Nynorsk to "I vedlegg 2 finn du ein tabell som viser opplysningar brukt i berekninga.",
-                English to "Appendix 2 includes a table with information about how your pension is calculated."
+                Bokmal to "I vedlegget ",
+                Nynorsk to "I vedlegget ",
+                English to "In the appendix "
+            )
+            namedReference(opplysningerBruktIBeregningenAP)
+            text(
+                Bokmal to " finner du en tabell som viser hvilke opplysninger vi har brukt.",
+                Nynorsk to " finn du ein tabell som viser kva opplysningar vi har brukt.",
+                English to " you will find a table showing the data we have used."
             )
         }
         title2 {

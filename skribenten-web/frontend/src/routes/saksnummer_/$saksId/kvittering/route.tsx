@@ -11,6 +11,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId/kvittering")({
 
 function Kvittering() {
   const { saksId } = Route.useParams();
+  const { enhetsId, vedtaksId } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const ferdigstillBrevContext = useFerdigstillResultatContext();
 
@@ -36,7 +37,7 @@ function Kvittering() {
           css={css`
             width: fit-content;
           `}
-          onClick={() => navigate({ to: "/saksnummer" })}
+          onClick={() => navigate({ to: "/saksnummer", search: { enhetsId } })}
           size="small"
           type="button"
           variant="secondary"
@@ -47,7 +48,9 @@ function Kvittering() {
           css={css`
             width: fit-content;
           `}
-          onClick={() => navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId } })}
+          onClick={() =>
+            navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId }, search: { enhetsId, vedtaksId } })
+          }
           size="small"
           type="button"
           variant="secondary"
@@ -58,7 +61,9 @@ function Kvittering() {
           css={css`
             width: fit-content;
           `}
-          onClick={() => navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId } })}
+          onClick={() =>
+            navigate({ to: "/saksnummer/$saksId/brevbehandler", params: { saksId }, search: { enhetsId, vedtaksId } })
+          }
           size="small"
           type="button"
           variant="secondary"

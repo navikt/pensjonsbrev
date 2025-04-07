@@ -15,6 +15,7 @@ const BrevvelgerFooter = (props: {
   onSubmitClick: Nullable<SubmitTemplateOptions>;
 }) => {
   const navigate = useNavigate({ from: Route.fullPath });
+  const { enhetsId, vedtaksId } = Route.useSearch();
   const harBrevKlarTilSending = props.antallBrevKlarTilSending > 0;
   //henter mutations som er pending for å vise loading på knapp - vi har kun en mutation som kan være pending
   const mutationState = useMutationState({ filters: { status: "pending" } });
@@ -28,12 +29,13 @@ const BrevvelgerFooter = (props: {
       justify={"end"}
     >
       <Button
-        onClick={() => {
+        onClick={() =>
           navigate({
             to: "/saksnummer/$saksId/brevbehandler",
             params: { saksId: props.saksId.toString() },
-          });
-        }}
+            search: { enhetsId, vedtaksId },
+          })
+        }
         size="small"
         type="button"
         variant="tertiary"

@@ -1,11 +1,15 @@
 import { css } from "@emotion/react";
 import { BodyShort, CopyButton, HStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
-import { getFavoritter, getKontaktAdresse, getNavn, getPreferredLanguage } from "~/api/skribenten-api-endpoints";
-import { getSakContext } from "~/api/skribenten-api-endpoints";
+import {
+  getFavoritterQuery,
+  getKontaktAdresseQuery,
+  getNavnQuery,
+  getPreferredLanguageQuery,
+  getSakContextQuery,
+} from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SakDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
@@ -14,37 +18,20 @@ import { queryFold } from "~/utils/tanstackUtils";
 import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
 import { FerdigstillResultatContextProvider } from "./kvittering/-components/FerdigstillResultatContext";
 
+// Typer er deklarert som `: string | undefined` heller enn `?: string` for å kreve at disse parametrene overføres i lenker.
+type SaksnummerSearch = { vedtaksId: string | undefined; enhetsId: string | undefined };
+
 export const Route = createFileRoute("/saksnummer_/$saksId")({
-  beforeLoad: ({ params: { saksId }, search: { vedtaksId } }) => {
-    const getSakContextQueryOptions = {
-      ...getSakContext,
-      queryKey: getSakContext.queryKey(saksId, vedtaksId),
-      queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
-    };
-
-    return { getSakContextQueryOptions };
-  },
-  loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId }),
-  loader: async ({ context: { queryClient, getSakContextQueryOptions }, params: { saksId }, deps: { vedtaksId } }) => {
+  beforeLoad: ({ params: { saksId }, search: { vedtaksId } }) => ({
+    getSakContextQueryOptions: getSakContextQuery(saksId, vedtaksId),
+  }),
+  loader: async ({ context: { queryClient, getSakContextQueryOptions }, params: { saksId } }) => {
     // Adresse is a slow query that will be needed later, therefore we prefetch it here as early as possible.
-    queryClient.prefetchQuery({
-      queryKey: getKontaktAdresse.queryKey(saksId.toString()),
-      queryFn: () => getKontaktAdresse.queryFn(saksId.toString()),
-    });
+    queryClient.prefetchQuery(getKontaktAdresseQuery(saksId));
+    queryClient.prefetchQuery(getFavoritterQuery);
+    queryClient.prefetchQuery(getPreferredLanguageQuery(saksId));
 
-    queryClient.prefetchQuery(getFavoritter);
-    queryClient.prefetchQuery({
-      queryKey: getPreferredLanguage.queryKey(saksId.toString()),
-      queryFn: () => getPreferredLanguage.queryFn(saksId.toString()),
-    });
-
-    // TODO: Dette er en work-around fordi getSakContextQueryOptions av en eller annen grunn er undefined når brukeren redirectes pga. encoding av search-parameters.
-    const queryOptions = getSakContextQueryOptions ?? {
-      ...getSakContext,
-      queryKey: getSakContext.queryKey(saksId, vedtaksId),
-      queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
-    };
-    return await queryClient.ensureQueryData(queryOptions);
+    return await queryClient.ensureQueryData(getSakContextQueryOptions);
   },
   errorComponent: ({ error }) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -52,9 +39,9 @@ export const Route = createFileRoute("/saksnummer_/$saksId")({
     return <ApiError error={error} title={`Klarte ikke hente saksnummer ${saksId}`} />;
   },
   component: SakLayout,
-  validateSearch: (search: Record<string, unknown>): { vedtaksId?: string; enhetsId?: string } => ({
-    vedtaksId: search.vedtaksId?.toString(),
-    enhetsId: search.enhetsId?.toString(),
+  validateSearch: (search: Record<string, unknown>): SaksnummerSearch => ({
+    vedtaksId: search.vedtaksId as string,
+    enhetsId: search.enhetsId as string,
   }),
 });
 
@@ -74,11 +61,7 @@ function SakLayout() {
 
 function Subheader({ sak }: { sak: SakDto }) {
   const { fødselsdato, personnummer } = splitFødselsnummer(sak.foedselsnr);
-  const hentNavnQuery = useQuery({
-    queryKey: getNavn.queryKey(sak?.foedselsnr as string),
-    queryFn: () => getNavn.queryFn(sak?.saksId?.toString() as string),
-    enabled: !!sak,
-  });
+  const hentNavnQuery = useQuery(getNavnQuery(sak.saksId.toString()));
 
   return (
     <div

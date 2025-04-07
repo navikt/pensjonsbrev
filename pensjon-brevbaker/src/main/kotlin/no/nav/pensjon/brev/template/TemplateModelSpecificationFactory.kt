@@ -2,9 +2,11 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.ObjectTypeSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
+import no.nav.pensjon.brevbaker.api.model.Year
 import kotlin.reflect.*
 import kotlin.reflect.full.primaryConstructor
 
@@ -60,43 +62,47 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
     }
 
     private fun createObjectTypeSpecification(type: KClass<*>): ObjectTypeSpecification =
-        type.primaryConstructor?.parameters?.associate { it.name!! to it.type.toFieldType() }
+        type.primaryConstructor?.parameters?.associate { it.name!! to it.type.toFieldType(it.annotations) }
             ?: emptyMap()
 
-    private fun KType.toFieldType(): FieldType {
+    private fun KType.toFieldType(annotations: List<Annotation>): FieldType {
         val theClassifier = classifier
         return if (theClassifier is KClass<*>) {
+            val displayText = annotations.filterIsInstance<DisplayText>().map { it.text }
             when (val qname = theClassifier.qualifiedName) {
                 "kotlin.String" ->
-                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.STRING)
+                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.STRING, displayText = displayText.firstOrNull())
 
                 "kotlin.Int", "kotlin.Long" ->
-                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.NUMBER)
+                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.NUMBER, displayText = displayText.firstOrNull())
 
                 "kotlin.Double", "kotlin.Float" ->
-                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DOUBLE)
+                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DOUBLE, displayText = displayText.firstOrNull())
 
                 "kotlin.Boolean" ->
-                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.BOOLEAN)
+                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.BOOLEAN, displayText = displayText.firstOrNull())
 
                 "kotlin.collections.List" -> {
-                    FieldType.Array(isMarkedNullable, arguments.first().type!!.toFieldType())
+                    FieldType.Array(isMarkedNullable, arguments.first().type!!.toFieldType(listOf()))
                 }
 
                 "java.time.LocalDate" ->
-                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DATE)
+                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DATE, displayText = displayText.firstOrNull())
+
+                Year::class.qualifiedName ->
+                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.YEAR, displayText = displayText.firstOrNull())
 
                 "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata" -> {
                     toProcess.add(theClassifier)
-                    FieldType.Object(isMarkedNullable, qname)
+                    FieldType.Object(isMarkedNullable, qname, displayText = displayText.firstOrNull())
                 }
 
                 else -> {
                     if (theClassifier.isData || theClassifier.isValue) {
                         toProcess.add(theClassifier)
-                        FieldType.Object(isMarkedNullable, qname!!)
+                        FieldType.Object(isMarkedNullable, qname!!, displayText = displayText.firstOrNull())
                     } else if (theClassifier.java.isEnum) {
-                        FieldType.Enum(isMarkedNullable, theClassifier.java.enumConstants.map { it.toString() }.toSet())
+                        FieldType.Enum(isMarkedNullable, theClassifier.java.enumConstants.map { it.toString() }.toSet(), displayText = displayText.firstOrNull())
                     } else {
                         throw TemplateModelSpecificationError("Don't know how to handle type: $qname")
                     }
