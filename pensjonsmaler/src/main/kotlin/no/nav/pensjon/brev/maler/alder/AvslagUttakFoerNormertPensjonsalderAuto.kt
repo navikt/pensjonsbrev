@@ -10,8 +10,10 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.virkFom
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
-import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025
+import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025Vedlegg
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -55,7 +57,8 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
                 AvslagUttakFoerNormertPensjonsalderFelles(
                     afpBruktIBeregning = afpBruktIBeregning,
                     normertPensjonsalder = normertPensjonsalder,
-                    opplysningerBruktIBeregningen = opplysningerBruktIBeregningen,
+                    uttaksgrad = opplysningerBruktIBeregningen.uttaksgrad,
+                    prorataBruktIBeregningen = opplysningerBruktIBeregningen.prorataBruktIBeregningen,
                     virkFom = virkFom,
                     minstePensjonssats = minstePensjonssats,
                     totalPensjon = totalPensjon,
@@ -66,6 +69,6 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
         }
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
-        includeAttachment(opplysningerBruktIBeregningenAP2025, opplysningerBruktIBeregningen)
+        includeAttachment(opplysningerBruktIBeregningenAP2025Vedlegg, opplysningerBruktIBeregningen)
     }
 }

@@ -1,11 +1,12 @@
 package no.nav.pensjon.brev.maler.alder.vedlegg
 
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenKap20Selectors.redusertTrygdetidKap20
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.delingstallVedNormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.delingstallVedUttak
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.kravAarsak
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.normertPensjonsalder
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.opplysningerKap20
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.pensjonsbeholdning
-import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.redusertTrygdetidKap20
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.sisteOpptjeningsAar
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.trygdeperioderNorge
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.trygdeperioderUtland
@@ -24,13 +25,11 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-@TemplateModelHelpers
-val opplysningerBruktIBeregningenAP2025 =
+val opplysningerBruktIBeregningenAP2025Vedlegg =
     createAttachment(
         title = newText(
             Bokmal to "Opplysninger brukt i beregningen",
@@ -182,7 +181,7 @@ val opplysningerBruktIBeregningenAP2025 =
             )
         }
 
-        showIf(redusertTrygdetidKap20) {
+        showIf(opplysningerKap20.redusertTrygdetidKap20) {
             paragraph {
                 text(
                     Bokmal to "Trygdetid baserer seg på perioder du har bodd og/eller arbeidet i Norge, og har betydning for beregning avpensjonen din. Full trygdetid er 40 år.",

@@ -6,14 +6,16 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.borINorge
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.minstePensjonssats
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.normertPensjonsalder
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.opplysningerBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.harEOSLand
+import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.opplysningerBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.vedtakBegrunnelseLavOpptjening
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
-import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2016
+import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2016Vedlegg
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -52,7 +54,8 @@ object AvslagGradsendringFoerNormertPensjonsalder2016Auto : AutobrevTemplate<Avs
                 AvslagGradsendringFoerNormertPensjonsalderFelles(
                     afpBruktIBeregning = afpBruktIBeregning,
                     normertPensjonsalder = normertPensjonsalder,
-                    opplysningerBruktIBeregningen = opplysningerBruktIBeregningen,
+                    uttaksgrad = opplysningerBruktIBeregningen.uttaksgrad,
+                    prorataBruktIBeregningen = opplysningerBruktIBeregningen.prorataBruktIBeregningen,
                     virkFom = virkFom,
                     minstePensjonssats = minstePensjonssats,
                     totalPensjon = totalPensjon,
@@ -66,7 +69,7 @@ object AvslagGradsendringFoerNormertPensjonsalder2016Auto : AutobrevTemplate<Avs
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
         includeAttachment(
-            template = opplysningerBruktIBeregningenAP2016,
+            template = opplysningerBruktIBeregningenAP2016Vedlegg,
             attachmentData = opplysningerBruktIBeregningen,
             predicate = vedtakBegrunnelseLavOpptjening
         )

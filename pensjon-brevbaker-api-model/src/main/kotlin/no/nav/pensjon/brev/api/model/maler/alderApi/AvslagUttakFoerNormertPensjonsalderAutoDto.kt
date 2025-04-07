@@ -13,7 +13,7 @@ data class AvslagUttakFoerNormertPensjonsalderAutoDto(
     val virkFom: LocalDate,
     val totalPensjon: Kroner,
     val afpBruktIBeregning: Boolean,
-    val opplysningerBruktIBeregningenAP2025: OpplysningerBruktIBeregningenAP2025,
+    val opplysningerBruktIBeregningen: OpplysningerBruktIBeregningen,
     val borINorge: Boolean,
     val harEOSLand: Boolean,
     val vedtakBegrunnelseLavOpptjening: Boolean,
@@ -27,7 +27,7 @@ data class AvslagUttakFoerNormertPensjonsalderAP2016AutoDto(
     val virkFom: LocalDate,
     val totalPensjon: Kroner,
     val afpBruktIBeregning: Boolean,
-    val opplysningerBruktIBeregningen: OpplysningerBruktIBeregningenAP2016,
+    val opplysningerBruktIBeregningen: OpplysningerBruktIBeregningen,
     val borINorge: Boolean,
     val harEOSLand: Boolean,
     val vedtakBegrunnelseLavOpptjening: Boolean,
@@ -50,7 +50,7 @@ data class TrygdeperiodeUtland(
     val land: String
 )
 
-data class OpplysningerBruktIBeregningenAP2025(
+data class OpplysningerBruktIBeregningen(
     val virkFom: LocalDate,
     val uttaksgrad: Int,
     val trygdetid: Int,
@@ -60,27 +60,18 @@ data class OpplysningerBruktIBeregningenAP2025(
     val normertPensjonsalder: NormertPensjonsalder,
     val sisteOpptjeningsAar: Int?,
     val prorataBruktIBeregningen: Boolean,
-    val redusertTrygdetidKap20: Boolean,
+    val kravAarsak: String?,
     val trygdeperioderNorge: List<TrygdeperiodeNorge>,
     val trygdeperioderUtland: List<TrygdeperiodeUtland>,
+    val opplysningerKap19: OpplysningerBruktIBeregningenKap19?,
+    val opplysningerKap20: OpplysningerBruktIBeregningenKap20,
 )
 
-
-data class OpplysningerBruktIBeregningenAP2016(
-    val virkFom: LocalDate,
-    val uttaksgrad: Int,
-    val trygdetid: Int,
-    val pensjonsbeholdning: Kroner,
-    val delingstallVedUttak: Double,
-    val delingstallVedNormertPensjonsalder: Double?,
-    val normertPensjonsalder: NormertPensjonsalder,
-    val sisteOpptjeningsAar: Int?,
-    val prorataBruktIBeregningen: Boolean,
+data class OpplysningerBruktIBeregningenKap20(
     val redusertTrygdetidKap20: Boolean,
-    val trygdeperioderNorge: List<TrygdeperiodeNorge>,
-    val trygdeperioderUtland: List<TrygdeperiodeUtland>,
+)
 
-    // nye felter
+data class OpplysningerBruktIBeregningenKap19(
     val fodselsAar: Year,
     val andelNyttRegelverk: Int,
     val andelGammeltRegelverk: Int,
@@ -92,6 +83,5 @@ data class OpplysningerBruktIBeregningenAP2016(
     val poengAarE91: Int?,
     val forholdstall: Double,
     val forholdstallVed67: Double,
-    val kravAarsak: String?,
     val redusertTrygdetidKap19: Boolean,
 )

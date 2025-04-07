@@ -13,9 +13,10 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
-import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2016
-import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025
+import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025Vedlegg
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -59,7 +60,8 @@ object AvslagUttakFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUttakFoerN
                 AvslagUttakFoerNormertPensjonsalderFelles(
                     afpBruktIBeregning = pesysData.afpBruktIBeregning,
                     normertPensjonsalder = pesysData.normertPensjonsalder,
-                    opplysningerBruktIBeregningen = pesysData.opplysningerBruktIBeregningen,
+                    uttaksgrad = pesysData.opplysningerBruktIBeregningen.uttaksgrad,
+                    prorataBruktIBeregningen = pesysData.opplysningerBruktIBeregningen.prorataBruktIBeregningen,
                     virkFom = pesysData.virkFom,
                     minstePensjonssats = pesysData.minstePensjonssats,
                     totalPensjon = pesysData.totalPensjon,
@@ -70,7 +72,7 @@ object AvslagUttakFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUttakFoerN
         }
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
-        includeAttachment(opplysningerBruktIBeregningenAP2025, pesysData.opplysningerBruktIBeregningen)
+        includeAttachment(opplysningerBruktIBeregningenAP2025Vedlegg, pesysData.opplysningerBruktIBeregningen)
     }
 
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING

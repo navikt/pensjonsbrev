@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.fixtures.alder
 
 import no.nav.pensjon.brev.api.model.maler.alderApi.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.LocalDate
 
 fun createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() =
@@ -38,7 +39,24 @@ fun createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() =
                     tom = LocalDate.now()
                 ), TrygdeperiodeUtland(land = "Danmark", fom = LocalDate.now(), tom = LocalDate.now())
             ),
-            redusertTrygdetid = true
+            kravAarsak = null,
+            opplysningerKap19 = OpplysningerBruktIBeregningenKap19(
+                forholdstallVed67 = 10.0,
+                forholdstall = 5.0,
+                poengAarE91 = 10,
+                poengAarF92 = 10,
+                innvilgetTillegspensjon = true,
+                poengAar = 4,
+                sluttpoengTall = 9,
+                redusertTrygdetidKap19 = true,
+                avslattKap19 = false,
+                fodselsAar = Year(1990),
+                andelGammeltRegelverk = 6,
+                andelNyttRegelverk = 4
+            ),
+            opplysningerKap20 = OpplysningerBruktIBeregningenKap20(
+                redusertTrygdetidKap20 = false
+            )
         ),
         borINorge = false,
         harEOSLand = true,

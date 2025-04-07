@@ -12,8 +12,10 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.vedtakBegrunnelseLavOpptjening
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.virkFom
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
-import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025
+import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025Vedlegg
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -52,7 +54,8 @@ object AvslagGradsendringFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagU
                 AvslagGradsendringFoerNormertPensjonsalderFelles(
                     afpBruktIBeregning = afpBruktIBeregning,
                     normertPensjonsalder = normertPensjonsalder,
-                    opplysningerBruktIBeregningen = opplysningerBruktIBeregningen,
+                    uttaksgrad = opplysningerBruktIBeregningen.uttaksgrad,
+                    prorataBruktIBeregningen = opplysningerBruktIBeregningen.prorataBruktIBeregningen,
                     virkFom = virkFom,
                     minstePensjonssats = minstePensjonssats,
                     totalPensjon = totalPensjon,
@@ -66,7 +69,7 @@ object AvslagGradsendringFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagU
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
         includeAttachment(
-            template = opplysningerBruktIBeregningenAP2025,
+            template = opplysningerBruktIBeregningenAP2025Vedlegg,
             attachmentData = opplysningerBruktIBeregningen,
             predicate = vedtakBegrunnelseLavOpptjening
         )
