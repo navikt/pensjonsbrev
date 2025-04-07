@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -24,15 +25,22 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.dagensDato
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.differanse
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.etteroppgjoersAar
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.norskInntekt
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.opplysningerOmEtteroppgjoeretData
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.resultatType
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.rettsgebyrBeloep
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.utbetalingData
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerUtbetalingDTOSelectors.avviksBeloep
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.OpplysningerOmEtteroppgjoeretData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.opplysningerOmEtteroppgjoeret
 import java.time.LocalDate
+
+data class EtteroppgjoerUtbetalingDTO(
+    val inntekt: Kroner,
+    val faktiskInntekt: Kroner,
+    val avviksBeloep: Kroner
+)
 
 data class EtteroppgjoerForhaandsvarselDTO(
     override val innhold: List<Element>,
@@ -41,10 +49,10 @@ data class EtteroppgjoerForhaandsvarselDTO(
     val etteroppgjoersAar: Int,
     val rettsgebyrBeloep: Kroner,
     val resultatType: String,
-    val differanse: Kroner,
     val dagensDato: LocalDate = LocalDate.now(),
+    val utbetalingData : EtteroppgjoerUtbetalingDTO
 ) : FerdigstillingBrevDTO {
-    val opplysningerOmEtteroppgjoeretData = OpplysningerOmEtteroppgjoeretData(etteroppgjoersAar)
+    val opplysningerOmEtteroppgjoeretData = OpplysningerOmEtteroppgjoeretData(etteroppgjoersAar, utbetalingData)
 }
 
 @TemplateModelHelpers
@@ -79,8 +87,8 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                         Language.Bokmal to "Hvert år, når skatteoppgjøret er ferdig, sjekker Nav inntekten din for å se om du " +
                                 "har fått utbetalt riktig beløp i omstillingsstønad året før. Omstillingsstønaden din er beregnet " +
                                 "basert på nye opplysninger fra Skatteetaten.",
-                        Language.Nynorsk to "123",
-                        Language.English to "123",
+                        Language.Nynorsk to "",
+                        Language.English to "",
                     )
                 }
             }.orShow {
@@ -107,7 +115,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
             showIf(resultatType.equalTo("TILBAKEKREVING")){
                 // dersom feilutbetalt beløp
                 paragraph {
-                    textExpr(Language.Bokmal to "Vår beregning viser at du har fått ".expr() + differanse.format() +" kroner for mye omstillingsstønad i "+etteroppgjoersAar.format() + ". Dette overstiger ett rettsgebyr, som betyr at du må betale tilbake det feilutbetalte beløpet.",
+                    textExpr(Language.Bokmal to "Vår beregning viser at du har fått ".expr() + utbetalingData.avviksBeloep.absoluteValue().format() +" kroner for mye omstillingsstønad i "+etteroppgjoersAar.format() + ". Dette overstiger ett rettsgebyr, som betyr at du må betale tilbake det feilutbetalte beløpet.",
                         Language.Nynorsk to "".expr(),
                         Language.English to "".expr())
                 }
@@ -117,7 +125,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                 // dersom etterbetaling
                 paragraph {
                     textExpr(
-                        Language.Bokmal to "Vår beregning viser at du har fått utbetalt ".expr() + differanse.format() +" kroner for lite omstillingsstønad i " + etteroppgjoersAar.format() + ". Dette overstiger 25 prosent av rettsgebyret.",
+                        Language.Bokmal to "Vår beregning viser at du har fått utbetalt ".expr() + utbetalingData.avviksBeloep.absoluteValue().format() +" kroner for lite omstillingsstønad i " + etteroppgjoersAar.format() + ". Dette overstiger 25 prosent av rettsgebyret.",
                         Language.Nynorsk to "".expr(),
                         Language.English to "".expr()
                     )
@@ -167,7 +175,6 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
             includePhrase(Felles.HvordanMelderDuFra)
             includePhrase(OmstillingsstoenadFellesFraser.HarDuIkkeBankID(bosattUtland))
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
-
         }
 
         includeAttachment(opplysningerOmEtteroppgjoeret(), opplysningerOmEtteroppgjoeretData)
