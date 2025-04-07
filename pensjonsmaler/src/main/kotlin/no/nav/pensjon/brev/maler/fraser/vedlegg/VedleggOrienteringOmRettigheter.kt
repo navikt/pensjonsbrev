@@ -304,7 +304,7 @@ object VedleggVeiledning : OutlinePhrase<LangBokmalNynorskEnglish>() {
 // TODO: Hvorfor har vi to versjoner av Innsyn (VedleggInnsynSakPensjon og VedleggInnsynSakUfoeretrygdPesys)
 
 // VedleggInnsynSakPensjon_001
-data class VedleggInnsynSakPensjon(val telefonnummer: Expression<Telefonnummer>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class VedleggInnsynSakPensjon(val telefonnummer: Expression<Telefonnummer>, val nettside: Expression<String>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
@@ -315,9 +315,9 @@ data class VedleggInnsynSakPensjon(val telefonnummer: Expression<Telefonnummer>)
         }
         paragraph {
             textExpr(
-                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn på $NAV_URL for å se all kommunikasjon som har vært mellom deg og Nav i saken din. Du kan også ringe oss på telefon ".expr() + telefonnummer.format() + ".".expr(),
-                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn på $NAV_URL for å sjå all kommunikasjon som har vore mellom deg og Nav i saka di. Du kan også ringje oss på telefon ".expr() + telefonnummer.format() + ".".expr(),
-                English to "With some exceptions, you are entitled to access all the documents relating to your case. Log on to $NAV_URL to review the communication between you and Nav in connection with your case. You can also call us at tel.: ".expr() + telefonnummer.format() + ".".expr()
+                Bokmal to "Med få unntak har du rett til å se dokumentene i saken din. Du kan logge deg inn på ".expr() + nettside + " for å se all kommunikasjon som har vært mellom deg og Nav i saken din. Du kan også ringe oss på telefon ".expr() + telefonnummer.format() + ".",
+                Nynorsk to "Med få unntak har du rett til å sjå dokumenta i saka di. Du kan logge deg inn på ".expr() + nettside + " for å sjå all kommunikasjon som har vore mellom deg og Nav i saka di. Du kan også ringje oss på telefon ".expr() + telefonnummer.format() + ".",
+                English to "With some exceptions, you are entitled to access all the documents relating to your case. Log on to ".expr() + nettside + " to review the communication between you and Nav in connection with your case. You can also call us at tel.: ".expr() + telefonnummer.format() + "."
             )
         }
     }

@@ -27,6 +27,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.nettside
 import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.telefonnummer
 
 // V00001 i metaforce
@@ -42,7 +43,7 @@ val vedleggDineRettigheterOgMulighetTilAaKlage =
     ) {
         includePhrase(VedleggVeiledning)
         showIf(sakstype.notEqualTo(Sakstype.UFOREP)) {
-            includePhrase(VedleggInnsynSakPensjon(felles.avsenderEnhet.telefonnummer))
+            includePhrase(VedleggInnsynSakPensjon(felles.avsenderEnhet.telefonnummer, nettside = felles.avsenderEnhet.nettside))
         }.orShow {
             title2 {
                 text(
