@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbeta
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.sumTilInnkrevingTotalBeloep
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.Redigerbar
 import no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalingerPE
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
@@ -26,9 +27,10 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import kotlin.math.E
 
 @TemplateModelHelpers
-// Conditional for inclusion is if an incorrect pension benefit payment is to be repaid, in full or in part -> TilbakekrevingResultat = FULL_TILBAKEKREV || DELVIS_TILBAKEKREV
+// If an incorrect pension benefit payment is to be repaid, in full or in part -> TilbakekrevingResultat = FULL_TILBAKEKREV || DELVIS_TILBAKEKREV
 object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvFeilutbetaltBeloepDto> {
 
     // MF_000190
@@ -51,7 +53,6 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
         val feilutbetaltTotalBeloep = pesysData.feilutbetaltTotalBeloep
         val harMotregning = pesysData.harMotregning
         val resultatAvVurderingenForTotalBeloep = pesysData.resultatAvVurderingenForTotalBeloep
-        val sakstype = pesysData.sakstype
         val sluttPeriodeForTilbakekreving = pesysData.sluttPeriodeForTilbakekreving
         val startPeriodeForTilbakekreving = pesysData.startPeriodeForTilbakekreving
         val sumTilInnkrevingTotalBeloep = pesysData.sumTilInnkrevingTotalBeloep
@@ -62,22 +63,7 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                 Nynorsk to "Du må betale tilbake ",
                 English to "You have to repay ",
             )
-            showIf(sakstype.isOneOf(Sakstype.AFP)) {
-                text(Bokmal to "AFP", Nynorsk to "AFP", English to "contractual pension (AFP)")
-            }
-            showIf(sakstype.isOneOf(Sakstype.AFP_PRIVAT)) {
-                text(
-                    Bokmal to "AFP i privat sektor",
-                    Nynorsk to "AFP i privat sektor",
-                    English to "contractual pension (AFP) in the private sector"
-                )
-            }
-            showIf(sakstype.isOneOf(Sakstype.ALDER)) {
-                text(Bokmal to "alderspensjon", Nynorsk to "alderspensjon", English to "retirement pension")
-            }.orShow {
-                val ytelse = fritekst("ytelse")
-                textExpr(Bokmal to ytelse, Nynorsk to ytelse, English to ytelse)
-            }
+            includePhrase(Redigerbar.SaksType(pesysData.sakstype))
         }
         outline {
             paragraph {
@@ -96,22 +82,7 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                     Nynorsk to "Du har fått for mykje ",
                     English to "You have received too much "
                 )
-                showIf(sakstype.isOneOf(Sakstype.AFP)) {
-                    text(Bokmal to "AFP", Nynorsk to "AFP", English to "contractual pension (AFP)")
-                }
-                showIf(sakstype.isOneOf(Sakstype.AFP_PRIVAT)) {
-                    text(
-                        Bokmal to "AFP i privat sektor",
-                        Nynorsk to "AFP i privat sektor",
-                        English to "contractual pension (AFP) in the private sector"
-                    )
-                }
-                showIf(sakstype.isOneOf(Sakstype.ALDER)) {
-                    text(Bokmal to "alderspensjon", Nynorsk to "alderspensjon", English to "retirement pension")
-                }.orShow {
-                    val ytelse = fritekst("ytelse")
-                    textExpr(Bokmal to ytelse, Nynorsk to ytelse, English to ytelse)
-                }
+                includePhrase(Redigerbar.SaksType(pesysData.sakstype))
                 textExpr(
                     Bokmal to " utbetalt fra ".expr() + startPeriodeForTilbakekreving.format() + " til ".expr() + sluttPeriodeForTilbakekreving.format() + ". ",
                     Nynorsk to " utbetalt frå ".expr() + startPeriodeForTilbakekreving.format() + " til ".expr() + sluttPeriodeForTilbakekreving.format() + ". ",
@@ -137,8 +108,8 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                 paragraph {
                     textExpr(
                         Bokmal to "Vi har kommet fram til at du skal betale tilbake deler av beløpet. Det vil si ".expr() + sumTilInnkrevingTotalBeloep.format() + " kroner etter at skatten er trukket fra.",
-                        Nynorsk to "Vi har kome fram til at du skalbetale tilbake delar av beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format() + " kroner etter at skatten er trektfrå.",
-                        English to "We have concluded that you mustrepay some of the excess payment you have received. This amounts to NOK ".expr() + sumTilInnkrevingTotalBeloep.format() + " after deduction of tax."
+                        Nynorsk to "Vi har kome fram til at du skal betale tilbake delar av beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format() + " kroner etter at skatten er trektfrå.",
+                        English to "We have concluded that you must repay some of the excess payment you have received. This amounts to NOK ".expr() + sumTilInnkrevingTotalBeloep.format() + " after deduction of tax."
                     )
                 }
             }
@@ -156,26 +127,7 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                         Nynorsk to "Du har i same perioden fått utbetalt for lite ",
                         English to "In the same period, you have received too little "
                     )
-                    showIf(sakstype.isOneOf(Sakstype.AFP)) {
-                        text(Bokmal to "AFP. ", Nynorsk to "AFP. ", English to "contractual pension (AFP). ")
-                    }
-                    showIf(sakstype.isOneOf(Sakstype.AFP_PRIVAT)) {
-                        text(
-                            Bokmal to "AFP i privat sektor. ",
-                            Nynorsk to "AFP i privat sektor. ",
-                            English to "contractual pension (AFP) in the private sector. "
-                        )
-                    }
-                    showIf(sakstype.isOneOf(Sakstype.ALDER)) {
-                        text(
-                            Bokmal to "alderspensjon. ",
-                            Nynorsk to "alderspensjon. ",
-                            English to "retirement pension. "
-                        )
-                    }.orShow {
-                        val ytelse = fritekst("ytelse. ")
-                        textExpr(Bokmal to ytelse, Nynorsk to ytelse, English to ytelse)
-                    }
+                    includePhrase(Redigerbar.SaksType(pesysData.sakstype))
                     text(
                         Bokmal to "Dette er tatt med i beregningen vår.",
                         Nynorsk to "Dette er teke med i berekninga vår.",
@@ -187,13 +139,13 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven § 22-15.",
                     Nynorsk to "Vedtaket er gjort etter folketrygdlova § 22-15.",
-                    English to "This decision was made pursuant to the provisions of section 22-15 of the National Insurance Act."
+                    English to "This decision is made pursuant to the provisions of section 22-15 of the National Insurance Act."
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "I vedlegget finner du en oversikt over periodene med feilutbetalinger og beløpet du må betale tilbake.",
-                    Nynorsk to "I vedlegget finn du ei oversikt over periodane med feilutbetalingar og beløpet du må betale tilbake.",
+                    Bokmal to "I vedlegget «Oversikt over feilutbetalinger» finner du en oversikt over periodene med feilutbetalinger og beløpet du må betale tilbake.",
+                    Nynorsk to "I vedlegget «Oversikt over feilutbetalinger» finn du ei oversikt over periodane med feilutbetalingar og beløpet du må betale tilbake.",
                     English to "The attachment titled 'Overview of Incorrect Payments' provides details on the periods with payment errors and the amounts that need to be repaid."
                 )
             }
@@ -201,7 +153,7 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                 text(
                     Bokmal to "Betydning for skatteoppgjøret",
                     Nynorsk to "Betydning for skatteoppgjeret",
-                    English to "Impact on your tax settlement"
+                    English to "Significance for the tax settlement"
                 )
             }
             paragraph {
@@ -221,9 +173,9 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
             paragraph {
                 text(
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. " +
-                            "Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage. I vedlegget får du vite mer om hvordan du går fram.",
+                            "Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage. I vedlegget «Dine rettigheter og mulighet til å klage» får du vite mer om hvordan du går fram.",
                     Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. " +
-                            "Klaga skal vera skriftleg. Du finn skjema og informasjon på nav.no/klage. I vedlegget får du vite meir om korleis du går fram.",
+                            "Klaga skal vera skriftleg. Du finn skjema og informasjon på nav.no/klage. I vedlegget «Rettane dine og høve til å klage» får du vite meir om korleis du går fram.",
                     English to "If you think the decision is wrong, you may appeal the decision within six weeks of the date on which you received notice of the decision. " +
                             "Your appeal must be made in writing. You will find a form and information about this at nav.no/klage. The attachment 'Your rights and how to appeal' includes information on how to proceed."
                 )
@@ -232,8 +184,8 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                 text(
                     Bokmal to "Selv om du klager på vedtaket, må du begynne å betale tilbake. Dette går frem av forvaltningsloven § 42 og hvordan vi må praktisere regelverket.",
                     Nynorsk to "Sjølv om du klagar på vedtaket, må du begynne å betale tilbake. Dette går fram av forvaltningslova § 42 og korleis vi må praktisere regelverket.",
-                    English to "Even if you appeal this decision, you will need to start the repayments. " +
-                            "This follows from section 42 of the Public Administration Act and the rules on our implementation of the regulations."
+                    English to "Even if you appeal this decision, you must start repaying. " +
+                            "This is stated in section 42 of the Public Administration Act and in the the guidelines for our application of the regulations."
                 )
             }
             paragraph {
@@ -250,6 +202,6 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
         includeAttachment(oversiktOverFeilutbetalingerPE, pesysData.oversiktOverFeilutbetalingPEDto)
-        // vedlegg: Dine rettigheter og mulighet til å klage
+// vedlegg: Dine rettigheter og mulighet til å klage
     }
 }
