@@ -27,8 +27,11 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.Etteropp
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.differanse
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.etteroppgjoersAar
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.norskInntekt
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.opplysningerOmEtteroppgjoeretData
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.resultatType
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.rettsgebyrBeloep
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.OpplysningerOmEtteroppgjoeretData
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.opplysningerOmEtteroppgjoeret
 import java.time.LocalDate
 
 data class EtteroppgjoerForhaandsvarselDTO(
@@ -40,7 +43,9 @@ data class EtteroppgjoerForhaandsvarselDTO(
     val resultatType: String,
     val differanse: Kroner,
     val dagensDato: LocalDate = LocalDate.now(),
-) : FerdigstillingBrevDTO
+) : FerdigstillingBrevDTO {
+    val opplysningerOmEtteroppgjoeretData = OpplysningerOmEtteroppgjoeretData(etteroppgjoersAar)
+}
 
 @TemplateModelHelpers
 object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsvarselDTO>, Hovedmal {
@@ -163,8 +168,8 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
             includePhrase(OmstillingsstoenadFellesFraser.HarDuIkkeBankID(bosattUtland))
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
 
-            // TODO: vedlegg opplysninger om etteroppgjøret
-
         }
+
+        includeAttachment(opplysningerOmEtteroppgjoeret(), opplysningerOmEtteroppgjoeretData)
     }
 }
