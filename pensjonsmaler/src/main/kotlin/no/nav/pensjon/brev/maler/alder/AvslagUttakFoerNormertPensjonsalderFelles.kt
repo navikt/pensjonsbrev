@@ -138,6 +138,15 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                                     "We calculate the part you wish to withdraw now and what you would have received if you take the rest of the pension at age ".expr() +
                                     normertPensjonsalder.aarOgMaanederFormattert() + ".",
                         )
+
+                        showIf(opplysningerBruktIBeregningen.prorataBruktIBeregningen) {
+                            text(
+                                Bokmal to " Vi har tatt hensyn til at du også har trygdetid fra land som Norge har trygdeavtale med.",
+                                Nynorsk to " Vi har tatt omsyn til at du også har trygdetid frå land som Noreg har trygdeavtale med.",
+                                English to " We have taken into account any periods of national insurance coverage" +
+                                        " that you may have in countries with which Norway has a social security agreement."
+                            )
+                        }
                     }
 
                     item {
