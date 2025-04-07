@@ -25,9 +25,9 @@ export const brevKeys = {
 };
 
 export const attesteringBrevKeys = {
-  all: ["BREV"] as const,
-  id: (brevId: number) => [...brevKeys.all, brevId] as const,
-  reservasjon: (brevId: number) => [...brevKeys.id(brevId), "ATTESTERING"] as const,
+  all: ["BREV", "ATTESTERING"] as const,
+  id: (brevId: number) => [...attesteringBrevKeys.all, brevId] as const,
+  reservasjon: (brevId: number) => [...attesteringBrevKeys.id(brevId), "RESERVASJON"] as const,
 };
 
 export const getModelSpecification = {
