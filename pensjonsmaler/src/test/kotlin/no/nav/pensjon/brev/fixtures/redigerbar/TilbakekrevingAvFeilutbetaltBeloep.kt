@@ -5,7 +5,9 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TilbakekrevingResultat
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDto
+import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDto
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -20,6 +22,10 @@ fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
             sluttPeriodeForTilbakekreving = LocalDate.of(2024, 1, 1),
             startPeriodeForTilbakekreving = LocalDate.of(2024, 12, 31),
             sumTilInnkrevingTotalBeloep = Kroner(25000),
+            dineRettigheterOgMulighetTilAaKlageDto = DineRettigheterOgMulighetTilAaKlageDto(
+                sakstype = Sakstype.ALDER,
+                brukerUnder18Aar = false
+            ),
             oversiktOverFeilutbetalingPEDto = OversiktOverFeilutbetalingPEDto(
                 sakstype = Sakstype.ALDER,
                 bruttoTilbakekrevdTotalbeloep = Kroner(25000),

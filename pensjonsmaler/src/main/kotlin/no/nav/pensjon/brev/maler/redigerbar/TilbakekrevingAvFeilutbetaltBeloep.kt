@@ -36,7 +36,7 @@ import kotlin.math.E
 object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvFeilutbetaltBeloepDto> {
 
     // MF_000190
-    override val kode = Pesysbrevkoder.Redigerbar.PE_TILBAKEKREVING_AV_FEILUTBETALT_BELØP
+    override val kode = Pesysbrevkoder.Redigerbar.PE_TILBAKEKREVING_AV_FEILUTBETALT_BELOEP
     override val kategori = TemplateDescription.Brevkategori.FEILUTBETALING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = Sakstype.pensjon
@@ -146,8 +146,8 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
             }
             paragraph {
                 text(
-                    Bokmal to "I vedlegget «Oversikt over feilutbetalinger» finner du en oversikt over periodene med feilutbetalinger og beløpet du må betale tilbake.",
-                    Nynorsk to "I vedlegget «Oversikt over feilutbetalinger» finn du ei oversikt over periodane med feilutbetalingar og beløpet du må betale tilbake.",
+                    Bokmal to "I vedlegget “Oversikt over feilutbetalinger” finner du en oversikt over periodene med feilutbetalinger og beløpet du må betale tilbake.",
+                    Nynorsk to "I vedlegget “Oversikt over feilutbetalinger” finn du ei oversikt over periodane med feilutbetalingar og beløpet du må betale tilbake.",
                     English to "The attachment titled 'Overview of Incorrect Payments' provides details on the periods with payment errors and the amounts that need to be repaid."
                 )
             }
@@ -175,9 +175,9 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
             paragraph {
                 text(
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. " +
-                            "Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage. I vedlegget «Dine rettigheter og mulighet til å klage» får du vite mer om hvordan du går fram.",
+                            "Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage. I vedlegget “Dine rettigheter og mulighet til å klage” får du vite mer om hvordan du går fram.",
                     Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. " +
-                            "Klaga skal vera skriftleg. Du finn skjema og informasjon på nav.no/klage. I vedlegget «Rettane dine og høve til å klage» får du vite meir om korleis du går fram.",
+                            "Klaga skal vera skriftleg. Du finn skjema og informasjon på nav.no/klage. I vedlegget “Rettane dine og høve til å klage” får du vite meir om korleis du går fram.",
                     English to "If you think the decision is wrong, you may appeal the decision within six weeks of the date on which you received notice of the decision. " +
                             "Your appeal must be made in writing. You will find a form and information about this at nav.no/klage. The attachment 'Your rights and how to appeal' includes information on how to proceed."
                 )
