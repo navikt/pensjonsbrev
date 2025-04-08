@@ -23,6 +23,7 @@ import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselBrevDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.dagensDato
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.etteroppgjoersAar
@@ -42,26 +43,33 @@ data class EtteroppgjoerUtbetalingDTO(
     val avviksBeloep: Kroner
 )
 
-data class EtteroppgjoerForhaandsvarselDTO(
+data class EtteroppgjoerForhaandsvarselBrevDTO(
     override val innhold: List<Element>,
+    val data: EtteroppgjoerForhaandsvarselDTO
+) : FerdigstillingBrevDTO
+
+data class EtteroppgjoerForhaandsvarselDTO(
     val bosattUtland: Boolean,
     val norskInntekt: Boolean,
     val etteroppgjoersAar: Int,
     val rettsgebyrBeloep: Kroner,
     val resultatType: String,
-    val dagensDato: LocalDate = LocalDate.now(),
-    val utbetalingData : EtteroppgjoerUtbetalingDTO
-) : FerdigstillingBrevDTO {
+    val inntekt: Kroner,
+    val faktiskInntekt: Kroner,
+    val avviksBeloep: Kroner
+){
+    val utbetalingData = EtteroppgjoerUtbetalingDTO(inntekt, faktiskInntekt, avviksBeloep)
     val opplysningerOmEtteroppgjoeretData = OpplysningerOmEtteroppgjoeretData(etteroppgjoersAar, utbetalingData)
+    val dagensDato: LocalDate = LocalDate.now()
 }
 
 @TemplateModelHelpers
-object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsvarselDTO>, Hovedmal {
+object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsvarselBrevDTO>, Hovedmal {
     override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_EO_FORHAANDSVARSEL
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = EtteroppgjoerForhaandsvarselDTO::class,
+        letterDataType = EtteroppgjoerForhaandsvarselBrevDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Etteroppgjør Forhåndsvarsel",
@@ -72,15 +80,15 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
     ) {
         title {
             textExpr(
-                Language.Bokmal to "Forhåndsvarsel om etteroppgjør av omstillingsstønad for ".expr() + etteroppgjoersAar.format(),
-                Language.Nynorsk to "".expr() + etteroppgjoersAar.format(),
-                Language.English to "".expr() + etteroppgjoersAar.format(),
+                Language.Bokmal to "Forhåndsvarsel om etteroppgjør av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
+                Language.Nynorsk to "".expr() + data.etteroppgjoersAar.format(),
+                Language.English to "".expr() + data.etteroppgjoersAar.format(),
             )
         }
 
         outline {
 
-            showIf(bosattUtland.not() and norskInntekt.not()) {
+            showIf(data.bosattUtland.not() and data.norskInntekt.not()) {
                 // felles minus bosatt utland og uten norsk inntekt
                 paragraph {
                     text(
@@ -97,7 +105,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                     textExpr(
                         Language.Bokmal to ("Skatteoppgjøret viser kun norsk inntekt. Siden vi ikke mottar opplysninger om utenlandsk inntekt, " +
                                 "har vi lagt til grunn det du tidligere oppga som forventet utenlandsk inntekt. Hvis disse opplysningene ikke stemmer, " +
-                                "må du sende oss dokumentasjon på din faktiske inntekt fra utlandet i ").expr() + etteroppgjoersAar.format() + ".",
+                                "må du sende oss dokumentasjon på din faktiske inntekt fra utlandet i ").expr() + data.etteroppgjoersAar.format() + ".",
                         Language.Nynorsk to "".expr(),
                         Language.English to "".expr(),
                     )
@@ -105,27 +113,27 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                 paragraph {
                     textExpr(
                         Language.Bokmal to ("Etteroppgjør skal unnlates hvis for lite utbetalt er mindre enn 25 prosent av rettsgebyret, " +
-                                "eller hvis for mye utbetalt er mindre enn ett rettsgebyr. Per ").expr() + dagensDato.format() + " er ett rettsgebyr " + rettsgebyrBeloep.format() + " kroner.",
+                                "eller hvis for mye utbetalt er mindre enn ett rettsgebyr. Per ").expr() + data.dagensDato.format() + " er ett rettsgebyr " + data.rettsgebyrBeloep.format() + " kroner.",
                         Language.Nynorsk to "".expr(),
                         Language.English to "".expr(),
                     )
                 }
             }
 
-            showIf(resultatType.equalTo("TILBAKEKREVING")){
+            showIf(data.resultatType.equalTo("TILBAKEKREVING")){
                 // dersom feilutbetalt beløp
                 paragraph {
-                    textExpr(Language.Bokmal to "Vår beregning viser at du har fått ".expr() + utbetalingData.avviksBeloep.absoluteValue().format() +" kroner for mye omstillingsstønad i "+etteroppgjoersAar.format() + ". Dette overstiger ett rettsgebyr, som betyr at du må betale tilbake det feilutbetalte beløpet.",
+                    textExpr(Language.Bokmal to "Vår beregning viser at du har fått ".expr() + data.utbetalingData.avviksBeloep.absoluteValue().format() +" kroner for mye omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger ett rettsgebyr, som betyr at du må betale tilbake det feilutbetalte beløpet.",
                         Language.Nynorsk to "".expr(),
                         Language.English to "".expr())
                 }
             }
 
-            showIf(resultatType.equalTo("ETTERBETALING")){
+            showIf(data.resultatType.equalTo("ETTERBETALING")){
                 // dersom etterbetaling
                 paragraph {
                     textExpr(
-                        Language.Bokmal to "Vår beregning viser at du har fått utbetalt ".expr() + utbetalingData.avviksBeloep.absoluteValue().format() +" kroner for lite omstillingsstønad i " + etteroppgjoersAar.format() + ". Dette overstiger 25 prosent av rettsgebyret.",
+                        Language.Bokmal to "Vår beregning viser at du har fått utbetalt ".expr() + data.utbetalingData.avviksBeloep.absoluteValue().format() +" kroner for lite omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger 25 prosent av rettsgebyret.",
                         Language.Nynorsk to "".expr(),
                         Language.English to "".expr()
                     )
@@ -149,7 +157,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
             }
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Se ny beregning av omstillingsstønaden din for inntektsåret ".expr() + etteroppgjoersAar.format() + " i vedlegget “Opplysninger om etteroppgjøret”. Du må kontrollere om inntektene som er oppgitt er riktig. ",
+                    Language.Bokmal to "Se ny beregning av omstillingsstønaden din for inntektsåret ".expr() + data.etteroppgjoersAar.format() + " i vedlegget “Opplysninger om etteroppgjøret”. Du må kontrollere om inntektene som er oppgitt er riktig. ",
                     Language.Nynorsk to "".expr(),
                     Language.English to "".expr(),
                 )
@@ -162,7 +170,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                 )
             }
 
-            showIf(resultatType.equalTo("TILBAKEKREVING")) {
+            showIf(data.resultatType.equalTo("TILBAKEKREVING")) {
                 paragraph {
                     text(
                         Language.Bokmal to "I vedtaket får du informasjon om hvordan du kan betale tilbake for mye utbetalt omstillingsstønad og hvordan du kan klage på vedtaket.",
@@ -173,10 +181,10 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
             }
 
             includePhrase(Felles.HvordanMelderDuFra)
-            includePhrase(OmstillingsstoenadFellesFraser.HarDuIkkeBankID(bosattUtland))
+            includePhrase(OmstillingsstoenadFellesFraser.HarDuIkkeBankID(data.bosattUtland))
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
 
-        includeAttachment(opplysningerOmEtteroppgjoeret(), opplysningerOmEtteroppgjoeretData)
+        includeAttachment(opplysningerOmEtteroppgjoeret(), data.opplysningerOmEtteroppgjoeretData)
     }
 }
