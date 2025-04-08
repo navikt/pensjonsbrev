@@ -33,5 +33,7 @@ object InnvilgetGarantitillegg {
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
-    )
+    ) {
+        val
+    }
 }
