@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.tellerProRata_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.tellerTTEOS
 import no.nav.pensjon.brev.maler.fraser.common.AntallAarText
+import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Expression
@@ -70,7 +71,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                                 English to "You are registered with the status of a refugee granted by the UDI",
                             )
                         }
-                        cell { text(Bokmal to "Ja", Nynorsk to "Ja", English to "Yes") }
+                        cell { includePhrase(Ja) }
                     }
                 }
                 ifNotNull(trygdetidsdetaljerKap20VedVirk) { trygdetidsdetaljer ->

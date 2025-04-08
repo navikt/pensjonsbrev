@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
 data class OpplysningerBruktIBeregningenSivilstand(
-    val beregnetSomEnsligPgaInstitsusjon: Expression<Boolean>,
+    val beregnetSomEnsligPgaInstitusjon : Expression<Boolean>,
     val epsVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.EPSvedVirk?>,
     val alderspensjonVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.AlderspensjonVedVirk>,
     val beregnetPensjonPerManedVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.AlderspensjonPerManed>
@@ -48,7 +48,7 @@ data class OpplysningerBruktIBeregningenSivilstand(
             }
 
             //vedleggBeregnGiftLeverAdskilt_001
-            showIf(beregnetSomEnsligPgaInstitsusjon) {
+            showIf(beregnetSomEnsligPgaInstitusjon ) {
                 paragraph {
                     text(
                         Bokmal to "Du og ektefellen din er registrert med forskjellig bosted, eller en av dere bor på institusjon. Pensjonen din er derfor beregnet som om du var enslig.",
@@ -68,25 +68,25 @@ data class OpplysningerBruktIBeregningenSivilstand(
                     }
                 }
 
-                //vedleggBeregnEktefelleOver2G_001
-                showIf(epsHarInntektOver2G and epsMottarPensjon) {
-                    paragraph {
-                        text(
-                            Bokmal to "Vi har registrert at ektefellen din har en inntekt som er høyere enn to ganger folketrygdens grunnbeløp (G).",
-                            Nynorsk to "Vi har registrert at ektefellen din har ei inntekt som er høgare enn to gonger grunnbeløpet i folketrygda (G).",
-                            English to "We have registered that your spouse has an annual income that exceeds twice the national insurance basic amount (G).",
-                        )
-                    }
-                }
-
-                //vedleggBeregnEktefelleUnder2G_001
-                showIf(not(epsHarInntektOver2G) and not(epsMottarPensjon)) {
-                    paragraph {
-                        text(
-                            Bokmal to "Vi har registrert at ektefellen din har en inntekt som er lavere enn to ganger folketrygdens grunnbeløp (G).",
-                            Nynorsk to "Vi har registrert at ektefellen din har ei inntekt som er lågare enn to gonger grunnbeløpet i folketrygda (G).",
-                            English to "We have registered that your spouse has an annual income lower than twice the national insurance basic amount (G).",
-                        )
+                showIf(not(epsMottarPensjon)) {
+                    showIf(epsHarInntektOver2G) {
+                        //vedleggBeregnEktefelleOver2G_001
+                        paragraph {
+                            text(
+                                Bokmal to "Vi har registrert at ektefellen din har en inntekt som er høyere enn to ganger folketrygdens grunnbeløp (G).",
+                                Nynorsk to "Vi har registrert at ektefellen din har ei inntekt som er høgare enn to gonger grunnbeløpet i folketrygda (G).",
+                                English to "We have registered that your spouse has an annual income that exceeds twice the national insurance basic amount (G).",
+                            )
+                        }
+                    }.orShow {
+                        //vedleggBeregnEktefelleUnder2G_001
+                        paragraph {
+                            text(
+                                Bokmal to "Vi har registrert at ektefellen din har en inntekt som er lavere enn to ganger folketrygdens grunnbeløp (G).",
+                                Nynorsk to "Vi har registrert at ektefellen din har ei inntekt som er lågare enn to gonger grunnbeløpet i folketrygda (G).",
+                                English to "We have registered that your spouse has an annual income lower than twice the national insurance basic amount (G).",
+                            )
+                        }
                     }
                 }
             }
@@ -117,7 +117,7 @@ data class OpplysningerBruktIBeregningenSivilstand(
                     English to "We have registered that you have a partner.",
                 )
             }
-            showIf(beregnetSomEnsligPgaInstitsusjon) {
+            showIf(beregnetSomEnsligPgaInstitusjon ) {
                 //vedleggBeregnPartnerLeerAdskilt_001
                 paragraph {
                     text(
@@ -197,7 +197,7 @@ data class OpplysningerBruktIBeregningenSivilstand(
                     )
                 }
             }
-            showIf(not(beregnetSomEnsligPgaInstitsusjon) and epsBorSammenMedBruker) {
+            showIf(not(beregnetSomEnsligPgaInstitusjon ) and epsBorSammenMedBruker) {
                 showIf(epsMottarPensjon) {
                     //vedleggBeregnSamboPensjon_001
                     paragraph {

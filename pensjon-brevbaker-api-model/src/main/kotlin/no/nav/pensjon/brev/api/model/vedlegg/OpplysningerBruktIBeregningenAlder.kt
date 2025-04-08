@@ -11,7 +11,7 @@ import java.time.LocalDate
 @Suppress("unused")
 data class OpplysningerBruktIBeregningenAlderDto(
     val beregnetPensjonPerManedVedVirk: AlderspensjonPerManed,
-    val beregnetSomEnsligPgaInstitsusjon: Boolean, //aldersEllerSykehjem ,ensligPgaInst ,epsPaInstitusjon ,fengsel eller helseinstitusjon
+    val beregnetSomEnsligPgaInstitusjon : Boolean, //aldersEllerSykehjem ,ensligPgaInst ,epsPaInstitusjon ,fengsel eller helseinstitusjon
     val alderspensjonVedVirk: AlderspensjonVedVirk,
     val trygdetidsdetaljerKap19VedVirk: TrygdetidsdetaljerKap19VedVirk,
     val trygdetidsdetaljerKap20VedVirk: TrygdetidsdetaljerKap20VedVirk?,
@@ -27,6 +27,7 @@ data class OpplysningerBruktIBeregningenAlderDto(
     val bruker: Bruker,
     val krav: Krav,
     val poengrekkeVedVirk: PoengrekkeVedVirk,
+    val skalSkjuleTrygdetidstabellerPgaAldersovergang: Boolean,
 ) : BrevbakerBrevdata {
 
     data class PoengrekkeVedVirk(

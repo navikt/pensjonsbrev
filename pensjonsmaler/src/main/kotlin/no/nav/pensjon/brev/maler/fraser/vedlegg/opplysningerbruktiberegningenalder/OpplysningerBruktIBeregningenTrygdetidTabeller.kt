@@ -31,20 +31,19 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
     val inngangOgEksportVurdering: Expression<OpplysningerBruktIBeregningenAlderDto.InngangOgEksportVurdering?>,
     val trygdetidNorge: Expression<List<OpplysningerBruktIBeregningenAlderDto.Trygdetid>>,
     val trygdetidEOS: Expression<List<OpplysningerBruktIBeregningenAlderDto.Trygdetid>>,
-    val trygdetidAvtaleland: Expression<List<OpplysningerBruktIBeregningenAlderDto.Trygdetid>>
+    val trygdetidAvtaleland: Expression<List<OpplysningerBruktIBeregningenAlderDto.Trygdetid>>,
+    val skalSkjuleTrygdetidstabellerPgaAldersovergang: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val regelverkstype = alderspensjonVedVirk.regelverkType
-        // TODO en sjekk som kanskje ikke gir mening:
-        //kategori = GetValue("fag=aldersovergangKategoriListe=aldersovergangKategori=kategori");
-        // if (kategori == "")
-        // ReturnValue("3");
 
         showIf(
-            (trygdetidsdetaljerKap19VedVirk.beregningsmetode.notEqualTo(FOLKETRYGD)
-                    and trygdetidsdetaljerKap20VedVirk.beregningsmetode_safe.notEqualTo(FOLKETRYGD))
-                    or beregningKap19VedVirk.redusertTrygdetid
-                    or beregningKap20VedVirk.redusertTrygdetid_safe.ifNull(false)
+            not(skalSkjuleTrygdetidstabellerPgaAldersovergang) and
+                    ((trygdetidsdetaljerKap19VedVirk.beregningsmetode.notEqualTo(FOLKETRYGD)
+                            and trygdetidsdetaljerKap20VedVirk.beregningsmetode_safe.notEqualTo(FOLKETRYGD))
+                            or beregningKap19VedVirk.redusertTrygdetid
+                            or beregningKap20VedVirk.redusertTrygdetid_safe.ifNull(false)
+                            )
         ) {
             //trygdetidOverskrift_001
             title1 {
@@ -95,14 +94,8 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
             }
 
             showIf(trygdetidNorge.size().greaterThan(0)) {
-                paragraph {
-                    text(
-                        Bokmal to "Tabellen nedenfor viser perioder vi har registrert at du har bodd og/eller arbeidet i Norge. Disse opplysningene er brukt for å fastsette din norske trygdetid.",
-                        Nynorsk to "Tabellen nedanfor viser periodar vi har registrert at du har budd og/eller arbeidd i Noreg. Desse opplysningane er brukte for å fastsetje den norske trygdetida di.",
-                        English to "The table below shows the time periods when you have been registered as living and/or working in Norway. This information has been used to establish your Norwegian national insurance coverage.",
-                    )
-                }
-                includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetid(trygdetidNorge))
+
+                includePhrase(NorskTrygdetid(trygdetidNorge))
             }
         }
 
@@ -116,7 +109,7 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
                 text(
                     Bokmal to "Tabellen nedenfor viser perioder du har bodd og/eller arbeidet i øvrige EØS-land. Disse periodene er brukt i vurderingen av retten til alderspensjon før fylte 67 år.",
                     Nynorsk to "Tabellen nedanfor viser periodar du har budd og/eller arbeidd i øvrige EØS-land. Desse periodane er brukt i vurderinga av retten til alderspensjon før fylte 67 år.",
-                    English to "The table below shows your National Insurance coverage in other EEC-countries. These periods have been used to assess whether you are eligible for retirement pension before the age of 67.",
+                    English to "The table below shows your National Insurance coverage in other EEA-countries. These periods have been used to assess whether you are eligible for retirement pension before the age of 67.",
                 )
             }
 
@@ -127,6 +120,7 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
             trygdetidsdetaljerKap19VedVirk.beregningsmetode.isNotAnyOf(EOS, FOLKETRYGD, NORDISK)
                     and trygdetidsdetaljerKap20VedVirk.beregningsmetode_safe.ifNull(EOS)
                 .isNotAnyOf(EOS, FOLKETRYGD, NORDISK)
+                    and trygdetidAvtaleland.size().greaterThan(0)
         ) {
             paragraph {
                 text(
@@ -146,9 +140,9 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
             showIf(trygdetidNorge.size().greaterThan(0)) {
                 paragraph {
                     text(
-                        Bokmal to "Tabellen nedenfor viser perioder vi har registrert at du har bodd og/eller arbeidet i Norge. Disse opplysningene er brukt for å fastsette din norske trygdetid.",
-                        Nynorsk to "Tabellen nedanfor viser periodar vi har registrert at du har budd og/eller arbeidd i Noreg. Desse opplysningane er brukte for å fastsetje den norske trygdetida di.",
-                        English to "The table below shows the time periods when you have been registered as living and/or working in Norway. This information has been used to establish your Norwegian national insurance coverage.",
+                        Bokmal to "Tabellen nedenfor viser perioder vi har brukt for å fastsette din norske trygdetid.",
+                        Nynorsk to "Tabellen nedanfor viser periodar vi har brukt for å fastsetje den norske trygdetida di.",
+                        English to "The table below shows the time periods used to establish your Norwegian national insurance coverage.",
                     )
                     table(
                         {
@@ -168,15 +162,15 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
                             }
                         }
                     ) {
-                        forEach(trygdetidNorge) { trygedtid ->
+                        forEach(trygdetidNorge) { trygdetid ->
                             row {
                                 cell {
-                                    ifNotNull(trygedtid.fom) {
+                                    ifNotNull(trygdetid.fom) {
                                         eval(it.format(short = true))
                                     }
                                 }
                                 cell {
-                                    ifNotNull(trygedtid.tom) {
+                                    ifNotNull(trygdetid.tom) {
                                         eval(it.format(short = true))
                                     }
                                 }

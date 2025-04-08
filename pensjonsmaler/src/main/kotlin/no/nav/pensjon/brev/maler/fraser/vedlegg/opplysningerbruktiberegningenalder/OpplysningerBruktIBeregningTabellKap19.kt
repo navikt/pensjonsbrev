@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.YrkesskadeDetaljerVedVirkSelectors.sluttpoengtall
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.YrkesskadeDetaljerVedVirkSelectors.yrkesskadeUforegrad
 import no.nav.pensjon.brev.maler.fraser.common.AntallAarText
+import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -40,7 +41,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-data class OpplysningerBruktIBeregingTabellKap19(
+data class OpplysningerBruktIBeregningTabellKap19(
     val trygdetidsdetaljerKap19VedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.TrygdetidsdetaljerKap19VedVirk>,
     val tilleggspensjonVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.TilleggspensjonVedVirk?>,
     val beregnetPensjonPerManedVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.AlderspensjonPerManed>,
@@ -79,7 +80,7 @@ data class OpplysningerBruktIBeregingTabellKap19(
                                 English to "You are registered with the status of a refugee granted by the UDI",
                             )
                         }
-                        cell { text(Bokmal to "Ja", Nynorsk to "Ja", English to "Yes") }
+                        cell { includePhrase(Ja) }
                     }
                 }
 
@@ -172,8 +173,8 @@ data class OpplysningerBruktIBeregingTabellKap19(
 
                     //tabellFaktiskTTBrokNorgeEOS_001
                     ifNotNull(
-                        trygdetidsdetaljerKap19VedVirk.nevnerTTEOS,
-                        trygdetidsdetaljerKap19VedVirk.tellerTTEOS
+                        trygdetidsdetaljerKap19VedVirk.tellerTTEOS,
+                        trygdetidsdetaljerKap19VedVirk.nevnerTTEOS
                     ) { teller, nevner ->
 
                         row {
@@ -364,7 +365,7 @@ data class OpplysningerBruktIBeregingTabellKap19(
                                 English to "Young disabled person",
                             )
                         }
-                        cell { text(Bokmal to "Ja", Nynorsk to "Ja", English to "Yes") }
+                        cell { includePhrase(Ja) }
                     }
                 }
 

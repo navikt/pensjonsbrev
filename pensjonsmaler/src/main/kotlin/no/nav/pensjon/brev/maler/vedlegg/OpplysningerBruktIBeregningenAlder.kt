@@ -22,7 +22,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.pensjonspoeng_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregnetPensjonPerManedVedVirk
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregnetSomEnsligPgaInstitsusjon
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregnetSomEnsligPgaInstitusjon 
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregningKap19VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregningKap20VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.bruker
@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.inngangOgEksportVurdering
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.krav
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.poengrekkeVedVirk
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.skalSkjuleTrygdetidstabellerPgaAldersovergang
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.tilleggspensjonVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidAvtaleland
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidEOS
@@ -38,7 +39,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidsdetaljerKap20VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.yrkesskadeDetaljerVedVirk
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
-import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregingTabellKap19
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningTabellKap19
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningTabellKap20
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenSivilstand
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
@@ -79,7 +80,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
 
             includePhrase(
                 OpplysningerBruktIBeregningenSivilstand(
-                    beregnetSomEnsligPgaInstitsusjon = beregnetSomEnsligPgaInstitsusjon,
+                    beregnetSomEnsligPgaInstitusjon  = beregnetSomEnsligPgaInstitusjon ,
                     epsVedVirk = epsVedVirk,
                     alderspensjonVedVirk = alderspensjonVedVirk,
                     beregnetPensjonPerManedVedVirk = beregnetPensjonPerManedVedVirk
@@ -137,7 +138,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
             }
 
             includePhrase(
-                OpplysningerBruktIBeregingTabellKap19(
+                OpplysningerBruktIBeregningTabellKap19(
                     trygdetidsdetaljerKap19VedVirk = trygdetidsdetaljerKap19VedVirk,
                     tilleggspensjonVedVirk = tilleggspensjonVedVirk,
                     beregnetPensjonPerManedVedVirk = beregnetPensjonPerManedVedVirk,
@@ -171,6 +172,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                     trygdetidNorge = trygdetidNorge,
                     trygdetidEOS = trygdetidEOS,
                     trygdetidAvtaleland = trygdetidAvtaleland,
+                    skalSkjuleTrygdetidstabellerPgaAldersovergang = skalSkjuleTrygdetidstabellerPgaAldersovergang,
                 )
             )
 
@@ -187,6 +189,15 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                         English to "Your accumulated pension capital",
                     )
                 }
+                
+                paragraph {
+                    text(
+                        Bokmal to "Du er registrert med ingen eller for lav inntekt til å ha rett til tilleggspensjon. For å ha rett til tilleggspensjon må du ha minst tre år med pensjonspoeng. Du får pensjonspoeng for år med inntekt over folketrygdens grunnbeløp (G) eller omsorgspoeng.",
+                        Nynorsk to "Du er registrert med inga eller for låg inntekt til å ha rett til tilleggspensjon. For å ha rett til tilleggspensjon må du ha minst tre år med pensjonspoeng. Du får pensjonspoeng for år med inntekt over grunnbeløpet i folketrygda (G) eller omsorgspoeng.",
+                        English to "You have been registered with no or too little income to be eligible for a supplementary pension. To be eligible for a supplementary pension, you must have earned pension points for at least three years. You earn pension points when your income is higher than the national insurance basic amount (G) or you can earn points for care work.",
+                    )
+                }
+
                 paragraph {
                     text(
                         Bokmal to "I nettjenesten Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsopptjeningen din for hvert enkelt år. Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg.",
@@ -271,9 +282,9 @@ val vedleggOpplysningerBruktIBeregningenAlder =
 
                 paragraph {
                     text(
-                        Bokmal to "NAV mottar opplysninger om pensjonsgivende inntekt fra Skatteetaten. Ta kontakt med skattekontoret ditt hvis du mener at inntektene i tabellen er feil.",
-                        Nynorsk to "NAV får opplysningar om pensjonsgivande inntekt frå Skatteetaten. Ta kontakt med skattekontoret ditt dersom du meiner at inntektene i tabellen er feil.",
-                        English to "NAV receives information about pensionable income from the Norwegian Tax Administration. Contact your local tax office if you think that this income is wrong.",
+                        Bokmal to "Nav mottar opplysninger om pensjonsgivende inntekt fra Skatteetaten. Ta kontakt med skattekontoret ditt hvis du mener at inntektene i tabellen er feil.",
+                        Nynorsk to "Nav får opplysningar om pensjonsgivande inntekt frå Skatteetaten. Ta kontakt med skattekontoret ditt dersom du meiner at inntektene i tabellen er feil.",
+                        English to "Nav receives information about pensionable income from the Norwegian Tax Administration. Contact your local tax office if you think that this income is wrong.",
                     )
                 }
 
