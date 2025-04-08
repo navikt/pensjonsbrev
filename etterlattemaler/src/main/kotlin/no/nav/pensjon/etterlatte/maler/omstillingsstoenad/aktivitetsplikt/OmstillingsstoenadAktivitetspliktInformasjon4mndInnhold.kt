@@ -16,6 +16,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadAktivitetspliktFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTOSelectors.aktivitetsgrad
@@ -188,14 +189,16 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                     text(
                         Bokmal to "For å motta omstillingsstønad videre må du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”. " +
                                 "Hvis du ikke foretar deg noen av de andre aktivitetene som er nevnt, må du melde deg som reell arbeidssøker hos Nav. " +
-                                "Dette innebærer at du sender meldekort, er aktiv med å søke jobber, samt deltar på de kurs som Nav tilbyr.",
+                                "Dette innebærer at du bekrefter at du vil stå som arbeidssøker, er aktiv med å søke jobber, samt deltar på de kurs som Nav tilbyr. " +
+                                "Du kan lese mer om å være arbeidssøker på ${Constants.REGISTRER_ARBEIDSSOKER}.",
                         Nynorsk to "For å kunne få omstillingsstønad vidare må du auke aktiviteten din. Sjå «Korleis oppfyller du aktivitetsplikta?». " +
                                 "Dersom du ikkje gjer nokon av dei andre aktivitetane som er nemnde, må du melde deg som reell arbeidssøkjar hos Nav. " +
-                                "Dette inneber at du sender meldekort, er aktiv med å søkje jobbar, og deltek på kursa som Nav tilbyr.",
+                                "Dette inneber at du må bekrefte at du vil stå som arbeidssøkjar, være aktiv med å søkje jobbar, og delta på kursa som Nav tilbyr. " +
+                                "Du kan lese meir om å være arbeidssøkjar på ${Constants.REGISTRER_ARBEIDSSOKER}.",
                         English to "To receive an adjustment allowance in the future, you must increase your level of activity. " +
                                 "See “How do I comply with the activity obligation?”.  If you do not undertake any of the other activities mentioned, " +
-                                "you must register as a genuine job seeker with Nav. This means that you must send in the Employment Status Form, " +
-                                "actively be looking for work, and participate in the courses offered by Nav.",
+                                "you must register as a genuine job seeker with Nav. This means that you confirm that you want to be a job seeker, " +
+                                "actively be looking for work, and participate in the courses offered by Nav. You can read more about being a job seeker at ${Constants.Engelsk.REGISTRER_ARBEIDSSOKER}.",
                     )
                 }
 

@@ -1,17 +1,15 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
-
 
 
 object Felles {
@@ -59,17 +57,17 @@ object Felles {
             paragraph {
                 text(
                     Bokmal to "Du finner mer informasjon på $merInformasjonUrl."
-                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
-                            + " Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon $telefonnummer,"
-                            + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                            + " På $KONTAKT_URL kan du chatte eller skrive til oss."
+                            + " Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon $telefonnummer,"
+                            + " hverdager kl. $NAV_KONTAKTSENTER_AAPNINGSTID.",
                     Nynorsk to "Du finn meir informasjon på $merInformasjonUrl."
-                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
-                            + " Om du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe oss på telefon $telefonnummer,"
-                            + " kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                            + " På $KONTAKT_URL kan du chatte eller skrive til oss."
+                            + " Om du ikkje finn svar på $NAV_URL, kan du ringe oss på telefon $telefonnummer,"
+                            + " kvardagar kl. $NAV_KONTAKTSENTER_AAPNINGSTID.",
                     English to "You can find more information at $merInformasjonUrl."
-                            + " At ${Constants.KONTAKT_URL}, you can chat or write to us."
-                            + " If you do not find the answer at ${Constants.NAV_URL}, you can call us at: +47 $telefonnummer,"
-                            + " weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
+                            + " At $KONTAKT_URL, you can chat or write to us."
+                            + " If you do not find the answer at $NAV_URL, you can call us at: +47 $telefonnummer,"
+                            + " weekdays $NAV_KONTAKTSENTER_AAPNINGSTID."
                 )
             }
         }
@@ -207,5 +205,18 @@ object Felles {
                 )
             }
         }
+    }
+
+    object DuKanLeseMer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "Du kan lese mer om dette på $NAV_URL.",
+                    Nynorsk to "Du kan lese meir om dette på $NAV_URL.",
+                    English to "You can read more about this at $NAV_URL."
+                )
+            }
+        }
+
     }
 }
