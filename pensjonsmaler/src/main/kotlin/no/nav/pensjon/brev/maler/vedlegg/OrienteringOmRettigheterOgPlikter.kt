@@ -325,7 +325,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                             )
                         }
                     }
-                    showIf(harBarnetillegg.ifNull(false)) {
+                    showIf(harBarnetillegg.notNull()) {
                         item { // vedleggPlikterUT7_001
                             text(
                                 Bokmal to "barn du forsørger får en inntekt over folketrygdens grunnbeløp, eller det skjer endringer i omsorgsituasjonen",

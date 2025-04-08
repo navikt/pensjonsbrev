@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.brev.brevbaker.LetterTestImpl
+import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.createVedleggTestTemplate
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.pensjon.brev.Fixtures
@@ -15,10 +16,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDt
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
+@Tag(TestTags.MANUAL_TEST)
 class OrienteringOmRettigheterOgPlikterTest {
 
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
