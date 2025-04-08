@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
@@ -15,5 +16,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 // MF_000102
 @TemplateModelHelpers
 object InnvilgetGarantitillegg {
-    override val kode = Pesysbrevkoder.Redigerbar.
+    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_INNVILGET_GARANTITILLEGG
+    override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
 }
