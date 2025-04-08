@@ -13,6 +13,7 @@ object FeatureToggles {
     val innhentingAvInformasjonFraBruker = FeatureToggle("innhentingAvInformasjonFraBruker")
     val apAvslagNormertPensjonsalder = FeatureToggle("pensjonsbrev.brev.ap_avslag_norm_auto")
     val apAvslagGradsendringNormertPensjonsalder = FeatureToggle("ap_avslag_gradsendring_norm_auto")
+    val informasjonOmGjenlevenderettigheter = FeatureToggle("informasjonOmGjenlevenderettigheter")
     val omsorgEgenManuell = FeatureToggle("omsorgEgenManuell")
     val varselRevurderingAvPensjon = FeatureToggle("varselRevideringAvPensjon")
     val varselTilbakekrevingAvFeilutbetaltBeloep = FeatureToggle("varselTilbakekrevingAvFeilutbetaltBeloep")
