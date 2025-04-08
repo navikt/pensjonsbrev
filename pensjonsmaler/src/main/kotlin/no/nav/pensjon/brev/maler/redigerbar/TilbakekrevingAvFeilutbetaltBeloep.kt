@@ -34,7 +34,7 @@ import kotlin.math.E
 object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvFeilutbetaltBeloepDto> {
 
     // MF_000190
-    override val kode = Pesysbrevkoder.Redigerbar.PE_VARSEL_OM_TILBAKEKREVING_FEILUTBETALT_BELOEP
+    override val kode = Pesysbrevkoder.Redigerbar.PE_TILBAKEKREVING_AV_FEILUTBETALT_BELØP
     override val kategori = TemplateDescription.Brevkategori.FEILUTBETALING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = Sakstype.pensjon
