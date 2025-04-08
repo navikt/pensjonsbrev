@@ -101,6 +101,7 @@ class KrrService(config: Config, authService: AzureADService, private val client
             .map { true }
 }
 
+// Denne er trekt ut for å kunne sette opp tester på denne klassa uten å måtte sette opp hele http-opplegget
 fun krrClientFactory(config: Config, authService: AzureADService): HttpClient = HttpClient(CIO) {
     defaultRequest {
         url(config.getString("url"))
