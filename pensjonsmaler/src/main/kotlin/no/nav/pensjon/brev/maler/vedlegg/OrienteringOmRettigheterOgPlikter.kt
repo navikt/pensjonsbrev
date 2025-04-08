@@ -74,12 +74,12 @@ val vedleggOrienteringOmRettigheterOgPlikter =
         ),
         includeSakspart = false
     ) {
-        val erIkkeInstitusjon = institusjonsoppholdGjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
+        val erIkkePaaInstitusjon = institusjonsoppholdGjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)
         showIf(sakstype.equalTo(Sakstype.ALDER)) {
             includePhrase(VedleggPlikter)
             paragraph {
                 list {
-                    showIf(brukerBorINorge and erIkkeInstitusjon) {
+                    showIf(brukerBorINorge and erIkkePaaInstitusjon) {
                         item {
                             text(
                                 Bokmal to "du skal oppholde deg utenfor Norge i en lengre periode eller skal flytte til et annet land",
@@ -88,7 +88,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                             )
                         }
                     }
-                    showIf(brukerBorINorge.not() and erIkkeInstitusjon) {
+                    showIf(brukerBorINorge.not() and erIkkePaaInstitusjon) {
                         item {
                             text(
                                 Bokmal to "du flytter til et annet land, tilbake til Norge eller du endrer adresse i ditt nåværende bostedsland",
@@ -97,7 +97,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                             )
                         }
                     }
-                    showIf((sivilstand.isNull() or sivilstand.isOneOf(ENKE, ENSLIG)) and erIkkeInstitusjon) {
+                    showIf((sivilstand.isNull() or sivilstand.isOneOf(ENKE, ENSLIG)) and erIkkePaaInstitusjon) {
                         item {
                             text(
                                 Bokmal to "du gifter deg eller inngår samboerskap",
@@ -134,7 +134,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                         }
                     }
                     // vedleggPlikterAP6_002
-                    showIf(sivilstand.equalTo(GIFT) and borSammenMedBruker and erIkkeInstitusjon and not(epsPaInstitusjon)) {
+                    showIf(sivilstand.equalTo(GIFT) and borSammenMedBruker and erIkkePaaInstitusjon and not(epsPaInstitusjon)) {
                         item {
                             text(
                                 Bokmal to "du og ektefellen din flytter fra hverandre",
@@ -144,7 +144,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                         }
                     }
                     // vedleggPlikterAP14_002
-                    showIf(sivilstand.equalTo(PARTNER) and borSammenMedBruker and erIkkeInstitusjon and not(epsPaInstitusjon)) {
+                    showIf(sivilstand.equalTo(PARTNER) and borSammenMedBruker and erIkkePaaInstitusjon and not(epsPaInstitusjon)) {
                         item {
                             text(
                                 Bokmal to "du og partneren din flytter fra hverandre",
@@ -153,7 +153,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                             )
                         }
                     }
-                    showIf(sivilstand.isOneOf(SAMBOER_1_5, SAMBOER_3_2) and borSammenMedBruker and erIkkeInstitusjon and not(epsPaInstitusjon)) {
+                    showIf(sivilstand.isOneOf(SAMBOER_1_5, SAMBOER_3_2) and borSammenMedBruker and erIkkePaaInstitusjon and not(epsPaInstitusjon)) {
                         item { // vedleggPlikterAP18_001
                             text(
                                 Bokmal to "du og samboeren din flytter fra hverandre",
@@ -231,7 +231,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                         }
                     }
                     showIf(sivilstand.isOneOf(GLAD_EKT, SEPARERT, GIFT, GLAD_PART, SEPARERT_PARTNER, PARTNER)
-                            and not(borSammenMedBruker) and erIkkeInstitusjon and not(epsPaInstitusjon)
+                            and not(borSammenMedBruker) and erIkkePaaInstitusjon and not(epsPaInstitusjon)
                     ) { // vedleggPlikterAP10_001
                         item {
                             text(
@@ -241,7 +241,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                             )
                         }
                     }
-                    showIf(sivilstand.isNotAnyOf(ENSLIG, ENKE) and sivilstand.notNull() and borSammenMedBruker and erIkkeInstitusjon and not(epsPaInstitusjon)) {
+                    showIf(sivilstand.isNotAnyOf(ENSLIG, ENKE) and sivilstand.notNull() and borSammenMedBruker and erIkkePaaInstitusjon and not(epsPaInstitusjon)) {
                         // vedleggPlikterAP5_001
                         item {
                             textExpr(
@@ -251,7 +251,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                             )
                         }
                     }
-                    showIf(sivilstand.isOneOf(ENSLIG, ENKE) or sivilstand.isNull() and erIkkeInstitusjon and brukerBorINorge) { // vedleggPlikterAP26_001
+                    showIf(sivilstand.isOneOf(ENSLIG, ENKE) or sivilstand.isNull() and erIkkePaaInstitusjon and brukerBorINorge) { // vedleggPlikterAP26_001
                         item {
                             text(
                                 Bokmal to "du får et varig opphold i institusjon",
@@ -260,7 +260,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                             )
                         }
                     }
-                    showIf(erIkkeInstitusjon and brukerBorINorge) { // vedleggPlikterAP27_001
+                    showIf(erIkkePaaInstitusjon and brukerBorINorge) { // vedleggPlikterAP27_001
                         item {
                             text(
                                 Bokmal to "du sitter i varetekt, soner straff eller er under forvaring",
@@ -302,7 +302,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                     item {
                         includePhrase(VedleggPlikterUT2)
                     }
-                    showIf(brukerBorINorge and erIkkeInstitusjon) {
+                    showIf(brukerBorINorge and erIkkePaaInstitusjon) {
                         item {
                             includePhrase(VedleggPlikterUT3)
                         }
@@ -357,12 +357,12 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                     showIf(sivilstand.isOneOf(ENSLIG, ENKE) or sivilstand.isNull()) {
                         item { includePhrase(VedleggPlikterAFP2) }
                     }
-                    showIf(brukerBorINorge and erIkkeInstitusjon) {
+                    showIf(brukerBorINorge and erIkkePaaInstitusjon) {
                         item {
                             includePhrase(VedleggPlikterAFP3)
                         }
                     }
-                    showIf(not(brukerBorINorge) and erIkkeInstitusjon) {
+                    showIf(not(brukerBorINorge) and erIkkePaaInstitusjon) {
                         item {
                             includePhrase(VedleggPlikterAFP4)
                         }
