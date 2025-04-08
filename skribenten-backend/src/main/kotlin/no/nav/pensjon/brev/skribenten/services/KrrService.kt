@@ -63,13 +63,13 @@ class KrrService(config: Config, authService: AzureADService, private val client
         }
     }
 
-    suspend fun getPreferredLocale(pid: String): KontaktinfoResponse {
-        return doPost("/rest/v1/personer", KontaktinfoRequest(listOf(pid)))
+    suspend fun getPreferredLocale(pid: String): KontaktinfoResponse =
+        doPost("/rest/v1/personer", KontaktinfoRequest(listOf(pid)))
             .toServiceResult<KontaktinfoKRRResponse>()
             .map { response ->
                 if (response.feil.isEmpty()) {
                     KontaktinfoResponse(
-                        when (response.personer[pid]!!.spraak) {
+                        when (response.personer[pid]?.spraak) {
                             KontaktinfoKRRResponseEnkeltperson.SpraakKode.nb -> SpraakKode.NB
                             KontaktinfoKRRResponseEnkeltperson.SpraakKode.nn -> SpraakKode.NN
                             KontaktinfoKRRResponseEnkeltperson.SpraakKode.en -> SpraakKode.EN
@@ -78,22 +78,21 @@ class KrrService(config: Config, authService: AzureADService, private val client
                         }
                     )
                 } else {
-                    val feilen = response.feil[pid]!!
                     KontaktinfoResponse(
-                        failure = when(feilen) {
+                        failure = when(response.feil[pid]) {
                             Feiltype.person_ikke_funnet -> KontaktinfoResponse.FailureType.NOT_FOUND
                             Feiltype.fortrolig_adresse,
                             Feiltype.strengt_fortrolig_adresse,
                             Feiltype.strengt_fortrolig_utenlandsk_adresse,
                             Feiltype.skjermet,
-                            Feiltype.noen_andre -> KontaktinfoResponse.FailureType.ERROR
+                            Feiltype.noen_andre,
+                            null -> KontaktinfoResponse.FailureType.ERROR
                         }
                     )
                 }
             }.catch { message, status ->
                 KontaktinfoResponse(KontaktinfoResponse.FailureType.ERROR).also { logger.error("Feil ved henting av kontaktinformasjon. Status: $status Melding: $message") }
             }
-    }
 
     override val name = "KRR"
     override suspend fun ping(): ServiceResult<Boolean> =
@@ -103,7 +102,7 @@ class KrrService(config: Config, authService: AzureADService, private val client
 }
 
 // Denne er trekt ut for å kunne sette opp tester på denne klassa uten å måtte sette opp hele http-opplegget
-fun krrClientFactory(config: Config, authService: AzureADService): HttpClient = HttpClient(CIO) {
+private fun krrClientFactory(config: Config, authService: AzureADService): HttpClient = HttpClient(CIO) {
     defaultRequest {
         url(config.getString("url"))
     }
