@@ -12,7 +12,6 @@ import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
 
 
-
 object Felles {
 
     /**
@@ -206,5 +205,18 @@ object Felles {
                 )
             }
         }
+    }
+
+    object DuKanLeseMer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "Du kan lese mer om dette på $NAV_URL.",
+                    Nynorsk to "Du kan lese meir om dette på $NAV_URL.",
+                    English to "You can read more about this at $NAV_URL."
+                )
+            }
+        }
+
     }
 }
