@@ -79,31 +79,32 @@ val vedleggOrienteringOmRettigheterOgPlikter =
             includePhrase(VedleggPlikter)
             paragraph {
                 list {
-                    showIf(brukerBorINorge and erIkkePaaInstitusjon) {
-                        item {
-                            text(
-                                Bokmal to "du skal oppholde deg utenfor Norge i en lengre periode eller skal flytte til et annet land",
-                                Nynorsk to "du skal opphalde deg utanfor Noreg i ein lengre periode eller skal flytte til eit anna land",
-                                English to "you intend to stay in a foreign country for an extended period of time or intend to move to another country"
-                            )
+                    showIf(erIkkePaaInstitusjon) {
+                        showIf(brukerBorINorge) {
+                            item {
+                                text(
+                                    Bokmal to "du skal oppholde deg utenfor Norge i en lengre periode eller skal flytte til et annet land",
+                                    Nynorsk to "du skal opphalde deg utanfor Noreg i ein lengre periode eller skal flytte til eit anna land",
+                                    English to "you intend to stay in a foreign country for an extended period of time or intend to move to another country"
+                                )
+                            }
+                        }.orShow {
+                            item {
+                                text(
+                                    Bokmal to "du flytter til et annet land, tilbake til Norge eller du endrer adresse i ditt nåværende bostedsland",
+                                    Nynorsk to "du flyttar til eit anna land, tilbake til Noreg eller du endrar adresse i landet kor du bur no",
+                                    English to "you move to another country, move back to Norway or if you change address in your country of residence"
+                                )
+                            }
                         }
-                    }
-                    showIf(brukerBorINorge.not() and erIkkePaaInstitusjon) {
-                        item {
-                            text(
-                                Bokmal to "du flytter til et annet land, tilbake til Norge eller du endrer adresse i ditt nåværende bostedsland",
-                                Nynorsk to "du flyttar til eit anna land, tilbake til Noreg eller du endrar adresse i landet kor du bur no",
-                                English to "you move to another country, move back to Norway or if you change address in your country of residence"
-                            )
-                        }
-                    }
-                    showIf((sivilstand.isNull() or sivilstand.isOneOf(ENKE, ENSLIG)) and erIkkePaaInstitusjon) {
-                        item {
-                            text(
-                                Bokmal to "du gifter deg eller inngår samboerskap",
-                                Nynorsk to "du giftar deg eller inngår sambuarskap",
-                                English to "you marry or get a cohabiting partner",
-                            )
+                        showIf((sivilstand.isNull() or sivilstand.isOneOf(ENKE, ENSLIG))) {
+                            item {
+                                text(
+                                    Bokmal to "du gifter deg eller inngår samboerskap",
+                                    Nynorsk to "du giftar deg eller inngår sambuarskap",
+                                    English to "you marry or get a cohabiting partner",
+                                )
+                            }
                         }
                     }
                     showIf(sivilstand.equalTo(GIFT) and borSammenMedBruker and not(epsPaInstitusjon)) {
