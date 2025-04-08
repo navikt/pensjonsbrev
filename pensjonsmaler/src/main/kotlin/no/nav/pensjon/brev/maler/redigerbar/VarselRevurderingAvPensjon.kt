@@ -2,8 +2,6 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata.pesysData
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata.saksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDtoSelectors.PesysDataSelectors.sakstype
