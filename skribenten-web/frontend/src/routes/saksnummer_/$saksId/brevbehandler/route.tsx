@@ -23,8 +23,10 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
 
     return sakContext;
   },
-  validateSearch: (search: Record<string, unknown>): { brevId?: number } => ({
+  validateSearch: (search: Record<string, unknown>): { brevId?: number; vedtaksId?: string; enhetsId?: string } => ({
     brevId: search.brevId ? z.number().parse(search.brevId) : undefined,
+    vedtaksId: search.vedtaksId ? z.string().parse(search.vedtaksId) : undefined,
+    enhetsId: search.enhetsId ? z.string().parse(search.enhetsId) : undefined,
   }),
 });
 
