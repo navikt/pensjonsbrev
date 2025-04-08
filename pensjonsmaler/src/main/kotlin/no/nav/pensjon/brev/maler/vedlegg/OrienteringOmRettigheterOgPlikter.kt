@@ -183,26 +183,24 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                             )
                         }
                     }
-                    showIf(sivilstand.isOneOf(GLAD_EKT, SEPARERT, GIFT)
-                            and not(borSammenMedBruker) and institusjonsoppholdGjeldende.notEqualTo(SYKEHJEM) and not(epsOppholdSykehjem.ifNull(false))
-                    ) { //  // vedleggPlikterAP8_001
-                        item {
-                            text(
-                                Bokmal to "du og ektefellen din flytter sammen igjen",
-                                Nynorsk to "du og ektefellen din flyttar saman igjen",
-                                English to "you and your spouse move back together",
-                            )
+                    showIf(institusjonsoppholdGjeldende.notEqualTo(SYKEHJEM) and not(epsOppholdSykehjem.ifNull(false))) {
+                        showIf(sivilstand.isOneOf(GLAD_EKT, SEPARERT, GIFT) and not(borSammenMedBruker)) { // vedleggPlikterAP8_001
+                            item {
+                                text(
+                                    Bokmal to "du og ektefellen din flytter sammen igjen",
+                                    Nynorsk to "du og ektefellen din flyttar saman igjen",
+                                    English to "you and your spouse move back together",
+                                )
+                            }
                         }
-                    }
-                    showIf(sivilstand.isOneOf(GLAD_PART, SEPARERT_PARTNER, PARTNER)
-                            and not(borSammenMedBruker) and institusjonsoppholdGjeldende.notEqualTo(SYKEHJEM) and not(epsOppholdSykehjem.ifNull(false))
-                    ) { //  // vedleggPlikterAP11_001
-                        item {
-                            text(
-                                Bokmal to "du og partneren din flytter sammen igjen",
-                                Nynorsk to "du og partnaren din flyttar saman igjen",
-                                English to "you and your partner move back together",
-                            )
+                        showIf(sivilstand.isOneOf(GLAD_PART, SEPARERT_PARTNER, PARTNER) and not(borSammenMedBruker)) { //  vedleggPlikterAP11_001
+                            item {
+                                text(
+                                    Bokmal to "du og partneren din flytter sammen igjen",
+                                    Nynorsk to "du og partnaren din flyttar saman igjen",
+                                    English to "you and your partner move back together",
+                                )
+                            }
                         }
                     }
                     showIf(sivilstand.isOneOf(GLAD_EKT, SEPARERT, GIFT, GLAD_PART, SEPARERT_PARTNER, PARTNER)) { // vedleggPlikterAP9_001
