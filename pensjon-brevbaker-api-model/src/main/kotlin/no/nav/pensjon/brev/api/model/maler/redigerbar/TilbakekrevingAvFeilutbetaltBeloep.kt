@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.TilbakekrevingResultat
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -22,6 +23,7 @@ data class TilbakekrevingAvFeilutbetaltBeloepDto(
         val sluttPeriodeForTilbakekreving: LocalDate,
         val startPeriodeForTilbakekreving: LocalDate,
         val sumTilInnkrevingTotalBeloep: Kroner,
+        val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
         val oversiktOverFeilutbetalingPEDto: OversiktOverFeilutbetalingPEDto,
     ) : BrevbakerBrevdata
 }
