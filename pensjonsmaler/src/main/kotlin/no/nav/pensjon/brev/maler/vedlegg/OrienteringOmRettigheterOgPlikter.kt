@@ -48,12 +48,10 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
-import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.notNull
-import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
@@ -97,7 +95,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                                 )
                             }
                         }
-                        showIf((sivilstand.isNull() or sivilstand.isOneOf(ENKE, ENSLIG))) {
+                        showIf(sivilstand.isOneOf(TOM_STRENG, ENKE, ENSLIG)) {
                             item {
                                 text(
                                     Bokmal to "du gifter deg eller inngår samboerskap",
@@ -254,7 +252,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                             )
                         }
                     }
-                    showIf(sivilstand.isOneOf(ENSLIG, ENKE) or sivilstand.isNull() and erIkkePaaInstitusjon and brukerBorINorge) { // vedleggPlikterAP26_001
+                    showIf(sivilstand.isOneOf(ENSLIG, ENKE, TOM_STRENG) and erIkkePaaInstitusjon and brukerBorINorge) { // vedleggPlikterAP26_001
                         item {
                             text(
                                 Bokmal to "du får et varig opphold i institusjon",
@@ -316,7 +314,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                     item {
                         includePhrase(VedleggPlikterUT5)
                     }
-                    showIf(sivilstand.isOneOf(ENSLIG, ENKE) or sivilstand.isNull()) {
+                    showIf(sivilstand.isOneOf(ENSLIG, ENKE, TOM_STRENG)) {
                         item { // vedleggPlikterUT6_001
                             text(
                                 Bokmal to "du gifter deg eller inngår samboerskap",
@@ -357,7 +355,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
             paragraph {
                 list {
                     item { includePhrase(VedleggPlikterAFP1) }
-                    showIf(sivilstand.isOneOf(ENSLIG, ENKE) or sivilstand.isNull()) {
+                    showIf(sivilstand.isOneOf(ENSLIG, ENKE, TOM_STRENG)) {
                         item { includePhrase(VedleggPlikterAFP2) }
                     }
                     showIf(brukerBorINorge and erIkkePaaInstitusjon) {
