@@ -47,6 +47,7 @@ object ProductionTemplates : AllTemplates {
         OmsorgEgenAuto,
         OpphoerBarnetilleggAuto,
         OpptjeningVedForhoeyetHjelpesats,
+        SamletMeldingOmPensjonsvedtak,
         UfoerOmregningEnslig,
         UngUfoerAuto,
         VarselSaksbehandlingstidAuto,
