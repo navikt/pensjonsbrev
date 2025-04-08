@@ -31,7 +31,7 @@ class KrrService(config: Config, authService: AzureADService): ServiceStatus {
 
     @Suppress("EnumEntryName")
     @JsonIgnoreProperties(ignoreUnknown = true)
-    data class KontaktinfoKRRResponse(val spraak: SpraakKode? = null) {
+    data class KontaktinfoKRRResponseEnkeltperson(val spraak: SpraakKode? = null) {
         enum class SpraakKode {
             nb, // bokmål
             nn, //nynorsk
@@ -39,6 +39,21 @@ class KrrService(config: Config, authService: AzureADService): ServiceStatus {
             se, //nord-samisk
         }
     }
+
+    @Suppress("EnumEntryName")
+    // henta fra https://github.com/navikt/digdir-krr/wiki/Migrere-vekk-fra-GET%E2%80%90tjenesten-for-enkeltoppslag
+    enum class Feiltype {
+        person_ikke_funnet,
+        skjermet,
+        fortrolig_adresse,
+        strengt_fortrolig_adresse,
+        strengt_fortrolig_utenlandsk_adresse,
+        noen_andre
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    data class KontaktinfoKRRResponse(val personer: Map<String, KontaktinfoKRRResponseEnkeltperson>, val feil: Map<String, Feiltype>)
+
 
     data class KontaktinfoResponse(val spraakKode: SpraakKode?, val failure: FailureType?) {
         constructor(failure: FailureType) : this(null, failure)
@@ -50,32 +65,41 @@ class KrrService(config: Config, authService: AzureADService): ServiceStatus {
         }
     }
 
+    data class KontaktinfoRequest(val personident: String)
+
     suspend fun getPreferredLocale(pid: String): KontaktinfoResponse {
-        return client.get("/rest/v1/person") {
+        return client.post("/rest/v1/personer") {
             headers {
                 accept(ContentType.Application.Json)
-                header("Nav-Personident", pid)
+                setBody(KontaktinfoRequest(pid))
             }
         }.toServiceResult<KontaktinfoKRRResponse>()
-            .map {
-                KontaktinfoResponse(
-                    when (it.spraak) {
-                        KontaktinfoKRRResponse.SpraakKode.nb -> SpraakKode.NB
-                        KontaktinfoKRRResponse.SpraakKode.nn -> SpraakKode.NN
-                        KontaktinfoKRRResponse.SpraakKode.en -> SpraakKode.EN
-                        KontaktinfoKRRResponse.SpraakKode.se -> SpraakKode.SE
-                        null -> null
-                    }
-                )
+            .map { response ->
+                if (response.feil.isEmpty()) {
+                    KontaktinfoResponse(
+                        when (response.personer[pid]!!.spraak) {
+                            KontaktinfoKRRResponseEnkeltperson.SpraakKode.nb -> SpraakKode.NB
+                            KontaktinfoKRRResponseEnkeltperson.SpraakKode.nn -> SpraakKode.NN
+                            KontaktinfoKRRResponseEnkeltperson.SpraakKode.en -> SpraakKode.EN
+                            KontaktinfoKRRResponseEnkeltperson.SpraakKode.se -> SpraakKode.SE
+                            null -> null
+                        }
+                    )
+                } else {
+                    val feilen = response.feil[pid]!!
+                    KontaktinfoResponse(
+                        failure = when(feilen) {
+                            Feiltype.person_ikke_funnet -> KontaktinfoResponse.FailureType.NOT_FOUND
+                            Feiltype.fortrolig_adresse,
+                            Feiltype.strengt_fortrolig_adresse,
+                            Feiltype.strengt_fortrolig_utenlandsk_adresse,
+                            Feiltype.skjermet,
+                            Feiltype.noen_andre -> KontaktinfoResponse.FailureType.ERROR
+                        }
+                    )
+                }
             }.catch { message, status ->
-                KontaktinfoResponse(
-                    if (status == HttpStatusCode.NotFound) {
-                        KontaktinfoResponse.FailureType.NOT_FOUND
-                    } else {
-                        logger.error("Feil ved henting av kontaktinformasjon. Status: $status Melding: $message")
-                        KontaktinfoResponse.FailureType.ERROR
-                    }
-                )
+                KontaktinfoResponse(KontaktinfoResponse.FailureType.ERROR).also { logger.error("Feil ved henting av kontaktinformasjon. Status: $status Melding: $message") }
             }
     }
 
