@@ -75,7 +75,6 @@ enum class AlderspensjonBeregnetEtter {
 
 // Brukes kun for konverterte brev. For nytt innhold, bruk brukersSivilstand eller bormedSivilstand
 enum class MetaforceSivilstand {
-    TOM_STRENG,
     EKTEFELLE, ENKE, ENSLIG,
     FELLES_BARN, FORELDER, GIFT, GLAD_EKT, GLAD_PART, PARTNER, SAMBOER,
     SAMBOER_1_5,

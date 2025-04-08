@@ -85,7 +85,6 @@ private fun metaforceBorMedSivilstand(sivilstand: MetaforceSivilstand, language:
         MetaforceSivilstand.SAMBOER_3_2 -> BorMedSivilstand.SAMBOER3_2
         MetaforceSivilstand.SEPARERT_PARTNER -> BorMedSivilstand.PARTNER
         MetaforceSivilstand.UKJENT,
-        MetaforceSivilstand.TOM_STRENG,
         MetaforceSivilstand.ENKE,
         MetaforceSivilstand.ENSLIG,
         MetaforceSivilstand.FELLES_BARN,
