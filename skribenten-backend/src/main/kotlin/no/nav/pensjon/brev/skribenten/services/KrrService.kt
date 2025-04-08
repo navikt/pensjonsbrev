@@ -52,18 +52,19 @@ class KrrService(config: Config, authService: AzureADService, private val client
         }
     }
 
-    data class KontaktinfoRequest(val personident: String)
+    data class KontaktinfoRequest(val personidenter: List<String>)
 
     // Dette er en workaround for å få testene til å fungere, pga denne buggen i mockk: https://github.com/mockk/mockk/issues/944
     suspend fun doPost(urlString: String, request: KontaktinfoRequest) = client.post(urlString) {
         headers {
+            contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
             setBody(request)
         }
     }
 
     suspend fun getPreferredLocale(pid: String): KontaktinfoResponse {
-        return doPost("/rest/v1/personer", KontaktinfoRequest(pid))
+        return doPost("/rest/v1/personer", KontaktinfoRequest(listOf(pid)))
             .toServiceResult<KontaktinfoKRRResponse>()
             .map { response ->
                 if (response.feil.isEmpty()) {
