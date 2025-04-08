@@ -5,13 +5,11 @@ import no.nav.pensjon.brev.api.model.Institusjon.HELSE
 import no.nav.pensjon.brev.api.model.Institusjon.SYKEHJEM
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.vedlegg.BrukerOpphold
-import no.nav.pensjon.brev.api.model.vedlegg.EpsOpphold
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.borSammenMedBruker
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.brukerBorINorge
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.brukerUnder18Aar
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.epsOpphold
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.epsOppholdSykehjem
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.epsPaInstitusjon
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.harBarnetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.institusjonsoppholdGjeldende
@@ -186,7 +184,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                         }
                     }
                     showIf(sivilstand.isOneOf(GLAD_EKT, SEPARERT, GIFT)
-                            and not(borSammenMedBruker) and institusjonsoppholdGjeldende.notEqualTo(BrukerOpphold.SYKEHJEM) and epsOpphold.notEqualTo(EpsOpphold.SYKEHJEM)
+                            and not(borSammenMedBruker) and institusjonsoppholdGjeldende.notEqualTo(SYKEHJEM) and not(epsOppholdSykehjem.ifNull(false))
                     ) { //  // vedleggPlikterAP8_001
                         item {
                             text(
@@ -197,7 +195,7 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                         }
                     }
                     showIf(sivilstand.isOneOf(GLAD_PART, SEPARERT_PARTNER, PARTNER)
-                            and not(borSammenMedBruker) and institusjonsoppholdGjeldende.notEqualTo(BrukerOpphold.SYKEHJEM) and epsOpphold.notEqualTo(EpsOpphold.SYKEHJEM)
+                            and not(borSammenMedBruker) and institusjonsoppholdGjeldende.notEqualTo(SYKEHJEM) and not(epsOppholdSykehjem.ifNull(false))
                     ) { //  // vedleggPlikterAP11_001
                         item {
                             text(

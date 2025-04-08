@@ -53,7 +53,7 @@ fun createOrienteringOmRettigheterOgPlikterDto(sakstype: Sakstype = ALDER) = Ori
     sivilstand = MetaforceSivilstand.GIFT,
     borSammenMedBruker = true,
     epsPaInstitusjon = false,
-    epsOpphold = null,
+    epsOppholdSykehjem = null,
     harBarnetillegg = false,
     brukerUnder18Aar = false,
 )
