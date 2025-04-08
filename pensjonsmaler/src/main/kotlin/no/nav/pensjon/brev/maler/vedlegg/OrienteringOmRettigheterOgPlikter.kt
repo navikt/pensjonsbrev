@@ -107,81 +107,83 @@ val vedleggOrienteringOmRettigheterOgPlikter =
                             }
                         }
                     }
-                    showIf(sivilstand.equalTo(GIFT) and borSammenMedBruker and not(epsPaInstitusjon)) {
-                        item {
-                            text(
-                                Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for ektefellen din",
-                                Nynorsk to "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til ektefellen din endrar seg",
-                                English to "the employment income, pension, disability benefit or investment income changes for your spouse",
-                            )
+                    showIf(borSammenMedBruker and not(epsPaInstitusjon)) {
+                        showIf(sivilstand.equalTo(GIFT)) {
+                            item {
+                                text(
+                                    Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for ektefellen din",
+                                    Nynorsk to "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til ektefellen din endrar seg",
+                                    English to "the employment income, pension, disability benefit or investment income changes for your spouse",
+                                )
+                            }
                         }
-                    }
-                    showIf(sivilstand.equalTo(PARTNER) and borSammenMedBruker and not(epsPaInstitusjon)) {
-                        item {
-                            text(
-                                Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for partneren din",
-                                Nynorsk to "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til partnaren din endrar seg",
-                                English to "the employment income, pension, disability benefit or investment income changes for your partner",
-                            )
+                        showIf(sivilstand.equalTo(PARTNER)) {
+                            item {
+                                text(
+                                    Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for partneren din",
+                                    Nynorsk to "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til partnaren din endrar seg",
+                                    English to "the employment income, pension, disability benefit or investment income changes for your partner",
+                                )
+                            }
                         }
-                    }
-                    showIf((sivilstand.isOneOf(SAMBOER_1_5, SAMBOER_3_2)) and borSammenMedBruker and not(epsPaInstitusjon)) {
-                        item {
-                            text(
-                                Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for samboeren din",
-                                Nynorsk to "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til sambuaren din endrar seg",
-                                English to "the employment income, pension, disability benefit or investment income changes for your cohabiting partner",
-                            )
+                        showIf((sivilstand.isOneOf(SAMBOER_1_5, SAMBOER_3_2))) {
+                            item {
+                                text(
+                                    Bokmal to "arbeidsinntekten, pensjonsinntekten, uføreinntekten eller kapitalinntekten endrer seg for samboeren din",
+                                    Nynorsk to "arbeidsinntekta, pensjonsinntekta, uføreinntekta eller kapitalinntekta til sambuaren din endrar seg",
+                                    English to "the employment income, pension, disability benefit or investment income changes for your cohabiting partner",
+                                )
+                            }
                         }
-                    }
-                    // vedleggPlikterAP6_002
-                    showIf(sivilstand.equalTo(GIFT) and borSammenMedBruker and erIkkePaaInstitusjon and not(epsPaInstitusjon)) {
-                        item {
-                            text(
-                                Bokmal to "du og ektefellen din flytter fra hverandre",
-                                Nynorsk to "du og ektefellen din flyttar frå kvarandre",
-                                English to "you and your spouse separate",
-                            )
+                        // vedleggPlikterAP6_002
+                        showIf(sivilstand.equalTo(GIFT) and erIkkePaaInstitusjon) {
+                            item {
+                                text(
+                                    Bokmal to "du og ektefellen din flytter fra hverandre",
+                                    Nynorsk to "du og ektefellen din flyttar frå kvarandre",
+                                    English to "you and your spouse separate",
+                                )
+                            }
                         }
-                    }
-                    // vedleggPlikterAP14_002
-                    showIf(sivilstand.equalTo(PARTNER) and borSammenMedBruker and erIkkePaaInstitusjon and not(epsPaInstitusjon)) {
-                        item {
-                            text(
-                                Bokmal to "du og partneren din flytter fra hverandre",
-                                Nynorsk to "du og partnaren din flyttar frå kvarandre",
-                                English to "you and your partner separate",
-                            )
+                        // vedleggPlikterAP14_002
+                        showIf(sivilstand.equalTo(PARTNER) and erIkkePaaInstitusjon) {
+                            item {
+                                text(
+                                    Bokmal to "du og partneren din flytter fra hverandre",
+                                    Nynorsk to "du og partnaren din flyttar frå kvarandre",
+                                    English to "you and your partner separate",
+                                )
+                            }
                         }
-                    }
-                    showIf(sivilstand.isOneOf(SAMBOER_1_5, SAMBOER_3_2) and borSammenMedBruker and erIkkePaaInstitusjon and not(epsPaInstitusjon)) {
-                        item { // vedleggPlikterAP18_001
-                            text(
-                                Bokmal to "du og samboeren din flytter fra hverandre",
-                                Nynorsk to "du og sambuaren din flyttar frå kvarandre",
-                                English to "you and your cohabiting partner separate",
-                            )
-                        }
-                        item { // vedleggPlikterAP16_001
-                            text(
-                                Bokmal to "du gifter deg",
-                                Nynorsk to "du giftar deg",
-                                English to "you marry",
-                            )
-                        }
-                        item { // vedleggPlikterAP17_001
-                            text(
-                                Bokmal to "du får barn med samboeren din",
-                                Nynorsk to "du får barn med sambuaren din",
-                                English to "you and your cohabiting partner have a child together",
-                            )
-                        }
-                        item { // vedleggPlikterAP19_001
-                            text(
-                                Bokmal to "samboeren din dør",
-                                Nynorsk to "sambuaren din døyr",
-                                English to "your cohabiting partner dies",
-                            )
+                        showIf(sivilstand.isOneOf(SAMBOER_1_5, SAMBOER_3_2) and erIkkePaaInstitusjon) {
+                            item { // vedleggPlikterAP18_001
+                                text(
+                                    Bokmal to "du og samboeren din flytter fra hverandre",
+                                    Nynorsk to "du og sambuaren din flyttar frå kvarandre",
+                                    English to "you and your cohabiting partner separate",
+                                )
+                            }
+                            item { // vedleggPlikterAP16_001
+                                text(
+                                    Bokmal to "du gifter deg",
+                                    Nynorsk to "du giftar deg",
+                                    English to "you marry",
+                                )
+                            }
+                            item { // vedleggPlikterAP17_001
+                                text(
+                                    Bokmal to "du får barn med samboeren din",
+                                    Nynorsk to "du får barn med sambuaren din",
+                                    English to "you and your cohabiting partner have a child together",
+                                )
+                            }
+                            item { // vedleggPlikterAP19_001
+                                text(
+                                    Bokmal to "samboeren din dør",
+                                    Nynorsk to "sambuaren din døyr",
+                                    English to "your cohabiting partner dies",
+                                )
+                            }
                         }
                     }
                     showIf(institusjonsoppholdGjeldende.notEqualTo(SYKEHJEM) and not(epsOppholdSykehjem.ifNull(false))) {
