@@ -13,21 +13,8 @@ import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import org.slf4j.LoggerFactory
 
-class KrrService(config: Config, authService: AzureADService): ServiceStatus {
-    private val krrUrl = config.getString("url")
+class KrrService(config: Config, authService: AzureADService, private val client: HttpClient = krrClientFactory(config, authService)): ServiceStatus {
     private val logger = LoggerFactory.getLogger(this::class.java)
-
-    private val client = HttpClient(CIO) {
-        defaultRequest {
-            url(krrUrl)
-        }
-        install(ContentNegotiation) {
-            jackson {
-                registerModule(JavaTimeModule())
-            }
-        }
-        callIdAndOnBehalfOfClient(config.getString("scope"), authService)
-    }
 
     @Suppress("EnumEntryName")
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -67,13 +54,16 @@ class KrrService(config: Config, authService: AzureADService): ServiceStatus {
 
     data class KontaktinfoRequest(val personident: String)
 
+    suspend fun doPost(urlString: String, request: KontaktinfoRequest) = client.post(urlString) {
+        headers {
+            accept(ContentType.Application.Json)
+            setBody(request)
+        }
+    }
+
     suspend fun getPreferredLocale(pid: String): KontaktinfoResponse {
-        return client.post("/rest/v1/personer") {
-            headers {
-                accept(ContentType.Application.Json)
-                setBody(KontaktinfoRequest(pid))
-            }
-        }.toServiceResult<KontaktinfoKRRResponse>()
+        return doPost("/rest/v1/personer", KontaktinfoRequest(pid))
+            .toServiceResult<KontaktinfoKRRResponse>()
             .map { response ->
                 if (response.feil.isEmpty()) {
                     KontaktinfoResponse(
@@ -108,4 +98,16 @@ class KrrService(config: Config, authService: AzureADService): ServiceStatus {
         client.get("/internal/health/readiness")
             .toServiceResult<String>()
             .map { true }
+}
+
+fun krrClientFactory(config: Config, authService: AzureADService): HttpClient = HttpClient(CIO) {
+    defaultRequest {
+        url(config.getString("url"))
+    }
+    install(ContentNegotiation) {
+        jackson {
+            registerModule(JavaTimeModule())
+        }
+    }
+    callIdAndOnBehalfOfClient(config.getString("scope"), authService)
 }

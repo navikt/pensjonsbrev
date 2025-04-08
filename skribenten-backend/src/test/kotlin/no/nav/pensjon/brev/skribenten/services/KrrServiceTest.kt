@@ -1,30 +1,42 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import no.nav.pensjon.brev.skribenten.auth.AzureADService
-import no.nav.pensjon.brev.skribenten.auth.JwtConfig
+import io.ktor.client.call.body
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpStatusCode
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.spyk
+import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoKRRResponse
+import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoKRRResponseEnkeltperson
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 class KrrServiceTest {
 
-    private val jwtConfig = JwtConfig(
-        "navn",
-        "utsteder",
-        "jwks url",
-        "skribenten-client-id",
-        "http://localhost:9991/token",
-        "skribenten-secret",
-        emptyList(),
-        true
-    )
-
     @Test
     fun `kan kontakte KRR`() {
-        val config = com.typesafe.config.Config()
-        val service = KrrService(
-            config = TODO(),
-            authService = AzureADService(jwtConfig)
+        val respons = KontaktinfoKRRResponse(
+            personer = mapOf("12345" to KontaktinfoKRRResponseEnkeltperson(KontaktinfoKRRResponseEnkeltperson.SpraakKode.nn)),
+            feil = mapOf()
         )
+        val service = spyk(
+            KrrService(
+                config = mockk(),
+                authService = mockk(),
+                client = mockk()
+            )
+        ).also {
+            coEvery { it.doPost(any(), any()) } returns mockk<HttpResponse>().also {
+                every { it.status } returns HttpStatusCode.OK
+                coEvery { it.body<KontaktinfoKRRResponse>() } returns respons
+            }
+        }
 
-        service.getPreferredLocale("12345")
+        runBlocking {
+            val preferredLocale = service.getPreferredLocale("12345")
+            assertEquals(SpraakKode.NN, preferredLocale.spraakKode)
+        }
     }
 }
