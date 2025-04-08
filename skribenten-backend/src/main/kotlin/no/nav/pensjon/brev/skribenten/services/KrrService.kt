@@ -54,6 +54,7 @@ class KrrService(config: Config, authService: AzureADService, private val client
 
     data class KontaktinfoRequest(val personident: String)
 
+    // Dette er en workaround for å få testene til å fungere, pga denne buggen i mockk: https://github.com/mockk/mockk/issues/944
     suspend fun doPost(urlString: String, request: KontaktinfoRequest) = client.post(urlString) {
         headers {
             accept(ContentType.Application.Json)
