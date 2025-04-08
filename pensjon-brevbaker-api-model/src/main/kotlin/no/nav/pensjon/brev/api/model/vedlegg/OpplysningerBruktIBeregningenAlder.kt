@@ -11,7 +11,7 @@ import java.time.LocalDate
 @Suppress("unused")
 data class OpplysningerBruktIBeregningenAlderDto(
     val beregnetPensjonPerManedVedVirk: AlderspensjonPerManed,
-    val institusjonsoppholdVedVirk: InstitusjonsoppholdVedVirk?,
+    val beregnetSomEnsligPgaInstitsusjon: Boolean, //aldersEllerSykehjem ,ensligPgaInst ,epsPaInstitusjon ,fengsel eller helseinstitusjon
     val alderspensjonVedVirk: AlderspensjonVedVirk,
     val trygdetidsdetaljerKap19VedVirk: TrygdetidsdetaljerKap19VedVirk,
     val trygdetidsdetaljerKap20VedVirk: TrygdetidsdetaljerKap20VedVirk?,

@@ -6,11 +6,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.borSammenMedBruker_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.harInntektOver2G_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.EPSvedVirkSelectors.mottarPensjon_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.aldersEllerSykehjem_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.ensligPgaInst_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.epsPaInstitusjon_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.fengsel_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InstitusjonsoppholdVedVirkSelectors.helseinstitusjon_safe
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -20,7 +15,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
 data class OpplysningerBruktIBeregningenSivilstand(
-    val institusjonsoppholdVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.InstitusjonsoppholdVedVirk?>,
+    val beregnetSomEnsligPgaInstitsusjon: Expression<Boolean>,
     val epsVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.EPSvedVirk?>,
     val alderspensjonVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.AlderspensjonVedVirk>,
     val beregnetPensjonPerManedVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.AlderspensjonPerManed>
@@ -35,12 +30,7 @@ data class OpplysningerBruktIBeregningenSivilstand(
                 English to "Civil status",
             )
         }
-        val beregnetSomEnsligPgaInstitsusjon =
-            institusjonsoppholdVedVirk.aldersEllerSykehjem_safe.ifNull(false) or
-                    institusjonsoppholdVedVirk.ensligPgaInst_safe.ifNull(false) or
-                    institusjonsoppholdVedVirk.epsPaInstitusjon_safe.ifNull(false) or
-                    institusjonsoppholdVedVirk.fengsel_safe.ifNull(false) or
-                    institusjonsoppholdVedVirk.helseinstitusjon_safe.ifNull(false)
+
         val epsBorSammenMedBruker = epsVedVirk.borSammenMedBruker_safe.ifNull(false)
         val epsMottarPensjon = epsVedVirk.mottarPensjon_safe.ifNull(false)
         val epsHarInntektOver2G = epsVedVirk.harInntektOver2G_safe.ifNull(false)
