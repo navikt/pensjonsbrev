@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.AP2011
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.AP2016
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.api.model.Beregningsmetode.FOLKETRYGD
 import no.nav.pensjon.brev.api.model.PoengTallsType
 import no.nav.pensjon.brev.api.model.PoengTallsType.*
