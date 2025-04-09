@@ -27,7 +27,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.formatTwoDecimals
 import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
 import no.nav.pensjon.brev.template.dsl.expression.legacyGreaterThanOrEqual
 import no.nav.pensjon.brev.template.dsl.expression.legacyLessThan
@@ -198,9 +198,9 @@ data class TBU080V_TBU027V(
 
                 paragraph {
                     textExpr (
-                        Bokmal to "For deg vil minsteytelse utgjøre ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format() + " ganger folketrygdens grunnbeløp. Er uføregraden din under 100 prosent, vil minsteytelsen bli justert ut fra uføregraden. Vi justerer også minsteytelsen ut fra trygdetid hvis du har mindre enn 40 års trygdetid. Du må melde fra til NAV dersom sivilstanden din endrer seg, fordi dette kan medføre at uføretrygden endres.",
-                        Nynorsk to "For deg vil minsteyting utgjere ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format() + " gonger grunnbeløpet i folketrygda. Er uføregraden din under 100 prosent, vil misteytinga bli justert ut frå uføregraden. Vi justerer også minsteytinga ut frå trygdetida, dersom du har mindre enn 40 års trygdetid. Du må melde frå til NAV om sivilstanden din endrar seg, dette kan gjere at uføretrygda blir endra.",
-                        English to "For you, the minimum benefit is equal to ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format() + " times the National Insurance basic amount. This will be adjusted based on your degree of disability and your insurance period in Norway. In case of changes in your marital status, you are obliged to inform NAV because your disability benefit may change.",
+                        Bokmal to "For deg vil minsteytelse utgjøre ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().formatTwoDecimals() + " ganger folketrygdens grunnbeløp. Er uføregraden din under 100 prosent, vil minsteytelsen bli justert ut fra uføregraden. Vi justerer også minsteytelsen ut fra trygdetid hvis du har mindre enn 40 års trygdetid. Du må melde fra til NAV dersom sivilstanden din endrer seg, fordi dette kan medføre at uføretrygden endres.",
+                        Nynorsk to "For deg vil minsteyting utgjere ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().formatTwoDecimals() + " gonger grunnbeløpet i folketrygda. Er uføregraden din under 100 prosent, vil misteytinga bli justert ut frå uføregraden. Vi justerer også minsteytinga ut frå trygdetida, dersom du har mindre enn 40 års trygdetid. Du må melde frå til NAV om sivilstanden din endrar seg, dette kan gjere at uføretrygda blir endra.",
+                        English to "For you, the minimum benefit is equal to ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().formatTwoDecimals() + " times the National Insurance basic amount. This will be adjusted based on your degree of disability and your insurance period in Norway. In case of changes in your marital status, you are obliged to inform NAV because your disability benefit may change.",
                     )
                 }
             }

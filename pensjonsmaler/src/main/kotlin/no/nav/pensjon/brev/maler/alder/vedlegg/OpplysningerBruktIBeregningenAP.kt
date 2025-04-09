@@ -112,9 +112,9 @@ val opplysningerBruktIBeregningenAP =
                     }
                     cell {
                         textExpr(
-                            Bokmal to delingstallVedUttak.format(),
-                            Nynorsk to delingstallVedUttak.format(),
-                            English to delingstallVedUttak.format()
+                            Bokmal to delingstallVedUttak.formatTwoDecimals(),
+                            Nynorsk to delingstallVedUttak.formatTwoDecimals(),
+                            English to delingstallVedUttak.formatTwoDecimals()
                         )
                     }
                 }
@@ -130,9 +130,9 @@ val opplysningerBruktIBeregningenAP =
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to delingstall.format(),
-                                    Nynorsk to delingstall.format(),
-                                    English to delingstall.format()
+                                    Bokmal to delingstall.formatTwoDecimals(),
+                                    Nynorsk to delingstall.formatTwoDecimals(),
+                                    English to delingstall.formatTwoDecimals()
                                 )
                             }
                         }

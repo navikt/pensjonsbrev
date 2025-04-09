@@ -32,7 +32,8 @@ fun Expression<Int>.toYear(): Expression<Year> =
         UnaryOperation.MapValue(IntToYear)
     )
 
-fun Expression<Double>.format(): Expression<String> = format(formatter = LocalizedFormatter.DoubleFormat)
+fun Expression<Double>.formatTwoDecimals(): Expression<String> = format(formatter = LocalizedFormatter.DoubleFormatTwoDecimal)
+fun Expression<Double>.formatThreeDecimals(): Expression<String> = format(formatter = LocalizedFormatter.DoubleFormatThreeDecimal)
 
 @JvmName("formatInt")
 fun Expression<Int>.format(): Expression<String> = format(formatter = LocalizedFormatter.IntFormat)
