@@ -26,7 +26,6 @@ fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
                 brukerUnder18Aar = false
             ),
             oversiktOverFeilutbetalingPEDto = OversiktOverFeilutbetalingPEDto(
-                sakstype = Sakstype.ALDER,
                 bruttoTilbakekrevdTotalbeloep = Kroner(25000),
                 nettoUtenRenterTilbakekrevdTotalbeloep = Kroner(20000),
                 rentetilleggSomInnkrevesTotalbeloep = null,

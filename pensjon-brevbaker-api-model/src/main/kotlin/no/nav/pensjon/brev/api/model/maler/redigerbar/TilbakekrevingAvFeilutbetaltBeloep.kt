@@ -16,14 +16,15 @@ data class TilbakekrevingAvFeilutbetaltBeloepDto(
 ) : RedigerbarBrevdata<EmptyBrevdata, TilbakekrevingAvFeilutbetaltBeloepDto.PesysData> {
 
     data class PesysData(
-        val feilutbetaltTotalBeloep: Kroner,
-        val harMotregning: Boolean,
-        val resultatAvVurderingenForTotalBeloep: TilbakekrevingResultat,
-        val sakstype: Sakstype,
-        val sluttPeriodeForTilbakekreving: LocalDate,
-        val startPeriodeForTilbakekreving: LocalDate,
-        val sumTilInnkrevingTotalBeloep: Kroner,
+        val feilutbetaltTotalBeloep: Kroner,  // v1.TilbakekrevingTotal.feilutbetalingTotal
+        val harMotregning: Boolean,  //
+        val resultatAvVurderingenForTotalBeloep: TilbakekrevingResultat,  // v1.TilbakekrevingTotal.resultatTotal/resultatTotalType
+        val sakstype: Sakstype,  // v1.Sak.sakTypeKode
+        val sluttPeriodeForTilbakekreving: LocalDate,  // v1.TilbakekrevingTotal.periodeTom
+        val startPeriodeForTilbakekreving: LocalDate,  // v1.TilbakekrevingTotal.periodeFom
+        val sumTilInnkrevingTotalBeloep: Kroner,  // v1.TilbakekrevingTotal.sumTilInnkreving
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
         val oversiktOverFeilutbetalingPEDto: OversiktOverFeilutbetalingPEDto,
     ) : BrevbakerBrevdata
 }
+

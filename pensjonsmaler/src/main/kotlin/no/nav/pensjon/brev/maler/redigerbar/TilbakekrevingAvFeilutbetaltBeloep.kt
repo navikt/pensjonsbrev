@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbeta
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.startPeriodeForTilbakekreving
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.sumTilInnkrevingTotalBeloep
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Redigerbar
 import no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalingerPE
@@ -28,6 +29,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -69,13 +71,11 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
         outline {
             paragraph {
                 val dato = fritekst("dato")
-                text(
-                    Bokmal to "Vi viser til forhåndsvarselet vårt ",
-                    Nynorsk to "Vi viser til førehandsvarselet vårt ",
-                    English to "This is in reference to our advance notification dated "
+                textExpr(
+                    Bokmal to "Vi viser til forhåndsvarselet vårt ".expr() + dato + ".",
+                    Nynorsk to "Vi viser til førehandsvarselet vårt ".expr() + dato + ".",
+                    English to "This is in reference to our advance notification dated ".expr() + dato + "."
                 )
-                textExpr(Bokmal to dato, Nynorsk to dato, English to dato)
-                text(Bokmal to ".", Nynorsk to ".", English to ".")
             }
             paragraph {
                 text(
@@ -100,7 +100,7 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                 paragraph {
                     textExpr(
                         Bokmal to "Vi har kommet fram til at du skal betale tilbake hele beløpet. Det vil si ".expr() + sumTilInnkrevingTotalBeloep.format() + " kroner etter at skatten er trukket fra.",
-                        Nynorsk to "Vi har kome fram til at du skal betale tilbake heile beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format() + " kroner etter at skatten er trektfrå.",
+                        Nynorsk to "Vi har kome fram til at du skal betale tilbake heile beløpet. Det vil seie ".expr() + sumTilInnkrevingTotalBeloep.format() + " kroner etter at skatten er trekt frå.",
                         English to "We have concluded that you must repay the full excess payment you have received. This amounts to NOK ".expr() + sumTilInnkrevingTotalBeloep.format() + " after deduction of tax."
                     )
                 }
@@ -174,11 +174,17 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
             paragraph {
                 text(
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. " +
-                            "Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage. I vedlegget “Dine rettigheter og mulighet til å klage” får du vite mer om hvordan du går fram.",
+                            "Klagen skal være skriftlig. Du finner skjema og informasjon på $KLAGE_URL. I vedlegget ",
                     Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. " +
-                            "Klaga skal vera skriftleg. Du finn skjema og informasjon på nav.no/klage. I vedlegget “Rettane dine og høve til å klage” får du vite meir om korleis du går fram.",
+                            "Klaga skal vera skriftleg. Du finn skjema og informasjon på $KLAGE_URL. I vedlegget ",
                     English to "If you think the decision is wrong, you may appeal the decision within six weeks of the date on which you received notice of the decision. " +
-                            "Your appeal must be made in writing. You will find a form and information about this at nav.no/klage. The attachment 'Your rights and how to appeal' includes information on how to proceed."
+                            "Your appeal must be made in writing. You will find a form and information about this at $KLAGE_URL. The attachment '"
+                )
+                namedReference(vedleggDineRettigheterOgMulighetTilAaKlage)
+                text(
+                    Bokmal to " får du vite mer om hvordan du går fram.",
+                    Nynorsk to " får du vite meir om korleis du går fram.",
+                    English to "' includes information on how to proceed.",
                 )
             }
             paragraph {

@@ -1,18 +1,34 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg
 
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDto
+import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.bruttobeloepTilbakekrevd
+import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.feilutbetaltBeloep
+import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.maanedOgAar
+import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.nettobeloepUtenRenterTilbakekrevd
+import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.resultatAvVurderingen
+import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.skattefradragSomInnkreves
+import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.ytelsenMedFeilutbetaling
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.bruttoTilbakekrevdTotalbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.nettoUtenRenterTilbakekrevdTotalbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.rentetilleggSomInnkrevesTotalbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.skattefradragSomInnkrevesTotalbeloep
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDtoSelectors.tilbakekrevingPerMaaned
-import no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalingerTabeller.TilbakekrevingerTabell
-import no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalingerTabeller.TilbakekrevingerTotalbeloepTabell
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.maler.fraser.common.KonteringTypeYtelseTextMappingStorBokstav
+import no.nav.pensjon.brev.maler.fraser.common.KronerText
+import no.nav.pensjon.brev.maler.fraser.common.ResultatAvVurderingenTextMappingStorBokstav
+import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
 @TemplateModelHelpers
@@ -37,4 +53,171 @@ val oversiktOverFeilutbetalingerPE = createAttachment<LangBokmalNynorskEnglish, 
             tilbakekreving = tilbakekrevingPerMaaned
         )
     )
+}
+
+private data class TilbakekrevingerTotalbeloepTabell(
+    val bruttoTilbakekrevdTotalbeloep: Expression<Kroner>,
+    val nettoTilbakekrevdTotalbeloep: Expression<Kroner>,
+    val rentetilleggSomInnkrevesBeloep: Expression<Kroner?>,
+    val skattefradragSomInnkrevesTotalbeloep: Expression<Kroner?>
+): OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+
+        paragraph {
+            table(
+                header = {
+                    column(columnSpan = 3) {
+                        text(
+                            Bokmal to "Beløp som skal kreves tilbake i hele feilutbetalingsperioden",
+                            Nynorsk to "Beløp som skal krevjast tilbake i heile feilutbetalingsperioden",
+                            English to "Reimbursement amount for entire error period",
+                        )
+                    }
+                    column(columnSpan = 1, alignment = RIGHT) {}
+                }
+            ) {
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Brutto tilbakekreving",
+                            Nynorsk to "Brutto tilbakekrevjing",
+                            English to "Gross amount to be repaid"
+                        )
+                    }
+                    cell {
+                        includePhrase(KronerText(bruttoTilbakekrevdTotalbeloep))
+                    }
+                }
+                row {
+                    cell {
+                        text(
+                            Bokmal to "- Fradrag skatt",
+                            Nynorsk to "- Frådrag skatt",
+                            English to "- Tax deduction",
+                        )
+                    }
+                    cell {
+                        includePhrase(KronerText(skattefradragSomInnkrevesTotalbeloep.ifNull(Kroner(0))))
+                    }
+                }
+
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Netto tilbakekreving",
+                            Nynorsk to "Netto tilbakekrevjing",
+                            English to "Net amount",
+                            fontType = FontType.BOLD,
+                        )
+                    }
+                    cell {
+                        includePhrase(KronerText(nettoTilbakekrevdTotalbeloep, FontType.BOLD))
+                    }
+                }
+                row {
+                    cell {
+                        text(
+                            Bokmal to "+ Rentetillegg",
+                            Nynorsk to "+ Rentetillegg",
+                            English to "+ Interest surcharge"
+                        )
+                    }
+                    cell {
+                        includePhrase(KronerText(rentetilleggSomInnkrevesBeloep.ifNull(Kroner(0))))
+                    }
+                }
+            }
+        }
+    }
+}
+
+private data class TilbakekrevingerTabell(
+    val skattefradragSomInnkreves: Expression<Kroner>,
+    val tilbakekreving: Expression<List<OversiktOverFeilutbetalingPEDto.Tilbakekreving>>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        forEach(tilbakekreving) { tilbakekreves ->
+            paragraph {
+                table(
+                    header = {
+                        column(columnSpan = 3) {
+                            textExpr(
+                                Bokmal to tilbakekreves.maanedOgAar.formatMonthYear() + " - ",
+                                Nynorsk to tilbakekreves.maanedOgAar.formatMonthYear() + " - ",
+                                English to tilbakekreves.maanedOgAar.formatMonthYear() + " - "
+                            )
+                            includePhrase(
+                                KonteringTypeYtelseTextMappingStorBokstav(
+                                    ytelsenMedFeilutbetaling = tilbakekreves.ytelsenMedFeilutbetaling
+                                )
+                            )
+                            text(
+                                Bokmal to " - ",
+                                Nynorsk to " - ",
+                                English to " - "
+                            )
+                            includePhrase(
+                                ResultatAvVurderingenTextMappingStorBokstav(
+                                    resultatAvVurderingen = tilbakekreves.resultatAvVurderingen
+                                )
+                            )
+
+                        }
+                        column(columnSpan = 1, RIGHT) {}
+                    }
+                ) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Feilutbetalt beløp",
+                                Nynorsk to "Feilutbetalt beløp",
+                                English to "Incorrect payment"
+                            )
+                        }
+                        cell {
+                            includePhrase(KronerText(tilbakekreves.feilutbetaltBeloep))
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Brutto tilbakekreving",
+                                Nynorsk to "Brutto tilbakekrevjing",
+                                English to "Gross repayment amount"
+                            )
+                        }
+                        cell {
+                            includePhrase(KronerText(tilbakekreves.bruttobeloepTilbakekrevd.ifNull(Kroner(0))))
+                        }
+                    }
+                    showIf(skattefradragSomInnkreves.ifNull(Kroner(0).greaterThan(0))) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Fradrag skatt",
+                                    Nynorsk to "Frådrag skatt",
+                                    English to "Tax deduction"
+                                )
+                            }
+                            cell {
+                                includePhrase(KronerText(tilbakekreves.skattefradragSomInnkreves.ifNull(Kroner(0))))
+                            }
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Netto tilbakekreving",
+                                Nynorsk to "Netto tilbakekrevjing",
+                                English to "Net repayment amount"
+                            )
+                        }
+                        cell {
+                            includePhrase(KronerText(tilbakekreves.nettobeloepUtenRenterTilbakekrevd))
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

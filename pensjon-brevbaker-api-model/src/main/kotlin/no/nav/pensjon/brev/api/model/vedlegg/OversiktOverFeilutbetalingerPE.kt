@@ -9,7 +9,6 @@ import java.time.LocalDate
 
 
 data class OversiktOverFeilutbetalingPEDto(
-    val sakstype: Sakstype,
     val bruttoTilbakekrevdTotalbeloep: Kroner,
     val nettoUtenRenterTilbakekrevdTotalbeloep: Kroner,
     val rentetilleggSomInnkrevesTotalbeloep: Kroner?,
