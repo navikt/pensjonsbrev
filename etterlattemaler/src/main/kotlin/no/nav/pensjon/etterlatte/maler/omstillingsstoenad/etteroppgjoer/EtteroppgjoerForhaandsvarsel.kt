@@ -52,7 +52,8 @@ data class EtteroppgjoerForhaandsvarselBrevDTO(
 
 enum class EtteroppgjoerResultatType{
     TILBAKEKREVING,
-    ETTEROPPGJOER
+    ETTEROPPGJOER,
+    IKKE_ETTEROPPGJOER
 }
 
 data class EtteroppgjoerForhaandsvarselDTO(
@@ -149,6 +150,16 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                 paragraph {
                     text(
                         Language.Bokmal to "Du kan få etterbetalt omstillingsstønad hvis du har vært i minst 50 prosent aktivitet eller har fått unntak for aktivitetsplikten. Du kan lese om aktivitetsplikten på nav.no/omstillingsstonad#aktivitet.",
+                        Language.Nynorsk to "",
+                        Language.English to ""
+                    )
+                }
+            }
+
+            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.IKKE_ETTEROPPGJOER)){
+                paragraph {
+                    text(
+                        Language.Bokmal to "Ingen etteroppgjør (tekst)",
                         Language.Nynorsk to "",
                         Language.English to ""
                     )
