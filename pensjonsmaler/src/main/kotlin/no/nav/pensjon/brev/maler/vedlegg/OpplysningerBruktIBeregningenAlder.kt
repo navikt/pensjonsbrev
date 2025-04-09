@@ -1,7 +1,8 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.AP2011
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.AP2016
+import no.nav.pensjon.brev.api.model.Beregningsmetode.FOLKETRYGD
 import no.nav.pensjon.brev.api.model.PoengTallsType
 import no.nav.pensjon.brev.api.model.PoengTallsType.*
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
@@ -20,9 +21,10 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.inneholderOmsorgspoeng_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.pensjonspoeng
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.PoengrekkeVedVirkSelectors.pensjonspoeng_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregnetPensjonPerManedVedVirk
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregnetSomEnsligPgaInstitusjon 
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregnetSomEnsligPgaInstitusjon
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregningKap19VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.beregningKap20VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.bruker
@@ -49,12 +51,9 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.TextOnlyScope
+import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
-import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 @TemplateModelHelpers
@@ -80,7 +79,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
 
             includePhrase(
                 OpplysningerBruktIBeregningenSivilstand(
-                    beregnetSomEnsligPgaInstitusjon  = beregnetSomEnsligPgaInstitusjon ,
+                    beregnetSomEnsligPgaInstitusjon = beregnetSomEnsligPgaInstitusjon,
                     epsVedVirk = epsVedVirk,
                     alderspensjonVedVirk = alderspensjonVedVirk,
                     beregnetPensjonPerManedVedVirk = beregnetPensjonPerManedVedVirk
@@ -177,19 +176,11 @@ val vedleggOpplysningerBruktIBeregningenAlder =
             )
 
             showIf(
-                (regelverkstype.isOneOf(AP2016) and poengrekkeVedVirk.pensjonspoeng_safe.ifNull(emptyList()).size()
-                    .greaterThan(0))
-                        or (regelverkstype.isOneOf(AlderspensjonRegelverkstype.AP2011)
-                        and beregnetPensjonPerManedVedVirk.tilleggspensjon.ifNull(Kroner(0)).greaterThan(0))
+                regelverkstype.isOneOf(AP2011)
+                        and trygdetidsdetaljerKap19VedVirk.beregningsmetode.equalTo(FOLKETRYGD)
+                        and beregnetPensjonPerManedVedVirk.tilleggspensjon.isNull()
             ) {
-                title1 {
-                    text(
-                        Bokmal to "Pensjonsopptjeningen din",
-                        Nynorsk to "Pensjonsoppteninga di",
-                        English to "Your accumulated pension capital",
-                    )
-                }
-                
+                includePhrase(PensjonsopptjeningenDinTittel)
                 paragraph {
                     text(
                         Bokmal to "Du er registrert med ingen eller for lav inntekt til å ha rett til tilleggspensjon. For å ha rett til tilleggspensjon må du ha minst tre år med pensjonspoeng. Du får pensjonspoeng for år med inntekt over folketrygdens grunnbeløp (G) eller omsorgspoeng.",
@@ -197,14 +188,18 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                         English to "You have been registered with no or too little income to be eligible for a supplementary pension. To be eligible for a supplementary pension, you must have earned pension points for at least three years. You earn pension points when your income is higher than the national insurance basic amount (G) or you can earn points for care work.",
                     )
                 }
+                includePhrase(PensjonsopptjeningenLesPaaNett)
+            }
 
-                paragraph {
-                    text(
-                        Bokmal to "I nettjenesten Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsopptjeningen din for hvert enkelt år. Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg.",
-                        Nynorsk to "I nettenesta Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsoppteninga di for kvart enkelt år. Der kan du sjå kva andre typar pensjonsopptening som er registrert på deg.",
-                        English to "Our online service «Din pensjon» at $DIN_PENSJON_URL provides details on your accumulated rights for each year. Here you will be able to see your other types of pension rights we have registered.",
-                    )
-                }
+            showIf(
+                (regelverkstype.isOneOf(AP2016) and poengrekkeVedVirk.pensjonspoeng_safe.ifNull(emptyList()).size()
+                    .greaterThan(0))
+                        or (regelverkstype.isOneOf(AP2011)
+                        and beregnetPensjonPerManedVedVirk.tilleggspensjon.ifNull(Kroner(0)).greaterThan(0))
+            ) {
+                includePhrase(PensjonsopptjeningenDinTittel)
+                includePhrase(PensjonsopptjeningenLesPaaNett)
+
                 paragraph {
                     text(
                         Bokmal to "Tabellen under viser den pensjonsgivende inntekten din og pensjonspoengene dine. Det er bare inntekt for ferdiglignede år som vises i tabellen.",
@@ -402,4 +397,29 @@ private data class PoengTallsTypeMerknad(
             )
         }
     }
+}
+
+private object PensjonsopptjeningenLesPaaNett: OutlinePhrase<LangBokmalNynorskEnglish>(){
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            text(
+                Bokmal to "I nettjenesten Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsopptjeningen din for hvert enkelt år. Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg.",
+                Nynorsk to "I nettenesta Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsoppteninga di for kvart enkelt år. Der kan du sjå kva andre typar pensjonsopptening som er registrert på deg.",
+                English to "Our online service «Din pensjon» at $DIN_PENSJON_URL provides details on your accumulated rights for each year. Here you will be able to see your other types of pension rights we have registered.",
+            )
+        }
+    }
+}
+
+private object PensjonsopptjeningenDinTittel: OutlinePhrase<LangBokmalNynorskEnglish>(){
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Pensjonsopptjeningen din",
+                Nynorsk to "Pensjonsoppteninga di",
+                English to "Your accumulated pension capital",
+            )
+        }
+    }
+
 }
