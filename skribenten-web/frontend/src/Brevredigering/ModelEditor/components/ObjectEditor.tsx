@@ -31,6 +31,7 @@ export const FieldEditor = ({
       return fieldType.nullable ? (
         <ToggleableObjectEditor
           brevkode={brevkode}
+          fieldType={fieldType}
           parentFieldName={prependedName ? `${prependedName}.${field}` : field}
           submitOnChange={submitOnChange}
           typeName={fieldType.typeName}
@@ -38,6 +39,7 @@ export const FieldEditor = ({
       ) : (
         <ObjectEditor
           brevkode={brevkode}
+          fieldType={fieldType}
           parentFieldName={prependedName ? `${prependedName}.${field}` : field}
           submitOnChange={submitOnChange}
           typeName={fieldType.typeName}
@@ -60,6 +62,7 @@ export const FieldEditor = ({
 
 export type ObjectEditorProperties = {
   brevkode: string;
+  fieldType: FieldType;
   typeName: string;
   parentFieldName?: string;
   submitOnChange?: () => void;
@@ -92,6 +95,7 @@ function ToggleableObjectEditor({
   brevkode,
   parentFieldName,
   typeName,
+  fieldType,
   submitOnChange,
 }: ObjectEditorProperties & { parentFieldName: string }) {
   const {
@@ -115,7 +119,7 @@ function ToggleableObjectEditor({
   return (
     <>
       <Switch checked={open} onChange={handleToggle}>
-        {convertFieldToReadableLabel(parentFieldName)}
+        {fieldType.displayText ?? convertFieldToReadableLabel(parentFieldName)}
       </Switch>
       {open && (
         <div
@@ -129,6 +133,7 @@ function ToggleableObjectEditor({
         >
           <ObjectEditor
             brevkode={brevkode}
+            fieldType={fieldType}
             parentFieldName={parentFieldName}
             submitOnChange={submitOnChange}
             typeName={typeName}
