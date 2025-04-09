@@ -62,6 +62,8 @@ export const FieldEditor = ({
 
 export type ObjectEditorProperties = {
   brevkode: string;
+  // Denne er jo brukt, eslint som er forvirra
+  // eslint-disable-next-line react/no-unused-prop-types
   fieldType: FieldType;
   typeName: string;
   parentFieldName?: string;
