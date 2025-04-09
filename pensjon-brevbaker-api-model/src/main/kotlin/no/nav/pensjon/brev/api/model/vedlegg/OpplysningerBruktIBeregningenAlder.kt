@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.api.model.vedlegg
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.PoengTallsType
@@ -108,7 +108,7 @@ data class OpplysningerBruktIBeregningenAlderDto(
     )
 
     data class AlderspensjonVedVirk(
-        val regelverkType: AlderspensjonRegelverkstype,
+        val regelverkType: AlderspensjonRegelverkType,
         val andelKap19: Int?,
         val andelKap20: Int?,
         val uttaksgrad: Int,
