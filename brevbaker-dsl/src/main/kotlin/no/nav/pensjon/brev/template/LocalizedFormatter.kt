@@ -30,11 +30,18 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
         override fun stableHashCode(): Int =  StableHash.of("MaanedAarFormatter").hashCode()
     }
 
-    object DoubleFormat : LocalizedFormatter<Double>() {
-        override fun stableHashCode(): Int = "DoubleFormat".hashCode()
+    object DoubleFormatTwoDecimal : LocalizedFormatter<Double>() {
+        override fun stableHashCode(): Int = "DoubleFormatTwoDecimal".hashCode()
         override fun apply(first: Double, second: Language): String =
             String.format(second.locale(), "%.2f", first)
     }
+
+    object DoubleFormatThreeDecimal : LocalizedFormatter<Double>() {
+        override fun stableHashCode(): Int = "DoubleFormatThreeDecimal".hashCode()
+        override fun apply(first: Double, second: Language): String =
+            String.format(second.locale(), "%.3f", first)
+    }
+
 
     object IntFormat : LocalizedFormatter<Int>() {
         override fun stableHashCode(): Int = "IntFormat".hashCode()
