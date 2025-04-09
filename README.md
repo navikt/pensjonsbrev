@@ -1,6 +1,9 @@
 # Pensjonsbrev
 This is a mono-repo for the microservices that together form the new letter ordering system.
 
+## Dokumentasjon
+Dokumentasjonen fra ``docs``-mappa i dette repoet blir automatisk publisert til https://navikt.github.io/pensjonsbrev/
+
 ## Lokal kjøring av brevbaker og pdf-bygger
 
 For å kjøre løsningen lokalt må man ha docker og docker compose installert.

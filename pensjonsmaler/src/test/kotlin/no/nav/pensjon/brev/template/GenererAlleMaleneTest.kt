@@ -13,6 +13,8 @@ import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
 import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -66,6 +68,16 @@ class GenererAlleMaleneTest {
 
     private fun filnavn(brevkode: Brevkode<*>, spraak: Language) =
         "${brevkode.kode()}_${spraak.javaClass.simpleName}"
+
+
+    @Test
+    fun `alle maler skal bruke en unik brevkode`() {
+        val malKoder = (ProductionTemplates.hentRedigerbareMaler() + ProductionTemplates.hentRedigerbareMaler())
+            .map { it.kode.kode() }
+
+        malKoder.sorted().zipWithNext { a, b ->
+            assert(a != b) {"Alle brevmaler må bruke egne unike brevkoder! Brevkode $a brukes i flere brev."} }
+    }
 
     companion object {
         @JvmStatic

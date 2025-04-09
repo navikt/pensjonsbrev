@@ -22,7 +22,7 @@ val dineRettigheterOgMulighetTilAaKlagePensjonStatisk =
         val telefonnummer = Constants.navKontaktsenterPensjon.expr()
 
         includePhrase(VedleggVeiledning)
-        includePhrase(VedleggInnsynSakPensjon(telefonnummer))
+        includePhrase(VedleggInnsynSakPensjon(telefonnummer, Constants.NAV_URL.expr()))
         includePhrase(VedleggHjelpFraAndre)
         includePhrase(VedleggKlagePaaVedtaket(telefonnummer))
     }
