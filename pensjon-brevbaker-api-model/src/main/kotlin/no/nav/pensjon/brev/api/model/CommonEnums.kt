@@ -20,7 +20,7 @@ enum class SivilstandAvdoed {
 }
 
 // Bruker er koblet mot en ektefelle, partner eller samboer og angir bor med/benyttet sivilstatus i beregningen
-enum class BorMedSivilstand{
+enum class BorMedSivilstand {
     PARTNER_LEVER_ADSKILT,
     GIFT_LEVER_ADSKILT,
     EKTEFELLE,
@@ -80,3 +80,5 @@ enum class MetaforceSivilstand {
     SAMBOER_1_5,
     SAMBOER_3_2, SEPARERT, SEPARERT_PARTNER, UKJENT;
 }
+
+enum class PoengTallsType { FPP, G, H, IFUT, J, K, L, PI }

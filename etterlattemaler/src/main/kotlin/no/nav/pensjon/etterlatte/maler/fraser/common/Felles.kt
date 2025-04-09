@@ -127,6 +127,26 @@ object Felles {
         }
     }
 
+    object HvordanMelderDuFra : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Bokmal to "Hvordan melder du fra?",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Meld fra til oss ved å benytte endringsskjema på ${Constants.OMS_MELD_INN_ENDRING_URL}. " +
+                            "Du må sende dokumentasjon på ${Constants.ETTERSENDE_OMS_URL}.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+        }
+    }
+
     data class HvordanSendeOpplysninger(
         val utland: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {

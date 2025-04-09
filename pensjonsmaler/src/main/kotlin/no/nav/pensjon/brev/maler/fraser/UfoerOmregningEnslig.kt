@@ -174,21 +174,21 @@ data class EndretMinsteytelseDoedEPS(
         paragraph {
             textExpr(
                 Bokmal to "Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Satsen på minsteytelsen avhenger av sivilstand. For deg utgjør minsteytelsen ".expr()
-                        + minsteytelseSatsVedvirk.format() + " ganger folketrygdens grunnbeløp. Du kan lese mer om grunnbeløp på $NAV_URL.".expr(),
+                        + minsteytelseSatsVedvirk.formatTwoDecimals() + " ganger folketrygdens grunnbeløp. Du kan lese mer om grunnbeløp på $NAV_URL.".expr(),
                 Nynorsk to "Du er sikra minsteyting fordi utrekninga ut frå den eigenopptente inntekta di er lågare enn minstenivået for uføretrygd. Satsen på minsteytinga avheng av sivilstand. For deg utgjer minsteytinga ".expr()
-                        + minsteytelseSatsVedvirk.format() + " gonger grunnbeløpet i folketrygda. Du kan lese meir om grunnbeløp på $NAV_URL.".expr(),
+                        + minsteytelseSatsVedvirk.formatTwoDecimals() + " gonger grunnbeløpet i folketrygda. Du kan lese meir om grunnbeløp på $NAV_URL.".expr(),
                 English to "You are eligible for the minimum benefit, because the calculated benefit based on your income is lower than the minimum benefit. The rate of the minimum benefit depends on your marital status. Your minimum benefit is ".expr()
-                        + minsteytelseSatsVedvirk.format() + " times the National Insurance basic amount. You can read more about the National Insurance basic amount at $NAV_URL.".expr()
+                        + minsteytelseSatsVedvirk.formatTwoDecimals() + " times the National Insurance basic amount. You can read more about the National Insurance basic amount at $NAV_URL.".expr()
             )
         }
         paragraph {
             textExpr(
                 Bokmal to "Dette kan ha betydning for kompensasjonsgraden din som er satt til ".expr()
-                        + kompensasjonsgradUfoeretrygdVedvirk.format() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
+                        + kompensasjonsgradUfoeretrygdVedvirk.formatTwoDecimals() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
                 Nynorsk to "Dette kan ha noko å seie for kompensasjonsgraden din som er fastsett til ".expr()
-                        + kompensasjonsgradUfoeretrygdVedvirk.format() + " prosent. Du kan lese meir om dette i vedlegget.".expr(),
+                        + kompensasjonsgradUfoeretrygdVedvirk.formatTwoDecimals() + " prosent. Du kan lese meir om dette i vedlegget.".expr(),
                 English to "This may affect your degree of compensation, which is determined to be ".expr()
-                        + kompensasjonsgradUfoeretrygdVedvirk.format() + " percent. You can read more about this in the appendix.".expr()
+                        + kompensasjonsgradUfoeretrygdVedvirk.formatTwoDecimals() + " percent. You can read more about this in the appendix.".expr()
             )
         }
     }
@@ -206,11 +206,11 @@ data class EndringMinsteytelseOgMinstInntektFoerUfoerhetDoedEPS(
         paragraph {
             textExpr(
                 Bokmal to "Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Satsen på minsteytelsen avhenger av sivilstand. For deg utgjør minsteytelsen ".expr()
-                        + minsteytelseSats.format() + " ganger folketrygdens grunnbeløp. Du kan lese mer om grunnbeløp på $NAV_URL.".expr(),
+                        + minsteytelseSats.formatTwoDecimals() + " ganger folketrygdens grunnbeløp. Du kan lese mer om grunnbeløp på $NAV_URL.".expr(),
                 Nynorsk to "Du er sikra minsteyting fordi utrekninga ut frå den eigenopptente inntekta di er lågare enn minstenivået for uføretrygd. Satsen på minsteytinga avheng av sivilstand. For deg utgjer minsteytinga ".expr()
-                        + minsteytelseSats.format() + " gonger grunnbeløpet i folketrygda. Du kan lese meir om grunnbeløp på $NAV_URL.".expr(),
+                        + minsteytelseSats.formatTwoDecimals() + " gonger grunnbeløpet i folketrygda. Du kan lese meir om grunnbeløp på $NAV_URL.".expr(),
                 English to "You are eligible for the minimum benefit, because the calculated benefit based on your income is lower than the minimum benefit. The rate of the minimum benefit depends on your marital status. Your minimum benefit is ".expr()
-                        + minsteytelseSats.format() + " times the National Insurance basic amount. You can read more about the National Insurance basic amount at $NAV_URL.".expr()
+                        + minsteytelseSats.formatTwoDecimals() + " times the National Insurance basic amount. You can read more about the National Insurance basic amount at $NAV_URL.".expr()
             )
         }
 
@@ -219,15 +219,15 @@ data class EndringMinsteytelseOgMinstInntektFoerUfoerhetDoedEPS(
                 Bokmal to "Sivilstandsendring har også betydning for inntekten din før du ble ufør. Denne utgjør ".expr()
                         + inntektFoerUfoerhet.format() + " kroner som oppjustert til virkningstidspunktet tilsvarer en inntekt på ".expr()
                         + oppjustertInntektFoerUfoerhet.format() + " kroner. Kompensasjonsgraden din er satt til ".expr()
-                        + kompensasjonsgradUfoeretrygd.format() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
+                        + kompensasjonsgradUfoeretrygd.formatTwoDecimals() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
                 Nynorsk to "Endringar i sivilstanden påverkar også inntekta di før du blei ufør. Denne utgjer ".expr()
                         + inntektFoerUfoerhet.format() + " kroner som oppjustert til verknadstidspunktet svarer til ei inntekt på ".expr()
                         + oppjustertInntektFoerUfoerhet.format() + " kroner. Kompensasjonsgraden din er fastsett til ".expr()
-                        + kompensasjonsgradUfoeretrygd.format() + " prosent. Du kan lese meir om dette i vedlegget.".expr(),
+                        + kompensasjonsgradUfoeretrygd.formatTwoDecimals() + " prosent. Du kan lese meir om dette i vedlegget.".expr(),
                 English to "The change in your marital status also affects your income prior to disability, which is determined to be NOK ".expr()
                         + inntektFoerUfoerhet.format() + ". Adjusted to today’s value, this is equivalent to an income of NOK ".expr()
                         + oppjustertInntektFoerUfoerhet.format() + ". Your degree of compensation is determined to be ".expr()
-                        + kompensasjonsgradUfoeretrygd.format() + " percent. You can read more about this in the appendix.".expr()
+                        + kompensasjonsgradUfoeretrygd.formatTwoDecimals() + " percent. You can read more about this in the appendix.".expr()
             )
         }
     }
@@ -245,15 +245,15 @@ data class EndretMinstInntektFoerUfoerhetDoedEPS(
                 Bokmal to "Inntekten din før du ble ufør er fastsatt til minstenivå som er avhengig av sivilstand. For deg er inntekten din før du ble ufør satt til ".expr()
                         + inntektFoerUfoerhet.format() + " kroner som oppjustert til virkningstidspunktet tilsvarer en inntekt på ".expr()
                         + oppjustertInntektFoerUfoerhet.format() + " kroner. Dette kan ha betydning for kompensasjonsgraden din som er satt til ".expr()
-                        + kompensasjonsgradUfoeretrygd.format() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
+                        + kompensasjonsgradUfoeretrygd.formatTwoDecimals() + " prosent. Du kan lese mer om dette i vedlegget.".expr(),
                 Nynorsk to "Inntekta di før du blei ufør er fastsett til minstenivå, som er avhengig av sivilstand. For deg er inntekta di før du blei ufør fastsett til ".expr()
                         + inntektFoerUfoerhet.format() + " kroner som oppjustert til verknadstidspunktet svarer til ei inntekt på ".expr()
                         + oppjustertInntektFoerUfoerhet.format() + " kroner. Dette kan ha noko å seie for kompensasjonsgraden din, som er fastsett til ".expr()
-                        + kompensasjonsgradUfoeretrygd.format() + " prosent. Du kan lese meir om dette i vedlegget.".expr(),
+                        + kompensasjonsgradUfoeretrygd.formatTwoDecimals() + " prosent. Du kan lese meir om dette i vedlegget.".expr(),
                 English to "Your income prior to disability is set to the minimum level, which depends on marital status. The change in your marital status affects your income prior to disability, which is determined to be NOK ".expr()
                         + inntektFoerUfoerhet.format() + ". Adjusted to today’s value, this is equivalent to an income of NOK ".expr()
                         + oppjustertInntektFoerUfoerhet.format() + ". This may affect your degree of compensation, which has been determined to be ".expr()
-                        + kompensasjonsgradUfoeretrygd.format() + " percent. You can read more about this in the appendix.".expr()
+                        + kompensasjonsgradUfoeretrygd.formatTwoDecimals() + " percent. You can read more about this in the appendix.".expr()
             )
         }
     }
