@@ -58,7 +58,7 @@ data class EtteroppgjoerForhaandsvarselDTO(
     val bosattUtland: Boolean,
     val norskInntekt: Boolean,
     val etteroppgjoersAar: Int,
-    val rettsgebyrBeloep: Kroner,
+    val rettsgebyrBeloep: Int,
     val resultatType: EtteroppgjoerResultatType,
     val inntekt: Kroner,
     val faktiskInntekt: Kroner,
