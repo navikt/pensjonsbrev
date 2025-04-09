@@ -217,7 +217,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
             }
             item {
                 text(
-                    Bokmal to "inntekt som fosterforelder ",
+                    Bokmal to "inntekt som fosterforelder",
                     Nynorsk to "",
                     English to "",
                 )

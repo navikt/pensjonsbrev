@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte.fixtures
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselBrevDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerResultatType
 
 fun createEtteroppgjoerForhaandsvarsel() =
     EtteroppgjoerForhaandsvarselBrevDTO(
@@ -12,7 +13,7 @@ fun createEtteroppgjoerForhaandsvarsel() =
             norskInntekt = false,
             etteroppgjoersAar = 2024,
             rettsgebyrBeloep = Kroner(123),
-            resultatType = "TILBAKEKREVING",
+            resultatType = EtteroppgjoerResultatType.ETTEROPPGJOER,
             inntekt = Kroner(321),
             faktiskInntekt = Kroner(123),
             avviksBeloep = Kroner(-3145)

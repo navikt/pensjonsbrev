@@ -48,12 +48,17 @@ data class EtteroppgjoerForhaandsvarselBrevDTO(
     val data: EtteroppgjoerForhaandsvarselDTO
 ) : FerdigstillingBrevDTO
 
+enum class EtteroppgjoerResultatType{
+    TILBAKEKREVING,
+    ETTEROPPGJOER
+}
+
 data class EtteroppgjoerForhaandsvarselDTO(
     val bosattUtland: Boolean,
     val norskInntekt: Boolean,
     val etteroppgjoersAar: Int,
     val rettsgebyrBeloep: Kroner,
-    val resultatType: String,
+    val resultatType: EtteroppgjoerResultatType,
     val inntekt: Kroner,
     val faktiskInntekt: Kroner,
     val avviksBeloep: Kroner
@@ -120,7 +125,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                 }
             }
 
-            showIf(data.resultatType.equalTo("TILBAKEKREVING")){
+            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.TILBAKEKREVING)){
                 // dersom feilutbetalt beløp
                 paragraph {
                     textExpr(Language.Bokmal to "Vår beregning viser at du har fått ".expr() + data.utbetalingData.avviksBeloep.absoluteValue().format() +" kroner for mye omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger ett rettsgebyr, som betyr at du må betale tilbake det feilutbetalte beløpet.",
@@ -129,7 +134,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                 }
             }
 
-            showIf(data.resultatType.equalTo("ETTERBETALING")){
+            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.ETTEROPPGJOER)){
                 // dersom etterbetaling
                 paragraph {
                     textExpr(
