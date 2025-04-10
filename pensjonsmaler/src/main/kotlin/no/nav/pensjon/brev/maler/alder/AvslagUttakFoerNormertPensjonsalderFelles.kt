@@ -2,9 +2,6 @@ package no.nav.pensjon.brev.maler.alder
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
-import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningen
-import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
-import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2016Vedlegg
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025Vedlegg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
@@ -89,7 +86,7 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
             }
         }
 
-        showIf(harEOSLand.not() and opplysningerBruktIBeregningen.prorataBruktIBeregningen) {
+        showIf(harEOSLand.not() and prorataBruktIBeregningen) {
             paragraph {
                 textExpr(
                     Bokmal to "Vedtaket er også gjort etter artikkel ".expr() + fritekst("legg inn aktuelle artikler om sammenlegging og eksport") +
