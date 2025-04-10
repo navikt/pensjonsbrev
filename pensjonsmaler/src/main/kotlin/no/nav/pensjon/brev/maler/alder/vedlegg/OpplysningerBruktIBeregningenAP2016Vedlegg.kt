@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregninge
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenKap19Selectors.poengAarF92
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenKap19Selectors.redusertTrygdetidKap19
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenKap19Selectors.sluttpoengTall
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenKap19Selectors.trygdetidKap19
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenKap20Selectors.redusertTrygdetidKap20
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.delingstallVedNormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.delingstallVedUttak
@@ -103,9 +104,9 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to trygdetid.format() + " år".expr(),
-                                    Nynorsk to trygdetid.format() + " år".expr(),
-                                    English to trygdetid.format() + " years".expr()
+                                    Bokmal to opplysningerKap19.trygdetidKap19.format() + " år".expr(),
+                                    Nynorsk to opplysningerKap19.trygdetidKap19.format() + " år".expr(),
+                                    English to opplysningerKap19.trygdetidKap19.format() + " years".expr()
                                 )
                             }
                         }
