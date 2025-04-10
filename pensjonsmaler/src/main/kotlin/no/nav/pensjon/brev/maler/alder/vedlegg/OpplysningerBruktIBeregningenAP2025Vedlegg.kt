@@ -1,9 +1,12 @@
 package no.nav.pensjon.brev.maler.alder.vedlegg
 
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenKap20Selectors.redusertTrygdetidKap20
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.delingstallVedNormertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.delingstallVedUttak
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.kravAarsak
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.normertPensjonsalder
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.opplysningerKap20
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.pensjonsbeholdning
-import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.redusertTrygdetid
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.sisteOpptjeningsAar
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.trygdeperioderNorge
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.trygdeperioderUtland
@@ -15,19 +18,18 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeNorgeSelectors.
 import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors.fom
 import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors.land
 import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors.tom
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-@TemplateModelHelpers
-val opplysningerBruktIBeregningenAP =
+val opplysningerBruktIBeregningenAP2025Vedlegg =
     createAttachment(
         title = newText(
             Bokmal to "Opplysninger brukt i beregningen",
@@ -112,9 +114,9 @@ val opplysningerBruktIBeregningenAP =
                     }
                     cell {
                         textExpr(
-                            Bokmal to delingstallVedUttak.format(),
-                            Nynorsk to delingstallVedUttak.format(),
-                            English to delingstallVedUttak.format()
+                            Bokmal to delingstallVedUttak.formatTwoDecimals(),
+                            Nynorsk to delingstallVedUttak.formatTwoDecimals(),
+                            English to delingstallVedUttak.formatTwoDecimals()
                         )
                     }
                 }
@@ -130,9 +132,9 @@ val opplysningerBruktIBeregningenAP =
                             }
                             cell {
                                 textExpr(
-                                    Bokmal to delingstall.format(),
-                                    Nynorsk to delingstall.format(),
-                                    English to delingstall.format()
+                                    Bokmal to delingstall.formatTwoDecimals(),
+                                    Nynorsk to delingstall.formatTwoDecimals(),
+                                    English to delingstall.formatTwoDecimals()
                                 )
                             }
                         }
@@ -141,19 +143,33 @@ val opplysningerBruktIBeregningenAP =
             }
         }
 
-        ifNotNull(sisteOpptjeningsAar) { sisteAar ->
-            paragraph {
-                textExpr(
-                    Bokmal to "Pensjonsopptjening og trygdetid tas med i beregningen av alderspensjon fra og med året etter at skatteoppgjøret er klart. ".expr() +
-                            "Dette gjelder selv om skatteoppgjøret ditt er klart tidligere. " +
-                            "I beregningen er det derfor brukt pensjonsopptjening til og med " + sisteAar.format() + ".",
-                    Nynorsk to "Pensjonsopptening og trygdetid blir tatt med i berekninga av alderspensjon frå og med året etter at skatteoppgjeret er klart. ".expr() +
-                            "Dette gjeld sjølv om skatteoppgjeret ditt er klart tidlegare. " +
-                            "I berekninga er det derfor brukt pensjonsopptening til og med " + sisteAar.format() + ".",
-                    English to "Pension accrual and periods of National Insurance Scheme coverage are included in the calculation of retirement pension from the year after the tax settlement is ready. ".expr() +
-                            "This applies even if your tax settlement is ready earlier. " +
-                            "Therefore, the calculation considers pension accrual up to and including " + sisteAar.format() + "."
-                )
+        showIf(kravAarsak.notEqualTo("UTTAKSGRAD")) {
+            ifNotNull(sisteOpptjeningsAar) { sisteAar ->
+                paragraph {
+                    textExpr(
+                        Bokmal to "Pensjonsopptjening og trygdetid tas med i beregningen av alderspensjon fra og med året etter at skatteoppgjøret er klart. ".expr() +
+                                "Dette gjelder selv om skatteoppgjøret ditt er klart tidligere. " +
+                                "I beregningen er det derfor brukt pensjonsopptjening til og med " + sisteAar.format() + ".",
+                        Nynorsk to "Pensjonsopptening og trygdetid blir tatt med i berekninga av alderspensjon frå og med året etter at skatteoppgjeret er klart. ".expr() +
+                                "Dette gjeld sjølv om skatteoppgjeret ditt er klart tidlegare. " +
+                                "I berekninga er det derfor brukt pensjonsopptening til og med " + sisteAar.format() + ".",
+                        English to "Pension accrual and periods of National Insurance Scheme coverage are included in the calculation of retirement pension from the year after the tax settlement is ready. ".expr() +
+                                "This applies even if your tax settlement is ready earlier. " +
+                                "Therefore, the calculation considers pension accrual up to and including " + sisteAar.format() + "."
+                    )
+                }
+            }
+        }
+
+        showIf(kravAarsak.equalTo("UTTAKSGRAD")) {
+            ifNotNull(sisteOpptjeningsAar) { sisteAar ->
+                paragraph {
+                    text(
+                        Bokmal to "Pensjonsbeholdningen i tabellen er beregnet ut fra den pensjonen du har tatt ut og pensjonsbeholdningen din.",
+                        Nynorsk to "Pensjonsbehaldninga i tabellen er berekna ut frå den pensjonen du har tatt ut og pensjonsbehaldninga di.",
+                        English to "The accumulated pension capital is calculated from your current pension and your remaining pension capital."
+                    )
+                }
             }
         }
 
@@ -165,7 +181,7 @@ val opplysningerBruktIBeregningenAP =
             )
         }
 
-        showIf(redusertTrygdetid) {
+        showIf(opplysningerKap20.redusertTrygdetidKap20) {
             paragraph {
                 text(
                     Bokmal to "Trygdetid baserer seg på perioder du har bodd og/eller arbeidet i Norge, og har betydning for beregning avpensjonen din. Full trygdetid er 40 år.",
@@ -176,9 +192,9 @@ val opplysningerBruktIBeregningenAP =
 
             paragraph {
                 text(
-                    Bokmal to "Tabellen nedenfor viser perioder vi har registrert at du har bodd og/eller arbeidet i Norge. Disse opplysningene er brukt for å fastsette din norske trygdetid.",
-                    Nynorsk to "Tabellen nedanfor viser periodar vi har registrertat du har budd og/eller arbeidd i Noreg. Desse opplysningane er brukte for å fastsetje den norske trygdetida di.",
-                    English to "The table below shows the time periods when you have been registered as living and/or working in Norway. This information has been used to establish your Norwegian national insurance coverage."
+                    Bokmal to "Tabellen nedenfor viser perioder vi har brukt for å fastsette din norske trygdetid.",
+                    Nynorsk to "Tabellen nedanfor viser periodar vi har brukt for å fastsetje den norske trygdetida di.",
+                    English to "The table below shows the time periods used to establish your Norwegian national insurance coverage."
                 )
             }
             paragraph {
@@ -221,10 +237,10 @@ val opplysningerBruktIBeregningenAP =
 
             showIf(trygdeperioderUtland.isNotEmpty()) {
                 paragraph {
-                    text(
-                        Bokmal to "Tabellen nedenfor viser perioder du har bodd og/eller arbeidet i land som Norge har trygdeavtale med. Disse periodene er brukt i vurderingen av retten til alderspensjon før fylte 67 år.",
-                        Nynorsk to "Tabellen nedanfor viser periodar du har budd og/eller arbeidd i land som Noreg har trygdeavtale med. Desse periodane er brukt i vurderinga av retten til alderspensjon før fylte 67 år.",
-                        English to "The table below shows your insurance coverage in countries with which Norway has a social security agreement. These periods has been used to assess whether you are eligible for retirement pension before the age of 67.",
+                    textExpr(
+                        Bokmal to "Tabellen nedenfor viser perioder du har bodd og/eller arbeidet i land som Norge har trygdeavtale med. Disse periodene er brukt i vurderingen av retten til alderspensjon før fylte ".expr() + normertPensjonsalder.aarOgMaanederFormattert() + ".",
+                        Nynorsk to "Tabellen nedanfor viser periodar du har budd og/eller arbeidd i land som Noreg har trygdeavtale med. Desse periodane er brukt i vurderinga av retten til alderspensjon før fylte ".expr() + normertPensjonsalder.aarOgMaanederFormattert() + ".",
+                        English to "The table below shows your insurance coverage in countries with which Norway has a social security agreement. These periods has been used to assess whether you are eligible for retirement pension before the age of ".expr() + normertPensjonsalder.aarOgMaanederFormattert() + ".",
                     )
                 }
 

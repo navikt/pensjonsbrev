@@ -5,8 +5,8 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.LocalDate
 
-fun createAvslagUttakFoerNormertPensjonsalderAutoDto() =
-    AvslagUttakFoerNormertPensjonsalderAutoDto(
+fun createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() =
+    AvslagUttakFoerNormertPensjonsalderAP2016AutoDto(
         minstePensjonssats = Kroner(215000),
         normertPensjonsalder = NormertPensjonsalder(
             aar = 67,
@@ -16,7 +16,7 @@ fun createAvslagUttakFoerNormertPensjonsalderAutoDto() =
         totalPensjon = Kroner(200000),
         afpBruktIBeregning = true,
         opplysningerBruktIBeregningen = OpplysningerBruktIBeregningen(
-            uttaksgrad = 80,
+            uttaksgrad = 100,
             trygdetid = 40,
             pensjonsbeholdning = Kroner(1200000),
             delingstallVedUttak = 12.0,
@@ -40,10 +40,23 @@ fun createAvslagUttakFoerNormertPensjonsalderAutoDto() =
                 ), TrygdeperiodeUtland(land = "Danmark", fom = LocalDate.now(), tom = LocalDate.now())
             ),
             kravAarsak = null,
-            opplysningerKap19 = null,
-            opplysningerKap20 = OpplysningerBruktIBeregningenKap20(
-                redusertTrygdetidKap20 = true
+            opplysningerKap19 = OpplysningerBruktIBeregningenKap19(
+                forholdstallVed67 = 10.0,
+                forholdstall = 5.0,
+                poengAarE91 = 10,
+                poengAarF92 = 10,
+                innvilgetTillegspensjon = true,
+                poengAar = 4,
+                sluttpoengTall = 9,
+                redusertTrygdetidKap19 = true,
+                avslattKap19 = false,
+                fodselsAar = Year(1990),
+                andelGammeltRegelverk = 6,
+                andelNyttRegelverk = 4
             ),
+            opplysningerKap20 = OpplysningerBruktIBeregningenKap20(
+                redusertTrygdetidKap20 = false
+            )
         ),
         borINorge = false,
         harEOSLand = true,

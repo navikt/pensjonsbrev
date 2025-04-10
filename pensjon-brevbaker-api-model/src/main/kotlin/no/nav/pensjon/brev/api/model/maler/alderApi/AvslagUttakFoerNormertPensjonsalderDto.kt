@@ -7,3 +7,8 @@ data class AvslagUttakFoerNormertPensjonsalderDto(
     override val saksbehandlerValg: EmptyBrevdata,
     override val pesysData: AvslagUttakFoerNormertPensjonsalderAutoDto
 ) : RedigerbarBrevdata<EmptyBrevdata, AvslagUttakFoerNormertPensjonsalderAutoDto>
+
+data class AvslagUttakFoerNormertPensjonsalderAP2016Dto(
+    override val saksbehandlerValg: EmptyBrevdata,
+    override val pesysData: AvslagUttakFoerNormertPensjonsalderAP2016AutoDto
+) : RedigerbarBrevdata<EmptyBrevdata, AvslagUttakFoerNormertPensjonsalderAP2016AutoDto>

@@ -42,7 +42,7 @@ object UngUfoer {
             }
 
             paragraph {
-                val satsFormatert = minsteytelseVedVirkSats.format()
+                val satsFormatert = minsteytelseVedVirkSats.formatTwoDecimals()
                 textExpr(
                     Language.Bokmal to "Du får derfor en årlig ytelse som utgjør ".expr()
                             + satsFormatert + " ganger grunnbeløpet.",

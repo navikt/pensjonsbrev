@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.AP2011
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.AP2016
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.erEksportberegnet
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.brukersSivilstand
@@ -24,7 +24,7 @@ data class MaanedligPensjonFoerSkattPensjonstillegg(
     val beregnetPensjonPerManedGjeldende: Expression<MaanedligPensjonFoerSkattDto.AlderspensjonPerManed>,
     val alderspensjonGjeldende: Expression<MaanedligPensjonFoerSkattDto.AlderspensjonGjeldende>,
     val saerskiltSatsGjeldende: Expression<MaanedligPensjonFoerSkattDto.SaerskiltSatsGjeldende?>,
-    val regelverkstype: Expression<AlderspensjonRegelverkstype>,
+    val regelverkstype: Expression<AlderspensjonRegelverkType>,
 ): OutlinePhrase<LangBokmalNynorskEnglish>(){
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
