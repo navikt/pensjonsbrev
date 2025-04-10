@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { hentPdfForBrev, hentPdfForBrevFunction } from "~/api/sak-api-endpoints";
 import { queryFold } from "~/utils/tanstackUtils";
 
-import PDFViewer from "../-components/PDFViewer";
+import PDFViewer from "../../-components/PDFViewer";
 
 const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) => {
   const hentPdfQuery = useQuery({

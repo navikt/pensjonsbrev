@@ -20,7 +20,7 @@ const PDFViewerTopBar = (properties: {
   setCurrentPageNumber: (n: number) => void;
   utenSlettKnapp?: boolean;
 }) => {
-  const navigate = useNavigate({ from: Route.fullPath });
+  const navigate = useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
   return (
     <HStack
