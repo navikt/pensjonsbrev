@@ -39,7 +39,6 @@ export const FieldEditor = ({
       ) : (
         <ObjectEditor
           brevkode={brevkode}
-          fieldType={fieldType}
           parentFieldName={prependedName ? `${prependedName}.${field}` : field}
           submitOnChange={submitOnChange}
           typeName={fieldType.typeName}
@@ -62,9 +61,6 @@ export const FieldEditor = ({
 
 export type ObjectEditorProperties = {
   brevkode: string;
-  // Denne er jo brukt, eslint som er forvirra
-  // eslint-disable-next-line react/no-unused-prop-types
-  fieldType: FieldType;
   typeName: string;
   parentFieldName?: string;
   submitOnChange?: () => void;
@@ -99,7 +95,7 @@ function ToggleableObjectEditor({
   typeName,
   fieldType,
   submitOnChange,
-}: ObjectEditorProperties & { parentFieldName: string }) {
+}: ObjectEditorProperties & { parentFieldName: string; fieldType: FieldType }) {
   const {
     formState: { defaultValues },
     unregister,
@@ -135,7 +131,6 @@ function ToggleableObjectEditor({
         >
           <ObjectEditor
             brevkode={brevkode}
-            fieldType={fieldType}
             parentFieldName={parentFieldName}
             submitOnChange={submitOnChange}
             typeName={typeName}
