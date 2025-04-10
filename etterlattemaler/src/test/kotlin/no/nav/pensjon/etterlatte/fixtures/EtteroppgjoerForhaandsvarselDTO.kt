@@ -10,10 +10,10 @@ fun createEtteroppgjoerForhaandsvarselBrevDTO() =
     EtteroppgjoerForhaandsvarselBrevDTO(
         innhold = createPlaceholderForRedigerbartInnhold(),
         data = EtteroppgjoerForhaandsvarselDTO(
-            bosattUtland = false,
-            norskInntekt = false,
+            bosattUtland = true,
+            norskInntekt = true,
             etteroppgjoersAar = 2024,
-            rettsgebyrBeloep = 1234,
+            rettsgebyrBeloep = Kroner(1234),
             resultatType = EtteroppgjoerResultatType.ETTERBETALING,
             inntekt = Kroner(321),
             faktiskInntekt = Kroner(123),
