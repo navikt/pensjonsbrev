@@ -78,17 +78,17 @@ data class TBU052V_TBU073V_SlikBeregnerViUtbetalingAvUforetrygdenNaarInntektenDi
             paragraph {
                 textExpr (
                     Bokmal to "Uføretrygden reduseres med ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .formatTwoDecimals() + " prosent av inntekten over " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
+                        .format() + " prosent av inntekten over " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                         .format() + " kroner fordi du har en kompensasjonsgrad som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .formatTwoDecimals() + " prosent.",
+                        .format() + " prosent.",
                     Nynorsk to "Uføretrygda blir redusert med ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .formatTwoDecimals() + " prosent av inntekta over " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
+                        .format() + " prosent av inntekta over " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                         .format() + " kroner fordi du har ein kompensasjonsgrad som er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .formatTwoDecimals() + " prosent.",
+                        .format() + " prosent.",
                     English to "Your disability benefit is reduced by ".expr() + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .formatTwoDecimals() + " percent of your income in excess of NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
+                        .format() + " percent of your income in excess of NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()
                         .format() + ", because your degree of compensation is " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                        .formatTwoDecimals() + " percent.",
+                        .format() + " percent.",
                 )
             }
         }

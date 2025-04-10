@@ -316,9 +316,9 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                         }
                         cell {
                             textExpr(
-                                Bokmal to delingstallVedUttak.formatTwoDecimals(),
-                                Nynorsk to delingstallVedUttak.formatTwoDecimals(),
-                                English to delingstallVedUttak.formatTwoDecimals()
+                                Bokmal to delingstallVedUttak.format(),
+                                Nynorsk to delingstallVedUttak.format(),
+                                English to delingstallVedUttak.format()
                             )
                         }
                     }
@@ -334,9 +334,9 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                                 }
                                 cell {
                                     textExpr(
-                                        Bokmal to delingstall.formatTwoDecimals(),
-                                        Nynorsk to delingstall.formatTwoDecimals(),
-                                        English to delingstall.formatTwoDecimals()
+                                        Bokmal to delingstall.format(),
+                                        Nynorsk to delingstall.format(),
+                                        English to delingstall.format()
                                     )
                                 }
                             }

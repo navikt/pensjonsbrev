@@ -58,7 +58,6 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.formatTwoDecimals
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
@@ -237,7 +236,7 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            val kompensasjonsgrad = ufoeretrygdGjeldende.kompensasjonsgrad.formatTwoDecimals()
+                            val kompensasjonsgrad = ufoeretrygdGjeldende.kompensasjonsgrad.format()
                             textExpr(
                                 Bokmal to kompensasjonsgrad + " %",
                                 Nynorsk to kompensasjonsgrad + " %",
