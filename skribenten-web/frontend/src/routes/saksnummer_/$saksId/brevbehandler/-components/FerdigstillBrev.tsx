@@ -10,14 +10,13 @@ import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { hentAlleBrevForSak, sendBrev, sendBrevTilAttestering } from "~/api/sak-api-endpoints";
+import { hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { BestillBrevResponse } from "~/types/brev";
 import { type BrevInfo } from "~/types/brev";
-import { erBrevArkivert, erBrevKlar, skalBrevAttesteres } from "~/utils/brevUtils";
+import { erBrevArkivert, erBrevKlar, erBrevKlarTilAttestering } from "~/utils/brevUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 
-import { useSendBrevAttesteringContext } from "../../kvittering/-components/SendBrevTilAttesteringResultatContext";
 import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 import { Route } from "../route";
 
@@ -115,7 +114,6 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   const navigate = useNavigate({ from: Route.fullPath });
   const { enhetsId, vedtaksId } = Route.useSearch();
   const ferdigstillBrevContext = useSendtBrevResultatContext();
-  const attesteringContext = useSendBrevAttesteringContext();
 
   const alleFerdigstilteBrevResult = useQuery({
     queryKey: hentAlleBrevForSak.queryKey(properties.sakId),
@@ -124,17 +122,12 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   });
 
   const alleFerdigstilteBrev = useMemo(() => alleFerdigstilteBrevResult.data ?? [], [alleFerdigstilteBrevResult.data]);
-  const [ferdigstilteBrevTilAttestering, ferdigstilteBrevTilSending] = partition(
-    alleFerdigstilteBrev,
-    skalBrevAttesteres,
+  const [ferdigstilteBrevTilAttestering, ferdigstilteBrevTilSending] = partition(alleFerdigstilteBrev, (brev) =>
+    erBrevKlarTilAttestering(brev),
   );
 
   const bestillBrevMutation = useMutation<BestillBrevResponse, Error, number>({
     mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
-  });
-
-  const sendBrevTilAttesteringMutation = useMutation<BrevInfo, AxiosError, number>({
-    mutationFn: (brevId) => sendBrevTilAttestering({ saksId: properties.sakId, brevId: brevId }),
   });
 
   const form = useForm<z.infer<typeof validationSchema>>({
@@ -171,14 +164,8 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
         (error: AxiosError) => ({ requestType: "sendBrev" as const, status: "error" as const, brevInfo, error }),
       ),
     );
-    const attesteringRequests = brevSomSkalTilAttestering.map((brevInfo) =>
-      sendBrevTilAttesteringMutation.mutateAsync(brevInfo.id).then(
-        (response) => ({ requestType: "attestering" as const, status: "success" as const, brevInfo, response }),
-        (error: AxiosError) => ({ requestType: "attestering" as const, status: "error" as const, brevInfo, error }),
-      ),
-    );
 
-    const alleRequests = [...sendBrevRequests, ...attesteringRequests];
+    const alleRequests = [...sendBrevRequests];
 
     const resultat = await Promise.allSettled(alleRequests).then((result) =>
       result.map((response) => {
@@ -195,10 +182,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
       }),
     );
 
-    const [tilAttestering, brevSendt] = partition(resultat, (res) => res.requestType === "attestering");
-
-    ferdigstillBrevContext.setResultat(brevSendt);
-    attesteringContext.setResultat(tilAttestering);
+    ferdigstillBrevContext.setResultat(resultat);
 
     const sendteBrev = new Set(
       resultat
