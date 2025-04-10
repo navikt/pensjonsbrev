@@ -150,9 +150,9 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                 list {
                     item {
                         textExpr(
-                            Bokmal to "For å kunne ta ut alderspensjon før du fyller ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
+                            Bokmal to "For å kunne ta ut alderspensjon før du blir ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
                                     ", må pensjonen din minst være ".expr() + minstePensjonssats.format() + " kroner i året.",
-                            Nynorsk to "For å kunne ta ut alderspensjon før du fyller ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
+                            Nynorsk to "For å kunne ta ut alderspensjon før du blir ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
                                     ", må pensjonen din minst vere ".expr() + minstePensjonssats.format() + " kroner i året.",
                             English to "For you to be eligible for retirement pension before the age of ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
                                     ", your retirement pension must be, at minimum, NOK ".expr() + minstePensjonssats.format() + " a year.",
