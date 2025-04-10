@@ -98,9 +98,9 @@ data class InnholdLavOpptjening(
             list {
                 item {
                     textExpr(
-                        Bokmal to "For å kunne ta ut mer alderspensjon før du fyller ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
+                        Bokmal to "For å kunne ta ut mer alderspensjon før du blir ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
                                 ", må pensjonen din minst utgjøre ".expr() + minstePensjonssats.format() + " kroner i året.",
-                        Nynorsk to "For å kunne ta ut meir alderspensjon før du fyller ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
+                        Nynorsk to "For å kunne ta ut meir alderspensjon før du blir ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
                                 ", må pensjonen din minst utgjer ".expr() + minstePensjonssats.format() + " kroner i året.",
                         English to "In order for you to be eligible for a higher retirement pension before the age of ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
                                 ", your retirement pension must be, at minimum, NOK ".expr() + minstePensjonssats.format() + " a year.",
@@ -167,8 +167,8 @@ data class InnholdLavOpptjening(
 
         title2 {
             textExpr(
-                Bokmal to "Du kan sjekke om du kan ta ut mer alderspensjon før du fyller ".expr() + normertPensjonsalder.aarOgMaanederFormattert(),
-                Nynorsk to "Du kan sjekke om du kan ta ut meir alderspensjon før du fyller ".expr() + normertPensjonsalder.aarOgMaanederFormattert(),
+                Bokmal to "Du kan sjekke om du kan ta ut mer alderspensjon før du blir ".expr() + normertPensjonsalder.aarOgMaanederFormattert(),
+                Nynorsk to "Du kan sjekke om du kan ta ut meir alderspensjon før du blir ".expr() + normertPensjonsalder.aarOgMaanederFormattert(),
                 English to "You can check if you can draw more retirement pension before the age of ".expr() + normertPensjonsalder.aarOgMaanederFormattert(),
             )
         }

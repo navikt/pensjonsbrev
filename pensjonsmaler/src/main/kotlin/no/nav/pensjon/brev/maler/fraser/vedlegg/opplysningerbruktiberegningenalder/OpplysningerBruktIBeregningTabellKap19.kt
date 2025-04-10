@@ -109,7 +109,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                         English to "Final pension point score",
                                     )
                                 }
-                                cell { eval(it.formatTwoDecimals()) }
+                                cell { eval(it.format()) }
                             }
                         }
 
@@ -200,7 +200,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                         English to "Final pension point score (EEA)",
                                     )
                                 }
-                                cell { eval(it.formatTwoDecimals()) }
+                                cell { eval(it.format()) }
                             }
                         }
                     }
@@ -290,7 +290,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                         English to "Final pension point score (Norway and countries with social security agreement)",
                                     )
                                 }
-                                cell { eval(it.formatTwoDecimals()) }
+                                cell { eval(it.format()) }
                             }
                         }
 
@@ -351,7 +351,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                 English to "Ratio for life expectancy adjustment",
                             )
                         }
-                        cell { eval(beregningKap19VedVirk.forholdstallLevealder.formatThreeDecimals()) }
+                        cell { eval(beregningKap19VedVirk.forholdstallLevealder.format(scale = 3)) }
                     }
                 }
 
@@ -391,7 +391,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                 English to "Final pension point score on occupational injury",
                             )
                         }
-                        cell { eval(it.sluttpoengtall.formatTwoDecimals()) }
+                        cell { eval(it.sluttpoengtall.format()) }
                     }
 
                     //tabellYrkesskadePoengAr_001
@@ -470,7 +470,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                     English to "Ratio for life expectancy adjustment used for calculating the supplement for the disabled",
                                 )
                             }
-                            cell { eval(beregningKap19VedVirk.forholdstall67Soeker.formatThreeDecimals()) }
+                            cell { eval(beregningKap19VedVirk.forholdstall67Soeker.format(scale = 3)) }
                         }
                     }
                 }

@@ -20,7 +20,8 @@ import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarsel
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarselRedigerbartUtfall
-import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerForhaandsvarsel
+import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerForhaandsvarselBrevDTO
+import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerForhaandsvarselRedigerbartBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createKlageOversendelseBlankettDTO
 import no.nav.pensjon.etterlatte.fixtures.createKlageOversendelseBrukerDTO
 import no.nav.pensjon.etterlatte.fixtures.createKlageSaksbehandlingstidDtoTestI
@@ -79,6 +80,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.Omstil
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselBrevDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselRedigerbartBrevDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysningerDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTO
@@ -151,7 +153,8 @@ object Fixtures {
             TilbakekrevingRedigerbartBrevDTO::class -> createTilbakekrevingRedigerbartBrevDTO() as T
 
             // Etteroppgjør
-            EtteroppgjoerForhaandsvarselBrevDTO::class -> createEtteroppgjoerForhaandsvarsel() as T
+            EtteroppgjoerForhaandsvarselBrevDTO::class -> createEtteroppgjoerForhaandsvarselBrevDTO() as T
+            EtteroppgjoerForhaandsvarselRedigerbartBrevDTO::class -> createEtteroppgjoerForhaandsvarselRedigerbartBrevDTO() as T
 
             AvvistKlageInnholdDTO::class -> createAvvistKlageInnholdDTO() as T
             KlageSaksbehandlingstidDTO::class -> createKlageSaksbehandlingstidDtoTestI() as T

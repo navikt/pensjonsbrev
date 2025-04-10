@@ -33,7 +33,7 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
     class DoubleFormat(private val scale: Int) : LocalizedFormatter<Double>() {
         override fun stableHashCode(): Int = "DoubleFormat($scale)".hashCode()
         override fun apply(first: Double, second: Language): String =
-            String.format(second.locale(), "%.${scale}f", first)
+            String.format(second.locale(), "%.${scale.coerceIn(0..16)}f", first)
     }
 
     object IntFormat : LocalizedFormatter<Int>() {

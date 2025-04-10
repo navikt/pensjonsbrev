@@ -84,4 +84,5 @@ data class OpplysningerBruktIBeregningenKap19(
     val forholdstall: Double,
     val forholdstallVed67: Double,
     val redusertTrygdetidKap19: Boolean,
+    val trygdetidKap19: Int
 )

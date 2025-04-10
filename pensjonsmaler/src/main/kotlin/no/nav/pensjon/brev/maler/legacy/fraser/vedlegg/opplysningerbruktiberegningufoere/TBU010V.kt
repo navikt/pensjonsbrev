@@ -234,11 +234,11 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                         cell {
                             textExpr(
                                 Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                                    .formatTwoDecimals() + " %",
+                                    .format() + " %",
                                 Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                                    .formatTwoDecimals() + " %",
+                                    .format() + " %",
                                 English to pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
-                                    .formatTwoDecimals() + " %",
+                                    .format() + " %",
                             )
                         }
 

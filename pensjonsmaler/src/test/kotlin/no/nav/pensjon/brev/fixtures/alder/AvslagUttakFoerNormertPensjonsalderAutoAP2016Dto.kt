@@ -52,7 +52,8 @@ fun createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() =
                 avslattKap19 = false,
                 fodselsAar = Year(1990),
                 andelGammeltRegelverk = 6,
-                andelNyttRegelverk = 4
+                andelNyttRegelverk = 4,
+                trygdetidKap19 = 35
             ),
             opplysningerKap20 = OpplysningerBruktIBeregningenKap20(
                 redusertTrygdetidKap20 = false

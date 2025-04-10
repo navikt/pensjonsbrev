@@ -2,26 +2,19 @@ package no.nav.pensjon.brev.maler.alder
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
-import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningen
-import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
-import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2016Vedlegg
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025Vedlegg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.redigerbar.InnhentingInformasjonFraBruker.fritekst
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.namedReference
@@ -93,6 +86,19 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
             }
         }
 
+        showIf(harEOSLand.not() and prorataBruktIBeregningen) {
+            paragraph {
+                textExpr(
+                    Bokmal to "Vedtaket er også gjort etter artikkel ".expr() + fritekst("legg inn aktuelle artikler om sammenlegging og eksport") +
+                            " i trygdeavtalen med " + fritekst("avtaleland") + ".",
+                    Nynorsk to "Vedtaket er også gjort etter artikkel ".expr() + fritekst("legg inn aktuelle artikler om sammenlegging og eksport") +
+                            " i trygdeavtalen med " + fritekst("avtaleland") + ".",
+                    English to "This decision was also made pursuant to the provisions of Article ".expr() + fritekst("legg inn aktuelle artikler om sammenlegging og eksport") +
+                            "  in the social security agreement with " + fritekst("avtaleland") + ".",
+                )
+            }
+        }
+
         title2 {
             text(
                 Bokmal to "Slik har vi beregnet",
@@ -105,9 +111,9 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                 list {
                     item {
                         textExpr(
-                            Bokmal to "For å kunne ta ut alderspensjon før du fyller ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
+                            Bokmal to "For å kunne ta ut alderspensjon før du blir ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
                                     ", må pensjonen din minst være ".expr() + minstePensjonssats.format() + " kroner i året.",
-                            Nynorsk to "For å kunne ta ut alderspensjon før du fyller ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
+                            Nynorsk to "For å kunne ta ut alderspensjon før du blir ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
                                     ", må pensjonen din minst vere ".expr() + minstePensjonssats.format() + " kroner i året.",
                             English to "For you to be eligible for retirement pension before the age of ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
                                     ", your retirement pension must be, at minimum, NOK ".expr() + minstePensjonssats.format() + " a year.",
@@ -144,18 +150,12 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                 list {
                     item {
                         textExpr(
-                            Bokmal to "For å kunne ta ut alderspensjon før du fyller ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
-                                    ", må pensjonen din minst være ".expr() + minstePensjonssats.format() + " kroner i året. " +
-                                    "Vi beregner den delen du ønsker å ta ut nå og hva du ville ha fått hvis du tar resten av pensjonen ved ".expr() +
-                                    normertPensjonsalder.aarOgMaanederFormattert() + ".",
-                            Nynorsk to "For å kunne ta ut alderspensjon før du fyller ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
-                                    ", må pensjonen din minst vere ".expr() + minstePensjonssats.format() + " kroner i året. " +
-                                    "Vi reknar ut den delen du ønsker å ta ut nå og kva du ville ha fått om du tar resten av pensjonen ved ".expr() +
-                                    normertPensjonsalder.aarOgMaanederFormattert() + ".",
+                            Bokmal to "For å kunne ta ut alderspensjon før du blir ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
+                                    ", må pensjonen din minst være ".expr() + minstePensjonssats.format() + " kroner i året.",
+                            Nynorsk to "For å kunne ta ut alderspensjon før du blir ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
+                                    ", må pensjonen din minst vere ".expr() + minstePensjonssats.format() + " kroner i året.",
                             English to "For you to be eligible for retirement pension before the age of ".expr() + normertPensjonsalder.aarOgMaanederFormattert() +
-                                    ", your retirement pension must be, at minimum, NOK ".expr() + minstePensjonssats.format() + " a year. " +
-                                    "We calculate the part you wish to withdraw now and what you would have received if you take the rest of the pension at age ".expr() +
-                                    normertPensjonsalder.aarOgMaanederFormattert() + ".",
+                                    ", your retirement pension must be, at minimum, NOK ".expr() + minstePensjonssats.format() + " a year.",
                         )
 
                         showIf(prorataBruktIBeregningen) {
@@ -170,13 +170,16 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
 
                     item {
                         textExpr(
-                            Bokmal to "Hvis du hadde tatt ut ".expr() + uttaksgrad.format() + " prosent alderspensjon fra " + virkFom.format() +
+                            Bokmal to "Vi beregner den delen du ønsker å ta ut nå og hva du ville ha fått hvis du tar resten av pensjonen ved ".expr() + normertPensjonsalder.aarOgMaanederFormattert() + ". " +
+                                    "Hvis du hadde tatt ut ".expr() + uttaksgrad.format() + " prosent alderspensjon fra " + virkFom.format() +
                                     ", ville du fått ".expr() + totalPensjon.format() + " kroner årlig i full pensjon når du blir ".expr() +
                                     normertPensjonsalder.aarOgMaanederFormattert() + ". ",
-                            Nynorsk to "Om du hadde tatt ut ".expr() + uttaksgrad.format() + " prosent alderspensjon frå " + virkFom.format() +
+                            Nynorsk to "Vi reknar ut den delen du ønsker å ta ut nå og kva du ville ha fått om du tar resten av pensjonen ved ".expr() + normertPensjonsalder.aarOgMaanederFormattert() + ". " +
+                                    "Om du hadde tatt ut ".expr() + uttaksgrad.format() + " prosent alderspensjon frå " + virkFom.format() +
                                     ", ville du fått ".expr() + totalPensjon.format() + " kroner årleg i full pensjon når du blir ".expr() +
                                     normertPensjonsalder.aarOgMaanederFormattert() + ". ",
-                            English to "If you draw a retirement pension of ".expr() + uttaksgrad.format() + " percent from the date you requested, " +
+                            English to "We calculate the part you wish to withdraw now and what you would have received if you take the rest of the pension at age ".expr() + normertPensjonsalder.aarOgMaanederFormattert() + ". " +
+                                    "If you draw a retirement pension of ".expr() + uttaksgrad.format() + " percent from the date you requested, " +
                                     "your full retirement pension is calculated to be NOK ".expr() + totalPensjon.format() + " a year at age ".expr() +
                                     normertPensjonsalder.aarOgMaanederFormattert() + ". ",
                         )
@@ -227,12 +230,12 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
         paragraph {
             showIf(borINorge) {
                 textExpr(
-                    Bokmal to "Selv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før du fyller ".expr() +
+                    Bokmal to "Selv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før du blir ".expr() +
                             normertPensjonsalder.aarOgMaanederFormattert() + ". " +
                             "Da må du kunne velge en lavere uttaksgrad eller ta ut pensjonen senere. " +
                             "På ${Constants.DIN_PENSJON_URL} kan du sjekke når du tidligst kan ta ut alderspensjon. " +
                             "Du kan også se hva pensjonen din blir, avhengig av når og hvor mye du tar ut.",
-                    Nynorsk to "Sjølv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før du fyller ".expr() +
+                    Nynorsk to "Sjølv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før du blir ".expr() +
                             normertPensjonsalder.aarOgMaanederFormattert() + ". " +
                             "Då må du kunne velje ein lågare uttaksgrad eller ta ut pensjonen seinare. " +
                             "På ${Constants.DIN_PENSJON_URL} kan du sjekke når du tidlegast kan ta ut alderspensjon. " +
@@ -261,10 +264,10 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                 )
                 textExpr(
                     Bokmal to "Selv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før ".expr() +
-                            "du fyller " + normertPensjonsalder.aarOgMaanederFormattert() + ". Da må du velge en lavere " +
+                            "du blir " + normertPensjonsalder.aarOgMaanederFormattert() + ". Da må du velge en lavere " +
                             "uttaksgrad eller ta ut pensjonen på et senere tidspunkt.",
                     Nynorsk to "Sjølv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon ".expr() +
-                            "før du fyller " + normertPensjonsalder.aarOgMaanederFormattert() + ". Da må du velje ei lågare " +
+                            "før du blir " + normertPensjonsalder.aarOgMaanederFormattert() + ". Da må du velje ei lågare " +
                             "uttaksgrad eller ta ut pensjonen på eit seinare tidspunkt.",
                     English to "".expr(),
                 )
