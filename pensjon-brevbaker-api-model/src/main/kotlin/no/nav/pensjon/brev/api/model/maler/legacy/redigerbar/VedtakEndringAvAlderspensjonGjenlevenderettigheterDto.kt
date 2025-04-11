@@ -4,12 +4,19 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
-    override val saksbehandlerValg: EmptyBrevdata,
+    override val saksbehandlerValg: SaksbehandlerValg,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptyBrevdata, VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData> {
+) : RedigerbarBrevdata<VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg, VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData> {
+    data class SaksbehandlerValg(
+        val visTilleggspensjonavsnittAP1967: Boolean,
+        val omregnetTilEnsligISammeVedtak: Boolean,
+        val pensjonenOeker: Boolean
+    ) : BrevbakerBrevdata
+
     data class PesysData(
         val avdod: Avdod,
         val bruker: Bruker,
@@ -34,10 +41,12 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
     )
 
     data class AlderspensjonVedVirk(
+        val totalPensjon: Kroner,
         val regelverkType: AlderspensjonRegelverkType,
         val uttaksgrad: Int,
         val gjenlevendetilleggKap19Innvilget: Boolean,
-        val gjenlevenderettAnvendt: Boolean
+        val gjenlevenderettAnvendt: Boolean,
+        val gjenlevendetilleggInnvilget: Boolean
     )
 
     data class YtelseskomponentInformasjon(
@@ -45,11 +54,13 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
     )
 
     data class GjenlevendetilleggKapittel19VedVirk(
-        val apKap19utenGJR: Boolean
+        val apKap19utenGJR: Int
     )
 
     data class BeregnetPensjonPerManedVedVirk(
-        val inntektspensjon: Boolean?
+        val inntektspensjon: Int?,
+        val gjenlevendetilleggKap19: Kroner?,
+        val gjenlevendetillegg: Kroner?
     )
 
     @Suppress("EnumEntryName")
