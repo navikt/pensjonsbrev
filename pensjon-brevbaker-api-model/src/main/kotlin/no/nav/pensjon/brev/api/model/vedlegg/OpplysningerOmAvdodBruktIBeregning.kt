@@ -8,14 +8,29 @@ import java.time.LocalDate
 data class OpplysningerOmAvdoedBruktIBeregningDto(
     val bruker: Bruker,
     val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
-    val avdoedTrygdetidsdetaljerKap19VedVirk: AvdoedTrygdetidsdetaljerKap19VedVirk,
+    val avdoedTrygdetidsdetaljerKap19VedVirk: AvdoedTrygdetidsdetaljerKap19VedVirk?,
     val avdoed: Avdoed,
     val alderspensjonVedVirk: AlderspensjonVedVirk,
     val avdoedTrygdetidsdetaljerVedVirkNokkelInfo: AvdoedTrygdetidsdetaljerVedVirkNokkelInfo,
     val tilleggspensjonVedVirk: TilleggspensjonVedVirk,
+    val avdoedBeregningKap19VedVirk: AvdoedBeregningKap19VedVirk?,
 ) {
+
+    data class AvdoedBeregningKap19VedVirk(
+        val faktiskPoengArAvtale: Int?,
+        val faktiskPoengArNorge: Int?,
+        val framtidigPoengAr: Int?,
+        val poengAr: Int?,
+        val poengArNevner: Int?,
+        val poengArTeller: Int?,
+        val poengAre91: Int?,
+        val poengArf92: Int?,
+        val sluttpoengtall: Double?,
+        val sluttpoengtallMedOverkomp: Double?,
+        val sluttpoengtallUtenOverkomp: Double?,
+    )
     data class TilleggspensjonVedVirk(
-        val kombinertMedAvdod: Boolean,
+        val kombinertMedAvdoed: Boolean,
     )
 
     data class AvdoedTrygdetidsdetaljerVedVirkNokkelInfo(
@@ -38,10 +53,7 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
         val faktiskTTNordiskKonv: Int?,
         val tellerTTEOS: Int?,
         val nevnerTTEOS: Int?,
-        val sluttpoengtall: Double?,
-        val sluttpoengtallMedOverkomp: Double?,
-        val sluttpoengtallUtenOverkomp: Double?,
-        val poengAr: Int?,
+        val framtidigTTEOS: Int?,
     )
 
     data class Avdoed(
