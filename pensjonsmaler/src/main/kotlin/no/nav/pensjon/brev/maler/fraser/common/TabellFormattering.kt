@@ -31,6 +31,27 @@ data class AntallAarText(val aar: Expression<Int>, val fontType: Element.Outline
         )
 }
 
+data class AntallMaanederText(val maaneder: Expression<Int>, val fontType: Element.OutlineContent.ParagraphContent.Text.FontType = Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN) :
+    TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        val maanedText = maaneder.format()
+        showIf(maaneder.greaterThan(1)) {
+            textExpr(
+                Bokmal to maanedText + " måneder",
+                Nynorsk to maanedText + " måneder",
+                English to maanedText + " months",
+            )
+        }.orShow {
+            textExpr(
+                Bokmal to maanedText + " måned",
+                Nynorsk to maanedText + " måned",
+                English to maanedText + " month",
+            )
+        }
+    }
+}
+
+
 object Ja: TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         text(

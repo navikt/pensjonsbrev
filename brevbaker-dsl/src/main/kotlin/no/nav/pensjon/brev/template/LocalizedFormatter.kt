@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.text.NumberFormat
 import java.time.LocalDate
@@ -55,6 +56,12 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
         override fun stableHashCode(): Int = "TelefonnummerFormat".hashCode()
         override fun apply(first: Telefonnummer, second: Language): String = first.format()
     }
+
+    object FoedselsnummerFormat : LocalizedFormatter<Foedselsnummer>() {
+        override fun stableHashCode(): Int = "FoedselsnummerFormat".hashCode()
+        override fun apply(first: Foedselsnummer, second: Language): String = first.format()
+    }
+
 
     object CollectionFormat : LocalizedFormatter<Collection<String>>() {
         override fun stableHashCode(): Int = "CollectionFormat".hashCode()
