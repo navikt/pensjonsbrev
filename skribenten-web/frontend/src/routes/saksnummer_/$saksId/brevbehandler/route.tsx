@@ -11,7 +11,7 @@ import { getNavnQuery } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
-import { BrevForhåndsvisning } from "./-components/BrevForhåndsvisning";
+import BrevForhåndsvisning from "./-components/BrevForhåndsvisning";
 import { FerdigstillOgSendBrevButton, FerdigstillOgSendBrevModal } from "./-components/FerdigstillBrev";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
@@ -23,8 +23,10 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
 
     return sakContext;
   },
-  validateSearch: (search: Record<string, unknown>): { brevId?: number } => ({
+  validateSearch: (search: Record<string, unknown>): { brevId?: number; vedtaksId?: string; enhetsId?: string } => ({
     brevId: search.brevId ? z.number().parse(search.brevId) : undefined,
+    vedtaksId: search.vedtaksId ? z.string().parse(search.vedtaksId) : undefined,
+    enhetsId: search.enhetsId ? z.string().parse(search.enhetsId) : undefined,
   }),
 });
 
@@ -91,7 +93,7 @@ function Brevbehandler() {
           {alleBrevForSak.isSuccess && <BrevbehandlerMeny brevInfo={alleBrevForSak.data} saksId={saksId} />}
         </VStack>
 
-        <div ref={brevPdfContainerReference}>{brevId && <BrevForhåndsvisning brevId={brevId} sakId={saksId} />}</div>
+        <div ref={brevPdfContainerReference}>{brevId && <BrevForhåndsvisning brevId={brevId} saksId={saksId} />}</div>
 
         <HStack
           css={css`

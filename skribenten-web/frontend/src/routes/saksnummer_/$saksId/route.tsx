@@ -16,7 +16,8 @@ import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 import { queryFold } from "~/utils/tanstackUtils";
 
 import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
-import { FerdigstillResultatContextProvider } from "./kvittering/-components/FerdigstillResultatContext";
+import { SendtBrevTilAttesteringResultatContext } from "./kvittering/-components/SendBrevTilAttesteringResultatContext";
+import { SendtBrevResultatContextProvider } from "./kvittering/-components/SendtBrevResultatContext";
 
 // Typer er deklarert som `: string | undefined` heller enn `?: string` for å kreve at disse parametrene overføres i lenker.
 type SaksnummerSearch = { vedtaksId: string | undefined; enhetsId: string | undefined };
@@ -48,14 +49,16 @@ export const Route = createFileRoute("/saksnummer_/$saksId")({
 function SakLayout() {
   const sakContext = Route.useLoaderData();
   return (
-    <FerdigstillResultatContextProvider>
-      <MottakerContextProvider>
-        {sakContext && <Subheader sak={sakContext.sak} />}
-        <div className="page-margins">
-          <Outlet />
-        </div>
-      </MottakerContextProvider>
-    </FerdigstillResultatContextProvider>
+    <SendtBrevTilAttesteringResultatContext>
+      <SendtBrevResultatContextProvider>
+        <MottakerContextProvider>
+          {sakContext && <Subheader sak={sakContext.sak} />}
+          <div className="page-margins">
+            <Outlet />
+          </div>
+        </MottakerContextProvider>
+      </SendtBrevResultatContextProvider>
+    </SendtBrevTilAttesteringResultatContext>
   );
 }
 

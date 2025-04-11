@@ -520,6 +520,10 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
           brevkode={props.brev.info.brevkode}
           fieldsToRender={"optional"}
           submitOnChange={props.submitOnChange}
+          specificationFormElements={{
+            requiredfields: [],
+            optionalFields: [],
+          }}
         />
         <AutoSavingTextField
           field={"signatur"}
@@ -547,6 +551,10 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
           brevkode={props.brev.info.brevkode}
           fieldsToRender={"required"}
           submitOnChange={props.submitOnChange}
+          specificationFormElements={{
+            requiredfields: [],
+            optionalFields: [],
+          }}
         />
         <AutoSavingTextField
           field={"signatur"}

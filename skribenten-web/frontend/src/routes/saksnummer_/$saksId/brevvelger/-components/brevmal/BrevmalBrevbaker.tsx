@@ -7,8 +7,8 @@ import { FormProvider, useForm } from "react-hook-form";
 
 import { createBrev, getBrev } from "~/api/brev-queries";
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { SaksbehandlerValgModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
+import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { Divider } from "~/components/Divider";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import type { LetterMetadata } from "~/types/apiTypes";
@@ -131,12 +131,18 @@ const BrevmalBrevbaker = (props: {
 
   const form = useForm<BrevbakerFormData>({
     defaultValues: {
-      enhetsId: props.defaultValues.enhetsId,
+      enhetsId: enhetsId || props.defaultValues.enhetsId || "",
       spraak: props.defaultValues.spraak,
       mottaker: null,
       saksbehandlerValg: {},
     },
   });
+
+  useEffect(() => {
+    if (enhetsId && enhetsId !== form.getValues("enhetsId")) {
+      form.setValue("enhetsId", enhetsId);
+    }
+  }, [enhetsId, form]);
 
   const { setOnFormSubmitClick } = props;
   useEffect(() => {
@@ -214,7 +220,7 @@ const BrevmalBrevbaker = (props: {
             </VStack>
             <SelectEnhet />
             <SelectLanguage preferredLanguage={props.preferredLanguage} sorterteSpråk={props.displayLanguages} />
-            <SaksbehandlerValgModelEditor brevkode={props.letterTemplate.id} fieldsToRender="required" />
+            <BrevmalAlternativer brevkode={props.letterTemplate.id} displaySingle="required" />
           </VStack>
           {opprettBrevMutation.isError && <ApiError error={opprettBrevMutation.error} title="Bestilling feilet" />}
         </BrevmalFormWrapper>
