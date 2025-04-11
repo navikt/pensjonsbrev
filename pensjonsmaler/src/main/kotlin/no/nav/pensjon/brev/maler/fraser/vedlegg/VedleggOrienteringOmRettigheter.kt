@@ -109,14 +109,10 @@ data class VedleggPlikterUT7(
     val harTilleggForFlereBarn: Expression<Boolean>
 ) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        val barnFlertall = harTilleggForFlereBarn
-        textExpr(
-            Bokmal to ifElse(barnFlertall, "barna", "barnet") +
-                    " du forsørger får en inntekt over folketrygdens grunnbeløp, eller det skjer endringer i omsorgsituasjonen".expr(),
-            Nynorsk to ifElse(barnFlertall, "barna", "barnet") +
-                    " du forsørgjer får ei samla inntekt over grunnbeløpet i folketrygda, eller det skjer endringar av omsorgsituasjonen".expr(),
-            English to ifElse(barnFlertall, "children in your care earn", "the child in your care earns") +
-                    " an income exceeding the National Insurance basic amount or there are changes in the care situation".expr()
+        text(
+            Bokmal to "du forsørger barn og det skjer endringer i omsorgssituasjonen",
+            Nynorsk to "du forsørgjer barn og det skjer endringar av omsorgsituasjonen ",
+            English to "you support children and there are changes in the care situation",
         )
     }
 }
