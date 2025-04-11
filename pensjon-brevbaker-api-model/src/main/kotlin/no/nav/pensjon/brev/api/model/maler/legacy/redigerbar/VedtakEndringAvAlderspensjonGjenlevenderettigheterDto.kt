@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -32,7 +34,9 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
         val gjenlevendetilleggKapittel19VedVirk: GjenlevendetilleggKapittel19VedVirk,
-        val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk
+        val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
+        val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
+        val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto,
     ) : BrevbakerBrevdata
 
     data class Avdod(
