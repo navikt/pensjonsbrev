@@ -21,9 +21,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
@@ -41,28 +39,24 @@ val oversiktOverFeilutbetalingerPE = createAttachment<LangBokmalNynorskEnglish, 
     includeSakspart = true,
 ) {
     includePhrase(
-        TilbakekrevingerTotalbeloepTabell(
+        TilbakekrevingerTotalbeloepTabell
+            (
             bruttoTilbakekrevdTotalbeloep = bruttoTilbakekrevdTotalbeloep,
             nettoTilbakekrevdTotalbeloep = nettoUtenRenterTilbakekrevdTotalbeloep,
             rentetilleggSomInnkrevesBeloep = rentetilleggSomInnkrevesTotalbeloep,
             skattefradragSomInnkrevesTotalbeloep = skattefradragSomInnkrevesTotalbeloep
         )
     )
-    includePhrase(
-        TilbakekrevingerTabell(
-            tilbakekreving = tilbakekrevingPerMaaned
-        )
-    )
+    includePhrase(TilbakekrevingerTabell(tilbakekreving = tilbakekrevingPerMaaned))
 }
 
 private data class TilbakekrevingerTotalbeloepTabell(
     val bruttoTilbakekrevdTotalbeloep: Expression<Kroner>,
     val nettoTilbakekrevdTotalbeloep: Expression<Kroner>,
-    val rentetilleggSomInnkrevesBeloep: Expression<Kroner?>,
+    val rentetilleggSomInnkrevesBeloep: Expression<Kroner>,
     val skattefradragSomInnkrevesTotalbeloep: Expression<Kroner?>
-): OutlinePhrase<LangBokmalNynorskEnglish>() {
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-
         paragraph {
             table(
                 header = {
@@ -85,7 +79,7 @@ private data class TilbakekrevingerTotalbeloepTabell(
                         )
                     }
                     cell {
-                        includePhrase(KronerText(bruttoTilbakekrevdTotalbeloep))
+                        includePhrase(KronerText(bruttoTilbakekrevdTotalbeloep.ifNull(Kroner(0))))
                     }
                 }
                 row {
@@ -111,7 +105,7 @@ private data class TilbakekrevingerTotalbeloepTabell(
                         )
                     }
                     cell {
-                        includePhrase(KronerText(nettoTilbakekrevdTotalbeloep, FontType.BOLD))
+                        includePhrase(KronerText(nettoTilbakekrevdTotalbeloep.ifNull(Kroner(0)), FontType.BOLD))
                     }
                 }
                 row {
@@ -132,7 +126,6 @@ private data class TilbakekrevingerTotalbeloepTabell(
 }
 
 private data class TilbakekrevingerTabell(
-    val skattefradragSomInnkreves: Expression<Kroner>,
     val tilbakekreving: Expression<List<OversiktOverFeilutbetalingPEDto.Tilbakekreving>>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -190,7 +183,7 @@ private data class TilbakekrevingerTabell(
                             includePhrase(KronerText(tilbakekreves.bruttobeloepTilbakekrevd.ifNull(Kroner(0))))
                         }
                     }
-                    showIf(skattefradragSomInnkreves.ifNull(Kroner(0).greaterThan(0))) {
+                    showIf(tilbakekreves.skattefradragSomInnkreves.notEqualTo(Kroner(0))) {
                         row {
                             cell {
                                 text(
@@ -200,7 +193,7 @@ private data class TilbakekrevingerTabell(
                                 )
                             }
                             cell {
-                                includePhrase(KronerText(tilbakekreves.skattefradragSomInnkreves.ifNull(Kroner(0))))
+                                includePhrase(KronerText(tilbakekreves.skattefradragSomInnkreves))
                             }
                         }
                     }
@@ -213,7 +206,7 @@ private data class TilbakekrevingerTabell(
                             )
                         }
                         cell {
-                            includePhrase(KronerText(tilbakekreves.nettobeloepUtenRenterTilbakekrevd))
+                            includePhrase(KronerText(tilbakekreves.nettobeloepUtenRenterTilbakekrevd.ifNull(Kroner(0))))
                         }
                     }
                 }

@@ -15,7 +15,6 @@ fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
     TilbakekrevingAvFeilutbetaltBeloepDto(
         pesysData = TilbakekrevingAvFeilutbetaltBeloepDto.PesysData(
             feilutbetaltTotalBeloep = Kroner(25000),
-            harMotregning = false,
             resultatAvVurderingenForTotalBeloep = TilbakekrevingResultat.FULL_TILBAKEKREV,
             sakstype = Sakstype.ALDER,
             sluttPeriodeForTilbakekreving = LocalDate.of(2024, 1, 1),
@@ -28,7 +27,7 @@ fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
             oversiktOverFeilutbetalingPEDto = OversiktOverFeilutbetalingPEDto(
                 bruttoTilbakekrevdTotalbeloep = Kroner(25000),
                 nettoUtenRenterTilbakekrevdTotalbeloep = Kroner(20000),
-                rentetilleggSomInnkrevesTotalbeloep = null,
+                rentetilleggSomInnkrevesTotalbeloep = Kroner(0),
                 resultatAvVurderingenForTotalbeloep = TilbakekrevingResultat.FULL_TILBAKEKREV,
                 skattefradragSomInnkrevesTotalbeloep = Kroner(5000),
                 tilbakekrevingPerMaaned = listOf(

@@ -14,15 +14,14 @@ import java.time.LocalDate
 data class TilbakekrevingAvFeilutbetaltBeloepDto(
     override val pesysData: PesysData, override val saksbehandlerValg: EmptyBrevdata
 ) : RedigerbarBrevdata<EmptyBrevdata, TilbakekrevingAvFeilutbetaltBeloepDto.PesysData> {
-
+// tilbakekrevingTotal data hentes fra v1.TilbakekrevingTotal
     data class PesysData(
-        val feilutbetaltTotalBeloep: Kroner,  // v1.TilbakekrevingTotal.feilutbetalingTotal
-        val harMotregning: Boolean,  //
-        val resultatAvVurderingenForTotalBeloep: TilbakekrevingResultat,  // v1.TilbakekrevingTotal.resultatTotal/resultatTotalType
+        val feilutbetaltTotalBeloep: Kroner,  // feilutbetalingTotal
+        val resultatAvVurderingenForTotalBeloep: TilbakekrevingResultat,  // resultatTotalType
         val sakstype: Sakstype,  // v1.Sak.sakTypeKode
-        val sluttPeriodeForTilbakekreving: LocalDate,  // v1.TilbakekrevingTotal.periodeTom
-        val startPeriodeForTilbakekreving: LocalDate,  // v1.TilbakekrevingTotal.periodeFom
-        val sumTilInnkrevingTotalBeloep: Kroner,  // v1.TilbakekrevingTotal.sumTilInnkreving
+        val sluttPeriodeForTilbakekreving: LocalDate,  // periodeTom
+        val startPeriodeForTilbakekreving: LocalDate,  // periodeFom
+        val sumTilInnkrevingTotalBeloep: Kroner,  // sumTilInnkreving
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
         val oversiktOverFeilutbetalingPEDto: OversiktOverFeilutbetalingPEDto,
     ) : BrevbakerBrevdata

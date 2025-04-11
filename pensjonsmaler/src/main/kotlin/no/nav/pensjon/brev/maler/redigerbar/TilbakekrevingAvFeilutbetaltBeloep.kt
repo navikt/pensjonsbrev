@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.feilutbetaltTotalBeloep
-import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.harMotregning
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.oversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.resultatAvVurderingenForTotalBeloep
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.sakstype
@@ -15,7 +14,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbeta
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.startPeriodeForTilbakekreving
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.PesysDataSelectors.sumTilInnkrevingTotalBeloep
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDtoSelectors.pesysData
-import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Redigerbar
 import no.nav.pensjon.brev.maler.fraser.vedlegg.oversiktOverFeilutbetalingerPE
@@ -29,7 +27,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -54,7 +51,6 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
         )
     ) {
         val feilutbetaltTotalBeloep = pesysData.feilutbetaltTotalBeloep
-        val harMotregning = pesysData.harMotregning
         val resultatAvVurderingenForTotalBeloep = pesysData.resultatAvVurderingenForTotalBeloep
         val sluttPeriodeForTilbakekreving = pesysData.sluttPeriodeForTilbakekreving
         val startPeriodeForTilbakekreving = pesysData.startPeriodeForTilbakekreving
@@ -64,7 +60,7 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
             text(
                 Bokmal to "Du må betale tilbake ",
                 Nynorsk to "Du må betale tilbake ",
-                English to "You have to repay ",
+                English to "You have to repay "
             )
             includePhrase(Redigerbar.SaksType(pesysData.sakstype))
         }
@@ -121,21 +117,6 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                     English to "Nav will collect the tax amount from the Norwegian Tax Administration."
                 )
             }
-            showIf(harMotregning) {
-                paragraph {
-                    text(
-                        Bokmal to "Du har i samme periode fått utbetalt for lite ",
-                        Nynorsk to "Du har i same perioden fått utbetalt for lite ",
-                        English to "In the same period, you have received too little "
-                    )
-                    includePhrase(Redigerbar.SaksType(pesysData.sakstype))
-                    text(
-                        Bokmal to "Dette er tatt med i beregningen vår.",
-                        Nynorsk to "Dette er teke med i berekninga vår.",
-                        English to "This has been taken into account in our calculations."
-                    )
-                }
-            }
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven § 22-15.",
@@ -161,32 +142,10 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                 text(
                     Bokmal to "Vi rapporterer endringen til Skatteetaten. De vil korrigere skatteoppgjøret ditt ut fra denne endringen.",
                     Nynorsk to "Vi rapporterer endringa til Skatteetaten. Dei vil korrigere skatteoppgjeret ditt ut frå denne endringa.",
-                    English to "We will report the change to the Norwegian Tax Administration. They will correct your tax settlement in view of this change.",
+                    English to "We will report the change to the Norwegian Tax Administration. They will correct your tax settlement in view of this change."
                 )
             }
-            title1 {
-                text(
-                    Bokmal to "Du har rett til å klage",
-                    Nynorsk to "Du har rett til å klage",
-                    English to "You have the right to appeal"
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. " +
-                            "Klagen skal være skriftlig. Du finner skjema og informasjon på $KLAGE_URL. I vedlegget ",
-                    Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. " +
-                            "Klaga skal vera skriftleg. Du finn skjema og informasjon på $KLAGE_URL. I vedlegget ",
-                    English to "If you think the decision is wrong, you may appeal the decision within six weeks of the date on which you received notice of the decision. " +
-                            "Your appeal must be made in writing. You will find a form and information about this at $KLAGE_URL. The attachment '"
-                )
-                namedReference(vedleggDineRettigheterOgMulighetTilAaKlage)
-                text(
-                    Bokmal to " får du vite mer om hvordan du går fram.",
-                    Nynorsk to " får du vite meir om korleis du går fram.",
-                    English to "' includes information on how to proceed.",
-                )
-            }
+            includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
             paragraph {
                 text(
                     Bokmal to "Selv om du klager på vedtaket, må du begynne å betale tilbake. Dette går frem av forvaltningsloven § 42 og hvordan vi må praktisere regelverket.",
@@ -205,7 +164,7 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
                             "You can also apply for deferral of the repayment, but we cannot take your financial situation into account when assessing whether you qualify for a deferral."
                 )
             }
-            includePhrase(Felles.RettTilInnsynRedigerbarebrev)
+            includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
         includeAttachment(oversiktOverFeilutbetalingerPE, pesysData.oversiktOverFeilutbetalingPEDto)
