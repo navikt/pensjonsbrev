@@ -2,7 +2,11 @@ package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDto
 import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDtoSelectors.erEOSLand
-import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.HELFO
+import no.nav.pensjon.brev.maler.fraser.common.Constants.HELSENORGE
+import no.nav.pensjon.brev.maler.fraser.common.Constants.MEDLEMSKAP_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.TELEFON_HELSE
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -36,8 +40,8 @@ val vedleggInformasjonOmMedlemskapOgHelserettigheter =
             }
             paragraph {
                 text(
-                    Bokmal to "Selv om du betaler skatt til Norge, er du ikke automatisk medlem i folketrygden. Du kan lese mer om dette på ${Constants.MEDLEMSKAP_URL}.",
-                    English to "Even if you pay tax to Norway, you are not automatically a member of the National Insurance Scheme. You can read more about this at ${Constants.MEDLEMSKAP_URL}."
+                    Bokmal to "Selv om du betaler skatt til Norge, er du ikke automatisk medlem i folketrygden. Du kan lese mer om dette på $MEDLEMSKAP_URL.",
+                    English to "Even if you pay tax to Norway, you are not automatically a member of the National Insurance Scheme. You can read more about this at $MEDLEMSKAP_URL."
                 )
             }
 
@@ -61,28 +65,28 @@ val vedleggInformasjonOmMedlemskapOgHelserettigheter =
             }
             paragraph {
                 text(
-                    Bokmal to "For å ha rett til helsetjenester må du bruke blankett E121/S1. Blanketten får du hos ${Constants.HELFO}.",
-                    English to "To be entitled to health services, you must use form E121/S1. The form can be obtained at ${Constants.HELFO}."
+                    Bokmal to "For å ha rett til helsetjenester må du bruke blankett E121/S1. Blanketten får du hos $HELFO.",
+                    English to "To be entitled to health services, you must use form E121/S1. The form can be obtained at $HELFO."
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du må kontakte ${Constants.HELFO} dersom du har spørsmål om helsetrygdkort, blankett E 121/S1 og helsetjenester mens du oppholder deg i utlandet.",
-                    English to "You must contact ${Constants.HELFO} if you have any questions about health benefit cards, form E 121/S1 and health services while you are abroad."
+                    Bokmal to "Du må kontakte $HELFO dersom du har spørsmål om helsetrygdkort, blankett E 121/S1 og helsetjenester mens du oppholder deg i utlandet.",
+                    English to "You must contact $HELFO if you have any questions about health benefit cards, form E 121/S1 and health services while you are abroad."
                 )
             }
             paragraph {
                 list {
                     item {
                         text(
-                            Bokmal to "Internett: ${Constants.HELSENORGE}.",
-                            English to "Internet: ${Constants.HELSENORGE}."
+                            Bokmal to "Internett: $HELSENORGE.",
+                            English to "Internet: $HELSENORGE."
                         )
                     }
                     item {
                         text(
-                            Bokmal to "Telefon: ${Constants.TELEFON_HELSE}",
-                            English to "Telephone: ${Constants.TELEFON_HELSE}"
+                            Bokmal to "Telefon: $TELEFON_HELSE",
+                            English to "Telephone: $TELEFON_HELSE"
                         )
                     }
                 }
@@ -102,8 +106,8 @@ val vedleggInformasjonOmMedlemskapOgHelserettigheter =
             }
             paragraph {
                 text(
-                    Bokmal to "Du kan, på nærmere bestemte vilkår, bli frivillig medlem i folketrygdens helsedel dersom du søker om det. Du kan lese mer om dette på ${Constants.NAV_URL}.",
-                    English to "You may, on further specified terms, become a voluntary member of the National Insurance Scheme if you apply for it. You can read more about this at ${Constants.NAV_URL}."
+                    Bokmal to "Du kan, på nærmere bestemte vilkår, bli frivillig medlem i folketrygdens helsedel dersom du søker om det. Du kan lese mer om dette på $NAV_URL.",
+                    English to "You may, on further specified terms, become a voluntary member of the National Insurance Scheme if you apply for it. You can read more about this at $NAV_URL."
                 )
             }
 
@@ -153,8 +157,8 @@ val vedleggInformasjonOmMedlemskapOgHelserettigheter =
             }
             paragraph {
                 text(
-                    Bokmal to "Du kan søke om frivillig medlemskap i folketrygdens helsedel. Du finner søknadsskjema på ${Constants.MEDLEMSKAP_URL}.",
-                    English to "You can apply for voluntary membership of the National Insurance Scheme’s health component. You can find the application form at ${Constants.MEDLEMSKAP_URL}."
+                    Bokmal to "Du kan søke om frivillig medlemskap i folketrygdens helsedel. Du finner søknadsskjema på $MEDLEMSKAP_URL.",
+                    English to "You can apply for voluntary membership of the National Insurance Scheme’s health component. You can find the application form at $MEDLEMSKAP_URL."
                 )
             }
 
@@ -167,7 +171,7 @@ val vedleggInformasjonOmMedlemskapOgHelserettigheter =
             paragraph {
                 text(
                     Bokmal to "En pensjonist som blir frivillig medlem må betale avgift til Nav.",
-                    English to "A pensioner who becomes a voluntary member must pay a contribution to Nav. "
+                    English to "A pensioner who becomes a voluntary member must pay a contribution to Nav."
                 )
             }
             paragraph {
@@ -191,22 +195,20 @@ val vedleggInformasjonOmMedlemskapOgHelserettigheter =
             }
             paragraph {
                 text(
-                    Bokmal to "Har du spørsmål om helsetjenester må du kontakte ${Constants.HELFO}.",
-                    English to "If you have any questions about health services, please contact ${Constants.HELFO}."
+                    Bokmal to "Har du spørsmål om helsetjenester må du kontakte $HELFO.",
+                    English to "If you have any questions about health services, please contact $HELFO."
                 )
-            }
-            paragraph {
                 list {
                     item {
                         text(
-                            Bokmal to "Internett: ${Constants.HELSENORGE}.",
-                            English to "Internet: ${Constants.HELSENORGE}."
+                            Bokmal to "Internett: $HELSENORGE.",
+                            English to "Internet: $HELSENORGE."
                         )
                     }
                     item {
                         text(
-                            Bokmal to "Telefon: ${Constants.TELEFON_HELSE}",
-                            English to "Telephone: ${Constants.TELEFON_HELSE}"
+                            Bokmal to "Telefon: $TELEFON_HELSE",
+                            English to "Telephone: $TELEFON_HELSE"
                         )
                     }
                 }
@@ -225,8 +227,8 @@ val vedleggInformasjonOmMedlemskapOgHelserettigheter =
             }
             paragraph {
                 text(
-                    Bokmal to Constants.NAV_URL,
-                    English to Constants.NAV_URL
+                    Bokmal to NAV_URL,
+                    English to NAV_URL
                 )
             }
         }
