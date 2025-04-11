@@ -123,8 +123,8 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
                     Language.English to "",
                 ) }
 
-                cell { includePhrase(KronerText(utbetalingData.inntekt)) }
                 cell { includePhrase(KronerText(utbetalingData.faktiskInntekt)) }
+                cell { includePhrase(KronerText(utbetalingData.inntekt)) }
                 cell { includePhrase(KronerText(utbetalingData.avviksBeloep)) }
             }
         }
