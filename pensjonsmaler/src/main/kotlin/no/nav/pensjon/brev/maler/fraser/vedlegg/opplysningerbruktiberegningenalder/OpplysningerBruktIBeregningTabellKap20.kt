@@ -169,7 +169,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                                     English to "Ratio for life expectancy adjustment",
                                 )
                             }
-                            cell { eval(beregningKap20VedVirk.delingstallLevealder.formatTwoDecimals()) }
+                            cell { eval(beregningKap20VedVirk.delingstallLevealder.format()) }
                         }
                     }
                 }

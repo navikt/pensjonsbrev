@@ -49,15 +49,17 @@ fun Application.brevbakerModule(templates: AllTemplates) {
 
     install(StatusPages) {
         exception<JacksonException> { call, cause ->
-            call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown cause")
+            val message = cause.message ?: "Failed to deserialize json body: unknown cause"
+            call.application.log.info(message)
+            call.respond(HttpStatusCode.BadRequest, message)
         }
         // Work-around to print proper error message when call.receive<T> fails.
         exception<BadRequestException> { call, cause ->
-            if (cause.cause is JacksonException) {
-                call.respond(
-                    HttpStatusCode.BadRequest,
-                    cause.cause?.message ?: "Failed to deserialize json body: unknown reason"
-                )
+            val jacksonCause = cause.findJacksonCause()
+            if (jacksonCause != null) {
+                val message = jacksonCause.message ?: "Failed to deserialize json body: unknown reason"
+                call.application.log.info(message)
+                call.respond(HttpStatusCode.BadRequest, message)
             } else {
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Unknown failure")
             }
@@ -140,3 +142,6 @@ private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
 
 private fun ApplicationConfig.booleanProperty(path: String, default: Boolean = false): Boolean = propertyOrNull(path)?.getString()?.toBoolean() ?: default
 private fun ApplicationConfig.stringProperty(path: String): String? = propertyOrNull(path)?.getString()
+
+private fun Throwable.findJacksonCause(): JacksonException? =
+    cause as? JacksonException ?: cause?.findJacksonCause()

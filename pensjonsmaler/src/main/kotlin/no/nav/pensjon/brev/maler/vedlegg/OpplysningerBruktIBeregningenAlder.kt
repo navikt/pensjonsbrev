@@ -352,9 +352,9 @@ val vedleggOpplysningerBruktIBeregningenAlder =
 
                                 cell {
                                     showIf(bruktIBeregningen) {
-                                        eval(it.pensjonspoeng.formatTwoDecimals(), BOLD)
+                                        eval(it.pensjonspoeng.format(), BOLD)
                                     }.orShow {
-                                        eval(it.pensjonspoeng.formatTwoDecimals())
+                                        eval(it.pensjonspoeng.format())
                                     }
                                 }
                                 cell {
