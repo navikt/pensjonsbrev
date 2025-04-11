@@ -46,7 +46,11 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
         val uttaksgrad: Int,
         val gjenlevendetilleggKap19Innvilget: Boolean,
         val gjenlevenderettAnvendt: Boolean,
-        val gjenlevendetilleggInnvilget: Boolean
+        val gjenlevendetilleggInnvilget: Boolean,
+        val saertilleggInnvilget: Boolean,
+        val minstenivaIndividuellInnvilget: Boolean,
+        val pensjonstilleggInnvilget: Boolean,
+        val garantipensjonInnvilget: Boolean,
     )
 
     data class YtelseskomponentInformasjon(
@@ -60,7 +64,8 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
     data class BeregnetPensjonPerManedVedVirk(
         val inntektspensjon: Int?,
         val gjenlevendetilleggKap19: Kroner?,
-        val gjenlevendetillegg: Kroner?
+        val gjenlevendetillegg: Kroner?,
+        val antallBeregningsperioderPensjon: Int,
     )
 
     @Suppress("EnumEntryName")

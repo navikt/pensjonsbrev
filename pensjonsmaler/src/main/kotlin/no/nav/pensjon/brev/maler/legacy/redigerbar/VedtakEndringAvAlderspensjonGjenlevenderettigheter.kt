@@ -9,13 +9,20 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.BeloepEndring.ENDR_OKT
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.KravInitiertAv
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevenderettAnvendt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevendetilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevendetilleggKap19Innvilget
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaIndividuellInnvilget
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaIndividuellInnvilget_safe
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.saertilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AvdodSelectors.navn
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.antallBeregningsperioderPensjon
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.antallBeregningsperioderPensjon_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.gjenlevendetilleggKap19_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.gjenlevendetillegg_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.inntektspensjon_safe
@@ -37,6 +44,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlde
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -466,6 +474,168 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                         Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + "  kroner i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt. Av dette er attlevandetillegget " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(Kroner(0)).format() + " etter gamle reglar og " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetillegg_safe.ifNull(Kroner(0)).format() + " etter nye reglar.",
                         English to "You receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner in retirement pension and survivor’s supplement from the National Insurance every month before tax. Of this, the survivor’s supplement is  " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(Kroner(0)).format() + "  according to old rules and " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetillegg_safe.ifNull(Kroner(0)).format() + " according to new rules.",
                     )
+                }
+            }
+
+            // utbetalingsInfoMndUtbet_001
+            showIf(pesysData.beregnetPensjonPerManedVedVirk.antallBeregningsperioderPensjon.greaterThan(0)
+            and pesysData.alderspensjonVedVirk.uttaksgrad.greaterThan(0)) {
+                paragraph {
+                    text(
+                        Bokmal to "Hvis du har andre pensjonsytelser som for eksempel AFP eller tjenestepensjon, blir de utbetalt i tillegg til alderspensjonen. Alderspensjonen din utbetales innen den 20. hver måned. Du finner oversikt over utbetalingene dine på ${Constants.UTBETALINGER_URL}.",
+                        Nynorsk to "Dersom du har andre pensjonsytingar som for eksempel AFP eller tenestepensjon, kjem slik utbetaling i tillegg til alderspensjonen. Alderspensjonen din blir betalt ut innan den 20. i kvar månad. Du finn meir informasjon om utbetalingane dine på ${Constants.UTBETALINGER_URL}.",
+                        English to "If you have occupational pensions from other schemes, this will be paid in addition to your retirement pension. Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at ${Constants.UTBETALINGER_URL}."
+                    )
+                }
+            }
+
+            // flereBeregningsperioderVedlegg_001
+            showIf(
+                pesysData.beregnetPensjonPerManedVedVirk.antallBeregningsperioderPensjon.greaterThan(1)
+                and pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0)
+            ) {
+                paragraph {
+                    text(
+                        Bokmal to "Du kan lese mer om andre beregningsperioder i vedlegget.",
+                        Nynorsk to "Du kan lese meir om andre berekningsperiodar i vedlegget.",
+                        English to "There is more information about other calculation periods in the attachment."
+                    )
+                }
+            }
+
+            // gjRettAP1967STHjemmel_001
+            showIf(
+                pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP1967)
+                and pesysData.alderspensjonVedVirk.saertilleggInnvilget
+                and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)
+            ) {
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 3-2, 3-3, 19-8, 19-16 og 22-12.",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 3-2, 3-3, 19-8, 19-16 og 22-12.",
+                        English to "This decision was made pursuant to the provisions of §§ 3-2, 3-3, 19-8, 19-16 and 22-12 of the National Insurance Act."
+                    )
+                }
+            }
+
+            // gjRettAP1967IngenSTHjemmel_001
+            showIf(
+                pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967)
+                and not(pesysData.alderspensjonVedVirk.saertilleggInnvilget)
+                and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)
+            ) {
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 3-2, 19-8, 19-16 og 22-12.",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 3-2, 19-8, 19-16 og 22-12.",
+                        English to "This decision was made pursuant to the provisions of §§ 3-2, 19-8, 19-16 and 22-12 of the National Insurance Act."
+                    )
+                }
+            }
+
+            // gjRettAPMNTHjemmel1967
+            showIf(
+                pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967)
+                        and pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget
+                        and not(pesysData.alderspensjonVedVirk.saertilleggInnvilget)
+            ) {
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 3-2, 19-8, 19-14, 19-16 og 22-12.",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 3-2, 19-8, 19-14, 19-16 og 22-12.",
+                        English to "This decision was made pursuant to the provisions of §§ 3-2, 19-8, 19-14, 19-16 and 22-12 of the National Insurance Act."
+                    )
+                }
+            }
+
+            // gjRettAP1967MNTHjemmel_001
+            showIf(
+                pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967)
+                        and pesysData.alderspensjonVedVirk.saertilleggInnvilget
+                        and pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget
+            ) {
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 3-2, 3-3, 19-8, 19-14, 19-16 og 22-12.",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 3-2, 3-3, 19-8, 19-14, 19-16 og 22-12.",
+                        English to "This decision was made pursuant to the provisions of §§ 3-2, 3-3, 19-8, 19-14, 19-16 and 22-12 of the National Insurance Act."
+                    )
+                }
+            }
+
+            // gjRettAP2011Hjemmel_001
+            showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2011) and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)) {
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
+                        English to "This decision was made pursuant to the provisions of §§ "
+                    )
+                    showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
+                        text(
+                            Bokmal to "3-2, 19-8, 19-9, 19-16 og 22-12",
+                            Nynorsk to "3-2, 19-8, 19-9, 19-16 og 22-12",
+                            English to "3-2, 19-8, 19-9, 19-16 and 22-12"
+                        )
+                    }.orShow {
+                        text(
+                            Bokmal to "3-2, 19-8, 19-16 og 22-12",
+                            Nynorsk to "3-2, 19-8, 19-16 og 22-12",
+                            English to "3-2, 19-8, 19-16 and 22-12"
+                        )
+                    }
+                }
+            }
+
+            // gjRettAP2011MNTHjemmel_001
+            showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2011) and pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget) {
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
+                        English to "This decision was made pursuant to the provisions of §§ "
+                    )
+                    showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
+                        text(
+                            Bokmal to "3-2, 19-8, 19-9, 19-14, 19-16 og 22-12",
+                            Nynorsk to "3-2, 19-8, 19-9, 19-14, 19-16 og 22-12",
+                            English to "3-2, 19-8, 19-9, 19-14, 19-16 and 22-12"
+                        )
+                    }.orShow {
+                        text(
+                            Bokmal to "3-2, 19-8, 19-14, 19-16 og 22-12",
+                            Nynorsk to "3-2, 19-8, 19-14, 19-16 og 22-12",
+                            English to "3-2, 19-8, 19-14, 19-16 and 22-12"
+                        )
+                    }
+                }
+            }
+
+
+            showIf(
+                pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2016)
+                and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)
+                and not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget)
+            ) {
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
+                        English to "This decision was made pursuant to the provisions of §§ "
+                    )
+                    showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
+                        text(
+                            Bokmal to "3-2, 19-8, 19-9, 19-15, 19-16, 20-18, 20-19 og 22-12",
+                            Nynorsk to "3-2, 19-8, 19-9, 19-15, 19-16, 20-18, 20-19 og 22-12",
+                            English to "3-2, 19-8, 19-9, 19-15, 19-16, 20-18, 20-19 and 22-12"
+                        )
+                    }.orShow {
+                        text(
+                            Bokmal to "3-2, 19-15, 19-16, 20-18, 20-19 og 22-12",
+                            Nynorsk to "3-2, 19-15, 19-16, 20-18, 20-19 og 22-12",
+                            English to "3-2, 19-15, 19-16, 20-18, 20-19 and 22-12"
+                        )
+                    }
                 }
             }
         }
