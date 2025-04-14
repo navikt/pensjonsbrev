@@ -15,8 +15,18 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
     val tilleggspensjonVedVirk: TilleggspensjonVedVirk,
     val avdoedBeregningKap19VedVirk: AvdoedBeregningKap19VedVirk?,
     val avdoedYrkesskadedetaljerVedVirk: AvdoedYrkesskadedetaljerVedVirk?,
+    val avdodBeregningKap3: AvdodBeregningKap3?,
 ) {
 
+    data class AvdodBeregningKap3(
+        val sluttpoengtall: Double?,
+        val sluttpoengtallMedOverkomp: Double?,
+        val sluttpoengtallUtenOverkomp: Double?,
+        val poengAr: Int?,
+        val poengAre91: Int?,
+        val poengArf92: Int?,
+        val framtidigPoengAr: Int?,
+    )
     data class AvdoedYrkesskadedetaljerVedVirk(
         val sluttpoengtall: Double?,
         val poengAr: Int?,
@@ -55,6 +65,8 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
 
     data class AlderspensjonVedVirk(
         val regelverkType: AlderspensjonRegelverkType,
+        val gjenlevenderettAnvendt: Boolean,
+        val tilleggspensjonInnvilget: Boolean,
     )
 
     data class AvdoedTrygdetidsdetaljerKap19VedVirk(
