@@ -14,7 +14,16 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
     val avdoedTrygdetidsdetaljerVedVirkNokkelInfo: AvdoedTrygdetidsdetaljerVedVirkNokkelInfo,
     val tilleggspensjonVedVirk: TilleggspensjonVedVirk,
     val avdoedBeregningKap19VedVirk: AvdoedBeregningKap19VedVirk?,
+    val avdoedYrkesskadedetaljerVedVirk: AvdoedYrkesskadedetaljerVedVirk?,
 ) {
+
+    data class AvdoedYrkesskadedetaljerVedVirk(
+        val sluttpoengtall: Double?,
+        val poengAr: Int?,
+        val poengAre91: Int?,
+        val poengArf92: Int?,
+        val yrkesskadeUforegrad: Int?,
+    )
 
     data class AvdoedBeregningKap19VedVirk(
         val faktiskPoengArAvtale: Int?,
@@ -29,8 +38,10 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
         val sluttpoengtallMedOverkomp: Double?,
         val sluttpoengtallUtenOverkomp: Double?,
     )
+
     data class TilleggspensjonVedVirk(
         val kombinertMedAvdoed: Boolean,
+        val pgaUngUforeAvdod: Boolean,
     )
 
     data class AvdoedTrygdetidsdetaljerVedVirkNokkelInfo(
@@ -54,6 +65,9 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
         val tellerTTEOS: Int?,
         val nevnerTTEOS: Int?,
         val framtidigTTEOS: Int?,
+        val framtidigTTBilateral: Int?,
+        val tellerProRata: Int?,
+        val nevnerProRata: Int?,
     )
 
     data class Avdoed(
