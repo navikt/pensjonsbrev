@@ -76,7 +76,7 @@ data class OpplysningerBruktIBeregningenKap19(
     val andelNyttRegelverk: Int,
     val andelGammeltRegelverk: Int,
     val avslattKap19: Boolean,
-    val sluttpoengTall: Int?,
+    val sluttpoengTall: Double?,
     val innvilgetTillegspensjon: Boolean?,
     val poengAar: Int?,
     val poengAarF92: Int?,
