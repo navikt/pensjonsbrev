@@ -7,6 +7,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AlderspensjonVedVirkSelectors.tilleggspensjonInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdodBeregningKap3Selectors.framtidigPoengAr_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdodBeregningKap3Selectors.poengArNevner_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdodBeregningKap3Selectors.poengArTeller_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdodBeregningKap3Selectors.poengAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdodBeregningKap3Selectors.poengAre91_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdodBeregningKap3Selectors.poengArf92_safe
@@ -39,8 +41,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.beregningsMetode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.faktiskTTNordiskKonv
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.framtidigTTBilateral
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.framtidigTTEOS
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.framtidigTTNorsk
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.nevnerProRata
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.nevnerTTEOS
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.tellerProRata
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.tellerTTEOS
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedYrkesskadedetaljerVedVirkSelectors.poengAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedYrkesskadedetaljerVedVirkSelectors.poengAre91_safe
@@ -125,7 +131,7 @@ val opplysningerOmAvdoedBruktIBeregning =
         showIf(regelverkstypeAlderspensjon.isOneOf(AP2011, AP2016)) {
             val tillegspensjonKombinertMedAvdod = tilleggspensjonVedVirk.kombinertMedAvdoed
             paragraph {
-                table(tabellHeadingOpplysningerBruktIBeregning()) {
+                table(tabellHeadingOpplysningerBruktIBeregningAvdod()) {
                     // vedleggTabellerAvdodFnr_001
                     foedselsnummer()
 
@@ -137,64 +143,58 @@ val opplysningerOmAvdoedBruktIBeregning =
                         //vedleggTabellAvdodTT_001
                         showIf(beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
                             avdodesTrygdetid(avdoedTrygdetidsdetaljerKap19VedVirk.anvendtTT)
-                        }
 
-                        //vedleggTabellAvdodFaktiskTTnordisk_001
-                        showIf(beregningsmetode.equalTo(NORDISK)) {
-                            faktiskTTNordiskKonvensjon(avdoedTrygdetidsdetaljerKap19VedVirk.faktiskTTNordiskKonv)
 
-                            //vedleggTabellAvdodKap19TTnorsk_001
-                            framtidigTTMaanederIfNotNull(avdoedTrygdetidsdetaljerKap19VedVirk.framtidigTTNorsk)
+                            //vedleggTabellAvdodFaktiskTTnordisk_001
+                            showIf(beregningsmetode.equalTo(NORDISK)) {
+                                faktiskTTNordiskKonvensjon(avdoedTrygdetidsdetaljerKap19VedVirk.faktiskTTNordiskKonv)
 
-                            //vedleggTabellFaktiskTTBrokNorgeNordisk_001
-                            tabellFaktiskTTBroekNorgeNordisk(
-                                avdoedTrygdetidsdetaljerKap19VedVirk.tellerTTEOS,
-                                avdoedTrygdetidsdetaljerKap19VedVirk.nevnerTTEOS
-                            )
-                        }
+                                //vedleggTabellAvdodKap19TTnorsk_001
+                                framtidigTTMaanederIfNotNull(avdoedTrygdetidsdetaljerKap19VedVirk.framtidigTTNorsk)
 
-                        showIf(tillegspensjonKombinertMedAvdod and beregningsmetode.equalTo(FOLKETRYGD)) {
-                            //vedleggTabellAvdodKap19Sluttpoengtall_001
-                            //vedleggTabellAvdodKap19SluttpoengtallMedOverkomp_001
-                            //vedleggTabellAvdodKap19SluttpoengtallUtenOverkomp_001
-
-                            sluttpoengtallKap19()
-
-                            //vedleggTabellKap19PoengAr_001
-                            antallPoengAar(avdoedBeregningKap19VedVirk.poengAr_safe)
-                        }
-                        //vedleggTabellKap19PoengArf92_001
-                        showIf(beregningsmetode.isOneOf(FOLKETRYGD, NORDISK) and tillegspensjonKombinertMedAvdod) {
-                            aarMed45og42pensjonProsentKap19()
-
-                            //vedleggTabellAvdodKap19FaktiskePoengArNorge_001
-                            antallFaktiskePoengAarINorge(avdoedBeregningKap19VedVirk.faktiskPoengArNorge_safe)
-
-                            //vedleggTabellAvdodKap19FramtidigPoengar_001
-                            showIf(beregningsmetode.isOneOf(FOLKETRYGD)) {
-                                norskeFramtidigePoengAar(avdoedBeregningKap19VedVirk.framtidigPoengAr_safe)
+                                //vedleggTabellFaktiskTTBrokNorgeNordisk_001
+                                tabellFaktiskTTBroekNorgeNordisk(
+                                    avdoedTrygdetidsdetaljerKap19VedVirk.tellerTTEOS,
+                                    avdoedTrygdetidsdetaljerKap19VedVirk.nevnerTTEOS
+                                )
                             }
 
+                            showIf(tillegspensjonKombinertMedAvdod and beregningsmetode.equalTo(FOLKETRYGD)) {
+                                //vedleggTabellAvdodKap19Sluttpoengtall_001
+                                //vedleggTabellAvdodKap19SluttpoengtallMedOverkomp_001
+                                //vedleggTabellAvdodKap19SluttpoengtallUtenOverkomp_001
 
+                                sluttpoengtallKap19()
+
+                                //vedleggTabellKap19PoengAr_001
+                                antallPoengAar(avdoedBeregningKap19VedVirk.poengAr_safe)
+                            }
+                            //vedleggTabellKap19PoengArf92_001
+                            showIf(tillegspensjonKombinertMedAvdod) {
+                                aarMed45og42pensjonsprosent(
+                                    poengAarFoer92 = avdoedBeregningKap19VedVirk.poengArf92_safe,
+                                    poengAarEtter91 = avdoedBeregningKap19VedVirk.poengAre91_safe,
+                                )
+
+                                //vedleggTabellAvdodKap19FaktiskePoengArNorge_001
+                                antallFaktiskePoengAarINorge(avdoedBeregningKap19VedVirk.faktiskPoengArNorge_safe)
+
+                                //vedleggTabellAvdodKap19FramtidigPoengar_001
+                                showIf(beregningsmetode.equalTo(FOLKETRYGD)) {
+                                    norskeFramtidigePoengAar(avdoedBeregningKap19VedVirk.framtidigPoengAr_safe)
+                                }
+                            }
                         }.orShowIf(beregningsmetode.equalTo(EOS)) {
                             //tabellTTNorgeEOS_001
-                            antallAarIfNotNull(
-                                "Samlet trygdetid i Norge og andre EØS-land",
-                                "Samla trygdetid i Noreg og andre EØS-land",
-                                "Total national insurance coverage in Norway and other EEA countries",
-                                avdoedTrygdetidsdetaljerKap19VedVirk.anvendtTT,
-                            )
+                            samletTTNorgeOgEOS(avdoedTrygdetidsdetaljerKap19VedVirk.anvendtTT)
 
                             //vedleggTabellAvdodFramtidigTT_001
                             framtidigTTMaanederIfNotNull(avdoedTrygdetidsdetaljerKap19VedVirk.framtidigTTEOS)
 
                             //tabellFaktiskTTBrokNorgeEOS_001
-                            broekIfNotNull(
-                                bokmal = "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og andre EØS-land",
-                                nynorsk = "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og andre EØS-land",
-                                engelsk = "The ratio between national insurance coverage in Norway and total insurance coverage in all EEA countries",
-                                teller = avdoedTrygdetidsdetaljerKap19VedVirk.tellerTTEOS,
-                                nevner = avdoedTrygdetidsdetaljerKap19VedVirk.nevnerTTEOS,
+                            faktiskTTBroekNorgeEOS(
+                                avdoedTrygdetidsdetaljerKap19VedVirk.tellerTTEOS,
+                                avdoedTrygdetidsdetaljerKap19VedVirk.nevnerTTEOS
                             )
 
                             showIf(tillegspensjonKombinertMedAvdod) {
@@ -219,42 +219,33 @@ val opplysningerOmAvdoedBruktIBeregning =
 
                                 //vedleggTabellKap19PoengArf92EOS_001
                                 //vedleggTabellKap19PoengAre91EOS_001
-                                aarMed45og42pensjonProsentKap19(
+                                aarMed45og42pensjonsprosent(
+                                    poengAarFoer92 = avdoedBeregningKap19VedVirk.poengArf92_safe,
+                                    poengAarEtter91 = avdoedBeregningKap19VedVirk.poengAre91_safe,
                                     bokmalSuffix = " (EØS)",
                                     nynorskSuffix = " (EØS)",
                                     engelskSuffix = " (EEA)"
                                 )
                                 //vedleggTabellAvdodFramtidigPoengTeoretisk_001
-                                framtidigePoengAarKap19()
+                                framtidigePoengAar(avdoedBeregningKap19VedVirk.framtidigPoengAr_safe)
 
                                 //tabellPoengArBrokNorgeEOS_001
-                                broekIfNotNull(
-                                    bokmal = "Forholdet mellom antall poengår i Norge og antall poengår i Norge og annet EØS-land",
-                                    nynorsk = "Forholdet mellom talet på poengår i Noreg og talet på poengår i Noreg og anna EØS-land",
-                                    engelsk = "The ratio between point earning years in Norway and total point earning years in all EEA countries",
-                                    teller = avdoedBeregningKap19VedVirk.poengArTeller_safe,
-                                    nevner = avdoedBeregningKap19VedVirk.poengArNevner_safe,
+                                poengAarBroekNorgeEOS(
+                                    avdoedBeregningKap19VedVirk.poengArTeller_safe,
+                                    avdoedBeregningKap19VedVirk.poengArNevner_safe
                                 )
                             }
                         }.orShow {
                             //tabellTTNorgeAvtaleland_001
-                            antallAarIfNotNull(
-                                bokmal = "Samlet trygdetid i Norge og avtaleland",
-                                nynorsk = "Samla trygdetid i Noreg og avtaleland",
-                                engelsk = "Total period of national insurance coverage in Norway and countries with social security agreement",
-                                aar = avdoedTrygdetidsdetaljerKap19VedVirk.anvendtTT
-                            )
+                            samletTrygdetidNorgeAvtaleland(avdoedTrygdetidsdetaljerKap19VedVirk.anvendtTT)
 
                             //vedleggTabellAvdodFramtidigTTBilateral_001
                             framtidigTTMaanederIfNotNull(avdoedTrygdetidsdetaljerKap19VedVirk.framtidigTTBilateral)
 
                             //tabellTTBrokNorgeAvtaleland_001
-                            broekIfNotNull(
-                                bokmal = "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og avtaleland",
-                                nynorsk = "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og avtaleland",
-                                engelsk = "Ratio between actual period of national insurance coverage in Norway and period of national insurance coverage in Norway and countries with social security agreement",
-                                teller = avdoedTrygdetidsdetaljerKap19VedVirk.tellerProRata,
-                                nevner = avdoedTrygdetidsdetaljerKap19VedVirk.nevnerProRata,
+                            trygdetidBroekNorgeAvtaleland(
+                                avdoedTrygdetidsdetaljerKap19VedVirk.tellerProRata,
+                                avdoedTrygdetidsdetaljerKap19VedVirk.nevnerProRata
                             )
 
 
@@ -277,20 +268,20 @@ val opplysningerOmAvdoedBruktIBeregning =
                                     suffixNorsk = " (avtaleland)",
                                     suffixEngelsk = " (earned in countries with social security agreement)"
                                 )
-                                aarMed45og42pensjonProsentKap19(
+                                aarMed45og42pensjonsprosent(
+                                    poengAarFoer92 = avdoedBeregningKap19VedVirk.poengArf92_safe,
+                                    poengAarEtter91 = avdoedBeregningKap19VedVirk.poengAre91_safe,
                                     bokmalSuffix = " (Norge og avtaleland)",
-                                    nynorskSuffix = " (Noreg og avtaleland) ",
+                                    nynorskSuffix = " (Noreg og avtaleland)",
                                     engelskSuffix = " (Norway and countries with social security agreement)"
                                 )
                                 //vedleggTabellAvdodFramtidigPoengTeoretisk_001
-                                framtidigePoengAarKap19()
+                                framtidigePoengAar(avdoedBeregningKap19VedVirk.framtidigPoengAr_safe)
 
-                                broekIfNotNull(
-                                    bokmal = "Forholdet mellom antall poengår i Norge og antall poengår i Norge og avtaleland",
-                                    nynorsk = "Forholdet mellom talet på poengår i Noreg og talet på poengår i Noreg og avtaleland",
-                                    engelsk = "Ratio between the number of point earning years in Norway and the number of point earning years in Norway and countries with social security agreement",
+                                //tabellPoengArBrokNorgeAvtaleland_001
+                                poengArBrokNorgeOgAvtaleland(
                                     teller = avdoedBeregningKap19VedVirk.poengArTeller_safe,
-                                    nevner = avdoedBeregningKap19VedVirk.poengArNevner_safe,
+                                    nevner = avdoedBeregningKap19VedVirk.poengArNevner_safe
                                 )
                             }
                         }
@@ -302,63 +293,227 @@ val opplysningerOmAvdoedBruktIBeregning =
                 }
             }
 
-        }.orShowIf(regelverkstypeAlderspensjon.isOneOf(AP1967)) {
+        }.orShowIf(regelverkstypeAlderspensjon.equalTo(AP1967)) {
             paragraph {
-                val beregningsmetode = avdoedTrygdetidsdetaljerVedVirkNokkelInfo.beregningsMetode
-                table(
-                    tabellHeadingOpplysningerBruktIBeregning()
-                ) {
-                    // vedleggTabellerAvdodFnr_001
-                    foedselsnummer()
+                ifNotNull(avdoedTrygdetidsdetaljerVedVirkNokkelInfo) { avdoedNokkelinfo ->
+                    val beregningsmetode = avdoedNokkelinfo.beregningsMetode
+                    table(tabellHeadingOpplysningerBruktIBeregningAvdod()) {
+                        // vedleggTabellerAvdodFnr_001
+                        foedselsnummer()
 
-                    // tabellAvdodFlyktningstatus_001
-                    flyktningstatusBrukt()
+                        // tabellAvdodFlyktningstatus_001
+                        flyktningstatusBrukt()
 
-                    //vedleggTabellAvdodTT1967_001
-                    showIf(
-                        beregningsmetode.isOneOf(NORDISK, FOLKETRYGD)
-                                and avdoedTrygdetidsdetaljerVedVirkNokkelInfo.anvendtTT.ifNull(0).greaterThan(0)
-                    ) {
-                        avdodesTrygdetid(avdoedTrygdetidsdetaljerVedVirkNokkelInfo.anvendtTT)
-                    }
+                        //vedleggTabellAvdodTT1967_001
+                        showIf(beregningsmetode.isOneOf(NORDISK, FOLKETRYGD)) {
 
-                    showIf(beregningsmetode.equalTo(NORDISK)) {
-                        //vedleggTabellAvdodFaktiskTTnordiskAP1967_001
-                        faktiskTTNordiskKonvensjon(avdoedTrygdetidsdetaljerVedVirkNokkelInfo.faktiskTTNordiskKonv)
+                            showIf(avdoedNokkelinfo.anvendtTT.ifNull(0).greaterThan(0)) {
+                                avdodesTrygdetid(avdoedNokkelinfo.anvendtTT)
+                            }
 
-                        //vedleggTabellAvdodKap19TTnorskAP1967_001
-                        framtidigTTMaanederIfNotNull(avdoedTrygdetidsdetaljerVedVirkNokkelInfo.framtidigTTNorsk)
+                            showIf(beregningsmetode.equalTo(NORDISK)) {
+                                //vedleggTabellAvdodFaktiskTTnordiskAP1967_001
+                                faktiskTTNordiskKonvensjon(avdoedNokkelinfo.faktiskTTNordiskKonv)
 
-                        //vedleggTabellFaktiskTTBrokNorgeNordiskAP1967_001
-                        tabellFaktiskTTBroekNorgeNordisk(
-                            avdoedTrygdetidsdetaljerVedVirkNokkelInfo.tellerTTEOS,
-                            avdoedTrygdetidsdetaljerVedVirkNokkelInfo.nevnerTTEOS
-                        )
-                    }
-                    showIf(
-                        beregningsmetode.equalTo(FOLKETRYGD)
-                                and alderspensjonVedVirk.tilleggspensjonInnvilget
-                                and alderspensjonVedVirk.gjenlevenderettAnvendt
-                    ) {
-                        sluttpoengtallAP1967()
-                        //vedleggTabellKap19PoengArAP1967_001
-                        antallPoengAar(avdodBeregningKap3.poengAr_safe)
+                                //vedleggTabellAvdodKap19TTnorskAP1967_001
+                                framtidigTTMaanederIfNotNull(avdoedNokkelinfo.framtidigTTNorsk)
 
-                        //vedleggTabellKap19PoengArf92AP1967_001
-                        //vedleggTabellKap19PoengAre91AP1967_001
-                        aarMed45og42pensjonsprosent(
-                            poengAarFoer92 = avdodBeregningKap3.poengArf92_safe,
-                            poengAarEtter91 = avdodBeregningKap3.poengAre91_safe,
-                        )
+                                //vedleggTabellFaktiskTTBrokNorgeNordiskAP1967_001
+                                tabellFaktiskTTBroekNorgeNordisk(
+                                    avdoedNokkelinfo.tellerTTEOS,
+                                    avdoedNokkelinfo.nevnerTTEOS
+                                )
+                            }
+                            showIf(
+                                beregningsmetode.equalTo(FOLKETRYGD)
+                                        and alderspensjonVedVirk.tilleggspensjonInnvilget
+                                        and alderspensjonVedVirk.gjenlevenderettAnvendt
+                            ) {
+                                sluttpoengtallKap3()
+                                //vedleggTabellKap19PoengArAP1967_001
+                                antallPoengAar(avdodBeregningKap3.poengAr_safe)
 
-                        //vedleggTabellAvdodKap19FramtidigPoengarAP1967
-                        norskeFramtidigePoengAar(avdodBeregningKap3.framtidigPoengAr_safe)
+                                //vedleggTabellKap19PoengArf92AP1967_001
+                                //vedleggTabellKap19PoengAre91AP1967_001
+                                aarMed45og42pensjonsprosent(
+                                    poengAarFoer92 = avdodBeregningKap3.poengArf92_safe,
+                                    poengAarEtter91 = avdodBeregningKap3.poengAre91_safe,
+                                )
+
+                                //vedleggTabellAvdodKap19FramtidigPoengarAP1967
+                                norskeFramtidigePoengAar(avdodBeregningKap3.framtidigPoengAr_safe)
+                            }
+                        }.orShowIf(beregningsmetode.equalTo(EOS)) {
+                            //tabellTTNorgeEOSap1967_001
+                            samletTTNorgeOgEOS(avdoedNokkelinfo.anvendtTT)
+
+                            //vedleggTabellAvdodFramtidigTTap1967_001
+                            framtidigTTMaanederIfNotNull(avdoedNokkelinfo.framtidigTTEOS)
+
+                            //tabellFaktiskTTBrokNorgeEOSap1967_001
+                            faktiskTTBroekNorgeEOS(
+                                avdoedNokkelinfo.tellerTTEOS,
+                                avdoedNokkelinfo.nevnerTTEOS,
+                            )
+                            showIf(
+                                alderspensjonVedVirk.tilleggspensjonInnvilget
+                                        and alderspensjonVedVirk.gjenlevenderettAnvendt
+                            ) {
+                                //vedleggTabellKap19SluttpoengtallEOSap1967_001
+                                //vedleggTabellAvdodSluttpoengMedOverkompEOSap1967_001
+                                //vedleggTabellAvdodSluttpoengUtenOverkompEOSap1967_001
+                                sluttpoengtallKap3(
+                                    suffixNorsk = " (EØS)",
+                                    suffixEngelsk = " (EEA)"
+                                )
+
+                                //vedleggTabellKap19PoengArf92EOSap1967_001
+                                //vedleggTabellKap19PoengAre91EOSap1967_001
+                                aarMed45og42pensjonsprosent(
+                                    poengAarFoer92 = avdodBeregningKap3.poengArf92_safe,
+                                    poengAarEtter91 = avdodBeregningKap3.poengAre91_safe,
+                                    bokmalSuffix = " (EØS)",
+                                    nynorskSuffix = " (EØS)",
+                                    engelskSuffix = " (EEA)"
+                                )
+
+                                //vedleggTabellAvdodFramtidigPoengTeoretiskAP1967_001
+                                framtidigePoengAar(avdodBeregningKap3.framtidigPoengAr_safe)
+
+                                //tabellPoengArBrokNorgeEOSap1967_001
+                                poengAarBroekNorgeEOS(
+                                    avdodBeregningKap3.poengArTeller_safe,
+                                    avdodBeregningKap3.poengArNevner_safe,
+                                )
+                            }
+                        }.orShow {
+                            //tabellTTNorgeAvtalelandAP1967_001
+                            samletTrygdetidNorgeAvtaleland(avdoedNokkelinfo.anvendtTT)
+
+                            //vedleggTabellAvdodFramtidigTTBilateralAP1967_001
+                            framtidigTTMaanederIfNotNull(avdoedNokkelinfo.framtidigTTBilateral)
+
+                            //tabellTTBrokNorgeAvtalelandAP1967_001
+                            trygdetidBroekNorgeAvtaleland(
+                                avdoedNokkelinfo.tellerProRata,
+                                avdoedNokkelinfo.nevnerProRata,
+                            )
+
+                            showIf(
+                                alderspensjonVedVirk.tilleggspensjonInnvilget
+                                        and alderspensjonVedVirk.gjenlevenderettAnvendt
+                            ) {
+                                //vedleggTabellKap19SluttpoengtallAvtalelandAP1967_001
+                                //vedleggTabellAvdodKap19SluttpoengMedOverkompAvtalelandAP1967_001
+                                //vedleggTabellAvdodKap19SluttpoengUtenOverkompAvtalelandAP1967_001
+
+                                // TODO ulik suffix på engelsk. bør avklares. Tror earned... er riktig
+                                sluttpoengtallKap3(
+                                    suffixNorsk = " (avtaleland)",
+                                    suffixEngelsk = " (earned in countries with social security agreement)"
+                                )
+
+                                //vedleggTabellKap19PoengArf92AvtalelandAP1967_001
+                                //vedleggTabellKap19PoengAre91AvtalelandAP1967_001
+                                aarMed45og42pensjonsprosent(
+                                    poengAarFoer92 = avdodBeregningKap3.poengArf92_safe,
+                                    poengAarEtter91 = avdodBeregningKap3.poengAre91_safe,
+                                    bokmalSuffix = " (Norge og avtaleland)",
+                                    nynorskSuffix = " (Noreg og avtaleland)",
+                                    engelskSuffix = " (Norway and countries with social security agreement)"
+                                )
+
+                                //vedleggTabellAvdodFramtidigPoengTeoretiskAP1967_001
+                                framtidigePoengAar(avdodBeregningKap3.framtidigPoengAr_safe)
+
+                                //tabellPoengArBrokNorgeAvtalelandAP1967_001
+                                poengArBrokNorgeOgAvtaleland(
+                                    teller = avdodBeregningKap3.poengArTeller_safe,
+                                    nevner = avdodBeregningKap3.poengArNevner_safe
+                                )
+                            }
+                        }
+                        tilleggspensjonPgaUngUfoer()
+                        yrkesskade()
                     }
                 }
             }
         }
 
     }
+
+private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>.poengArBrokNorgeOgAvtaleland(
+    teller: Expression<Int?>,
+    nevner: Expression<Int?>
+) {
+    broekIfNotNull(
+        bokmal = "Forholdet mellom antall poengår i Norge og antall poengår i Norge og avtaleland",
+        nynorsk = "Forholdet mellom talet på poengår i Noreg og talet på poengår i Noreg og avtaleland",
+        engelsk = "Ratio between the number of point earning years in Norway and the number of point earning years in Norway and countries with social security agreement",
+        teller = teller,
+        nevner = nevner,
+    )
+}
+
+private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>.trygdetidBroekNorgeAvtaleland(
+    teller: Expression<Int?>,
+    nevner: Expression<Int?>
+) {
+    broekIfNotNull(
+        bokmal = "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og avtaleland",
+        nynorsk = "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og avtaleland",
+        engelsk = "Ratio between actual period of national insurance coverage in Norway and period of national insurance coverage in Norway and countries with social security agreement",
+        teller = teller,
+        nevner = nevner,
+    )
+}
+
+private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>.samletTrygdetidNorgeAvtaleland(
+    anvendtTT: Expression<Int?>
+    ) {
+    antallAarIfNotNull(
+        bokmal = "Samlet trygdetid i Norge og avtaleland",
+        nynorsk = "Samla trygdetid i Noreg og avtaleland",
+        engelsk = "Total period of national insurance coverage in Norway and countries with social security agreement",
+        aar = anvendtTT
+    )
+}
+
+private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>.poengAarBroekNorgeEOS(
+    teller: Expression<Int?>, nevner: Expression<Int?>
+) {
+    broekIfNotNull(
+        bokmal = "Forholdet mellom antall poengår i Norge og antall poengår i Norge og annet EØS-land",
+        nynorsk = "Forholdet mellom talet på poengår i Noreg og talet på poengår i Noreg og anna EØS-land",
+        engelsk = "The ratio between point earning years in Norway and total point earning years in all EEA countries",
+        teller = teller,
+        nevner = nevner,
+    )
+}
+
+private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>.faktiskTTBroekNorgeEOS(
+    teller: Expression<Int?>,
+    nevner: Expression<Int?>
+) {
+    broekIfNotNull(
+        bokmal = "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og andre EØS-land",
+        nynorsk = "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og andre EØS-land",
+        engelsk = "The ratio between national insurance coverage in Norway and total insurance coverage in all EEA countries",
+        teller = teller,
+        nevner = nevner,
+    )
+}
+
+private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>.samletTTNorgeOgEOS(
+    anvendtTT: Expression<Int?>
+) {
+    antallAarIfNotNull(
+        "Samlet trygdetid i Norge og andre EØS-land",
+        "Samla trygdetid i Noreg og andre EØS-land",
+        "Total national insurance coverage in Norway and other EEA countries",
+        anvendtTT,
+    )
+}
 
 private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>.norskeFramtidigePoengAar(
     poengAar: Expression<Int?>
@@ -446,7 +601,7 @@ private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBereg
     }
 }
 
-private fun tabellHeadingOpplysningerBruktIBeregning(): TableHeaderScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>.() -> Unit =
+private fun tabellHeadingOpplysningerBruktIBeregningAvdod(): TableHeaderScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>.() -> Unit =
     {
         column(columnSpan = 5) {
             val virkFom = beregnetPensjonPerManedVedVirk.virkDatoFom.format(short = true)
@@ -522,9 +677,11 @@ private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBereg
     }
 }
 
-private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>.framtidigePoengAarKap19() {
-    ifNotNull(avdoedBeregningKap19VedVirk.framtidigPoengAr_safe) { framtidigPoengAr ->
-        showIf(framtidigPoengAr.greaterThan(0)) {
+private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>.framtidigePoengAar(
+    framtidigePoengAar: Expression<Int?>
+) {
+    ifNotNull(framtidigePoengAar) {
+        showIf(it.greaterThan(0)) {
             row {
                 cell {
                     text(
@@ -533,24 +690,10 @@ private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBereg
                         English to "Future point earning years",
                     )
                 }
-                cell { includePhrase(AntallAarText(framtidigPoengAr)) }
+                cell { includePhrase(AntallAarText(it)) }
             }
         }
     }
-}
-
-private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>.aarMed45og42pensjonProsentKap19(
-    bokmalSuffix: String = "",
-    nynorskSuffix: String = "",
-    engelskSuffix: String = "",
-) {
-    aarMed45og42pensjonsprosent(
-        avdoedBeregningKap19VedVirk.poengArf92_safe,
-        avdoedBeregningKap19VedVirk.poengAre91_safe,
-        bokmalSuffix,
-        nynorskSuffix,
-        engelskSuffix,
-    )
 }
 
 private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>.aarMed45og42pensjonsprosent(
@@ -590,7 +733,7 @@ private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBereg
     )
 }
 
-private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>.sluttpoengtallAP1967(
+private fun TableScope<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>.sluttpoengtallKap3(
     suffixNorsk: String = "",
     suffixEngelsk: String = "",
 ) {

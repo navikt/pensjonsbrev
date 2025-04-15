@@ -11,7 +11,7 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
     val avdoedTrygdetidsdetaljerKap19VedVirk: AvdoedTrygdetidsdetaljerKap19VedVirk?,
     val avdoed: Avdoed,
     val alderspensjonVedVirk: AlderspensjonVedVirk,
-    val avdoedTrygdetidsdetaljerVedVirkNokkelInfo: AvdoedTrygdetidsdetaljerVedVirkNokkelInfo,
+    val avdoedTrygdetidsdetaljerVedVirkNokkelInfo: AvdoedTrygdetidsdetaljerVedVirkNokkelInfo?,
     val tilleggspensjonVedVirk: TilleggspensjonVedVirk,
     val avdoedBeregningKap19VedVirk: AvdoedBeregningKap19VedVirk?,
     val avdoedYrkesskadedetaljerVedVirk: AvdoedYrkesskadedetaljerVedVirk?,
@@ -25,6 +25,8 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
         val poengAr: Int?,
         val poengAre91: Int?,
         val poengArf92: Int?,
+        val poengArNevner: Int?,
+        val poengArTeller: Int?,
         val framtidigPoengAr: Int?,
     )
     data class AvdoedYrkesskadedetaljerVedVirk(
@@ -56,11 +58,15 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
 
     data class AvdoedTrygdetidsdetaljerVedVirkNokkelInfo(
         val beregningsMetode: Beregningsmetode,
+        val framtidigTTEOS: Int?,
+        val framtidigTTBilateral: Int?,
         val anvendtTT: Int?,
         val faktiskTTNordiskKonv: Int?,
         val framtidigTTNorsk: Int?,
         val tellerTTEOS: Int?,
         val nevnerTTEOS: Int?,
+        val tellerProRata: Int?,
+        val nevnerProRata: Int?,
     )
 
     data class AlderspensjonVedVirk(
