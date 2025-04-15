@@ -12,7 +12,7 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
     val avdoed: Avdoed,
     val alderspensjonVedVirk: AlderspensjonVedVirk,
     val avdoedTrygdetidsdetaljerVedVirkNokkelInfo: AvdoedTrygdetidsdetaljerVedVirkNokkelInfo?,
-    val tilleggspensjonVedVirk: TilleggspensjonVedVirk,
+    val tilleggspensjonVedVirk: TilleggspensjonVedVirk?,
     val avdoedBeregningKap19VedVirk: AvdoedBeregningKap19VedVirk?,
     val avdoedYrkesskadedetaljerVedVirk: AvdoedYrkesskadedetaljerVedVirk?,
     val avdodBeregningKap3: AvdodBeregningKap3?,
