@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import org.junit.jupiter.api.Test
+import java.math.BigDecimal
 
 class LocalizedFormatterTest {
 
@@ -25,5 +26,15 @@ class LocalizedFormatterTest {
     @Test
     fun `double formatteres ikke til mer enn 16 plasser`() {
         assertThat(2.0.expr().format(100).eval(testExpressionScope), equalTo("2," + "0".repeat(16)))
+    }
+
+    @Test
+    fun `bigDecimal formatteres som standard til 2 desimaler`() {
+        assertThat(BigDecimal(2).expr().format().eval(testExpressionScope), equalTo("2,00"))
+    }
+
+    @Test
+    fun `bigDecimal formatteres ikke til negative tall`() {
+        assertThat(BigDecimal(2).expr().format(-1).eval(testExpressionScope), equalTo("2"))
     }
 }
