@@ -16,8 +16,16 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
     val avdoedBeregningKap19VedVirk: AvdoedBeregningKap19VedVirk?,
     val avdoedYrkesskadedetaljerVedVirk: AvdoedYrkesskadedetaljerVedVirk?,
     val avdodBeregningKap3: AvdodBeregningKap3?,
+    val avdoedTrygdetidNorge: List<Trygdetid>,
+    val avdoedTrygdetidEOS: List<Trygdetid>,
+    val avdoedTrygdetidAvtaleland: List<Trygdetid>,
+    val avdoedPoengrekkeVedVirk: AvdoedPoengrekkeVedVirk
 ) {
-
+    data class AvdoedPoengrekkeVedVirk(
+        val inneholderFramtidigPoeng: Boolean,
+        val inneholderOmsorgspoeng: Boolean,
+        val pensjonspoeng: List<Pensjonspoeng>,
+    )
     data class AvdodBeregningKap3(
         val sluttpoengtall: Double?,
         val sluttpoengtallMedOverkomp: Double?,
