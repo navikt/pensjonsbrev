@@ -250,9 +250,9 @@ export const newVariable = (args: {
   };
 };
 
-export function newItem({ content }: { content: TextContent[] }): Item {
+export function newItem({ id, content }: { id?: Nullable<number>; content: TextContent[] }): Item {
   return {
-    id: null,
+    id: id ?? null,
     parentId: null,
     content,
     deletedContent: [],
