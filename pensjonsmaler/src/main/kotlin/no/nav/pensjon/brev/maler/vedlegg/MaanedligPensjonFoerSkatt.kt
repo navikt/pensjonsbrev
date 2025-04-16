@@ -701,25 +701,8 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
 
 
         // vedlegg del 2
-
         showIf(alderspensjonPerManed.size().greaterThan(1)) {
-            //vedleggBelopFlerePerioderTittel_001
-            title1 {
-                textExpr(
-                    Bokmal to "Oversikt over pensjonen fra ".expr() + krav.virkDatoFom.format(),
-                    Nynorsk to "Oversikt over pensjonen frå ".expr() + krav.virkDatoFom.format(),
-                    English to "Pension specifications as of ".expr() + krav.virkDatoFom.format(),
-                )
-            }
-
-            // veldeggBelopFlerePerioder_001
-            paragraph {
-                text(
-                    Bokmal to "Hvis det har vært endringer i noen av opplysningene som ligger til grunn for beregningen eller pensjonen har vært regulert, kan dette føre til en endring i hvor mye du får utbetalt. Nedenfor følger en oversikt over de månedlige pensjonsbeløpene dine.",
-                    Nynorsk to "Dersom det har vore endringar i nokre av opplysningane som ligg til grunn for utrekninga eller pensjonen har vore regulert, kan det føre til ei endring i kor mykje du får utbetalt. Nedanfor fylgjer ei oversikt over dei månadlege pensjonsbeløpa dine.",
-                    English to "If there have been changes affecting how your pension is calculated in the period or amendments in the National Insurance basic amount, your pension may be adjusted accordingly. Below is a list of your monthly pension payments.",
-                )
-            }
+            includePhrase(TabellMaanedligPensjonFlerePerioderInnledning(krav.virkDatoFom))
 
             forEach(alderspensjonPerManed) { alderspensjon ->
                 showIf(regelverkstype.isOneOf(AP1967, AP2011)) {
