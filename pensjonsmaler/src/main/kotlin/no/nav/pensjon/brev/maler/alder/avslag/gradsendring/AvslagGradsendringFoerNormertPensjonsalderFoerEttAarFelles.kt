@@ -14,17 +14,8 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
-data class AvslagGradsendringFoerNormertPensjonsalderFelles(
-    val afpBruktIBeregning: Expression<Boolean>,
-    val normertPensjonsalder: Expression<NormertPensjonsalder>,
-    val virkFom: Expression<LocalDate>,
-    val minstePensjonssats: Expression<Kroner>,
-    val totalPensjon: Expression<Kroner>,
-    val borINorge: Expression<Boolean>,
-    val harEOSLand: Expression<Boolean>,
+data class AvslagGradsendringFoerNormertPensjonsalderFoerEttAarFelles(
     val regelverkType: Expression<AlderspensjonRegelverkType>,
-    val uttaksgrad: Expression<Int>,
-    val prorataBruktIBeregningen: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title2 {
@@ -36,16 +27,7 @@ data class AvslagGradsendringFoerNormertPensjonsalderFelles(
         }
 
         includePhrase(
-            InnholdLavOpptjening(
-                afpBruktIBeregning = afpBruktIBeregning,
-                normertPensjonsalder = normertPensjonsalder,
-                uttaksgrad = uttaksgrad,
-                prorataBruktIBeregningen = prorataBruktIBeregningen,
-                virkFom = virkFom,
-                minstePensjonssats = minstePensjonssats,
-                totalPensjon = totalPensjon,
-                borINorge = borINorge,
-                harEOSLand = harEOSLand,
+            InnholdSoeknadFoerEttAar(
                 regelverkType = regelverkType
             )
         )

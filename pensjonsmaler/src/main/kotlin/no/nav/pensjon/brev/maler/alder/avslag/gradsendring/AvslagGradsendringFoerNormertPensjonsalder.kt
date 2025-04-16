@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.opplysningerBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.vedtakBegrunnelseLavOpptjening
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderDtoSelectors.pesysData
@@ -64,7 +63,6 @@ object AvslagGradsendringFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUtt
                     totalPensjon = pesysData.totalPensjon,
                     borINorge = pesysData.borINorge,
                     harEOSLand = pesysData.harEOSLand,
-                    vedtakBegrunnelseLavOpptjening = pesysData.vedtakBegrunnelseLavOpptjening,
                     regelverkType = pesysData.regelverkType,
                 )
             )
@@ -73,8 +71,7 @@ object AvslagGradsendringFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUtt
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
         includeAttachment(
             template = opplysningerBruktIBeregningenAP2025Vedlegg,
-            attachmentData = pesysData.opplysningerBruktIBeregningen,
-            predicate = pesysData.vedtakBegrunnelseLavOpptjening
+            attachmentData = pesysData.opplysningerBruktIBeregningen
         )
     }
 

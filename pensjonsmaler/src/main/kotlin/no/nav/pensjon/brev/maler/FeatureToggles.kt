@@ -13,6 +13,7 @@ object FeatureToggles {
     val innhentingAvInformasjonFraBruker = FeatureToggle("innhentingAvInformasjonFraBruker")
     val apAvslagGradsendringNormertPensjonsalder = FeatureToggle("ap_avslag_gradsendring_norm_redigerbar")
     val apAvslagGradsendringNormertPensjonsalderAP2016 = FeatureToggle("ap_avslag_gradsendring_norm_redigerbar_ap2016")
+    val apAvslagGradsendringNormertPensjonsalderFoerEttAar = FeatureToggle("ap_avslag_gradsendring_norm_foer_ett_aar_redigerbar")
     val apAvslagNormertPensjonsalder = FeatureToggle("ap_avslag_norm_redigerbar")
     val apAvslagNormertPensjonsalderAP2016 = FeatureToggle("ap_avslag_norm_redigerbar_ap2016")
     val informasjonOmGjenlevenderettigheter = FeatureToggle("informasjonOmGjenlevenderettigheter")

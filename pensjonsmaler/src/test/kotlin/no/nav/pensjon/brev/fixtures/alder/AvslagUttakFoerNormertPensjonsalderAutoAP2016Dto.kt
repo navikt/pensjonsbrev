@@ -60,6 +60,5 @@ fun createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() =
             )
         ),
         borINorge = false,
-        harEOSLand = true,
-        vedtakBegrunnelseLavOpptjening = true,
+        harEOSLand = true
     )
