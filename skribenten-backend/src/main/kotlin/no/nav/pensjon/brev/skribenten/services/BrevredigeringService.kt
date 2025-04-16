@@ -141,7 +141,9 @@ class BrevredigeringService(
         frigiReservasjon: Boolean = false,
     ): ServiceResult<Dto.Brevredigering>? =
         hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-            if (brevDto.info.laastForRedigering) {
+            //TODO dette er en quick fix for å kunne fortsette utviklingen.
+            //  Åpner opp for for mye redigering etter ferdigstilling
+            if (brevDto.info.laastForRedigering && !PrincipalInContext.require().isInGroup(ADGroups.attestant)) {
                 throw BrevLaastForRedigeringException("Kan ikke oppdatere brev markert som 'klar til sending'.")
             }
             rendreBrev(

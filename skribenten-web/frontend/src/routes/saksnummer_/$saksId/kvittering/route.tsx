@@ -2,8 +2,12 @@ import { css } from "@emotion/react";
 import { Button, Heading, VStack } from "@navikt/ds-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
-import { useFerdigstillResultatContext } from "./-components/FerdigstillResultatContext";
-import KvitterteBrev from "./-components/KvitterteBrev";
+import KvitterteBrev from "~/components/kvitterteBrev/KvitterteBrev";
+import type { KvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
+import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
+
+import { useSendBrevAttesteringContext } from "./-components/SendBrevTilAttesteringResultatContext";
+import { useSendtBrevResultatContext } from "./-components/SendtBrevResultatContext";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/kvittering")({
   component: Kvittering,
@@ -13,7 +17,29 @@ function Kvittering() {
   const { saksId } = Route.useParams();
   const { enhetsId, vedtaksId } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
-  const ferdigstillBrevContext = useFerdigstillResultatContext();
+  const ferdigstillBrevContext = useSendtBrevResultatContext();
+  const brevTilAttesteringContext = useSendBrevAttesteringContext();
+
+  const kvitterteBrev: KvittertBrev[] = [
+    ...ferdigstillBrevContext.resultat.map((resultat) =>
+      toKvittertBrev({
+        status: resultat.status,
+        context: "sendBrev",
+        brevFørHandling: resultat.brevInfo,
+        bestillBrevResponse: resultat.status === "success" ? resultat.response : null,
+        attesterResponse: null,
+      }),
+    ),
+    ...brevTilAttesteringContext.resultat.map((resultat) =>
+      toKvittertBrev({
+        status: resultat.status,
+        context: "attestering",
+        brevFørHandling: resultat.brevInfo,
+        bestillBrevResponse: null,
+        attesterResponse: resultat.status === "success" ? resultat.response : null,
+      }),
+    ),
+  ];
 
   return (
     <div
@@ -26,9 +52,17 @@ function Kvittering() {
         background: var(--a-white);
       `}
     >
+      <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={saksId} />
+      <div
+        // This is a vertical line
+        css={css`
+          background: var(--a-gray-200);
+          width: 1px;
+        `}
+      ></div>
       <VStack
         css={css`
-          justify-self: flex-end;
+          justify-self: anchor-center;
         `}
         gap="4"
       >
@@ -71,14 +105,6 @@ function Kvittering() {
           Gå til brevbehandler
         </Button>
       </VStack>
-      <div
-        // This is a vertical line
-        css={css`
-          background: var(--a-gray-200);
-          width: 1px;
-        `}
-      ></div>
-      <KvitterteBrev resultat={ferdigstillBrevContext.resultat} sakId={saksId} />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, Checkbox, CheckboxGroup, HStack, Label, Modal } from "@navikt/ds-react";
+import { BodyLong, BodyShort, Button, Checkbox, CheckboxGroup, HStack, Label, Modal, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -14,13 +14,10 @@ import { ApiError } from "~/components/ApiError";
 import type { BestillBrevResponse } from "~/types/brev";
 import { type BrevInfo } from "~/types/brev";
 import { erBrevArkivert, erBrevKlar } from "~/utils/brevUtils";
+import { queryFold } from "~/utils/tanstackUtils";
 
-import type {
-  FerdigstillErrorResponse,
-  FerdigstillResponser,
-  FerdigstillSuccessResponse,
-} from "../../kvittering/-components/FerdigstillResultatContext";
-import { useFerdigstillResultatContext } from "../../kvittering/-components/FerdigstillResultatContext";
+import type { SendtBrevResponser } from "../../kvittering/-components/SendtBrevResultatContext";
+import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 import { Route } from "../route";
 
 export const FerdigstillOgSendBrevButton = (properties: {
@@ -99,33 +96,29 @@ const FerdigstillValgtBrev = (properties: {
 };
 
 const validationSchema = z.object({
-  valgteBrevSomSkalSendes: z.array(z.number()).min(1, "Du må velge minst 1 brev"),
+  valgteBrevSomSkalSendes: z.array(z.number()).min(1, "Du må velge minst ett brev å sende"),
 });
 
-const isFerdigstillSuccessResponse = (
-  res: FerdigstillSuccessResponse | FerdigstillErrorResponse,
-): res is FerdigstillSuccessResponse => {
-  return res.status === "fulfilledWithSuccess" && !!res.response.journalpostId;
-};
-
 export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: boolean; onClose: () => void }) => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate({ from: Route.fullPath });
   const { enhetsId, vedtaksId } = Route.useSearch();
-  const queryClient = useQueryClient();
+  const ferdigstillBrevContext = useSendtBrevResultatContext();
 
-  const ferdigstillBrevContext = useFerdigstillResultatContext();
-
-  const bestillBrevMutation = useMutation<BestillBrevResponse, Error, number>({
-    mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
-  });
-
-  const alleFerdigstileBrevResult = useQuery({
+  const alleFerdigstilteBrevResult = useQuery({
     queryKey: hentAlleBrevForSak.queryKey(properties.sakId),
     queryFn: () => hentAlleBrevForSak.queryFn(properties.sakId),
     select: (data) => data.filter((b) => erBrevKlar(b) || erBrevArkivert(b)),
   });
 
-  const alleFerdigstilteBrev = useMemo(() => alleFerdigstileBrevResult.data ?? [], [alleFerdigstileBrevResult.data]);
+  const ferdigstilteBrevTilSending = useMemo(
+    () => alleFerdigstilteBrevResult.data ?? [],
+    [alleFerdigstilteBrevResult.data],
+  );
+
+  const bestillBrevMutation = useMutation<BestillBrevResponse, Error, number>({
+    mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
+  });
 
   const form = useForm<z.infer<typeof validationSchema>>({
     defaultValues: { valgteBrevSomSkalSendes: [] },
@@ -135,49 +128,40 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   useEffect(() => {
     form.setValue(
       "valgteBrevSomSkalSendes",
-      alleFerdigstilteBrev.map((brev) => brev.id),
+      ferdigstilteBrevTilSending.map((brev) => brev.id),
     );
-  }, [alleFerdigstilteBrev, form]);
+  }, [ferdigstilteBrevTilSending, form]);
 
   const onSendValgteBrev = async (values: { valgteBrevSomSkalSendes: number[] }) => {
-    const brevSomSkalSendes = values.valgteBrevSomSkalSendes
-      .map((brevId) => alleFerdigstilteBrev.find((brev) => brev.id === brevId))
-      .filter((brev): brev is BrevInfo => !!brev);
+    const brevSomSkalSendes = values.valgteBrevSomSkalSendes.map(
+      (brevId) => ferdigstilteBrevTilSending.find((brev) => brev.id === brevId)!,
+    );
 
-    const requests = brevSomSkalSendes.map((brevInfo) =>
+    const sendBrevRequests = brevSomSkalSendes.map((brevInfo) =>
       bestillBrevMutation.mutateAsync(brevInfo.id).then(
-        //vi har fortsatt behov for informasjon i brevet, så vi returnerer brevinfo sammen med responsen
-        (response) => ({ status: "fulfilledWithSuccess" as const, brevInfo, response }),
-        (error: AxiosError) => ({ status: "fulfilledWithError" as const, brevInfo, error }),
+        (response) => ({ requestType: "sendBrev" as const, status: "success" as const, brevInfo, response }),
+        (error: AxiosError) => ({ requestType: "sendBrev" as const, status: "error" as const, brevInfo, error }),
       ),
     );
 
-    const resultat: FerdigstillResponser = await Promise.allSettled(requests).then((result) =>
-      result.map((response) => {
-        switch (response.status) {
-          //fordi vi håndterer vanlige caser av rejected i mutation, vil resultatet 'alltid' være fulfilled
-          case "fulfilled": {
-            return response.value;
-          }
-          //en safe-guard dersom noe uventet går feil? Kan se om vi kan håndtere dette på en bedre måte
-          case "rejected": {
-            throw new Error(`Feil ved sending av minst 1 brev. Original error: ${response.reason}`);
-          }
-        }
-      }),
+    const resultat = (await Promise.allSettled(sendBrevRequests)).map(
+      (response) => (response as PromiseFulfilledResult<SendtBrevResponser[number]>).value,
     );
+
     ferdigstillBrevContext.setResultat(resultat);
-    const sendteBrev = new Set(resultat.filter(isFerdigstillSuccessResponse).map((res) => res.brevInfo.id));
+
+    const sendteBrev = new Set(resultat.filter((res) => res.status === "success").map((res) => res.brevInfo.id));
+
     queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
       currentBrevInfo.filter((brev) => !sendteBrev.has(brev.id)),
     );
+
     return navigate({
       to: "/saksnummer/$saksId/kvittering",
       params: { saksId: properties.sakId },
       search: { enhetsId, vedtaksId },
     });
   };
-
   return (
     <Modal
       css={css`
@@ -198,46 +182,46 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
               margin-bottom: 1rem;
             `}
           >
-            <div>
-              <BodyShort>
-                Brevene du ferdigstiller og sender vil bli lagt til i brukers dokumentoversikt. Du kan ikke angre denne
-                handlingen.
-              </BodyShort>
-              <br />
-              <BodyShort>Kun brev du har valgt å ferdigstille vil bli sendt.</BodyShort>
-            </div>
-            <br />
-            <div>
-              {alleFerdigstileBrevResult.isPending && <Label>Henter alle ferdigstilte brev...</Label>}
-              {alleFerdigstileBrevResult.isError && (
-                <ApiError
-                  error={alleFerdigstileBrevResult.error}
-                  title={"Klarte ikke å hente alle ferdigstilte for saken"}
-                />
-              )}
-              {alleFerdigstileBrevResult.isSuccess && (
-                <Controller
-                  control={form.control}
-                  name="valgteBrevSomSkalSendes"
-                  render={({ field, fieldState }) => (
-                    <CheckboxGroup
-                      data-cy="ferdigstillbrev-valgte-brev"
-                      error={fieldState.error?.message}
-                      hideLegend
-                      legend="Velg brev som skal sendes"
-                      onChange={field.onChange}
-                      value={field.value}
-                    >
-                      {alleFerdigstilteBrev.map((brev) => (
-                        <Checkbox key={brev.id} value={brev.id}>
-                          {brev.brevtittel}
-                        </Checkbox>
-                      ))}
-                    </CheckboxGroup>
+            {queryFold({
+              query: alleFerdigstilteBrevResult,
+              initial: () => null,
+              pending: () => <Label>Henter alle ferdigstilte brev...</Label>,
+              error: (error) => <ApiError error={error} title={"Klarte ikke å hente alle ferdigstilte for saken"} />,
+              success: () => (
+                <VStack gap="6">
+                  {ferdigstilteBrevTilSending.length > 0 ? (
+                    <VStack gap="1">
+                      <BodyLong>
+                        Valgte brev du ferdigstiller og sender vil bli lagt til i brukers dokumentoversikt. Du kan ikke
+                        angre denne handlingen.
+                      </BodyLong>
+                      <Controller
+                        control={form.control}
+                        name="valgteBrevSomSkalSendes"
+                        render={({ field, fieldState }) => (
+                          <CheckboxGroup
+                            data-cy="ferdigstillbrev-valgte-brev-til-sending"
+                            error={fieldState.error?.message}
+                            hideLegend
+                            legend="Velg brev som skal sendes"
+                            onChange={field.onChange}
+                            value={field.value}
+                          >
+                            {ferdigstilteBrevTilSending.map((brev) => (
+                              <Checkbox key={brev.id} value={brev.id}>
+                                {brev.brevtittel}
+                              </Checkbox>
+                            ))}
+                          </CheckboxGroup>
+                        )}
+                      />
+                    </VStack>
+                  ) : (
+                    <BodyLong>Ingen brev er klare til å ferdigstilles og sendes.</BodyLong>
                   )}
-                />
-              )}
-            </div>
+                </VStack>
+              ),
+            })}
           </div>
         </Modal.Body>
         <Modal.Footer>
