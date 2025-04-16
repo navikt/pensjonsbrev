@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import java.math.BigDecimal
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -34,6 +35,12 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
         override fun stableHashCode(): Int = "DoubleFormat($scale)".hashCode()
         override fun apply(first: Double, second: Language): String =
             String.format(second.locale(), "%.${scale.coerceIn(0..16)}f", first)
+    }
+
+    class BigDecimalFormat(private val scale: Int) : LocalizedFormatter<BigDecimal>() {
+        override fun stableHashCode(): Int = "BigDecimalFormat($scale)".hashCode()
+        override fun apply(first: BigDecimal, second: Language): String =
+            String.format(second.locale(), "%.${scale.coerceIn(0..Int.MAX_VALUE)}f", first)
     }
 
     object IntFormat : LocalizedFormatter<Int>() {
