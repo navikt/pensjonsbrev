@@ -122,9 +122,9 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                                     }
                                     cell {
                                         textExpr(
-                                            Bokmal to sluttpoeng.format() + " år".expr(),
-                                            Nynorsk to sluttpoeng.format() + " år".expr(),
-                                            English to sluttpoeng.format() + " years".expr()
+                                            Bokmal to sluttpoeng.format(),
+                                            Nynorsk to sluttpoeng.format(),
+                                            English to sluttpoeng.format()
                                         )
                                     }
                                 }
