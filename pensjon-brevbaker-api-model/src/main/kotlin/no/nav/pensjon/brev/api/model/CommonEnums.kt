@@ -81,6 +81,8 @@ enum class MetaforceSivilstand {
     SAMBOER_3_2, SEPARERT, SEPARERT_PARTNER, UKJENT;
 }
 
+enum class PoengTallsType { FPP, G, H, IFUT, J, K, L, PI }
+
 enum class TilbakekrevingResultat  {
     DELVIS_TILBAKEKREV,
     FEILREGISTRERT,
