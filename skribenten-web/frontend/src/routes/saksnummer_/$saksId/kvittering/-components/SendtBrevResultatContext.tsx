@@ -8,13 +8,13 @@ export type SendtBrevResponse = SendtBrevSuccessResponse | SendtBrevErrorRespons
 
 export interface SendtBrevSuccessResponse {
   status: "success";
-  brevInfo: BrevInfo;
+  brevInfo: BrevInfo | undefined;
   response: BestillBrevResponse;
 }
 
 export interface SendtBrevErrorResponse {
   status: "error";
-  brevInfo: BrevInfo;
+  brevInfo: BrevInfo | undefined;
   error: AxiosError<unknown, unknown>;
 }
 

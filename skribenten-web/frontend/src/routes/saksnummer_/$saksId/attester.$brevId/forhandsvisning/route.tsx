@@ -1,12 +1,13 @@
 import { css } from "@emotion/react";
 import { ArrowLeftIcon, ArrowRightIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Box, Button, Heading, HStack, Label, Loader, Modal, VStack } from "@navikt/ds-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
+import { he } from "date-fns/locale";
 import { useState } from "react";
 
-import { brevKeys, getBrevAttestering } from "~/api/brev-queries";
+import { getBrevAttestering } from "~/api/brev-queries";
 import { sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
@@ -137,28 +138,36 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
 };
 
 const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; onClose: () => void }) => {
-  const queryClient = useQueryClient();
   const { setResultat } = useSendtBrevResultatContext();
   const navigate = useNavigate({ from: Route.fullPath });
-  //TODO: Hånter feil hvis brev ikke eksisterer isteden for none-null-assertion.
-  const brevResponse = queryClient.getQueryData<BrevResponse>([brevKeys.id, Number.parseInt(props.brevId)])!;
+  const { data } = useQuery({
+    queryKey: getBrevAttestering.queryKey(Number(props.brevId)),
+    queryFn: () => getBrevAttestering.queryFn(props.saksId, Number(props.brevId)),
+  });
 
   const sendBrevMutation = useMutation({
     mutationFn: () => {
       return sendBrev(props.saksId, props.brevId);
     },
-    onError: (error: AxiosError) => setResultat([{ status: "error", brevInfo: brevResponse.info, error: error }]),
-    onSuccess: (res) => setResultat([{ status: "success", brevInfo: brevResponse.info, response: res }]),
-    //settled trigges etter success/error
-    onSettled: () =>
+    onError: (error: AxiosError) => {
+      setResultat([{ status: "error", brevInfo: data?.info, error: error }]);
+      props.onClose();
+    },
+    onSuccess: (res) => {
+      setResultat([{ status: "success", brevInfo: data?.info, response: res }]);
+      props.onClose();
+    },
+
+    onSettled: () => {
       navigate({
         to: "/saksnummer/$saksId/attester/$brevId/kvittering",
         params: { saksId: props.saksId, brevId: props.brevId },
         search: {
-          vedtaksId: brevResponse.info.vedtaksId?.toString() ?? undefined,
-          enhetsId: brevResponse.info.avsenderEnhet?.enhetNr.toString() ?? undefined,
+          vedtaksId: data?.info?.vedtaksId?.toString() ?? undefined,
+          enhetsId: data?.info?.avsenderEnhet?.enhetNr.toString() ?? undefined,
         },
-      }),
+      });
+    },
   });
 
   return (
