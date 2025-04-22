@@ -29,7 +29,7 @@ fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
                 nettoUtenRenterTilbakekrevdTotalbeloep = Kroner(20000),
                 rentetilleggSomInnkrevesTotalbeloep = Kroner(0),
                 resultatAvVurderingenForTotalbeloep = TilbakekrevingResultat.FULL_TILBAKEKREV,
-                skattefradragSomInnkrevesTotalbeloep = Kroner(5000),
+                skattefradragSomInnkrevesTotalbeloep = Kroner(0),
                 tilbakekrevingPerMaaned = listOf(
                     OversiktOverFeilutbetalingPEDto.Tilbakekreving(
                         maanedOgAar = LocalDate.of(2024, 1, 1),
@@ -37,7 +37,7 @@ fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
                         feilutbetaltBeloep = Kroner(2000),
                         nettobeloepUtenRenterTilbakekrevd = Kroner(1800),
                         resultatAvVurderingen = TilbakekrevingResultat.FULL_TILBAKEKREV,
-                        skattefradragSomInnkreves = Kroner(200),
+                        skattefradragSomInnkreves = Kroner(0),
                         ytelsenMedFeilutbetaling = KonteringType.AP_GJT,
                     ), OversiktOverFeilutbetalingPEDto.Tilbakekreving(
                         maanedOgAar = LocalDate.of(2024, 2, 1),
@@ -45,7 +45,7 @@ fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
                         feilutbetaltBeloep = Kroner(3000),
                         nettobeloepUtenRenterTilbakekrevd = Kroner(2000),
                         resultatAvVurderingen = TilbakekrevingResultat.FULL_TILBAKEKREV,
-                        skattefradragSomInnkreves = Kroner(1000),
+                        skattefradragSomInnkreves = Kroner(0),
                         ytelsenMedFeilutbetaling = KonteringType.AFP_KRONETILLEGG,
                     )
                 )
