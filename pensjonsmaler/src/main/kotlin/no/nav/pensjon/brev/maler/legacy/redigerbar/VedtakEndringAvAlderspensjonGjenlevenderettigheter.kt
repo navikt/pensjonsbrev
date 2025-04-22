@@ -98,9 +98,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
     ) {
         val virkDatoFomEtter2023 = pesysData.krav.virkDatoFom.greaterThanOrEqual(
             LocalDate.of(
-                1,
+                2024,
                 Month.JANUARY,
-                2024
+                1
             )
         )
         val kravInitiertAvNav = pesysData.krav.kravInitiertAv.equalTo(KravInitiertAv.NAV)
