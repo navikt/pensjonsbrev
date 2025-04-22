@@ -142,9 +142,9 @@ private data class TilbakekrevingerTabell(
                     header = {
                         column(columnSpan = 3) {
                             textExpr(
-                                Bokmal to tilbakekreves.maanedOgAar.formatYearMonth() + " - ",
-                                Nynorsk to tilbakekreves.maanedOgAar.formatYearMonth() + " - ",
-                                English to tilbakekreves.maanedOgAar.formatYearMonth() + " - "
+                                Bokmal to tilbakekreves.maanedOgAar.formatMonthYear() + " - ",
+                                Nynorsk to tilbakekreves.maanedOgAar.formatMonthYear() + " - ",
+                                English to tilbakekreves.maanedOgAar.formatMonthYear() + " - "
                             )
                             includePhrase(
                                 KonteringTypeYtelseTextMappingStorBokstav(

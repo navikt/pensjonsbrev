@@ -33,7 +33,7 @@ fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
                 skattefradragSomInnkrevesTotalbeloep = Kroner(0),
                 tilbakekrevingPerMaaned = listOf(
                     OversiktOverFeilutbetalingPEDto.Tilbakekreving(
-                        maanedOgAar = YearMonth.of(2024, 1),
+                        maanedOgAar = LocalDate.of(2024, 1, 1 ),
                         bruttobeloepTilbakekrevd = Kroner(2000),
                         feilutbetaltBeloep = Kroner(2000),
                         nettobeloepUtenRenterTilbakekrevd = Kroner(1800),
@@ -41,7 +41,7 @@ fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
                         skattefradragSomInnkreves = Kroner(0),
                         ytelsenMedFeilutbetaling = KonteringType.AP_GJT,
                     ), OversiktOverFeilutbetalingPEDto.Tilbakekreving(
-                        maanedOgAar = YearMonth.of(2024, 2),
+                        maanedOgAar = LocalDate.of(2024, 2, 1 ),
                         bruttobeloepTilbakekrevd = Kroner(3000),
                         feilutbetaltBeloep = Kroner(3000),
                         nettobeloepUtenRenterTilbakekrevd = Kroner(2000),
