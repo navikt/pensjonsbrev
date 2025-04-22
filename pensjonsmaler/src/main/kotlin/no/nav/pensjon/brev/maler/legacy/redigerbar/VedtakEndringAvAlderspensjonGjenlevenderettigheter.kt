@@ -115,19 +115,21 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 English to "We have recalculated your retirement pension from "
             )
             eval(pesysData.krav.virkDatoFom.format())
-            showIf(
-                virkDatoFomEtter2023 and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
-            ) {
-                text(
-                    Bokmal to "Gjenlevendetillegg i alderspensjonen fra ",
-                    Nynorsk to "Attlevandetillegg i alderspensjonen din frå ",
-                    English to "Survivor's supplement in retirement pension from "
-                )
-                eval(pesysData.krav.virkDatoFom.format())
-            }
         }
 
         outline {
+            showIf(
+                virkDatoFomEtter2023 and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
+            ) {
+                title1 {
+                    text(
+                        Bokmal to "Gjenlevendetillegg i alderspensjonen fra ",
+                        Nynorsk to "Attlevandetillegg i alderspensjonen din frå ",
+                        English to "Survivor's supplement in retirement pension from "
+                    )
+                    eval(pesysData.krav.virkDatoFom.format())
+                }
+            }
             title1 {
                 text(
                     Bokmal to "Vedtak",
