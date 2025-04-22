@@ -11,4 +11,5 @@ export const erBrevArkivert = (brev: BrevInfo): boolean => brev.status.type === 
 export const skalBrevAttesteres = (b: BrevInfo) => b.vedtaksId !== null;
 export const erBrevKlarTilAttestering = (brev: BrevInfo) => brev.status.type === "Attestering";
 
-export const erBrevLaastForRedigering = (brev: BrevInfo) => brev.status.type === "Klar";
+export const erBrevLaastForRedigering = (brev: BrevInfo) =>
+  brev.status.type === "Klar" || brev.status.type === "Attestering";
