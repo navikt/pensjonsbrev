@@ -47,6 +47,13 @@ val oversiktOverFeilutbetalingerPE = createAttachment<LangBokmalNynorskEnglish, 
             skattefradragSomInnkrevesTotalbeloep = skattefradragSomInnkrevesTotalbeloep
         )
     )
+    title1 {
+        text(
+            Bokmal to "Detaljert oversikt over perioder med feilutbetalinger",
+            Nynorsk to "Detaljert oversikt over periodar feilutbetalingar",
+            English to "Detailed overview of periods with incorrect payments",
+        )
+    }
     includePhrase(TilbakekrevingerTabell(tilbakekreving = tilbakekrevingPerMaaned))
 }
 
@@ -135,9 +142,9 @@ private data class TilbakekrevingerTabell(
                     header = {
                         column(columnSpan = 3) {
                             textExpr(
-                                Bokmal to tilbakekreves.maanedOgAar.formatMonthYear() + " - ",
-                                Nynorsk to tilbakekreves.maanedOgAar.formatMonthYear() + " - ",
-                                English to tilbakekreves.maanedOgAar.formatMonthYear() + " - "
+                                Bokmal to tilbakekreves.maanedOgAar.formatYearMonth() + " - ",
+                                Nynorsk to tilbakekreves.maanedOgAar.formatYearMonth() + " - ",
+                                English to tilbakekreves.maanedOgAar.formatYearMonth() + " - "
                             )
                             includePhrase(
                                 KonteringTypeYtelseTextMappingStorBokstav(

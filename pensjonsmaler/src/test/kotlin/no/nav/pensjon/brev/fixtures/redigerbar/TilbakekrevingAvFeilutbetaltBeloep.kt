@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
+import java.time.YearMonth
 
 
 fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
@@ -32,7 +33,7 @@ fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
                 skattefradragSomInnkrevesTotalbeloep = Kroner(0),
                 tilbakekrevingPerMaaned = listOf(
                     OversiktOverFeilutbetalingPEDto.Tilbakekreving(
-                        maanedOgAar = LocalDate.of(2024, 1, 1),
+                        maanedOgAar = YearMonth.of(2024, 1),
                         bruttobeloepTilbakekrevd = Kroner(2000),
                         feilutbetaltBeloep = Kroner(2000),
                         nettobeloepUtenRenterTilbakekrevd = Kroner(1800),
@@ -40,7 +41,7 @@ fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
                         skattefradragSomInnkreves = Kroner(0),
                         ytelsenMedFeilutbetaling = KonteringType.AP_GJT,
                     ), OversiktOverFeilutbetalingPEDto.Tilbakekreving(
-                        maanedOgAar = LocalDate.of(2024, 2, 1),
+                        maanedOgAar = YearMonth.of(2024, 2),
                         bruttobeloepTilbakekrevd = Kroner(3000),
                         feilutbetaltBeloep = Kroner(3000),
                         nettobeloepUtenRenterTilbakekrevd = Kroner(2000),
