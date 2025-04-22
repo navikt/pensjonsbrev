@@ -8,6 +8,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregn
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.inntektiavtaleland_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.omsorgsaar_safe
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.pgi_safe
+import no.nav.pensjon.brev.maler.fraser.common.Ja
+import no.nav.pensjon.brev.maler.fraser.common.Nei
 import no.nav.pensjon.brev.maler.legacy.pebrevkode
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense
@@ -105,17 +107,9 @@ data class TBU038V_1(
                                 }
                                 cell {
                                     showIf(opptjeningUt.inntektiavtaleland_safe.ifNull(false)){
-                                        text (
-                                            Bokmal to "Ja",
-                                            Nynorsk to "Ja",
-                                            English to "Yes",
-                                        )
+                                        includePhrase(Ja)
                                     }.orShow {
-                                        text (
-                                            Bokmal to "Nei",
-                                            Nynorsk to "Nei",
-                                            English to "No",
-                                        )
+                                        includePhrase(Nei)
                                     }
                                 }
                                 cell {

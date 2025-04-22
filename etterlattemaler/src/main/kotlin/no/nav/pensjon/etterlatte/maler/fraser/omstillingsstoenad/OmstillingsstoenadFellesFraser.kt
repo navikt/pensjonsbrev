@@ -18,6 +18,7 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.bosattUtland
 
 object OmstillingsstoenadFellesFraser {
 
@@ -202,6 +203,30 @@ object OmstillingsstoenadFellesFraser {
                             "repay the excess to Nav. You can find more information about final settlements online: " +
                             "${Constants.OMS_ETTEROPPGJOER_URL}.",
                 )
+            }
+        }
+    }
+
+    data class HarDuIkkeBankID(
+        val bosattUtland: Expression<Boolean>
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(bosattUtland) {
+                paragraph {
+                    text(
+                        Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, må du sende brev til Nav familie- og pensjonsytelser, Postboks 6600 Etterstad, 0607 Oslo, Norway.",
+                        Nynorsk to "Dersom du ikkje har BankID eller andre måtar å logge deg på heimesida vår, nav.no, må du sende brev til Nav familie- og pensjonsytelser, Postboks 6600 Etterstad, 0607 Oslo, Norway.",
+                        English to "If you do not have BankID or other means of logging into our home page nav.no, you must send a letter to Nav familie- og pensjonsytelser, P.O. Box 6600 Etterstad, 0607 Oslo, Norway.",
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, må du sende brev til Nav skanning, Postboks 1400, 0109 OSLO.",
+                        Nynorsk to "Dersom du ikkje har BankID eller andre måtar å logge deg på heimesida vår, nav.no, må du sende brev til Nav skanning, Postboks 1400, 0109 OSLO.",
+                        English to "If you do not have BankID or other means of logging into our home page nav.no, you must send a letter to Nav skanning, P.O. Box 1400, 0109 OSLO, Norway.",
+                    )
+                }
             }
         }
     }

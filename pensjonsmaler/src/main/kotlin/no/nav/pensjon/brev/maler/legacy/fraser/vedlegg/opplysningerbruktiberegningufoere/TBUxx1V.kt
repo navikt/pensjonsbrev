@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.maler.legacy.avdod_fremtidig_trygdetid_under_40_aar
 import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagavdod_brukerflyktning
 import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagavdod_fodselsnummer
@@ -170,11 +171,7 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                                 )
                             }
                             cell {
-                                text(
-                                    Bokmal to "Ja",
-                                    Nynorsk to "Ja",
-                                    English to "Yes",
-                                )
+                                includePhrase(Ja)
                             }
                         }
                     }
@@ -215,11 +212,7 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                                 )
                             }
                             cell {
-                                text(
-                                    Bokmal to "Ja",
-                                    Nynorsk to "Ja",
-                                    English to "Yes",
-                                )
+                                includePhrase(Ja)
                             }
                         }
                     }
