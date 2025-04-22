@@ -44,6 +44,10 @@ updates:
       backend:
         patterns:
           - "*"
+      postgresql:
+        patterns:
+          - "org.postgresql:postgresql"
+
 
   # =============
   # FRONTEND
