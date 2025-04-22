@@ -79,6 +79,7 @@ object ProductionTemplates : AllTemplates {
         InnhentingOpplysningerFraBruker,
         OmsorgEgenManuell,
         OrienteringOmSaksbehandlingstid,
+        TilbakekrevingAvFeilutbetaltBeloep,
         VarselOmMuligAvslag,
         VarselRevurderingAvPensjon,
         VarselTilbakekrevingAvFeilutbetaltBeloep,
