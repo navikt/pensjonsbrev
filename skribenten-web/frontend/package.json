@@ -39,9 +39,9 @@
   "devDependencies": {
     "@eslint/compat": "1.2.8",
     "@eslint/eslintrc": "3.3.1",
-    "@eslint/js": "9.24.0",
+    "@eslint/js": "9.25.1",
     "@navikt/aksel-stylelint": "7.18.0",
-    "@tanstack/eslint-plugin-query": "5.71.5",
+    "@tanstack/eslint-plugin-query": "5.73.3",
     "@tanstack/react-query-devtools": "5.71.10",
     "@tanstack/react-router-devtools": "1.115.0",
     "@tanstack/router-vite-plugin": "1.115.0",
@@ -51,12 +51,12 @@
     "@types/node": "22.14.0",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1",
-    "@typescript-eslint/eslint-plugin": "8.29.0",
-    "@typescript-eslint/parser": "8.29.0",
+    "@typescript-eslint/eslint-plugin": "8.31.0",
+    "@typescript-eslint/parser": "8.31.0",
     "@vitejs/plugin-react": "4.3.4",
     "cypress": "14.2.1",
-    "eslint": "9.24.0",
-    "eslint-config-prettier": "10.1.1",
+    "eslint": "9.25.1",
+    "eslint-config-prettier": "10.1.2",
     "eslint-plugin-import": "2.31.0",
     "eslint-plugin-prettier": "5.2.6",
     "eslint-plugin-react": "7.37.5",
@@ -71,7 +71,7 @@
     "stylelint": "16.18.0",
     "stylelint-config-standard": "38.0.0",
     "typescript": "5.8.3",
-    "vite": "6.2.5",
+    "vite": "6.3.2",
     "vitest": "3.1.1"
   }
 }

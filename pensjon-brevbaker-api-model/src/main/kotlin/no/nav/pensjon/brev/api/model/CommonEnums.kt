@@ -20,7 +20,7 @@ enum class SivilstandAvdoed {
 }
 
 // Bruker er koblet mot en ektefelle, partner eller samboer og angir bor med/benyttet sivilstatus i beregningen
-enum class BorMedSivilstand {
+enum class BorMedSivilstand{
     PARTNER_LEVER_ADSKILT,
     GIFT_LEVER_ADSKILT,
     EKTEFELLE,
@@ -82,3 +82,69 @@ enum class MetaforceSivilstand {
 }
 
 enum class PoengTallsType { FPP, G, H, IFUT, J, K, L, PI }
+
+enum class TilbakekrevingResultat  {
+    DELVIS_TILBAKEKREV,
+    FEILREGISTRERT,
+    FORELDET,
+    FULL_TILBAKEKREV,
+    INGEN_TILBAKEKREV,
+}
+
+enum class KonteringType {
+    AAP,
+    AFP_KOMP_TILLEGG,
+    AFP_KRONETILLEGG,
+    AFP_LIVSVARIG,
+    AFP_T,
+    ANNET,
+    AP_GJT,
+    BARNETILSYN,
+    BT,
+    ET,
+    FAM_T,
+    FAST_UTGIFT_T,
+    FEILKONTO,
+    GAP,
+    GARANTITILLEGG,
+    GAT,
+    AP_GJT_KAP19,
+    GP,
+    HJELP_BIDRAG,
+    HJELP_I_HUS,
+    IP,
+    JUSTERINGSKONTO,
+    KRIG_GY,
+    MENDEL,
+    MIN_NIVA_TILL_INDV,
+    MIN_NIVA_TILL_PPAR,
+    MISK,
+    PT,
+    SISK,
+    SKATT,
+    SKATT_F_GP,
+    SKATT_F_T,
+    SKATT_F_UT_ORDINER,
+    SKATT_PALEGG,
+    SKJERMT,
+    SP,
+    ST,
+    TFB,
+    TILSKOTT_FLYTTEUTG,
+    TJENESTEPENSJON,
+    TP,
+    TREKK,
+    TSB,
+    UFORETILLEGG_AP,
+    UTD_STONAD,
+    UT_AAP,
+    UT_ET,
+    UT_FAST_UTGIFT_T,
+    UT_GJT,
+    UT_GT_NORDISK,
+    UT_ORDINER,
+    UT_SP,
+    UT_TFB,
+    UT_TSB,
+    VT
+}
