@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.KravArsakType
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDto
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
@@ -16,10 +17,10 @@ data class InnvilgetGarantitilleggDto(
 
     data class PesysData(
         val garantitillegg: Kroner,
-        val kravAarsak: String,
+        val kravAarsak: KravArsakType,
         val kravVirkDatoFom: LocalDate,
         val minstenivaaIndividuellInnvilget: Boolean,
-        val regelverkstype: AlderspensjonRegelverkstype,
+        val regelverkstype: AlderspensjonRegelverkType,
         val saerskiltSatsErBrukt: Boolean,
         val totalPensjon: Kroner,
         val ufoereKombinertMedAlder: Boolean,
