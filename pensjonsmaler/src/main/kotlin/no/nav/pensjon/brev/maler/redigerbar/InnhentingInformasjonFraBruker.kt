@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.amerikanskSocialSecurityNumber
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.bankOpplysninger
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.bankopplysninger
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.boOgArbeidsperioder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.bosattIEoesLandSedErEoesBlanketter
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.eps60aarOgInntektUnder1g
@@ -52,21 +52,28 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
         ),
     ) {
         title {
-            textExpr(
-                Bokmal to "Vi har mottatt ".expr() +
-                        fritekst("søknad/blankett/brev/henvendelse")
-                        + " fra deg " + fritekst("dato") + ".",
-
-                Nynorsk to "Vi har fått ".expr() +
-                        fritekst("søknad/blankett/brev/henvendelse")
-                        + " frå deg " + fritekst("dato") + ".",
-
-                English to "We have received ".expr() +
-                        fritekst("an application/a form/a letter/an inquiry")
-                        + " from you " + fritekst("dato") + ".",
+            text(
+                Bokmal to "Du må sende oss flere opplysninger",
+                Nynorsk to "Du må sende oss fleire opplysningar",
+                English to "We need more information from you",
             )
         }
         outline {
+            paragraph {
+                textExpr(
+                    Bokmal to "Vi har mottatt ".expr() +
+                            fritekst("søknad/blankett/brev/henvendelse")
+                            + " fra deg " + fritekst("dato") + ".",
+
+                    Nynorsk to "Vi har fått ".expr() +
+                            fritekst("søknad/blankett/brev/henvendelse")
+                            + " frå deg " + fritekst("dato") + ".",
+
+                    English to "We have received ".expr() +
+                            fritekst("an application/a form/a letter/an inquiry")
+                            + " from you " + fritekst("dato") + ".",
+                )
+            }
             paragraph {
                 val fritekst = fritekst("Utfyllende informasjon til bruker om årsak til brevet.")
                 textExpr(
@@ -115,7 +122,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.bankOpplysninger) {
+            showIf(saksbehandlerValg.bankopplysninger) {
                 title1 {
                     text(
                         Bokmal to "Bankopplysninger",

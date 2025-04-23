@@ -8,35 +8,36 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVarselDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.Delmal
+import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
+
+class EtteroppgjoerVedtakRedigerbartUtfallDTO: RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
-object EtteroppgjoerVarselTilbakekreving : EtterlatteTemplate<EtteroppgjoerVarselDTO>, Hovedmal {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_EO_VARSEL_TILBAKEKREVING
+object EtteroppgjoerVedtakRedigerbartUtfall:
+    EtterlatteTemplate<EtteroppgjoerVedtakRedigerbartUtfallDTO>, Delmal {
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_EO_VEDTAK_UTFALL
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = EtteroppgjoerVarselDTO::class,
+        letterDataType = EtteroppgjoerVedtakRedigerbartUtfallDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Varselbrev etteroppgjør varsel",
+            displayTitle = "Vedtak - Etteroppgjør",
             isSensitiv = true,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
     ) {
         title {
             text(
                 Language.Bokmal to "",
                 Language.Nynorsk to "",
-                Language.English to ""
+                Language.English to "",
             )
         }
-
         outline {
-            konverterElementerTilBrevbakerformat(innhold)
+
         }
     }
 }

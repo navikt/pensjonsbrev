@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.AlderspensjonBeregnetEtter
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -50,7 +50,7 @@ data class MaanedligPensjonFoerSkattDto(
     )
 
     data class AlderspensjonGjeldende(
-        val regelverkstype: AlderspensjonRegelverkstype,
+        val regelverkstype: AlderspensjonRegelverkType,
         val erEksportberegnet: Boolean,
         val andelKap19: Int,
         val andelKap20: Int,

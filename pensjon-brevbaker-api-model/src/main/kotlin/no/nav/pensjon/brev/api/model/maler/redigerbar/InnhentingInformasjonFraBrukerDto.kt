@@ -14,7 +14,7 @@ data class InnhentingInformasjonFraBrukerDto(
         @DisplayText("Bosatt i EØS-land. SED-er/EØS-blanketter")
         val bosattIEoesLandSedErEoesBlanketter: Boolean,
         val inntektsopplysninger: Boolean,
-        val bankOpplysninger: Boolean,
+        val bankopplysninger: Boolean,
         val amerikanskSocialSecurityNumber: Boolean,
         val registreringAvSivilstand: Boolean,
         @DisplayText("Ektefelle/partner/samboer 60 år og inntekt under 1G")
