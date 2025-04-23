@@ -21,8 +21,16 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUtta
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.PesysDataSelectors.krav
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.PesysDataSelectors.vedtak
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.SaksbehandlerValgSelectors.visEtterbetaling
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.VedtakSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
+import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.model.format
@@ -38,13 +46,16 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.Percent
 
 @TemplateModelHelpers
 object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradDto> {
@@ -241,16 +252,199 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                 }
             }
 
+            showIf(pesysData.krav.kravInitiertAv.isOneOf(BRUKER, VERGE) and pesysData.alderspensjonVedVirk.uttaksgrad.lessThan(100)) {
+                // gradsendrAPSoknadInfo_001
+                paragraph {
+                    text(
+                        Bokmal to "Du må sende oss en ny søknad når du ønsker å ta ut mer alderspensjon. En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden.",
+                        Nynorsk to "Du må sende oss ein ny søknad når du ønskjer å ta ut meir alderspensjon. Ei eventuell endring kan tidlegast skje månaden etter at vi har mottatt søknaden.",
+                        English to "You have to submit an application when you want to increase your retirement pension. Any change will be implemented at the earliest the month after we have received the application."
+                    )
+                }
+            }
+
+            showIf(pesysData.krav.kravInitiertAv.isNotAnyOf(BRUKER, VERGE) and pesysData.alderspensjonVedVirk.uforeKombinertMedAlder) {
+                // endringGradAPOktUFGBegrunn_001
+                title1 {
+                    text(
+                        Bokmal to "Begrunnelse for vedtaket",
+                        Nynorsk to "Grunngiving for vedtaket",
+                        English to "Grounds for the decision"
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Fordi uføregraden din har økt, kan du ikke ta ut like mye alderspensjon som før. Vi har derfor redusert alderspensjonen din til ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() +" prosent, som er den høyest mulige graden.",
+                        Nynorsk to "Fordi uføregraden din har auka, kan du ikkje ta ut like mykje alderspensjon som før. Vi har derfor redusert alderspensjonen din til ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() +" prosent, som er den høgast moglege graden.",
+                        English to "Because your degree of disability has increased, you are no longer entitled to draw the same amount of retirement pension as before. We have therefore reduced your retirement pension to ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() +"percent, which is the highest possible withdrawal rate."
+                    )
+                }
+
+                //  endringGradAPInnvUTBegrunn_001
+                title1 {
+                    text(
+                        Bokmal to "Begrunnelse for vedtaket",
+                        Nynorsk to "Grunngiving for vedtaket",
+                        English to "Grounds for the decision"
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Fordi du har fått innvilget uføretrygd, kan du ikke ta ut like mye alderspensjon som før. Vi har derfor redusert alderspensjonen din til ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent, som er den høyest mulige graden.",
+                        Nynorsk to "Fordi du har fått innvilga uføretrygd, kan du ikkje ta ut like mykje alderspensjon som før. Vi har derfor redusert alderspensjonen din til ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent, som er den høgast moglege graden.",
+                        English to "Because you have been granted disability benefit, you are no longer entitled to draw the same amount of retirement pension as before. We have therefore reduced your retirement pension to ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " percent, which is the highest possible withdrawal rate."
+                    )
+                }
+            }.orShowIf(pesysData.krav.kravInitiertAv.isNotAnyOf(BRUKER, VERGE) and not(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder)) {
+                // endringAPOpptjenBegrunn_001
+                title1 {
+                    text(
+                        Bokmal to "Begrunnelse for vedtaket",
+                        Nynorsk to "Grunngiving for vedtaket",
+                        English to "Grounds for the decision"
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Fordi opptjeningsgrunnlaget ditt er endret kan du ikke lenger ta ut like mye pensjon som før. Vi har derfor redusert alderspensjonen din til ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent.",
+                        Nynorsk to "Fordi oppteningsgrunnlaget ditt er endra kan du ikkje lenger ta ut like mykje pensjon som før. Vi har derfor redusert alderspensjonen din til ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent.",
+                        English to "Because your basis for accumulating pension rights has changed, you are no longer entitled to draw the same amount of pension as before. We have therefore reduced your retirement pension to ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " percent."
+                    )
+                }
+            }
+
+            // skattAPendring_001
+            title1 {
+                text(
+                    Bokmal to "Endring av alderspensjon kan ha betydning for skatt",
+                    Nynorsk to "Endring av alderspensjon kan ha betyding for skatt",
+                    English to "The change in your retirement pension may affect how much tax you pay"
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du bør kontrollere om skattekortet ditt er riktig når alderspensjonen blir endret. Dette kan du gjøre selv på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister.",
+                    Nynorsk to "Du bør kontrollere om skattekortet ditt er riktig når alderspensjonen blir endra. Dette kan du gjere sjølv på $SKATTEETATEN_PENSJONIST_URL. Der får du også meir informasjon om skattekort for pensjonistar.",
+                    English to "When your retirement pension has been changed, you should check if your tax deduction card is correctly calculated. You can change your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL. There you will find more information regarding tax deduction card for pensioners."
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "På $DIN_PENSJON_URL får du vite hva du betaler i skatt. Her kan du også legge inn ekstra skattetrekk om du ønsker det. Dersom du endrer skattetrekket vil dette gjelde fra måneden etter at vi har fått beskjed.",
+                    Nynorsk to "På $DIN_PENSJON_URL får du vite kva du betaler i skatt. Her kan du også leggje inn tilleggsskatt om du ønskjer det. Dersom du endrar skattetrekket, vil dette gjelde frå månaden etter at vi har fått beskjed.",
+                    English to "At $DIN_PENSJON_URL you can see how much tax you are paying. Here you can also add surtax, if you want. If you change your income tax rate, this will be applied from the month after we have been notified of the change."
+                )
+            }
+
+            showIf(pesysData.vedtak.etterbetaling or saksbehandlerValg.visEtterbetaling) {
+                // etterbetalingAP_002
+                title1 {
+                    text(
+                        Bokmal to "Etterbetaling",
+                        Nynorsk to "Etterbetaling",
+                        English to "Retroactive payment"
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får etterbetalt pensjon fra ".expr() + pesysData.krav.virkDatoFom.format() + ". Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. Vi kan trekke fra skatt og ytelser du har fått fra for eksempel Nav eller tjenestepensjonsordninger. Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $DITT_NAV.",
+                        Nynorsk to "Du får etterbetalt pensjon frå ".expr() + pesysData.krav.virkDatoFom.format() + ". Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. Vi kan trekke frå skatt og ytingar du har fått frå for eksempel Nav eller tenestepensjonsordningar. Derfor kan etterbetalinga di bli forsinka. Tenestepensjonsordninga har ni veker frist på å krevje trekk i etterbetalinga. Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $DITT_NAV.",
+                        English to "You will receive retroactive pension payments from ".expr() + pesysData.krav.virkDatoFom.format() +". The retroactive payments will normally be made in the course of seven working days. We can make deductions for tax and benefits you have received, for example, from Nav or occupational pension schemes. Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. You can check if there are any deductions from the payment notice at $DITT_NAV."
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser.",
+                        Nynorsk to "Dersom etterbetalinga gjeld tidlegare år, vil vi trekkje skatt etter standardsatsane til skatteetaten.",
+                        English to "If the retroactive payment refers to earlier years, we will deduct tax at the Tax Administration's standard rates."
+                    )
+                }
+            }
+
+            // arbInntektAPOverskrift_001
+            title1 {
+                text(
+                    Bokmal to "Arbeidsinntekt og alderspensjon",
+                    Nynorsk to "Arbeidsinntekt og alderspensjon",
+                    English to "Earned income and retirement pension"
+                )
+            }
+
+            // arbInntektAP_001
+            paragraph {
+                text(
+                    Bokmal to "Du kan arbeide så mye du vil uten at alderspensjonen din blir redusert. Det kan føre til at pensjonen din øker.",
+                    Nynorsk to "Du kan arbeide så mykje du vil utan at alderspensjonen din blir redusert. Det kan føre til at pensjonen din aukar.",
+                    English to "You can work as much as you want without your retirement pension being reduced. This may lead to an increase in your pension."
+                )
+            }
+
+            showIf(pesysData.alderspensjonVedVirk.uttaksgrad.equalTo(Percent(100))) {
+                // nyOpptjeningHelAP_001
+                paragraph {
+                    text(
+                        Bokmal to "Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig.",
+                        Nynorsk to "Dersom du har 100 prosent alderspensjon, gjeld auken frå 1. januar året etter at skatteoppgjeret ditt er ferdig.",
+                        English to "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed."
+                    )
+                }
+            }.orShow {
+                // nyOpptjeningGradertAP_001
+                paragraph {
+                    text(
+                        Bokmal to "Hvis du har lavere enn 100 prosent alderspensjon, blir økningen lagt til hvis du søker om endret grad eller ny beregning av den graden du har nå.",
+                        Nynorsk to "Dersom du har lågare enn 100 prosent alderspensjon, blir auken lagd til dersom du søkjer om endra grad eller ny berekning av den graden du har no.",
+                        English to "If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated."
+                    )
+                }
+            }
+
+            showIf(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder) {
+                // arbInntektAPogUT_001
+                paragraph {
+                    text(
+                        Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
+                        Nynorsk to "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd.",
+                        English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit."
+                    )
+                }
+            }
+
+            // meldEndringerPesys_002
+            // TODO: Denne er så godt som lik mange av dei andre meld fra om endringer. Bør samkjøres og legges i felles.
+            title1 {
+                text(
+                    Bokmal to "Du må melde fra om endringer",
+                    Nynorsk to "Du må melde frå om endringar",
+                    English to "You must notify Nav if anything changes"
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget ser du hvilke endringer du må si fra om.",
+                    Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget ser du kva endringar du må seie frå om.",
+                    English to "If your circumstances change, you must inform Nav immediately. The appendix specifies which changes you are obligated to notify us of."
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav.",
+                    Nynorsk to "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til Nav.",
+                    English to "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav."
+                )
+            }
+
+        // TODO vedlegg inn her            includePhrase(Felles.RettTilAAKlage())
+        // TODO vedlegg inn her            includePhrase(Felles.RettTilInnsyn())
 
 
-
+             includePhrase(Felles.HarDuSpoersmaal.alder)
             }
 
         includeAttachment(vedleggOrienteringOmRettigheterOgPlikter, pesysData.orienteringOmRettigheterOgPlikterDto)
         includeAttachment(vedleggMaanedligPensjonFoerSkatt, pesysData.maanedligPensjonFoerSkattDto)
         // v10
         // v5
-
     }
 
 }

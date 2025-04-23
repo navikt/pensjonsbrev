@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.Percent
 import java.time.LocalDate
 
 data class VedtakEndringAvUttaksgradDto(
@@ -13,7 +14,7 @@ data class VedtakEndringAvUttaksgradDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<VedtakEndringAvUttaksgradDto.SaksbehandlerValg, VedtakEndringAvUttaksgradDto.PesysData> {
     data class SaksbehandlerValg(
-        val tittel: String // TODO
+        val visEtterbetaling: Boolean
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -22,6 +23,7 @@ data class VedtakEndringAvUttaksgradDto(
         val krav: Krav,
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val beregnetPensjonPerManed: BeregnetPensjonPerManed,
+        val vedtak: Vedtak,
     ) : BrevbakerBrevdata
 
     data class Krav(
@@ -30,7 +32,7 @@ data class VedtakEndringAvUttaksgradDto(
     )
 
     data class AlderspensjonVedVirk(
-        val uttaksgrad: Int,
+        val uttaksgrad: Percent,
         val uforeKombinertMedAlder: Boolean,
         val totalPensjon: Kroner,
         val privatAFPErBrukt: Boolean,
@@ -41,6 +43,10 @@ data class VedtakEndringAvUttaksgradDto(
 
     data class BeregnetPensjonPerManed(
         val antallBeregningsperioderPensjon: Int
+    )
+
+    data class Vedtak(
+        val etterbetaling: Boolean
     )
 
     @Suppress("EnumEntryName")
