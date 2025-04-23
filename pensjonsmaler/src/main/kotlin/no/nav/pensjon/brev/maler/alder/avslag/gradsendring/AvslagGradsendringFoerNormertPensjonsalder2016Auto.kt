@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.harEOSLand
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.opplysningerBruktIBeregningen
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.vedtakBegrunnelseLavOpptjening
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
@@ -61,7 +60,6 @@ object AvslagGradsendringFoerNormertPensjonsalder2016Auto : AutobrevTemplate<Avs
                     totalPensjon = totalPensjon,
                     borINorge = borINorge,
                     harEOSLand = harEOSLand,
-                    vedtakBegrunnelseLavOpptjening = vedtakBegrunnelseLavOpptjening,
                     regelverkType = regelverkType
                 )
             )
@@ -70,8 +68,7 @@ object AvslagGradsendringFoerNormertPensjonsalder2016Auto : AutobrevTemplate<Avs
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
         includeAttachment(
             template = opplysningerBruktIBeregningenAP2016Vedlegg,
-            attachmentData = opplysningerBruktIBeregningen,
-            predicate = vedtakBegrunnelseLavOpptjening
+            attachmentData = opplysningerBruktIBeregningen
         )
     }
 }
