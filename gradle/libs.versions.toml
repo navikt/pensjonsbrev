@@ -1,6 +1,6 @@
 [versions]
 kotlinVersion = "2.1.20"
-kotlinKspVersion = "2.1.20-1.0.32" # TODO: Denne er kombinasjon av kotlinVersion og kspVersion. Har ikkje funne ein måte å slå saman desse to automatisk på
+kotlinKspVersion = "2.1.20-2.0.0"
 ktorVersion = "3.1.2"
 
 assertJVersion = "3.27.3"

@@ -4,13 +4,12 @@ import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.*
 import com.tschuchort.compiletesting.*
 import no.nav.pensjon.brev.template.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.io.File
 
 private val unsupportedAnnotationTarget = UnsupportedAnnotationTarget::class.qualifiedName!!
 private val invalidObjectTarget = InvalidObjectTarget::class.qualifiedName!!
-private val annotationName = TemplateModelHelpers::class.qualifiedName!!
-private val hasModelName = HasModel::class.qualifiedName!!
 
 class TemplateModelHelpersAnnotationProcessorTest {
 
@@ -20,6 +19,13 @@ class TemplateModelHelpersAnnotationProcessorTest {
     @Suppress("unused")
     interface AModelInterface{
         val fornavn: String
+    }
+
+    @Test
+    fun `HasModel typeparameter name matches name from reflection`() {
+        // To avoid exposing a transitive dependency on kotlin-reflect just to find the name of this type-parameter, we have it set as constant.
+        // Thus, we need this test to verify that constant actually matches the name from source.
+        assertEquals(HasModel::class.typeParameters.first().name, HAS_MODEL_TYPE_PARAMETER_NAME)
     }
 
     @Test
@@ -129,7 +135,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
 
         assertThat(
-            result.messages, hasKspErrorMessages("$unsupportedAnnotationTarget: @$annotationName does not support target class kind CLASS (only supports OBJECT): MyClass")
+            result.messages, hasKspErrorMessages("$unsupportedAnnotationTarget: @$ANNOTATION_NAME does not support target class kind CLASS (only supports OBJECT): MyClass")
         )
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.INTERNAL_ERROR))
     }
@@ -148,7 +154,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
         ).compile()
 
         assertThat(result.exitCode, equalTo(KotlinCompilation.ExitCode.INTERNAL_ERROR))
-        assertThat(result.messages, hasKspErrorMessages("$invalidObjectTarget: @$annotationName annotated target OBJECT must extend $hasModelName"))
+        assertThat(result.messages, hasKspErrorMessages("$invalidObjectTarget: @$ANNOTATION_NAME annotated target OBJECT must extend $HAS_MODEL_INTERFACE_NAME"))
     }
 
     @Test
