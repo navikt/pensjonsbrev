@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
+import no.nav.pensjon.brev.api.model.GarantipensjonSatsType
 import no.nav.pensjon.brev.maler.fraser.common.AntallAarText
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.beregningVirkDatoFom
@@ -8,16 +9,21 @@ import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP202
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.satsType_safe
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VilkaarsVedtakSelectors.avslattGarantipensjon
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.beregningKap20VedVirk
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.garantipensjonVedVirk
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.trygdetidsdetaljerKap20VedVirk
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.vilkarsVedtak
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
@@ -31,7 +37,7 @@ data class OpplysningerBruktIBeregningenAlderAP2025Dto(
     val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
     val beregningKap20VedVirk: BeregningKap20VedVirk,
     val vilkarsVedtak: VilkaarsVedtak,
-    val garantipensjonVedVirk: GarantipensjonVedVirk,
+    val garantipensjonVedVirk: GarantipensjonVedVirk?,
     val trygdetidsdetaljerKap20VedVirk: TrygdetidsdetaljerKap20VedVirk,
 ) {
 
@@ -41,6 +47,7 @@ data class OpplysningerBruktIBeregningenAlderAP2025Dto(
 
     data class GarantipensjonVedVirk(
         val delingstalletVed67Ar: Double,
+        val satsType: GarantipensjonSatsType,
     )
 
     data class VilkaarsVedtak(
@@ -67,6 +74,7 @@ data class OpplysningerBruktIBeregningenAlderAP2025Dto(
 @TemplateModelHelpers
 val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningenAlderAP2025Dto>(
+        //vedleggBeregnAP2025Tittel_001
         title = newText(
             Bokmal to "Slik har vi beregnet pensjonen din",
             Nynorsk to "Slik har vi berekna pensjonen din",
@@ -74,6 +82,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
         ),
         includeSakspart = false
     ) {
+        //vedleggBeregnInnlednAP2025_001
         paragraph {
             text(
                 Bokmal to "I dette vedlegget finner du opplysninger som vi har brukt for å regne ut alderspensjonen din.",
@@ -88,6 +97,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                 English to "If you believe any information is incorrect, you must notify Nav, as it may affect the amount of your pension.",
             )
         }
+        //vedleggBeregnUttaksgrad_001
         paragraph {
             textExpr(
                 Bokmal to "Uttaksgraden for alderspensjonen din er ".expr() + alderspensjonVedVirk.uttaksgrad.format() + " prosent.",
@@ -108,6 +118,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                 column(alignment = RIGHT) { }
             }) {
                 row {
+                    //tabellBeholdningForForsteUttak_002
                     cell {
                         text(
                             Bokmal to "Pensjonsbeholdning ved uttak",
@@ -118,6 +129,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                     cell { includePhrase(KronerText(beregningKap20VedVirk.beholdningForForsteUttak)) }
                 }
 
+                //vedleggTabellKap20Delingstall _002
                 row {
                     cell {
                         text(
@@ -129,6 +141,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                     cell { eval(beregningKap20VedVirk.delingstallLevealder.format()) }
                 }
 
+                //vedleggTabellKap20Trygdetid_001
                 showIf(not(vilkarsVedtak.avslattGarantipensjon)) {
                     row {
                         cell {
@@ -142,22 +155,42 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                     }
                 }
 
+                //vedleggTabellKap20SatsGarP_001
                 showIf(
                     alderspensjonVedVirk.garantipensjonInnvilget
                             and alderspensjonVedVirk.nettoUtbetaltPerManed.greaterThan(0)
                 ) {
-                    //vedleggTabellKap20SatsGarP_001 TODO WIP
                     row {
                         cell {
+                            val hoysats = garantipensjonVedVirk.satsType_safe.equalTo(GarantipensjonSatsType.HOY)
+                            val ordinaer = garantipensjonVedVirk.satsType_safe.equalTo(GarantipensjonSatsType.ORDINAER)
+                            text(
+                                Bokmal to "Sats for garantipensjon",
+                                Nynorsk to "Sats for garantipensjon",
+                                English to "Guaranteed pension rate",
+                            )
+
+                            showIf(hoysats) {
+                                text(
+                                    Bokmal to " (høy sats)",
+                                    Nynorsk to " (høg sats)",
+                                    English to " (high rate)",
+                                )
+                            }.orShowIf(ordinaer) {
+                                text(
+                                    Bokmal to " (ordinær sats)",
+                                    Nynorsk to " (ordinær sats)",
+                                    English to " (ordinary rate)",
+                                )
+                            }
 
                         }
                         cell {
-
+                            garantipensjonSatsPerAr
                         }
                     }
                 }
 
             }
         }
-
     }
