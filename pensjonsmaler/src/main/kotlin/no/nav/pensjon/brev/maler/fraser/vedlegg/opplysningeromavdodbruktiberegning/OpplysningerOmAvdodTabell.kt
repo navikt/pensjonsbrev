@@ -385,7 +385,6 @@ data class OpplysningerOmAvdodTabell(
                                 //vedleggTabellAvdodKap19SluttpoengMedOverkompAvtalelandAP1967_001
                                 //vedleggTabellAvdodKap19SluttpoengUtenOverkompAvtalelandAP1967_001
 
-                                // TODO ulik suffix på engelsk. bør avklares. Tror earned... er riktig
                                 sluttpoengTall(
                                     suffixNorsk = " (avtaleland)",
                                     suffixEngelsk = " (earned in countries with social security agreement)",

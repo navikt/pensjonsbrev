@@ -123,7 +123,7 @@ val opplysningerOmAvdoedBruktIBeregning =
             //norskTTTabellAvdødInnl_001 - AP1967
             includePhrase(TrygdetidNorgeAvdodTabellInnledning)
 
-            //TODO vises tabellen her i det hele tatt?
+            //TODO Tabellen for AP1967 trygdetid i norge mangler!
         }
 
         showIf(
@@ -140,19 +140,9 @@ val opplysningerOmAvdoedBruktIBeregning =
             includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.UtenlandskTrygdetid(avdoedTrygdetidEOS))
         }
 
-        showIf(
-            (
-                    avdoedTrygdetidEOS.size().greaterThan(0) and
-                            // TODO helt meningsløs logikk, vil alltid være true fordi kun en av de er satt. Den er også feil-implementert i dagens kode.
-                            // fungerer i dag på grunn av sjekken på om du har trygdetidsperioder.
-                            (beregningsmetodeKap19.notEqualTo(EOS) and beregningsmetodeKap19.notEqualTo(NORDISK) and beregningsmetodeKap19.notEqualTo(
-                                FOLKETRYGD
-                            ))
-                            or (beregningsmetodeAP1967.notEqualTo(EOS) and beregningsmetodeAP1967.notEqualTo(NORDISK) and beregningsmetodeAP1967.notEqualTo(
-                        FOLKETRYGD
-                    ))
-                    )
-        ) {
+        // TODO her var det feil-implementert logikk som alltid vil returnere true. Fjernet den, men det betyr at det kan hende trygdetid i avtaleland vises unødvendig.
+        //      fungerer i dag på grunn av sjekken på om du har trygdetidsperioder.
+        showIf(avdoedTrygdetidEOS.size().greaterThan(0)) {
             paragraph {
                 text(
                     Bokmal to "Avdødes trygdetid i avtaleland er fastsatt på grunnlag av følgende perioder:",
@@ -166,7 +156,9 @@ val opplysningerOmAvdoedBruktIBeregning =
             text(
                 Bokmal to "Pensjonsopptjening",
                 Nynorsk to "Pensjonsopptening",
-                English to "Accumulated pension capital", // TODO ser denne teksten også er brukt for Pensjonsbeholdning. Er det det samme?
+                // TODO ser denne teksten også er brukt for Pensjonsbeholdning. Er det det samme?
+                //  det er lite konsekvent ordbruk for pensjonsopptjening og beholdning på engelsk.
+                English to "Accumulated pension capital",
             )
         }
         paragraph {
