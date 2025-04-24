@@ -121,9 +121,10 @@ val opplysningerOmAvdoedBruktIBeregning =
             //trygdetidOverskrift_001 - AP1967
             //norskTTAvdodInfoGenerell_001 - AP1967
             //norskTTTabellAvdødInnl_001 - AP1967
-            includePhrase(TrygdetidNorgeAvdodTabellInnledning)
+            //includePhrase(TrygdetidNorgeAvdodTabellInnledning)
 
-            //TODO Tabellen for AP1967 trygdetid i norge mangler!
+            //TODO Tabellen for AP1967 trygdetid i norge mangler! Skjuler også innledningen.
+            //
         }
 
         showIf(
