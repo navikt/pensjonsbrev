@@ -24,7 +24,7 @@ object Redigerbar {
                 text(
                     Bokmal to "AFP i privat sektor",
                     Nynorsk to "AFP i privat sektor",
-                    English to "contractual pension (AFP) in the private) sector",
+                    English to "contractual pension (AFP) in the private sector",
                 )
             }.orShowIf(sakstype.isOneOf(Sakstype.ALDER)) {
                 text(
