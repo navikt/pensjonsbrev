@@ -8,7 +8,7 @@ import { useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import {
-  getBrevAttestering,
+  getBrevAttesteringQuery,
   getBrevReservasjon,
   oppdaterAttestantSignatur,
   oppdaterSaksbehandlerValg,
@@ -45,8 +45,7 @@ const VedtakWrapper = () => {
   const { vedtaksId, enhetsId } = Route.useSearch();
 
   const hentBrevQuery = useQuery({
-    queryKey: getBrevAttestering.queryKey(Number.parseInt(brevId)),
-    queryFn: () => getBrevAttestering.queryFn(saksId, Number.parseInt(brevId)),
+    ...getBrevAttesteringQuery(saksId, Number(brevId)),
     staleTime: Number.POSITIVE_INFINITY,
   });
 

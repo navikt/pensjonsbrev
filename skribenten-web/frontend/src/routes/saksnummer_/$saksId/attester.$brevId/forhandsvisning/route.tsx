@@ -4,10 +4,9 @@ import { Alert, BodyShort, Box, Button, Heading, HStack, Label, Loader, Modal, V
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { he } from "date-fns/locale";
 import { useState } from "react";
 
-import { getBrevAttestering } from "~/api/brev-queries";
+import { getBrevAttesteringQuery } from "~/api/brev-queries";
 import { sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
@@ -25,10 +24,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/forh
 
 const VedtakForhåndsvisningWrapper = () => {
   const { saksId, brevId } = Route.useParams();
-  const hentBrevQuery = useQuery({
-    queryKey: getBrevAttestering.queryKey(Number.parseInt(brevId)),
-    queryFn: () => getBrevAttestering.queryFn(saksId, Number.parseInt(brevId)),
-  });
+  const hentBrevQuery = useQuery(getBrevAttesteringQuery(saksId, Number(brevId)));
 
   return queryFold({
     query: hentBrevQuery,
@@ -140,10 +136,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
 const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; onClose: () => void }) => {
   const { setResultat } = useSendtBrevResultatContext();
   const navigate = useNavigate({ from: Route.fullPath });
-  const { data } = useQuery({
-    queryKey: getBrevAttestering.queryKey(Number(props.brevId)),
-    queryFn: () => getBrevAttestering.queryFn(props.saksId, Number(props.brevId)),
-  });
+  const { data } = useQuery(getBrevAttesteringQuery(props.saksId, Number(props.brevId)));
 
   const sendBrevMutation = useMutation({
     mutationFn: () => {
