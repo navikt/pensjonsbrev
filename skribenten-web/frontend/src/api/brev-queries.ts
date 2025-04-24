@@ -18,18 +18,6 @@ export const brevmalKeys = {
   modelSpecification: (brevkode: string) => [...brevmalKeys.brevkode(brevkode), "MODEL_SPECIFICATION"],
 };
 
-export const brevKeys = {
-  all: ["BREV"] as const,
-  id: (brevId: number) => [...brevKeys.all, brevId] as const,
-  reservasjon: (brevId: number) => [...brevKeys.id(brevId), "RESERVASJON"] as const,
-};
-
-export const attesteringBrevKeys = {
-  all: ["BREV", "ATTESTERING"] as const,
-  id: (brevId: number) => [...attesteringBrevKeys.all, brevId] as const,
-  reservasjon: (brevId: number) => [...attesteringBrevKeys.id(brevId), "RESERVASJON"] as const,
-};
-
 export const getModelSpecification = {
   queryKey: brevmalKeys.modelSpecification,
   queryFn: async (brevkode: string) =>
@@ -37,14 +25,10 @@ export const getModelSpecification = {
       .data,
 };
 
-export const getBrevAttestering = {
-  queryKey: attesteringBrevKeys.id,
-  queryFn: async (saksId: string, brevId: number, reserver: boolean = true) =>
-    (
-      await axios.get<BrevResponse>(
-        `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/attestering?reserver=${reserver}`,
-      )
-    ).data,
+export const brevKeys = {
+  all: ["BREV"] as const,
+  id: (brevId: number) => [...brevKeys.all, brevId] as const,
+  reservasjon: (brevId: number) => [...brevKeys.id(brevId), "RESERVASJON"] as const,
 };
 
 export const getBrev = {
@@ -53,6 +37,24 @@ export const getBrev = {
     (await axios.get<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}?reserver=${reserver}`))
       .data,
 };
+
+export const attesteringBrevKeys = {
+  all: ["BREV", "ATTESTERING"] as const,
+  id: (brevId: number, saksId: string, reserver: boolean = true) =>
+    [...attesteringBrevKeys.all, brevId, saksId, reserver] as const,
+  reservasjon: (brevId: number, saksId: string, reserver: boolean = true) =>
+    [...attesteringBrevKeys.id(brevId, saksId, reserver), "RESERVASJON"] as const,
+};
+
+export const getBrevAttesteringQuery = (saksId: string, brevId: number, reserver: boolean = true) => ({
+  queryKey: attesteringBrevKeys.id(brevId, saksId, reserver),
+  queryFn: async () =>
+    (
+      await axios.get<BrevResponse>(
+        `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/attestering?reserver=${reserver}`,
+      )
+    ).data,
+});
 
 export async function createBrev(saksId: string, request: OpprettBrevRequest) {
   return (await axios.post<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev`, request)).data;
