@@ -20,7 +20,7 @@ data class InnvilgetGarantitilleggDto(
         val kravAarsak: KravArsakType,
         val kravVirkDatoFom: LocalDate,
         val minstenivaaIndividuellInnvilget: Boolean,
-        val regelverkstype: AlderspensjonRegelverkType,
+        val regelverkType: AlderspensjonRegelverkType,
         val saerskiltSatsErBrukt: Boolean,
         val totalPensjon: Kroner,
         val ufoereKombinertMedAlder: Boolean,
