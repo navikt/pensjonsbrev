@@ -311,7 +311,7 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                         cell {
                             text(
                                 Bokmal to "Delingstall ved uttak",
-                                Nynorsk to "Delingstal ved levealdersjustering",
+                                Nynorsk to "Delingstal ved uttak",
                                 English to "Ratio for life expectancy adjustment"
                             )
                         }

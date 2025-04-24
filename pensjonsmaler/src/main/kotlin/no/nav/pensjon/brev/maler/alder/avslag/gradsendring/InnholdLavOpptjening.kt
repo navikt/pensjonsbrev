@@ -57,9 +57,9 @@ data class InnholdLavOpptjening(
         }.orShowIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2016)) {
             paragraph {
                 text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-11, 19-15, 20-15 og 20-19.",
-                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-11, 19-15, 20-15 og 20-19.",
-                    English to "This decision was made pursuant to the provisions of §§ 19-11, 19-15, 20-15 og 20-19 of the National Insurance Act."
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-11, 19-15, 22-13, 20-15 og 20-19.",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-11, 19-15, 22-13, 20-15 og 20-19.",
+                    English to "This decision was made pursuant to the provisions of §§ 19-11, 19-15, 22-13, 20-15 og 20-19 of the National Insurance Act."
                 )
             }
         }
