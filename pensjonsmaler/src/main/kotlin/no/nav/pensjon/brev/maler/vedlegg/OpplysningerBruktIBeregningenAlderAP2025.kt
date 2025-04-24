@@ -186,7 +186,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
 
                         }
                         cell {
-                            garantipensjonSatsPerAr
+
                         }
                     }
                 }
