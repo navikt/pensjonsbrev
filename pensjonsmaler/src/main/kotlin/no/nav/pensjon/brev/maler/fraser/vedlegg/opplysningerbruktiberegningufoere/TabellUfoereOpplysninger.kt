@@ -46,12 +46,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.YrkesskadeGjeldendeSelectors.skadetidspunkt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDtoSelectors.YrkesskadeGjeldendeSelectors.yrkesskadegrad
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.tableFormat
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -86,7 +86,7 @@ data class TabellUfoereOpplysninger(
     val harMinsteytelse: Expression<Boolean>,
     val brukersSivilstand: Expression<Sivilstand>,
     val borMedSivilstand: Expression<BorMedSivilstand?>,
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             table(
@@ -98,7 +98,10 @@ data class TabellUfoereOpplysninger(
                             English to "Information",
                         )
                     }
-                    column(columnSpan = 1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {}
+                    column(
+                        columnSpan = 1,
+                        alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+                    ) {}
                 }
             ) {
                 row {
@@ -280,7 +283,7 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            ifNotNull(borMedSivilstand){
+                            ifNotNull(borMedSivilstand) {
                                 textExpr(
                                     Bokmal to it.tableFormat(),
                                     Nynorsk to it.tableFormat(),
@@ -302,11 +305,13 @@ data class TabellUfoereOpplysninger(
                         }
                     }
 
-                    ifNotNull(borMedSivilstand){ borMedSivilstand->
-                        showIf(borMedSivilstand.isOneOf(
-                            BorMedSivilstand.GIFT_LEVER_ADSKILT,
-                            BorMedSivilstand.PARTNER_LEVER_ADSKILT
-                        )) {
+                    ifNotNull(borMedSivilstand) { borMedSivilstand ->
+                        showIf(
+                            borMedSivilstand.isOneOf(
+                                BorMedSivilstand.GIFT_LEVER_ADSKILT,
+                                BorMedSivilstand.PARTNER_LEVER_ADSKILT
+                            )
+                        ) {
                             val erGift = borMedSivilstand.isOneOf(BorMedSivilstand.GIFT_LEVER_ADSKILT)
                             row {
                                 cell {
@@ -323,11 +328,7 @@ data class TabellUfoereOpplysninger(
                                     )
                                 }
                                 cell {
-                                    text(
-                                        Bokmal to "Ja",
-                                        Nynorsk to "Ja",
-                                        English to "Yes",
-                                    )
+                                    includePhrase(Ja)
                                 }
                             }
                         }
@@ -345,11 +346,7 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "Ja",
-                                Nynorsk to "Ja",
-                                English to "Yes"
-                            )
+                            includePhrase(Ja)
                         }
                     }
                 }
@@ -419,11 +416,7 @@ data class TabellUfoereOpplysninger(
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "Ja",
-                                Nynorsk to "Ja",
-                                English to "Yes"
-                            )
+                            includePhrase(Ja)
                         }
                     }
                 }
@@ -747,7 +740,11 @@ data class TabellUfoereOpplysninger(
                         barnetillegg.fellesbarn_safe.samletInntektBruktIAvkortning_safe.ifNull(Kroner(0))
                     val inntektBruktIAvkortningSaerkull =
                         barnetillegg.saerkullsbarn_safe.inntektBruktIAvkortning_safe.ifNull(Kroner(0))
-                    showIf(samletInntektBruktIAvkortningFelles.greaterThan(0) or inntektBruktIAvkortningSaerkull.greaterThan(0)) {
+                    showIf(
+                        samletInntektBruktIAvkortningFelles.greaterThan(0) or inntektBruktIAvkortningSaerkull.greaterThan(
+                            0
+                        )
+                    ) {
                         row {
                             cell {
                                 text(

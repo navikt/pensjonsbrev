@@ -116,7 +116,7 @@ const SwitchField = (props: { prependName?: string; field: string; fieldType: TS
             }}
             size="small"
           >
-            {convertFieldToReadableLabel(props.field)}
+            {props.fieldType.displayText ?? convertFieldToReadableLabel(props.field)}
           </Switch>
         )}
       />
@@ -264,7 +264,7 @@ const ControlledDatePicker = (props: {
         <DatePickerEditor
           defaultValue={defaultValue}
           error={fieldState.error?.message}
-          label={convertFieldToReadableLabel(fieldName)}
+          label={props.fieldType.displayText ?? convertFieldToReadableLabel(fieldName)}
           onChange={field.onChange}
         />
       )}

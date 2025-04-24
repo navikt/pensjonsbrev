@@ -6,9 +6,15 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAuto
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalder
+import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAP2016
+import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAP2016Auto
 import no.nav.pensjon.brev.maler.alder.InfoAldersovergang67AarAuto
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder
+import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder2016Auto
+import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderAP2016
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderAuto
+import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFoerEttAar
+import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
@@ -37,9 +43,15 @@ object ProductionTemplates : AllTemplates {
         AdhocVarselOpphoerMedHvilendeRett,
         AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling,
         AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling,
+        AvslagGradsendringFoerNormertPensjonsalder2016Auto,
+        AvslagGradsendringFoerNormertPensjonsalderAuto,
+        AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto,
+        AvslagUttakFoerNormertPensjonsalderAP2016Auto,
+        AvslagUttakFoerNormertPensjonsalderAuto,
         EndretBarnetilleggUfoerertrygd,
         EndretUfoeretrygdPGAInntektLegacy,
         EndretUfoeretrygdPGAInntektV2,
+        EndretUforetrygdPGAOpptjeningLegacy,
         EtteroppgjoerEtterbetalingAutoLegacy,
         FeilUtsendingAvGjenlevenderett,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
@@ -50,19 +62,20 @@ object ProductionTemplates : AllTemplates {
         UfoerOmregningEnslig,
         UngUfoerAuto,
         VarselSaksbehandlingstidAuto,
-        EndretUforetrygdPGAOpptjeningLegacy,
-        AvslagUttakFoerNormertPensjonsalderAuto,
-        AvslagGradsendringFoerNormertPensjonsalderAuto,
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
-        AvslagUfoeretrygd,
         AvslagGradsendringFoerNormertPensjonsalder,
+        AvslagGradsendringFoerNormertPensjonsalderAP2016,
+        AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
+        AvslagUfoeretrygd,
         AvslagUttakFoerNormertPensjonsalder,
+        AvslagUttakFoerNormertPensjonsalderAP2016,
         BekreftelsePaaFlyktningstatus,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
         ForhaandsvarselVedTilbakekreving,
+        InformasjonOmGjenlevenderettigheter,
         InformasjonOmSaksbehandlingstid,
         InformasjonOmSaksbehandlingstidUT,
         InnhentingDokumentasjonFraBruker,
@@ -70,6 +83,7 @@ object ProductionTemplates : AllTemplates {
         InnhentingOpplysningerFraBruker,
         OmsorgEgenManuell,
         OrienteringOmSaksbehandlingstid,
+        TilbakekrevingAvFeilutbetaltBeloep,
         VarselOmMuligAvslag,
         VarselRevurderingAvPensjon,
         VarselTilbakekrevingAvFeilutbetaltBeloep,
