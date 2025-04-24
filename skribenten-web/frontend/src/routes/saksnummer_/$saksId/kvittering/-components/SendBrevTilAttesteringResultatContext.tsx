@@ -1,20 +1,20 @@
 import type { AxiosError } from "axios";
 import { createContext, useContext, useState } from "react";
 
-import type { BrevInfo } from "~/types/brev";
+import type { BestillBrevResponse, BrevInfo } from "~/types/brev";
 
 export type SendtBrevTilAttesteringResponser = Array<SendBrevTilAttesteringResponse>;
 export type SendBrevTilAttesteringResponse = SendBrevAttesteringSuccessResponse | SendBrevAttesteringErrorResponse;
 
 export interface SendBrevAttesteringSuccessResponse {
   status: "success";
-  brevInfo: BrevInfo;
-  response: BrevInfo;
+  brevInfo: BrevInfo | undefined;
+  response: BestillBrevResponse;
 }
 
 export interface SendBrevAttesteringErrorResponse {
   status: "error";
-  brevInfo: BrevInfo;
+  brevInfo: BrevInfo | undefined;
   error: AxiosError<unknown, unknown>;
 }
 
@@ -23,7 +23,7 @@ const SendBrevAttesteringContext = createContext<{
   setResultat: (resultat: SendtBrevTilAttesteringResponser) => void;
 }>({ resultat: [], setResultat: () => {} });
 
-export const SendtBrevTilAttesteringResultatContext = (properties: { children: React.ReactNode }) => {
+export const SendtBrevTilAttesteringResultatProvider = (properties: { children: React.ReactNode }) => {
   const [resultat, setResultat] = useState<SendtBrevTilAttesteringResponser>([]);
 
   return (
@@ -33,4 +33,4 @@ export const SendtBrevTilAttesteringResultatContext = (properties: { children: R
   );
 };
 
-export const useSendBrevAttesteringContext = () => useContext(SendBrevAttesteringContext);
+export const useSendtBrevAttesteringResultatContext = () => useContext(SendBrevAttesteringContext);

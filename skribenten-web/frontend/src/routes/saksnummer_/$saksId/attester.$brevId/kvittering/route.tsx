@@ -5,7 +5,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import KvitterteBrev from "~/components/kvitterteBrev/KvitterteBrev";
 import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 
-import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
+import { useSendtBrevAttesteringResultatContext } from "../../kvittering/-components/SendBrevTilAttesteringResultatContext";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/kvittering")({
   component: () => <Kvittering />,
@@ -15,7 +15,7 @@ const Kvittering = () => {
   const isProd = import.meta.env.PROD;
   const { saksId, brevId } = Route.useParams();
   const { vedtaksId, enhetsId } = Route.useSearch();
-  const { resultat } = useSendtBrevResultatContext();
+  const { resultat } = useSendtBrevAttesteringResultatContext();
 
   const brukeroversiktQ2Url = `https://pensjon-psak-q2.dev.adeo.no/psak/bruker/brukeroversikt.jsf?sakId=${saksId}`;
   const dokumentoversiktQ2Url = `https://pensjon-psak-q2.dev.adeo.no/psak/dokument/saksoversikt.jsf?sakId=${saksId}`;

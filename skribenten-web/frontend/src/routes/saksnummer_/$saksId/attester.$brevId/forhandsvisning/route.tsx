@@ -16,7 +16,7 @@ import type { BrevResponse } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
 
 import BrevForhåndsvisning from "../../brevbehandler/-components/BrevForhåndsvisning";
-import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
+import { useSendtBrevAttesteringResultatContext } from "../../kvittering/-components/SendBrevTilAttesteringResultatContext";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/forhandsvisning")({
   component: () => <VedtakForhåndsvisningWrapper />,
@@ -134,8 +134,10 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
 };
 
 const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; onClose: () => void }) => {
-  const { setResultat } = useSendtBrevResultatContext();
+  const { setResultat } = useSendtBrevAttesteringResultatContext();
   const navigate = useNavigate({ from: Route.fullPath });
+
+  //Håndter error når henting av brev feiler
   const { data } = useQuery(getBrevAttesteringQuery(props.saksId, Number(props.brevId)));
 
   const sendBrevMutation = useMutation({
@@ -150,7 +152,6 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
       setResultat([{ status: "success", brevInfo: data?.info, response: res }]);
       props.onClose();
     },
-
     onSettled: () => {
       navigate({
         to: "/saksnummer/$saksId/attester/$brevId/kvittering",

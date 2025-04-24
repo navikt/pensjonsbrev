@@ -1,12 +1,13 @@
 import { css } from "@emotion/react";
 import { Button, Heading, VStack } from "@navikt/ds-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import KvitterteBrev from "~/components/kvitterteBrev/KvitterteBrev";
 import type { KvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 
-import { useSendBrevAttesteringContext } from "./-components/SendBrevTilAttesteringResultatContext";
+import { useSendtBrevAttesteringResultatContext } from "./-components/SendBrevTilAttesteringResultatContext";
 import { useSendtBrevResultatContext } from "./-components/SendtBrevResultatContext";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/kvittering")({
@@ -18,7 +19,7 @@ function Kvittering() {
   const { enhetsId, vedtaksId } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const ferdigstillBrevContext = useSendtBrevResultatContext();
-  const brevTilAttesteringContext = useSendBrevAttesteringContext();
+  const brevTilAttesteringContext = useSendtBrevAttesteringResultatContext();
 
   const kvitterteBrev: KvittertBrev[] = [
     ...ferdigstillBrevContext.resultat.map((resultat) =>
@@ -35,8 +36,8 @@ function Kvittering() {
         status: resultat.status,
         context: "attestering",
         brevFørHandling: resultat.brevInfo,
-        bestillBrevResponse: null,
-        attesterResponse: resultat.status === "success" ? resultat.response : null,
+        bestillBrevResponse: resultat.status === "success" ? resultat.response : null,
+        attesterResponse: null,
       }),
     ),
   ];
