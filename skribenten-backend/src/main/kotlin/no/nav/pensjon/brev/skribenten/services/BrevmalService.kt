@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.skribenten.services
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.Features
@@ -39,14 +38,12 @@ class BrevmalService(
             .toList()
     }
 
-    private fun brevdataByggerStoettedeVedtak(vedtaksId: String): KravStoettetAvDatabyggerResult =
-        runBlocking {
-            penService.hentIsKravStoettetAvDatabygger(vedtaksId)
-                .catch { message, httpStatusCode ->
-                    logger.error("Feil ved henting av felt \"hentIsKravStoettetAvDatabygger\" fra vedtak. Status: $httpStatusCode, message: $message")
-                    KravStoettetAvDatabyggerResult()
-                }
-        }
+    private suspend fun brevdataByggerStoettedeVedtak(vedtaksId: String): KravStoettetAvDatabyggerResult =
+        penService.hentIsKravStoettetAvDatabygger(vedtaksId)
+            .catch { message, httpStatusCode ->
+                logger.error("Feil ved henting av felt \"hentIsKravStoettetAvDatabygger\" fra vedtak. Status: $httpStatusCode, message: $message")
+                KravStoettetAvDatabyggerResult()
+            }
 
     private suspend fun Sequence<LetterMetadata>.filterIsRelevantRegelverk(sakstype: Sakstype, vedtaksId: String): Sequence<LetterMetadata> {
         val erKravPaaGammeltRegelverk = if (sakstype == Sakstype.ALDER) {
