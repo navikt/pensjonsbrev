@@ -5,6 +5,7 @@ import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.text.NumberFormat
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -26,6 +27,14 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
     object MonthYearFormatter : LocalizedFormatter<LocalDate>() {
         override fun apply(date: LocalDate, second: Language): String {
             return date.format(DateTimeFormatter.ofPattern("MMMM yyyy", second.locale()))
+        }
+
+        override fun stableHashCode(): Int =  StableHash.of("MaanedAarFormatter").hashCode()
+    }
+
+    object YearMonthFormatter : LocalizedFormatter<YearMonth>() {
+        override fun apply(date: YearMonth, second: Language): String {
+            return MonthYearFormatter.apply(date.atDay(1), second)
         }
 
         override fun stableHashCode(): Int =  StableHash.of("MaanedAarFormatter").hashCode()

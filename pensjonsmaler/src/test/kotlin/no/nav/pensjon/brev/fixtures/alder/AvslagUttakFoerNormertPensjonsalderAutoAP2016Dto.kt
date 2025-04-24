@@ -47,7 +47,7 @@ fun createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() =
                 poengAarF92 = 10,
                 innvilgetTillegspensjon = true,
                 poengAar = 4,
-                sluttpoengTall = 9,
+                sluttpoengTall = 1.86,
                 redusertTrygdetidKap19 = true,
                 avslattKap19 = false,
                 fodselsAar = Year(1990),
@@ -60,6 +60,5 @@ fun createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() =
             )
         ),
         borINorge = false,
-        harEOSLand = true,
-        vedtakBegrunnelseLavOpptjening = true,
+        harEOSLand = true
     )

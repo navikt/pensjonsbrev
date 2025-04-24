@@ -2,11 +2,15 @@ package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.template.*
 import java.time.LocalDate
+import java.time.YearMonth
 
 fun Expression<LocalDate>.format(short: Boolean = false) =
     format(formatter = if(short) LocalizedFormatter.ShortDateFormat else LocalizedFormatter.DateFormat)
 
 fun Expression<LocalDate>.formatMonthYear(): Expression<String> = this.format(LocalizedFormatter.MonthYearFormatter)
+
+@JvmName("formatYearMonth")
+fun Expression<YearMonth>.formatYearMonth(): Expression<String> = this.format(LocalizedFormatter.YearMonthFormatter)
 
 private object LocalDateSelectors {
     val yearSelector = object : TemplateModelSelector<LocalDate, Int> {

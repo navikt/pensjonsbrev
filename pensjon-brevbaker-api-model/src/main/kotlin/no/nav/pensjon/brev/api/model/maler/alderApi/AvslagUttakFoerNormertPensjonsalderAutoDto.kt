@@ -16,7 +16,6 @@ data class AvslagUttakFoerNormertPensjonsalderAutoDto(
     val opplysningerBruktIBeregningen: OpplysningerBruktIBeregningen,
     val borINorge: Boolean,
     val harEOSLand: Boolean,
-    val vedtakBegrunnelseLavOpptjening: Boolean,
     val regelverkType: AlderspensjonRegelverkType = AlderspensjonRegelverkType.AP2025
 ) : BrevbakerBrevdata
 
@@ -30,7 +29,11 @@ data class AvslagUttakFoerNormertPensjonsalderAP2016AutoDto(
     val opplysningerBruktIBeregningen: OpplysningerBruktIBeregningen,
     val borINorge: Boolean,
     val harEOSLand: Boolean,
-    val vedtakBegrunnelseLavOpptjening: Boolean,
+    val regelverkType: AlderspensjonRegelverkType = AlderspensjonRegelverkType.AP2016
+) : BrevbakerBrevdata
+
+@Suppress("unused")
+data class AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto(
     val regelverkType: AlderspensjonRegelverkType = AlderspensjonRegelverkType.AP2016
 ) : BrevbakerBrevdata
 
@@ -76,7 +79,7 @@ data class OpplysningerBruktIBeregningenKap19(
     val andelNyttRegelverk: Int,
     val andelGammeltRegelverk: Int,
     val avslattKap19: Boolean,
-    val sluttpoengTall: Int?,
+    val sluttpoengTall: Double?,
     val innvilgetTillegspensjon: Boolean?,
     val poengAar: Int?,
     val poengAarF92: Int?,

@@ -13,6 +13,8 @@ import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoe
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder2016Auto
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderAP2016
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderAuto
+import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFoerEttAar
+import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
@@ -43,6 +45,7 @@ object ProductionTemplates : AllTemplates {
         AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling,
         AvslagGradsendringFoerNormertPensjonsalder2016Auto,
         AvslagGradsendringFoerNormertPensjonsalderAuto,
+        AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto,
         AvslagUttakFoerNormertPensjonsalderAP2016Auto,
         AvslagUttakFoerNormertPensjonsalderAuto,
         EndretBarnetilleggUfoerertrygd,
@@ -64,6 +67,7 @@ object ProductionTemplates : AllTemplates {
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AvslagGradsendringFoerNormertPensjonsalder,
         AvslagGradsendringFoerNormertPensjonsalderAP2016,
+        AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
         AvslagUfoeretrygd,
         AvslagUttakFoerNormertPensjonsalder,
         AvslagUttakFoerNormertPensjonsalderAP2016,
@@ -79,6 +83,7 @@ object ProductionTemplates : AllTemplates {
         InnhentingOpplysningerFraBruker,
         OmsorgEgenManuell,
         OrienteringOmSaksbehandlingstid,
+        TilbakekrevingAvFeilutbetaltBeloep,
         VarselOmMuligAvslag,
         VarselRevurderingAvPensjon,
         VarselTilbakekrevingAvFeilutbetaltBeloep,
