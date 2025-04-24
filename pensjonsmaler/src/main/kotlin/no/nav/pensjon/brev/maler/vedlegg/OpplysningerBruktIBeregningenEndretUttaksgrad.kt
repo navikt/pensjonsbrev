@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2025
-import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.Beregningsmetode.FOLKETRYGD
 import no.nav.pensjon.brev.api.model.Beregningsmetode.NORDISK
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDto
@@ -21,13 +20,11 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndret
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BrukerSelectors.fodselsdato
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.garantipensjonsBeholdning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.pensjonsbeholdning
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.pensjonsbeholdning_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.restGrunnpensjon
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.restTilleggspensjon
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.KravSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.PGISisteGyldigeOpptjeningsAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.opptjeningTilfortKap20
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.poengtallSisteGyldigeOpptjeningsAr
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.poengtallSisteGyldigeOpptjeningsAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.sisteGyldigeOpptjeningsAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.anvendtTT
@@ -44,12 +41,11 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndret
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.trygdetidsdetaljerKap19VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.trygdetidsdetaljerKap20VedVirk
 import no.nav.pensjon.brev.maler.fraser.common.AntallAarText
-import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -70,7 +66,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brevbaker.api.model.Kroner
 
 // V00005 i metaforce
 @TemplateModelHelpers
@@ -185,19 +180,19 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
             }
         }
 
-        // TOOD: Høgrestille tal og venstrestille tekst
         showIf(alderspensjonVedVirk.regelverkType.notEqualTo(AP2025)) {
             paragraph {
                 table(
                     header = {
                         // vedleggBeregnTabellOverskrift_002
-                        column(columnSpan = 2) {
+                        column(columnSpan = 2, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT) {
                             textExpr(
                                 Bokmal to "Opplysninger brukt i beregningen fra ".expr() + krav.virkDatoFom.format(),
                                 Nynorsk to "Opplysninger brukte i berekninga frå ".expr() + krav.virkDatoFom.format(),
                                 English to "Information used in the calculation as of ".expr() + krav.virkDatoFom.format()
                             )
                         }
+                        column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {}
                     }
                 ) {
                     showIf(trygdetidsdetaljerKap19VedVirk.anvendtTT.greaterThan(0) and trygdetidsdetaljerKap19VedVirk.beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
@@ -393,13 +388,14 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                 // vedleggBeregnTabellOverskrift_002
                 table(
                     header = {
-                        column(columnSpan = 2) {
+                        column(columnSpan = 2, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT) {
                             textExpr(
                                 Bokmal to "Opplysninger brukt i beregningen fra ".expr() + krav.virkDatoFom.format(),
                                 Nynorsk to "Opplysninger brukte i berekninga frå ".expr() + krav.virkDatoFom.format(),
                                 English to "Information used in the calculation as of ".expr() + krav.virkDatoFom.format()
                             )
                         }
+                        column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {}
                     }
                 ) {
                     showIf(trygdetidsdetaljerKap20VedVirk.anvendtTT.greaterThan(0)) {
