@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.Fixtures
-import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.EndretUfoeretrygdPGAInntektDto
 import java.time.LocalDate
 
 fun createEndretUfoeretrygdPGAInntektDto() =

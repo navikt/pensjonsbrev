@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt
+package no.nav.pensjon.brev.api.model.maler.ufoerApi
 
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
