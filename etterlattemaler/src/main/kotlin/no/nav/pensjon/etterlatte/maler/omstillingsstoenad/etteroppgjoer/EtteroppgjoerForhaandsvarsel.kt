@@ -164,21 +164,23 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
 
             // dersom ingen endring
             showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.IKKE_ETTEROPPGJOER)){
-                paragraph {
-                    textExpr(
-                        Language.Bokmal to "Vår beregning viser at det du fikk i omstillingsstønad sammenlignet med du skulle ha fått i ".expr() + data.etteroppgjoersAar.format()+ ", er innenfor toleransegrensen. Etteroppgjør vil derfor ikke bli gjennomført",
-                        Language.Nynorsk to "".expr(),
-                        Language.English to "".expr()
-                    )
-                }
-
-                // for lite utbetalt mindre en 0,25 RG eller for mye utbetalt mindre en 1 RG
-                paragraph {
-                    textExpr(
-                        Language.Bokmal to "Vår beregning viser at du har fått utbetalt ".expr() + data.utbetalingData.avviksBeloep.absoluteValue().format() +" kroner "+ ifElse(data.utbetalingData.avviksBeloep.greaterThan(0), "for lite", "for mye") +" i omstillingsstønad for "+data.etteroppgjoersAar.format()+". Dette er innenfor toleransegrensen, og det vil derfor ikke bli "+ifElse(data.utbetalingData.avviksBeloep.greaterThan(0),"tilbakekrevd","etterbetalt") +" omstillingsstønad for "+data.etteroppgjoersAar.format()+".",
-                        Language.Nynorsk to "".expr(),
-                        Language.English to "".expr()
-                    )
+                showIf(data.utbetalingData.avviksBeloep.equalTo(0)){
+                    paragraph {
+                        textExpr(
+                            Language.Bokmal to "Vår beregning viser at utbetalt omstillingsstønad i ".expr() + data.etteroppgjoersAar.format()+ " er lik det du skulle ha fått. Etteroppgjør vil derfor ikke bli gjennomført.",
+                            Language.Nynorsk to "".expr(),
+                            Language.English to "".expr()
+                        )
+                    }
+                }.orShow {
+                    // for lite utbetalt mindre en 0,25 RG eller for mye utbetalt mindre en 1 RG
+                    paragraph {
+                        textExpr(
+                            Language.Bokmal to "Vår beregning viser at du har fått utbetalt ".expr() + data.utbetalingData.avviksBeloep.absoluteValue().format() +" kroner "+ ifElse(data.utbetalingData.avviksBeloep.greaterThan(0), "for lite", "for mye") +" i omstillingsstønad for "+data.etteroppgjoersAar.format()+". Dette er innenfor toleransegrensen, og det vil derfor ikke bli "+ifElse(data.utbetalingData.avviksBeloep.greaterThan(0),"tilbakekrevd","etterbetalt") +" omstillingsstønad for "+data.etteroppgjoersAar.format()+".",
+                            Language.Nynorsk to "".expr(),
+                            Language.English to "".expr()
+                        )
+                    }
                 }
             }
 
