@@ -1,13 +1,18 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brevbaker.api.model.FoedselsnummerImpl
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 import java.time.Month
 
+@OptIn(InterneDataklasser::class)
 fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
     VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
         saksbehandlerValg = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg(
@@ -56,6 +61,51 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
                 antallBeregningsperioderPensjon = 2
             ),
             orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
-            maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt()
-        )
+            maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
+            maanedligPensjonFoerSkattAP2025Dto = MaanedligPensjonFoerSkattAP2025Dto(
+                beregnetPensjonPerManedGjeldende = MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed(
+                    inntektspensjon = Kroner(1000),
+                    totalPensjon = Kroner(2000),
+                    garantipensjonInnvilget = Kroner(500),
+                    garantipensjon = Kroner(1000),
+                    minstenivaIndividuell = Kroner(0),
+                    virkDatoFom = LocalDate.now(),
+                    virkDatoTom = null
+                ),
+                beregnetPensjonperManed = listOf(),
+                kravVirkFom = LocalDate.now()
+            ),
+            opplysningerOmAvdoedBruktIBeregningDto = OpplysningerOmAvdoedBruktIBeregningDto(
+                bruker = OpplysningerOmAvdoedBruktIBeregningDto.Bruker(
+                    foedselsdato = LocalDate.now()
+                ),
+                beregnetPensjonPerManedVedVirk = OpplysningerOmAvdoedBruktIBeregningDto.BeregnetPensjonPerManedVedVirk(
+                    virkDatoFom = LocalDate.now(),
+                    avdoedFlyktningstatusErBrukt = true
+                ),
+                avdoedTrygdetidsdetaljerKap19VedVirk = null,
+                avdoed = OpplysningerOmAvdoedBruktIBeregningDto.Avdoed(
+                    navn = "Peder Ås",
+                    avdoedFnr = FoedselsnummerImpl("01019878910")
+                ),
+                alderspensjonVedVirk = OpplysningerOmAvdoedBruktIBeregningDto.AlderspensjonVedVirk(
+                    regelverkType = AlderspensjonRegelverkType.AP2011,
+                    gjenlevenderettAnvendt = true,
+                    tilleggspensjonInnvilget = false
+                ),
+                avdoedTrygdetidsdetaljerVedVirkNokkelInfo = null,
+                tilleggspensjonVedVirk = null,
+                avdoedBeregningKap19VedVirk = null,
+                avdoedYrkesskadedetaljerVedVirk = null,
+                avdodBeregningKap3 = null,
+                avdoedTrygdetidNorge = listOf(),
+                avdoedTrygdetidEOS = listOf(),
+                avdoedTrygdetidAvtaleland = listOf(),
+                avdoedPoengrekkeVedVirk = OpplysningerOmAvdoedBruktIBeregningDto.AvdoedPoengrekkeVedVirk(
+                    inneholderFramtidigPoeng = false,
+                    inneholderOmsorgspoeng = true,
+                    pensjonspoeng = listOf()
+                )
+            )
+        ),
     )
