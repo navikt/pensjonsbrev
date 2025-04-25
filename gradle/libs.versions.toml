@@ -4,6 +4,7 @@ kotlinKspVersion = "2.1.20-2.0.0"
 ktorVersion = "3.1.2"
 
 assertJVersion = "3.27.3"
+classGraphVersion = "4.8.179"
 commonsCodecVersion = "1.18.0"
 commonVersion = "1.9.2"
 exposedVersion = "0.61.0"
@@ -13,7 +14,6 @@ hikariVersion = "6.3.0"
 jacksonJsr310Version = "2.18.3"
 jupiterVersion = "5.12.2"
 kotlinxHtmlVersion = "0.12.0"
-kspKctVersion = "0.7.0"
 logbackVersion = "1.5.18"
 logstashVersion = "8.1"
 micrometerVersion = "1.14.6"
@@ -30,12 +30,14 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKspVersion" }
 brevbaker-common = { module = "no.nav.pensjon.brevbaker:brevbaker-api-model-common", version.ref = "commonVersion" }
 commons-codec = { module = "commons-codec:commons-codec", version.ref = "commonsCodecVersion" }
 hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikariVersion" }
+io-github-classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classGraphVersion" }
+jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jacksonJsr310Version" }
 kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version.ref = "kotlinxHtmlVersion" }
 ksp-symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "kotlinKspVersion"}
-ksp-kotlin-compile-testing = { module = "dev.zacsweers.kctfork:ksp", version.ref = "kspKctVersion" }
+ksp-symbol-processing-aa = { module = "com.google.devtools.ksp:symbol-processing-aa", version.ref = "kotlinKspVersion"}
+ksp-symbol-processing-common = { module = "com.google.devtools.ksp:symbol-processing-common-deps", version.ref = "kotlinKspVersion"}
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logbackVersion" }
 logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstashVersion" }
-jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jacksonJsr310Version" }
 micrometer-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "micrometerVersion" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresqlVersion" }
 unleash = { module = "io.getunleash:unleash-client-java", version.ref = "unleashVersion" }
