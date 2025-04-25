@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode
+import no.nav.pensjon.brev.api.model.GarantipensjonSatsType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.flyktningstatusErBrukt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.virkDatoFom
@@ -42,6 +43,17 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.maler.fraser.common.AntallAarText
 import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.beregningVirkDatoFom
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.nettoUtbetaltPerManed
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.delingstalletVed67Ar
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.garantipensjonSatsPerAr
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.satsType
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VilkaarsVedtakSelectors.avslattGarantipensjon
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -627,6 +639,120 @@ data class OpplysningerBruktIBeregningTabellKap20(
     }
 }
 
+data class OpplysningerBruktIBeregningTabellAP2025(
+    val alderspensjonVedVirk: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.AlderspensjonVedVirk>,
+    val beregningKap20VedVirk: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.BeregningKap20VedVirk>,
+    val vilkarsVedtak: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.VilkaarsVedtak>,
+    val trygdetidsdetaljerKap20VedVirk: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.TrygdetidsdetaljerKap20VedVirk>,
+    val garantipensjonVedVirk: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.GarantipensjonVedVirk?>
+) : OutlinePhrase<LangBokmalNynorskEnglish>(){
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            table({
+                //vedleggBeregnTabellOverskrift_001
+                column(columnSpan = 4) {
+                    textExpr(
+                        Bokmal to "Opplysninger brukt i beregningen per ".expr() + alderspensjonVedVirk.beregningVirkDatoFom.format(),
+                        Nynorsk to "Opplysningar brukte i berekninga frå ".expr() + alderspensjonVedVirk.beregningVirkDatoFom.format(),
+                        English to "Information used to calculate as of ".expr() + alderspensjonVedVirk.beregningVirkDatoFom.format(),
+                    )
+                }
+                column(alignment = RIGHT) { }
+            }) {
+                row {
+                    //tabellBeholdningForForsteUttak_002
+                    cell {
+                        text(
+                            Bokmal to "Pensjonsbeholdning ved uttak",
+                            Nynorsk to "Pensjonsbehaldning ved uttak",
+                            English to "Accumulated pension capital before initial withdrawal",
+                        )
+                    }
+                    cell { includePhrase(KronerText(beregningKap20VedVirk.beholdningForForsteUttak)) }
+                }
+
+                //vedleggTabellKap20Delingstall_002
+                row {
+                    cell {
+                        text(
+                            Bokmal to "Delingstall ved uttak",
+                            Nynorsk to "Delingstal ved uttak",
+                            English to "Life expectancy adjustment divisor at withdrawal",
+                        )
+                    }
+                    cell { eval(beregningKap20VedVirk.delingstallLevealder.format()) }
+                }
+
+                //vedleggTabellKap20Trygdetid_001
+                showIf(not(vilkarsVedtak.avslattGarantipensjon)) {
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "Trygdetid",
+                                Nynorsk to "Trygdetid",
+                                English to "National insurance coverage",
+                            )
+                        }
+                        cell { AntallAarText(trygdetidsdetaljerKap20VedVirk.anvendtTT) }
+                    }
+                }
+
+                //vedleggTabellKap20SatsGarP_001
+                showIf(
+                    alderspensjonVedVirk.garantipensjonInnvilget
+                            and alderspensjonVedVirk.nettoUtbetaltPerManed.greaterThan(0)
+                ) {
+                    ifNotNull(garantipensjonVedVirk) { garantipensjonVedVirk ->
+                        row {
+                            cell {
+                                val hoysats = garantipensjonVedVirk.satsType.equalTo(GarantipensjonSatsType.HOY)
+                                val ordinaer =
+                                    garantipensjonVedVirk.satsType.equalTo(GarantipensjonSatsType.ORDINAER)
+
+                                text(
+                                    Bokmal to "Sats for garantipensjon",
+                                    Nynorsk to "Sats for garantipensjon",
+                                    English to "Guaranteed pension rate",
+                                )
+
+                                showIf(hoysats) {
+                                    text(
+                                        Bokmal to " (høy sats)",
+                                        Nynorsk to " (høg sats)",
+                                        English to " (high rate)",
+                                    )
+                                }.orShowIf(ordinaer) {
+                                    text(
+                                        Bokmal to " (ordinær sats)",
+                                        Nynorsk to " (ordinær sats)",
+                                        English to " (ordinary rate)",
+                                    )
+                                }
+
+                            }
+                            cell {
+                                includePhrase(KronerText(garantipensjonVedVirk.garantipensjonSatsPerAr))
+                            }
+                        }
+
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Delingstall ved 67 år",
+                                    Nynorsk to "Delingstal ved 67 år",
+                                    // TODO hvilken oversettelse er riktig? Flere varianter.
+                                    English to "Life expectancy adjustment divisor at 67 years"
+                                )
+                            }
+                            cell { eval(garantipensjonVedVirk.delingstalletVed67Ar.format()) }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+}
 fun opplysningerBruktIBeregningenHeader(beregningVirkDatoFom: Expression<LocalDate>): TableHeaderScope<LangBokmalNynorskEnglish, Unit>.() -> Unit =
     {
         //vedleggBeregnTabellOverskrift_001

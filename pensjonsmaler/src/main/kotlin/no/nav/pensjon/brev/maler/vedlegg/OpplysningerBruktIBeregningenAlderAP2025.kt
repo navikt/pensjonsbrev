@@ -1,35 +1,33 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.GarantipensjonSatsType
-import no.nav.pensjon.brev.maler.fraser.common.AntallAarText
-import no.nav.pensjon.brev.maler.fraser.common.KronerText
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.beregningVirkDatoFom
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningTabellAP2025
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.nettoUtbetaltPerManed
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.satsType_safe
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.redusertTrygdetid
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.beholdningForForsteUttak
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.nettoUtbetaltPerManed_safe
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VedtakSelectors.sisteOpptejningsAr
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VilkaarsVedtakSelectors.avslattGarantipensjon
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.beregningKap20VedVirk
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.garantipensjonVedVirk
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.trygdetidsdetaljerKap20VedVirk
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.vedtak
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.vilkarsVedtak
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
-import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningenAlderAP2025Dto(
@@ -37,9 +35,13 @@ data class OpplysningerBruktIBeregningenAlderAP2025Dto(
     val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
     val beregningKap20VedVirk: BeregningKap20VedVirk,
     val vilkarsVedtak: VilkaarsVedtak,
+    val vedtak: Vedtak,
     val garantipensjonVedVirk: GarantipensjonVedVirk?,
     val trygdetidsdetaljerKap20VedVirk: TrygdetidsdetaljerKap20VedVirk,
 ) {
+    data class Vedtak(
+        val sisteOpptejningsAr: Int
+    )
 
     data class TrygdetidsdetaljerKap20VedVirk(
         val anvendtTT: Int,
@@ -48,6 +50,9 @@ data class OpplysningerBruktIBeregningenAlderAP2025Dto(
     data class GarantipensjonVedVirk(
         val delingstalletVed67Ar: Double,
         val satsType: GarantipensjonSatsType,
+        val garantipensjonSatsPerAr: Kroner,
+        val nettoUtbetaltPerManed: Kroner,
+        val beholdningForForsteUttak: Kroner,
     )
 
     data class VilkaarsVedtak(
@@ -57,6 +62,7 @@ data class OpplysningerBruktIBeregningenAlderAP2025Dto(
     data class BeregningKap20VedVirk(
         val beholdningForForsteUttak: Kroner,
         val delingstallLevealder: Double,
+        val redusertTrygdetid: Boolean,
     )
 
     data class AlderspensjonVedVirk(
@@ -105,92 +111,275 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                 English to "The rate of your retirement pension is ".expr() + alderspensjonVedVirk.uttaksgrad.format() + " percent.",
             )
         }
-        paragraph {
-            table({
-                //vedleggBeregnTabellOverskrift_001
-                column(columnSpan = 4) {
-                    textExpr(
-                        Bokmal to "Opplysninger brukt i beregningen per ".expr() + alderspensjonVedVirk.beregningVirkDatoFom.format(),
-                        Nynorsk to "Opplysningar brukte i berekninga frå ".expr() + alderspensjonVedVirk.beregningVirkDatoFom.format(),
-                        English to "Information used to calculate as of ".expr() + alderspensjonVedVirk.beregningVirkDatoFom.format(),
-                    )
-                }
-                column(alignment = RIGHT) { }
-            }) {
-                row {
-                    //tabellBeholdningForForsteUttak_002
-                    cell {
-                        text(
-                            Bokmal to "Pensjonsbeholdning ved uttak",
-                            Nynorsk to "Pensjonsbehaldning ved uttak",
-                            English to "Accumulated pension capital before initial withdrawal",
-                        )
-                    }
-                    cell { includePhrase(KronerText(beregningKap20VedVirk.beholdningForForsteUttak)) }
-                }
+        includePhrase(
+            OpplysningerBruktIBeregningTabellAP2025(
+                alderspensjonVedVirk = alderspensjonVedVirk,
+                beregningKap20VedVirk = beregningKap20VedVirk,
+                vilkarsVedtak = vilkarsVedtak,
+                trygdetidsdetaljerKap20VedVirk = trygdetidsdetaljerKap20VedVirk,
+                garantipensjonVedVirk = garantipensjonVedVirk,
+            )
+        )
 
-                //vedleggTabellKap20Delingstall _002
-                row {
-                    cell {
-                        text(
-                            Bokmal to "Delingstall ved uttak",
-                            Nynorsk to "Delingstal ved uttak",
-                            English to "Life expectancy adjustment divisor at withdrawal",
-                        )
-                    }
-                    cell { eval(beregningKap20VedVirk.delingstallLevealder.format()) }
-                }
-
-                //vedleggTabellKap20Trygdetid_001
-                showIf(not(vilkarsVedtak.avslattGarantipensjon)) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Trygdetid",
-                                Nynorsk to "Trygdetid",
-                                English to "National insurance coverage",
-                            )
-                        }
-                        cell { AntallAarText(trygdetidsdetaljerKap20VedVirk.anvendtTT) }
-                    }
-                }
-
-                //vedleggTabellKap20SatsGarP_001
-                showIf(
-                    alderspensjonVedVirk.garantipensjonInnvilget
-                            and alderspensjonVedVirk.nettoUtbetaltPerManed.greaterThan(0)
-                ) {
-                    row {
-                        cell {
-                            val hoysats = garantipensjonVedVirk.satsType_safe.equalTo(GarantipensjonSatsType.HOY)
-                            val ordinaer = garantipensjonVedVirk.satsType_safe.equalTo(GarantipensjonSatsType.ORDINAER)
-                            text(
-                                Bokmal to "Sats for garantipensjon",
-                                Nynorsk to "Sats for garantipensjon",
-                                English to "Guaranteed pension rate",
-                            )
-
-                            showIf(hoysats) {
-                                text(
-                                    Bokmal to " (høy sats)",
-                                    Nynorsk to " (høg sats)",
-                                    English to " (high rate)",
-                                )
-                            }.orShowIf(ordinaer) {
-                                text(
-                                    Bokmal to " (ordinær sats)",
-                                    Nynorsk to " (ordinær sats)",
-                                    English to " (ordinary rate)",
-                                )
-                            }
-
-                        }
-                        cell {
-
-                        }
-                    }
-                }
-
+        val garantipensjonInnvilget = alderspensjonVedVirk.garantipensjonInnvilget
+        val avslattGarantipensjon = vilkarsVedtak.avslattGarantipensjon
+        val redusertTrygdetid = beregningKap20VedVirk.redusertTrygdetid
+        showIf(
+            garantipensjonInnvilget
+                    and (redusertTrygdetid or avslattGarantipensjon)
+        ) {
+            //vedleggBeregnPensjonsBeholdning_001
+            title1 {
+                text(
+                    Bokmal to "Pensjonsbeholdning",
+                    Nynorsk to "Pensjonsbehaldning",
+                    English to "Accumulated pension capital",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Pensjonsbeholdningen ved uttaket er summen av all pensjonsopptjening fra tidligere år. Du kan tjene opp inntektspensjon fra og med det året du fyller 17. Den årlige pensjonsopptjeningen din er 18,1 prosent av samlet opptjeningsgrunnlag opp til 7,1 av folketrygdens gjennomsnittlige grunnbeløp (G) for dette året. Pensjonsbeholdningen er regulert hvert år fram til du begynner å ta ut alderspensjon.",
+                    Nynorsk to "Pensjonsbehaldninga ved uttaket er summen av all pensjonsopptening frå tidlegare år. Du kan tene opp inntektspensjon frå og med det året du fyller 17. Den årlege pensjonsoppteninga di er 18,1 prosent av samla opptjeningsgrunnlag opp til 7,1 av folketrygdens gjennomsnittlege grunnbeløp (G). Pensjonsbehaldninga er regulert kvart år med lønnsveksten fram til du byrjar å ta ut alderspensjon.",
+                    English to "The accumulated pension capital is the sum of all pension accruals from previous years. You can earn income pension starting from the year you turn 17. Your annual pension accrual is 18.1 percent of the total earnings basis up to 7.1 times the National Insurance average basic amount (G) for that year. The pension balance is adjusted annually until you begin to receive retirement pension.",
+                )
             }
         }
+
+        showIf(
+            (garantipensjonInnvilget and garantipensjonVedVirk.nettoUtbetaltPerManed_safe.ifNull(Kroner(0))
+                .greaterThan(0))
+                    or (redusertTrygdetid and not(avslattGarantipensjon))
+        ) {
+            //vedleggBeregnPensjonsBeholdning_001
+            title1 {
+                text(
+                    Bokmal to "Pensjonsbeholdning",
+                    Nynorsk to "Pensjonsbehaldning",
+                    English to "Accumulated pension capital",
+                )
+                showIf(redusertTrygdetid) {
+                    text(
+                        Bokmal to " og trygdetid",
+                        Nynorsk to " og trygdetid",
+                        English to " and Norwegian national insurance coverage",
+                    )
+                }
+            }
+            paragraph {
+                text(
+                    Bokmal to "Pensjonsbeholdningen ved uttaket er summen av all pensjonsopptjening fra tidligere år. Du kan tjene opp inntektspensjon fra og med det året du fyller 17. Den årlige pensjonsopptjeningen din er 18,1 prosent av samlet opptjeningsgrunnlag opp til 7,1 av folketrygdens gjennomsnittlige grunnbeløp (G) for dette året. Pensjonsbeholdningen er regulert hvert år fram til du begynner å ta ut alderspensjon.",
+                    Nynorsk to "Pensjonsbehaldninga ved uttaket er summen av all pensjonsopptening frå tidlegare år. Du kan tene opp inntektspensjon frå og med det året du fyller 17. Den årlege pensjonsoppteninga di utgjer 18,1 prosent av samla opptjeningsgrunnlag opp til 7,1 av det gjennomsnittleg grunnbeløpet i folketrygda for dette året. Pensjonsbehaldninga er regulert kvart år fram til du byrjar å ta ut alderspensjon.",
+                    English to "The accumulated pension capital is the sum of all pension accruals from previous years. You can earn income pension starting from the year you turn 17. Your annual pension accrual amounts to 18.1 percent of the total earnings basis up to 7.1 times the average National Insurance basic amount (G). The accumulated pension capital is adjusted annually until you begin to receive retirement pension.",
+                )
+            }
+
+            //vedleggBeregnTrygdetidKap20_001
+            paragraph {
+                text(
+                    Bokmal to "Trygdetid er perioder du har vært medlem i folketrygden. Som hovedregel er dette perioder du har bodd eller arbeidet i Norge fra fylte 16 år til og med det året du fyller 66 år. Trygdetid har betydning for beregning av garantipensjon. Full trygdetid er 40 år.",
+                    Nynorsk to "Trygdetid er periodar du har vore medlem i folketrygda. Som hovudregel er dette periodar du har budd eller arbeidd i Noreg frå fylte 16 år til og med det året du fyller 66 år. Trygdetid har betydning for berekninga av garantipensjon. Full trygdetid er 40 år.",
+                    English to "National insurance coverage refers to the periods during which you have been a member of the Norwegian National Insurance Scheme. As a general rule, these periods include the time you have lived or worked in Norway from the age of 16 until the year you turn 66. The period of national insurance coverage is relevant for calculating the guaranteed pension, full coverage requires 40 years.",
+                )
+            }
+        }
+
+        showIf(vedtak.sisteOpptejningsAr.lessThan(2023)) {
+            //forklaringSisteOpptjeningsaar_001
+            paragraph {
+                text(
+                    Bokmal to "Pensjonsopptjening",
+                    Nynorsk to "Pensjonsopptening",
+                    English to "Your pension accruals",
+                )
+                showIf(
+                    (garantipensjonInnvilget
+                            and garantipensjonVedVirk.nettoUtbetaltPerManed_safe.ifNull(Kroner(0)).greaterThan(0))
+                            or (not(garantipensjonInnvilget) and redusertTrygdetid)
+                ) {
+                    text(
+                        Bokmal to " og trygdetid",
+                        Nynorsk to " og trygdetid",
+                        English to " and your national insurance coverage",
+                    )
+                }
+                textExpr(
+                    Bokmal to " tas med i beregningen av alderspensjon fra og med året etter at skatteoppgjøret er klart. Dette gjelder selv om skatteoppgjøret ditt er klart tidligere. I beregningen er det derfor brukt pensjonsopptjening til og med ".expr()
+                            + vedtak.sisteOpptejningsAr.format() + ".",
+                    Nynorsk to " blir teke med i berekninga av alderspensjon frå og med året etter at skatteoppgjeret er klart. Dette gjeld sjølv om skatteoppgjeret ditt er klart tidlegare. I berekninga er det difor brukt pensjonsopptening til og med ".expr()
+                            + vedtak.sisteOpptejningsAr.format() + ".",
+                    English to " are taken into account when calculating retirement pension starting from the year after your tax assessment is finalised. This applies even if your tax assessment is completed earlier. In the calculation, pension accruals are used up to and including ".expr()
+                            + vedtak.sisteOpptejningsAr.format() + ".",
+                )
+            }
+            //forklaringSisteOpptjeningsaar_001
+            paragraph {
+                text(
+                    Bokmal to "Du vil få et nytt vedtak fra oss når pensjonen din blir omregnet.",
+                    Nynorsk to "Du vil få eit nytt vedtak frå oss når pensjonen din blir omrekna.",
+                    English to "You will receive a new decision from us when your pension is calculated.",
+                )
+            }
+        }
+        //vedleggBeregnDelingstall_001
+        title1 {
+            text(
+                Bokmal to "Delingstall",
+                Nynorsk to "Delingstall",
+                English to "Life expectancy adjustment divisor at withdrawal",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Delingstallet uttrykker forventet levetid for ditt årskull på uttakstidspunktet. Alderen din ved uttak avgjør hvilket delingstall som gjelder for deg. Dette blir kalt levealdersjustering.",
+                Nynorsk to "Delingstalet uttrykkjer forventa levetid for årskullet ditt på uttakstidspunktet. Alderen din ved uttak avgjer kva delingstal som gjeld for deg. Dette blir kalla levealdersjustering.",
+                English to "The divisor expresses the life expectancy for people born in the same year (cohort) at a specific pension withdrawal date. Your age at retirement determines which divisor applies to you. This is called life expectancy adjustment.",
+            )
+        }
+        //vedleggBeregnInntektspensjonOverskrift_001
+        title1 {
+            text(
+                Bokmal to "Inntektspensjon",
+                Nynorsk to "Inntektspensjon",
+                English to "Income pension",
+            )
+        }
+        showIf(alderspensjonVedVirk.uttaksgrad.equalTo(100)) {
+            paragraph {
+                textExpr(
+                    Bokmal to "Din årlige inntektspensjon blir beregnet ved å dele pensjonsbeholdningen din på delingstallet ved uttak. Pensjonsbeholdningen din er på ".expr() +
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + " kroner, og delingstallet ved uttak er "
+                            + beregningKap20VedVirk.delingstallLevealder.format() + ".",
+
+                    Nynorsk to "Den årlege inntektspensjonen din blir rekna ut ved å dele pensjonsbehaldninga di på delingstalet ved uttak. Pensjonsbehaldninga di er på ".expr() +
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + " kroner, og delingstalet ved uttak er "
+                            + beregningKap20VedVirk.delingstallLevealder.format() + ".",
+
+                    English to "Your annual income pension is calculated by dividing your pension capital by the life expectancy adjustment divisor at the time of the withdrawal. Your accumulated pension capital is NOK ".expr() +
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + ", and the divisor at the time of withdrawal is "
+                            + beregningKap20VedVirk.delingstallLevealder.format() + ".",
+                )
+            }
+        }.orShow {
+            //vedleggBeregnInntektspensjonGradertUttak_001
+            paragraph {
+                textExpr(
+                    Bokmal to "Din årlige inntektspensjon blir beregnet ved å dele pensjonsbeholdningen din på delingstallet ved uttak. Pensjonsbeholdningen din er på ".expr() +
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + " kroner, og delingstallet ved uttak er " +
+                            beregningKap20VedVirk.delingstallLevealder.format() + ". Siden du ikke tar ut full pensjon, vil du kun få utbetalt "
+                            + alderspensjonVedVirk.uttaksgrad.format() + " prosent av dette beløpet.",
+
+                    Nynorsk to "Den årlege inntektspensjonen din blir rekna ut ved å dele pensjonsbehaldninga di på delingstalet ved uttak. Pensjonsbehaldninga di er på ".expr() +
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + " kroner, og delingstalet ved uttak er " +
+                            beregningKap20VedVirk.delingstallLevealder.format() + ".  Sidan du ikkje tek ut full pensjon, vil du berre få utbetalt "
+                            + alderspensjonVedVirk.uttaksgrad.format() + " prosent av dette beløpet.",
+
+                    English to "Your annual income pension is calculated by dividing your accumulated pension capital by the life expectancy adjustment divisor at the time of the initial withdrawal. Your accumulated pension capital is NOK ".expr() +
+                            beregningKap20VedVirk.beholdningForForsteUttak.format() + ", and the divisor at the time of withdrawal is " +
+                            beregningKap20VedVirk.delingstallLevealder.format() + ". Since you are not withdrawing the full pension, you will only receive "
+                            + alderspensjonVedVirk.uttaksgrad.format() + " percent of this amount.",
+                )
+            }
+        }
+        showIf(
+            garantipensjonVedVirk.nettoUtbetaltPerManed_safe.equalTo(0)
+                    and not(avslattGarantipensjon)
+                    and redusertTrygdetid
+        ) {
+            //vedleggBeregnGarantipensjonIkkeUtbetales_001
+            title1 {
+                text(
+                    Bokmal to "Garantipensjon",
+                    Nynorsk to "Garantipensjon",
+                    English to "Guaranteed pension",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Inntektspensjonen din er så høy at du får ikke utbetalt garantipensjon.",
+                    Nynorsk to "Inntektspensjonen din er så høg at du får ikkje utbetalt garantipensjon.",
+                    English to "You are not eligible for a guaranteed pension because your income pension exceeds the threshold.",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Garantipensjonen skal sikre et visst minimum på pensjonen. Størrelsen på garantipensjonen fastsettes ut fra en sats som er avhengig av din sivilstand. Satsen blir redusert når trygdetiden din er under 40 år.",
+                    Nynorsk to "Garantipensjonen skal sikre eit visst minimum på pensjonen. Størrelsen på garantipensjonen fastsettast ut frå ein sats som er avhengig av din sivilstand. Satsen blir redusert når trygdetida di er under 40 år.",
+                    English to "The guaranteed pension ensures a minimum level for the pension. The size of the guaranteed pension is based on a rate that depends on your marital status. The rate is reduced if your national insurance coverage is less than 40 years.",
+                )
+            }
+        }
+
+        showIf(
+            garantipensjonInnvilget // TODO At den sendes med bør egentlig bety at den er innvilget. Svak antagelse.
+                    and garantipensjonVedVirk.nettoUtbetaltPerManed_safe.ifNull(Kroner(0)).greaterThan(0)
+        ) {
+            //vedleggBeregnGarantipensjonOverskrift_001
+            ifNotNull(garantipensjonVedVirk) { garantipensjonVedVirk ->
+                title1 {
+                    text(
+                        Bokmal to "Garantipensjon",
+                        Nynorsk to "Garantipensjon",
+                        English to "Guaranteed pension",
+                    )
+                }
+                showIf(alderspensjonVedVirk.uttaksgrad.equalTo(100)) {
+                    //vedleggBeregnGarantipensjonUtbetaltFullUttak_001
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Din årlige garantipensjon blir beregnet ved å dele garantipensjonsbeholdningen din på delingstallet ved uttak. Garantipensjonsbeholdningen din er på ".expr() +
+                                    garantipensjonVedVirk.beholdningForForsteUttak.format() + " kroner, og delingstallet ved uttak er " +
+                                    beregningKap20VedVirk.delingstallLevealder.format() + ".",
+
+                            Nynorsk to "Den årlege garantipensjonen din blir rekna ut ved å dele garantipensjonsbeholdninga di på delingstalet ved uttak. Garantipensjonsbeholdninga di er på ".expr() +
+                                    garantipensjonVedVirk.beholdningForForsteUttak.format() + " kroner, og delingstalet ved uttak er " +
+                                    beregningKap20VedVirk.delingstallLevealder.format() + ".",
+
+                            English to "Your annual guaranteed pension is calculated by dividing your guaranteed pension capital by the life expectancy divisor at the time of the initial withdrawal. Your guaranteed pension capital is NOK ".expr() +
+                                    garantipensjonVedVirk.beholdningForForsteUttak.format() + ", and the divisor at withdrawal is " +
+                                    beregningKap20VedVirk.delingstallLevealder.format() + ".",
+                        )
+                    }
+                }.orShow {
+                    //vedleggBeregnGarantipensjonUtbetaltGradertUttak_001
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Din årlige garantipensjon blir beregnet ved å dele garantipensjonsbeholdningen din på delingstallet ved uttak. Garantipensjonsbeholdningen din er på ".expr() +
+                                    garantipensjonVedVirk.beholdningForForsteUttak.format() +
+                                    " kroner, og delingstallet ved uttak er "+ beregningKap20VedVirk.delingstallLevealder.format() +
+                                    ". Siden du ikke tar ut full pensjon, vil du kun få utbetalt " +
+                                    alderspensjonVedVirk.uttaksgrad.format() +" prosent av dette beløpet.",
+
+                            Nynorsk to "Den årlege garantipensjonen din blir rekna ut ved å dele garantipensjonsbeholdninga di på delingstalet ved uttak. Garantipensjonsbeholdninga di er på ".expr() +
+                                    garantipensjonVedVirk.beholdningForForsteUttak.format() +
+                                    " kroner, og delingstalet ved uttak er "+ beregningKap20VedVirk.delingstallLevealder.format() +
+                                    ". Sidan du ikkje tek ut full pensjon, vil du berre få utbetalt " +
+                                    alderspensjonVedVirk.uttaksgrad.format() +" prosent av dette beløpet.",
+
+                            English to "Your annual guaranteed pension is calculated by dividing your guaranteed pension capital by the life expectancy divisor at the time of the initial withdrawal. Your guaranteed pension capital is NOK ".expr() +
+                                    garantipensjonVedVirk.beholdningForForsteUttak.format() +
+                                    ", and the life expectancy divisor at withdrawal is "+ beregningKap20VedVirk.delingstallLevealder.format() +
+                                    ". Since you are not taking out full pension, you will only receive " +
+                                    alderspensjonVedVirk.uttaksgrad.format() +" percent of this amount.",
+                        )
+                    }
+                }
+                
+                title1 {
+                    text(
+                        Bokmal to "Garantipensjonsbeholdningen din er beregnet slik:",
+                        Nynorsk to "Garantipensjonsbehaldninga di er rekna ut slik:",
+                        English to "Your guaranteed pension capital is calculated as follows:",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Garantipensjonen skal sikre deg et visst minstenivå på pensjonen din. Garantipensjonen reduseres med inntektspensjonen. Størrelsen på garantipensjonen fastsettes ut fra en sats som er avhengig av din sivilstand. Satsen blir redusert hvis trygdetiden din er under 40 år.",
+                        Nynorsk to "Garantipensjonen skal sikre deg eit visst minstenivå på pensjonen din. Garantipensjonen blir redusert med inntektspensjonen. Storleiken på garantipensjonen blir fastsett ut frå ein sats som er avhengig av sivilstanden din. Satsen blir redusert dersom trygdetida di er under 40 år.",
+                        English to "The guaranteed pension ensures a certain minimum level for your pension. The guaranteed pension is reduced by the income pension. The size of the guaranteed pension is based on a rate that depends on your marital status. The rate is reduced if your national insurance coverage period is less than 40 years.",
+                    )
+                }
+            }
+        }
+
+
     }

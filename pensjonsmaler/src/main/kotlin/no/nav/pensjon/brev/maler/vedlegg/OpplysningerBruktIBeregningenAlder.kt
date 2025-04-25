@@ -421,5 +421,5 @@ private object PensjonsopptjeningenDinTittel: OutlinePhrase<LangBokmalNynorskEng
             )
         }
     }
-
 }
+
