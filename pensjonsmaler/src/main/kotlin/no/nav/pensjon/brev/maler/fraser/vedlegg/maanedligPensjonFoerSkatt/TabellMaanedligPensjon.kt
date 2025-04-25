@@ -280,7 +280,6 @@ data class TabellMaanedligPensjonKap20(
     val alderspensjonPerManed: Expression<MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        // TODO hvorfor er det ikke pensjon per måned i kolonne-headingen i denne tabellen?
         paragraph {
             table({
                 column(columnSpan = 3) {
