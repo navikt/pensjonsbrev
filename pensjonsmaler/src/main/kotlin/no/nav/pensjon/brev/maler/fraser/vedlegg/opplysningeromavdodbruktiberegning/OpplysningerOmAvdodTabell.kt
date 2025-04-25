@@ -62,6 +62,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Broek
 import no.nav.pensjon.brevbaker.api.model.BroekSelectors.nevner
 import no.nav.pensjon.brevbaker.api.model.BroekSelectors.teller
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import java.time.LocalDate
 
 data class OpplysningerOmAvdodTabell(
@@ -520,7 +521,7 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.flyktningstatusBrukt(flyk
     }
 }
 
-private fun TableScope<LangBokmalNynorskEnglish, Unit>.foedselsnummer(avdodFnr: Expression<OpplysningerOmAvdoedBruktIBeregningDto.Foedselsnummer>) {
+private fun TableScope<LangBokmalNynorskEnglish, Unit>.foedselsnummer(avdodFnr: Expression<Foedselsnummer>) {
     row {
         cell {
             text(
