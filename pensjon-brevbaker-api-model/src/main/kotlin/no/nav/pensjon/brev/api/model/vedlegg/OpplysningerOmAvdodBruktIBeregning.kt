@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.vedlegg
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brevbaker.api.model.Broek
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import java.time.LocalDate
 
 @Suppress("unused")
@@ -104,7 +105,4 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
         val virkDatoFom: LocalDate,
         val avdoedFlyktningstatusErBrukt: Boolean,
     )
-
-    data class Foedselsnummer(override val value: String) : no.nav.pensjon.brevbaker.api.model.Foedselsnummer
-
 }
