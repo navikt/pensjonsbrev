@@ -9,11 +9,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap19VedVirkSelectors.redusertTrygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.BeregningKap20VedVirkSelectors.redusertTrygdetid_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InngangOgEksportVurderingSelectors.eksportBeregnetUtenGarantipensjon_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidSelectors.fom
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidSelectors.land
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidSelectors.tom
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.beregningsmetode_safe
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetid
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.fom
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.land
+import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.tom
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -29,9 +30,9 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
     val beregningKap20VedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.BeregningKap20VedVirk?>,
     val alderspensjonVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.AlderspensjonVedVirk>,
     val inngangOgEksportVurdering: Expression<OpplysningerBruktIBeregningenAlderDto.InngangOgEksportVurdering?>,
-    val trygdetidNorge: Expression<List<OpplysningerBruktIBeregningenAlderDto.Trygdetid>>,
-    val trygdetidEOS: Expression<List<OpplysningerBruktIBeregningenAlderDto.Trygdetid>>,
-    val trygdetidAvtaleland: Expression<List<OpplysningerBruktIBeregningenAlderDto.Trygdetid>>,
+    val trygdetidNorge: Expression<List<Trygdetid>>,
+    val trygdetidEOS: Expression<List<Trygdetid>>,
+    val trygdetidAvtaleland: Expression<List<Trygdetid>>,
     val skalSkjuleTrygdetidstabellerPgaAldersovergang: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -94,7 +95,13 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
             }
 
             showIf(trygdetidNorge.size().greaterThan(0)) {
-
+                paragraph {
+                    text(
+                        Bokmal to "Tabellen nedenfor viser perioder vi har brukt for å fastsette din norske trygdetid.",
+                        Nynorsk to "Tabellen nedanfor viser periodar vi har brukt for å fastsetje den norske trygdetida di.",
+                        English to "The table below shows the time periods used to establish your Norwegian national insurance coverage.",
+                    )
+                }
                 includePhrase(NorskTrygdetid(trygdetidNorge))
             }
         }
@@ -134,16 +141,11 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
     }
 
     data class NorskTrygdetid(
-        val trygdetidNorge: Expression<List<OpplysningerBruktIBeregningenAlderDto.Trygdetid>>,
+        val trygdetidNorge: Expression<List<Trygdetid>>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             showIf(trygdetidNorge.size().greaterThan(0)) {
                 paragraph {
-                    text(
-                        Bokmal to "Tabellen nedenfor viser perioder vi har brukt for å fastsette din norske trygdetid.",
-                        Nynorsk to "Tabellen nedanfor viser periodar vi har brukt for å fastsetje den norske trygdetida di.",
-                        English to "The table below shows the time periods used to establish your Norwegian national insurance coverage.",
-                    )
                     table(
                         {
                             column {
@@ -184,7 +186,7 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
     }
 
     data class UtenlandskTrygdetid(
-        val trygdetid: Expression<List<OpplysningerBruktIBeregningenAlderDto.Trygdetid>>,
+        val trygdetid: Expression<List<Trygdetid>>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {

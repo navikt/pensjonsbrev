@@ -111,7 +111,7 @@ object Felles {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             textExpr(
                 Bokmal to antall.format() + " måneder",
-                Nynorsk to antall.format() + " måneder",
+                Nynorsk to antall.format() + " månadar",
                 English to antall.format() + " months"
             )
     }
