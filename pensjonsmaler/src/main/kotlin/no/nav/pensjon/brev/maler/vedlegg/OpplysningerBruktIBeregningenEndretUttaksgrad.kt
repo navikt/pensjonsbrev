@@ -7,29 +7,29 @@ import no.nav.pensjon.brev.api.model.Beregningsmetode.FOLKETRYGD
 import no.nav.pensjon.brev.api.model.Beregningsmetode.NORDISK
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.andelKap19
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.andelKap20
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.andelKap19_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.andelKap20_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.forholdstallLevealder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.poengAr
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.poengAre91
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.poengArf92
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.sluttpoengtall
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.poengAre91_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.poengArf92_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.sluttpoengtall_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BrukerSelectors.fodselsdato
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.garantipensjonsBeholdning
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.pensjonsbeholdning
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.garantipensjonsBeholdning_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.pensjonsbeholdning_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.restGrunnpensjon
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.restTilleggspensjon
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.KravSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.opptjeningTilfortKap20
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.opptjeningTilfortKap20_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.poenggivendeInntektSisteGyldigeOpptjeningsAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.poengtallSisteGyldigeOpptjeningsAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.sisteGyldigeOpptjeningsAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.alderspensjon
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.beregningKap19VedVirk
@@ -59,6 +59,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -158,13 +159,15 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
         showIf(alderspensjonVedVirk.regelverkType.equalTo(AP2016)) {
             //  vedleggBelopAP2016Oversikt_001
             paragraph {
+                val andelKap19 = alderspensjonVedVirk.andelKap19_safe.ifNull(0).format()
+                val andelKap20 = alderspensjonVedVirk.andelKap20_safe.ifNull(0).format()
                 textExpr(
                     Bokmal to "De som er født i perioden 1954-1962 får en kombinasjon av alderspensjon etter gamle og nye regler i folketrygdloven (kapittel 19 og 20). Fordi du er født i ".expr() + bruker.fodselsdato.year.format()
-                            + " får du beregnet " + alderspensjonVedVirk.andelKap19.format() + "/10 av pensjonen etter gamle regler, og " + alderspensjonVedVirk.andelKap20.format() + "/10 etter nye regler.",
+                            + " får du beregnet " + andelKap19 + "/10 av pensjonen etter gamle regler, og " + andelKap20 + "/10 etter nye regler.",
                     Nynorsk to "Dei som er fødde i perioden 1954-1962 får ein kombinasjon av alderspensjon etter gamle og nye reglar i folketrygdlova (kapittel 19 og 20). Fordi du er fødd i ".expr() + bruker.fodselsdato.year.format()
-                            + " får du rekna ut " + alderspensjonVedVirk.andelKap19.format() + "/10 av pensjonen etter gamle reglar, og " + alderspensjonVedVirk.andelKap20.format() + "/10 etter nye reglar.",
+                            + " får du rekna ut " + andelKap19 + "/10 av pensjonen etter gamle reglar, og " + andelKap20 + "/10 etter nye reglar.",
                     English to "]Individuals born between 1954 and 1962 will receive a combination of retirement pension calculated on the basis of both old and new provisions in the National Insurance Act (Chapters 19 and 20). Because you are born in ".expr() +
-                            bruker.fodselsdato.year.format() + ", " + alderspensjonVedVirk.andelKap19.format() + "/10 of your pension is calculated on the basis of the old provisions, and " + alderspensjonVedVirk.andelKap20.format() + "/10 is calculated on the basis of new provisions."
+                            bruker.fodselsdato.year.format() + ", " + andelKap19 + "/10 of your pension is calculated on the basis of the old provisions, and " + andelKap20 + "/10 is calculated on the basis of new provisions."
                 )
             }
 
@@ -242,18 +245,20 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                             }
                         }
                     }
-                    showIf(beregningKap19VedVirk.sluttpoengtall.greaterThan(0) and trygdetidsdetaljerKap19VedVirk.beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
-                     // vedleggTabellKap19Sluttpoengtall_001_]
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Sluttpoengtall",
-                                    Nynorsk to "Sluttpoengtal",
-                                    English to "Final pension point score"
-                                )
-                            }
-                            cell {
-                                eval(beregningKap19VedVirk.sluttpoengtall.format())
+                    ifNotNull(beregningKap19VedVirk.sluttpoengtall_safe) {
+                        showIf(it.greaterThan(0.0) and trygdetidsdetaljerKap19VedVirk.beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
+                            // vedleggTabellKap19Sluttpoengtall_001_]
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Sluttpoengtall",
+                                        Nynorsk to "Sluttpoengtal",
+                                        English to "Final pension point score"
+                                    )
+                                }
+                                cell {
+                                    eval(it.format())
+                                }
                             }
                         }
                     }
@@ -274,34 +279,39 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                         }
                     }
 
-                    showIf(beregningKap19VedVirk.poengArf92.greaterThan(0) and trygdetidsdetaljerKap19VedVirk.beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
-                        // vedleggTabellKap19PoengArf92_001
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Antall år med pensjonsprosent 45",
-                                    Nynorsk to "Talet på år med pensjonsprosent 45",
-                                    English to "Number of years calculated with pension percentage 45"
-                                )
-                            }
-                            cell {
-                                includePhrase(AntallAarText(beregningKap19VedVirk.poengArf92))
+                    ifNotNull(beregningKap19VedVirk.poengArf92_safe) {
+                        showIf(it.greaterThan(0) and trygdetidsdetaljerKap19VedVirk.beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
+                            // vedleggTabellKap19PoengArf92_001
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Antall år med pensjonsprosent 45",
+                                        Nynorsk to "Talet på år med pensjonsprosent 45",
+                                        English to "Number of years calculated with pension percentage 45"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(AntallAarText(it))
+                                }
                             }
                         }
+
                     }
 
-                    showIf(beregningKap19VedVirk.poengAre91.greaterThan(0) and trygdetidsdetaljerKap19VedVirk.beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
-                        // vedleggTabellKap19PoengAre91_001
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Antall år med pensjonsprosent 42",
-                                    Nynorsk to "Talet på år med pensjonsprosent 42",
-                                    English to "Number of years calculated with pension percentage 42"
-                                )
-                            }
-                            cell {
-                                includePhrase(AntallAarText(beregningKap19VedVirk.poengAre91))
+                    ifNotNull(beregningKap19VedVirk.poengAre91_safe) {
+                        showIf(it.greaterThan(0) and trygdetidsdetaljerKap19VedVirk.beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
+                            // vedleggTabellKap19PoengAre91_001
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Antall år med pensjonsprosent 42",
+                                        Nynorsk to "Talet på år med pensjonsprosent 42",
+                                        English to "Number of years calculated with pension percentage 42"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(AntallAarText(it))
+                                }
                             }
                         }
                     }
@@ -373,100 +383,123 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
             paragraph {
                 // vedleggBeregnTabellOverskrift_002
                 table(header = tabellheader()) {
-                    showIf(trygdetidsdetaljerKap20VedVirk.anvendtTT.greaterThan(0)) {
-                        // vedleggTabellKap20Trygdetid_001
-                        row {
-                            cell {
-                                textExpr(
-                                    Bokmal to "Trygdetid".expr() + ifElse(alderspensjon.regelverkType.equalTo(AP2016), " etter kapittel 20", ""),
-                                    Nynorsk to "Trygdetid".expr() + ifElse(alderspensjon.regelverkType.equalTo(AP2016), " etter kapittel 20", ""),
-                                    English to "National insurance coverage".expr() + ifElse(alderspensjon.regelverkType.equalTo(AP2016), " pursuant to Chapter 20", "")
-                                )
-                            }
-                            cell {
-                                includePhrase(AntallAarText(trygdetidsdetaljerKap20VedVirk.anvendtTT))
-                            }
-                        }
-                    }
-
-                    showIf(oppfrisketOpptjeningVedVirk.opptjeningTilfortKap20.greaterThan(0)) {
-                        //  vedleggTabellKap20NyOpptjening_001
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Ny opptjening",
-                                    Nynorsk to "Ny opptening",
-                                    English to "New accumulated pension capital"
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(oppfrisketOpptjeningVedVirk.opptjeningTilfortKap20))
+                    ifNotNull(trygdetidsdetaljerKap20VedVirk.anvendtTT_safe) {
+                        showIf(it.greaterThan(0)) {
+                            // vedleggTabellKap20Trygdetid_001
+                            row {
+                                cell {
+                                    textExpr(
+                                        Bokmal to "Trygdetid".expr() + ifElse(
+                                            alderspensjon.regelverkType.equalTo(AP2016),
+                                            " etter kapittel 20",
+                                            ""
+                                        ),
+                                        Nynorsk to "Trygdetid".expr() + ifElse(
+                                            alderspensjon.regelverkType.equalTo(
+                                                AP2016
+                                            ), " etter kapittel 20", ""
+                                        ),
+                                        English to "National insurance coverage".expr() + ifElse(
+                                            alderspensjon.regelverkType.equalTo(
+                                                AP2016
+                                            ), " pursuant to Chapter 20", ""
+                                        )
+                                    )
+                                }
+                                cell {
+                                    includePhrase(AntallAarText(it))
+                                }
                             }
                         }
                     }
 
-                    showIf(endretUttaksgradVedVirk.pensjonsbeholdning.greaterThan(0) and alderspensjonVedVirk.regelverkType.isOneOf(AP2016, AP2025)) {
-                        // tabellBeholdningEtterUttak_001
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Pensjonsbeholdning",
-                                    Nynorsk to "Pensjonsbehaldning",
-                                    English to "Accumulated pension capital"
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(endretUttaksgradVedVirk.pensjonsbeholdning))
-                            }
-                        }
-                    }
-
-                    showIf(endretUttaksgradVedVirk.garantipensjonsBeholdning.greaterThan(0)) {
-                        // vedleggTabellGarantiPbeholdningEtterUttak_001
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Garantipensjonsbeholdning",
-                                    Nynorsk to "Garantipensjonsbehaldning",
-                                    English to "Guaranteed pension capital"
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(endretUttaksgradVedVirk.garantipensjonsBeholdning))
+                    ifNotNull(oppfrisketOpptjeningVedVirk.opptjeningTilfortKap20_safe) {
+                        showIf(it.greaterThan(0)) {
+                            //  vedleggTabellKap20NyOpptjening_001
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Ny opptjening",
+                                        Nynorsk to "Ny opptening",
+                                        English to "New accumulated pension capital"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(KronerText(it))
+                                }
                             }
                         }
                     }
 
-                    showIf(beregningKap20VedVirk.delingstallLevealder.greaterThan(0.0) and alderspensjonVedVirk.regelverkType.equalTo(AP2016)) {
-                        // vedleggTabellKap20Delingstall_001
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Delingstall ved levealdersjustering",
-                                    Nynorsk to "Delingstal ved levealdersjustering",
-                                    English to "Ratio for life expectancy adjustment"
-                                )
-                            }
-                            cell {
-                                eval(beregningKap20VedVirk.delingstallLevealder.format())
+                    ifNotNull(endretUttaksgradVedVirk.pensjonsbeholdning_safe) {
+                        showIf(it.greaterThan(0) and alderspensjonVedVirk.regelverkType.isOneOf(AP2016, AP2025)) {
+                            // tabellBeholdningEtterUttak_001
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Pensjonsbeholdning",
+                                        Nynorsk to "Pensjonsbehaldning",
+                                        English to "Accumulated pension capital"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(KronerText(it))
+                                }
                             }
                         }
                     }
 
-                    showIf(beregningKap20VedVirk.delingstallLevealder.greaterThan(0.0) and alderspensjonVedVirk.regelverkType.equalTo(AP2025)) {
-                        // vedleggTabellKap20DelingstallGradEndr_001
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Delingstall ved endring",
-                                    Nynorsk to "Delingstal ved endring",
-                                    English to "Divisor at the time of adjustment"
-                                )
-                            }
-                            cell {
-                                eval(beregningKap20VedVirk.delingstallLevealder.format())
+                    ifNotNull(endretUttaksgradVedVirk.garantipensjonsBeholdning_safe) {
+                        showIf(it.greaterThan(0)) {
+                            // vedleggTabellGarantiPbeholdningEtterUttak_001
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Garantipensjonsbeholdning",
+                                        Nynorsk to "Garantipensjonsbehaldning",
+                                        English to "Guaranteed pension capital"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(KronerText(it))
+                                }
                             }
                         }
+                    }
+
+                    ifNotNull(beregningKap20VedVirk.delingstallLevealder_safe) {
+                        showIf(it.greaterThan(0.0) and alderspensjonVedVirk.regelverkType.equalTo(AP2016)) {
+                            // vedleggTabellKap20Delingstall_001
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Delingstall ved levealdersjustering",
+                                        Nynorsk to "Delingstal ved levealdersjustering",
+                                        English to "Ratio for life expectancy adjustment"
+                                    )
+                                }
+                                cell {
+                                    eval(it.format())
+                                }
+                            }
+                        }
+
+                        showIf(it.greaterThan(0.0) and alderspensjonVedVirk.regelverkType.equalTo(AP2025)) {
+                            // vedleggTabellKap20DelingstallGradEndr_001
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Delingstall ved endring",
+                                        Nynorsk to "Delingstal ved endring",
+                                        English to "Divisor at the time of adjustment"
+                                    )
+                                }
+                                cell {
+                                    eval(it.format())
+                                }
+                            }
+                        }
+
                     }
                 }
             }

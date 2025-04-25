@@ -15,22 +15,22 @@ data class OpplysningerBruktIBeregningenEndretUttaksgradDto(
     val trygdetidsdetaljerKap19VedVirk: TrygdetidsdetaljerKap19VedVirk,
     val beregningKap19VedVirk: BeregningKap19VedVirk,
     val endretUttaksgradVedVirk: EndretUttaksgradVedVirk,
-    val trygdetidsdetaljerKap20VedVirk: TrygdetidsdetaljerKap20VedVirk,
+    val trygdetidsdetaljerKap20VedVirk: TrygdetidsdetaljerKap20VedVirk?,
     val alderspensjon: Alderspensjon,
-    val beregningKap20VedVirk: BeregningKap20VedVirk
+    val beregningKap20VedVirk: BeregningKap20VedVirk?
 ) {
     data class AlderspensjonVedVirk(
         val uttaksgrad: Percent,
         val regelverkType: AlderspensjonRegelverkType,
-        val andelKap19: Int,
-        val andelKap20: Int
+        val andelKap19: Int?,
+        val andelKap20: Int?
     )
 
     data class OppfrisketOpptjeningVedVirk(
         val sisteGyldigeOpptjeningsAr: Year?,
         val poenggivendeInntektSisteGyldigeOpptjeningsAr: Kroner?,
         val poengtallSisteGyldigeOpptjeningsAr: Double?, // TODO: BigDecimal?
-        val opptjeningTilfortKap20: Kroner,
+        val opptjeningTilfortKap20: Kroner?,
     )
 
     data class Bruker(
@@ -47,18 +47,18 @@ data class OpplysningerBruktIBeregningenEndretUttaksgradDto(
     )
 
     data class BeregningKap19VedVirk(
-        val sluttpoengtall: Int,
+        val sluttpoengtall: Double?,
         val poengAr: Int,
-        val poengArf92: Int,
-        val poengAre91: Int,
+        val poengArf92: Int?,
+        val poengAre91: Int?,
         val forholdstallLevealder: Double
     )
 
     data class EndretUttaksgradVedVirk(
         val restGrunnpensjon: Kroner?,
         val restTilleggspensjon: Kroner?,
-        val pensjonsbeholdning: Kroner,
-        val garantipensjonsBeholdning: Kroner,
+        val pensjonsbeholdning: Kroner?,
+        val garantipensjonsBeholdning: Kroner?,
     )
 
     data class TrygdetidsdetaljerKap20VedVirk(

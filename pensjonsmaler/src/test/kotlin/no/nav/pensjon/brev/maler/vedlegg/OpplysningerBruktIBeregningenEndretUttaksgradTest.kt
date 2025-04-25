@@ -75,7 +75,7 @@ fun createOpplysningerBruktIBeregningenEndretUttaksgradDto(alderspensjonRegelver
             beregningsmetode = Beregningsmetode.FOLKETRYGD
         ),
         beregningKap19VedVirk = OpplysningerBruktIBeregningenEndretUttaksgradDto.BeregningKap19VedVirk(
-            sluttpoengtall = 10,
+            sluttpoengtall = 10.0,
             poengAr = 50,
             poengArf92 = 1,
             poengAre91 = 3,
