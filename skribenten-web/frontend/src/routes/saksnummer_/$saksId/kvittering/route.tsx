@@ -1,7 +1,6 @@
 import { css } from "@emotion/react";
 import { Button, Heading, VStack } from "@navikt/ds-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
 
 import KvitterteBrev from "~/components/kvitterteBrev/KvitterteBrev";
 import type { KvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
