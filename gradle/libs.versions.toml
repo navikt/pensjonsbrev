@@ -5,7 +5,7 @@ ktorVersion = "3.1.2"
 
 assertJVersion = "3.27.3"
 commonsCodecVersion = "1.18.0"
-commonVersion = "1.9.2"
+commonVersion = "1.9.3"
 exposedVersion = "0.61.0"
 flywayVersion = "11.7.2"
 hamkrestVersion = "1.8.0.1"

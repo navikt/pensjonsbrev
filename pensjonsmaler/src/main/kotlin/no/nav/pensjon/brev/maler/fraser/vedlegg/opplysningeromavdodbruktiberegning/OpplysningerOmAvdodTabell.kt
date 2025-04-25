@@ -7,8 +7,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AlderspensjonVedVirkSelectors.tilleggspensjonInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdodBeregningKap3Selectors.framtidigPoengAr_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdodBeregningKap3Selectors.poengArNevner_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdodBeregningKap3Selectors.poengArTeller_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdodBeregningKap3Selectors.poengArBroek_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdodBeregningKap3Selectors.poengAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdodBeregningKap3Selectors.poengAre91_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdodBeregningKap3Selectors.poengArf92_safe
@@ -18,8 +17,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedBeregningKap19VedVirkSelectors.faktiskPoengArAvtale_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedBeregningKap19VedVirkSelectors.faktiskPoengArNorge_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedBeregningKap19VedVirkSelectors.framtidigPoengAr_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedBeregningKap19VedVirkSelectors.poengArNevner_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedBeregningKap19VedVirkSelectors.poengArTeller_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedBeregningKap19VedVirkSelectors.poengArBroek_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedBeregningKap19VedVirkSelectors.poengAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedBeregningKap19VedVirkSelectors.poengAre91_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedBeregningKap19VedVirkSelectors.poengArf92_safe
@@ -33,20 +31,15 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregning
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerKap19VedVirkSelectors.framtidigTTBilateral
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerKap19VedVirkSelectors.framtidigTTEOS
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerKap19VedVirkSelectors.framtidigTTNorsk
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerKap19VedVirkSelectors.nevnerProRata
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerKap19VedVirkSelectors.nevnerTTEOS
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerKap19VedVirkSelectors.tellerProRata
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerKap19VedVirkSelectors.tellerTTEOS
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerKap19VedVirkSelectors.trygdetidEOSBroek
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.beregningsMetode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.faktiskTTNordiskKonv
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.framtidigTTBilateral
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.framtidigTTEOS
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.framtidigTTNorsk
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.nevnerProRata
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.nevnerTTEOS
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.tellerProRata
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.tellerTTEOS
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.proRataBroek
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedTrygdetidsdetaljerVedVirkNokkelInfoSelectors.trygdetidEOSBroek
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedYrkesskadedetaljerVedVirkSelectors.poengAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedYrkesskadedetaljerVedVirkSelectors.poengAre91_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.AvdoedYrkesskadedetaljerVedVirkSelectors.poengArf92_safe
@@ -66,6 +59,9 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brevbaker.api.model.Broek
+import no.nav.pensjon.brevbaker.api.model.BroekSelectors.nevner
+import no.nav.pensjon.brevbaker.api.model.BroekSelectors.teller
 import java.time.LocalDate
 
 data class OpplysningerOmAvdodTabell(
@@ -115,8 +111,7 @@ data class OpplysningerOmAvdodTabell(
 
                                 //vedleggTabellFaktiskTTBrokNorgeNordisk_001
                                 tabellFaktiskTTBroekNorgeNordisk(
-                                    avdoedTrygdetidsdetaljerKap19VedVirk.tellerTTEOS,
-                                    avdoedTrygdetidsdetaljerKap19VedVirk.nevnerTTEOS
+                                    avdoedTrygdetidsdetaljerKap19VedVirk.trygdetidEOSBroek,
                                 )
                             }
 
@@ -157,10 +152,7 @@ data class OpplysningerOmAvdodTabell(
                             framtidigTTMaanederIfNotNull(avdoedTrygdetidsdetaljerKap19VedVirk.framtidigTTEOS)
 
                             //tabellFaktiskTTBrokNorgeEOS_001
-                            faktiskTTBroekNorgeEOS(
-                                avdoedTrygdetidsdetaljerKap19VedVirk.tellerTTEOS,
-                                avdoedTrygdetidsdetaljerKap19VedVirk.nevnerTTEOS
-                            )
+                            faktiskTTBroekNorgeEOS(avdoedTrygdetidsdetaljerKap19VedVirk.trygdetidEOSBroek)
 
                             showIf(tillegspensjonKombinertMedAvdod) {
                                 //vedleggAvdodTabellAntallPoengArFaktiskNorge_001
@@ -198,10 +190,7 @@ data class OpplysningerOmAvdodTabell(
                                 framtidigePoengAar(avdoedBeregningKap19VedVirk.framtidigPoengAr_safe)
 
                                 //tabellPoengArBrokNorgeEOS_001
-                                poengAarBroekNorgeEOS(
-                                    avdoedBeregningKap19VedVirk.poengArTeller_safe,
-                                    avdoedBeregningKap19VedVirk.poengArNevner_safe
-                                )
+                                poengAarBroekNorgeEOS(avdoedBeregningKap19VedVirk.poengArBroek_safe)
                             }
                         }.orShow {
                             //tabellTTNorgeAvtaleland_001
@@ -211,10 +200,7 @@ data class OpplysningerOmAvdodTabell(
                             framtidigTTMaanederIfNotNull(avdoedTrygdetidsdetaljerKap19VedVirk.framtidigTTBilateral)
 
                             //tabellTTBrokNorgeAvtaleland_001
-                            trygdetidBroekNorgeAvtaleland(
-                                avdoedTrygdetidsdetaljerKap19VedVirk.tellerProRata,
-                                avdoedTrygdetidsdetaljerKap19VedVirk.nevnerProRata
-                            )
+                            trygdetidBroekNorgeAvtaleland(avdoedTrygdetidsdetaljerKap19VedVirk.trygdetidEOSBroek)
 
 
                             showIf(tillegspensjonKombinertMedAvdod) {
@@ -250,10 +236,7 @@ data class OpplysningerOmAvdodTabell(
                                 framtidigePoengAar(avdoedBeregningKap19VedVirk.framtidigPoengAr_safe)
 
                                 //tabellPoengArBrokNorgeAvtaleland_001
-                                poengArBrokNorgeOgAvtaleland(
-                                    teller = avdoedBeregningKap19VedVirk.poengArTeller_safe,
-                                    nevner = avdoedBeregningKap19VedVirk.poengArNevner_safe
-                                )
+                                poengArBrokNorgeOgAvtaleland(avdoedBeregningKap19VedVirk.poengArBroek_safe)
                             }
                         }
                     }
@@ -290,10 +273,7 @@ data class OpplysningerOmAvdodTabell(
                                 framtidigTTMaanederIfNotNull(avdoedNokkelinfo.framtidigTTNorsk)
 
                                 //vedleggTabellFaktiskTTBrokNorgeNordiskAP1967_001
-                                tabellFaktiskTTBroekNorgeNordisk(
-                                    avdoedNokkelinfo.tellerTTEOS,
-                                    avdoedNokkelinfo.nevnerTTEOS
-                                )
+                                tabellFaktiskTTBroekNorgeNordisk(avdoedNokkelinfo.trygdetidEOSBroek)
                             }
                             showIf(
                                 beregningsmetode.equalTo(FOLKETRYGD)
@@ -326,10 +306,7 @@ data class OpplysningerOmAvdodTabell(
                             framtidigTTMaanederIfNotNull(avdoedNokkelinfo.framtidigTTEOS)
 
                             //tabellFaktiskTTBrokNorgeEOSap1967_001
-                            faktiskTTBroekNorgeEOS(
-                                avdoedNokkelinfo.tellerTTEOS,
-                                avdoedNokkelinfo.nevnerTTEOS,
-                            )
+                            faktiskTTBroekNorgeEOS(avdoedNokkelinfo.trygdetidEOSBroek)
                             showIf(
                                 alderspensjonVedVirk.tilleggspensjonInnvilget
                                         and alderspensjonVedVirk.gjenlevenderettAnvendt
@@ -359,10 +336,7 @@ data class OpplysningerOmAvdodTabell(
                                 framtidigePoengAar(avdodBeregningKap3.framtidigPoengAr_safe)
 
                                 //tabellPoengArBrokNorgeEOSap1967_001
-                                poengAarBroekNorgeEOS(
-                                    avdodBeregningKap3.poengArTeller_safe,
-                                    avdodBeregningKap3.poengArNevner_safe,
-                                )
+                                poengAarBroekNorgeEOS(avdodBeregningKap3.poengArBroek_safe)
                             }
                         }.orShow {
                             //tabellTTNorgeAvtalelandAP1967_001
@@ -372,10 +346,7 @@ data class OpplysningerOmAvdodTabell(
                             framtidigTTMaanederIfNotNull(avdoedNokkelinfo.framtidigTTBilateral)
 
                             //tabellTTBrokNorgeAvtalelandAP1967_001
-                            trygdetidBroekNorgeAvtaleland(
-                                avdoedNokkelinfo.tellerProRata,
-                                avdoedNokkelinfo.nevnerProRata,
-                            )
+                            trygdetidBroekNorgeAvtaleland(avdoedNokkelinfo.proRataBroek)
 
                             showIf(
                                 alderspensjonVedVirk.tilleggspensjonInnvilget
@@ -407,10 +378,7 @@ data class OpplysningerOmAvdodTabell(
                                 framtidigePoengAar(avdodBeregningKap3.framtidigPoengAr_safe)
 
                                 //tabellPoengArBrokNorgeAvtalelandAP1967_001
-                                poengArBrokNorgeOgAvtaleland(
-                                    teller = avdodBeregningKap3.poengArTeller_safe,
-                                    nevner = avdodBeregningKap3.poengArNevner_safe
-                                )
+                                poengArBrokNorgeOgAvtaleland(avdodBeregningKap3.poengArBroek_safe)
                             }
                         }
                         tilleggspensjonPgaUngUfoer(tilleggspensjonVedVirk.pgaUngUforeAvdod_safe.ifNull(false))
@@ -424,35 +392,25 @@ data class OpplysningerOmAvdodTabell(
 }
 
 
-private fun TableScope<LangBokmalNynorskEnglish, Unit>.poengArBrokNorgeOgAvtaleland(
-    teller: Expression<Int?>,
-    nevner: Expression<Int?>
-) {
+private fun TableScope<LangBokmalNynorskEnglish, Unit>.poengArBrokNorgeOgAvtaleland(broek: Expression<Broek?>) {
     broekIfNotNull(
         bokmal = "Forholdet mellom antall poengår i Norge og antall poengår i Norge og avtaleland",
         nynorsk = "Forholdet mellom talet på poengår i Noreg og talet på poengår i Noreg og avtaleland",
         engelsk = "Ratio between the number of point earning years in Norway and the number of point earning years in Norway and countries with social security agreement",
-        teller = teller,
-        nevner = nevner,
+        broek = broek,
     )
 }
 
-private fun TableScope<LangBokmalNynorskEnglish, Unit>.trygdetidBroekNorgeAvtaleland(
-    teller: Expression<Int?>,
-    nevner: Expression<Int?>
-) {
+private fun TableScope<LangBokmalNynorskEnglish, Unit>.trygdetidBroekNorgeAvtaleland(broek: Expression<Broek?>) {
     broekIfNotNull(
         bokmal = "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og avtaleland",
         nynorsk = "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og avtaleland",
         engelsk = "Ratio between actual period of national insurance coverage in Norway and period of national insurance coverage in Norway and countries with social security agreement",
-        teller = teller,
-        nevner = nevner,
+        broek = broek,
     )
 }
 
-private fun TableScope<LangBokmalNynorskEnglish, Unit>.samletTrygdetidNorgeAvtaleland(
-    anvendtTT: Expression<Int?>
-) {
+private fun TableScope<LangBokmalNynorskEnglish, Unit>.samletTrygdetidNorgeAvtaleland(anvendtTT: Expression<Int?>) {
     antallAarIfNotNull(
         bokmal = "Samlet trygdetid i Norge og avtaleland",
         nynorsk = "Samla trygdetid i Noreg og avtaleland",
@@ -461,28 +419,23 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.samletTrygdetidNorgeAvtal
     )
 }
 
-private fun TableScope<LangBokmalNynorskEnglish, Unit>.poengAarBroekNorgeEOS(
-    teller: Expression<Int?>, nevner: Expression<Int?>
-) {
+private fun TableScope<LangBokmalNynorskEnglish, Unit>.poengAarBroekNorgeEOS(broek: Expression<Broek?>) {
     broekIfNotNull(
         bokmal = "Forholdet mellom antall poengår i Norge og antall poengår i Norge og annet EØS-land",
         nynorsk = "Forholdet mellom talet på poengår i Noreg og talet på poengår i Noreg og anna EØS-land",
         engelsk = "The ratio between point earning years in Norway and total point earning years in all EEA countries",
-        teller = teller,
-        nevner = nevner,
+        broek = broek,
     )
 }
 
 private fun TableScope<LangBokmalNynorskEnglish, Unit>.faktiskTTBroekNorgeEOS(
-    teller: Expression<Int?>,
-    nevner: Expression<Int?>
+    broek: Expression<Broek?>
 ) {
     broekIfNotNull(
         bokmal = "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og andre EØS-land",
         nynorsk = "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og andre EØS-land",
         engelsk = "The ratio between national insurance coverage in Norway and total insurance coverage in all EEA countries",
-        teller = teller,
-        nevner = nevner,
+        broek = broek,
     )
 }
 
@@ -520,15 +473,13 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.antallPoengAar(antallPoen
 }
 
 private fun TableScope<LangBokmalNynorskEnglish, Unit>.tabellFaktiskTTBroekNorgeNordisk(
-    tellerTTEOS: Expression<Int?>,
-    nevnerTTEOS: Expression<Int?>
+    broek: Expression<Broek?>,
 ) {
     broekIfNotNull(
         bokmal = "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og annet nordisk land",
         nynorsk = "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og anna nordisk land",
         engelsk = "Ratio between actual period of national insurance coverage in Norway and period of national insurance coverage in Norway and other Nordic countries",
-        teller = tellerTTEOS,
-        nevner = nevnerTTEOS
+        broek = broek,
     )
 }
 
@@ -779,13 +730,12 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.broekIfNotNull(
     bokmal: String,
     nynorsk: String,
     engelsk: String,
-    teller: Expression<Int?>,
-    nevner: Expression<Int?>,
+    broek: Expression<Broek?>,
 ) {
-    ifNotNull(teller, nevner) { teller, nevner ->
+    ifNotNull(broek) {
         row {
             cell { text(Bokmal to bokmal, Nynorsk to nynorsk, English to engelsk) }
-            cell { includePhrase(BroekText(teller, nevner)) }
+            cell { includePhrase(BroekText(it.teller, it.nevner)) }
         }
     }
 }

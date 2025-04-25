@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Beregningsmetode
+import no.nav.pensjon.brevbaker.api.model.Broek
 import java.time.LocalDate
 
 @Suppress("unused")
@@ -33,8 +34,7 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
         val poengAr: Int?,
         val poengAre91: Int?,
         val poengArf92: Int?,
-        val poengArNevner: Int?,
-        val poengArTeller: Int?,
+        val poengArBroek: Broek?,
         val framtidigPoengAr: Int?,
     )
     data class AvdoedYrkesskadedetaljerVedVirk(
@@ -50,8 +50,7 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
         val faktiskPoengArNorge: Int?,
         val framtidigPoengAr: Int?,
         val poengAr: Int?,
-        val poengArNevner: Int?,
-        val poengArTeller: Int?,
+        val poengArBroek: Broek?,
         val poengAre91: Int?,
         val poengArf92: Int?,
         val sluttpoengtall: Double?,
@@ -71,10 +70,8 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
         val anvendtTT: Int?,
         val faktiskTTNordiskKonv: Int?,
         val framtidigTTNorsk: Int?,
-        val tellerTTEOS: Int?,
-        val nevnerTTEOS: Int?,
-        val tellerProRata: Int?,
-        val nevnerProRata: Int?,
+        val trygdetidEOSBroek: Broek?,
+        val proRataBroek: Broek?,
     )
 
     data class AlderspensjonVedVirk(
@@ -88,12 +85,10 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
         val beregningsMetode: Beregningsmetode,
         val framtidigTTNorsk: Int?,
         val faktiskTTNordiskKonv: Int?,
-        val tellerTTEOS: Int?,
-        val nevnerTTEOS: Int?,
+        val trygdetidEOSBroek: Broek?,
         val framtidigTTEOS: Int?,
         val framtidigTTBilateral: Int?,
-        val tellerProRata: Int?,
-        val nevnerProRata: Int?,
+        val proRataBroek: Broek?,
     )
 
     data class Avdoed(

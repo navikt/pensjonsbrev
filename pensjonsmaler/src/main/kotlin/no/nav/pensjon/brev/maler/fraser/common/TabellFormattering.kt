@@ -40,13 +40,13 @@ data class AntallMaanederText(val maaneder: Expression<Int>, val fontType: FontT
         showIf(maaneder.greaterThan(1)) {
             textExpr(
                 Bokmal to maanedText + " måneder",
-                Nynorsk to maanedText + " måneder",
+                Nynorsk to maanedText + " månadar",
                 English to maanedText + " months",
             )
         }.orShow {
             textExpr(
                 Bokmal to maanedText + " måned",
-                Nynorsk to maanedText + " måned",
+                Nynorsk to maanedText + " månad",
                 English to maanedText + " month",
             )
         }

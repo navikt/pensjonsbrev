@@ -42,7 +42,7 @@ data class TabellPoengrekke(val pensjonspoeng: Expression<List<Pensjonspoeng>>) 
                 column(alignment = RIGHT, columnSpan = 1) {
                     text(
                         Bokmal to "Gj.snittlig G (kr)",
-                        Nynorsk to "Gj.snittlig G (kr)",
+                        Nynorsk to "Gj.snittleg G (kr)",
                         English to "Average G (NOK)"
                     )
                 }

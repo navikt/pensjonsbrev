@@ -105,8 +105,8 @@ val opplysningerOmAvdoedBruktIBeregning =
 
         showIf(
             regelverkstype.isOneOf(AP2011, AP2016) and
-                    (ikkeFullAnvendtTTKap19 and beregningsmetodeKap19.equalTo(FOLKETRYGD))
-                    or beregningsmetodeKap19.notEqualTo(FOLKETRYGD)
+                    ((ikkeFullAnvendtTTKap19 and beregningsmetodeKap19.equalTo(FOLKETRYGD))
+                    or beregningsmetodeKap19.notEqualTo(FOLKETRYGD))
         ) {
             //trygdetidOverskrift_001
             //norskTTAvdodInfoGenerell_001
@@ -143,7 +143,7 @@ val opplysningerOmAvdoedBruktIBeregning =
 
         // TODO her var det feil-implementert logikk som alltid vil returnere true. Fjernet den, men det betyr at det kan hende trygdetid i avtaleland vises unødvendig.
         //      fungerer i dag på grunn av sjekken på om du har trygdetidsperioder.
-        showIf(avdoedTrygdetidEOS.size().greaterThan(0)) {
+        showIf(avdoedTrygdetidAvtaleland.size().greaterThan(0)) {
             paragraph {
                 text(
                     Bokmal to "Avdødes trygdetid i avtaleland er fastsatt på grunnlag av følgende perioder:",
