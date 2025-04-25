@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.tellerProRata_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.tellerTTEOS
 import no.nav.pensjon.brev.maler.fraser.common.AntallAarText
+import no.nav.pensjon.brev.maler.fraser.common.BroekText
 import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -103,7 +104,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                                             English to "The ratio between national insurance coverage in Norway and total insurance coverage in all EEA countries",
                                         )
                                     }
-                                    cell { eval(tellerTTEOS.format() + "/" + nevnerTTEOS.format()) }
+                                    cell { includePhrase(BroekText(tellerTTEOS, nevnerTTEOS)) }
                                 }
                             }
                         }
@@ -122,7 +123,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                                             English to "Ratio between actual period of national insurance coverage in Norway and period of national insurance coverage in Norway and countries with social security agreement",
                                         )
                                     }
-                                    cell { eval(tellerProRata.format() + "/" + nevnerProRata.format()) }
+                                    cell { includePhrase(BroekText(tellerProRata, nevnerProRata)) }
                                 }
                             }
                         }

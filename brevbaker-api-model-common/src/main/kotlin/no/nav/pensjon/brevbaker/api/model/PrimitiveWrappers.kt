@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package no.nav.pensjon.brevbaker.api.model
 
 import no.nav.brev.InterneDataklasser
@@ -29,3 +31,5 @@ data class Months(override val value: Int) : IntValue
 data class Days(override val value: Int) : IntValue
 
 data class Percent(override val value: Int) : IntValue
+
+data class Broek(val teller: Int, val nevner: Int)
