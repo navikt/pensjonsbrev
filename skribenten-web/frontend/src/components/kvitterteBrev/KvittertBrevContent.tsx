@@ -1,10 +1,10 @@
 import { Accordion, BodyShort, Button, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { hentPdfForJournalpostQuery, sendBrev, sendBrevTilAttestering } from "~/api/sak-api-endpoints";
+import { hentPdfForJournalpostQuery, sendBrev } from "~/api/sak-api-endpoints";
 import { getNavnQuery } from "~/api/skribenten-api-endpoints";
 import Oppsummeringspar from "~/routes/saksnummer_/$saksId/kvittering/-components/Oppsummeringspar";
-import type { BestillBrevResponse, BrevInfo, Mottaker } from "~/types/brev";
+import type { BestillBrevResponse, Mottaker } from "~/types/brev";
 import { Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { humanizeName } from "~/utils/stringUtils";
@@ -17,7 +17,6 @@ const AccordionContent = (props: {
   saksId: string;
   brevId: number;
   apiStatus: "error" | "success";
-  context: "sendBrev" | "attestering";
   distribusjonstype: Distribusjonstype;
   journalpostId: Nullable<number>;
   mottaker: Nullable<Mottaker>;
@@ -26,56 +25,24 @@ const AccordionContent = (props: {
     mutationFn: () => sendBrev(props.saksId, props.brevId),
   });
 
-  const sendBrevTilAttesteringMutation = useMutation<BrevInfo, Error>({
-    mutationFn: () => sendBrevTilAttestering({ saksId: props.saksId, brevId: props.brevId }),
-  });
-
   switch (props.apiStatus) {
     case "error": {
-      switch (props.context) {
-        case "sendBrev": {
-          return (
-            <AccordionContentError isPending={sendBrevMutation.isPending} onPrøvIgjenClick={sendBrevMutation.mutate} />
-          );
-        }
-        case "attestering": {
-          return (
-            <AccordionContentError
-              isPending={sendBrevTilAttesteringMutation.isPending}
-              onPrøvIgjenClick={sendBrevTilAttesteringMutation.mutate}
-            />
-          );
-        }
-      }
-      break;
+      return (
+        <AccordionContentError isPending={sendBrevMutation.isPending} onPrøvIgjenClick={sendBrevMutation.mutate} />
+      );
     }
     case "success": {
-      switch (props.context) {
-        case "sendBrev": {
-          return (
-            <AccordionContentSuccess
-              distribusjonstype={props.distribusjonstype}
-              journalpostId={props.journalpostId}
-              mottaker={props.mottaker}
-              saksId={props.saksId}
-            />
-          );
-        }
-        case "attestering": {
-          return (
-            <AccordionContentSuccess
-              distribusjonstype={props.distribusjonstype}
-              journalpostId={null}
-              mottaker={props.mottaker}
-              saksId={props.saksId}
-            />
-          );
-        }
-      }
+      return (
+        <AccordionContentSuccess
+          distribusjonstype={props.distribusjonstype}
+          journalpostId={props.journalpostId}
+          mottaker={props.mottaker}
+          saksId={props.saksId}
+        />
+      );
     }
   }
 };
-
 export default AccordionContent;
 
 const AccordionContentSuccess = (props: {
