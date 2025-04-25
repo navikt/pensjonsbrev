@@ -23,8 +23,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndret
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.restGrunnpensjon
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.EndretUttaksgradVedVirkSelectors.restTilleggspensjon
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.KravSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.PGISisteGyldigeOpptjeningsAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.opptjeningTilfortKap20
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.poenggivendeInntektSisteGyldigeOpptjeningsAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.poengtallSisteGyldigeOpptjeningsAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.sisteGyldigeOpptjeningsAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.anvendtTT
@@ -45,13 +45,14 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.TableScope
+import no.nav.pensjon.brev.template.dsl.TableHeaderScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -126,23 +127,20 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
         }
 
         // vedleggBeregnGradsEndrOpptjen_001
-        ifNotNull(oppfrisketOpptjeningVedVirk.sisteGyldigeOpptjeningsAr_safe) { sisteGyldigeOpptjeningsaar ->
-            ifNotNull(oppfrisketOpptjeningVedVirk.PGISisteGyldigeOpptjeningsAr_safe) { pGISisteGyldigeOpptjeningsaar ->
-                paragraph {
-                    textExpr(
-                        Bokmal to "Fordi du har søkt om endring av uttaksgrad vil ny pensjonsopptjening for inntektsåret ".expr() + sisteGyldigeOpptjeningsaar.format() + " bli lagt til alderspensjonen din.",
-                        Nynorsk to "Fordi du har søkt om endring av uttaksgrad vil ny pensjonsopptjening for inntektsåret ".expr() + sisteGyldigeOpptjeningsaar.format() + " bli lagt til alderspensjonen din.",
-                        English to "Because you have applied to change your pension withdrawal percentage, your new pension earnings for the income year ".expr() + sisteGyldigeOpptjeningsaar.format() + " will be added to your retirement pension."
-                    )
-                }
-                paragraph {
-                    textExpr(
-                        Bokmal to "Du har ".expr() + pGISisteGyldigeOpptjeningsaar.format() + " kroner i pensjonsgivende inntekt i dette året. ",
-                        Nynorsk to "Du har ".expr() + pGISisteGyldigeOpptjeningsaar.format() + " kroner i pensjonsgivande inntekt i dette året.",
-                        English to "Your pensionable income for this year is NOK ".expr() + pGISisteGyldigeOpptjeningsaar.format() + "."
-                    )
-                }
-
+        ifNotNull(oppfrisketOpptjeningVedVirk.sisteGyldigeOpptjeningsAr_safe, oppfrisketOpptjeningVedVirk.poenggivendeInntektSisteGyldigeOpptjeningsAr_safe) { sisteGyldigeOpptjeningsaar, poenggivendeInntektSisteGyldigeOpptjeningsaar ->
+            paragraph {
+                textExpr(
+                    Bokmal to "Fordi du har søkt om endring av uttaksgrad vil ny pensjonsopptjening for inntektsåret ".expr() + sisteGyldigeOpptjeningsaar.format() + " bli lagt til alderspensjonen din.",
+                    Nynorsk to "Fordi du har søkt om endring av uttaksgrad vil ny pensjonsopptjening for inntektsåret ".expr() + sisteGyldigeOpptjeningsaar.format() + " bli lagt til alderspensjonen din.",
+                    English to "Because you have applied to change your pension withdrawal percentage, your new pension earnings for the income year ".expr() + sisteGyldigeOpptjeningsaar.format() + " will be added to your retirement pension."
+                )
+            }
+            paragraph {
+                textExpr(
+                    Bokmal to "Du har ".expr() + poenggivendeInntektSisteGyldigeOpptjeningsaar.format() + " kroner i pensjonsgivende inntekt i dette året. ",
+                    Nynorsk to "Du har ".expr() + poenggivendeInntektSisteGyldigeOpptjeningsaar.format() + " kroner i pensjonsgivande inntekt i dette året.",
+                    English to "Your pensionable income for this year is NOK ".expr() + poenggivendeInntektSisteGyldigeOpptjeningsaar.format() + "."
+                )
             }
         }
 
@@ -182,19 +180,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
 
         showIf(alderspensjonVedVirk.regelverkType.notEqualTo(AP2025)) {
             paragraph {
-                table(
-                    header = {
-                        // vedleggBeregnTabellOverskrift_002
-                        column(columnSpan = 2, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT) {
-                            textExpr(
-                                Bokmal to "Opplysninger brukt i beregningen fra ".expr() + krav.virkDatoFom.format(),
-                                Nynorsk to "Opplysninger brukte i berekninga frå ".expr() + krav.virkDatoFom.format(),
-                                English to "Information used in the calculation as of ".expr() + krav.virkDatoFom.format()
-                            )
-                        }
-                        column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {}
-                    }
-                ) {
+                table(header = tabellheader()) {
                     showIf(trygdetidsdetaljerKap19VedVirk.anvendtTT.greaterThan(0) and trygdetidsdetaljerKap19VedVirk.beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
                         row {
                             cell {
@@ -223,7 +209,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                             }
                         }
                     }
-                    ifNotNull(oppfrisketOpptjeningVedVirk.PGISisteGyldigeOpptjeningsAr_safe) {
+                    ifNotNull(oppfrisketOpptjeningVedVirk.poenggivendeInntektSisteGyldigeOpptjeningsAr_safe) {
                         showIf(it.greaterThan(0)) {
                             row {
                                 cell {
@@ -234,7 +220,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                                     )
                                 }
                                 cell {
-                                    eval(it.format())
+                                    includePhrase(KronerText(it))
                                 }
                             }
                         }
@@ -386,18 +372,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
         showIf(alderspensjonVedVirk.regelverkType.isOneOf(AP2016, AP2025)) {
             paragraph {
                 // vedleggBeregnTabellOverskrift_002
-                table(
-                    header = {
-                        column(columnSpan = 2, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT) {
-                            textExpr(
-                                Bokmal to "Opplysninger brukt i beregningen fra ".expr() + krav.virkDatoFom.format(),
-                                Nynorsk to "Opplysninger brukte i berekninga frå ".expr() + krav.virkDatoFom.format(),
-                                English to "Information used in the calculation as of ".expr() + krav.virkDatoFom.format()
-                            )
-                        }
-                        column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {}
-                    }
-                ) {
+                table(header = tabellheader()) {
                     showIf(trygdetidsdetaljerKap20VedVirk.anvendtTT.greaterThan(0)) {
                         // vedleggTabellKap20Trygdetid_001
                         row {
@@ -430,14 +405,20 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                         }
                     }
 
-                    showIf(endretUttaksgradVedVirk.pensjonsbeholdning.greaterThan(0) and alderspensjonVedVirk.regelverkType.equalTo(AP2016)) {
+                    showIf(endretUttaksgradVedVirk.pensjonsbeholdning.greaterThan(0) and alderspensjonVedVirk.regelverkType.isOneOf(AP2016, AP2025)) {
                         // tabellBeholdningEtterUttak_001
-                        tabellPensjonsbeholdning()
-                    }
-
-                    showIf(endretUttaksgradVedVirk.pensjonsbeholdning.greaterThan(0) and alderspensjonVedVirk.regelverkType.equalTo(AP2025)) {
-                        // tabellBeholdningEtterUttak_001
-                        tabellPensjonsbeholdning()
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Pensjonsbeholdning",
+                                    Nynorsk to "Pensjonsbehaldning",
+                                    English to "Accumulated pension capital"
+                                )
+                            }
+                            cell {
+                                includePhrase(KronerText(endretUttaksgradVedVirk.pensjonsbeholdning))
+                            }
+                        }
                     }
 
                     showIf(endretUttaksgradVedVirk.garantipensjonsBeholdning.greaterThan(0)) {
@@ -503,17 +484,15 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
 
     }
 
-private fun TableScope<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningenEndretUttaksgradDto>.tabellPensjonsbeholdning() {
-    row {
-        cell {
-            text(
-                Bokmal to "Pensjonsbeholdning",
-                Nynorsk to "Pensjonsbehaldning",
-                English to "Accumulated pension capital"
+private fun tabellheader(): TableHeaderScope<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningenEndretUttaksgradDto>.() -> Unit =
+    {
+        // vedleggBeregnTabellOverskrift_002
+        column(columnSpan = 2, alignment = LEFT) {
+            textExpr(
+                Bokmal to "Opplysninger brukt i beregningen fra ".expr() + krav.virkDatoFom.format(),
+                Nynorsk to "Opplysninger brukte i berekninga frå ".expr() + krav.virkDatoFom.format(),
+                English to "Information used in the calculation as of ".expr() + krav.virkDatoFom.format()
             )
         }
-        cell {
-            includePhrase(KronerText(endretUttaksgradVedVirk.pensjonsbeholdning))
-        }
+        column(alignment = RIGHT) {}
     }
-}

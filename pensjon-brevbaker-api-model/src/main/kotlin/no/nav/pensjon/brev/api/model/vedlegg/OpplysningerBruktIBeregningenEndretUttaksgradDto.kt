@@ -28,7 +28,7 @@ data class OpplysningerBruktIBeregningenEndretUttaksgradDto(
 
     data class OppfrisketOpptjeningVedVirk(
         val sisteGyldigeOpptjeningsAr: Year?,
-        val PGISisteGyldigeOpptjeningsAr: Kroner?,
+        val poenggivendeInntektSisteGyldigeOpptjeningsAr: Kroner?,
         val poengtallSisteGyldigeOpptjeningsAr: Double?, // TODO: BigDecimal?
         val opptjeningTilfortKap20: Kroner,
     )

@@ -60,7 +60,7 @@ fun createOpplysningerBruktIBeregningenEndretUttaksgradDto(alderspensjonRegelver
         ),
         oppfrisketOpptjeningVedVirk = OpplysningerBruktIBeregningenEndretUttaksgradDto.OppfrisketOpptjeningVedVirk(
             sisteGyldigeOpptjeningsAr = Year(2022),
-            PGISisteGyldigeOpptjeningsAr = Kroner(987),
+            poenggivendeInntektSisteGyldigeOpptjeningsAr = Kroner(987),
             poengtallSisteGyldigeOpptjeningsAr = 4.0,
             opptjeningTilfortKap20 = Kroner(234)
         ),
