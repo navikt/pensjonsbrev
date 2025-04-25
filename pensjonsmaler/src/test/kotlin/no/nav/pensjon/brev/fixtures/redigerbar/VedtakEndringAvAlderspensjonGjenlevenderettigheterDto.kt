@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
@@ -33,7 +34,7 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
             ),
             krav = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.Krav(
                 virkDatoFom = LocalDate.of(2024, Month.FEBRUARY, 2),
-                kravInitiertAv = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.KravInitiertAv.NAV
+                kravInitiertAv = KravInitiertAv.NAV
             ),
             alderspensjonVedVirk = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.AlderspensjonVedVirk(
                 totalPensjon = Kroner(1000),

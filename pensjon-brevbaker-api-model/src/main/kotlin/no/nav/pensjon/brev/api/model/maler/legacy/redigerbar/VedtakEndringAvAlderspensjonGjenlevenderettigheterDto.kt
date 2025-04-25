@@ -86,13 +86,6 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
     )
 
     @Suppress("EnumEntryName")
-    enum class KravInitiertAv {
-        BRUKER,
-        NAV,
-        VERGE,
-    }
-
-    @Suppress("EnumEntryName")
     enum class BeloepEndring {
         ENDR_OKT,
         ENDR_RED,
