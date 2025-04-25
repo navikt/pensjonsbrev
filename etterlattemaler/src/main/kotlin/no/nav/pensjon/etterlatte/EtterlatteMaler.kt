@@ -40,6 +40,8 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.Omstillingsstoe
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingsstoenadAvslagRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarsel
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselInnhold
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtak
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInformasjonDoedsfall
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysninger
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknad
@@ -114,6 +116,8 @@ object EtterlatteMaler : AllTemplates {
             // Etteroppgjør
             EtteroppgjoerForhaandsvarsel,
             EtteroppgjoerForhaandsvarselInnhold,
+            EtteroppgjoerVedtak,
+            EtteroppgjoerVedtakRedigerbartUtfall,
 
             // Tilbakekreving
             TilbakekrevingInnhold,

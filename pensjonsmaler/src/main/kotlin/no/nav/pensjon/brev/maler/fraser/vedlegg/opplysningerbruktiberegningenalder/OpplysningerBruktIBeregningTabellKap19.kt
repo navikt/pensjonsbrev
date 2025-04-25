@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.YrkesskadeDetaljerVedVirkSelectors.sluttpoengtall
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.YrkesskadeDetaljerVedVirkSelectors.yrkesskadeUforegrad
 import no.nav.pensjon.brev.maler.fraser.common.AntallAarText
+import no.nav.pensjon.brev.maler.fraser.common.BroekText
 import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Expression
@@ -185,7 +186,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                     English to "The ratio between national insurance coverage in Norway and total insurance coverage in all EEA countries",
                                 )
                             }
-                            cell { eval(teller.format() + "/" + nevner.format()) }
+                            cell { includePhrase(BroekText(teller, nevner)) }
                         }
                     }
 
@@ -246,7 +247,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                     English to "The ratio between point earning years in Norway and total point earning years in all EEA countries",
                                 )
                             }
-                            cell { eval(teller.format() + "/" + nevner.format()) }
+                            cell { includePhrase(BroekText(teller, nevner)) }
                         }
                     }
                 }.orShow {
@@ -275,7 +276,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                     English to "Ratio between actual period of national insurance coverage in Norway and period of national insurance coverage in Norway and countries with social security agreement",
                                 )
                             }
-                            cell { eval(teller.format() + "/" + nevner.format()) }
+                            cell { includePhrase(BroekText(teller, nevner)) }
                         }
                     }
 
@@ -335,7 +336,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                                         English to "Ratio between the number of point earning years in Norway and the number of point earning years in Norway and countries with social security agreement",
                                     )
                                 }
-                                cell { eval(teller.format() + "/" + nevner.format()) }
+                                cell { includePhrase(BroekText(teller, nevner)) }
                             }
                         }
                     }

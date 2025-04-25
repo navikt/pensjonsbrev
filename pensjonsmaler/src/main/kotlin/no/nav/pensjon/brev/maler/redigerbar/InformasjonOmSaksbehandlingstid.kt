@@ -25,7 +25,7 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
     override val kode = Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID
     override val kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
-    override val sakstyper = Sakstype.all
+    override val sakstyper = Sakstype.pensjon
 
     override val template = createTemplate(
         name = kode.name,

@@ -22,7 +22,6 @@ data class AvslagGradsendringFoerNormertPensjonsalderFelles(
     val totalPensjon: Expression<Kroner>,
     val borINorge: Expression<Boolean>,
     val harEOSLand: Expression<Boolean>,
-    val vedtakBegrunnelseLavOpptjening: Expression<Boolean>,
     val regelverkType: Expression<AlderspensjonRegelverkType>,
     val uttaksgrad: Expression<Int>,
     val prorataBruktIBeregningen: Expression<Boolean>,
@@ -35,28 +34,21 @@ data class AvslagGradsendringFoerNormertPensjonsalderFelles(
                 English to "Decision"
             )
         }
-        showIf(vedtakBegrunnelseLavOpptjening) {
-            includePhrase(
-                InnholdLavOpptjening(
-                    afpBruktIBeregning = afpBruktIBeregning,
-                    normertPensjonsalder = normertPensjonsalder,
-                    uttaksgrad = uttaksgrad,
-                    prorataBruktIBeregningen = prorataBruktIBeregningen,
-                    virkFom = virkFom,
-                    minstePensjonssats = minstePensjonssats,
-                    totalPensjon = totalPensjon,
-                    borINorge = borINorge,
-                    harEOSLand = harEOSLand,
-                    regelverkType = regelverkType
-                )
+
+        includePhrase(
+            InnholdLavOpptjening(
+                afpBruktIBeregning = afpBruktIBeregning,
+                normertPensjonsalder = normertPensjonsalder,
+                uttaksgrad = uttaksgrad,
+                prorataBruktIBeregningen = prorataBruktIBeregningen,
+                virkFom = virkFom,
+                minstePensjonssats = minstePensjonssats,
+                totalPensjon = totalPensjon,
+                borINorge = borINorge,
+                harEOSLand = harEOSLand,
+                regelverkType = regelverkType
             )
-        }.orShow {
-            includePhrase(
-                InnholdSoeknadFoerEttAar(
-                    regelverkType = regelverkType
-                )
-            )
-        }
+        )
 
         includePhrase(Felles.RettTilAAKlage(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
         includePhrase(Felles.RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
