@@ -6,7 +6,7 @@ import KvitterteBrev from "~/components/kvitterteBrev/KvitterteBrev";
 import type { KvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 
-import { useSendtBrevAttesteringResultatContext } from "./-components/SendBrevTilAttesteringResultatContext";
+// import { useAttesteringResultat } from "./-components/AttesteringResultatContext";
 import { useSendtBrevResultatContext } from "./-components/SendtBrevResultatContext";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/kvittering")({
@@ -18,7 +18,7 @@ function Kvittering() {
   const { enhetsId, vedtaksId } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const ferdigstillBrevContext = useSendtBrevResultatContext();
-  const brevTilAttesteringContext = useSendtBrevAttesteringResultatContext();
+  // const brevTilAttesteringContext = useAttesteringResultat();
 
   const kvitterteBrev: KvittertBrev[] = [
     ...ferdigstillBrevContext.resultat.map((resultat) =>
@@ -30,15 +30,15 @@ function Kvittering() {
         attesterResponse: null,
       }),
     ),
-    ...brevTilAttesteringContext.resultat.map((resultat) =>
-      toKvittertBrev({
-        status: resultat.status,
-        context: "attestering",
-        brevFørHandling: resultat.brevInfo,
-        bestillBrevResponse: resultat.status === "success" ? resultat.response : null,
-        attesterResponse: null,
-      }),
-    ),
+    // ...brevTilAttesteringContext.resultat.map((resultat) =>
+    //   toKvittertBrev({
+    //     status: resultat.status,
+    //     context: "attestering",
+    //     brevFørHandling: resultat.brevInfo,
+    //     bestillBrevResponse: null,
+    //     attesterResponse: null,
+    //   }),
+    // ),
   ];
 
   return (
