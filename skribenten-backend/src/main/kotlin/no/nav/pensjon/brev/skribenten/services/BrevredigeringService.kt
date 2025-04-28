@@ -67,6 +67,7 @@ sealed class BrevredigeringException(message: String) : Exception(message) {
     class KanIkkeAttestereEgetBrevException(override val message: String) : BrevredigeringException(message)
     class KanIkkeAttestereException(override val message: String) : BrevredigeringException(message)
     class AlleredeAttestertException(override val message: String) : BrevredigeringException(message)
+    class BrevmalFinnesIkke(override val message: String) : BrevredigeringException(message)
 }
 
 class BrevredigeringService(
