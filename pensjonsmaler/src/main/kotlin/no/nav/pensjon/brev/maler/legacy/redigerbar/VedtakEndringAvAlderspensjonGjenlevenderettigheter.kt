@@ -321,7 +321,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                         text(
                             Bokmal to " Alderspensjonen som er basert på din egen opptjening, blir fortsatt regulert 1. mai hvert år.",
                             Nynorsk to " Alderspensjonen som er basert på di eiga opptening, blir framleis regulert 1. mai kvart år.",
-                            English to "  The retirement pension based on your own earnings will continue to be adjusted from 1 May each year."
+                            English to " The retirement pension based on your own earnings will continue to be adjusted from 1 May each year."
                         )
                     }
                 }
@@ -475,16 +475,16 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                             .format() + " etter gamle regler og " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetillegg_safe.ifNull(
                             Kroner(0)
                         ).format() + " etter nye regler.",
-                        Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + "  kroner i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt. Av dette er attlevandetillegget " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
+                        Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt. Av dette er attlevandetillegget " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
                             Kroner(0)
                         )
                             .format() + " etter gamle reglar og " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetillegg_safe.ifNull(
                             Kroner(0)
                         ).format() + " etter nye reglar.",
-                        English to "You receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner in retirement pension and survivor’s supplement from the National Insurance every month before tax. Of this, the survivor’s supplement is  " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
+                        English to "You receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner in retirement pension and survivor’s supplement from the National Insurance every month before tax. Of this, the survivor’s supplement is " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(
                             Kroner(0)
                         )
-                            .format() + "  according to old rules and " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetillegg_safe.ifNull(
+                            .format() + " according to old rules and " + pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetillegg_safe.ifNull(
                             Kroner(0)
                         ).format() + " according to new rules.",
                     )
