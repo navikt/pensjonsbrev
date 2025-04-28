@@ -94,9 +94,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
         letterDataType = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vi har beregnet alderspensjonen din på nytt fra <dato>",
+            displayTitle = "Vedtak - endring ved gjenlevenderett",
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
