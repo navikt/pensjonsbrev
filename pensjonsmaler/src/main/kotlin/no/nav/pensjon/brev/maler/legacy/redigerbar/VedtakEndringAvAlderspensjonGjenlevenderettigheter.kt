@@ -114,9 +114,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
         }
 
         outline {
-            showIf(
-                virkDatoFomEtter2023 and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
-            ) {
+            showIf(virkDatoFomEtter2023 and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) {
                 title1 {
                     text(
                         Bokmal to "Gjenlevendetillegg i alderspensjonen fra ",
@@ -144,9 +142,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
             // nyBeregningGjtKap19Vedtak
-            showIf(
-                virkDatoFomEtter2023 and kravInitiertAvNav and brukerFoedtEtter1944
-            ) {
+            showIf(virkDatoFomEtter2023 and kravInitiertAvNav and brukerFoedtEtter1944) {
                 paragraph {
                     text(
                         Bokmal to "Fra 2024 blir gjenlevenderetten skilt ut fra alderspensjonen din som et eget tillegg.",
@@ -167,11 +163,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // innvilgetGjRettAPIngenEndr_001
-            showIf(
-                not(virkDatoFomEtter2023) and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt and pesysData.ytelseskomponentInformasjon.beloepEndring.notEqualTo(
-                    ENDR_OKT
-                )
-            ) {
+            showIf(not(virkDatoFomEtter2023) and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt and pesysData.ytelseskomponentInformasjon.beloepEndring.notEqualTo(ENDR_OKT)) {
                 paragraph {
                     val fritekst = fritekst("skriv inn aktuell ytelseskomponent")
                     textExpr(
@@ -194,14 +186,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // innvilgetGjRettAPEndr_001
-            showIf(
-                pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt and pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(
-                    ENDR_OKT
-                )
-                        and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) and not(
-                    virkDatoFomEtter2023
-                )
-            ) {
+            showIf(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt and pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(ENDR_OKT) and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) and not(virkDatoFomEtter2023)) {
                 paragraph {
                     text(
                         Bokmal to "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening, og det gir deg en høyere alderspensjon enn den du har tjent opp selv.",
@@ -212,10 +197,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // nyBeregningGjtKap19Egen_001
-            showIf(
-                pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
-                        and brukerFoedtEtter1944 and not(virkDatoFomEtter2023)
-            ) {
+            showIf(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016) and brukerFoedtEtter1944 and not(virkDatoFomEtter2023)) {
                 paragraph {
                     text(
                         Bokmal to "Fra januar 2024 er gjenlevenderett i alderspensjonen din skilt ut som et eget gjenlevendetillegg. Alderspensjonen er basert på din egen pensjonsopptjening. Gjenlevendetillegget er differansen mellom alderspensjon basert på din egen pensjonsopptjening og opptjening fra den avdøde, og alderspensjon du har tjent opp selv.",
@@ -244,11 +226,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // forklaringberegningGjtKap9_148_01
-            showIf(
-                kravInitiertAvNav and pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
-                        and brukerFoedtEtter1944 and virkDatoFomEtter2023 and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
+            showIf(kravInitiertAvNav and pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016) and brukerFoedtEtter1944 and virkDatoFomEtter2023 and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
             ) {
-                title2 {
+                title1 {
                     text(
                         Bokmal to "Slik blir gjenlevendetillegget ditt beregnet",
                         Nynorsk to "Slik blir attlevandetillegget ditt rekna ut",
@@ -355,7 +335,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                         and virkDatoFomEtter2023
                         and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)
             ) {
-                title2 {
+                title1 {
                     text(
                         Bokmal to "Hvorfor blir ikke gjenlevendetillegget ditt utbetalt?",
                         Nynorsk to "Kvifor blir ikkje attlevandetillegget ditt utbetalt?",
@@ -380,7 +360,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
 
             // forklaringutfasingGjtKap20_001
             showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggInnvilget) {
-                title2 {
+                title1 {
                     text(
                         Bokmal to "Gjenlevendetillegget etter nye regler blir faset ut",
                         Nynorsk to "Attlevandetillegget etter nye reglar blir fasa ut",
@@ -404,10 +384,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // omregnetTPAvdod_001
-            showIf(
-                pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP1967) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
-                        and saksbehandlerValg.visTilleggspensjonavsnittAP1967
-            ) {
+            showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP1967) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt and saksbehandlerValg.visTilleggspensjonavsnittAP1967) {
                 paragraph {
                     text(
                         Bokmal to "Tilleggspensjonen til en gjenlevende alderspensjonist kan enten bestå av pensjonistens egen tilleggspensjon eller 55 prosent av summen av pensjonistens egen tilleggspensjon og den avdødes tilleggspensjon. Tilleggspensjonen din er gitt etter det siste alternativet, da dette gir det høyeste beløpet for deg.",
@@ -816,7 +793,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
 
             // skattAPendring_001
             showIf(pesysData.alderspensjonVedVirk.harEndretPensjon and saksbehandlerValg.endringIPensjonsutbetaling) {
-                title2 {
+                title1 {
                     text(
                         Bokmal to "Endring av alderspensjon kan ha betydning for skatt",
                         Nynorsk to "Endring av alderspensjon kan ha betyding for skatt",
@@ -840,7 +817,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // pensjonFraAndreOverskrift_001
-            title2 {
+            title1 {
                 text(
                     Bokmal to "Andre pensjonsordninger",
                     Nynorsk to "Andre pensjonsordningar",
@@ -859,7 +836,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
 
             // etterbetalingAP_002
             showIf(saksbehandlerValg.etterbetaling) {
-                title2 {
+                title1 {
                     text(
                         Bokmal to "Etterbetaling",
                         Nynorsk to "Etterbetaling",
@@ -883,7 +860,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // infoAPOverskrift_001
-            title2 {
+            title1 {
                 text(
                     Bokmal to "Hvor kan du få vite mer om alderspensjonen din?",
                     Nynorsk to "Kvar kan du få vite meir om alderspensjonen din?",
@@ -907,7 +884,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // meldEndringerPesysGjenlevende_001
-            title2 {
+            title1 {
                 text(
                     Bokmal to "Du må melde fra om endringer",
                     Nynorsk to "Du må melde frå om endringar",
