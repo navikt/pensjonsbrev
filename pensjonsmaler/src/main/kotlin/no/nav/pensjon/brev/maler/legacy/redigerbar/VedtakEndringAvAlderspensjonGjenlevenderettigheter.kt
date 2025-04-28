@@ -100,17 +100,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
-        val virkDatoFomEtter2023 = pesysData.krav.virkDatoFom.greaterThanOrEqual(
-            LocalDate.of(
-                2024,
-                Month.JANUARY,
-                1
-            )
-        )
+        val virkDatoFomEtter2023 = pesysData.krav.virkDatoFom.greaterThanOrEqual(LocalDate.of(2024, Month.JANUARY, 1))
         val kravInitiertAvNav = pesysData.krav.kravInitiertAv.equalTo(KravInitiertAv.NAV)
-        val brukerFoedtEtter1944 = pesysData.bruker.fodselsdato.greaterThanOrEqual(
-            LocalDate.of(1944, Month.JANUARY, 1)
-        )
+        val brukerFoedtEtter1944 = pesysData.bruker.fodselsdato.greaterThanOrEqual(LocalDate.of(1944, Month.JANUARY, 1))
 
         title {
             text(
