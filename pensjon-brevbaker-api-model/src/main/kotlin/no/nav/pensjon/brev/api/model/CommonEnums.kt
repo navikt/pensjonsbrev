@@ -148,3 +148,9 @@ enum class KonteringType {
     UT_TSB,
     VT
 }
+
+enum class KravInitiertAv {
+    BRUKER,
+    NAV,
+    VERGE,
+}
