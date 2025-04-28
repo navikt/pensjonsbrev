@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder
 
 import no.nav.pensjon.brev.api.model.Beregningsmetode
-import no.nav.pensjon.brev.api.model.GarantipensjonSatsType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.flyktningstatusErBrukt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.virkDatoFom
@@ -41,6 +40,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.YrkesskadeDetaljerVedVirkSelectors.sluttpoengtall
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.YrkesskadeDetaljerVedVirkSelectors.yrkesskadeUforegrad
 import no.nav.pensjon.brev.maler.fraser.common.AntallAarText
+import no.nav.pensjon.brev.maler.fraser.common.GarantipensjonSatsTypeText
 import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
@@ -705,29 +705,17 @@ data class OpplysningerBruktIBeregningTabellAP2025(
                     ifNotNull(garantipensjonVedVirk) { garantipensjonVedVirk ->
                         row {
                             cell {
-                                val hoysats = garantipensjonVedVirk.satsType.equalTo(GarantipensjonSatsType.HOY)
-                                val ordinaer =
-                                    garantipensjonVedVirk.satsType.equalTo(GarantipensjonSatsType.ORDINAER)
-
                                 text(
-                                    Bokmal to "Sats for garantipensjon",
-                                    Nynorsk to "Sats for garantipensjon",
-                                    English to "Guaranteed pension rate",
+                                    Bokmal to "Sats for garantipensjon (",
+                                    Nynorsk to "Sats for garantipensjon (",
+                                    English to "Guaranteed pension rate (",
                                 )
-
-                                showIf(hoysats) {
-                                    text(
-                                        Bokmal to " (høy sats)",
-                                        Nynorsk to " (høg sats)",
-                                        English to " (high rate)",
-                                    )
-                                }.orShowIf(ordinaer) {
-                                    text(
-                                        Bokmal to " (ordinær sats)",
-                                        Nynorsk to " (ordinær sats)",
-                                        English to " (ordinary rate)",
-                                    )
-                                }
+                                includePhrase(GarantipensjonSatsTypeText(garantipensjonVedVirk.satsType))
+                                text(
+                                    Bokmal to ")",
+                                    Nynorsk to ")",
+                                    English to ")",
+                                )
 
                             }
                             cell {
