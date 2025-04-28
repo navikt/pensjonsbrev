@@ -1,12 +1,12 @@
 import { css } from "@emotion/react";
 import { ArrowLeftIcon, ArrowRightIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Box, Button, Heading, HStack, Label, Loader, Modal, VStack } from "@navikt/ds-react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useState } from "react";
 
-import { getBrevAttesteringQuery } from "~/api/brev-queries";
+import { attesteringBrevKeys, getBrevAttesteringQuery } from "~/api/brev-queries";
 import { sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
@@ -16,7 +16,7 @@ import type { BrevResponse } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
 
 import BrevForhåndsvisning from "../../brevbehandler/-components/BrevForhåndsvisning";
-import { useSendtBrevAttesteringResultatContext } from "../../kvittering/-components/SendBrevTilAttesteringResultatContext";
+import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/forhandsvisning")({
   component: () => <VedtakForhåndsvisningWrapper />,
@@ -134,22 +134,25 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
 };
 
 const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; onClose: () => void }) => {
-  const { setResultat } = useSendtBrevAttesteringResultatContext();
+  const { setResultat } = useSendtBrevResultatContext();
   const navigate = useNavigate({ from: Route.fullPath });
 
-  //Håndter error når henting av brev feiler
-  const { data } = useQuery(getBrevAttesteringQuery(props.saksId, Number(props.brevId)));
+  const queryClient = useQueryClient();
+
+  const cachedBrevData = queryClient.getQueryData<BrevResponse>(
+    attesteringBrevKeys.id(Number(props.brevId), props.saksId),
+  );
 
   const sendBrevMutation = useMutation({
     mutationFn: () => {
       return sendBrev(props.saksId, props.brevId);
     },
     onError: (error: AxiosError) => {
-      setResultat([{ status: "error", brevInfo: data?.info, error: error }]);
+      setResultat([{ status: "error", brevInfo: cachedBrevData!.info, error: error }]);
       props.onClose();
     },
     onSuccess: (res) => {
-      setResultat([{ status: "success", brevInfo: data?.info, response: res }]);
+      setResultat([{ status: "success", brevInfo: cachedBrevData!.info, response: res }]);
       props.onClose();
     },
     onSettled: () => {
@@ -157,13 +160,24 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
         to: "/saksnummer/$saksId/attester/$brevId/kvittering",
         params: { saksId: props.saksId, brevId: props.brevId },
         search: {
-          vedtaksId: data?.info?.vedtaksId?.toString() ?? undefined,
-          enhetsId: data?.info?.avsenderEnhet?.enhetNr.toString() ?? undefined,
+          vedtaksId: cachedBrevData!.info.vedtaksId?.toString() ?? undefined,
+          enhetsId: cachedBrevData!.info.avsenderEnhet?.enhetNr.toString() ?? undefined,
         },
       });
     },
   });
-
+  if (!cachedBrevData) {
+    return (
+      <Modal header={{ heading: "Vil du sende brevet?" }} onClose={props.onClose} open={props.åpen} portal width={450}>
+        <Modal.Body>
+          <BodyShort>Klarte ikke å hente brev­informasjon – prøv på nytt senere.</BodyShort>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button onClick={props.onClose}>Lukk</Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  }
   return (
     <Modal header={{ heading: "Vil du sende brevet?" }} onClose={props.onClose} open={props.åpen} portal width={450}>
       <Modal.Body>

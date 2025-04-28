@@ -5,7 +5,7 @@ import type { Nullable } from "~/types/Nullable";
 export interface KvittertBrev {
   apiStatus: "error" | "success";
   context: "sendBrev" | "attestering";
-  brevFørHandling: BrevInfo | undefined;
+  brevFørHandling: BrevInfo;
   attesteringResponse: Nullable<BrevInfo>;
   sendtBrevResponse: Nullable<BestillBrevResponse>;
 }
@@ -24,7 +24,7 @@ export const distribusjonstypeTilText = (d: Distribusjonstype) => {
 export const toKvittertBrev = (args: {
   status: "error" | "success";
   context: "sendBrev" | "attestering";
-  brevFørHandling: BrevInfo | undefined;
+  brevFørHandling: BrevInfo;
   bestillBrevResponse: Nullable<BestillBrevResponse>;
   attesterResponse: Nullable<BrevInfo>;
 }): KvittertBrev => ({
