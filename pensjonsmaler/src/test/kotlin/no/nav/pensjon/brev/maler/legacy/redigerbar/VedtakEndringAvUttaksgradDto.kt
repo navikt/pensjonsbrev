@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.maler.legacy.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDto
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningenEndretUttaksgradDto
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
@@ -20,7 +20,7 @@ fun createVedtakEndringAvUttaksgradDto() =
             orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
             maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
             krav = VedtakEndringAvUttaksgradDto.Krav(
-                kravInitiertAv = VedtakEndringAvUttaksgradDto.KravInitiertAv.BRUKER,
+                kravInitiertAv = KravInitiertAv.BRUKER,
                 virkDatoFom = LocalDate.of(2024, Month.JANUARY, 1)
             ),
             alderspensjonVedVirk = VedtakEndringAvUttaksgradDto.AlderspensjonVedVirk(
