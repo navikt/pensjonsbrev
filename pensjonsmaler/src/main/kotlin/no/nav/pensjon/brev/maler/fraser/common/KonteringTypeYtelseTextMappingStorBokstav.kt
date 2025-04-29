@@ -39,6 +39,12 @@ data class KonteringTypeYtelseTextMappingStorBokstav(
                 Nynorsk to "AFP-tillegg",
                 English to "AFP supplement"
             )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.BARNEPENSION)) {
+            text(
+                Bokmal to "barnepensjon",
+                Nynorsk to "barnepensjon",
+                English to "children's pension",
+            )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.BARNETILSYN)) {
             text(
                 Bokmal to "Barnetillegg",
