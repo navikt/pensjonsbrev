@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonGjtOppryddingDto
+import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonGjtOppryddingAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonGjtOppryddingDtoSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonGjtOppryddingDtoSelectors.virkFom
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
@@ -17,13 +17,13 @@ import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryddingDto> {
+object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryddingAutoDto> {
 
     override val kode = Pesysbrevkoder.AutoBrev.PE_AP_ADHOC_2025_OPPRYDDING_GJT_KAP_20
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = AlderspensjonGjtOppryddingDto::class,
+        letterDataType = AlderspensjonGjtOppryddingAutoDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Nav har beregnet for høyt gjenlevendetillegg",
