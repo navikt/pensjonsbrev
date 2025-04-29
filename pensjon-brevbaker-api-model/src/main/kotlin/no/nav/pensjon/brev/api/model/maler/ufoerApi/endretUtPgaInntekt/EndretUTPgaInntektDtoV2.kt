@@ -15,7 +15,7 @@ data class EndretUTPgaInntektDtoV2 (
     val totalNetto: Int,
     val datoForNormertPensjonsalder: LocalDate,
     val sokerMottarApIlaAret: Boolean,
-    val settingAvInntektForNesteAar: Boolean,
+    val brukerBorINorge: Boolean,
 
     ) : BrevbakerBrevdata
 {
@@ -26,6 +26,9 @@ data class EndretUTPgaInntektDtoV2 (
         val uforegrad: Int,
         val inntektstak: Int,
         val inntektsgrense: Int,
+        val nettoPerAr: Int,
+        val nettoAkkumulert: Int,
+        val nettoRestbelop: Int,
     )
 
     data class BarnetilleggFellesbarn(
