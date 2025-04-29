@@ -523,223 +523,184 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-            // gjRettAP1967STHjemmel_001
-            showIf(
-                pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP1967)
-                        and pesysData.alderspensjonVedVirk.saertilleggInnvilget
-                        and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)
-            ) {
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 3-2, 3-3, 19-8, 19-16 og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 3-2, 3-3, 19-8, 19-16 og 22-12.",
-                        English to "This decision was made pursuant to the provisions of §§ 3-2, 3-3, 19-8, 19-16 and 22-12 of the National Insurance Act."
-                    )
-                }
-            }
 
-            // gjRettAP1967IngenSTHjemmel_001
-            showIf(
-                pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967)
-                        and not(pesysData.alderspensjonVedVirk.saertilleggInnvilget)
-                        and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)
-            ) {
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 3-2, 19-8, 19-16 og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 3-2, 19-8, 19-16 og 22-12.",
-                        English to "This decision was made pursuant to the provisions of §§ 3-2, 19-8, 19-16 and 22-12 of the National Insurance Act."
-                    )
-                }
-            }
-
-            // gjRettAPMNTHjemmel1967
-            showIf(
-                pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967)
-                        and pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget
-                        and not(pesysData.alderspensjonVedVirk.saertilleggInnvilget)
-            ) {
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 3-2, 19-8, 19-14, 19-16 og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 3-2, 19-8, 19-14, 19-16 og 22-12.",
-                        English to "This decision was made pursuant to the provisions of §§ 3-2, 19-8, 19-14, 19-16 and 22-12 of the National Insurance Act."
-                    )
-                }
-            }
-
-            // gjRettAP1967MNTHjemmel_001
-            showIf(
-                pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967)
-                        and pesysData.alderspensjonVedVirk.saertilleggInnvilget
-                        and pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget
-            ) {
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 3-2, 3-3, 19-8, 19-14, 19-16 og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 3-2, 3-3, 19-8, 19-14, 19-16 og 22-12.",
-                        English to "This decision was made pursuant to the provisions of §§ 3-2, 3-3, 19-8, 19-14, 19-16 and 22-12 of the National Insurance Act."
-                    )
-                }
-            }
-
-            // gjRettAP2011Hjemmel_001
-            showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2011) and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)) {
+            showIf(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967, AP2011, AP2016)) {
                 paragraph {
                     text(
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
                         Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
                         English to "This decision was made pursuant to the provisions of §§ "
                     )
-                    showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
+
+                    // gjRettAP1967STHjemmel_001
+                    showIf(
+                        pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP1967)
+                                and pesysData.alderspensjonVedVirk.saertilleggInnvilget
+                                and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)
+                    ) {
                         text(
-                            Bokmal to "3-2, 19-8, 19-9, 19-16 og 22-12",
-                            Nynorsk to "3-2, 19-8, 19-9, 19-16 og 22-12",
-                            English to "3-2, 19-8, 19-9, 19-16 and 22-12"
-                        )
-                    }.orShow {
-                        text(
-                            Bokmal to "3-2, 19-8, 19-16 og 22-12",
-                            Nynorsk to "3-2, 19-8, 19-16 og 22-12",
-                            English to "3-2, 19-8, 19-16 and 22-12"
+                            Bokmal to "3-2, 3-3, 19-8, 19-16 og 22-12.",
+                            Nynorsk to "3-2, 3-3, 19-8, 19-16 og 22-12.",
+                            English to "3-2, 3-3, 19-8, 19-16 and 22-12 of the National Insurance Act."
                         )
                     }
-                }
-            }
 
-            // gjRettAP2011MNTHjemmel_001
-            showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2011) and pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget) {
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
-                        English to "This decision was made pursuant to the provisions of §§ "
-                    )
-                    showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
+                    // gjRettAP1967IngenSTHjemmel_001
+                    showIf(
+                        pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967)
+                                and not(pesysData.alderspensjonVedVirk.saertilleggInnvilget)
+                                and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)
+                    ) {
                         text(
-                            Bokmal to "3-2, 19-8, 19-9, 19-14, 19-16 og 22-12",
-                            Nynorsk to "3-2, 19-8, 19-9, 19-14, 19-16 og 22-12",
-                            English to "3-2, 19-8, 19-9, 19-14, 19-16 and 22-12"
-                        )
-                    }.orShow {
-                        text(
-                            Bokmal to "3-2, 19-8, 19-14, 19-16 og 22-12",
-                            Nynorsk to "3-2, 19-8, 19-14, 19-16 og 22-12",
-                            English to "3-2, 19-8, 19-14, 19-16 and 22-12"
+                            Bokmal to "3-2, 19-8, 19-16 og 22-12.",
+                            Nynorsk to "3-2, 19-8, 19-16 og 22-12.",
+                            English to "3-2, 19-8, 19-16 and 22-12 of the National Insurance Act."
                         )
                     }
-                }
-            }
 
-            //  gjRettAP2016Hjemmel_001
-            showIf(
-                pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2016)
-                        and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)
-                        and not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget)
-            ) {
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
-                        English to "This decision was made pursuant to the provisions of §§ "
-                    )
-                    showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
+                    // gjRettAPMNTHjemmel1967
+                    showIf(
+                        pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967)
+                                and pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget
+                                and not(pesysData.alderspensjonVedVirk.saertilleggInnvilget)
+                    ) {
                         text(
-                            Bokmal to "3-2, 19-8, 19-9, 19-15, 19-16, 20-18, 20-19 og 22-12",
-                            Nynorsk to "3-2, 19-8, 19-9, 19-15, 19-16, 20-18, 20-19 og 22-12",
-                            English to "3-2, 19-8, 19-9, 19-15, 19-16, 20-18, 20-19 and 22-12"
-                        )
-                    }.orShow {
-                        text(
-                            Bokmal to "3-2, 19-15, 19-16, 20-18, 20-19 og 22-12",
-                            Nynorsk to "3-2, 19-15, 19-16, 20-18, 20-19 og 22-12",
-                            English to "3-2, 19-15, 19-16, 20-18, 20-19 and 22-12"
+                            Bokmal to "3-2, 19-8, 19-14, 19-16 og 22-12.",
+                            Nynorsk to "3-2, 19-8, 19-14, 19-16 og 22-12.",
+                            English to "3-2, 19-8, 19-14, 19-16 and 22-12 of the National Insurance Act."
                         )
                     }
-                }
-            }
 
-            // gjRettAP2016MNTGarantiPensjonHjemmel_001
-            showIf(
-                pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2016)
-                        and pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget
-                        and pesysData.alderspensjonVedVirk.garantipensjonInnvilget
-            )
-            {
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
-                        English to "This decision was made pursuant to the provisions of §§ "
-                    )
-                    showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
+                    // gjRettAP1967MNTHjemmel_001
+                    showIf(
+                        pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967)
+                                and pesysData.alderspensjonVedVirk.saertilleggInnvilget
+                                and pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget
+                    ) {
                         text(
-                            Bokmal to "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 og 22-12",
-                            Nynorsk to "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 og 22-12",
-                            English to "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 and 22-12",
-                        )
-                    }.orShow {
-                        text(
-                            Bokmal to "3-2, 19-8, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 og 22-12",
-                            Nynorsk to "3-2, 19-8, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 og 22-12",
-                            English to "3-2, 19-8, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 and 22-12",
+                            Bokmal to "3-2, 3-3, 19-8, 19-14, 19-16 og 22-12.",
+                            Nynorsk to "3-2, 3-3, 19-8, 19-14, 19-16 og 22-12.",
+                            English to "3-2, 3-3, 19-8, 19-14, 19-16 and 22-12 of the National Insurance Act."
                         )
                     }
-                }
-            }
 
-            // gjRettAP2016GarantiPensjonHjemmel_001
-            showIf(
-                pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2016)
-                        and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)
-                        and pesysData.alderspensjonVedVirk.garantipensjonInnvilget
-            ) {
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
-                        English to "This decision was made pursuant to the provisions of §§ "
-                    )
-                    showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
-                        text(
-                            Bokmal to "3-2, 19-8, 19-9, 19-15, 19-16, 20-9, 20-19 og 22-12",
-                            Nynorsk to "3-2, 19-8, 19-9, 19-15, 19-16, 20-9, 20-19 og 22-12",
-                            English to "3-2, 19-8, 19-9, 19-15, 19-16, 20-9, 20-19 and 22-12",
-                        )
-                    }.orShow {
-                        text(
-                            Bokmal to "3-2, 19-15, 19-16, 20-9, 20-19 og 22-12",
-                            Nynorsk to "3-2, 19-15, 19-16, 20-9, 20-19 og 22-12",
-                            English to "3-2, 19-15, 19-16, 20-9, 20-19 and 22-12",
-                        )
+                    // gjRettAP2011Hjemmel_001
+                    showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2011) and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)) {
+                        showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
+                            text(
+                                Bokmal to "3-2, 19-8, 19-9, 19-16 og 22-12",
+                                Nynorsk to "3-2, 19-8, 19-9, 19-16 og 22-12",
+                                English to "3-2, 19-8, 19-9, 19-16 and 22-12"
+                            )
+                        }.orShow {
+                            text(
+                                Bokmal to "3-2, 19-8, 19-16 og 22-12",
+                                Nynorsk to "3-2, 19-8, 19-16 og 22-12",
+                                English to "3-2, 19-8, 19-16 and 22-12"
+                            )
+                        }
                     }
-                }
-            }
 
-            // gjRettAP2016MNTHjemmel_001
-            showIf(
-                pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2016)
-                        and pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget
-                        and not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget)
-            ) {
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
-                        English to "This decision was made pursuant to the provisions of §§ "
+                    // gjRettAP2011MNTHjemmel_001
+                    showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2011) and pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget) {
+                        showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
+                            text(
+                                Bokmal to "3-2, 19-8, 19-9, 19-14, 19-16 og 22-12",
+                                Nynorsk to "3-2, 19-8, 19-9, 19-14, 19-16 og 22-12",
+                                English to "3-2, 19-8, 19-9, 19-14, 19-16 and 22-12"
+                            )
+                        }.orShow {
+                            text(
+                                Bokmal to "3-2, 19-8, 19-14, 19-16 og 22-12",
+                                Nynorsk to "3-2, 19-8, 19-14, 19-16 og 22-12",
+                                English to "3-2, 19-8, 19-14, 19-16 and 22-12"
+                            )
+                        }
+                    }
+
+                    //  gjRettAP2016Hjemmel_001
+                    showIf(
+                        pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2016)
+                                and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)
+                                and not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget)
+                    ) {
+                        showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
+                            text(
+                                Bokmal to "3-2, 19-8, 19-9, 19-15, 19-16, 20-18, 20-19 og 22-12",
+                                Nynorsk to "3-2, 19-8, 19-9, 19-15, 19-16, 20-18, 20-19 og 22-12",
+                                English to "3-2, 19-8, 19-9, 19-15, 19-16, 20-18, 20-19 and 22-12"
+                            )
+                        }.orShow {
+                            text(
+                                Bokmal to "3-2, 19-15, 19-16, 20-18, 20-19 og 22-12",
+                                Nynorsk to "3-2, 19-15, 19-16, 20-18, 20-19 og 22-12",
+                                English to "3-2, 19-15, 19-16, 20-18, 20-19 and 22-12"
+                            )
+                        }
+                    }
+
+                    // gjRettAP2016MNTGarantiPensjonHjemmel_001
+                    showIf(
+                        pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2016)
+                                and pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget
+                                and pesysData.alderspensjonVedVirk.garantipensjonInnvilget
                     )
-                    showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
-                        text(
-                            Bokmal to "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-18, 20-19 og 22-12",
-                            Nynorsk to "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-18, 20-19 og 22-12",
-                            English to "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-18, 20-19 and 22-12",
-                        )
-                    }.orShow {
-                        text(
-                            Bokmal to "3-2, 19-8, 19-14, 19-15, 19-16, 20-18, 20-19 og 22-12",
-                            Nynorsk to "3-2, 19-8, 19-14, 19-15, 19-16, 20-18, 20-19 og 22-12",
-                            English to "3-2, 19-8, 19-14, 19-15, 19-16, 20-18, 20-19 and 22-12",
-                        )
+                    {
+                        showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
+                            text(
+                                Bokmal to "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 og 22-12",
+                                Nynorsk to "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 og 22-12",
+                                English to "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 and 22-12",
+                            )
+                        }.orShow {
+                            text(
+                                Bokmal to "3-2, 19-8, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 og 22-12",
+                                Nynorsk to "3-2, 19-8, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 og 22-12",
+                                English to "3-2, 19-8, 19-14, 19-15, 19-16, 20-9, 20-18, 20-19 and 22-12",
+                            )
+                        }
+                    }
+
+                    // gjRettAP2016GarantiPensjonHjemmel_001
+                    showIf(
+                        pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2016)
+                                and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)
+                                and pesysData.alderspensjonVedVirk.garantipensjonInnvilget
+                    ) {
+                        showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
+                            text(
+                                Bokmal to "3-2, 19-8, 19-9, 19-15, 19-16, 20-9, 20-19 og 22-12",
+                                Nynorsk to "3-2, 19-8, 19-9, 19-15, 19-16, 20-9, 20-19 og 22-12",
+                                English to "3-2, 19-8, 19-9, 19-15, 19-16, 20-9, 20-19 and 22-12",
+                            )
+                        }.orShow {
+                            text(
+                                Bokmal to "3-2, 19-15, 19-16, 20-9, 20-19 og 22-12",
+                                Nynorsk to "3-2, 19-15, 19-16, 20-9, 20-19 og 22-12",
+                                English to "3-2, 19-15, 19-16, 20-9, 20-19 and 22-12",
+                            )
+                        }
+                    }
+
+                    // gjRettAP2016MNTHjemmel_001
+                    showIf(
+                        pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2016)
+                                and pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget
+                                and not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget)
+                    ) {
+                        showIf(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) {
+                            text(
+                                Bokmal to "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-18, 20-19 og 22-12",
+                                Nynorsk to "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-18, 20-19 og 22-12",
+                                English to "3-2, 19-8, 19-9, 19-14, 19-15, 19-16, 20-18, 20-19 and 22-12",
+                            )
+                        }.orShow {
+                            text(
+                                Bokmal to "3-2, 19-8, 19-14, 19-15, 19-16, 20-18, 20-19 og 22-12",
+                                Nynorsk to "3-2, 19-8, 19-14, 19-15, 19-16, 20-18, 20-19 og 22-12",
+                                English to "3-2, 19-8, 19-14, 19-15, 19-16, 20-18, 20-19 and 22-12",
+                            )
+                        }
                     }
                 }
             }
