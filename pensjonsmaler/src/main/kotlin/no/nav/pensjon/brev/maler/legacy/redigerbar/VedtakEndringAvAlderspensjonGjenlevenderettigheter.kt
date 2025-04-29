@@ -539,9 +539,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)
                     ) {
                         text(
-                            Bokmal to "3-2, 3-3, 19-8, 19-16 og 22-12.",
-                            Nynorsk to "3-2, 3-3, 19-8, 19-16 og 22-12.",
-                            English to "3-2, 3-3, 19-8, 19-16 and 22-12 of the National Insurance Act."
+                            Bokmal to "3-2, 3-3, 19-8, 19-16 og 22-12",
+                            Nynorsk to "3-2, 3-3, 19-8, 19-16 og 22-12",
+                            English to "3-2, 3-3, 19-8, 19-16 and 22-12 of the National Insurance Act"
                         )
                     }
 
@@ -552,9 +552,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 and not(pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget)
                     ) {
                         text(
-                            Bokmal to "3-2, 19-8, 19-16 og 22-12.",
-                            Nynorsk to "3-2, 19-8, 19-16 og 22-12.",
-                            English to "3-2, 19-8, 19-16 and 22-12 of the National Insurance Act."
+                            Bokmal to "3-2, 19-8, 19-16 og 22-12",
+                            Nynorsk to "3-2, 19-8, 19-16 og 22-12",
+                            English to "3-2, 19-8, 19-16 and 22-12 of the National Insurance Act"
                         )
                     }
 
@@ -565,9 +565,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 and not(pesysData.alderspensjonVedVirk.saertilleggInnvilget)
                     ) {
                         text(
-                            Bokmal to "3-2, 19-8, 19-14, 19-16 og 22-12.",
-                            Nynorsk to "3-2, 19-8, 19-14, 19-16 og 22-12.",
-                            English to "3-2, 19-8, 19-14, 19-16 and 22-12 of the National Insurance Act."
+                            Bokmal to "3-2, 19-8, 19-14, 19-16 og 22-12",
+                            Nynorsk to "3-2, 19-8, 19-14, 19-16 og 22-12",
+                            English to "3-2, 19-8, 19-14, 19-16 and 22-12 of the National Insurance Act"
                         )
                     }
 
@@ -578,9 +578,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 and pesysData.alderspensjonVedVirk.minstenivaIndividuellInnvilget
                     ) {
                         text(
-                            Bokmal to "3-2, 3-3, 19-8, 19-14, 19-16 og 22-12.",
-                            Nynorsk to "3-2, 3-3, 19-8, 19-14, 19-16 og 22-12.",
-                            English to "3-2, 3-3, 19-8, 19-14, 19-16 and 22-12 of the National Insurance Act."
+                            Bokmal to "3-2, 3-3, 19-8, 19-14, 19-16 og 22-12",
+                            Nynorsk to "3-2, 3-3, 19-8, 19-14, 19-16 og 22-12",
+                            English to "3-2, 3-3, 19-8, 19-14, 19-16 and 22-12 of the National Insurance Act"
                         )
                     }
 
@@ -702,6 +702,10 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                             )
                         }
                     }
+
+                    text(
+                        Bokmal to ".", Nynorsk to ".", English to "."
+                    )
                 }
             }
 
