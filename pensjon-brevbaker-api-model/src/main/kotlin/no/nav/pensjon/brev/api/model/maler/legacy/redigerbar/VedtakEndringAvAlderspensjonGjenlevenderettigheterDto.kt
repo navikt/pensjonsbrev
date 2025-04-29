@@ -19,6 +19,8 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
     data class SaksbehandlerValg(
         @DisplayText("Bruk alternativ tittel")
         val gjenlevendetilleggTittel: Boolean,
+        @DisplayText("Vis avsnitt om gjenlevendetillegg pga pensjonsrettigheter")
+        val visGjenlevendetilleggPensjonsrettigheter: Boolean,
         val visTilleggspensjonavsnittAP1967: Boolean,
         val omregnetTilEnsligISammeVedtak: Boolean,
         val pensjonenOeker: Boolean,

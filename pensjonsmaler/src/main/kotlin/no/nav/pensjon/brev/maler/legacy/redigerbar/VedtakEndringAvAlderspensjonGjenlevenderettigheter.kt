@@ -46,6 +46,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlde
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.gjenlevendetilleggTittel
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.omregnetTilEnsligISammeVedtak
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.pensjonenOeker
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.visGjenlevendetilleggPensjonsrettigheter
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.visTilleggspensjonavsnittAP1967
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.pesysData
@@ -211,7 +212,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // beregningAPGjtKap19_001
-            showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) {
+            showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget and saksbehandlerValg.visGjenlevendetilleggPensjonsrettigheter) {
                 paragraph {
                     textExpr(
                         Bokmal to "Du får et gjenlevendetillegg i alderspensjonen fordi du har pensjonsrettigheter etter ".expr() + pesysData.avdod.navn + ".",
@@ -235,7 +236,8 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     and virkDatoFomEtter2023
             ) {
                 // forklaringberegningGjtKap9_148_01
-                showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
+                showIf(
+                    pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
                 ) {
                     title1 {
                         text(
@@ -313,30 +315,30 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
 
 
-                // referansebeløpGjtKap19ErNull_001
-                showIf(not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)) {
-                    title1 {
-                        text(
-                            Bokmal to "Hvorfor blir ikke gjenlevendetillegget ditt utbetalt?",
-                            Nynorsk to "Kvifor blir ikkje attlevandetillegget ditt utbetalt?",
-                            English to "Why is your survivor’s supplement not being paid out?"
-                        )
+                    // referansebeløpGjtKap19ErNull_001
+                    showIf(not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)) {
+                        title1 {
+                            text(
+                                Bokmal to "Hvorfor blir ikke gjenlevendetillegget ditt utbetalt?",
+                                Nynorsk to "Kvifor blir ikkje attlevandetillegget ditt utbetalt?",
+                                English to "Why is your survivor’s supplement not being paid out?"
+                            )
+                        }
+                        paragraph {
+                            text(
+                                Bokmal to "Alderspensjonen er basert på din egen pensjonsopptjening og opptjening fra den avdøde. Gjenlevendetillegget er differansen mellom denne alderspensjonen og den alderspensjonen du har tjent opp selv. Din samlede alderspensjon basert på egen pensjonsopptjening og alderspensjon med opptjening fra den avdøde blir samme beløp. Derfor blir ikke gjenlevendetillegget utbetalt.",
+                                Nynorsk to "Alderspensjonen er basert på di eiga pensjonsopptening og opptening frå den avdøde. Attlevandetillegget er differansen mellom denne alderspensjonen og den alderspensjonen du har tent opp sjølv. Den samla alderspensjon basert på di eiga pensjonsopptening og alderspensjon med opptening frå den avdøde blir same beløp. Difor blir ikkje attlevandetillegget utbetalt.",
+                                English to "The retirement pension is based on your own pension earnings and the earnings from the deceased. The survivor’s supplement is the difference between this retirement pension and the retirement pension you have earned yourself. Your total retirement pension, based on your own pension earnings and the retirement pension with earnings from the deceased, becomes the same amount. Therefore, the survivor’s supplement is not paid out."
+                            )
+                        }
+                        paragraph {
+                            text(
+                                Bokmal to "Alderspensjonen som nå er basert på din egen opptjening, blir fortsatt regulert 1. mai hvert år.",
+                                Nynorsk to "Alderspensjonen som no er basert på di eiga opptening, blir framleis regulert 1. mai kvart år.",
+                                English to "The retirement pension, which is now based on your own earnings, continues to be adjusted from 1 May each year."
+                            )
+                        }
                     }
-                    paragraph {
-                        text(
-                            Bokmal to "Alderspensjonen er basert på din egen pensjonsopptjening og opptjening fra den avdøde. Gjenlevendetillegget er differansen mellom denne alderspensjonen og den alderspensjonen du har tjent opp selv. Din samlede alderspensjon basert på egen pensjonsopptjening og alderspensjon med opptjening fra den avdøde blir samme beløp. Derfor blir ikke gjenlevendetillegget utbetalt.",
-                            Nynorsk to "Alderspensjonen er basert på di eiga pensjonsopptening og opptening frå den avdøde. Attlevandetillegget er differansen mellom denne alderspensjonen og den alderspensjonen du har tent opp sjølv. Den samla alderspensjon basert på di eiga pensjonsopptening og alderspensjon med opptening frå den avdøde blir same beløp. Difor blir ikkje attlevandetillegget utbetalt.",
-                            English to "The retirement pension is based on your own pension earnings and the earnings from the deceased. The survivor’s supplement is the difference between this retirement pension and the retirement pension you have earned yourself. Your total retirement pension, based on your own pension earnings and the retirement pension with earnings from the deceased, becomes the same amount. Therefore, the survivor’s supplement is not paid out."
-                        )
-                    }
-                    paragraph {
-                        text(
-                            Bokmal to "Alderspensjonen som nå er basert på din egen opptjening, blir fortsatt regulert 1. mai hvert år.",
-                            Nynorsk to "Alderspensjonen som no er basert på di eiga opptening, blir framleis regulert 1. mai kvart år.",
-                            English to "The retirement pension, which is now based on your own earnings, continues to be adjusted from 1 May each year."
-                        )
-                    }
-                }
             }
 
             // forklaringutfasingGjtKap20_001
@@ -489,6 +491,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // flereBeregningsperioderVedlegg_001
+                // TODO: Bør vi ikke heller her sjekke om dataene til vedlegget er med?
             showIf(
                 pesysData.beregnetPensjonPerManedVedVirk.antallBeregningsperioderPensjon.greaterThan(1)
                         and pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0)
