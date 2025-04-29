@@ -287,12 +287,16 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }
             }
 
-            // omregningGP_001
-            showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG) and not(saertilleggInnvilget) and not(minstenivaaPensjonistParInnvilget) and not(minstenivaaIndividuellInnvilget) and not(pensjonstilleggInnvilget) and not(garantipensjonInnvilget) and grunnpensjon.greaterThan(0)) {
-
-            }
-
-
+            // omregningGP
+            showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG) and not(saertilleggInnvilget) and not(minstenivaaPensjonistParInnvilget) and not(minstenivaaIndividuellInnvilget) and not(pensjonstilleggInnvilget) and not(garantipensjonInnvilget) and grunnpensjon.greaterThan(0)) {}
+            // omregningGPST
+            showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG) and (saertilleggInnvilget) and not(minstenivaaPensjonistParInnvilget) and not(minstenivaaIndividuellInnvilget) and regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {}
+            // omregningGPSTMNT
+            showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG) and (saertilleggInnvilget) and (minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget) and regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {}
+            // omregningGP_PenT
+            showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG) and not(saertilleggInnvilget) and not(minstenivaaPensjonistParInnvilget) and not(minstenivaaIndividuellInnvilget) and pensjonstilleggInnvilget and not(garantipensjonInnvilget) and grunnpensjon.greaterThan(0)) {}
+            // omregningGP_MNT
+            showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG) and not(saertilleggInnvilget) and (minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget) and not(pensjonstilleggInnvilget) and not(garantipensjonInnvilget) and grunnpensjon.greaterThan(0)) {}
             paragraph {
                 text(
                     Bokmal to "Garantitillegget skal sikre at du får en alderspensjon som tilsvarer den pensjonen du hadde tjent opp før pensjonsreformen i 2010.",
