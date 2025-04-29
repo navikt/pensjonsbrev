@@ -1,12 +1,19 @@
 package no.nav.pensjon.brev.maler.adhoc
 
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonGjtOppryddingDto
+import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonGjtOppryddingDtoSelectors.totalPensjon
+import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonGjtOppryddingDtoSelectors.virkFom
+import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
+import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -35,24 +42,29 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryd
         outline {
             title1 {
                 text(
-                    Bokmal to "Forhåndsvarsel",
-                    Nynorsk to "Førehandsvarsel",
-                    English to "Prior notification"
+                    Bokmal to "Vedtak",
+                    Nynorsk to "",
+                    English to ""
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Vi har oppdaget en feil i beregningen av gjenlevendetillegget i pensjonen din. " +
-                            "Det har vært satt for høyt, og vi skal nå rette opp i dette. " +
-                            "Du vil få et nytt vedtak med informasjon om det riktige beløpet når justeringen er gjort.",
-                    Nynorsk to "Vi har oppdaga ein feil i berekninga av attlevandetillegget i pensjonen din. " +
-                            "Det har vore sett for høgt, og vi skal no rette opp i dette. " +
-                            "Du vil få eit nytt vedtak med informasjon om det rette beløpet når justeringa er gjord.",
-                    English to "We have discovered an error in the calculation of the survivor's supplement in your pension. " +
-                            "It was set too high, and we will now rectify this. You will receive a new decision with " +
-                            "information about the correct amount when the adjustment has been made.",
+                    Bokmal to "I april fikk du brev om feil i beregningen av gjenlevendetillegget i pensjonen din. " +
+                            "Det har vært satt for høyt, og vi har nå rettet opp i dette.  ",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
+
+            paragraph {
+                textExpr(
+                    Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner i alderspensjon før skatt fra " +
+                            virkFom.format() + ".",
+                    Nynorsk to "".expr(),
+                    English to "".expr(),
+                )
+            }
+
             paragraph {
                 text(
                     Bokmal to "Nav vil ikke kreve tilbake det du har fått for mye utbetalt.",
@@ -67,7 +79,8 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryd
                     Nynorsk to "Kva har skjedd?",
                     English to "What has happened?"
                 )
-            }
+            }@
+
             paragraph {
                 text(
                     Bokmal to "Du får et gjenlevendetillegg i den delen av alderspensjonen din som beregnes etter nye " +
@@ -88,6 +101,7 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryd
                             "lower each year and will eventually disappear completely. ",
                 )
             }
+
             paragraph {
                 text(
                     Bokmal to "I reguleringen mai 2024 ble tillegget ditt redusert, men ved en feil har det senere økt " +
@@ -104,45 +118,70 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryd
 
             title1 {
                 text(
-                    Bokmal to "Har du spørsmål eller vil uttale deg?",
-                    Nynorsk to "Har du spørsmål eller vil uttale deg?",
-                    English to "If you have any questions or would like to make a statement, please let us know",
+                    Bokmal to "Du har rett til å klage",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Du har rett til å uttale deg i saken. Fristen for å uttale deg er 14 dager etter at du " +
-                            "har fått dette brevet. Uttalelsen bør være skriftlig. Du kan skrive til oss på nav.no/kontakt",
-                    Nynorsk to "Du har rett til å uttale deg i saka. Fristen for å uttale deg er 14 dagar etter at du " +
-                            "har fått dette brevet. Fråsegna bør vere skriftleg. Du kan skrive til oss på nav.no/kontakt",
-                    English to "You have the right to submit a statement on your case. The deadline for commenting is " +
-                            "14 days after you receive this letter. You can submit a statement by logging in to nav.no/contact",
+                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. " +
+                            "Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage.",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
 
-
-            paragraph {
+            title1 {
                 text(
-                    Bokmal to "Hvis vi ikke hører noe fra deg, vil saken bli behandlet med de opplysningene vi har informert om ovenfor.",
-                    Nynorsk to "Om vi ikkje høyrer frå deg, vil saka bli behandla med dei opplysningane vi har informert om ovanfor.",
-                    English to "If we do not hear from you, the case will be processed with the information we have provided above.",
+                    Bokmal to "Du har rett til innsyn",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Du finner mer informasjon om gjenlevendetillegg på nav.no/alderspensjon-gjenlevende. " +
-                            "På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no, " +
-                            "kan du ringe oss på telefon 55 55 33 34, hverdager kl. 09:00-15:00.",
-                    Nynorsk to "Du finn meir informasjon om attlevandetillegg på nav.no/alderspensjon-gjenlevende. " +
-                            "På nav.no/kontakt kan du chatte eller skrive til oss. Om du ikkje finn svar på nav.no, " +
-                            "kan du ringje oss på telefon 55 55 33 34, kvardagar kl. 09:00-15:00.",
-                    English to "You can find more information about survivor's pension at nav.no/alderspensjon/en. " +
-                            "At nav.no/contact you can chat or write to us. If you do not find the answer at nav.no, " +
-                            "you can call us at +47 55 55 33 34, weekdays 09:00–15:00.",
+                    Bokmal to "Du har rett til å se dokumentene i saken din.",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
+
+            paragraph {
+                text(
+                    Bokmal to "I vedlegget ",
+                    Nynorsk to "",
+                    English to "",
+                )
+                namedReference(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
+                text(
+                    Bokmal to " finner du mer informasjon om klage, innsyn og hvordan du går fram.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+
+            title1 {
+                text(
+                    Bokmal to "Har du spørsmål?",
+                    Nynorsk to "Har du spørsmål?",
+                    English to "If you have any questions, please let us know",
+                )
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "Du finner mer informasjon på nav.no/pensjon. På nav.no/kontakt kan du chatte eller skrive til oss. " +
+                            "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon " +
+                            "+47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, hverdager kl. 09.00-15.00.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+
+            includePhrase(Felles.RettTilAAKlage(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
         }
     }
 }
