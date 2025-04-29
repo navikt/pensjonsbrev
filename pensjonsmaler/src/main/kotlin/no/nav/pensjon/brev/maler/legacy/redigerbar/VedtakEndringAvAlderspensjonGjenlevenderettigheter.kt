@@ -266,39 +266,32 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-            // forklaringberegningGjtKap19_148_11
             showIf(
                 kravInitiertAvNav
                         and pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
                         and brukerFoedtEtter1944
                         and virkDatoFomEtter2023
                         and pesysData.gjenlevendetilleggKapittel19VedVirk.apKap19utenGJR.equalTo(0)
-                        and pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0).equalTo(0)
             ) {
-                paragraph {
-                    text(
-                        Bokmal to "Du får ikke utbetalt alderspensjon etter egen opptjening fordi du har ingen eller lav pensjonsopptjening.",
-                        Nynorsk to "Du får ikkje utbetalt alderspensjon etter eigen opptjening fordi du har ingen eller låg pensjonsopptjening.",
-                        English to "You will not receive a retirement pension based on your own earnings because you have no or low pension earnings."
-                    )
-                }
-            }
+                // forklaringberegningGjtKap19_148_11
+                showIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0).equalTo(0)) {
+                    paragraph {
+                        text(
+                            Bokmal to "Du får ikke utbetalt alderspensjon etter egen opptjening fordi du har ingen eller lav pensjonsopptjening.",
+                            Nynorsk to "Du får ikkje utbetalt alderspensjon etter eigen opptjening fordi du har ingen eller låg pensjonsopptjening.",
+                            English to "You will not receive a retirement pension based on your own earnings because you have no or low pension earnings."
+                        )
+                    }
+                }.orShowIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0).greaterThan(0)) {
+                    // forklaringberegningGjtKap19_148_12
+                    paragraph {
+                        text(
+                            Bokmal to "Du får ikke utbetalt alderspensjon etter egen opptjening i den delen som beregnes etter gamle regler fordi du har ingen eller lav pensjonsopptjening.",
+                            Nynorsk to "Du får ikkje utbetalt alderspensjon etter eigen opptjening i den delen som blir rekna etter gamle reglar fordi du har ingen eller låg pensjonsopptjening.",
+                            English to "You will not receive a retirement pension based on your own earnings in the part that is calculated according to old rules because you have no or low pension earnings."
+                        )
+                    }
 
-            // forklaringberegningGjtKap19_148_12
-            showIf(
-                kravInitiertAvNav
-                        and pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
-                        and brukerFoedtEtter1944
-                        and virkDatoFomEtter2023
-                        and pesysData.gjenlevendetilleggKapittel19VedVirk.apKap19utenGJR.equalTo(0)
-                        and pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0).greaterThan(0)
-            ) {
-                paragraph {
-                    text(
-                        Bokmal to "Du får ikke utbetalt alderspensjon etter egen opptjening i den delen som beregnes etter gamle regler fordi du har ingen eller lav pensjonsopptjening.",
-                        Nynorsk to "Du får ikkje utbetalt alderspensjon etter eigen opptjening i den delen som blir rekna etter gamle reglar fordi du har ingen eller låg pensjonsopptjening.",
-                        English to "You will not receive a retirement pension based on your own earnings in the part that is calculated according to old rules because you have no or low pension earnings."
-                    )
                 }
             }
 
