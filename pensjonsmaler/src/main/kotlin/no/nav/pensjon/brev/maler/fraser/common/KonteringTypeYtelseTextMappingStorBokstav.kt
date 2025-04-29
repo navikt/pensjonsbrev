@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
 import no.nav.pensjon.brev.api.model.KonteringType
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoAFPprivatAP
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
