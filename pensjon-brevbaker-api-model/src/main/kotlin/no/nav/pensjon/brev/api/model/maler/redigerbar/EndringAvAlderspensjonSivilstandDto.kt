@@ -18,6 +18,8 @@ data class EndringAvAlderspensjonSivilstandDto(
 
     data class SaksbehandlerValg(
         val samboer15: MetaforceSivilstand,
+        val endringIEPSInntekt: KravArsakType,
+        val institusjonsopphold: KravArsakType,
     ) : BrevbakerBrevdata
 
     data class PesysData(
