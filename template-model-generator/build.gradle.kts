@@ -5,6 +5,7 @@ val javaTarget: String by System.getProperties()
 
 plugins {
     kotlin("jvm")
+    alias(libs.plugins.ksp) apply true
 }
 
 group = "no.nav.pensjon.brev"
@@ -39,13 +40,15 @@ tasks {
 }
 
 dependencies {
-    compileOnly(kotlin("reflect"))
     implementation(libs.ksp.symbol.processing.api)
     implementation(project(":brevbaker-dsl"))
 
+    testImplementation(kotlin("reflect"))
+    testImplementation(libs.brevbaker.common)
     testImplementation(libs.bundles.junit)
-    // Byttet til fork som støtter kotlin > 2.0
-    //    testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.6.0")
-    testImplementation(libs.ksp.kotlin.compile.testing)
     testImplementation(libs.hamkrest)
+    testImplementation(libs.ksp.symbol.processing.aa)
+    testImplementation(libs.ksp.symbol.processing.common)
+    testImplementation(libs.io.github.classgraph)
+    kspTest(project)
 }

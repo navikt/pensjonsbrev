@@ -14,10 +14,10 @@ fun createEtteroppgjoerForhaandsvarselBrevDTO() =
             norskInntekt = true,
             etteroppgjoersAar = 2024,
             rettsgebyrBeloep = Kroner(1234),
-            resultatType = EtteroppgjoerResultatType.ETTERBETALING,
+            resultatType = EtteroppgjoerResultatType.IKKE_ETTEROPPGJOER,
             inntekt = Kroner(321),
             faktiskInntekt = Kroner(123),
-            avviksBeloep = Kroner(-3145)
+            avviksBeloep = Kroner(0)
         ),
     )
 
