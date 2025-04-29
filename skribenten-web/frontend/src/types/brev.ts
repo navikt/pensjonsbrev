@@ -68,6 +68,7 @@ export type BrevInfo = {
   sistredigert: string;
   brevkode: string;
   brevtittel: string;
+  brevtype: string;
   status: BrevStatus;
   distribusjonstype: Distribusjonstype;
   mottaker: Nullable<Mottaker>;
