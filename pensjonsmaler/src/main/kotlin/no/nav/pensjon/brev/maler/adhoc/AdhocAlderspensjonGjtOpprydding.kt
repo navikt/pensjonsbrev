@@ -71,6 +71,14 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryd
 
             paragraph {
                 text(
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven § 20-19a.",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova § 20-19a.",
+                    English to "This decision was made pursuant to the provision of § 20-19a of the National Insurance Act.",
+                )
+            }
+
+            paragraph {
+                text(
                     Bokmal to "Nav vil ikke kreve tilbake det du har fått for mye utbetalt.",
                     Nynorsk to "Nav vil ikkje krevje tilbake det du har fått for mykje utbetalt.",
                     English to "Nav will not claim repayment of the amount that was overpaid.",
