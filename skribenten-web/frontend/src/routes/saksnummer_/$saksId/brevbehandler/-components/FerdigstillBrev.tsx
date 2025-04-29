@@ -1,10 +1,23 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyLong, BodyShort, Button, Checkbox, CheckboxGroup, HStack, Label, Modal, VStack } from "@navikt/ds-react";
+import {
+  BodyLong,
+  BodyShort,
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  HStack,
+  Label,
+  List,
+  Modal,
+  VStack,
+} from "@navikt/ds-react";
+import { ListItem } from "@navikt/ds-react/esm/list";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
+import { partition } from "lodash";
 import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -13,7 +26,7 @@ import { hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { BestillBrevResponse } from "~/types/brev";
 import { type BrevInfo } from "~/types/brev";
-import { erBrevArkivert, erBrevKlar } from "~/utils/brevUtils";
+import { erBrevArkivert, erBrevKlar, erBrevKlarTilAttestering } from "~/utils/brevUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 
 import type { SendtBrevResponser } from "../../kvittering/-components/SendtBrevResultatContext";
@@ -105,16 +118,16 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   const { enhetsId, vedtaksId } = Route.useSearch();
   const ferdigstillBrevContext = useSendtBrevResultatContext();
 
-  const alleFerdigstilteBrevResult = useQuery({
+  const alleBrevResult = useQuery({
     queryKey: hentAlleBrevForSak.queryKey(properties.sakId),
     queryFn: () => hentAlleBrevForSak.queryFn(properties.sakId),
-    select: (data) => data.filter((b) => erBrevKlar(b) || erBrevArkivert(b)),
+    select: (data) => data.filter((brev) => erBrevKlar(brev) || erBrevArkivert(brev) || erBrevKlarTilAttestering(brev)),
   });
 
-  const ferdigstilteBrevTilSending = useMemo(
-    () => alleFerdigstilteBrevResult.data ?? [],
-    [alleFerdigstilteBrevResult.data],
-  );
+  const [brevAttestering, brevSending] = useMemo(() => {
+    const alle = alleBrevResult.data ?? [];
+    return partition(alle, (brev) => erBrevKlarTilAttestering(brev));
+  }, [alleBrevResult.data]);
 
   const bestillBrevMutation = useMutation<BestillBrevResponse, Error, number>({
     mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
@@ -128,13 +141,13 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   useEffect(() => {
     form.setValue(
       "valgteBrevSomSkalSendes",
-      ferdigstilteBrevTilSending.map((brev) => brev.id),
+      brevSending.map((brev) => brev.id),
     );
-  }, [ferdigstilteBrevTilSending, form]);
+  }, [brevSending, form]);
 
   const onSendValgteBrev = async (values: { valgteBrevSomSkalSendes: number[] }) => {
     const brevSomSkalSendes = values.valgteBrevSomSkalSendes.map(
-      (brevId) => ferdigstilteBrevTilSending.find((brev) => brev.id === brevId)!,
+      (brevId) => brevSending.find((brev) => brev.id === brevId)!,
     );
 
     const sendBrevRequests = brevSomSkalSendes.map((brevInfo) =>
@@ -183,13 +196,13 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
             `}
           >
             {queryFold({
-              query: alleFerdigstilteBrevResult,
+              query: alleBrevResult,
               initial: () => null,
               pending: () => <Label>Henter alle ferdigstilte brev...</Label>,
               error: (error) => <ApiError error={error} title={"Klarte ikke å hente alle ferdigstilte for saken"} />,
               success: () => (
                 <VStack gap="6">
-                  {ferdigstilteBrevTilSending.length > 0 ? (
+                  {brevSending.length > 0 && (
                     <VStack gap="1">
                       <BodyLong>
                         Valgte brev du ferdigstiller og sender vil bli lagt til i brukers dokumentoversikt. Du kan ikke
@@ -207,7 +220,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
                             onChange={field.onChange}
                             value={field.value}
                           >
-                            {ferdigstilteBrevTilSending.map((brev) => (
+                            {brevSending.map((brev) => (
                               <Checkbox key={brev.id} value={brev.id}>
                                 {brev.brevtittel}
                               </Checkbox>
@@ -216,8 +229,17 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
                         )}
                       />
                     </VStack>
-                  ) : (
-                    <BodyLong>Ingen brev er klare til å ferdigstilles og sendes.</BodyLong>
+                  )}
+
+                  {brevAttestering.length > 0 && (
+                    <VStack>
+                      <BodyLong>Vedtaksbrev sendes av attestant etter at attestering er gjennomført.</BodyLong>
+                      {brevAttestering.map((brev) => (
+                        <List key={brev.id}>
+                          <List.Item>{brev.brevtittel}</List.Item>
+                        </List>
+                      ))}
+                    </VStack>
                   )}
                 </VStack>
               ),
