@@ -349,6 +349,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     )
                 }
                 paragraph {
+                    // TODO: Denne teksten framstår utdatert nå når 2024 er over.
                     text(
                         Bokmal to "Fra 2024 blir dette tillegget redusert med samme beløp som alderspensjonen din øker ved den årlige reguleringen. Tillegget vil dermed bli lavere, og etter hvert opphøre.",
                         Nynorsk to "Frå 2024 blir dette tillegget redusert med same beløp som alderspensjonen din aukar ved den årlege reguleringa. Tillegget vil dermed bli lågare, og etter kvart bli borte.",
@@ -386,6 +387,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
+                // TODO: Bør vi ikke kunne hente ut dette automatisk?
             showIf(saksbehandlerValg.pensjonenOeker) {
                 // nyBeregningAPØkning_001
                 paragraph {
