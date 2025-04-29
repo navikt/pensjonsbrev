@@ -128,25 +128,7 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryd
                 )
             }
 
-            title1 {
-                text(
-                    Bokmal to "Du har rett til å klage",
-                    Nynorsk to "Du har rett til å klage",
-                    English to "You have the right to appeal",
-                )
-            }
-
-            paragraph {
-                text(
-                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. " +
-                            "Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage.",
-                    Nynorsk to "Om du meiner vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. " +
-                            "Klagen skal vere skriftleg. Du finn skjema og informasjon på nav.no/klage.",
-                    English to "If you think the decision is wrong, you may appeal the decision within six weeks of the date on " +
-                            "which you received notice of the decision. Your appeal must be made in writing. You will find a " +
-                            "form you can use and more information about appeals at nav.no/klage.",
-                )
-            }
+            includePhrase(Felles.RettTilAAKlage(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
 
             title1 {
                 text(
@@ -199,8 +181,8 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryd
                             "+47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, weekdays 09:00-15:00.",
                 )
             }
-
-            includePhrase(Felles.RettTilAAKlage(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
         }
+
+        includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
     }
 }
