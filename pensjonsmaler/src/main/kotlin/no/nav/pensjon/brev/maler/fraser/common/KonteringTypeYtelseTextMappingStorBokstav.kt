@@ -123,6 +123,12 @@ data class KonteringTypeYtelseTextMappingStorBokstav(
                 Nynorsk to "Pensjonstillegg",
                 English to "Pension supplement"
             )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.P_8_5_1_T)) {
+            text(
+                Bokmal to "Tillegg",
+                Nynorsk to "Tillegg",
+                English to "Supplement"
+            )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.SKATT_F_GP)) {
             text(
                 Bokmal to "Skattefri grunnpensjon",
