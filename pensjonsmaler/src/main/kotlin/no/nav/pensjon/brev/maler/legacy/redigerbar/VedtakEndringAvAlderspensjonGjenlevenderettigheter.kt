@@ -228,129 +228,114 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-            // forklaringberegningGjtKap9_148_01
-            showIf(kravInitiertAvNav and pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016) and brukerFoedtEtter1944 and virkDatoFomEtter2023 and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
-            ) {
-                title1 {
-                    text(
-                        Bokmal to "Slik blir gjenlevendetillegget ditt beregnet",
-                        Nynorsk to "Slik blir attlevandetillegget ditt rekna ut",
-                        English to "This is how your survivor’s supplement is calculated"
-                    )
-                }
-                paragraph {
-                    text(
-                        Bokmal to "Alderspensjonen er basert på din egen pensjonsopptjening og opptjening fra den avdøde. Gjenlevendetillegget er fra 1. januar 2024 differansen mellom denne alderspensjonen og den alderspensjonen du har tjent opp selv.",
-                        Nynorsk to "Alderspensjonen er basert på di eiga pensjonsopptening og oppteninga frå den avdøde. Attlevandetillegget er frå 1. januar 2024 skilnaden mellom denne alderspensjonen og den alderspensjonen du har tent opp sjølv.",
-                        English to "The retirement pension is based on your own pension earnings and the earnings from the deceased. The survivor’s supplement, from 1 January 2024, is the difference between this retirement pension and the retirement pension you have earned yourself."
-                    )
-                }
-            }
 
-            // forklaringberegningGjtKap19_148_10
-            showIf(
-                pesysData.alderspensjonVedVirk.uttaksgrad.greaterThan(0)
-                        and pesysData.alderspensjonVedVirk.uttaksgrad.lessThan(100)
-                        and kravInitiertAvNav
-                        and pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
-                        and brukerFoedtEtter1944
-                        and virkDatoFomEtter2023
-                        and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
+            showIf(kravInitiertAvNav
+                    and pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
+                    and brukerFoedtEtter1944
+                    and virkDatoFomEtter2023
             ) {
-                paragraph {
-                    textExpr(
-                        Bokmal to "Du får utbetalt ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon med gjenlevendetillegg.",
-                        Nynorsk to "Du får utbetalt ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon med attlevandetillegg.",
-                        English to "You receive".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " percent retirement pension with survivor’s supplement."
-                    )
-                }
-            }
-
-            showIf(
-                kravInitiertAvNav
-                        and pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
-                        and brukerFoedtEtter1944
-                        and virkDatoFomEtter2023
-                        and pesysData.gjenlevendetilleggKapittel19VedVirk.apKap19utenGJR.equalTo(0)
-            ) {
-                // forklaringberegningGjtKap19_148_11
-                showIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0).equalTo(0)) {
-                    paragraph {
+                // forklaringberegningGjtKap9_148_01
+                showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
+                ) {
+                    title1 {
                         text(
-                            Bokmal to "Du får ikke utbetalt alderspensjon etter egen opptjening fordi du har ingen eller lav pensjonsopptjening.",
-                            Nynorsk to "Du får ikkje utbetalt alderspensjon etter eigen opptjening fordi du har ingen eller låg pensjonsopptjening.",
-                            English to "You will not receive a retirement pension based on your own earnings because you have no or low pension earnings."
+                            Bokmal to "Slik blir gjenlevendetillegget ditt beregnet",
+                            Nynorsk to "Slik blir attlevandetillegget ditt rekna ut",
+                            English to "This is how your survivor’s supplement is calculated"
                         )
                     }
-                }.orShowIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0).greaterThan(0)) {
-                    // forklaringberegningGjtKap19_148_12
                     paragraph {
                         text(
-                            Bokmal to "Du får ikke utbetalt alderspensjon etter egen opptjening i den delen som beregnes etter gamle regler fordi du har ingen eller lav pensjonsopptjening.",
-                            Nynorsk to "Du får ikkje utbetalt alderspensjon etter eigen opptjening i den delen som blir rekna etter gamle reglar fordi du har ingen eller låg pensjonsopptjening.",
-                            English to "You will not receive a retirement pension based on your own earnings in the part that is calculated according to old rules because you have no or low pension earnings."
+                            Bokmal to "Alderspensjonen er basert på din egen pensjonsopptjening og opptjening fra den avdøde. Gjenlevendetillegget er fra 1. januar 2024 differansen mellom denne alderspensjonen og den alderspensjonen du har tjent opp selv.",
+                            Nynorsk to "Alderspensjonen er basert på di eiga pensjonsopptening og oppteninga frå den avdøde. Attlevandetillegget er frå 1. januar 2024 skilnaden mellom denne alderspensjonen og den alderspensjonen du har tent opp sjølv.",
+                            English to "The retirement pension is based on your own pension earnings and the earnings from the deceased. The survivor’s supplement, from 1 January 2024, is the difference between this retirement pension and the retirement pension you have earned yourself."
                         )
                     }
 
-                }
-            }
-
-            // forklaringberegningGjtKap19_148_13
-            showIf(
-                kravInitiertAvNav
-                        and pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
-                        and brukerFoedtEtter1944
-                        and virkDatoFomEtter2023
-                        and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
-            ) {
-                paragraph {
-                    text(
-                        Bokmal to "Dette gjenlevendetillegget skal ikke lenger reguleres når pensjonene øker 1. mai hvert år.",
-                        Nynorsk to "Dette attlevandetillegget skal ikkje lenger regulerast når pensjonane aukar 1. mai kvart år.",
-                        English to "This survivor’s supplement will no longer be adjusted when pensions increase from 1 May each year."
-                    )
+                    // forklaringberegningGjtKap19_148_10
                     showIf(
-                        pesysData.gjenlevendetilleggKapittel19VedVirk.apKap19utenGJR.greaterThan(0)
-                                and pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0)
-                            .greaterThan(0)
+                        pesysData.alderspensjonVedVirk.uttaksgrad.greaterThan(0)
+                                and pesysData.alderspensjonVedVirk.uttaksgrad.lessThan(100)
                     ) {
-                        text(
-                            Bokmal to " Alderspensjonen som er basert på din egen opptjening, blir fortsatt regulert 1. mai hvert år.",
-                            Nynorsk to " Alderspensjonen som er basert på di eiga opptening, blir framleis regulert 1. mai kvart år.",
-                            English to " The retirement pension based on your own earnings will continue to be adjusted from 1 May each year."
-                        )
+                        paragraph {
+                            textExpr(
+                                Bokmal to "Du får utbetalt ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon med gjenlevendetillegg.",
+                                Nynorsk to "Du får utbetalt ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent alderspensjon med attlevandetillegg.",
+                                English to "You receive".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " percent retirement pension with survivor’s supplement."
+                            )
+                        }
                     }
                 }
-            }
 
-            // referansebeløpGjtKap19ErNull_001
-            showIf(
-                kravInitiertAvNav
-                        and pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
-                        and brukerFoedtEtter1944
-                        and virkDatoFomEtter2023
-                        and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)
-            ) {
-                title1 {
-                    text(
-                        Bokmal to "Hvorfor blir ikke gjenlevendetillegget ditt utbetalt?",
-                        Nynorsk to "Kvifor blir ikkje attlevandetillegget ditt utbetalt?",
-                        English to "Why is your survivor’s supplement not being paid out?"
-                    )
+                showIf(pesysData.gjenlevendetilleggKapittel19VedVirk.apKap19utenGJR.equalTo(0)) {
+                    // forklaringberegningGjtKap19_148_11
+                    showIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0).equalTo(0)) {
+                        paragraph {
+                            text(
+                                Bokmal to "Du får ikke utbetalt alderspensjon etter egen opptjening fordi du har ingen eller lav pensjonsopptjening.",
+                                Nynorsk to "Du får ikkje utbetalt alderspensjon etter eigen opptjening fordi du har ingen eller låg pensjonsopptjening.",
+                                English to "You will not receive a retirement pension based on your own earnings because you have no or low pension earnings."
+                            )
+                        }
+                    }.orShowIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0).greaterThan(0)) {
+                        // forklaringberegningGjtKap19_148_12
+                        paragraph {
+                            text(
+                                Bokmal to "Du får ikke utbetalt alderspensjon etter egen opptjening i den delen som beregnes etter gamle regler fordi du har ingen eller lav pensjonsopptjening.",
+                                Nynorsk to "Du får ikkje utbetalt alderspensjon etter eigen opptjening i den delen som blir rekna etter gamle reglar fordi du har ingen eller låg pensjonsopptjening.",
+                                English to "You will not receive a retirement pension based on your own earnings in the part that is calculated according to old rules because you have no or low pension earnings."
+                            )
+                        }
+
+                    }
                 }
-                paragraph {
-                    text(
-                        Bokmal to "Alderspensjonen er basert på din egen pensjonsopptjening og opptjening fra den avdøde. Gjenlevendetillegget er differansen mellom denne alderspensjonen og den alderspensjonen du har tjent opp selv. Din samlede alderspensjon basert på egen pensjonsopptjening og alderspensjon med opptjening fra den avdøde blir samme beløp. Derfor blir ikke gjenlevendetillegget utbetalt.",
-                        Nynorsk to "Alderspensjonen er basert på di eiga pensjonsopptening og opptening frå den avdøde. Attlevandetillegget er differansen mellom denne alderspensjonen og den alderspensjonen du har tent opp sjølv. Den samla alderspensjon basert på di eiga pensjonsopptening og alderspensjon med opptening frå den avdøde blir same beløp. Difor blir ikkje attlevandetillegget utbetalt.",
-                        English to "The retirement pension is based on your own pension earnings and the earnings from the deceased. The survivor’s supplement is the difference between this retirement pension and the retirement pension you have earned yourself. Your total retirement pension, based on your own pension earnings and the retirement pension with earnings from the deceased, becomes the same amount. Therefore, the survivor’s supplement is not paid out."
-                    )
+
+                // forklaringberegningGjtKap19_148_13
+                showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) {
+                    paragraph {
+                        text(
+                            Bokmal to "Dette gjenlevendetillegget skal ikke lenger reguleres når pensjonene øker 1. mai hvert år.",
+                            Nynorsk to "Dette attlevandetillegget skal ikkje lenger regulerast når pensjonane aukar 1. mai kvart år.",
+                            English to "This survivor’s supplement will no longer be adjusted when pensions increase from 1 May each year."
+                        )
+                        showIf(
+                            pesysData.gjenlevendetilleggKapittel19VedVirk.apKap19utenGJR.greaterThan(0)
+                                    and pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0)
+                                .greaterThan(0)
+                        ) {
+                            text(
+                                Bokmal to " Alderspensjonen som er basert på din egen opptjening, blir fortsatt regulert 1. mai hvert år.",
+                                Nynorsk to " Alderspensjonen som er basert på di eiga opptening, blir framleis regulert 1. mai kvart år.",
+                                English to " The retirement pension based on your own earnings will continue to be adjusted from 1 May each year."
+                            )
+                        }
+                    }
                 }
-                paragraph {
-                    text(
-                        Bokmal to "Alderspensjonen som nå er basert på din egen opptjening, blir fortsatt regulert 1. mai hvert år.",
-                        Nynorsk to "Alderspensjonen som no er basert på di eiga opptening, blir framleis regulert 1. mai kvart år.",
-                        English to "The retirement pension, which is now based on your own earnings, continues to be adjusted from 1 May each year."
-                    )
+
+
+                // referansebeløpGjtKap19ErNull_001
+                showIf(not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)) {
+                    title1 {
+                        text(
+                            Bokmal to "Hvorfor blir ikke gjenlevendetillegget ditt utbetalt?",
+                            Nynorsk to "Kvifor blir ikkje attlevandetillegget ditt utbetalt?",
+                            English to "Why is your survivor’s supplement not being paid out?"
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Alderspensjonen er basert på din egen pensjonsopptjening og opptjening fra den avdøde. Gjenlevendetillegget er differansen mellom denne alderspensjonen og den alderspensjonen du har tjent opp selv. Din samlede alderspensjon basert på egen pensjonsopptjening og alderspensjon med opptjening fra den avdøde blir samme beløp. Derfor blir ikke gjenlevendetillegget utbetalt.",
+                            Nynorsk to "Alderspensjonen er basert på di eiga pensjonsopptening og opptening frå den avdøde. Attlevandetillegget er differansen mellom denne alderspensjonen og den alderspensjonen du har tent opp sjølv. Den samla alderspensjon basert på di eiga pensjonsopptening og alderspensjon med opptening frå den avdøde blir same beløp. Difor blir ikkje attlevandetillegget utbetalt.",
+                            English to "The retirement pension is based on your own pension earnings and the earnings from the deceased. The survivor’s supplement is the difference between this retirement pension and the retirement pension you have earned yourself. Your total retirement pension, based on your own pension earnings and the retirement pension with earnings from the deceased, becomes the same amount. Therefore, the survivor’s supplement is not paid out."
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Alderspensjonen som nå er basert på din egen opptjening, blir fortsatt regulert 1. mai hvert år.",
+                            Nynorsk to "Alderspensjonen som no er basert på di eiga opptening, blir framleis regulert 1. mai kvart år.",
+                            English to "The retirement pension, which is now based on your own earnings, continues to be adjusted from 1 May each year."
+                        )
+                    }
                 }
             }
 
