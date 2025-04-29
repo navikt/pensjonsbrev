@@ -3,13 +3,20 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaIndividuellInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaPensjonsistParInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.saertilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.borSammenMedBruker
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.harInntektOver2G
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.mottarOmstillingsstonad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.mottarPensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.brukersSivilstand
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.epsVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.garantitillegg_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.grunnpensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.kravAarsak
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.regelverkType
@@ -59,6 +66,12 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
         val mottarPensjon = pesysData.epsVedVirk.mottarPensjon
         val borSammenMedBruker = pesysData.epsVedVirk.borSammenMedBruker
         val mottarOmstillingsstonad = pesysData.epsVedVirk.mottarOmstillingsstonad
+        val grunnpensjon = pesysData.grunnpensjon
+        val garantipensjonInnvilget = pesysData.alderspensjonVedVirk.garantipensjonInnvilget
+        val pensjonstilleggInnvilget = pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget
+        val minstenivaaIndividuellInnvilget = pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget
+        val minstenivaaPensjonistParInnvilget = pesysData.alderspensjonVedVirk.minstenivaaPensjonsistParInnvilget
+        val saertilleggInnvilget = pesysData.alderspensjonVedVirk.saertilleggInnvilget
 
 
 
@@ -269,9 +282,14 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     textExpr(
                         Bokmal to hvemPaaInstitusjonNB + " din har flyttet på ".expr() + typeInstitusjonNB + ".",
                         Nynorsk to hvemPaaInstitusjonNN + " din har flytta på ".expr() + typeInstitusjonNN + ".",
-                        English to hvemPaaInstitusjonEN + " moved into ".expr() + typeInstitusjonNEN + ".",
+                        English to hvemPaaInstitusjonEN + " moved into ".expr() + typeInstitusjonNEN + "."
                     )
                 }
+            }
+
+            // omregningGP_001
+            showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG) and not(saertilleggInnvilget) and not(minstenivaaPensjonistParInnvilget) and not(minstenivaaIndividuellInnvilget) and not(pensjonstilleggInnvilget) and not(garantipensjonInnvilget) and grunnpensjon.greaterThan(0)) {
+
             }
 
 
