@@ -43,16 +43,18 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryd
             title1 {
                 text(
                     Bokmal to "Vedtak",
-                    Nynorsk to "",
-                    English to ""
+                    Nynorsk to "Vedtak",
+                    English to "Decision"
                 )
             }
             paragraph {
                 text(
                     Bokmal to "I april fikk du brev om feil i beregningen av gjenlevendetillegget i pensjonen din. " +
                             "Det har vært satt for høyt, og vi har nå rettet opp i dette.  ",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "I april fekk du brev om feil i berekninga av attlevandetillegget i pensjonen din. " +
+                            "Det har vore sett for høgt, og vi har no retta opp i dette.",
+                    English to "In April, you received a letter regarding an error in the calculation of the survivor’s " +
+                            "supplement in your pension. It had been set too high, but we have now corrected it.",
                 )
             }
 
@@ -60,8 +62,10 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryd
                 textExpr(
                     Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner i alderspensjon før skatt fra " +
                             virkFom.format() + ".",
-                    Nynorsk to "".expr(),
-                    English to "".expr(),
+                    Nynorsk to "Du får ".expr() + totalPensjon.format() + " kroner i alderspensjon før skatt frå " +
+                            virkFom.format() + ".",
+                    English to "You will receive NOK ".expr() + totalPensjon.format() + " in retirement pension before tax from " +
+                            virkFom.format() + ".",
                 )
             }
 
@@ -79,7 +83,7 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryd
                     Nynorsk to "Kva har skjedd?",
                     English to "What has happened?"
                 )
-            }@
+            }
 
             paragraph {
                 text(
@@ -119,8 +123,8 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryd
             title1 {
                 text(
                     Bokmal to "Du har rett til å klage",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "Du har rett til å klage",
+                    English to "You have the right to appeal",
                 )
             }
 
@@ -128,38 +132,41 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryd
                 text(
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. " +
                             "Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage.",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "Om du meiner vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. " +
+                            "Klagen skal vere skriftleg. Du finn skjema og informasjon på nav.no/klage.",
+                    English to "If you think the decision is wrong, you may appeal the decision within six weeks of the date on " +
+                            "which you received notice of the decision. Your appeal must be made in writing. You will find a " +
+                            "form you can use and more information about appeals at nav.no/klage.",
                 )
             }
 
             title1 {
                 text(
                     Bokmal to "Du har rett til innsyn",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "Du har rett til innsyn",
+                    English to "You have the right to access your file",
                 )
             }
 
             paragraph {
                 text(
                     Bokmal to "Du har rett til å se dokumentene i saken din.",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "Du har rett til å sjå dokumenta i saka di.",
+                    English to "You have the right to access all documents pertaining to your case.",
                 )
             }
 
             paragraph {
                 text(
                     Bokmal to "I vedlegget ",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "I vedlegget ",
+                    English to "The attachment "
                 )
                 namedReference(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
                 text(
                     Bokmal to " finner du mer informasjon om klage, innsyn og hvordan du går fram.",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to " finn du meir informasjon om klage, innsyn og korleis du går fram.",
+                    English to " includes information on how to proceed.",
                 )
             }
 
@@ -167,7 +174,7 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryd
                 text(
                     Bokmal to "Har du spørsmål?",
                     Nynorsk to "Har du spørsmål?",
-                    English to "If you have any questions, please let us know",
+                    English to "Do you have questions?",
                 )
             }
 
@@ -176,8 +183,12 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryd
                     Bokmal to "Du finner mer informasjon på nav.no/pensjon. På nav.no/kontakt kan du chatte eller skrive til oss. " +
                             "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon " +
                             "+47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, hverdager kl. 09.00-15.00.",
-                    Nynorsk to "",
-                    English to "",
+                    Nynorsk to "Du finn meir informasjon på nav.no/pensjon. På nav.no/kontakt kan du chatte eller skrive til oss. " +
+                            "Om du ikkje finn svar på nav.no, kan du ringe oss på telefon " +
+                            "+47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, kvardagar kl. 09.00-15.00.",
+                    English to "You can find more information at nav.no/pensjon. At nav.no/kontakt, you can chat or write to us. " +
+                            "If you do not find the answer at nav.no, you can call us at: " +
+                            "+47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, weekdays 09:00-15:00.",
                 )
             }
 
