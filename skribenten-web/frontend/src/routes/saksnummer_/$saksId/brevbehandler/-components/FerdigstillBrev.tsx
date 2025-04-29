@@ -13,7 +13,6 @@ import {
   Modal,
   VStack,
 } from "@navikt/ds-react";
-import { ListItem } from "@navikt/ds-react/esm/list";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -29,6 +28,7 @@ import { type BrevInfo } from "~/types/brev";
 import { erBrevArkivert, erBrevKlar, erBrevKlarTilAttestering } from "~/utils/brevUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 
+import { useAttesteringResultat } from "../../kvittering/-components/AttesteringResultatContext";
 import type { SendtBrevResponser } from "../../kvittering/-components/SendtBrevResultatContext";
 import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 import { Route } from "../route";
@@ -117,6 +117,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   const navigate = useNavigate({ from: Route.fullPath });
   const { enhetsId, vedtaksId } = Route.useSearch();
   const ferdigstillBrevContext = useSendtBrevResultatContext();
+  const { setResultat } = useAttesteringResultat();
 
   const alleBrevResult = useQuery({
     queryKey: hentAlleBrevForSak.queryKey(properties.sakId),
@@ -137,6 +138,18 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
     defaultValues: { valgteBrevSomSkalSendes: [] },
     resolver: zodResolver(validationSchema),
   });
+
+  useEffect(() => {
+    if (brevAttestering.length > 0) {
+      setResultat(
+        brevAttestering.map((brev) => ({
+          brevInfo: brev,
+          error: null,
+          status: "success",
+        })),
+      );
+    }
+  }, [brevAttestering, setResultat]);
 
   useEffect(() => {
     form.setValue(
