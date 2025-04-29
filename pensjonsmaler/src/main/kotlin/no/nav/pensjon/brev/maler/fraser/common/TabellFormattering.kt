@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.maler.fraser.common
 import no.nav.pensjon.brev.api.model.GarantipensjonSatsType
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
@@ -13,9 +15,8 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 
 data class KronerText(
     val kroner: Expression<Kroner>,
-    val fontType: Element.OutlineContent.ParagraphContent.Text.FontType = Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN
-) :
-    TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    val fontType: FontType = FontType.PLAIN
+) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         textExpr(
             Bokmal to kroner.format() + " kr",
@@ -27,9 +28,8 @@ data class KronerText(
 
 data class AntallAarText(
     val aar: Expression<Int>,
-    val fontType: Element.OutlineContent.ParagraphContent.Text.FontType = Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN
-) :
-    TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    val fontType: FontType = FontType.PLAIN
+) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
         textExpr(
             Bokmal to aar.format() + " år",
@@ -38,6 +38,36 @@ data class AntallAarText(
             fontType,
         )
 }
+
+data class AntallMaanederText(val maaneder: Expression<Int>, val fontType: FontType = FontType.PLAIN) :
+    TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        val maanedText = maaneder.format()
+        showIf(maaneder.greaterThan(1)) {
+            textExpr(
+                Bokmal to maanedText + " måneder",
+                Nynorsk to maanedText + " månadar",
+                English to maanedText + " months",
+            )
+        }.orShow {
+            textExpr(
+                Bokmal to maanedText + " måned",
+                Nynorsk to maanedText + " månad",
+                English to maanedText + " month",
+            )
+        }
+    }
+}
+
+data class BroekText(
+    val teller: Expression<Int>,
+    val nevner: Expression<Int>,
+    val fontType: FontType = FontType.PLAIN
+) :TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
+        eval(teller.format() + "/" + nevner.format())
+}
+
 
 object Ja : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
     override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
