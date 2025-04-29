@@ -17,6 +17,8 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg, VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData> {
     data class SaksbehandlerValg(
+        @DisplayText("Bruk alternativ tittel")
+        val gjenlevendetilleggTittel: Boolean,
         val visTilleggspensjonavsnittAP1967: Boolean,
         val omregnetTilEnsligISammeVedtak: Boolean,
         val pensjonenOeker: Boolean,

@@ -43,6 +43,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlde
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.endringIPensjonsutbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.gjenlevendetilleggTittel
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.omregnetTilEnsligISammeVedtak
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.pensjonenOeker
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.SaksbehandlerValgSelectors.visTilleggspensjonavsnittAP1967
@@ -109,25 +110,23 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
         val brukerFoedtEtter1944 = pesysData.bruker.fodselsdato.greaterThanOrEqual(LocalDate.of(1944, Month.JANUARY, 1))
 
         title {
-            text(
-                Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ",
-                Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ",
-                English to "We have recalculated your retirement pension from "
-            )
+            showIf(virkDatoFomEtter2023 and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget and saksbehandlerValg.gjenlevendetilleggTittel) {
+                text(
+                    Bokmal to "Gjenlevendetillegg i alderspensjonen fra ",
+                    Nynorsk to "Attlevandetillegg i alderspensjonen din frå ",
+                    English to "Survivor's supplement in retirement pension from "
+                )
+            }.orShow {
+                text(
+                    Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ",
+                    Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ",
+                    English to "We have recalculated your retirement pension from "
+                )
+            }
             eval(pesysData.krav.virkDatoFom.format())
         }
 
         outline {
-            showIf(virkDatoFomEtter2023 and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) {
-                title1 {
-                    text(
-                        Bokmal to "Gjenlevendetillegg i alderspensjonen fra ",
-                        Nynorsk to "Attlevandetillegg i alderspensjonen din frå ",
-                        English to "Survivor's supplement in retirement pension from "
-                    )
-                    eval(pesysData.krav.virkDatoFom.format())
-                }
-            }
             title1 {
                 text(
                     Bokmal to "Vedtak",
