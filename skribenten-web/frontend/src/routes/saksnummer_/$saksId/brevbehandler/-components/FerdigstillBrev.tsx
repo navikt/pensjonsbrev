@@ -28,7 +28,7 @@ import { type BrevInfo } from "~/types/brev";
 import { erBrevArkivert, erBrevKlar, erBrevKlarTilAttestering } from "~/utils/brevUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 
-import { useAttesteringResultat } from "../../kvittering/-components/AttesteringResultatContext";
+import { useBrevInfoKlarTilAttestering } from "../../kvittering/-components/KlarTilAttesteringContext";
 import type { SendtBrevResponser } from "../../kvittering/-components/SendtBrevResultatContext";
 import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
 import { Route } from "../route";
@@ -117,7 +117,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   const navigate = useNavigate({ from: Route.fullPath });
   const { enhetsId, vedtaksId } = Route.useSearch();
   const ferdigstillBrevContext = useSendtBrevResultatContext();
-  const { setResultat } = useAttesteringResultat();
+  const { setBrevListKlarTilAttestering } = useBrevInfoKlarTilAttestering();
 
   const alleBrevResult = useQuery({
     queryKey: hentAlleBrevForSak.queryKey(properties.sakId),
@@ -140,16 +140,8 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   });
 
   useEffect(() => {
-    if (brevAttestering.length > 0) {
-      setResultat(
-        brevAttestering.map((brev) => ({
-          brevInfo: brev,
-          error: null,
-          status: "success",
-        })),
-      );
-    }
-  }, [brevAttestering, setResultat]);
+    setBrevListKlarTilAttestering(brevAttestering);
+  }, [brevAttestering, setBrevListKlarTilAttestering]);
 
   useEffect(() => {
     form.setValue(
