@@ -882,8 +882,8 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             vedleggOrienteringOmRettigheterOgPlikter,
             pesysData.orienteringOmRettigheterOgPlikterDto
         ) // v2
-        includeAttachment(vedleggMaanedligPensjonFoerSkatt, pesysData.maanedligPensjonFoerSkattDto) // v3
-        includeAttachment(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025Dto) // v10
-        includeAttachment(opplysningerOmAvdoedBruktIBeregning, pesysData.opplysningerOmAvdoedBruktIBeregningDto) // v6
+        includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, pesysData.maanedligPensjonFoerSkattDto) // v3
+        includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025Dto) // v10
+        includeAttachmentIfNotNull(opplysningerOmAvdoedBruktIBeregning, pesysData.opplysningerOmAvdoedBruktIBeregningDto) // v6
     }
 }

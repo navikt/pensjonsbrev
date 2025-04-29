@@ -41,9 +41,9 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
         val gjenlevendetilleggKapittel19VedVirk: GjenlevendetilleggKapittel19VedVirk,
         val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
-        val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto,
-        val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto,
-        val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto,
+        val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
+        val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
+        val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto?,
     ) : BrevbakerBrevdata
 
     data class Avdod(
