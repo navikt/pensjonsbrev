@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonGjtOppryddingAutoDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonGjtOppryddingDtoSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonGjtOppryddingDtoSelectors.virkFom
+import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonGjtOppryddingAutoDtoSelectors.totalPensjon
+import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonGjtOppryddingAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
