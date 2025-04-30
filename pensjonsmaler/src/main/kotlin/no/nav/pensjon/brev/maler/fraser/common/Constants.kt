@@ -43,7 +43,7 @@ object Constants {
     const val REGULERING_ALDERSPENSJON_URL = "$NAV_URL/reguleringalderspensjon"
     const val SEND_BESKJED_URL = "$NAV_URL/send-beskjed"
     const val SKATTEETATEN_URL = "skatteetaten.no"
-    const val SKATTEETATEN_PENSJONIST_URL = "skatteetaten.no/pensjonist"
+    const val SKATTEETATEN_PENSJONIST_URL = "$SKATTEETATEN_URL/pensjonist"
     const val SKJEMA_URL = "$NAV_URL/skjema"
     const val SKRIV_TIL_OSS_URL = "$NAV_URL/skriv-til-oss"
     const val TELEFON_HELSE = "800 HELSE (800 43 573)"
