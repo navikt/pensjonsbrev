@@ -89,7 +89,8 @@ object ProductionTemplates : AllTemplates {
         VarselOmMuligAvslag,
         VarselRevurderingAvPensjon,
         VarselTilbakekrevingAvFeilutbetaltBeloep,
-        VedtakEndringAvAlderspensjonGjenlevenderettigheter,
+        VedtakEndringAvAlderspensjonFordiOpptjeningErEndret,
+        VedtakEndringAvAlderspensjonGjenlevenderettigheter
     )
 
     override fun hentAutobrevmaler() = autobrev
