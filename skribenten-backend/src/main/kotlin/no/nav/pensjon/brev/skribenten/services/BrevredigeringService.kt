@@ -163,7 +163,7 @@ class BrevredigeringService(
                     }
                 }
             } else {
-                throw BrevLaastForRedigeringException("Kan ikke oppdatere brev markert som 'klar til sending'.")
+                throw BrevLaastForRedigeringException("Kan ikke oppdatere brev markert som 'klar til sending'/'klar til attestering'.")
             }
         }
 
