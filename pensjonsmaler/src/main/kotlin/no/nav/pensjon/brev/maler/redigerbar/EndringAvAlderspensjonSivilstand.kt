@@ -257,11 +257,11 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
             showIf(kravArsakType.isOneOf(KravArsakType.SIVILSTANDSENDRING) and not(borSammenMedBruker)) {
                 paragraph {
-                       val navn = fritekst("navn")
+                    val navn = fritekst("navn")
                     textExpr(
                         Bokmal to "Du og ".expr() + navn + " bor ikke lenger sammen.",
                         Nynorsk to "Du og ".expr() + navn + "bur ikkje lenger saman.",
-                        English to "You and ".expr() + navn + "no longer live together.",
+                        English to "You and ".expr() + navn + "no longer live together."
                     )
                     text(
                         Bokmal to "Du har giftet deg. Ifølge folkeregisteret er du og ektefellen din registrert bosatt på ulike adresser.",
@@ -286,17 +286,123 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     )
                 }
             }
+            showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG) and grunnpensjon.greaterThan(0)) {
+                showIf(
+                    not(saertilleggInnvilget) and (minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget) and not(
+                        pensjonstilleggInnvilget
+                    )
+                ) {
+                    showIf(not(garantipensjonInnvilget)) {
+                        // omregningGP_MNT
+                        paragraph {
+                            Bokmal to "Derfor har vi beregnet grunnpensjonen og minstenivåtillegget ditt på nytt."
+                            Nynorsk to "Derfor har vi berekna grunnpensjonen og minstenivåtillegget ditt på nytt."
+                            English to "We have therefore recalculated your basic pension and minimum pension supplement."
+                        }
+                    }.orShow {
+                        // omregningGP_GarantiPen_MNT
+                        paragraph {
+                            Bokmal to "Derfor har vi beregnet grunnpensjonen og garantipensjonen din på nytt."
+                            Nynorsk to "Derfor har vi berekna grunnpensjonen og garantipensjonen din på nytt."
+                            English to "We have therefore recalculated your basic pension and guaranteed pension."
+                        }
+                    }
+                }
+                showIf(not(saertilleggInnvilget) and (minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget) and pensjonstilleggInnvilget) {
+                    // omregningGP_PenT_MNT
+                    showIf(not(garantipensjonInnvilget)) {
+                        paragraph {
+                            Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget og minstenivåtillegget ditt på nytt."
+                            Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget og minstenivåtillegget ditt på nytt."
+                            English to "We have therefore recalculated your basic pension, supplementary pension and minimum pension supplement."
+                        }
+                    }.orShow {
+                        // omregningGP_PenT_Garanti_MNT
+                        paragraph {
+                            Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt."
+                            Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt."
+                            English to "We have therefore recalculated your basic pension, supplementary pension, guaranteed pension and minimum pension supplement."
+                        }
+                    }
 
-            // omregningGP
-            showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG) and not(saertilleggInnvilget) and not(minstenivaaPensjonistParInnvilget) and not(minstenivaaIndividuellInnvilget) and not(pensjonstilleggInnvilget) and not(garantipensjonInnvilget) and grunnpensjon.greaterThan(0)) {}
-            // omregningGPST
-            showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG) and (saertilleggInnvilget) and not(minstenivaaPensjonistParInnvilget) and not(minstenivaaIndividuellInnvilget) and regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {}
-            // omregningGPSTMNT
-            showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG) and (saertilleggInnvilget) and (minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget) and regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {}
-            // omregningGP_PenT
-            showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG) and not(saertilleggInnvilget) and not(minstenivaaPensjonistParInnvilget) and not(minstenivaaIndividuellInnvilget) and pensjonstilleggInnvilget and not(garantipensjonInnvilget) and grunnpensjon.greaterThan(0)) {}
-            // omregningGP_MNT
-            showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG) and not(saertilleggInnvilget) and (minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget) and not(pensjonstilleggInnvilget) and not(garantipensjonInnvilget) and grunnpensjon.greaterThan(0)) {}
+                }
+                showIf(
+                    not(saertilleggInnvilget) and not(minstenivaaPensjonistParInnvilget) and not(
+                        minstenivaaIndividuellInnvilget
+                    ) and not(pensjonstilleggInnvilget)
+                ) {
+                    showIf(not(garantipensjonInnvilget)) {
+                        // omregningGP
+                        paragraph {
+                            Bokmal to "Derfor har vi beregnet grunnpensjonen din på nytt."
+                            Nynorsk to "Derfor har vi berekna grunnpensjonen din på nytt."
+                            English to "Derfor har vi berekna grunnpensjonen din på nytt."
+                        }
+                    }.orShow {
+                        // omregningGP_GarantiPen
+                        paragraph {
+                            Bokmal to "Derfor har vi beregnet grunnpensjonen og garantipensjonen din på nytt."
+                            Nynorsk to "Derfor har vi berekna grunnpensjonen og garantipensjonen din på nytt."
+                            English to "We have therefore recalculated your basic pension and guaranteed pension."
+                        }
+                    }
+
+                }
+                showIf(
+                    not(saertilleggInnvilget) and not(minstenivaaPensjonistParInnvilget) and not(
+                        minstenivaaIndividuellInnvilget
+                    ) and pensjonstilleggInnvilget
+                ) {
+                    showIf(not(garantipensjonInnvilget)) {
+                        // omregningGP_PenT
+                        paragraph {
+                            Bokmal to "Derfor har vi beregnet grunnpensjonen og pensjonstillegget ditt på nytt."
+                            Nynorsk to "Derfor har vi berekna grunnpensjonen og pensjonstillegget ditt på nytt."
+                            English to "We have therefore recalculated your basic pension and pension supplement."
+                        }
+                    }.orShow {
+                        // omregningGP_PenT_GarantiPen_MNT
+                        paragraph {
+                            Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt."
+                            Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt."
+                            English to "We have therefore recalculated your basic pension, supplementary pension, guaranteed pension and minimum pension supplement."
+                        }
+                    }
+                }
+            }
+            showIf(
+                kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG) and regelverkType.isOneOf(
+                    AlderspensjonRegelverkType.AP1967
+                ) and saertilleggInnvilget
+            ) {
+                showIf(not(minstenivaaPensjonistParInnvilget) and not(minstenivaaPensjonistParInnvilget)) {
+                    // omregningGPST
+                    paragraph {
+                        Bokmal to "Derfor har vi beregnet grunnpensjonen og særtillegget ditt på nytt."
+                        Nynorsk to "Derfor har vi berekna grunnpensjonen og særtillegget ditt på nytt."
+                        English to "We have therefore recalculated your basic pension and the special supplement."
+                    }
+                }.orShowIf((minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget)) {
+                }
+                // omregningGPSTMNT
+                paragraph {
+                    Bokmal to "Derfor har vi beregnet grunnpensjonen, særtillegget og minstenivåtillegget ditt på nytt."
+                    Nynorsk to "Derfor har vi berekna grunnpensjonen, særtillegget og minstenivåtillegget ditt på nytt."
+                    English to "We have therefore recalculated your basic pension, the special supplement and the minimum level supplement."
+                }
+            }
+            showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2025)) {
+                // omregning_GarantiPen
+                paragraph {
+                    text(
+                        Bokmal to "Derfor har vi vurdert garantipensjonen din på nytt.",
+                        Nynorsk to "Derfor har vi vurdert garantipensjonen din på nytt.",
+                        English to "We have therefore recalculated your guaranteed pension."
+                    )
+                }
+                }
+
+
             paragraph {
                 text(
                     Bokmal to "Garantitillegget skal sikre at du får en alderspensjon som tilsvarer den pensjonen du hadde tjent opp før pensjonsreformen i 2010.",
