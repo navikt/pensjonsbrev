@@ -5,7 +5,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 @Suppress("unused")
-data class AlderspensjonGjtOppryddingAutoDto(
+data class AdhocAlderspensjonGjtOppryddingAutoDto(
     val totalPensjon: Kroner,
     val virkFom: LocalDate
 ) : BrevbakerBrevdata

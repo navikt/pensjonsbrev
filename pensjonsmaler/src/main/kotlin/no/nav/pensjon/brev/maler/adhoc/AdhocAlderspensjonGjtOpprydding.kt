@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonGjtOppryddingAutoDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonGjtOppryddingAutoDtoSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonGjtOppryddingAutoDtoSelectors.virkFom
+import no.nav.pensjon.brev.api.model.maler.alderApi.AdhocAlderspensjonGjtOppryddingAutoDto
+import no.nav.pensjon.brev.api.model.maler.alderApi.AdhocAlderspensjonGjtOppryddingAutoDtoSelectors.totalPensjon
+import no.nav.pensjon.brev.api.model.maler.alderApi.AdhocAlderspensjonGjtOppryddingAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -17,19 +17,19 @@ import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AlderspensjonGjtOppryddingAutoDto> {
+object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AdhocAlderspensjonGjtOppryddingAutoDto> {
 
     override val kode = Pesysbrevkoder.AutoBrev.PE_AP_ADHOC_2025_OPPRYDDING_GJT_KAP_20
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = AlderspensjonGjtOppryddingAutoDto::class,
+        letterDataType = AdhocAlderspensjonGjtOppryddingAutoDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Nav har beregnet for høyt gjenlevendetillegg",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
         title {
