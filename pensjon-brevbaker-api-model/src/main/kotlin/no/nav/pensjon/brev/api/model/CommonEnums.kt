@@ -163,3 +163,8 @@ enum class KravInitiertAv {
     KONV,
     ADVOKAT
 }
+enum class BelopEndring {
+    ENDR_OKT,
+    ENDR_RED,
+    UENDRET
+}
