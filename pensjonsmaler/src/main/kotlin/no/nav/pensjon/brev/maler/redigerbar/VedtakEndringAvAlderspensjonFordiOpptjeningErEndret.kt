@@ -43,6 +43,8 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.AttachmentTemplate
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -53,6 +55,7 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -60,6 +63,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 import java.time.Month
@@ -240,32 +244,13 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
 
                 // flereBeregningsperioderVedleggOpptjening_001
                 // TODO Når vedlegg er på plass, fiks denne rett lenke
-                /*
-                var regelverkType = GetValue("fag=alderspensjonVedVirk=regelverkType");
-                var spraakkode = GetValue("felles=spraakkode");
+//                val vedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, Any>? = if (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
+//                    vedleggOpplysningerBruktIBeregningenAlder
+//                } else if (pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025)) {
+//                    vedleggOpplysningerBruktIBeregningenAlder
+//                    // TODO vedlegg 11 heller her
+//                }
 
-                if ( regelverkType == "AP2016" ||  regelverkType == "AP2011" ) {
-                    if ( spraakkode == "NB" ) {
-                        ReturnValue("Opplysninger brukt i beregningen");
-                    } else if ( spraakkode == "NN" ) {
-                        ReturnValue("Opplysningar brukte i berekninga");
-                    } else if ( spraakkode == "EN" ) {
-                        ReturnValue("Information about your calculation");
-                    }
-                }
-
-
-                if ( regelverkType == "AP2025" ) {
-                    if ( spraakkode == "NB" ) {
-                        ReturnValue("Slik har vi beregnet pensjonen din");
-                    } else if ( spraakkode == "NN" ) {
-                        ReturnValue("Slik har vi berekna pensjonen din");
-                    } else if ( spraakkode == "EN" ) {
-                        ReturnValue("This is how we have calculated your pension");
-                    }
-                }
-
-                 */
                 paragraph {
                     textExpr(
                         Bokmal to "I vedlegget ".expr() + "[_Script nyOpptjeningBegrunn_001_]" + " finner du detaljer om din månedlige pensjon.",
