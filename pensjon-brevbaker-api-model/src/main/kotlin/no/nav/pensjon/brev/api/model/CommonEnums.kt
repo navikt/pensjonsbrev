@@ -156,3 +156,8 @@ enum class KravInitiertAv {
     NAV,
     VERGE,
 }
+enum class BelopEndring {
+    ENDR_OKT,
+    ENDR_RED,
+    UENDRET
+}
