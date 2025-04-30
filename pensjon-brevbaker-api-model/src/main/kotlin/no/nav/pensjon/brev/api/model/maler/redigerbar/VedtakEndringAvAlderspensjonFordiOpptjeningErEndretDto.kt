@@ -4,6 +4,10 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BelopEndring
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -21,7 +25,11 @@ data class VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto(
         val krav: Krav,
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
-        val behandlingKontekst: BehandlingKontekst
+        val behandlingKontekst: BehandlingKontekst,
+        val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
+        val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
+        val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
+        val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto
     ) : BrevbakerBrevdata
 
     data class Krav(
