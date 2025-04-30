@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder
 
-import no.nav.pensjon.brev.api.model.Beregningsmetode
+import no.nav.pensjon.brev.api.model.Beregningsmetode.*
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.flyktningstatusErBrukt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.virkDatoFom
@@ -102,7 +102,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                 }
 
                 val beregningsmetodeKap19 = trygdetidsdetaljerKap19VedVirk.beregningsmetode
-                showIf(beregningsmetodeKap19.isOneOf(Beregningsmetode.FOLKETRYGD, Beregningsmetode.NORDISK)) {
+                showIf(beregningsmetodeKap19.isOneOf(FOLKETRYGD, NORDISK)) {
                     //tabellTT_002
                     row {
                         cell {
@@ -131,7 +131,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                         }
 
                         //vedleggTabellKap19PoengAr_001
-                        showIf(beregningsmetodeKap19.isOneOf(Beregningsmetode.FOLKETRYGD)) {
+                        showIf(beregningsmetodeKap19.isOneOf(FOLKETRYGD)) {
                             row {
                                 cell {
                                     text(
@@ -175,7 +175,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                             }
                         }
                     }
-                }.orShowIf(beregningsmetodeKap19.isOneOf(Beregningsmetode.EOS)) {
+                }.orShowIf(beregningsmetodeKap19.isOneOf(EOS)) {
                     //tabellTTNorgeEOS_001
                     row {
                         cell {
@@ -552,7 +552,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                             trygdetidsdetaljer.tellerTTEOS,
                             trygdetidsdetaljer.nevnerTTEOS
                         ) { tellerTTEOS, nevnerTTEOS ->
-                            showIf(beregningsmetode.isOneOf(Beregningsmetode.EOS)) {
+                            showIf(beregningsmetode.isOneOf(EOS)) {
                                 row {
                                     cell {
                                         text(
@@ -561,7 +561,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                                             English to "The ratio between national insurance coverage in Norway and total insurance coverage in all EEA countries",
                                         )
                                     }
-                                    cell { eval(tellerTTEOS.format() + "/" + nevnerTTEOS.format()) }
+                                    cell { includePhrase(BroekText(tellerTTEOS, nevnerTTEOS)) }
                                 }
                             }
                         }
@@ -571,11 +571,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                             trygdetidsdetaljer.tellerProRata_safe,
                             trygdetidsdetaljer.nevnerProRata_safe
                         ) { tellerProRata, nevnerProRata ->
-                            showIf(beregningsmetode.isNotAnyOf(
-                                Beregningsmetode.EOS,
-                                Beregningsmetode.NORDISK,
-                                Beregningsmetode.FOLKETRYGD
-                            )) {
+                            showIf(beregningsmetode.isNotAnyOf(EOS, NORDISK, FOLKETRYGD)) {
                                 row {
                                     cell {
                                         text(
@@ -584,7 +580,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                                             English to "Ratio between actual period of national insurance coverage in Norway and period of national insurance coverage in Norway and countries with social security agreement",
                                         )
                                     }
-                                    cell { eval(tellerProRata.format() + "/" + nevnerProRata.format()) }
+                                    cell { includePhrase(BroekText(tellerProRata, nevnerProRata)) }
                                 }
                             }
                         }

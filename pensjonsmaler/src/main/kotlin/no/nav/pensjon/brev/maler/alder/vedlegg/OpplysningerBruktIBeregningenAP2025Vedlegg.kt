@@ -127,7 +127,7 @@ val opplysningerBruktIBeregningenAP2025Vedlegg =
                                 text(
                                     Bokmal to "Delingstall ved 67 år",
                                     Nynorsk to "Delingstal ved 67 år",
-                                    English to "Ratio for life expectancy adjustment at age 67"
+                                    English to "Life expectancy adjustment divisor at 67 years"
                                 )
                             }
                             cell {

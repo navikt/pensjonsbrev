@@ -15,11 +15,13 @@ import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP202
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.EpsVedVirkSelectors.borSammenMedBruker_safe
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.EpsVedVirkSelectors.harInntektOver2G
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.EpsVedVirkSelectors.mottarPensjon
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.EpsVedVirkSelectors.mottarPensjon_safe
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.beholdningForForsteUttak
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.delingstalletVed67Ar
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.garantipensjonSatsPerAr
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.nettoUtbetaltPerManed
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.nettoUtbetaltPerManed_safe
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.satsType
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VedtakSelectors.sisteOpptejningsAr
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VilkaarsVedtakSelectors.avslattGarantipensjon
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.alderspensjonVedVirk
@@ -41,7 +43,6 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import java.awt.SystemColor.text
 import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningenAlderAP2025Dto(
@@ -54,15 +55,7 @@ data class OpplysningerBruktIBeregningenAlderAP2025Dto(
     val trygdetidsdetaljerKap20VedVirk: TrygdetidsdetaljerKap20VedVirk,
     val epsVedVirk: EpsVedVirk?,
     val erBeregnetSomEnsligPgaInstitusjonsopphold: Boolean,
-    //val institusjonsoppholdVedVirk: InstitusjonsoppholdVedVirk,
 ) {
-    data class InstitusjonsoppholdVedVirk(
-        val aldersEllerSykehjem: Boolean,
-        val ensligPgaInst: Boolean,
-        val epsPaInstitusjon: Boolean,
-        val fengsel: Boolean,
-        val helseinstitusjon: Boolean,
-    )
 
     data class EpsVedVirk(
         val borSammenMedBruker: Boolean,
@@ -515,8 +508,6 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                                         )
                                     }
                                 }
-
-
                             }
 
                             includePhrase(GarantipensjonSatsTypeText(garantipensjonVedVirk.satsType))
@@ -524,7 +515,171 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                         }
                     }
                 }.orShowIf(brukersSivilstand.isOneOf(GLAD_EKT, SEPARERT)) {
-
+                    paragraph {
+                        //vedleggBeregnGift_001
+                        text(
+                            Bokmal to "Vi har lagt til grunn at du er gift.",
+                            Nynorsk to "Vi har lagt til grunn at du er gift.",
+                            English to "We have registered that you have a spouse.",
+                        )
+                    }
+                    showIf(erBeregnetSomEnsligPgaInstitusjonsopphold) {
+                        paragraph {                        //vedleggGiftLeverAdskilt&&Institusjonsopphold_002
+                            text(
+                                Bokmal to "Du og ektefellen din er registrert med forskjellig bosted da en av dere bor på institusjon. Pensjonen din er derfor beregnet som om du var enslig. Satsen vi bruker er derfor ",
+                                Nynorsk to "Du og ektefellen din er registrerte med forskjellig bustad da ein av dykk bur på institusjon. Pensjonen din er derfor berekna som om du var einsleg. Satsen vi brukar er difor ",
+                                English to "You and your spouse are registered with different residences as one of you is residing in an institution. Therefore, your pension has been calculated as if you were single. The rate we use is therefore the ",
+                            )
+                            includePhrase(GarantipensjonSatsTypeText(garantipensjonVedVirk.satsType))
+                            text(Bokmal to ".", Nynorsk to ".", English to ".")
+                        }
+                    }.orShowIf(not(epsVedVirk.borSammenMedBruker_safe.ifNull(false))) {
+                        //vedleggBeregnGiftLeverAdskilt_002
+                        paragraph {
+                            text(
+                                Bokmal to "Du og ektefellen din er registrert med forskjellig bosted. Pensjonen din er derfor beregnet som om du var enslig. Satsen vi bruker er derfor ",
+                                Nynorsk to "Du og ektefellen din er registrerte med forskjellig bustad. Pensjonen din er derfor berekna som om du var einsleg. Satsen vi brukar er difor ",
+                                English to "You and your spouse are registered with different residences. Therefore, your pension has been calculated as if you were single. The rate we use is therefore the ",
+                            )
+                            includePhrase(GarantipensjonSatsTypeText(garantipensjonVedVirk.satsType))
+                            text(Bokmal to ".", Nynorsk to ".", English to ".")
+                        }
+                    }
+                }.orShowIf(brukersSivilstand.isOneOf(GLAD_PART, SEPARERT_PARTNER)) {
+                    //vedleggBeregnPartner_001
+                    paragraph {
+                        text(
+                            Bokmal to "Vi har lagt til grunn at du er partner.",
+                            Nynorsk to "Vi har lagt til grunn at du er partnar.",
+                            English to "We have registered that you have a partner.",
+                        )
+                    }
+                    paragraph {
+                        //vedleggBeregnPartnerLeverAdskilt_002
+                        text(
+                            Bokmal to "Du og partneren din er registrert med forskjellig bosted. Pensjonen din er derfor beregnet som om du var enslig. Satsen vi bruker er derfor ",
+                            Nynorsk to "Du og partnaren din er registrerte med forskjellig bustad. Pensjonen di er difor rekna som om du var einsleg. Satsen vi brukar er difor ",
+                            English to "You and your partner are registered with different residences. Therefore, your pension has been calculated as if you were single. The rate we use is therefore the ",
+                        )
+                        includePhrase(GarantipensjonSatsTypeText(garantipensjonVedVirk.satsType))
+                        text(Bokmal to ".", Nynorsk to ".", English to ".")
+                    }
+                }.orShowIf(brukersSivilstand.isOneOf(SAMBOER_3_2, SAMBOER_1_5)) {
+                    showIf(brukersSivilstand.equalTo(SAMBOER_3_2)) {
+                        //vedleggBeregnSambo§20-9_001
+                        paragraph {
+                            text(
+                                Bokmal to "Vi har lagt til grunn at du er samboer (jf. folketrygdloven § 20-9).",
+                                Nynorsk to "Vi har lagt til grunn at du er sambuar (jf. folketrygdlova § 20-9).",
+                                English to "We have registered that you have a cohabitant (cf. § 20-9 of the National Insurance Act).",
+                            )
+                        }
+                    }.orShow {
+                        //vedleggBeregnSambo§1-5_001
+                        paragraph {
+                            text(
+                                Bokmal to "Vi har lagt til grunn at du er samboer (jf. folketrygdloven § 1-5).",
+                                Nynorsk to "Vi har lagt til grunn at du er sambuar (jf. folketrygdlova § 1-5).",
+                                English to "We have registered that you have a cohabitant (cf. § 1-5 of the National Insurance Act).",
+                            )
+                        }
+                    }
+                    ifNotNull(epsVedVirk) { epsVedVirk ->
+                        showIf(
+                            epsVedVirk.borSammenMedBruker
+                                    and epsVedVirk.mottarPensjon
+                                    and not(erBeregnetSomEnsligPgaInstitusjonsopphold)
+                        ) {
+                            //vedleggBeregnSamboPensjon_001
+                            paragraph {
+                                text(
+                                    Bokmal to "Vi har registrert at samboeren din mottar uføretrygd, pensjon fra folketrygden eller AFP som det godskrives pensjonspoeng for.",
+                                    Nynorsk to "Vi har registrert at sambuaren din får uføretrygd, pensjon frå folketrygda eller AFP som det blir godskrive pensjonspoeng for.",
+                                    English to "We have registered that your cohabitant is receiving disability benefit, a national insurance pension or contractual early retirement pension (AFP) which earns pension points.",
+                                )
+                            }
+                        }
+                        showIf(
+                            epsVedVirk.borSammenMedBruker
+                                    and not(epsVedVirk.mottarPensjon)
+                                    and not(erBeregnetSomEnsligPgaInstitusjonsopphold)
+                        ) {
+                            showIf(epsVedVirk.harInntektOver2G) {
+                                //vedleggBeregnSamboOver2G_002
+                                paragraph {
+                                    text(
+                                        Bokmal to "Vi har registrert at samboeren din har en inntekt som er høyere enn to ganger folketrygdens grunnbeløp (G). Satsen vi bruker er derfor ordinær sats.",
+                                        Nynorsk to "Vi har registrert at sambuaren din har ei inntekt som er høgare enn to gonger grunnbeløpet i folketrygda (G). Satsen vi bruker er difor ordinær sats.",
+                                        English to "We have registered that your cohabitant has an annual income that exceeds twice the national insurance basic amount (G). The rate we use is therefore the ordinary rate.",
+                                    )
+                                }
+                            }.orShow {
+                                //vedleggBeregnSamboUnder2G_002
+                                paragraph {
+                                    text(
+                                        Bokmal to "Vi har registrert at samboeren din har en inntekt som er lavere enn to ganger folketrygdens grunnbeløp (G). Satsen vi bruker er derfor høy sats.",
+                                        Nynorsk to "Vi har registrert at sambuaren din har ei inntekt som er lågare enn to gonger grunnbeløpet i folketrygda (G). Satsen vi bruker er difor høg sats.",
+                                        English to "We have registered that your cohabitant has an annual income lower than twice the national insurance basic amount (G). The rate we use is therefore the high rate.",
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }.orShowIf(brukersSivilstand.isOneOf(ENSLIG, ENKE, UKJENT)) {
+                    paragraph {
+                        //vedleggBeregnEnslig_002
+                        text(
+                            Bokmal to "Vi har lagt til grunn at du er enslig. Satsen vi bruker er derfor ",
+                            Nynorsk to "Vi har lagt til grunn at du er einsleg. Satsen vi brukar er difor ",
+                            English to "We have registered that you are single. The rate we use is therefore the ",
+                        )
+                        includePhrase(GarantipensjonSatsTypeText(garantipensjonVedVirk.satsType))
+                        text(Bokmal to ".", Nynorsk to ".", English to ".")
+                    }
+                }
+                showIf(beregningKap20VedVirk.redusertTrygdetid) {
+                    paragraph {
+                        text(
+                            Bokmal to "Satsen er redusert fordi trygdetiden din er under 40 år.",
+                            Nynorsk to "Satsen er redusert fordi trygdetida di er under 40 år.",
+                            English to "The rate is reduced because your national insurance coverage is less than 40 years.",
+                        )
+                    }
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Vi bruker delingstallet fastsatt for ditt årskull ved 67 år for å regne om denne satsen til en beholdningsstørrelse. Vi trekker deretter fra 80 prosent av pensjonsbeholdningen din ved uttak fra dette beløpet. Summen utgjør da garantipensjonsbeholdningen ved uttak.",
+                        Nynorsk to "Vi brukar delingstalet fastsett for årskullet ditt ved 67 år for å rekne om denne satsen til ein behaldningsstorleik. Vi trekkjer deretter frå 80 prosent av pensjonsbehaldninga di ved uttak frå dette beløpet. Summen utgjer då garantipensjonsbehaldninga ved uttak.",
+                        English to "We use the life expectancy divisor set for your cohort at 67 years to convert this rate into a capital balance. We then deduct 80 percent of your accumulated pension capital at withdrawal from this amount. The sum then constitutes the guaranteed pension capital at the time of the initial withdrawal.",
+                    )
+                }
+                showIf(beregningKap20VedVirk.redusertTrygdetid) {
+                    paragraph {
+                        text(
+                            Bokmal to "Sats for garantipensjon x (trygdetid / 40 år full trygdetid) x delingstall ved 67 år - (80% av pensjonsbeholdning ved uttak) = garantipensjonsbeholdning",
+                            Nynorsk to "Sats for garantipensjon x (trygdetid / 40 år full trygdetid) x delingstal ved 67 år - (80% av pensjonsbehaldning ved uttak) = garantipensjonsbehaldning",
+                            English to "Guaranteed pension rate x (NI coverage / 40 years full NI coverage) x life expectancy adjustment divisor at 67 years - (80% of accumulated pension capital before initial withdrawal) = guaranteed pension capital",
+                        )
+                    }
+                    paragraph {
+                        textExpr(
+                            Bokmal to garantipensjonVedVirk.garantipensjonSatsPerAr.format() +
+                                    " kr x (" + trygdetidsdetaljerKap20VedVirk.anvendtTT.format() +
+                                    " / 40) x " + garantipensjonVedVirk.delingstalletVed67Ar.format() +
+                                    " - (80% (" + beregningKap20VedVirk.beholdningForForsteUttak.format()
+                                    + " kr)) =" + garantipensjonVedVirk.beholdningForForsteUttak.format() + " kr",
+                            Nynorsk to garantipensjonVedVirk.garantipensjonSatsPerAr.format() +
+                                    " kr x (" + trygdetidsdetaljerKap20VedVirk.anvendtTT.format() +
+                                    " / 40) x " + garantipensjonVedVirk.delingstalletVed67Ar.format() +
+                                    " - (80% (" + beregningKap20VedVirk.beholdningForForsteUttak.format()
+                                    + " kr)) =" + garantipensjonVedVirk.beholdningForForsteUttak.format() + " kr",
+                            English to "NOK ".expr() + garantipensjonVedVirk.garantipensjonSatsPerAr.format() +
+                                    " x (" + trygdetidsdetaljerKap20VedVirk.anvendtTT.format() +
+                                    " / 40) x " + garantipensjonVedVirk.delingstalletVed67Ar.format() +
+                                    " - (80% (NOK " + beregningKap20VedVirk.beholdningForForsteUttak.format()
+                                    + ")) =NOK " + garantipensjonVedVirk.beholdningForForsteUttak.format(),
+                        )
+                    }
                 }
             }
         }
