@@ -31,6 +31,7 @@ object ProductionTemplates : AllTemplates {
         AdhocAFPInformasjonOekningToleransebeloep,
         AdhocAlderspensjonFraFolketrygden,
         AdhocAlderspensjonFraFolketrygden2,
+        AdhocAlderspensjonGjtOpprydding,
         AdhocAlderspensjonGjtVarselBrev,
         AdhocFeilEtteroppgjoer2023,
         AdhocGjenlevendEtter1970,
