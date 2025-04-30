@@ -100,7 +100,7 @@ enum class KonteringType {
     ANNET,
     AP_GJT,
     AP_GJT_KAP19,
-    BARNEPENSION,
+    BARNEPENSJON,
     BARNETILSYN,
     BT,
     ET,

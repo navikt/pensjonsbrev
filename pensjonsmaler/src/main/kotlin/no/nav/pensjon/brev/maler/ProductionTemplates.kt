@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
+import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheter
 import no.nav.pensjon.brev.maler.redigerbar.*
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUfoeretrygdPGAInntektV2
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
@@ -32,6 +33,7 @@ object ProductionTemplates : AllTemplates {
         AdhocAFPInformasjonOekningToleransebeloep,
         AdhocAlderspensjonFraFolketrygden,
         AdhocAlderspensjonFraFolketrygden2,
+        AdhocAlderspensjonGjtOpprydding,
         AdhocAlderspensjonGjtVarselBrev,
         AdhocFeilEtteroppgjoer2023,
         AdhocGjenlevendEtter1970,
@@ -88,6 +90,7 @@ object ProductionTemplates : AllTemplates {
         VarselOmMuligAvslag,
         VarselRevurderingAvPensjon,
         VarselTilbakekrevingAvFeilutbetaltBeloep,
+        VedtakEndringAvAlderspensjonGjenlevenderettigheter,
         VedtakEndringAvUttaksgrad,
     )
 
