@@ -20,7 +20,7 @@ import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useMemo, useState } from "react";
 
-import type { UserInfo } from "~/api/bff-endpoints";
+import { type UserInfo } from "~/api/bff-endpoints";
 import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { getNavnQuery } from "~/api/skribenten-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
@@ -28,7 +28,7 @@ import { useUserInfo } from "~/hooks/useUserInfo";
 import type { BrevStatus, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
-import { erBrevArkivert, erBrevKlar } from "~/utils/brevUtils";
+import { erBrevArkivert, erBrevLaastForRedigering, skalBrevAttesteres } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 import { humanizeName } from "~/utils/stringUtils";
 
@@ -217,7 +217,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
     },
   });
 
-  const erLåst = useMemo(() => erBrevKlar(props.brev), [props.brev]);
+  const erLåst = useMemo(() => erBrevLaastForRedigering(props.brev), [props.brev]);
 
   return (
     <div>
@@ -251,12 +251,11 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
 
         <Switch
           checked={erLåst}
-          // TODO - finn en måte å gi feedback på dersom kallet gir error. Jeg antar at switcehn ikke blir endret dersom det er en error
           loading={låsForRedigeringMutation.isPending}
           onChange={(event) => låsForRedigeringMutation.mutate(event.target.checked)}
           size="small"
         >
-          Brevet er klart for sending
+          {skalBrevAttesteres(props.brev) ? "Brevet er klart for attestering" : "Brevet er klart for sending"}
         </Switch>
 
         {låsForRedigeringMutation.isError && (
