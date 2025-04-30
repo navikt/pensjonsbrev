@@ -96,6 +96,7 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
                 is KanIkkeAttestereEgetBrevException -> call.respond(HttpStatusCode.Forbidden, cause.message)
                 is AlleredeAttestertException -> call.respond(HttpStatusCode.Conflict, cause.message)
                 is KanIkkeAttestereException -> call.respond(HttpStatusCode.InternalServerError, cause.message)
+                is BrevmalFinnesIkke -> call.respond(HttpStatusCode.InternalServerError, cause.message)
             }
         }
         exception<Exception> { call, cause ->

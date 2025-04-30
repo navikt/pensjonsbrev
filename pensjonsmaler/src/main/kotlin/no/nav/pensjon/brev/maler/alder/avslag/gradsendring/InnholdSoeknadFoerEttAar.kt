@@ -42,7 +42,7 @@ data class InnholdSoeknadFoerEttAar(
         showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2025)) {
             paragraph {
                 text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven § 20-14",
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven § 20-14.",
                     Nynorsk to "Vedtaket er gjort etter folketrygdlova § 20-14.",
                     English to "This decision was made pursuant to the provisions of § 20-14 of the National Insurance Act.",
                 )
@@ -53,6 +53,14 @@ data class InnholdSoeknadFoerEttAar(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-10 og 20-14.",
                     Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-10 og 20-14.",
                     English to "This decision was made pursuant to the provisions of §§ 19-10 and 20-14 of the National Insurance Act.",
+                )
+            }
+        }.orShowIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2011)) {
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven § 19-10.",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova § 19-10.",
+                    English to "This decision was made pursuant to the provisions of § 19-10 of the National Insurance Act.",
                 )
             }
         }

@@ -279,7 +279,7 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                         cell {
                             text(
                                 Bokmal to "Pensjonsbeholdning",
-                                Nynorsk to "Pensjonsbeholdning",
+                                Nynorsk to "Pensjonsbehaldning",
                                 English to "Accumulated pension capital"
                             )
                         }
@@ -311,7 +311,7 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                         cell {
                             text(
                                 Bokmal to "Delingstall ved uttak",
-                                Nynorsk to "Delingstal ved levealdersjustering",
+                                Nynorsk to "Delingstal ved uttak",
                                 English to "Ratio for life expectancy adjustment"
                             )
                         }
@@ -378,9 +378,9 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
 
             paragraph {
                 text(
-                    Bokmal to "På ${Constants.PENSJON_URL} kan du lese mer om regelverket for alderspensjon og hvordan disse tallene har betydning for beregningen. I nettjenesten Din pensjon på ${Constants.DIN_PENSJON_URL} kan du se hvilke inntekter og opplysninger om opptjening som vi har registrert.",
-                    Nynorsk to "På ${Constants.PENSJON_URL} kan du lese meir om regelverket for alderspensjon og kva desse tala har å seie for berekninga. I nettenesta Din pensjon på ${Constants.DIN_PENSJON_URL} kan du sjå kva inntekter og opplysningar om opptening som vi har registrert.",
-                    English to "Go to ${Constants.PENSJON_URL} to read more about these regulations that apply to retirement pension and how these affect your calculation. Logon to our online service \"Din pensjon\" at ${Constants.DIN_PENSJON_URL} to see your income and accumulated pension capital."
+                    Bokmal to "På ${Constants.PENSJON_URL} kan du lese mer om regelverket for alderspensjon og hvordan disse tallene har betydning for beregningen. Logg inn på ${Constants.DIN_PENSJON_URL} for å se hvilke inntekter og opplysninger om opptjening vi har registrert.",
+                    Nynorsk to "På ${Constants.PENSJON_URL} kan du lese meir om regelverket for alderspensjon og kva desse tala har å seie for berekninga. Logg inn på ${Constants.DIN_PENSJON_URL} for å sjå kva inntekter og opplysningar om opptening vi har registrert.",
+                    English to "Go to ${Constants.PENSJON_URL} to read more about these regulations that apply to retirement pension and how these affect your calculation. Log in to ${Constants.DIN_PENSJON_URL} to see your income and accumulated pension capital."
                 )
             }
 
@@ -457,10 +457,10 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                         textExpr(
                             Bokmal to ("Tabellen nedenfor viser perioder du har bodd og/eller arbeidet i land som Norge har" +
                                     " trygdeavtale med. Disse periodene er brukt i vurderingen av retten til alderspensjon før" +
-                                    " fylte ").expr() + normertPensjonsalder.aarOgMaanederFormattert() + ".",
+                                    " du blir ").expr() + normertPensjonsalder.aarOgMaanederFormattert() + ".",
                             Nynorsk to ("Tabellen nedanfor viser periodar du har budd og/eller arbeidd i land som Noreg" +
                                     " har trygdeavtale med. Desse periodane er brukt i vurderinga av retten til alderspensjon" +
-                                    " før fylte ").expr() + normertPensjonsalder.aarOgMaanederFormattert() + ".",
+                                    " før du blir ").expr() + normertPensjonsalder.aarOgMaanederFormattert() + ".",
                             English to ("The table below shows your insurance coverage in countries with which Norway" +
                                     " has a social security agreement. These periods has been used to assess whether" +
                                     " you are eligible for retirement pension before the age of ").expr() + normertPensjonsalder.aarOgMaanederFormattert() + ".",
