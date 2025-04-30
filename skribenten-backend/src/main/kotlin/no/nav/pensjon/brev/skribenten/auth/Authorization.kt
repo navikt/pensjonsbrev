@@ -101,6 +101,7 @@ interface UserPrincipal {
     fun isInGroup(groupId: ADGroup): Boolean
     fun getOnBehalfOfToken(scope: String): TokenResponse.OnBehalfOfToken?
     fun setOnBehalfOfToken(scope: String, token: TokenResponse.OnBehalfOfToken)
+    fun isAttestant(): Boolean = isInGroup(ADGroups.attestant)
 }
 
 data class JwtUserPrincipal(override val accessToken: UserAccessToken, private val jwtPayload: Payload) : UserPrincipal {

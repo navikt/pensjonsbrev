@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.Duration
 import java.time.Instant
 
@@ -51,6 +52,7 @@ object Api {
         val sistredigert: Instant,
         val brevkode: Brevkode.Redigerbart,
         val brevtittel: String,
+        val brevtype: LetterMetadata.Brevtype,
         val status: BrevStatus,
         val distribusjonstype: Distribusjonstype,
         val mottaker: OverstyrtMottaker?,
