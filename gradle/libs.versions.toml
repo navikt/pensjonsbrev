@@ -19,7 +19,7 @@ logbackVersion = "1.5.18"
 logstashVersion = "8.1"
 micrometerVersion = "1.14.6"
 mockkVersion = "1.14.0"
-postgresqlVersion = "42.7.3"
+postgresqlVersion = "42.7.5"
 testcontainersPostgresqlVersion = "1.20.6"
 unleashVersion = "10.2.2"
 
