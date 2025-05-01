@@ -15,7 +15,7 @@
   "dependencies": {
     "@navikt/vite-mode": "0.12.0",
     "express": "5.1.0",
-    "http-proxy-middleware": "3.0.3"
+    "http-proxy-middleware": "3.0.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.1",
