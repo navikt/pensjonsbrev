@@ -98,7 +98,7 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
                 }
 
                 else -> {
-                    if (theClassifier.isData || theClassifier.isValue) {
+                    if (theClassifier.isData || theClassifier.isValue || theClassifier.java.isInterface) {
                         toProcess.add(theClassifier)
                         FieldType.Object(isMarkedNullable, qname!!, displayText = displayText.firstOrNull())
                     } else if (theClassifier.java.isEnum) {

@@ -20,4 +20,5 @@ object FeatureToggles {
     val omsorgEgenManuell = FeatureToggle("omsorgEgenManuell")
     val varselRevurderingAvPensjon = FeatureToggle("varselRevideringAvPensjon")
     val varselTilbakekrevingAvFeilutbetaltBeloep = FeatureToggle("varselTilbakekrevingAvFeilutbetaltBeloep")
+    val vedtakEndringAvAlderspensjonGjenlevenderettigheter = FeatureToggle("vedtakEndringAvAlderspensjonGjenlevenderettigheter")
 }
