@@ -9,7 +9,6 @@ on:
       - brevoppskrift-web/**
 
 jobs:
-  verify:
   verify-bff:
     name: Verify bff tests, lint and typescript errors
     permissions:
