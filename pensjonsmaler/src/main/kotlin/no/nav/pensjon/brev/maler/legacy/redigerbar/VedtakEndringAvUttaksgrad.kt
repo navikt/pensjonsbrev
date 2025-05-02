@@ -106,6 +106,11 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                 )
             }
 
+            /* TODO: Her skal saksbehandlar egentlig velge mellom disse to avsnitta.
+             * Sånn det er nå er ikke dét åpenbart
+             * I doksys var dette representert med radio-button-group, vi bør finne på en liknende mekanisme
+             * */
+
             // Velg årsak til endring
             showIf(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder and pesysData.krav.kravInitiertAv.isNotAnyOf(BRUKER, VERGE)) {
                 paragraph {
