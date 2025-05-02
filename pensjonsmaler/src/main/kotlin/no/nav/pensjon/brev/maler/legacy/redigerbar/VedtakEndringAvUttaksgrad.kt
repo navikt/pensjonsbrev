@@ -272,6 +272,10 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                 }
             }.orShow {
                 showIf(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder) {
+                    // TODO: Her har vi flere avsnitt, hvor saksbehandler skal velge ett av dem.
+                    // Som det er nå er det lett å glemme å ta bort det som ikke skal med
+                    // I doksys er dette radioknapper
+
                     // endringGradAPOktUFGBegrunn_001
                     includePhrase(Vedtak.BegrunnelseOverskrift)
                     paragraph {
