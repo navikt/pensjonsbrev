@@ -12,11 +12,11 @@ import { ApiError } from "~/components/ApiError";
 import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
-import type { BrevResponse } from "~/types/brev";
+import type { BestillBrevResponse, BrevResponse } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
 
 import BrevForhåndsvisning from "../../brevbehandler/-components/BrevForhåndsvisning";
-import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
+import { useSendtBrev } from "../../kvittering/-components/SendtBrevContext";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/forhandsvisning")({
   component: () => <VedtakForhåndsvisningWrapper />,
@@ -134,7 +134,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
 };
 
 const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; onClose: () => void }) => {
-  const { setResultat } = useSendtBrevResultatContext();
+  const { setBrevResult } = useSendtBrev();
   const navigate = useNavigate({ from: Route.fullPath });
 
   const queryClient = useQueryClient();
@@ -143,16 +143,24 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
     attesteringBrevKeys.id(Number(props.brevId), props.saksId),
   );
 
-  const sendBrevMutation = useMutation({
+  const sendBrevMutation = useMutation<BestillBrevResponse, AxiosError>({
     mutationFn: () => {
       return sendBrev(props.saksId, props.brevId);
     },
-    onError: (error: AxiosError) => {
-      setResultat([{ status: "error", brevInfo: cachedBrevData!.info, error: error }]);
+    onSuccess: (response) => {
+      setBrevResult(props.brevId, {
+        status: "success",
+        brevInfo: cachedBrevData!.info,
+        response,
+      });
       props.onClose();
     },
-    onSuccess: (res) => {
-      setResultat([{ status: "success", brevInfo: cachedBrevData!.info, response: res }]);
+    onError: (error) => {
+      setBrevResult(props.brevId, {
+        status: "error",
+        brevInfo: cachedBrevData!.info,
+        error,
+      });
       props.onClose();
     },
     onSettled: () => {

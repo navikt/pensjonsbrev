@@ -29,8 +29,7 @@ import { erBrevArkivert, erBrevKlar, erBrevKlarTilAttestering } from "~/utils/br
 import { queryFold } from "~/utils/tanstackUtils";
 
 import { useBrevInfoKlarTilAttestering } from "../../kvittering/-components/KlarTilAttesteringContext";
-import type { SendtBrevResponser } from "../../kvittering/-components/SendtBrevResultatContext";
-import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
+import { useSendtBrev } from "../../kvittering/-components/SendtBrevContext";
 import { Route } from "../route";
 
 export const FerdigstillOgSendBrevButton = (properties: {
@@ -116,7 +115,8 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   const queryClient = useQueryClient();
   const navigate = useNavigate({ from: Route.fullPath });
   const { enhetsId, vedtaksId } = Route.useSearch();
-  const ferdigstillBrevContext = useSendtBrevResultatContext();
+
+  const { setBrevResult, sendteBrev } = useSendtBrev();
   const { setBrevListKlarTilAttestering } = useBrevInfoKlarTilAttestering();
 
   const alleBrevResult = useQuery({
@@ -130,7 +130,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
     return partition(alle, (brev) => erBrevKlarTilAttestering(brev));
   }, [alleBrevResult.data]);
 
-  const bestillBrevMutation = useMutation<BestillBrevResponse, Error, number>({
+  const sendBrevMutation = useMutation<BestillBrevResponse, AxiosError, number>({
     mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
   });
 
@@ -151,35 +151,46 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   }, [brevSending, form]);
 
   const onSendValgteBrev = async (values: { valgteBrevSomSkalSendes: number[] }) => {
-    const brevSomSkalSendes = values.valgteBrevSomSkalSendes.map(
-      (brevId) => brevSending.find((brev) => brev.id === brevId)!,
-    );
+    const toSend = values.valgteBrevSomSkalSendes.map((id) => brevSending.find((brev) => brev.id === id)!);
 
-    const sendBrevRequests = brevSomSkalSendes.map((brevInfo) =>
-      bestillBrevMutation.mutateAsync(brevInfo.id).then(
-        (response) => ({ requestType: "sendBrev" as const, status: "success" as const, brevInfo, response }),
-        (error: AxiosError) => ({ requestType: "sendBrev" as const, status: "error" as const, brevInfo, error }),
+    await Promise.all(
+      toSend.map((brevInfo) =>
+        sendBrevMutation
+          .mutateAsync(brevInfo.id)
+          .then((response) => {
+            setBrevResult(String(brevInfo.id), {
+              status: "success",
+              brevInfo,
+              response,
+            });
+          })
+          .catch((error) => {
+            setBrevResult(String(brevInfo.id), {
+              status: "error",
+              brevInfo,
+              error,
+            });
+          }),
       ),
     );
 
-    const resultat = (await Promise.allSettled(sendBrevRequests)).map(
-      (response) => (response as PromiseFulfilledResult<SendtBrevResponser[number]>).value,
+    const sentIds = new Set<number>(
+      Object.entries(sendteBrev)
+        .filter(([, result]) => result.status === "success")
+        .map(([id]) => Number(id)),
     );
 
-    ferdigstillBrevContext.setResultat(resultat);
-
-    const sendteBrev = new Set(resultat.filter((res) => res.status === "success").map((res) => res.brevInfo.id));
-
-    queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
-      currentBrevInfo.filter((brev) => !sendteBrev.has(brev.id)),
+    queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (current: BrevInfo[] = []) =>
+      current.filter((b) => !sentIds.has(b.id)),
     );
 
-    return navigate({
+    navigate({
       to: "/saksnummer/$saksId/kvittering",
       params: { saksId: properties.sakId },
       search: { enhetsId, vedtaksId },
     });
   };
+
   return (
     <Modal
       css={css`
@@ -257,7 +268,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
               Avbryt
             </Button>
 
-            <Button loading={bestillBrevMutation.isPending} type="submit">
+            <Button loading={sendBrevMutation.isPending} type="submit">
               Ja, send valgte brev
             </Button>
           </HStack>

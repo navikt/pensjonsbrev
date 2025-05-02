@@ -1,11 +1,12 @@
 import { css } from "@emotion/react";
 import { BodyShort, Box, Button, Heading, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 import KvitterteBrev from "~/components/kvitterteBrev/KvitterteBrev";
 import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 
-import { useSendtBrevResultatContext } from "../../kvittering/-components/SendtBrevResultatContext";
+import { useSendtBrev } from "../../kvittering/-components/SendtBrevContext";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/kvittering")({
   component: () => <Kvittering />,
@@ -15,7 +16,8 @@ const Kvittering = () => {
   const isProd = import.meta.env.PROD;
   const { saksId, brevId } = Route.useParams();
   const { vedtaksId, enhetsId } = Route.useSearch();
-  const { resultat } = useSendtBrevResultatContext();
+
+  const { sendteBrev } = useSendtBrev();
 
   const brukeroversiktQ2Url = `https://pensjon-psak-q2.dev.adeo.no/psak/bruker/brukeroversikt.jsf?sakId=${saksId}`;
   const dokumentoversiktQ2Url = `https://pensjon-psak-q2.dev.adeo.no/psak/dokument/saksoversikt.jsf?sakId=${saksId}`;
@@ -25,17 +27,17 @@ const Kvittering = () => {
   const brukeroversiktUrl = isProd ? brukeroversiktProdUrl : brukeroversiktQ2Url;
   const dokumentoversiktUrl = isProd ? dokumentoversiktProdUrl : dokumentoversiktQ2Url;
 
-  const sendteBrev = resultat.map((resultat) =>
+  const sendteBrevLista = Object.values(sendteBrev).map((brevResult) =>
     toKvittertBrev({
-      status: resultat.status,
+      status: brevResult.status,
       context: "sendBrev",
-      brevFørHandling: resultat.brevInfo,
-      bestillBrevResponse: resultat.status === "success" ? resultat.response : null,
+      brevFørHandling: brevResult.brevInfo,
+      bestillBrevResponse: brevResult.status === "success" ? brevResult.response! : null,
       attesterResponse: null,
     }),
   );
 
-  if (resultat.length === 0) {
+  if (sendteBrevLista.length === 0) {
     return (
       <Box
         background="bg-default"
@@ -84,7 +86,7 @@ const Kvittering = () => {
     >
       <VStack gap="5">
         <Heading size="medium">Kvittering</Heading>
-        <KvitterteBrev kvitterteBrev={sendteBrev} sakId={saksId} />
+        <KvitterteBrev kvitterteBrev={sendteBrevLista} sakId={saksId} />
       </VStack>
       <VStack gap="2">
         <Heading size="medium">Hva vil du gjøre nå?</Heading>

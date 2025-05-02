@@ -17,7 +17,7 @@ import { queryFold } from "~/utils/tanstackUtils";
 
 import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
 import { BrevInfoKlarTilAttesteringProvider } from "./kvittering/-components/KlarTilAttesteringContext";
-import { SendtBrevResultatContextProvider } from "./kvittering/-components/SendtBrevResultatContext";
+import { SendtBrevProvider } from "./kvittering/-components/SendtBrevContext";
 
 // Typer er deklarert som `: string | undefined` heller enn `?: string` for å kreve at disse parametrene overføres i lenker.
 type SaksnummerSearch = { vedtaksId: string | undefined; enhetsId: string | undefined };
@@ -50,14 +50,14 @@ function SakLayout() {
   const sakContext = Route.useLoaderData();
   return (
     <BrevInfoKlarTilAttesteringProvider>
-      <SendtBrevResultatContextProvider>
+      <SendtBrevProvider>
         <MottakerContextProvider>
           {sakContext && <Subheader sak={sakContext.sak} />}
           <div className="page-margins">
             <Outlet />
           </div>
         </MottakerContextProvider>
-      </SendtBrevResultatContextProvider>
+      </SendtBrevProvider>
     </BrevInfoKlarTilAttesteringProvider>
   );
 }

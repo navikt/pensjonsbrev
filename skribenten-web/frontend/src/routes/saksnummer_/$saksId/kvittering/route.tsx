@@ -7,7 +7,7 @@ import type { KvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils
 import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 
 import { useBrevInfoKlarTilAttestering } from "./-components/KlarTilAttesteringContext";
-import { useSendtBrevResultatContext } from "./-components/SendtBrevResultatContext";
+import { useSendtBrev } from "./-components/SendtBrevContext";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/kvittering")({
   component: Kvittering,
@@ -17,29 +17,31 @@ function Kvittering() {
   const { saksId } = Route.useParams();
   const { enhetsId, vedtaksId } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
-  const ferdigstillBrevContext = useSendtBrevResultatContext();
-  const brevTilAttesteringContext = useBrevInfoKlarTilAttestering();
 
-  const kvitterteBrev: KvittertBrev[] = [
-    ...ferdigstillBrevContext.resultat.map((resultat) =>
-      toKvittertBrev({
-        status: resultat.status,
-        context: "sendBrev",
-        brevFørHandling: resultat.brevInfo,
-        bestillBrevResponse: resultat.status === "success" ? resultat.response : null,
-        attesterResponse: null,
-      }),
-    ),
-    ...brevTilAttesteringContext.brevListKlarTilAttestering.map((brev) =>
-      toKvittertBrev({
-        status: "success",
-        context: "attestering",
-        brevFørHandling: brev,
-        bestillBrevResponse: null,
-        attesterResponse: null,
-      }),
-    ),
-  ];
+  const { sendteBrev } = useSendtBrev();
+  const { brevListKlarTilAttestering } = useBrevInfoKlarTilAttestering();
+
+  const sendtBrevList: KvittertBrev[] = Object.values(sendteBrev).map((resultat) =>
+    toKvittertBrev({
+      status: resultat.status,
+      context: "sendBrev",
+      brevFørHandling: resultat.brevInfo,
+      bestillBrevResponse: resultat.status === "success" ? resultat.response! : null,
+      attesterResponse: null,
+    }),
+  );
+
+  const attestList: KvittertBrev[] = brevListKlarTilAttestering.map((brev) =>
+    toKvittertBrev({
+      status: "success",
+      context: "attestering",
+      brevFørHandling: brev,
+      bestillBrevResponse: null,
+      attesterResponse: null,
+    }),
+  );
+
+  const kvitterteBrev: KvittertBrev[] = [...sendtBrevList, ...attestList];
 
   return (
     <div
