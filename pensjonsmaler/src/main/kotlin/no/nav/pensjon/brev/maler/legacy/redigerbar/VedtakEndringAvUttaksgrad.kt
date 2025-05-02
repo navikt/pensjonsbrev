@@ -33,6 +33,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenEndretUttaksgrad
@@ -275,13 +276,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             }.orShow {
                 showIf(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder) {
                     // endringGradAPOktUFGBegrunn_001
-                    title1 {
-                        text(
-                            Bokmal to "Begrunnelse for vedtaket",
-                            Nynorsk to "Grunngiving for vedtaket",
-                            English to "Grounds for the decision"
-                        )
-                    }
+                    includePhrase(Vedtak.BegrunnelseOverskrift)
                     paragraph {
                         textExpr(
                             Bokmal to "Fordi uføregraden din har økt, kan du ikke ta ut like mye alderspensjon som før. Vi har derfor redusert alderspensjonen din til ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent, som er den høyest mulige graden.",
@@ -291,13 +286,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                     }
 
                     //  endringGradAPInnvUTBegrunn_001
-                    title1 {
-                        text(
-                            Bokmal to "Begrunnelse for vedtaket",
-                            Nynorsk to "Grunngiving for vedtaket",
-                            English to "Grounds for the decision"
-                        )
-                    }
+                    includePhrase(Vedtak.BegrunnelseOverskrift)
                     paragraph {
                         textExpr(
                             Bokmal to "Fordi du har fått innvilget uføretrygd, kan du ikke ta ut like mye alderspensjon som før. Vi har derfor redusert alderspensjonen din til ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent, som er den høyest mulige graden.",
@@ -307,13 +296,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                     }
                 }.orShow {
                     // endringAPOpptjenBegrunn_001
-                    title1 {
-                        text(
-                            Bokmal to "Begrunnelse for vedtaket",
-                            Nynorsk to "Grunngiving for vedtaket",
-                            English to "Grounds for the decision"
-                        )
-                    }
+                    includePhrase(Vedtak.BegrunnelseOverskrift)
                     paragraph {
                         textExpr(
                             Bokmal to "Fordi opptjeningsgrunnlaget ditt er endret kan du ikke lenger ta ut like mye pensjon som før. Vi har derfor redusert alderspensjonen din til ".expr() + pesysData.alderspensjonVedVirk.uttaksgrad.format() + " prosent.",
@@ -349,27 +332,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
 
             showIf(pesysData.vedtak.etterbetaling or saksbehandlerValg.visEtterbetaling) {
                 // etterbetalingAP_002
-                title1 {
-                    text(
-                        Bokmal to "Etterbetaling",
-                        Nynorsk to "Etterbetaling",
-                        English to "Retroactive payment"
-                    )
-                }
-                paragraph {
-                    textExpr(
-                        Bokmal to "Du får etterbetalt pensjon fra ".expr() + pesysData.krav.virkDatoFom.format() + ". Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. Vi kan trekke fra skatt og ytelser du har fått fra for eksempel Nav eller tjenestepensjonsordninger. Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $DITT_NAV.",
-                        Nynorsk to "Du får etterbetalt pensjon frå ".expr() + pesysData.krav.virkDatoFom.format() + ". Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. Vi kan trekke frå skatt og ytingar du har fått frå for eksempel Nav eller tenestepensjonsordningar. Derfor kan etterbetalinga di bli forsinka. Tenestepensjonsordninga har ni veker frist på å krevje trekk i etterbetalinga. Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $DITT_NAV.",
-                        English to "You will receive retroactive pension payments from ".expr() + pesysData.krav.virkDatoFom.format() +". The retroactive payments will normally be made in the course of seven working days. We can make deductions for tax and benefits you have received, for example, from Nav or occupational pension schemes. Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. You can check if there are any deductions from the payment notice at $DITT_NAV."
-                    )
-                }
-                paragraph {
-                    text(
-                        Bokmal to "Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser.",
-                        Nynorsk to "Dersom etterbetalinga gjeld tidlegare år, vil vi trekkje skatt etter standardsatsane til skatteetaten.",
-                        English to "If the retroactive payment refers to earlier years, we will deduct tax at the Tax Administration's standard rates."
-                    )
-                }
+                includePhrase(Vedtak.Etterbetaling(pesysData.krav.virkDatoFom))
             }
 
             // arbInntektAPOverskrift_001
