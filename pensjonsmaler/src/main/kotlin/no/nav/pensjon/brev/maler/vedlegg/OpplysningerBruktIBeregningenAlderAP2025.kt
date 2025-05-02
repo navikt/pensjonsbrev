@@ -3,8 +3,13 @@ package no.nav.pensjon.brev.maler.vedlegg
 import no.nav.pensjon.brev.api.model.GarantipensjonSatsType
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand.*
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetid
+import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.GarantipensjonSatsTypeText
+import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningTabellAP2025
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto.Pensjonsopptjening.Merknad
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.brukersSivilstand
@@ -21,6 +26,18 @@ import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP202
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.nettoUtbetaltPerManed
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.nettoUtbetaltPerManed_safe
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.satsType
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningKap20VedVirkSelectors.harDagpenger
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningKap20VedVirkSelectors.harMerknadType
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningKap20VedVirkSelectors.harOmsorgsopptjeningFOM2010
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningKap20VedVirkSelectors.harOmsorgsopptjeningTOM2009
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningKap20VedVirkSelectors.harUforepensjon
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningKap20VedVirkSelectors.harUforepensjonKonvertertTilUforetrygd
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningKap20VedVirkSelectors.harUforetrygd
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningKap20VedVirkSelectors.pensjonsopptjeninger
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningSelectors.aarstall
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningSelectors.gjennomsnittligG
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningSelectors.merknader
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningSelectors.pensjonsgivendeinntekt
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VedtakSelectors.sisteOpptejningsAr
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VilkaarsVedtakSelectors.avslattGarantipensjon
@@ -30,6 +47,8 @@ import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP202
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.epsVedVirk
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.erBeregnetSomEnsligPgaInstitusjonsopphold
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.garantipensjonVedVirk
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.pensjonsopptjeningKap20VedVirk
+import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.trygdetidNorge
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.trygdetidsdetaljerKap20VedVirk
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.vedtak
 import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.vilkarsVedtak
@@ -37,6 +56,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
@@ -55,7 +75,36 @@ data class OpplysningerBruktIBeregningenAlderAP2025Dto(
     val trygdetidsdetaljerKap20VedVirk: TrygdetidsdetaljerKap20VedVirk,
     val epsVedVirk: EpsVedVirk?,
     val erBeregnetSomEnsligPgaInstitusjonsopphold: Boolean,
+    val trygdetidNorge: List<Trygdetid>,
+    val trygdetidEOS: List<Trygdetid>,
+    val trygdetidAvtaleland: List<Trygdetid>,
+    val pensjonsopptjeningKap20VedVirk: PensjonsopptjeningKap20VedVirk,
 ) {
+
+    data class PensjonsopptjeningKap20VedVirk(
+        val harOmsorgsopptjeningFOM2010: Boolean,
+        val harOmsorgsopptjeningTOM2009: Boolean,
+        val harDagpenger: Boolean,
+        val harUforetrygd: Boolean,
+        val harUforepensjonKonvertertTilUforetrygd: Boolean,
+        val harUforepensjon: Boolean,
+        val harMerknadType: Boolean,
+        val pensjonsopptjeninger: List<Pensjonsopptjening>,
+    )
+
+    data class Pensjonsopptjening(
+        val aarstall: Int,
+        val pensjonsgivendeinntekt: Kroner,
+        val gjennomsnittligG: Kroner,
+        val merknader: List<Merknad>,
+    ) {
+        enum class Merknad {
+            DAGPENGER,
+            OMSORGSOPPTJENING,
+            UFORETRYGD,
+            UFOREPENSJON,
+        }
+    }
 
     data class EpsVedVirk(
         val borSammenMedBruker: Boolean,
@@ -339,7 +388,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
         //vedleggBeregnGarantipensjonOverskrift_001
         ifNotNull(garantipensjonVedVirk) { garantipensjonVedVirk ->
             showIf(
-                garantipensjonInnvilget // TODO At den sendes med bør egentlig bety at den er innvilget. Svak antagelse.
+                garantipensjonInnvilget
                         and garantipensjonVedVirk.nettoUtbetaltPerManed.greaterThan(0)
             ) {
                 title1 {
@@ -638,6 +687,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                     }
                 }
                 showIf(beregningKap20VedVirk.redusertTrygdetid) {
+                    //vedleggBeregnSatsRedusertTT_001
                     paragraph {
                         text(
                             Bokmal to "Satsen er redusert fordi trygdetiden din er under 40 år.",
@@ -647,6 +697,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                     }
                 }
                 paragraph {
+                    //vedleggBeregnGarantipensjonDelingstall67_001
                     text(
                         Bokmal to "Vi bruker delingstallet fastsatt for ditt årskull ved 67 år for å regne om denne satsen til en beholdningsstørrelse. Vi trekker deretter fra 80 prosent av pensjonsbeholdningen din ved uttak fra dette beløpet. Summen utgjør da garantipensjonsbeholdningen ved uttak.",
                         Nynorsk to "Vi brukar delingstalet fastsett for årskullet ditt ved 67 år for å rekne om denne satsen til ein behaldningsstorleik. Vi trekkjer deretter frå 80 prosent av pensjonsbehaldninga di ved uttak frå dette beløpet. Summen utgjer då garantipensjonsbehaldninga ved uttak.",
@@ -655,29 +706,52 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                 }
                 showIf(beregningKap20VedVirk.redusertTrygdetid) {
                     paragraph {
+                        //vedleggBeregnGarantipensjonsbeholdningRedusertTT_001
                         text(
                             Bokmal to "Sats for garantipensjon x (trygdetid / 40 år full trygdetid) x delingstall ved 67 år - (80% av pensjonsbeholdning ved uttak) = garantipensjonsbeholdning",
                             Nynorsk to "Sats for garantipensjon x (trygdetid / 40 år full trygdetid) x delingstal ved 67 år - (80% av pensjonsbehaldning ved uttak) = garantipensjonsbehaldning",
                             English to "Guaranteed pension rate x (NI coverage / 40 years full NI coverage) x life expectancy adjustment divisor at 67 years - (80% of accumulated pension capital before initial withdrawal) = guaranteed pension capital",
                         )
                     }
+                    //vedleggBeregnGarantipensjonsbeholdningRedusertTT_002
                     paragraph {
+                        val norskText = garantipensjonVedVirk.garantipensjonSatsPerAr.format() +
+                                " kr x (" + trygdetidsdetaljerKap20VedVirk.anvendtTT.format() +
+                                " / 40) x " + garantipensjonVedVirk.delingstalletVed67Ar.format() +
+                                " - (80% (" + beregningKap20VedVirk.beholdningForForsteUttak.format() +
+                                " kr)) = " + garantipensjonVedVirk.beholdningForForsteUttak.format() + " kr"
                         textExpr(
-                            Bokmal to garantipensjonVedVirk.garantipensjonSatsPerAr.format() +
-                                    " kr x (" + trygdetidsdetaljerKap20VedVirk.anvendtTT.format() +
-                                    " / 40) x " + garantipensjonVedVirk.delingstalletVed67Ar.format() +
-                                    " - (80% (" + beregningKap20VedVirk.beholdningForForsteUttak.format()
-                                    + " kr)) =" + garantipensjonVedVirk.beholdningForForsteUttak.format() + " kr",
-                            Nynorsk to garantipensjonVedVirk.garantipensjonSatsPerAr.format() +
-                                    " kr x (" + trygdetidsdetaljerKap20VedVirk.anvendtTT.format() +
-                                    " / 40) x " + garantipensjonVedVirk.delingstalletVed67Ar.format() +
-                                    " - (80% (" + beregningKap20VedVirk.beholdningForForsteUttak.format()
-                                    + " kr)) =" + garantipensjonVedVirk.beholdningForForsteUttak.format() + " kr",
+                            Bokmal to norskText,
+                            Nynorsk to norskText,
                             English to "NOK ".expr() + garantipensjonVedVirk.garantipensjonSatsPerAr.format() +
                                     " x (" + trygdetidsdetaljerKap20VedVirk.anvendtTT.format() +
                                     " / 40) x " + garantipensjonVedVirk.delingstalletVed67Ar.format() +
                                     " - (80% (NOK " + beregningKap20VedVirk.beholdningForForsteUttak.format()
-                                    + ")) =NOK " + garantipensjonVedVirk.beholdningForForsteUttak.format(),
+                                    + ")) = NOK " + garantipensjonVedVirk.beholdningForForsteUttak.format(),
+                        )
+                    }
+                }.orShow {
+                    paragraph {
+                        //vedleggBeregnGarantipensjonsbeholdningIkkeRedusertTT_001
+                        text(
+                            Bokmal to "Sats for garantipensjon x delingstall ved 67 år - (80% av pensjonsbeholdning ved uttak) = garantipensjonsbeholdning:",
+                            Nynorsk to "Sats for garantipensjon x delingstal ved 67 år - (80% av pensjonsbehaldning ved uttak) = garantipensjonsbehaldning:",
+                            English to "Guaranteed pension rate x life expectancy adjustment divisor at 67 years - (80% of accumulated pension capital before initial withdrawal) = guaranteed pension capital:",
+                        )
+                    }
+                    paragraph {
+                        //vedleggBeregnGarantipensjonsbeholdningIkkeRedusertTT_002
+                        val norskText = garantipensjonVedVirk.garantipensjonSatsPerAr.format() +
+                                " kr x " + garantipensjonVedVirk.delingstalletVed67Ar.format() +
+                                " - (80% (" + beregningKap20VedVirk.beholdningForForsteUttak.format() +
+                                " kr)) = " + garantipensjonVedVirk.beholdningForForsteUttak.format() + " kr"
+                        textExpr(
+                            Bokmal to norskText, Nynorsk to norskText,
+
+                            English to "NOK ".expr() + garantipensjonVedVirk.garantipensjonSatsPerAr.format() +
+                                    " x " + garantipensjonVedVirk.delingstalletVed67Ar.format() +
+                                    " - (80% (NOK " + beregningKap20VedVirk.beholdningForForsteUttak.format() +
+                                    ")) =  NOK " + garantipensjonVedVirk.beholdningForForsteUttak.format(),
                         )
                     }
                 }
@@ -685,4 +759,190 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
         }
 
 
+        showIf(beregningKap20VedVirk.redusertTrygdetid and not(avslattGarantipensjon)) {
+            title1 {
+                text(
+                    Bokmal to "Trygdetid",
+                    Nynorsk to "Trygdetid",
+                    English to "Period of national insurance coverage",
+                )
+            }
+            includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetidInnledning)
+            includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetid(trygdetidNorge))
+        }
+        //vedleggBeregnPensjonsOpptjeningKap20_001
+        title1 {
+            text(
+                Bokmal to "Pensjonsopptjening din",
+                Nynorsk to "Pensjonsopptening di",
+                English to "Your pension accrual",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Tabellen under viser den pensjonsgivende inntekten din og om du har andre typer pensjonsopptjening registrert på deg i det enkelte år. Det er egne regler for pensjonsopptjening ved omsorgsarbeid, dagpenger ved arbeidsledighet eller uføretrygd.",
+                Nynorsk to "Tabellen under viser den pensjonsgivande inntekta di og om du har andre typar pensjonsopptening registrert på deg i det enkelte år. Det er egne reglar for pensjonsopptening ved omsorgsarbeid, dagpengar ved arbeidsløyse eller uføretrygd.",
+                English to "The table below shows your pensionable income, and you will be able to see your other types of pension accruals we have registered for each year. There are special rules for pension accrual in connection with care work, unemployment benefit or disability benefit. ",
+            )
+        }
+
+        showIf(pensjonsopptjeningKap20VedVirk.harOmsorgsopptjeningFOM2010) {
+            //vedleggBeregnAP2025Omsorgsopptjening_001
+            paragraph {
+                text(
+                    Bokmal to "Opptjening fra omsorgsarbeid garanterer at du får pensjonsopptjening som tilsvarer inntekt inntil 4,5 ganger gjennomsnittlig G. Hvis pensjonsgivende inntekt eller annen opptjening er lavere i det aktuelle året, er du sikret denne opptjeningen.",
+                    Nynorsk to "Opptening frå omsorgsarbeid garanterer at du får pensjonsopptening som utgjer ei inntekt inntil 4,5 gongar gjennomsnittleg G. Dersom pensjonsgivande inntekt eller anna opptening er lågare i det aktuelle året, er du sikra denne oppteninga.",
+                    English to "Accrual from care work guarantees that you will receive pension accrual corresponding to income up to 4.5 times the average G. If pensionable income or other pension accrual is lower in the year in question, you are guaranteed this pension accrual from care work.",
+                )
+                showIf(pensjonsopptjeningKap20VedVirk.harOmsorgsopptjeningTOM2009) {
+                    text(
+                        Bokmal to " Fram til 2010 var garantien 4 ganger gjennomsnittlig G.",
+                        Nynorsk to " Fram til 2010 var garantien 4 gongar gjennomsnittleg G.",
+                        English to " Prior to 2010, the pension accrual from care work was 4 times the average G.",
+                    )
+                }
+            }
+        }.orShowIf(pensjonsopptjeningKap20VedVirk.harOmsorgsopptjeningTOM2009) {
+            //vedleggBeregnAP2025OmsorgsopptjeningFor2010_001
+            paragraph {
+                text(
+                    Bokmal to "Opptjening fra omsorgsarbeid garanterer at du får pensjonsopptjening som tilsvarer inntekt inntil 4 ganger gjennomsnittlig G. Hvis pensjonsgivende inntekt eller annen opptjening er lavere i det aktuelle året, er du sikret denne opptjeningen.",
+                    Nynorsk to "Opptening frå omsorgsarbeid garanterer at du får pensjonsopptening som utgjer ei inntekt inntil 4 gongar gjennomsnittleg G. Dersom pensjonsgivande inntekt eller anna opptening er lågare i det aktuelle året, er du sikra denne oppteninga.",
+                    English to "Accrual from care work guarantees that you will receive pension accrual corresponding to income up to 4 times the average G. If pensionable income or other pension accrual is lower in the year in question, you are guaranteed this pension accrual from care work.",
+                )
+            }
+        }
+
+        showIf(pensjonsopptjeningKap20VedVirk.harDagpenger) {
+            paragraph {
+                text(
+                    Bokmal to "For perioder du har hatt dagpenger er det egne regler for pensjonsopptjening. Reglene gjelder fra og med 2010.",
+                    Nynorsk to "For periodar du har hatt dagpengar er det egne reglar for pensjonsopptening. Reglane gjelder frå og med 2010.",
+                    English to "For periods when you have had unemployment benefit, there are separate rules for pension accrual. The rules apply from 2010 onwards.",
+                )
+            }
+        }
+
+        showIf(pensjonsopptjeningKap20VedVirk.harUforetrygd) {
+            paragraph {
+                text(
+                    Bokmal to "For perioder du har hatt uføretrygd er det egne regler for pensjonsopptjening.",
+                    Nynorsk to "For periodar du har hatt uføretrygd er det egne reglar for pensjonsopptening.",
+                    English to "For periods when you have received disability benefit, there are separate rules for pension accrual.",
+                )
+            }
+        }
+
+        showIf(pensjonsopptjeningKap20VedVirk.harUforepensjonKonvertertTilUforetrygd) {
+            paragraph {
+                text(
+                    Bokmal to "For perioder du har hatt uførepensjon og uføretrygd er det egne regler for pensjonsopptjening.",
+                    Nynorsk to "For periodar du har hatt uførepensjon eller uføretrygd er det egne reglar for pensjonsopptening.",
+                    English to "For periods when you have received disability pension and disability benefit, there are separate rules for pension accrual.",
+                )
+            }
+        }
+
+        showIf(pensjonsopptjeningKap20VedVirk.harUforepensjon) {
+            paragraph {
+                text(
+                    Bokmal to "For perioder du har hatt uførepensjon er det egne regler for pensjonsopptjening.",
+                    Nynorsk to "For periodar du har hatt uførepensjon er det egne reglar for pensjonsopptening.",
+                    English to "For periods when you have received disability pension, there are separate rules for pension accrual. ",
+                )
+            }
+        }
+
+        paragraph {
+            text(
+                Bokmal to "I nettjenesten Din pensjon på $DIN_PENSJON_URL får du oversikt over pensjonsopptjeningen din for hvert enkelt år. Nav mottar opplysninger om pensjonsgivende inntekt fra Skatteetaten. Ta kontakt med Skatteetaten hvis du mener at inntektene i tabellen er feil.",
+                Nynorsk to "I nettenesta Din pensjon på $DIN_PENSJON_URL får du oversikt over pensjonsoppteninga di for kvart enkelt år. Nav får opplysningar om pensjonsgivande inntekt frå Skatteetaten. Ta kontakt med Skatteetaten dersom du meiner at inntektene i tabellen er feil.",
+                English to "Our online service \"Din pensjon\" at $DIN_PENSJON_URL provides details on your accumulated rights for each year. Nav receives information about pensionable income from the Norwegian Tax Administration. Contact the tax authorities if you think that this income is wrong.",
+            )
+        }
+        showIf(pensjonsopptjeningKap20VedVirk.harMerknadType) {
+            pensjonsgivendeInntekt(true)
+        }.orShow {
+            pensjonsgivendeInntekt(false)
+        }
+
+
     }
+
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningenAlderAP2025Dto>.pensjonsgivendeInntekt(
+    medMerknader: Boolean
+) {
+    paragraph {
+        table({
+            column {
+                text(
+                    Bokmal to "År",
+                    Nynorsk to "År",
+                    English to "Year",
+                )
+            }
+            column {
+                text(
+                    Bokmal to "Pensjonsgivende inntekt (kr)",
+                    Nynorsk to "Pensjonsgivande inntekt (kr)",
+                    English to "Pensionable income (NOK)",
+                )
+            }
+            column {
+                text(
+                    Bokmal to "Gjennomsnittlig G (kr)",
+                    Nynorsk to "Gjennomsnittlig G (kr)",
+                    English to "Average G (NOK)",
+                )
+            }
+            if(medMerknader) {
+                column(columnSpan = 2) {
+                    text(
+                        Bokmal to "Andre typer opptjeningsgrunnlag registrert",
+                        Nynorsk to "Andre typer oppteningsgrunnlag registrert",
+                        English to "Other types of accruals registered",
+                    )
+                }
+            }
+        }) {
+            forEach(pensjonsopptjeningKap20VedVirk.pensjonsopptjeninger) {
+                row {
+                    cell { eval(it.aarstall.format()) }
+                    cell { includePhrase(KronerText(it.pensjonsgivendeinntekt)) }
+                    cell { includePhrase(KronerText(it.gjennomsnittligG)) }
+                    if (medMerknader) {
+                        cell {
+                            forEach(it.merknader) { merknad ->
+                                showIf(merknad.equalTo(Merknad.DAGPENGER)) {
+                                    text(
+                                        Bokmal to "Dagpenger ",
+                                        Nynorsk to "Dagpenger ",
+                                        English to "Unemployment benefit ",
+                                    )
+                                }.orShowIf(merknad.equalTo(Merknad.OMSORGSOPPTJENING)){
+                                    text(
+                                        Bokmal to "Omsorgsopptjening ",
+                                        Nynorsk to "Omsorgsopptjening ",
+                                        English to "Care work accrual ",
+                                    )
+                                }.orShowIf(merknad.equalTo(Merknad.UFOREPENSJON)){
+                                    text(
+                                        Bokmal to "Uførepensjon ",
+                                        Nynorsk to "Uførepensjon ",
+                                        English to "Disability pension ",
+                                    )
+                                }.orShowIf(merknad.equalTo(Merknad.UFORETRYGD)){
+                                    text(
+                                        Bokmal to "Uføretrygd ",
+                                        Nynorsk to "Uføretrygd ",
+                                        English to "Disability benefit ",
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
