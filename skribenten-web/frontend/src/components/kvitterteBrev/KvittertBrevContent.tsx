@@ -1,15 +1,9 @@
 import { Accordion, BodyShort, Button, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
 
 import { hentPdfForJournalpostQuery, sendBrev } from "~/api/sak-api-endpoints";
 import { getNavnQuery } from "~/api/skribenten-api-endpoints";
 import Oppsummeringspar from "~/routes/saksnummer_/$saksId/kvittering/-components/Oppsummeringspar";
-import type {
-  SendtBrevErrorResponse,
-  SendtBrevSuccessResponse,
-} from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevResultatContext";
-import { useSendtBrevResultatContext } from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevResultatContext";
 import type { BestillBrevResponse, Mottaker } from "~/types/brev";
 import { Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
@@ -19,50 +13,34 @@ import { queryFold } from "~/utils/tanstackUtils";
 import { ApiError } from "../ApiError";
 import { distribusjonstypeTilText } from "./KvitterteBrevUtils";
 
-const AccordionContent = (props: { saksId: string; brevId: number }) => {
-  const { resultat, setResultat } = useSendtBrevResultatContext();
-  const filtered = resultat.find((brev) => brev.brevInfo.id === props.brevId);
-
+const AccordionContent = (props: {
+  saksId: string;
+  brevId: number;
+  apiStatus: "error" | "success";
+  distribusjonstype: Distribusjonstype;
+  journalpostId: Nullable<number>;
+  mottaker: Nullable<Mottaker>;
+}) => {
   const sendBrevMutation = useMutation<BestillBrevResponse, Error>({
     mutationFn: () => sendBrev(props.saksId, props.brevId),
-    onSuccess: (response) => {
-      if (response.error) {
-        const errorEntry: SendtBrevErrorResponse = {
-          status: "error",
-          error: response.error as unknown as AxiosError<unknown, unknown>,
-          brevInfo: filtered!.brevInfo,
-        };
-        setResultat([...resultat.filter((brev) => brev.brevInfo.id !== props.brevId), errorEntry]);
-        return;
-      }
-      const successEntry: SendtBrevSuccessResponse = {
-        status: "success",
-        response,
-        brevInfo: filtered!.brevInfo,
-      };
-      setResultat([...resultat.filter((brev) => brev.brevInfo.id !== props.brevId), successEntry]);
-    },
   });
 
-  if (!filtered || filtered.status === "error") {
-    return (
-      <AccordionContentError
-        isPending={sendBrevMutation.isPending}
-        onPrøvIgjenClick={() => {
-          sendBrevMutation.mutate();
-        }}
-      />
-    );
-  }
-  if (filtered.status === "success") {
-    return (
-      <AccordionContentSuccess
-        distribusjonstype={filtered.brevInfo.distribusjonstype}
-        journalpostId={filtered.response.journalpostId}
-        mottaker={filtered.brevInfo.mottaker}
-        saksId={props.saksId}
-      />
-    );
+  switch (props.apiStatus) {
+    case "error": {
+      return (
+        <AccordionContentError isPending={sendBrevMutation.isPending} onPrøvIgjenClick={sendBrevMutation.mutate} />
+      );
+    }
+    case "success": {
+      return (
+        <AccordionContentSuccess
+          distribusjonstype={props.distribusjonstype}
+          journalpostId={props.journalpostId}
+          mottaker={props.mottaker}
+          saksId={props.saksId}
+        />
+      );
+    }
   }
 };
 export default AccordionContent;
