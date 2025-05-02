@@ -44,17 +44,17 @@ import no.nav.pensjon.brev.maler.fraser.common.GarantipensjonSatsTypeText
 import no.nav.pensjon.brev.maler.fraser.common.BroekText
 import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.beregningVirkDatoFom
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.nettoUtbetaltPerManed
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.delingstalletVed67Ar
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.garantipensjonSatsPerAr
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.satsType
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
-import no.nav.pensjon.brev.maler.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VilkaarsVedtakSelectors.avslattGarantipensjon
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.beregningVirkDatoFom
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.nettoUtbetaltPerManed
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.delingstalletVed67Ar
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.garantipensjonSatsPerAr
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.satsType
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VilkaarsVedtakSelectors.avslattGarantipensjon
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -62,6 +62,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.TableHeaderScope
+import no.nav.pensjon.brev.template.dsl.TableScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -75,45 +76,24 @@ data class OpplysningerBruktIBeregningTabellKap19(
     val beregningKap20VedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.BeregningKap20VedVirk?>,
     val yrkesskadeDetaljerVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.YrkesskadeDetaljerVedVirk?>,
     val alderspensjonVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.AlderspensjonVedVirk>,
-): OutlinePhrase<LangBokmalNynorskEnglish>(){
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             val harTilleggspensjon = tilleggspensjonVedVirk.notNull()
-            table(
-                header = opplysningerBruktIBeregningenHeader(beregnetPensjonPerManedVedVirk.virkDatoFom)
-            ) {
-
+            table(opplysningerBruktIBeregningenHeader(beregnetPensjonPerManedVedVirk.virkDatoFom)) {
                 showIf(
                     beregnetPensjonPerManedVedVirk.flyktningstatusErBrukt
                             and not(beregningKap19VedVirk.redusertTrygdetid)
                             and not(beregningKap20VedVirk.redusertTrygdetid_safe.ifNull(false))
                 ) {
                     //tabellFlyktningstatus_002
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Du er innvilget flyktningstatus fra UDI",
-                                Nynorsk to "Du er innvilga flyktningstatus frå UDI",
-                                English to "You are registered with the status of a refugee granted by the UDI",
-                            )
-                        }
-                        cell { includePhrase(Ja) }
-                    }
+                    flyktningstatusFraUDIrad()
                 }
 
                 val beregningsmetodeKap19 = trygdetidsdetaljerKap19VedVirk.beregningsmetode
                 showIf(beregningsmetodeKap19.isOneOf(FOLKETRYGD, NORDISK)) {
                     //tabellTT_002
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Trygdetid",
-                                Nynorsk to "Trygdetid",
-                                English to "National insurance coverage",
-                            )
-                        }
-                        cell { includePhrase(AntallAarText(trygdetidsdetaljerKap19VedVirk.anvendtTT)) }
-                    }
+                    trygdetidAarRad(trygdetidsdetaljerKap19VedVirk.anvendtTT)
 
                     showIf(tilleggspensjonVedVirk.notNull()) {
                         //vedleggTabellKap19Sluttpoengtall_001
@@ -193,17 +173,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                         trygdetidsdetaljerKap19VedVirk.tellerTTEOS,
                         trygdetidsdetaljerKap19VedVirk.nevnerTTEOS
                     ) { teller, nevner ->
-
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og andre EØS-land",
-                                    Nynorsk to "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og andre EØS-land",
-                                    English to "The ratio between national insurance coverage in Norway and total insurance coverage in all EEA countries",
-                                )
-                            }
-                            cell { includePhrase(BroekText(teller, nevner)) }
-                        }
+                        trygdetidEOSrad(teller, nevner)
                     }
 
                     //vedleggTabellKap19SluttpoengtallEOS_001
@@ -284,16 +254,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                         trygdetidsdetaljerKap19VedVirk.tellerProRata,
                         trygdetidsdetaljerKap19VedVirk.nevnerProRata
                     ) { teller, nevner ->
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og avtaleland",
-                                    Nynorsk to "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og avtaleland",
-                                    English to "Ratio between actual period of national insurance coverage in Norway and period of national insurance coverage in Norway and countries with social security agreement",
-                                )
-                            }
-                            cell { includePhrase(BroekText(teller, nevner)) }
-                        }
+                        prorataBroekRad(teller, nevner)
                     }
 
                     showIf(harTilleggspensjon) {
@@ -494,7 +455,6 @@ data class OpplysningerBruktIBeregningTabellKap19(
             }
         }
     }
-
 }
 
 data class OpplysningerBruktIBeregningTabellKap20(
@@ -512,25 +472,14 @@ data class OpplysningerBruktIBeregningTabellKap20(
                 English to "We have used the following information to calculate the part of your pension that comes under the new provisions (Chapter 20):",
             )
 
-            table(
-                header = opplysningerBruktIBeregningenHeader(beregnetPensjonPerManedVedVirk.virkDatoFom)
-            ) {
+            table(opplysningerBruktIBeregningenHeader(beregnetPensjonPerManedVedVirk.virkDatoFom)) {
                 showIf(
                     beregnetPensjonPerManedVedVirk.flyktningstatusErBrukt
                             and not(beregningKap19VedVirk.redusertTrygdetid)
                             and not(beregningKap20VedVirk.redusertTrygdetid_safe.ifNull(false))
                 ) {
                     //tabellFlyktningstatus_002
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Du er innvilget flyktningstatus fra UDI",
-                                Nynorsk to "Du er innvilga flyktningstatus frå UDI",
-                                English to "You are registered with the status of a refugee granted by the UDI",
-                            )
-                        }
-                        cell { includePhrase(Ja) }
-                    }
+                    flyktningstatusFraUDIrad()
                 }
                 ifNotNull(trygdetidsdetaljerKap20VedVirk) { trygdetidsdetaljer ->
                     //vedleggTabellKap20Trygdetid_001
@@ -553,16 +502,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                             trygdetidsdetaljer.nevnerTTEOS
                         ) { tellerTTEOS, nevnerTTEOS ->
                             showIf(beregningsmetode.isOneOf(EOS)) {
-                                row {
-                                    cell {
-                                        text(
-                                            Bokmal to "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og andre EØS-land",
-                                            Nynorsk to "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og andre EØS-land",
-                                            English to "The ratio between national insurance coverage in Norway and total insurance coverage in all EEA countries",
-                                        )
-                                    }
-                                    cell { includePhrase(BroekText(tellerTTEOS, nevnerTTEOS)) }
-                                }
+                                trygdetidEOSrad(tellerTTEOS, nevnerTTEOS)
                             }
                         }
 
@@ -572,16 +512,7 @@ data class OpplysningerBruktIBeregningTabellKap20(
                             trygdetidsdetaljer.nevnerProRata_safe
                         ) { tellerProRata, nevnerProRata ->
                             showIf(beregningsmetode.isNotAnyOf(EOS, NORDISK, FOLKETRYGD)) {
-                                row {
-                                    cell {
-                                        text(
-                                            Bokmal to "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og avtaleland",
-                                            Nynorsk to "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og avtaleland",
-                                            English to "Ratio between actual period of national insurance coverage in Norway and period of national insurance coverage in Norway and countries with social security agreement",
-                                        )
-                                    }
-                                    cell { includePhrase(BroekText(tellerProRata, nevnerProRata)) }
-                                }
+                                prorataBroekRad(tellerProRata, nevnerProRata)
                             }
                         }
                     }
@@ -636,26 +567,32 @@ data class OpplysningerBruktIBeregningTabellKap20(
     }
 }
 
+private fun TableScope<LangBokmalNynorskEnglish, Unit>.trygdetidEOSrad(
+    tellerTTEOS: Expression<Int>,
+    nevnerTTEOS: Expression<Int>
+) {
+    row {
+        cell {
+            text(
+                Bokmal to "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og andre EØS-land",
+                Nynorsk to "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og andre EØS-land",
+                English to "The ratio between national insurance coverage in Norway and total insurance coverage in all EEA countries",
+            )
+        }
+        cell { includePhrase(BroekText(tellerTTEOS, nevnerTTEOS)) }
+    }
+}
+
 data class OpplysningerBruktIBeregningTabellAP2025(
     val alderspensjonVedVirk: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.AlderspensjonVedVirk>,
     val beregningKap20VedVirk: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.BeregningKap20VedVirk>,
     val vilkarsVedtak: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.VilkaarsVedtak>,
     val trygdetidsdetaljerKap20VedVirk: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.TrygdetidsdetaljerKap20VedVirk>,
     val garantipensjonVedVirk: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.GarantipensjonVedVirk?>
-) : OutlinePhrase<LangBokmalNynorskEnglish>(){
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
-            table({
-                //vedleggBeregnTabellOverskrift_001
-                column(columnSpan = 4) {
-                    textExpr(
-                        Bokmal to "Opplysninger brukt i beregningen per ".expr() + alderspensjonVedVirk.beregningVirkDatoFom.format(),
-                        Nynorsk to "Opplysningar brukte i berekninga frå ".expr() + alderspensjonVedVirk.beregningVirkDatoFom.format(),
-                        English to "Information used to calculate as of ".expr() + alderspensjonVedVirk.beregningVirkDatoFom.format(),
-                    )
-                }
-                column(alignment = RIGHT) { }
-            }) {
+            table(opplysningerBruktIBeregningenHeader(alderspensjonVedVirk.beregningVirkDatoFom)) {
                 row {
                     //tabellBeholdningForForsteUttak_002
                     cell {
@@ -682,16 +619,7 @@ data class OpplysningerBruktIBeregningTabellAP2025(
 
                 //vedleggTabellKap20Trygdetid_001
                 showIf(not(vilkarsVedtak.avslattGarantipensjon)) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Trygdetid",
-                                Nynorsk to "Trygdetid",
-                                English to "National insurance coverage",
-                            )
-                        }
-                        cell { AntallAarText(trygdetidsdetaljerKap20VedVirk.anvendtTT) }
-                    }
+                    trygdetidAarRad(trygdetidsdetaljerKap20VedVirk.anvendtTT)
                 }
 
                 //vedleggTabellKap20SatsGarP_001
@@ -738,6 +666,7 @@ data class OpplysningerBruktIBeregningTabellAP2025(
     }
 
 }
+
 fun opplysningerBruktIBeregningenHeader(beregningVirkDatoFom: Expression<LocalDate>): TableHeaderScope<LangBokmalNynorskEnglish, Unit>.() -> Unit =
     {
         //vedleggBeregnTabellOverskrift_001
@@ -750,3 +679,46 @@ fun opplysningerBruktIBeregningenHeader(beregningVirkDatoFom: Expression<LocalDa
         }
         column(alignment = RIGHT) { }
     }
+
+
+private fun TableScope<LangBokmalNynorskEnglish, Unit>.flyktningstatusFraUDIrad() {
+    row {
+        cell {
+            text(
+                Bokmal to "Du er innvilget flyktningstatus fra UDI",
+                Nynorsk to "Du er innvilga flyktningstatus frå UDI",
+                English to "You are registered with the status of a refugee granted by the UDI",
+            )
+        }
+        cell { includePhrase(Ja) }
+    }
+}
+
+private fun TableScope<LangBokmalNynorskEnglish, Unit>.trygdetidAarRad(trygdetid: Expression<Int>) {
+    row {
+        cell {
+            text(
+                Bokmal to "Trygdetid",
+                Nynorsk to "Trygdetid",
+                English to "National insurance coverage",
+            )
+        }
+        cell { includePhrase(AntallAarText(trygdetid)) }
+    }
+}
+
+private fun TableScope<LangBokmalNynorskEnglish, Unit>.prorataBroekRad(
+    teller: Expression<Int>,
+    nevner: Expression<Int>
+) {
+    row {
+        cell {
+            text(
+                Bokmal to "Forholdet mellom faktisk trygdetid i Norge og trygdetid i Norge og avtaleland",
+                Nynorsk to "Forholdet mellom faktisk trygdetid i Noreg og trygdetid i Noreg og avtaleland",
+                English to "Ratio between actual period of national insurance coverage in Norway and period of national insurance coverage in Norway and countries with social security agreement",
+            )
+        }
+        cell { includePhrase(BroekText(teller, nevner)) }
+    }
+}
