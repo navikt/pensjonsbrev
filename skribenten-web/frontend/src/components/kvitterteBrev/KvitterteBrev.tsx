@@ -1,7 +1,11 @@
 import { css } from "@emotion/react";
 import { Accordion } from "@navikt/ds-react";
+import { useMutation } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 
-import type { BrevInfo } from "~/types/brev";
+import { sendBrev } from "~/api/sak-api-endpoints";
+import { useSendtBrev } from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevContext";
+import type { BestillBrevResponse, BrevInfo } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 
 import AccordionContent from "./KvittertBrevContent";
@@ -53,16 +57,38 @@ const AccordionItem = (props: {
   context: "sendBrev" | "attestering";
   journalpostId: Nullable<number>;
 }) => {
+  const { setBrevResult } = useSendtBrev();
+  const key = String(props.brevFørHandling.id);
+
+  const sendBrevMutation = useMutation<BestillBrevResponse, AxiosError>({
+    mutationFn: () => sendBrev(props.saksId, props.brevFørHandling.id),
+    onSuccess: (response) => {
+      setBrevResult(key, {
+        status: "success",
+        brevInfo: props.brevFørHandling,
+        response,
+      });
+    },
+    onError: (error) => {
+      setBrevResult(key, {
+        status: "error",
+        brevInfo: props.brevFørHandling,
+        error,
+      });
+    },
+  });
+
   return (
     <Accordion.Item>
       <AccordionHeader apiStatus={props.apiStatus} brevInfo={props.brevFørHandling} context={props.context} />
       <AccordionContent
         apiStatus={props.apiStatus}
-        brevId={props.brevFørHandling.id}
         context={props.context}
         distribusjonstype={props.brevFørHandling.distribusjonstype}
+        isPending={sendBrevMutation.isPending}
         journalpostId={props.journalpostId}
         mottaker={props.brevFørHandling.mottaker}
+        onRetry={() => sendBrevMutation.mutate()}
         saksId={props.saksId}
       />
     </Accordion.Item>

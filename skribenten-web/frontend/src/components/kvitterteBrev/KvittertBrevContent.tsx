@@ -1,10 +1,10 @@
 import { Accordion, BodyShort, Button, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { hentPdfForJournalpostQuery, sendBrev } from "~/api/sak-api-endpoints";
+import { hentPdfForJournalpostQuery } from "~/api/sak-api-endpoints";
 import { getNavnQuery } from "~/api/skribenten-api-endpoints";
 import Oppsummeringspar from "~/routes/saksnummer_/$saksId/kvittering/-components/Oppsummeringspar";
-import type { BestillBrevResponse, Mottaker } from "~/types/brev";
+import type { Mottaker } from "~/types/brev";
 import { Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { humanizeName } from "~/utils/stringUtils";
@@ -15,23 +15,19 @@ import { distribusjonstypeTilText } from "./KvitterteBrevUtils";
 
 const AccordionContent = (props: {
   saksId: string;
-  brevId: number;
+  context: "sendBrev" | "attestering";
   apiStatus: "error" | "success";
+  isPending: boolean;
+  onRetry: () => void;
   distribusjonstype: Distribusjonstype;
   journalpostId: Nullable<number>;
   mottaker: Nullable<Mottaker>;
 }) => {
-  const sendBrevMutation = useMutation<BestillBrevResponse, Error>({
-    mutationFn: () => sendBrev(props.saksId, props.brevId),
-  });
-
   switch (props.apiStatus) {
-    case "error": {
-      return (
-        <AccordionContentError isPending={sendBrevMutation.isPending} onPrøvIgjenClick={sendBrevMutation.mutate} />
-      );
-    }
-    case "success": {
+    case "error":
+      return <AccordionContentError isPending={props.isPending} onPrøvIgjenClick={props.onRetry} />;
+
+    case "success":
       return (
         <AccordionContentSuccess
           distribusjonstype={props.distribusjonstype}
@@ -40,9 +36,9 @@ const AccordionContent = (props: {
           saksId={props.saksId}
         />
       );
-    }
   }
 };
+
 export default AccordionContent;
 
 const AccordionContentSuccess = (props: {
