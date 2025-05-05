@@ -1,13 +1,13 @@
 import type { AxiosError } from "axios";
 import { createContext, useContext, useState } from "react";
 
-import type { BestillBrevResponse, BrevInfo } from "~/types/brev";
+import type { BestillBrevError, BestillBrevResponse, BrevInfo } from "~/types/brev";
 
 export interface BrevResult {
   status: "success" | "error";
   brevInfo: BrevInfo;
   response?: BestillBrevResponse;
-  error?: AxiosError;
+  error?: AxiosError | BestillBrevError;
 }
 
 export type SendteBrevMap = Record<string, BrevResult>;

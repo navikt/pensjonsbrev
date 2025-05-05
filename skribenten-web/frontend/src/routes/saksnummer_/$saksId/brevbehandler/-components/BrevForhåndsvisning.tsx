@@ -30,7 +30,6 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
           brevId={properties.brevId}
           pdf={pdf}
           sakId={properties.saksId}
-          utenSlettKnapp
           viewerHeight={"var(--main-page-content-height)"}
         />
       ),

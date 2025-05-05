@@ -67,7 +67,7 @@ const hentTagOgTittelForHeader = (args: {
           case Distribusjonstype.LOKALPRINT: {
             const tag = (
               <Tag size="small" variant={"info"}>
-                Lokalprint - arkivert
+                Lokalprint - sendt til joark
               </Tag>
             );
             return { tag, tittel: args.brevInfo.brevtittel };

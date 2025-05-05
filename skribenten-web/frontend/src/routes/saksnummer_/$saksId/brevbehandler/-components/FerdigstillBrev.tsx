@@ -23,7 +23,7 @@ import { z } from "zod";
 
 import { hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { BestillBrevResponse } from "~/types/brev";
+import type { BestillBrevError, BestillBrevResponse } from "~/types/brev";
 import { type BrevInfo } from "~/types/brev";
 import { erBrevArkivert, erBrevKlar, erBrevKlarTilAttestering } from "~/utils/brevUtils";
 import { queryFold } from "~/utils/tanstackUtils";
@@ -153,25 +153,52 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   const onSendValgteBrev = async (values: { valgteBrevSomSkalSendes: number[] }) => {
     const toSend = values.valgteBrevSomSkalSendes.map((id) => brevSending.find((brev) => brev.id === id)!);
 
+    // await Promise.all(
+    //   toSend.map((brevInfo) =>
+    //     sendBrevMutation
+    //       .mutateAsync(brevInfo.id)
+    //       .then((response) => {
+    //         setBrevResult(String(brevInfo.id), {
+    //           status: "success",
+    //           brevInfo,
+    //           response,
+    //         });
+    //       })
+    //       .catch((error) => {
+    //         setBrevResult(String(brevInfo.id), {
+    //           status: "error",
+    //           brevInfo,
+    //           error,
+    //         });
+    //       }),
+    //   ),
+    // );
+
     await Promise.all(
-      toSend.map((brevInfo) =>
-        sendBrevMutation
-          .mutateAsync(brevInfo.id)
-          .then((response) => {
+      toSend.map(async (brevInfo) => {
+        try {
+          const response = await sendBrevMutation.mutateAsync(brevInfo.id);
+          if (response.error) {
+            setBrevResult(String(brevInfo.id), {
+              status: "error",
+              brevInfo,
+              error: response.error,
+            });
+          } else {
             setBrevResult(String(brevInfo.id), {
               status: "success",
               brevInfo,
               response,
             });
-          })
-          .catch((error) => {
-            setBrevResult(String(brevInfo.id), {
-              status: "error",
-              brevInfo,
-              error,
-            });
-          }),
-      ),
+          }
+        } catch (error) {
+          setBrevResult(String(brevInfo.id), {
+            status: "error",
+            brevInfo,
+            error: error as AxiosError | BestillBrevError,
+          });
+        }
+      }),
     );
 
     const sentIds = new Set<number>(
@@ -229,7 +256,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
                         name="valgteBrevSomSkalSendes"
                         render={({ field, fieldState }) => (
                           <CheckboxGroup
-                            data-cy="ferdigstillbrev-valgte-brev-til-sending"
+                            data-cy="ferdigstillbrev-valgte-brev"
                             error={fieldState.error?.message}
                             hideLegend
                             legend="Velg brev som skal sendes"
