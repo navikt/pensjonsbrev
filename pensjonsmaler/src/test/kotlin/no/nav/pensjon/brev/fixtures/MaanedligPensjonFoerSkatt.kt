@@ -8,7 +8,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 
-private fun createAlderspensjonPerManed() = MaanedligPensjonFoerSkattDto.AlderspensjonPerManed(
+internal fun createAlderspensjonPerManed() = MaanedligPensjonFoerSkattDto.AlderspensjonPerManed(
     virkDatoFom = LocalDate.of(2020, 1, 1),
     virkDatoTom = LocalDate.of(2020, 1, 2),
     grunnpensjon = Kroner(12),
