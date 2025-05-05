@@ -20,12 +20,21 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.kravAarsak
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.regelverkType
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.saerskiltSatsErBrukt
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.totalPensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.ufoereKombinertMedAlder
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.aarligKontrollEPS
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.endringIEPSInntekt
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.forsoergerEPSOver60AarBruktIBeregningen
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.ingenBetydning
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.institusjonsopphold
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.pensjonenOeker
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.pensjonenRedusert
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.samboer15
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.*
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -34,7 +43,9 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import java.time.LocalDate
 
 // MF_000102 med krav.arsak = ALDERSOVERGANG
 // Brevet gjelder for AP2016/AP2025 brukere når garantitillegg er innvilget etter kapittel 20 i ny alderspensjon
@@ -58,10 +69,11 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
         )
     ) {
         val kravVirkDatoFom = pesysData.kravVirkDatoFom
-        val garantitillegg = pesysData.garantitillegg_safe
+        val garantitillegg = pesysData.garantitillegg_safe.ifNull(then = Kroner(0))
         val regelverkType = pesysData.regelverkType
         val kravArsakType = pesysData.kravAarsak
-        val brukersSivilstand = pesysData.brukersSivilstand // trenger bestemtform og ubestemtform
+        val brukersSivilstand =
+            pesysData.brukersSivilstand // trenger bestemtform og ubestemtform, bestemtform storbokstav
         val harInntektOver2G = pesysData.epsVedVirk.harInntektOver2G
         val mottarPensjon = pesysData.epsVedVirk.mottarPensjon
         val borSammenMedBruker = pesysData.epsVedVirk.borSammenMedBruker
@@ -72,6 +84,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
         val minstenivaaIndividuellInnvilget = pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget
         val minstenivaaPensjonistParInnvilget = pesysData.alderspensjonVedVirk.minstenivaaPensjonsistParInnvilget
         val saertilleggInnvilget = pesysData.alderspensjonVedVirk.saertilleggInnvilget
+        val saerskiltSatsErBrukt = pesysData.saerskiltSatsErBrukt
+        val uforeKombinertMedAlder = pesysData.ufoereKombinertMedAlder
+        val totalPensjon = pesysData.totalPensjon
 
 
 
@@ -286,109 +301,132 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     )
                 }
             }
-            showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG) and grunnpensjon.greaterThan(0)) {
-                showIf(
-                    not(saertilleggInnvilget) and (minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget) and not(
-                        pensjonstilleggInnvilget
-                    )
-                ) {
-                    showIf(not(garantipensjonInnvilget)) {
-                        // omregningGP_MNT
-                        paragraph {
-                            Bokmal to "Derfor har vi beregnet grunnpensjonen og minstenivåtillegget ditt på nytt."
-                            Nynorsk to "Derfor har vi berekna grunnpensjonen og minstenivåtillegget ditt på nytt."
-                            English to "We have therefore recalculated your basic pension and minimum pension supplement."
-                        }
-                    }.orShow {
-                        // omregningGP_GarantiPen_MNT
-                        paragraph {
-                            Bokmal to "Derfor har vi beregnet grunnpensjonen og garantipensjonen din på nytt."
-                            Nynorsk to "Derfor har vi berekna grunnpensjonen og garantipensjonen din på nytt."
-                            English to "We have therefore recalculated your basic pension and guaranteed pension."
-                        }
-                    }
-                }
-                showIf(not(saertilleggInnvilget) and (minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget) and pensjonstilleggInnvilget) {
-                    // omregningGP_PenT_MNT
-                    showIf(not(garantipensjonInnvilget)) {
-                        paragraph {
-                            Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget og minstenivåtillegget ditt på nytt."
-                            Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget og minstenivåtillegget ditt på nytt."
-                            English to "We have therefore recalculated your basic pension, supplementary pension and minimum pension supplement."
-                        }
-                    }.orShow {
-                        // omregningGP_PenT_Garanti_MNT
-                        paragraph {
-                            Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt."
-                            Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt."
-                            English to "We have therefore recalculated your basic pension, supplementary pension, guaranteed pension and minimum pension supplement."
-                        }
-                    }
-
-                }
-                showIf(
-                    not(saertilleggInnvilget) and not(minstenivaaPensjonistParInnvilget) and not(
-                        minstenivaaIndividuellInnvilget
-                    ) and not(pensjonstilleggInnvilget)
-                ) {
-                    showIf(not(garantipensjonInnvilget)) {
-                        // omregningGP
-                        paragraph {
-                            Bokmal to "Derfor har vi beregnet grunnpensjonen din på nytt."
-                            Nynorsk to "Derfor har vi berekna grunnpensjonen din på nytt."
-                            English to "Derfor har vi berekna grunnpensjonen din på nytt."
-                        }
-                    }.orShow {
-                        // omregningGP_GarantiPen
-                        paragraph {
-                            Bokmal to "Derfor har vi beregnet grunnpensjonen og garantipensjonen din på nytt."
-                            Nynorsk to "Derfor har vi berekna grunnpensjonen og garantipensjonen din på nytt."
-                            English to "We have therefore recalculated your basic pension and guaranteed pension."
-                        }
-                    }
-
-                }
-                showIf(
-                    not(saertilleggInnvilget) and not(minstenivaaPensjonistParInnvilget) and not(
-                        minstenivaaIndividuellInnvilget
-                    ) and pensjonstilleggInnvilget
-                ) {
-                    showIf(not(garantipensjonInnvilget)) {
-                        // omregningGP_PenT
-                        paragraph {
-                            Bokmal to "Derfor har vi beregnet grunnpensjonen og pensjonstillegget ditt på nytt."
-                            Nynorsk to "Derfor har vi berekna grunnpensjonen og pensjonstillegget ditt på nytt."
-                            English to "We have therefore recalculated your basic pension and pension supplement."
-                        }
-                    }.orShow {
-                        // omregningGP_PenT_GarantiPen_MNT
-                        paragraph {
-                            Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt."
-                            Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt."
-                            English to "We have therefore recalculated your basic pension, supplementary pension, guaranteed pension and minimum pension supplement."
-                        }
-                    }
-                }
-            }
             showIf(
-                kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG) and regelverkType.isOneOf(
-                    AlderspensjonRegelverkType.AP1967
-                ) and saertilleggInnvilget
+                kravArsakType.isNotAnyOf(
+                    KravArsakType.ALDERSOVERGANG,
+                    KravArsakType.VURDER_SERSKILT_SATS
+                ) and regelverkType.isNotAnyOf(AlderspensjonRegelverkType.AP2025)
             ) {
-                showIf(not(minstenivaaPensjonistParInnvilget) and not(minstenivaaPensjonistParInnvilget)) {
-                    // omregningGPST
-                    paragraph {
-                        Bokmal to "Derfor har vi beregnet grunnpensjonen og særtillegget ditt på nytt."
-                        Nynorsk to "Derfor har vi berekna grunnpensjonen og særtillegget ditt på nytt."
-                        English to "We have therefore recalculated your basic pension and the special supplement."
+                showIf(grunnpensjon.greaterThan(0)) {
+                    showIf(
+                        not(saertilleggInnvilget) and (minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget) and not(
+                            pensjonstilleggInnvilget
+                        )
+                    ) {
+                        showIf(not(garantipensjonInnvilget)) {
+                            // omregningGP_MNT
+                            paragraph {
+                                text(
+                                    Bokmal to "Derfor har vi beregnet grunnpensjonen og minstenivåtillegget ditt på nytt.",
+                                    Nynorsk to "Derfor har vi berekna grunnpensjonen og minstenivåtillegget ditt på nytt.",
+                                    English to "We have therefore recalculated your basic pension and minimum pension supplement."
+                                )
+                            }
+                        }.orShow {
+                            // omregningGP_GarantiPen_MNT
+                            paragraph {
+                                text(
+                                    Bokmal to "Derfor har vi beregnet grunnpensjonen og garantipensjonen din på nytt.",
+                                    Nynorsk to "Derfor har vi berekna grunnpensjonen og garantipensjonen din på nytt.",
+                                    English to "We have therefore recalculated your basic pension and guaranteed pension."
+                                )
+                            }
+                        }
                     }
-                }.orShowIf((minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget)) {
+                    showIf(not(saertilleggInnvilget) and (minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget) and pensjonstilleggInnvilget) {
+                        // omregningGP_PenT_MNT
+                        showIf(not(garantipensjonInnvilget)) {
+                            paragraph {
+                                text(
+                                    Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget og minstenivåtillegget ditt på nytt.",
+                                    Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget og minstenivåtillegget ditt på nytt.",
+                                    English to "We have therefore recalculated your basic pension, supplementary pension and minimum pension supplement."
+                                )
+                            }
+                        }.orShow {
+                            // omregningGP_PenT_Garanti_MNT
+                            paragraph {
+                                text(
+                                    Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt.",
+                                    Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt.",
+                                    English to "We have therefore recalculated your basic pension, supplementary pension, guaranteed pension and minimum pension supplement."
+                                )
+                            }
+                        }
+                    }
+                    showIf(
+                        not(saertilleggInnvilget) and not(minstenivaaPensjonistParInnvilget) and not(
+                            minstenivaaIndividuellInnvilget
+                        ) and not(pensjonstilleggInnvilget)
+                    ) {
+                        showIf(not(garantipensjonInnvilget)) {
+                            // omregningGP
+                            paragraph {
+                                text(
+                                    Bokmal to "Derfor har vi beregnet grunnpensjonen din på nytt.",
+                                    Nynorsk to "Derfor har vi berekna grunnpensjonen din på nytt.",
+                                    English to "Derfor har vi berekna grunnpensjonen din på nytt."
+                                )
+                            }
+                        }.orShow {
+                            // omregningGP_GarantiPen
+                            paragraph {
+                                text(
+                                    Bokmal to "Derfor har vi beregnet grunnpensjonen og garantipensjonen din på nytt.",
+                                    Nynorsk to "Derfor har vi berekna grunnpensjonen og garantipensjonen din på nytt.",
+                                    English to "We have therefore recalculated your basic pension and guaranteed pension."
+                                )
+                            }
+                        }
+                    }
+                    showIf(
+                        not(saertilleggInnvilget) and not(minstenivaaPensjonistParInnvilget) and not(
+                            minstenivaaIndividuellInnvilget
+                        ) and pensjonstilleggInnvilget
+                    ) {
+                        showIf(not(garantipensjonInnvilget)) {
+                            // omregningGP_PenT
+                            paragraph {
+                                text(
+                                    Bokmal to "Derfor har vi beregnet grunnpensjonen og pensjonstillegget ditt på nytt.",
+                                    Nynorsk to "Derfor har vi berekna grunnpensjonen og pensjonstillegget ditt på nytt.",
+                                    English to "We have therefore recalculated your basic pension and pension supplement."
+                                )
+                            }
+                        }.orShow {
+                            // omregningGP_PenT_GarantiPen_MNT
+                            paragraph {
+                                text(
+                                    Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt.",
+                                    Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt.",
+                                    English to "We have therefore recalculated your basic pension, supplementary pension, guaranteed pension and minimum pension supplement."
+                                )
+                            }
+                        }
+                    }
                 }
-                // omregningGPSTMNT
-                paragraph {
-                    Bokmal to "Derfor har vi beregnet grunnpensjonen, særtillegget og minstenivåtillegget ditt på nytt."
-                    Nynorsk to "Derfor har vi berekna grunnpensjonen, særtillegget og minstenivåtillegget ditt på nytt."
-                    English to "We have therefore recalculated your basic pension, the special supplement and the minimum level supplement."
+                showIf(
+                    regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967) and saertilleggInnvilget
+                ) {
+                    showIf(not(minstenivaaPensjonistParInnvilget) and not(minstenivaaPensjonistParInnvilget)) {
+                        // omregningGPST
+                        paragraph {
+                            text(
+                                Bokmal to "Derfor har vi beregnet grunnpensjonen og særtillegget ditt på nytt.",
+                                Nynorsk to "Derfor har vi berekna grunnpensjonen og særtillegget ditt på nytt.",
+                                English to "We have therefore recalculated your basic pension and the special supplement."
+                            )
+                        }
+                    }.orShowIf((minstenivaaPensjonistParInnvilget or minstenivaaIndividuellInnvilget)) {
+                        // omregningGPSTMNT
+                        paragraph {
+                            text(
+                                Bokmal to "Derfor har vi beregnet grunnpensjonen, særtillegget og minstenivåtillegget ditt på nytt.",
+                                Nynorsk to "Derfor har vi berekna grunnpensjonen, særtillegget og minstenivåtillegget ditt på nytt.",
+                                English to "We have therefore recalculated your basic pension, the special supplement and the minimum level supplement."
+                            )
+                        }
+                    }
                 }
             }
             showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2025)) {
@@ -400,50 +438,363 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         English to "We have therefore recalculated your guaranteed pension."
                     )
                 }
-                }
-
-
-            paragraph {
-                text(
-                    Bokmal to "Garantitillegget skal sikre at du får en alderspensjon som tilsvarer den pensjonen du hadde tjent opp før pensjonsreformen i 2010.",
-                    Nynorsk to "Garantitillegget skal sikre at du får ein alderspensjon ved 67 år som svarer til den pensjonen du hadde tent opp før pensjonsreforma i 2010.",
-                    English to "The guarantee supplement for accumulated pension capital rights is to ensure that you receive a retirement pension at age 67 that corresponds " +
-                            "to the pension you had earned before the pension reform in 2010.",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Tillegget utbetales sammen med alderspensjonen og kan tidligst utbetales fra måneden etter du fyller 67 år.",
-                    Nynorsk to "Tillegget blir betalt ut samen med alderspensjonen og kan tidlegast betalast ut frå månaden etter du fyller 67 år.",
-                    English to "The supplement will be paid in addition to your retirement pension and can at the earliest be paid from the month after you turn 67 years of age.",
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "Garantitillegget utgjør ".expr() + garantitillegg.format() + " kroner per måned før skatt fra ".expr() + kravVirkDatoFom.format(),
-                    Nynorsk to "Garantitillegget utgjer ".expr() + garantitillegg.format() + " kroner per månad før skatt frå ".expr() + kravVirkDatoFom.format(),
-                    English to "Your monthly guarantee supplement for accumulated pension capital rights will be NOK "
-                        .expr() + garantitillegg.format() + " before tax from ".expr() + kravVirkDatoFom.format()
-                )
             }
 
-            includePhrase(Utbetalingsinformasjon)
-
-            showIf(regelverkType.isNotAnyOf(AlderspensjonRegelverkType.AP2025)) {
+            showIf(kravArsakType.isOneOf(KravArsakType.ALDERSOVERGANG)) {
+                // innvilgetGarantitilleggKap20
                 paragraph {
                     text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven § 20-20.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova § 20-20.",
-                        English to "This decision was made pursuant to the provisions of § 20-20 of the National Insurance Act."
+                        Bokmal to "Garantitillegget skal sikre at du får en alderspensjon som tilsvarer den pensjonen du hadde tjent opp før pensjonsreformen i 2010.",
+                        Nynorsk to
+                                "Garantitillegget skal sikre at du får ein alderspensjon ved 67 år som svarer til den pensjonen du hadde tent opp før pensjonsreforma i 2010.",
+                        English to
+                                "The guarantee supplement for accumulated pension capital rights is to ensure that you receive a retirement pension at age 67 that corresponds to the pension you had earned before the pension reform in 2010."
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Tillegget utbetales sammen med alderspensjonen og kan tidligst utbetales fra måneden etter du fyller 67 år.",
+                        Nynorsk to "Tillegget blir betalt ut samen med alderspensjonen og kan tidlegast betalast ut frå månaden etter du fyller 67 år.",
+                        English to "The supplement will be paid in addition to your retirement pension and can at the earliest be paid from the month after you turn 67 years of age."
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Garantitillegget utgjør ".expr() + garantitillegg.format() + " kroner per måned før skatt fra ".expr() + kravVirkDatoFom.format() + ".",
+                        Nynorsk to "Garantitillegget utgjer ".expr() + garantitillegg.format() + " kroner per månad før skatt frå ".expr() + kravVirkDatoFom.format() + ".",
+                        English to "Your monthly guarantee supplement for accumulated pension capital rights will be NOK ".expr() +
+                                garantitillegg.format() + " before tax from ".expr() + kravVirkDatoFom.format() + ".",
+                    )
+                }
+            }
+
+            showIf(saksbehandlerValg.forsoergerEPSOver60AarBruktIBeregningen.isOneOf(KravArsakType.VURDER_SERSKILT_SATS)) {
+                paragraph {
+                    textExpr(
+                        Bokmal to brukersSivilstand + " du forsørger har en inntekt lavere enn grunnbeløpet ".expr() + grunnpensjon.format() + " kroner.",
+                        Nynorsk to brukersSivilstand + " du forsørgjer har ei inntekt lågare enn grunnbeløpet ".expr() + grunnpensjon.format() + " kroner.",
+                        English to "Your ".expr() + brukersSivilstand + " you support has an income lower than the basic amount which is NOK ".expr() + grunnpensjon.format() + ".",
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "",
+                        Nynorsk to "",
+                        English to ""
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "",
+                        Nynorsk to "",
+                        English to ""
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "",
+                        Nynorsk to "",
+                        English to ""
+                    )
+                }
+            }
+
+            // omregningSaerskilSats_AP1967, _AP2011AP2016
+            showIf(saerskiltSatsErBrukt) {
+                paragraph {
+                    text(
+                        Bokmal to "Derfor har vi beregnet ",
+                        Nynorsk to "Derfor har vi berekna ",
+                        English to "We have therefore recalculated your "
+                    )
+                    showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {
+                        text(
+                            Bokmal to +ifElse(
+                                minstenivaaIndividuellInnvilget,
+                                ifTrue = "særtillegget og minstenivåtillegget",
+                                ifFalse = "særtillegget"
+                            ),
+                            Nynorsk to +ifElse(
+                                minstenivaaIndividuellInnvilget,
+                                ifTrue = "særtillegget og minstenivåtillegget",
+                                ifFalse = "særtillegget"
+                            ),
+                            English to +ifElse(
+                                minstenivaaIndividuellInnvilget,
+                                ifTrue = "special supplement and minimum pension supplement",
+                                ifFalse = "special supplement"
+                            ),
+                        )
+                    }.orShowIf(
+                        regelverkType.isOneOf(
+                            AlderspensjonRegelverkType.AP2011,
+                            AlderspensjonRegelverkType.AP2016
+                        )
+                    ) {
+                        text(
+                            Bokmal to +ifElse(
+                                minstenivaaIndividuellInnvilget,
+                                ifTrue = "pensjonstillegget og minstenivåtillegget",
+                                ifFalse = "pensjonstillegget"
+                            ),
+                            Nynorsk to +ifElse(
+                                minstenivaaIndividuellInnvilget,
+                                ifTrue = "pensjonstillegget og minstenivåtillegget",
+                                ifFalse = "pensjonstillegget"
+                            ),
+                            English to +ifElse(
+                                minstenivaaIndividuellInnvilget,
+                                ifTrue = "basic pension and minimum pension supplement",
+                                ifFalse = "basic pension"
+                            ),
+                        )
+                    }
+                    text(
+                        Bokmal to " ditt på nytt med særskilt sats.",
+                        Nynorsk to " ditt på nytt med særskilt sats.",
+                        English to " according to a special rate."
+                    )
+                }
+            }
+
+            paragraph {
+                val fritekst = fritekst("Opplysninger/forhold du vil informere bruker om i saken.")
+                textExpr(
+                    Bokmal to fritekst,
+                    Nynorsk to fritekst,
+                    English to fritekst,
+                )
+            }
+
+            showIf(
+                regelverkType.isOneOf(
+                    AlderspensjonRegelverkType.AP2011,
+                    AlderspensjonRegelverkType.AP2016
+                ) and saerskiltSatsErBrukt
+            ) {
+                showIf(saksbehandlerValg.ingenBetydning) {
+                    // ingenEndringBelop
+                    paragraph {
+                        text(
+                            Bokmal to "Dette får ingen betydning for utbetalingen din.",
+                            Nynorsk to "Dette får ingen følgjer for utbetalinga di.",
+                            English to "This does not affect the amount you will receive."
+                        )
+                    }
+
+                }
+                showIf(saksbehandlerValg.pensjonenOeker) {
+                    // nyBeregningAPØkning
+                    paragraph {
+                        text(
+                            Bokmal to "Dette fører til at pensjonen din øker.",
+                            Nynorsk to "Dette fører til at pensjonen din aukar.",
+                            English to "This leads to an increase in your retirement pension."
+                        )
+                    }
+                }
+                showIf(saksbehandlerValg.pensjonenRedusert) {
+                    // nyBeregningAPReduksjon
+                    paragraph {
+                        text(
+                            Bokmal to "Dette fører til at pensjonen din blir redusert.",
+                            Nynorsk to "Dette fører til at pensjonen din blir redusert.",
+                            English to "This leads to a reduction in your retirement pension."
+                        )
+                    }
+                }
+            }
+
+            showIf(kravArsakType.isOneOf(KravArsakType.VURDER_SERSKILT_SATS)) {
+                showIf(saksbehandlerValg.aarligKontrollEPS) {
+                    // SaerSatsInfoAarligKontrollEps
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Fram til ".expr() + brukersSivilstand + " din fyller 67 år, har vi en årlig kontroll om ".expr() +
+                                    brukersSivilstand + " din har rett til full alderpensjon. Du får nytt vedtak hvis dette fører til at alderspensjonen din blir omregnet.",
+                            Nynorsk to "Fram til ".expr() + brukersSivilstand + " din fyller 67 år, har vi ein årleg kontroll av ".expr() +
+                                    brukersSivilstand + " si rett til full alderpensjon. Du får nytt vedtak hvis dette fører til at alderspensjonen din blir omrekna.",
+                            English to "Until your ".expr() + brukersSivilstand + "  turns 67 years of age, we have an annual control of their rights to a full retirement pension. " +
+                                    "You will receive a new decision if this results in your retirement pension being recalculated."
+                        )
+                    }
+                }
+            }
+
+            showIf(uforeKombinertMedAlder) {
+                // innvilgelseAPogUTInnledn
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom.format() + "." +
+                                " Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
+                        Nynorsk to "Du får ".expr() + totalPensjon.format() + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom.format() + "." +
+                                " Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
+                        English to "You will receive NOK ".expr() + totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom.format() + "." +
+                                " You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit."
                     )
                 }
             }.orShow {
                 paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-9, 20-17 femte avsnitt og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-9, 20-17 femte avsnitt og 22-12.",
-                        English to "This decision was made pursuant to the provisions of §§ 20-9, 20-17 fifth paragraph, and 22-12 of the National Insurance Act."
+                    // innvilgelseAPInnledn
+                    textExpr(
+                        Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom.format() + " i alderspensjon fra folketrygden.",
+                        Nynorsk to "Du får ".expr() + totalPensjon.format() + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom.format() + " i alderspensjon frå folketrygda.",
+                        English to "You will receive NOK ".expr() + totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom.format() + " as retirement pension from the National Insurance Scheme."
                     )
+                }
+            }
+
+            includePhrase(Utbetalingsinformasjon)
+
+            paragraph {
+                val fritekst = fritekst("Opplysninger/forhold du vil informere bruker om i saken.")
+                textExpr(
+                    Bokmal to fritekst,
+                    Nynorsk to fritekst,
+                    English to fritekst,
+                )
+            }
+
+            showIf(
+                kravArsakType.isNotAnyOf(
+                    KravArsakType.ALDERSOVERGANG,
+                    KravArsakType.VURDER_SERSKILT_SATS
+                ) and regelverkType.isNotAnyOf(AlderspensjonRegelverkType.AP2025)
+            ) {
+                // hjemmelSivilstandAlleRegelverkstyper
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
+                        English to "This decision was made pursuant to the provisions of §§ ",
+                    )
+                    showIf(brukersSivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
+                        text(
+                            Bokmal to "1-5, ",
+                            Nynorsk to "1-5, ",
+                            English to "1-5, "
+                        )
+                    }
+                    text(
+                        Bokmal to "3-2",
+                        Nynorsk to "3-2",
+                        English to "3-2",
+                    )
+                    showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967) and saertilleggInnvilget) {
+                        text(
+                            Bokmal to ", 3-3, ",
+                            Nynorsk to ", 3-3, ",
+                            English to ", 3-3, ",
+                        )
+                    }
+                    showIf(pensjonstilleggInnvilget or minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget) {
+                        text(
+                            Bokmal to ", 19-8",
+                            Nynorsk to ", 19-8",
+                            English to ", 19-8",
+                        )
+                    }
+                    showIf(pensjonstilleggInnvilget) {
+                        text(
+                            Bokmal to ", 19-9",
+                            Nynorsk to ", 19-9",
+                            English to ", 19-9",
+                        )
+                    }
+                    showIf(garantipensjonInnvilget) {
+                        text(
+                            Bokmal to ", 20-9",
+                            Nynorsk to ", 20-9",
+                            English to ", 20-9",
+                        )
+                    }
+                    text(
+                        Bokmal to " og 22-12.",
+                        Nynorsk to " og 22-12.",
+                        English to " and 22-12.",
+                    )
+                }
+
+                showIf(
+                    kravArsakType.isOneOf(KravArsakType.ALDERSOVERGANG) and regelverkType.isNotAnyOf(
+                        AlderspensjonRegelverkType.AP2025
+                    )
+                ) {
+                    // hjemmelGarantitillegg§20-20
+                    paragraph {
+                        text(
+                            Bokmal to "Vedtaket er gjort etter folketrygdloven § 20-20.",
+                            Nynorsk to "Vedtaket er gjort etter folketrygdlova § 20-20.",
+                            English to "This decision was made pursuant to the provisions of § 20-20 of the National Insurance Act.",
+                        )
+                    }
+                }
+
+                showIf(
+                    kravArsakType.isOneOf(KravArsakType.VURDER_SERSKILT_SATS) and saerskiltSatsErBrukt
+                ) {
+                    paragraph {
+                        text(
+                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
+                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
+                            English to "This decision was made pursuant to the provisions of §§ ",
+                        )
+                        showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {
+                            showIf(brukersSivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
+                                text(
+                                    Bokmal to "1-5, ",
+                                    Nynorsk to "1-5, ",
+                                    English to "1-5, "
+                                )
+                            }
+                            text(
+                                Bokmal to "3-2",
+                                Nynorsk to "3-2",
+                                English to "3-2"
+                            )
+                            showIf(saertilleggInnvilget) {
+                                text(
+                                    Bokmal to ", 3-3",
+                                    Nynorsk to ", 3-3",
+                                    English to ", 3-3"
+                                )
+                            }
+                            text(
+                                Bokmal to ", 19-8 og 22-12.",
+                                Nynorsk to ", 19-8 og 22-12.",
+                                English to ", 19-8 and 22-12 of the National Insurance Act."
+                            )
+                        }.orShowIf(
+                            regelverkType.isOneOf(
+                                AlderspensjonRegelverkType.AP2011,
+                                AlderspensjonRegelverkType.AP2016
+                            )
+                        ) {
+                            showIf(brukersSivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
+                                text(
+                                    Bokmal to "1-5, ",
+                                    Nynorsk to "1-5, ",
+                                    English to "1-5, "
+                                )
+                            }
+                        }.orShow {
+                            text(
+                                Bokmal to "19-8, 19-9 og 22-12.",
+                                Nynorsk to "19-8, 19-9 og 22-12.",
+                                English to "19-8, 19-9 and 22-12 of the National Insurance Act."
+                            )
+                        }
+                    }
+                }
+
+                showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2025)) {
+                    paragraph {
+                        text(
+                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-9, 20-17 femte avsnitt og 22-12.",
+                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-9, 20-17 femte avsnitt og 22-12.",
+                            English to "This decision was made pursuant to the provisions of §§ 20-9, 20-17 fifth paragraph, and 22-12 of the National Insurance Act."
+                        )
+                    }
                 }
             }
         }
