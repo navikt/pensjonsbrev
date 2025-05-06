@@ -6,7 +6,6 @@ import no.nav.pensjon.brevbaker.api.model.BrukerImpl
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.FoedselsnummerImpl
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
-import no.nav.pensjon.brevbaker.api.model.NavEnhetImpl
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlereImpl
 import no.nav.pensjon.brevbaker.api.model.TelefonnummerImpl
@@ -21,7 +20,7 @@ object FellesFactory {
     ): Felles = Felles(
         dokumentDato = dokumentDato,
         saksnummer = saksnummer,
-        avsenderEnhet = NavEnhetImpl(
+        avsenderEnhet = NAVEnhet(
             nettside = "nav.no",
             navn = "Nav Familie- og pensjonsytelser Porsgrunn",
             telefonnummer = TelefonnummerImpl("55553334"),

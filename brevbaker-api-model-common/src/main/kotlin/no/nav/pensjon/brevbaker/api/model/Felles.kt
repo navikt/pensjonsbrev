@@ -49,15 +49,8 @@ interface Bruker {
     val etternavn: String
 }
 
-@InterneDataklasser
-data class NavEnhetImpl(
-    override val nettside: String,
-    override val navn: String,
-    override val telefonnummer: Telefonnummer,
-) : NAVEnhet
-
-interface NAVEnhet {
-    val nettside: String
-    val navn: String
+class NAVEnhet internal constructor(
+    val nettside: String,
+    val navn: String,
     val telefonnummer: Telefonnummer
-}
+)

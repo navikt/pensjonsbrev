@@ -921,25 +921,10 @@ public final class no/nav/pensjon/brevbaker/api/model/Months : no/nav/pensjon/br
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class no/nav/pensjon/brevbaker/api/model/NAVEnhet {
-	public abstract fun getNavn ()Ljava/lang/String;
-	public abstract fun getNettside ()Ljava/lang/String;
-	public abstract fun getTelefonnummer ()Lno/nav/pensjon/brevbaker/api/model/Telefonnummer;
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/NavEnhetImpl : no/nav/pensjon/brevbaker/api/model/NAVEnhet {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/Telefonnummer;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/Telefonnummer;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/Telefonnummer;)Lno/nav/pensjon/brevbaker/api/model/NavEnhetImpl;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/NavEnhetImpl;Ljava/lang/String;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/Telefonnummer;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/NavEnhetImpl;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getNavn ()Ljava/lang/String;
-	public fun getNettside ()Ljava/lang/String;
-	public fun getTelefonnummer ()Lno/nav/pensjon/brevbaker/api/model/Telefonnummer;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
+public final class no/nav/pensjon/brevbaker/api/model/NAVEnhet {
+	public final fun getNavn ()Ljava/lang/String;
+	public final fun getNettside ()Ljava/lang/String;
+	public final fun getTelefonnummer ()Lno/nav/pensjon/brevbaker/api/model/Telefonnummer;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/brevbaker/api/model/IntValue {
