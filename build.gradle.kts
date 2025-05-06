@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version libs.versions.kotlinVersion apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.ktor) apply false
+    alias(libs.plugins.binary.compatibility.validator) apply false
 }
 
 allprojects {

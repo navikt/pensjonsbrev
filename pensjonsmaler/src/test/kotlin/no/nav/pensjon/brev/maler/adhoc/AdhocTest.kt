@@ -148,4 +148,14 @@ class AdhocTest {
             Bokmal, Nynorsk, English
         )
     }
+
+
+    @Test
+    fun `testAdhocAlderspensjonGjtVedtakBrev pdf`() {
+        testAdhocPdf(
+            AdhocAlderspensjonGjtOpprydding.template,
+            pdfName = AdhocAlderspensjonGjtOpprydding.kode.name,
+            Bokmal, Nynorsk, English
+        )
+    }
 }

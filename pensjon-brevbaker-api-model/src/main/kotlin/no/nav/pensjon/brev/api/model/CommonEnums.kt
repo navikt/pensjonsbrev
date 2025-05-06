@@ -151,20 +151,11 @@ enum class KonteringType {
     VT
 }
 
-enum class KravArsakType{
-    ALDERSOVERGANG,
-    ENDRET_OPPTJENING,
-    EPS_ENDRET_INNTEKT,
-    EPS_NY_YTELSE,
-    EPS_NY_YTELSE_UT,
-    EPS_OPPH_YTELSE_UT,
-    INNVANDRET,
-    INSTOPPHOLD,
-    SIVILSTANDSENDRING,
-    TILSTOT_ENDR_YTELSE,
-    TILSTOT_OPPHORT,
-    TILSTOT_DOD,
-    UTTAKSGRAD,
-    UTVANDRET,
-    VURDER_SERSKILT_SATS
+enum class KravInitiertAv {
+    BRUKER,
+    NAV,
+    VERGE,
+    SOSIALKONTOR,
+    KONV,
+    ADVOKAT
 }

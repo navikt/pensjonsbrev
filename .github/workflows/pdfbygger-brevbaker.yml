@@ -186,7 +186,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: ${{ (needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main') && github.event_name != 'workflow_dispatch' }}
         with:
-          node-version: '20'
+          node-version: '22'
       - run: npm install --save-dev @percy/cli
         if: ${{ (needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main') && github.event_name != 'workflow_dispatch' }}
       - name: Publish visual-tests to percy
