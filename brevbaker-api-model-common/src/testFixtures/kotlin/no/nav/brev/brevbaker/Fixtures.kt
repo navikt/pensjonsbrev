@@ -33,9 +33,9 @@ object Fixtures {
 
     val felles = lagFelles(
         SignerendeSaksbehandlereImpl(
-        saksbehandler = "Ole Saksbehandler",
-        attesterendeSaksbehandler = "Per Attesterende"
-    )
+            saksbehandler = "Ole Saksbehandler",
+            attesterendeSaksbehandler = "Per Attesterende"
+        )
     )
 
     val fellesAuto = lagFelles(null)
