@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlereImpl
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -209,8 +209,8 @@ class LatexVisualITest {
     @Test
     fun `brev med saksbehandler underskrift`() {
         render(
-            felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(
+            felles = Fixtures.felles.medSignerendeSaksbehandlere(
+                signerendeSaksbehandlere = SignerendeSaksbehandlere.from(
                     saksbehandler = "Ole Saksbehandler"
                 )
             )
@@ -222,8 +222,8 @@ class LatexVisualITest {
     @Test
     fun `brev med saksbehandler og attestant underskrift`() {
         render(
-            felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(
+            felles = Fixtures.felles.medSignerendeSaksbehandlere(
+                signerendeSaksbehandlere = SignerendeSaksbehandlere.from(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Saksbehandler"
                 )
@@ -237,7 +237,7 @@ class LatexVisualITest {
     fun `test av ulike `() {
         render(
             felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(
+                signerendeSaksbehandlere = SignerendeSaksbehandlere.from(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Saksbehandler"
                 )
@@ -251,7 +251,7 @@ class LatexVisualITest {
     fun `vedtaksbrev med saksbehandler underskrift`() {
         render(
             felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(
+                signerendeSaksbehandlere = SignerendeSaksbehandlere.from(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Attesterende"
                 )

@@ -915,23 +915,15 @@ public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/b
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class no/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere {
-	public abstract fun getAttesterendeSaksbehandler ()Ljava/lang/String;
-	public abstract fun getSaksbehandler ()Ljava/lang/String;
+public final class no/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere {
+	public static final field Companion Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere$Companion;
+	public final fun getAttesterendeSaksbehandler ()Ljava/lang/String;
+	public final fun getSaksbehandler ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlereImpl : no/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlereImpl;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlereImpl;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlereImpl;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getAttesterendeSaksbehandler ()Ljava/lang/String;
-	public fun getSaksbehandler ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
+public final class no/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere$Companion {
+	public final fun from (Ljava/lang/String;Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;
+	public static synthetic fun from$default (Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere$Companion;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Telefonnummer {

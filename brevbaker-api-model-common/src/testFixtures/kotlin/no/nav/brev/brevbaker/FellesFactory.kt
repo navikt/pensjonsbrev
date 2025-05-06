@@ -1,16 +1,13 @@
 package no.nav.brev.brevbaker
 
-import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlereImpl
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
 
-@OptIn(InterneDataklasser::class)
 object FellesFactory {
     fun lagFelles(
         dokumentDato: LocalDate = LocalDate.of(2020, 1, 1),
@@ -35,7 +32,7 @@ object FellesFactory {
     )
 
     val felles = lagFelles(
-        signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(
+        signerendeSaksbehandlere = SignerendeSaksbehandlere(
             saksbehandler = "Ole Saksbehandler",
             attesterendeSaksbehandler = "Per Attesterende"
         )

@@ -2,8 +2,6 @@
 
 package no.nav.pensjon.brevbaker.api.model
 
-import no.nav.brev.InterneDataklasser
-
 interface IntValue {
     val value: Int
 }

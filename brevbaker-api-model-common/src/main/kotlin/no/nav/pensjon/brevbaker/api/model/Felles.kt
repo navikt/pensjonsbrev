@@ -1,6 +1,5 @@
 package no.nav.pensjon.brevbaker.api.model
 
-import no.nav.brev.InterneDataklasser
 import java.time.LocalDate
 
 class Felles internal constructor(
@@ -12,7 +11,7 @@ class Felles internal constructor(
     val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null
 ) {
 
-    fun medSignerendeSaksbehandlere(signerendeSaksbehandlere: SignerendeSaksbehandlere): Felles =
+    fun medSignerendeSaksbehandlere(signerendeSaksbehandlere: SignerendeSaksbehandlere?): Felles =
         Felles(
             dokumentDato = this.dokumentDato,
             saksnummer = this.saksnummer,
@@ -23,15 +22,17 @@ class Felles internal constructor(
         )
 }
 
-@InterneDataklasser
-data class SignerendeSaksbehandlereImpl(
-    override val saksbehandler: String,
-    override val attesterendeSaksbehandler: String? = null
-) : SignerendeSaksbehandlere
-
-interface SignerendeSaksbehandlere {
-    val saksbehandler: String
+class SignerendeSaksbehandlere internal constructor(
+    val saksbehandler: String,
     val attesterendeSaksbehandler: String?
+) {
+    companion object {
+        fun from(saksbehandler: String, attesterendeSaksbehandler: String? = null): SignerendeSaksbehandlere =
+            SignerendeSaksbehandlere(
+                saksbehandler = saksbehandler,
+                attesterendeSaksbehandler = attesterendeSaksbehandler
+            )
+    }
 }
 
 class Bruker internal constructor(
