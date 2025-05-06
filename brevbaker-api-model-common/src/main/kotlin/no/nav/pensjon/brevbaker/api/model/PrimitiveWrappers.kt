@@ -14,11 +14,12 @@ class Telefonnummer internal constructor(val value: String) {
     }
 }
 
-@InterneDataklasser
-data class FoedselsnummerImpl(override val value: String) : Foedselsnummer
-
-interface Foedselsnummer {
+class Foedselsnummer internal constructor(
     val value: String
+) {
+    companion object {
+        fun from(string: String): Foedselsnummer = Foedselsnummer(string)
+    }
 }
 
 data class Kroner(override val value: Int) : IntValue

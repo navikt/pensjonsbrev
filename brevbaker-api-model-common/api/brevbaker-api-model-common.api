@@ -272,19 +272,13 @@ public final class no/nav/pensjon/brevbaker/api/model/Felles {
 	public final fun medSignerendeSaksbehandlere (Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;)Lno/nav/pensjon/brevbaker/api/model/Felles;
 }
 
-public abstract interface class no/nav/pensjon/brevbaker/api/model/Foedselsnummer {
-	public abstract fun getValue ()Ljava/lang/String;
+public final class no/nav/pensjon/brevbaker/api/model/Foedselsnummer {
+	public static final field Companion Lno/nav/pensjon/brevbaker/api/model/Foedselsnummer$Companion;
+	public final fun getValue ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/FoedselsnummerImpl : no/nav/pensjon/brevbaker/api/model/Foedselsnummer {
-	public fun <init> (Ljava/lang/String;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/FoedselsnummerImpl;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/FoedselsnummerImpl;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/FoedselsnummerImpl;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getValue ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
+public final class no/nav/pensjon/brevbaker/api/model/Foedselsnummer$Companion {
+	public final fun from (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/Foedselsnummer;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/IntValue {

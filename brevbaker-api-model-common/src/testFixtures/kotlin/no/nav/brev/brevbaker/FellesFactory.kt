@@ -3,7 +3,7 @@ package no.nav.brev.brevbaker
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.FoedselsnummerImpl
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlereImpl
@@ -28,7 +28,7 @@ object FellesFactory {
             fornavn = "Test",
             mellomnavn = "\"bruker\"",
             etternavn = "Testerson",
-            foedselsnummer = FoedselsnummerImpl("01019878910"),
+            foedselsnummer = Foedselsnummer("01019878910"),
         ),
         signerendeSaksbehandlere = signerendeSaksbehandlere,
         vergeNavn = null,
