@@ -57,9 +57,9 @@ data class InnholdLavOpptjening(
         }.orShowIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2016)) {
             paragraph {
                 text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-11, 19-15, 20-15 og 20-19.",
-                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-11, 19-15, 20-15 og 20-19.",
-                    English to "This decision was made pursuant to the provisions of §§ 19-11, 19-15, 20-15 og 20-19 of the National Insurance Act."
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-11, 19-15, 20-15, 20-19 og 22-13.",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-11, 19-15, 20-15, 20-19 og 22-13.",
+                    English to "This decision was made pursuant to the provisions of §§ 19-11, 19-15, 20-15, 20-19 and 22-13 of the National Insurance Act."
                 )
             }
         }
@@ -114,7 +114,8 @@ data class InnholdLavOpptjening(
                                     " that you may have in countries with which Norway has a social security agreement."
                         )
                     }
-
+                }
+                item {
                     showIf(uttaksgrad.notEqualTo(100)) {
                         textExpr(
                             Bokmal to " Vi beregner den delen du ønsker å ta ut nå og hva du ville ha fått hvis du tar ut resten av pensjonen ved ".expr() + normertPensjonsalder.aarOgMaanederFormattert() + ".",
@@ -123,15 +124,16 @@ data class InnholdLavOpptjening(
                                     " if you take the rest of the pension at the age of " + normertPensjonsalder.aarOgMaanederFormattert() + "."
                         )
                     }
-                }
-                item {
                     textExpr(
                         Bokmal to "Dersom du hadde tatt ut ".expr() + uttaksgrad.format() + " prosent alderspensjon fra "
-                                + virkFom.format() + ", ville du fått ".expr() + totalPensjon.format() + " kroner årlig i pensjon. ",
+                                + virkFom.format() + ", ville du fått ".expr() + totalPensjon.format() + " kroner årlig i full pensjon når du blir ".expr() +
+                                normertPensjonsalder.aarOgMaanederFormattert() + ". ",
                         Nynorsk to "Dersom du hadde tatt ut ".expr() + uttaksgrad.format() + " prosent alderspensjon frå "
-                                + virkFom.format() + ", ville du fått ".expr() + totalPensjon.format() + " kroner årleg i pensjon. ",
+                                + virkFom.format() + ", ville du fått ".expr() + totalPensjon.format() + " kroner årleg i full pensjon når du blir ".expr() +
+                                normertPensjonsalder.aarOgMaanederFormattert() + ". ",
                         English to "If you draw a retirement pension of ".expr() + uttaksgrad.format() + " percent from "
-                                + virkFom.format() + ", your retirement pension is calculated to be NOK " + totalPensjon.format() + " a year. ",
+                                + virkFom.format() + ", your retirement pension is calculated to be NOK " + totalPensjon.format() + " a year at age ".expr() +
+                                normertPensjonsalder.aarOgMaanederFormattert() + ". ",
                     )
                     showIf(afpBruktIBeregning) {
                         text(

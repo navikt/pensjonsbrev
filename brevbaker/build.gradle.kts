@@ -7,6 +7,7 @@ plugins {
     id("java-library")
     id("java-test-fixtures")
     alias(libs.plugins.ksp) apply true
+    alias(libs.plugins.binary.compatibility.validator) apply true
 }
 
 group = "no.nav.brev.brevbaker"

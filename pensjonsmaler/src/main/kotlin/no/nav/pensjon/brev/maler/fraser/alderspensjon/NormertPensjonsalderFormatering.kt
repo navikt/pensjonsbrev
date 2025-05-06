@@ -14,7 +14,8 @@ object NormertPensjonsalderFormatter : LocalizedFormatter<NormertPensjonsalder>(
         val aar = first.aar
         val maaneder = first.maaneder
         return when (second) {
-            Bokmal, Nynorsk -> "$aar år" + if (maaneder > 0) " og $maaneder måneder" else ""
+            Bokmal -> "$aar år" + if (maaneder > 0) " og $maaneder måneder" else ""
+            Nynorsk -> "$aar år" + if (maaneder > 0) " og $maaneder månadar" else ""
             English -> "$aar years" + if (maaneder > 0) " and $maaneder months" else ""
         }
     }
