@@ -34,7 +34,7 @@ object Constants {
     const val MEDLEMSKAP_URL = "$NAV_URL/medlemskap"
     const val NAV_KONTAKTSENTER_AAPNINGSTID = "09:00-15:00"
     const val NAV_KONTAKTSENTER_TELEFON = "55 55 33 33"
-    val navKontaktsenterPensjon = Telefonnummer.from("55553334")
+    val navKontaktsenterPensjon = Telefonnummer("55553334")
     val NAV_KONTAKTSENTER_TELEFON_PENSJON = navKontaktsenterPensjon.format()
     const val OMSORGSOPPTJENING_URL = "$NAV_URL/omsorgsopptjening"
     const val OMSTILLINGSSTOENAD_URL = "$NAV_URL/omstillingsstonad"

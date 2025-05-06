@@ -210,7 +210,7 @@ class LatexVisualITest {
     fun `brev med saksbehandler underskrift`() {
         render(
             felles = Fixtures.felles.medSignerendeSaksbehandlere(
-                signerendeSaksbehandlere = SignerendeSaksbehandlere.from(
+                signerendeSaksbehandlere = SignerendeSaksbehandlere(
                     saksbehandler = "Ole Saksbehandler"
                 )
             )
@@ -223,7 +223,7 @@ class LatexVisualITest {
     fun `brev med saksbehandler og attestant underskrift`() {
         render(
             felles = Fixtures.felles.medSignerendeSaksbehandlere(
-                signerendeSaksbehandlere = SignerendeSaksbehandlere.from(
+                signerendeSaksbehandlere = SignerendeSaksbehandlere(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Saksbehandler"
                 )
@@ -237,7 +237,7 @@ class LatexVisualITest {
     fun `test av ulike `() {
         render(
             felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlere.from(
+                signerendeSaksbehandlere = SignerendeSaksbehandlere(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Saksbehandler"
                 )
@@ -251,7 +251,7 @@ class LatexVisualITest {
     fun `vedtaksbrev med saksbehandler underskrift`() {
         render(
             felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlere.from(
+                signerendeSaksbehandlere = SignerendeSaksbehandlere(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Attesterende"
                 )

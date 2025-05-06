@@ -2,7 +2,7 @@ package no.nav.pensjon.brevbaker.api.model
 
 import java.time.LocalDate
 
-class Felles internal constructor(
+class Felles(
     val dokumentDato: LocalDate,
     val saksnummer: String,
     val avsenderEnhet: NavEnhet,
@@ -10,7 +10,6 @@ class Felles internal constructor(
     val vergeNavn: String?,
     val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null
 ) {
-
     fun medSignerendeSaksbehandlere(signerendeSaksbehandlere: SignerendeSaksbehandlere?): Felles =
         Felles(
             dokumentDato = this.dokumentDato,
@@ -22,27 +21,19 @@ class Felles internal constructor(
         )
 }
 
-class SignerendeSaksbehandlere internal constructor(
+class SignerendeSaksbehandlere(
     val saksbehandler: String,
-    val attesterendeSaksbehandler: String?
-) {
-    companion object {
-        fun from(saksbehandler: String, attesterendeSaksbehandler: String? = null): SignerendeSaksbehandlere =
-            SignerendeSaksbehandlere(
-                saksbehandler = saksbehandler,
-                attesterendeSaksbehandler = attesterendeSaksbehandler
-            )
-    }
-}
+    val attesterendeSaksbehandler: String? = null
+)
 
-class Bruker internal constructor(
+class Bruker(
     val foedselsnummer: Foedselsnummer,
     val fornavn: String,
     val mellomnavn: String?,
     val etternavn: String
 )
 
-class NavEnhet internal constructor(
+class NavEnhet(
     val nettside: String,
     val navn: String,
     val telefonnummer: Telefonnummer

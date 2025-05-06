@@ -6,19 +6,9 @@ interface IntValue {
     val value: Int
 }
 
-class Telefonnummer internal constructor(val value: String) {
-    companion object {
-        fun from(string: String): Telefonnummer = Telefonnummer(string)
-    }
-}
+class Telefonnummer(val value: String)
 
-class Foedselsnummer internal constructor(
-    val value: String
-) {
-    companion object {
-        fun from(string: String): Foedselsnummer = Foedselsnummer(string)
-    }
-}
+class Foedselsnummer(val value: String)
 
 data class Kroner(override val value: Int) : IntValue
 

@@ -26,7 +26,7 @@ class CollectionTest {
 
     @Test
     fun `map transforms collection items`() {
-        val fnrs = listOf(1, 5, 6, 2, 4, 7).map { Foedselsnummer.from(it.toString()) }
+        val fnrs = listOf(1, 5, 6, 2, 4, 7).map { Foedselsnummer(it.toString()) }
 
         assertEquals(fnrs.map { it.value }, fnrs.expr().map(UnaryOperation.Select(selector)).eval(emptyScope))
         assertEquals(fnrs.map { it.value }, fnrs.expr().map(selector).eval(emptyScope))
@@ -34,7 +34,7 @@ class CollectionTest {
 
     @Test
     fun `format transforms collection to a string`() {
-        val fnrs = listOf(1, 5, 6, 2, 4, 7).map { Foedselsnummer.from(it.toString()) }
+        val fnrs = listOf(1, 5, 6, 2, 4, 7).map { Foedselsnummer(it.toString()) }
 
         listOf(Language.Bokmal, Language.Nynorsk, Language.English).forEach {
             val scope = ExpressionScope(Unit, FellesFactory.felles, it)
