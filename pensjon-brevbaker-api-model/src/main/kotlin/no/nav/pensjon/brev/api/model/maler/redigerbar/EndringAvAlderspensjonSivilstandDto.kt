@@ -68,6 +68,7 @@ data class EndringAvAlderspensjonSivilstandDto(
         val minstenivaaIndividuellInnvilget: Boolean,
         val minstenivaaPensjonsistParInnvilget: Boolean,
         val pensjonstilleggInnvilget: Boolean,
+        val uttaksgrad: Int,
         val saertilleggInnvilget: Boolean,
     )
 }

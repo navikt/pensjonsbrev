@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaPensjonsistParInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.saertilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.borSammenMedBruker
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.harInntektOver2G
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.EpsVedVirkSelectors.mottarOmstillingsstonad
@@ -75,7 +76,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
-        val kravVirkDatoFom = pesysData.kravVirkDatoFom
+        val kravVirkDatoFom = pesysData.kravVirkDatoFom.format()
         val garantitillegg = pesysData.garantitillegg_safe.ifNull(then = Kroner(0))
         val regelverkType = pesysData.regelverkType
         val kravArsakType = pesysData.kravAarsak
@@ -85,7 +86,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
         val mottarPensjon = pesysData.epsVedVirk.mottarPensjon
         val borSammenMedBruker = pesysData.epsVedVirk.borSammenMedBruker
         val mottarOmstillingsstonad = pesysData.epsVedVirk.mottarOmstillingsstonad
-        val grunnpensjon = pesysData.grunnpensjon
+        val grunnpensjon = pesysData.grunnpensjon.format()
         val garantipensjonInnvilget = pesysData.alderspensjonVedVirk.garantipensjonInnvilget
         val pensjonstilleggInnvilget = pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget
         val minstenivaaIndividuellInnvilget = pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget
@@ -93,23 +94,24 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
         val saertilleggInnvilget = pesysData.alderspensjonVedVirk.saertilleggInnvilget
         val saerskiltSatsErBrukt = pesysData.saerskiltSatsErBrukt
         val uforeKombinertMedAlder = pesysData.ufoereKombinertMedAlder
-        val totalPensjon = pesysData.totalPensjon
+        val totalPensjon = pesysData.totalPensjon.format()
         val vedtakEtterbetaling = pesysData.vedtakEtterbetaling
+        val uttaksgrad = pesysData.alderspensjonVedVirk.uttaksgrad.ifNull(then = (0))
 
 
 
         title {
             showIf(kravArsakType.isNotAnyOf(KravArsakType.ALDERSOVERGANG)) {
                 textExpr(
-                    Bokmal to "Vi har beregnet alderspensjon din på nytt fra ".expr() + kravVirkDatoFom.format(),
-                    Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + kravVirkDatoFom.format(),
-                    English to "We have recalculated your retirement pension from ".expr() + kravVirkDatoFom.format()
+                    Bokmal to "Vi har beregnet alderspensjon din på nytt fra ".expr() + kravVirkDatoFom,
+                    Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + kravVirkDatoFom,
+                    English to "We have recalculated your retirement pension from ".expr() + kravVirkDatoFom
                 )
             }.orShow {
                 textExpr(
-                    Bokmal to "Du har fått innvilget garantitillegg fra ".expr() + kravVirkDatoFom.format(),
-                    Nynorsk to "Du har fått innvilga garantitillegg frå ".expr() + kravVirkDatoFom.format(),
-                    English to "You have been granted a guarantee supplement for accumulated pension capital rights from ".expr() + kravVirkDatoFom.format()
+                    Bokmal to "Du har fått innvilget garantitillegg fra ".expr() + kravVirkDatoFom,
+                    Nynorsk to "Du har fått innvilga garantitillegg frå ".expr() + kravVirkDatoFom,
+                    English to "You have been granted a guarantee supplement for accumulated pension capital rights from ".expr() + kravVirkDatoFom
                 )
             }
         }
@@ -480,9 +482,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
             showIf(saksbehandlerValg.forsoergerEPSOver60AarBruktIBeregningen.isOneOf(KravArsakType.VURDER_SERSKILT_SATS)) {
                 paragraph {
                     textExpr(
-                        Bokmal to brukersSivilstand + " du forsørger har en inntekt lavere enn grunnbeløpet ".expr() + grunnpensjon.format() + " kroner.",
-                        Nynorsk to brukersSivilstand + " du forsørgjer har ei inntekt lågare enn grunnbeløpet ".expr() + grunnpensjon.format() + " kroner.",
-                        English to "Your ".expr() + brukersSivilstand + " you support has an income lower than the basic amount which is NOK ".expr() + grunnpensjon.format() + ".",
+                        Bokmal to brukersSivilstand + " du forsørger har en inntekt lavere enn grunnbeløpet ".expr() + grunnpensjon + " kroner.",
+                        Nynorsk to brukersSivilstand + " du forsørgjer har ei inntekt lågare enn grunnbeløpet ".expr() + grunnpensjon + " kroner.",
+                        English to "Your ".expr() + brukersSivilstand + " you support has an income lower than the basic amount which is NOK ".expr() + grunnpensjon + ".",
                     )
                 }
                 paragraph {
@@ -634,11 +636,11 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 // innvilgelseAPogUTInnledn
                 paragraph {
                     textExpr(
-                        Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom.format() + "." +
+                        Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom + "." +
                                 " Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
-                        Nynorsk to "Du får ".expr() + totalPensjon.format() + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom.format() + "." +
+                        Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom + "." +
                                 " Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
-                        English to "You will receive NOK ".expr() + totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom.format() + "." +
+                        English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from ".expr() + kravVirkDatoFom + "." +
                                 " You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit."
                     )
                 }
@@ -646,9 +648,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 paragraph {
                     // innvilgelseAPInnledn
                     textExpr(
-                        Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom.format() + " i alderspensjon fra folketrygden.",
-                        Nynorsk to "Du får ".expr() + totalPensjon.format() + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom.format() + " i alderspensjon frå folketrygda.",
-                        English to "You will receive NOK ".expr() + totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom.format() + " as retirement pension from the National Insurance Scheme."
+                        Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom + " i alderspensjon fra folketrygden.",
+                        Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom + " i alderspensjon frå folketrygda.",
+                        English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from ".expr() + kravVirkDatoFom + " as retirement pension from the National Insurance Scheme."
                     )
                 }
             }
@@ -881,9 +883,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }
                 paragraph {
                     textExpr(
-                        Bokmal to "Du får etterbetalt pensjon fra ".expr() + kravVirkDatoFom.format() + ". Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. Vi kan trekke fra skatt og ytelser du har fått fra for eksempel Nav eller tjenestepensjonsordninger. Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $DITT_NAV.",
-                        Nynorsk to "Du får etterbetalt pensjon frå ".expr() + kravVirkDatoFom.format() + ". Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. Vi kan trekke frå skatt og ytingar du har fått frå for eksempel Nav eller tenestepensjonsordningar. Derfor kan etterbetalinga di bli forsinka. Tenestepensjonsordninga har ni veker frist på å krevje trekk i etterbetalinga. Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $DITT_NAV.",
-                        English to "You will receive retroactive pension payments from ".expr() + kravVirkDatoFom.format() + ". The retroactive payments will normally be made in the course of seven working days. We can make deductions for tax and benefits you have received, for example, from Nav or occupational pension schemes. Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. You can check if there are any deductions from the payment notice at $DITT_NAV.",
+                        Bokmal to "Du får etterbetalt pensjon fra ".expr() + kravVirkDatoFom + ". Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. Vi kan trekke fra skatt og ytelser du har fått fra for eksempel Nav eller tjenestepensjonsordninger. Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $DITT_NAV.",
+                        Nynorsk to "Du får etterbetalt pensjon frå ".expr() + kravVirkDatoFom + ". Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. Vi kan trekke frå skatt og ytingar du har fått frå for eksempel Nav eller tenestepensjonsordningar. Derfor kan etterbetalinga di bli forsinka. Tenestepensjonsordninga har ni veker frist på å krevje trekk i etterbetalinga. Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $DITT_NAV.",
+                        English to "You will receive retroactive pension payments from ".expr() + kravVirkDatoFom + ". The retroactive payments will normally be made in the course of seven working days. We can make deductions for tax and benefits you have received, for example, from Nav or occupational pension schemes. Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. You can check if there are any deductions from the payment notice at $DITT_NAV.",
                     )
                 }
                 paragraph {
@@ -908,9 +910,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     }
                     paragraph {
                         textExpr(
-                            Bokmal to "Du får etterbetalt pensjon fra ".expr() + kravVirkDatoFom.format() + ". Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. Vi kan trekke fra skatt og ytelser du har fått fra for eksempel Nav eller tjenestepensjonsordninger. Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $DITT_NAV.",
-                            Nynorsk to "Du får etterbetalt pensjon frå ".expr() + kravVirkDatoFom.format() + ". Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. Vi kan trekke frå skatt og ytingar du har fått frå for eksempel Nav eller tenestepensjonsordningar. Derfor kan etterbetalinga di bli forsinka. Tenestepensjonsordninga har ni veker frist på å krevje trekk i etterbetalinga. Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $DITT_NAV.",
-                            English to "You will receive retroactive pension payments from ".expr() + kravVirkDatoFom.format() + ". The retroactive payments will normally be made in the course of seven working days. We can make deductions for tax and benefits you have received, for example, from Nav or occupational pension schemes. Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. You can check if there are any deductions from the payment notice at $DITT_NAV.",
+                            Bokmal to "Du får etterbetalt pensjon fra ".expr() + kravVirkDatoFom + ". Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. Vi kan trekke fra skatt og ytelser du har fått fra for eksempel Nav eller tjenestepensjonsordninger. Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $DITT_NAV.",
+                            Nynorsk to "Du får etterbetalt pensjon frå ".expr() + kravVirkDatoFom + ". Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. Vi kan trekke frå skatt og ytingar du har fått frå for eksempel Nav eller tenestepensjonsordningar. Derfor kan etterbetalinga di bli forsinka. Tenestepensjonsordninga har ni veker frist på å krevje trekk i etterbetalinga. Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $DITT_NAV.",
+                            English to "You will receive retroactive pension payments from ".expr() + kravVirkDatoFom + ". The retroactive payments will normally be made in the course of seven working days. We can make deductions for tax and benefits you have received, for example, from Nav or occupational pension schemes. Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. You can check if there are any deductions from the payment notice at $DITT_NAV.",
                         )
                     }
                     paragraph {
@@ -929,9 +931,50 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     KravArsakType.INSTOPPHOLD
                 )
             ) {
+                // arbInntektAPOverskrift
                 title1 {
-
-
+                    text(
+                        Bokmal to "Arbeidsinntekt og alderspensjon",
+                        Nynorsk to "Arbeidsinntekt og alderspensjon",
+                        English to "Earned income and retirement pension",
+                    )
+                }
+                // arbInntektAP
+                paragraph {
+                    text(
+                        Bokmal to "Du kan arbeide så mye du vil uten at alderspensjonen din blir redusert. Det kan føre til at pensjonen din øker.",
+                        Nynorsk to "Du kan arbeide så mykje du vil utan at alderspensjonen din blir redusert. Det kan føre til at pensjonen din aukar.",
+                        English to "You can work as much as you want without your retirement pension being reduced. This may lead to an increase in your pension.",
+                    )
+                }
+                // nyOpptjeningHelAP
+                showIf(uttaksgrad.equalTo(100)) {
+                    paragraph {
+                        text(
+                            Bokmal to "Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig.",
+                            Nynorsk to "Dersom du har 100 prosent alderspensjon, gjeld auken frå 1. januar året etter at skatteoppgjeret ditt er ferdig.",
+                            English to "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed.",
+                        )
+                    }
+                }.orShow {
+                    // nyOpptjeningGradertAP
+                    paragraph {
+                        text(
+                            Bokmal to "Hvis du har lavere enn 100 prosent alderspensjon, blir økningen lagt til hvis du søker om endret grad eller ny beregning av den graden du har nå.",
+                            Nynorsk to "Dersom du har lågare enn 100 prosent alderspensjon, blir auken lagd til dersom du søkjer om endra grad eller ny berekning av den graden du har no.",
+                            English to "If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated.",
+                        )
+                    }
+                }
+                // arbInntektAPogUT
+                showIf(uforeKombinertMedAlder) {
+                    paragraph {
+                        text(
+                            Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
+                            Nynorsk to "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd.",
+                            English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit.",
+                        )
+                    }
                 }
             }
         }
