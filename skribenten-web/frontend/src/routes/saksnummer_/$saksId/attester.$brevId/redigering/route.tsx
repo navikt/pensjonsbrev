@@ -211,6 +211,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                     type: "scalar",
                     nullable: false,
                     kind: "STRING",
+                    displayText: null,
                   }}
                   label="Underskrift"
                   onSubmit={() => attestantSignaturMutation.mutate(form.getValues("attestantSignatur"))}
