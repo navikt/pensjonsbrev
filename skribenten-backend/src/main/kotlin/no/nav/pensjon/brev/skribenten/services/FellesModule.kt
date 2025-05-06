@@ -2,8 +2,6 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.brev.InterneDataklasser
-import no.nav.pensjon.brevbaker.api.model.Bruker
-import no.nav.pensjon.brevbaker.api.model.BrukerImpl
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.FoedselsnummerImpl
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
@@ -18,7 +16,6 @@ object FellesModule : SimpleModule() {
     init {
         addInterfaceDeserializer<Telefonnummer, TelefonnummerImpl>()
         addInterfaceDeserializer<Foedselsnummer, FoedselsnummerImpl>()
-        addInterfaceDeserializer<Bruker, BrukerImpl>()
         addInterfaceDeserializer<SignerendeSaksbehandlere, SignerendeSaksbehandlereImpl>()
     }
 }

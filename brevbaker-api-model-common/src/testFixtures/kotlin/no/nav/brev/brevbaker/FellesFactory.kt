@@ -2,7 +2,6 @@ package no.nav.brev.brevbaker
 
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.Bruker
-import no.nav.pensjon.brevbaker.api.model.BrukerImpl
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.FoedselsnummerImpl
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
@@ -25,7 +24,7 @@ object FellesFactory {
             navn = "Nav Familie- og pensjonsytelser Porsgrunn",
             telefonnummer = TelefonnummerImpl("55553334"),
         ),
-        bruker = BrukerImpl(
+        bruker = Bruker(
             fornavn = "Test",
             mellomnavn = "\"bruker\"",
             etternavn = "Testerson",

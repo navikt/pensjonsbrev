@@ -34,20 +34,12 @@ interface SignerendeSaksbehandlere {
     val attesterendeSaksbehandler: String?
 }
 
-@InterneDataklasser
-data class BrukerImpl(
-    override val foedselsnummer: Foedselsnummer,
-    override val fornavn: String,
-    override val mellomnavn: String?,
-    override val etternavn: String,
-) : Bruker
-
-interface Bruker {
-    val foedselsnummer: Foedselsnummer
-    val fornavn: String
-    val mellomnavn: String?
+class Bruker internal constructor(
+    val foedselsnummer: Foedselsnummer,
+    val fornavn: String,
+    val mellomnavn: String?,
     val etternavn: String
-}
+)
 
 class NAVEnhet internal constructor(
     val nettside: String,

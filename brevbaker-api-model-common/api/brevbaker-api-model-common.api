@@ -233,28 +233,11 @@ public final class no/nav/pensjon/brevbaker/api/model/Broek {
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class no/nav/pensjon/brevbaker/api/model/Bruker {
-	public abstract fun getEtternavn ()Ljava/lang/String;
-	public abstract fun getFoedselsnummer ()Lno/nav/pensjon/brevbaker/api/model/Foedselsnummer;
-	public abstract fun getFornavn ()Ljava/lang/String;
-	public abstract fun getMellomnavn ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/BrukerImpl : no/nav/pensjon/brevbaker/api/model/Bruker {
-	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/Foedselsnummer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
-	public final fun component1 ()Lno/nav/pensjon/brevbaker/api/model/Foedselsnummer;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Ljava/lang/String;
-	public final fun component4 ()Ljava/lang/String;
-	public final fun copy (Lno/nav/pensjon/brevbaker/api/model/Foedselsnummer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/BrukerImpl;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/BrukerImpl;Lno/nav/pensjon/brevbaker/api/model/Foedselsnummer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/BrukerImpl;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getEtternavn ()Ljava/lang/String;
-	public fun getFoedselsnummer ()Lno/nav/pensjon/brevbaker/api/model/Foedselsnummer;
-	public fun getFornavn ()Ljava/lang/String;
-	public fun getMellomnavn ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
+public final class no/nav/pensjon/brevbaker/api/model/Bruker {
+	public final fun getEtternavn ()Ljava/lang/String;
+	public final fun getFoedselsnummer ()Lno/nav/pensjon/brevbaker/api/model/Foedselsnummer;
+	public final fun getFornavn ()Ljava/lang/String;
+	public final fun getMellomnavn ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Days : no/nav/pensjon/brevbaker/api/model/IntValue {
