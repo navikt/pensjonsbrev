@@ -31,6 +31,12 @@ data class EndringAvAlderspensjonSivilstandDto(
         val pensjonenRedusert: Boolean,
         @DisplayText("Informasjon om årlig kontroll til 67 år")
         val aarligKontrollEPS: Boolean,
+        @DisplayText("Hvis reduksjon tilbake i tid")
+        val feilutbetaling: Boolean,
+        @DisplayText("Hvis endring i pensjonen")
+        val endringPensjon: Boolean,
+        @DisplayText("Hvis etterbetaling")
+        val etterbetaling: Boolean,
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -45,6 +51,7 @@ data class EndringAvAlderspensjonSivilstandDto(
         val saerskiltSatsErBrukt: Boolean,  //saerskiltSatsVedVirk
         val totalPensjon: Kroner,  //beregnetPensjonPerManedVedVirk
         val ufoereKombinertMedAlder: Boolean,
+        val vedtakEtterbetaling: Boolean,  //v1.Vedtak
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto,
         val orienteringOmRettigheterAlderDto: OrienteringOmRettigheterAlderDto
     ) : BrevbakerBrevdata
