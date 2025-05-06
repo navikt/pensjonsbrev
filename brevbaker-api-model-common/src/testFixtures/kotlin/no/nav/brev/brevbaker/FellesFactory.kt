@@ -15,9 +15,13 @@ import java.time.LocalDate
 
 @OptIn(InterneDataklasser::class)
 object FellesFactory {
-    fun lagFelles(signerendeSaksbehandlere: SignerendeSaksbehandlere?): Felles = FellesImpl(
-        dokumentDato = LocalDate.of(2020, 1, 1),
-        saksnummer = "1337123",
+    fun lagFelles(
+        dokumentDato: LocalDate = LocalDate.of(2020, 1, 1),
+        saksnummer: String = "1337123",
+        signerendeSaksbehandlere: SignerendeSaksbehandlere? = null
+    ): Felles = FellesImpl(
+        dokumentDato = dokumentDato,
+        saksnummer = saksnummer,
         avsenderEnhet = NavEnhetImpl(
             nettside = "nav.no",
             navn = "Nav Familie- og pensjonsytelser Porsgrunn",
@@ -34,13 +38,13 @@ object FellesFactory {
     )
 
     val felles = lagFelles(
-        SignerendeSaksbehandlereImpl(
+        signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(
             saksbehandler = "Ole Saksbehandler",
             attesterendeSaksbehandler = "Per Attesterende"
         )
     )
 
-    val fellesAuto = lagFelles(null)
+    val fellesAuto = lagFelles(signerendeSaksbehandlere = null)
 
 
     fun copy(

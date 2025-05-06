@@ -114,4 +114,6 @@ dependencies {
     testImplementation(libs.assertJ)
     testImplementation(libs.testcontainers.postgresql)
 
+    testImplementation(testFixtures(project(":brevbaker-api-model-common")))
+
 }
