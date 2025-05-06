@@ -1,10 +1,12 @@
 package no.nav.brev.brevbaker
 
 import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.BrukerImpl
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.FellesImpl
 import no.nav.pensjon.brevbaker.api.model.FoedselsnummerImpl
+import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.NavEnhetImpl
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlereImpl
@@ -40,4 +42,20 @@ object FellesFactory {
 
     val fellesAuto = lagFelles(null)
 
+
+    fun copy(
+        dokumentDato: LocalDate,
+        saksnummer: String,
+        avsenderEnhet: NAVEnhet,
+        bruker: Bruker,
+        vergeNavn: String?,
+        signerendeSaksbehandlere: SignerendeSaksbehandlere?,
+    ): Felles = FellesImpl(
+        dokumentDato = dokumentDato,
+        saksnummer = saksnummer,
+        avsenderEnhet = avsenderEnhet,
+        bruker = bruker,
+        vergeNavn = vergeNavn,
+        signerendeSaksbehandlere = signerendeSaksbehandlere,
+    )
 }
