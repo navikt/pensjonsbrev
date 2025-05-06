@@ -32,8 +32,8 @@ import io.ktor.util.logging.Logger
 import io.micrometer.core.instrument.Tag
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.PDFRequest
+import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
-import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
 import no.nav.pensjon.brev.pdfbygger.getPropertyOrNull
 import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
@@ -45,15 +45,18 @@ fun Application.restModule(
     latexCompileService: LatexCompileService,
     prometheusMeterRegistry: PrometheusMeterRegistry
 ) {
-    val parallelism = getPropertyOrNull("pdfBygger.latex.latexParallelism")?.toInt() ?: Runtime.getRuntime().availableProcessors()
+    val parallelism =
+        getPropertyOrNull("pdfBygger.latex.latexParallelism")?.toInt() ?: Runtime.getRuntime().availableProcessors()
     val blockingLatexService = BlockingLatexService(
-        queueWaitTimeout = getPropertyOrNull("pdfBygger.latex.compileQueueWaitTimeout")?.let { Duration.Companion.parse(it) }
-            ?: 4.seconds,
+        queueWaitTimeout = getPropertyOrNull("pdfBygger.latex.compileQueueWaitTimeout")?.let {
+            Duration.Companion.parse(it)
+        }?: 4.seconds,
         latexParallelism = parallelism,
         latexCompileService = latexCompileService,
     )
 
-    val activityCounter = ActiveCounter(prometheusMeterRegistry, "pensjonsbrev_pdf_compile_active", listOf(Tag.of("hpa", "value")))
+    val activityCounter =
+        ActiveCounter(prometheusMeterRegistry, "pensjonsbrev_pdf_compile_active", listOf(Tag.of("hpa", "value")))
 
     log.info("Target parallelism : $parallelism")
 
@@ -120,7 +123,8 @@ fun Application.restModule(
         get("/isReady") {
             val currentActivity = activityCounter.currentCount()
             if (currentActivity > parallelism) {
-                val msg = "Application not ready: pdf compilation activity of $currentActivity above target of $parallelism"
+                val msg =
+                    "Application not ready: pdf compilation activity of $currentActivity above target of $parallelism"
                 call.application.log.info(msg)
                 call.respondText(msg, ContentType.Text.Plain, HttpStatusCode.ServiceUnavailable)
             } else {
@@ -135,7 +139,7 @@ private suspend fun RoutingContext.handleResult(
     logger: Logger,
 ) {
     when (result) {
-        is PDFCompilationResponse.Bytes -> call.respond(result)
+        is PDFCompilationResponse.Success -> call.respond(result.pdfCompilationOutput)
         is PDFCompilationResponse.Failure.Client -> {
             logger.info("Client error: ${result.reason}")
             if (result.output?.isNotBlank() == true) {

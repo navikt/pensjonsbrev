@@ -4,11 +4,12 @@ import io.ktor.server.config.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Semaphore
+import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequestAsync
+import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brev.pdfbygger.getProperty
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
-import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
 import no.nav.pensjon.brev.pdfbygger.pdfByggerObjectMapper
 import org.apache.kafka.clients.consumer.*
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -40,8 +41,8 @@ class PdfRequestConsumer(
     private val consumerConfig = createKafkaConsumerConfig(kafkaConfig, parallelism)
     private val producerConfig = createKafkaProducerConfig(kafkaConfig)
     private val retryProducers = Producers<PDFRequestAsync>(producerConfig)
-    private val successProducers = Producers<ByteArray>(producerConfig)
-    private val retrySuccessProducers = Producers<ByteArray>(producerConfig)
+    private val successProducers = Producers<PDFCompilationOutput>(producerConfig)
+    private val retrySuccessProducers = Producers<PDFCompilationOutput>(producerConfig)
 
     private var shuttingDown = false
     private var isHealthy = true
@@ -140,7 +141,7 @@ class PdfRequestConsumer(
             .forEach {
                 if (it.pdf != null) {
                     val producer = retrySuccessProducers.getProducer(renderTopic, it.consumedPartiton)
-                    sendSingleSynchronous(it, it.renderRequest.replyTopic, it.pdf.bytes, producer, consumer.groupMetadata())
+                    sendSingleSynchronous(it, it.renderRequest.replyTopic, it.pdf.pdfCompilationOutput, producer, consumer.groupMetadata())
                 } else {
                     val producer = retryProducers.getProducer(it.consumedTopic, it.consumedPartiton)
                     sendSingleSynchronous(it, retryTopic, it.renderRequest, producer, consumer.groupMetadata())
@@ -201,7 +202,7 @@ class PdfRequestConsumer(
                 consumerGroupMetadata(isFromRetryQueue)
             )
             results.forEach {
-                successProducer.send(ProducerRecord(it.renderRequest.replyTopic, it.renderRequest.messageId, it.pdf!!.bytes))
+                successProducer.send(ProducerRecord(it.renderRequest.replyTopic, it.renderRequest.messageId, it.pdf!!.pdfCompilationOutput))
             }
             successProducer.commitTransaction()
         } catch (e: Exception) {
@@ -222,7 +223,7 @@ class PdfRequestConsumer(
                 async {
                     RenderResult(
                         renderRequest = record.value(),
-                        pdf = compile(record.value()) as? PDFCompilationResponse.Bytes,
+                        pdf = compile(record.value()) as? PDFCompilationResponse.Success,
                         consumedTopic = record.topic(),
                         consumedPartiton = record.partition(),
                         consumedOffset = record.offset(),
@@ -238,11 +239,11 @@ class PdfRequestConsumer(
         parallelismSemaphore.release()
 
         when (result) {
-            is PDFCompilationResponse.Bytes -> return result
             is PDFCompilationResponse.Failure.Client -> logger.error(result.reason) // TODO better logging
             is PDFCompilationResponse.Failure.QueueTimeout -> logger.error(result.reason)
             is PDFCompilationResponse.Failure.Server -> logger.error(result.reason)
             is PDFCompilationResponse.Failure.Timeout -> logger.error(result.reason)
+            is PDFCompilationResponse.Success -> return result
         }
         return null
     }
@@ -269,7 +270,7 @@ private fun transactionId(topic: String, partition: Int) = "$topic-$partition"
 
 private data class RenderResult(
     val renderRequest: PDFRequestAsync,
-    val pdf: PDFCompilationResponse.Bytes?,
+    val pdf: PDFCompilationResponse.Success?,
     val consumedTopic: String,
     val consumedPartiton: Int,
     val consumedOffset: Long,

@@ -34,34 +34,6 @@ fun Application.module() {
         it.log.info("Application preparing to shutdown gracefully")
     }
 
-/*
-    install(ContentNegotiation) {
-        jackson {
-            registerModule(JavaTimeModule())
-            registerModule(LetterMarkupModule)
-            registerModule(FellesModule)
-            enable(SerializationFeature.INDENT_OUTPUT)
-            disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
-        }
-    }
-
-    install(Compression) {
-        gzip {
-            priority = 1.0
-            matchContentType(
-                ContentType.Application.Json
-            )
-        }
-        deflate {
-            priority = 10.0
-            minimumSize(1024)
-            matchContentType(
-                ContentType.Application.Json
-            )
-        }
-    }*/ // TODO flytt
-
     val prometheusMeterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
     install(MicrometerMetrics) {
         registry = prometheusMeterRegistry
@@ -85,6 +57,7 @@ fun Application.module() {
     } else {
         restModule(latexCompileService, prometheusMeterRegistry)
     }
+}
 /* TODO flytt
 private suspend fun RoutingContext.handleResult(
     result: PDFCompilationResponse,

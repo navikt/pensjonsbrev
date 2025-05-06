@@ -4,7 +4,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
-import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
+import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brev.template.render.DocumentFile
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -39,7 +40,7 @@ class LatexCompileService(
             when (val result: Execution = compile(tmpDir)) {
                 is Execution.Success -> {
                     result.pdf.toFile().readBytes()
-                        .let { PDFCompilationResponse.Bytes(it) }
+                        .let { PDFCompilationResponse.Success(PDFCompilationOutput(it)) }
                 }
 
                 is Execution.Failure.Compilation ->

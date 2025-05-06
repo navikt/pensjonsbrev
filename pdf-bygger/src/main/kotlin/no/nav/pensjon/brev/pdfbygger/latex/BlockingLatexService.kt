@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.pdfbygger.latex
 
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.withTimeoutOrNull
-import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
+import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brev.template.render.DocumentFile
 import kotlin.time.Duration
 

@@ -2,7 +2,6 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val javaTarget: String by System.getProperties()
-//TODO val kafkaVersion: String by project
 
 plugins {
     application
@@ -112,8 +111,8 @@ dependencies {
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.swagger)
     implementation(libs.ktor.client.encoding)
-    implementation("org.apache.kafka:kafka-clients:$kafkaVersion")
-    implementation("org.apache.kafka:connect-runtime:$kafkaVersion")
+    implementation(libs.kafka.streams)
+    implementation(libs.connect.runtime)
 
     implementation(project(":pensjonsmaler"))
     implementation(project(":etterlattemaler"))

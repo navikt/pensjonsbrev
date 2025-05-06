@@ -1,7 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val javaTarget: String by System.getProperties()
-// TODO val kafkaVersion: String by project
 
 plugins {
     kotlin("jvm")
@@ -38,9 +37,8 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.compression.jvm)
-    implementation(org.apache.kafka.kafka-streams)
-    implementation(org.apache.kafka.kafka-clients)
-    implementation(org.apache.kafka.connect-runtime)
+    implementation(libs.kafka.streams)
+    implementation(libs.connect.runtime)
 
     implementation(libs.bundles.metrics)
 
