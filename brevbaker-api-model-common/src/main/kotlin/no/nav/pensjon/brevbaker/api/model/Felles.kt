@@ -11,7 +11,9 @@ data class FellesImpl(
     override val bruker: Bruker,
     override val vergeNavn: String?,
     override val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null,
-) : Felles
+) : Felles {
+    override fun medSignerendeSaksbehandlere(signerendeSaksbehandlere: SignerendeSaksbehandlere) = this.copy(signerendeSaksbehandlere = signerendeSaksbehandlere)
+}
 
 interface Felles {
     val dokumentDato: LocalDate
@@ -20,6 +22,8 @@ interface Felles {
     val bruker: Bruker
     val vergeNavn: String?
     val signerendeSaksbehandlere: SignerendeSaksbehandlere?
+
+    fun medSignerendeSaksbehandlere(signerendeSaksbehandlere: SignerendeSaksbehandlere): Felles
 }
 
 @InterneDataklasser
