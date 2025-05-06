@@ -28,6 +28,7 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(libs.hamkrest)
 
+    testImplementation(testFixtures(project(":brevbaker-api-model-common")))
     testImplementation(testFixtures(project(":brevbaker-dsl")))
 
     testFixturesImplementation(libs.ktor.serialization.jackson)

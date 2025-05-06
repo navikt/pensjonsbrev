@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.template.render
 
+import no.nav.brev.brevbaker.Fixtures.felles
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.render.Fixtures.felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
