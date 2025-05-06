@@ -28,7 +28,7 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(libs.hamkrest)
 
-    testImplementation(testFixtures(project(":brevbaker-api-model-common")))
+    testImplementation(testFixtures(libs.brevbaker.common))
     testImplementation(testFixtures(project(":brevbaker-dsl")))
 
     testFixturesImplementation(libs.ktor.serialization.jackson)
@@ -37,7 +37,7 @@ dependencies {
     testFixturesImplementation(libs.ktor.client.encoding)
     testFixturesImplementation(libs.ktor.server.callId)
 
-    testFixturesImplementation(testFixtures(project(":brevbaker-api-model-common")))
+    testFixturesImplementation(testFixtures(libs.brevbaker.common))
     testFixturesImplementation(libs.bundles.logging)
 
     testFixturesImplementation(libs.jackson.datatype.jsr310) {
