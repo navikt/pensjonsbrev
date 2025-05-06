@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.template.render
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.has
 import com.natpryce.hamkrest.isEmpty
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -51,7 +51,7 @@ class IncludeAttachmentTest {
         @Test
         fun `attachment is not included when using includeAttachmentIfNotNull and attachmentData is null`() {
             assertThat(
-                Letter2Markup.render(LetterImpl(testTemplate, NullData(null), Nynorsk, Fixtures.felles)),
+                Letter2Markup.render(LetterImpl(testTemplate, NullData(null), Nynorsk, FellesFactory.felles)),
                 has(LetterWithAttachmentsMarkup::attachments, isEmpty)
             )
         }
@@ -59,7 +59,7 @@ class IncludeAttachmentTest {
         @Test
         fun `attachment is included when using includeAttachmentIfNotNull and attachmentData is not null`() {
             assertThat(
-                Letter2Markup.render(LetterImpl(testTemplate, NullData("testtekst"), Nynorsk, Fixtures.felles)),
+                Letter2Markup.render(LetterImpl(testTemplate, NullData("testtekst"), Nynorsk, FellesFactory.felles)),
                 hasAttachments {
                     attachment {
                         title { literal("Test vedlegg") }

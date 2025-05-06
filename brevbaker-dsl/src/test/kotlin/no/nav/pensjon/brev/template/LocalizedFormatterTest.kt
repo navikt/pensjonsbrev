@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.template
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 
 class LocalizedFormatterTest {
 
-    private val testExpressionScope = ExpressionScope(EmptyBrevdata, Fixtures.felles, Language.Bokmal)
+    private val testExpressionScope = ExpressionScope(EmptyBrevdata, FellesFactory.felles, Language.Bokmal)
 
     @Test
     fun `double formatteres som standard til 2 desimaler`() {

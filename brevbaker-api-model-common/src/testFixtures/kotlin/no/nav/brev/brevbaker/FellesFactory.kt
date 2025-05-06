@@ -12,7 +12,7 @@ import no.nav.pensjon.brevbaker.api.model.TelefonnummerImpl
 import java.time.LocalDate
 
 @OptIn(InterneDataklasser::class)
-object Fixtures {
+object FellesFactory {
     fun lagFelles(signerendeSaksbehandlere: SignerendeSaksbehandlere?): Felles = FellesImpl(
         dokumentDato = LocalDate.of(2020, 1, 1),
         saksnummer = "1337123",

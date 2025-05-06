@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.brev.brevbaker.Fixtures.felles
+import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.createTemplate

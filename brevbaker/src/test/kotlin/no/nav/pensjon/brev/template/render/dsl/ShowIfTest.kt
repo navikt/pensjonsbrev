@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template.render.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
-import no.nav.brev.brevbaker.Fixtures.felles
+import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterImpl
