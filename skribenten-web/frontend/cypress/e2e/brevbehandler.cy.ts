@@ -225,18 +225,18 @@ describe("Brevbehandler", () => {
 
     cy.contains("Sendt til mottaker").should("be.visible");
     cy.contains(kladdBrev.brevtittel).click();
-    cy.contains("Distribueres via").should("be.visible");
-    cy.contains("Sentral print").should("be.visible");
-    cy.contains("Journalpost ID").should("be.visible");
-    cy.contains("80912").should("be.visible");
+    cy.get('[data-cy="journalpostId-80912"]').contains("Distribueres via").should("be.visible");
+    cy.get('[data-cy="journalpostId-80912"]').contains("Sentral print").should("be.visible");
+    cy.get('[data-cy="journalpostId-80912"]').contains("Journalpost ID").should("be.visible");
+    cy.get('[data-cy="journalpostId-80912"]').contains("80912").should("be.visible");
     cy.contains(kladdBrev.brevtittel).click();
 
     cy.contains("Lokalprint - sendt til joark").should("be.visible");
     cy.contains(brevSomSendesSomLokalPrint.brevtittel).click();
-    cy.get('p:contains("Distribueres via")').eq(1).should("be.visible");
-    cy.contains("Lokal print").should("be.visible");
-    cy.get('p:contains("Journalpost ID")').eq(1).should("be.visible");
-    cy.contains("80913").should("be.visible");
+    cy.get('[data-cy="journalpostId-80913"]').contains("Distribueres via").should("be.visible");
+    cy.get('[data-cy="journalpostId-80913"]').contains("Lokal print").should("be.visible");
+    cy.get('[data-cy="journalpostId-80913"]').contains("Journalpost ID").should("be.visible");
+    cy.get('[data-cy="journalpostId-80913"]').contains("80913").should("be.visible");
     cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
   });
 

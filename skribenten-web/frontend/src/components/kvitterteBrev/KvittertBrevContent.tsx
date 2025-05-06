@@ -58,7 +58,7 @@ const AccordionContentSuccess = (props: {
   const hentNavnQuery = useQuery(getNavnQuery(props.saksId.toString()));
 
   return (
-    <Accordion.Content>
+    <Accordion.Content data-cy={`journalpostId-${props.journalpostId}`}>
       <VStack align={"start"} gap="4">
         {props.mottaker ? (
           <Oppsummeringspar tittel={"Mottaker"} verdi={props.mottaker.navn ?? "Fant ikke mottakerens navn"} />
