@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Features
-import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.Brevredigering
@@ -486,7 +485,7 @@ class BrevredigeringService(
                         pesysData = pesysData.brevdata,
                         saksbehandlerValg = saksbehandlerValg,
                     ),
-                    felles = pesysData.felles.kopier(signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(signaturSignerende, signaturAttestant))
+                    felles = pesysData.felles.medSignerendeSaksbehandlere(signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(signaturSignerende, signaturAttestant))
                 )
             }
     }
@@ -519,7 +518,7 @@ class BrevredigeringService(
                     pesysData = pesysData.brevdata,
                     saksbehandlerValg = brevredigering.saksbehandlerValg,
                 ),
-                felles = pesysData.felles.kopier(signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(brevredigering.info.signaturSignerende)),
+                felles = pesysData.felles.medSignerendeSaksbehandlere(signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(brevredigering.info.signaturSignerende)),
                 redigertBrev = brevredigering.redigertBrev.toMarkup()
             ).map {
                 transaction {
