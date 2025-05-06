@@ -14,28 +14,9 @@ import java.time.LocalDate
 
 object Fixtures {
 
-    val felles: Felles = FellesImpl(
-        dokumentDato = LocalDate.of(2020, 1, 1),
-        saksnummer = "1337123",
-        avsenderEnhet = NavEnhetImpl(
-            nettside = "nav.no",
-            navn = "Nav Familie- og pensjonsytelser Porsgrunn",
-            telefonnummer = TelefonnummerImpl("55553334"),
-        ),
-        bruker = BrukerImpl(
-            fornavn = "Test",
-            mellomnavn = "\"bruker\"",
-            etternavn = "Testerson",
-            foedselsnummer = FoedselsnummerImpl("01019878910"),
-        ),
-        signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(
-            saksbehandler = "Ole Saksbehandler",
-            attesterendeSaksbehandler = "Per Attesterende",
-        ),
-        vergeNavn = null,
-    )
+    val felles: Felles = FellesFactory.felles
 
-    val fellesAuto: Felles = (felles as FellesImpl).copy(signerendeSaksbehandlere = null)
+    val fellesAuto: Felles = FellesFactory.fellesAuto
 }
 
 fun Felles.copy(

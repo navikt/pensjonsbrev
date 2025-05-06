@@ -37,6 +37,7 @@ dependencies {
     testFixturesImplementation(libs.ktor.client.encoding)
     testFixturesImplementation(libs.ktor.server.callId)
 
+    testFixturesImplementation(testFixtures(project(":brevbaker-api-model-common")))
     testFixturesImplementation(libs.bundles.logging)
 
     testFixturesImplementation(libs.jackson.datatype.jsr310) {
