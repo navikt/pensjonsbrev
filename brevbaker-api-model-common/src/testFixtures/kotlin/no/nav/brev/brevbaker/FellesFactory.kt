@@ -3,7 +3,7 @@ package no.nav.brev.brevbaker
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.NAVEnhet
+import no.nav.pensjon.brevbaker.api.model.NavEnhet
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
@@ -16,7 +16,7 @@ object FellesFactory {
     ): Felles = Felles(
         dokumentDato = dokumentDato,
         saksnummer = saksnummer,
-        avsenderEnhet = NAVEnhet(
+        avsenderEnhet = NavEnhet(
             nettside = "nav.no",
             navn = "Nav Familie- og pensjonsytelser Porsgrunn",
             telefonnummer = Telefonnummer("55553334"),
@@ -45,7 +45,7 @@ object FellesFactory {
     fun copy(
         dokumentDato: LocalDate,
         saksnummer: String,
-        avsenderEnhet: NAVEnhet,
+        avsenderEnhet: NavEnhet,
         bruker: Bruker,
         vergeNavn: String?,
         signerendeSaksbehandlere: SignerendeSaksbehandlere?,

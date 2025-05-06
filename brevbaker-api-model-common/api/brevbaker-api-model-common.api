@@ -263,7 +263,7 @@ public final class no/nav/pensjon/brevbaker/api/model/ElementTags : java/lang/En
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Felles {
-	public final fun getAvsenderEnhet ()Lno/nav/pensjon/brevbaker/api/model/NAVEnhet;
+	public final fun getAvsenderEnhet ()Lno/nav/pensjon/brevbaker/api/model/NavEnhet;
 	public final fun getBruker ()Lno/nav/pensjon/brevbaker/api/model/Bruker;
 	public final fun getDokumentDato ()Ljava/time/LocalDate;
 	public final fun getSaksnummer ()Ljava/lang/String;
@@ -898,7 +898,7 @@ public final class no/nav/pensjon/brevbaker/api/model/Months : no/nav/pensjon/br
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/NAVEnhet {
+public final class no/nav/pensjon/brevbaker/api/model/NavEnhet {
 	public final fun getNavn ()Ljava/lang/String;
 	public final fun getNettside ()Ljava/lang/String;
 	public final fun getTelefonnummer ()Lno/nav/pensjon/brevbaker/api/model/Telefonnummer;

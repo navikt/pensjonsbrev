@@ -5,7 +5,7 @@ import java.time.LocalDate
 class Felles internal constructor(
     val dokumentDato: LocalDate,
     val saksnummer: String,
-    val avsenderEnhet: NAVEnhet,
+    val avsenderEnhet: NavEnhet,
     val bruker: Bruker,
     val vergeNavn: String?,
     val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null
@@ -42,7 +42,7 @@ class Bruker internal constructor(
     val etternavn: String
 )
 
-class NAVEnhet internal constructor(
+class NavEnhet internal constructor(
     val nettside: String,
     val navn: String,
     val telefonnummer: Telefonnummer
