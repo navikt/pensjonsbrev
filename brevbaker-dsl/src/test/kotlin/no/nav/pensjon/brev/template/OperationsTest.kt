@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.Fixtures
+import no.nav.brev.brevbaker.Fixtures
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.api.model.FeatureToggle

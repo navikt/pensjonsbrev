@@ -31,6 +31,7 @@ dependencies {
     testImplementation(libs.hamkrest)
     testImplementation(kotlin("reflect"))
 
+    testImplementation(testFixtures(project(":brevbaker-api-model-common")))
     testFixturesImplementation(libs.brevbaker.common)
 }
 
