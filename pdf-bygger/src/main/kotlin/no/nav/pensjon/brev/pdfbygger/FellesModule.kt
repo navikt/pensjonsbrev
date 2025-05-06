@@ -5,8 +5,6 @@ import no.nav.brev.InterneDataklasser
 
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.BrukerImpl
-import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.FellesImpl
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.FoedselsnummerImpl
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
@@ -26,6 +24,5 @@ object FellesModule : SimpleModule() {
         addInterfaceDeserializer<Foedselsnummer, FoedselsnummerImpl>()
         addInterfaceDeserializer<Bruker, BrukerImpl>()
         addInterfaceDeserializer<SignerendeSaksbehandlere, SignerendeSaksbehandlereImpl>()
-        addInterfaceDeserializer<Felles, FellesImpl>()
     }
 }

@@ -3,27 +3,24 @@ package no.nav.pensjon.brevbaker.api.model
 import no.nav.brev.InterneDataklasser
 import java.time.LocalDate
 
-@InterneDataklasser
-data class FellesImpl(
-    override val dokumentDato: LocalDate,
-    override val saksnummer: String,
-    override val avsenderEnhet: NAVEnhet,
-    override val bruker: Bruker,
-    override val vergeNavn: String?,
-    override val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null,
-) : Felles {
-    override fun medSignerendeSaksbehandlere(signerendeSaksbehandlere: SignerendeSaksbehandlere) = this.copy(signerendeSaksbehandlere = signerendeSaksbehandlere)
-}
+class Felles internal constructor(
+    val dokumentDato: LocalDate,
+    val saksnummer: String,
+    val avsenderEnhet: NAVEnhet,
+    val bruker: Bruker,
+    val vergeNavn: String?,
+    val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null
+) {
 
-interface Felles {
-    val dokumentDato: LocalDate
-    val saksnummer: String
-    val avsenderEnhet: NAVEnhet
-    val bruker: Bruker
-    val vergeNavn: String?
-    val signerendeSaksbehandlere: SignerendeSaksbehandlere?
-
-    fun medSignerendeSaksbehandlere(signerendeSaksbehandlere: SignerendeSaksbehandlere): Felles
+    fun medSignerendeSaksbehandlere(signerendeSaksbehandlere: SignerendeSaksbehandlere): Felles =
+        Felles(
+            dokumentDato = this.dokumentDato,
+            saksnummer = this.saksnummer,
+            avsenderEnhet = this.avsenderEnhet,
+            bruker = this.bruker,
+            vergeNavn = this.vergeNavn,
+            signerendeSaksbehandlere = signerendeSaksbehandlere,
+        )
 }
 
 @InterneDataklasser

@@ -4,7 +4,6 @@ import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.BrukerImpl
 import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.FellesImpl
 import no.nav.pensjon.brevbaker.api.model.FoedselsnummerImpl
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.NavEnhetImpl
@@ -19,7 +18,7 @@ object FellesFactory {
         dokumentDato: LocalDate = LocalDate.of(2020, 1, 1),
         saksnummer: String = "1337123",
         signerendeSaksbehandlere: SignerendeSaksbehandlere? = null
-    ): Felles = FellesImpl(
+    ): Felles = Felles(
         dokumentDato = dokumentDato,
         saksnummer = saksnummer,
         avsenderEnhet = NavEnhetImpl(
@@ -47,6 +46,7 @@ object FellesFactory {
     val fellesAuto = lagFelles(signerendeSaksbehandlere = null)
 
 
+    // TODO: Mistenkjer at denne berre blir brukt til signerendeSaksbehandlere, kan i så fall fjerne
     fun copy(
         dokumentDato: LocalDate,
         saksnummer: String,
@@ -54,7 +54,7 @@ object FellesFactory {
         bruker: Bruker,
         vergeNavn: String?,
         signerendeSaksbehandlere: SignerendeSaksbehandlere?,
-    ): Felles = FellesImpl(
+    ): Felles = Felles(
         dokumentDato = dokumentDato,
         saksnummer = saksnummer,
         avsenderEnhet = avsenderEnhet,
