@@ -940,19 +940,13 @@ public final class no/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlereIm
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class no/nav/pensjon/brevbaker/api/model/Telefonnummer {
-	public abstract fun getValue ()Ljava/lang/String;
+public final class no/nav/pensjon/brevbaker/api/model/Telefonnummer {
+	public static final field Companion Lno/nav/pensjon/brevbaker/api/model/Telefonnummer$Companion;
+	public final fun getValue ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/TelefonnummerImpl : no/nav/pensjon/brevbaker/api/model/Telefonnummer {
-	public fun <init> (Ljava/lang/String;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/TelefonnummerImpl;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/TelefonnummerImpl;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/TelefonnummerImpl;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getValue ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
+public final class no/nav/pensjon/brevbaker/api/model/Telefonnummer$Companion {
+	public final fun from (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/Telefonnummer;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification {

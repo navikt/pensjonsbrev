@@ -7,7 +7,7 @@ import no.nav.pensjon.brevbaker.api.model.FoedselsnummerImpl
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlereImpl
-import no.nav.pensjon.brevbaker.api.model.TelefonnummerImpl
+import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
 
 @OptIn(InterneDataklasser::class)
@@ -22,7 +22,7 @@ object FellesFactory {
         avsenderEnhet = NAVEnhet(
             nettside = "nav.no",
             navn = "Nav Familie- og pensjonsytelser Porsgrunn",
-            telefonnummer = TelefonnummerImpl("55553334"),
+            telefonnummer = Telefonnummer("55553334"),
         ),
         bruker = Bruker(
             fornavn = "Test",

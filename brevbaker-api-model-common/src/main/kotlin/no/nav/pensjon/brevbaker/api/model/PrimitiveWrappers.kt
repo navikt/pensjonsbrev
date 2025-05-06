@@ -8,12 +8,11 @@ interface IntValue {
     val value: Int
 }
 
-interface Telefonnummer {
-    val value: String
+class Telefonnummer internal constructor(val value: String) {
+    companion object {
+        fun from(string: String): Telefonnummer = Telefonnummer(string)
+    }
 }
-
-@InterneDataklasser
-data class TelefonnummerImpl(override val value: String) : Telefonnummer
 
 @InterneDataklasser
 data class FoedselsnummerImpl(override val value: String) : Foedselsnummer
