@@ -11,7 +11,7 @@ import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import org.slf4j.LoggerFactory
-import java.net.URL
+import java.net.URI
 
 private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.skribenten.auth.Authentication")
 
@@ -56,7 +56,7 @@ private fun parsePreAuthorizedApps(preAuthApps: String): List<JwtConfig.PreAutho
 fun AuthenticationConfig.skribentenJwt(config: JwtConfig) =
     jwt(config.name) {
         realm = "skribenten-$name"
-        verifier(JwkProviderBuilder(URL(config.jwksUrl)).build(), config.issuer) {
+        verifier(JwkProviderBuilder(URI(config.jwksUrl).toURL()).build(), config.issuer) {
             withAnyOfAudience(config.clientId)
             withIssuer(config.issuer)
 
@@ -101,6 +101,7 @@ interface UserPrincipal {
     fun isInGroup(groupId: ADGroup): Boolean
     fun getOnBehalfOfToken(scope: String): TokenResponse.OnBehalfOfToken?
     fun setOnBehalfOfToken(scope: String, token: TokenResponse.OnBehalfOfToken)
+    fun isAttestant(): Boolean = isInGroup(ADGroups.attestant)
 }
 
 data class JwtUserPrincipal(override val accessToken: UserAccessToken, private val jwtPayload: Payload) : UserPrincipal {

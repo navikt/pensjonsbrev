@@ -38,7 +38,7 @@ fun informasjonOmOmstillingsstoenad(): AttachmentTemplate<LangBokmalNynorskEngli
         hvilkenInntektReduseresEtter()
         hvordanMeldeEndringer(argument.bosattUtland)
         utbetalingTilKontonummer()
-        skatt()
+        skatt(argument.bosattUtland)
     }
 }
 
@@ -355,7 +355,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
 
     paragraph {
         text(
-            Bokmal to "Du kan gi beskjed om endring på følgende måter:",
+            Bokmal to "Du kan gi beskjed om endringer på følgende måter:",
             Nynorsk to "Du kan melde frå om endringar på følgjande måtar:",
             English to "You can report changes in the following ways:"
         )
@@ -417,7 +417,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.skatt() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData>.skatt(bosattUtland: Expression<Boolean>) {
     title2 {
         text(
             Bokmal to "Skatt",
@@ -425,36 +425,91 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
             English to "Tax",
         )
     }
-    paragraph {
-        text(
-            Bokmal to "Omstillingsstønaden er skattepliktig. Du trenger ikke levere skattekortet til Nav " +
-                    "fordi skatteopplysningene dine sendes elektronisk fra Skatteetaten.",
-            Nynorsk to "Omstillingsstønaden er skattepliktig. Du treng ikkje levere skattekortet til Nav, " +
-                    "då skatteopplysningane dine blir sende elektronisk frå Skatteetaten.",
-            English to "Adjustment allowance are taxable. You do not need to submit your tax deduction " +
-                    "card to Nav because your tax information is sent to Nav electronically from the " +
-                    "Norwegian Tax Administration.",
-        )
-    }
-    paragraph {
-        text(
-            Bokmal to "Endring av skattekort gjøres enklest på Skatteetatens nettsider www.skatteetaten.no. " +
-                    "Har du spørsmål kan du ringe Skatteetaten på telefon " + Constants.KONTAKTTELEFON_SKATT + ". " +
-                    "Fra utlandet ringer du " + Constants.Utland.KONTAKTTELEFON_SKATT + ".",
-            Nynorsk to "Skattekortet endrar du enklast frå nettsidene til Skatteetaten, www.skatteetaten.no. " +
-                    "Viss du har spørsmål, kan du ringje Skatteetaten på telefon " + Constants.KONTAKTTELEFON_SKATT + ". " +
-                    "Frå utlandet ringjer du " + Constants.Utland.KONTAKTTELEFON_SKATT + ".",
-            English to "The easiest way to change your tax deduction card is done on the Tax Administration's " +
-                    "website: www.skatteetaten.no. If you have any questions, please call the Tax Administration " +
-                    "by phone: " + Constants.KONTAKTTELEFON_SKATT + ". For calls from abroad: " +
-                    Constants.Utland.KONTAKTTELEFON_SKATT + ".",
-        )
+
+    showIf(bosattUtland) {
+        paragraph {
+            text(
+                Bokmal to "Skattereglene for omstillingsstønad avhenger av om du er skattemessig bosatt i Norge.",
+                Nynorsk to "Skattereglar for omstillingsstønad avheng av om du er skattemessig busett i Noreg.",
+                English to "The tax rules for the adjustment allowance vary depending on whether or not you are a tax resident in Norway."
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Skattemessig bosatt i Norge:",
+                Nynorsk to "Skattemessig busett i Noreg:",
+                English to "Tax reident in Norway:"
+            )
+            text(
+                Bokmal to "Hvis du er skattemessig bosatt i Norge, skal du betale skatt på all inntekt og formue. " +
+                        "Husk å kontrollere skattekortet ditt på ${Constants.SKATTEETATEN_ENDRE_URL}. Ønsker du å avslutte skatteplikten, " +
+                        "kan du søke om skattemessig emigrasjon",
+                Nynorsk to "Viss du er skattemessig busett i Norge, skal du betale skatt for all inntekt og formue. " +
+                        "Husk å sjekke skattekortet ditt på ${Constants.SKATTEETATEN_ENDRE_URL}. Ønskjer du å avslutte skatteplikta, " +
+                        "kan du søkje om skattemessig emigrasjon.",
+                English to "If you are resident in Norway for tax purposes, you must pay tax on all income and wealth. " +
+                        "Remember to check your tax deduction card at ${Constants.Engelsk.SKATTEETATEN_ENDRE_URL}. If you wish to terminate your tax liability, " +
+                        "you can apply for tax emigration."
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Ikke skattemessig bosatt i Norge:",
+                Nynorsk to "Ikkje skattemessig busett i Noreg:",
+                English to "Non-tax resident in Norway:"
+            )
+            text(
+                Bokmal to "Er du ikke skattemessig bosatt i Norge, skal du betale 15 prosent kildeskatt på brutto omstillingsstønad." +
+                        "Bor du i et land med skatteavtale med Norge, kan du ha rett til fritak fra kildeskatt. Bor du i et land med skatteavtale med Norge, " +
+                        "kan du ha rett til fritak fra kildeskatt. Hvis du bor i et EU- eller EØS-land, kan du bli skatteberegnet som bosatt i Norge.",
+                Nynorsk to "Er du ikkje skattemessig busett i Noreg, skal du betale 15 prosent kjeldeskatt av brutto omstillingsstønad. " +
+                        "Bur du i eit land som Noreg har skatteavtale med, kan du ha rett til fritak frå kjeldeskatt. Viss du bur i eit EU- eller EØS-land, " +
+                        "kan du bli skatteberekna som busett i Noreg.",
+                English to "If you are not resident in Norway for tax purposes, you must pay 15 per cent withholding tax on your adjustment allowance. " +
+                        "If you are resident in a country Norway has a tax treaty with, you may be entitled to an exemption from withholding tax on certain benefits. " +
+                        "If you live in an EU/EEA country, you may qualify to be considered as resident in Norway for tax purposes."
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Les mer på ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} eller kontakt Skatteetaten på telefon ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} fra utlandet",
+                Nynorsk to "Les meir på ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} eller kontakt Skatteetaten på telefon ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} frå utlandet.",
+                English to "Read more at ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} or contact the Norwegian Tax Administration by phone at ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} from abroad."
+            )
+        }
+    }.orShow {
+        paragraph {
+            text(
+                Bokmal to "Omstillingsstønaden er skattepliktig. Du trenger ikke levere skattekortet til Nav " +
+                        "fordi skatteopplysningene dine sendes elektronisk fra Skatteetaten.",
+                Nynorsk to "Omstillingsstønaden er skattepliktig. Du treng ikkje levere skattekortet til Nav, " +
+                        "då skatteopplysningane dine blir sende elektronisk frå Skatteetaten.",
+                English to "Adjustment allowance are taxable. You do not need to submit your tax deduction " +
+                        "card to Nav because your tax information is sent to Nav electronically from the " +
+                        "Norwegian Tax Administration.",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Endring av skattekort gjøres enklest på Skatteetatens nettsider www.skatteetaten.no. " +
+                        "Har du spørsmål kan du ringe Skatteetaten på telefon " + Constants.KONTAKTTELEFON_SKATT + ". " +
+                        "Fra utlandet ringer du " + Constants.Utland.KONTAKTTELEFON_SKATT + ".",
+                Nynorsk to "Skattekortet endrar du enklast frå nettsidene til Skatteetaten, www.skatteetaten.no. " +
+                        "Viss du har spørsmål, kan du ringje Skatteetaten på telefon " + Constants.KONTAKTTELEFON_SKATT + ". " +
+                        "Frå utlandet ringjer du " + Constants.Utland.KONTAKTTELEFON_SKATT + ".",
+                English to "The easiest way to change your tax deduction card is done on the Tax Administration's " +
+                        "website: www.skatteetaten.no. If you have any questions, please call the Tax Administration " +
+                        "by phone: " + Constants.KONTAKTTELEFON_SKATT + ". For calls from abroad: " +
+                        Constants.Utland.KONTAKTTELEFON_SKATT + ".",
+            )
+        }
     }
     paragraph {
         text(
             Bokmal to "Omstillingsstønaden er pensjonsgivende inntekt. Den gir ikke opptjening av feriepenger.",
-            Nynorsk to "Omstillingsstønaden er pensjonsgivande inntekt. Han gir ikkje opptening av feriepengar.",
+            Nynorsk to "Omstillingsstønaden er pensjonsgivande inntekt. Den gir ikkje opptening av feriepengar.",
             English to "Adjustment allowance are considered pensionable income. They do not earn you holiday pay.",
         )
     }
+
 }

@@ -39,6 +39,7 @@ const EksisterendeKladdModal = (props: {
   sisteEksisterendeKladdId: number;
 }) => {
   const navigate = useNavigate({ from: Route.fullPath });
+  const { enhetsId, vedtaksId } = Route.useSearch();
   return (
     <Modal
       header={{ heading: "Vil du bruke eksisterende kladd?" }}
@@ -56,12 +57,13 @@ const EksisterendeKladdModal = (props: {
             Lag nytt brev
           </Button>
           <Button
-            onClick={() => {
+            onClick={() =>
               navigate({
                 to: "/saksnummer/$saksId/brev/$brevId",
                 params: { brevId: props.sisteEksisterendeKladdId },
-              });
-            }}
+                search: { enhetsId, vedtaksId },
+              })
+            }
             type="button"
             variant="primary"
           >
@@ -89,7 +91,7 @@ const BrevmalBrevbaker = (props: {
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   const formRef = useRef<HTMLFormElement>(null);
   const [åpnerNyttBrevOgHarKladd, setÅpnerNyttBrevOgHarKladd] = useState<boolean>(false);
-  const { vedtaksId } = Route.useSearch();
+  const { enhetsId, vedtaksId } = Route.useSearch();
 
   const alleSaksbrevQuery = useQuery({
     queryKey: hentAlleBrevForSak.queryKey(props.saksId.toString()),
@@ -122,6 +124,7 @@ const BrevmalBrevbaker = (props: {
       return navigate({
         to: "/saksnummer/$saksId/brev/$brevId",
         params: { brevId: response.info.id },
+        search: { enhetsId, vedtaksId },
       });
     },
   });

@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.Duration
 import java.time.Instant
 
@@ -37,6 +38,12 @@ object Api {
         val mottaker: OverstyrtMottaker? = null
     )
 
+    data class OppdaterAttesteringRequest(
+        val saksbehandlerValg: SaksbehandlerValg,
+        val redigertBrev: Edit.Letter,
+        val signaturAttestant: String,
+    )
+
     data class BrevInfo(
         val id: Long,
         val opprettetAv: NavAnsatt,
@@ -45,6 +52,7 @@ object Api {
         val sistredigert: Instant,
         val brevkode: Brevkode.Redigerbart,
         val brevtittel: String,
+        val brevtype: LetterMetadata.Brevtype,
         val status: BrevStatus,
         val distribusjonstype: Distribusjonstype,
         val mottaker: OverstyrtMottaker?,
@@ -57,13 +65,15 @@ object Api {
     @JsonSubTypes(
         JsonSubTypes.Type(BrevStatus.Kladd::class, name = "Kladd"),
         JsonSubTypes.Type(BrevStatus.UnderRedigering::class, name = "UnderRedigering"),
+        JsonSubTypes.Type(BrevStatus.Attestering::class, name = "Attestering"),
         JsonSubTypes.Type(BrevStatus.Klar::class, name = "Klar"),
         JsonSubTypes.Type(BrevStatus.Arkivert::class, name = "Arkivert"),
     )
     sealed class BrevStatus {
         data object Kladd : BrevStatus()
         data class UnderRedigering(val redigeresAv: NavAnsatt) : BrevStatus()
-        data object Klar : BrevStatus()
+        data object Attestering : BrevStatus()
+        data class Klar(val attestertAv: NavAnsatt? = null) : BrevStatus()
         data object Arkivert : BrevStatus()
     }
 

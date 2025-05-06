@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.*
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import no.nav.pensjon.brev.converters.BrevbakerBrevdataModule
 import no.nav.pensjon.brev.converters.BrevkodeModule
+import no.nav.pensjon.brev.converters.FellesModule
 import no.nav.pensjon.brev.converters.LetterMarkupModule
 import no.nav.pensjon.brev.converters.TemplateModelSpecificationModule
 
@@ -12,6 +13,7 @@ fun ObjectMapper.brevbakerConfig() {
     registerModule(BrevbakerBrevdataModule)
     registerModule(BrevkodeModule)
     registerModule(LetterMarkupModule)
+    registerModule(FellesModule)
     registerModule(TemplateModelSpecificationModule)
     enable(SerializationFeature.INDENT_OUTPUT)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

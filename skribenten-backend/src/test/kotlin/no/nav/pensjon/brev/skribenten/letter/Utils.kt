@@ -1,27 +1,28 @@
 package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 
 
-fun letter(vararg blocks: Block) =
-    LetterMarkup(
+fun letter(vararg blocks: LetterMarkup.Block) =
+    LetterMarkupImpl(
         title = "En tittel",
-        sakspart = Sakspart("Test Testeson", "1234568910", "1234", "20.12.2022"),
+        sakspart = SakspartImpl("Test Testeson", "1234568910", "1234", "20.12.2022"),
         blocks = blocks.toList(),
-        signatur = Signatur("Med vennlig hilsen", "Saksbehandler", "Kjersti Saksbehandler", null, "Nav Familie- og pensjonsytelser Porsgrunn")
+        signatur = SignaturImpl("Med vennlig hilsen", "Saksbehandler", "Kjersti Saksbehandler", null, "Nav Familie- og pensjonsytelser Porsgrunn")
     )
 
 fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet(), fixParentIds: Boolean = true): Edit.Letter =
     Edit.Letter(
         "En tittel",
-        Sakspart("Test Testeson", "1234568910", "1234", "20.12.2022"),
+        SakspartImpl("Test Testeson", "1234568910", "1234", "20.12.2022"),
         blocks.toList().let {
             if (fixParentIds) {
                 blocks.map { it.fixParentIds(null) }
             } else it
         },
-        Signatur("Med vennlig hilsen", "Saksbehandler", "Kjersti Saksbehandler", null, "Nav Familie- og pensjonsytelser Porsgrunn"),
+        SignaturImpl("Med vennlig hilsen", "Saksbehandler", "Kjersti Saksbehandler", null, "Nav Familie- og pensjonsytelser Porsgrunn"),
         deleted
     )
 

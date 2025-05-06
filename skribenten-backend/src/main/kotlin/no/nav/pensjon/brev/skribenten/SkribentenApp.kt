@@ -32,6 +32,8 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.routes.BrevkodeModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
+import no.nav.pensjon.brev.skribenten.services.FellesModule
+import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
 
 
 fun main() {
@@ -94,6 +96,7 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
                 is KanIkkeAttestereEgetBrevException -> call.respond(HttpStatusCode.Forbidden, cause.message)
                 is AlleredeAttestertException -> call.respond(HttpStatusCode.Conflict, cause.message)
                 is KanIkkeAttestereException -> call.respond(HttpStatusCode.InternalServerError, cause.message)
+                is BrevmalFinnesIkke -> call.respond(HttpStatusCode.InternalServerError, cause.message)
             }
         }
         exception<Exception> { call, cause ->
@@ -135,6 +138,8 @@ fun Application.skribentenContenNegotiation() {
             registerModule(JavaTimeModule())
             registerModule(Edit.JacksonModule)
             registerModule(BrevkodeModule)
+            registerModule(LetterMarkupModule)
+            registerModule(FellesModule)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }

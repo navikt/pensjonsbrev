@@ -2,15 +2,10 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val apiModelJavaTarget: String by System.getProperties()
-val jacksonJsr310Version: String by project
-val jupiterVersion: String by project
-val logstashVersion: String by project
-val ktorVersion: String by System.getProperties()
-val mockkVersion: String by project
 
 plugins {
     kotlin("jvm")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.ksp) apply true
 }
 
 group = "no.nav.pensjon.brev"
@@ -23,21 +18,20 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    api(project(":brevbaker"))
+    implementation(project(":brevbaker"))
     ksp(project(":template-model-generator"))
 
 
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonJsr310Version") {
+    implementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
     }
 
     // JUnit 5
-    testImplementation(platform("org.junit:junit-bom:$jupiterVersion"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation("io.mockk:mockk:${mockkVersion}")
+    testImplementation(libs.bundles.junit)
+    testImplementation(libs.mockk)
 
     testImplementation(testFixtures(project(":brevbaker")))
-    testImplementation("io.ktor:ktor-server-call-id:$ktorVersion")
+    testImplementation(libs.ktor.server.callId)
 }
 
 tasks.test {

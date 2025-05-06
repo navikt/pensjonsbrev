@@ -1,11 +1,8 @@
 plugins {
-    val kotlinVersion: String by System.getProperties()
-    val ktorVersion: String by System.getProperties()
-    val kspVersion: String by System.getProperties()
-
-    kotlin("jvm") version kotlinVersion apply false
-    id("com.google.devtools.ksp") version "$kotlinVersion-$kspVersion" apply false
-    id("io.ktor.plugin") version ktorVersion apply false
+    kotlin("jvm") version libs.versions.kotlinVersion apply false
+    alias(libs.plugins.ksp) apply false
+    alias(libs.plugins.ktor) apply false
+    alias(libs.plugins.binary.compatibility.validator) apply false
 }
 
 allprojects {

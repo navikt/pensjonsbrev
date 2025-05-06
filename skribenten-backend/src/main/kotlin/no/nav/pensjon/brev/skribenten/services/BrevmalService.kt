@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype
 import org.slf4j.LoggerFactory
 
 private val ekskluderteBrev = hashSetOf("PE_IY_05_301", "PE_BA_01_108", "PE_GP_01_010", "PE_AP_04_922", "PE_IY_03_169", "PE_IY_03_171", "PE_IY_03_172", "PE_IY_03_173")
@@ -59,6 +60,9 @@ class BrevmalService(
     private suspend fun hentBrevakerMaler(): List<TemplateDescription.Redigerbar> =
         if (Features.brevbakerbrev.isEnabled()) {
             brevbakerService.getTemplates()
+                .map { maler ->
+                    if (Features.attestant.isEnabled()) maler else maler.filter { it.metadata.brevtype != Brevtype.VEDTAKSBREV }
+                }
                 .catch { message, statusCode ->
                     logger.error("Kunne ikke hente brevmaler fra brevbaker: $message - $statusCode")
                     emptyList()

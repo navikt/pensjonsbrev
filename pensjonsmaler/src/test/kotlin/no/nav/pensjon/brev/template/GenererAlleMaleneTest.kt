@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
@@ -12,6 +13,8 @@ import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
 import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -38,7 +41,7 @@ class GenererAlleMaleneTest {
             println("Mal ${template.name} fins ikke på språk $spraak, tester ikke denne")
             return
         }
-        val letter = Letter(template, fixtures, spraak, Fixtures.felles)
+        val letter = LetterTestImpl(template, fixtures, spraak, Fixtures.felles)
 
         letter.renderTestPDF(filnavn(brevkode, spraak))
     }
@@ -55,7 +58,7 @@ class GenererAlleMaleneTest {
             println("Mal ${template.name} fins ikke på språk ${spraak.javaClass.simpleName}, tester ikke denne")
             return
         }
-        Letter(
+        LetterTestImpl(
             template,
             fixtures,
             spraak,
@@ -65,6 +68,16 @@ class GenererAlleMaleneTest {
 
     private fun filnavn(brevkode: Brevkode<*>, spraak: Language) =
         "${brevkode.kode()}_${spraak.javaClass.simpleName}"
+
+
+    @Test
+    fun `alle maler skal bruke en unik brevkode`() {
+        val malKoder = (ProductionTemplates.hentRedigerbareMaler() + ProductionTemplates.hentRedigerbareMaler())
+            .map { it.kode.kode() }
+
+        malKoder.sorted().zipWithNext { a, b ->
+            assert(a != b) {"Alle brevmaler må bruke egne unike brevkoder! Brevkode $a brukes i flere brev."} }
+    }
 
     companion object {
         @JvmStatic

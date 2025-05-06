@@ -1,16 +1,15 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
-import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
-
 
 
 object Felles {
@@ -58,17 +57,17 @@ object Felles {
             paragraph {
                 text(
                     Bokmal to "Du finner mer informasjon på $merInformasjonUrl."
-                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
-                            + " Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon $telefonnummer,"
-                            + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                            + " På $KONTAKT_URL kan du chatte eller skrive til oss."
+                            + " Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon $telefonnummer,"
+                            + " hverdager kl. $NAV_KONTAKTSENTER_AAPNINGSTID.",
                     Nynorsk to "Du finn meir informasjon på $merInformasjonUrl."
-                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
-                            + " Om du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe oss på telefon $telefonnummer,"
-                            + " kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
+                            + " På $KONTAKT_URL kan du chatte eller skrive til oss."
+                            + " Om du ikkje finn svar på $NAV_URL, kan du ringe oss på telefon $telefonnummer,"
+                            + " kvardagar kl. $NAV_KONTAKTSENTER_AAPNINGSTID.",
                     English to "You can find more information at $merInformasjonUrl."
-                            + " At ${Constants.KONTAKT_URL}, you can chat or write to us."
-                            + " If you do not find the answer at ${Constants.NAV_URL}, you can call us at: +47 $telefonnummer,"
-                            + " weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
+                            + " At $KONTAKT_URL, you can chat or write to us."
+                            + " If you do not find the answer at $NAV_URL, you can call us at: +47 $telefonnummer,"
+                            + " weekdays $NAV_KONTAKTSENTER_AAPNINGSTID."
                 )
             }
         }
@@ -112,7 +111,7 @@ object Felles {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             textExpr(
                 Bokmal to antall.format() + " måneder",
-                Nynorsk to antall.format() + " måneder",
+                Nynorsk to antall.format() + " månadar",
                 English to antall.format() + " months"
             )
     }
@@ -174,7 +173,7 @@ object Felles {
                 text(
                     Bokmal to "Meld fra om endringer",
                     Nynorsk to "Meld frå om endringar",
-                    Language.English to "Duty to report changes"
+                    English to "Duty to report changes"
                 )
             }
             paragraph {
@@ -183,11 +182,41 @@ object Felles {
                             + "for eksempel ved endring av sivilstand eller ved flytting.",
                     Nynorsk to "Du må melde frå til oss med ein gong dersom det skjer endringar som kan ha noko å seie for saka din, "
                             + "for eksempel ved endring av sivilstand eller ved flytting.",
-                    Language.English to "You must notify us immediately if there are any changes that may affect your case, "
+                    English to "You must notify us immediately if there are any changes that may affect your case, "
                             + "such as a change in your marital status or if you move."
                 )
             }
         }
     }
+    object RettTilInnsynRedigerbarebrev : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 {
+                text(
+                    Bokmal to "Du har rett til innsyn",
+                    Nynorsk to "Du har rett til innsyn",
+                    English to "You have the right to access your file",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du har rett til å se dokumentene i saken din. Du kan logge deg inn via $NAV_URL for å se dokumenter i saken din.",
+                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Du kan logge deg inn via $NAV_URL for å sjå dokumenta i saka di.",
+                    English to "You are entitled to see your case documents. You can log in via $NAV_URL to view documents related to your case."
+                )
+            }
+        }
+    }
 
+    object DuKanLeseMer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "Du kan lese mer om dette på $NAV_URL.",
+                    Nynorsk to "Du kan lese meir om dette på $NAV_URL.",
+                    English to "You can read more about this at $NAV_URL."
+                )
+            }
+        }
+
+    }
 }

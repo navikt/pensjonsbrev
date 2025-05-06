@@ -4,6 +4,7 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
 import com.natpryce.hamkrest.equalTo
 import kotlinx.coroutines.runBlocking
+import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
@@ -11,7 +12,6 @@ import no.nav.pensjon.brev.pdfbygger.Fixtures.felles
 import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
@@ -81,7 +81,7 @@ class LatexDocumentRendererTest {
     fun `renderPDF redigertBrev uses letterMarkup from argument and includes attachments`() = runBlocking {
         val letterData = createEksempelbrevRedigerbartDto()
 
-        val letter = Letter(EksempelbrevRedigerbart.template, letterData, Language.Bokmal, felles)
+        val letter = LetterTestImpl(EksempelbrevRedigerbart.template, letterData, Language.Bokmal, felles)
 
         val letterMarkup = LetterTestRenderer.render(letter)
 
@@ -106,7 +106,7 @@ class LatexDocumentRendererTest {
         expectedParagraphs: Int,
         outline: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit
     ) {
-        val letter = Letter(
+        val letter = LetterTestImpl(
             LetterExample.template,
             EmptyBrevdata,
             Language.Bokmal,
@@ -114,7 +114,7 @@ class LatexDocumentRendererTest {
         )
         runBlocking {
             val markup =
-                LetterTestRenderer.render(Letter(outlineTestTemplate(outline), EmptyBrevdata, Language.Bokmal, felles))
+                LetterTestRenderer.render(LetterTestImpl(outlineTestTemplate(outline), EmptyBrevdata, Language.Bokmal, felles))
 
             val latexDocument = LatexDocumentRenderer.render(
                 PDFRequest(

@@ -21,8 +21,7 @@ class LaTeXCompilerService(private val pdfByggerUrl: String) : PDFByggerService 
         }
         HttpResponseValidator {
             validateResponse {
-                validateResponse(
-                    HttpStatusCodes(it.status.value, it.status.description),
+                validateResponse(it.status.value,
                     { msg -> println(msg) }) { it.body<String>() }
             }
         }

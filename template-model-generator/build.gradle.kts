@@ -2,14 +2,10 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 val javaTarget: String by System.getProperties()
-val kotlinVersion: String by System.getProperties()
-val kspVersion: String by System.getProperties()
-val commonVersion: String by project
-val jupiterVersion: String by project
-val hamkrestVersion: String by project
 
 plugins {
     kotlin("jvm")
+    alias(libs.plugins.ksp) apply true
 }
 
 group = "no.nav.pensjon.brev"
@@ -44,15 +40,15 @@ tasks {
 }
 
 dependencies {
-    compileOnly(kotlin("reflect"))
-    implementation("com.google.devtools.ksp:symbol-processing-api:$kotlinVersion-$kspVersion")
-    implementation("no.nav.pensjon.brevbaker:brevbaker-api-model-common:$commonVersion")
+    implementation(libs.ksp.symbol.processing.api)
     implementation(project(":brevbaker-dsl"))
 
-    testImplementation("org.junit.jupiter:junit-jupiter-api:$jupiterVersion")
-    // Byttet til fork som støtter kotlin > 2.0
-    //    testImplementation("com.github.tschuchortdev:kotlin-compile-testing-ksp:1.6.0")
-    testImplementation("dev.zacsweers.kctfork:ksp:0.7.0")
-    testImplementation("com.natpryce:hamkrest:$hamkrestVersion")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$jupiterVersion")
+    testImplementation(kotlin("reflect"))
+    testImplementation(libs.brevbaker.common)
+    testImplementation(libs.bundles.junit)
+    testImplementation(libs.hamkrest)
+    testImplementation(libs.ksp.symbol.processing.aa)
+    testImplementation(libs.ksp.symbol.processing.common)
+    testImplementation(libs.io.github.classgraph)
+    kspTest(project)
 }

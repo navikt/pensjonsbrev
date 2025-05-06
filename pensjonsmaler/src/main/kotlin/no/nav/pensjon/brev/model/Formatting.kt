@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.model
 
 import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.api.model.Sivilstand.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -39,46 +38,11 @@ object FormatBorMedSivilstandTabell : LocalizedFormatter<BorMedSivilstand>() {
 
     override fun stableHashCode(): Int = "FormatBorMedSivilstandTabell".hashCode()
 }
+@JvmName("formatMetaforceSivilstandBestemtForm")
+fun Expression<MetaforceSivilstand>.bestemtForm() = format(formatter = MetaforceSivilstandBestemt)
 
-
-@JvmName("formatSivilstandBestemtForm")
-fun Expression<Sivilstand>.bestemtForm() = format(SivilstandEpsBestemt)
-
-@Deprecated("Bruk bormed sivilstand istedenfor")
-object SivilstandEpsBestemt : LocalizedFormatter<Sivilstand>() {
-    override fun apply(first: Sivilstand, second: Language): String = sivilstand(first, second, true)
-    override fun stableHashCode(): Int = "SivilstandEpsBestemt".hashCode()
-}
-
-@Deprecated("bruk bormedSivilstand")
-private fun sivilstand(sivilstand: Sivilstand, language: Language, bestemtForm: Boolean): String =
-    when (sivilstand) {
-        GIFT,
-        GIFT_LEVER_ADSKILT -> when (language) {
-            Bokmal, Nynorsk -> if (bestemtForm) "ektefellen" else "ektefelle"
-            English -> "spouse"
-        }
-
-        PARTNER,
-        PARTNER_LEVER_ADSKILT,
-        SEPARERT_PARTNER -> when (language) {
-            Bokmal -> if (bestemtForm) "partneren" else "partner"
-            Nynorsk -> if (bestemtForm) "partnaren" else "partnar"
-            English -> "partner"
-        }
-
-        SAMBOER1_5, SAMBOER3_2 -> when (language) {
-            Bokmal -> if (bestemtForm) "samboeren" else "samboer"
-            Nynorsk -> if (bestemtForm) "sambuaren" else "sambuar"
-            English -> "cohabitant"
-        }
-
-        //TODO lag en egen SivilstandEps enum slik at vi kan garantere at teksten blir riktig.
-        ENSLIG,
-        ENKE,
-        SEPARERT-> ""
-    }
-
+@JvmName("formatMetaforceSivilstandUbestemtForm")
+fun Expression<MetaforceSivilstand>.ubestemtForm() = format(formatter = MetaforceSivilstandUbestemt)
 
 @JvmName("formatBorMedSivilstandBestemtForm")
 fun Expression<BorMedSivilstand>.bestemtForm() = format(formatter = BorMedSivilstandBestemt)
@@ -91,10 +55,46 @@ object BorMedSivilstandUbestemt : LocalizedFormatter<BorMedSivilstand>() {
     override fun stableHashCode(): Int = "BorMedSivilstandUbestemt".hashCode()
 }
 
+object MetaforceSivilstandBestemt : LocalizedFormatter<MetaforceSivilstand>() {
+    override fun apply(first: MetaforceSivilstand, second: Language): String = metaforceBorMedSivilstand(first, second, true)
+    override fun stableHashCode(): Int = "MetaforceSivilstandBestemt".hashCode()
+}
+
+object MetaforceSivilstandUbestemt : LocalizedFormatter<MetaforceSivilstand>() {
+    override fun apply(first: MetaforceSivilstand, second: Language): String = metaforceBorMedSivilstand(first, second, false)
+    override fun stableHashCode(): Int = "MetaforceSivilstandUbestemt".hashCode()
+}
+
+
+
 object BorMedSivilstandBestemt : LocalizedFormatter<BorMedSivilstand>() {
     override fun apply(first: BorMedSivilstand, second: Language): String = borMedSivilstand(first, second, true)
     override fun stableHashCode(): Int = "BorMedSivilstandBestemt".hashCode()
 }
+
+private fun metaforceBorMedSivilstand(sivilstand: MetaforceSivilstand, language: Language, bestemtForm: Boolean): String {
+    val borMedSivilstand = when (sivilstand) {
+        MetaforceSivilstand.EKTEFELLE -> BorMedSivilstand.EKTEFELLE
+        MetaforceSivilstand.GIFT -> BorMedSivilstand.EKTEFELLE
+        MetaforceSivilstand.SEPARERT -> BorMedSivilstand.EKTEFELLE
+        MetaforceSivilstand.GLAD_EKT -> BorMedSivilstand.GIFT_LEVER_ADSKILT
+        MetaforceSivilstand.GLAD_PART -> BorMedSivilstand.PARTNER_LEVER_ADSKILT
+        MetaforceSivilstand.PARTNER -> BorMedSivilstand.PARTNER
+        MetaforceSivilstand.SAMBOER -> BorMedSivilstand.SAMBOER1_5 //formatteres likt uansett
+        MetaforceSivilstand.SAMBOER_1_5 -> BorMedSivilstand.SAMBOER1_5
+        MetaforceSivilstand.SAMBOER_3_2 -> BorMedSivilstand.SAMBOER3_2
+        MetaforceSivilstand.SEPARERT_PARTNER -> BorMedSivilstand.PARTNER
+        MetaforceSivilstand.UKJENT,
+        MetaforceSivilstand.ENKE,
+        MetaforceSivilstand.ENSLIG,
+        MetaforceSivilstand.FELLES_BARN,
+        MetaforceSivilstand.FORELDER -> null
+    }
+    return if(borMedSivilstand != null) {
+        borMedSivilstand(borMedSivilstand, language, bestemtForm)
+    } else ""
+}
+
 private fun borMedSivilstand(sivilstand: BorMedSivilstand, language: Language, bestemtForm: Boolean): String =
     when (sivilstand) {
         BorMedSivilstand.EKTEFELLE,

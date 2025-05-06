@@ -1,14 +1,19 @@
 package no.nav.pensjon.brev.skribenten.letter
 
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title1
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList.Item
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.*
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnAlignment
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.Title1Impl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.Title2Impl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.ItemListImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.ItemListImpl.ItemImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl.CellImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl.ColumnSpecImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl.HeaderImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl.RowImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.InstanceOfAssertFactories
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -33,16 +38,16 @@ class UpdateRenderedLetterTest {
 
     @Test
     fun `updates fields of editedLetter from renderedLetter`() {
-        val rendered = letter(Title1(1, true, listOf(Literal(1, "Noe tekst"))))
+        val rendered = letter(Title1Impl(1, true, listOf(LiteralImpl(1, "Noe tekst"))))
         val next = rendered.copy(
             title = "ny tittel11",
-            sakspart = Sakspart(
+            sakspart = SakspartImpl(
                 "ny gjelder",
                 "nytt fødselsnummer",
                 "nytt saksnummer",
                 "ny dato"
             ),
-            signatur = Signatur("ny hilsenTekst", "ny saksbehandler rolle tekst", "ny saksbehandlernavn", "ny attesterendenavn", "ny avsenderenhet"),
+            signatur = SignaturImpl("ny hilsenTekst", "ny saksbehandler rolle tekst", "ny saksbehandlernavn", "ny attesterendenavn", "ny avsenderenhet"),
         )
 
         assertEquals(next.toEdit(), rendered.toEdit().copy(deletedBlocks = setOf(-1)).updateEditedLetter(next))
@@ -51,11 +56,11 @@ class UpdateRenderedLetterTest {
     @Test
     fun `no changes in editedLetter and no changes in nextLetter returns same letter`() {
         val rendered = letter(
-            Title1(
+            Title1Impl(
                 1, true, listOf(
-                    Literal(1, "En tittel "),
-                    Variable(2, "for deg "),
-                    Literal(3, "og meg!")
+                    LiteralImpl(1, "En tittel "),
+                    VariableImpl(2, "for deg "),
+                    LiteralImpl(3, "og meg!")
                 )
             )
         )
@@ -66,11 +71,11 @@ class UpdateRenderedLetterTest {
     @Test
     fun `literals in editedLetter are not replaced`() {
         val next = letter(
-            Title1(
+            Title1Impl(
                 1, true, listOf(
-                    Literal(1, "En tittel "),
-                    Variable(2, "for deg "),
-                    Literal(3, "og meg!")
+                    LiteralImpl(1, "En tittel "),
+                    VariableImpl(2, "for deg "),
+                    LiteralImpl(3, "og meg!")
                 )
             )
         )
@@ -90,11 +95,11 @@ class UpdateRenderedLetterTest {
     @Test
     fun `variables in editedLetter are replaced `() {
         val rendered = letter(
-            Title1(
+            Title1Impl(
                 1, true, listOf(
-                    Literal(1, "En tittel "),
-                    Variable(2, "for de andre "),
-                    Literal(3, "og meg!")
+                    LiteralImpl(1, "En tittel "),
+                    VariableImpl(2, "for de andre "),
+                    LiteralImpl(3, "og meg!")
                 )
             )
         )
@@ -114,9 +119,9 @@ class UpdateRenderedLetterTest {
     @Test
     fun `unedited literals no longer present in next render are removed but other edits are kept`() {
         val rendered = letter(
-            Title1(
+            Title1Impl(
                 1, true, listOf(
-                    Variable(2, "for deg "),
+                    VariableImpl(2, "for deg "),
                 )
             )
         )
@@ -145,10 +150,10 @@ class UpdateRenderedLetterTest {
     @Test
     fun `new edited content is kept`() {
         val next = letter(
-            Title1(
+            Title1Impl(
                 1, true, listOf(
-                    Variable(2, "for deg "),
-                    Literal(3, "og meg!")
+                    VariableImpl(2, "for deg "),
+                    LiteralImpl(3, "og meg!")
                 )
             )
         )
@@ -181,11 +186,11 @@ class UpdateRenderedLetterTest {
     @Test
     fun `new content from next is added`() {
         val next = letter(
-            Title1(
+            Title1Impl(
                 1, true, listOf(
-                    Variable(2, "for deg "),
-                    Literal(3, "og meg!"),
-                    Literal(4, " pluss noe mer tekst")
+                    VariableImpl(2, "for deg "),
+                    LiteralImpl(3, "og meg!"),
+                    LiteralImpl(4, " pluss noe mer tekst")
                 )
             )
         )
@@ -214,11 +219,11 @@ class UpdateRenderedLetterTest {
     @Test
     fun `should fail when edited content has different type than the rendered content with same ID`() {
         val next = letter(
-            Title1(
+            Title1Impl(
                 1, true, listOf(
-                    Variable(1, "En tittel "),
-                    Variable(2, "for deg "),
-                    Literal(3, "og meg!")
+                    VariableImpl(1, "En tittel "),
+                    VariableImpl(2, "for deg "),
+                    LiteralImpl(3, "og meg!")
                 )
             )
         )
@@ -238,11 +243,11 @@ class UpdateRenderedLetterTest {
     @Test
     fun `new edited literal added before a variable should be kept before that variable`() {
         val next = letter(
-            Title1(
+            Title1Impl(
                 1, true, listOf(
-                    Variable(1, "En tittel "),
-                    Variable(2, "for deg "),
-                    Literal(3, "og meg!")
+                    VariableImpl(1, "En tittel "),
+                    VariableImpl(2, "for deg "),
+                    LiteralImpl(3, "og meg!")
                 )
             )
         )
@@ -263,12 +268,12 @@ class UpdateRenderedLetterTest {
     @Test
     fun `new edited literal added after a rendered content should keep relative position`() {
         val next = letter(
-            Title1(
+            Title1Impl(
                 1, true, listOf(
-                    Variable(1, "En tittel "),
-                    Variable(2, "for deg "),
-                    Literal(3, "og meg!"),
-                    Literal(4, "ny rendered literal"),
+                    VariableImpl(1, "En tittel "),
+                    VariableImpl(2, "for deg "),
+                    LiteralImpl(3, "og meg!"),
+                    LiteralImpl(4, "ny rendered literal"),
                 )
             )
         )
@@ -300,10 +305,10 @@ class UpdateRenderedLetterTest {
     @Test
     fun `can change type of unedited block`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true, listOf(
-                    Literal(1, "Noe tekst"),
-                    Variable(2, "en variabel"),
+                    LiteralImpl(1, "Noe tekst"),
+                    VariableImpl(2, "en variabel"),
                 )
             )
         )
@@ -324,12 +329,12 @@ class UpdateRenderedLetterTest {
     @Test
     fun `an edited block where type is changed from paragraph to title1 then any fresh nontext content is ignored`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true, listOf(
-                    Literal(1, "Noe tekst "),
-                    Variable(2, "med en oppdatert variabel"),
-                    Literal(3, " og noe mer tekst"),
-                    ItemList(4, listOf(Item(41, listOf(Literal(411, "en punktliste"))))),
+                    LiteralImpl(1, "Noe tekst "),
+                    VariableImpl(2, "med en oppdatert variabel"),
+                    LiteralImpl(3, " og noe mer tekst"),
+                    ItemListImpl(4, listOf(ItemImpl(41, listOf(LiteralImpl(411, "en punktliste"))))),
                 )
             )
         )
@@ -357,12 +362,12 @@ class UpdateRenderedLetterTest {
     @Test
     fun `an edited block where type is changed from paragraph to title1 can merge`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true, listOf(
-                    Literal(1, "Noe tekst "),
-                    Variable(2, "med en oppdatert variabel"),
-                    Literal(3, " og noe mer tekst"),
-                    Literal(4, " pluss noe ny tekst"),
+                    LiteralImpl(1, "Noe tekst "),
+                    VariableImpl(2, "med en oppdatert variabel"),
+                    LiteralImpl(3, " og noe mer tekst"),
+                    LiteralImpl(4, " pluss noe ny tekst"),
                 )
             )
         )
@@ -391,11 +396,11 @@ class UpdateRenderedLetterTest {
     @Test
     fun `a new edited block should be kept`() {
         val next = letter(
-            Title1(
+            Title1Impl(
                 1, true, listOf(
-                    Literal(1, "En tittel "),
-                    Variable(2, "for deg "),
-                    Literal(3, "og meg!")
+                    LiteralImpl(1, "En tittel "),
+                    VariableImpl(2, "for deg "),
+                    LiteralImpl(3, "og meg!")
                 )
             )
         )
@@ -426,16 +431,16 @@ class UpdateRenderedLetterTest {
     @Test
     fun `new block from rendered should be added`() {
         val next = letter(
-            Title1(
+            Title1Impl(
                 1, true, listOf(
-                    Literal(1, "En tittel "),
-                    Variable(2, "for deg "),
-                    Literal(3, "og meg!")
+                    LiteralImpl(1, "En tittel "),
+                    VariableImpl(2, "for deg "),
+                    LiteralImpl(3, "og meg!")
                 )
             ),
-            Title1(
+            Title1Impl(
                 3, true, listOf(
-                    Literal(1, "En ny tittel "),
+                    LiteralImpl(1, "En ny tittel "),
                 )
             ),
         )
@@ -480,16 +485,16 @@ class UpdateRenderedLetterTest {
     @Test
     fun `keeps new edited blocks in positions relative to original blocks`() {
         val next = letter(
-            Title1(
+            Title1Impl(
                 1, true, listOf(
-                    Literal(1, "En tittel "),
-                    Variable(2, "for deg "),
-                    Literal(3, "og meg!")
+                    LiteralImpl(1, "En tittel "),
+                    VariableImpl(2, "for deg "),
+                    LiteralImpl(3, "og meg!")
                 )
             ),
-            Title1(
+            Title1Impl(
                 3, true, listOf(
-                    Literal(1, "En ny tittel "),
+                    LiteralImpl(1, "En ny tittel "),
                 )
             ),
         )
@@ -534,21 +539,21 @@ class UpdateRenderedLetterTest {
     @Test
     fun `new edited blocks belongs to the previous rendered block`() {
         val next = letter(
-            Title1(
+            Title1Impl(
                 1, true, listOf(
-                    Literal(1, "En tittel "),
-                    Variable(2, "for deg "),
-                    Literal(3, "og meg!")
+                    LiteralImpl(1, "En tittel "),
+                    VariableImpl(2, "for deg "),
+                    LiteralImpl(3, "og meg!")
                 )
             ),
-            Title1(
+            Title1Impl(
                 3, true, listOf(
-                    Literal(1, "Dette er en ny block før id:4 "),
+                    LiteralImpl(1, "Dette er en ny block før id:4 "),
                 )
             ),
-            Title1(
+            Title1Impl(
                 4, true, listOf(
-                    Literal(1, "En tittel "),
+                    LiteralImpl(1, "En tittel "),
                 )
             ),
         )
@@ -602,16 +607,16 @@ class UpdateRenderedLetterTest {
     @Test
     fun `unedited content not present in next render are removed`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true, listOf(
-                    Literal(11, "Første"),
-                    Variable(12, "en variabel"),
-                    Literal(13, "Andre"),
-                    Variable(14, "andre variabel"),
-                    Literal(15, "Tredje"),
-                    ItemList(
+                    LiteralImpl(11, "Første"),
+                    VariableImpl(12, "en variabel"),
+                    LiteralImpl(13, "Andre"),
+                    VariableImpl(14, "andre variabel"),
+                    LiteralImpl(15, "Tredje"),
+                    ItemListImpl(
                         16, listOf(
-                            Item(160, listOf(Literal(161, "punkt 1"), Literal(162, "punkt 2"), Literal(163, "punkt 3"))),
+                            ItemImpl(160, listOf(LiteralImpl(161, "punkt 1"), LiteralImpl(162, "punkt 2"), LiteralImpl(163, "punkt 3"))),
                         )
                     ),
                 )
@@ -649,12 +654,12 @@ class UpdateRenderedLetterTest {
     @Test
     fun `content edited to empty string is kept after render`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true,
                 listOf(
-                    Literal(11, "lit1"),
-                    Variable(12, "var1"),
-                    Literal(13, "rediger til tom streng"),
+                    LiteralImpl(11, "lit1"),
+                    VariableImpl(12, "var1"),
+                    LiteralImpl(13, "rediger til tom streng"),
                 ),
             ),
         )
@@ -675,16 +680,16 @@ class UpdateRenderedLetterTest {
     @Test
     fun `deleted blocks are not included in updated letter`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true,
                 listOf(
-                    Literal(11, "lit1"),
+                    LiteralImpl(11, "lit1"),
                 ),
             ),
-            Paragraph(
+            ParagraphImpl(
                 2, true,
                 listOf(
-                    Literal(21, "lit2"),
+                    LiteralImpl(21, "lit2"),
                 ),
             ),
         )
@@ -704,23 +709,23 @@ class UpdateRenderedLetterTest {
     @Test
     fun `deleted content are not included in updated letter`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true,
                 listOf(
-                    Literal(11, "1lit1"),
-                    Literal(12, "1lit2"),
+                    LiteralImpl(11, "1lit1"),
+                    LiteralImpl(12, "1lit2"),
                 ),
             ),
-            Title1(
+            Title1Impl(
                 2, true, listOf(
-                    Literal(21, "2lit1"),
-                    Literal(22, "2lit2"),
+                    LiteralImpl(21, "2lit1"),
+                    LiteralImpl(22, "2lit2"),
                 )
             ),
-            Block.Title2(
+            Title2Impl(
                 3, true, listOf(
-                    Literal(31, "3lit1"),
-                    Literal(32, "3lit2"),
+                    LiteralImpl(31, "3lit1"),
+                    LiteralImpl(32, "3lit2"),
                 )
             ),
         )
@@ -751,13 +756,13 @@ class UpdateRenderedLetterTest {
     @Test
     fun `deleted items are not included in updated letter`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true,
                 listOf(
-                    ItemList(
+                    ItemListImpl(
                         11, listOf(
-                            Item(111, listOf(Literal(1111, "item 1"))),
-                            Item(112, listOf(Literal(1121, "item 2"))),
+                            ItemImpl(111, listOf(LiteralImpl(1111, "item 1"))),
+                            ItemImpl(112, listOf(LiteralImpl(1121, "item 2"))),
                         )
                     ),
                 ),
@@ -783,13 +788,13 @@ class UpdateRenderedLetterTest {
     @Test
     fun `multiple new rendered items are included`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true,
                 listOf(
-                    Literal(11, "første"),
-                    Literal(12, "andre"),
-                    Literal(13, "tredje"),
-                    Literal(14, "fjerde"),
+                    LiteralImpl(11, "første"),
+                    LiteralImpl(12, "andre"),
+                    LiteralImpl(13, "tredje"),
+                    LiteralImpl(14, "fjerde"),
                 )
             )
         )
@@ -818,14 +823,14 @@ class UpdateRenderedLetterTest {
     @Test
     fun `variables moved to a new block will be updated to new value from rendered`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true,
                 listOf(
-                    Literal(11, "en literal"),
-                    Variable(12, "oppdatert variabel"),
-                    Variable(1311, "oppdatert variabel 2"),
-                    Variable(141111, "oppdatert variabel 3"),
-                    Variable(14211, "oppdatert variabel 4"),
+                    LiteralImpl(11, "en literal"),
+                    VariableImpl(12, "oppdatert variabel"),
+                    VariableImpl(1311, "oppdatert variabel 2"),
+                    VariableImpl(141111, "oppdatert variabel 3"),
+                    VariableImpl(14211, "oppdatert variabel 4"),
                 )
             )
         )
@@ -891,17 +896,17 @@ class UpdateRenderedLetterTest {
     @Test
     fun `variables moved to a new block no longer present in rendered cannot be updated and is converted to literal`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true,
                 listOf(
-                    Literal(11, "en literal"),
+                    LiteralImpl(11, "en literal"),
                 )
             )
         )
         val edited = editedLetter(
             E_Paragraph(
                 null, true,
-                listOf(E_Literal(11, "en literal",), E_Variable(12, "en variabel"))
+                listOf(E_Literal(11, "en literal"), E_Variable(12, "en variabel"))
             ),
             deleted = setOf(1),
         )
@@ -918,16 +923,16 @@ class UpdateRenderedLetterTest {
     @Test
     fun `variables moved to another parent block will be updated`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true,
                 listOf(
-                    Literal(11, "en literal"),
-                    ItemList(12, listOf(Item(121, listOf(Variable(1211, "oppdatert v1"))))),
+                    LiteralImpl(11, "en literal"),
+                    ItemListImpl(12, listOf(ItemImpl(121, listOf(VariableImpl(1211, "oppdatert v1"))))),
                 )
             ),
-            Paragraph(
+            ParagraphImpl(
                 2, true,
-                listOf(Literal(21, "to literal")),
+                listOf(LiteralImpl(21, "to literal")),
             )
         )
         val edited = editedLetter(
@@ -958,11 +963,11 @@ class UpdateRenderedLetterTest {
     @Test
     fun `variables moved from itemList to parent block will be updated`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true,
                 listOf(
-                    Literal(11, "en literal"),
-                    ItemList(12, listOf(Item(121, listOf(Variable(1211, "oppdatert v1"))))),
+                    LiteralImpl(11, "en literal"),
+                    ItemListImpl(12, listOf(ItemImpl(121, listOf(VariableImpl(1211, "oppdatert v1"))))),
                 )
             )
         )
@@ -986,9 +991,9 @@ class UpdateRenderedLetterTest {
     @Test
     fun `variables moved to another parent block no longer present will be updated if variable is present in rendered`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true,
-                listOf(Literal(11, "en literal"), Variable(12, "oppdatert v1")),
+                listOf(LiteralImpl(11, "en literal"), VariableImpl(12, "oppdatert v1")),
             ),
         )
         val edited = editedLetter(
@@ -1018,13 +1023,13 @@ class UpdateRenderedLetterTest {
     @Test
     fun `content moved into an item list is kept`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true,
                 listOf(
-                    Literal(11, "lit1"),
-                    Variable(12, "var2"),
-                    ItemList(13, listOf(Item(131, listOf(Literal(1311, "punkt1"))))),
-                    Literal(14, "lit2"),
+                    LiteralImpl(11, "lit1"),
+                    VariableImpl(12, "var2"),
+                    ItemListImpl(13, listOf(ItemImpl(131, listOf(LiteralImpl(1311, "punkt1"))))),
+                    LiteralImpl(14, "lit2"),
                 )
             )
         )
@@ -1049,9 +1054,9 @@ class UpdateRenderedLetterTest {
     @Test
     fun `content moved to another block is kept`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true,
-                listOf(Literal(11, "lit1"), Variable(12, "var2"), ItemList(13, listOf(Item(131, listOf(Literal(1311, "punkt1"))))), Literal(14, "lit2"))
+                listOf(LiteralImpl(11, "lit1"), VariableImpl(12, "var2"), ItemListImpl(13, listOf(ItemImpl(131, listOf(LiteralImpl(1311, "punkt1"))))), LiteralImpl(14, "lit2"))
             )
         )
         val edited = editedLetter(
@@ -1074,17 +1079,17 @@ class UpdateRenderedLetterTest {
     @Test
     fun `parentIds will be fixed for edited letters that does not have them`() {
         val next = letter(
-            Paragraph(
+            ParagraphImpl(
                 1, true,
                 listOf(
-                    Literal(11, "lit1"),
-                    Variable(12, "var2"),
-                    ItemList(13, listOf(Item(131, listOf(Literal(1311, "punkt1"))))),
-                    Literal(14, "lit2"),
-                    Table(
+                    LiteralImpl(11, "lit1"),
+                    VariableImpl(12, "var2"),
+                    ItemListImpl(13, listOf(ItemImpl(131, listOf(LiteralImpl(1311, "punkt1"))))),
+                    LiteralImpl(14, "lit2"),
+                    TableImpl(
                         15,
-                        listOf(Row(152, listOf(Cell(1521, listOf(Literal(15211, "cell 1")))))),
-                        Header(151, listOf(ColumnSpec(1511, Cell(15111, listOf(Literal(151111, "title cell 1"))), ColumnAlignment.LEFT, 1))),
+                        listOf(RowImpl(152, listOf(CellImpl(1521, listOf(LiteralImpl(15211, "cell 1")))))),
+                        HeaderImpl(151, listOf(ColumnSpecImpl(1511, CellImpl(15111, listOf(LiteralImpl(151111, "title cell 1"))), ColumnAlignment.LEFT, 1))),
                     ),
                 )
             )

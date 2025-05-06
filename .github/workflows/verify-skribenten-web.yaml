@@ -20,7 +20,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           registry-url: https://npm.pkg.github.com/
           scope: '@navikt'
       - name: Install bff dependencies
@@ -52,7 +52,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: skribenten-web/frontend
       - name: Install dependencies
@@ -60,7 +60,7 @@ jobs:
         run: npm ci
 
       - name: Cypress run e2e tests
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@6d4f8f59600b4259fe501be43a99bfc6c05c5927
         with:
           working-directory: skribenten-web/frontend
           install: false
@@ -69,7 +69,7 @@ jobs:
           start: npm run dev
 
       - name: Cypress run component tests
-        uses: cypress-io/github-action@v6
+        uses: cypress-io/github-action@6d4f8f59600b4259fe501be43a99bfc6c05c5927
         with:
           working-directory: skribenten-web/frontend
           install: false

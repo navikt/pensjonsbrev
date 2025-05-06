@@ -18,6 +18,7 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTOSelectors.bosattUtland
 
 object OmstillingsstoenadFellesFraser {
 
@@ -188,20 +189,44 @@ object OmstillingsstoenadFellesFraser {
                 text(
                     Bokmal to "Hver høst sjekker Nav inntektsopplysningene i skatteoppgjøret ditt for å se " +
                             "om du har fått utbetalt riktig beløp i omstillingsstønad året før. Hvis du har fått " +
-                            "for lite utbetalt, får du en etterbetaling. Har du fått for mye utbetalt, må du betale " +
+                            "for lite utbetalt, kan du få en etterbetaling. Har du fått for mye utbetalt, kan du måtte betale " +
                             "tilbake. Du kan finne mer informasjon om etteroppgjør på " +
                             "${Constants.OMS_ETTEROPPGJOER_URL}.",
                     Nynorsk to "Kvar haust sjekkar Nav inntektsopplysningane i skatteoppgjeret ditt for å sjå " +
                             "om du fekk utbetalt rett beløp i omstillingsstønad året før. Dersom du fekk utbetalt " +
-                            "for lite, får du ei etterbetaling. Dersom du fekk utbetalt meir enn du hadde rett på, " +
-                            "må du betale tilbake. Du kan lese meir om etteroppgjer på " +
+                            "for lite, kan du få ei etterbetaling. Dersom du fekk utbetalt meir enn du hadde rett på, " +
+                            "kan du betale tilbake. Du kan lese meir om etteroppgjer på " +
                             "${Constants.OMS_ETTEROPPGJOER_URL}.",
                     English to "Each autumn, Nav checks income data from your tax return to verify the correct " +
                             "amount of adjustment allowance for the previous year. If you received less than you " +
-                            "are owed, you will receive Back Pay. If you received more than you were owed, you must " +
+                            "are owed, you may receive Back Pay. If you received more than you were owed, you may have to " +
                             "repay the excess to Nav. You can find more information about final settlements online: " +
                             "${Constants.OMS_ETTEROPPGJOER_URL}.",
                 )
+            }
+        }
+    }
+
+    data class HarDuIkkeBankID(
+        val bosattUtland: Expression<Boolean>
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(bosattUtland) {
+                paragraph {
+                    text(
+                        Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, må du sende brev til Nav familie- og pensjonsytelser, Postboks 6600 Etterstad, 0607 Oslo, Norway.",
+                        Nynorsk to "Dersom du ikkje har BankID eller andre måtar å logge deg på heimesida vår, nav.no, må du sende brev til Nav familie- og pensjonsytelser, Postboks 6600 Etterstad, 0607 Oslo, Norway.",
+                        English to "If you do not have BankID or other means of logging into our home page nav.no, you must send a letter to Nav familie- og pensjonsytelser, P.O. Box 6600 Etterstad, 0607 Oslo, Norway.",
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, må du sende brev til Nav skanning, Postboks 1400, 0109 OSLO.",
+                        Nynorsk to "Dersom du ikkje har BankID eller andre måtar å logge deg på heimesida vår, nav.no, må du sende brev til Nav skanning, Postboks 1400, 0109 OSLO.",
+                        English to "If you do not have BankID or other means of logging into our home page nav.no, you must send a letter to Nav skanning, P.O. Box 1400, 0109 OSLO, Norway.",
+                    )
+                }
             }
         }
     }

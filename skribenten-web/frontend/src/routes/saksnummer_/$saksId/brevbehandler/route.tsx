@@ -7,22 +7,19 @@ import { useRef, useState } from "react";
 import { z } from "zod";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getNavn } from "~/api/skribenten-api-endpoints";
+import { getNavnQuery } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
 import { BrevForhåndsvisning } from "./-components/BrevForhåndsvisning";
 import { FerdigstillOgSendBrevButton, FerdigstillOgSendBrevModal } from "./-components/FerdigstillBrev";
 
-export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler")({
+export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
   component: Brevbehandler,
   loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
     const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
 
-    queryClient.prefetchQuery({
-      queryKey: getNavn.queryKey(sakContext.sak.saksId.toString()),
-      queryFn: () => getNavn.queryFn(sakContext.sak.saksId.toString()),
-    });
+    queryClient.prefetchQuery(getNavnQuery(sakContext.sak.saksId.toString()));
 
     return sakContext;
   },
@@ -33,7 +30,7 @@ export const Route = createFileRoute("/saksnummer/$saksId/brevbehandler")({
 
 function Brevbehandler() {
   const { saksId } = Route.useParams();
-  const { brevId } = Route.useSearch();
+  const { brevId, enhetsId, vedtaksId } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
 
@@ -105,9 +102,13 @@ function Brevbehandler() {
           justify="space-between"
         >
           <Button
-            onClick={() => {
-              navigate({ to: "/saksnummer/$saksId/brevvelger", params: { saksId: saksId } });
-            }}
+            onClick={() =>
+              navigate({
+                to: "/saksnummer/$saksId/brevvelger",
+                params: { saksId: saksId },
+                search: { enhetsId, vedtaksId },
+              })
+            }
             size="small"
             type="button"
             variant="secondary"

@@ -65,6 +65,19 @@ export const ScalarEditor = ({
         <ControlledDatePicker field={field} fieldType={fieldType} onSubmit={submitOnChange} prependName={prependName} />
       );
     }
+    case "YEAR": {
+      return (
+        <AutoSavingTextField
+          field={field}
+          fieldType={fieldType}
+          onSubmit={submitOnChange}
+          prependName={prependName}
+          step={1}
+          timeoutTimer={2000}
+          type={"number"}
+        />
+      );
+    }
   }
 };
 
@@ -84,7 +97,7 @@ const SwitchField = (props: { prependName?: string; field: string; fieldType: TS
               props.onSubmit?.();
             }}
           >
-            {convertFieldToReadableLabel(props.field)}
+            {props.fieldType.displayText ?? convertFieldToReadableLabel(props.field)}
           </Switch>
         )}
       />
@@ -141,7 +154,7 @@ export const AutoSavingTextField = (props: {
           autoComplete="off"
           error={fieldState.error?.message}
           inputMode={props.type === "number" ? "numeric" : undefined}
-          label={convertFieldToReadableLabel(fieldName)}
+          label={props.fieldType.displayText ?? convertFieldToReadableLabel(fieldName)}
           onChange={(e) => (e.target.value ? field.onChange(e.target.value) : field.onChange(null))}
           size="small"
           step={props.step}
@@ -150,17 +163,39 @@ export const AutoSavingTextField = (props: {
       )}
       rules={{
         required: props.fieldType.nullable ? false : "Må oppgis",
-        pattern:
-          props.fieldType.kind === "NUMBER"
-            ? {
-                value: /^\d+$/,
-                message: "Må være et tall",
-              }
-            : undefined,
+        pattern: valideringsmoenster(props),
       }}
     />
   );
 };
+
+function valideringsmoenster(props: {
+  prependName?: string;
+  field: string;
+  fieldType: TScalar;
+  type: "number" | "text";
+  step?: number;
+  timeoutTimer: number;
+  onSubmit?: () => void;
+}) {
+  switch (props.fieldType.kind) {
+    case "NUMBER":
+      return {
+        value: /^\d+$/,
+        message: "Må være et tall",
+      };
+    case "DOUBLE":
+    case "STRING":
+    case "BOOLEAN":
+    case "DATE":
+      return undefined;
+    case "YEAR":
+      return {
+        value: /^\d{4}$/,
+        message: "Må være et årstall, fire siffer",
+      };
+  }
+}
 
 /**
  * Componenten har mulighet til å autolagre endringer i feltet etter en gitt timeout dersom onSubmit sendes med.
@@ -208,7 +243,7 @@ const ControlledDatePicker = (props: {
         <DatePickerEditor
           defaultValue={defaultValue}
           error={fieldState.error?.message}
-          label={convertFieldToReadableLabel(fieldName)}
+          label={props.fieldType.displayText ?? convertFieldToReadableLabel(fieldName)}
           onChange={field.onChange}
         />
       )}

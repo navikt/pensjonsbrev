@@ -8,6 +8,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.api.restModule
 import no.nav.pensjon.brev.pdfbygger.kafka.kafkaModule
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
@@ -33,6 +34,34 @@ fun Application.module() {
         it.log.info("Application preparing to shutdown gracefully")
     }
 
+/*
+    install(ContentNegotiation) {
+        jackson {
+            registerModule(JavaTimeModule())
+            registerModule(LetterMarkupModule)
+            registerModule(FellesModule)
+            enable(SerializationFeature.INDENT_OUTPUT)
+            disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+        }
+    }
+
+    install(Compression) {
+        gzip {
+            priority = 1.0
+            matchContentType(
+                ContentType.Application.Json
+            )
+        }
+        deflate {
+            priority = 10.0
+            minimumSize(1024)
+            matchContentType(
+                ContentType.Application.Json
+            )
+        }
+    }*/ // TODO flytt
+
     val prometheusMeterRegistry = PrometheusMeterRegistry(PrometheusConfig.DEFAULT)
     install(MicrometerMetrics) {
         registry = prometheusMeterRegistry
@@ -56,6 +85,23 @@ fun Application.module() {
     } else {
         restModule(latexCompileService, prometheusMeterRegistry)
     }
-
+/* TODO flytt
+private suspend fun RoutingContext.handleResult(
+    result: PDFCompilationResponse,
+    logger: Logger,
+) {
+    when (result) {
+        is PDFCompilationResponse.Success -> call.respond(result.pdfCompilationOutput)
+        is PDFCompilationResponse.Failure.Client -> {
+            logger.info("Client error: ${result.reason}")
+            if (result.output?.isNotBlank() == true) {
+                logger.info(result.output)
+            }
+            if (result.error?.isNotBlank() == true) {
+                logger.info(result.error)
+            }
+            call.respond(HttpStatusCode.BadRequest, result)
+        }
 }
+ */
 

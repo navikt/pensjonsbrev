@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { ArrowCirclepathIcon, ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyLong, Box, Button, Heading, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { type Dispatch, type SetStateAction, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -18,7 +18,7 @@ import {
   tilbakestillBrev,
 } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
-import { getSakContext } from "~/api/skribenten-api-endpoints";
+import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -32,13 +32,17 @@ import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, Saksbehand
 import { type EditedLetter } from "~/types/brevbakerTypes";
 import { queryFold } from "~/utils/tanstackUtils";
 
-export const Route = createFileRoute("/saksnummer/$saksId/brev/$brevId")({
-  parseParams: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
+export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
+  params: {
+    parse: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
+  },
   component: RedigerBrevPage,
 });
 
 function RedigerBrevPage() {
   const { brevId, saksId } = Route.useParams();
+  const { enhetsId, vedtaksId } = Route.useSearch();
+  const navigate = Route.useNavigate();
   const brevQuery = useQuery({
     queryKey: getBrev.queryKey(brevId),
     queryFn: () => getBrev.queryFn(saksId, brevId),
@@ -80,13 +84,17 @@ function RedigerBrevPage() {
             <VStack align="start" gap="2">
               <Label size="small">Brevet er arkivert, og kan derfor ikke redigeres.</Label>
               <Button
-                as={Link}
                 css={css`
                   padding: 4px 0;
                 `}
-                params={{ saksId: saksId }}
+                onClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevbehandler",
+                    params: { saksId },
+                    search: { enhetsId, vedtaksId },
+                  })
+                }
                 size="small"
-                to="/saksnummer/$saksId/brevbehandler"
                 variant="tertiary"
               >
                 Gå til brevbehandler
@@ -97,12 +105,13 @@ function RedigerBrevPage() {
       }
       return <ApiError error={error} title={"En feil skjedde ved henting av brev"} />;
     },
-    success: (data) => <RedigerBrev brev={data} doReload={brevQuery.refetch} saksId={saksId} vedtaksId={undefined} />,
+    success: (data) => <RedigerBrev brev={data} doReload={brevQuery.refetch} saksId={saksId} vedtaksId={vedtaksId} />,
   });
 }
 
 const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: ReservasjonResponse; doRetry: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
+  const { enhetsId, vedtaksId } = Route.useSearch();
   if (reservasjon) {
     return (
       <Modal
@@ -121,7 +130,11 @@ const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: Reservasjo
           <Button onClick={doRetry} type="button">
             Ja, åpne på nytt
           </Button>
-          <Button onClick={() => navigate({ to: BrevvelgerRoute.fullPath })} type="button" variant="tertiary">
+          <Button
+            onClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
+            type="button"
+            variant="tertiary"
+          >
             Nei, gå til brevbehandler
           </Button>
         </Modal.Footer>
@@ -201,18 +214,18 @@ function RedigerBrev({
 }) {
   const queryClient = useQueryClient();
   const navigate = useNavigate({ from: Route.fullPath });
+  const { enhetsId } = Route.useSearch();
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brev));
 
   const brevmal = useQuery({
-    queryKey: getSakContext.queryKey(saksId, vedtaksId),
-    queryFn: () => getSakContext.queryFn(saksId, vedtaksId),
+    ...getSakContextQuery(saksId, vedtaksId),
     select: (data) => data.brevMetadata.find((brevmal) => brevmal.id === brev.info.brevkode),
   });
 
   const showDebug = useSearch({
     strict: false,
-    select: (search: { debug?: string | boolean }) => search?.["debug"] === "true" || search?.["debug"] === true,
+    select: (search: Record<string, unknown>) => search?.["debug"] === "true" || search?.["debug"] === true,
   });
 
   const saksbehandlerValgMutation = useHurtiglagreMutation(brev.info.id, setEditorState, oppdaterSaksbehandlerValg);
@@ -333,7 +346,7 @@ function RedigerBrev({
             navigate({
               to: "/saksnummer/$saksId/brevbehandler",
               params: { saksId },
-              search: { brevId: brev.info.id },
+              search: { brevId: brev.info.id, enhetsId, vedtaksId },
             }),
           ),
         )}
@@ -383,7 +396,7 @@ function RedigerBrev({
               error={error}
               freeze={freeze}
               setEditorState={setEditorState}
-              showDebug={showDebug}
+              showDebug={showDebug ?? false}
             />
           </div>
           <HStack
@@ -413,13 +426,13 @@ function RedigerBrev({
             </Button>
             <HStack gap="2" justify={"end"}>
               <Button
-                onClick={() => {
+                onClick={() =>
                   navigate({
                     to: "/saksnummer/$saksId/brevvelger",
                     params: { saksId: saksId },
                     search: (s) => ({ ...s, brevId: brev.info.id.toString() }),
-                  });
-                }}
+                  })
+                }
                 size="small"
                 type="button"
                 variant="tertiary"
@@ -514,6 +527,7 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
             type: "scalar",
             nullable: false,
             kind: "STRING",
+            displayText: null,
           }}
           onSubmit={props.submitOnChange}
           timeoutTimer={2500}
@@ -540,6 +554,7 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
             type: "scalar",
             nullable: false,
             kind: "STRING",
+            displayText: null,
           }}
           onSubmit={props.submitOnChange}
           timeoutTimer={2500}

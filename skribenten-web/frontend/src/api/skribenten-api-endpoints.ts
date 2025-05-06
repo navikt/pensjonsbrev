@@ -1,6 +1,5 @@
 // "When accessing a member from an await expression, the await expression has to be parenthesized, which is not readable."
 // For the purpose of this file it is convenient to be able to access the data property of axios response as a one-liners.
-/* eslint-disable unicorn/no-await-expression-member*/
 
 import type { AxiosResponse } from "axios";
 import axios, { AxiosError } from "axios";
@@ -11,7 +10,6 @@ import type {
   Enhet,
   FinnSamhandlerRequestDto,
   FinnSamhandlerResponseDto,
-  HentSamhandlerAdresseRequestDto,
   HentSamhandlerAdresseResponseDto,
   HentSamhandlerRequestDto,
   HentsamhandlerResponseDto,
@@ -88,32 +86,31 @@ export const orderLetterKeys = {
   brevsystem: (brevsystem: string) => [...orderLetterKeys.all, brevsystem] as const,
 };
 
-export const getSakContext = {
-  queryKey: saksnummerKeys.id,
-  queryFn: async (saksId: string, vedtaksId: string | undefined) =>
+export const getSakContextQuery = (saksId: string, vedtaksId: string | undefined) => ({
+  queryKey: saksnummerKeys.id(saksId, vedtaksId),
+  queryFn: async () =>
     (await axios.get<SakContextDto>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}`, { params: { vedtaksId } })).data,
   staleTime: 5000,
-};
+});
 
-export const getNavn = {
-  queryKey: navnKeys.saksId,
-  queryFn: async (saksId: string | number) =>
-    (await axios.get<string>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/navn`)).data,
-};
+export const getNavnQuery = (saksId: string) => ({
+  queryKey: navnKeys.saksId(saksId),
+  queryFn: async () => (await axios.get<string>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/navn`)).data,
+});
 
-export const getPreferredLanguage = {
-  queryKey: preferredLanguageKeys.saksId,
-  queryFn: async (saksId: string) =>
+export const getPreferredLanguageQuery = (saksId: string) => ({
+  queryKey: preferredLanguageKeys.saksId(saksId),
+  queryFn: async () =>
     (await axios.get<PreferredLanguage>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/foretrukketSpraak`)).data,
-};
+});
 
-export const getKontaktAdresse = {
-  queryKey: adresseKeys.saksId,
-  queryFn: async (saksId: string) =>
+export const getKontaktAdresseQuery = (saksId: string) => ({
+  queryKey: adresseKeys.saksId(saksId),
+  queryFn: async () =>
     (await axios.get<KontaktAdresseResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/adresse`)).data,
-};
+});
 
-export const getFavoritter = {
+export const getFavoritterQuery = {
   queryKey: favoritterKeys.all,
   queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`)).data,
 };
@@ -196,12 +193,12 @@ export const hentSamhandler = {
   },
 };
 
-export const hentSamhandlerAdresse = {
-  queryKey: samhandlerAdresseKeys.idTSSEkstern,
-  queryFn: async (request: HentSamhandlerAdresseRequestDto) => {
+export const hentSamhandlerAdresseQuery = (idTSSEkstern: string) => ({
+  queryKey: samhandlerAdresseKeys.idTSSEkstern(idTSSEkstern),
+  queryFn: async () => {
     const response = await axios.post<HentSamhandlerAdresseResponseDto>(
       `${SKRIBENTEN_API_BASE_PATH}/hentSamhandlerAdresse`,
-      request,
+      { idTSSEkstern },
     );
 
     if (response.data.failureType) {
@@ -210,7 +207,7 @@ export const hentSamhandlerAdresse = {
 
     return response.data.adresse;
   },
-};
+});
 
 export const hentLandForManuellUtfyllingAvAdresse = {
   queryKey: ["LANDKODER_OG_NAVN"],

@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.model.Api.NavAnsatt
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 class Dto2ApiService(
     private val brevbakerService: BrevbakerService,
@@ -25,6 +26,7 @@ class Dto2ApiService(
 
     suspend fun toApi(info: Dto.BrevInfo): Api.BrevInfo {
         val template = brevbakerService.getRedigerbarTemplate(info.brevkode)
+            ?: throw BrevredigeringException.BrevmalFinnesIkke("Fant ikke mal for brevkode i brevbaker: ${info.brevkode}")
 
         return Api.BrevInfo(
             id = info.id,
@@ -33,10 +35,17 @@ class Dto2ApiService(
             sistredigertAv = hentNavAnsatt(info.sistredigertAv),
             sistredigert = info.sistredigert,
             brevkode = info.brevkode,
-            brevtittel = template?.metadata?.displayTitle ?: info.brevkode.kode(),
+            brevtittel = template.metadata.displayTitle,
+            brevtype = template.metadata.brevtype,
             status = when {
                 info.journalpostId != null -> BrevStatus.Arkivert
-                info.laastForRedigering -> BrevStatus.Klar
+                info.attestertAv != null -> BrevStatus.Klar(attestertAv = hentNavAnsatt(info.attestertAv))
+                info.laastForRedigering ->
+                    if (info.vedtaksId != null && template.metadata.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
+                        BrevStatus.Attestering
+                    } else {
+                        BrevStatus.Klar()
+                    }
                 info.redigeresAv != null -> BrevStatus.UnderRedigering(hentNavAnsatt(info.redigeresAv))
                 else -> BrevStatus.Kladd
             },

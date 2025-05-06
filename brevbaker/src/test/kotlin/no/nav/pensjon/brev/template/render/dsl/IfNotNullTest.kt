@@ -1,23 +1,22 @@
 package no.nav.pensjon.brev.template.render.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
-import no.nav.pensjon.brev.template.render.Fixtures.felles
-import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.ContentOrControlStructure.*
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.HasModel
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.render.Fixtures.felles
 import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test1
 import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test2
 import no.nav.pensjon.brev.template.render.hasBlocks
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -61,53 +60,9 @@ class IfNotNullTest {
     }
 
     @Test
-    fun `ifNotNull and orIfNotNull adds a conditional checks`() {
-        val navn = Expression.FromScope.Argument<NullBrevDto>().test1
-        val noegreier = Expression.FromScope.Argument<NullBrevDto>().test2
-
-        @Suppress("UNCHECKED_CAST") // (navn as Expression<String>)
-        val expected = template.copy(
-            outline = listOf(
-                Content(
-                    Element.OutlineContent.Paragraph(
-                        listOf(
-                            newText(Bokmal to "alltid med"),
-                            Conditional(
-                                predicate = navn.notNull(),
-                                showIf = listOf(
-                                    Content(
-                                        Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
-                                            Bokmal to "hei: ".expr() + (navn as Expression<String>)
-                                        )
-                                    )
-                                ),
-                                showElse = listOf(
-                                    Conditional(
-                                        predicate = noegreier.notNull(),
-                                        showIf = listOf(
-                                            Content(
-                                                Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(
-                                                    Bokmal to "tall: ".expr() + (noegreier as Expression<String>)
-                                                )
-                                            )
-                                        ),
-                                        showElse = emptyList(),
-                                    )
-                                ),
-                            )
-                        )
-                    )
-                )
-            )
-        )
-
-        assertEquals(expected, template)
-    }
-
-    @Test
     fun `ifNotNull renders successfully for non-null value`() {
         assertThat(
-            Letter2Markup.render(Letter(template, NullBrevDto("Ole", null), Bokmal, felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(template, NullBrevDto("Ole", null), Bokmal, felles)).letterMarkup,
             hasBlocks {
                 paragraph {
                     literal("alltid med")
@@ -121,7 +76,7 @@ class IfNotNullTest {
     @Test
     fun `ifNotNull renders successfully but without null-block`() {
         assertThat(
-            Letter2Markup.render(Letter(template, NullBrevDto(null, null), Bokmal, felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(template, NullBrevDto(null, null), Bokmal, felles)).letterMarkup,
             hasBlocks {
                 paragraph {
                     literal("alltid med")
@@ -136,7 +91,7 @@ class IfNotNullTest {
         @Test
         fun `renders when preceding condition is not met and orShowIf condition is met`() {
             assertThat(
-                Letter2Markup.render(Letter(template, NullBrevDto(null, "138513"), Bokmal, felles)).letterMarkup,
+                Letter2Markup.render(LetterImpl(template, NullBrevDto(null, "138513"), Bokmal, felles)).letterMarkup,
                 hasBlocks {
                     paragraph {
                         literal("alltid med")
@@ -150,7 +105,7 @@ class IfNotNullTest {
         @Test
         fun `does not render when preceding condition met`() {
             assertThat(
-                Letter2Markup.render(Letter(template, NullBrevDto("Ole", "138513"), Bokmal, felles)).letterMarkup,
+                Letter2Markup.render(LetterImpl(template, NullBrevDto("Ole", "138513"), Bokmal, felles)).letterMarkup,
                 hasBlocks {
                     paragraph {
                         literal("alltid med")
@@ -164,7 +119,7 @@ class IfNotNullTest {
         @Test
         fun `does not render when preceding condition is not met and orShowIf condition is not met`() {
             assertThat(
-                Letter2Markup.render(Letter(template, NullBrevDto(null, null), Bokmal, felles)).letterMarkup,
+                Letter2Markup.render(LetterImpl(template, NullBrevDto(null, null), Bokmal, felles)).letterMarkup,
                 hasBlocks {
                     paragraph {
                         literal("alltid med")

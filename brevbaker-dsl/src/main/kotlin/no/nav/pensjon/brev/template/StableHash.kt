@@ -44,7 +44,6 @@ interface StableHash {
         fun <K : StableHash?, V : StableHash?> of(map: Map<K, V>): StableHash = MapStableHash(map)
         @JvmName("ofStringMap")
         fun <K : StableHash?> of(map: Map<K, String>): StableHash = StringMapStableHash(map)
-        fun of(selector: TemplateModelSelector<*, *>): StableHash = SelectorStableHash(selector)
         fun of(enum: Enum<*>): StableHash = EnumStableHash(enum)
         fun of(number: Number): StableHash = HashCodeStableHash(number)
         fun of(boolean: Boolean): StableHash = HashCodeStableHash(boolean)
@@ -56,10 +55,6 @@ interface StableHash {
 
 private class HashCodeStableHash(val value: Any) : StableHash {
     override fun stableHashCode() = value.hashCode()
-}
-
-private class SelectorStableHash(val selector: TemplateModelSelector<*, *>) : StableHash {
-    override fun stableHashCode() = selector.stableHashCode()
 }
 
 private class ClassFieldsStableHash(val firstField: StableHash?, vararg val fields: StableHash?) : StableHash {

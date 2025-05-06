@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.maler.fraser.common.BroekText
+import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
@@ -372,11 +374,7 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "Ja",
-                                Nynorsk to "Ja",
-                                English to "Yes",
-                            )
+                            includePhrase(Ja)
                         }
                     }
                 }
@@ -394,11 +392,7 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "Ja",
-                                Nynorsk to "Ja",
-                                English to "Yes",
-                            )
+                            includePhrase(Ja)
                         }
                     }
                 }
@@ -416,11 +410,7 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "Ja",
-                                Nynorsk to "Ja",
-                                English to "Yes",
-                            )
+                            includePhrase(Ja)
                         }
                     }
                 }
@@ -506,11 +496,7 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "Ja",
-                                Nynorsk to "Ja",
-                                English to "Yes",
-                            )
+                            includePhrase(Ja)
                         }
                     }
                 }
@@ -660,10 +646,11 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_tttellereos().format() + "/" + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnevnereos().format(),
-                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_tttellereos().format() + "/" + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnevnereos().format(),
-                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_tttellereos().format() + "/" + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnevnereos().format(),
+                            includePhrase(
+                                BroekText(
+                                    pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_tttellereos(),
+                                    pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnevnereos()
+                                )
                             )
                         }
                     }
@@ -727,10 +714,11 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_tttellernordisk().format() + "/" + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnevnernordisk().format(),
-                                Nynorsk to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_tttellernordisk().format() + "/" + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnevnernordisk().format(),
-                                English to pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_tttellernordisk().format() + "/" + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnevnernordisk().format(),
+                            includePhrase(
+                                BroekText(
+                                    pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_tttellernordisk(),
+                                    pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnevnernordisk()
+                                )
                             )
                         }
                     }
@@ -815,13 +803,11 @@ data class TBU010V(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEngl
                             )
                         }
                         cell {
-                            textExpr(
-                                Bokmal to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_proratabrokteller()
-                                    .format() + "/" + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_proratabroknevner().format(),
-                                Nynorsk to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_proratabrokteller()
-                                    .format() + "/" + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_proratabroknevner().format(),
-                                English to pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_proratabrokteller()
-                                    .format() + "/" + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_proratabroknevner().format(),
+                            includePhrase(
+                                BroekText(
+                                    pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_proratabrokteller(),
+                                    pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_proratabroknevner()
+                                )
                             )
                         }
                     }

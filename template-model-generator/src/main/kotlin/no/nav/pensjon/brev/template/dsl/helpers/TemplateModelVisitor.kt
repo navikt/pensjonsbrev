@@ -6,14 +6,14 @@ import com.google.devtools.ksp.symbol.ClassKind.CLASS
 import com.google.devtools.ksp.symbol.ClassKind.INTERFACE
 import com.google.devtools.ksp.visitor.KSDefaultVisitor
 
-private val SKIPPED_NO_WARN_PACKAGES: Set<String> = setOf("kotlin", "java.util", "java.time")
+private val SKIPPED_NO_WARN_PACKAGES: Set<String> = setOf("kotlin", "java.util", "java.time", "kotlin.collections", "kotlin.ranges")
 private val SKIPPED_NO_WARN_CLASSES: Set<String> = setOf(
     "no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata",
     "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata",
 )
 
 private fun KSPLogger.logSkipped(classDeclaration: KSClassDeclaration) {
-    val message = "Skipping $classDeclaration: can only generate helpers for classes and interfaces"
+    val message = "Skipping ${classDeclaration.qualifiedName?.asString() ?: classDeclaration}: can only generate helpers for classes and interfaces"
 
     if (classDeclaration.packageName.asString() in SKIPPED_NO_WARN_PACKAGES
         || classDeclaration.classKind == ClassKind.ENUM_CLASS

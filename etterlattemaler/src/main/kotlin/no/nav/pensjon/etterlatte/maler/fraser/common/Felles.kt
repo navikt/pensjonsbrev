@@ -2,7 +2,6 @@ package no.nav.pensjon.etterlatte.maler.fraser.common
 
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -53,7 +52,7 @@ object Felles {
         }
     }
 
-    object SlikUttalerDuDeg : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object SlikUttalerDuDegOmstillingsstoenad : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(
@@ -73,6 +72,31 @@ object Felles {
                     English to "You can send us a statement regarding the matter by logging in to: " +
                             "${Constants.Engelsk.BESKJED_TIL_NAV_URL}. You can also " +
                             "send us your statement by post. The address can be found at: ${Constants.Engelsk.ETTERSENDELSE_URL}.",
+                )
+            }
+        }
+    }
+
+    object SlikUttalerDuDegBarnepensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Bokmal to "Slik uttaler du deg",
+                    Nynorsk to "Slik uttaler du deg",
+                    English to "How to provide a statement",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på " +
+                            "${Constants.BESKJED_TIL_NAV_URL}. Du kan også sende " +
+                            "uttalelsen din til oss i posten. Adressen finner du på ${Constants.BP_MELDE}.",
+                    Nynorsk to "Du kan sende svar til oss ved å logge inn på " +
+                            "${Constants.BESKJED_TIL_NAV_URL}. Alternativt kan du " +
+                            "sende oss svar i posten. Adressa finn du på ${Constants.BP_MELDE}.",
+                    English to "You can send us a statement regarding the matter by logging in to: " +
+                            "${Constants.Engelsk.BESKJED_TIL_NAV_URL}. You can also " +
+                            "send us your statement by post. The address can be found at: ${Constants.BP_MELDE}.",
                 )
             }
         }
@@ -103,6 +127,26 @@ object Felles {
         }
     }
 
+    object HvordanMelderDuFra : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    Bokmal to "Hvordan melder du fra?",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Meld fra til oss ved å benytte endringsskjema på ${Constants.OMS_MELD_INN_ENDRING_URL}. " +
+                            "Du må sende dokumentasjon på ${Constants.ETTERSENDE_OMS_URL}.",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
+        }
+    }
+
     data class HvordanSendeOpplysninger(
         val utland: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -116,16 +160,13 @@ object Felles {
             }
             paragraph {
                 text(
-                    Bokmal to "Du kan logge deg inn på våre nettsider for å sende oss opplysninger. " +
-                        "Du kan også chatte eller sende melding via ${Constants.SKRIVTILOSS_URL}. " +
+                    Bokmal to "Du kan benytte endringsskjema ved å logge deg på på ${Constants.OMS_MELD_INN_ENDRING_URL}. " +
                         "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside ${Constants.NAV_URL}, " +
                         "kan du kontakte oss på telefon.",
-                    Nynorsk to "Du kan logge deg inn på nettsidene våre for å sende oss opplysningar. " +
-                        "Du kan også chatte eller sende melding via ${Constants.SKRIVTILOSS_URL}. " +
+                    Nynorsk to "Du kan bruke endringsskjema ved å logge på ${Constants.OMS_MELD_INN_ENDRING_URL}. " +
                         "Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår ${Constants.NAV_URL}, " +
                         "kan du kontakte oss på telefon.",
-                    English to "You can log in to our website to submit information. " +
-                        "You can also use ${Constants.Engelsk.SKRIVTILOSS_URL} to chat with us or send us a message. " +
+                    English to "You can log in to our website and use change form on ${Constants.OMS_MELD_INN_ENDRING_URL}. " +
                         "If you do not have BankID or another option to log in to our website, ${Constants.NAV_URL}, " +
                         "you can also call us.",
                 )

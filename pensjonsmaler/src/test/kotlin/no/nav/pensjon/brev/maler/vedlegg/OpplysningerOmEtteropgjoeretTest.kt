@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.createVedleggTestTemplate
 import no.nav.brev.brevbaker.renderTestPDF
@@ -14,7 +15,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.In
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt.InntektLinje
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -103,7 +103,7 @@ class OpplysningerOmEtteropgjoeretTest {
             ).expr(),
             languages(Bokmal),
         )
-        Letter(
+        LetterTestImpl(
             template,
             Unit,
             Bokmal,

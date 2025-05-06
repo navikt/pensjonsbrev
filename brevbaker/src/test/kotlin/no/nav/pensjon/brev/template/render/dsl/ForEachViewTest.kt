@@ -9,13 +9,9 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.render.Fixtures.felles
 import no.nav.pensjon.brev.template.render.Letter2Markup
-import no.nav.pensjon.brev.template.render.dsl.ForEachViewTestSelectors.ListArgumentSelectors.liste
-import no.nav.pensjon.brev.template.render.dsl.ForEachViewTestSelectors.ListArgumentSelectors.listeSelector
 import no.nav.pensjon.brev.template.render.hasBlocks
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class ForEachViewTest {
@@ -39,7 +35,7 @@ class ForEachViewTest {
         }
 
         assertThat(
-            Letter2Markup.render(Letter(actual, Unit, Language.Bokmal, felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(actual, Unit, Language.Bokmal, felles)).letterMarkup,
             hasBlocks {
                 paragraph {
                     listen.forEach { variable(it) }
@@ -67,7 +63,7 @@ class ForEachViewTest {
         }
 
         assertThat(
-            Letter2Markup.render(Letter(actual, Unit, Language.Bokmal, felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(actual, Unit, Language.Bokmal, felles)).letterMarkup,
             hasBlocks {
                 paragraph {
                     listen.forEach { nestedList ->
@@ -102,7 +98,7 @@ class ForEachViewTest {
             }
         }
 
-        val render = Letter2Markup.render(Letter(actual, Argument("Tja:"), Language.Bokmal, felles))
+        val render = Letter2Markup.render(LetterImpl(actual, Argument("Tja:"), Language.Bokmal, felles))
         assertThat(
             render.letterMarkup,
             hasBlocks {
@@ -132,7 +128,7 @@ class ForEachViewTest {
         val expected = "1,1;1,2;2,1;2,2;"
 
         assertThat(
-            Letter2Markup.render(Letter(template, Unit, Language.Bokmal, felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(template, Unit, Language.Bokmal, felles)).letterMarkup,
             hasBlocks {
                 paragraph {
                     list.forEach { outer ->
@@ -152,40 +148,4 @@ class ForEachViewTest {
 
     @TemplateModelHelpers
     object Helpers : HasModel<ListArgument>
-
-    @Test
-    fun `ForEach uses stableHashCode of items to assign id of Assigned-Expression`() {
-        val template = outlineTestTemplate<ListArgument> {
-            paragraph {
-                forEach(liste) {
-                    textExpr(Language.Bokmal to it)
-                }
-            }
-        }
-
-        val itemsExpr = Expression.FromScope.Argument<ListArgument>().select(listeSelector)
-        val expectedNext = Expression.FromScope.Assigned<String>(itemsExpr.stableHashCode())
-
-        val expected = ContentOrControlStructure.Content(
-            Element.OutlineContent.Paragraph(
-                listOf(
-                    ContentOrControlStructure.ForEach(
-                        itemsExpr,
-                        listOf(
-                            ContentOrControlStructure.Content(
-                                Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(Language.Bokmal to expectedNext)
-                            ),
-                        ),
-                        expectedNext
-                    )
-                )
-            )
-        )
-
-        assertEquals(
-            expected,
-            template.outline.first()
-        )
-    }
-
 }

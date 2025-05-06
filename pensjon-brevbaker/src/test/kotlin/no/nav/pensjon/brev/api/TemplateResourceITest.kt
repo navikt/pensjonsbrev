@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api
 
 import no.nav.brev.brevbaker.Fixtures
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.copy
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.*
 import no.nav.pensjon.brev.api.model.maler.Brevkode

@@ -110,6 +110,7 @@ const isFerdigstillSuccessResponse = (
 
 export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: boolean; onClose: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
+  const { enhetsId, vedtaksId } = Route.useSearch();
   const queryClient = useQueryClient();
 
   const ferdigstillBrevContext = useFerdigstillResultatContext();
@@ -170,7 +171,11 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
     queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
       currentBrevInfo.filter((brev) => !sendteBrev.has(brev.id)),
     );
-    navigate({ to: "/saksnummer/$saksId/kvittering", params: { saksId: properties.sakId } });
+    return navigate({
+      to: "/saksnummer/$saksId/kvittering",
+      params: { saksId: properties.sakId },
+      search: { enhetsId, vedtaksId },
+    });
   };
 
   return (

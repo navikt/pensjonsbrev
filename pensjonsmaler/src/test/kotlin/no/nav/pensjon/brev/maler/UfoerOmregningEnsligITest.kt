@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler
 
+import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
@@ -13,7 +14,7 @@ class UfoerOmregningEnsligITest {
 
     @Test
     fun test() {
-        Letter(
+        LetterTestImpl(
             UfoerOmregningEnslig.template,
             Fixtures.create<UfoerOmregningEnsligDto>(),
             Language.Bokmal,
@@ -23,7 +24,7 @@ class UfoerOmregningEnsligITest {
 
     @Test
     fun testHtml() {
-        Letter(
+        LetterTestImpl(
             UfoerOmregningEnslig.template,
             Fixtures.create<UfoerOmregningEnsligDto>(),
             Language.Bokmal,

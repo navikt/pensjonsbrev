@@ -126,7 +126,6 @@ services:
     env_file:
       - tjenestebuss-integrasjon/secrets/docker.env
     environment:
-      - TJENESTEBUSS_URL=https://tjenestebuss-q2.adeo.no/
       - STS_URL=https://security-token-service.dev.adeo.no
       - SAMHANDLERSERVICE_URL=https://wasapp-q2.adeo.no/
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5018

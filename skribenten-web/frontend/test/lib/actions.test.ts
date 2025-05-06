@@ -1,4 +1,3 @@
-/* eslint-disable unicorn/consistent-function-scoping */
 import { describe, expect, test } from "vitest";
 
 import type { Action } from "~/Brevredigering/LetterEditor/lib/actions";
