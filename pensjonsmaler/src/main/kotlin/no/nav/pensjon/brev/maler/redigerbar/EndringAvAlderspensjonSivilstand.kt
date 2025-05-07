@@ -42,6 +42,7 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
+import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -80,8 +81,8 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
         val garantitillegg = pesysData.garantitillegg_safe.ifNull(then = Kroner(0))
         val regelverkType = pesysData.regelverkType
         val kravArsakType = pesysData.kravAarsak
-        val brukersSivilstand =
-            pesysData.brukersSivilstand // trenger bestemtform og ubestemtform, bestemtform storbokstav
+        val brukersSivilstand = pesysData.brukersSivilstand
+        val brukersSivilstandBestemt = pesysData.brukersSivilstand.bestemtForm(storBokstav = true)
         val harInntektOver2G = pesysData.epsVedVirk.harInntektOver2G
         val mottarPensjon = pesysData.epsVedVirk.mottarPensjon
         val borSammenMedBruker = pesysData.epsVedVirk.borSammenMedBruker
@@ -223,9 +224,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     val epsInntektsendringEN = fritekst("increased/been reduced")
                     textExpr(
                         Bokmal to "Inntekten til ".expr()
-                                + brukersSivilstand + " din er ".expr() + epsInntektsendringNB + ".",
-                        Nynorsk to "Inntekta til ".expr() + brukersSivilstand + " din er ".expr() + epsInntektsendringNN + ".",
-                        English to "Your ".expr() + brukersSivilstand + "'s income has ".expr() + epsInntektsendringEN + ".",
+                                + brukersSivilstandBestemt + " din er ".expr() + epsInntektsendringNB + ".",
+                        Nynorsk to "Inntekta til ".expr() + brukersSivilstandBestemt + " din er ".expr() + epsInntektsendringNN + ".",
+                        English to "Your ".expr() + brukersSivilstandBestemt + "'s income has ".expr() + epsInntektsendringEN + ".",
                     )
                 }
             }
@@ -238,18 +239,18 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 // brukersSivilstand = bestemtform stor bokstav, og liten bokstav
                 paragraph {
                     textExpr(
-                        Bokmal to brukersSivilstand + " din har fått innvilget egen pensjon eller uføretrygd.",
-                        Nynorsk to brukersSivilstand + " din har fått innvilga eigen pensjon eller eiga uføretrygd.",
-                        English to "Your ".expr() + brukersSivilstand + " has been granted a pension or disability benefit."
+                        Bokmal to brukersSivilstandBestemt + " din har fått innvilget egen pensjon eller uføretrygd.",
+                        Nynorsk to brukersSivilstandBestemt + " din har fått innvilga eigen pensjon eller eiga uføretrygd.",
+                        English to "Your ".expr() + brukersSivilstandBestemt + " has been granted a pension or disability benefit."
                     )
                 }
             }.orShowIf(kravArsakType.isOneOf(KravArsakType.TILSTOT_ENDR_YTELSE)) {
                 // brukersSivilstand = bestemtform liten bokstav
                 paragraph {
                     textExpr(
-                        Bokmal to "Pensjonen eller uføretrygden til ".expr() + brukersSivilstand + " din er endret.",
-                        Nynorsk to "Pensjonen eller uføretrygda til ".expr() + brukersSivilstand + " din er endra.",
-                        English to "Your ".expr() + brukersSivilstand + "'s pension or disability benefit been changed."
+                        Bokmal to "Pensjonen eller uføretrygden til ".expr() + brukersSivilstandBestemt + " din er endret.",
+                        Nynorsk to "Pensjonen eller uføretrygda til ".expr() + brukersSivilstandBestemt + " din er endra.",
+                        English to "Your ".expr() + brukersSivilstandBestemt + "'s pension or disability benefit been changed."
                     )
                 }
             }.orShowIf(
@@ -260,9 +261,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
             {
                 paragraph {
                     textExpr(
-                        Bokmal to brukersSivilstand + " din mottar ikke lenger egen pensjon eller uføretrygd.",
-                        Nynorsk to brukersSivilstand + " din får ikkje lenger eigen pensjon eller eiga uføretrygd.",
-                        English to "Your ".expr() + brukersSivilstand + " no longer receives a pension or disability benefit."
+                        Bokmal to brukersSivilstandBestemt + " din mottar ikke lenger egen pensjon eller uføretrygd.",
+                        Nynorsk to brukersSivilstandBestemt + " din får ikkje lenger eigen pensjon eller eiga uføretrygd.",
+                        English to "Your ".expr() + brukersSivilstandBestemt + " no longer receives a pension or disability benefit."
                     )
                 }
             }.orShowIf(
@@ -274,9 +275,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 // brukersSivilstand = bestemtform stor bokstav og liten bokstav
                 paragraph {
                     textExpr(
-                        Bokmal to brukersSivilstand + " din mottat  ikke lenger egen pensjon eller uføretrygd, men har fortsatt en inntekt større enn to ganger grunnbeløpet.",
-                        Nynorsk to brukersSivilstand + " din får ikkje lenger eigen pensjon eller eiga uføretrygd, men har framleis ei inntekt som er større enn to gonger grunnbeløpet.",
-                        English to "Your ".expr() + brukersSivilstand + " no longer receives a pension or disability benefit, but still has an annual income that exceeds twice the national insurance basic amount."
+                        Bokmal to brukersSivilstandBestemt + " din mottat  ikke lenger egen pensjon eller uføretrygd, men har fortsatt en inntekt større enn to ganger grunnbeløpet.",
+                        Nynorsk to brukersSivilstandBestemt + " din får ikkje lenger eigen pensjon eller eiga uføretrygd, men har framleis ei inntekt som er større enn to gonger grunnbeløpet.",
+                        English to "Your ".expr() + brukersSivilstandBestemt + " no longer receives a pension or disability benefit, but still has an annual income that exceeds twice the national insurance basic amount."
                     )
                 }
             }
