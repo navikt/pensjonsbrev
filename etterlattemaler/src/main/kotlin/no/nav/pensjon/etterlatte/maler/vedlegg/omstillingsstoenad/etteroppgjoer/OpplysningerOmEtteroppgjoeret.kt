@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
+import no.nav.pensjon.brev.template.dsl.expression.formatYearMonth
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -313,7 +314,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
 
     paragraph {
         textExpr(
-            Bokmal to "I periode " .expr() + grunnlag.fom.formatMonthYear()+ " til " + grunnlag.tom.formatMonthYear() + " var den faktiske inntekten din " + utbetalingData.faktiskInntekt.format() + " kroner. Du kan se fordelingen i tabellen under.",
+            Bokmal to "I periode " .expr() + grunnlag.fom.formatYearMonth()+ " til " + grunnlag.tom.formatYearMonth() + " var den faktiske inntekten din " + utbetalingData.faktiskInntekt.format() + " kroner. Du kan se fordelingen i tabellen under.",
             Nynorsk to "".expr(),
             English to "".expr(),)
     }
