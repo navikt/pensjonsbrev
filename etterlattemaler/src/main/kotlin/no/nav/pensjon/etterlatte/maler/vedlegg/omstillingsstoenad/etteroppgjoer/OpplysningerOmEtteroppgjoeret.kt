@@ -36,7 +36,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.OpplysningerOmEtteroppgjoeretDataSelectors.etteroppgjoersAar
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.OpplysningerOmEtteroppgjoeretDataSelectors.grunnlag
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.OpplysningerOmEtteroppgjoeretDataSelectors.utbetalingData
-import java.time.LocalDate
+import java.time.YearMonth
 
 data class OpplysningerOmEtteroppgjoeretData(
     val etteroppgjoersAar: Int,
@@ -45,8 +45,8 @@ data class OpplysningerOmEtteroppgjoeretData(
 )
 
 data class EtteroppgjoerGrunnlagDTO(
-    val fom: LocalDate,
-    val tom: LocalDate,
+    val fom: YearMonth,
+    val tom: YearMonth,
     val innvilgedeMaaneder: Int,
     val loennsinntekt: Kroner,
     val naeringsinntekt: Kroner,

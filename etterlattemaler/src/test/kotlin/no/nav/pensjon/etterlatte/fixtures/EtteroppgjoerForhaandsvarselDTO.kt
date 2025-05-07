@@ -7,6 +7,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.Etteropp
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerResultatType
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTO
 import java.time.LocalDate
+import java.time.YearMonth
 
 fun createEtteroppgjoerForhaandsvarselBrevDTO() =
     EtteroppgjoerForhaandsvarselBrevDTO(
@@ -21,8 +22,8 @@ fun createEtteroppgjoerForhaandsvarselBrevDTO() =
             faktiskInntekt = Kroner(4444),
             avviksBeloep = Kroner(0),
             grunnlag = EtteroppgjoerGrunnlagDTO(
-                LocalDate.of(2024,1,1),
-                LocalDate.of(2024,12,31),
+                YearMonth.of(2024,1),
+                YearMonth.of(2024,12),
                 12,
                 Kroner(4),
                 Kroner(40),
