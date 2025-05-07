@@ -319,15 +319,6 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
             English to "".expr(),)
     }
 
-
-//    paragraph {
-//        textExpr(
-//            Bokmal to "I ".expr() + etteroppgjoersAar.format() + " var din pensjonsgivende inntekt " + utbetalingData.inntekt.format() + " kroner inkludert skatt, ifølge opplysninger fra Skatteetaten. Den fordeler seg slik:",
-//            Nynorsk to "".expr(),
-//            English to "".expr(),
-//        )
-//    }
-
     paragraph {
         table(
             header = {
