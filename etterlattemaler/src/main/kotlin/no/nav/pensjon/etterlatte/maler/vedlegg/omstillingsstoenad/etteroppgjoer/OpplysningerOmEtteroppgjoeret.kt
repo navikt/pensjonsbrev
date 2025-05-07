@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AttachmentTemplate
+import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
@@ -13,23 +14,44 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.fraser.common.KronerText
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerUtbetalingDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerUtbetalingDTOSelectors.avviksBeloep
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerUtbetalingDTOSelectors.faktiskInntekt
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerUtbetalingDTOSelectors.inntekt
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.afp
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.fom
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.loennsinntekt
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.naeringsinntekt
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.tom
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.utlandsinntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.OpplysningerOmEtteroppgjoeretDataSelectors.etteroppgjoersAar
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.OpplysningerOmEtteroppgjoeretDataSelectors.grunnlag
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.OpplysningerOmEtteroppgjoeretDataSelectors.utbetalingData
+import java.time.LocalDate
 
 data class OpplysningerOmEtteroppgjoeretData(
     val etteroppgjoersAar: Int,
-    val utbetalingData : EtteroppgjoerUtbetalingDTO
+    val utbetalingData : EtteroppgjoerUtbetalingDTO,
+    val grunnlag: EtteroppgjoerGrunnlagDTO
+)
+
+data class EtteroppgjoerGrunnlagDTO(
+    val fom: LocalDate,
+    val tom: LocalDate,
+    val innvilgedeMaaneder: Int,
+    val loennsinntekt: Kroner,
+    val naeringsinntekt: Kroner,
+    val afp: Kroner,
+    val utlandsinntekt: Kroner
 )
 
 fun opplysningerOmEtteroppgjoeret(): AttachmentTemplate<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData> =
@@ -45,8 +67,8 @@ fun opplysningerOmEtteroppgjoeret(): AttachmentTemplate<LangBokmalNynorskEnglish
         opplysningerOmEtteroppgjoer(argument.etteroppgjoersAar)
         hvaDuFikkUtbetalt(argument.etteroppgjoersAar, argument.utbetalingData)
         omBeregningAvOmstillingsstoenad(argument.etteroppgjoersAar)
-        dinPensjonsgivendeInntekt(argument.etteroppgjoersAar, argument.utbetalingData)
-        beloepTrukketFraDinPensjonsgivendeInntekt()
+        dinPensjonsgivendeInntekt(argument.etteroppgjoersAar, argument.utbetalingData, argument.grunnlag)
+//        beloepTrukketFraDinPensjonsgivendeInntekt()
         inntektBruktIBeregningenAvOms(argument.etteroppgjoersAar, argument.utbetalingData)
     }
 
@@ -82,6 +104,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
         )
     }
 
+    // TODO include
     paragraph {
         table(
             header = {
@@ -276,12 +299,13 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData>.dinPensjonsgivendeInntekt(
     etteroppgjoersAar: Expression<Int>,
-    utbetalingData: Expression<EtteroppgjoerUtbetalingDTO>
+    utbetalingData: Expression<EtteroppgjoerUtbetalingDTO>,
+    grunnlag: Expression<EtteroppgjoerGrunnlagDTO>
 ) {
 
     title2 {
         text(
-            Bokmal to "Din pensjonsgivende inntekt",
+            Bokmal to "Din pensjonsgivende inntekt i innvilget periode",
             Nynorsk to "",
             English to "",
         )
@@ -289,13 +313,95 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
 
     paragraph {
         textExpr(
-            Bokmal to "I ".expr() + etteroppgjoersAar.format() + " var din pensjonsgivende inntekt " + utbetalingData.inntekt.format() + " kroner inkludert skatt, ifølge opplysninger fra Skatteetaten. Den fordeler seg slik:",
+            Bokmal to "I periode " .expr() + grunnlag.fom.formatMonthYear()+ " til " + grunnlag.tom.formatMonthYear() + " var den faktiske inntekten din " + utbetalingData.faktiskInntekt.format() + " kroner. Du kan se fordelingen i tabellen under.",
             Nynorsk to "".expr(),
-            English to "".expr(),
-        )
+            English to "".expr(),)
     }
 
-    // TODO: tabell
+
+//    paragraph {
+//        textExpr(
+//            Bokmal to "I ".expr() + etteroppgjoersAar.format() + " var din pensjonsgivende inntekt " + utbetalingData.inntekt.format() + " kroner inkludert skatt, ifølge opplysninger fra Skatteetaten. Den fordeler seg slik:",
+//            Nynorsk to "".expr(),
+//            English to "".expr(),
+//        )
+//    }
+
+    paragraph {
+        table(
+            header = {
+                column(1) {
+                    text(
+                        Language.Bokmal to "Type inntekt",
+                        Language.Nynorsk to "",
+                        Language.English to "",
+                    )
+                }
+                column(1, alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
+                    text(
+                        Language.Bokmal to "Beløp",
+                        Language.Nynorsk to "",
+                        Language.English to "",
+                    )
+                }
+            }
+        ) {
+
+            // beregnetEtteroppgjoerResultat
+            row {
+                cell { text(
+                    Language.Bokmal to "Lønnsinntekt",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                ) }
+
+                cell { includePhrase(KronerText(grunnlag.loennsinntekt)) }
+
+            }
+            row {
+                cell { text(
+                    Language.Bokmal to "Næringsinntekt",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                ) }
+
+                cell { includePhrase(KronerText(grunnlag.naeringsinntekt)) }
+
+
+            }
+            row {
+                cell { text(
+                    Language.Bokmal to "AFP",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                ) }
+
+                cell { includePhrase(KronerText(grunnlag.afp)) }
+
+
+            }
+            row {
+                cell { text(
+                    Language.Bokmal to "Utlandsinntekt",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                ) }
+
+                cell { includePhrase(KronerText(grunnlag.utlandsinntekt)) }
+            }
+
+            row {
+                cell { text(
+                    Language.Bokmal to "Sum",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                    fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                ) }
+                cell { includePhrase(KronerText(utbetalingData.faktiskInntekt, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
+            }
+
+        }
+    }
 }
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData>.beloepTrukketFraDinPensjonsgivendeInntekt() {

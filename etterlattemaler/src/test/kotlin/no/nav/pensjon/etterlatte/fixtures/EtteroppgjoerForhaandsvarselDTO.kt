@@ -5,6 +5,8 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.Etteropp
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselRedigerbartBrevDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerResultatType
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTO
+import java.time.LocalDate
 
 fun createEtteroppgjoerForhaandsvarselBrevDTO() =
     EtteroppgjoerForhaandsvarselBrevDTO(
@@ -16,8 +18,17 @@ fun createEtteroppgjoerForhaandsvarselBrevDTO() =
             rettsgebyrBeloep = Kroner(1234),
             resultatType = EtteroppgjoerResultatType.IKKE_ETTEROPPGJOER,
             inntekt = Kroner(321),
-            faktiskInntekt = Kroner(123),
-            avviksBeloep = Kroner(0)
+            faktiskInntekt = Kroner(4444),
+            avviksBeloep = Kroner(0),
+            grunnlag = EtteroppgjoerGrunnlagDTO(
+                LocalDate.of(2024,1,1),
+                LocalDate.of(2024,12,31),
+                12,
+                Kroner(4),
+                Kroner(40),
+                Kroner(400),
+                Kroner(4000)
+            )
         ),
     )
 
