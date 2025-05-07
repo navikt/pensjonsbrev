@@ -3,11 +3,10 @@ package no.nav.pensjon.brev.pdfbygger
 import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
 import kotlinx.coroutines.*
-import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse.Success
-import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse.Failure
+import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse.Failure
+import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse.Success
 import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
-import no.nav.pensjon.brev.pdfbygger.model.PDFCompilationResponse
 import no.nav.pensjon.brev.template.render.DocumentFile
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createTempFile

@@ -7,6 +7,7 @@ public final class no/nav/brev/brevbaker/Brevbaker {
 	public fun <init> (Lno/nav/brev/brevbaker/PDFByggerService;)V
 	public final fun renderHTML (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brev/api/model/LetterResponse;
 	public final fun renderLetterMarkup (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
+	public final fun renderLetterWithAttachmentsMarkup (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brev/template/render/LetterWithAttachmentsMarkup;
 	public final fun renderPDF (Lno/nav/pensjon/brev/template/Letter;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun renderRedigertBrevHTML (Lno/nav/pensjon/brev/template/Letter;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)Lno/nav/pensjon/brev/api/model/LetterResponse;
 	public final fun renderRedigertBrevPDF (Lno/nav/pensjon/brev/template/Letter;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -82,6 +83,19 @@ public final class no/nav/pensjon/brev/template/render/HTMLDocument : no/nav/pen
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public fun getFiles ()Ljava/util/List;
 	public final fun getIndexHTML ()Lno/nav/pensjon/brev/template/render/DocumentFile;
+}
+
+public final class no/nav/pensjon/brev/template/render/LetterWithAttachmentsMarkup {
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;)V
+	public final fun component1 ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;)Lno/nav/pensjon/brev/template/render/LetterWithAttachmentsMarkup;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brev/template/render/LetterWithAttachmentsMarkup;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/render/LetterWithAttachmentsMarkup;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttachments ()Ljava/util/List;
+	public final fun getLetterMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/BrukerSelectors {

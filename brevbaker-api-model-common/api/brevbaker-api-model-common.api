@@ -29,6 +29,27 @@ public final class no/nav/pensjon/brev/api/model/BestillBrevRequest : no/nav/pen
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class no/nav/pensjon/brev/api/model/BestillBrevRequestAsync : no/nav/pensjon/brev/api/model/BrevRequest {
+	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
+	public final fun component2 ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
+	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public final fun component4 ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun copy (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Ljava/lang/String;Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/BestillBrevRequestAsync;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brev/api/model/BestillBrevRequestAsync;Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/pensjon/brev/api/model/BestillBrevRequestAsync;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public final fun getKode ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
+	public final fun getLanguage ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
+	public final fun getLetterData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
+	public final fun getMessageId ()Ljava/lang/String;
+	public final fun getReplyTopic ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class no/nav/pensjon/brev/api/model/BestillRedigertBrevRequest : no/nav/pensjon/brev/api/model/BrevRequest {
 	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)V
 	public final fun component1 ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
