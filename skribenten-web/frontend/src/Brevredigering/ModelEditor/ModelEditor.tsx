@@ -25,7 +25,7 @@ const useModelSpecificationForm = (brevkode: string) => {
   };
 };
 
-const usePartitionedModelSpecification = (brevkode: string) => {
+export const usePartitionedModelSpecification = (brevkode: string) => {
   const { status, specification, error } = useModelSpecificationForm(brevkode);
 
   const [optionalFields, requiredfields] = specification

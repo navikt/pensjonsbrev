@@ -25,7 +25,10 @@ import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
-import { SaksbehandlerValgModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
+import {
+  SaksbehandlerValgModelEditor,
+  usePartitionedModelSpecification,
+} from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
@@ -483,7 +486,18 @@ enum BrevSidemenyTabs {
   OVERSTYRING = "OVERSTYRING",
 }
 
+function useTekstvalg(brevkode: string, mode: BrevSidemenyTabs) {
+  const { status, requiredfields, optionalFields } = usePartitionedModelSpecification(brevkode);
+  if (status != "success") {
+    return false;
+  }
+  const field = mode === BrevSidemenyTabs.OVERSTYRING ? requiredfields : optionalFields;
+  return field && Object.entries(field).length > 0;
+}
+
 const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?: () => void }) => {
+  const visTekstvalg = useTekstvalg(props.brev.info.brevkode, BrevSidemenyTabs.TEKSTVALG);
+  const visOverstyring = useTekstvalg(props.brev.info.brevkode, BrevSidemenyTabs.OVERSTYRING);
   return (
     <Tabs
       css={css`
@@ -498,15 +512,17 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
       fill
       size="small"
     >
-      <Tabs.List
-        css={css`
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-        `}
-      >
-        <Tabs.Tab label="Tekstvalg" value={BrevSidemenyTabs.TEKSTVALG} />
-        <Tabs.Tab label="Overstyring" value={BrevSidemenyTabs.OVERSTYRING} />
-      </Tabs.List>
+      {(visTekstvalg || visOverstyring) && (
+        <Tabs.List
+          css={css`
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+          `}
+        >
+          {visTekstvalg && <Tabs.Tab label="Tekstvalg" value={BrevSidemenyTabs.TEKSTVALG} />}
+          {visOverstyring && <Tabs.Tab label="Overstyring" value={BrevSidemenyTabs.OVERSTYRING} />}
+        </Tabs.List>
+      )}
       <Tabs.Panel
         css={css`
           display: flex;
