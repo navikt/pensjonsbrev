@@ -1,6 +1,6 @@
 ~~# Asynkron kø brevbestilling
 
-* Status: [draft]
+* Status: [accepted]
 * Deciders: Håkon Heggholmen, Alexander Hoem Rosbach, Mads Opheim
 
 Technical Story: [Lage asynkron kø for brevbestillinger]

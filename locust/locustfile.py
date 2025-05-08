@@ -1,10 +1,10 @@
 from locust import FastHttpUser, task, between
-#payload = open(os.path.jo
 import azuread
 import os
 import uuid
 
-# Test av synkront kallin(os.path.dirname(__file__), 'autobrev_request.json'), "r").read()
+# Test av synkront kall
+#payload = open(os.path.join(os.path.dirname(__file__), 'autobrev_request.json'), "r").read()
 # Test av asynkront kall
 payload = open(os.path.join(os.path.dirname(__file__), 'autobrev_request_async.json'), "r").read()
 

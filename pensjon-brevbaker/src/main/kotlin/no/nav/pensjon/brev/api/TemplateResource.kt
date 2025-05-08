@@ -48,8 +48,8 @@ abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brev
         brevkode: Kode,
         brevdata: BrevbakerBrevdata,
         spraak: LanguageCode,
-        felles: Felles
-    ,): Letter<BrevbakerBrevdata> {
+        felles: Felles,
+    ): Letter<BrevbakerBrevdata> {
         val template =
             getTemplate(brevkode)?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
 
