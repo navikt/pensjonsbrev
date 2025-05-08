@@ -66,19 +66,3 @@ getSecret "$secret_name" azuread
 
 # Unleash ApiToken
 getSecret pensjon-brevbaker-unleash-api-token unleash
-
-#kafka
-#secret and AivenApplication created with:
-#nais aiven create -p nav-dev -e 999999 -s aiven-pensjon-brevbaker-q2-lokal kafka pensjon-brevbaker-lokal pensjonsbrev
-nais aiven tidy
-nais aiven get kafka aiven-pensjon-brevbaker-q2-lokal pensjonsbrev
-rm -rf ./secrets/kafka
-mv /tmp/aiven-secret* ./secrets/kafka
-
-# Erstatt paths i filer for å kunne mounte fila riktig i pdf-bygger containeren. Laget for å få riktig path i container
-find ./secrets/kafka/* -type f -exec sed -i 's/\/tmp\/aiven-secret-.*\//\/secrets\//g' {} \;
-
-#rett opp i kcat conf (brukes kun utenfor container)
-sed -i 's/\/secrets\//\.\//g' ./secrets/kafka/kcat.conf
-
-echo -e "Kafka secrets hentet til ./secrets/kafka"
