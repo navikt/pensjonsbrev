@@ -131,7 +131,7 @@ const BrevmalBrevbaker = (props: {
 
   const form = useForm<BrevbakerFormData>({
     defaultValues: {
-      enhetsId: enhetsId || props.defaultValues.enhetsId || "",
+      enhetsId: props.defaultValues.enhetsId,
       spraak: props.defaultValues.spraak,
       mottaker: null,
       saksbehandlerValg: {},
