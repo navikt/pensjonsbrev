@@ -7,7 +7,7 @@ import java.time.LocalDate
 data class MaanedligPensjonFoerSkattAlderspensjonDto(
     val krav: Krav,
     val alderspensjonGjeldende: AlderspensjonGjeldende,
-    val alderspensjonPerManed: AlderspensjonPerManed
+    val alderspensjonPerManed: List<AlderspensjonPerManed>
 ) {
     data class Krav(
         val virkDatoFom: LocalDate

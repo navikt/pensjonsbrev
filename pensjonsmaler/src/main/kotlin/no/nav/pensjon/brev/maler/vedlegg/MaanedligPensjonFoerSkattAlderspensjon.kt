@@ -45,9 +45,13 @@ val maanedligPensjonFoerSkattAlderspensjon =
             }
 
             showIf(alderspensjonGjeldende.regelverkType.isOneOf(AP1967, AP2011)) {
-                this@createAttachment.includePhrase(TabellMaanedligPensjonKap19(alderspensjonPerManed))
+                forEach(alderspensjonPerManed) {
+                    this.includePhrase(TabellMaanedligPensjonKap19(it))
+                }
             }.orShowIf(alderspensjonGjeldende.regelverkType.equalTo(AP2016)) {
-                this@createAttachment.includePhrase(TabellMaanedligPensjonKap19og20(alderspensjonPerManed))
+                forEach(alderspensjonPerManed) {
+                    this.includePhrase(TabellMaanedligPensjonKap19og20(it))
+                }
             }
         }
 )

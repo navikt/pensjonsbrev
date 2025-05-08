@@ -59,5 +59,5 @@ fun createMaanedligPensjonFoerSkattAlderspensjonDto(regelverkType: Alderspensjon
         alderspensjonGjeldende = MaanedligPensjonFoerSkattAlderspensjonDto.AlderspensjonGjeldende(
             regelverkType = regelverkType
         ),
-        alderspensjonPerManed = createAlderspensjonPerManed()
+        alderspensjonPerManed = listOf(createAlderspensjonPerManed(), createAlderspensjonPerManed(), createAlderspensjonPerManed()),
     )
