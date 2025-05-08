@@ -22,9 +22,6 @@ fun main(args: Array<String>) = EngineMain.main(args)
 fun Application.getPropertyOrNull(name: String): String? =
     environment.config.propertyOrNull(name)?.getString()
 
-fun ApplicationConfig.getPropertyOrNull(name: String): String? =
-    propertyOrNull(name)?.getString()
-
 fun ApplicationConfig.getProperty(name: String): String =
     property(name).getString()
 
@@ -58,23 +55,4 @@ fun Application.module() {
         restModule(latexCompileService, prometheusMeterRegistry)
     }
 }
-/* TODO flytt
-private suspend fun RoutingContext.handleResult(
-    result: PDFCompilationResponse,
-    logger: Logger,
-) {
-    when (result) {
-        is PDFCompilationResponse.Success -> call.respond(result.pdfCompilationOutput)
-        is PDFCompilationResponse.Failure.Client -> {
-            logger.info("Client error: ${result.reason}")
-            if (result.output?.isNotBlank() == true) {
-                logger.info(result.output)
-            }
-            if (result.error?.isNotBlank() == true) {
-                logger.info(result.error)
-            }
-            call.respond(HttpStatusCode.BadRequest, result)
-        }
-}
- */
 

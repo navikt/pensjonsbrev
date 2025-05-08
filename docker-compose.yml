@@ -9,25 +9,6 @@ services:
     ports:
       - "8081:8080"
       - "5016:5016"
-  pdf-bygger-async:
-    profiles:
-      - async
-    build: ./pdf-bygger
-    environment:
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5019 -Djdk.lang.Process.launchMechanism=vfork #used for Apple M1 compatability
-      - PDF_COMPILE_TIMEOUT_SECONDS=200
-      - PDF_BYGGER_COMPILE_TMP_DIR=/tmp
-      - PDF_BYGGER_IS_ASYNC=true
-      - KAFKA_PDF_RENDER_TOPIC=pensjonsbrev.pdf-bygger-render-q2
-      - KAFKA_CONSUMER_GROUP_ID=pdf-bygger-async-q2
-    ports:
-      - "8085:8080"
-      - "5019:5019"
-    env_file:
-      - ./pdf-bygger/secrets/kafka-secret.env
-    volumes:
-      - ./pdf-bygger/secrets/client.keystore.p12:/secrets/client.keystore.p12
-      - ./pdf-bygger/secrets/client.truststore.jks:/secrets/client.truststore.jks
   pensjon-brevbaker:
     environment:
       - NAIS_APP_NAME=brevbaker
@@ -36,7 +17,7 @@ services:
       - AZURE_OPENID_CONFIG_ISSUER=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
       - AZURE_APP_CLIENT_ID=66a118a6-95db-4a64-be81-3af02048a46e
       - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"skribenten-backend","clientId":"adce3431-deeb-422f-959c-298b644b7611"}]
-      - KAFKA_PDF_RENDER_TOPIC=pensjonsbrev.pdf-bygger-render-q2
+      - KAFKA_PDF_RENDER_TOPIC=pensjonsbrev.pdf-bygger-render
       # Allows requests without auth-header #opens up debug port
       - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5015
     build: ./pensjon-brevbaker

@@ -34,5 +34,15 @@ class PDFRequestAsync(
     val messageId: String,
     val replyTopic: String,
 ) {
-    // TODO equals & hashcode.
+    override fun equals(other: Any?): Boolean {
+        if (other !is PDFRequestAsync) return false
+        return request == other.request
+                && messageId == other.messageId
+                && replyTopic == other.replyTopic
+    }
+
+    override fun hashCode() = Objects.hash(request, messageId, replyTopic)
+
+    override fun toString(): String = "PDFRequestAsync(request=$request, messageId='$messageId', replyTopic='$replyTopic')"
+
 }
