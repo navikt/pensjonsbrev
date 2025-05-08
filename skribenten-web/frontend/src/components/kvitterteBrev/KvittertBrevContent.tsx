@@ -15,7 +15,6 @@ import { distribusjonstypeTilText } from "./KvitterteBrevUtils";
 
 const AccordionContent = (props: {
   saksId: string;
-  context: "sendBrev" | "attestering";
   apiStatus: "error" | "success";
   isPending: boolean;
   onRetry: () => void;

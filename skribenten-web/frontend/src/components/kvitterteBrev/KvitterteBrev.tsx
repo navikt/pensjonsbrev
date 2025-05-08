@@ -83,7 +83,6 @@ const AccordionItem = (props: {
       <AccordionHeader apiStatus={props.apiStatus} brevInfo={props.brevFørHandling} context={props.context} />
       <AccordionContent
         apiStatus={props.apiStatus}
-        context={props.context}
         distribusjonstype={props.brevFørHandling.distribusjonstype}
         isPending={sendBrevMutation.isPending}
         journalpostId={props.journalpostId}
