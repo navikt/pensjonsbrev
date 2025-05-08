@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextScope
 import no.nav.pensjon.brev.template.dsl.text
 import java.util.Objects
@@ -11,6 +12,16 @@ fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
     outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit
 ) = AttachmentTemplate<Lang, LetterData>(
     title,
+    OutlineOnlyScope<Lang, LetterData>().apply(outline).elements,
+    includeSakspart
+)
+
+fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
+    title: PlainTextOnlyScope<Lang, LetterData>.() -> Unit,
+    includeSakspart: Boolean = false,
+    outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit
+) = AttachmentTemplate<Lang, LetterData>(
+    PlainTextOnlyScope<Lang, LetterData>().apply(title).elements.first(),
     OutlineOnlyScope<Lang, LetterData>().apply(outline).elements,
     includeSakspart
 )

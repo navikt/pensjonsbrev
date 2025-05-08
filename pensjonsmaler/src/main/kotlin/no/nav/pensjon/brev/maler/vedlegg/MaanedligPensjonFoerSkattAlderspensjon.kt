@@ -22,28 +22,21 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 // V00007 i doksys: Din månedlige pensjon før skatt (alderspensjon)
 @TemplateModelHelpers
 val maanedligPensjonFoerSkattAlderspensjon =
     createAttachment<LangBokmalNynorskEnglish, MaanedligPensjonFoerSkattAlderspensjonDto>(
-        title = newText(
-            Bokmal to "Oversikt over pensjonen",
-            Nynorsk to "Oversikt over pensjonen",
-            English to "Pension specifications"
-        ),
+        title = {
+            textExpr(
+                Bokmal to "Oversikt over pensjonen fra ".expr() + krav.virkDatoFom.format(),
+                Nynorsk to "Oversikt over pensjonen frå ".expr() + krav.virkDatoFom.format(),
+                English to "Pension specifications as of".expr() + krav.virkDatoFom.format(),
+            )
+        },
         includeSakspart = false,
         outline = {
-            title1 {
-                textExpr(
-                    Bokmal to "Fra ".expr() + krav.virkDatoFom.format(),
-                    Nynorsk to "Frå ".expr() + krav.virkDatoFom.format(),
-                    English to "As of ".expr() + krav.virkDatoFom.format()
-                )
-            }
-
             showIf(alderspensjonGjeldende.regelverkType.isOneOf(AP1967, AP2011)) {
                 forEach(alderspensjonPerManed) {
                     this.includePhrase(TabellMaanedligPensjonKap19(it))
