@@ -20,7 +20,8 @@ data class EndringAvAlderspensjonSivilstandDto(
     data class SaksbehandlerValg(
         val samboer15: MetaforceSivilstand,
         val endringIEPSInntekt: KravArsakType,
-        val institusjonsopphold: KravArsakType,
+        @DisplayText("Alders- og sykehjem eller EPS på annen institusjon")
+        val institusjonsopphold: Boolean = false,
         val forsoergerEPSOver60AarBruktIBeregningen: KravArsakType,
         val forsoergerEPSOver60AarIkkeBruktIBeregningen: KravArsakType,
         @DisplayText("Betydning får omregulering for pensjon? Ingen")
@@ -37,6 +38,8 @@ data class EndringAvAlderspensjonSivilstandDto(
         val endringPensjon: Boolean,
         @DisplayText("Hvis etterbetaling")
         val etterbetaling: Boolean,
+        @DisplayText("Hva er årsaken til sivilstandsendringen?")
+        val sivilstandsendringAarsak: Boolean = false,
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -44,7 +47,7 @@ data class EndringAvAlderspensjonSivilstandDto(
         val brukersSivilstand: MetaforceSivilstand,
         val epsVedVirk: EpsVedVirk,
         val garantitillegg: Kroner?,
-        val grunnpensjon: Kroner,  //beregnetPensjonPerManedVedVirk
+        val grunnpensjon: Kroner?,  //beregnetPensjonPerManedVedVirk
         val kravAarsak: KravArsakType,
         val kravVirkDatoFom: LocalDate,
         val regelverkType: AlderspensjonRegelverkType,
