@@ -19,6 +19,10 @@ class BrevbakerLoadTest(FastHttpUser):
         #Test av synkront kall på clusteret:
         #headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token(), 'X-Request-ID': str(uuid.uuid4())}
 
+        # Test av async på clusteret:
+        headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + self.access_token(), 'X-Request-ID': str(uuid.uuid4())}
+        self.client.post("/letter/autobrev/pdfAsync", payload, headers=headers)
+
     def access_token(self):
         return self.token.token
         # Kjent feil. Etter token løper ut etter en time prøver alle workers å fetche token samtidig
