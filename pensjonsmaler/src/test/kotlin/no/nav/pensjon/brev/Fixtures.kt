@@ -33,6 +33,7 @@ import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
 import no.nav.pensjon.brev.maler.legacy.redigerbar.createVedtakEndringAvUttaksgradDto
+import no.nav.pensjon.brev.maler.redigerbar.createVedtakEndringAvUttaksgradStansDto
 import no.nav.pensjon.brev.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Year
@@ -106,6 +107,7 @@ object Fixtures {
             VarselSaksbehandlingstidAutoDto::class -> createVarselSaksbehandlingstidAutoDto() as T
             VedtakEndringAvAlderspensjonGjenlevenderettigheterDto::class -> createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() as T
             VedtakEndringAvUttaksgradDto::class -> createVedtakEndringAvUttaksgradDto() as T
+            VedtakEndringAvUttaksgradStansDto::class -> createVedtakEndringAvUttaksgradStansDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
