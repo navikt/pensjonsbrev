@@ -21,7 +21,7 @@ fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
     includeSakspart: Boolean = false,
     outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit
 ) = AttachmentTemplate<Lang, LetterData>(
-    PlainTextOnlyScope<Lang, LetterData>().apply(title).elements.first(),
+    PlainTextOnlyScope<Lang, LetterData>().apply(title).elements.single(),
     OutlineOnlyScope<Lang, LetterData>().apply(outline).elements,
     includeSakspart
 )
