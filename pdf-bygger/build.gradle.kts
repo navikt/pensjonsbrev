@@ -17,13 +17,6 @@ kotlin {
     }
 }
 
-
-buildscript {
-    dependencies {
-        classpath(libs.avro.tools)
-    }
-}
-
 tasks {
     compileJava {
         targetCompatibility = javaTarget

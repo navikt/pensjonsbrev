@@ -24,7 +24,6 @@ fun Application.kafkaModule(latexCompileService: LatexCompileService) {
         latexCompileService = latexCompileService,
         kafkaConfig = config,
         renderTopic = config.property("topic").getString(),
-        retryTopic = config.property("retryTopic").getString(),
     )
 
     pdfRequestConsumer.start()

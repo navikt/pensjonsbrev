@@ -2,6 +2,5 @@ app-name: "pensjon-pdf-bygger-async-q2"
 kafka:
   pool: "nav-dev"
   pdf-render-topic: "pensjonsbrev.pdf-bygger-render-q2"
-  pdf-render-retry-topic: "pensjonsbrev.pdf-bygger-render-retry-q2"
   consumer-group-id: "pdf-bygger-async-q2"
 maxReplicas: 20

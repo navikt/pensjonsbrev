@@ -7,7 +7,6 @@ binaryCompatibilityValidatorVersion = "0.17.0"
 classGraphVersion = "4.8.179"
 commonsCodecVersion = "1.18.0"
 commonVersion = "1.10.1"
-avroVersion = "1.11.4"
 exposedVersion = "0.61.0"
 flywayVersion = "11.8.0"
 hamkrestVersion = "1.8.0.1"
@@ -44,8 +43,6 @@ logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", ve
 micrometer-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "micrometerVersion" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresqlVersion" }
 unleash = { module = "io.getunleash:unleash-client-java", version.ref = "unleashVersion" }
-avro = {module = "org.apache.avro:avro", version.ref = "avroVersion"}
-avro-tools = {module = "org.apache.avro:avro-tools", version.ref = "avroVersion"}
 
 # Ktor
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorVersion" }

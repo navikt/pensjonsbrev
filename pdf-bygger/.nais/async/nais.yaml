@@ -57,8 +57,6 @@ spec:
       value: "true"
     - name: KAFKA_PDF_RENDER_TOPIC
       value: {{kafka.pdf-render-topic}}
-    - name: KAFKA_PDF_RENDER_RETRY_TOPIC
-      value: {{kafka.pdf-render-retry-topic}}
     - name: KAFKA_CONSUMER_GROUP_ID
       value: {{kafka.consumer-group-id}}
     - name: JAVA_TOOL_OPTIONS

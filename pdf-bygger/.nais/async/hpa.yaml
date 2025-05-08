@@ -32,14 +32,3 @@ spec:
         target:
           type: AverageValue
           averageValue: "50"
-    - type: External
-      external:
-        metric:
-          name: kafka_consumergroup_group_lag
-          selector:
-            matchLabels:
-              topic: {{kafka.pdf-render-retry-topic}}
-              group: {{kafka.consumer-group-id}}
-        target:
-          type: AverageValue
-          averageValue: "200"
