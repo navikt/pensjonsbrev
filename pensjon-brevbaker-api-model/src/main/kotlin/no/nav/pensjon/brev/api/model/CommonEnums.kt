@@ -36,6 +36,10 @@ enum class Institusjon {
     INGEN,
 }
 
+enum class GarantipensjonSatsType {
+    HOY, ORDINAER
+}
+
 enum class Beregningsmetode {
     AUSTRALIA,
     CANADA,

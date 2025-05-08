@@ -20,6 +20,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors
 import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors.tom
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Language.*
@@ -127,7 +128,7 @@ val opplysningerBruktIBeregningenAP2025Vedlegg =
                                 text(
                                     Bokmal to "Delingstall ved 67 år",
                                     Nynorsk to "Delingstal ved 67 år",
-                                    English to "Ratio for life expectancy adjustment at age 67"
+                                    English to "Life expectancy adjustment divisor at 67 years"
                                 )
                             }
                             cell {
@@ -190,13 +191,8 @@ val opplysningerBruktIBeregningenAP2025Vedlegg =
                 )
             }
 
-            paragraph {
-                text(
-                    Bokmal to "Tabellen nedenfor viser perioder vi har brukt for å fastsette din norske trygdetid.",
-                    Nynorsk to "Tabellen nedanfor viser periodar vi har brukt for å fastsetje den norske trygdetida di.",
-                    English to "The table below shows the time periods used to establish your Norwegian national insurance coverage."
-                )
-            }
+            includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetidInnledning)
+
             paragraph {
                 table(header = {
                     column {
