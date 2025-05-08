@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.forsoergerEPSOver60AarBruktIBeregningen
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.forsoergerEPSOver60AarIkkeBruktIBeregningen
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.ingenBetydning
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.institusjonsopphold
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.pensjonenOeker
@@ -512,104 +513,159 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }
 
                 // Radioknapper: Forsørger EPS over 60 år. Særskilt sats for minste pensjonsnivå
-                showIf(saksbehandlerValg.forsoergerEPSOver60AarBruktIBeregningen.isOneOf(KravArsakType.VURDER_SERSKILT_SATS)) {
-                    paragraph {
-                        textExpr(
-                            Bokmal to brukersSivilstandBestemt + " du forsørger har en inntekt lavere enn grunnbeløpet ".expr() + grunnpensjon.format() + " kroner.",
-                            Nynorsk to brukersSivilstandBestemt + " du forsørgjer har ei inntekt lågare enn grunnbeløpet ".expr() + grunnpensjon.format() + " kroner.",
-                            English to "Your ".expr() + brukersSivilstandBestemt + " you support has an income lower than the basic amount which is NOK ".expr() + grunnpensjon.format() + ".",
-                        )
-                    }
-                    paragraph {
-                        textExpr(
-                            Bokmal to "",
-                            Nynorsk to "",
-                            English to ""
-                        )
-                    }
-                    paragraph {
-                        textExpr(
-                            Bokmal to "",
-                            Nynorsk to "",
-                            English to ""
-                        )
-                    }
-                    paragraph {
-                        textExpr(
-                            Bokmal to "",
-                            Nynorsk to "",
-                            English to ""
-                        )
-                    }
-                }
-
-                // omregningSaerskilSats_AP1967, _AP2011AP2016
-                showIf(saerskiltSatsErBrukt) {
-                    paragraph {
-                        text(
-                            Bokmal to "Derfor har vi beregnet ",
-                            Nynorsk to "Derfor har vi berekna ",
-                            English to "We have therefore recalculated your "
-                        )
-                        showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {
-                            text(
-                                Bokmal to +ifElse(
-                                    minstenivaaIndividuellInnvilget,
-                                    ifTrue = "særtillegget og minstenivåtillegget",
-                                    ifFalse = "særtillegget"
-                                ),
-                                Nynorsk to +ifElse(
-                                    minstenivaaIndividuellInnvilget,
-                                    ifTrue = "særtillegget og minstenivåtillegget",
-                                    ifFalse = "særtillegget"
-                                ),
-                                English to +ifElse(
-                                    minstenivaaIndividuellInnvilget,
-                                    ifTrue = "special supplement and minimum pension supplement",
-                                    ifFalse = "special supplement"
-                                ),
-                            )
-                        }.orShowIf(
-                            regelverkType.isOneOf(
-                                AlderspensjonRegelverkType.AP2011,
-                                AlderspensjonRegelverkType.AP2016
-                            )
-                        ) {
-                            text(
-                                Bokmal to +ifElse(
-                                    minstenivaaIndividuellInnvilget,
-                                    ifTrue = "pensjonstillegget og minstenivåtillegget",
-                                    ifFalse = "pensjonstillegget"
-                                ),
-                                Nynorsk to +ifElse(
-                                    minstenivaaIndividuellInnvilget,
-                                    ifTrue = "pensjonstillegget og minstenivåtillegget",
-                                    ifFalse = "pensjonstillegget"
-                                ),
-                                English to +ifElse(
-                                    minstenivaaIndividuellInnvilget,
-                                    ifTrue = "basic pension and minimum pension supplement",
-                                    ifFalse = "basic pension"
-                                ),
+                showIf(kravArsakType.isOneOf(KravArsakType.VURDER_SERSKILT_SATS)) {
+                    showIf(saksbehandlerValg.forsoergerEPSOver60AarBruktIBeregningen) {
+                        // SaerSatsBruktEpsUnder62
+                        paragraph {
+                            textExpr(
+                                Bokmal to brukersSivilstandBestemt + " din du forsørger har en inntekt lavere enn grunnbeløpet ".expr() + grunnpensjon.format() + " kroner.",
+                                Nynorsk to brukersSivilstandBestemt + " din du forsørgjer har ei inntekt lågare enn grunnbeløpet ".expr() + grunnpensjon.format() + " kroner.",
+                                English to "Your ".expr() + brukersSivilstandBestemt + " you support has an income lower than the basic amount which is NOK ".expr() + grunnpensjon.format() + ".",
                             )
                         }
-                        text(
-                            Bokmal to " ditt på nytt med særskilt sats.",
-                            Nynorsk to " ditt på nytt med særskilt sats.",
-                            English to " according to a special rate."
+                        // SaerSatsBruktEpsIkkeRettTilAP
+                        paragraph {
+                            textExpr(
+                                Bokmal to brukersSivilstandBestemt + " din som du forsørger har ikke rett til full alderspensjon fra folketrygden og har inntekt lavere enn grunnbeløpet ".expr() + grunnpensjon.format() + " kroner.",
+                                Nynorsk to brukersSivilstandBestemt + " din som du forsørgjer har ikkje rett til full alderspensjon frå folketrygda og har inntekt lågare enn grunnbeløpet ".expr() + grunnpensjon.format() + " kroner.",
+                                English to "Your ".expr() + brukersSivilstandBestemt + " you support does not have rights to full retirement pension through the National Insurance Act and has income lower than the basic amount which is NOK ".expr() + grunnpensjon.format() + "."
+                            )
+                        }
+                        // SaerSatsBruktEpsGittAvkallAP
+                        paragraph {
+                            textExpr(
+                                Bokmal to brukersSivilstandBestemt + " din har gitt avkall på sin alderspensjon fra folketrygden.",
+                                Nynorsk to brukersSivilstandBestemt + " din har gitt avkall på alderspensjon sin frå folketrygda.",
+                                English to brukersSivilstandBestemt + " has renounced their retirement pension through the National Insurance Act."
+                            )
+                        }
+                        // SaerSatsBruktEpsGittAvkallUT
+                        paragraph {
+                            textExpr(
+                                Bokmal to brukersSivilstandBestemt + " din har gitt avkall på sin uføretrygd fra folketrygden.",
+                                Nynorsk to brukersSivilstandBestemt + " din har gitt avkall på uføretrygda si frå folketrygda.",
+                                English to brukersSivilstandBestemt + " has renounced their disability benefits through the National Insurance Act."
+                            )
+                        }
+                    }
+                    showIf(saksbehandlerValg.forsoergerEPSOver60AarIkkeBruktIBeregningen) {
+                        // SaerSatsIkkeBruktEpsInntektOver1G, SaerSatsIkkeBruktEpsRettTilFullAP, SaerSatsIkkeBruktEpsMottarAP, SaerSatsIkkeBruktEpsMottarAfp, SaerSatsIkkeBruktEpsMottarUT
+                        paragraph {
+                            textExpr(
+                                Bokmal to "Du får ikke beregnet alderspensjonen din med særskilt sats fordi ".expr() + brukersSivilstandBestemt + " din",
+                                Nynorsk to "Du får ikkje berekna alderspensjonen din med særskilt sats fordi ".expr() + brukersSivilstandBestemt + " din",
+                                English to "Your retirement pension is not recalculated according to a special rate because your ".expr() + brukersSivilstandBestemt + " has"
+                            )
+                        }
+                        paragraph {
+                            textExpr(
+                                Bokmal to "Du får ikke beregnet alderspensjonen din med særskilt sats fordi ".expr() + brukersSivilstandBestemt + " din har inntekt høyere enn grunnbeløpet (".expr() + grunnpensjon.format() + " kroner).",
+                                Nynorsk to "Du får ikkje berekna alderspensjonen din med særskilt sats fordi ".expr() + brukersSivilstandBestemt + " din har inntekt høgare enn grunnbeløpet (".expr() + grunnpensjon.format() + " kroner).",
+                                English to "Your retirement pension is not recalculated according to a special rate because your ".expr() + brukersSivilstandBestemt + " has a higher income than the basic amount which is NOK ".expr() + grunnpensjon.format() + "."
+                            )
+                        }
+                        // SaerSatsIkkeBruktEpsRettTilFullAP
+                        paragraph {
+                            textExpr(
+                                Bokmal to "Du får ikke beregnet alderspensjonen din med særskilt sats fordi ".expr() + brukersSivilstandBestemt + " din har rett til full alderspensjon fra folketrygden.",
+                                Nynorsk to "Du får ikkje berekna alderspensjonen din med særskilt sats fordi ".expr() + brukersSivilstandBestemt + " din har rett til full alderspensjon frå folketrygda.",
+                                English to "Your retirement pension is not recalculated according to a special rate because your ".expr() + brukersSivilstandBestemt + " has rights to full retirement pension through the National Insurance Act."
+                            )
+                        }
+                        // SaerSatsIkkeBruktEpsMottarAP
+                        paragraph {
+                            textExpr(
+                                Bokmal to "Du får ikke beregnet alderspensjonen din med særskilt sats fordi ".expr() + brukersSivilstandBestemt + " din mottar alderspensjon fra folketrygden.",
+                                Nynorsk to "Du får ikkje berekna alderspensjonen din med særskilt sats fordi ".expr() + brukersSivilstandBestemt + " din mottar alderspensjon frå folketrygda.",
+                                English to "Your retirement pension is not recalculated according to a special rate because your ".expr() + brukersSivilstandBestemt + " recieves retirement pension through the National Insurance Act."
+                            )
+                        }
+                        // SaerSatsIkkeBruktEpsMottarAfp
+                        paragraph {
+                            textExpr(
+                                Bokmal to "Du får ikke beregnet alderspensjonen din med særskilt sats fordi ".expr() + brukersSivilstandBestemt + " din mottar AFP i statlig sektor.",
+                                Nynorsk to "Du får ikkje berekna alderspensjonen din med særskilt sats fordi ".expr() + brukersSivilstandBestemt + " din mottar AFP i statleg sektor.",
+                                English to "Your retirement pension is not recalculated according to a special rate because your ".expr() + brukersSivilstandBestemt + " receives contractual retirement pension from the public sector."
+                            )
+                        }
+                        // SaerSatsIkkeBruktEpsMottarUT
+                        paragraph {
+                            textExpr(
+                                Bokmal to "Du får ikke beregnet alderspensjonen din med særskilt sats fordi ".expr() + brukersSivilstandBestemt + " din mottar uføretrygd fra folketrygden.",
+                                Nynorsk to "Du får ikkje berekna alderspensjonen din med særskilt sats fordi ".expr() + brukersSivilstandBestemt + " din mottar uføretrygd frå folketrygda.",
+                                English to "Your retirement pension is not recalculated according to a special rate because your ".expr() + brukersSivilstandBestemt + " receives disability benefits through the National Insurance Act."
+                            )
+                        }
+                    }
+
+
+                    // omregningSaerskilSats_AP1967, _AP2011AP2016
+                    showIf(saerskiltSatsErBrukt) {
+                        paragraph {
+                            text(
+                                Bokmal to "Derfor har vi beregnet ",
+                                Nynorsk to "Derfor har vi berekna ",
+                                English to "We have therefore recalculated your "
+                            )
+                            showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {
+                                text(
+                                    Bokmal to +ifElse(
+                                        minstenivaaIndividuellInnvilget,
+                                        ifTrue = "særtillegget og minstenivåtillegget",
+                                        ifFalse = "særtillegget"
+                                    ),
+                                    Nynorsk to +ifElse(
+                                        minstenivaaIndividuellInnvilget,
+                                        ifTrue = "særtillegget og minstenivåtillegget",
+                                        ifFalse = "særtillegget"
+                                    ),
+                                    English to +ifElse(
+                                        minstenivaaIndividuellInnvilget,
+                                        ifTrue = "special supplement and minimum pension supplement",
+                                        ifFalse = "special supplement"
+                                    ),
+                                )
+                            }.orShowIf(
+                                regelverkType.isOneOf(
+                                    AlderspensjonRegelverkType.AP2011,
+                                    AlderspensjonRegelverkType.AP2016
+                                )
+                            ) {
+                                text(
+                                    Bokmal to +ifElse(
+                                        minstenivaaIndividuellInnvilget,
+                                        ifTrue = "pensjonstillegget og minstenivåtillegget",
+                                        ifFalse = "pensjonstillegget"
+                                    ),
+                                    Nynorsk to +ifElse(
+                                        minstenivaaIndividuellInnvilget,
+                                        ifTrue = "pensjonstillegget og minstenivåtillegget",
+                                        ifFalse = "pensjonstillegget"
+                                    ),
+                                    English to +ifElse(
+                                        minstenivaaIndividuellInnvilget,
+                                        ifTrue = "basic pension and minimum pension supplement",
+                                        ifFalse = "basic pension"
+                                    ),
+                                )
+                            }
+                            text(
+                                Bokmal to " ditt på nytt med særskilt sats.",
+                                Nynorsk to " ditt på nytt med særskilt sats.",
+                                English to " according to a special rate."
+                            )
+                        }
+                    }
+
+                    paragraph {
+                        val fritekst = fritekst("Opplysninger/forhold du vil informere bruker om i saken.")
+                        textExpr(
+                            Bokmal to fritekst,
+                            Nynorsk to fritekst,
+                            English to fritekst,
                         )
                     }
                 }
-
-                paragraph {
-                    val fritekst = fritekst("Opplysninger/forhold du vil informere bruker om i saken.")
-                    textExpr(
-                        Bokmal to fritekst,
-                        Nynorsk to fritekst,
-                        English to fritekst,
-                    )
-                }
-
                 showIf(
                     regelverkType.isOneOf(
                         AlderspensjonRegelverkType.AP2011,

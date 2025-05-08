@@ -22,8 +22,10 @@ data class EndringAvAlderspensjonSivilstandDto(
         val endringIEPSInntekt: KravArsakType,
         @DisplayText("Alders- og sykehjem eller EPS på annen institusjon")
         val institusjonsopphold: Boolean = false,
-        val forsoergerEPSOver60AarBruktIBeregningen: KravArsakType,
-        val forsoergerEPSOver60AarIkkeBruktIBeregningen: KravArsakType,
+        @DisplayText("Forsørger EPS over 60 år. Særskilt sats for minste persjonsnivå brukt i beregingen")
+        val forsoergerEPSOver60AarBruktIBeregningen: Boolean = false,
+        @DisplayText("Forsørger EPS over 60 år. Særskilt sats for minste persjonsnivå IKKE brukt i beregingen")
+        val forsoergerEPSOver60AarIkkeBruktIBeregningen: Boolean = false,
         @DisplayText("Betydning får omregulering for pensjon? Ingen")
         val ingenBetydning: Boolean,
         @DisplayText("Betydning får omregulering for pensjon? Pensjonen øker")
