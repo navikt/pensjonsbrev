@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.pdfbygger
 
 import no.nav.brev.brevbaker.PDFCompilationOutput
 
-internal sealed class PDFCompilationResponse {
+sealed class PDFCompilationResponse {
     data class Success(val pdfCompilationOutput: PDFCompilationOutput) : PDFCompilationResponse()
     
     sealed class Failure: PDFCompilationResponse() {

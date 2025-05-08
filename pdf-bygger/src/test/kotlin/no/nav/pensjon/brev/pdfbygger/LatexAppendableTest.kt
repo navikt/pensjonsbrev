@@ -5,6 +5,8 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.endsWith
 import com.natpryce.hamkrest.equalTo
 import com.natpryce.hamkrest.startsWith
+import no.nav.pensjon.brev.pdfbygger.latex.LatexAppendable
+import no.nav.pensjon.brev.pdfbygger.latex.latexEscape
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 

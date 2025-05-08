@@ -13,6 +13,7 @@ private val BREV_KODE = AttributeKey<String>("BrevKode")
 fun <T : Brevkode<T>> RoutingContext.installBrevkodeInCallContext(kode: Brevkode<T>) {
     call.attributes.put(BREV_KODE, kode.kode())
 }
+
 fun ApplicationCall.useBrevkodeFromCallContext(): String? = attributes.getOrNull(BREV_KODE)
 
 fun Route.autobrevRoutes(

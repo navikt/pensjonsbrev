@@ -3,12 +3,12 @@ services:
   pdf-bygger:
     build: ./pdf-bygger
     environment:
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5006 -Djdk.lang.Process.launchMechanism=vfork #used for Apple M1 compatability
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Djdk.lang.Process.launchMechanism=vfork #used for Apple M1 compatability
       - PDF_COMPILE_TIMEOUT_SECONDS=200
       - PDF_BYGGER_COMPILE_TMP_DIR=/tmp
     ports:
       - "8081:8080"
-      - "5016:5006"
+      - "5016:5016"
   pensjon-brevbaker:
     environment:
       - NAIS_APP_NAME=brevbaker
@@ -17,14 +17,20 @@ services:
       - AZURE_OPENID_CONFIG_ISSUER=https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/v2.0
       - AZURE_APP_CLIENT_ID=66a118a6-95db-4a64-be81-3af02048a46e
       - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"skribenten-backend","clientId":"adce3431-deeb-422f-959c-298b644b7611"}]
+      - KAFKA_PDF_RENDER_TOPIC=pensjonsbrev.pdf-bygger-render
       # Allows requests without auth-header #opens up debug port
-      - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+      - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5015
     build: ./pensjon-brevbaker
     ports:
       - "8080:8080"
-      - "5015:5005" # debug port
+      - "5015:5015" # debug port
     env_file:
       - ./pensjon-brevbaker/secrets/unleash.env
+      - ./pensjon-brevbaker/secrets/kafka/kafka-secret.env
+    volumes:
+      - ./pensjon-brevbaker/secrets/kafka:/secrets
+      - ./pensjon-brevbaker/secrets/kafka/client.keystore.p12:/secrets/client.keystore.p12
+      - ./pensjon-brevbaker/secrets/kafka/client.truststore.jks:/secrets/client.truststore.jks
   skribenten-backend:
     profiles:
       - skribenten
@@ -34,7 +40,7 @@ services:
           condition: service_healthy
     ports:
       - "8082:8080"
-      - "5017:5007"
+      - "5017:5017"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     env_file:
@@ -51,7 +57,7 @@ services:
       - DB_DATABASE=postgres
       - DB_USERNAME=postgres
       - DB_PASSWORD=pass
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5007
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5017
       - KRR_SCOPE=api://dev-gcp.team-rocket.digdir-krr-proxy/.default
       - KRR_URL=https://digdir-krr-proxy.intern.dev.nav.no
       - PDL_SCOPE=api://dev-fss.pdl.pdl-api/.default
@@ -96,13 +102,13 @@ services:
       - skribenten
     ports:
       - "8086:8080"
-      - "5018:5008"
+      - "5018:5018"
     env_file:
       - tjenestebuss-integrasjon/secrets/docker.env
     environment:
       - STS_URL=https://security-token-service.dev.adeo.no
       - SAMHANDLERSERVICE_URL=https://wasapp-q2.adeo.no/
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5008
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5018
 
   wonderwall:
     profiles:

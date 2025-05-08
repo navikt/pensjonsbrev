@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.pdfbygger
+package no.nav.pensjon.brev.pdfbygger.latex
 
 @DslMarker
 internal annotation class LatexAppendableMarker

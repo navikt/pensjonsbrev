@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.pdfbygger
 import com.natpryce.hamkrest.assertion.assertThat
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import no.nav.pensjon.brev.pdfbygger.api.ActiveCounter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue

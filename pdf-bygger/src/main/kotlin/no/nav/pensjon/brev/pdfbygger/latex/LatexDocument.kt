@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.pdfbygger
+package no.nav.pensjon.brev.pdfbygger.latex
 
 import no.nav.pensjon.brev.template.render.Document
 import no.nav.pensjon.brev.template.render.DocumentFile

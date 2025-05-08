@@ -66,5 +66,3 @@ getSecret "$secret_name" azuread
 
 # Unleash ApiToken
 getSecret pensjon-brevbaker-unleash-api-token unleash
-
-echo "All secrets are fetched and stored in the \"secrets\" folder."

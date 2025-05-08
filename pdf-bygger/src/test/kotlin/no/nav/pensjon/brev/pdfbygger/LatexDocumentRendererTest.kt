@@ -9,6 +9,7 @@ import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.pdfbygger.Fixtures.felles
+import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope

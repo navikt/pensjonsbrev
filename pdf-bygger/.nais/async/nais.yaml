@@ -6,11 +6,13 @@ metadata:
   labels:
     "team": "pensjonsbrev"
 spec:
+  kafka:
+    pool: {{kafka.pool}}
   image: {{image}}
   port: 8080
-  terminationGracePeriodSeconds: 60
+  terminationGracePeriodSeconds: 150
   service:
-    port: 80
+    port: 8080
     protocol: http
   liveness:
     path: "/isAlive"
@@ -41,11 +43,7 @@ spec:
       cpu: "1"
       memory: "1024Mi"
     limits:
-      memory: "8192Mi"
-  accessPolicy:
-    inbound:
-      rules:
-        - application: {{brevbaker-app}}
+      memory: "4096Mi"
   filesFrom:
     - emptyDir:
         medium: Memory
@@ -53,12 +51,13 @@ spec:
   env:
     - name: PDF_BYGGER_COMPILE_TIMEOUT
       value: "120s"
-    - name: PDF_BYGGER_LATEX_PARALLELISM
-      value: "4"
-    - name: PDF_BYGGER_COMPILE_QUEUE_WAIT_TIMEOUT
-      value: "1s"
     - name: PDF_BYGGER_COMPILE_TMP_DIR
       value: "/app/tmp"
     - name: PDF_BYGGER_IS_ASYNC
-      value: "false"
-  ingresses: [{{#each ingresses as |url|}}{{url}},{{/each}}]
+      value: "true"
+    - name: KAFKA_PDF_RENDER_TOPIC
+      value: {{kafka.pdf-render-topic}}
+    - name: KAFKA_CONSUMER_GROUP_ID
+      value: {{kafka.consumer-group-id}}
+    - name: JAVA_TOOL_OPTIONS
+      value: -XX:ActiveProcessorCount=4

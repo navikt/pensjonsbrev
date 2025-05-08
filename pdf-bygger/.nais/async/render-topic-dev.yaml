@@ -1,0 +1,18 @@
+apiVersion: kafka.nais.io/v1
+kind: Topic
+metadata:
+  name: pdf-bygger-render
+  namespace: pensjonsbrev
+  labels:
+    team: pensjonsbrev
+spec:
+  pool: nav-dev
+  acl:
+    - team: pensjonsbrev
+      application: pensjon-brevbaker
+      access: write
+    - team: pensjonsbrev
+      application: pensjon-pdf-bygger-async
+      access: read
+  config:
+    partitions: 100
