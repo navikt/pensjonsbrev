@@ -4,11 +4,13 @@ import io.ktor.server.config.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Semaphore
+import no.nav.brev.brevbaker.AsyncPDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequestAsync
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brev.pdfbygger.getProperty
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
+import no.nav.pensjon.brev.pdfbygger.mdc
 import no.nav.pensjon.brev.pdfbygger.pdfByggerObjectMapper
 import org.apache.kafka.clients.consumer.*
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -19,12 +21,13 @@ import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
 import org.slf4j.LoggerFactory
+import java.util.Base64
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
 // Consumer will be timed out after 5 minutes if no polls occur
-private val QUEUE_READ_TIMEOUT = 20.seconds.toJavaDuration()
+private val QUEUE_READ_TIMEOUT = 1.seconds.toJavaDuration()
 
 class PdfRequestConsumer(
     private val latexCompileService: LatexCompileService,
@@ -37,15 +40,14 @@ class PdfRequestConsumer(
 
     private val consumerConfig = createKafkaConsumerConfig(kafkaConfig, parallelism)
     private val producerConfig = createKafkaProducerConfig(kafkaConfig)
-    private val replyProducers = Producers<PDFCompilationResponse>(producerConfig)
+    private val replyProducers = Producers<AsyncPDFCompilationOutput>(producerConfig)
 
+    private val pdfEncoder = Base64.getEncoder()
     private var shuttingDown = false
     private lateinit var flow: Flow<ConsumerRecords<String, PDFRequestAsync>>
     private lateinit var consumerJob: Job
 
     private val logger = LoggerFactory.getLogger(PdfRequestConsumer::class.java)
-
-    // TODO add message id to logger
     private val consumer = KafkaConsumer(consumerConfig, StringDeserializer(), PDFRequestAsyncDeserializer())
 
     fun start() {
@@ -90,14 +92,21 @@ class PdfRequestConsumer(
                         mapOf(consumedFrom to newOffset),
                         consumer.groupMetadata()
                     )
-                    results.forEach {
-                        replyProducer.send(
-                            ProducerRecord(
-                                it.renderRequest.replyTopic,
-                                it.renderRequest.messageId,
-                                it.pdf
+
+                    results.forEach { result ->
+                        val error = errorMessage(result)
+                        mdc("messageId" to result.renderRequest.messageId) {
+                            replyProducer.send(
+                                ProducerRecord(
+                                    result.renderRequest.replyTopic,
+                                    result.renderRequest.messageId,
+                                    AsyncPDFCompilationOutput(
+                                        base64PDF = base64PDForNull(result),
+                                        error = error?.also { logger.error(it) },
+                                    )
+                                )
                             )
-                        )
+                        }
                     }
                     replyProducer.commitTransaction()
                 } catch (e: Exception) {
@@ -107,6 +116,26 @@ class PdfRequestConsumer(
             }
     }
 
+    private fun errorMessage(result: RenderResult): String? = when (val response = result.pDFCompilationResponse) {
+        is PDFCompilationResponse.Failure.QueueTimeout -> response.reason
+        is PDFCompilationResponse.Failure.Timeout -> result.pDFCompilationResponse.reason
+        is PDFCompilationResponse.Failure.Server -> result.pDFCompilationResponse.reason
+        is PDFCompilationResponse.Failure.Client -> {
+            """${response.reason}
+                |PDF ompilation error:
+                | ${response.error ?: ""}
+                |PDF Compilation output:
+                | ${response.output ?: ""}
+            """.trimMargin()
+        }
+
+        else -> null
+    }
+
+    private fun base64PDForNull(result: RenderResult): String? =
+        (result.pDFCompilationResponse as? PDFCompilationResponse.Success)
+            ?.pdfCompilationOutput?.bytes?.let { pdfEncoder.encodeToString(it) }
+
     private suspend fun renderLetters(
         renderRequests: ConsumerRecords<String, PDFRequestAsync>,
     ): List<RenderResult> =
@@ -115,7 +144,7 @@ class PdfRequestConsumer(
                 async {
                     RenderResult(
                         renderRequest = record.value(),
-                        pdf = compile(record.value()),
+                        pDFCompilationResponse = compile(record.value()),
                         consumedTopic = record.topic(),
                         consumedPartiton = record.partition(),
                         consumedOffset = record.offset(),
@@ -149,7 +178,7 @@ private fun transactionId(topic: String, partition: Int) = "$topic-$partition"
 
 private data class RenderResult(
     val renderRequest: PDFRequestAsync,
-    val pdf: PDFCompilationResponse,
+    val pDFCompilationResponse: PDFCompilationResponse,
     val consumedTopic: String,
     val consumedPartiton: Int,
     val consumedOffset: Long,
