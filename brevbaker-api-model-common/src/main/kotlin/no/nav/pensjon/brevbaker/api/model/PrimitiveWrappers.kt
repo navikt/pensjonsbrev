@@ -6,9 +6,25 @@ interface IntValue {
     val value: Int
 }
 
-class Telefonnummer(val value: String)
+class Telefonnummer(val value: String) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is Telefonnummer) return false
+        return value == other.value
+    }
 
-class Foedselsnummer(val value: String)
+    override fun hashCode() = value.hashCode()
+
+    override fun toString(): String = "Telefonnummer(value='$value')"
+}
+
+class Foedselsnummer(val value: String) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is Foedselsnummer) return false
+        return value == other.value
+    }
+
+    override fun hashCode() = value.hashCode()
+}
 
 data class Kroner(override val value: Int) : IntValue
 
