@@ -235,10 +235,13 @@ public final class no/nav/pensjon/brevbaker/api/model/Broek {
 
 public final class no/nav/pensjon/brevbaker/api/model/Bruker {
 	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/Foedselsnummer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getEtternavn ()Ljava/lang/String;
 	public final fun getFoedselsnummer ()Lno/nav/pensjon/brevbaker/api/model/Foedselsnummer;
 	public final fun getFornavn ()Ljava/lang/String;
 	public final fun getMellomnavn ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Days : no/nav/pensjon/brevbaker/api/model/IntValue {
@@ -266,18 +269,23 @@ public final class no/nav/pensjon/brevbaker/api/model/ElementTags : java/lang/En
 public final class no/nav/pensjon/brevbaker/api/model/Felles {
 	public fun <init> (Ljava/time/LocalDate;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/NavEnhet;Lno/nav/pensjon/brevbaker/api/model/Bruker;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;)V
 	public synthetic fun <init> (Ljava/time/LocalDate;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/NavEnhet;Lno/nav/pensjon/brevbaker/api/model/Bruker;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAvsenderEnhet ()Lno/nav/pensjon/brevbaker/api/model/NavEnhet;
 	public final fun getBruker ()Lno/nav/pensjon/brevbaker/api/model/Bruker;
 	public final fun getDokumentDato ()Ljava/time/LocalDate;
 	public final fun getSaksnummer ()Ljava/lang/String;
 	public final fun getSignerendeSaksbehandlere ()Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;
 	public final fun getVergeNavn ()Ljava/lang/String;
+	public fun hashCode ()I
 	public final fun medSignerendeSaksbehandlere (Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;)Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Foedselsnummer {
 	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/IntValue {
@@ -899,9 +907,12 @@ public final class no/nav/pensjon/brevbaker/api/model/Months : no/nav/pensjon/br
 
 public final class no/nav/pensjon/brevbaker/api/model/NavEnhet {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/Telefonnummer;)V
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getNavn ()Ljava/lang/String;
 	public final fun getNettside ()Ljava/lang/String;
 	public final fun getTelefonnummer ()Lno/nav/pensjon/brevbaker/api/model/Telefonnummer;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/brevbaker/api/model/IntValue {
@@ -918,13 +929,19 @@ public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/b
 public final class no/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAttesterendeSaksbehandler ()Ljava/lang/String;
 	public final fun getSaksbehandler ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Telefonnummer {
 	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
 	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification {
