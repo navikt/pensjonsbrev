@@ -24,7 +24,7 @@ object TemplateDocumentationRenderer {
 
     private fun renderAttachment(attachment: IncludeAttachment<*, *>, lang: Language): TemplateDocumentation.Attachment =
         TemplateDocumentation.Attachment(
-            title = renderText(listOf(attachment.template.title), lang),
+            title = renderText(attachment.template.title, lang),
             outline = renderOutline(attachment.template.outline, lang),
             include = renderExpression(attachment.predicate),
             attachmentData = renderExpression(attachment.data),
