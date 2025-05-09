@@ -28,6 +28,10 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTP
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.totalNetto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.uforetrygd
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.virkningFom
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.pe
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.orienteringOmRettigheterUfoere
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Element
@@ -145,7 +149,7 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                 showIf(barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull() or gjenlevendetillegg.notNull()) {
                     textExpr(
                         Bokmal to "Du får ".expr() + totalNetto.format(CurrencyFormat) + " kroner i uføretrygd og tillegg per måned før skatt. ",
-                        Nynorsk to "Du får ".expr() + totalNetto.format(CurrencyFormat) + "kroner i uføretrygd og tillegg per månad før skatt. "
+                        Nynorsk to "Du får ".expr() + totalNetto.format(CurrencyFormat) + " kroner i uføretrygd og tillegg per månad før skatt. "
                     )
                 }.orShow {
                     textExpr(
@@ -766,19 +770,8 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
             }
         }
 
-        /* outline {
-             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-             includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
-             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
-             includePhrase(Ufoeretrygd.SjekkUtbetalingene)†
-             includePhrase(Ufoeretrygd.Skattekort)
-             includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(brukerBorINorge))
-             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
-         }
 
-         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
-         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pe, pe.inkluderopplysningerbruktiberegningen())
+         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pe)
          includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
-    */
     }
 }
