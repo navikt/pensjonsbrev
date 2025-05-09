@@ -1,5 +1,11 @@
 package no.nav.pensjon.brev.fixtures
 
+import no.nav.pensjon.brev.Fixtures
+import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.Grunnlag
+import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PSfnr
+import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSak
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.Vedtaksbrev
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2.Uforetrygd
 import java.time.LocalDate
@@ -27,5 +33,7 @@ fun createEndretUTPgaInntektDtoV2() =
         sokerMottarApIlaAret = false,
         btfbEndret = false,
         btsbEndret = false,
-        brukerBorINorge = true
+        brukerBorINorge = true,
+        pe = Fixtures.create(),
+        orienteringOmRettigheterUfoere = Fixtures.create(),
     )
