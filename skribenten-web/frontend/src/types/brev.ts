@@ -59,6 +59,7 @@ export type NavAnsatt = {
   id: string;
   navn: string | null;
 };
+export type BrevType = "VEDTAKSBREV" | "INFORMASJONSBREV";
 
 export type BrevInfo = {
   id: number;
@@ -68,7 +69,7 @@ export type BrevInfo = {
   sistredigert: string;
   brevkode: string;
   brevtittel: string;
-  brevtype: string;
+  brevtype: BrevType;
   status: BrevStatus;
   distribusjonstype: Distribusjonstype;
   mottaker: Nullable<Mottaker>;
