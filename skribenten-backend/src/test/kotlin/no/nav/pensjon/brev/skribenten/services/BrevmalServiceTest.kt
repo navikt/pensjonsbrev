@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.services.Brevkoder.FRITEKSTBREV_KODE
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_KODE
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_VIRK0101_KODE
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_VIRK0102_KODE
+import no.nav.pensjon.brev.skribenten.services.PenService.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ListAssert
@@ -182,6 +183,7 @@ class BrevmalServiceTest {
     ): ListAssert<Api.Brevmal> {
         coEvery { brevmetadataService.getBrevmalerForSakstype(any()) } returns listOf(brevdataDto)
         coEvery { penService.hentIsKravPaaGammeltRegelverk(TEST_VEDTAKS_ID) }.returns(ServiceResult.Ok(isKravPaaGammeltRegelverk))
+        coEvery { penService.hentIsKravStoettetAvDatabygger(TEST_VEDTAKS_ID) }.returns(ServiceResult.Ok(KravStoettetAvDatabyggerResult(emptyMap())))
 
         return runBlocking {
             val brevmaler = brevmalService.hentBrevmalerForVedtak(sakstype, inkluderEblanketter, TEST_VEDTAKS_ID)
