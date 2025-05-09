@@ -2,6 +2,7 @@ import type {
   BrevInfo,
   BrevResponse,
   BrevStatus,
+  BrevType,
   Mottaker,
   NavAnsatt,
   NAVEnhet,
@@ -118,6 +119,7 @@ export const nyBrevInfo = (args: {
   sistredigert?: string;
   brevkode?: string;
   brevtittel?: string;
+  brevtype?: BrevType;
   status?: BrevStatus;
   distribusjonstype?: Distribusjonstype;
   mottaker?: Nullable<Mottaker>;
@@ -134,6 +136,7 @@ export const nyBrevInfo = (args: {
     sistredigert: args.sistredigert ?? "2024-09-25T08:54:51.520Z",
     brevkode: args.brevkode ?? "INFORMASJON_OM_SAKSBEHANDLINGSTID",
     brevtittel: args.brevtittel ?? "Informasjon om saksbehandlingstid",
+    brevtype: args.brevtype ?? "INFORMASJONSBREV",
     status: args.status ?? {
       type: "Kladd",
     },

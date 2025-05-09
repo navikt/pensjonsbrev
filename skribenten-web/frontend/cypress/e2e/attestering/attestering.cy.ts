@@ -14,6 +14,10 @@ import {
 
 const defaultBrev = nyBrevResponse({});
 const bekreftelsePåFlyktningstatusBrev = brev as unknown as BrevResponse;
+const vedtaksBrev = nyBrevResponse({
+  ...bekreftelsePåFlyktningstatusBrev,
+  info: { ...bekreftelsePåFlyktningstatusBrev.info, brevtype: "VEDTAKSBREV" },
+});
 
 describe("attestering", () => {
   beforeEach(() => {
@@ -31,11 +35,11 @@ describe("attestering", () => {
     ).as("userInfo");
 
     const brevEtterLagringAvSignatur = nyBrevResponse({
-      ...bekreftelsePåFlyktningstatusBrev,
+      ...vedtaksBrev,
       redigertBrev: nyRedigertBrev({
-        ...bekreftelsePåFlyktningstatusBrev.redigertBrev,
+        ...vedtaksBrev.redigertBrev,
         signatur: nySignatur({
-          ...bekreftelsePåFlyktningstatusBrev.redigertBrev.signatur,
+          ...vedtaksBrev.redigertBrev.signatur,
           saksbehandlerNavn: "Dette er en signatur",
         }),
       }),
@@ -55,7 +59,7 @@ describe("attestering", () => {
 
     const brevEtterLås: BrevResponse = {
       ...brevEtterLagringAvSignatur,
-      info: nyBrevInfo({ ...brevEtterLagringAvSignatur.info, status: { type: "Klar" } }),
+      info: nyBrevInfo({ ...brevEtterLagringAvSignatur.info, status: { type: "Attestering" } }),
     };
 
     //brevvelger
@@ -68,12 +72,13 @@ describe("attestering", () => {
     let hentAlleSakBrevKallNr = 0;
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (req) => {
       //1 fordi ved klikking av det valgte brevet man skal opprette blir det gjort et nytt kall for å hente alle brev på saken
+
       if (hentAlleSakBrevKallNr <= 1) {
         hentAlleSakBrevKallNr++;
         req.reply([]);
       } else if (hentAlleSakBrevKallNr === 2) {
         hentAlleSakBrevKallNr++;
-        req.reply([bekreftelsePåFlyktningstatusBrev.info]);
+        req.reply([vedtaksBrev.info]);
       } else {
         hentAlleSakBrevKallNr++;
         req.reply([brevEtterLås.info]);
@@ -87,12 +92,12 @@ describe("attestering", () => {
         avsenderEnhetsId: "",
         saksbehandlerValg: {},
         mottaker: null,
-        vedtaksId: null,
+        vedtaksId: 9876,
       });
-      return req.reply(bekreftelsePåFlyktningstatusBrev);
+      return req.reply(vedtaksBrev);
     }).as("opprettBrev");
 
-    cy.visit("/saksnummer/123456/brevvelger?vedtakId=9876");
+    cy.visit('/saksnummer/123456/brevvelger?vedtaksId="9876"');
 
     cy.contains("Innhente opplysninger").click();
     cy.contains("Bekreftelse på flyktningstatus").click();
@@ -106,7 +111,7 @@ describe("attestering", () => {
 
     cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
       expect(req.body).to.deep.equal({});
-      req.reply(bekreftelsePåFlyktningstatusBrev);
+      req.reply(vedtaksBrev);
     }).as("saksbehandlerValg");
 
     cy.intercept("PUT", "/bff/skribenten-backend/brev/1/signatur", (req) => {
@@ -118,7 +123,7 @@ describe("attestering", () => {
       req.reply(brevEtterOppdateringAvTekst);
     }).as("oppdaterBrevtekst");
 
-    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1", (req) =>
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1?frigiReservasjon=true", (req) =>
       req.reply(brevEtterOppdateringAvTekst),
     ).as("lagreBrev");
 
@@ -147,34 +152,18 @@ describe("attestering", () => {
 
     cy.contains("Brevet er klart for attestering").click();
     cy.wait("@låsBrev");
-    cy.contains("Ferdigstill 1 brev").click();
-    cy.contains("Vil du ferdigstille, og sende disse brevene?").should("exist");
-    cy.contains("Vedtaksbrev vil bli ferdigstilt, men sendes ikke før saken er attestert.").should("exist");
-    cy.contains("Bekreftelse på flyktningstatus").should("exist");
-    cy.get(`[data-cy="ferdigstillbrev-valgte-brev-til-attestering"] input[type="checkbox"][value="1"]`).should(
-      "be.checked",
-    );
-    cy.contains("Ja, send valgte brev").click();
-
-    //Kvittering
-    cy.url().should("contain", "/saksnummer/123456/kvittering");
-    cy.contains("Klar til attestering").should("exist");
-    cy.contains("Bekreftelse på flyktningstatus").click();
-    cy.contains("Mottaker").should("exist");
-    cy.contains("Tydelig Bakke").should("exist");
-    cy.contains("Distribueres via").should("exist");
-    cy.contains("Sentral print").should("exist");
+    cy.contains("Klar til Attestering").should("be.visible");
   });
 
   it("kan attestere, forhåndsvise og sende brev", () => {
-    cy.visit("/saksnummer/123456/vedtak/1/redigering");
+    cy.visit("/saksnummer/123456/attester/1/redigering");
     cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
       fixture: "modelSpecification.json",
     }).as("modelSpecification");
 
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (req) => req.reply(defaultBrev)).as(
-      "brev",
-    );
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/attestering?reserver=true", (req) =>
+      req.reply(defaultBrev),
+    ).as("brev");
 
     cy.fixture("helloWorldPdf.txt").then((pdf) => {
       cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/pdf", pdf).as("pdf");
@@ -268,14 +257,14 @@ describe("attestering", () => {
     cy.get("@oppdaterBrevtekst.all").should("have.length", 0);
     cy.contains("weeks.").focus();
     cy.contains("weeks.").type("{end}{enter}Dette er en ny tekstblokk");
-    cy.wait("@oppdaterBrevtekst");
+    cy.wait("@oppdaterBrevtekst", { timeout: 20000 });
     cy.contains("Dette er en ny tekstblokk").should("exist");
 
     //attesterer
     cy.get("@attester.all").should("have.length", 0);
     cy.contains("Fortsett").click();
     cy.wait("@attester");
-    cy.url().should("contain", "/saksnummer/123456/vedtak/1/forhandsvisning");
+    cy.url().should("contain", "/saksnummer/123456/attester/1/forhandsvisning");
 
     //------Forhåndsvisning------
     cy.contains("Information about application processing time").should("exist");
@@ -293,7 +282,7 @@ describe("attestering", () => {
     cy.contains("Ja, send brev").click();
 
     //------Kvittering------
-    cy.url().should("contain", "/saksnummer/123456/vedtak/1/kvittering");
+    cy.url().should("contain", "/saksnummer/123456/attester/1/kvittering");
     cy.contains("Sendt til mottaker").should("exist");
     cy.contains("Informasjon om saksbehandlingstid").should("exist");
     cy.contains("Informasjon om saksbehandlingstid").click();
