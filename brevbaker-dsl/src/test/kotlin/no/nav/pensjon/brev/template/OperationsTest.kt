@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.api.model.FeatureToggle
@@ -52,7 +52,7 @@ class OperationsTest {
     @Nested
     @DisplayName("Absolute value operators")
     inner class AbsoluteValue {
-        private val scope = ExpressionScope(2, Fixtures.felles, Language.Bokmal)
+        private val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
 
         @Test
         fun `absoluteKronerValue returns positive value if negative value`() {
@@ -82,7 +82,7 @@ class OperationsTest {
     @Nested
     @DisplayName("Feature-toggling")
     inner class FunksjonsbryterEnabled {
-        private val scope = ExpressionScope(2, Fixtures.felles, Language.Nynorsk)
+        private val scope = ExpressionScope(2, FellesFactory.felles, Language.Nynorsk)
 
         @Test
         fun `enabled gir true viss funksjonen returnerer true`() {

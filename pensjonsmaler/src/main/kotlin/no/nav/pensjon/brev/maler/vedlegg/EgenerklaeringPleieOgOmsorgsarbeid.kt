@@ -21,7 +21,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
-import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
+import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.navn
 
 
 @TemplateModelHelpers

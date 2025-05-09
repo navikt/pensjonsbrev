@@ -34,7 +34,7 @@ class TemplateResourceITest {
                     BestillBrevRequest(
                         kode = kode,
                         letterData = argument,
-                        felles = Fixtures.felles.copy(signerendeSaksbehandlere = null),
+                        felles = Fixtures.felles.medSignerendeSaksbehandlere(signerendeSaksbehandlere = null),
                         language = LanguageCode.BOKMAL
                     )
                 )

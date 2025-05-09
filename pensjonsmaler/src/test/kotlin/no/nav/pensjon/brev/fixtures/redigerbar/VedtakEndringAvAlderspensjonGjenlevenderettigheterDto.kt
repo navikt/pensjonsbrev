@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
-import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
@@ -8,12 +7,11 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brevbaker.api.model.FoedselsnummerImpl
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 import java.time.Month
 
-@OptIn(InterneDataklasser::class)
 fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
     VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
         saksbehandlerValg = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg(
@@ -89,7 +87,7 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
                 avdoedTrygdetidsdetaljerKap19VedVirk = null,
                 avdoed = OpplysningerOmAvdoedBruktIBeregningDto.Avdoed(
                     navn = "Peder Ås",
-                    avdoedFnr = FoedselsnummerImpl("01019878910")
+                    avdoedFnr = Foedselsnummer("01019878910")
                 ),
                 alderspensjonVedVirk = OpplysningerOmAvdoedBruktIBeregningDto.AlderspensjonVedVirk(
                     regelverkType = AlderspensjonRegelverkType.AP2011,

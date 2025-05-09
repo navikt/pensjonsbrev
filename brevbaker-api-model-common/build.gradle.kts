@@ -6,10 +6,12 @@ plugins {
     kotlin("jvm")
     `maven-publish`
     alias(libs.plugins.binary.compatibility.validator) apply true
+    id("java-library")
+    id("java-test-fixtures")
 }
 
 group = "no.nav.pensjon.brevbaker"
-version = "1.10.0"
+version = "1.11.0"
 
 java {
     withSourcesJar()
