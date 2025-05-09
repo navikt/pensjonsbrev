@@ -329,12 +329,10 @@ describe("Brevbehandler", () => {
     cy.contains("Kunne ikke sende brev").should("be.visible");
     cy.contains(kladdBrev.brevtittel).click();
 
-    cy.contains("Brevet ble ikke sendt pga Her er det en teknisk grunn. Prøv igjen.").should("be.visible");
-    cy.contains(
-      "Her kommer det også en veldig god, og begrunnende beskrivelse. Denne skal kanskje være litt lenger, siden den forklarer mer om hva som har skjedd?",
-    ).should("be.visible");
-    cy.contains("Prøv igjen").should("be.visible");
-    cy.get("button").contains("Prøv igjen").click();
+    cy.contains("Skribenten klarte ikke å sende brevet.").should("be.visible");
+    cy.contains("Brevet ligger lagret i brevbehandler til brevet er sendt.").should("be.visible");
+    cy.contains("Prøv å sende igjen").should("be.visible");
+    cy.get("button").contains("Prøv å sende igjen").click();
 
     cy.contains("Sendt til mottaker").should("be.visible");
     cy.contains("Distribueres via").should("be.visible");
