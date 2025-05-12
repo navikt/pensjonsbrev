@@ -1,5 +1,7 @@
 package no.nav.brev.brevbaker
 
+import java.util.Objects
+
 @Suppress("unused")
 class PDFCompilationOutput(val bytes: ByteArray) {
     override fun equals(other: Any?): Boolean {
@@ -21,20 +23,10 @@ class AsyncPDFCompilationOutput(
     }
 
     override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as AsyncPDFCompilationOutput
-
-        if (base64PDF != other.base64PDF) return false
-        if (error != other.error) return false
-
-        return true
+        if (other !is AsyncPDFCompilationOutput) return false
+        return base64PDF == other.base64PDF
+                && error == other.error
     }
 
-    override fun hashCode(): Int {
-        var result = base64PDF?.hashCode() ?: 0
-        result = 31 * result + (error?.hashCode() ?: 0)
-        return result
-    }
+    override fun hashCode(): Int = Objects.hash(base64PDF.hashCode(), error.hashCode())
 }

@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.template.render.pensjonLatexSettings
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.NAVEnhet
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
@@ -56,7 +57,7 @@ internal object LatexDocumentRenderer {
     ) {
         pensjonLatexSettings.writeLanguageSettings(language) { settingName, settingValue ->
             appendNewCmd("felt$settingName") {
-                renderTextLiteral(settingValue, LetterMarkup.ParagraphContent.Text.FontType.PLAIN)
+                renderTextLiteral(settingValue, Text.FontType.PLAIN)
             }
         }
 
@@ -193,7 +194,7 @@ internal object LatexDocumentRenderer {
         appendCmd("sluttvedlegg")
     }
 
-    private fun LatexAppendable.renderIfNonEmptyText(content: List<LetterMarkup.ParagraphContent.Text>, render: LatexAppendable.(String) -> Unit) {
+    private fun LatexAppendable.renderIfNonEmptyText(content: List<Text>, render: LatexAppendable.(String) -> Unit) {
         val text = String(StringBuilder().also { LatexAppendable(it).renderText(content) })
         if (text.isNotEmpty()) {
             render(text)
@@ -206,7 +207,7 @@ internal object LatexDocumentRenderer {
     private fun LatexAppendable.renderBlocks(blocks: List<LetterMarkup.Block>): Unit =
         blocks.forEach { renderBlock(it) }
 
-    private fun LatexAppendable.renderText(elements: List<LetterMarkup.ParagraphContent.Text>): Unit =
+    private fun LatexAppendable.renderText(elements: List<Text>): Unit =
         elements.forEach { renderTextContent(it) }
 
     private fun LatexAppendable.renderBlock(block: LetterMarkup.Block): Unit =
@@ -222,7 +223,7 @@ internal object LatexDocumentRenderer {
             }
         }
 
-    private fun LatexAppendable.renderTextParagraph(text: List<LetterMarkup.ParagraphContent.Text>): Unit =
+    private fun LatexAppendable.renderTextParagraph(text: List<Text>): Unit =
         appendCmd("templateparagraph") {
             arg { renderText(text) }
         }
@@ -230,19 +231,19 @@ internal object LatexDocumentRenderer {
     //TODO depricate table/itemlist/form inside paragraph and make them available outside.
     // there should not be a different space between elements if within/outside paragraphs.
     private fun LatexAppendable.renderParagraph(element: LetterMarkup.Block.Paragraph) {
-        var continousTextContent = mutableListOf<LetterMarkup.ParagraphContent.Text>()
+        var continousTextContent = mutableListOf<Text>()
 
         element.content.forEach { current ->
-            if (current !is LetterMarkup.ParagraphContent.Text && continousTextContent.isNotEmpty()) {
+            if (current !is Text && continousTextContent.isNotEmpty()) {
                 renderTextParagraph(continousTextContent)
                 continousTextContent = mutableListOf()
             }
 
             when (current) {
-                is LetterMarkup.ParagraphContent.Form -> renderForm(current)
-                is LetterMarkup.ParagraphContent.ItemList -> renderList(current)
-                is LetterMarkup.ParagraphContent.Table -> renderTable(current)
-                is LetterMarkup.ParagraphContent.Text -> continousTextContent.add(current)
+                is Form -> renderForm(current)
+                is ItemList -> renderList(current)
+                is Table -> renderTable(current)
+                is Text -> continousTextContent.add(current)
             }
         }
         if (continousTextContent.isNotEmpty()) {
@@ -250,7 +251,7 @@ internal object LatexDocumentRenderer {
         }
     }
 
-    private fun LatexAppendable.renderList(list: LetterMarkup.ParagraphContent.ItemList) {
+    private fun LatexAppendable.renderList(list: ItemList) {
         if (list.items.isNotEmpty()) {
             appendCmd("begin", "letteritemize")
             list.items.forEach { item ->
@@ -261,7 +262,7 @@ internal object LatexDocumentRenderer {
         }
     }
 
-    private fun LatexAppendable.renderTable(table: LetterMarkup.ParagraphContent.Table) {
+    private fun LatexAppendable.renderTable(table: Table) {
         if (table.rows.isNotEmpty()) {
             val columnSpec = table.header.colSpec
 
@@ -277,7 +278,7 @@ internal object LatexDocumentRenderer {
         }
     }
 
-    private fun LatexAppendable.renderTableCells(cells: List<LetterMarkup.ParagraphContent.Table.Cell>, colSpec: List<LetterMarkup.ParagraphContent.Table.ColumnSpec>) {
+    private fun LatexAppendable.renderTableCells(cells: List<Table.Cell>, colSpec: List<Table.ColumnSpec>) {
         cells.forEachIndexed { index, cell ->
             val columnSpan = colSpec[index].span
             if (columnSpan > 1) {
@@ -294,32 +295,32 @@ internal object LatexDocumentRenderer {
         append("""\\""", escape = false)
     }
 
-    private fun columnHeadersLatexString(columnSpec: List<LetterMarkup.ParagraphContent.Table.ColumnSpec>): String =
+    private fun columnHeadersLatexString(columnSpec: List<Table.ColumnSpec>): String =
         columnSpec.joinToString("") {
             ("X" +
                     when (it.alignment) {
-                        LetterMarkup.ParagraphContent.Table.ColumnAlignment.LEFT -> "[l]"
-                        LetterMarkup.ParagraphContent.Table.ColumnAlignment.RIGHT -> "[r]"
+                        Table.ColumnAlignment.LEFT -> "[l]"
+                        Table.ColumnAlignment.RIGHT -> "[r]"
                     }).repeat(it.span)
         }
 
-    private fun LatexAppendable.renderTextContent(element: LetterMarkup.ParagraphContent.Text): Unit =
+    private fun LatexAppendable.renderTextContent(element: Text): Unit =
         when (element) {
-            is LetterMarkup.ParagraphContent.Text.Literal -> renderTextLiteral(element.text, element.fontType)
-            is LetterMarkup.ParagraphContent.Text.Variable -> renderTextLiteral(element.text, element.fontType)
-            is LetterMarkup.ParagraphContent.Text.NewLine -> appendCmd("newline")
+            is Text.Literal -> renderTextLiteral(element.text, element.fontType)
+            is Text.Variable -> renderTextLiteral(element.text, element.fontType)
+            is Text.NewLine -> appendCmd("newline")
         }
 
-    private fun LatexAppendable.renderTextLiteral(text: String, fontType: LetterMarkup.ParagraphContent.Text.FontType): Unit =
+    private fun LatexAppendable.renderTextLiteral(text: String, fontType: Text.FontType): Unit =
         when (fontType) {
-            LetterMarkup.ParagraphContent.Text.FontType.PLAIN -> append(text)
-            LetterMarkup.ParagraphContent.Text.FontType.BOLD -> appendCmd("textbf") { arg { append(text) } }
-            LetterMarkup.ParagraphContent.Text.FontType.ITALIC -> appendCmd("textit") { arg { append(text) } }
+            Text.FontType.PLAIN -> append(text)
+            Text.FontType.BOLD -> appendCmd("textbf") { arg { append(text) } }
+            Text.FontType.ITALIC -> appendCmd("textit") { arg { append(text) } }
         }
 
-    private fun LatexAppendable.renderForm(element: LetterMarkup.ParagraphContent.Form): Unit =
+    private fun LatexAppendable.renderForm(element: Form): Unit =
         when (element) {
-            is LetterMarkup.ParagraphContent.Form.MultipleChoice -> {
+            is Form.MultipleChoice -> {
                 if (element.vspace) {
                     appendCmd("formvspace")
                 }
@@ -337,7 +338,7 @@ internal object LatexDocumentRenderer {
                 appendCmd("end", "formChoice")
             }
 
-            is LetterMarkup.ParagraphContent.Form.Text -> {
+            is Form.Text -> {
                 if (element.vspace) {
                     appendCmd("formvspace")
                 }
@@ -345,9 +346,9 @@ internal object LatexDocumentRenderer {
                 appendCmd("formText") {
                     arg {
                         val size = when (element.size) {
-                            LetterMarkup.ParagraphContent.Form.Text.Size.NONE -> 0
-                            LetterMarkup.ParagraphContent.Form.Text.Size.SHORT -> 25
-                            LetterMarkup.ParagraphContent.Form.Text.Size.LONG -> 60
+                            Form.Text.Size.NONE -> 0
+                            Form.Text.Size.SHORT -> 25
+                            Form.Text.Size.LONG -> 60
                         }
                         renderText(element.prompt)
                         append(" ${".".repeat(size)}")

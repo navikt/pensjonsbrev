@@ -122,7 +122,7 @@ class PdfRequestConsumer(
         is PDFCompilationResponse.Failure.Server -> result.pDFCompilationResponse.reason
         is PDFCompilationResponse.Failure.Client -> {
             """${response.reason}
-                |PDF ompilation error:
+                |PDF Compilation error:
                 | ${response.error ?: ""}
                 |PDF Compilation output:
                 | ${response.output ?: ""}

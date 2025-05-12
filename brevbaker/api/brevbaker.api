@@ -87,15 +87,10 @@ public final class no/nav/pensjon/brev/template/render/HTMLDocument : no/nav/pen
 
 public final class no/nav/pensjon/brev/template/render/LetterWithAttachmentsMarkup {
 	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;)V
-	public final fun component1 ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
-	public final fun component2 ()Ljava/util/List;
-	public final fun copy (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;)Lno/nav/pensjon/brev/template/render/LetterWithAttachmentsMarkup;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brev/template/render/LetterWithAttachmentsMarkup;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/render/LetterWithAttachmentsMarkup;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAttachments ()Ljava/util/List;
 	public final fun getLetterMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
 	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/BrukerSelectors {
