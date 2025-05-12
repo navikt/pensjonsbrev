@@ -27,5 +27,7 @@ fun createEndretUTPgaInntektDtoV2() =
         sokerMottarApIlaAret = false,
         btfbEndret = false,
         btsbEndret = false,
-        brukerBorINorge = true
+        brukerBorINorge = true,
+        pe = createPE(),
+        orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
     )
