@@ -39,6 +39,7 @@ class BrevmalService(
             .toList()
     }
 
+    // TODO rename vekk fra "krav..." når alle tolkninger er over i spring component data-bygger
     private suspend fun brevdataByggerStoettedeVedtak(vedtaksId: String): KravStoettetAvDatabyggerResult =
         penService.hentIsKravStoettetAvDatabygger(vedtaksId)
             .catch { message, httpStatusCode ->
