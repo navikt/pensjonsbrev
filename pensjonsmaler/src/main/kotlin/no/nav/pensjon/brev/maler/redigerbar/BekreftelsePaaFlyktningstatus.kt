@@ -18,7 +18,7 @@ import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
 import no.nav.pensjon.brevbaker.api.model.FoedselsnummerSelectors.value
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
+import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.navn
 
 @TemplateModelHelpers
 object BekreftelsePaaFlyktningstatus : RedigerbarTemplate<EmptyRedigerbarBrevdata> {

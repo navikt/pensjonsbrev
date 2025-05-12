@@ -58,8 +58,8 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.nettside
-import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.telefonnummer
+import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.nettside
+import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.telefonnummer
 
 // V00002 i metaforce
 // Hvis sivilstand mangler, map det til UKJENT
