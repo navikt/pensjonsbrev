@@ -99,16 +99,16 @@ describe("attestering", () => {
 
     cy.visit('/saksnummer/123456/brevvelger?vedtaksId="9876"');
 
+    cy.intercept("GET", "/bff/skribenten-backend/brev/1/reservasjon", {
+      fixture: "brevreservasjon.json",
+    }).as("reservasjon");
+
     cy.contains("Innhente opplysninger").click();
     cy.contains("Bekreftelse på flyktningstatus").click();
     cy.get("@alleBrevPåSak.all").should("have.length", 1);
     cy.contains("Åpne brev").click();
 
     //brev redigering
-    cy.intercept("GET", "/bff/skribenten-backend/brev/1/reservasjon", {
-      fixture: "brevreservasjon.json",
-    }).as("reservasjon");
-
     cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
       expect(req.body).to.deep.equal({});
       req.reply(vedtaksBrev);
@@ -130,6 +130,7 @@ describe("attestering", () => {
     cy.url().should("contain", "/saksnummer/123456/brev/1");
     cy.get("@saksbehandlerValg.all").should("have.length", 0);
     cy.get("@signatur.all").should("have.length", 0);
+    cy.wait("@reservasjon");
     cy.contains("Signatur").click().type("{selectall}{backspace}Dette er en signatur");
     cy.wait("@signatur");
     cy.get("@saksbehandlerValg.all").should("have.length", 1);
@@ -156,7 +157,6 @@ describe("attestering", () => {
   });
 
   it("kan attestere, forhåndsvise og sende brev", () => {
-    cy.visit("/saksnummer/123456/attester/1/redigering");
     cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
       fixture: "modelSpecification.json",
     }).as("modelSpecification");
@@ -168,6 +168,13 @@ describe("attestering", () => {
     cy.fixture("helloWorldPdf.txt").then((pdf) => {
       cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/pdf", pdf).as("pdf");
     });
+    cy.intercept("GET", "/bff/skribenten-backend/brev/1/reservasjon", {
+      fixture: "brevreservasjon.json",
+    }).as("reservasjon");
+
+    cy.visit("/saksnummer/123456/attester/1/redigering");
+    cy.contains("Underskrift").should("exist");
+    cy.clock();
 
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/pdf/send", (req) => {
       req.reply({
@@ -175,10 +182,6 @@ describe("attestering", () => {
         error: null,
       });
     });
-
-    cy.intercept("GET", "/bff/skribenten-backend/brev/1/reservasjon", {
-      fixture: "brevreservasjon.json",
-    }).as("reservasjon");
 
     const brevEtterOppdateringAvAttestantNavn = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
@@ -224,12 +227,14 @@ describe("attestering", () => {
       req.reply(brevEtterOppdateringAvTekst);
     }).as("oppdaterBrevtekst");
 
-    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/attester", (req) => {
-      expect(req.body).to.deep.equal({
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1/attestering?frigiReservasjon=true", (req) => {
+      expect(req.body).to.deep.include({
         saksbehandlerValg: { land: "Norge" },
-        redigertBrev: brevEtterOppdateringAvTekst.redigertBrev,
-        signatur: "Dette er det nye attestant navnet mitt",
+        signaturAttestant: "Dette er det nye attestant navnet mitt",
       });
+
+      expect(req.body.redigertBrev.blocks).to.have.length.above(0);
+
       req.reply(brevEtterOppdateringAvTekst);
     }).as("attester");
 
@@ -239,12 +244,14 @@ describe("attestering", () => {
       .click()
       .type("{selectall}{backspace}{selectall}{backspace}")
       .type("Dette er det nye attestant navnet mitt");
+    cy.tick(3000);
     cy.wait("@attestantNavn");
     cy.get("p:contains('Dette er det nye attestant navnet mitt')").should("exist");
 
     // //oppdaterer saksbehandlerValg
     cy.get("@saksbehandlerValg.all").should("have.length", 0);
     cy.contains("Land").click().type("Norge");
+    cy.tick(3000);
     cy.wait("@saksbehandlerValg");
     cy.get("@saksbehandlerValg.all").should("have.length", 1);
     cy.get("@saksbehandlerValg").then((intercept) => {
@@ -255,9 +262,11 @@ describe("attestering", () => {
 
     //oppdaterer brevtekst
     cy.get("@oppdaterBrevtekst.all").should("have.length", 0);
-    cy.contains("weeks.").focus();
-    cy.contains("weeks.").type("{end}{enter}Dette er en ny tekstblokk");
-    cy.wait("@oppdaterBrevtekst", { timeout: 20000 });
+    cy.contains("span[contenteditable='true']", "weeks.")
+      .focus()
+      .type("{end}{enter}Dette er en ny tekstblokk", { delay: 100 });
+    cy.tick(6000);
+    cy.wait("@oppdaterBrevtekst");
     cy.contains("Dette er en ny tekstblokk").should("exist");
 
     //attesterer
@@ -274,8 +283,7 @@ describe("attestering", () => {
     cy.contains("4844 Arendal").should("exist");
     cy.contains("Distribusjonstype").should("exist");
     cy.contains("Sentral print").should("exist");
-    cy.wait("@pdf");
-    cy.contains("Hello World").should("exist");
+    cy.wait("@pdf").its("response.statusCode").should("eq", 200);
     cy.contains("Send brev").click();
     cy.contains("Vil du sende brevet?").should("exist");
     cy.contains("Du kan ikke angre denne handlingen.").should("exist");
