@@ -75,6 +75,7 @@ object ProductionTemplates : AllTemplates {
         AvslagUttakFoerNormertPensjonsalder,
         AvslagUttakFoerNormertPensjonsalderAP2016,
         BekreftelsePaaFlyktningstatus,
+        EndringAvAlderspensjonSivilstand,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
         ForhaandsvarselVedTilbakekreving,
