@@ -121,6 +121,9 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): ServiceResult<Boolean> =
         client.get("brev/skribenten/vedtak/$vedtaksId/isKravPaaGammeltRegelverk").toServiceResult<Boolean>(::handlePenErrorResponse)
 
+    suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): ServiceResult<KravStoettetAvDatabyggerResult> =
+        client.get("brev/skribenten/vedtak/$vedtaksId/isKravStoettetAvDatabygger").toServiceResult<KravStoettetAvDatabyggerResult>(::handlePenErrorResponse)
+
     suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse.Data> =
         client.get("brev/skribenten/sak/$saksId/brevdata/${brevkode.kode()}") {
             if (avsenderEnhetsId != null) {
@@ -165,6 +168,9 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         val foedselsdato: LocalDate,
         val sakType: Pen.SakType,
         val enhetId: String?,
+    )
+    data class KravStoettetAvDatabyggerResult(
+        val kravStoettet: Map<String, Boolean> = emptyMap()
     )
 }
 
