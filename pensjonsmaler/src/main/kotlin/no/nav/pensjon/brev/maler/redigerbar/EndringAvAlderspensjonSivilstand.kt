@@ -27,29 +27,41 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivi
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.ufoereKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.aarligKontrollEPS
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.endringIEPSInntekt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.endringPensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsAvkallPaaEgenAlderspenspensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsAvkallPaaEgenUfoeretrygd
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsHarInntektOver1G
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsHarRettTilFullAlderspensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsIkkeFylt62Aar
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsIkkeRettTilFullAlderspensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsInntektOekningReduksjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsTarUtAlderspensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsTarUtAlderspensjonIStatligSektor
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.epsTarUtUfoeretrygd
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.forsoergerEPSOver60AarBruktIBeregningen
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.forsoergerEPSOver60AarIkkeBruktIBeregningen
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.fraFlytet
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.giftBorIkkeSammen
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.ingenBetydning
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.institusjonsopphold
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.opplysninger1
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.opplysninger2
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.pensjonenOeker
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.pensjonenRedusert
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.samboer15
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.sivilstandsendringAarsak
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.samboereMedFellesBarn
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.SaksbehandlerValgSelectors.samboereTidligereGift
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
+import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -58,9 +70,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Date
+
 
 // MF_000102 med krav.arsak = ALDERSOVERGANG
 // Brevet gjelder for AP2016/AP2025 brukere når garantitillegg er innvilget etter kapittel 20 i ny alderspensjon
@@ -165,19 +175,30 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                             English to "You have been living with ".expr() + navn + " for 12 out of the past 18 months."
                         )
                     }
-                }.orShowIf(saksbehandlerValg.samboer15.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
+                }.orShowIf(brukersSivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
                     // Radio knapper: Velg type § 1-5 samboer
-                    // endringSivilstand1-5samboerBarn, endringSivilstand1-5samboerTidlGift
-                    paragraph {
-                        val navn = fritekst("navn")
-                        val textValgNB = fritekst("barn sammen/vært gift tidligere")
-                        val textValgNN = fritekst("barn saman/vore gift tidlegare")
-                        val textValgEN = fritekst("with whom you have children/to whom you were previously married")
-                        textExpr(
-                            Bokmal to "Du har flyttet sammen med ".expr() + navn + ", og dere har ".expr() + textValgNB + ".",
-                            Nynorsk to "Du har flytta saman med ".expr() + navn + ", og dere har ".expr() + textValgNN + ".",
-                            English to "You have moved together with ".expr() + navn + ", ".expr() + textValgEN + ".",
-                        )
+                    showIf(saksbehandlerValg.samboereMedFellesBarn) {
+                        paragraph {
+                            // endringSivilstand1-5samboerBarn
+                            val navn = fritekst("navn")
+                            textExpr(
+                                Bokmal to "Du har flyttet sammen med ".expr() + navn + ", og dere har barn sammen.",
+                                Nynorsk to "Du har flytta saman med ".expr() + navn + ", og dere har barn saman.",
+                                English to "You have moved together with ".expr() + navn + ", with whom you have children."
+
+                            )
+                        }
+                    }
+                    showIf(saksbehandlerValg.samboereTidligereGift) {
+                        // endringSivilstand1-5samboerTidlGift
+                        paragraph {
+                            val navn = fritekst("navn")
+                            textExpr(
+                                Bokmal to "Du har flyttet sammen med ".expr() + navn + ", og dere har vært tidligere.",
+                                Nynorsk to "Du har flytta saman med ".expr() + navn + ", og dere har vore gift tidlegare.",
+                                English to "You have moved together with ".expr() + navn + ", with whom you were previously married."
+                            )
+                        }
                     }
                 }
 
@@ -226,11 +247,11 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         )
                     }
                 }
-            }
+            } // END of kravArsakType.SIVILSTANDSENDRING
 
             // Radio knapper: Velg endring i EPS inntekt
             // endringInntektOktEPS, endringInntektRedusertEPS
-            showIf(saksbehandlerValg.endringIEPSInntekt.isOneOf(KravArsakType.EPS_ENDRET_INNTEKT)) {
+            showIf(kravArsakType.isOneOf(KravArsakType.EPS_ENDRET_INNTEKT) and saksbehandlerValg.epsInntektOekningReduksjon) {
                 paragraph {
                     val epsInntektsendringNB = fritekst("økt/redusert")
                     val epsInntektsendringNN = fritekst("auka/redusert")
@@ -311,14 +332,24 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
             // Radioknapper: Hva er årsaken til sivilstandsendringen?
             showIf(kravArsakType.isOneOf(KravArsakType.SIVILSTANDSENDRING) and not(borSammenMedBruker)) {
-                showIf(saksbehandlerValg.sivilstandsendringAarsak) {
-                    // flyttetEPS, endringSivilstandGiftBorIkkeSammen
+                showIf(saksbehandlerValg.fraFlytet) {
+                    // flyttetEPS
                     paragraph {
                         val navn = fritekst("navn")
                         textExpr(
-                            Bokmal to "Du og ".expr() + navn + " bor ikke lenger sammen. // Du har giftet deg. Ifølge folkeregisteret er du og ektefellen din registrert bosatt på ulike adresser.",
-                            Nynorsk to "Du og ".expr() + navn + "bur ikkje lenger saman. // Du har gifta deg. Ifølgje folkeregisteret er du og ektefellen din registrert busette på ulike adresser.",
-                            English to "You and ".expr() + navn + "no longer live together. // You have gotten married. According to the national registry you and your spouse are listed at different residential addresses."
+                            Bokmal to "Du og ".expr() + navn + " bor ikke lenger sammen.",
+                            Nynorsk to "Du og ".expr() + navn + "bur ikkje lenger saman.",
+                            English to "You and ".expr() + navn + "no longer live together."
+                        )
+                    }
+                }
+                showIf(saksbehandlerValg.giftBorIkkeSammen) {
+                    // endirngSivilstandGiftBorIkkeSammen
+                    paragraph {
+                        text(
+                            Bokmal to "Du har giftet deg. Ifølge folkeregisteret er du og ektefellen din registrert bosatt på ulike adresser.",
+                            Nynorsk to "Du har gifta deg. Ifølgje folkeregisteret er du og ektefellen din registrert busette på ulike adresser.",
+                            English to "You have gotten married. According to the national registry you and your spouse are listed at different residential addresses."
                         )
                     }
                 }
@@ -514,7 +545,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
                 // Radioknapper: Forsørger EPS over 60 år. Særskilt sats for minste pensjonsnivå
                 showIf(kravArsakType.isOneOf(KravArsakType.VURDER_SERSKILT_SATS)) {
-                    showIf(saksbehandlerValg.forsoergerEPSOver60AarBruktIBeregningen) {
+                    showIf(saksbehandlerValg.epsIkkeFylt62Aar) {
                         // SaerSatsBruktEpsUnder62
                         paragraph {
                             textExpr(
@@ -523,6 +554,8 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 English to "Your ".expr() + brukersSivilstandBestemt + " you support has an income lower than the basic amount which is NOK ".expr() + grunnpensjon.format() + ".",
                             )
                         }
+                    }
+                    showIf(saksbehandlerValg.epsIkkeRettTilFullAlderspensjon) {
                         // SaerSatsBruktEpsIkkeRettTilAP
                         paragraph {
                             textExpr(
@@ -531,6 +564,8 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 English to "Your ".expr() + brukersSivilstandBestemt + " you support does not have rights to full retirement pension through the National Insurance Act and has income lower than the basic amount which is NOK ".expr() + grunnpensjon.format() + "."
                             )
                         }
+                    }
+                    showIf(saksbehandlerValg.epsAvkallPaaEgenAlderspenspensjon) {
                         // SaerSatsBruktEpsGittAvkallAP
                         paragraph {
                             textExpr(
@@ -539,6 +574,8 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 English to brukersSivilstandBestemt + " has renounced their retirement pension through the National Insurance Act."
                             )
                         }
+                    }
+                    showIf(saksbehandlerValg.epsAvkallPaaEgenUfoeretrygd) {
                         // SaerSatsBruktEpsGittAvkallUT
                         paragraph {
                             textExpr(
@@ -548,15 +585,8 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                             )
                         }
                     }
-                    showIf(saksbehandlerValg.forsoergerEPSOver60AarIkkeBruktIBeregningen) {
+                    showIf(saksbehandlerValg.epsHarInntektOver1G) {
                         // SaerSatsIkkeBruktEpsInntektOver1G, SaerSatsIkkeBruktEpsRettTilFullAP, SaerSatsIkkeBruktEpsMottarAP, SaerSatsIkkeBruktEpsMottarAfp, SaerSatsIkkeBruktEpsMottarUT
-                        paragraph {
-                            textExpr(
-                                Bokmal to "Du får ikke beregnet alderspensjonen din med særskilt sats fordi ".expr() + brukersSivilstandBestemt + " din",
-                                Nynorsk to "Du får ikkje berekna alderspensjonen din med særskilt sats fordi ".expr() + brukersSivilstandBestemt + " din",
-                                English to "Your retirement pension is not recalculated according to a special rate because your ".expr() + brukersSivilstandBestemt + " has"
-                            )
-                        }
                         paragraph {
                             textExpr(
                                 Bokmal to "Du får ikke beregnet alderspensjonen din med særskilt sats fordi ".expr() + brukersSivilstandBestemt + " din har inntekt høyere enn grunnbeløpet (".expr() + grunnpensjon.format() + " kroner).",
@@ -564,6 +594,8 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 English to "Your retirement pension is not recalculated according to a special rate because your ".expr() + brukersSivilstandBestemt + " has a higher income than the basic amount which is NOK ".expr() + grunnpensjon.format() + "."
                             )
                         }
+                    }
+                    showIf(saksbehandlerValg.epsHarRettTilFullAlderspensjon) {
                         // SaerSatsIkkeBruktEpsRettTilFullAP
                         paragraph {
                             textExpr(
@@ -572,6 +604,8 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 English to "Your retirement pension is not recalculated according to a special rate because your ".expr() + brukersSivilstandBestemt + " has rights to full retirement pension through the National Insurance Act."
                             )
                         }
+                    }
+                    showIf(saksbehandlerValg.epsTarUtAlderspensjon) {
                         // SaerSatsIkkeBruktEpsMottarAP
                         paragraph {
                             textExpr(
@@ -580,6 +614,8 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 English to "Your retirement pension is not recalculated according to a special rate because your ".expr() + brukersSivilstandBestemt + " recieves retirement pension through the National Insurance Act."
                             )
                         }
+                    }
+                    showIf(saksbehandlerValg.epsTarUtAlderspensjonIStatligSektor) {
                         // SaerSatsIkkeBruktEpsMottarAfp
                         paragraph {
                             textExpr(
@@ -588,6 +624,8 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                                 English to "Your retirement pension is not recalculated according to a special rate because your ".expr() + brukersSivilstandBestemt + " receives contractual retirement pension from the public sector."
                             )
                         }
+                    }
+                    showIf(saksbehandlerValg.epsTarUtUfoeretrygd) {
                         // SaerSatsIkkeBruktEpsMottarUT
                         paragraph {
                             textExpr(
@@ -597,66 +635,67 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                             )
                         }
                     }
+                }
 
-
-                    // omregningSaerskilSats_AP1967, _AP2011AP2016
-                    showIf(saerskiltSatsErBrukt) {
-                        paragraph {
-                            text(
-                                Bokmal to "Derfor har vi beregnet ",
-                                Nynorsk to "Derfor har vi berekna ",
-                                English to "We have therefore recalculated your "
+                showIf(saerskiltSatsErBrukt) {
+                    // omregningSaerskilSats_AP1967, _AP2011
+                    paragraph {
+                        text(
+                            Bokmal to "Derfor har vi beregnet ",
+                            Nynorsk to "Derfor har vi berekna ",
+                            English to "We have therefore recalculated your "
+                        )
+                        showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {
+                            textExpr(
+                                Bokmal to ifElse(
+                                    minstenivaaIndividuellInnvilget,
+                                    ifTrue = "særtillegget og minstenivåtillegget",
+                                    ifFalse = "særtillegget"
+                                ),
+                                Nynorsk to ifElse(
+                                    minstenivaaIndividuellInnvilget,
+                                    ifTrue = "særtillegget og minstenivåtillegget",
+                                    ifFalse = "særtillegget"
+                                ),
+                                English to ifElse(
+                                    minstenivaaIndividuellInnvilget,
+                                    ifTrue = "special supplement and minimum pension supplement",
+                                    ifFalse = "special supplement"
+                                ),
                             )
-                            showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {
-                                text(
-                                    Bokmal to +ifElse(
-                                        minstenivaaIndividuellInnvilget,
-                                        ifTrue = "særtillegget og minstenivåtillegget",
-                                        ifFalse = "særtillegget"
-                                    ),
-                                    Nynorsk to +ifElse(
-                                        minstenivaaIndividuellInnvilget,
-                                        ifTrue = "særtillegget og minstenivåtillegget",
-                                        ifFalse = "særtillegget"
-                                    ),
-                                    English to +ifElse(
-                                        minstenivaaIndividuellInnvilget,
-                                        ifTrue = "special supplement and minimum pension supplement",
-                                        ifFalse = "special supplement"
-                                    ),
-                                )
-                            }.orShowIf(
-                                regelverkType.isOneOf(
-                                    AlderspensjonRegelverkType.AP2011,
-                                    AlderspensjonRegelverkType.AP2016
-                                )
-                            ) {
-                                text(
-                                    Bokmal to +ifElse(
-                                        minstenivaaIndividuellInnvilget,
-                                        ifTrue = "pensjonstillegget og minstenivåtillegget",
-                                        ifFalse = "pensjonstillegget"
-                                    ),
-                                    Nynorsk to +ifElse(
-                                        minstenivaaIndividuellInnvilget,
-                                        ifTrue = "pensjonstillegget og minstenivåtillegget",
-                                        ifFalse = "pensjonstillegget"
-                                    ),
-                                    English to +ifElse(
-                                        minstenivaaIndividuellInnvilget,
-                                        ifTrue = "basic pension and minimum pension supplement",
-                                        ifFalse = "basic pension"
-                                    ),
-                                )
-                            }
-                            text(
-                                Bokmal to " ditt på nytt med særskilt sats.",
-                                Nynorsk to " ditt på nytt med særskilt sats.",
-                                English to " according to a special rate."
+                        }.orShowIf(
+                            regelverkType.isOneOf(
+                                AlderspensjonRegelverkType.AP2011,
+                                AlderspensjonRegelverkType.AP2016
+                            )
+                        ) {
+                            textExpr(
+                                Bokmal to ifElse(
+                                    minstenivaaIndividuellInnvilget,
+                                    ifTrue = "pensjonstillegget og minstenivåtillegget",
+                                    ifFalse = "pensjonstillegget"
+                                ),
+                                Nynorsk to ifElse(
+                                    minstenivaaIndividuellInnvilget,
+                                    ifTrue = "pensjonstillegget og minstenivåtillegget",
+                                    ifFalse = "pensjonstillegget"
+                                ),
+                                English to ifElse(
+                                    minstenivaaIndividuellInnvilget,
+                                    ifTrue = "basic pension and minimum pension supplement",
+                                    ifFalse = "basic pension"
+                                ),
                             )
                         }
+                        text(
+                            Bokmal to " ditt på nytt med særskilt sats.",
+                            Nynorsk to " ditt på nytt med særskilt sats.",
+                            English to " according to a special rate."
+                        )
                     }
+                }
 
+                showIf(saksbehandlerValg.opplysninger1) {
                     paragraph {
                         val fritekst = fritekst("Opplysninger/forhold du vil informere bruker om i saken.")
                         textExpr(
@@ -666,86 +705,88 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         )
                     }
                 }
-                showIf(
-                    regelverkType.isOneOf(
-                        AlderspensjonRegelverkType.AP2011,
-                        AlderspensjonRegelverkType.AP2016
-                    ) and saerskiltSatsErBrukt
-                ) {
-                    showIf(saksbehandlerValg.ingenBetydning) {
-                        // ingenEndringBelop
-                        paragraph {
-                            text(
-                                Bokmal to "Dette får ingen betydning for utbetalingen din.",
-                                Nynorsk to "Dette får ingen følgjer for utbetalinga di.",
-                                English to "This does not affect the amount you will receive."
-                            )
-                        }
+            }
 
-                    }
-                    showIf(saksbehandlerValg.pensjonenOeker) {
-                        // nyBeregningAPØkning
-                        paragraph {
-                            text(
-                                Bokmal to "Dette fører til at pensjonen din øker.",
-                                Nynorsk to "Dette fører til at pensjonen din aukar.",
-                                English to "This leads to an increase in your retirement pension."
-                            )
-                        }
-                    }
-                    showIf(saksbehandlerValg.pensjonenRedusert) {
-                        // nyBeregningAPReduksjon
-                        paragraph {
-                            text(
-                                Bokmal to "Dette fører til at pensjonen din blir redusert.",
-                                Nynorsk to "Dette fører til at pensjonen din blir redusert.",
-                                English to "This leads to a reduction in your retirement pension."
-                            )
-                        }
-                    }
-                }
-
-                showIf(kravArsakType.isOneOf(KravArsakType.VURDER_SERSKILT_SATS)) {
-                    showIf(saksbehandlerValg.aarligKontrollEPS) {
-                        // SaerSatsInfoAarligKontrollEps
-                        paragraph {
-                            textExpr(
-                                Bokmal to "Fram til ".expr() + brukersSivilstand + " din fyller 67 år, har vi en årlig kontroll om ".expr() +
-                                        brukersSivilstand + " din har rett til full alderpensjon. Du får nytt vedtak hvis dette fører til at alderspensjonen din blir omregnet.",
-                                Nynorsk to "Fram til ".expr() + brukersSivilstand + " din fyller 67 år, har vi ein årleg kontroll av ".expr() +
-                                        brukersSivilstand + " si rett til full alderpensjon. Du får nytt vedtak hvis dette fører til at alderspensjonen din blir omrekna.",
-                                English to "Until your ".expr() + brukersSivilstand + "  turns 67 years of age, we have an annual control of their rights to a full retirement pension. " +
-                                        "You will receive a new decision if this results in your retirement pension being recalculated."
-                            )
-                        }
-                    }
-                }
-
-                showIf(uforeKombinertMedAlder) {
-                    // innvilgelseAPogUTInnledn
+            // Selectable: Hvilken betydning får omregulering for pensjonen?
+            showIf(
+                regelverkType.isOneOf(
+                    AlderspensjonRegelverkType.AP2011,
+                    AlderspensjonRegelverkType.AP2016
+                ) and saerskiltSatsErBrukt
+            ) {
+                showIf(saksbehandlerValg.ingenBetydning) {
+                    // ingenEndringBelop
                     paragraph {
-                        textExpr(
-                            Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom + "." +
-                                    " Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
-                            Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom + "." +
-                                    " Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
-                            English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from ".expr() + kravVirkDatoFom + "." +
-                                    " You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit."
+                        text(
+                            Bokmal to "Dette får ingen betydning for utbetalingen din.",
+                            Nynorsk to "Dette får ingen følgjer for utbetalinga di.",
+                            English to "This does not affect the amount you will receive."
                         )
                     }
-                }.orShow {
+
+                }
+                showIf(saksbehandlerValg.pensjonenOeker) {
+                    // nyBeregningAPØkning
                     paragraph {
-                        // innvilgelseAPInnledn
+                        text(
+                            Bokmal to "Dette fører til at pensjonen din øker.",
+                            Nynorsk to "Dette fører til at pensjonen din aukar.",
+                            English to "This leads to an increase in your retirement pension."
+                        )
+                    }
+                }
+                showIf(saksbehandlerValg.pensjonenRedusert) {
+                    // nyBeregningAPReduksjon
+                    paragraph {
+                        text(
+                            Bokmal to "Dette fører til at pensjonen din blir redusert.",
+                            Nynorsk to "Dette fører til at pensjonen din blir redusert.",
+                            English to "This leads to a reduction in your retirement pension."
+                        )
+                    }
+                }
+            }
+
+            showIf(kravArsakType.isOneOf(KravArsakType.VURDER_SERSKILT_SATS) and saksbehandlerValg.aarligKontrollEPS) {
+                    // SaerSatsInfoAarligKontrollEps
+                    paragraph {
                         textExpr(
-                            Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom + " i alderspensjon fra folketrygden.",
-                            Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom + " i alderspensjon frå folketrygda.",
-                            English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from ".expr() + kravVirkDatoFom + " as retirement pension from the National Insurance Scheme."
+                            Bokmal to "Fram til ".expr() + brukersSivilstandBestemt + " din fyller 67 år, har vi en årlig kontroll om ".expr() +
+                                    brukersSivilstandBestemt + " din har rett til full alderpensjon. Du får nytt vedtak hvis dette fører til at alderspensjonen din blir omregnet.",
+                            Nynorsk to "Fram til ".expr() + brukersSivilstandBestemt + " din fyller 67 år, har vi ein årleg kontroll av ".expr() +
+                                    brukersSivilstandBestemt + " si rett til full alderpensjon. Du får nytt vedtak hvis dette fører til at alderspensjonen din blir omrekna.",
+                            English to "Until your ".expr() + brukersSivilstandBestemt + "  turns 67 years of age, we have an annual control of their rights to a full retirement pension. " +
+                                    "You will receive a new decision if this results in your retirement pension being recalculated."
                         )
                     }
                 }
 
-                includePhrase(Utbetalingsinformasjon)
+            showIf(uforeKombinertMedAlder) {
+                // innvilgelseAPogUTInnledn
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom + "." +
+                                " Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
+                        Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom + "." +
+                                " Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
+                        English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from ".expr() + kravVirkDatoFom + "." +
+                                " You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit."
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    // innvilgelseAPInnledn
+                    textExpr(
+                        Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom + " i alderspensjon fra folketrygden.",
+                        Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom + " i alderspensjon frå folketrygda.",
+                        English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from ".expr() + kravVirkDatoFom + " as retirement pension from the National Insurance Scheme."
+                    )
+                }
+            }
 
+            includePhrase(Utbetalingsinformasjon)
+
+            showIf(saksbehandlerValg.opplysninger2) {
                 paragraph {
                     val fritekst = fritekst("Opplysninger/forhold du vil informere bruker om i saken.")
                     textExpr(
@@ -754,20 +795,94 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         English to fritekst,
                     )
                 }
+            }
+
+            showIf(
+                kravArsakType.isNotAnyOf(
+                    KravArsakType.ALDERSOVERGANG,
+                    KravArsakType.VURDER_SERSKILT_SATS
+                ) and regelverkType.isNotAnyOf(AlderspensjonRegelverkType.AP2025)
+            ) {
+                // hjemmelSivilstandAlleRegelverkstyper
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
+                        English to "This decision was made pursuant to the provisions of §§ ",
+                    )
+                    showIf(brukersSivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
+                        text(
+                            Bokmal to "1-5, ",
+                            Nynorsk to "1-5, ",
+                            English to "1-5, "
+                        )
+                    }
+                    text(
+                        Bokmal to "3-2",
+                        Nynorsk to "3-2",
+                        English to "3-2",
+                    )
+                    showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967) and saertilleggInnvilget) {
+                        text(
+                            Bokmal to ", 3-3, ",
+                            Nynorsk to ", 3-3, ",
+                            English to ", 3-3, ",
+                        )
+                    }
+                    showIf(pensjonstilleggInnvilget or minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget) {
+                        text(
+                            Bokmal to ", 19-8",
+                            Nynorsk to ", 19-8",
+                            English to ", 19-8",
+                        )
+                    }
+                    showIf(pensjonstilleggInnvilget) {
+                        text(
+                            Bokmal to ", 19-9",
+                            Nynorsk to ", 19-9",
+                            English to ", 19-9",
+                        )
+                    }
+                    showIf(garantipensjonInnvilget) {
+                        text(
+                            Bokmal to ", 20-9",
+                            Nynorsk to ", 20-9",
+                            English to ", 20-9",
+                        )
+                    }
+                    text(
+                        Bokmal to " og 22-12.",
+                        Nynorsk to " og 22-12.",
+                        English to " and 22-12.",
+                    )
+                }
 
                 showIf(
-                    kravArsakType.isNotAnyOf(
-                        KravArsakType.ALDERSOVERGANG,
-                        KravArsakType.VURDER_SERSKILT_SATS
-                    ) and regelverkType.isNotAnyOf(AlderspensjonRegelverkType.AP2025)
+                    kravArsakType.isOneOf(KravArsakType.ALDERSOVERGANG) and regelverkType.isNotAnyOf(
+                        AlderspensjonRegelverkType.AP2025
+                    )
                 ) {
-                    // hjemmelSivilstandAlleRegelverkstyper
+                    // hjemmelGarantitillegg§20-20
                     paragraph {
                         text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
-                            English to "This decision was made pursuant to the provisions of §§ ",
+                            Bokmal to "Vedtaket er gjort etter folketrygdloven § 20-20.",
+                            Nynorsk to "Vedtaket er gjort etter folketrygdlova § 20-20.",
+                            English to "This decision was made pursuant to the provisions of § 20-20 of the National Insurance Act.",
                         )
+                    }
+                }
+            }
+
+            showIf(
+                kravArsakType.isOneOf(KravArsakType.VURDER_SERSKILT_SATS) and saerskiltSatsErBrukt
+            ) {
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
+                        English to "This decision was made pursuant to the provisions of §§ ",
+                    )
+                    showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {
                         showIf(brukersSivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
                             text(
                                 Bokmal to "1-5, ",
@@ -778,190 +893,144 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         text(
                             Bokmal to "3-2",
                             Nynorsk to "3-2",
-                            English to "3-2",
+                            English to "3-2"
                         )
-                        showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967) and saertilleggInnvilget) {
+                        showIf(saertilleggInnvilget) {
                             text(
-                                Bokmal to ", 3-3, ",
-                                Nynorsk to ", 3-3, ",
-                                English to ", 3-3, ",
-                            )
-                        }
-                        showIf(pensjonstilleggInnvilget or minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget) {
-                            text(
-                                Bokmal to ", 19-8",
-                                Nynorsk to ", 19-8",
-                                English to ", 19-8",
-                            )
-                        }
-                        showIf(pensjonstilleggInnvilget) {
-                            text(
-                                Bokmal to ", 19-9",
-                                Nynorsk to ", 19-9",
-                                English to ", 19-9",
-                            )
-                        }
-                        showIf(garantipensjonInnvilget) {
-                            text(
-                                Bokmal to ", 20-9",
-                                Nynorsk to ", 20-9",
-                                English to ", 20-9",
+                                Bokmal to ", 3-3",
+                                Nynorsk to ", 3-3",
+                                English to ", 3-3"
                             )
                         }
                         text(
-                            Bokmal to " og 22-12.",
-                            Nynorsk to " og 22-12.",
-                            English to " and 22-12.",
+                            Bokmal to ", 19-8 og 22-12.",
+                            Nynorsk to ", 19-8 og 22-12.",
+                            English to ", 19-8 and 22-12 of the National Insurance Act."
                         )
-                    }
-
-                    showIf(
-                        kravArsakType.isOneOf(KravArsakType.ALDERSOVERGANG) and regelverkType.isNotAnyOf(
-                            AlderspensjonRegelverkType.AP2025
+                    }.orShowIf(
+                        regelverkType.isOneOf(
+                            AlderspensjonRegelverkType.AP2011,
+                            AlderspensjonRegelverkType.AP2016
                         )
                     ) {
-                        // hjemmelGarantitillegg§20-20
-                        paragraph {
+                        showIf(brukersSivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
                             text(
-                                Bokmal to "Vedtaket er gjort etter folketrygdloven § 20-20.",
-                                Nynorsk to "Vedtaket er gjort etter folketrygdlova § 20-20.",
-                                English to "This decision was made pursuant to the provisions of § 20-20 of the National Insurance Act.",
+                                Bokmal to "1-5, ",
+                                Nynorsk to "1-5, ",
+                                English to "1-5, "
                             )
                         }
-                    }
-                }
-
-                showIf(
-                    kravArsakType.isOneOf(KravArsakType.VURDER_SERSKILT_SATS) and saerskiltSatsErBrukt
-                ) {
-                    paragraph {
+                    }.orShow {
                         text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ ",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ ",
-                            English to "This decision was made pursuant to the provisions of §§ ",
-                        )
-                        showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP1967)) {
-                            showIf(brukersSivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
-                                text(
-                                    Bokmal to "1-5, ",
-                                    Nynorsk to "1-5, ",
-                                    English to "1-5, "
-                                )
-                            }
-                            text(
-                                Bokmal to "3-2",
-                                Nynorsk to "3-2",
-                                English to "3-2"
-                            )
-                            showIf(saertilleggInnvilget) {
-                                text(
-                                    Bokmal to ", 3-3",
-                                    Nynorsk to ", 3-3",
-                                    English to ", 3-3"
-                                )
-                            }
-                            text(
-                                Bokmal to ", 19-8 og 22-12.",
-                                Nynorsk to ", 19-8 og 22-12.",
-                                English to ", 19-8 and 22-12 of the National Insurance Act."
-                            )
-                        }.orShowIf(
-                            regelverkType.isOneOf(
-                                AlderspensjonRegelverkType.AP2011,
-                                AlderspensjonRegelverkType.AP2016
-                            )
-                        ) {
-                            showIf(brukersSivilstand.isOneOf(MetaforceSivilstand.SAMBOER_1_5)) {
-                                text(
-                                    Bokmal to "1-5, ",
-                                    Nynorsk to "1-5, ",
-                                    English to "1-5, "
-                                )
-                            }
-                        }.orShow {
-                            text(
-                                Bokmal to "19-8, 19-9 og 22-12.",
-                                Nynorsk to "19-8, 19-9 og 22-12.",
-                                English to "19-8, 19-9 and 22-12 of the National Insurance Act."
-                            )
-                        }
-                    }
-                }
-
-                showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2025)) {
-                    // hjemmelSivilstandAP2025
-                    paragraph {
-                        text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-9, 20-17 femte avsnitt og 22-12.",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-9, 20-17 femte avsnitt og 22-12.",
-                            English to "This decision was made pursuant to the provisions of §§ 20-9, 20-17 fifth paragraph, and 22-12 of the National Insurance Act."
+                            Bokmal to "19-8, 19-9 og 22-12.",
+                            Nynorsk to "19-8, 19-9 og 22-12.",
+                            English to "19-8, 19-9 and 22-12 of the National Insurance Act."
                         )
                     }
                 }
+            }
 
-                showIf(kravArsakType.isOneOf(KravArsakType.ALDERSOVERGANG)) {
-                    // vedleggBeregnPensjonsOpptjeningOverskrift
-                    title1 {
-                        text(
-                            Bokmal to "Pensjonsopptjeningen din",
-                            Nynorsk to "Pensjonsoppteninga di",
-                            English to "Your accumulated pension capital",
-                        )
-                    }
-                    // vedleggBeregnPensjonsOpptjening
-                    paragraph {
-                        text(
-                            Bokmal to "I nettjenesten Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsopptjeningen din for hvert enkelt år. Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg.",
-                            Nynorsk to "I nettenesta Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsoppteninga di for kvart enkelt år. Der kan du sjå kva andre typar pensjonsopptening som er registrert på deg.",
-                            English to "Our online service 'Din pensjon' at $DIN_PENSJON_URL provides details on your accumulated rights for each year. Here you will be able to see your other types of pension rights we have registered."
-                        )
-                    }
+            showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2025)) {
+                // hjemmelSivilstandAP2025
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-9, 20-17 femte avsnitt og 22-12.",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-9, 20-17 femte avsnitt og 22-12.",
+                        English to "This decision was made pursuant to the provisions of §§ 20-9, 20-17 fifth paragraph, and 22-12 of the National Insurance Act."
+                    )
                 }
+            }
 
-                // Hvis reduksjon tilbake i tid (Selectable) - feilutbetalingAP
-                showIf(saksbehandlerValg.feilutbetaling) {
-                    title1 {
-                        text(
-                            Bokmal to "Feilutbetaling",
-                            Nynorsk to "Feilutbetaling",
-                            English to "Incorrect payment"
-                        )
-                    }
-                    paragraph {
-                        text(
-                            Bokmal to "Vi har redusert pensjonen din tilbake i tid. Derfor har du fått for mye utbetalt. Vi vil sende deg et eget varselbrev om en eventuell tilbakebetaling.",
-                            Nynorsk to "Vi har redusert pensjonen din tilbake i tid. Derfor har du fått for mykje utbetalt. Vi vil sende deg eit eige varselbrev om ei eventuell tilbakebetaling.",
-                            English to "We have reduced your retirement pension for a previous period. You have therefore been paid too much. We will send you a separate notice letter concerning possible repayment.",
-                        )
-                    }
+            showIf(kravArsakType.isOneOf(KravArsakType.ALDERSOVERGANG)) {
+                // vedleggBeregnPensjonsOpptjeningOverskrift
+                title1 {
+                    text(
+                        Bokmal to "Pensjonsopptjeningen din",
+                        Nynorsk to "Pensjonsoppteninga di",
+                        English to "Your accumulated pension capital",
+                    )
                 }
-
-                // Hvis endring i pensjonen (Selectable) - skattAPendring
-                showIf(saksbehandlerValg.endringPensjon) {
-                    title1 {
-                        text(
-                            Bokmal to "Endring av alderspensjon kan ha betydning for skatt",
-                            Nynorsk to "Endring av alderspensjon kan ha betyding for skatt",
-                            English to "The change in your retirement pension may affect how much tax you pay"
-                        )
-                    }
-                    paragraph {
-                        text(
-                            Bokmal to "Du bør kontrollere om skattekortet ditt er riktig når alderspensjonen blir endret. Dette kan du gjøre selv på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister.",
-                            Nynorsk to "Du bør kontrollere om skattekortet ditt er riktig når alderspensjonen blir endra. Dette kan du gjere sjølv på $SKATTEETATEN_PENSJONIST_URL. Der får du også meir informasjon om skattekort for pensjonistar.",
-                            English to "When your retirement pension has been changed, you should check if your tax deduction card is correctly calculated. You can change your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL. There you will find more information regarding tax deduction card for pensioners.",
-                        )
-                    }
-                    paragraph {
-                        text(
-                            Bokmal to "På $DIN_PENSJON_URL får du vite hva du betaler i skatt. Her kan du også legge inn ekstra skattetrekk om du ønsker det. Dersom du endrer skattetrekket vil dette gjelde fra måneden etter at vi har fått beskjed.",
-                            Nynorsk to "På $DIN_PENSJON_URL får du vite kva du betaler i skatt. Her kan du også leggje inn tilleggsskatt om du ønskjer det. Dersom du endrar skattetrekket, vil dette gjelde frå månaden etter at vi har fått beskjed.",
-                            English to "At $DIN_PENSJON_URL you can see how much tax you are paying. Here you can also add surtax, if you want. If you change your income tax rate, this will be applied from the month after we have been notified of the change.",
-                        )
-                    }
+                // vedleggBeregnPensjonsOpptjening
+                paragraph {
+                    text(
+                        Bokmal to "I nettjenesten Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsopptjeningen din for hvert enkelt år. Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg.",
+                        Nynorsk to "I nettenesta Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsoppteninga di for kvart enkelt år. Der kan du sjå kva andre typar pensjonsopptening som er registrert på deg.",
+                        English to "Our online service 'Din pensjon' at $DIN_PENSJON_URL provides details on your accumulated rights for each year. Here you will be able to see your other types of pension rights we have registered."
+                    )
                 }
+            }
 
-                showIf(vedtakEtterbetaling) {
+            // Selectable - Hvis reduksjon tilbake i tid - feilutbetalingAP
+            showIf(saksbehandlerValg.feilutbetaling) {
+                title1 {
+                    text(
+                        Bokmal to "Feilutbetaling",
+                        Nynorsk to "Feilutbetaling",
+                        English to "Incorrect payment"
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Vi har redusert pensjonen din tilbake i tid. Derfor har du fått for mye utbetalt. Vi vil sende deg et eget varselbrev om en eventuell tilbakebetaling.",
+                        Nynorsk to "Vi har redusert pensjonen din tilbake i tid. Derfor har du fått for mykje utbetalt. Vi vil sende deg eit eige varselbrev om ei eventuell tilbakebetaling.",
+                        English to "We have reduced your retirement pension for a previous period. You have therefore been paid too much. We will send you a separate notice letter concerning possible repayment.",
+                    )
+                }
+            }
+
+            // Hvis endring i pensjonen (Selectable) - skattAPendring
+            showIf(saksbehandlerValg.endringPensjon) {
+                title1 {
+                    text(
+                        Bokmal to "Endring av alderspensjon kan ha betydning for skatt",
+                        Nynorsk to "Endring av alderspensjon kan ha betyding for skatt",
+                        English to "The change in your retirement pension may affect how much tax you pay"
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Du bør kontrollere om skattekortet ditt er riktig når alderspensjonen blir endret. Dette kan du gjøre selv på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister.",
+                        Nynorsk to "Du bør kontrollere om skattekortet ditt er riktig når alderspensjonen blir endra. Dette kan du gjere sjølv på $SKATTEETATEN_PENSJONIST_URL. Der får du også meir informasjon om skattekort for pensjonistar.",
+                        English to "When your retirement pension has been changed, you should check if your tax deduction card is correctly calculated. You can change your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL. There you will find more information regarding tax deduction card for pensioners.",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "På $DIN_PENSJON_URL får du vite hva du betaler i skatt. Her kan du også legge inn ekstra skattetrekk om du ønsker det. Dersom du endrer skattetrekket vil dette gjelde fra måneden etter at vi har fått beskjed.",
+                        Nynorsk to "På $DIN_PENSJON_URL får du vite kva du betaler i skatt. Her kan du også leggje inn tilleggsskatt om du ønskjer det. Dersom du endrar skattetrekket, vil dette gjelde frå månaden etter at vi har fått beskjed.",
+                        English to "At $DIN_PENSJON_URL you can see how much tax you are paying. Here you can also add surtax, if you want. If you change your income tax rate, this will be applied from the month after we have been notified of the change.",
+                    )
+                }
+            }
+
+            showIf(vedtakEtterbetaling) {
+                // etterbetalingAP_002
+                title1 {
+                    text(
+                        Bokmal to "Etterbetaling",
+                        Nynorsk to "Etterbetaling",
+                        English to "Retroactive payment",
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får etterbetalt pensjon fra ".expr() + kravVirkDatoFom + ". Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. Vi kan trekke fra skatt og ytelser du har fått fra for eksempel Nav eller tjenestepensjonsordninger. Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $DITT_NAV.",
+                        Nynorsk to "Du får etterbetalt pensjon frå ".expr() + kravVirkDatoFom + ". Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. Vi kan trekke frå skatt og ytingar du har fått frå for eksempel Nav eller tenestepensjonsordningar. Derfor kan etterbetalinga di bli forsinka. Tenestepensjonsordninga har ni veker frist på å krevje trekk i etterbetalinga. Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $DITT_NAV.",
+                        English to "You will receive retroactive pension payments from ".expr() + kravVirkDatoFom + ". The retroactive payments will normally be made in the course of seven working days. We can make deductions for tax and benefits you have received, for example, from Nav or occupational pension schemes. Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. You can check if there are any deductions from the payment notice at $DITT_NAV.",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser.",
+                        Nynorsk to "Dersom etterbetalinga gjeld tidlegare år, vil vi trekkje skatt etter standardsatsane til skatteetaten.",
+                        English to "If the retroactive payment refers to earlier years, we will deduct tax at the Tax Administration's standard rates.",
+                    )
+                }
+            }
+
+            // Hvis etterbetaling (Selectable) - etterbetalingAP_002
+            showIf(not(vedtakEtterbetaling)) {
+                showIf(saksbehandlerValg.etterbetaling) {
                     // etterbetalingAP_002
                     title1 {
                         text(
@@ -985,90 +1054,70 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         )
                     }
                 }
+            }
 
-                // Hvis etterbetaling (Selectable) - etterbetalingAP_002
-                showIf(not(vedtakEtterbetaling)) {
-                    showIf(saksbehandlerValg.etterbetaling) {
-                        // etterbetalingAP_002
-                        title1 {
-                            text(
-                                Bokmal to "Etterbetaling",
-                                Nynorsk to "Etterbetaling",
-                                English to "Retroactive payment",
-                            )
-                        }
-                        paragraph {
-                            textExpr(
-                                Bokmal to "Du får etterbetalt pensjon fra ".expr() + kravVirkDatoFom + ". Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. Vi kan trekke fra skatt og ytelser du har fått fra for eksempel Nav eller tjenestepensjonsordninger. Derfor kan etterbetalingen din bli forsinket. Tjenestepensjonsordninger har ni ukers frist på å kreve trekk i etterbetalingen. Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $DITT_NAV.",
-                                Nynorsk to "Du får etterbetalt pensjon frå ".expr() + kravVirkDatoFom + ". Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. Vi kan trekke frå skatt og ytingar du har fått frå for eksempel Nav eller tenestepensjonsordningar. Derfor kan etterbetalinga di bli forsinka. Tenestepensjonsordninga har ni veker frist på å krevje trekk i etterbetalinga. Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $DITT_NAV.",
-                                English to "You will receive retroactive pension payments from ".expr() + kravVirkDatoFom + ". The retroactive payments will normally be made in the course of seven working days. We can make deductions for tax and benefits you have received, for example, from Nav or occupational pension schemes. Therefore, your retroactive payment may be delayed. Occupational pension schemes have a deadline of nine weeks to demand a deduction from the retroactive payments. You can check if there are any deductions from the payment notice at $DITT_NAV.",
-                            )
-                        }
-                        paragraph {
-                            text(
-                                Bokmal to "Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser.",
-                                Nynorsk to "Dersom etterbetalinga gjeld tidlegare år, vil vi trekkje skatt etter standardsatsane til skatteetaten.",
-                                English to "If the retroactive payment refers to earlier years, we will deduct tax at the Tax Administration's standard rates.",
-                            )
-                        }
-                    }
-                }
-
-                // Arbeidsinntekt og pensjon
-                showIf(
-                    regelverkType.isNotAnyOf(AlderspensjonRegelverkType.AP1967) and kravArsakType.isNotAnyOf(
-                        KravArsakType.INSTOPPHOLD
+            // Arbeidsinntekt og pensjon
+            showIf(
+                regelverkType.isNotAnyOf(AlderspensjonRegelverkType.AP1967) and kravArsakType.isNotAnyOf(
+                    KravArsakType.INSTOPPHOLD
+                )
+            ) {
+                // arbInntektAPOverskrift
+                title1 {
+                    text(
+                        Bokmal to "Arbeidsinntekt og alderspensjon",
+                        Nynorsk to "Arbeidsinntekt og alderspensjon",
+                        English to "Earned income and retirement pension",
                     )
-                ) {
-                    // arbInntektAPOverskrift
-                    title1 {
-                        text(
-                            Bokmal to "Arbeidsinntekt og alderspensjon",
-                            Nynorsk to "Arbeidsinntekt og alderspensjon",
-                            English to "Earned income and retirement pension",
-                        )
-                    }
-                    // arbInntektAP
+                }
+                // arbInntektAP
+                paragraph {
+                    text(
+                        Bokmal to "Du kan arbeide så mye du vil uten at alderspensjonen din blir redusert. Det kan føre til at pensjonen din øker.",
+                        Nynorsk to "Du kan arbeide så mykje du vil utan at alderspensjonen din blir redusert. Det kan føre til at pensjonen din aukar.",
+                        English to "You can work as much as you want without your retirement pension being reduced. This may lead to an increase in your pension.",
+                    )
+                }
+                // nyOpptjeningHelAP
+                showIf(uttaksgrad.equalTo(100)) {
                     paragraph {
                         text(
-                            Bokmal to "Du kan arbeide så mye du vil uten at alderspensjonen din blir redusert. Det kan føre til at pensjonen din øker.",
-                            Nynorsk to "Du kan arbeide så mykje du vil utan at alderspensjonen din blir redusert. Det kan føre til at pensjonen din aukar.",
-                            English to "You can work as much as you want without your retirement pension being reduced. This may lead to an increase in your pension.",
+                            Bokmal to "Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig.",
+                            Nynorsk to "Dersom du har 100 prosent alderspensjon, gjeld auken frå 1. januar året etter at skatteoppgjeret ditt er ferdig.",
+                            English to "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed.",
                         )
                     }
-                    // nyOpptjeningHelAP
-                    showIf(uttaksgrad.equalTo(100)) {
-                        paragraph {
-                            text(
-                                Bokmal to "Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig.",
-                                Nynorsk to "Dersom du har 100 prosent alderspensjon, gjeld auken frå 1. januar året etter at skatteoppgjeret ditt er ferdig.",
-                                English to "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed.",
-                            )
-                        }
-                    }.orShow {
-                        // nyOpptjeningGradertAP
-                        paragraph {
-                            text(
-                                Bokmal to "Hvis du har lavere enn 100 prosent alderspensjon, blir økningen lagt til hvis du søker om endret grad eller ny beregning av den graden du har nå.",
-                                Nynorsk to "Dersom du har lågare enn 100 prosent alderspensjon, blir auken lagd til dersom du søkjer om endra grad eller ny berekning av den graden du har no.",
-                                English to "If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated.",
-                            )
-                        }
+                }.orShow {
+                    // nyOpptjeningGradertAP
+                    paragraph {
+                        text(
+                            Bokmal to "Hvis du har lavere enn 100 prosent alderspensjon, blir økningen lagt til hvis du søker om endret grad eller ny beregning av den graden du har nå.",
+                            Nynorsk to "Dersom du har lågare enn 100 prosent alderspensjon, blir auken lagd til dersom du søkjer om endra grad eller ny berekning av den graden du har no.",
+                            English to "If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated.",
+                        )
                     }
-                    // arbInntektAPogUT
-                    showIf(uforeKombinertMedAlder) {
-                        paragraph {
-                            text(
-                                Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
-                                Nynorsk to "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd.",
-                                English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit.",
-                            )
-                        }
+                }
+                // arbInntektAPogUT
+                showIf(uforeKombinertMedAlder) {
+                    paragraph {
+                        text(
+                            Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
+                            Nynorsk to "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd.",
+                            English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit.",
+                        )
                     }
                 }
             }
+
+            includePhrase(informasjonOmAlderspensjon)
+            includePhrase(meldeFraOmEndringer)
+            includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.HarDuSpoersmaal.alder)
+
         }
     }
+}
 
 
 
