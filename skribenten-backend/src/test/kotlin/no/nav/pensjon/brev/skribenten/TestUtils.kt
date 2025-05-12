@@ -16,7 +16,7 @@ inline fun <reified T> AbstractAssert<*, *>.isInstanceOfSatisfying(block: Consum
 inline fun <reified T> AbstractAssert<*, *>.isInstanceOf() =
     isInstanceOf(T::class.java)!!
 
-data class MockPrincipal(override val navIdent: NavIdent, override val fullName: String, val groups: MutableSet<ADGroup> = mutableSetOf()) : UserPrincipal {
+data class MockPrincipal(override val navIdent: NavIdent, override val fullName: String, val groups: Set<ADGroup> = emptySet()) : UserPrincipal {
     override val accessToken: UserAccessToken
         get() = throw NotImplementedError("Not implemented in mock class")
 

@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template.render.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
-import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterImpl
@@ -27,7 +27,7 @@ class TemplateListTest {
         }
 
         assertThat(
-            Letter2Markup.render(LetterImpl(doc, Unit, Language.Bokmal, Fixtures.felles)).letterMarkup,
+            Letter2Markup.render(LetterImpl(doc, Unit, Language.Bokmal, FellesFactory.felles)).letterMarkup,
             hasBlocks {
                 title1 { literal("this text should render") }
                 paragraph { }

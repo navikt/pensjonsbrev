@@ -1,62 +1,94 @@
 package no.nav.pensjon.brevbaker.api.model
 
-import no.nav.brev.InterneDataklasser
 import java.time.LocalDate
+import java.util.Objects
 
-@InterneDataklasser
-data class FellesImpl(
-    override val dokumentDato: LocalDate,
-    override val saksnummer: String,
-    override val avsenderEnhet: NAVEnhet,
-    override val bruker: Bruker,
-    override val vergeNavn: String?,
-    override val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null,
-) : Felles
+class Felles(
+    val dokumentDato: LocalDate,
+    val saksnummer: String,
+    val avsenderEnhet: NavEnhet,
+    val bruker: Bruker,
+    val vergeNavn: String?,
+    val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null
+) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is Felles) return false
+        return dokumentDato == other.dokumentDato
+                && saksnummer == other.saksnummer
+                && avsenderEnhet == other.avsenderEnhet
+                && bruker == other.bruker
+                && vergeNavn == other.vergeNavn
+                && signerendeSaksbehandlere == other.signerendeSaksbehandlere
+    }
 
-interface Felles {
-    val dokumentDato: LocalDate
-    val saksnummer: String
-    val avsenderEnhet: NAVEnhet
-    val bruker: Bruker
-    val vergeNavn: String?
-    val signerendeSaksbehandlere: SignerendeSaksbehandlere?
+    override fun hashCode() = Objects.hash(dokumentDato, saksnummer, avsenderEnhet, bruker, vergeNavn, signerendeSaksbehandlere)
+
+    override fun toString() =
+        "Felles(dokumentDato=$dokumentDato, saksnummer='$saksnummer', avsenderEnhet=$avsenderEnhet, bruker=$bruker, vergeNavn=$vergeNavn, signerendeSaksbehandlere=$signerendeSaksbehandlere)"
+
+    fun medSignerendeSaksbehandlere(signerendeSaksbehandlere: SignerendeSaksbehandlere?): Felles =
+        Felles(
+            dokumentDato = this.dokumentDato,
+            saksnummer = this.saksnummer,
+            avsenderEnhet = this.avsenderEnhet,
+            bruker = this.bruker,
+            vergeNavn = this.vergeNavn,
+            signerendeSaksbehandlere = signerendeSaksbehandlere,
+        )
 }
 
-@InterneDataklasser
-data class SignerendeSaksbehandlereImpl(
-    override val saksbehandler: String,
-    override val attesterendeSaksbehandler: String? = null
-) : SignerendeSaksbehandlere
+class SignerendeSaksbehandlere(
+    val saksbehandler: String,
+    val attesterendeSaksbehandler: String? = null
+) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is SignerendeSaksbehandlere) return false
+        return saksbehandler == other.saksbehandler && attesterendeSaksbehandler == other.attesterendeSaksbehandler
+    }
 
-interface SignerendeSaksbehandlere {
-    val saksbehandler: String
-    val attesterendeSaksbehandler: String?
+    override fun hashCode() = Objects.hash(saksbehandler, attesterendeSaksbehandler)
+
+    override fun toString() =
+        "SignerendeSaksbehandlere(saksbehandler='$saksbehandler', attesterendeSaksbehandler=$attesterendeSaksbehandler)"
 }
 
-@InterneDataklasser
-data class BrukerImpl(
-    override val foedselsnummer: Foedselsnummer,
-    override val fornavn: String,
-    override val mellomnavn: String?,
-    override val etternavn: String,
-) : Bruker
-
-interface Bruker {
-    val foedselsnummer: Foedselsnummer
-    val fornavn: String
-    val mellomnavn: String?
+class Bruker(
+    val foedselsnummer: Foedselsnummer,
+    val fornavn: String,
+    val mellomnavn: String?,
     val etternavn: String
+) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is Bruker) return false
+        return foedselsnummer == other.foedselsnummer
+                && fornavn == other.fornavn
+                && mellomnavn == other.mellomnavn
+                && etternavn == other.etternavn
+    }
+
+    override fun hashCode() = Objects.hash(foedselsnummer, fornavn, mellomnavn, etternavn)
+
+    override fun toString() =
+        "Bruker(foedselsnummer=$foedselsnummer, fornavn='$fornavn', mellomnavn=$mellomnavn, etternavn='$etternavn')"
+
+
 }
 
-@InterneDataklasser
-data class NavEnhetImpl(
-    override val nettside: String,
-    override val navn: String,
-    override val telefonnummer: Telefonnummer,
-) : NAVEnhet
-
-interface NAVEnhet {
-    val nettside: String
-    val navn: String
+class NavEnhet(
+    val nettside: String,
+    val navn: String,
     val telefonnummer: Telefonnummer
+) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is NavEnhet) return false
+        return nettside == other.nettside
+                && navn == other.navn
+                && telefonnummer == other.telefonnummer
+    }
+
+    override fun hashCode() = Objects.hash(nettside, navn, telefonnummer)
+
+    override fun toString() = "NavEnhet(nettside='$nettside', navn='$navn', telefonnummer=$telefonnummer)"
+
+
 }

@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.telefonnummer
+import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.telefonnummer
 
 val vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk =
     createAttachment<LangBokmalNynorskEnglish, EmptyBrevdata>(

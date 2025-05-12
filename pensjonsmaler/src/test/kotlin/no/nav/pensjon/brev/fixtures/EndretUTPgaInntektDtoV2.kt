@@ -12,7 +12,10 @@ fun createEndretUTPgaInntektDtoV2() =
             uforegrad = 100,
             inntektstak = 1,
             inntektsgrense = 1,
-            inntektBruktIAvkortning = 0
+            inntektBruktIAvkortning = 0,
+            nettoPerAr = 300000,
+            nettoAkkumulert = 1000000,
+            nettoRestbelop = 2000000
         ),
         barnetilleggFellesbarn = null,
         barnetilleggSaerkullsbarn = null,
@@ -24,5 +27,5 @@ fun createEndretUTPgaInntektDtoV2() =
         sokerMottarApIlaAret = false,
         btfbEndret = false,
         btsbEndret = false,
-        settingAvInntektForNesteAar = false,
+        brukerBorINorge = true
     )

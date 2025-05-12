@@ -6,11 +6,11 @@ on:
       - 'main'
     paths:
       - .github/workflows/verify-brevoppskrift-web.yaml
-      - brevoppskrift-web/frontend/**
+      - brevoppskrift-web/**
 
 jobs:
-  verify:
-    name: Verify tests, lint and typescript errors
+  verify-bff:
+    name: Verify bff tests, lint and typescript errors
     permissions:
       contents: read
     runs-on: ubuntu-latest
@@ -20,7 +20,39 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
+          registry-url: https://npm.pkg.github.com/
+          scope: '@navikt'
+      - name: Install bff dependencies
+        working-directory: brevoppskrift-web/bff
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+
+      - name: Run ESLint
+        working-directory: brevoppskrift-web/bff
+        run: npm run lint
+
+      - name: Check for typescript errors
+        working-directory: brevoppskrift-web/bff
+        run: npm run check-types
+
+      - name: Build bff
+        working-directory: brevoppskrift-web/bff
+        run: npm run build
+
+  verify-frontend:
+    name: Verify frontend tests, lint and typescript errors
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: brevoppskrift-web/frontend
       - name: Install dependencies

@@ -2,24 +2,28 @@
 
 package no.nav.pensjon.brevbaker.api.model
 
-import no.nav.brev.InterneDataklasser
-
 interface IntValue {
     val value: Int
 }
 
-interface Telefonnummer {
-    val value: String
+class Telefonnummer(val value: String) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is Telefonnummer) return false
+        return value == other.value
+    }
+
+    override fun hashCode() = value.hashCode()
+
+    override fun toString(): String = "Telefonnummer(value='$value')"
 }
 
-@InterneDataklasser
-data class TelefonnummerImpl(override val value: String) : Telefonnummer
+class Foedselsnummer(val value: String) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is Foedselsnummer) return false
+        return value == other.value
+    }
 
-@InterneDataklasser
-data class FoedselsnummerImpl(override val value: String) : Foedselsnummer
-
-interface Foedselsnummer {
-    val value: String
+    override fun hashCode() = value.hashCode()
 }
 
 data class Kroner(override val value: Int) : IntValue

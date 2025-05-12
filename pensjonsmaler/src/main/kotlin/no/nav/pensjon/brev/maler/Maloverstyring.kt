@@ -24,7 +24,10 @@ fun isEnabled(kode: String) = when (kode) {
     Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER_AP2016.kode() -> FeatureToggles.apAvslagNormertPensjonsalderAP2016
     Pesysbrevkoder.Redigerbar.PE_VARSEL_REVURDERING_AV_PENSJON.kode() -> FeatureToggles.varselRevurderingAvPensjon
     Pesysbrevkoder.Redigerbar.PE_VARSEL_OM_TILBAKEKREVING_FEILUTBETALT_BELOEP.kode() -> FeatureToggles.varselTilbakekrevingAvFeilutbetaltBeloep
+    Pesysbrevkoder.Redigerbar.PE_TILBAKEKREVING_AV_FEILUTBETALT_BELOEP.kode() -> FeatureToggles.vedtakTilbakekrevingAvFeilutbetaltBeloep
     Pesysbrevkoder.Redigerbar.PE_OMSORG_EGEN_MANUELL.kode() -> FeatureToggles.omsorgEgenManuell
     Pesysbrevkoder.Redigerbar.PE_INFORMASJON_OM_GJENLEVENDERETTIGHETER.kode() -> FeatureToggles.informasjonOmGjenlevenderettigheter
+    Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_GJENLEVENDERETT.kode() -> FeatureToggles.vedtakEndringAvAlderspensjonGjenlevenderettigheter
+    Pesysbrevkoder.Redigerbar.PE_AP_ENDRET_UTTAKSGRAD.kode() -> FeatureToggles.vedtakEndringAvUttaksgrad
     else -> null
 }?.let { FeatureToggleSingleton.isEnabled(it) } ?: true
