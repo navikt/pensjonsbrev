@@ -64,7 +64,7 @@ function Kvittering() {
       ></div>
       <VStack
         css={css`
-          justify-self: anchor-center;
+          justify-self: center;
         `}
         gap="4"
       >
