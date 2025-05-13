@@ -9,9 +9,14 @@ import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlage
 import java.time.LocalDate
 
 data class VedtakEndringAvUttaksgradStansDto(
-    override val saksbehandlerValg: EmptyBrevdata,
+    override val saksbehandlerValg: SaksbehandlerValg,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<EmptyBrevdata, VedtakEndringAvUttaksgradStansDto.PesysData> {
+) : RedigerbarBrevdata<VedtakEndringAvUttaksgradStansDto.SaksbehandlerValg, VedtakEndringAvUttaksgradStansDto.PesysData> {
+    data class SaksbehandlerValg(
+        val ufoeretrygdErInnvilgetEllerUfoeregradErOekt: Boolean,
+        val pensjonsopptjeningenErEndret: Boolean
+    ) : BrevbakerBrevdata
+
     data class PesysData(
         val krav: Krav,
         val alderspensjonVedVirk: AlderspensjonVedVirk,
