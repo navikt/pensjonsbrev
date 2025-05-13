@@ -27,7 +27,7 @@ import no.nav.brev.brevbaker.LatexTimeoutException
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.template.jacksonObjectMapper
+import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import org.slf4j.LoggerFactory
 import kotlin.math.pow
 import kotlin.random.Random
@@ -40,7 +40,7 @@ class LaTeXCompilerService(
     private val timeout: Duration = 300.seconds,
 ) : PDFByggerService {
     private val logger = LoggerFactory.getLogger(this::class.java)
-    private val objectmapper = jacksonObjectMapper()
+    private val objectmapper = brevbakerJacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
             jackson()

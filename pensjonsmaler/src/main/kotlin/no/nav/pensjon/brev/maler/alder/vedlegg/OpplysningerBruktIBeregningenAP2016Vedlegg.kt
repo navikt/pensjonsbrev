@@ -35,6 +35,8 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors
 import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors.tom
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.DelingstallVed67Aar
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Language
@@ -112,74 +114,82 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                         }
                         showIf(opplysningerKap19.innvilgetTillegspensjon.equalTo(true)) {
                             ifNotNull(opplysningerKap19.sluttpoengTall) { sluttpoeng ->
-                                row {
-                                    cell {
-                                        text(
-                                            Bokmal to "Sluttpoengtall",
-                                            Nynorsk to "Sluttpoengtal",
-                                            English to "Final pension point score"
-                                        )
-                                    }
-                                    cell {
-                                        textExpr(
-                                            Bokmal to sluttpoeng.format(),
-                                            Nynorsk to sluttpoeng.format(),
-                                            English to sluttpoeng.format()
-                                        )
+                                showIf(sluttpoeng.greaterThan(0.0)) {
+                                    row {
+                                        cell {
+                                            text(
+                                                Bokmal to "Sluttpoengtall",
+                                                Nynorsk to "Sluttpoengtal",
+                                                English to "Final pension point score"
+                                            )
+                                        }
+                                        cell {
+                                            textExpr(
+                                                Bokmal to sluttpoeng.format(),
+                                                Nynorsk to sluttpoeng.format(),
+                                                English to sluttpoeng.format()
+                                            )
+                                        }
                                     }
                                 }
                             }
                             ifNotNull(opplysningerKap19.poengAar) { antallPoengAar ->
-                                row {
-                                    cell {
-                                        text(
-                                            Bokmal to "Antall poengår",
-                                            Nynorsk to "Talet på poengår",
-                                            English to "Number of pension point earning years"
-                                        )
-                                    }
-                                    cell {
-                                        textExpr(
-                                            Bokmal to antallPoengAar.format() + " år".expr(),
-                                            Nynorsk to antallPoengAar.format() + " år".expr(),
-                                            English to antallPoengAar.format() + " years".expr()
-                                        )
+                                showIf(antallPoengAar.greaterThan(0)) {
+                                    row {
+                                        cell {
+                                            text(
+                                                Bokmal to "Antall poengår",
+                                                Nynorsk to "Talet på poengår",
+                                                English to "Number of pension point earning years"
+                                            )
+                                        }
+                                        cell {
+                                            textExpr(
+                                                Bokmal to antallPoengAar.format() + " år".expr(),
+                                                Nynorsk to antallPoengAar.format() + " år".expr(),
+                                                English to antallPoengAar.format() + " years".expr()
+                                            )
+                                        }
                                     }
                                 }
                             }
                             ifNotNull(opplysningerKap19.poengAarF92) { antallPoengAar ->
-                                row {
-                                    cell {
-                                        text(
-                                            Bokmal to "Antall år med pensjonsprosent 45",
-                                            Nynorsk to "Talet på år med pensjonsprosent 45",
-                                            English to "Number of years calculated with pension percentage 45"
-                                        )
-                                    }
-                                    cell {
-                                        textExpr(
-                                            Bokmal to antallPoengAar.format() + " år".expr(),
-                                            Nynorsk to antallPoengAar.format() + " år".expr(),
-                                            English to antallPoengAar.format() + " years".expr()
-                                        )
+                                showIf(antallPoengAar.greaterThan(0)) {
+                                    row {
+                                        cell {
+                                            text(
+                                                Bokmal to "Antall år med pensjonsprosent 45",
+                                                Nynorsk to "Talet på år med pensjonsprosent 45",
+                                                English to "Number of years calculated with pension percentage 45"
+                                            )
+                                        }
+                                        cell {
+                                            textExpr(
+                                                Bokmal to antallPoengAar.format() + " år".expr(),
+                                                Nynorsk to antallPoengAar.format() + " år".expr(),
+                                                English to antallPoengAar.format() + " years".expr()
+                                            )
+                                        }
                                     }
                                 }
                             }
                             ifNotNull(opplysningerKap19.poengAarE91) { antallPoengAar ->
-                                row {
-                                    cell {
-                                        text(
-                                            Bokmal to "Antall år med pensjonsprosent 42",
-                                            Nynorsk to "Talet på år med pensjonsprosent 42",
-                                            English to "Number of years calculated with pension percentage 42"
-                                        )
-                                    }
-                                    cell {
-                                        textExpr(
-                                            Bokmal to antallPoengAar.format() + " år".expr(),
-                                            Nynorsk to antallPoengAar.format() + " år".expr(),
-                                            English to antallPoengAar.format() + " years".expr()
-                                        )
+                                showIf(antallPoengAar.greaterThan(0)) {
+                                    row {
+                                        cell {
+                                            text(
+                                                Bokmal to "Antall år med pensjonsprosent 42",
+                                                Nynorsk to "Talet på år med pensjonsprosent 42",
+                                                English to "Number of years calculated with pension percentage 42"
+                                            )
+                                        }
+                                        cell {
+                                            textExpr(
+                                                Bokmal to antallPoengAar.format() + " år".expr(),
+                                                Nynorsk to antallPoengAar.format() + " år".expr(),
+                                                English to antallPoengAar.format() + " years".expr()
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -326,13 +336,7 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                     showIf(uttaksgrad.lessThan(100)) {
                         ifNotNull(delingstallVedNormertPensjonsalder) { delingstall ->
                             row {
-                                cell {
-                                    text(
-                                        Bokmal to "Delingstall ved 67 år",
-                                        Nynorsk to "Delingstal ved 67 år",
-                                        English to "Ratio for life expectancy adjustment at age 67"
-                                    )
-                                }
+                                cell { includePhrase(DelingstallVed67Aar) }
                                 cell {
                                     textExpr(
                                         Bokmal to delingstall.format(),
@@ -407,13 +411,8 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                     )
                 }
 
-                paragraph {
-                    text(
-                        Bokmal to "Tabellen nedenfor viser perioder vi har brukt for å fastsette din norske trygdetid.",
-                        Nynorsk to "Tabellen nedanfor viser periodar vi har brukt for å fastsetje den norske trygdetida di.",
-                        English to "The table below shows the time periods used to establish your Norwegian national insurance coverage."
-                    )
-                }
+                includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetidInnledning)
+
                 paragraph {
                     table(header = {
                         column {

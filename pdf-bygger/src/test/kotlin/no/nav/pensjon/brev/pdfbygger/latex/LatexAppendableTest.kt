@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.pdfbygger
+package no.nav.pensjon.brev.pdfbygger.latex
 
 import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat

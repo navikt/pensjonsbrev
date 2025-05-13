@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderD
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.InngangOgEksportVurderingSelectors.eksportBeregnetUtenGarantipensjon_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.beregningsmetode_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidNorge
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetid
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.fom
 import no.nav.pensjon.brev.api.model.vedlegg.TrygdetidSelectors.land
@@ -95,13 +96,7 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
             }
 
             showIf(trygdetidNorge.size().greaterThan(0)) {
-                paragraph {
-                    text(
-                        Bokmal to "Tabellen nedenfor viser perioder vi har brukt for å fastsette din norske trygdetid.",
-                        Nynorsk to "Tabellen nedanfor viser periodar vi har brukt for å fastsetje den norske trygdetida di.",
-                        English to "The table below shows the time periods used to establish your Norwegian national insurance coverage.",
-                    )
-                }
+                includePhrase(NorskTrygdetidInnledning)
                 includePhrase(NorskTrygdetid(trygdetidNorge))
             }
         }
@@ -138,6 +133,20 @@ data class OpplysningerBruktIBeregningenTrygdetidTabeller(
             }
             includePhrase(UtenlandskTrygdetid(trygdetidAvtaleland))
         }
+    }
+
+    object NorskTrygdetidInnledning : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "Tabellen nedenfor viser perioder vi har brukt for å fastsette din norske trygdetid.",
+                    Nynorsk to "Tabellen nedanfor viser periodar vi har brukt for å fastsetje den norske trygdetida di.",
+                    English to "The table below shows the time periods used to establish your Norwegian national insurance coverage.",
+                )
+            }
+
+        }
+
     }
 
     data class NorskTrygdetid(

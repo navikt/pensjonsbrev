@@ -40,6 +40,6 @@ internal abstract class LetterRenderer<R : Any> {
         return hasContent
     }
 
-    protected abstract fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): R
+    abstract fun renderLetter(scope: ExpressionScope<*>, template: LetterTemplate<*, *>): R
 
 }
