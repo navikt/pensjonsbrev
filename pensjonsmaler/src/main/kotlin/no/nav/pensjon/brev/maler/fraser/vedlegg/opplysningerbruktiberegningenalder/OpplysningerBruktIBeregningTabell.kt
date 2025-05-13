@@ -45,7 +45,7 @@ import no.nav.pensjon.brev.maler.fraser.common.BroekText
 import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.beregningVirkDatoFom
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.delingstalletVed67Ar
@@ -590,11 +590,12 @@ data class OpplysningerBruktIBeregningTabellAP2025(
     val beregningKap20VedVirk: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.BeregningKap20VedVirk>,
     val vilkarsVedtak: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.VilkaarsVedtak>,
     val trygdetidsdetaljerKap20VedVirk: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.TrygdetidsdetaljerKap20VedVirk>,
-    val garantipensjonVedVirk: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.GarantipensjonVedVirk?>
+    val garantipensjonVedVirk: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.GarantipensjonVedVirk?>,
+    val beregnetPensjonPerManedVedVirk: Expression<OpplysningerBruktIBeregningenAlderAP2025Dto.BeregnetPensjonPerManedVedVirk>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
-            table(opplysningerBruktIBeregningenHeader(alderspensjonVedVirk.beregningVirkDatoFom)) {
+            table(opplysningerBruktIBeregningenHeader(beregnetPensjonPerManedVedVirk.virkDatoFom)) {
                 row {
                     //tabellBeholdningForForsteUttak_002
                     cell {
@@ -628,7 +629,9 @@ data class OpplysningerBruktIBeregningTabellAP2025(
 
                 ifNotNull(garantipensjonVedVirk) { garantipensjonVedVirk ->
                     showIf(
-                        garantipensjonVedVirk.garantipensjonInnvilget and garantipensjonVedVirk.nettoUtbetaltPerManed.greaterThan(0)
+                        garantipensjonVedVirk.garantipensjonInnvilget and garantipensjonVedVirk.nettoUtbetaltPerManed.greaterThan(
+                            0
+                        )
                     ) {
                         row {
                             cell {

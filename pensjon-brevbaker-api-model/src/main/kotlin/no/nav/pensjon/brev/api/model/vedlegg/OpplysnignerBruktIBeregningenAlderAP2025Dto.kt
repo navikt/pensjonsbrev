@@ -82,7 +82,6 @@ data class OpplysningerBruktIBeregningenAlderAP2025Dto(
 
     data class AlderspensjonVedVirk(
         val uttaksgrad: Int,
-        val beregningVirkDatoFom: LocalDate,
         val garantipensjonInnvilget: Boolean,
         val nettoUtbetaltPerManed: Kroner,
     )

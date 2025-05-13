@@ -91,6 +91,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                 vilkarsVedtak = vilkarsVedtak,
                 trygdetidsdetaljerKap20VedVirk = trygdetidsdetaljerKap20VedVirk,
                 garantipensjonVedVirk = garantipensjonVedVirk,
+                beregnetPensjonPerManedVedVirk = beregnetPensjonPerManedVedVirk
             )
         )
 
