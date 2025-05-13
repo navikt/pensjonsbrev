@@ -2,7 +2,12 @@ import { css } from "@emotion/react";
 import { Box, Button, Label, VStack } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
 
+import { Route } from "~/routes/saksnummer_/$saksId/attester.$brevId/redigering/route";
+
 const ArkivertBrev = (props: { saksId: string }) => {
+  const navigate = Route.useNavigate();
+  const { vedtaksId, enhetsId } = Route.useSearch();
+
   return (
     <Box
       background="surface-default"
@@ -19,9 +24,14 @@ const ArkivertBrev = (props: { saksId: string }) => {
           css={css`
             padding: 4px 0;
           `}
-          params={{ saksId: props.saksId }}
+          onClick={() =>
+            navigate({
+              to: "/saksnummer/$saksId/brevbehandler",
+              params: { saksId: props.saksId },
+              search: { vedtaksId, enhetsId },
+            })
+          }
           size="small"
-          to="/saksnummer/$saksId/brevbehandler"
           variant="tertiary"
         >
           Gå til brevbehandler
