@@ -324,7 +324,7 @@ describe("ArrowRight will move focus to next editable content", () => {
     const range = document.createRange();
     range.selectNodeContents(element);
     range.collapse(false); // collapse to the end
-    const selection = window.getSelection();
+    const selection = globalThis.getSelection();
     selection?.removeAllRanges();
     selection?.addRange(range);
 

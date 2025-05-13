@@ -11,7 +11,6 @@ import type {
   OppdaterBrevRequest,
 } from "~/types/brev";
 
-import { nyBrevInfo } from "../../cypress/utils/brevredigeringTestUtils";
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";
 
 export const hentAlleBrevForSak = {
