@@ -101,7 +101,6 @@ fun pdfByggerObjectMapper() = jacksonObjectMapper().apply { pdfByggerConfig() }
 fun ObjectMapper.pdfByggerConfig() {
     registerModule(JavaTimeModule())
     registerModule(LetterMarkupModule)
-    registerModule(FellesModule)
     enable(SerializationFeature.INDENT_OUTPUT)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
