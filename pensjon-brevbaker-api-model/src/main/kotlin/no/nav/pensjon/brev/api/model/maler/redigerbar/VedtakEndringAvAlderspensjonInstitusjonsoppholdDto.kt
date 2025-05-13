@@ -8,10 +8,10 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDt
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
-data class VedtakEndringAlderspensjonInstitusjonsoppholdDto(
+data class VedtakEndringAvAlderspensjonInstitusjonsoppholdDto(
     override val saksbehandlerValg: SaksbehandlerValg,
     override val pesysData: PesysData
-) : RedigerbarBrevdata<VedtakEndringAlderspensjonInstitusjonsoppholdDto.SaksbehandlerValg, VedtakEndringAlderspensjonInstitusjonsoppholdDto.PesysData> {
+) : RedigerbarBrevdata<VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.SaksbehandlerValg, VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.PesysData> {
     data class SaksbehandlerValg(
         val alderspensjonUnderOppholdIInstitusjon: Boolean,
         val alderspensjonUnderSoning: Boolean,
