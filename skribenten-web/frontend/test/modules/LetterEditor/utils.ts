@@ -47,6 +47,7 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
       spraak: SpraakKode.Bokmaal,
       journalpostId: null,
       vedtaksId: null,
+      brevtype: "INFORMASJONSBREV",
     },
     redigertBrev: {
       title: "tittel",

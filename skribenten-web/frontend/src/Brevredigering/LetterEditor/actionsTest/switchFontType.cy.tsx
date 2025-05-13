@@ -40,6 +40,7 @@ function EditorWithState({ initial }: { initial: EditedLetter }) {
       spraak: SpraakKode.Bokmaal,
       journalpostId: null,
       vedtaksId: null,
+      brevtype: "INFORMASJONSBREV",
     },
     redigertBrev: initial,
     redigertBrevHash: "hash1",
