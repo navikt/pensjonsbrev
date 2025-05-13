@@ -3,15 +3,15 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansDtoSelectors.AlderspensjonVedVirkSelectors.skjermingstilleggInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansDtoSelectors.KravSelectors.virkDatoFom
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansDtoSelectors.PesysDataSelectors.krav
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDtoSelectors.AlderspensjonVedVirkSelectors.skjermingstilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDtoSelectors.KravSelectors.virkDatoFom
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDtoSelectors.PesysDataSelectors.krav
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -31,14 +31,14 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge :
-    RedigerbarTemplate<VedtakEndringAvUttaksgradStansDto> {
+    RedigerbarTemplate<VedtakEndringAvUttaksgradStansBrukerEllerVergeDto> {
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRET_UTTAKSGRAD_STANS_BRUKER_ELLER_VERGE
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = VedtakEndringAvUttaksgradStansDto::class,
+        letterDataType = VedtakEndringAvUttaksgradStansBrukerEllerVergeDto::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av uttaksgrad (stans)",

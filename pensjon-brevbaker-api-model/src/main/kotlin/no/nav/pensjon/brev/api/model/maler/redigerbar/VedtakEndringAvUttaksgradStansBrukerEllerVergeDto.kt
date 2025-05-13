@@ -8,15 +8,10 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import java.time.LocalDate
 
-data class VedtakEndringAvUttaksgradStansDto(
-    override val saksbehandlerValg: SaksbehandlerValg,
+data class VedtakEndringAvUttaksgradStansBrukerEllerVergeDto(
+    override val saksbehandlerValg: EmptyBrevdata,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<VedtakEndringAvUttaksgradStansDto.SaksbehandlerValg, VedtakEndringAvUttaksgradStansDto.PesysData> {
-    data class SaksbehandlerValg(
-        val ufoeretrygdErInnvilgetEllerUfoeregradErOekt: Boolean,
-        val pensjonsopptjeningenErEndret: Boolean
-    ) : BrevbakerBrevdata
-
+) : RedigerbarBrevdata<EmptyBrevdata, VedtakEndringAvUttaksgradStansBrukerEllerVergeDto.PesysData> {
     data class PesysData(
         val krav: Krav,
         val alderspensjonVedVirk: AlderspensjonVedVirk,
@@ -24,7 +19,6 @@ data class VedtakEndringAvUttaksgradStansDto(
     ) : BrevbakerBrevdata
 
     data class Krav(
-        val kravInitiertAv: KravInitiertAv,
         val virkDatoFom: LocalDate
     )
 

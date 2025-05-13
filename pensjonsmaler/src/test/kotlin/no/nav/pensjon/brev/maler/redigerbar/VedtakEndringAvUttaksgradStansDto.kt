@@ -1,23 +1,38 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.KravInitiertAv
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansDto
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto
 import no.nav.pensjon.brev.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
 import java.time.LocalDate
 import java.time.Month
 
-fun createVedtakEndringAvUttaksgradStansDto() = VedtakEndringAvUttaksgradStansDto(
-    saksbehandlerValg = VedtakEndringAvUttaksgradStansDto.SaksbehandlerValg(
+fun createVedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto() = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto(
+    saksbehandlerValg = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.SaksbehandlerValg(
         ufoeretrygdErInnvilgetEllerUfoeregradErOekt = true,
         pensjonsopptjeningenErEndret = false
     ),
-    pesysData = VedtakEndringAvUttaksgradStansDto.PesysData(
-        krav = VedtakEndringAvUttaksgradStansDto.Krav(
-            kravInitiertAv = KravInitiertAv.NAV,
+    pesysData = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.PesysData(
+        krav = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.Krav(
             virkDatoFom = LocalDate.of(2024, Month.JANUARY, 1)
         ),
-        alderspensjonVedVirk = VedtakEndringAvUttaksgradStansDto.AlderspensjonVedVirk(
+        alderspensjonVedVirk = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.AlderspensjonVedVirk(
+            skjermingstilleggInnvilget = false,
+            regelverkType = AlderspensjonRegelverkType.AP2016
+        ),
+        dineRettigheterOgMulighetTilAaKlageDto = createDineRettigheterOgMulighetTilAaKlageDto()
+    )
+)
+
+fun createVedtakEndringAvUttaksgradStansBrukerEllerVergeDto() = VedtakEndringAvUttaksgradStansBrukerEllerVergeDto(
+    saksbehandlerValg = EmptyBrevdata,
+    pesysData = VedtakEndringAvUttaksgradStansBrukerEllerVergeDto.PesysData(
+        krav = VedtakEndringAvUttaksgradStansBrukerEllerVergeDto.Krav(
+            virkDatoFom = LocalDate.of(2024, Month.JANUARY, 1)
+        ),
+        alderspensjonVedVirk = VedtakEndringAvUttaksgradStansBrukerEllerVergeDto.AlderspensjonVedVirk(
             skjermingstilleggInnvilget = false,
             regelverkType = AlderspensjonRegelverkType.AP2016
         ),
