@@ -93,9 +93,7 @@ object VedtakEndringAvUttaksgradStans : RedigerbarTemplate<VedtakEndringAvUttaks
                             English to "This decision was made pursuant to the provisions of §§ 19-10, 19-12 and 22-12 of the National Insurance Act."
                         )
                     }
-                }
-
-                showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2016)) {
+                }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2016)) {
                     // endrUtaksgradAP2016_001
                     paragraph {
                         text(
@@ -104,9 +102,7 @@ object VedtakEndringAvUttaksgradStans : RedigerbarTemplate<VedtakEndringAvUttaks
                             English to "This decision was made pursuant to the provisions of §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 and 22-12 of the National Insurance Act."
                         )
                     }
-                }
-
-                showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025)) {
+                }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025)) {
                     // endrUtaksgradAP2025Soknad_001
                     paragraph {
                         text(
