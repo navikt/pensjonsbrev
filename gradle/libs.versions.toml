@@ -1,27 +1,27 @@
 [versions]
 kotlinVersion = "2.1.20"
-kotlinKspVersion = "2.1.20-2.0.0"
+kotlinKspVersion = "2.1.20-2.0.1"
 ktorVersion = "3.1.2"
-
 assertJVersion = "3.27.3"
 binaryCompatibilityValidatorVersion = "0.17.0"
 classGraphVersion = "4.8.179"
 commonsCodecVersion = "1.18.0"
-commonVersion = "1.10.0"
+commonVersion = "1.11.1"
 exposedVersion = "0.61.0"
-flywayVersion = "11.7.2"
+flywayVersion = "11.8.0"
 hamkrestVersion = "1.8.0.1"
 hikariVersion = "6.3.0"
-jacksonJsr310Version = "2.18.3"
+jacksonJsr310Version = "2.19.0"
 jupiterVersion = "5.12.2"
 kotlinxHtmlVersion = "0.12.0"
 logbackVersion = "1.5.18"
 logstashVersion = "8.1"
 micrometerVersion = "1.14.6"
-mockkVersion = "1.14.0"
+mockkVersion = "1.14.2"
 postgresqlVersion = "42.7.3"
-testcontainersPostgresqlVersion = "1.20.6"
+testcontainersPostgresqlVersion = "1.21.0"
 unleashVersion = "10.2.2"
+kafkaVersion="3.9.0"
 
 [plugins]
 ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
@@ -70,6 +70,10 @@ ktor-server-request-validation = { module = "io.ktor:ktor-server-auth", version.
 ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktorVersion" }
 ktor-server-swagger = { module = "io.ktor:ktor-server-swagger", version.ref = "ktorVersion" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktorVersion" }
+
+# Kafka
+kafka-streams = { module = "org.apache.kafka:kafka-streams", version.ref = "kafkaVersion" }
+connect-runtime = { module = "org.apache.kafka:connect-runtime", version.ref = "kafkaVersion" }
 
 # Exposed
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposedVersion" }

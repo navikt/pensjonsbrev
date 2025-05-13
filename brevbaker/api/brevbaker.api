@@ -7,6 +7,7 @@ public final class no/nav/brev/brevbaker/Brevbaker {
 	public fun <init> (Lno/nav/brev/brevbaker/PDFByggerService;)V
 	public final fun renderHTML (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brev/api/model/LetterResponse;
 	public final fun renderLetterMarkup (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
+	public final fun renderLetterWithAttachmentsMarkup (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brev/template/render/LetterWithAttachmentsMarkup;
 	public final fun renderPDF (Lno/nav/pensjon/brev/template/Letter;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun renderRedigertBrevHTML (Lno/nav/pensjon/brev/template/Letter;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)Lno/nav/pensjon/brev/api/model/LetterResponse;
 	public final fun renderRedigertBrevPDF (Lno/nav/pensjon/brev/template/Letter;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -84,6 +85,14 @@ public final class no/nav/pensjon/brev/template/render/HTMLDocument : no/nav/pen
 	public final fun getIndexHTML ()Lno/nav/pensjon/brev/template/render/DocumentFile;
 }
 
+public final class no/nav/pensjon/brev/template/render/LetterWithAttachmentsMarkup {
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttachments ()Ljava/util/List;
+	public final fun getLetterMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
+	public fun hashCode ()I
+}
+
 public final class no/nav/pensjon/brevbaker/api/model/BrukerSelectors {
 	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrukerSelectors;
 	public final fun getEtternavn (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
@@ -140,8 +149,8 @@ public final class no/nav/pensjon/brevbaker/api/model/FoedselsnummerSelectors {
 	public final fun getValue_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/NAVEnhetSelectors {
-	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/NAVEnhetSelectors;
+public final class no/nav/pensjon/brevbaker/api/model/NavEnhetSelectors {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/NavEnhetSelectors;
 	public final fun getNavn (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun getNavn (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun getNavnSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;

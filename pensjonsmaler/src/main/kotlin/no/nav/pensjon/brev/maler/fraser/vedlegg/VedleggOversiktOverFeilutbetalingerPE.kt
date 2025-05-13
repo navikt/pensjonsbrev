@@ -50,7 +50,7 @@ val oversiktOverFeilutbetalingerPE = createAttachment<LangBokmalNynorskEnglish, 
     title1 {
         text(
             Bokmal to "Detaljert oversikt over perioder med feilutbetalinger",
-            Nynorsk to "Detaljert oversikt over periodar feilutbetalingar",
+            Nynorsk to "Detaljert oversikt over periodar med feilutbetalingar",
             English to "Detailed overview of periods with incorrect payments",
         )
     }

@@ -239,18 +239,20 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2391NN, TBU2391EN, TBU2391]
 
                 paragraph {
-                    text(
-                        Bokmal to "For at vi skal kunne ta stilling til søknaden din om uføretrygd, må du gi oss de opplysningene vi trenger. Vi sendte deg et brev <FRITEKST: dato> der vi ba deg sende oss dokumentene som manglet, og varslet deg om at søknaden din ville bli avslått dersom vi ikke fikk dem innen fristen. ",
-                        Nynorsk to "For at vi skal kunne ta stilling til søknaden din om uføretrygd, må du gi oss dei opplysningane vi treng. Vi sende deg eit brev <FRITEKST: dato> der vi bad deg sende oss dei dokumenta som mangla, og der vi varsla deg om at søknaden din ville bli avslått dersom vi ikkje fekk dokumenta innan fristen.",
-                        English to "In order for us to be able to process your application for disability benefit, you must provide all the information we need. We sent you a letter on <FRITEKST: dato>, where we asked you to provide the documentation that was missing, and notified you that your application would be denied if said documentation was not provided within the date specified.",
+                    val datoFritekst = fritekst("dato")
+                    textExpr(
+                        Bokmal to "For at vi skal kunne ta stilling til søknaden din om uføretrygd, må du gi oss de opplysningene vi trenger. Vi sendte deg et brev ".expr() + datoFritekst + " der vi ba deg sende oss dokumentene som manglet, og varslet deg om at søknaden din ville bli avslått dersom vi ikke fikk dem innen fristen. ",
+                        Nynorsk to "For at vi skal kunne ta stilling til søknaden din om uføretrygd, må du gi oss dei opplysningane vi treng. Vi sende deg eit brev ".expr() + datoFritekst + " der vi bad deg sende oss dei dokumenta som mangla, og der vi varsla deg om at søknaden din ville bli avslått dersom vi ikkje fekk dokumenta innan fristen.",
+                        English to "In order for us to be able to process your application for disability benefit, you must provide all the information we need. We sent you a letter on ".expr() + datoFritekst + ", where we asked you to provide the documentation that was missing, and notified you that your application would be denied if said documentation was not provided within the date specified.",
                     )
                 }
 
                 paragraph {
-                    text(
-                        Bokmal to "<FRITEKST: Forklar nærmere hvilken dokumentasjon vi ba om, og hvorfor vi ikke kan behandle søknaden uten disse opplysningene.>",
-                        Nynorsk to "<FRITEKST: Forklar nærmere hvilken dokumentasjon vi ba om, og hvorfor vi ikke kan behandle søknaden uten disse opplysningene.>",
-                        English to "<FRITEKST: Forklar nærmere hvilken dokumentasjon vi ba om, og hvorfor vi ikke kan behandle søknaden uten disse opplysningene.>",
+                    val forklarFritekst = fritekst("Forklar nærmere hvilken dokumentasjon vi ba om, og hvorfor vi ikke kan behandle søknaden uten disse opplysningene")
+                    textExpr(
+                        Bokmal to forklarFritekst,
+                        Nynorsk to forklarFritekst,
+                        English to forklarFritekst,
                     )
                 }
 
@@ -263,10 +265,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 }
 
                 paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 21-3 <FRITEKST: Vurdere om det skal henvises til bestemmelser i kap 12, og hvis 21-7 er brukt, må du angi hvilken bokstav som er vurdert>. ",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 21-3 <FRITEKST: Vurdere om det skal henvises til bestemmelser i kap 12, og hvis 21-7 er brukt, må du angi hvilken bokstav som er vurdert>.",
-                        English to "This decision is made pursuant to Sections 21-3 <FRITEKST: Vurdere om det skal henvises til bestemmelser i kap 12, og hvis 21-7 er brukt, må du angi hvilken bokstav som er vurdert> of the National Insurance Act.",
+                    val vurderFritekst = fritekst("Vurdere om det skal henvises til bestemmelser i kap 12, og hvis 21-7 er brukt, må du angi hvilken bokstav som er vurdert")
+                    textExpr(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 21-3 ".expr() + vurderFritekst + ".",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 21-3 ".expr() + vurderFritekst + ".",
+                        English to "This decision is made pursuant to Sections 21-3 ".expr() + vurderFritekst + " of the National Insurance Act.",
                     )
                 }
             }
@@ -356,12 +359,13 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
 
                 //[TBU2394]
                 paragraph {
+                    val innflyttingsdatoFritekst = fritekst("siste innflyttingsdato til Norge")
                     textExpr(
-                        Bokmal to "Du flyttet til Norge <FRIKTEKST: siste innflyttingsdato til Norge>, og ble da medlem av folketrygden. Vi har fastsatt uføretidspunktet ditt til ".expr() + uforetidspunkt
+                        Bokmal to "Du flyttet til Norge ".expr() + innflyttingsdatoFritekst + ", og ble da medlem av folketrygden. Vi har fastsatt uføretidspunktet ditt til ".expr() + uforetidspunkt
                             .format() + ". Da ble inntektsevnen din varig nedsatt med minst ",
-                        Nynorsk to "Du flytta til Noreg <FRITEKST: siste innflyttingsdato til Norge>, og blei då medlem av folketrygda. Vi har fastsett uføretidspunktet ditt til ".expr() + uforetidspunkt
+                        Nynorsk to "Du flytta til Noreg ".expr() + innflyttingsdatoFritekst + ", og blei då medlem av folketrygda. Vi har fastsett uføretidspunktet ditt til ".expr() + uforetidspunkt
                             .format() + ". Då blei inntektsevna di varig sett ned med minst ",
-                        English to "You moved to Norway on <FRITEKST: siste innflyttingsdato til Norge>, and you have national insurance coverage from that date. We have determined your date of disability to be ".expr() + uforetidspunkt
+                        English to "You moved to Norway on ".expr() + innflyttingsdatoFritekst + ", and you have national insurance coverage from that date. We have determined your date of disability to be ".expr() + uforetidspunkt
                             .format() + ". Your earning ability then became permanently reduced by at least ",
                     )
 
@@ -447,10 +451,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2397NN, TBU2397EN, TBU2397]
 
                 paragraph {
-                    text(
-                        Bokmal to "Du bor i <FRITEKST: land>. Dette er et land Norge ikke har trygdeavtale med.",
-                        Nynorsk to "Du bur i <FRITEKST: land>. Dette er eit land Noreg ikkje har trygdeavtale med.",
-                        English to "You live in <FRITEKST: land>. This is a country with which Norway does not have a national insurance agreement.",
+                    val landFritekst = fritekst("land")
+                    textExpr(
+                        Bokmal to "Du bor i ".expr() + landFritekst + ". Dette er et land Norge ikke har trygdeavtale med.",
+                        Nynorsk to "Du bur i ".expr() + landFritekst + ". Dette er eit land Noreg ikkje har trygdeavtale med.",
+                        English to "You live in ".expr() + landFritekst + ". This is a country with which Norway does not have a national insurance agreement.",
                     )
                 }
                 //[TBU2398NN, TBU2398EN, TBU2398]
@@ -500,10 +505,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                             English to "30 percent",
                         )
                     }
-                    text(
-                        Bokmal to ". Ut fra opplysningene i saken din <FRITEKST: arbeid og inntekt i Norge>. Du har ikke jobbet i Norge i minst ett år før uføretidspunktet ditt. Du oppfyller derfor ikke dette kravet.",
-                        Nynorsk to ". Ut frå opplysningane i saka di <FRITEKST: arbeid og inntekt i Norge> har du ikkje arbeidd i Noreg i minst eitt år før uføretidspunktet ditt. Du oppfyller derfor ikkje dette kravet.",
-                        English to ". Given the information available in your case, <FRITEKST: arbeid og inntekt i Norge>. You have not worked in Norway for one year or more before your date of disability. You do not meet this requirement.",
+                    val arbeidInntektFritekst = fritekst("arbeid og inntekt i Norge")
+                    textExpr(
+                        Bokmal to ". Ut fra opplysningene i saken din ".expr() + arbeidInntektFritekst + ". Du har ikke jobbet i Norge i minst ett år før uføretidspunktet ditt. Du oppfyller derfor ikke dette kravet.",
+                        Nynorsk to ". Ut frå opplysningane i saka di ".expr() + arbeidInntektFritekst + " har du ikkje arbeidd i Noreg i minst eitt år før uføretidspunktet ditt. Du oppfyller derfor ikkje dette kravet.",
+                        English to ". Given the information available in your case, ".expr() + arbeidInntektFritekst + ". You have not worked in Norway for one year or more before your date of disability. You do not meet this requirement.",
                     )
                 }
                 //[TBU2400NN, TBU2400EN, TBU2400]
@@ -518,10 +524,12 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2401NN, TBU2401EN, TBU2401]
 
                 paragraph {
-                    text(
-                        Bokmal to "Du bodde i Norge og var medlem av folketrygden fra <FRITEKST: FOMmedlemsperiode Norge> til <FRITEKST: TOMmedlemsperiode Norge>. Du har ikke vært medlem av folketrygden i 20 år, og oppfyller heller ikke dette kravet. Vi avslår derfor søknaden din om uføretrygd.",
-                        Nynorsk to "Du budde i Noreg og var medlem av folketrygda frå <FRITEKST: FOMmedlemsperiode Norge> til <FRITEKST: TOMmedlemsperiode Norge>. Du har ikkje vore medlem av folketrygda i 20 år før uføretidspunktet ditt, og oppfyller heller ikkje dette kravet. Vi avslår derfor søknaden din om uføretrygd.",
-                        English to "You lived in Norway, and had national insurance coverage from <FRITEKST: FOMmedlemsperiode Norge> to <FRITEKST: TOMmedlemsperiode Norge>. You have not had national insurance coverage for 20 years prior to your disability, and, consequently, you do not meet this requirement either. We therefore deny your application for disability benefit.",
+                    val fomFritekst = fritekst("FOM medlemsperiode Norge")
+                    val tomFritekst = fritekst("TOM medlemsperiode Norge")
+                    textExpr(
+                        Bokmal to "Du bodde i Norge og var medlem av folketrygden fra ".expr() + fomFritekst + " til + " + tomFritekst +  ". Du har ikke vært medlem av folketrygden i 20 år, og oppfyller heller ikke dette kravet. Vi avslår derfor søknaden din om uføretrygd.",
+                        Nynorsk to "Du budde i Noreg og var medlem av folketrygda frå ".expr() + fomFritekst + " til + " + tomFritekst +  ". Du har ikkje vore medlem av folketrygda i 20 år før uføretidspunktet ditt, og oppfyller heller ikkje dette kravet. Vi avslår derfor søknaden din om uføretrygd.",
+                        English to "You lived in Norway, and had national insurance coverage from ".expr() + fomFritekst + " to + " + tomFritekst +  ". You have not had national insurance coverage for 20 years prior to your disability, and, consequently, you do not meet this requirement either. We therefore deny your application for disability benefit.",
                     )
                 }
                 //[TBU2402NN, TBU2402EN, TBU2402]
@@ -546,19 +554,21 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2403NN, TBU2403EN, TBU2403]
 
                 paragraph {
-                    text(
-                        Bokmal to "For å ha rett til uføretrygd må du ha vært medlem av folketrygden i de siste tre årene fram til uføretidspunktet. Fordi du har bodd i et land Norge har trygdeavtale med, kan vi gjøre unntak fra denne regelen. Vi gjør dette ved å legge sammen periodene dine med medlemskap i folketrygden og medlemskap i den <FRITEKST: nasjonalitet> trygdeordningen.",
-                        Nynorsk to "For å ha rett til uføretrygd må du ha vore medlem av folketrygda i dei siste tre åra fram til uføretidspunktet. Fordi du har budd i eit land Noreg har trygdeavtale med, kan vi gjere unntak frå denne regelen. Vi gjer dette ved å leggje saman periodane dine med medlemskap i folketrygda og medlemskap i den <FRITEKST: nasjonalitet> trygdeordninga.",
-                        English to "In order to be entitled to disability benefit, you must have had national insurance coverage for the last three years prior to your disability. Because you have lived in a country with which Norway has a national insurance agreement, we can make an exception to this rule. This is done by adding up your periods of national insurance coverage in Norway and your periods of coverage by <FRITEKST: nasjonalitet> national insurance.",
+                    val nasjonalitetFritekst = fritekst("nasjonalitet")
+                    textExpr(
+                        Bokmal to "For å ha rett til uføretrygd må du ha vært medlem av folketrygden i de siste tre årene fram til uføretidspunktet. Fordi du har bodd i et land Norge har trygdeavtale med, kan vi gjøre unntak fra denne regelen. Vi gjør dette ved å legge sammen periodene dine med medlemskap i folketrygden og medlemskap i den ".expr() + nasjonalitetFritekst + " trygdeordningen.",
+                        Nynorsk to "For å ha rett til uføretrygd må du ha vore medlem av folketrygda i dei siste tre åra fram til uføretidspunktet. Fordi du har budd i eit land Noreg har trygdeavtale med, kan vi gjere unntak frå denne regelen. Vi gjer dette ved å leggje saman periodane dine med medlemskap i folketrygda og medlemskap i den ".expr() + nasjonalitetFritekst + " trygdeordninga.",
+                        English to "In order to be entitled to disability benefit, you must have had national insurance coverage for the last three years prior to your disability. Because you have lived in a country with which Norway has a national insurance agreement, we can make an exception to this rule. This is done by adding up your periods of national insurance coverage in Norway and your periods of coverage by ".expr() + nasjonalitetFritekst + " national insurance.",
                     )
                 }
                 //[TBU2404NN, TBU2404EN, TBU2404]
 
                 paragraph {
-                    text(
-                        Bokmal to "Uføretidspunktet ditt er satt til <FRITEKST: uføretidspunkt>. Da ble inntektsevnen din varig nedsatt med minst ",
-                        Nynorsk to "Uføretidspunktet ditt er sett til <FRITEKST: uføretidspunkt>. Då blei inntektsevna di varig sett ned med minst ",
-                        English to "Your date of disability has been determined to <FRITEKST: uføretidspunkt>. Your earning ability then became permanently reduced by at least ",
+                    val ufoeretidspunktFritekst = fritekst("uføretidspunkt")
+                    textExpr(
+                        Bokmal to "Uføretidspunktet ditt er satt til ".expr() + ufoeretidspunktFritekst + ". Da ble inntektsevnen din varig nedsatt med minst ",
+                        Nynorsk to "Uføretidspunktet ditt er sett til ".expr() + ufoeretidspunktFritekst + ". Då blei inntektsevna di varig sett ned med minst ",
+                        English to "Your date of disability has been determined to ".expr() + ufoeretidspunktFritekst + ". Your earning ability then became permanently reduced by at least ",
                     )
 
                     //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_NedsattInntektsevneBegrunnelse) = "stdbegr_12_7_2_o_1") THEN      INCLUDE ENDIF
@@ -601,42 +611,49 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                         Nynorsk to "Du var medlem av den norske folketrygda: ",
                         English to "You had national insurance coverage in Norway: ",
                     )
-                    text(
-                        Bokmal to "<FRITEKST: FOMmedlemskap Norge> til <FRITEKST: TOMmedlemskap Norge>.",
-                        Nynorsk to "<FRITEKST: FOMmedlemskap Norge> til <FRITEKST: TOMmedlemskap Norge>.",
-                        English to "<FRITEKST: FOMmedlemskap Norge> to <FRITEKST: TOMmedlemskap Norge>.",
+                    val fomFritekst = fritekst("FOM medlemskap Norge")
+                    val tomFritekst = fritekst("TOM medlemskap Norge")
+                    textExpr(
+                        Bokmal to fomFritekst + " til " + tomFritekst + ".",
+                        Nynorsk to fomFritekst + " til " + tomFritekst + ".",
+                        English to fomFritekst + " to " + tomFritekst + ".",
                     )
                 }
                 //[TBU2406NN, TBU2406EN, TBU2406]
 
                 paragraph {
-                    text(
-                        Bokmal to "Du var medlem av den <FRITEKST: nasjonalitet> trygdeordningen:",
-                        Nynorsk to "Du var medlem av den <FRITEKST: nasjonalitet> trygdeordninga:",
-                        English to "You had national insurance coverage in <FRITEKST: nasjonalitet>:",
+                    val nasjonalitetFritekst = fritekst("nasjonalitet")
+                    textExpr(
+                        Bokmal to "Du var medlem av den ".expr() + nasjonalitetFritekst + " trygdeordningen:",
+                        Nynorsk to "Du var medlem av den ".expr() + nasjonalitetFritekst + " trygdeordninga:",
+                        English to "You had national insurance coverage in ".expr() + nasjonalitetFritekst + ":",
                     )
-                    text(
-                        Bokmal to "<FRITEKST: FOMutenlandsk medlemskap> til <FRITEKST: TOMutenlandsk medlemskap>.",
-                        Nynorsk to "<FRITEKST: FOMutenlandsk medlemskap> til <FRITEKST: TOMutenlandsk medlemskap>.",
-                        English to "<FRITEKST: FOMutenlandsk medlemskap> to <FRITEKST: TOMutenlandsk medlemskap>.",
+                    val fomFritekst = fritekst("FOM utenlandsk medlemskap")
+                    val tomFritekst = fritekst("TOM utenlandsk medlemskap")
+                    textExpr(
+                        Bokmal to fomFritekst + " til " + tomFritekst + ".",
+                        Nynorsk to fomFritekst + " til " + tomFritekst + ".",
+                        English to fomFritekst + " to " + tomFritekst + ".",
                     )
                 }
                 //[TBU2407NN, TBU2407EN, TBU2407]
 
                 paragraph {
-                    text(
-                        Bokmal to "Du har ikke vært medlem av folketrygden og den <FRITEKST: nasjonalitet> trygdeordningen sammenhengende i minst tre år fram til uføretidspunktet ditt. Vi avslår derfor søknaden din om uføretrygd.",
-                        Nynorsk to "Du har ikkje vore medlem av folketrygda og den <FRITEKST: nasjonalitet> trygdeordninga samanhengande i minst tre år fram til uføretidspunktet ditt. Vi avslår derfor søknaden din om uføretrygd.",
-                        English to "You did not have continuous coverage by Norwegian national insurance and the <FRITEKST: land> national insurance for three years or more prior to your disability. We thus deny your application for disability benefit.",
+                    val nasjonalitetFritekst = fritekst("nasjonalitet")
+                    textExpr(
+                        Bokmal to "Du har ikke vært medlem av folketrygden og den ".expr() + nasjonalitetFritekst + " trygdeordningen sammenhengende i minst tre år fram til uføretidspunktet ditt. Vi avslår derfor søknaden din om uføretrygd.",
+                        Nynorsk to "Du har ikkje vore medlem av folketrygda og den ".expr() + nasjonalitetFritekst + " trygdeordninga samanhengande i minst tre år fram til uføretidspunktet ditt. Vi avslår derfor søknaden din om uføretrygd.",
+                        English to "You did not have continuous coverage by Norwegian national insurance and the ".expr() + nasjonalitetFritekst + " national insurance for three years or more prior to your disability. We thus deny your application for disability benefit.",
                     )
                 }
                 //[TBU2408NN, TBU2408EN, TBU2408]
 
                 paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter <FRITEKST: trygdeavtale brukt for inngang med artikkel> avtalen artikkel og folketrygdloven § 12-2.",
-                        Nynorsk to "Vedtaket er gjort etter <FRITEKST: trygdeavtale brukt for inngang med artikkel> avtalen artikkel og folketrygdlova § 12-2.",
-                        English to "This decision is made pursuant to <FRITEKST: trygdeavtale brukt for inngang med artikkel> and Section 12-2 of the National Insurance Act.",
+                    val trygdeavtaleFritekst = fritekst("trygdeavtale brukt for inngang med artikkel")
+                    textExpr(
+                        Bokmal to "Vedtaket er gjort etter ".expr() + trygdeavtaleFritekst + " avtalen artikkel og folketrygdloven § 12-2.",
+                        Nynorsk to "Vedtaket er gjort etter ".expr() + trygdeavtaleFritekst + " avtalen artikkel og folketrygdlova § 12-2.",
+                        English to "This decision is made pursuant to ".expr() + trygdeavtaleFritekst + " and Section 12-2 of the National Insurance Act.",
                     )
                 }
             }
@@ -709,10 +726,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2414NN, TBU2414EN, TBU2414]
 
                 paragraph {
-                    text(
-                        Bokmal to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>.",
-                        Nynorsk to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>.",
-                        English to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>.",
+                    val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
+                    textExpr(
+                        Bokmal to begrunnelseFritekst + ". ",
+                        Nynorsk to begrunnelseFritekst + ". ",
+                        English to begrunnelseFritekst + ". ",
                     )
                     text(
                         Bokmal to "Vi har ut fra sakens opplysninger vurdert at du ikke har gjennomført all hensiktsmessig behandling. Du har heller ikke gjennomført arbeidsrettede tiltak, som kan bedre dine inntektsmuligheter i arbeidslivet.",
@@ -748,10 +766,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2415NN, TBU2415EN, TBU2415]
 
                 paragraph {
-                    text(
-                        Bokmal to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                        Nynorsk to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                        English to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
+                    val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
+                    textExpr(
+                        Bokmal to begrunnelseFritekst + ". ",
+                        Nynorsk to begrunnelseFritekst + ". ",
+                        English to begrunnelseFritekst + ". ",
                     )
                     text(
                         Bokmal to "Vi har ut fra sakens opplysninger vurdert at du ikke har gjennomført all hensiktsmessig behandling. Du har heller ikke gjennomført de arbeidsrettede tiltakene som kan bedre dine inntektsmuligheter i arbeidslivet.",
@@ -760,10 +779,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     )
                 }
                 paragraph {
-                    text(
-                        Bokmal to "Fordi behandling og arbeidsrettede tiltak ikke er gjennomført, kan vi ikke ta stilling til om inntektsevnen din er varig nedsatt med mer enn <FRITEKST: Nåværende uføregrad> prosent.",
-                        Nynorsk to "Fordi du ikkje har gjennomført behandling og arbeidsretta tiltak, kan vi ikkje ta stilling til om inntektsevna di er varig nedsett med meir enn <FRITEKST: Nåværende uføregrad> prosent.",
-                        English to "Because relevant treatments and employment schemes have not been tried, we cannot conclude whether your earning ability is permanently reduced by more than <FRITEKST: Nåværende uføregrad> percent.",
+                    val ufoeregradFritekst = fritekst("nåværende uføregrad")
+                    textExpr(
+                        Bokmal to "Fordi behandling og arbeidsrettede tiltak ikke er gjennomført, kan vi ikke ta stilling til om inntektsevnen din er varig nedsatt med mer enn ".expr() + ufoeregradFritekst + " prosent.",
+                        Nynorsk to "Fordi du ikkje har gjennomført behandling og arbeidsretta tiltak, kan vi ikkje ta stilling til om inntektsevna di er varig nedsett med meir enn ".expr() + ufoeregradFritekst + " prosent.",
+                        English to "Because relevant treatments and employment schemes have not been tried, we cannot conclude whether your earning ability is permanently reduced by more than ".expr() + ufoeregradFritekst + " percent.",
                     )
                 }
                 paragraph {
@@ -787,10 +807,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2416NN, TBU2416EN, TBU2416]
 
                 paragraph {
-                    text(
-                        Bokmal to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                        Nynorsk to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                        English to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
+                    val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
+                    textExpr(
+                        Bokmal to begrunnelseFritekst + ". ",
+                        Nynorsk to begrunnelseFritekst + ". ",
+                        English to begrunnelseFritekst + ". ",
                     )
                     text(
                         Bokmal to "Ut fra opplysninger i saken din, er du fortsatt i behandling. Vi har derfor vurdert at du ikke har gjennomført all hensiktsmessig behandling som kan bedre funksjonsevnen din. Du har heller ikke gjennomført arbeidsrettede tiltak eller forsøkt annet arbeid som kan bedre dine inntektsmuligheter i arbeidslivet. Det er sannsynlig at du senere vil kunne være i aktivitet og gjennomføre arbeidsrettede tiltak. ",
@@ -826,10 +847,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2417NN, TBU2417EN, TBU2417]
 
                 paragraph {
-                    text(
-                        Bokmal to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                        Nynorsk to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                        English to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
+                    val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
+                    textExpr(
+                        Bokmal to begrunnelseFritekst + ". ",
+                        Nynorsk to begrunnelseFritekst + ". ",
+                        English to begrunnelseFritekst + ". ",
                     )
                     text(
                         Bokmal to "Ut fra opplysninger i saken din, er du fortsatt i behandling. Vi har derfor vurdert at du ikke har gjennomført all hensiktsmessig behandling som kan bedre funksjonsevnen din. Du har heller ikke gjennomført arbeidsrettede tiltak eller forsøkt annet arbeid som kan bedre dine inntektsmuligheter i arbeidslivet.",
@@ -838,10 +860,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     )
                 }
                 paragraph {
-                    text(
-                        Bokmal to "Det er sannsynlig at du senere vil kunne være i aktivitet og gjennomføre arbeidsrettede tiltak. Vi kan derfor ikke ta stilling til om inntektsevnen din er varig nedsatt med mer enn <FRITEKST: Nåværende uføregrad> prosent.",
-                        Nynorsk to "Det er sannsynleg at du seinare vil kunne vere i aktivitet og gjennomføre arbeidsretta tiltak. Vi kan derfor ikkje ta stilling til om inntektsevna di er varig sett ned med meir enn <FRITEKST: Nåværende uføregrad> prosent.",
-                        English to "It is likely that you, in the future, can be more active and complete employment schemes. We can therefore not conclude whether your earning ability is permanently reduced by more than <FRITEKST: Nåværende uføregrad> percent.",
+                    val ufoeregradFritekst = fritekst("nåværende uføregrad")
+                    textExpr(
+                        Bokmal to "Det er sannsynlig at du senere vil kunne være i aktivitet og gjennomføre arbeidsrettede tiltak. Vi kan derfor ikke ta stilling til om inntektsevnen din er varig nedsatt med mer enn ".expr() + ufoeregradFritekst + " prosent.",
+                        Nynorsk to "Det er sannsynleg at du seinare vil kunne vere i aktivitet og gjennomføre arbeidsretta tiltak. Vi kan derfor ikkje ta stilling til om inntektsevna di er varig sett ned med meir enn ".expr() + ufoeregradFritekst + " prosent.",
+                        English to "It is likely that you, in the future, can be more active and complete employment schemes. We can therefore not conclude whether your earning ability is permanently reduced by more than ".expr() + ufoeregradFritekst + " percent.",
                     )
                 }
                 paragraph {
@@ -865,10 +888,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2418NN, TBU2418EN, TBU2418]
 
                 paragraph {
-                    text(
-                        Bokmal to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                        Nynorsk to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                        English to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
+                    val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
+                    textExpr(
+                        Bokmal to begrunnelseFritekst + ". ",
+                        Nynorsk to begrunnelseFritekst + ". ",
+                        English to begrunnelseFritekst + ". ",
                     )
                     text(
                         Bokmal to "Vi har ut fra sakens opplysninger vurdert at du har gjennomført hensiktsmessig behandling. Du har imidlertid ikke gjennomført arbeidsrettede tiltak eller forsøkt annet arbeid som kan bedre dine inntektsmuligheter i arbeidslivet. Det er ingen åpenbare grunner til at du ikke kan gjennomføre arbeidsrettede tiltak.",
@@ -905,10 +929,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2419NN, TBU2419EN, TBU2419]
 
                 paragraph {
-                    text(
-                        Bokmal to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                        Nynorsk to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                        English to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
+                    val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
+                    textExpr(
+                        Bokmal to begrunnelseFritekst + ". ",
+                        Nynorsk to begrunnelseFritekst + ". ",
+                        English to begrunnelseFritekst + ". ",
                     )
                     text(
                         Bokmal to "Vi har ut fra sakens opplysninger vurdert at du har gjennomført hensiktsmessig behandling. Du har imidlertid ikke gjennomført arbeidsrettede tiltak eller forsøkt annet arbeid som kan bedre dine inntektsmuligheter i arbeidslivet.",
@@ -917,10 +942,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     )
                 }
                 paragraph {
-                    text(
-                        Bokmal to "Det er ingen åpenbare grunner til at du ikke kan gjennomføre arbeidsrettede tiltak. Vi kan derfor ikke ta stilling til om inntektsevnen din er varig nedsatt med mer enn <FRITEKST: Nåværende uføregrad> prosent. ",
-                        Nynorsk to "Det er ingen openberre grunnar til at du ikkje kan gjennomføre arbeidsretta tiltak. Vi kan derfor ikkje ta stilling til om inntektsevna di er varig sett ned med meir enn <FRITEKST: Nåværende uføregrad> prosent.",
-                        English to "There are no obvious reasons why you cannot complete employment schemes. We can therefore not conclude whether your earning ability is permanently reduced by more than <FRITEKST: Nåværende uføregrad> percent.",
+                    val ufoeregradFritekst = fritekst("nåværende uføregrad")
+                    textExpr(
+                        Bokmal to "Det er ingen åpenbare grunner til at du ikke kan gjennomføre arbeidsrettede tiltak. Vi kan derfor ikke ta stilling til om inntektsevnen din er varig nedsatt med mer enn ".expr() + ufoeregradFritekst + " prosent. ",
+                        Nynorsk to "Det er ingen openberre grunnar til at du ikkje kan gjennomføre arbeidsretta tiltak. Vi kan derfor ikkje ta stilling til om inntektsevna di er varig sett ned med meir enn ".expr() + ufoeregradFritekst + " prosent.",
+                        English to "There are no obvious reasons why you cannot complete employment schemes. We can therefore not conclude whether your earning ability is permanently reduced by more than ".expr() + ufoeregradFritekst + " percent.",
                     )
                 }
                 paragraph {
@@ -945,10 +971,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2420NN, TBU2420EN, TBU2420]
 
                 paragraph {
-                    text(
-                        Bokmal to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                        Nynorsk to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                        English to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
+                    val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
+                    textExpr(
+                        Bokmal to begrunnelseFritekst + ". ",
+                        Nynorsk to begrunnelseFritekst + ". ",
+                        English to begrunnelseFritekst + ". ",
                     )
                     text(
                         Bokmal to "Vi har ut fra sakens opplysninger vurdert at du har gjennomført hensiktsmessig behandling. Du har imidlertid ikke gjennomført alle arbeidsrettede tiltak eller forsøkt annet arbeid som kan bedre dine inntektsmuligheter i arbeidslivet. Det er ingen åpenbare grunner til at du ikke kan delta på flere arbeidsrettede tiltak.",
@@ -984,10 +1011,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2421NN, TBU2421EN, TBU2421]
 
                 paragraph {
-                    text(
-                        Bokmal to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                        Nynorsk to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                        English to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
+                    val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
+                    textExpr(
+                        Bokmal to begrunnelseFritekst + ". ",
+                        Nynorsk to begrunnelseFritekst + ". ",
+                        English to begrunnelseFritekst + ". ",
                     )
                     text(
                         Bokmal to "Vi har ut fra sakens opplysninger vurdert at du har gjennomført hensiktsmessig behandling. Du har imidlertid ikke gjennomført alle arbeidsrettede tiltak eller forsøkt annet arbeid som kan bedre dine inntektsmuligheter i arbeidslivet. Det er ingen åpenbare grunner til at du ikke kan delta på flere arbeidsrettede tiltak.",
@@ -996,10 +1024,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     )
                 }
                 paragraph {
-                    text(
-                        Bokmal to "Vi kan derfor ikke ta stilling til om inntektsevnen din er varig nedsatt med mer enn <FRITEKST: Nåværende uføregrad> prosent.",
-                        Nynorsk to "Vi kan derfor ikkje ta stilling til om inntektsevna di er varig sett ned med meir enn <FRITEKST: Nåværende uføregrad> prosent.",
-                        English to "We can therefore not conclude whether your earning ability is permanently reduced by more than <FRITEKST: Nåværende uføregrad> percent.",
+                    val ufoeregradFritekst = fritekst("nåværende uføregrad")
+                    textExpr(
+                        Bokmal to "Vi kan derfor ikke ta stilling til om inntektsevnen din er varig nedsatt med mer enn ".expr() + ufoeregradFritekst + " prosent.",
+                        Nynorsk to "Vi kan derfor ikkje ta stilling til om inntektsevna di er varig sett ned med meir enn ".expr() + ufoeregradFritekst + " prosent.",
+                        English to "We can therefore not conclude whether your earning ability is permanently reduced by more than ".expr() + ufoeregradFritekst + " percent.",
                     )
                 }
                 paragraph {
@@ -1031,10 +1060,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     //[TBU2424NN, TBU2424EN, TBU2424]
 
                     paragraph {
-                        text(
-                            Bokmal to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                            Nynorsk to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                            English to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
+                        val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
+                        textExpr(
+                            Bokmal to begrunnelseFritekst + ". ",
+                            Nynorsk to begrunnelseFritekst + ". ",
+                            English to begrunnelseFritekst + ". ",
                         )
                         text(
                             Bokmal to "Vi har ut fra sakens opplysninger vurdert at sykdom har ført til at funksjonsevnen din er nedsatt. Det er imidlertid ikke dokumentert at du har varig sykdom.",
@@ -1069,10 +1099,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     //[TBU2425NN, TBU2425EN, TBU2425]
 
                     paragraph {
-                        text(
-                            Bokmal to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                            Nynorsk to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
-                            English to "<FRITEKST: legg inn konkret begrunnelse der det er nødvendig>. ",
+                        val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
+                        textExpr(
+                            Bokmal to begrunnelseFritekst + ". ",
+                            Nynorsk to begrunnelseFritekst + ". ",
+                            English to begrunnelseFritekst + ". ",
                         )
                         text(
                             Bokmal to "Vi har ut fra sakens opplysninger vurdert at sykdom har ført til at funksjonsevnen din er nedsatt. Det er imidlertid ikke dokumentert at sykdom er hovedårsak til din nedsatte funksjonsevne.",
@@ -1191,10 +1222,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     //[TBU2431NN, TBU2431EN, TBU2431]
 
                     paragraph {
-                        text(
-                            Bokmal to "Du mottar <FRITEKST: Nåværende Uforegrad> prosent uføretrygd. Uføregraden kan økes dersom inntektsevnen blir varig nedsatt med mer enn dette, på grunn av sykdom eller skade.",
-                            Nynorsk to "Du får <FRITEKST: Nåværende Uforegrad> prosent uføretrygd. Uføregraden kan aukast dersom inntektsevna blir varig sett ned med meir enn dette på grunn av sjukdom eller skade.",
-                            English to "You are receiving <FRITEKST: Nåværende Uforegrad> percent disability benefit. Your degree of disability can be increased if your earning ability is further reduced due to illness or injury, and the reduction is permanent.",
+                        val ufoeregradFritekst = fritekst("nåværende uføregrad")
+                        textExpr(
+                            Bokmal to "Du mottar ".expr() + ufoeregradFritekst + " prosent uføretrygd. Uføregraden kan økes dersom inntektsevnen blir varig nedsatt med mer enn dette, på grunn av sykdom eller skade.",
+                            Nynorsk to "Du får ".expr() + ufoeregradFritekst + " prosent uføretrygd. Uføregraden kan aukast dersom inntektsevna blir varig sett ned med meir enn dette på grunn av sjukdom eller skade.",
+                            English to "You are receiving ".expr() + ufoeregradFritekst + " percent disability benefit. Your degree of disability can be increased if your earning ability is further reduced due to illness or injury, and the reduction is permanent.",
                         )
                     }
                 }
@@ -1230,16 +1262,19 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     //[TBU2432NN, TBU2432EN, TBU2432]
 
                     paragraph {
+                        val begrunnelseIfuFritekst = fritekst("begrunnelse for fastsatt IFU")
+                        val oppjustertIfuFritekst = fritekst("oppjustert IFU")
+                        val ufoeregradFritekst = fritekst("sett inn fastsatt uføregrad før avrunding")
                         textExpr(
                             Bokmal to "Inntekten din før du ble ufør er fastsatt til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                                .format() + " kroner. <FRITEKST: begrunnelse for fastsatt IFU>. Oppjustert til dagens verdi tilsvarer dette en inntekt på <FRITEKST: Oppjustert ifu> kroner. Du har en inntekt på " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
-                                .format() + " kroner, og vi har derfor fastsatt din nedsatte inntektsevne til <FRITEKST: sett inn fastsatt uføregrad før avrunding> prosent.",
+                                .format() + " kroner. " + begrunnelseIfuFritekst + ". Oppjustert til dagens verdi tilsvarer dette en inntekt på " + oppjustertIfuFritekst + " kroner. Du har en inntekt på " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
+                                .format() + " kroner, og vi har derfor fastsatt din nedsatte inntektsevne til " + ufoeregradFritekst + " prosent.",
                             Nynorsk to "Inntekta di før du blei ufør, er fastsett til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                                .format() + " kroner. <FRITEKST: begrunnelse for fastsatt IFU>. Oppjustert til dagens verdi svarer dette til ei inntekt på <FRITEKST: Oppjustert ifu> kroner. Du har ei inntekt på " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
-                                .format() + " kroner, og vi har derfor fastsett den nedsette inntektsevna di til <FRITEKST: sett inn fastsatt uføregrad før avrunding> prosent.",
+                                .format() + " kroner. " + begrunnelseIfuFritekst + ". Oppjustert til dagens verdi svarer dette til ei inntekt på " + oppjustertIfuFritekst + " kroner. Du har ei inntekt på " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
+                                .format() + " kroner, og vi har derfor fastsett den nedsette inntektsevna di til " + ufoeregradFritekst + " prosent.",
                             English to "Your income prior to your disability was determined as NOK ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                                .format() + ". <FRITEKST: begrunnelse for fastsatt IFU>. Adjusted to current value, this is equivalent to an income of NOK <FRITEKST: Oppjustert ifu>. Your current income is NOK " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
-                                .format() + ", and we have thus determined your reduction in earning ability to <FRITEKST: sett inn fastsatt uføregrad før avrunding> percent.",
+                                .format() + ". " + begrunnelseIfuFritekst + ". Adjusted to current value, this is equivalent to an income of NOK " + oppjustertIfuFritekst + ". Your current income is NOK " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
+                                .format() + ", and we have thus determined your reduction in earning ability to " + ufoeregradFritekst + " percent.",
                         )
                     }
                 }
@@ -1252,16 +1287,19 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     //[TBU2433NN, TBU2433EN, TBU2433]
 
                     paragraph {
+                        val begrunnelseIfuFritekst = fritekst("begrunnelse for fastsatt IFU")
+                        val oppjustertIfuFritekst = fritekst("oppjustert IFU")
+                        val ufoeregradFritekst = fritekst("sett inn fastsatt uføregrad før avrunding")
                         textExpr(
                             Bokmal to "Inntekten din før du ble ufør er fastsatt til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                                .format() + " kroner. <FRITEKST: begrunnelse for fastsatt IFU>. Oppjustert til dagens verdi tilsvarer dette en inntekt på <FRITEKST: Oppjustert ifu> kroner. Det er dokumentert at du har inntektsmuligheter som du ikke benytter, og disse tar vi med når vi fastsetter inntekten din etter at du ble ufør. Inntekten din etter at du ble ufør er fastsatt til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
-                                .format() + " kroner, og din nedsatte inntektsevne er derfor fastsatt til <FRITEKST: sett inn fastsatt uføregrad før avrunding> prosent.",
+                                .format() + " kroner. " + begrunnelseIfuFritekst + ". Oppjustert til dagens verdi tilsvarer dette en inntekt på " + oppjustertIfuFritekst + " kroner. Det er dokumentert at du har inntektsmuligheter som du ikke benytter, og disse tar vi med når vi fastsetter inntekten din etter at du ble ufør. Inntekten din etter at du ble ufør er fastsatt til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
+                                .format() + " kroner, og din nedsatte inntektsevne er derfor fastsatt til " + ufoeregradFritekst + " prosent.",
                             Nynorsk to "Inntekta di før du blei ufør, er fastsett til ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                                .format() + " kroner. <FRITEKST: begrunnelse for fastsatt IFU>. Oppjustert til dagens verdi svarer dette til ei inntekt på <FRITEKST: Oppjustert ifu> kroner. Det er dokumentert at du har moglegheiter for å skaffe inntekter som du ikkje nyttar, og desse tek vi med når vi fastset inntekta di etter at du blei ufør. Inntekta di etter at du blei ufør, er fastsett til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
-                                .format() + " kroner, og den nedsette inntektsevna di er derfor fastsett til <FRITEKST: sett inn fastsatt uføregrad før avrunding> prosent.",
+                                .format() + " kroner. " + begrunnelseIfuFritekst + ". Oppjustert til dagens verdi svarer dette til ei inntekt på " + oppjustertIfuFritekst + " kroner. Det er dokumentert at du har moglegheiter for å skaffe inntekter som du ikkje nyttar, og desse tek vi med når vi fastset inntekta di etter at du blei ufør. Inntekta di etter at du blei ufør, er fastsett til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
+                                .format() + " kroner, og den nedsette inntektsevna di er derfor fastsett til " + ufoeregradFritekst + " prosent.",
                             English to "Your income prior to your disability was established as NOK ".expr() + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                                .format() + ". <FRITEKST: begrunnelse for fastsatt IFU>. Adjusted to current value, this is equivalent to an income of NOK <FRITEKST: oppjustert ifu>. It has been documented that you have options for gainful employment that you are not taking advantage of, and these will be included when your income after your disability is calculated. Your income after your disability was determined as NOK " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
-                                .format() + ", and your reduction in earning ability has been determined as <FRITEKST: sett inn fastsatt uføregrad før avrunding> percent.",
+                                .format() + ". " + begrunnelseIfuFritekst + ". Adjusted to current value, this is equivalent to an income of NOK " + oppjustertIfuFritekst + ". It has been documented that you have options for gainful employment that you are not taking advantage of, and these will be included when your income after your disability is calculated. Your income after your disability was determined as NOK " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
+                                .format() + ", and your reduction in earning ability has been determined as " + ufoeregradFritekst + " percent.",
                         )
                     }
                 }
@@ -1463,10 +1501,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     //[TBU2442NN, TBU2442EN, TBU2442]
 
                     paragraph {
-                        text(
-                            Bokmal to "Inntektsevnen din er imidlertid ikke tilstrekkelig varig nedsatt med minst <FRITEKST: prosentsats 30/40/50> prosent.",
-                            Nynorsk to "Inntektsevna di er likevel ikkje tilstrekkeleg varig sett ned med minst <FRITEKST: prosentsats 30/40/50> prosent.",
-                            English to "However, your earning ability is not permanently reduced by at least <FRITEKST: prosentsats 30/40/50> percent.",
+                        val prosentFritekst = fritekst("prosentsats 30/40/50")
+                        textExpr(
+                            Bokmal to "Inntektsevnen din er imidlertid ikke tilstrekkelig varig nedsatt med minst ".expr() + prosentFritekst + " prosent.",
+                            Nynorsk to "Inntektsevna di er likevel ikkje tilstrekkeleg varig sett ned med minst ".expr() + prosentFritekst + " prosent.",
+                            English to "However, your earning ability is not permanently reduced by at least ".expr() + prosentFritekst + " percent.",
                         )
                     }
                 }
@@ -1645,10 +1684,11 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                                     "stdbegr_12_8_2_10"
                                 ))
                             ) {
-                                text(
-                                    Bokmal to "Du har ikke hatt en varig inntektsøkning i din stilling på <FRITEKST: prosentandel> prosent. ",
-                                    Nynorsk to "Du har ikkje hatt ei varig inntektsauke i stillinga di på <FRITEKST: prosentandel> prosent. ",
-                                    English to "You have not had a permanent increase in income from your position of <FRITEKST: prosentandel> percent of full-time equivalent. ",
+                                val prosentFritekst = fritekst("prosentandel")
+                                textExpr(
+                                    Bokmal to "Du har ikke hatt en varig inntektsøkning i din stilling på ".expr() + prosentFritekst + " prosent. ",
+                                    Nynorsk to "Du har ikkje hatt ei varig inntektsauke i stillinga di på ".expr() + prosentFritekst + " prosent. ",
+                                    English to "You have not had a permanent increase in income from your position of ".expr() + prosentFritekst + " percent of full-time equivalent. ",
                                 )
                             }
 

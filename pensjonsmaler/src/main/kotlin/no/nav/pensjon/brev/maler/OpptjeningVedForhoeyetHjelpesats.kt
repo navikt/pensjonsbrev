@@ -27,7 +27,7 @@ object OpptjeningVedForhoeyetHjelpesats : AutobrevTemplate<OpptjeningVedForhoeye
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak – innvilgelse av omsorgsopptjening ved forhøyet hjelpestønad sats 3 eller 4",
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = VEDTAKSBREV
         )
     ) {

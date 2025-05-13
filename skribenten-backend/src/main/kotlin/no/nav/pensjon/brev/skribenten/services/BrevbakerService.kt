@@ -49,7 +49,6 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
             jackson {
                 registerModule(JavaTimeModule())
                 registerModule(LetterMarkupModule)
-                registerModule(FellesModule)
                 registerModule(TemplateModelSpecificationModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }

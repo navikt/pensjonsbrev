@@ -36,6 +36,10 @@ enum class Institusjon {
     INGEN,
 }
 
+enum class GarantipensjonSatsType {
+    HOY, ORDINAER
+}
+
 enum class Beregningsmetode {
     AUSTRALIA,
     CANADA,
@@ -155,4 +159,7 @@ enum class KravInitiertAv {
     BRUKER,
     NAV,
     VERGE,
+    SOSIALKONTOR,
+    KONV,
+    ADVOKAT
 }

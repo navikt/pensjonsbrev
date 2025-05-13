@@ -34,5 +34,6 @@ fun Application.brevbakerTestModule() = this.brevbakerModule(
         override fun hentAutobrevmaler() = alleAutobrevmaler
 
         override fun hentRedigerbareMaler() = alleRedigerbareMaler
-    }
+    },
+    brukAsyncProducer = false,
 )
