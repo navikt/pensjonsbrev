@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import io.ktor.http.*
 import io.mockk.*
 import kotlinx.coroutines.*
-import no.nav.brev.InterneDataklasser
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -107,26 +107,11 @@ class BrevredigeringServiceTest {
         "rabbit"
     )
 
-    @OptIn(InterneDataklasser::class)
-    private val brevdataResponseData = BrevdataResponse.Data(
-        felles = FellesImpl(
-            dokumentDato = LocalDate.now(),
-            saksnummer = sak.saksId.toString(),
-            avsenderEnhet = NavEnhetImpl(
-                nettside = "nav.no",
-                navn = "en fantastisk enhet",
-                telefonnummer = TelefonnummerImpl("12345678")
-            ),
-            bruker = BrukerImpl(
-                foedselsnummer = FoedselsnummerImpl("12345678910"),
-                fornavn = "Navn",
-                mellomnavn = null,
-                etternavn = "Navnesen"
-            ),
-            vergeNavn = null,
-            signerendeSaksbehandlere = null,
-        ), brevdata = Api.GeneriskBrevdata()
-    )
+    private val brevdataResponseData = BrevdataResponse.Data(felles = FellesFactory.lagFelles(
+        dokumentDato = LocalDate.now(),
+        saksnummer = sak.saksId.toString()
+    ), brevdata = Api.GeneriskBrevdata())
+
     private val penService: PenService = mockk()
     private val navAnsattService = mockk<NavansattService> {
         coEvery { harTilgangTilEnhet(any(), any()) } returns ServiceResult.Ok(false)

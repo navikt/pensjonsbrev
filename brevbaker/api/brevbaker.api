@@ -149,8 +149,8 @@ public final class no/nav/pensjon/brevbaker/api/model/FoedselsnummerSelectors {
 	public final fun getValue_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/NAVEnhetSelectors {
-	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/NAVEnhetSelectors;
+public final class no/nav/pensjon/brevbaker/api/model/NavEnhetSelectors {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/NavEnhetSelectors;
 	public final fun getNavn (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun getNavn (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun getNavnSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;

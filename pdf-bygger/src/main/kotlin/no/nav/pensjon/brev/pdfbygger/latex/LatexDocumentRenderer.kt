@@ -158,7 +158,7 @@ internal object LatexDocumentRenderer {
         }
     }
 
-    private fun LatexAppendable.navEnhetCommands(navEnhet: NAVEnhet) =
+    private fun LatexAppendable.navEnhetCommands(navEnhet: NavEnhet) =
         with(navEnhet) {
             appendNewCmd("feltnavenhet", navn)
             appendNewCmd("feltnavenhettlf", telefonnummer.format())

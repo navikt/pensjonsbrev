@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
+import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.navn
 
 @TemplateModelHelpers
 object ForhaandsvarselVedTilbakekreving : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
