@@ -54,7 +54,7 @@ data class OpplysningerBruktIBeregningenAlderAP2025Dto(
         )
 
     data class Vedtak(
-        val sisteOpptejningsAr: Int
+        val sisteOpptjeningsAr: Int
     )
 
     data class TrygdetidsdetaljerKap20VedVirk(
@@ -67,6 +67,7 @@ data class OpplysningerBruktIBeregningenAlderAP2025Dto(
         val garantipensjonSatsPerAr: Kroner,
         val nettoUtbetaltPerManed: Kroner,
         val beholdningForForsteUttak: Kroner,
+        val garantipensjonInnvilget: Boolean,
     )
 
     data class VilkaarsVedtak(

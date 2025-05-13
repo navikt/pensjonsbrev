@@ -46,12 +46,12 @@ import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.beregningVirkDatoFom
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.nettoUtbetaltPerManed
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.delingstalletVed67Ar
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.garantipensjonSatsPerAr
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.nettoUtbetaltPerManed
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.satsType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VilkaarsVedtakSelectors.avslattGarantipensjon
@@ -60,7 +60,9 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.TableHeaderScope
 import no.nav.pensjon.brev.template.dsl.TableScope
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -623,11 +625,11 @@ data class OpplysningerBruktIBeregningTabellAP2025(
                 }
 
                 //vedleggTabellKap20SatsGarP_001
-                showIf(
-                    alderspensjonVedVirk.garantipensjonInnvilget
-                            and alderspensjonVedVirk.nettoUtbetaltPerManed.greaterThan(0)
-                ) {
-                    ifNotNull(garantipensjonVedVirk) { garantipensjonVedVirk ->
+
+                ifNotNull(garantipensjonVedVirk) { garantipensjonVedVirk ->
+                    showIf(
+                        garantipensjonVedVirk.garantipensjonInnvilget and garantipensjonVedVirk.nettoUtbetaltPerManed.greaterThan(0)
+                    ) {
                         row {
                             cell {
                                 text(
@@ -649,14 +651,7 @@ data class OpplysningerBruktIBeregningTabellAP2025(
                         }
 
                         row {
-                            cell {
-                                text(
-                                    Bokmal to "Delingstall ved 67 år",
-                                    Nynorsk to "Delingstal ved 67 år",
-                                    // TODO hvilken oversettelse er riktig? Flere varianter.
-                                    English to "Life expectancy adjustment divisor at 67 years"
-                                )
-                            }
+                            cell { includePhrase(DelingstallVed67Aar) }
                             cell { eval(garantipensjonVedVirk.delingstalletVed67Ar.format()) }
                         }
                     }
@@ -721,4 +716,15 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.prorataBroekRad(
         }
         cell { includePhrase(BroekText(teller, nevner)) }
     }
+}
+
+object DelingstallVed67Aar : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        text(
+            Bokmal to "Delingstall ved 67 år",
+            Nynorsk to "Delingstal ved 67 år",
+            English to "Life expectancy adjustment divisor at 67 years"
+        )
+    }
+
 }

@@ -35,6 +35,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors
 import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors.tom
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.DelingstallVed67Aar
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -327,13 +328,7 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                     showIf(uttaksgrad.lessThan(100)) {
                         ifNotNull(delingstallVedNormertPensjonsalder) { delingstall ->
                             row {
-                                cell {
-                                    text(
-                                        Bokmal to "Delingstall ved 67 år",
-                                        Nynorsk to "Delingstal ved 67 år",
-                                        English to "Life expectancy adjustment divisor at 67 years"
-                                    )
-                                }
+                                cell { includePhrase(DelingstallVed67Aar) }
                                 cell {
                                     textExpr(
                                         Bokmal to delingstall.format(),

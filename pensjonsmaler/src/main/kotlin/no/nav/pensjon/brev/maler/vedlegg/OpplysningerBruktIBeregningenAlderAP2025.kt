@@ -24,7 +24,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderA
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningSelectors.gjennomsnittligG
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningSelectors.merknader
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.PensjonsopptjeningSelectors.pensjonsgivendeinntekt
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VedtakSelectors.sisteOpptejningsAr
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VedtakSelectors.sisteOpptjeningsAr
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VilkaarsVedtakSelectors.avslattGarantipensjon
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.beregnetPensjonPerManedVedVirk
@@ -98,8 +98,8 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
         val avslattGarantipensjon = vilkarsVedtak.avslattGarantipensjon
         val redusertTrygdetid = beregningKap20VedVirk.redusertTrygdetid
         showIf(
-            garantipensjonInnvilget
-                    and (redusertTrygdetid or avslattGarantipensjon)
+            not(garantipensjonInnvilget)
+                    and (not(redusertTrygdetid) or avslattGarantipensjon)
         ) {
             //vedleggBeregnPensjonsBeholdning_001
             title1 {
@@ -123,7 +123,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                 .greaterThan(0))
                     or (redusertTrygdetid and not(avslattGarantipensjon))
         ) {
-            //vedleggBeregnPensjonsBeholdning_001
+            //vedleggBeregnPensjonsbeholdningOgTrygdetid_001
             title1 {
                 text(
                     Bokmal to "Pensjonsbeholdning",
@@ -156,7 +156,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             }
         }
 
-        showIf(vedtak.sisteOpptejningsAr.lessThan(2023)) {
+        showIf(vedtak.sisteOpptjeningsAr.lessThan(2023)) {
             //forklaringSisteOpptjeningsaar_001
             paragraph {
                 text(
@@ -177,11 +177,11 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                 }
                 textExpr(
                     Bokmal to " tas med i beregningen av alderspensjon fra og med året etter at skatteoppgjøret er klart. Dette gjelder selv om skatteoppgjøret ditt er klart tidligere. I beregningen er det derfor brukt pensjonsopptjening til og med ".expr()
-                            + vedtak.sisteOpptejningsAr.format() + ".",
+                            + vedtak.sisteOpptjeningsAr.format() + ".",
                     Nynorsk to " blir teke med i berekninga av alderspensjon frå og med året etter at skatteoppgjeret er klart. Dette gjeld sjølv om skatteoppgjeret ditt er klart tidlegare. I berekninga er det difor brukt pensjonsopptening til og med ".expr()
-                            + vedtak.sisteOpptejningsAr.format() + ".",
+                            + vedtak.sisteOpptjeningsAr.format() + ".",
                     English to " are taken into account when calculating retirement pension starting from the year after your tax assessment is finalised. This applies even if your tax assessment is completed earlier. In the calculation, pension accruals are used up to and including ".expr()
-                            + vedtak.sisteOpptejningsAr.format() + ".",
+                            + vedtak.sisteOpptjeningsAr.format() + ".",
                 )
             }
             //forklaringSisteOpptjeningsaar_001
@@ -305,14 +305,16 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
                     English to "Period of national insurance coverage",
                 )
             }
-            includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetidInnledning)
+            showIf(trygdetidNorge.size().greaterThan(0)) {
+                includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetidInnledning)
+            }
             includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetid(trygdetidNorge))
         }
         //vedleggBeregnPensjonsOpptjeningKap20_001
         title1 {
             text(
-                Bokmal to "Pensjonsopptjening din",
-                Nynorsk to "Pensjonsopptening di",
+                Bokmal to "Pensjonsopptjeningen din",
+                Nynorsk to "Pensjonsoppteninga di",
                 English to "Your pension accrual",
             )
         }
