@@ -25,6 +25,7 @@ type BrevvelgerSearch = {
   brevId?: string;
   idTSSEkstern?: string;
   templateId?: string;
+  debug?: boolean;
 };
 
 export const Route = createFileRoute("/saksnummer_/$saksId/brevvelger")({
@@ -32,6 +33,12 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevvelger")({
     brevId: search.brevId as string,
     idTSSEkstern: search.idTSSEkstern as string,
     templateId: search.templateId as string,
+    debug:
+      search.debug === "true" || search.debug === true
+        ? true
+        : search.debug === "false" || search.debug === false
+          ? false
+          : undefined,
   }),
   loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId }),
   loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
