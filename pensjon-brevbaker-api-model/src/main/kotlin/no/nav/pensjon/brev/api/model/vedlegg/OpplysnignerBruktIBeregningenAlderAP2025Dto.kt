@@ -67,7 +67,6 @@ data class OpplysningerBruktIBeregningenAlderAP2025Dto(
         val garantipensjonSatsPerAr: Kroner,
         val nettoUtbetaltPerManed: Kroner,
         val beholdningForForsteUttak: Kroner,
-        val garantipensjonInnvilget: Boolean,
     )
 
     data class VilkaarsVedtak(

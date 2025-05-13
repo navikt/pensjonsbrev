@@ -45,11 +45,11 @@ import no.nav.pensjon.brev.maler.fraser.common.BroekText
 import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.beholdningForForsteUttak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.BeregningKap20VedVirkSelectors.delingstallLevealder
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.delingstalletVed67Ar
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.garantipensjonSatsPerAr
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.nettoUtbetaltPerManed
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.satsType
@@ -628,10 +628,8 @@ data class OpplysningerBruktIBeregningTabellAP2025(
                 //vedleggTabellKap20SatsGarP_001
 
                 ifNotNull(garantipensjonVedVirk) { garantipensjonVedVirk ->
-                    showIf(
-                        garantipensjonVedVirk.garantipensjonInnvilget and garantipensjonVedVirk.nettoUtbetaltPerManed.greaterThan(
-                            0
-                        )
+                    showIf(alderspensjonVedVirk.garantipensjonInnvilget and
+                            garantipensjonVedVirk.nettoUtbetaltPerManed.greaterThan(0)
                     ) {
                         row {
                             cell {
