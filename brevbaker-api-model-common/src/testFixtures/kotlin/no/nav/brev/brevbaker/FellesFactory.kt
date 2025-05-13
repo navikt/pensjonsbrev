@@ -16,10 +16,11 @@ object FellesFactory {
     ): Felles = Felles(
         dokumentDato = dokumentDato,
         saksnummer = saksnummer,
-        avsenderEnhet = NavEnhet(
-            nettside = "nav.no",
-            navn = "Nav Familie- og pensjonsytelser Porsgrunn",
-            telefonnummer = Telefonnummer("55553334"),
+        avsenderEnhet =
+            NavEnhet(
+                nettside = "nav.no",
+                navn = "Nav Familie- og pensjonsytelser Porsgrunn",
+                telefonnummer = Telefonnummer("55553334"),
         ),
         bruker = Bruker(
             fornavn = "Test",

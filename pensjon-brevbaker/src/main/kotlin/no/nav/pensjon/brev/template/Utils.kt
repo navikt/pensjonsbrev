@@ -18,4 +18,4 @@ fun ObjectMapper.brevbakerConfig() {
     enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
 }
 
-fun jacksonObjectMapper() = com.fasterxml.jackson.module.kotlin.jacksonObjectMapper().apply { brevbakerConfig() }
+fun brevbakerJacksonObjectMapper() = com.fasterxml.jackson.module.kotlin.jacksonObjectMapper().apply { brevbakerConfig() }

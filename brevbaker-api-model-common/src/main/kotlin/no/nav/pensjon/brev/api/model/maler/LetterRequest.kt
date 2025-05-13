@@ -16,6 +16,16 @@ data class BestillBrevRequest<T : Brevkode<T>>(
 ) : BrevRequest<T>
 
 @Suppress("unused")
+data class BestillBrevRequestAsync<T : Brevkode<T>>(
+    val kode: T,
+    val letterData: BrevbakerBrevdata,
+    val felles: Felles,
+    val language: LanguageCode,
+    val messageId: String,
+    val replyTopic: String,
+) : BrevRequest<T>
+
+@Suppress("unused")
 data class BestillRedigertBrevRequest<T : Brevkode<T>>(
     val kode: T,
     val letterData: RedigerbarBrevdata<*, *>,
