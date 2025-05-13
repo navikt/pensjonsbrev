@@ -238,6 +238,6 @@ object VedtakEndringAvUttaksgradStans : RedigerbarTemplate<VedtakEndringAvUttaks
             includePhrase(Felles.HarDuSpoersmaal.alder)
 
         }
-        includeAttachmentIfNotNull(vedleggDineRettigheterOgMulighetTilAaKlage, pesysData.dineRettigheterOgMulighetTilAaKlageDto)
+        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, pesysData.dineRettigheterOgMulighetTilAaKlageDto)
     }
 }
