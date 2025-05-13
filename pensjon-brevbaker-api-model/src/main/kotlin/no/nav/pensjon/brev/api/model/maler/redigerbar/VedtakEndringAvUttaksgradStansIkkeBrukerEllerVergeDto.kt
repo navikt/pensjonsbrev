@@ -12,7 +12,8 @@ data class VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.SaksbehandlerValg, VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.PesysData> {
     data class SaksbehandlerValg(
-        val ufoeretrygdErInnvilgetEllerUfoeregradErOekt: Boolean,
+        val ufoeretrygdErInnvilget: Boolean,
+        val ufoeregradErOekt: Boolean,
         val pensjonsopptjeningenErEndret: Boolean
     ) : BrevbakerBrevdata
 

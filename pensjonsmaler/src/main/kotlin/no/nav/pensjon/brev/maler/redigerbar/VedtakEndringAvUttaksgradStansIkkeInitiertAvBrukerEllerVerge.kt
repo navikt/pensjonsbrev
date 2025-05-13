@@ -10,7 +10,12 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradS
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.PesysDataSelectors.krav
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.SaksbehandlerValgSelectors.pensjonsopptjeningenErEndret
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.SaksbehandlerValgSelectors.ufoeregradErOekt
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.SaksbehandlerValgSelectors.ufoeretrygdErInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDtoSelectors.saksbehandlerValgSelector
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -21,6 +26,7 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -57,32 +63,38 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
         outline {
             includePhrase(Vedtak.Overskrift)
 
-            // TODO: Her skal saksbehandlar velje eitt av desse tre - radiobutton i doksys
-            paragraph {
-                // stansAPOktUFG_001
-                textExpr(
-                    Language.Bokmal to "Vi stanser utbetalingen av alderspensjonen din fra ".expr() + pesysData.krav.virkDatoFom.format() + " fordi uføregraden din er endret.",
-                    Language.Nynorsk to "Vi stansar utbetalinga av alderspensjonen din frå ".expr() + pesysData.krav.virkDatoFom.format() + " fordi uføregraden din er endra.",
-                    Language.English to "We are stopping payment of your retirement pension from ".expr() + pesysData.krav.virkDatoFom.format() + " because your degree of disability has changed.",
-                )
+            showIf(saksbehandlerValg.ufoeregradErOekt) {
+                paragraph {
+                    // stansAPOktUFG_001
+                    textExpr(
+                        Language.Bokmal to "Vi stanser utbetalingen av alderspensjonen din fra ".expr() + pesysData.krav.virkDatoFom.format() + " fordi uføregraden din er endret.",
+                        Language.Nynorsk to "Vi stansar utbetalinga av alderspensjonen din frå ".expr() + pesysData.krav.virkDatoFom.format() + " fordi uføregraden din er endra.",
+                        Language.English to "We are stopping payment of your retirement pension from ".expr() + pesysData.krav.virkDatoFom.format() + " because your degree of disability has changed.",
+                    )
+                }
             }
-            paragraph {
-                // stansAPInnvUT_001
-                textExpr(
-                    Language.Bokmal to "Vi stanser utbetalingen av alderspensjonen din fra ".expr() + pesysData.krav.virkDatoFom.format() + " fordi du har fått innvilget uføretrygd.",
-                    Language.Nynorsk to "Vi stansar utbetalinga av alderspensjonen din frå ".expr() + pesysData.krav.virkDatoFom.format() + " fordi du har fått innvilga uføretrygd.",
-                    Language.English to "We are stopping payment of your retirement pension from ".expr() + pesysData.krav.virkDatoFom.format() + " because you have been granted disability benefit.",
-                )
+
+            showIf(saksbehandlerValg.ufoeretrygdErInnvilget) {
+                paragraph {
+                    // stansAPInnvUT_001
+                    textExpr(
+                        Language.Bokmal to "Vi stanser utbetalingen av alderspensjonen din fra ".expr() + pesysData.krav.virkDatoFom.format() + " fordi du har fått innvilget uføretrygd.",
+                        Language.Nynorsk to "Vi stansar utbetalinga av alderspensjonen din frå ".expr() + pesysData.krav.virkDatoFom.format() + " fordi du har fått innvilga uføretrygd.",
+                        Language.English to "We are stopping payment of your retirement pension from ".expr() + pesysData.krav.virkDatoFom.format() + " because you have been granted disability benefit.",
+                    )
+                }
             }
-            paragraph {
-                // stansAPOpptjen_001
-                textExpr(
-                    Language.Bokmal to "Vi viser til varselbrevet vi har sendt deg. Nav stanser utbetalingen av alderspensjonen din fra ".expr() + pesysData.krav.virkDatoFom.format() + " fordi du ikke lenger har høy nok opptjening.",
-                    Language.Nynorsk to "Vi viser til varselbrevet vi har sendt deg. Nav stansar utbetalinga av alderspensjonen din frå ".expr() + pesysData.krav.virkDatoFom.format() + "  fordi du ikkje lenger har høg nok opptening.",
-                    Language.English to "We refer to the notice letter we sent you. Nav is stopping payment of your retirement pension from ".expr() + pesysData.krav.virkDatoFom.format() + " because you no longer have high enough pension earnings.",
-                )
+
+            showIf(saksbehandlerValg.pensjonsopptjeningenErEndret) {
+                paragraph {
+                    // stansAPOpptjen_001
+                    textExpr(
+                        Language.Bokmal to "Vi viser til varselbrevet vi har sendt deg. Nav stanser utbetalingen av alderspensjonen din fra ".expr() + pesysData.krav.virkDatoFom.format() + " fordi du ikke lenger har høy nok opptjening.",
+                        Language.Nynorsk to "Vi viser til varselbrevet vi har sendt deg. Nav stansar utbetalinga av alderspensjonen din frå ".expr() + pesysData.krav.virkDatoFom.format() + "  fordi du ikkje lenger har høg nok opptening.",
+                        Language.English to "We refer to the notice letter we sent you. Nav is stopping payment of your retirement pension from ".expr() + pesysData.krav.virkDatoFom.format() + " because you no longer have high enough pension earnings.",
+                    )
+                }
             }
-            // Valgmuligheter ferdige her
 
             // stansAPUTgradBegrunn_001_]
             includePhrase(Vedtak.BegrunnelseOverskrift)
@@ -96,55 +108,68 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
 
             showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2011)) { // radiobutton i doksys
                 // endrUtaksgradAP2011_001 - Uføretrygd er innvilget eller uføregrad er økt
-                paragraph {
-                    text(
-                        Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12 og 22-12.",
-                        Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12 og 22-12.",
-                        Language.English to "This decision was made pursuant to the provisions of §§ 19-10, 19-12 and 22-12 of the National Insurance Act."
-                    )
+                showIf(saksbehandlerValg.ufoeregradErOekt or saksbehandlerValg.ufoeretrygdErInnvilget) {
+                    paragraph {
+                        text(
+                            Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12 og 22-12.",
+                            Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12 og 22-12.",
+                            Language.English to "This decision was made pursuant to the provisions of §§ 19-10, 19-12 and 22-12 of the National Insurance Act."
+                        )
+                    }
                 }
                 // avslagAP2011TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
-                paragraph {
-                    text(
-                        Language.Bokmal to "Vedtaket er gjort etter folketrygdloven § 19-11.",
-                        Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova § 19-11.",
-                        Language.English to "This decision was made pursuant to the provisions of § 19-11 of the National Insurance Act."
-                    )
+                showIf(saksbehandlerValg.pensjonsopptjeningenErEndret) {
+                    paragraph {
+                        text(
+                            Language.Bokmal to "Vedtaket er gjort etter folketrygdloven § 19-11.",
+                            Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova § 19-11.",
+                            Language.English to "This decision was made pursuant to the provisions of § 19-11 of the National Insurance Act."
+                        )
+                    }
                 }
             }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2016)) { // radiobuttons
                 // avslagAP2016TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
-                paragraph {
-                    text(
-                        Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-11, 19-15, 20-15 og 20-19.",
-                        Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-11, 19-15, 20-15 og 20-19.",
-                        Language.English to "This decision was made pursuant to the provisions of §§ 19-11, 19-15, 20-15 and 20-19 of the National Insurance Act."
-                    )
+                showIf(saksbehandlerValg.pensjonsopptjeningenErEndret) {
+                    paragraph {
+                        text(
+                            Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-11, 19-15, 20-15 og 20-19.",
+                            Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-11, 19-15, 20-15 og 20-19.",
+                            Language.English to "This decision was made pursuant to the provisions of §§ 19-11, 19-15, 20-15 and 20-19 of the National Insurance Act."
+                        )
+                    }
                 }
-                // endrUtaksgradAP2016_001 - Uføretrygd er innvilget eller uføregrad er økt
-                paragraph {
-                    text(
-                        Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12.",
-                        Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12.",
-                        Language.English to "This decision was made pursuant to the provisions of §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 and 22-12 of the National Insurance Act."
-                    )
+
+                showIf(saksbehandlerValg.ufoeregradErOekt or saksbehandlerValg.ufoeretrygdErInnvilget) {
+                    // endrUtaksgradAP2016_001 - Uføretrygd er innvilget eller uføregrad er økt
+                    paragraph {
+                        text(
+                            Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12.",
+                            Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12.",
+                            Language.English to "This decision was made pursuant to the provisions of §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 and 22-12 of the National Insurance Act."
+                        )
+                    }
                 }
             }
                 .orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) { // radiobuttons
                     // avslagAP2025TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
-                    paragraph {
-                        text(
-                            Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-15 og 22-13.",
-                            Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-15 og 22-13.",
-                            Language.English to "This decision was made pursuant to the provisions of §§ 20-15 and 22-13 of the National Insurance Act."
-                        )
+                    showIf(saksbehandlerValg.pensjonsopptjeningenErEndret) {
+                        paragraph {
+                            text(
+                                Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-15 og 22-13.",
+                                Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-15 og 22-13.",
+                                Language.English to "This decision was made pursuant to the provisions of §§ 20-15 and 22-13 of the National Insurance Act."
+                            )
+                        }
                     }
                     // endrUtaksgradAP2025_001 - Uføretrygd er innvilget eller uføregrad er økt
-                    paragraph {
-                        text(
-                            Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-14 og 20-16.",
-                            Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-14 og 20-16.",
-                            Language.English to "This decision was made pursuant to the provisions of §§ 20-14 and 20-16 of the National Insurance Act."
-                        )
+                    showIf(saksbehandlerValg.ufoeregradErOekt or saksbehandlerValg.ufoeretrygdErInnvilget) {
+                        paragraph {
+                            text(
+                                Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-14 og 20-16.",
+                                Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-14 og 20-16.",
+                                Language.English to "This decision was made pursuant to the provisions of §§ 20-14 and 20-16 of the National Insurance Act."
+                            )
+                        }
                     }
                 }
 

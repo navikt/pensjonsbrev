@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto
 import no.nav.pensjon.brev.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
@@ -11,7 +10,8 @@ import java.time.Month
 
 fun createVedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto() = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto(
     saksbehandlerValg = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.SaksbehandlerValg(
-        ufoeretrygdErInnvilgetEllerUfoeregradErOekt = true,
+        ufoeretrygdErInnvilget = true,
+        ufoeregradErOekt = false,
         pensjonsopptjeningenErEndret = false
     ),
     pesysData = VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.PesysData(
