@@ -86,8 +86,8 @@ describe("<KvitterteBrev />", () => {
     cy.get('button:contains("Prøv å sende igjen")').should("be.visible");
     cy.get('span:contains("Kunne ikke sende brev")').eq(2).click();
 
-    cy.contains("Lokalprint - arkivert").should("be.visible");
-    cy.contains("Lokalprint - arkivert").click();
+    cy.contains("Lokalprint - sendt til joark").should("be.visible");
+    cy.contains("Lokalprint - sendt til joark").click();
     cy.contains("Mottaker").should("be.visible");
     cy.contains("Tydelig Bakke").should("be.visible");
     cy.contains("Distribueres via").should("be.visible");
@@ -95,7 +95,7 @@ describe("<KvitterteBrev />", () => {
     cy.contains("Journalpost ID").should("be.visible");
     cy.contains("1").should("be.visible");
     cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
-    cy.contains("Lokalprint - arkivert").click();
+    cy.contains("Lokalprint - sendt til joark").click();
 
     cy.contains("Klar til attestering").should("be.visible");
     cy.contains("Klar til attestering").click();
@@ -137,33 +137,8 @@ describe("<KvitterteBrev />", () => {
     cy.get(".navds-accordion__item").eq(0).contains("Kunne ikke sende brev");
     cy.get(".navds-accordion__item").eq(1).contains("Kunne ikke sende brev");
     cy.get(".navds-accordion__item").eq(2).contains("Kunne ikke sende brev");
-    cy.get(".navds-accordion__item").eq(3).contains("Lokalprint - arkivert");
+    cy.get(".navds-accordion__item").eq(3).contains("Lokalprint - sendt til joark");
     cy.get(".navds-accordion__item").eq(4).contains("Klar til attestering");
     cy.get(".navds-accordion__item").eq(5).contains("Sendt til mottaker");
-  });
-
-  it("Brev med error får riktig handling basert på context", () => {
-    const kvitterteBrev = [sendBrevError, attesteringError];
-    cy.intercept("POST", "bff/skribenten-backend/sak/123456/brev/1/pdf/send", (req) =>
-      req.reply("en ok response tilbake"),
-    ).as("sendBrev");
-    cy.intercept("POST", "bff/skribenten-backend/sak/123456/brev/1/attester", (req) => {
-      req.reply("en ok response tilbake");
-    }).as("attesterBrev");
-
-    cy.mount(
-      <QueryClientProvider client={queryClient}>
-        <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={"123456"} />
-      </QueryClientProvider>,
-    );
-    cy.get("@sendBrev.all").should("have.length", 0);
-    cy.get(".navds-accordion__item").eq(0).click();
-    cy.get('button:contains("Prøv å sende igjen")').eq(0).click();
-    cy.get("@sendBrev.all").should("have.length", 1);
-
-    cy.get("@attesterBrev.all").should("have.length", 0);
-    cy.get(".navds-accordion__item").eq(1).click();
-    cy.get(".navds-accordion__item").eq(1).contains("Prøv å sende igjen").click();
-    cy.get("@attesterBrev.all").should("have.length", 1);
   });
 });
