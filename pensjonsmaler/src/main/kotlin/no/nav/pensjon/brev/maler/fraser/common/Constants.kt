@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
-import no.nav.pensjon.brev.model.TelefonnummerImpl
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 
 object Constants {
     const val NAV_URL = "nav.no"
@@ -34,7 +34,7 @@ object Constants {
     const val MEDLEMSKAP_URL = "$NAV_URL/medlemskap"
     const val NAV_KONTAKTSENTER_AAPNINGSTID = "09:00-15:00"
     const val NAV_KONTAKTSENTER_TELEFON = "55 55 33 33"
-    val navKontaktsenterPensjon = TelefonnummerImpl("55553334")
+    val navKontaktsenterPensjon = Telefonnummer("55553334")
     val NAV_KONTAKTSENTER_TELEFON_PENSJON = navKontaktsenterPensjon.format()
     const val OMSORGSOPPTJENING_URL = "$NAV_URL/omsorgsopptjening"
     const val OMSTILLINGSSTOENAD_URL = "$NAV_URL/omstillingsstonad"
@@ -43,7 +43,7 @@ object Constants {
     const val REGULERING_ALDERSPENSJON_URL = "$NAV_URL/reguleringalderspensjon"
     const val SEND_BESKJED_URL = "$NAV_URL/send-beskjed"
     const val SKATTEETATEN_URL = "skatteetaten.no"
-    const val SKATTEETATEN_PENSJONIST_URL = "skatteetaten.no/pensjonist"
+    const val SKATTEETATEN_PENSJONIST_URL = "$SKATTEETATEN_URL/pensjonist"
     const val SKJEMA_URL = "$NAV_URL/skjema"
     const val SKRIV_TIL_OSS_URL = "$NAV_URL/skriv-til-oss"
     const val TELEFON_HELSE = "800 HELSE (800 43 573)"

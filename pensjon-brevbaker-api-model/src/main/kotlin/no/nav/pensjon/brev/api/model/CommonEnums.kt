@@ -159,4 +159,7 @@ enum class KravInitiertAv {
     BRUKER,
     NAV,
     VERGE,
+    SOSIALKONTOR,
+    KONV,
+    ADVOKAT
 }

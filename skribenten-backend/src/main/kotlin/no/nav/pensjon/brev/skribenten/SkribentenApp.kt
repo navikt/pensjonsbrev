@@ -32,7 +32,6 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.routes.BrevkodeModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
-import no.nav.pensjon.brev.skribenten.services.FellesModule
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
 
 
@@ -139,7 +138,6 @@ fun Application.skribentenContenNegotiation() {
             registerModule(Edit.JacksonModule)
             registerModule(BrevkodeModule)
             registerModule(LetterMarkupModule)
-            registerModule(FellesModule)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }
