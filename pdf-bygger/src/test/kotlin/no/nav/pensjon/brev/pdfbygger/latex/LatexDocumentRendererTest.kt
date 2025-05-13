@@ -11,8 +11,6 @@ import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.pdfbygger.EksempelbrevRedigerbart
-import no.nav.pensjon.brev.pdfbygger.Fixtures
-import no.nav.pensjon.brev.pdfbygger.Fixtures.felles
 import no.nav.pensjon.brev.pdfbygger.LetterExample
 import no.nav.pensjon.brev.pdfbygger.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.pdfbygger.outlineTestTemplate
@@ -101,11 +99,11 @@ class LatexDocumentRendererTest {
         val rendered = LatexDocumentRenderer.render(pdfRequest)
 
         assertThat(
-            rendered.files.filterIsInstance<DocumentFile>().first { it.fileName == "letter.tex" }.content,
+            rendered.files.first { it.fileName == "letter.tex" }.content,
             containsSubstring("Du har fått innvilget pensjon")
         )
 
-        assertThat(rendered.files.filterIsInstance<DocumentFile>().first { it.fileName == "attachment_0.tex" }.content, containsSubstring("Test vedlegg"))
+        assertThat(rendered.files.first { it.fileName == "attachment_0.tex" }.content, containsSubstring("Test vedlegg"))
     }
 
     fun assertNumberOfParagraphs(
