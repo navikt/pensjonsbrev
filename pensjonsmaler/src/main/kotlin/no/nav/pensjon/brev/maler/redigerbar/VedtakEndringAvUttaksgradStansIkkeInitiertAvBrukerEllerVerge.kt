@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansDtoSelectors.AlderspensjonVedVirkSelectors.skjermingstilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansDtoSelectors.KravSelectors.kravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansDtoSelectors.KravSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
@@ -25,6 +24,7 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -33,11 +33,11 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object VedtakEndringAvUttaksgradStans : RedigerbarTemplate<VedtakEndringAvUttaksgradStansDto> {
+object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge : RedigerbarTemplate<VedtakEndringAvUttaksgradStansDto> {
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
-    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRET_UTTAKSGRAD_STANS
+    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRET_UTTAKSGRAD_STANS_IKKE_BRUKER_VERGE
     override val template = createTemplate(
         name = kode.name,
         letterDataType = VedtakEndringAvUttaksgradStansDto::class,
@@ -60,62 +60,7 @@ object VedtakEndringAvUttaksgradStans : RedigerbarTemplate<VedtakEndringAvUttaks
         outline {
             includePhrase(Vedtak.Overskrift)
 
-            showIf(pesysData.krav.kravInitiertAv.isOneOf(KravInitiertAv.BRUKER, KravInitiertAv.VERGE)) {
-                // stansAPInnledn_001
-                paragraph {
-                    textExpr(
-                        Language.Bokmal to "Vi viser til søknaden din, og stanser utbetalingen av alderspensjonen fra ".expr() + pesysData.krav.virkDatoFom.format(),
-                        Language.Nynorsk to "Vi viser til søknaden din, og stansar utbetalinga av alderspensjonen frå ".expr() + pesysData.krav.virkDatoFom.format(),
-                        Language.English to "This is in reference to your application. We are stopping payment of your retirement pension from ".expr() + pesysData.krav.virkDatoFom.format(),
-                    )
-                }
-
-                showIf(pesysData.alderspensjonVedVirk.skjermingstilleggInnvilget) {
-                    // fortsattSkjermingstillegg_001
-                    paragraph {
-                        text(
-                            Language.Bokmal to "Du får fortsatt utbetalt skjermingstillegget til uføre. Vedtaket er gjort etter folketrygdloven §§ 19-9a, 19-10 og 19-12.",
-                            Language.Nynorsk to "Du får fortsatt utbetalt skjermingstillegget til uføre. Vedtaket er gjort etter folketrygdlova §§ 19-9a, 19-10 og 19-12.",
-                            Language.English to "You will still receive the supplement for disabled people. This decision was made pursuant to the provisions of §§ 19-9a, 19-10 and 19-12 of the National Insurance Act."
-                        )
-                    }
-                }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2011)) {
-                    // endrUtaksgradAP2011_001
-                    paragraph {
-                        text(
-                            Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12 og 22-12.",
-                            Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12 og 22-12.",
-                            Language.English to "This decision was made pursuant to the provisions of §§ 19-10, 19-12 and 22-12 of the National Insurance Act."
-                        )
-                    }
-                }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2016)) {
-                    // endrUtaksgradAP2016_001
-                    paragraph {
-                        text(
-                            Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12.",
-                            Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12.",
-                            Language.English to "This decision was made pursuant to the provisions of §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 and 22-12 of the National Insurance Act."
-                        )
-                    }
-                }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) {
-                    // endrUtaksgradAP2025Soknad_001
-                    paragraph {
-                        text(
-                            Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-14, 20-16 og 22-13.",
-                            Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-14, 20-16 og 22-13.",
-                            Language.English to "This decision was made pursuant to the provisions of §§ 20-14, 20-16 and 22-13 of the National Insurance Act."
-                        )
-                    }
-                }
-
-                paragraph {
-                    text(
-                        Language.Bokmal to "Du må sende oss en ny søknad når du ønsker å ta ut alderspensjon. En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden.",
-                        Language.Nynorsk to "Du må sende oss ein ny søknad når du ønskjer å ta ut alderspensjonen. Ei eventuell endring kan tidlegast skje månaden etter at vi har mottatt søknaden.",
-                        Language.English to "You have to submit an application when you want to start drawing your retirement pension. Any change will be implemented at the earliest the month after we have received the application."
-                    )
-                }
-            }.orShow {
+            showIf(not(pesysData.krav.kravInitiertAv.isOneOf(KravInitiertAv.BRUKER, KravInitiertAv.VERGE))) {
                 // TODO: Her skal saksbehandlar velje eitt av desse tre - radiobutton i doksys
                 paragraph {
                     // stansAPOktUFG_001
