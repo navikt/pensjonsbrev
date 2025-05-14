@@ -2,7 +2,7 @@ app-name: "pensjon-brevbaker"
 pdf-bygger-app: "pensjon-pdf-bygger"
 kafka-pool: "nav-dev"
 kafka-pdf-render-topic: "pensjonsbrev.pdf-bygger-render"
-enable-kafka: "true"
+enable-kafka: str(true)
 ingresses:
   - "https://pensjon-brevbaker.intern.dev.nav.no"
 
