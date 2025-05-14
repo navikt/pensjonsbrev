@@ -125,8 +125,10 @@ fun Application.brevbakerModule(
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
 
-    val latexAsyncCompilerService = if (brukAsyncProducer) {
-        LatexAsyncCompilerService(brevbakerConfig.config("kafka"))
+    val kafkaConfig = brevbakerConfig.config("kafka")
+    val kafkaIsEnabled = kafkaConfig.propertyOrNull("enabled")?.getString() == "true"
+    val latexAsyncCompilerService = if (brukAsyncProducer && kafkaIsEnabled) {
+        LatexAsyncCompilerService(kafkaConfig)
     } else null
 
     konfigurerUnleash(brevbakerConfig)
