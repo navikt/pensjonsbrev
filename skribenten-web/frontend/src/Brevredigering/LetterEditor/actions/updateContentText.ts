@@ -5,9 +5,8 @@ import type { LiteralValue } from "~/types/brevbakerTypes";
 
 import { ITEM_LIST, LITERAL } from "../../../types/brevbakerTypes";
 import type { Action } from "../lib/actions";
-import type { LetterEditorState } from "../model/state";
+import type { LetterEditorState, LiteralIndex } from "../model/state";
 import { cleanseText } from "./common";
-import type { LiteralIndex } from "./model";
 
 export const updateContentText: Action<LetterEditorState, [literalIndex: LiteralIndex, text: string]> = produce(
   (draft, literalIndex, text) => {

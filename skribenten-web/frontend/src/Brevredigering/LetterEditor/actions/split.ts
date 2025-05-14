@@ -5,10 +5,9 @@ import type { AnyBlock, Content, ItemList, TextContent } from "~/types/brevbaker
 import { ITEM_LIST } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
-import type { LetterEditorState } from "../model/state";
+import type { LetterEditorState, LiteralIndex } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem, isItemList, isLiteral, isVariable } from "../model/utils";
 import { addElements, newItem, newLiteral, newParagraph, removeElements, splitLiteralAtOffset, text } from "./common";
-import type { LiteralIndex } from "./model";
 
 export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number]> = produce(splitRecipe);
 

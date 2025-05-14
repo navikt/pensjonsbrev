@@ -2,13 +2,12 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 
 import type { Content, FontType, ItemList, LiteralValue, ParagraphBlock, VariableValue } from "~/types/brevbakerTypes";
-import { handleSwitchContent, handleSwitchTextContent, isItemContentIndex } from "~/utils/brevbakerUtils";
+import { handleSwitchContent, handleSwitchTextContent } from "~/utils/brevbakerUtils";
 
 import type { Action } from "../lib/actions";
-import type { LetterEditorState } from "../model/state";
+import type { LetterEditorState, LiteralIndex } from "../model/state";
 import { getCursorOffset } from "../services/caretUtils";
-import { newLiteral } from "./common";
-import type { LiteralIndex } from "./model";
+import { isItemContentIndex, newLiteral } from "./common";
 
 export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralIndex, fontType: FontType]> = produce(
   (draft, literalIndex, fontType) => {

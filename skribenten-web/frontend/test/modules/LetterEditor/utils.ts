@@ -1,8 +1,7 @@
 import { randomInt } from "node:crypto";
 
 import { newLiteral, newVariable } from "~/Brevredigering/LetterEditor/actions/common";
-import type { ItemContentIndex } from "~/Brevredigering/LetterEditor/actions/model";
-import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import type { ItemContentIndex, LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { SpraakKode } from "~/types/apiTypes";
 import { Distribusjonstype } from "~/types/brev";
 import type {
@@ -68,6 +67,7 @@ function randomId() {
   return randomInt(1_000_000);
 }
 
+// TODO: Skriv om til å støtte å angi id.
 export function paragraph(...content: Content[]): ParagraphBlock {
   const id = randomId();
   return {

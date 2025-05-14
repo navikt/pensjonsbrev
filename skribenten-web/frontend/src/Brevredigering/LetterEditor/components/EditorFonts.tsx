@@ -1,8 +1,9 @@
 import { css } from "@emotion/react";
 import { Button, Label } from "@navikt/ds-react";
 
+import { isItemContentIndex } from "~/Brevredigering/LetterEditor/actions/common";
 import { FontType } from "~/types/brevbakerTypes";
-import { handleSwitchContent, handleSwitchTextContent, isItemContentIndex } from "~/utils/brevbakerUtils";
+import { handleSwitchContent, handleSwitchTextContent } from "~/utils/brevbakerUtils";
 
 import Actions from "../actions";
 import type { CallbackReceiver } from "../lib/actions";

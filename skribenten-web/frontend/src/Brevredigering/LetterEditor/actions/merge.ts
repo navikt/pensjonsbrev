@@ -12,9 +12,8 @@ import {
 } from "../../../Brevredigering/LetterEditor/actions/common";
 import { ITEM_LIST, LITERAL, NEW_LINE, VARIABLE } from "../../../types/brevbakerTypes";
 import type { Action } from "../lib/actions";
-import type { Focus, LetterEditorState } from "../model/state";
+import type { Focus, ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem, isTextContent } from "../model/utils";
-import type { ItemContentIndex, LiteralIndex } from "./model";
 
 export enum MergeTarget {
   PREVIOUS = "PREVIOUS",
