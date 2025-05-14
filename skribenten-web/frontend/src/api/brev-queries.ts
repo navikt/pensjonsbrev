@@ -40,14 +40,12 @@ export const getBrev = {
 
 export const attesteringBrevKeys = {
   all: ["BREV", "ATTESTERING"] as const,
-  id: (brevId: number, saksId: string, reserver: boolean = true) =>
-    [...attesteringBrevKeys.all, brevId, saksId, reserver] as const,
-  reservasjon: (brevId: number, saksId: string, reserver: boolean = true) =>
-    [...attesteringBrevKeys.id(brevId, saksId, reserver), "RESERVASJON"] as const,
+  id: (brevId: number) => [...attesteringBrevKeys.all, brevId] as const,
+  reservasjon: (brevId: number) => [...attesteringBrevKeys.id(brevId), "RESERVASJON"] as const,
 };
 
 export const getBrevAttesteringQuery = (saksId: string, brevId: number, reserver: boolean = true) => ({
-  queryKey: attesteringBrevKeys.id(brevId, saksId, reserver),
+  queryKey: attesteringBrevKeys.id(brevId),
   queryFn: async () =>
     (
       await axios.get<BrevResponse>(

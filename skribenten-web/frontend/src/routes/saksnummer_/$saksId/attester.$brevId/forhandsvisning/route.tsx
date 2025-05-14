@@ -139,9 +139,7 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
 
   const queryClient = useQueryClient();
 
-  const cachedBrevData = queryClient.getQueryData<BrevResponse>(
-    attesteringBrevKeys.id(Number(props.brevId), props.saksId),
-  );
+  const cachedBrevData = queryClient.getQueryData<BrevResponse>(attesteringBrevKeys.id(Number(props.brevId)));
 
   const sendBrevMutation = useMutation<BestillBrevResponse, AxiosError>({
     mutationFn: () => {
