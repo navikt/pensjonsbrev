@@ -92,9 +92,10 @@ const SwitchField = (props: { prependName?: string; field: string; fieldType: TS
    * Vi gjør en submit ved onChange, og prøver på nytt hver 3 sekund dersom kallet feilet.
    */
   useEffect(() => {
-    if (fieldState.isDirty && props.onSubmit !== undefined) {
+    const onSubmit = props.onSubmit;
+    if (fieldState.isDirty && onSubmit !== undefined) {
       const timeout = setTimeout(() => {
-        props.onSubmit!();
+        onSubmit();
       }, 3000);
 
       return () => clearTimeout(timeout);
@@ -149,9 +150,10 @@ export const AutoSavingTextField = (props: {
    * useEffekten er brukt kun i forbindelse med autolagring
    */
   useEffect(() => {
-    if (fieldState.isDirty && (props.fieldType.nullable ? true : !!watchedValue) && props.onSubmit) {
+    const onSubmit = props.onSubmit;
+    if (fieldState.isDirty && (props.fieldType.nullable ? true : !!watchedValue) && onSubmit) {
       const timeout = setTimeout(() => {
-        props.onSubmit!();
+        onSubmit();
       }, props.timeoutTimer);
 
       return () => clearTimeout(timeout);
@@ -245,9 +247,10 @@ const ControlledDatePicker = (props: {
    * useEffekten er brukt kun i forbindelse med autolagring
    */
   useEffect(() => {
-    if (fieldState.isDirty && !!watchedValue && props.onSubmit) {
+    const onSubmit = props.onSubmit;
+    if (fieldState.isDirty && !!watchedValue && onSubmit) {
       const timeout = setTimeout(() => {
-        props.onSubmit!();
+        onSubmit();
       }, 500);
 
       return () => clearTimeout(timeout);
