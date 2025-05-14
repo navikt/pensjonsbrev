@@ -153,27 +153,6 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   const onSendValgteBrev = async (values: { valgteBrevSomSkalSendes: number[] }) => {
     const toSend = values.valgteBrevSomSkalSendes.map((id) => brevSending.find((brev) => brev.id === id)!);
 
-    // await Promise.all(
-    //   toSend.map((brevInfo) =>
-    //     sendBrevMutation
-    //       .mutateAsync(brevInfo.id)
-    //       .then((response) => {
-    //         setBrevResult(String(brevInfo.id), {
-    //           status: "success",
-    //           brevInfo,
-    //           response,
-    //         });
-    //       })
-    //       .catch((error) => {
-    //         setBrevResult(String(brevInfo.id), {
-    //           status: "error",
-    //           brevInfo,
-    //           error,
-    //         });
-    //       }),
-    //   ),
-    // );
-
     await Promise.all(
       toSend.map(async (brevInfo) => {
         try {
