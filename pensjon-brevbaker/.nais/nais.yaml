@@ -82,5 +82,7 @@ spec:
       value: "250"
     - name: KAFKA_PDF_RENDER_TOPIC
       value: {{kafka-pdf-render-topic}}
+    - name: ENABLE_KAFKA
+      value: {{enable-kafka}}
   envFrom:
     - secret: pensjon-brevbaker-unleash-api-token
