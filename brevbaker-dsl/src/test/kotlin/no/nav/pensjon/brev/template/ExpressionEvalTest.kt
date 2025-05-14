@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.Fixtures
+import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Felles
 import org.junit.jupiter.api.Assertions.*
@@ -40,7 +40,7 @@ class ExpressionEvalTest {
     private val Expression<Felles>.saksnummer
         get() = Expression.UnaryInvoke(this, UnaryOperation.Select(saksnummerSelector))
 
-    private val scope = ExpressionScope(SomeDto("Ole", null), Fixtures.felles, Language.Bokmal)
+    private val scope = ExpressionScope(SomeDto("Ole", null), FellesFactory.felles, Language.Bokmal)
     private val argumentExpr = Expression.FromScope.Argument<SomeDto>()
     private val fellesExpr = Expression.FromScope.Felles
 
@@ -105,7 +105,7 @@ class ExpressionEvalTest {
     @Test
     fun `eval can select fields from felles`() {
         val evaluated = fellesExpr.saksnummer.eval(scope)
-        assertEquals(Fixtures.felles.saksnummer, evaluated)
+        assertEquals(FellesFactory.felles.saksnummer, evaluated)
     }
 
     @Test

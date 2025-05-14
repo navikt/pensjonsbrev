@@ -17,7 +17,25 @@ import java.util.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-internal data class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attachments: List<Attachment>)
+class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attachments: List<Attachment>){
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as LetterWithAttachmentsMarkup
+
+        if (letterMarkup != other.letterMarkup) return false
+        if (attachments != other.attachments) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = letterMarkup.hashCode()
+        result = 31 * result + attachments.hashCode()
+        return result
+    }
+}
 
 @OptIn(InterneDataklasser::class)
 internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {

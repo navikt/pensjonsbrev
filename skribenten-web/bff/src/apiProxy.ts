@@ -20,18 +20,19 @@ export const setupSkribentenBackendApiProxy = (server: Express) =>
 export function addProxyHandler(router: Router, { ingoingUrl, outgoingUrl, scope }: ProxyOptions) {
   router.use(
     ingoingUrl,
-    async (request: Request, response: Response, next: NextFunction) => {
+    async (request: Request, response: Response, next: NextFunction): Promise<void> => {
       const token = getToken(request);
       if (!token) {
-        return response.status(401).send();
+        response.status(401).send();
+        return;
       }
-      const onBehalfOfTokenResponse = await requestOboToken(token, scope);
+      const onBehalfOfTokenResponse = await requestOboToken(token as string, scope);
       if (onBehalfOfTokenResponse.ok) {
         request.headers["obo-token"] = onBehalfOfTokenResponse.token;
-        return next();
+        next();
       } else {
         console.log("OBO-exchange failed", onBehalfOfTokenResponse.error);
-        return response.status(403).send();
+        response.status(403).send();
       }
     },
 

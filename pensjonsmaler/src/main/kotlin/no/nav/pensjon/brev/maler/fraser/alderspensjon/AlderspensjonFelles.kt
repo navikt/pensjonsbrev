@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.template.dsl.text
 
 
 // infoAPinntekt_001
-object InfoInntektAP: OutlinePhrase<LangBokmalNynorskEnglish>() {
+object InfoInntektAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(

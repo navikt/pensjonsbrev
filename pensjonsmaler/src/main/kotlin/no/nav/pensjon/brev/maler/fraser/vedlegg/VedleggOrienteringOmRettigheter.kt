@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.telefonnummer
+import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.telefonnummer
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 
 

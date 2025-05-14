@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheter
+import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge
 import no.nav.pensjon.brev.maler.redigerbar.*
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUfoeretrygdPGAInntektV2
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
@@ -93,6 +94,8 @@ object ProductionTemplates : AllTemplates {
         VarselTilbakekrevingAvFeilutbetaltBeloep,
         VedtakEndringAvAlderspensjonGjenlevenderettigheter,
         VedtakEndringAvUttaksgrad,
+        VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,
+        VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,
     )
 
     override fun hentAutobrevmaler() = autobrev
