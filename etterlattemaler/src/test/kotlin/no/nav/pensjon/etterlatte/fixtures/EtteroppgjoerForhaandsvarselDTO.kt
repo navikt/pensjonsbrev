@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte.fixtures
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselBrevDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselInnholfDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselRedigerbartBrevDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerResultatType
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTO
@@ -35,5 +36,12 @@ fun createEtteroppgjoerForhaandsvarselBrevDTO() =
 
 fun createEtteroppgjoerForhaandsvarselRedigerbartBrevDTO() =
     EtteroppgjoerForhaandsvarselRedigerbartBrevDTO(
-        type = "test"
+        data = EtteroppgjoerForhaandsvarselInnholfDTO(
+            bosattUtland = true,
+            norskInntekt = true,
+            etteroppgjoersAar = 2024,
+            rettsgebyrBeloep = Kroner(1234),
+            resultatType = EtteroppgjoerResultatType.IKKE_ETTEROPPGJOER,
+            avviksBeloep = Kroner(0),
+        )
     )
