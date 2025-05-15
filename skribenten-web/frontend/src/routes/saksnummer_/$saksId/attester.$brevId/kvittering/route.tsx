@@ -1,7 +1,9 @@
 import { css } from "@emotion/react";
 import { BodyShort, Box, Button, Heading, VStack } from "@navikt/ds-react";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
+import { getBaseUrls } from "~/api/bff-endpoints";
 import KvitterteBrev from "~/components/kvitterteBrev/KvitterteBrev";
 import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 
@@ -12,19 +14,14 @@ export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/kvit
 });
 
 const Kvittering = () => {
-  const isProd = import.meta.env.PROD;
   const { saksId, brevId } = Route.useParams();
   const { vedtaksId, enhetsId } = Route.useSearch();
 
   const { sendteBrev } = useSendtBrev();
+  const { data: baseUrls, isLoading, error } = useQuery(getBaseUrls);
 
-  const brukeroversiktQ2Url = `https://pensjon-psak-q2.dev.adeo.no/psak/bruker/brukeroversikt.jsf?sakId=${saksId}`;
-  const dokumentoversiktQ2Url = `https://pensjon-psak-q2.dev.adeo.no/psak/dokument/saksoversikt.jsf?sakId=${saksId}`;
-  const brukeroversiktProdUrl = `https://pensjon-psak.nais.adeo.no/psak/bruker/brukeroversikt.jsf?sakId=${saksId}`;
-  const dokumentoversiktProdUrl = `https://pensjon-psak.nais.adeo.no/psak/dokument/saksoversikt.jsf?sakId=${saksId}`;
-
-  const brukeroversiktUrl = isProd ? brukeroversiktProdUrl : brukeroversiktQ2Url;
-  const dokumentoversiktUrl = isProd ? dokumentoversiktProdUrl : dokumentoversiktQ2Url;
+  const psak = baseUrls?.psak;
+  const urlReady = !isLoading && !error && !!psak;
 
   const sendteBrevLista = Object.values(sendteBrev).map((brevResult) =>
     toKvittertBrev({
@@ -35,6 +32,26 @@ const Kvittering = () => {
       attesterResponse: null,
     }),
   );
+
+  const NavButtons = () => {
+    if (!urlReady) return null;
+
+    const urls = {
+      bruker: `${psak}/psak/bruker/brukeroversikt.jsf?sakId=${saksId}`,
+      dokument: `${psak}/psak/dokument/saksoversikt.jsf?sakId=${saksId}`,
+    };
+
+    return (
+      <VStack align={"start"} gap="3">
+        <ButtonLink as={"a"} href={urls.bruker}>
+          Gå til brukeroversikt
+        </ButtonLink>
+        <ButtonLink as={"a"} href={urls.dokument}>
+          Gå til dokumentoversikt
+        </ButtonLink>
+      </VStack>
+    );
+  };
 
   if (sendteBrevLista.length === 0) {
     return (
@@ -48,17 +65,12 @@ const Kvittering = () => {
           padding-top: var(--a-spacing-8);
         `}
       >
-        <VStack gap="2">
-          <Heading size="medium">Hva vil du gjøre nå?</Heading>
-          <VStack align={"start"} gap="3">
-            <ButtonLink as={"a"} href={brukeroversiktUrl}>
-              Gå til brukeroversikt
-            </ButtonLink>
-            <ButtonLink as={"a"} href={dokumentoversiktUrl}>
-              Gå til dokumentoversikt
-            </ButtonLink>
+        {urlReady && (
+          <VStack gap="2">
+            <Heading size="medium">Hva vil du gjøre nå?</Heading>
+            <NavButtons />
           </VStack>
-        </VStack>
+        )}
         <BodyShort>Ingen informasjon om brevsending</BodyShort>
         <Link
           params={{ saksId, brevId }}
@@ -87,17 +99,12 @@ const Kvittering = () => {
         <Heading size="medium">Kvittering</Heading>
         <KvitterteBrev kvitterteBrev={sendteBrevLista} sakId={saksId} />
       </VStack>
-      <VStack gap="2">
-        <Heading size="medium">Hva vil du gjøre nå?</Heading>
-        <VStack align={"start"} gap="3">
-          <ButtonLink as={"a"} href={brukeroversiktUrl}>
-            Gå til brukeroversikt
-          </ButtonLink>
-          <ButtonLink as={"a"} href={dokumentoversiktUrl}>
-            Gå til dokumentoversikt
-          </ButtonLink>
+      {urlReady && (
+        <VStack gap="2">
+          <Heading size="medium">Hva vil du gjøre nå?</Heading>
+          <NavButtons />
         </VStack>
-      </VStack>
+      )}
     </Box>
   );
 };
