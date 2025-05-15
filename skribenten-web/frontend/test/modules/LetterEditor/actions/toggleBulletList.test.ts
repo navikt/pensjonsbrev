@@ -10,12 +10,12 @@ describe("LetterEditorActions.toggleBulletList", () => {
   describe("has adjoining itemList", () => {
     test("should not merge with itemList in previous block if not first in current block", () => {
       const state = letter(
-        paragraph(itemList({ items: [item(literal({ text: "b0-c1" }))] })),
-        paragraph(
+        paragraph([itemList({ items: [item(literal({ text: "b0-c1" }))] })]),
+        paragraph([
           literal({ text: "b1-c0" }),
           itemList({ items: [item(literal({ text: "b1-c1-i0-ic0" }))] }),
           literal({ text: "b1-c2" }),
-        ),
+        ]),
       );
       const result = Actions.toggleBulletList(state, { blockIndex: 1, contentIndex: 2 });
       expect(result.redigertBrev.blocks).toHaveLength(2);
@@ -32,12 +32,12 @@ describe("LetterEditorActions.toggleBulletList", () => {
     });
     test("should not merge with itemList in next block if not last in current block", () => {
       const state = letter(
-        paragraph(
+        paragraph([
           literal({ text: "b1-l1" }),
           itemList({ items: [item(literal({ text: "b1-p1" }))] }),
           literal({ text: "b1-l2" }),
-        ),
-        paragraph(itemList({ items: [item(literal({ text: "b2-p1" }))] })),
+        ]),
+        paragraph([itemList({ items: [item(literal({ text: "b2-p1" }))] })]),
       );
       const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0 });
       expect(result.redigertBrev.blocks).toHaveLength(2);
@@ -54,15 +54,15 @@ describe("LetterEditorActions.toggleBulletList", () => {
     });
     test("should not merge with itemList in previous and next block if not first and last in block", () => {
       const state = letter(
-        paragraph(itemList({ id: 1, items: [item(literal({ text: "b1-p1" }))] })),
-        paragraph(
+        paragraph([itemList({ id: 1, items: [item(literal({ text: "b1-p1" }))] })]),
+        paragraph([
           literal({ text: "b2-l1" }),
           itemList({ id: 2, items: [item(literal({ text: "b2-ul1-p1" }))] }),
           literal({ id: 22, text: "b2-l2" }),
           itemList({ id: 3, items: [item(literal({ text: "b2-ul2-p1" }))] }),
           literal({ text: "b2-l3" }),
-        ),
-        paragraph(itemList({ id: 4, items: [item(literal({ text: "b3-p1" }))] })),
+        ]),
+        paragraph([itemList({ id: 4, items: [item(literal({ text: "b3-p1" }))] })]),
       );
 
       const result = Actions.toggleBulletList(state, { blockIndex: 1, contentIndex: 2 });
@@ -132,11 +132,11 @@ describe("LetterEditorActions.toggleBulletList", () => {
     });
     test("previous deletedItems is kept for merged itemLists", () => {
       const state = letter(
-        paragraph(
+        paragraph([
           itemList({ items: [item(literal({ text: "l1" }))], deletedItems: [-1] }),
           literal({ text: "l2" }),
           itemList({ items: [item(literal({ text: "l3" }))], deletedItems: [-2] }),
-        ),
+        ]),
       );
       const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 1 });
 
@@ -152,7 +152,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
     test("toggling off item in middle of list keeps deletedItems for the part that keeps ID", () => {
       const state = letter(
-        paragraph(
+        paragraph([
           itemList({
             id: -1,
             items: [
@@ -162,7 +162,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
             ],
             deletedItems: [-2],
           }),
-        ),
+        ]),
       );
       const originalItemList = select<ItemList>(state, {
         blockIndex: 0,
@@ -188,7 +188,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
   describe("updates deleted", () => {
     test("when toggling off first item it is deleted", () => {
       const state = letter(
-        paragraph(itemList({ items: [item(literal({ text: "p1" })), item(literal({ text: "p2" }))] })),
+        paragraph([itemList({ items: [item(literal({ text: "p1" })), item(literal({ text: "p2" }))] })]),
       );
       const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0, itemIndex: 0 });
 
@@ -198,7 +198,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
     });
 
     test("when toggling off only item, then itemList is deleted", () => {
-      const state = letter(paragraph(itemList({ items: [item(literal({ text: "p1" }))] })));
+      const state = letter(paragraph([itemList({ items: [item(literal({ text: "p1" }))] })]));
       const toggleIndex = { blockIndex: 0, contentIndex: 0, itemIndex: 0 };
       const originalItem = select<Item>(state, toggleIndex);
       const result = Actions.toggleBulletList(state, toggleIndex);
@@ -212,7 +212,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
     test("when toggling off last item it is deleted", () => {
       const state = letter(
-        paragraph(itemList({ items: [item(literal({ text: "p1" })), item(literal({ text: "p2" }))] })),
+        paragraph([itemList({ items: [item(literal({ text: "p1" })), item(literal({ text: "p2" }))] })]),
       );
       const result = Actions.toggleBulletList(state, { blockIndex: 0, contentIndex: 0, itemIndex: 1 });
 
@@ -224,7 +224,9 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
   describe("focus is moved", () => {
     test("when toggling off only item focus is moved", () => {
-      const state = letter(paragraph(itemList({ items: [item(literal({ text: "p1" }), literal({ text: "p1-l2" }))] })));
+      const state = letter(
+        paragraph([itemList({ items: [item(literal({ text: "p1" }), literal({ text: "p1-l2" }))] })]),
+      );
       const toggleIndex = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 1 };
       const result = Actions.toggleBulletList(state, toggleIndex);
 
@@ -235,12 +237,12 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
     test("when toggling off first item focus should be moved", () => {
       const state = letter(
-        paragraph(
+        paragraph([
           literal({ text: "b0-c0" }),
           itemList({
             items: [item(literal({ text: "b0-c1-i0-ic0" })), item(literal({ text: "b0-c1-i1-ic0" }))],
           }),
-        ),
+        ]),
       );
       const result = Actions.toggleBulletList(state, {
         blockIndex: 0,
@@ -255,7 +257,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
     test("when toggling off first item with multiple literals, focus should be moved", () => {
       const state = letter(
-        paragraph(
+        paragraph([
           literal({ text: "b0-c0" }),
           itemList({
             items: [
@@ -263,7 +265,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
               item(literal({ text: "b0-c1-i1-ic0" })),
             ],
           }),
-        ),
+        ]),
       );
       const result = Actions.toggleBulletList(state, {
         blockIndex: 0,
@@ -278,7 +280,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
     test("when toggling off last item, focus should be moved", () => {
       const state = letter(
-        paragraph(
+        paragraph([
           literal({ text: "b0-c0" }),
           itemList({
             items: [
@@ -286,7 +288,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
               item(literal({ text: "b0-c1-i1-ic0" })),
             ],
           }),
-        ),
+        ]),
       );
       const result = Actions.toggleBulletList(state, {
         blockIndex: 0,
@@ -302,7 +304,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
     test("when toggling off last item with multiple literals, focus should be moved", () => {
       const state = letter(
-        paragraph(
+        paragraph([
           literal({ text: "b0-c0" }),
           itemList({
             items: [
@@ -310,7 +312,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
               item(literal({ text: "b0-c1-i1-ic0" }), literal({ text: "b0-c1-i1-ic1" })),
             ],
           }),
-        ),
+        ]),
       );
       const result = Actions.toggleBulletList(state, {
         blockIndex: 0,
@@ -326,7 +328,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
     test("when toggling off item in the middle, focus should be moved", () => {
       const state = letter(
-        paragraph(
+        paragraph([
           variable("v1"),
           itemList({
             items: [
@@ -336,7 +338,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
             ],
           }),
           variable("v2"),
-        ),
+        ]),
       );
       const result = Actions.toggleBulletList(state, {
         blockIndex: 0,
@@ -354,7 +356,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
   describe("toggle off", () => {
     test("first of two items, then content is inserted after list", () => {
       const state = letter(
-        paragraph(
+        paragraph([
           variable("v1"),
           itemList({
             items: [
@@ -363,7 +365,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
             ],
           }),
           variable("v2"),
-        ),
+        ]),
       );
       const result = Actions.toggleBulletList(state, {
         blockIndex: 0,
@@ -379,7 +381,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
     });
     test("last of two items, then content is inserted after list", () => {
       const state = letter(
-        paragraph(
+        paragraph([
           variable("v1"),
           itemList({
             items: [
@@ -388,7 +390,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
             ],
           }),
           variable("v2"),
-        ),
+        ]),
       );
       const result = Actions.toggleBulletList(state, {
         blockIndex: 0,
@@ -404,13 +406,13 @@ describe("LetterEditorActions.toggleBulletList", () => {
     });
     test("only item, then content replaces list", () => {
       const state = letter(
-        paragraph(
+        paragraph([
           variable("v1"),
           itemList({
             items: [item(literal({ text: "p2-l1" }), literal({ text: "p2-l2" }))],
           }),
           variable("v2"),
-        ),
+        ]),
       );
       const result = Actions.toggleBulletList(state, {
         blockIndex: 0,
@@ -427,7 +429,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
 
     test("middle, then list is split and itemContent is moved", () => {
       const state = letter(
-        paragraph(
+        paragraph([
           variable("v1"),
           itemList({
             items: [
@@ -437,7 +439,7 @@ describe("LetterEditorActions.toggleBulletList", () => {
             ],
           }),
           variable("v2"),
-        ),
+        ]),
       );
       const result = Actions.toggleBulletList(state, {
         blockIndex: 0,

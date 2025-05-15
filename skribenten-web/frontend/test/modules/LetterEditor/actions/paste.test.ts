@@ -1,23 +1,23 @@
 import { expect } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import { newItem, newParagraph, newVariable, text } from "~/Brevredigering/LetterEditor/actions/common";
+import { newItem, newVariable, text } from "~/Brevredigering/LetterEditor/actions/common";
 import type { Item, ParagraphBlock, VariableValue } from "~/types/brevbakerTypes";
 import { ElementTags, type ItemList, type LiteralValue } from "~/types/brevbakerTypes";
 
-import { item, itemList, letter, literal, paragraph, select, variable, withParent } from "../utils";
+import { item, itemList, letter, literal, paragraph, select, variable } from "../utils";
 
 describe("LetterEditorActions.paste", () => {
   describe("format: text/plain", () => {
     test("start of a literal 11112", () => {
-      const state = letter(paragraph(literal({ text: "Her har vi noe" })));
+      const state = letter(paragraph([literal({ text: "Her har vi noe" })]));
       const clipboard = new MockDataTransfer({ "text/plain": "ikke " });
       const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 0, clipboard);
 
       expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("ikke Her har vi noe");
     });
     test("inside of a literal", () => {
-      const state = letter(paragraph(literal({ text: "Her har vi noe" })));
+      const state = letter(paragraph([literal({ text: "Her har vi noe" })]));
       const clipboard = new MockDataTransfer({ "text/plain": " ikke" });
       const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 10, clipboard);
 
@@ -25,7 +25,7 @@ describe("LetterEditorActions.paste", () => {
     });
 
     test("end of a literal", () => {
-      const state = letter(paragraph(literal({ text: "Her har vi noe" })));
+      const state = letter(paragraph([literal({ text: "Her har vi noe" })]));
       const clipboard = new MockDataTransfer({ "text/plain": " ikke" });
       const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 14, clipboard);
 
@@ -34,14 +34,14 @@ describe("LetterEditorActions.paste", () => {
 
     test("in an item", () => {
       const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
-      const state = letter(paragraph(itemList({ items: [item(literal({ text: "Her har vi noe" }))] })));
+      const state = letter(paragraph([itemList({ items: [item(literal({ text: "Her har vi noe" }))] })]));
       const clipboard = new MockDataTransfer({ "text/plain": " ikke" });
       const result = Actions.paste(state, index, 10, clipboard);
 
       expect(text(select<LiteralValue>(result, index))).toEqual("Her har vi ikke noe");
     });
     test("should update cursorPosition", () => {
-      const state = letter(paragraph(literal({ text: "Hei" })));
+      const state = letter(paragraph([literal({ text: "Hei" })]));
       const clipboard = new MockDataTransfer({ "text/plain": " Hade" });
       const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 10, clipboard);
 
@@ -56,7 +56,7 @@ describe("LetterEditorActions.paste", () => {
         describe("inserts a single word", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<span>1</span>" });
             const result = Actions.paste(state, index, 0, clipboard);
 
@@ -71,7 +71,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "første avsnitt" }),
@@ -97,7 +97,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and itemlists", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "første avsnitt" }),
@@ -105,7 +105,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ text: "andre teksten min" }),
                 ],
               }),
-              paragraph(literal({ text: "Bare en ny setning" })),
+              paragraph([literal({ text: "Bare en ny setning" })]),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<span>1</span>" });
             const result = Actions.paste(state, idx, 0, clipboard);
@@ -131,7 +131,7 @@ describe("LetterEditorActions.paste", () => {
 
         test("inserts multiple words", () => {
           const index = { blockIndex: 0, contentIndex: 0 };
-          const state = letter(newParagraph({ id: 1, content: [literal({ text: "Teksten min" })] }));
+          const state = letter(paragraph({ id: 1, content: [literal({ text: "Teksten min" })] }));
           const clipboard = new MockDataTransfer({ "text/html": "<span>1</span><span> 2</span" });
           const result = Actions.paste(state, index, 0, clipboard);
 
@@ -146,7 +146,7 @@ describe("LetterEditorActions.paste", () => {
         describe("inserts single paragraph", () => {
           test("single paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
             const result = Actions.paste(state, idx, 0, clipboard);
 
@@ -164,7 +164,7 @@ describe("LetterEditorActions.paste", () => {
 
           test("multiple paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
             const first = Actions.paste(state, idx, 0, clipboard);
             const second = Actions.paste(first, first.focus, first.focus.cursorPosition!, clipboard);
@@ -186,7 +186,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "første avsnitt" }),
@@ -215,7 +215,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and itemlists", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "første avsnitt" }),
@@ -223,7 +223,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ text: "andre teksten min" }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
             const result = Actions.paste(state, idx, 0, clipboard);
@@ -254,7 +254,7 @@ describe("LetterEditorActions.paste", () => {
         describe("inserts multiple paragraphs", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p><p>2</p>" });
             const result = Actions.paste(state, index, 0, clipboard);
 
@@ -273,7 +273,7 @@ describe("LetterEditorActions.paste", () => {
           });
           test("multiple paste", () => {
             const index = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p><p>2</p>" });
             const firstResult = Actions.paste(state, index, 0, clipboard);
 
@@ -309,7 +309,7 @@ describe("LetterEditorActions.paste", () => {
         describe("inserts ul list", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
             const result = Actions.paste(state, index, 0, clipboard);
 
@@ -334,7 +334,7 @@ describe("LetterEditorActions.paste", () => {
           });
           test("multiple paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
             const firstResult = Actions.paste(state, idx, 0, clipboard);
 
@@ -367,7 +367,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "første avsnitt" }),
@@ -376,7 +376,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ text: "fritekst", tags: [ElementTags.FRITEKST] }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
             const result = Actions.paste(state, idx, 0, clipboard);
@@ -401,7 +401,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and itemlists", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "første avsnitt" }),
@@ -409,7 +409,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ text: "andre teksten min" }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
             const result = Actions.paste(state, idx, 0, clipboard);
@@ -449,7 +449,7 @@ describe("LetterEditorActions.paste", () => {
               "text/html":
                 "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
             });
-            const state = letter(newParagraph({ id: 1, content: [literal({ text: "Hei" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ text: "Hei" })] }));
             const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 0, clipboard);
 
             expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("Punktliste");
@@ -480,7 +480,7 @@ describe("LetterEditorActions.paste", () => {
               "text/html":
                 "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
             });
-            const state = letter(newParagraph({ id: 1, content: [literal({ text: "Hei" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ text: "Hei" })] }));
             const first = Actions.paste(state, idx, 0, clipboard);
             const second = Actions.paste(first, first.focus, first.focus.cursorPosition!, clipboard);
 
@@ -522,7 +522,7 @@ describe("LetterEditorActions.paste", () => {
         describe("inserts a single word", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<span>1</span>" });
             const result = Actions.paste(state, index, 7, clipboard);
 
@@ -536,7 +536,7 @@ describe("LetterEditorActions.paste", () => {
           });
           test("multiple paste", () => {
             const index = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<span>1</span>" });
             const first = Actions.paste(state, index, 7, clipboard);
             const second = Actions.paste(first, first.focus, first.focus.cursorPosition!, clipboard);
@@ -552,7 +552,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 2 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "første avsnitt" }),
@@ -561,7 +561,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ text: "fritekst", tags: [ElementTags.FRITEKST] }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<span>1</span>" });
             const result = Actions.paste(state, idx, 5, clipboard);
@@ -585,7 +585,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and itemlists", () => {
             const idx = { blockIndex: 0, contentIndex: 1 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "første avsnitt" }),
@@ -594,7 +594,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ text: "tredje teksten min" }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<span>1</span>" });
             const result = Actions.paste(state, idx, 5, clipboard);
@@ -624,7 +624,7 @@ describe("LetterEditorActions.paste", () => {
         describe("inserts multiple words", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 11, text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 11, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<span>1</span><span>2</span>" });
             const result = Actions.paste(state, index, 7, clipboard);
 
@@ -638,7 +638,7 @@ describe("LetterEditorActions.paste", () => {
           });
           test("multiple paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 11, text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 11, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<span>1</span><span>2</span>" });
             const first = Actions.paste(state, idx, 7, clipboard);
             const second = Actions.paste(first, first.focus, first.focus.cursorPosition!, clipboard);
@@ -655,7 +655,7 @@ describe("LetterEditorActions.paste", () => {
         describe("inserts single paragraph", () => {
           test("single paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
             const result = Actions.paste(state, idx, 7, clipboard);
 
@@ -673,9 +673,7 @@ describe("LetterEditorActions.paste", () => {
           });
           test("multiple paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(
-              newParagraph({ id: 1, content: withParent([literal({ id: 101, text: "Teksten min" })], 1) }),
-            );
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 101, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
             const first = Actions.paste(state, idx, 7, clipboard);
             const second = Actions.paste(first, first.focus, first.focus.cursorPosition!, clipboard);
@@ -696,19 +694,16 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 2 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
-                content: withParent(
-                  [
-                    literal({ id: 100, text: "første avsnitt" }),
-                    newVariable({ id: 101, text: "variabel" }),
-                    literal({ id: 102, text: "andre teksten min" }),
-                    literal({ id: 103, text: "fritekst", tags: [ElementTags.FRITEKST] }),
-                  ],
-                  1,
-                ),
+                content: [
+                  literal({ id: 100, text: "første avsnitt" }),
+                  newVariable({ id: 101, text: "variabel" }),
+                  literal({ id: 102, text: "andre teksten min" }),
+                  literal({ id: 103, text: "fritekst", tags: [ElementTags.FRITEKST] }),
+                ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
             const result = Actions.paste(state, idx, 5, clipboard);
@@ -734,22 +729,19 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and itemlists", () => {
             const idx = { blockIndex: 0, contentIndex: 1 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
-                content: withParent(
-                  [
-                    literal({ id: 100, text: "første avsnitt" }),
-                    literal({ id: 101, text: "andre teksten min" }),
-                    itemList({
-                      id: 102,
-                      items: [item(literal({ text: "item 1" })), item(literal({ text: "item 2" }))],
-                    }),
-                    literal({ id: 103, text: "tredje teksten min" }),
-                  ],
-                  1,
-                ),
+                content: [
+                  literal({ id: 100, text: "første avsnitt" }),
+                  literal({ id: 101, text: "andre teksten min" }),
+                  itemList({
+                    id: 102,
+                    items: [item(literal({ text: "item 1" })), item(literal({ text: "item 2" }))],
+                  }),
+                  literal({ id: 103, text: "tredje teksten min" }),
+                ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
             const result = Actions.paste(state, idx, 5, clipboard);
@@ -783,7 +775,7 @@ describe("LetterEditorActions.paste", () => {
         describe("inserts multiple paragraphs", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 101, text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 101, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p><p>2</p>" });
             const result = Actions.paste(state, index, 7, clipboard);
 
@@ -802,9 +794,7 @@ describe("LetterEditorActions.paste", () => {
           });
           test("multiple paste", () => {
             const index = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(
-              newParagraph({ id: 1, content: withParent([literal({ id: 101, text: "Teksten min" })], 1) }),
-            );
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 101, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p><p>2</p>" });
             const first = Actions.paste(state, index, 7, clipboard);
             const second = Actions.paste(first, first.focus, first.focus.cursorPosition!, clipboard);
@@ -831,9 +821,7 @@ describe("LetterEditorActions.paste", () => {
         describe("inserts ul list", () => {
           test("single paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(
-              newParagraph({ id: 1, content: withParent([literal({ id: 101, text: "Teksten min" })], 1) }),
-            );
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 101, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
             const result = Actions.paste(state, idx, 7, clipboard);
 
@@ -858,9 +846,7 @@ describe("LetterEditorActions.paste", () => {
           });
           test("multiple paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(
-              newParagraph({ id: 1, content: withParent([literal({ id: 101, text: "Teksten min" })], 1) }),
-            );
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 101, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
             const first = Actions.paste(state, idx, 7, clipboard);
             const second = Actions.paste(first, first.focus, first.focus.cursorPosition!, clipboard);
@@ -894,19 +880,16 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 2 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
-                content: withParent(
-                  [
-                    literal({ id: 100, text: "første avsnitt" }),
-                    newVariable({ id: 101, text: "variabel" }),
-                    literal({ id: 102, text: "andre teksten min" }),
-                    literal({ id: 103, text: "fritekst", tags: [ElementTags.FRITEKST] }),
-                  ],
-                  1,
-                ),
+                content: [
+                  literal({ id: 100, text: "første avsnitt" }),
+                  newVariable({ id: 101, text: "variabel" }),
+                  literal({ id: 102, text: "andre teksten min" }),
+                  literal({ id: 103, text: "fritekst", tags: [ElementTags.FRITEKST] }),
+                ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
             const result = Actions.paste(state, idx, 5, clipboard);
@@ -946,22 +929,19 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and itemlists", () => {
             const idx = { blockIndex: 0, contentIndex: 1 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
-                content: withParent(
-                  [
-                    literal({ id: 100, text: "første avsnitt" }),
-                    literal({ id: 101, text: "andre teksten min" }),
-                    itemList({
-                      id: 102,
-                      items: [item(literal({ text: "item 1" })), item(literal({ text: "item 2" }))],
-                    }),
-                    literal({ id: 103, text: "tredje teksten min" }),
-                  ],
-                  1,
-                ),
+                content: [
+                  literal({ id: 100, text: "første avsnitt" }),
+                  literal({ id: 101, text: "andre teksten min" }),
+                  itemList({
+                    id: 102,
+                    items: [item(literal({ text: "item 1" })), item(literal({ text: "item 2" }))],
+                  }),
+                  literal({ id: 103, text: "tredje teksten min" }),
+                ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
             const res = Actions.paste(state, idx, 5, clipboard);
@@ -1006,7 +986,7 @@ describe("LetterEditorActions.paste", () => {
               "text/html":
                 "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
             });
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 101, text: "Help" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 101, text: "Help" })] }));
             const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 2, clipboard);
 
             expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("HePunktliste");
@@ -1036,7 +1016,7 @@ describe("LetterEditorActions.paste", () => {
               "text/html":
                 "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
             });
-            const state = letter(newParagraph({ id: 1, content: withParent([literal({ id: 101, text: "Help" })], 1) }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 101, text: "Help" })] }));
             const first = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 2, clipboard);
             const second = Actions.paste(first, first.focus, first.focus.cursorPosition!, clipboard);
 
@@ -1077,7 +1057,7 @@ describe("LetterEditorActions.paste", () => {
         describe("inserts a single word", () => {
           test("single paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<span>Single</span>" });
             const result = Actions.paste(state, idx, 11, clipboard);
 
@@ -1091,7 +1071,7 @@ describe("LetterEditorActions.paste", () => {
           });
           test("multiple paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<span>Single</span>" });
             const first = Actions.paste(state, idx, 11, clipboard);
             const second = Actions.paste(first, first.focus, first.focus.cursorPosition!, clipboard);
@@ -1107,7 +1087,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 3 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ id: 100, text: "første avsnitt" }),
@@ -1116,7 +1096,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ id: 103, text: "andre teksten min" }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<span>1</span>" });
             const result = Actions.paste(state, idx, 17, clipboard);
@@ -1140,7 +1120,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and itemlists", () => {
             const idx = { blockIndex: 0, contentIndex: 3 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ id: 100, text: "første avsnitt" }),
@@ -1149,7 +1129,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ id: 103, text: "tredje teksten min" }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<span>1</span>" });
             const result = Actions.paste(state, idx, 18, clipboard);
@@ -1179,7 +1159,7 @@ describe("LetterEditorActions.paste", () => {
         describe("inserts multiple words", () => {
           test("single paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<span>Single</span><span>Spanner</span>" });
             const result = Actions.paste(state, idx, 11, clipboard);
 
@@ -1193,7 +1173,7 @@ describe("LetterEditorActions.paste", () => {
           });
           test("multiple paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<span>Single</span><span>Spanner</span>" });
             const first = Actions.paste(state, idx, 11, clipboard);
             const second = Actions.paste(first, first.focus, first.focus.cursorPosition!, clipboard);
@@ -1210,7 +1190,7 @@ describe("LetterEditorActions.paste", () => {
         describe("inserts single paragraph", () => {
           test("single paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
             const result = Actions.paste(state, idx, 11, clipboard);
 
@@ -1224,7 +1204,7 @@ describe("LetterEditorActions.paste", () => {
           });
           test("multiple paste", () => {
             const index = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
             const first = Actions.paste(state, index, 11, clipboard);
             const second = Actions.paste(first, first.focus, first.focus.cursorPosition!, clipboard);
@@ -1241,7 +1221,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 3 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ id: 100, text: "første avsnitt" }),
@@ -1250,7 +1230,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ id: 103, text: "andre teksten min" }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
             const result = Actions.paste(state, idx, 17, clipboard);
@@ -1279,7 +1259,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and itemlists", () => {
             const idx = { blockIndex: 0, contentIndex: 3 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ id: 100, text: "første avsnitt" }),
@@ -1288,7 +1268,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ id: 103, text: "tredje teksten min" }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p>" });
             const result = Actions.paste(state, idx, 18, clipboard);
@@ -1322,7 +1302,7 @@ describe("LetterEditorActions.paste", () => {
         describe("inserts multiple paragraphs", () => {
           test("single paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p><p>2</p>" });
             const result = Actions.paste(state, idx, 11, clipboard);
 
@@ -1337,7 +1317,7 @@ describe("LetterEditorActions.paste", () => {
           });
           test("multiple paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<p>1</p><p>2</p>" });
             const first = Actions.paste(state, idx, 11, clipboard);
             const second = Actions.paste(first, first.focus, first.focus.cursorPosition!, clipboard);
@@ -1361,9 +1341,7 @@ describe("LetterEditorActions.paste", () => {
         describe("inserts ul list", () => {
           test("single paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(
-              newParagraph({ id: 1, content: withParent([literal({ id: 101, text: "Teksten min" })], 1) }),
-            );
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 101, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
             const result = Actions.paste(state, idx, 11, clipboard);
 
@@ -1387,9 +1365,7 @@ describe("LetterEditorActions.paste", () => {
           });
           test("multiple paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
-            const state = letter(
-              newParagraph({ id: 1, content: withParent([literal({ id: 101, text: "Teksten min" })], 1) }),
-            );
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 101, text: "Teksten min" })] }));
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
             const first = Actions.paste(state, idx, 15, clipboard);
             const second = Actions.paste(first, first.focus, first.focus.cursorPosition!, clipboard);
@@ -1418,19 +1394,16 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 3 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
-                content: withParent(
-                  [
-                    literal({ id: 100, text: "første avsnitt" }),
-                    newVariable({ id: 101, text: "variabel" }),
-                    literal({ id: 102, text: "fritekst", tags: [ElementTags.FRITEKST] }),
-                    literal({ id: 103, text: "andre teksten min" }),
-                  ],
-                  1,
-                ),
+                content: [
+                  literal({ id: 100, text: "første avsnitt" }),
+                  newVariable({ id: 101, text: "variabel" }),
+                  literal({ id: 102, text: "fritekst", tags: [ElementTags.FRITEKST] }),
+                  literal({ id: 103, text: "andre teksten min" }),
+                ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
             const result = Actions.paste(state, idx, 17, clipboard);
@@ -1471,22 +1444,19 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and itemlists", () => {
             const idx = { blockIndex: 0, contentIndex: 3 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
-                content: withParent(
-                  [
-                    literal({ id: 100, text: "første avsnitt" }),
-                    literal({ id: 101, text: "andre teksten min" }),
-                    itemList({
-                      id: 102,
-                      items: [item(literal({ text: "item 1" })), item(literal({ text: "item 2" }))],
-                    }),
-                    literal({ id: 103, text: "tredje teksten min" }),
-                  ],
-                  1,
-                ),
+                content: [
+                  literal({ id: 100, text: "første avsnitt" }),
+                  literal({ id: 101, text: "andre teksten min" }),
+                  itemList({
+                    id: 102,
+                    items: [item(literal({ text: "item 1" })), item(literal({ text: "item 2" }))],
+                  }),
+                  literal({ id: 103, text: "tredje teksten min" }),
+                ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
             const result = Actions.paste(state, idx, 18, clipboard);
@@ -1529,7 +1499,7 @@ describe("LetterEditorActions.paste", () => {
               "text/html":
                 "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
             });
-            const state = letter(newParagraph({ id: 1, content: [literal({ id: 11, text: "Hei" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ id: 11, text: "Hei" })] }));
             const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 4, clipboard);
 
             expect(text(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }))).toEqual("HeiPunktliste");
@@ -1557,7 +1527,7 @@ describe("LetterEditorActions.paste", () => {
               "text/html":
                 "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
             });
-            const state = letter(newParagraph({ id: 1, content: [literal({ text: "Hei" })] }));
+            const state = letter(paragraph({ id: 1, content: [literal({ text: "Hei" })] }));
             const first = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 3, clipboard);
             const second = Actions.paste(first, first.focus, first.focus.cursorPosition!, clipboard);
 
@@ -1601,7 +1571,7 @@ describe("LetterEditorActions.paste", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [itemList({ id: 10, items: [item(literal({ id: 101, text: "Teksten min" }))] })],
               }),
@@ -1621,7 +1591,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "punktliste" }),
@@ -1643,7 +1613,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ text: "Etter punktliste" }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<span>Pasta</span>" });
             const result = Actions.paste(state, idx, 0, clipboard);
@@ -1697,7 +1667,7 @@ describe("LetterEditorActions.paste", () => {
         test("inserts multiple words", () => {
           const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
           const state = letter(
-            newParagraph({
+            paragraph({
               id: 1,
               content: [
                 itemList({
@@ -1725,7 +1695,7 @@ describe("LetterEditorActions.paste", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({
@@ -1757,7 +1727,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "punktliste" }),
@@ -1779,7 +1749,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ text: "Etter punktliste" }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<p>Pasta</p>" });
             const result = Actions.paste(state, idx, 0, clipboard);
@@ -1834,7 +1804,7 @@ describe("LetterEditorActions.paste", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({
@@ -1864,7 +1834,7 @@ describe("LetterEditorActions.paste", () => {
           test("multiple paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({
@@ -1899,7 +1869,7 @@ describe("LetterEditorActions.paste", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({
@@ -1929,7 +1899,7 @@ describe("LetterEditorActions.paste", () => {
           test("multiple paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({
@@ -1962,7 +1932,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "punktliste" }),
@@ -1984,7 +1954,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ text: "Etter punktliste" }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
             const result = Actions.paste(state, idx, 0, clipboard);
@@ -2044,7 +2014,7 @@ describe("LetterEditorActions.paste", () => {
                 "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
             });
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({
@@ -2076,7 +2046,7 @@ describe("LetterEditorActions.paste", () => {
                 "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
             });
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({
@@ -2112,7 +2082,7 @@ describe("LetterEditorActions.paste", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -2135,7 +2105,7 @@ describe("LetterEditorActions.paste", () => {
           test("multiple paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -2159,7 +2129,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 1 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "punktliste" }),
@@ -2177,7 +2147,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ text: "Etter punktliste" }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<span>Pasta</span>" });
             const result = Actions.paste(state, idx, 4, clipboard);
@@ -2231,7 +2201,7 @@ describe("LetterEditorActions.paste", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -2254,7 +2224,7 @@ describe("LetterEditorActions.paste", () => {
           test("multiple paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -2280,7 +2250,7 @@ describe("LetterEditorActions.paste", () => {
           test("single paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -2314,7 +2284,7 @@ describe("LetterEditorActions.paste", () => {
           test("multiple paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -2352,7 +2322,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 1 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "punktliste" }),
@@ -2388,7 +2358,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ text: "Etter punktliste" }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<p>Pasta</p>" });
             const res = Actions.paste(state, idx, 4, clipboard);
@@ -2445,7 +2415,7 @@ describe("LetterEditorActions.paste", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -2470,7 +2440,7 @@ describe("LetterEditorActions.paste", () => {
           test("multiple paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -2500,7 +2470,7 @@ describe("LetterEditorActions.paste", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -2525,7 +2495,7 @@ describe("LetterEditorActions.paste", () => {
           test("multiple paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({
@@ -2558,7 +2528,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 1 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "punktliste" }),
@@ -2594,7 +2564,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ text: "Etter punktliste" }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
             const result = Actions.paste(state, idx, 4, clipboard);
@@ -2657,7 +2627,7 @@ describe("LetterEditorActions.paste", () => {
                 "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
             });
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({
@@ -2694,7 +2664,7 @@ describe("LetterEditorActions.paste", () => {
                 "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
             });
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -2729,7 +2699,7 @@ describe("LetterEditorActions.paste", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -2752,7 +2722,7 @@ describe("LetterEditorActions.paste", () => {
           test("multiple paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -2776,7 +2746,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 2 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "punktliste" }),
@@ -2798,7 +2768,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ text: "Etter punktliste" }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<span>Pasta</span>" });
             const result = Actions.paste(state, idx, 9, clipboard);
@@ -2852,7 +2822,7 @@ describe("LetterEditorActions.paste", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -2875,7 +2845,7 @@ describe("LetterEditorActions.paste", () => {
           test("multiple paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -2901,7 +2871,7 @@ describe("LetterEditorActions.paste", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({
@@ -2929,7 +2899,7 @@ describe("LetterEditorActions.paste", () => {
           test("multiple paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -2955,7 +2925,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 1, itemIndex: 1, itemContentIndex: 2 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "punktliste" }),
@@ -2977,7 +2947,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ text: "Etter punktliste" }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<p>Pasta</p>" });
             const result = Actions.paste(state, idx, 9, clipboard);
@@ -3032,7 +3002,7 @@ describe("LetterEditorActions.paste", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -3056,7 +3026,7 @@ describe("LetterEditorActions.paste", () => {
           test("multiple paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -3086,7 +3056,7 @@ describe("LetterEditorActions.paste", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -3111,7 +3081,7 @@ describe("LetterEditorActions.paste", () => {
           test("multiple paste", () => {
             const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Teksten min" })] })] }),
@@ -3139,7 +3109,7 @@ describe("LetterEditorActions.paste", () => {
           test("complex letter - literals and variables", () => {
             const idx = { blockIndex: 0, contentIndex: 1, itemIndex: 2, itemContentIndex: 2 };
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [
                   literal({ text: "punktliste" }),
@@ -3161,7 +3131,7 @@ describe("LetterEditorActions.paste", () => {
                   literal({ text: "Etter punktliste" }),
                 ],
               }),
-              newParagraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
+              paragraph({ id: 2, content: [literal({ text: "Bare en ny setning" })] }),
             );
             const clipboard = new MockDataTransfer({ "text/html": "<ul><li>1</li><li>2</li></ul>" });
             const result = Actions.paste(state, idx, 9, clipboard);
@@ -3218,7 +3188,7 @@ describe("LetterEditorActions.paste", () => {
                 "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
             });
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Hei" })] })] })],
               }),
@@ -3245,7 +3215,7 @@ describe("LetterEditorActions.paste", () => {
                 "<div><p><span><span>Punktliste</span></span><span> </span></p></div><div><ul><li><p><span><span>Første punkt</span></span><span> </span></p></li></ul></div><div><ul><li><p><span><span>Andre punkt</span></span><span> </span></p></li></ul></div>",
             });
             const state = letter(
-              newParagraph({
+              paragraph({
                 id: 1,
                 content: [itemList({ id: 10, items: [newItem({ id: 100, content: [literal({ text: "Hei" })] })] })],
               }),

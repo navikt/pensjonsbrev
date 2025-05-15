@@ -67,17 +67,32 @@ function randomId() {
   return randomInt(1_000_000);
 }
 
-// TODO: Skriv om til å støtte å angi id.
-export function paragraph(...content: Content[]): ParagraphBlock {
-  const id = randomId();
-  return {
-    id,
-    parentId: null,
-    editable: true,
-    type: PARAGRAPH,
-    deletedContent: [],
-    content: withParent(content, id),
-  };
+export type ParagraphArgs = {
+  id?: number;
+  content: Content[];
+  deletedContent?: number[];
+};
+export function paragraph(content?: Content[] | ParagraphArgs): ParagraphBlock {
+  if (Array.isArray(content) || content === undefined) {
+    const id = randomId();
+    return {
+      id,
+      parentId: null,
+      editable: true,
+      type: PARAGRAPH,
+      deletedContent: [],
+      content: withParent(content ?? [], id),
+    };
+  } else {
+    return {
+      id: content.id ?? null,
+      parentId: null,
+      editable: true,
+      type: PARAGRAPH,
+      deletedContent: [],
+      content: withParent(content.content, content.id ?? null),
+    };
+  }
 }
 
 export function withDeleted<T extends AnyBlock>(block: T, deletedContent: number[]): T {

@@ -9,6 +9,7 @@ import type { LetterEditorState, LiteralIndex } from "../model/state";
 import { getCursorOffset } from "../services/caretUtils";
 import { isItemContentIndex, newLiteral } from "./common";
 
+// TODO: Denne bør skrives om til å gjenbruke funksjonalitet (addElements, removeElements, osv).
 export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralIndex, fontType: FontType]> = produce(
   (draft, literalIndex, fontType) => {
     const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
