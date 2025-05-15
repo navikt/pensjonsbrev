@@ -7,22 +7,23 @@ export const internalRoutes = (server: Express) => {
     response.redirect("/oauth2/logout");
   });
 
-  server.get("/bff/internal/userinfo", (request, response) => {
+  server.get("/bff/internal/userinfo", (request, response): void => {
     const token = getToken(request);
 
     if (!token) {
-      return response.status(400).json({ message: "Bruker er ikke logget inn" });
+      response.status(400).json({ message: "Bruker er ikke logget inn" });
+      return;
     }
 
     try {
-      const { name, NAVident } = jwtDecode<{ name: string; NAVident: string }>(token);
+      const { name, NAVident } = jwtDecode<{ name: string; NAVident: string }>(token as string);
 
-      return response.json({
+      response.json({
         name,
         navident: NAVident,
       });
     } catch {
-      return response.status(404).json({ message: "Could not get username" });
+      response.status(404).json({ message: "Could not get username" });
     }
   });
 };
