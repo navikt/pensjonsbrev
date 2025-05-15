@@ -253,63 +253,55 @@ function parseAndCombineHTML(clipboard: DataTransfer) {
   return mergeNeighboringTags(result);
 }
 
-/**
- * Slutt resultatet vil vi skal inneholde kun tekst-strenger. Den kan inneholde traversedElement pga at vi kaller funksjonen rekursivt
- */
 interface TraversedElement {
   tag: "P" | "LI" | "SPAN";
   content: (TraversedElement | string)[];
 }
 
 /**
- * fun fact: LI elementet sin content inneholder kun rene tekst-strenger, og kan bli castet til det.
+ * Flat ut html-struktur
  */
-const traverseElement = (el: Element): TraversedElement[] | TraversedElement => {
-  switch (el.tagName) {
+const traverseElement = (element: Element): TraversedElement[] | TraversedElement => {
+  switch (element.tagName) {
     case "LI": {
-      if (el.children.length > 0) {
-        const content = [...el.children].flatMap(traverseElement).filter((el) => el.content !== null);
-
-        const mapped = content.flatMap((el) => {
-          // TODO Burde det være el.content?
-          if (typeof el === "string") {
-            return el;
-          }
-
-          return el.content;
-        });
-
-        return { tag: "LI", content: mapped };
+      if (element.children.length > 0) {
+        const content = [...element.children].flatMap(traverseElement).flatMap((e) => e.content);
+        return { tag: "LI", content: content };
       }
 
-      return { tag: "LI", content: el.textContent?.trim() ? [el.textContent.trim()] : [] };
+      const textContent = element.textContent?.trim();
+      return { tag: "LI", content: textContent ? [textContent] : [] };
     }
     case "P": {
-      if (el.children.length > 0) {
-        const content = [...el.children].flatMap(traverseElement).flatMap((el) => el.content);
+      if (element.children.length > 0) {
+        const content = [...element.children].flatMap(traverseElement).flatMap((el) => el.content);
 
         //dersom content er tom, betyr det at den bar inneholdt en tom span, som skal være linjeskift
         return { tag: "P", content: content.length > 0 ? content : [" "] };
       }
 
-      //p elementet skal forsåvidt inneholde andre elementer, men dersom den ikke gjør det og kun inneholder tekst, skal den returneres som en string
-      return { tag: "P", content: el.textContent?.trim() ? [el.textContent.trim()] : [] };
+      //p elementet burde inneholde andre elementer, men dersom den ikke gjør det og kun inneholder tekst, skal den returneres som en string
+      const textContent = element.textContent?.trim();
+      return { tag: "P", content: textContent ? [textContent] : [] };
     }
 
     case "SPAN": {
-      if (el.children.length > 0) {
-        const content = [...el.children].flatMap(traverseElement).flatMap((el) => el.content);
+      if (element.children.length > 0) {
+        const content = [...element.children].flatMap(traverseElement).flatMap((el) => el.content);
         return { tag: "SPAN", content: content };
       }
-      const isEmptyOrNonExisting = el.textContent?.trim() === "" || !el.textContent;
-      return { tag: "SPAN", content: isEmptyOrNonExisting ? [] : [el.textContent!.trim()] };
+      const textContent = element.textContent?.trim();
+      return { tag: "SPAN", content: textContent ? [textContent] : [] };
     }
 
     case "DIV": {
-      return [...el.children].flatMap(traverseElement);
+      return [...element.children].flatMap(traverseElement);
+    }
+    case "TABLE": {
+      return [];
     }
     default: {
-      return [...el.children].flatMap(traverseElement);
+      return [...element.children].flatMap(traverseElement);
     }
   }
 };
