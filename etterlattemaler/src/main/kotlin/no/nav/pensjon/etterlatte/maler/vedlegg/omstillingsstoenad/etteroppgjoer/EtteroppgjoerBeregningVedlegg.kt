@@ -74,9 +74,8 @@ val beregningsVedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, BeregningsVe
         hvaDuFikkUtbetalt(argument.etteroppgjoersAar, argument.utbetalingData)
         omBeregningAvOmstillingsstoenad(argument.etteroppgjoersAar)
         dinPensjonsgivendeInntekt(argument.etteroppgjoersAar, argument.utbetalingData, argument.grunnlag)
-        beloepTrukketFraDinPensjonsgivendeInntekt() // TODO
+        beloepTrukketFraDinPensjonsgivendeInntekt()
 
-        // TODO: redigerbart innhold
         konverterElementerTilBrevbakerformat(argument.innhold)
 
         inntektBruktIBeregningenAvOms(argument.etteroppgjoersAar, argument.utbetalingData)
