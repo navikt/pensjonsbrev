@@ -30,7 +30,8 @@ fun createEtteroppgjoerForhaandsvarselBrevDTO() =
                 Kroner(40),
                 Kroner(400),
                 Kroner(4000)
-            )
+            ),
+            vedleggInnhold = emptyList()
         ),
     )
 

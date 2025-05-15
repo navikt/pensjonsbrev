@@ -14,36 +14,40 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.formatYearMonth
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.etterlatte.maler.BrevDTO
+import no.nav.pensjon.etterlatte.maler.BrevDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.common.KronerText
+import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerUtbetalingDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerUtbetalingDTOSelectors.avviksBeloep
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerUtbetalingDTOSelectors.faktiskInntekt
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerUtbetalingDTOSelectors.inntekt
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.etteroppgjoersAar
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.grunnlag
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.utbetalingData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.afp
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.fom
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.loennsinntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.naeringsinntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.tom
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.utlandsinntekt
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.OpplysningerOmEtteroppgjoeretDataSelectors.etteroppgjoersAar
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.OpplysningerOmEtteroppgjoeretDataSelectors.grunnlag
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.OpplysningerOmEtteroppgjoeretDataSelectors.utbetalingData
 import java.time.YearMonth
 
-data class OpplysningerOmEtteroppgjoeretData(
+data class BeregningsVedleggData(
+    override val innhold: List<no.nav.pensjon.etterlatte.maler.Element>,
     val etteroppgjoersAar: Int,
     val utbetalingData : EtteroppgjoerUtbetalingDTO,
-    val grunnlag: EtteroppgjoerGrunnlagDTO
-)
+    val grunnlag: EtteroppgjoerGrunnlagDTO,
+) : BrevDTO
 
 data class EtteroppgjoerGrunnlagDTO(
     val fom: YearMonth,
@@ -55,7 +59,8 @@ data class EtteroppgjoerGrunnlagDTO(
     val utlandsinntekt: Kroner
 )
 
-fun opplysningerOmEtteroppgjoeret(): AttachmentTemplate<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData> =
+@TemplateModelHelpers
+val beregningsVedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, BeregningsVedleggData> =
     createAttachment(
         title =
         newText(
@@ -69,12 +74,16 @@ fun opplysningerOmEtteroppgjoeret(): AttachmentTemplate<LangBokmalNynorskEnglish
         hvaDuFikkUtbetalt(argument.etteroppgjoersAar, argument.utbetalingData)
         omBeregningAvOmstillingsstoenad(argument.etteroppgjoersAar)
         dinPensjonsgivendeInntekt(argument.etteroppgjoersAar, argument.utbetalingData, argument.grunnlag)
-//        beloepTrukketFraDinPensjonsgivendeInntekt()
+        beloepTrukketFraDinPensjonsgivendeInntekt() // TODO
+
+        // TODO: redigerbart innhold
+        konverterElementerTilBrevbakerformat(argument.innhold)
+
         inntektBruktIBeregningenAvOms(argument.etteroppgjoersAar, argument.utbetalingData)
     }
 
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData>.opplysningerOmEtteroppgjoer(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.opplysningerOmEtteroppgjoer(
     etteroppgjoersAar: Expression<Int>
 ) {
     paragraph {
@@ -93,7 +102,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData>.hvaDuFikkUtbetalt(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hvaDuFikkUtbetalt(
     etteroppgjoersAar: Expression<Int>,
     utbetalingData: Expression<EtteroppgjoerUtbetalingDTO>
 ) {
@@ -163,7 +172,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData>.omBeregningAvOmstillingsstoenad(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.omBeregningAvOmstillingsstoenad(
     etteroppgjoersAar: Expression<Int>
 ) {
     title2 {
@@ -298,7 +307,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
 
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData>.dinPensjonsgivendeInntekt(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.dinPensjonsgivendeInntekt(
     etteroppgjoersAar: Expression<Int>,
     utbetalingData: Expression<EtteroppgjoerUtbetalingDTO>,
     grunnlag: Expression<EtteroppgjoerGrunnlagDTO>
@@ -396,7 +405,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData>.beloepTrukketFraDinPensjonsgivendeInntekt() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.beloepTrukketFraDinPensjonsgivendeInntekt() {
     title2 {
         text(
             Bokmal to "Beløp trukket fra din pensjonsgivende inntekt",
@@ -416,7 +425,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData>.inntektBruktIBeregningenAvOms(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.inntektBruktIBeregningenAvOms(
     etteroppgjoersAar: Expression<Int>,
     utbetalingData: Expression<EtteroppgjoerUtbetalingDTO>
 ) {
