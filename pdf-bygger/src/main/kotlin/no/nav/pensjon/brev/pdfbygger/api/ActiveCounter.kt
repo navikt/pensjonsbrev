@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.pdfbygger
+package no.nav.pensjon.brev.pdfbygger.api
 
 import io.micrometer.core.instrument.Tag
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry

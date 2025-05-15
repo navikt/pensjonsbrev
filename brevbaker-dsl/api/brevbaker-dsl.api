@@ -10,6 +10,16 @@ public final class no/nav/pensjon/brev/PDFRequest {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class no/nav/pensjon/brev/PDFRequestAsync {
+	public fun <init> (Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMessageId ()Ljava/lang/String;
+	public final fun getReplyTopic ()Ljava/lang/String;
+	public final fun getRequest ()Lno/nav/pensjon/brev/PDFRequest;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract interface class no/nav/pensjon/brev/api/FeatureToggleService {
 	public abstract fun isEnabled (Lno/nav/pensjon/brev/api/model/FeatureToggle;)Z
 }

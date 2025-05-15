@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.pdfbygger
+package no.nav.pensjon.brev.pdfbygger.latex
 
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.toLanguage
@@ -8,11 +8,13 @@ import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brev.template.render.pensjonLatexSettings
-import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.Bruker
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.*
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.Text.Size
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.ColumnAlignment
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.NavEnhet
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -55,7 +57,7 @@ internal object LatexDocumentRenderer {
     ) {
         pensjonLatexSettings.writeLanguageSettings(language) { settingName, settingValue ->
             appendNewCmd("felt$settingName") {
-                renderTextLiteral(settingValue, FontType.PLAIN)
+                renderTextLiteral(settingValue, Text.FontType.PLAIN)
             }
         }
 
@@ -297,8 +299,8 @@ internal object LatexDocumentRenderer {
         columnSpec.joinToString("") {
             ("X" +
                     when (it.alignment) {
-                        ColumnAlignment.LEFT -> "[l]"
-                        ColumnAlignment.RIGHT -> "[r]"
+                        Table.ColumnAlignment.LEFT -> "[l]"
+                        Table.ColumnAlignment.RIGHT -> "[r]"
                     }).repeat(it.span)
         }
 
@@ -309,11 +311,11 @@ internal object LatexDocumentRenderer {
             is Text.NewLine -> appendCmd("newline")
         }
 
-    private fun LatexAppendable.renderTextLiteral(text: String, fontType: FontType): Unit =
+    private fun LatexAppendable.renderTextLiteral(text: String, fontType: Text.FontType): Unit =
         when (fontType) {
-            FontType.PLAIN -> append(text)
-            FontType.BOLD -> appendCmd("textbf") { arg { append(text) } }
-            FontType.ITALIC -> appendCmd("textit") { arg { append(text) } }
+            Text.FontType.PLAIN -> append(text)
+            Text.FontType.BOLD -> appendCmd("textbf") { arg { append(text) } }
+            Text.FontType.ITALIC -> appendCmd("textit") { arg { append(text) } }
         }
 
     private fun LatexAppendable.renderForm(element: Form): Unit =
@@ -344,9 +346,9 @@ internal object LatexDocumentRenderer {
                 appendCmd("formText") {
                     arg {
                         val size = when (element.size) {
-                            Size.NONE -> 0
-                            Size.SHORT -> 25
-                            Size.LONG -> 60
+                            Form.Text.Size.NONE -> 0
+                            Form.Text.Size.SHORT -> 25
+                            Form.Text.Size.LONG -> 60
                         }
                         renderText(element.prompt)
                         append(" ${".".repeat(size)}")
