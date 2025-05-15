@@ -87,14 +87,13 @@ data class EndringAvAlderspensjonSivilstandDto(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val brukersSivilstand: MetaforceSivilstand,
         val epsVedVirk: EpsVedVirk,
-        val garantitillegg: Kroner?,
+        val garantitillegg: Kroner?,  //beregnetPensjonPerManedVedVirk <- v1.ALderspensjon
         val grunnpensjon: Kroner?,  //beregnetPensjonPerManedVedVirk
-        val kravAarsak: KravArsakType,
-        val kravVirkDatoFom: LocalDate,
+        val kravAarsak: KravArsakType,  //v3.Krav
+        val kravVirkDatoFom: LocalDate,  //v3.Krav
         val regelverkType: AlderspensjonRegelverkType,
         val saerskiltSatsErBrukt: Boolean,  //saerskiltSatsVedVirk
         val totalPensjon: Kroner,  //beregnetPensjonPerManedVedVirk
-        val ufoereKombinertMedAlder: Boolean,
         val vedtakEtterbetaling: Boolean,  //v1.Vedtak
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
@@ -113,7 +112,8 @@ data class EndringAvAlderspensjonSivilstandDto(
         val minstenivaaIndividuellInnvilget: Boolean,
         val minstenivaaPensjonsistParInnvilget: Boolean,
         val pensjonstilleggInnvilget: Boolean,
-        val uttaksgrad: Int,
         val saertilleggInnvilget: Boolean,
+        val ufoereKombinertMedAlder: Boolean,
+        val uttaksgrad: Int,
     )
 }

@@ -47,6 +47,7 @@ fun createEndringAvAlderspensjonSivilstandDto() =
                 minstenivaaPensjonsistParInnvilget = false,
                 pensjonstilleggInnvilget = false,
                 uttaksgrad = 100,
+                ufoereKombinertMedAlder = false,
                 saertilleggInnvilget = false
             ),
             brukersSivilstand = MetaforceSivilstand.GIFT,
@@ -63,7 +64,6 @@ fun createEndringAvAlderspensjonSivilstandDto() =
             regelverkType = AlderspensjonRegelverkType.AP2025,
             saerskiltSatsErBrukt = false,
             totalPensjon = Kroner(320000),
-            ufoereKombinertMedAlder = false,
             vedtakEtterbetaling = false,
             dineRettigheterOgMulighetTilAaKlageDto = DineRettigheterOgMulighetTilAaKlageDto(
                 sakstype = Sakstype.ALDER,
