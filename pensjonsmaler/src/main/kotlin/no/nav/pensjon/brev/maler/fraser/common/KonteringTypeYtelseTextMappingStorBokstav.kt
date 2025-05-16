@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
 import no.nav.pensjon.brev.api.model.KonteringType
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoAFPprivatAP
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
@@ -38,6 +37,12 @@ data class KonteringTypeYtelseTextMappingStorBokstav(
                 Bokmal to "AFP-tillegg",
                 Nynorsk to "AFP-tillegg",
                 English to "AFP supplement"
+            )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.BARNEPENSJON)) {
+            text(
+                Bokmal to "barnepensjon",
+                Nynorsk to "barnepensjon",
+                English to "children's pension",
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.BARNETILSYN)) {
             text(
@@ -117,6 +122,12 @@ data class KonteringTypeYtelseTextMappingStorBokstav(
                 Bokmal to "Pensjonstillegg",
                 Nynorsk to "Pensjonstillegg",
                 English to "Pension supplement"
+            )
+        }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.P_8_5_1_T)) {
+            text(
+                Bokmal to "Tillegg",
+                Nynorsk to "Tillegg",
+                English to "Supplement"
             )
         }.orShowIf(ytelsenMedFeilutbetaling.isOneOf(KonteringType.SKATT_F_GP)) {
             text(

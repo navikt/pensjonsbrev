@@ -36,6 +36,10 @@ enum class Institusjon {
     INGEN,
 }
 
+enum class GarantipensjonSatsType {
+    HOY, ORDINAER
+}
+
 enum class Beregningsmetode {
     AUSTRALIA,
     CANADA,
@@ -99,6 +103,8 @@ enum class KonteringType {
     AFP_T,
     ANNET,
     AP_GJT,
+    AP_GJT_KAP19,
+    BARNEPENSJON,
     BARNETILSYN,
     BT,
     ET,
@@ -108,7 +114,6 @@ enum class KonteringType {
     GAP,
     GARANTITILLEGG,
     GAT,
-    AP_GJT_KAP19,
     GP,
     HJELP_BIDRAG,
     HJELP_I_HUS,
@@ -120,6 +125,7 @@ enum class KonteringType {
     MIN_NIVA_TILL_PPAR,
     MISK,
     PT,
+    P_8_5_1_T,
     SISK,
     SKATT,
     SKATT_F_GP,
@@ -147,4 +153,13 @@ enum class KonteringType {
     UT_TFB,
     UT_TSB,
     VT
+}
+
+enum class KravInitiertAv {
+    BRUKER,
+    NAV,
+    VERGE,
+    SOSIALKONTOR,
+    KONV,
+    ADVOKAT
 }

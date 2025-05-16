@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.template.render.dsl
 
 import com.natpryce.hamkrest.assertion.assertThat
+import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.render.Fixtures.felles
 import no.nav.pensjon.brev.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.name
 import no.nav.pensjon.brev.template.render.hasBlocks

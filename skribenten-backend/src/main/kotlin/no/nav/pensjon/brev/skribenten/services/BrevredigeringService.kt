@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Features
-import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.Brevredigering
@@ -37,7 +36,7 @@ import no.nav.pensjon.brev.skribenten.services.ServiceResult.Ok
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlereImpl
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
@@ -142,27 +141,28 @@ class BrevredigeringService(
         frigiReservasjon: Boolean = false,
     ): ServiceResult<Dto.Brevredigering>? =
         hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-            if (brevDto.info.laastForRedigering) {
-                throw BrevLaastForRedigeringException("Kan ikke oppdatere brev markert som 'klar til sending'.")
-            }
-            rendreBrev(
-                brev = brevDto,
-                saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg,
-                signaturSignerende = signatur ?: brevDto.info.signaturSignerende,
-            ).map { rendretBrev ->
-                val principal = PrincipalInContext.require()
-                transaction {
-                    brevDb.apply {
-                        redigertBrev = (nyttRedigertbrev ?: brevDto.redigertBrev).updateEditedLetter(rendretBrev)
-                        sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-                        saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
-                        sistRedigertAvNavIdent = principal.navIdent
-                        signatur?.also { signaturSignerende = it }
-                        if (frigiReservasjon) {
-                            redigeresAvNavIdent = null
-                        }
-                    }.toDto()
+            if (!brevDto.info.laastForRedigering || PrincipalInContext.require().isAttestant()) {
+                rendreBrev(
+                    brev = brevDto,
+                    saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg,
+                    signaturSignerende = signatur ?: brevDto.info.signaturSignerende,
+                ).map { rendretBrev ->
+                    val principal = PrincipalInContext.require()
+                    transaction {
+                        brevDb.apply {
+                            redigertBrev = (nyttRedigertbrev ?: brevDto.redigertBrev).updateEditedLetter(rendretBrev)
+                            sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
+                            saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
+                            sistRedigertAvNavIdent = principal.navIdent
+                            signatur?.also { signaturSignerende = it }
+                            if (frigiReservasjon) {
+                                redigeresAvNavIdent = null
+                            }
+                        }.toDto()
+                    }
                 }
+            } else {
+                throw BrevLaastForRedigeringException("Kan ikke oppdatere brev markert som 'klar til sending'/'klar til attestering'.")
             }
         }
 
@@ -485,7 +485,7 @@ class BrevredigeringService(
                         pesysData = pesysData.brevdata,
                         saksbehandlerValg = saksbehandlerValg,
                     ),
-                    felles = pesysData.felles.kopier(signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(signaturSignerende, signaturAttestant))
+                    felles = pesysData.felles.medSignerendeSaksbehandlere(signerendeSaksbehandlere = SignerendeSaksbehandlere(signaturSignerende, signaturAttestant))
                 )
             }
     }
@@ -518,7 +518,7 @@ class BrevredigeringService(
                     pesysData = pesysData.brevdata,
                     saksbehandlerValg = brevredigering.saksbehandlerValg,
                 ),
-                felles = pesysData.felles.kopier(signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(brevredigering.info.signaturSignerende)),
+                felles = pesysData.felles.medSignerendeSaksbehandlere(signerendeSaksbehandlere = SignerendeSaksbehandlere(brevredigering.info.signaturSignerende)),
                 redigertBrev = brevredigering.redigertBrev.toMarkup()
             ).map {
                 transaction {
@@ -558,7 +558,7 @@ private fun Dto.Brevredigering.validerErFerdigRedigert(): Boolean =
     redigertBrev.klarTilSending() || throw BrevIkkeKlartTilSendingException("Brevet inneholder fritekst-felter som ikke er endret")
 
 private fun Dto.Brevredigering.validerKanAttestere(userPrincipal: UserPrincipal) {
-    if (!userPrincipal.isInGroup(ADGroups.attestant)) {
+    if (!userPrincipal.isAttestant()) {
         throw BrevredigeringException.HarIkkeAttestantrolleException(
             "Bruker ${userPrincipal.navIdent} har ikke attestantrolle, brev ${info.id}",
         )

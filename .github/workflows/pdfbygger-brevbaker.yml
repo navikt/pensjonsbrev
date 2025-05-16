@@ -186,7 +186,7 @@ jobs:
       - uses: actions/setup-node@v4
         if: ${{ (needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main') && github.event_name != 'workflow_dispatch' }}
         with:
-          node-version: '20'
+          node-version: '22'
       - run: npm install --save-dev @percy/cli
         if: ${{ (needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main') && github.event_name != 'workflow_dispatch' }}
       - name: Publish visual-tests to percy
@@ -247,6 +247,24 @@ jobs:
           "VAR": image=${{ needs.build-pdfbygger.outputs.image }}
           "VARS": "pdf-bygger/.nais/dev.yaml"
 
+  "deployPdfByggerAsyncToDev":
+    name: "Deploy pdf-bygger-async to dev"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    needs: ["runIntegrationTests", "build-pdfbygger"]
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: "actions/checkout@v4"
+      - name: "Deploy to DEV"
+        uses: "nais/deploy/actions/deploy@v2"
+        env:
+          "ENVIRONMENT": "dev-gcp:pdf-bygger-async"
+          "CLUSTER": "dev-gcp"
+          "RESOURCE": "pdf-bygger/.nais/async/nais.yaml,pdf-bygger/.nais/async/render-topic-dev.yaml,pdf-bygger/.nais/async/hpa.yaml"
+          "VAR": image=${{ needs.build-pdfbygger.outputs.image }}
+          "VARS": "pdf-bygger/.nais/async/dev.yaml"
   "deployBrevbakerToProduction":
     name: "Deploy brevbaker to production"
     permissions:

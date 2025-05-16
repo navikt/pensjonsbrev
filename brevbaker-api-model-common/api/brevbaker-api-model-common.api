@@ -1,0 +1,1096 @@
+public abstract interface annotation class no/nav/brev/InternKonstruktoer : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class no/nav/brev/InterneDataklasser : java/lang/annotation/Annotation {
+}
+
+public final class no/nav/brev/brevbaker/AsyncPDFCompilationOutput {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBase64PDF ()Ljava/lang/String;
+	public final fun getError ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/PDFCompilationOutput {
+	public fun <init> ([B)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBytes ()[B
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/BestillBrevRequest : no/nav/pensjon/brev/api/model/BrevRequest {
+	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;)V
+	public final fun component1 ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
+	public final fun component2 ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
+	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public final fun component4 ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
+	public final fun copy (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;)Lno/nav/pensjon/brev/api/model/BestillBrevRequest;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brev/api/model/BestillBrevRequest;Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;ILjava/lang/Object;)Lno/nav/pensjon/brev/api/model/BestillBrevRequest;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public final fun getKode ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
+	public final fun getLanguage ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
+	public final fun getLetterData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/BestillBrevRequestAsync : no/nav/pensjon/brev/api/model/BrevRequest {
+	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
+	public final fun component2 ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
+	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public final fun component4 ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/String;
+	public final fun copy (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Ljava/lang/String;Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/BestillBrevRequestAsync;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brev/api/model/BestillBrevRequestAsync;Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/pensjon/brev/api/model/BestillBrevRequestAsync;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public final fun getKode ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
+	public final fun getLanguage ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
+	public final fun getLetterData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
+	public final fun getMessageId ()Ljava/lang/String;
+	public final fun getReplyTopic ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/BestillRedigertBrevRequest : no/nav/pensjon/brev/api/model/BrevRequest {
+	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)V
+	public final fun component1 ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
+	public final fun component2 ()Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;
+	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public final fun component4 ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
+	public final fun component5 ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
+	public final fun copy (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)Lno/nav/pensjon/brev/api/model/BestillRedigertBrevRequest;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brev/api/model/BestillRedigertBrevRequest;Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;ILjava/lang/Object;)Lno/nav/pensjon/brev/api/model/BestillRedigertBrevRequest;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public final fun getKode ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
+	public final fun getLanguage ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
+	public final fun getLetterData ()Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;
+	public final fun getLetterMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brev/api/model/BrevRequest {
+}
+
+public final class no/nav/pensjon/brev/api/model/LetterResponse {
+	public fun <init> ([BLjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;)V
+	public final fun component1 ()[B
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
+	public final fun copy ([BLjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;)Lno/nav/pensjon/brev/api/model/LetterResponse;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brev/api/model/LetterResponse;[BLjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;ILjava/lang/Object;)Lno/nav/pensjon/brev/api/model/LetterResponse;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContentType ()Ljava/lang/String;
+	public final fun getFile ()[B
+	public final fun getLetterMetadata ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/Sakstype : java/lang/Enum {
+	public static final field AFP Lno/nav/pensjon/brev/api/model/Sakstype;
+	public static final field AFP_PRIVAT Lno/nav/pensjon/brev/api/model/Sakstype;
+	public static final field ALDER Lno/nav/pensjon/brev/api/model/Sakstype;
+	public static final field BARNEP Lno/nav/pensjon/brev/api/model/Sakstype;
+	public static final field Companion Lno/nav/pensjon/brev/api/model/Sakstype$Companion;
+	public static final field FAM_PL Lno/nav/pensjon/brev/api/model/Sakstype;
+	public static final field GAM_YRK Lno/nav/pensjon/brev/api/model/Sakstype;
+	public static final field GENRL Lno/nav/pensjon/brev/api/model/Sakstype;
+	public static final field GJENLEV Lno/nav/pensjon/brev/api/model/Sakstype;
+	public static final field GRBL Lno/nav/pensjon/brev/api/model/Sakstype;
+	public static final field KRIGSP Lno/nav/pensjon/brev/api/model/Sakstype;
+	public static final field OMSORG Lno/nav/pensjon/brev/api/model/Sakstype;
+	public static final field UFOREP Lno/nav/pensjon/brev/api/model/Sakstype;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/Sakstype;
+	public static fun values ()[Lno/nav/pensjon/brev/api/model/Sakstype;
+}
+
+public final class no/nav/pensjon/brev/api/model/Sakstype$Companion {
+	public final fun getAll ()Ljava/util/Set;
+	public final fun getPensjon ()Ljava/util/Set;
+}
+
+public abstract interface class no/nav/pensjon/brev/api/model/TemplateDescription {
+	public abstract fun getLanguages ()Ljava/util/List;
+	public abstract fun getLetterDataClass ()Ljava/lang/String;
+	public abstract fun getMetadata ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
+	public abstract fun getName ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/TemplateDescription$Autobrev : no/nav/pensjon/brev/api/model/TemplateDescription {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getLanguages ()Ljava/util/List;
+	public fun getLetterDataClass ()Ljava/lang/String;
+	public fun getMetadata ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
+	public fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori : java/lang/Enum {
+	public static final field BREV_MED_SKJEMA Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static final field ETTEROPPGJOER Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static final field FEILUTBETALING Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static final field FOERSTEGANGSBEHANDLING Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static final field FRITEKSTBREV Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static final field INFORMASJONSBREV Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static final field INNHENTE_OPPLYSNINGER Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static final field KLAGE_OG_ANKE Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static final field LEVEATTEST Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static final field OMSORGSOPPTJENING Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static final field POSTERINGSGRUNNLAG Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static final field SLUTTBEHANDLING Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static final field UFOEREPENSJON Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static final field VARSEL Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static final field VEDTAK_EKSPORT Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static final field VEDTAK_ENDRING_OG_REVURDERING Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static final field VEDTAK_FLYTTE_MELLOM_LAND Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public static fun values ()[Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+}
+
+public final class no/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst : java/lang/Enum {
+	public static final field ALLE Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
+	public static final field SAK Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
+	public static final field VEDTAK Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
+	public static fun values ()[Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
+}
+
+public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar : no/nav/pensjon/brev/api/model/TemplateDescription {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;Ljava/util/Set;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBrevkontekst ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
+	public final fun getKategori ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public fun getLanguages ()Ljava/util/List;
+	public fun getLetterDataClass ()Ljava/lang/String;
+	public fun getMetadata ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
+	public fun getName ()Ljava/lang/String;
+	public final fun getSakstyper ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/maler/AutomatiskBrevkode : no/nav/pensjon/brev/api/model/maler/Brevkode$Automatisk {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/maler/AutomatiskBrevkode;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun kode ()Ljava/lang/String;
+	public static fun kode-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
+}
+
+public abstract interface class no/nav/pensjon/brev/api/model/maler/Brevkode {
+	public abstract fun kode ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brev/api/model/maler/Brevkode$Automatisk : no/nav/pensjon/brev/api/model/maler/Brevkode {
+}
+
+public abstract interface class no/nav/pensjon/brev/api/model/maler/Brevkode$Redigerbart : no/nav/pensjon/brev/api/model/maler/Brevkode {
+}
+
+public final class no/nav/pensjon/brev/api/model/maler/EmptyBrevdata : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
+	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/EmptyBrevdata;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/maler/EmptyRedigerbarBrevdata : no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata {
+	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/EmptyRedigerbarBrevdata;
+	public fun equals (Ljava/lang/Object;)Z
+	public synthetic fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
+	public fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/EmptyBrevdata;
+	public synthetic fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
+	public fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/EmptyBrevdata;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
+	public abstract fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
+	public abstract fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
+}
+
+public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/nav/pensjon/brev/api/model/maler/Brevkode$Redigerbart {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun kode ()Ljava/lang/String;
+	public static fun kode-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/Broek {
+	public fun <init> (II)V
+	public final fun component1 ()I
+	public final fun component2 ()I
+	public final fun copy (II)Lno/nav/pensjon/brevbaker/api/model/Broek;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/Broek;IIILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/Broek;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getNevner ()I
+	public final fun getTeller ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/Bruker {
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/Foedselsnummer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEtternavn ()Ljava/lang/String;
+	public final fun getFoedselsnummer ()Lno/nav/pensjon/brevbaker/api/model/Foedselsnummer;
+	public final fun getFornavn ()Ljava/lang/String;
+	public final fun getMellomnavn ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/Days : no/nav/pensjon/brevbaker/api/model/IntValue {
+	public fun <init> (I)V
+	public final fun component1 ()I
+	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/Days;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/Days;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/Days;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface annotation class no/nav/pensjon/brevbaker/api/model/DisplayText : java/lang/annotation/Annotation {
+	public abstract fun text ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/ElementTags : java/lang/Enum {
+	public static final field FRITEKST Lno/nav/pensjon/brevbaker/api/model/ElementTags;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/ElementTags;
+	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/ElementTags;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/Felles {
+	public fun <init> (Ljava/time/LocalDate;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/NavEnhet;Lno/nav/pensjon/brevbaker/api/model/Bruker;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;)V
+	public synthetic fun <init> (Ljava/time/LocalDate;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/NavEnhet;Lno/nav/pensjon/brevbaker/api/model/Bruker;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAvsenderEnhet ()Lno/nav/pensjon/brevbaker/api/model/NavEnhet;
+	public final fun getBruker ()Lno/nav/pensjon/brevbaker/api/model/Bruker;
+	public final fun getDokumentDato ()Ljava/time/LocalDate;
+	public final fun getSaksnummer ()Ljava/lang/String;
+	public final fun getSignerendeSaksbehandlere ()Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;
+	public final fun getVergeNavn ()Ljava/lang/String;
+	public fun hashCode ()I
+	public final fun medSignerendeSaksbehandlere (Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;)Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/Foedselsnummer {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/IntValue {
+	public abstract fun getValue ()I
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/Kroner : no/nav/pensjon/brevbaker/api/model/IntValue {
+	public fun <init> (I)V
+	public final fun component1 ()I
+	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/Kroner;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/Kroner;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/Kroner;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LanguageCode : java/lang/Enum {
+	public static final field BOKMAL Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
+	public static final field ENGLISH Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
+	public static final field NYNORSK Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
+	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup {
+	public abstract fun getBlocks ()Ljava/util/List;
+	public abstract fun getSakspart ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart;
+	public abstract fun getSignatur ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur;
+	public abstract fun getTitle ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Attachment {
+	public abstract fun getBlocks ()Ljava/util/List;
+	public abstract fun getIncludeSakspart ()Z
+	public abstract fun getTitle ()Ljava/util/List;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block {
+	public abstract fun getEditable ()Z
+	public abstract fun getId ()I
+	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Paragraph : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block {
+	public abstract fun getContent ()Ljava/util/List;
+	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Paragraph$DefaultImpls {
+	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Paragraph;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title1 : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block {
+	public abstract fun getContent ()Ljava/util/List;
+	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title1$DefaultImpls {
+	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title1;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title2 : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block {
+	public abstract fun getContent ()Ljava/util/List;
+	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title2$DefaultImpls {
+	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title2;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type : java/lang/Enum {
+	public static final field PARAGRAPH Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public static final field TITLE1 Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public static final field TITLE2 Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {
+	public abstract fun getId ()I
+	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$MultipleChoice : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form {
+	public abstract fun getChoices ()Ljava/util/List;
+	public abstract fun getPrompt ()Ljava/util/List;
+	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public abstract fun getVspace ()Z
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$MultipleChoice$Choice {
+	public abstract fun getId ()I
+	public abstract fun getText ()Ljava/util/List;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$MultipleChoice$DefaultImpls {
+	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$MultipleChoice;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form {
+	public abstract fun getPrompt ()Ljava/util/List;
+	public abstract fun getSize ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;
+	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public abstract fun getVspace ()Z
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$DefaultImpls {
+	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size : java/lang/Enum {
+	public static final field LONG Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;
+	public static final field NONE Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;
+	public static final field SHORT Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;
+	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$ItemList : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {
+	public abstract fun getItems ()Ljava/util/List;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$ItemList$Item {
+	public abstract fun getContent ()Ljava/util/List;
+	public abstract fun getId ()I
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {
+	public abstract fun getHeader ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Header;
+	public abstract fun getRows ()Ljava/util/List;
+	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Cell {
+	public abstract fun getId ()I
+	public abstract fun getText ()Ljava/util/List;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$ColumnAlignment : java/lang/Enum {
+	public static final field LEFT Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$ColumnAlignment;
+	public static final field RIGHT Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$ColumnAlignment;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$ColumnAlignment;
+	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$ColumnAlignment;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$ColumnSpec {
+	public abstract fun getAlignment ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$ColumnAlignment;
+	public abstract fun getHeaderContent ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Cell;
+	public abstract fun getId ()I
+	public abstract fun getSpan ()I
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$DefaultImpls {
+	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Header {
+	public abstract fun getColSpec ()Ljava/util/List;
+	public abstract fun getId ()I
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Row {
+	public abstract fun getCells ()Ljava/util/List;
+	public abstract fun getId ()I
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {
+	public abstract fun getFontType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;
+	public abstract fun getText ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType : java/lang/Enum {
+	public static final field BOLD Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;
+	public static final field ITALIC Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;
+	public static final field PLAIN Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;
+	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Literal : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text {
+	public abstract fun getTags ()Ljava/util/Set;
+	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Literal$DefaultImpls {
+	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Literal;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$NewLine : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text {
+	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$NewLine$DefaultImpls {
+	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$NewLine;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Variable : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text {
+	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Variable$DefaultImpls {
+	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Variable;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type : java/lang/Enum {
+	public static final field FORM_CHOICE Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public static final field FORM_TEXT Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public static final field ITEM_LIST Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public static final field LITERAL Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public static final field NEW_LINE Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public static final field TABLE Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public static final field VARIABLE Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart {
+	public abstract fun getDokumentDato ()Ljava/lang/String;
+	public abstract fun getGjelderFoedselsnummer ()Ljava/lang/String;
+	public abstract fun getGjelderNavn ()Ljava/lang/String;
+	public abstract fun getSaksnummer ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur {
+	public abstract fun getAttesterendeSaksbehandlerNavn ()Ljava/lang/String;
+	public abstract fun getHilsenTekst ()Ljava/lang/String;
+	public abstract fun getNavAvsenderEnhet ()Ljava/lang/String;
+	public abstract fun getSaksbehandlerNavn ()Ljava/lang/String;
+	public abstract fun getSaksbehandlerRolleTekst ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup {
+	public fun <init> (Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur;
+	public final fun copy (Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getBlocks ()Ljava/util/List;
+	public fun getSakspart ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart;
+	public fun getSignatur ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur;
+	public fun getTitle ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$AttachmentImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Attachment {
+	public fun <init> (Ljava/util/List;Ljava/util/List;Z)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Z
+	public final fun copy (Ljava/util/List;Ljava/util/List;Z)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$AttachmentImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$AttachmentImpl;Ljava/util/List;Ljava/util/List;ZILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$AttachmentImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getBlocks ()Ljava/util/List;
+	public fun getIncludeSakspart ()Z
+	public fun getTitle ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$BlockImpl {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$BlockImpl;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$BlockImpl$ParagraphImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Paragraph {
+	public fun <init> (IZLjava/util/List;)V
+	public synthetic fun <init> (IZLjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()Z
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (IZLjava/util/List;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$BlockImpl$ParagraphImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$BlockImpl$ParagraphImpl;IZLjava/util/List;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$BlockImpl$ParagraphImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getContent ()Ljava/util/List;
+	public fun getEditable ()Z
+	public fun getId ()I
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$BlockImpl$Title1Impl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title1 {
+	public fun <init> (IZLjava/util/List;)V
+	public synthetic fun <init> (IZLjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()Z
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (IZLjava/util/List;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$BlockImpl$Title1Impl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$BlockImpl$Title1Impl;IZLjava/util/List;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$BlockImpl$Title1Impl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getContent ()Ljava/util/List;
+	public fun getEditable ()Z
+	public fun getId ()I
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$BlockImpl$Title2Impl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title2 {
+	public fun <init> (IZLjava/util/List;)V
+	public synthetic fun <init> (IZLjava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()Z
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (IZLjava/util/List;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$BlockImpl$Title2Impl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$BlockImpl$Title2Impl;IZLjava/util/List;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$BlockImpl$Title2Impl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getContent ()Ljava/util/List;
+	public fun getEditable ()Z
+	public fun getId ()I
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$Form {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$Form;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$Form$MultipleChoiceImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$MultipleChoice {
+	public fun <init> (ILjava/util/List;Ljava/util/List;Z)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/util/List;
+	public final fun component4 ()Z
+	public final fun copy (ILjava/util/List;Ljava/util/List;Z)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$Form$MultipleChoiceImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$Form$MultipleChoiceImpl;ILjava/util/List;Ljava/util/List;ZILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$Form$MultipleChoiceImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getChoices ()Ljava/util/List;
+	public fun getId ()I
+	public fun getPrompt ()Ljava/util/List;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun getVspace ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$Form$MultipleChoiceImpl$ChoiceImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$MultipleChoice$Choice {
+	public fun <init> (ILjava/util/List;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (ILjava/util/List;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$Form$MultipleChoiceImpl$ChoiceImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$Form$MultipleChoiceImpl$ChoiceImpl;ILjava/util/List;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$Form$MultipleChoiceImpl$ChoiceImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()I
+	public fun getText ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$Form$TextImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text {
+	public fun <init> (ILjava/util/List;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;Z)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;
+	public final fun component4 ()Z
+	public final fun copy (ILjava/util/List;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;Z)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$Form$TextImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$Form$TextImpl;ILjava/util/List;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;ZILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$Form$TextImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()I
+	public fun getPrompt ()Ljava/util/List;
+	public fun getSize ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun getVspace ()Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$ItemListImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$ItemList {
+	public fun <init> (ILjava/util/List;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (ILjava/util/List;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$ItemListImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$ItemListImpl;ILjava/util/List;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$ItemListImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()I
+	public fun getItems ()Ljava/util/List;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$ItemListImpl$ItemImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$ItemList$Item {
+	public fun <init> (ILjava/util/List;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (ILjava/util/List;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$ItemListImpl$ItemImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$ItemListImpl$ItemImpl;ILjava/util/List;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$ItemListImpl$ItemImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getContent ()Ljava/util/List;
+	public fun getId ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table {
+	public fun <init> (ILjava/util/List;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Header;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Header;
+	public final fun copy (ILjava/util/List;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Header;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl;ILjava/util/List;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Header;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getHeader ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Header;
+	public fun getId ()I
+	public fun getRows ()Ljava/util/List;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl$CellImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Cell {
+	public fun <init> (ILjava/util/List;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (ILjava/util/List;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl$CellImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl$CellImpl;ILjava/util/List;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl$CellImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getId ()I
+	public fun getText ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl$ColumnSpecImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$ColumnSpec {
+	public fun <init> (ILno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Cell;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$ColumnAlignment;I)V
+	public final fun component1 ()I
+	public final fun component2 ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Cell;
+	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$ColumnAlignment;
+	public final fun component4 ()I
+	public final fun copy (ILno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Cell;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$ColumnAlignment;I)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl$ColumnSpecImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl$ColumnSpecImpl;ILno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Cell;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$ColumnAlignment;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl$ColumnSpecImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getAlignment ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$ColumnAlignment;
+	public fun getHeaderContent ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Cell;
+	public fun getId ()I
+	public fun getSpan ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl$HeaderImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Header {
+	public fun <init> (ILjava/util/List;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (ILjava/util/List;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl$HeaderImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl$HeaderImpl;ILjava/util/List;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl$HeaderImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getColSpec ()Ljava/util/List;
+	public fun getId ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl$RowImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Row {
+	public fun <init> (ILjava/util/List;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (ILjava/util/List;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl$RowImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl$RowImpl;ILjava/util/List;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TableImpl$RowImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getCells ()Ljava/util/List;
+	public fun getId ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl$LiteralImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Literal {
+	public fun <init> (ILjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;Ljava/util/Set;)V
+	public synthetic fun <init> (ILjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;Ljava/util/Set;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;
+	public final fun component4 ()Ljava/util/Set;
+	public final fun copy (ILjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;Ljava/util/Set;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl$LiteralImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl$LiteralImpl;ILjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;Ljava/util/Set;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl$LiteralImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getFontType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;
+	public fun getId ()I
+	public fun getTags ()Ljava/util/Set;
+	public fun getText ()Ljava/lang/String;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl$NewLineImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$NewLine {
+	public fun <init> (I)V
+	public final fun component1 ()I
+	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl$NewLineImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl$NewLineImpl;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl$NewLineImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getFontType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;
+	public fun getId ()I
+	public fun getText ()Ljava/lang/String;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl$VariableImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Variable {
+	public fun <init> (ILjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;)V
+	public synthetic fun <init> (ILjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;
+	public final fun copy (ILjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl$VariableImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl$VariableImpl;ILjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$ParagraphContentImpl$TextImpl$VariableImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getFontType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;
+	public fun getId ()I
+	public fun getText ()Ljava/lang/String;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$SakspartImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$SakspartImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$SakspartImpl;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$SakspartImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDokumentDato ()Ljava/lang/String;
+	public fun getGjelderFoedselsnummer ()Ljava/lang/String;
+	public fun getGjelderNavn ()Ljava/lang/String;
+	public fun getSaksnummer ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$SignaturImpl : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$SignaturImpl;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$SignaturImpl;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$SignaturImpl;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getAttesterendeSaksbehandlerNavn ()Ljava/lang/String;
+	public fun getHilsenTekst ()Ljava/lang/String;
+	public fun getNavAvsenderEnhet ()Ljava/lang/String;
+	public fun getSaksbehandlerNavn ()Ljava/lang/String;
+	public fun getSaksbehandlerRolleTekst ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMetadata {
+	public fun <init> (Ljava/lang/String;ZLno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Z
+	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;
+	public final fun component4 ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
+	public final fun copy (Ljava/lang/String;ZLno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;)Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Ljava/lang/String;ZLno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBrevtype ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
+	public final fun getDisplayTitle ()Ljava/lang/String;
+	public final fun getDistribusjonstype ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;
+	public fun hashCode ()I
+	public final fun isSensitiv ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype : java/lang/Enum {
+	public static final field INFORMASJONSBREV Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
+	public static final field VEDTAKSBREV Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
+	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype : java/lang/Enum {
+	public static final field ANNET Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;
+	public static final field VEDTAK Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;
+	public static final field VIKTIG Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;
+	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/Months : no/nav/pensjon/brevbaker/api/model/IntValue {
+	public fun <init> (I)V
+	public final fun component1 ()I
+	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/Months;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/Months;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/Months;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/NavEnhet {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/Telefonnummer;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getNavn ()Ljava/lang/String;
+	public final fun getNettside ()Ljava/lang/String;
+	public final fun getTelefonnummer ()Lno/nav/pensjon/brevbaker/api/model/Telefonnummer;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/brevbaker/api/model/IntValue {
+	public fun <init> (I)V
+	public final fun component1 ()I
+	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/Percent;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/Percent;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/Percent;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttesterendeSaksbehandler ()Ljava/lang/String;
+	public final fun getSaksbehandler ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/Telefonnummer {
+	public fun <init> (Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification {
+	public fun <init> (Ljava/util/Map;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/util/Map;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/util/Map;Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification;Ljava/util/Map;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLetterModelTypeName ()Ljava/lang/String;
+	public final fun getTypes ()Ljava/util/Map;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType {
+	public abstract fun getDisplayText ()Ljava/lang/String;
+	public abstract fun getNullable ()Z
+	public abstract fun getType ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Array : no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType {
+	public fun <init> (ZLno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType;Ljava/lang/String;)V
+	public synthetic fun <init> (ZLno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Z
+	public final fun component2 ()Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (ZLno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType;Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Array;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Array;ZLno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Array;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDisplayText ()Ljava/lang/String;
+	public final fun getItems ()Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType;
+	public fun getNullable ()Z
+	public fun getType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Enum : no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType {
+	public fun <init> (ZLjava/util/Set;Ljava/lang/String;)V
+	public synthetic fun <init> (ZLjava/util/Set;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Z
+	public final fun component2 ()Ljava/util/Set;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (ZLjava/util/Set;Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Enum;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Enum;ZLjava/util/Set;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Enum;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDisplayText ()Ljava/lang/String;
+	public fun getNullable ()Z
+	public fun getType ()Ljava/lang/String;
+	public final fun getValues ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Object : no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType {
+	public fun <init> (ZLjava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (ZLjava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Z
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (ZLjava/lang/String;Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Object;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Object;ZLjava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Object;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDisplayText ()Ljava/lang/String;
+	public fun getNullable ()Z
+	public fun getType ()Ljava/lang/String;
+	public final fun getTypeName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar : no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType {
+	public fun <init> (ZLno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;Ljava/lang/String;)V
+	public synthetic fun <init> (ZLno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Z
+	public final fun component2 ()Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (ZLno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar;ZLno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getDisplayText ()Ljava/lang/String;
+	public final fun getKind ()Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
+	public fun getNullable ()Z
+	public fun getType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind : java/lang/Enum {
+	public static final field BOOLEAN Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
+	public static final field DATE Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
+	public static final field DOUBLE Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
+	public static final field NUMBER Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
+	public static final field STRING Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
+	public static final field YEAR Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
+	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Type : java/lang/Enum {
+	public static final field array Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Type;
+	public static final field enum Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Type;
+	public static final field object Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Type;
+	public static final field scalar Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Type;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Type;
+	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Type;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/Year : no/nav/pensjon/brevbaker/api/model/IntValue {
+	public fun <init> (I)V
+	public final fun component1 ()I
+	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/Year;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/Year;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/Year;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getValue ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+

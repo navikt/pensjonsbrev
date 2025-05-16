@@ -111,6 +111,8 @@ dependencies {
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.swagger)
     implementation(libs.ktor.client.encoding)
+    implementation(libs.kafka.streams)
+    implementation(libs.connect.runtime)
 
     implementation(project(":pensjonsmaler"))
     implementation(project(":etterlattemaler"))

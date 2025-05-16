@@ -16,8 +16,12 @@ Bruk følgende for å bygge og kjøre:
 ```
 Dersom du kun skal kjøre brevbaker og pdf-bygger og ikke skribenten må du fortsatt pga en bug i docker-compose generere tomme env files for skribenten:
 ```bash
-(mkdir -p - skribenten-backend/secrets tjenestebuss-integrasjon/secrets skribenten-web/bff)
-(touch skribenten-backend/secrets/azuread.env skribenten-backend/secrets/unleash.env tjenestebuss-integrasjon/secrets/docker.env  skribenten-web/bff/.env)
+(mkdir -p - skribenten-backend/secrets tjenestebuss-integrasjon/secrets skribenten-web/bff pensjon-brevbaker/secrets/kafka)
+(touch skribenten-backend/secrets/azuread.env skribenten-backend/secrets/unleash.env tjenestebuss-integrasjon/secrets/docker.env  skribenten-web/bff/.env\
+  pensjon-brevbaker/secrets/kafka/kafka-secret.env\
+  pensjon-brevbaker/secrets/kafka/client.keystore.p12\
+  pensjon-brevbaker/secrets/kafka/client.truststore.jks
+)
 ```
 ```bash
 docker-compose up -d --build
@@ -92,6 +96,13 @@ For å hente npm pakker ved å legge inn brukernavn og samme token som passord m
 ```bash
 npm login --registry=https://npm.pkg.github.com --auth-type=legacy
 ```
+
+### Endringer i biblioteks-koden
+Vi bruker gradle-pluginen `binary-compatibility-validator` for å se etter endringer i koden i modulene som inngår i biblioteket (per nå `brevbaker-api-model-common`, `brevbaker-dsl` og `brevbaker). Denne holder oversikt representert i .api-filer i disse modulene.
+
+Ved endringer av public-kode i disse modulene - inkludert sletting av metoder eller nye metoder - må du huske å kjøre `gradle apiDump` og sjekke inn de oppdaterte .api-filene. Glemmer du dette vil bygget feile - det kjører automatisk `gradle apiCheck`-kommandoen.
+
+Mer om dette på https://kotlinlang.org/docs/api-guidelines-backward-compatibility.html
 
 ### Ytelsestesting med locust
 Ytelsestesten er i utgangspunktet satt opp til å teste vedtaksbrevet UNG_UFOER_AUTO.

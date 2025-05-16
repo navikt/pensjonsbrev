@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures
 
+import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2.Uforetrygd
 import java.time.LocalDate
@@ -12,7 +13,10 @@ fun createEndretUTPgaInntektDtoV2() =
             uforegrad = 100,
             inntektstak = 1,
             inntektsgrense = 1,
-            inntektBruktIAvkortning = 0
+            inntektBruktIAvkortning = 0,
+            nettoPerAr = 300000,
+            nettoAkkumulert = 1000000,
+            nettoRestbelop = 2000000
         ),
         barnetilleggFellesbarn = null,
         barnetilleggSaerkullsbarn = null,
@@ -24,5 +28,7 @@ fun createEndretUTPgaInntektDtoV2() =
         sokerMottarApIlaAret = false,
         btfbEndret = false,
         btsbEndret = false,
-        settingAvInntektForNesteAar = false,
+        brukerBorINorge = true,
+        pe = Fixtures.create(),
+        orienteringOmRettigheterUfoere = Fixtures.create(),
     )

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
+import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.createContent
 import no.nav.brev.brevbaker.createIncludeAttachment
 import no.nav.brev.brevbaker.createParagraph
@@ -25,7 +26,6 @@ import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brev.template.render.Fixtures.felles
 import no.nav.pensjon.brev.template.render.TestVedleggDtoSelectors.testVerdi1
 import no.nav.pensjon.brev.template.toScope
 import org.junit.jupiter.api.Assertions.assertEquals

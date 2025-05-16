@@ -1,0 +1,6 @@
+app-name: "pensjon-pdf-bygger-async"
+kafka:
+  pool: "nav-dev"
+  pdf-render-topic: "pensjonsbrev.pdf-bygger-render"
+  consumer-group-id: "pdf-bygger-async"
+maxReplicas: 20

@@ -62,6 +62,7 @@ import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingFerdig
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingInnhold
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.redigerbar.BarnepensjonVedleggBeregningTrygdetidRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.redigerbar.BarnepensjonVedleggForhaandsvarselRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.redigerbar.OmstillingsstoenadVedleggBeregningRedigerbartUtfall
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.redigerbar.OmstillingsstoenadVedleggForhaandsvarselRedigerbartUtfall
 
@@ -118,6 +119,7 @@ object EtterlatteMaler : AllTemplates {
             EtteroppgjoerForhaandsvarselInnhold,
             EtteroppgjoerVedtak,
             EtteroppgjoerVedtakRedigerbartUtfall,
+            EtteroppgjoerBeregningVedleggRedigerbartUtfall,
 
             // Tilbakekreving
             TilbakekrevingInnhold,
