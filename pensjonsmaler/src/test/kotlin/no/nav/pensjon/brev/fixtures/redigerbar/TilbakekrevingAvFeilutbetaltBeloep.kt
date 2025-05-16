@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.api.model.vedlegg.OversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
-import java.time.YearMonth
 
 
 fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
