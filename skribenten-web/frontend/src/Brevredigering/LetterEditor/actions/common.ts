@@ -129,27 +129,16 @@ export function findAdjoiningContent<T extends Content, S extends T>(
     return { startIndex: 0, endIndex: 0, count: 0 };
   }
 
-  let countBefore = 0;
-  for (let i = atIndex - 1; i >= 0; i--) {
-    if (predicate(from[i])) {
-      countBefore++;
-    } else {
-      break;
-    }
-  }
-  let countAfter = 0;
-  for (let i = atIndex + 1; i < from.length; i++) {
-    if (predicate(from[i])) {
-      countAfter++;
-    } else {
-      break;
-    }
-  }
+  const reverseSearchNonMatching = from.slice(0, atIndex).findLastIndex((c) => !predicate(c));
+  const forwardSearchNonMatching = from.slice(atIndex + 1).findIndex((c) => !predicate(c));
+
+  const startIndex = reverseSearchNonMatching >= 0 ? reverseSearchNonMatching + 1 : 0;
+  const endIndex = forwardSearchNonMatching >= 0 ? atIndex + forwardSearchNonMatching : from.length - 1;
 
   return {
-    startIndex: atIndex - countBefore,
-    endIndex: atIndex + countAfter,
-    count: countBefore + 1 + countAfter,
+    startIndex,
+    endIndex,
+    count: endIndex - startIndex + 1,
   };
 }
 

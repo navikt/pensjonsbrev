@@ -3,6 +3,7 @@ import { produce } from "immer";
 
 import {
   addElements,
+  findAdjoiningContent,
   isBlockContentIndex,
   isItemContentIndex,
   newItem,
@@ -124,19 +125,12 @@ function insertHtmlClipboardInLetter(
   } else if (isInsertingOnlyWords) {
     insertTextInLetter(draft, literalIndex, offset, parsedAndCombinedHtml[0].content.join(" "), false);
   } else {
-    insertTraversedElements(draft, literalIndex, offset, parsedAndCombinedHtml);
+    insertTraversedElements(draft, parsedAndCombinedHtml);
   }
   draft.isDirty = true;
 }
 
-function insertTraversedElements(
-  draft: Draft<LetterEditorState>,
-  index: LiteralIndex,
-  cursorOffset: number,
-  elements: TraversedElement[],
-) {
-  draft.focus = { ...index, cursorPosition: cursorOffset };
-
+function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]) {
   elements.forEach((el) => {
     const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
 
@@ -180,24 +174,21 @@ function insertTraversedElements(
   });
 }
 
-// TODO: Burde se på å bruke toggle-itemlist-action her!
 function toggleItemListAndSplitAtCursor(draft: Draft<LetterEditorState>, currentBlock: Draft<AnyBlock>) {
   let itemContent: TextContent[] = [];
 
-  // Finn indeks for all sammenhengende TextContent før der vi limer inn.
-  const prevNonTextContentIndex = currentBlock.content
-    .slice(0, draft.focus.contentIndex)
-    .findLastIndex((c) => !isTextContent(c));
-  const extractContentFrom = prevNonTextContentIndex >= 0 ? prevNonTextContentIndex + 1 : 0;
+  // Finn første indeks for all sammenhengende TextContent før der vi limer inn.
+  const sentenceIndex = findAdjoiningContent(
+    draft.focus.contentIndex,
+    currentBlock.content.slice(0, draft.focus.contentIndex + 1),
+    isTextContent,
+  );
 
-  if (extractContentFrom < draft.focus.contentIndex) {
-    itemContent = removeElements(
-      extractContentFrom,
-      draft.focus.contentIndex - extractContentFrom,
-      currentBlock,
-    ).filter(isTextContent);
-    // Vi har fjernet fra og med extractContentFrom frem til draft.focus.contentIndex som betyr at den nye indeksen til current er extractContentFrom
-    draft.focus.contentIndex = extractContentFrom;
+  // Om count er 1 så er det kun gjeldende content-element, så vi trenger ikke å inkludere flere.
+  if (sentenceIndex.count > 1) {
+    itemContent = removeElements(sentenceIndex.startIndex, sentenceIndex.count - 1, currentBlock).filter(isTextContent);
+    // Vi har fjernet fra og med startIndex frem til draft.focus.contentIndex som betyr at den nye indeksen til current er startIndex
+    draft.focus.contentIndex = sentenceIndex.startIndex;
   }
 
   // Split currentContent om vi limer inn et sted som ikke er i starten av den, og legg den til i itemContent og resten tilbake til blokken.
@@ -220,13 +211,13 @@ function toggleItemListAndSplitAtCursor(draft: Draft<LetterEditorState>, current
   const theItem = newItem({ content: itemContent });
 
   // Sett inn item i eksisterende liste før current content, eller lag en ny liste og theItem inn i den.
-  const prevNonTextContent = prevNonTextContentIndex >= 0 ? currentBlock.content[prevNonTextContentIndex] : null;
+  const prevNonTextContent = sentenceIndex.startIndex > 0 ? currentBlock.content[sentenceIndex.startIndex - 1] : null;
   if (isItemList(prevNonTextContent)) {
     addElements([theItem], prevNonTextContent.items.length, prevNonTextContent.items, prevNonTextContent.deletedItems);
     // Sett fokus til det theItem som vi har satt inn i eksisterende ItemList.
     draft.focus = {
       ...draft.focus,
-      contentIndex: prevNonTextContentIndex,
+      contentIndex: sentenceIndex.startIndex - 1,
       itemIndex: prevNonTextContent.items.length - 1,
       itemContentIndex: theItem.content.length - 1,
     };
