@@ -33,26 +33,6 @@ const Kvittering = () => {
     }),
   );
 
-  const NavButtons = () => {
-    if (!urlReady) return null;
-
-    const urls = {
-      bruker: `${psak}/psak/bruker/brukeroversikt.jsf?sakId=${saksId}`,
-      dokument: `${psak}/psak/dokument/saksoversikt.jsf?sakId=${saksId}`,
-    };
-
-    return (
-      <VStack align={"start"} gap="3">
-        <ButtonLink as={"a"} href={urls.bruker}>
-          Gå til brukeroversikt
-        </ButtonLink>
-        <ButtonLink as={"a"} href={urls.dokument}>
-          Gå til dokumentoversikt
-        </ButtonLink>
-      </VStack>
-    );
-  };
-
   if (sendteBrevLista.length === 0) {
     return (
       <Box
@@ -68,7 +48,7 @@ const Kvittering = () => {
         {urlReady && (
           <VStack gap="2">
             <Heading size="medium">Hva vil du gjøre nå?</Heading>
-            <NavButtons />
+            <NavButtons psak={psak} saksId={saksId} />
           </VStack>
         )}
         <BodyShort>Ingen informasjon om brevsending</BodyShort>
@@ -102,10 +82,30 @@ const Kvittering = () => {
       {urlReady && (
         <VStack gap="2">
           <Heading size="medium">Hva vil du gjøre nå?</Heading>
-          <NavButtons />
+          <NavButtons psak={psak} saksId={saksId} />
         </VStack>
       )}
     </Box>
+  );
+};
+
+const NavButtons = ({ psak, saksId }: { psak?: string; saksId: string }) => {
+  if (!psak) return null;
+
+  const urls = {
+    bruker: `${psak}/psak/bruker/brukeroversikt.jsf?sakId=${saksId}`,
+    dokument: `${psak}/psak/dokument/saksoversikt.jsf?sakId=${saksId}`,
+  };
+
+  return (
+    <VStack align={"start"} gap="3">
+      <ButtonLink as={"a"} href={urls.bruker}>
+        Gå til brukeroversikt
+      </ButtonLink>
+      <ButtonLink as={"a"} href={urls.dokument}>
+        Gå til dokumentoversikt
+      </ButtonLink>
+    </VStack>
   );
 };
 
