@@ -20,7 +20,7 @@ import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonRevurderingRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarsel
 import no.nav.pensjon.etterlatte.fixtures.createBarnepensjonVarselRedigerbartUtfall
-import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerBeregningVedleggRedigerbartUtfall
+import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerForhaandsvarselBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerForhaandsvarselRedigerbartBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerVedtakDTO
@@ -101,7 +101,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.Omstillingsstoe
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTO
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingRedigerbartBrevDTO
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO
 import kotlin.reflect.KClass
 
 object Fixtures {
@@ -161,7 +161,7 @@ object Fixtures {
             // Etteroppgjør
             EtteroppgjoerForhaandsvarselBrevDTO::class -> createEtteroppgjoerForhaandsvarselBrevDTO() as T
             EtteroppgjoerForhaandsvarselRedigerbartBrevDTO::class -> createEtteroppgjoerForhaandsvarselRedigerbartBrevDTO() as T
-            EtteroppgjoerBeregningVedleggRedigerbartUtfall::class -> createEtteroppgjoerBeregningVedleggRedigerbartUtfall() as T
+            EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO::class -> createEtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO() as T
             EtteroppgjoerVedtakDTO::class -> createEtteroppgjoerVedtakDTO() as T
             EtteroppgjoerVedtakRedigerbartUtfallDTO::class -> createEtteroppgjoerVedtakRedigerbartUtfallDTO() as T
 

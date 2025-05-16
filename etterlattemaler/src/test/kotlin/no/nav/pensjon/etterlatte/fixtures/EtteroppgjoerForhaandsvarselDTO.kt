@@ -48,7 +48,7 @@ fun createEtteroppgjoerForhaandsvarselRedigerbartBrevDTO() =
         )
     )
 
-fun createEtteroppgjoerBeregningVedleggRedigerbartUtfall() =
+fun createEtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO() =
     EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO(
         data = EtteroppgjoerBeregningVedleggInnholdDTO(
             etteroppgjoersAar = 2024,
