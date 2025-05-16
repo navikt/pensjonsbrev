@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer
+package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer
 
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -16,9 +16,8 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.Vedlegg
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggInnholdDTOSelectors.etteroppgjoersAar
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTOSelectors.data
-
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggInnholdDTOSelectors.etteroppgjoersAar
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTOSelectors.data
 
 data class EtteroppgjoerBeregningVedleggInnholdDTO(
     val etteroppgjoersAar: Int,
@@ -29,7 +28,7 @@ data class EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO(
 
 @TemplateModelHelpers
 object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO>, Vedlegg {
-    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_EO_FORHANDSVARSEL_BEREGNINGVEDLEGG_INNHOLD
+    override val kode: EtterlatteBrevKode = EtterlatteBrevKode.OMS_EO_FORHAANDSVARSEL_BEREGNINGVEDLEGG_INNHOLD
 
     override val template = createTemplate(
         name = kode.name,
