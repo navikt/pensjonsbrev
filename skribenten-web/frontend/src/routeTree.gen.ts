@@ -18,9 +18,9 @@ import { Route as SaksnummerSaksIdKvitteringRouteImport } from './routes/saksnum
 import { Route as SaksnummerSaksIdBrevvelgerRouteImport } from './routes/saksnummer_/$saksId/brevvelger/route'
 import { Route as SaksnummerSaksIdBrevbehandlerRouteImport } from './routes/saksnummer_/$saksId/brevbehandler/route'
 import { Route as SaksnummerSaksIdBrevBrevIdImport } from './routes/saksnummer_/$saksId/brev.$brevId'
-import { Route as SaksnummerSaksIdAttesterBrevIdRedigeringRouteImport } from './routes/saksnummer_/$saksId/attester.$brevId/redigering/route'
-import { Route as SaksnummerSaksIdAttesterBrevIdKvitteringRouteImport } from './routes/saksnummer_/$saksId/attester.$brevId/kvittering/route'
-import { Route as SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteImport } from './routes/saksnummer_/$saksId/attester.$brevId/forhandsvisning/route'
+import { Route as SaksnummerSaksIdAttesterBrevIdRedigeringImport } from './routes/saksnummer_/$saksId/attester.$brevId/redigering'
+import { Route as SaksnummerSaksIdAttesterBrevIdKvitteringImport } from './routes/saksnummer_/$saksId/attester.$brevId/kvittering'
+import { Route as SaksnummerSaksIdAttesterBrevIdForhandsvisningImport } from './routes/saksnummer_/$saksId/attester.$brevId/forhandsvisning'
 
 // Create/Update Routes
 
@@ -71,22 +71,22 @@ const SaksnummerSaksIdBrevBrevIdRoute = SaksnummerSaksIdBrevBrevIdImport.update(
   } as any,
 )
 
-const SaksnummerSaksIdAttesterBrevIdRedigeringRouteRoute =
-  SaksnummerSaksIdAttesterBrevIdRedigeringRouteImport.update({
+const SaksnummerSaksIdAttesterBrevIdRedigeringRoute =
+  SaksnummerSaksIdAttesterBrevIdRedigeringImport.update({
     id: '/attester/$brevId/redigering',
     path: '/attester/$brevId/redigering',
     getParentRoute: () => SaksnummerSaksIdRouteRoute,
   } as any)
 
-const SaksnummerSaksIdAttesterBrevIdKvitteringRouteRoute =
-  SaksnummerSaksIdAttesterBrevIdKvitteringRouteImport.update({
+const SaksnummerSaksIdAttesterBrevIdKvitteringRoute =
+  SaksnummerSaksIdAttesterBrevIdKvitteringImport.update({
     id: '/attester/$brevId/kvittering',
     path: '/attester/$brevId/kvittering',
     getParentRoute: () => SaksnummerSaksIdRouteRoute,
   } as any)
 
-const SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteRoute =
-  SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteImport.update({
+const SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute =
+  SaksnummerSaksIdAttesterBrevIdForhandsvisningImport.update({
     id: '/attester/$brevId/forhandsvisning',
     path: '/attester/$brevId/forhandsvisning',
     getParentRoute: () => SaksnummerSaksIdRouteRoute,
@@ -149,21 +149,21 @@ declare module '@tanstack/react-router' {
       id: '/saksnummer_/$saksId/attester/$brevId/forhandsvisning'
       path: '/attester/$brevId/forhandsvisning'
       fullPath: '/saksnummer/$saksId/attester/$brevId/forhandsvisning'
-      preLoaderRoute: typeof SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteImport
+      preLoaderRoute: typeof SaksnummerSaksIdAttesterBrevIdForhandsvisningImport
       parentRoute: typeof SaksnummerSaksIdRouteImport
     }
     '/saksnummer_/$saksId/attester/$brevId/kvittering': {
       id: '/saksnummer_/$saksId/attester/$brevId/kvittering'
       path: '/attester/$brevId/kvittering'
       fullPath: '/saksnummer/$saksId/attester/$brevId/kvittering'
-      preLoaderRoute: typeof SaksnummerSaksIdAttesterBrevIdKvitteringRouteImport
+      preLoaderRoute: typeof SaksnummerSaksIdAttesterBrevIdKvitteringImport
       parentRoute: typeof SaksnummerSaksIdRouteImport
     }
     '/saksnummer_/$saksId/attester/$brevId/redigering': {
       id: '/saksnummer_/$saksId/attester/$brevId/redigering'
       path: '/attester/$brevId/redigering'
       fullPath: '/saksnummer/$saksId/attester/$brevId/redigering'
-      preLoaderRoute: typeof SaksnummerSaksIdAttesterBrevIdRedigeringRouteImport
+      preLoaderRoute: typeof SaksnummerSaksIdAttesterBrevIdRedigeringImport
       parentRoute: typeof SaksnummerSaksIdRouteImport
     }
   }
@@ -176,9 +176,9 @@ interface SaksnummerSaksIdRouteRouteChildren {
   SaksnummerSaksIdBrevvelgerRouteRoute: typeof SaksnummerSaksIdBrevvelgerRouteRoute
   SaksnummerSaksIdKvitteringRouteRoute: typeof SaksnummerSaksIdKvitteringRouteRoute
   SaksnummerSaksIdBrevBrevIdRoute: typeof SaksnummerSaksIdBrevBrevIdRoute
-  SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteRoute: typeof SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteRoute
-  SaksnummerSaksIdAttesterBrevIdKvitteringRouteRoute: typeof SaksnummerSaksIdAttesterBrevIdKvitteringRouteRoute
-  SaksnummerSaksIdAttesterBrevIdRedigeringRouteRoute: typeof SaksnummerSaksIdAttesterBrevIdRedigeringRouteRoute
+  SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute: typeof SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute
+  SaksnummerSaksIdAttesterBrevIdKvitteringRoute: typeof SaksnummerSaksIdAttesterBrevIdKvitteringRoute
+  SaksnummerSaksIdAttesterBrevIdRedigeringRoute: typeof SaksnummerSaksIdAttesterBrevIdRedigeringRoute
 }
 
 const SaksnummerSaksIdRouteRouteChildren: SaksnummerSaksIdRouteRouteChildren = {
@@ -187,12 +187,12 @@ const SaksnummerSaksIdRouteRouteChildren: SaksnummerSaksIdRouteRouteChildren = {
   SaksnummerSaksIdBrevvelgerRouteRoute: SaksnummerSaksIdBrevvelgerRouteRoute,
   SaksnummerSaksIdKvitteringRouteRoute: SaksnummerSaksIdKvitteringRouteRoute,
   SaksnummerSaksIdBrevBrevIdRoute: SaksnummerSaksIdBrevBrevIdRoute,
-  SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteRoute:
-    SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteRoute,
-  SaksnummerSaksIdAttesterBrevIdKvitteringRouteRoute:
-    SaksnummerSaksIdAttesterBrevIdKvitteringRouteRoute,
-  SaksnummerSaksIdAttesterBrevIdRedigeringRouteRoute:
-    SaksnummerSaksIdAttesterBrevIdRedigeringRouteRoute,
+  SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute:
+    SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute,
+  SaksnummerSaksIdAttesterBrevIdKvitteringRoute:
+    SaksnummerSaksIdAttesterBrevIdKvitteringRoute,
+  SaksnummerSaksIdAttesterBrevIdRedigeringRoute:
+    SaksnummerSaksIdAttesterBrevIdRedigeringRoute,
 }
 
 const SaksnummerSaksIdRouteRouteWithChildren =
@@ -208,9 +208,9 @@ export interface FileRoutesByFullPath {
   '/saksnummer/$saksId/brevvelger': typeof SaksnummerSaksIdBrevvelgerRouteRoute
   '/saksnummer/$saksId/kvittering': typeof SaksnummerSaksIdKvitteringRouteRoute
   '/saksnummer/$saksId/brev/$brevId': typeof SaksnummerSaksIdBrevBrevIdRoute
-  '/saksnummer/$saksId/attester/$brevId/forhandsvisning': typeof SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteRoute
-  '/saksnummer/$saksId/attester/$brevId/kvittering': typeof SaksnummerSaksIdAttesterBrevIdKvitteringRouteRoute
-  '/saksnummer/$saksId/attester/$brevId/redigering': typeof SaksnummerSaksIdAttesterBrevIdRedigeringRouteRoute
+  '/saksnummer/$saksId/attester/$brevId/forhandsvisning': typeof SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute
+  '/saksnummer/$saksId/attester/$brevId/kvittering': typeof SaksnummerSaksIdAttesterBrevIdKvitteringRoute
+  '/saksnummer/$saksId/attester/$brevId/redigering': typeof SaksnummerSaksIdAttesterBrevIdRedigeringRoute
 }
 
 export interface FileRoutesByTo {
@@ -221,9 +221,9 @@ export interface FileRoutesByTo {
   '/saksnummer/$saksId/brevvelger': typeof SaksnummerSaksIdBrevvelgerRouteRoute
   '/saksnummer/$saksId/kvittering': typeof SaksnummerSaksIdKvitteringRouteRoute
   '/saksnummer/$saksId/brev/$brevId': typeof SaksnummerSaksIdBrevBrevIdRoute
-  '/saksnummer/$saksId/attester/$brevId/forhandsvisning': typeof SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteRoute
-  '/saksnummer/$saksId/attester/$brevId/kvittering': typeof SaksnummerSaksIdAttesterBrevIdKvitteringRouteRoute
-  '/saksnummer/$saksId/attester/$brevId/redigering': typeof SaksnummerSaksIdAttesterBrevIdRedigeringRouteRoute
+  '/saksnummer/$saksId/attester/$brevId/forhandsvisning': typeof SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute
+  '/saksnummer/$saksId/attester/$brevId/kvittering': typeof SaksnummerSaksIdAttesterBrevIdKvitteringRoute
+  '/saksnummer/$saksId/attester/$brevId/redigering': typeof SaksnummerSaksIdAttesterBrevIdRedigeringRoute
 }
 
 export interface FileRoutesById {
@@ -235,9 +235,9 @@ export interface FileRoutesById {
   '/saksnummer_/$saksId/brevvelger': typeof SaksnummerSaksIdBrevvelgerRouteRoute
   '/saksnummer_/$saksId/kvittering': typeof SaksnummerSaksIdKvitteringRouteRoute
   '/saksnummer_/$saksId/brev/$brevId': typeof SaksnummerSaksIdBrevBrevIdRoute
-  '/saksnummer_/$saksId/attester/$brevId/forhandsvisning': typeof SaksnummerSaksIdAttesterBrevIdForhandsvisningRouteRoute
-  '/saksnummer_/$saksId/attester/$brevId/kvittering': typeof SaksnummerSaksIdAttesterBrevIdKvitteringRouteRoute
-  '/saksnummer_/$saksId/attester/$brevId/redigering': typeof SaksnummerSaksIdAttesterBrevIdRedigeringRouteRoute
+  '/saksnummer_/$saksId/attester/$brevId/forhandsvisning': typeof SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute
+  '/saksnummer_/$saksId/attester/$brevId/kvittering': typeof SaksnummerSaksIdAttesterBrevIdKvitteringRoute
+  '/saksnummer_/$saksId/attester/$brevId/redigering': typeof SaksnummerSaksIdAttesterBrevIdRedigeringRoute
 }
 
 export interface FileRouteTypes {
@@ -342,15 +342,15 @@ export const routeTree = rootRoute
       "parent": "/saksnummer_/$saksId"
     },
     "/saksnummer_/$saksId/attester/$brevId/forhandsvisning": {
-      "filePath": "saksnummer_/$saksId/attester.$brevId/forhandsvisning/route.tsx",
+      "filePath": "saksnummer_/$saksId/attester.$brevId/forhandsvisning.tsx",
       "parent": "/saksnummer_/$saksId"
     },
     "/saksnummer_/$saksId/attester/$brevId/kvittering": {
-      "filePath": "saksnummer_/$saksId/attester.$brevId/kvittering/route.tsx",
+      "filePath": "saksnummer_/$saksId/attester.$brevId/kvittering.tsx",
       "parent": "/saksnummer_/$saksId"
     },
     "/saksnummer_/$saksId/attester/$brevId/redigering": {
-      "filePath": "saksnummer_/$saksId/attester.$brevId/redigering/route.tsx",
+      "filePath": "saksnummer_/$saksId/attester.$brevId/redigering.tsx",
       "parent": "/saksnummer_/$saksId"
     }
   }

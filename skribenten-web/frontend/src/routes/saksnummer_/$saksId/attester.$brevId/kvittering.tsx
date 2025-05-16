@@ -7,7 +7,7 @@ import { getBaseUrls } from "~/api/bff-endpoints";
 import KvitterteBrev from "~/components/kvitterteBrev/KvitterteBrev";
 import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 
-import { useSendtBrev } from "../../kvittering/-components/SendtBrevContext";
+import { useSendtBrev } from "../kvittering/-components/SendtBrevContext";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/kvittering")({
   component: () => <Kvittering />,

@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { Box, Button, Label, VStack } from "@navikt/ds-react";
 import { Link } from "@tanstack/react-router";
 
-import { Route } from "~/routes/saksnummer_/$saksId/attester.$brevId/redigering/route";
+import { Route } from "~/routes/saksnummer_/$saksId/attester.$brevId/redigering";
 
 const ArkivertBrev = (props: { saksId: string }) => {
   const navigate = Route.useNavigate();

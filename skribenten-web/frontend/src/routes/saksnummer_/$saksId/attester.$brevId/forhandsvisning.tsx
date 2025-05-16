@@ -15,8 +15,8 @@ import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BestillBrevResponse, BrevResponse } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
 
-import BrevForhåndsvisning from "../../brevbehandler/-components/BrevForhåndsvisning";
-import { useSendtBrev } from "../../kvittering/-components/SendtBrevContext";
+import BrevForhåndsvisning from "../brevbehandler/-components/BrevForhåndsvisning";
+import { useSendtBrev } from "../kvittering/-components/SendtBrevContext";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/forhandsvisning")({
   component: () => <VedtakForhåndsvisningWrapper />,
