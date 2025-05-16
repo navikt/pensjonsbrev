@@ -1,5 +1,4 @@
 import { useMutation } from "@tanstack/react-query";
-import { useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useEffect } from "react";
 
@@ -17,13 +16,8 @@ import type { EditedLetter } from "~/types/brevbakerTypes";
  *
  * <ManagedLetterEditor /> krever at har <ManagedLetterEditorContextProvider /> som parent.
  */
-const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error: boolean }) => {
+const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error: boolean; showDebug?: boolean }) => {
   const { editorState, setEditorState, onSaveSuccess: onSaveSuccess } = useManagedLetterEditorContext();
-
-  const showDebug = useSearch({
-    strict: false,
-    select: (search: { debug?: string | boolean }) => search?.["debug"] === "true" || search?.["debug"] === true,
-  });
 
   const { mutate, isError, isPending } = useMutation<BrevResponse, AxiosError, EditedLetter>({
     mutationFn: (redigertBrev: EditedLetter) => {
@@ -62,7 +56,7 @@ const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error
       error={props.error || isError}
       freeze={props.freeze || isPending}
       setEditorState={setEditorState}
-      showDebug={showDebug}
+      showDebug={props.showDebug ?? false}
     />
   );
 };

@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyShort, Box, Button, Heading, Label, Loader, Switch, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useEffect, useMemo } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -115,6 +115,11 @@ const VedtakWrapper = () => {
 const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const { editorState, onSaveSuccess } = useManagedLetterEditorContext();
+
+  const showDebug = useSearch({
+    strict: false,
+    select: (search: Record<string, unknown>) => search?.["debug"] === "true" || search?.["debug"] === true,
+  });
 
   const reservasjonQuery = useQuery({
     queryKey: getBrevReservasjon.querykey(props.brev.info.id),
@@ -246,7 +251,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               }
               reservasjon={reservasjonQuery.data}
             />
-            <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} />
+            <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
           </>
         }
       />
