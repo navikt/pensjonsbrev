@@ -1,3 +1,5 @@
+import { newLiteral, newParagraph, newVariable } from "~/Brevredigering/LetterEditor/actions/common";
+import { SpraakKode } from "~/types/apiTypes";
 import type {
   BrevInfo,
   BrevResponse,
@@ -7,6 +9,7 @@ import type {
   NAVEnhet,
   SaksbehandlerValg,
 } from "~/types/brev";
+import { Distribusjonstype } from "~/types/brev";
 import type {
   AnyBlock,
   Content,
@@ -22,12 +25,8 @@ import type {
   Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
+import { FontType } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
-
-import { newLiteral, newParagraph, newVariable } from "../../src/Brevredigering/LetterEditor/actions/common";
-import { SpraakKode } from "../../src/types/apiTypes";
-import { Distribusjonstype } from "../../src/types/brev";
-import { FontType } from "../../src/types/brevbakerTypes";
 
 export const nyBrevResponse = ({
   info = nyBrevInfo({}),

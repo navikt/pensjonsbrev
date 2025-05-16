@@ -1,9 +1,9 @@
 import { css } from "@emotion/react";
 
+import type { LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import type { TextContent } from "~/types/brevbakerTypes";
 import { FontType, LITERAL, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
 
-import type { LiteralIndex } from "../actions/model";
 import { useEditor } from "../LetterEditor";
 
 export type TextProperties = {
