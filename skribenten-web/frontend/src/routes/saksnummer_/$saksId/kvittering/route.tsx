@@ -2,8 +2,12 @@ import { css } from "@emotion/react";
 import { Button, Heading, VStack } from "@navikt/ds-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
-import { useFerdigstillResultatContext } from "./-components/FerdigstillResultatContext";
-import KvitterteBrev from "./-components/KvitterteBrev";
+import KvitterteBrev from "~/components/kvitterteBrev/KvitterteBrev";
+import type { KvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
+import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
+
+import { useBrevInfoKlarTilAttestering } from "./-components/KlarTilAttesteringContext";
+import { useSendtBrev } from "./-components/SendtBrevContext";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/kvittering")({
   component: Kvittering,
@@ -13,7 +17,31 @@ function Kvittering() {
   const { saksId } = Route.useParams();
   const { enhetsId, vedtaksId } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
-  const ferdigstillBrevContext = useFerdigstillResultatContext();
+
+  const { sendteBrev } = useSendtBrev();
+  const { brevListKlarTilAttestering } = useBrevInfoKlarTilAttestering();
+
+  const sendtBrevList: KvittertBrev[] = Object.values(sendteBrev).map((resultat) =>
+    toKvittertBrev({
+      status: resultat.status,
+      context: "sendBrev",
+      brevFørHandling: resultat.brevInfo,
+      bestillBrevResponse: resultat.status === "success" ? resultat.response! : null,
+      attesterResponse: null,
+    }),
+  );
+
+  const attestList: KvittertBrev[] = brevListKlarTilAttestering.map((brev) =>
+    toKvittertBrev({
+      status: "success",
+      context: "attestering",
+      brevFørHandling: brev,
+      bestillBrevResponse: null,
+      attesterResponse: null,
+    }),
+  );
+
+  const kvitterteBrev: KvittertBrev[] = [...sendtBrevList, ...attestList];
 
   return (
     <div
@@ -26,9 +54,17 @@ function Kvittering() {
         background: var(--a-white);
       `}
     >
+      <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={saksId} />
+      <div
+        // This is a vertical line
+        css={css`
+          background: var(--a-gray-200);
+          width: 1px;
+        `}
+      ></div>
       <VStack
         css={css`
-          justify-self: flex-end;
+          justify-self: center;
         `}
         gap="4"
       >
@@ -71,14 +107,6 @@ function Kvittering() {
           Gå til brevbehandler
         </Button>
       </VStack>
-      <div
-        // This is a vertical line
-        css={css`
-          background: var(--a-gray-200);
-          width: 1px;
-        `}
-      ></div>
-      <KvitterteBrev resultat={ferdigstillBrevContext.resultat} sakId={saksId} />
     </div>
   );
 }

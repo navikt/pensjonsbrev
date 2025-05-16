@@ -25,7 +25,10 @@ import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
-import { SaksbehandlerValgModelEditor } from "~/Brevredigering/ModelEditor/ModelEditor";
+import {
+  SaksbehandlerValgModelEditor,
+  usePartitionedModelSpecification,
+} from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
@@ -484,6 +487,7 @@ enum BrevSidemenyTabs {
 }
 
 const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?: () => void }) => {
+  const specificationFormElements = usePartitionedModelSpecification(props.brev.info.brevkode);
   return (
     <Tabs
       css={css`
@@ -519,6 +523,7 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
         <SaksbehandlerValgModelEditor
           brevkode={props.brev.info.brevkode}
           fieldsToRender={"optional"}
+          specificationFormElements={specificationFormElements}
           submitOnChange={props.submitOnChange}
         />
         <AutoSavingTextField
@@ -546,6 +551,7 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
         <SaksbehandlerValgModelEditor
           brevkode={props.brev.info.brevkode}
           fieldsToRender={"required"}
+          specificationFormElements={specificationFormElements}
           submitOnChange={props.submitOnChange}
         />
         <AutoSavingTextField

@@ -59,6 +59,7 @@ object Api {
         val avsenderEnhet: NavEnhet?,
         val spraak: SpraakKode,
         val journalpostId: Long?,
+        val vedtaksId: Long?,
     )
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")

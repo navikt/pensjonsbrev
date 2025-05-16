@@ -1,26 +1,35 @@
 import { css } from "@emotion/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, Checkbox, CheckboxGroup, HStack, Label, Modal } from "@navikt/ds-react";
+import {
+  BodyLong,
+  BodyShort,
+  Button,
+  Checkbox,
+  CheckboxGroup,
+  HStack,
+  Label,
+  List,
+  Modal,
+  VStack,
+} from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
+import { partition } from "lodash";
 import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { BestillBrevResponse } from "~/types/brev";
+import type { BestillBrevError, BestillBrevResponse } from "~/types/brev";
 import { type BrevInfo } from "~/types/brev";
-import { erBrevArkivert, erBrevKlar } from "~/utils/brevUtils";
+import { erBrevArkivert, erBrevKlar, erBrevKlarTilAttestering } from "~/utils/brevUtils";
+import { queryFold } from "~/utils/tanstackUtils";
 
-import type {
-  FerdigstillErrorResponse,
-  FerdigstillResponser,
-  FerdigstillSuccessResponse,
-} from "../../kvittering/-components/FerdigstillResultatContext";
-import { useFerdigstillResultatContext } from "../../kvittering/-components/FerdigstillResultatContext";
+import { useBrevInfoKlarTilAttestering } from "../../kvittering/-components/KlarTilAttesteringContext";
+import { useSendtBrev } from "../../kvittering/-components/SendtBrevContext";
 import { Route } from "../route";
 
 export const FerdigstillOgSendBrevButton = (properties: {
@@ -99,33 +108,31 @@ const FerdigstillValgtBrev = (properties: {
 };
 
 const validationSchema = z.object({
-  valgteBrevSomSkalSendes: z.array(z.number()).min(1, "Du må velge minst 1 brev"),
+  valgteBrevSomSkalSendes: z.array(z.number()).min(1, "Du må velge minst ett brev å sende"),
 });
 
-const isFerdigstillSuccessResponse = (
-  res: FerdigstillSuccessResponse | FerdigstillErrorResponse,
-): res is FerdigstillSuccessResponse => {
-  return res.status === "fulfilledWithSuccess" && !!res.response.journalpostId;
-};
-
 export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: boolean; onClose: () => void }) => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate({ from: Route.fullPath });
   const { enhetsId, vedtaksId } = Route.useSearch();
-  const queryClient = useQueryClient();
 
-  const ferdigstillBrevContext = useFerdigstillResultatContext();
+  const { setBrevResult, sendteBrev } = useSendtBrev();
+  const { setBrevListKlarTilAttestering } = useBrevInfoKlarTilAttestering();
 
-  const bestillBrevMutation = useMutation<BestillBrevResponse, Error, number>({
-    mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
-  });
-
-  const alleFerdigstileBrevResult = useQuery({
+  const alleBrevResult = useQuery({
     queryKey: hentAlleBrevForSak.queryKey(properties.sakId),
     queryFn: () => hentAlleBrevForSak.queryFn(properties.sakId),
-    select: (data) => data.filter((b) => erBrevKlar(b) || erBrevArkivert(b)),
+    select: (data) => data.filter((brev) => erBrevKlar(brev) || erBrevArkivert(brev) || erBrevKlarTilAttestering(brev)),
   });
 
-  const alleFerdigstilteBrev = useMemo(() => alleFerdigstileBrevResult.data ?? [], [alleFerdigstileBrevResult.data]);
+  const [brevAttestering, brevSending] = useMemo(() => {
+    const alle = alleBrevResult.data ?? [];
+    return partition(alle, (brev) => erBrevKlarTilAttestering(brev));
+  }, [alleBrevResult.data]);
+
+  const sendBrevMutation = useMutation<BestillBrevResponse, AxiosError, number>({
+    mutationFn: (brevId) => sendBrev(properties.sakId, brevId),
+  });
 
   const form = useForm<z.infer<typeof validationSchema>>({
     defaultValues: { valgteBrevSomSkalSendes: [] },
@@ -133,45 +140,57 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   });
 
   useEffect(() => {
+    setBrevListKlarTilAttestering(brevAttestering);
+  }, [brevAttestering, setBrevListKlarTilAttestering]);
+
+  useEffect(() => {
     form.setValue(
       "valgteBrevSomSkalSendes",
-      alleFerdigstilteBrev.map((brev) => brev.id),
+      brevSending.map((brev) => brev.id),
     );
-  }, [alleFerdigstilteBrev, form]);
+  }, [brevSending, form]);
 
   const onSendValgteBrev = async (values: { valgteBrevSomSkalSendes: number[] }) => {
-    const brevSomSkalSendes = values.valgteBrevSomSkalSendes
-      .map((brevId) => alleFerdigstilteBrev.find((brev) => brev.id === brevId))
-      .filter((brev): brev is BrevInfo => !!brev);
+    const toSend = values.valgteBrevSomSkalSendes.map((id) => brevSending.find((brev) => brev.id === id)!);
 
-    const requests = brevSomSkalSendes.map((brevInfo) =>
-      bestillBrevMutation.mutateAsync(brevInfo.id).then(
-        //vi har fortsatt behov for informasjon i brevet, så vi returnerer brevinfo sammen med responsen
-        (response) => ({ status: "fulfilledWithSuccess" as const, brevInfo, response }),
-        (error: AxiosError) => ({ status: "fulfilledWithError" as const, brevInfo, error }),
-      ),
-    );
-
-    const resultat: FerdigstillResponser = await Promise.allSettled(requests).then((result) =>
-      result.map((response) => {
-        switch (response.status) {
-          //fordi vi håndterer vanlige caser av rejected i mutation, vil resultatet 'alltid' være fulfilled
-          case "fulfilled": {
-            return response.value;
+    await Promise.all(
+      toSend.map(async (brevInfo) => {
+        try {
+          const response = await sendBrevMutation.mutateAsync(brevInfo.id);
+          if (response.error) {
+            setBrevResult(String(brevInfo.id), {
+              status: "error",
+              brevInfo,
+              error: response.error,
+            });
+          } else {
+            setBrevResult(String(brevInfo.id), {
+              status: "success",
+              brevInfo,
+              response,
+            });
           }
-          //en safe-guard dersom noe uventet går feil? Kan se om vi kan håndtere dette på en bedre måte
-          case "rejected": {
-            throw new Error(`Feil ved sending av minst 1 brev. Original error: ${response.reason}`);
-          }
+        } catch (error) {
+          setBrevResult(String(brevInfo.id), {
+            status: "error",
+            brevInfo,
+            error: error as AxiosError | BestillBrevError,
+          });
         }
       }),
     );
-    ferdigstillBrevContext.setResultat(resultat);
-    const sendteBrev = new Set(resultat.filter(isFerdigstillSuccessResponse).map((res) => res.brevInfo.id));
-    queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
-      currentBrevInfo.filter((brev) => !sendteBrev.has(brev.id)),
+
+    const sentIds = new Set<number>(
+      Object.entries(sendteBrev)
+        .filter(([, result]) => result.status === "success")
+        .map(([id]) => Number(id)),
     );
-    return navigate({
+
+    queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (current: BrevInfo[] = []) =>
+      current.filter((b) => !sentIds.has(b.id)),
+    );
+
+    navigate({
       to: "/saksnummer/$saksId/kvittering",
       params: { saksId: properties.sakId },
       search: { enhetsId, vedtaksId },
@@ -198,46 +217,55 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
               margin-bottom: 1rem;
             `}
           >
-            <div>
-              <BodyShort>
-                Brevene du ferdigstiller og sender vil bli lagt til i brukers dokumentoversikt. Du kan ikke angre denne
-                handlingen.
-              </BodyShort>
-              <br />
-              <BodyShort>Kun brev du har valgt å ferdigstille vil bli sendt.</BodyShort>
-            </div>
-            <br />
-            <div>
-              {alleFerdigstileBrevResult.isPending && <Label>Henter alle ferdigstilte brev...</Label>}
-              {alleFerdigstileBrevResult.isError && (
-                <ApiError
-                  error={alleFerdigstileBrevResult.error}
-                  title={"Klarte ikke å hente alle ferdigstilte for saken"}
-                />
-              )}
-              {alleFerdigstileBrevResult.isSuccess && (
-                <Controller
-                  control={form.control}
-                  name="valgteBrevSomSkalSendes"
-                  render={({ field, fieldState }) => (
-                    <CheckboxGroup
-                      data-cy="ferdigstillbrev-valgte-brev"
-                      error={fieldState.error?.message}
-                      hideLegend
-                      legend="Velg brev som skal sendes"
-                      onChange={field.onChange}
-                      value={field.value}
-                    >
-                      {alleFerdigstilteBrev.map((brev) => (
-                        <Checkbox key={brev.id} value={brev.id}>
-                          {brev.brevtittel}
-                        </Checkbox>
-                      ))}
-                    </CheckboxGroup>
+            {queryFold({
+              query: alleBrevResult,
+              initial: () => null,
+              pending: () => <Label>Henter alle ferdigstilte brev...</Label>,
+              error: (error) => <ApiError error={error} title={"Klarte ikke å hente alle ferdigstilte for saken"} />,
+              success: () => (
+                <VStack gap="6">
+                  {brevSending.length > 0 && (
+                    <VStack gap="1">
+                      <BodyLong>
+                        Valgte brev du ferdigstiller og sender vil bli lagt til i brukers dokumentoversikt. Du kan ikke
+                        angre denne handlingen.
+                      </BodyLong>
+                      <Controller
+                        control={form.control}
+                        name="valgteBrevSomSkalSendes"
+                        render={({ field, fieldState }) => (
+                          <CheckboxGroup
+                            data-cy="ferdigstillbrev-valgte-brev"
+                            error={fieldState.error?.message}
+                            hideLegend
+                            legend="Velg brev som skal sendes"
+                            onChange={field.onChange}
+                            value={field.value}
+                          >
+                            {brevSending.map((brev) => (
+                              <Checkbox key={brev.id} value={brev.id}>
+                                {brev.brevtittel}
+                              </Checkbox>
+                            ))}
+                          </CheckboxGroup>
+                        )}
+                      />
+                    </VStack>
                   )}
-                />
-              )}
-            </div>
+
+                  {brevAttestering.length > 0 && (
+                    <VStack>
+                      <BodyLong>Vedtaksbrev sendes av attestant etter at attestering er gjennomført.</BodyLong>
+                      {brevAttestering.map((brev) => (
+                        <List key={brev.id}>
+                          <List.Item>{brev.brevtittel}</List.Item>
+                        </List>
+                      ))}
+                    </VStack>
+                  )}
+                </VStack>
+              ),
+            })}
           </div>
         </Modal.Body>
         <Modal.Footer>
@@ -246,7 +274,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
               Avbryt
             </Button>
 
-            <Button loading={bestillBrevMutation.isPending} type="submit">
+            <Button loading={sendBrevMutation.isPending} type="submit">
               Ja, send valgte brev
             </Button>
           </HStack>

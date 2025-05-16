@@ -10,7 +10,13 @@ import PDFViewerTopBar from "./PDFViewerTopBar";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
 
-const PDFViewer = (properties: { sakId: string; brevId: number; pdf: Blob; viewerHeight?: string }) => {
+const PDFViewer = (properties: {
+  sakId: string;
+  brevId: number;
+  pdf: Blob;
+  viewerHeight?: string;
+  utenSlettKnapp?: boolean;
+}) => {
   const [scale, setScale] = useState<number>(1);
   const [totalNumberOfPages, setTotalNumberOfPages] = useState<number>(1);
 
@@ -80,6 +86,7 @@ const PDFViewer = (properties: { sakId: string; brevId: number; pdf: Blob; viewe
         setCurrentPageNumber={setCurrentPageNumber}
         setScale={setScale}
         totalNumberOfPages={totalNumberOfPages}
+        utenSlettKnapp={properties.utenSlettKnapp}
       />
       <div
         css={css`

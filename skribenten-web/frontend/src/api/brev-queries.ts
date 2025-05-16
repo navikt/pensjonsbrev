@@ -18,17 +18,17 @@ export const brevmalKeys = {
   modelSpecification: (brevkode: string) => [...brevmalKeys.brevkode(brevkode), "MODEL_SPECIFICATION"],
 };
 
-export const brevKeys = {
-  all: ["BREV"] as const,
-  id: (brevId: number) => [...brevKeys.all, brevId] as const,
-  reservasjon: (brevId: number) => [...brevKeys.id(brevId), "RESERVASJON"] as const,
-};
-
 export const getModelSpecification = {
   queryKey: brevmalKeys.modelSpecification,
   queryFn: async (brevkode: string) =>
     (await axios.get<LetterModelSpecification>(`${SKRIBENTEN_API_BASE_PATH}/brevmal/${brevkode}/modelSpecification`))
       .data,
+};
+
+export const brevKeys = {
+  all: ["BREV"] as const,
+  id: (brevId: number) => [...brevKeys.all, brevId] as const,
+  reservasjon: (brevId: number) => [...brevKeys.id(brevId), "RESERVASJON"] as const,
 };
 
 export const getBrev = {
@@ -38,17 +38,42 @@ export const getBrev = {
       .data,
 };
 
+export const attesteringBrevKeys = {
+  all: ["BREV", "ATTESTERING"] as const,
+  id: (brevId: number) => [...attesteringBrevKeys.all, brevId] as const,
+  reservasjon: (brevId: number) => [...attesteringBrevKeys.id(brevId), "RESERVASJON"] as const,
+};
+
+export const getBrevAttesteringQuery = (saksId: string, brevId: number, reserver: boolean = true) => ({
+  queryKey: attesteringBrevKeys.id(brevId),
+  queryFn: async () =>
+    (
+      await axios.get<BrevResponse>(
+        `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/attestering?reserver=${reserver}`,
+      )
+    ).data,
+});
+
 export async function createBrev(saksId: string, request: OpprettBrevRequest) {
   return (await axios.post<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev`, request)).data;
 }
 
-export async function oppdaterBrev(args: { saksId: number; brevId: number; request: OppdaterBrevRequest }) {
+export async function oppdaterBrev(args: {
+  saksId: number;
+  brevId: number;
+  request: OppdaterBrevRequest;
+  frigiReservasjon?: boolean;
+}) {
+  const frigiReservasjon = args.frigiReservasjon ?? true;
   return (
-    await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}`, {
-      saksbehandlerValg: args.request.saksbehandlerValg,
-      redigertBrev: args.request.redigertBrev,
-      signatur: args.request.signatur,
-    })
+    await axios.put<BrevResponse>(
+      `${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}?frigiReservasjon=${frigiReservasjon}`,
+      {
+        saksbehandlerValg: args.request.saksbehandlerValg,
+        redigertBrev: args.request.redigertBrev,
+        signatur: args.request.signatur,
+      },
+    )
   ).data;
 }
 
@@ -70,6 +95,14 @@ export async function oppdaterSaksbehandlerValg(brevId: number, saksbehandlerVal
 export const oppdaterSignatur = async (brevId: number | string, signatur: string) =>
   (
     await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/signatur`, signatur, {
+      //sendes som form-data hvis man ikke setter content-type til text/plain
+      headers: { "Content-Type": "text/plain" },
+    })
+  ).data;
+
+export const oppdaterAttestantSignatur = async (brevId: number | string, signatur: string) =>
+  (
+    await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/attestant`, signatur, {
       //sendes som form-data hvis man ikke setter content-type til text/plain
       headers: { "Content-Type": "text/plain" },
     })
