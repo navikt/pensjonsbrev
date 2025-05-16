@@ -101,7 +101,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.Omstillingsstoe
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTO
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingRedigerbartBrevDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggRedigerbartUtfall
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggRedigerbartUtfall
 import kotlin.reflect.KClass
 
 object Fixtures {

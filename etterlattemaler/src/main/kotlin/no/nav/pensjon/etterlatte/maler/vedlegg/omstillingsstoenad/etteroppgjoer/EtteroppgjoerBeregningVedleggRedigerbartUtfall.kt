@@ -1,4 +1,4 @@
-package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer
+package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer
 
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -16,8 +16,8 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.Vedlegg
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggInnholdDTOSelectors.etteroppgjoersAar
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggInnholdDTOSelectors.etteroppgjoersAar
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTOSelectors.data
 
 data class EtteroppgjoerBeregningVedleggInnholdDTO(
     val etteroppgjoersAar: Int,
@@ -50,7 +50,6 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
         }
         outline {
             paragraph {
-
                 textExpr(
                     Bokmal to "I tabllen over har vi registrert beløp som vi mener ikke skal være med i årsinntekten din for ".expr() + data.etteroppgjoersAar.format() +". Du må gi oss beskjed hvis dette er feil og sende dokumentasjon hvis du har andre inntekter som ikke skal være med i inntekt for de månedene omstillingsstønaden har vært innvilget i "+data.etteroppgjoersAar.format()+". ",
                     Nynorsk to "".expr(),
@@ -59,6 +58,4 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
             }
         }
     }
-
-
 }
