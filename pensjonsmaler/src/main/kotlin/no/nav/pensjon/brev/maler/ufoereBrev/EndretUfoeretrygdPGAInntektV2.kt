@@ -374,7 +374,7 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                         Bokmal to "Inntekten din har betydning for hvor mye du får utbetalt i barnetillegg. " +
                                 "Uføretrygden din regnes med som inntekt. For barn som bor med begge sine foreldre, bruker vi begge foreldrenes inntekt når vi beregner størrelsen på barnetillegget. " +
                                 "Inntektene og fribeløpet for beregning av barnetillegg er justert slik at det kun gjelder for den perioden du mottar barnetillegg. ",
-                        Nynorsk to "nntekta di verkar inn på kor mykje du får utbetalt i barnetillegg. " +
+                        Nynorsk to "Inntekta di verkar inn på kor mykje du får utbetalt i barnetillegg. " +
                                 "Uføretrygda di blir teken med som inntekt. For barn som bur hos begge foreldra sine, bruker vi inntekta til begge foreldre når vi reknar ut storleiken på barnetillegget. " +
                                 "Inntektene og fribeløpet for utrekning av barnetillegg er justert slik at det berre gjeld for den perioden du får barnetillegg.  ",
                     )
@@ -391,7 +391,7 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                 }
             }
 
-            showIf(barnetilleggFellesbarn.notNull() and barnetilleggSaerkullsbarn.isNull()) {
+            showIf(btfbEndret and barnetilleggFellesbarn.notNull() and barnetilleggSaerkullsbarn.isNull()) {
                 ifNotNull(barnetilleggFellesbarn) { btfb ->
                     title2 {
                         text(
@@ -414,7 +414,7 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                         )
                     }
                 }
-            }.orShowIf(barnetilleggFellesbarn.isNull() and barnetilleggSaerkullsbarn.notNull()) {
+            }.orShowIf(btsbEndret and barnetilleggSaerkullsbarn.notNull() and barnetilleggFellesbarn.isNull() ) {
                 ifNotNull(barnetilleggSaerkullsbarn) { btsb ->
                     title2 {
                         text(
@@ -433,7 +433,7 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                         )
                     }
                 }
-            }.orShow {
+            }.orShowIf(btfbEndret and btsbEndret) {
                 ifNotNull(barnetilleggFellesbarn, barnetilleggSaerkullsbarn) { barnetilleggFellesbarn, barnetilleggSaerkullsbarn ->
                     title2 {
                         text(
