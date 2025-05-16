@@ -9,7 +9,7 @@ import { item, itemList, letter, literal, paragraph, select, variable } from "..
 
 describe("LetterEditorActions.paste", () => {
   describe("format: text/plain", () => {
-    test("start of a literal 11112", () => {
+    test("start of a literal", () => {
       const state = letter(paragraph([literal({ text: "Her har vi noe" })]));
       const clipboard = new MockDataTransfer({ "text/plain": "ikke " });
       const result = Actions.paste(state, { blockIndex: 0, contentIndex: 0 }, 0, clipboard);

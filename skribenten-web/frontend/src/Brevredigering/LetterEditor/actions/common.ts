@@ -33,7 +33,9 @@ export function isEditableContent(content: Content | undefined | null): boolean 
   return content != null && (content.type === VARIABLE || content.type === ITEM_LIST);
 }
 
-export const isBlockContentIndex = (f: Focus | LiteralIndex): f is BlockContentIndex => !isItemContentIndex(f);
+export function isBlockContentIndex(f: Focus | LiteralIndex): f is BlockContentIndex {
+  return !isItemContentIndex(f);
+}
 
 export function isItemContentIndex(f: Focus | LiteralIndex): f is ItemContentIndex {
   return "itemIndex" in f && f.itemIndex !== undefined && "itemContentIndex" in f && f.itemContentIndex !== undefined;
