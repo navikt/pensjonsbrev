@@ -28,6 +28,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUtta
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.VedtakSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -309,7 +310,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             }
 
             // skattAPendring_001
-            includePhrase(Vedtak.EndringKanHaBetydningForSkatt)
+            includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
 
             showIf(pesysData.vedtak.etterbetaling or saksbehandlerValg.visEtterbetaling) {
                 // etterbetalingAP_002
@@ -317,22 +318,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             }
 
             // arbInntektAPOverskrift_001
-            title1 {
-                text(
-                    Bokmal to "Arbeidsinntekt og alderspensjon",
-                    Nynorsk to "Arbeidsinntekt og alderspensjon",
-                    English to "Earned income and retirement pension"
-                )
-            }
-
-            // arbInntektAP_001
-            paragraph {
-                text(
-                    Bokmal to "Du kan arbeide så mye du vil uten at alderspensjonen din blir redusert. Det kan føre til at pensjonen din øker.",
-                    Nynorsk to "Du kan arbeide så mykje du vil utan at alderspensjonen din blir redusert. Det kan føre til at pensjonen din aukar.",
-                    English to "You can work as much as you want without your retirement pension being reduced. This may lead to an increase in your pension."
-                )
-            }
+            includePhrase(VedtakAlderspensjon.ArbeidsinntektOgAlderspensjon)
 
             showIf(pesysData.alderspensjonVedVirk.uttaksgrad.equalTo(Percent(100))) {
                 // nyOpptjeningHelAP_001
