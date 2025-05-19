@@ -35,7 +35,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
             displayTitle = "Forhåndsvarsel - Gjenlevendepensjonen din kan bli forlenget",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
         title {
@@ -75,7 +75,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             paragraph {
                 text(
-                    Bokmal to "Forhåndsvarsel - Gjenlevendepensjonen dinkan bli forlenget",
+                    Bokmal to "Hvis du har hatt lav eller ingen pensjonsgivende inntekt de siste fem årene før 2024, kan du beholde gjenlevendepensjonen din til du blir 67 år. ",
                     Nynorsk to "",
                     English to ""
                 )
