@@ -82,6 +82,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
         ),
     ) {
         title {
+            // hvis ingen endring
             showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.IKKE_ETTEROPPGJOER)){
                 textExpr(
                     Language.Bokmal to "Informasjon om etteroppgjør av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
@@ -89,6 +90,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                     Language.English to "".expr() + data.etteroppgjoersAar.format(),
                 )
             }.orShow {
+                // hvis for mye eller for lite utbetalt
                 textExpr(
                     Language.Bokmal to "Forhåndsvarsel om etteroppgjør av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
                     Language.Nynorsk to "".expr() + data.etteroppgjoersAar.format(),
