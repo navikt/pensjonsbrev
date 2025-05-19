@@ -17,12 +17,10 @@ Bruk følgende for å bygge og kjøre:
 Dersom du kun skal kjøre brevbaker og pdf-bygger og ikke skribenten må du fortsatt pga en bug i docker-compose generere tomme env files for skribenten:
 ```bash
 (mkdir -p - skribenten-backend/secrets tjenestebuss-integrasjon/secrets skribenten-web/bff pensjon-brevbaker/secrets/kafka)
-(touch skribenten-backend/secrets/azuread.env skribenten-backend/secrets/unleash.env tjenestebuss-integrasjon/secrets/docker.env  skribenten-web/bff/.env  pensjon-brevbaker/secrets/kafka/kafka-secret.env\
+(touch skribenten-backend/secrets/azuread.env skribenten-backend/secrets/unleash.env tjenestebuss-integrasjon/secrets/docker.env  skribenten-web/bff/.env\
+  pensjon-brevbaker/secrets/kafka/kafka-secret.env\
   pensjon-brevbaker/secrets/kafka/client.keystore.p12\
-  pensjon-brevbaker/secrets/kafka/client.truststore.jks\
-  pensjon-brevbaker/secrets/kafka/client.keystore.p12\
-  pensjon-brevbaker/secrets/kafka/client.keystore.p12\
-  pensjon-brevbaker/secrets/kafka/client.keystore.p12\
+  pensjon-brevbaker/secrets/kafka/client.truststore.jks
 )
 ```
 ```bash

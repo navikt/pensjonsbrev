@@ -1,42 +1,39 @@
-import { css } from "@emotion/react";
-import { Label, Loader, VStack } from "@navikt/ds-react";
+import { Alert, Label, Loader, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 
 import { hentPdfForBrev, hentPdfForBrevFunction } from "~/api/sak-api-endpoints";
-import { ApiError } from "~/components/ApiError";
+import { queryFold } from "~/utils/tanstackUtils";
 
-import PDFViewer from "../-components/PDFViewer";
+import PDFViewer from "../../-components/PDFViewer";
 
-export const BrevForhåndsvisning = (properties: { sakId: string; brevId: number }) => {
+const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) => {
   const hentPdfQuery = useQuery({
     queryKey: hentPdfForBrev.queryKey(properties.brevId),
-    queryFn: () => hentPdfForBrevFunction(properties.sakId, properties.brevId),
+    queryFn: () => hentPdfForBrevFunction(properties.saksId, properties.brevId),
   });
 
-  return (
-    <VStack
-      css={css`
-        height: 100%;
-      `}
-      justify={"center"}
-    >
-      {hentPdfQuery.isPending && (
-        <VStack align="center" justify="center">
-          <Loader size="3xlarge" title="Henter..." />
-          <Label>Henter brev...</Label>
-        </VStack>
-      )}
-      {hentPdfQuery.isError && <ApiError error={hentPdfQuery.error} title={"Kunne ikke hente PDF"} />}
-      {hentPdfQuery.isSuccess && hentPdfQuery.data !== null && (
+  return queryFold({
+    query: hentPdfQuery,
+    initial: () => <></>,
+    pending: () => (
+      <VStack align="center" justify="center">
+        <Loader size="3xlarge" title="Henter brev..." />
+        <Label>Henter brev...</Label>
+      </VStack>
+    ),
+    error: (error) => <Alert variant="error">{error.message}</Alert>,
+    success: (pdf) =>
+      pdf === null ? (
+        <VStack align="center">Fant ikke PDF</VStack>
+      ) : (
         <PDFViewer
           brevId={properties.brevId}
-          pdf={hentPdfQuery.data}
-          sakId={properties.sakId}
+          pdf={pdf}
+          sakId={properties.saksId}
           viewerHeight={"var(--main-page-content-height)"}
         />
-      )}
-    </VStack>
-  );
+      ),
+  });
 };
 
 export default BrevForhåndsvisning;
