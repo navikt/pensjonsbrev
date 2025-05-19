@@ -57,7 +57,7 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
         letterDataType = EtteroppgjoerForhaandsvarselRedigerbartBrevDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Etteroppgjør Forhåndsvarsel Innhold",
+            displayTitle = "Varsel - Etteroppgjør Innhold",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,

@@ -45,9 +45,9 @@ object EtteroppgjoerVedtak: EtterlatteTemplate<EtteroppgjoerVedtakDTO>, Hovedmal
         ) {
             title {
                 text(
-                    Bokmal to "TODO",
-                    Nynorsk to "TODO",
-                    English to "TODO",
+                    Bokmal to "Vedtak om etteroppgjør",
+                    Nynorsk to "",
+                    English to "",
                 )
             }
 

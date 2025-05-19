@@ -24,7 +24,7 @@ import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerBeregningVedleggRed
 import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerForhaandsvarselBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerForhaandsvarselRedigerbartBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerVedtakDTO
-import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerVedtakRedigerbartUtfallDTO
+import no.nav.pensjon.etterlatte.fixtures.createEtteroppgjoerVedtakRedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createKlageOversendelseBlankettDTO
 import no.nav.pensjon.etterlatte.fixtures.createKlageOversendelseBrukerDTO
 import no.nav.pensjon.etterlatte.fixtures.createKlageSaksbehandlingstidDtoTestI
@@ -85,7 +85,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.Omstillingstoen
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselBrevDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselRedigerbartBrevDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakRedigerbartUtfallDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakRedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysningerDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTO
@@ -163,7 +163,7 @@ object Fixtures {
             EtteroppgjoerForhaandsvarselRedigerbartBrevDTO::class -> createEtteroppgjoerForhaandsvarselRedigerbartBrevDTO() as T
             EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO::class -> createEtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO() as T
             EtteroppgjoerVedtakDTO::class -> createEtteroppgjoerVedtakDTO() as T
-            EtteroppgjoerVedtakRedigerbartUtfallDTO::class -> createEtteroppgjoerVedtakRedigerbartUtfallDTO() as T
+            EtteroppgjoerVedtakRedigerbartUtfallBrevDTO::class -> createEtteroppgjoerVedtakRedigerbartUtfallBrevDTO() as T
 
             AvvistKlageInnholdDTO::class -> createAvvistKlageInnholdDTO() as T
             KlageSaksbehandlingstidDTO::class -> createKlageSaksbehandlingstidDtoTestI() as T
