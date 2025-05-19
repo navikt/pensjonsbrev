@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensj
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.krav
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenAlderAP2025Dto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon
@@ -39,6 +40,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -51,6 +53,7 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -58,6 +61,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 import java.time.Month
@@ -236,20 +240,22 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                     )
                 }
 
-                // flereBeregningsperioderVedleggOpptjening_001
-                // TODO Når vedlegg er på plass, fiks denne rett lenke
-//                val vedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, Any>? = if (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
-//                    vedleggOpplysningerBruktIBeregningenAlder
-//                } else if (pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025)) {
-//                    vedleggOpplysningerBruktIBeregningenAlder
-//                    // TODO vedlegg 11 heller her
-//                }
-
                 paragraph {
-                    textExpr(
-                        Bokmal to "I vedlegget ".expr() + "[_Script nyOpptjeningBegrunn_001_]" + " finner du detaljer om din månedlige pensjon.",
-                        Nynorsk to "I vedlegget ".expr() + "[_Script nyOpptjeningBegrunn_001_]" + " finn du detaljar om din månadlege pensjon.",
-                        English to "In the appendix ".expr() + "[_Script nyOpptjeningBegrunn_001_]" + " you will find more details about your monthly pension."
+                    // flereBeregningsperioderVedleggOpptjening_001
+                    text(
+                        Bokmal to "I vedlegget ",
+                        Nynorsk to "I vedlegget ",
+                        English to "In the appendix"
+                    )
+                    showIf (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
+                        namedReference(vedleggOpplysningerBruktIBeregningenAlder)
+                    }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025)) {
+                        namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
+                    }
+                    text(
+                        Bokmal to " finner du detaljer om din månedlige pensjon.",
+                        Nynorsk to " finn du detaljar om din månadlege pensjon.",
+                        English to " you will find more details about your monthly pension."
                     )
                 }
             }
@@ -308,10 +314,17 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                         )
                     }
                 }
-                // TODO: Samme vedlegg som over
-//                text(
-//                    Bokmal to "Du kan finne mer informasjon i vedlegget \"[_Script nyOpptjeningBegrunn_001_]\".\n"
-//                )
+                text(
+                    Bokmal to "Du kan finne mer informasjon i vedlegget ",
+                    Nynorsk to "Du kan finne meir informasjon i vedlegget ",
+                    English to "You will find more information in the appendix "
+                )
+                showIf (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
+                    namedReference(vedleggOpplysningerBruktIBeregningenAlder)
+                }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025)) {
+                    namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
+                }
+                text(Bokmal to ".", Nynorsk to ".", English to ".")
             }
 
             showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2011)) {
@@ -382,12 +395,22 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                     )
                 }
                 paragraph {
-                    // TODO: Vurder å bruke referansar til vedlegga også her
                     text(
-                        Bokmal to "Du finner flere detaljer om pensjonen din i vedlegget \"Dette er din månedlige pensjon før skatt\" og \"Opplysninger vi har brukt i beregningen\".",
-                        Nynorsk to "Du finn fleire detaljar om pensjonen din i vedlegget \"Dette er den månadlege pensjonen din før skatt\" og \"Opplysningar vi har brukt i berekninga\".",
-                        English to "You will find more details about your pension in the attachment 'This is your monthly pension before tax' and 'Information about your calculation'."
+                        Bokmal to "Du finner flere detaljer om pensjonen din i vedlegget ",
+                        Nynorsk to "Du finn fleire detaljar om pensjonen din i vedlegget ",
+                        English to "You will find more details about your pension in the attachment ",
                     )
+
+                    showIf (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
+                        namedReference(vedleggMaanedligPensjonFoerSkatt)
+                        text(Bokmal to " og ", Nynorsk to " og ", English to " and ")
+                        namedReference(vedleggOpplysningerBruktIBeregningenAlder)
+                    }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025)) {
+                        namedReference(vedleggMaanedligPensjonFoerSkattAp2025)
+                        text(Bokmal to " og ", Nynorsk to " og ", English to " and ")
+                        namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
+                    }
+                    text(Bokmal to ".", Nynorsk to ".", English to ".")
                 }
             }
 
@@ -485,6 +508,6 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, pesysData.maanedligPensjonFoerSkattDto)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025Dto)
         includeAttachment(vedleggOpplysningerBruktIBeregningenAlder, pesysData.opplysningerBruktIBeregningenAlderDto)
-        // includeAttachment(vedlegg11)
+        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025, pesysData.opplysningerBruktIBeregningenAlderAP2025Dto)
     }
 }
