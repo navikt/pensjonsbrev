@@ -31,7 +31,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensj
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
-import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.MINSIDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
@@ -451,29 +450,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 }
             }
 
-            // infoAPOverskrift_001
-            title1 {
-                text(
-                    Bokmal to "Hvor kan du få vite mer om alderspensjonen din?",
-                    Nynorsk to "Kvar kan du få vite meir om alderspensjonen din?",
-                    English to "Where can you find out more about your retirement pension?"
-                )
-            }
-            // infoAP_001
-            paragraph {
-                text(
-                    Bokmal to "Du finner mer informasjon om hvordan alderspensjon er satt sammen og oversikter over grunnbeløp og aktuelle satser på $ALDERSPENSJON.",
-                    Nynorsk to "Du finn meir informasjon om korleis alderspensjonen er sett saman, og oversikter over grunnbeløp og aktuelle satsar på $ALDERSPENSJON.",
-                    English to "There is more information on how retirement pension is calculated, with overviews of basic amounts and relevant rates, at $ALDERSPENSJON."
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Informasjon om utbetalingene dine finner du på $DITT_NAV. Her kan du også endre kontonummeret ditt.",
-                    Nynorsk to "Informasjon om utbetalingane dine finn du på $DITT_NAV. Her kan du også endre kontonummeret ditt.",
-                    English to "You can find more detailed information on what you will receive at $DITT_NAV. Here you can also change your bank account number."
-                )
-            }
+
 
             // TODO: Det kjens som dette burde vera standardtekst i felles
             //  meldEndringerPesys_001
