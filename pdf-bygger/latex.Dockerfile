@@ -34,3 +34,5 @@ RUN tlmgr install xmpincl
 RUN tlmgr install everyshi
 RUN tlmgr install etoolbox
 
+RUN rm -rf /app/tex/texmf-dist/doc
+RUN rm -rf /app/tex/texmf-dist/fonts
