@@ -18,6 +18,8 @@ RUN ./install-tl/install-tl --no-interaction -s f -portable -texdir /app/tex -te
 
 #Install xetex and required packages from uib using texlive package manager
 RUN tlmgr option repository https://mirror.ctan.org/systems/texlive/tlnet/
+RUN tlmgr option docfiles 0
+RUN tlmgr option srcfiles 0
 RUN tlmgr install xetex
 RUN tlmgr install collection-latex
 RUN tlmgr install fontspec
