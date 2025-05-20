@@ -213,8 +213,6 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
             }
 
             includeAttachment(beregningsVedlegg, data.beregningsVedleggData)
-
-            //includeAttachment(praktiskInformasjonOmEtteroppgjoeret)
-            // TODO: vedlegg praktisk informasjon om etteroppgjøret
+            includeAttachment(praktiskInformasjonOmEtteroppgjoeret)
         }
 }
