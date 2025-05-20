@@ -25,7 +25,7 @@ ENV PATH="${PATH}:/app/tex/bin/x86_64-linux/"
 ENV TEXINPUTS=".:/app/pensjonsbrev_latex//:"
 RUN apt update && apt -y install tzdata perl-tk fontconfig && rm -rf /var/lib/apt/lists/*
 #To update TeXLive/XeLaTeX version, run the github workflow and replace the --from argument to newest release
-COPY --from=ghcr.io/navikt/pensjonsbrev/pensjon-latex:2024-12-30-14_56 /app /app
+COPY --from=ghcr.io/navikt/pensjonsbrev/pensjon-latex:2025-05-20-14_26 /app /app
 COPY containerFiles/fonts /usr/share/fonts
 RUN fc-cache /usr/share/fonts # Build font cache for faster latex compile time. About 400 ms faster per letter
 COPY containerFiles/latex /app/pensjonsbrev_latex
