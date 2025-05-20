@@ -7,7 +7,7 @@ RUN $JAVA_HOME/bin/jlink \
          --strip-debug \
          --no-man-pages \
          --no-header-files \
-         --compress=2 \
+         --compress=zip-6 \
          --output /javaruntime
 
 # Define your base image
