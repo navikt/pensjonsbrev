@@ -1,4 +1,20 @@
-FROM --platform=linux/amd64 eclipse-temurin:21-jre
+# Example of custom Java runtime using jlink in a multi-stage container build
+FROM --platform=linux/amd64 eclipse-temurin:21 as jre-build
+
+# Create a custom Java runtime
+RUN $JAVA_HOME/bin/jlink \
+         --add-modules java.base,jdk.jdwp.agent,java.xml,java.naming,java.management \
+         --strip-debug \
+         --no-man-pages \
+         --no-header-files \
+         --compress=2 \
+         --output /javaruntime
+
+# Define your base image
+FROM --platform=linux/amd64 debian:buster-slim
+ENV JAVA_HOME=/opt/java/openjdk
+ENV PATH "${JAVA_HOME}/bin:${PATH}"
+COPY --from=jre-build /javaruntime $JAVA_HOME
 
 EXPOSE 8080
 
@@ -7,8 +23,7 @@ RUN groupadd -r --gid 1001 apprunner && useradd -r --uid 1001 -g apprunner appru
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
 ENV PATH="${PATH}:/app/tex/bin/x86_64-linux/"
 ENV TEXINPUTS=".:/app/pensjonsbrev_latex//:"
-RUN apt remove wget -y
-RUN apt update && apt -y install tzdata perl-tk && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt -y install tzdata perl-tk fontconfig && rm -rf /var/lib/apt/lists/*
 #To update TeXLive/XeLaTeX version, run the github workflow and replace the --from argument to newest release
 COPY --from=ghcr.io/navikt/pensjonsbrev/pensjon-latex:2024-12-30-14_56 /app /app
 COPY containerFiles/fonts /usr/share/fonts
