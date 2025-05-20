@@ -16,5 +16,5 @@ RUN fc-cache /usr/share/fonts # Build font cache for faster latex compile time. 
 COPY containerFiles/latex /app/pensjonsbrev_latex
 
 USER apprunner
-COPY  build/libs/pdf-bygger.jar /app/app.jar
+COPY build/libs/pdf-bygger.jar /app/app.jar
 CMD ["java", "-jar", "/app/app.jar"]
