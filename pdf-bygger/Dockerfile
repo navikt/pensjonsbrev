@@ -1,6 +1,6 @@
 FROM --platform=linux/amd64 eclipse-temurin:21 AS jre-build
 RUN $JAVA_HOME/bin/jlink \
-         --add-modules java.base,jdk.jdwp.agent,java.xml,java.naming,java.management,java.instrument,jdk.unsupported,jdk.management \
+         --add-modules java.base,jdk.jdwp.agent,java.xml,java.naming,java.management,java.instrument,jdk.unsupported,jdk.management,jdk.localedata \
          --strip-debug \
          --no-man-pages \
          --no-header-files \
