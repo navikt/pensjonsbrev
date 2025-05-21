@@ -2,10 +2,13 @@ package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
+import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.text
 
 
@@ -33,23 +36,23 @@ object InfoInntektAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 // utbetalingsInfoMndUtbet_001
-object Utbetalingsinformasjon: OutlinePhrase<LangBokmalNynorskEnglish>() {
+object Utbetalingsinformasjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
                 Bokmal to "Hvis du har andre pensjonsytelser som for eksempel AFP eller tjenestepensjon, blir de utbetalt i tillegg til alderspensjonen. " +
-                        "Alderspensjonen din utbetales innen den 20. hver måned. Du finner oversikt over utbetalingene dine på nav.no/utbetalinger.",
+                        "Alderspensjonen din utbetales innen den 20. hver måned. Du finner oversikt over utbetalingene dine på $UTBETALINGER_URL.",
                 Nynorsk to "Dersom du har andre pensjonsytingar som for eksempel AFP eller tenestepensjon, kjem slik utbetaling i tillegg til alderspensjonen. " +
-                        "Alderspensjonen din blir betalt ut innan den 20. i kvar månad. Du finn meir informasjon om utbetalingane dine på nav.no/utbetalinger.",
+                        "Alderspensjonen din blir betalt ut innan den 20. i kvar månad. Du finn meir informasjon om utbetalingane dine på $UTBETALINGER_URL.",
                 English to "If you have occupational pensions from other schemes, this will be paid in addition to your retirement pension. " +
-                        "Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at nav.no/utbetalingsinformasjon."
+                        "Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at $UTBETALINGER_URL."
             )
         }
     }
 }
 
 // infoAP_001
-object informasjonOmAlderspensjon: OutlinePhrase<LangBokmalNynorskEnglish>() {
+object InformasjonOmAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
@@ -69,7 +72,7 @@ object informasjonOmAlderspensjon: OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 // meldEndringerPesys_001
-object meldeFraOmEndringer: OutlinePhrase<LangBokmalNynorskEnglish>() {
+object MeldeFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
@@ -106,15 +109,54 @@ object meldeFraOmEndringer: OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-// rettTilKlagePesys_001
-object rettTilKlageAlderspensjon: OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class ArbeidsinntektOgAlderspensjon(
+    val uttaksgrad: Expression<Int>,
+    val uforeKombinertMedAlder: Expression<Boolean>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
-                Bokmal to "Du har rett til å klage ",
-                Nynorsk to "",
-                English to "",
+                Bokmal to "Arbeidsinntekt og alderspensjon",
+                Nynorsk to "Arbeidsinntekt og alderspensjon",
+                English to "Earned income and retirement pension",
             )
+        }
+        // arbInntektAP
+        paragraph {
+            text(
+                Bokmal to "Du kan arbeide så mye du vil uten at alderspensjonen din blir redusert. Det kan føre til at pensjonen din øker.",
+                Nynorsk to "Du kan arbeide så mykje du vil utan at alderspensjonen din blir redusert. Det kan føre til at pensjonen din aukar.",
+                English to "You can work as much as you want without your retirement pension being reduced. This may lead to an increase in your pension.",
+            )
+        }
+        // nyOpptjeningHelAP
+        showIf(uttaksgrad.equalTo(100)) {
+            paragraph {
+                text(
+                    Bokmal to "Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig.",
+                    Nynorsk to "Dersom du har 100 prosent alderspensjon, gjeld auken frå 1. januar året etter at skatteoppgjeret ditt er ferdig.",
+                    English to "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed.",
+                )
+            }
+        }.orShow {
+            // nyOpptjeningGradertAP
+            paragraph {
+                text(
+                    Bokmal to "Hvis du har lavere enn 100 prosent alderspensjon, blir økningen lagt til hvis du søker om endret grad eller ny beregning av den graden du har nå.",
+                    Nynorsk to "Dersom du har lågare enn 100 prosent alderspensjon, blir auken lagd til dersom du søkjer om endra grad eller ny berekning av den graden du har no.",
+                    English to "If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated.",
+                )
+            }
+        }
+        // arbInntektAPogUT
+        showIf(uforeKombinertMedAlder) {
+            paragraph {
+                text(
+                    Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
+                    Nynorsk to "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd.",
+                    English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit.",
+                )
+            }
         }
     }
 }
