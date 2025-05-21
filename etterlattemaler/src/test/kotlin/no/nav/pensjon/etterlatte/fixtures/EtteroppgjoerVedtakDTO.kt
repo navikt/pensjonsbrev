@@ -30,7 +30,7 @@ fun createEtteroppgjoerVedtakBrevDTO() =
                 Kroner(4000)
             ),
             vedleggInnhold = emptyList(),
-            stoenadsBeloep = Kroner(4444)
+            utbetaltBeloep = Kroner(4444)
         )
     )
 
