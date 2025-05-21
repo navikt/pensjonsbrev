@@ -296,6 +296,41 @@ class LatexVisualITest {
         }
     }
 
+    @Test
+    fun `Table title`() {
+        render {
+            repeat(5) {
+                paragraph {
+                    text(
+                        Bokmal to "Padding text bla bla. ".repeat(18),
+                    )
+                }
+            }
+            paragraph {
+                text(Bokmal to "Padding text bla bla. ".repeat(14))
+            }
+            title1 {
+                text(Bokmal to "Test-tittel")
+            }
+            paragraph {
+                table(
+                    header = {
+                        column { text(Bokmal to "Column A") }
+                        column { text(Bokmal to "Column B") }
+                    }
+                ) {
+                    for (i in 1..5) {
+                        row {
+                            cell { text(Bokmal to "Cell A-$i") }
+                            cell { text(Bokmal to "Cell B-$i") }
+                        }
+                    }
+                }
+
+            }
+        }
+    }
+
     @ParameterizedTest
     @MethodSource("allElementCombinations")
     fun `Test unique content combinations`(elementA: ElementType, elementB: ElementType) {
