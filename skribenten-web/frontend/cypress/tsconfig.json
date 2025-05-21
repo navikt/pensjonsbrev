@@ -1,8 +1,10 @@
 {
   "compilerOptions": {
-    "paths": {
-      "~/*": ["../src/*"]
-    },
     "baseUrl": "./",
+    "esModuleInterop": true,
+    "paths": {
+      "~/*": ["../src/*"],
+    },
+    "resolveJsonModule": true,
   },
 }
