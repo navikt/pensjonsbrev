@@ -136,7 +136,7 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
 
     switch (el.tag) {
       case "SPAN": {
-        insertTextInLetter(draft, draft.focus, draft.focus.cursorPosition!, el.content.join(" "));
+        insertTextInLetter(draft, draft.focus, draft.focus.cursorPosition ?? 0, el.content.join(" "));
         break;
       }
       case "P": {
@@ -151,22 +151,22 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
           );
           draft.focus.blockIndex += 1;
         } else {
-          insertTextInLetter(draft, draft.focus, draft.focus.cursorPosition!, pastedText);
-          splitRecipe(draft, draft.focus, draft.focus.cursorPosition!);
+          insertTextInLetter(draft, draft.focus, draft.focus.cursorPosition! ?? 0, pastedText);
+          splitRecipe(draft, draft.focus, draft.focus.cursorPosition! ?? 0);
         }
         break;
       }
       case "LI": {
         if (isItemContentIndex(draft.focus) && isItemList(currentBlock.content[draft.focus.contentIndex])) {
-          insertTextInLetter(draft, draft.focus, draft.focus.cursorPosition!, el.content.join(" "));
-          splitRecipe(draft, draft.focus, draft.focus.cursorPosition!);
+          insertTextInLetter(draft, draft.focus, draft.focus.cursorPosition! ?? 0, el.content.join(" "));
+          splitRecipe(draft, draft.focus, draft.focus.cursorPosition! ?? 0);
         } else if (!isItemContentIndex(draft.focus) && !isItemList(currentBlock.content[draft.focus.contentIndex])) {
           // vi sjekker også at gjeldende ikke er itemList fordi da _må_ også focus være ItemContentIndex.
 
           toggleItemListAndSplitAtCursor(draft, currentBlock);
           const pastedText = el.content.join(" ");
-          insertTextInLetter(draft, draft.focus, draft.focus.cursorPosition!, pastedText);
-          splitRecipe(draft, draft.focus, draft.focus.cursorPosition!);
+          insertTextInLetter(draft, draft.focus, draft.focus.cursorPosition! ?? 0, pastedText);
+          splitRecipe(draft, draft.focus, draft.focus.cursorPosition! ?? 0);
         }
         break;
       }
@@ -193,9 +193,9 @@ function toggleItemListAndSplitAtCursor(draft: Draft<LetterEditorState>, current
 
   // Split currentContent om vi limer inn et sted som ikke er i starten av den, og legg den til i itemContent og resten tilbake til blokken.
   const currentContent = currentBlock.content[draft.focus.contentIndex];
-  if (isLiteral(currentContent) && draft.focus.cursorPosition! > 0) {
+  if (isLiteral(currentContent) && (draft.focus.cursorPosition! ?? 0) > 0) {
     removeElements(draft.focus.contentIndex, 1, currentBlock);
-    const afterSplit = splitLiteralAtOffset(currentContent, draft.focus.cursorPosition!);
+    const afterSplit = splitLiteralAtOffset(currentContent, draft.focus.cursorPosition! ?? 0);
 
     if (text(afterSplit).length > 0) {
       addElements([afterSplit], draft.focus.contentIndex, currentBlock.content, []);
