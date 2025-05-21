@@ -297,7 +297,7 @@ class LatexVisualITest {
     }
 
     @Test
-    fun `Table title`() {
+    fun `Table title should have the correct spacing when sticking to a table that was shipped to the next page`() {
         render {
             repeat(5) {
                 paragraph {
@@ -312,22 +312,25 @@ class LatexVisualITest {
             title1 {
                 text(Bokmal to "Test-tittel")
             }
-            paragraph {
-                table(
-                    header = {
-                        column { text(Bokmal to "Column A") }
-                        column { text(Bokmal to "Column B") }
-                    }
-                ) {
-                    for (i in 1..5) {
-                        row {
-                            cell { text(Bokmal to "Cell A-$i") }
-                            cell { text(Bokmal to "Cell B-$i") }
-                        }
-                    }
-                }
+            paragraph { testTable(5) }        }
+    }
 
-            }
+    @Test
+    fun `table title and other content`() {
+        render {
+            paragraph { text(Bokmal to "asdf") }
+            title1 { text(Bokmal to "Test-tittel") }
+            paragraph { testTable(5) }
+        }
+    }
+
+
+    @Test
+    fun `table title and other title`() {
+        render {
+            title1 { text(Bokmal to "Test-tittel") }
+            title1 { text(Bokmal to "Test-tittel") }
+            paragraph { testTable(5) }
         }
     }
 
@@ -374,16 +377,18 @@ class LatexVisualITest {
         }
     }
 
-    private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testTable() {
+    private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testTable(numRows: Int = 1) {
         table(
             header = {
                 column { text(Bokmal to "Column A") }
                 column { text(Bokmal to "Column B") }
             }
         ) {
-            row {
-                cell { text(Bokmal to "Cell A-1") }
-                cell { text(Bokmal to "Cell B-1") }
+            for (i in 1..numRows) {
+                row {
+                    cell { text(Bokmal to "Cell A-$i") }
+                    cell { text(Bokmal to "Cell B-$i") }
+                }
             }
         }
     }
