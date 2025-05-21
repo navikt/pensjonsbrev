@@ -13,7 +13,7 @@ COPY containerFiles/latex /app/pensjonsbrev_latex
 RUN apt remove wget -y
 RUN apt update && apt -y install tzdata perl-tk && rm -rf /var/lib/apt/lists/*
 #To update TeXLive/XeLaTeX version, run the github workflow and replace the --from argument to newest release
-COPY --from=debian_latex:latest /app /app
+COPY --from=ghcr.io/navikt/pensjonsbrev/pensjon-latex:2024-12-30-14_56 /app /app
 
 USER apprunner
 COPY  build/libs/pdf-bygger.jar /app/app.jar
