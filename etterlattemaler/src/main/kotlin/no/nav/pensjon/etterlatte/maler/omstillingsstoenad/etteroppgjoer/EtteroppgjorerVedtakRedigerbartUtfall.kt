@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer
 
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -56,13 +57,26 @@ object EtteroppgjoerVedtakRedigerbartUtfall:
             )
         }
         outline {
-            paragraph {
-                textExpr(
-                    Language.Bokmal to "Vi viser til forhåndsvarselet vårt om etteroppgjør på omstillingsstønaden din av ".expr() + data.forhaandsvarselSendtDato.format() + "" + ifElse(data.mottattSvarDato.notNull(), " og din tilbakemelding som vi mottok ".expr() + data.mottattSvarDato.format(), "".expr()) + ". Omstillingsstønaden din er endret for " + data.etteroppgjoersAar.format(),
-                    Language.Nynorsk to "".expr(),
-                    Language.English to "".expr(),
-                )
+
+            ifNotNull(data.mottattSvarDato){ mottattSvarDato ->
+                paragraph {
+                    textExpr(
+                        Language.Bokmal to "Vi viser til forhåndsvarselet vårt om etteroppgjør på omstillingsstønaden din av ".expr() + data.forhaandsvarselSendtDato.format() + "og din tilbakemelding som vi mottok ".expr() + mottattSvarDato.format() + ". Omstillingsstønaden din er endret for " + data.etteroppgjoersAar.format(),
+                        Language.Nynorsk to "".expr(),
+                        Language.English to "".expr(),
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    textExpr(
+                        Language.Bokmal to "Vi viser til forhåndsvarselet vårt om etteroppgjør på omstillingsstønaden din av ".expr() + data.forhaandsvarselSendtDato.format() + ". Omstillingsstønaden din er endret for " + data.etteroppgjoersAar.format(),
+                        Language.Nynorsk to "".expr(),
+                        Language.English to "".expr(),
+                    )
+                }
             }
+
+
         }
     }
 }
