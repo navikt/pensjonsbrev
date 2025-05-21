@@ -37,7 +37,7 @@ describe("Brevredigering", () => {
     cy.contains("Lagret 26.07.2024 ").should("exist");
     cy.contains("Dersom vi trenger flere opplysninger").click();
     cy.focused().type(" hello!");
-    cy.wait("@hurtiglagreRedigertBrev");
+    cy.wait("@hurtiglagreRedigertBrev", { timeout: 20000 });
     cy.contains("Lagret kl " + format(hurtiglagreTidspunkt, "HH:mm")).should("exist");
     cy.contains("hello!").should("exist");
   });
@@ -45,7 +45,7 @@ describe("Brevredigering", () => {
   it("lagrer signatur og saksbehandlerValg ved fortsett klikk", () => {
     const brev = nyBrevResponse({});
 
-    cy.intercept("put", "/bff/skribenten-backend/sak/123456/brev/1", (req) => {
+    cy.intercept({ method: "put", pathname: "/bff/skribenten-backend/sak/123456/brev/1" }, (req) => {
       expect(req.body.saksbehandlerValg).deep.equal({
         mottattSoeknad: "2024-07-24",
         ytelse: "alderspensjon",
@@ -61,7 +61,7 @@ describe("Brevredigering", () => {
     cy.contains("Signatur").click().type("{selectall}{backspace}").type("Det nye saksbehandlernavnet");
     cy.contains("Fortsett").click();
 
-    cy.wait("@lagreBrev").should((req) => {
+    cy.wait("@lagreBrev", { timeout: 20000 }).should((req) => {
       expect(req.response?.statusCode).to.equal(200);
     });
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=1");

@@ -119,6 +119,7 @@ function ToggleableObjectEditor({
       <Switch checked={open} onChange={handleToggle}>
         {fieldType.displayText ?? convertFieldToReadableLabel(parentFieldName)}
       </Switch>
+
       {open && (
         <div
           css={css`

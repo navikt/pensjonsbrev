@@ -45,6 +45,8 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
       avsenderEnhet: null,
       spraak: SpraakKode.Bokmaal,
       journalpostId: null,
+      vedtaksId: null,
+      brevtype: "INFORMASJONSBREV",
     },
     redigertBrev: {
       title: "tittel",
