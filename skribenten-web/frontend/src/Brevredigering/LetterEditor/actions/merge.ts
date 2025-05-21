@@ -182,14 +182,10 @@ function mergeFromItemList(draft: Draft<LetterEditorState>, literalIndex: ItemCo
       const block = blocks[literalIndex.blockIndex];
       const contentBeforeItemList = block.content[literalIndex.contentIndex - 1];
 
-      removeElements(literalIndex.contentIndex, 1, {
-        content: block.content,
-        deletedContent: block.deletedContent,
-        id: block.id,
-      });
+      removeElements(literalIndex.contentIndex, 1, block);
 
       // TODO: Denne burde nok være en switch, slik at vi får håndtert andre typer content.
-      if (contentBeforeItemList?.type === VARIABLE) {
+      if (contentBeforeItemList?.type === VARIABLE || contentBeforeItemList === undefined) {
         addElements([newLiteral({ text: "" })], literalIndex.contentIndex, block.content, block.deletedContent);
         draft.focus = {
           blockIndex: literalIndex.blockIndex,
