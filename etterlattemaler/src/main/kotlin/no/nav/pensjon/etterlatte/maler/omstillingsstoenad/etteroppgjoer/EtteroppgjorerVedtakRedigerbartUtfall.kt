@@ -25,7 +25,7 @@ import java.time.LocalDate
 class EtteroppgjoerVedtakRedigerbartUtfallInnholdDTO(
     val etteroppgjoersAar: Int,
     val forhaandsvarselSendtDato: LocalDate,
-    val mottattSvarDato: LocalDate
+    val mottattSvarDato: LocalDate?
 )
 
 class EtteroppgjoerVedtakRedigerbartUtfallBrevDTO(
