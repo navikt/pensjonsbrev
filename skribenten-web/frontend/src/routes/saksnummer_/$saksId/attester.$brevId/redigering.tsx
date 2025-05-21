@@ -193,14 +193,14 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   }, [brevtekstMutation, editorState.isDirty, editorState.redigertBrev]);
 
   useEffect(() => {
-    if (editorState.redigertBrevHash !== props.brev.redigertBrevHash) {
+    if (!editorState.isDirty && editorState.redigertBrevHash !== props.brev.redigertBrevHash) {
       setEditorState((s) => ({
         ...s,
         redigertBrev: props.brev.redigertBrev,
         redigertBrevHash: props.brev.redigertBrevHash,
       }));
     }
-  }, [editorState.redigertBrevHash, props.brev.redigertBrev, props.brev.redigertBrevHash]);
+  }, [editorState.isDirty, editorState.redigertBrevHash, props.brev.redigertBrev, props.brev.redigertBrevHash]);
 
   const attesterMutation = useMutation<Blob, AxiosError, OppdaterBrevRequest>({
     mutationFn: (requestData) =>
