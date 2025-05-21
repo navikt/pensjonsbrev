@@ -1,7 +1,4 @@
-# Example of custom Java runtime using jlink in a multi-stage container build
 FROM --platform=linux/amd64 eclipse-temurin:21 as jre-build
-
-# Create a custom Java runtime
 RUN $JAVA_HOME/bin/jlink \
          --add-modules java.base,jdk.jdwp.agent,java.xml,java.naming,java.management \
          --strip-debug \
@@ -10,7 +7,6 @@ RUN $JAVA_HOME/bin/jlink \
          --compress=zip-6 \
          --output /javaruntime
 
-# Define your base image
 FROM --platform=linux/amd64 debian:bookworm-slim
 ENV JAVA_HOME=/opt/java/openjdk
 ENV PATH "${JAVA_HOME}/bin:${PATH}"
