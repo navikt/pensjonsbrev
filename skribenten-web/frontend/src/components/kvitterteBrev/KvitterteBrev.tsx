@@ -79,7 +79,9 @@ const AccordionItem = (props: {
   });
 
   return (
-    <Accordion.Item>
+    <Accordion.Item
+      defaultOpen={props.brevFørHandling.distribusjonstype === "LOKALPRINT" || props.apiStatus === "error"}
+    >
       <AccordionHeader apiStatus={props.apiStatus} brevInfo={props.brevFørHandling} context={props.context} />
       <AccordionContent
         apiStatus={props.apiStatus}
