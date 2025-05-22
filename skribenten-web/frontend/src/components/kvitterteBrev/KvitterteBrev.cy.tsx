@@ -94,7 +94,7 @@ describe("<KvitterteBrev />", () => {
     cy.contains("Lokal print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
     cy.contains("1").should("be.visible");
-    cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
+    cy.contains("Åpne PDF i ny fane").should("be.visible");
     cy.contains("Lokalprint - sendt til joark").click();
 
     cy.contains("Klar til attestering").should("be.visible");

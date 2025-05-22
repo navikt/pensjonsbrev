@@ -139,7 +139,7 @@ describe("Brevbehandler", () => {
     cy.contains("Lokal print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
     cy.contains("80912").should("be.visible");
-    cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
+    cy.contains("Åpne PDF i ny fane").should("be.visible");
   });
 
   it("kan ferdigstille og sende brev med lokalprint selv om henting av pdf feiler", () => {
@@ -199,7 +199,7 @@ describe("Brevbehandler", () => {
     cy.contains("Lokal print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
     cy.contains("80912").should("be.visible");
-    cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
+    cy.contains("Åpne PDF i ny fane").should("be.visible");
   });
 
   it("kan sende flere ferdigstilte brev samtidig", () => {
@@ -237,7 +237,7 @@ describe("Brevbehandler", () => {
     cy.get('[data-cy="journalpostId-80913"]').contains("Lokal print").should("be.visible");
     cy.get('[data-cy="journalpostId-80913"]').contains("Journalpost ID").should("be.visible");
     cy.get('[data-cy="journalpostId-80913"]').contains("80913").should("be.visible");
-    cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
+    cy.contains("Åpne PDF i ny fane").should("be.visible");
   });
 
   it("velger hvilke brev som skal sendes", () => {
