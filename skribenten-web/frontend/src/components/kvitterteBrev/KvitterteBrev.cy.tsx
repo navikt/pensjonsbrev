@@ -73,13 +73,13 @@ describe("<KvitterteBrev />", () => {
     );
 
     cy.get('span:contains("Kunne ikke sende brev")').eq(0).should("be.visible");
-    cy.get('span:contains("Kunne ikke sende brev")').eq(0).click();
+    cy.get('span:contains("Kunne ikke sende brev")').eq(0);
     cy.contains("Skribenten klarte ikke å sende brevet.").should("be.visible");
     cy.contains("Brevet ligger lagret i brevbehandler til brevet er sendt.").should("be.visible");
     cy.contains("Prøv å sende igjen").should("be.visible");
     cy.get('span:contains("Kunne ikke sende brev")').eq(0).click();
 
-    cy.get('span:contains("Kunne ikke sende brev")').eq(1).click();
+    cy.get('span:contains("Kunne ikke sende brev")');
     //ser ut som at .contains cacher elementet som vi får, så vi henter disse med .get
     cy.get('p:contains("Skribenten klarte ikke å sende brevet.")').should("be.visible");
     cy.get('p:contains("Brevet ligger lagret i brevbehandler til brevet er sendt.")').should("be.visible");
@@ -87,7 +87,7 @@ describe("<KvitterteBrev />", () => {
     cy.get('span:contains("Kunne ikke sende brev")').eq(2).click();
 
     cy.contains("Lokalprint - sendt til joark").should("be.visible");
-    cy.contains("Lokalprint - sendt til joark").click();
+    cy.contains("Lokalprint - sendt til joark");
     cy.contains("Mottaker").should("be.visible");
     cy.contains("Tydelig Bakke").should("be.visible");
     cy.contains("Distribueres via").should("be.visible");
