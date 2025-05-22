@@ -51,7 +51,7 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
         outline {
             paragraph {
                 textExpr(
-                    Bokmal to "I tabllen over har vi registrert beløp som vi mener ikke skal være med i årsinntekten din for ".expr() + data.etteroppgjoersAar.format() +". Du må gi oss beskjed hvis dette er feil og sende dokumentasjon hvis du har andre inntekter som ikke skal være med i inntekt for de månedene omstillingsstønaden har vært innvilget i "+data.etteroppgjoersAar.format()+". ",
+                    Bokmal to "I tabellen over har vi registrert beløp som vi mener ikke skal være med i årsinntekten din for ".expr() + data.etteroppgjoersAar.format() +". Du må gi oss beskjed hvis dette er feil og sende dokumentasjon hvis du har andre inntekter som ikke skal være med i inntekt for de månedene omstillingsstønaden har vært innvilget i "+data.etteroppgjoersAar.format()+". ",
                     Nynorsk to "".expr(),
                     English to "".expr(),
                 )
