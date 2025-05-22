@@ -32,7 +32,7 @@ data class EndringAvAlderspensjonSivilstandDto(
 
         // Årsak til sivilstandsendringen:
         @DisplayText("Sivilstandsendring årsak - Fraflyting")
-        val fraFlytet: Boolean,
+        val fraFlyttet: Boolean,
         @DisplayText("Sivilstandsendring årsak - inngått ekteskap men bor ikke sammen")
         val giftBorIkkeSammen: Boolean,
 
@@ -59,13 +59,7 @@ data class EndringAvAlderspensjonSivilstandDto(
         @DisplayText("Ikke brukt i beregningen. EPS tar ut uføretrygd")
         val epsTarUtUfoeretrygd: Boolean,
 
-        @DisplayText("Opplysninger/forhold du vil informere bruker om i saken")
-        val opplysninger1: Boolean,
-        @DisplayText("Opplysninger/forhold du vil informere bruker om i saken")
-        val opplysninger2: Boolean,
-
-
-        // Hvilken betydning får omregulering for pensjonen?
+        // Betydning for pensjons utbetaling?
         @DisplayText("Betydning får omregulering for pensjon? Ingen")
         val ingenBetydning: Boolean,
         @DisplayText("Betydning får omregulering for pensjon? Pensjonen øker")
@@ -85,15 +79,13 @@ data class EndringAvAlderspensjonSivilstandDto(
 
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
-        val brukersSivilstand: MetaforceSivilstand,
+        val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
         val epsVedVirk: EpsVedVirk,
-        val garantitillegg: Kroner?,  //beregnetPensjonPerManedVedVirk <- v1.ALderspensjon
-        val grunnpensjon: Kroner?,  //beregnetPensjonPerManedVedVirk
         val kravAarsak: KravArsakType,  //v3.Krav
         val kravVirkDatoFom: LocalDate,  //v3.Krav
         val regelverkType: AlderspensjonRegelverkType,
         val saerskiltSatsErBrukt: Boolean,  //saerskiltSatsVedVirk
-        val totalPensjon: Kroner,  //beregnetPensjonPerManedVedVirk
+        val sivilstand: MetaforceSivilstand,
         val vedtakEtterbetaling: Boolean,  //v1.Vedtak
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
@@ -115,5 +107,12 @@ data class EndringAvAlderspensjonSivilstandDto(
         val saertilleggInnvilget: Boolean,
         val ufoereKombinertMedAlder: Boolean,
         val uttaksgrad: Int,
+    )
+
+    data class BeregnetPensjonPerManedVedVirk(
+        val garantitillegg: Kroner?,  //beregnetPensjonPerManedVedVirk <- v1.ALderspensjon
+        val grunnbelop: Kroner,  // beregnetPensjonPerManedVedVirk
+        val grunnpensjon: Kroner?,  //beregnetPensjonPerManedVedVirk
+        val totalPensjon: Kroner,  //beregnetPensjonPerManedVedVirk
     )
 }

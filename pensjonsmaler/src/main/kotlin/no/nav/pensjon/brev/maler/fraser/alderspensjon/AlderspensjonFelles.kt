@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
+import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.template.Expression
@@ -51,9 +52,16 @@ object Utbetalingsinformasjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-// infoAP_001
+// infoAPOverskrift_001, infoAP_001
 object InformasjonOmAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Hvor kan du få vite mer om alderspensjonen din?",
+                Nynorsk to "Kvar kan du få vite meir om alderspensjonen din?",
+                English to "Where can you find out more about your retirement pension?"
+            )
+        }
         paragraph {
             text(
                 Bokmal to "Du finner mer informasjon om hvordan alderspensjon er satt sammen og oversikter over grunnbeløp og aktuelle satser på $ALDERSPENSJON.",
@@ -157,6 +165,27 @@ data class ArbeidsinntektOgAlderspensjon(
                     English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit.",
                 )
             }
+        }
+    }
+}
+
+object PensjonsopptjeningInformasjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        // vedleggBeregnPensjonsOpptjeningOverskrift
+        title1 {
+            text(
+                Bokmal to "Pensjonsopptjeningen din",
+                Nynorsk to "Pensjonsoppteninga di",
+                English to "Your accumulated pension capital"
+            )
+        }
+        // vedleggBeregnPensjonsOpptjening
+        paragraph {
+            text(
+                Bokmal to "I nettjenesten Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsopptjeningen din for hvert enkelt år. Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg.",
+                Nynorsk to "I nettenesta Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsoppteninga di for kvart enkelt år. Der kan du sjå kva andre typar pensjonsopptening som er registrert på deg.",
+                English to "Our online service 'Din pensjon' at $DIN_PENSJON_URL provides details on your accumulated rights for each year. Here you will be able to see your other types of pension rights we have registered."
+            )
         }
     }
 }
