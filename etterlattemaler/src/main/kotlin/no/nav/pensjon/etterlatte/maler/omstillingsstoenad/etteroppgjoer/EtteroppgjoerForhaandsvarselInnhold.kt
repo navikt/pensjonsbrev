@@ -57,7 +57,7 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
         letterDataType = EtteroppgjoerForhaandsvarselRedigerbartBrevDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Etteroppgjør Forhåndsvarsel Innhold",
+            displayTitle = "Varsel - Etteroppgjør Innhold",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
@@ -78,7 +78,7 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
                 // felles minus bosatt utland og uten norsk inntekt
                 paragraph {
                     text(
-                        Language.Bokmal to "Hvert år, når skatteoppgjøret er ferdig, sjekker Nav inntekten din for å se om du har fått utbetalt riktig beløp i omstillingsstønad året før. Omstillingsstønaden din er beregnet basert på nye opplysninger fra Skatteetaten.",
+                        Language.Bokmal to "Hvert år, når skatteoppgjøret er ferdig, sjekker Nav inntekten din for å se om omstillingsstønaden du fikk utbetalt i fjor, er riktig. Omstillingsstønaden din er beregnet basert på nye opplysninger fra Skatteetaten og a-ordningen.",
                         Language.Nynorsk to "",
                         Language.English to "",
                     )
@@ -87,7 +87,7 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
                 // hvis bosatt utland med norsk inntekt
                 paragraph {
                     textExpr(
-                        Language.Bokmal to "Skatteoppgjøret viser kun norsk inntekt. Siden vi ikke mottar opplysninger om utenlandsk inntekt, har vi lagt til grunn det du tidligere oppga som forventet utenlandsk inntekt. Hvis disse opplysningene ikke stemmer, må du sende oss dokumentasjon på din faktiske inntekt fra utlandet i ".expr() +  data.etteroppgjoersAar.format() + ".",
+                        Language.Bokmal to "Inntektsopplysninger innhentet fra Skatteetaten og a-ordningen, viser kun norsk inntekt. Siden vi ikke mottar opplysninger om utenlandsk inntekt, har vi lagt til grunn det du tidligere oppga som forventet utenlandsk inntekt. Hvis disse opplysningene ikke stemmer, må du sende oss dokumentasjon på din faktiske inntekt fra utlandet i ".expr() +  data.etteroppgjoersAar.format() + ".",
                         Language.Nynorsk to "".expr(),
                         Language.English to "".expr(),
                     )
@@ -103,7 +103,7 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
                 )
             }
 
-            // dersom feilutbetalt beløp
+            // dersom feilutbetalt beløp (tilbakekreving)
             showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.TILBAKEKREVING)){
                 paragraph {
                     textExpr(Language.Bokmal to "Vår beregning viser at du har fått ".expr() + data.avviksBeloep.absoluteValue().format() +" kroner for mye omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger ett rettsgebyr, som betyr at du må betale tilbake det feilutbetalte beløpet.",

@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.formatYearMonth
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -35,10 +34,9 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.grunnlag
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.utbetalingData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.afp
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.fom
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.loennsinntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.naeringsinntekt
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.tom
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.utlandsinntekt
 import java.time.YearMonth
 
@@ -56,7 +54,8 @@ data class EtteroppgjoerGrunnlagDTO(
     val loennsinntekt: Kroner,
     val naeringsinntekt: Kroner,
     val afp: Kroner,
-    val utlandsinntekt: Kroner
+    val utlandsinntekt: Kroner,
+    val inntekt: Kroner
 )
 
 @TemplateModelHelpers
@@ -74,10 +73,10 @@ val beregningsVedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, BeregningsVe
         hvaDuFikkUtbetalt(argument.etteroppgjoersAar, argument.utbetalingData)
         omBeregningAvOmstillingsstoenad(argument.etteroppgjoersAar)
         dinPensjonsgivendeInntekt(argument.etteroppgjoersAar, argument.utbetalingData, argument.grunnlag)
-        beloepTrukketFraDinPensjonsgivendeInntekt()
 
         konverterElementerTilBrevbakerformat(argument.innhold)
 
+        beloepTrukketFraDinPensjonsgivendeInntekt()
         inntektBruktIBeregningenAvOms(argument.etteroppgjoersAar, argument.utbetalingData)
     }
 
@@ -87,7 +86,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.op
 ) {
     paragraph {
         textExpr(
-            Bokmal to "Omstillingsstønaden din ble beregnet ut fra inntekten du oppga som forventet i ".expr() + etteroppgjoersAar.format() +". Vi har nå gjort en ny beregning basert på opplysninger fra Skatteetaten om din faktiske inntekt for "+etteroppgjoersAar.format()+". Du kan se skatteoppgjøret ditt på skatteetaten.no.",
+            Bokmal to "Omstillingsstønaden din ble beregnet ut fra inntekten du oppga som forventet i ".expr() + etteroppgjoersAar.format() +". Vi har nå gjort en ny beregning basert på opplysninger registrert i a-ordningen og fra Skatteetaten om din faktiske inntekt for "+etteroppgjoersAar.format()+". Du kan se skatteoppgjøret ditt på skatteetaten.no.",
             Nynorsk to "".expr(),
             English to "".expr(),
         )
@@ -322,7 +321,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
 
     paragraph {
         textExpr(
-            Bokmal to "I periode " .expr() + grunnlag.fom.formatYearMonth()+ " til " + grunnlag.tom.formatYearMonth() + " var den faktiske inntekten din " + utbetalingData.faktiskInntekt.format() + " kroner. Du kan se fordelingen i tabellen under.",
+            Bokmal to "I " .expr() + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + grunnlag.inntekt.format() + " kroner inkludert skatt, i følge opplysninger fra Skatteetaten og a-ordningen. Den fordeler seg slik:",
             Nynorsk to "".expr(),
             English to "".expr(),)
     }
@@ -346,17 +345,13 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
                 }
             }
         ) {
-
-            // beregnetEtteroppgjoerResultat
             row {
                 cell { text(
                     Language.Bokmal to "Lønnsinntekt",
                     Language.Nynorsk to "",
                     Language.English to "",
                 ) }
-
                 cell { includePhrase(KronerText(grunnlag.loennsinntekt)) }
-
             }
             row {
                 cell { text(
@@ -364,10 +359,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
                     Language.Nynorsk to "",
                     Language.English to "",
                 ) }
-
                 cell { includePhrase(KronerText(grunnlag.naeringsinntekt)) }
-
-
             }
             row {
                 cell { text(
@@ -375,10 +367,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
                     Language.Nynorsk to "",
                     Language.English to "",
                 ) }
-
                 cell { includePhrase(KronerText(grunnlag.afp)) }
-
-
             }
             row {
                 cell { text(
@@ -386,7 +375,6 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
                     Language.Nynorsk to "",
                     Language.English to "",
                 ) }
-
                 cell { includePhrase(KronerText(grunnlag.utlandsinntekt)) }
             }
 
@@ -397,9 +385,8 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
                     Language.English to "",
                     fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 ) }
-                cell { includePhrase(KronerText(utbetalingData.faktiskInntekt, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
+                cell { includePhrase(KronerText(grunnlag.inntekt, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
             }
-
         }
     }
 }

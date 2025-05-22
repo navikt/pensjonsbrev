@@ -49,11 +49,11 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AdhocAlderspensjonGjtO
             }
             paragraph {
                 text(
-                    Bokmal to "I april fikk du brev om feil i beregningen av gjenlevendetillegget i pensjonen din. " +
+                    Bokmal to "Du har tidligere fått brev om feil i beregningen av gjenlevendetillegget ditt. " +
                             "Det har vært satt for høyt, og vi har nå rettet opp i dette.  ",
-                    Nynorsk to "I april fekk du brev om feil i berekninga av attlevandetillegget i pensjonen din. " +
+                    Nynorsk to "Du har tidlegare fått brev om feil i berekninga av attlevandetillegget ditt. " +
                             "Det har vore sett for høgt, og vi har no retta opp i dette.",
-                    English to "In April, you received a letter regarding an error in the calculation of the survivor’s " +
+                    English to "You have previously received a letter regarding an error in the calculation of the survivor’s " +
                             "supplement in your pension. It had been set too high, but we have now corrected it.",
                 )
             }
