@@ -134,7 +134,7 @@ describe("Brevbehandler", () => {
     //verifisering av kvittering
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
     cy.contains("Lokalprint - sendt til joark").should("be.visible");
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.contains(kladdBrev.brevtittel);
     cy.contains("Distribueres via").should("be.visible");
     cy.contains("Lokal print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
@@ -194,7 +194,7 @@ describe("Brevbehandler", () => {
     //verifisering av kvittering
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
     cy.contains("Lokalprint - sendt til joark").should("be.visible");
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.contains(kladdBrev.brevtittel);
     cy.contains("Distribueres via").should("be.visible");
     cy.contains("Lokal print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
@@ -232,7 +232,7 @@ describe("Brevbehandler", () => {
     cy.contains(kladdBrev.brevtittel).click();
 
     cy.contains("Lokalprint - sendt til joark").should("be.visible");
-    cy.contains(brevSomSendesSomLokalPrint.brevtittel).click();
+    cy.contains(brevSomSendesSomLokalPrint.brevtittel);
     cy.get('[data-cy="journalpostId-80913"]').contains("Distribueres via").should("be.visible");
     cy.get('[data-cy="journalpostId-80913"]').contains("Lokal print").should("be.visible");
     cy.get('[data-cy="journalpostId-80913"]').contains("Journalpost ID").should("be.visible");
@@ -327,7 +327,7 @@ describe("Brevbehandler", () => {
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
 
     cy.contains("Kunne ikke sende brev").should("be.visible");
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.contains(kladdBrev.brevtittel);
 
     cy.contains("Skribenten klarte ikke å sende brevet.").should("be.visible");
     cy.contains("Brevet ligger lagret i brevbehandler til brevet er sendt.").should("be.visible");
