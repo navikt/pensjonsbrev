@@ -319,7 +319,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
 
     paragraph {
         textExpr(
-            Bokmal to "I " .expr() + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + utbetalingData.faktiskInntekt.format() + " kroner inkludert skatt, i følge opplysninger fra Skatteetaten og a-ordningen. Den fordeler seg slik:",
+            Bokmal to "I " .expr() + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + utbetalingData.inntekt.format() + " kroner inkludert skatt, i følge opplysninger fra Skatteetaten og a-ordningen. Den fordeler seg slik:",
             Nynorsk to "".expr(),
             English to "".expr(),)
     }
@@ -383,7 +383,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
                     Language.English to "",
                     fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 ) }
-                cell { includePhrase(KronerText(utbetalingData.faktiskInntekt, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
+                cell { includePhrase(KronerText(utbetalingData.inntekt, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
             }
         }
     }
