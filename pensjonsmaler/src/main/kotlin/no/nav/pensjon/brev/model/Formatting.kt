@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.model
 
 import no.nav.pensjon.brev.api.model.*
+import no.nav.pensjon.brev.maler.fraser.common.ResultatAvVurderingenTextMappingStorBokstav
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -39,40 +40,39 @@ object FormatBorMedSivilstandTabell : LocalizedFormatter<BorMedSivilstand>() {
     override fun stableHashCode(): Int = "FormatBorMedSivilstandTabell".hashCode()
 }
 @JvmName("formatMetaforceSivilstandBestemtForm")
-fun Expression<MetaforceSivilstand>.bestemtForm() = format(formatter = MetaforceSivilstandBestemt)
+fun Expression<MetaforceSivilstand>.bestemtForm(storBokstav: Boolean = false) = format(formatter = MetaforceSivilstandBestemt(storBokstav))
 
 @JvmName("formatMetaforceSivilstandUbestemtForm")
-fun Expression<MetaforceSivilstand>.ubestemtForm() = format(formatter = MetaforceSivilstandUbestemt)
+fun Expression<MetaforceSivilstand>.ubestemtForm(storBokstav: Boolean = false) = format(formatter = MetaforceSivilstandUbestemt(storBokstav))
 
 @JvmName("formatBorMedSivilstandBestemtForm")
-fun Expression<BorMedSivilstand>.bestemtForm() = format(formatter = BorMedSivilstandBestemt)
+fun Expression<BorMedSivilstand>.bestemtForm(storBokstav: Boolean = false) = format(formatter = BorMedSivilstandBestemt(storBokstav))
 
 @JvmName("formatBorMedSivilstandUbestemtForm")
-fun Expression<BorMedSivilstand>.ubestemtForm() = format(formatter = BorMedSivilstandUbestemt)
+fun Expression<BorMedSivilstand>.ubestemtForm(storBokstav: Boolean = false) = format(formatter = BorMedSivilstandUbestemt(storBokstav))
 
-object BorMedSivilstandUbestemt : LocalizedFormatter<BorMedSivilstand>() {
-    override fun apply(first: BorMedSivilstand, second: Language): String = borMedSivilstand(first, second, false)
-    override fun stableHashCode(): Int = "BorMedSivilstandUbestemt".hashCode()
+class BorMedSivilstandUbestemt(private val storBokstav: Boolean) : LocalizedFormatter<BorMedSivilstand>() {
+    override fun apply(first: BorMedSivilstand, second: Language): String = borMedSivilstand(first, second, false, storBokstav)
+    override fun stableHashCode(): Int = "BorMedSivilstandUbestemt($storBokstav)".hashCode()
 }
 
-object MetaforceSivilstandBestemt : LocalizedFormatter<MetaforceSivilstand>() {
-    override fun apply(first: MetaforceSivilstand, second: Language): String = metaforceBorMedSivilstand(first, second, true)
-    override fun stableHashCode(): Int = "MetaforceSivilstandBestemt".hashCode()
+class MetaforceSivilstandBestemt(private val storBokstav: Boolean) : LocalizedFormatter<MetaforceSivilstand>() {
+    override fun apply(first: MetaforceSivilstand, second: Language): String = metaforceBorMedSivilstand(first, second, true, storBokstav)
+    override fun stableHashCode(): Int = "MetaforceSivilstandBestemt($storBokstav)".hashCode()
 }
 
-object MetaforceSivilstandUbestemt : LocalizedFormatter<MetaforceSivilstand>() {
-    override fun apply(first: MetaforceSivilstand, second: Language): String = metaforceBorMedSivilstand(first, second, false)
-    override fun stableHashCode(): Int = "MetaforceSivilstandUbestemt".hashCode()
+class MetaforceSivilstandUbestemt(private val storBokstav: Boolean) : LocalizedFormatter<MetaforceSivilstand>() {
+    override fun apply(first: MetaforceSivilstand, second: Language): String = metaforceBorMedSivilstand(first, second, false, storBokstav)
+    override fun stableHashCode(): Int = "MetaforceSivilstandUbestemt($storBokstav)".hashCode()
 }
 
 
-
-object BorMedSivilstandBestemt : LocalizedFormatter<BorMedSivilstand>() {
-    override fun apply(first: BorMedSivilstand, second: Language): String = borMedSivilstand(first, second, true)
-    override fun stableHashCode(): Int = "BorMedSivilstandBestemt".hashCode()
+class BorMedSivilstandBestemt(private val storBokstav: Boolean) : LocalizedFormatter<BorMedSivilstand>() {
+    override fun apply(first: BorMedSivilstand, second: Language): String = borMedSivilstand(first, second, true, storBokstav)
+    override fun stableHashCode(): Int = "BorMedSivilstandBestemt($storBokstav)".hashCode()
 }
 
-private fun metaforceBorMedSivilstand(sivilstand: MetaforceSivilstand, language: Language, bestemtForm: Boolean): String {
+private fun metaforceBorMedSivilstand(sivilstand: MetaforceSivilstand, language: Language, bestemtForm: Boolean, storBokstav: Boolean = false): String {
     val borMedSivilstand = when (sivilstand) {
         MetaforceSivilstand.EKTEFELLE -> BorMedSivilstand.EKTEFELLE
         MetaforceSivilstand.GIFT -> BorMedSivilstand.EKTEFELLE
@@ -91,11 +91,11 @@ private fun metaforceBorMedSivilstand(sivilstand: MetaforceSivilstand, language:
         MetaforceSivilstand.FORELDER -> null
     }
     return if(borMedSivilstand != null) {
-        borMedSivilstand(borMedSivilstand, language, bestemtForm)
+        borMedSivilstand(borMedSivilstand, language, bestemtForm, storBokstav)
     } else ""
 }
 
-private fun borMedSivilstand(sivilstand: BorMedSivilstand, language: Language, bestemtForm: Boolean): String =
+private fun borMedSivilstand(sivilstand: BorMedSivilstand, language: Language, bestemtForm: Boolean, storBokstav: Boolean): String =
     when (sivilstand) {
         BorMedSivilstand.EKTEFELLE,
         BorMedSivilstand.GIFT_LEVER_ADSKILT -> when (language) {
@@ -115,4 +115,8 @@ private fun borMedSivilstand(sivilstand: BorMedSivilstand, language: Language, b
             Nynorsk -> if (bestemtForm) "sambuaren" else "sambuar"
             English -> "cohabitant"
         }
+    }.apply {
+        return if(storBokstav) {
+            replaceFirstChar { it.uppercase() }
+        } else this
     }

@@ -593,4 +593,3 @@ object InfoPensjonFraAndreAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
     }
 }
-
