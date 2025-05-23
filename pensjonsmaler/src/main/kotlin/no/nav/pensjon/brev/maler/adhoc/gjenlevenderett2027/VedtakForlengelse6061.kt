@@ -73,7 +73,7 @@ object VedtakForlengelse6061 : AutobrevTemplate<Gjenlevenderett2027Dto> {
 
             paragraph {
                 text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven § 17 A-3.  ",
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven § 17 A-3. ",
                 )
             }
 
@@ -354,7 +354,7 @@ object VedtakForlengelse6061 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du får endringer i inntekt, familiesituasjon, jobbsituasjon eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til NAV.  ",
+                    Bokmal to "Hvis du får endringer i inntekt, familiesituasjon, jobbsituasjon eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav. ",
                 )
             }
 
