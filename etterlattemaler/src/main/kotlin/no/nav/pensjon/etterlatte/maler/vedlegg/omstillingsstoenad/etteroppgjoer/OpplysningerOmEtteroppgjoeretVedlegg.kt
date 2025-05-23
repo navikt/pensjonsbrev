@@ -164,7 +164,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hv
     showIf(utbetalingData.avviksBeloep.absoluteValue().equalTo(0)) {
         paragraph {
             textExpr(
-                Bokmal to "Du har fått utbetalt riktig stønad i ".expr() + etteroppgjoersAar.format(),
+                Bokmal to "Tabellen viser at du har fått utbetalt riktig stønad i ".expr() + etteroppgjoersAar.format(),
                 Nynorsk to "".expr(),
                 English to "".expr(),
             )
@@ -174,7 +174,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hv
     .orShow {
         paragraph {
             textExpr(
-                Bokmal to "Du fikk utbetalt ".expr() + utbetalingData.avviksBeloep.absoluteValue().format() + " kroner for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mye", "lite") + " i " + etteroppgjoersAar.format() + " inkludert skatt.",
+                Bokmal to "Tabellen viser at du fikk utbetalt ".expr() + utbetalingData.avviksBeloep.absoluteValue().format() + " kroner for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mye", "lite") + " i " + etteroppgjoersAar.format() + " inkludert skatt.",
                 Nynorsk to "".expr(),
                 English to "".expr(),
             )

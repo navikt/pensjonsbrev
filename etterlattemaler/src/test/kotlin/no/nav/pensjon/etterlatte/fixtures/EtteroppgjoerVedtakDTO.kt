@@ -19,7 +19,7 @@ fun createEtteroppgjoerVedtakBrevDTO() =
             resultatType = EtteroppgjoerResultatType.TILBAKEKREVING,
             inntekt = Kroner(321),
             faktiskInntekt = Kroner(4444),
-            avviksBeloep = Kroner(-1230),
+            avviksBeloep = Kroner(12340),
             grunnlag = EtteroppgjoerGrunnlagDTO(
                 YearMonth.of(2024, 1),
                 YearMonth.of(2024, 12),
