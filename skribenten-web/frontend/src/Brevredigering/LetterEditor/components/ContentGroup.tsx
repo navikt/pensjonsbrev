@@ -2,13 +2,13 @@ import { css } from "@emotion/react";
 import React, { useEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import { isBlockContentIndex, isItemContentIndex } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
-import type { BlockContentIndex, ItemContentIndex, LiteralIndex } from "~/Brevredigering/LetterEditor/actions/model";
 import { logPastedClipboard } from "~/Brevredigering/LetterEditor/actions/paste";
 import { Text } from "~/Brevredigering/LetterEditor/components/Text";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
-import type { Focus } from "~/Brevredigering/LetterEditor/model/state";
+import type { Focus, LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import {
   areAnyContentEditableSiblingsPlacedHigher,
   areAnyContentEditableSiblingsPlacedLower,
@@ -90,18 +90,10 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   );
 }
 
-const isFocusingItemContentIndex = (focus: Focus): focus is ItemContentIndex & { cursorPosition?: number } => {
-  return "itemIndex" in focus && "itemContentIndex" in focus;
-};
-
-const isFocusingBlockContentIndex = (focus: Focus): focus is BlockContentIndex & { cursorPosition?: number } => {
-  return !isFocusingItemContentIndex(focus);
-};
-
 const hasFocus = (focus: Focus, literalIndex: LiteralIndex) => {
-  if (isFocusingBlockContentIndex(focus) && isFocusingBlockContentIndex(literalIndex)) {
+  if (isBlockContentIndex(focus) && isBlockContentIndex(literalIndex)) {
     return focus.blockIndex === literalIndex.blockIndex && focus.contentIndex === literalIndex.contentIndex;
-  } else if (isFocusingItemContentIndex(focus) && isFocusingItemContentIndex(literalIndex)) {
+  } else if (isItemContentIndex(focus) && isItemContentIndex(literalIndex)) {
     return (
       focus.blockIndex === literalIndex.blockIndex &&
       focus.contentIndex === literalIndex.contentIndex &&
