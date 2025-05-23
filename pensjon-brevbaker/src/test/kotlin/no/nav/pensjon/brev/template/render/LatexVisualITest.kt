@@ -296,6 +296,44 @@ class LatexVisualITest {
         }
     }
 
+    @Test
+    fun `Table title should have the correct spacing when sticking to a table that was shipped to the next page`() {
+        render {
+            repeat(5) {
+                paragraph {
+                    text(
+                        Bokmal to "Padding text bla bla. ".repeat(18),
+                    )
+                }
+            }
+            paragraph {
+                text(Bokmal to "Padding text bla bla. ".repeat(14))
+            }
+            title1 {
+                text(Bokmal to "Test-tittel")
+            }
+            paragraph { testTable(5) }        }
+    }
+
+    @Test
+    fun `table title and other content`() {
+        render {
+            paragraph { text(Bokmal to "asdf") }
+            title1 { text(Bokmal to "Test-tittel") }
+            paragraph { testTable(5) }
+        }
+    }
+
+
+    @Test
+    fun `table title and other title`() {
+        render {
+            title1 { text(Bokmal to "Test-tittel") }
+            title1 { text(Bokmal to "Test-tittel") }
+            paragraph { testTable(5) }
+        }
+    }
+
     @ParameterizedTest
     @MethodSource("allElementCombinations")
     fun `Test unique content combinations`(elementA: ElementType, elementB: ElementType) {
@@ -339,16 +377,18 @@ class LatexVisualITest {
         }
     }
 
-    private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testTable() {
+    private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testTable(numRows: Int = 1) {
         table(
             header = {
                 column { text(Bokmal to "Column A") }
                 column { text(Bokmal to "Column B") }
             }
         ) {
-            row {
-                cell { text(Bokmal to "Cell A-1") }
-                cell { text(Bokmal to "Cell B-1") }
+            for (i in 1..numRows) {
+                row {
+                    cell { text(Bokmal to "Cell A-$i") }
+                    cell { text(Bokmal to "Cell B-$i") }
+                }
             }
         }
     }
