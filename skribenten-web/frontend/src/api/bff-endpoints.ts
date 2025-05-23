@@ -7,13 +7,23 @@ import { CACHE_FOR } from "./cache";
 
 const BFF_BASE_URL = "/bff/internal";
 
+export type BaseUrls = {
+  psak: string;
+};
+
+export type UserInfo = {
+  name: string;
+  navident: string;
+};
+
 export const getUserInfo = {
   queryKey: ["USER"],
   queryFn: async () => (await axios.get<UserInfo>(`${BFF_BASE_URL}/userInfo`)).data,
   staleTime: CACHE_FOR.aDay,
 };
 
-export type UserInfo = {
-  name: string;
-  navident: string;
+export const getBaseUrls = {
+  queryKey: ["BASE_URLS"],
+  queryFn: async () => (await axios.get<BaseUrls>(`${BFF_BASE_URL}/baseUrls`)).data,
+  staleTime: CACHE_FOR.aDay,
 };

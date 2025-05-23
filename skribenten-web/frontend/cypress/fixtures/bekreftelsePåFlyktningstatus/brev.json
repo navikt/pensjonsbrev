@@ -1,0 +1,132 @@
+{
+    "info": {
+        "id": 1,
+        "opprettetAv": {
+            "id": "Z990297",
+            "navn": "F_Z990297 E_Z990297"
+        },
+        "opprettet": "2025-01-24T13:07:56.519Z",
+        "sistredigertAv": {
+            "id": "Z990297",
+            "navn": "F_Z990297 E_Z990297"
+        },
+        "sistredigert": "2025-01-24T13:07:56.519Z",
+        "brevkode": "PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS",
+        "brevtittel": "Bekreftelse på flyktningstatus",
+        "status": {
+            "type": "UnderRedigering",
+            "redigeresAv": {
+                "id": "Z990297",
+                "navn": "F_Z990297 E_Z990297"
+            }
+        },
+        "distribusjonstype": "SENTRALPRINT",
+        "mottaker": null,
+        "avsenderEnhet": null,
+        "spraak": "NB",
+        "journalpostId": null,
+        "vedtaksId": 9870
+    },
+    "redigertBrev": {
+        "title": "Bekreftelse på flyktningstatus",
+        "sakspart": {
+            "gjelderNavn": "Pussig Cosinus",
+            "gjelderFoedselsnummer": "15498407894",
+            "saksnummer": "22995512",
+            "dokumentDato": "24.01.2025"
+        },
+        "blocks": [
+            {
+                "id": 957201018,
+                "editable": true,
+                "content": [
+                    {
+                        "id": -266585931,
+                        "text": "Nav familie- og pensjonsytelser Steinkjer",
+                        "fontType": "PLAIN",
+                        "parentId": 957201018,
+                        "type": "VARIABLE"
+                    },
+                    {
+                        "id": 1186799481,
+                        "text": " ønsker å få bekreftet om ",
+                        "fontType": "PLAIN",
+                        "editedText": null,
+                        "editedFontType": null,
+                        "tags": [],
+                        "parentId": 957201018,
+                        "type": "LITERAL"
+                    },
+                    {
+                        "id": 1194450385,
+                        "text": "Pussig Cosinus",
+                        "fontType": "PLAIN",
+                        "parentId": 957201018,
+                        "type": "VARIABLE"
+                    },
+                    {
+                        "id": -1526022923,
+                        "text": " med fødselsnummer ",
+                        "fontType": "PLAIN",
+                        "editedText": null,
+                        "editedFontType": null,
+                        "tags": [],
+                        "parentId": 957201018,
+                        "type": "LITERAL"
+                    },
+                    {
+                        "id": 1111111807,
+                        "text": "15498407894",
+                        "fontType": "PLAIN",
+                        "parentId": 957201018,
+                        "type": "VARIABLE"
+                    },
+                    {
+                        "id": -761624590,
+                        "text": " er registrert med flyktningstatus hos dere.",
+                        "fontType": "PLAIN",
+                        "editedText": null,
+                        "editedFontType": null,
+                        "tags": [],
+                        "parentId": 957201018,
+                        "type": "LITERAL"
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "parentId": null,
+                "type": "PARAGRAPH"
+            },
+            {
+                "id": 535273832,
+                "editable": true,
+                "content": [
+                    {
+                        "id": 535273801,
+                        "text": "Vi ønsker i den forbindelse kopi av vedtaket og dato for ankomst til Norge.",
+                        "fontType": "PLAIN",
+                        "editedText": null,
+                        "editedFontType": null,
+                        "tags": [],
+                        "parentId": 535273832,
+                        "type": "LITERAL"
+                    }
+                ],
+                "deletedContent": [],
+                "originalType": null,
+                "parentId": null,
+                "type": "PARAGRAPH"
+            }
+        ],
+        "signatur": {
+            "hilsenTekst": "Med vennlig hilsen",
+            "saksbehandlerRolleTekst": "Saksbehandler",
+            "saksbehandlerNavn": "F_Z990297 E_Z990297",
+            "attesterendeSaksbehandlerNavn": "",
+            "navAvsenderEnhet": "Nav familie- og pensjonsytelser Steinkjer"
+        },
+        "deletedBlocks": []
+    },
+    "redigertBrevHash": "e157e2fc3995902952d8571878936a618d8cd1f00175de833d7ac91f2b49e746",
+    "saksbehandlerValg": {}
+}

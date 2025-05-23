@@ -14,36 +14,38 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
-import no.nav.pensjon.brev.template.dsl.expression.formatYearMonth
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.etterlatte.maler.BrevDTO
+import no.nav.pensjon.etterlatte.maler.BrevDTOSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.fraser.common.KronerText
+import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerUtbetalingDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerUtbetalingDTOSelectors.avviksBeloep
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerUtbetalingDTOSelectors.faktiskInntekt
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerUtbetalingDTOSelectors.inntekt
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.etteroppgjoersAar
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.grunnlag
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.utbetalingData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.afp
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.fom
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.loennsinntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.naeringsinntekt
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.tom
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.utlandsinntekt
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.OpplysningerOmEtteroppgjoeretDataSelectors.etteroppgjoersAar
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.OpplysningerOmEtteroppgjoeretDataSelectors.grunnlag
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.OpplysningerOmEtteroppgjoeretDataSelectors.utbetalingData
 import java.time.YearMonth
 
-data class OpplysningerOmEtteroppgjoeretData(
+data class BeregningsVedleggData(
+    override val innhold: List<no.nav.pensjon.etterlatte.maler.Element>,
     val etteroppgjoersAar: Int,
     val utbetalingData : EtteroppgjoerUtbetalingDTO,
-    val grunnlag: EtteroppgjoerGrunnlagDTO
-)
+    val grunnlag: EtteroppgjoerGrunnlagDTO,
+) : BrevDTO
 
 data class EtteroppgjoerGrunnlagDTO(
     val fom: YearMonth,
@@ -52,10 +54,12 @@ data class EtteroppgjoerGrunnlagDTO(
     val loennsinntekt: Kroner,
     val naeringsinntekt: Kroner,
     val afp: Kroner,
-    val utlandsinntekt: Kroner
+    val utlandsinntekt: Kroner,
+    val inntekt: Kroner
 )
 
-fun opplysningerOmEtteroppgjoeret(): AttachmentTemplate<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData> =
+@TemplateModelHelpers
+val beregningsVedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, BeregningsVedleggData> =
     createAttachment(
         title =
         newText(
@@ -69,17 +73,20 @@ fun opplysningerOmEtteroppgjoeret(): AttachmentTemplate<LangBokmalNynorskEnglish
         hvaDuFikkUtbetalt(argument.etteroppgjoersAar, argument.utbetalingData)
         omBeregningAvOmstillingsstoenad(argument.etteroppgjoersAar)
         dinPensjonsgivendeInntekt(argument.etteroppgjoersAar, argument.utbetalingData, argument.grunnlag)
-//        beloepTrukketFraDinPensjonsgivendeInntekt()
+
+        konverterElementerTilBrevbakerformat(argument.innhold)
+
+        beloepTrukketFraDinPensjonsgivendeInntekt()
         inntektBruktIBeregningenAvOms(argument.etteroppgjoersAar, argument.utbetalingData)
     }
 
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData>.opplysningerOmEtteroppgjoer(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.opplysningerOmEtteroppgjoer(
     etteroppgjoersAar: Expression<Int>
 ) {
     paragraph {
         textExpr(
-            Bokmal to "Omstillingsstønaden din ble beregnet ut fra inntekten du oppga som forventet i ".expr() + etteroppgjoersAar.format() +". Vi har nå gjort en ny beregning basert på opplysninger fra Skatteetaten om din faktiske inntekt for "+etteroppgjoersAar.format()+". Du kan se skatteoppgjøret ditt på skatteetaten.no.",
+            Bokmal to "Omstillingsstønaden din ble beregnet ut fra inntekten du oppga som forventet i ".expr() + etteroppgjoersAar.format() +". Vi har nå gjort en ny beregning basert på opplysninger registrert i a-ordningen og fra Skatteetaten om din faktiske inntekt for "+etteroppgjoersAar.format()+". Du kan se skatteoppgjøret ditt på skatteetaten.no.",
             Nynorsk to "".expr(),
             English to "".expr(),
         )
@@ -93,7 +100,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData>.hvaDuFikkUtbetalt(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hvaDuFikkUtbetalt(
     etteroppgjoersAar: Expression<Int>,
     utbetalingData: Expression<EtteroppgjoerUtbetalingDTO>
 ) {
@@ -163,7 +170,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData>.omBeregningAvOmstillingsstoenad(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.omBeregningAvOmstillingsstoenad(
     etteroppgjoersAar: Expression<Int>
 ) {
     title2 {
@@ -298,7 +305,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
 
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData>.dinPensjonsgivendeInntekt(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.dinPensjonsgivendeInntekt(
     etteroppgjoersAar: Expression<Int>,
     utbetalingData: Expression<EtteroppgjoerUtbetalingDTO>,
     grunnlag: Expression<EtteroppgjoerGrunnlagDTO>
@@ -314,7 +321,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
 
     paragraph {
         textExpr(
-            Bokmal to "I periode " .expr() + grunnlag.fom.formatYearMonth()+ " til " + grunnlag.tom.formatYearMonth() + " var den faktiske inntekten din " + utbetalingData.faktiskInntekt.format() + " kroner. Du kan se fordelingen i tabellen under.",
+            Bokmal to "I " .expr() + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + grunnlag.inntekt.format() + " kroner inkludert skatt, i følge opplysninger fra Skatteetaten og a-ordningen. Den fordeler seg slik:",
             Nynorsk to "".expr(),
             English to "".expr(),)
     }
@@ -338,17 +345,13 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
                 }
             }
         ) {
-
-            // beregnetEtteroppgjoerResultat
             row {
                 cell { text(
                     Language.Bokmal to "Lønnsinntekt",
                     Language.Nynorsk to "",
                     Language.English to "",
                 ) }
-
                 cell { includePhrase(KronerText(grunnlag.loennsinntekt)) }
-
             }
             row {
                 cell { text(
@@ -356,10 +359,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
                     Language.Nynorsk to "",
                     Language.English to "",
                 ) }
-
                 cell { includePhrase(KronerText(grunnlag.naeringsinntekt)) }
-
-
             }
             row {
                 cell { text(
@@ -367,10 +367,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
                     Language.Nynorsk to "",
                     Language.English to "",
                 ) }
-
                 cell { includePhrase(KronerText(grunnlag.afp)) }
-
-
             }
             row {
                 cell { text(
@@ -378,7 +375,6 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
                     Language.Nynorsk to "",
                     Language.English to "",
                 ) }
-
                 cell { includePhrase(KronerText(grunnlag.utlandsinntekt)) }
             }
 
@@ -389,14 +385,13 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
                     Language.English to "",
                     fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 ) }
-                cell { includePhrase(KronerText(utbetalingData.faktiskInntekt, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
+                cell { includePhrase(KronerText(grunnlag.inntekt, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
             }
-
         }
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData>.beloepTrukketFraDinPensjonsgivendeInntekt() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.beloepTrukketFraDinPensjonsgivendeInntekt() {
     title2 {
         text(
             Bokmal to "Beløp trukket fra din pensjonsgivende inntekt",
@@ -416,7 +411,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjo
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OpplysningerOmEtteroppgjoeretData>.inntektBruktIBeregningenAvOms(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.inntektBruktIBeregningenAvOms(
     etteroppgjoersAar: Expression<Int>,
     utbetalingData: Expression<EtteroppgjoerUtbetalingDTO>
 ) {

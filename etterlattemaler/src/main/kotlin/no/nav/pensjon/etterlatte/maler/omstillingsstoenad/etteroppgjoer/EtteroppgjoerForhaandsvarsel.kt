@@ -1,16 +1,10 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer
 
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
-import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -28,13 +22,13 @@ import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.Omstillingsstoe
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselBrevDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselBrevDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.beregningsVedleggData
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.etteroppgjoersAar
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.opplysningerOmEtteroppgjoeretData
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselDTOSelectors.resultatType
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTO
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.OpplysningerOmEtteroppgjoeretData
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.opplysningerOmEtteroppgjoeret
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggData
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.beregningsVedlegg
 import java.time.LocalDate
 
 data class EtteroppgjoerUtbetalingDTO(
@@ -55,18 +49,20 @@ enum class EtteroppgjoerResultatType{
 }
 
 data class EtteroppgjoerForhaandsvarselDTO(
+    val vedleggInnhold: List<Element>,
+
     val bosattUtland: Boolean,
     val norskInntekt: Boolean,
     val etteroppgjoersAar: Int,
     val rettsgebyrBeloep: Kroner,
     val resultatType: EtteroppgjoerResultatType,
-    val inntekt: Kroner,
-    val faktiskInntekt: Kroner,
+    val stoenad: Kroner,
+    val faktiskStoenad: Kroner,
     val avviksBeloep: Kroner,
     val grunnlag: EtteroppgjoerGrunnlagDTO
 ){
-    val utbetalingData = EtteroppgjoerUtbetalingDTO(inntekt, faktiskInntekt, avviksBeloep)
-    val opplysningerOmEtteroppgjoeretData = OpplysningerOmEtteroppgjoeretData(etteroppgjoersAar, utbetalingData, grunnlag)
+    val utbetalingData = EtteroppgjoerUtbetalingDTO(stoenad, faktiskStoenad, avviksBeloep)
+    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag)
     val dagensDato: LocalDate = LocalDate.now()
 }
 
@@ -79,13 +75,14 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
         letterDataType = EtteroppgjoerForhaandsvarselBrevDTO::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Etteroppgjør Forhåndsvarsel",
+            displayTitle = "Varsel - Etteroppgjør",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
     ) {
         title {
+            // hvis ingen endring
             showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.IKKE_ETTEROPPGJOER)){
                 textExpr(
                     Language.Bokmal to "Informasjon om etteroppgjør av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
@@ -93,6 +90,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                     Language.English to "".expr() + data.etteroppgjoersAar.format(),
                 )
             }.orShow {
+                // hvis for mye eller for lite utbetalt
                 textExpr(
                     Language.Bokmal to "Forhåndsvarsel om etteroppgjør av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
                     Language.Nynorsk to "".expr() + data.etteroppgjoersAar.format(),
@@ -127,7 +125,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                 )
             }
 
-            showIf(data.resultatType.equalTo("TILBAKEKREVING")) {
+            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.TILBAKEKREVING)) {
                 paragraph {
                     text(
                         Language.Bokmal to "I vedtaket får du informasjon om hvordan du kan betale tilbake for mye utbetalt omstillingsstønad og hvordan du kan klage på vedtaket.",
@@ -142,6 +140,6 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
 
-        includeAttachment(opplysningerOmEtteroppgjoeret(), data.opplysningerOmEtteroppgjoeretData)
+        includeAttachment(beregningsVedlegg, data.beregningsVedleggData)
     }
 }
