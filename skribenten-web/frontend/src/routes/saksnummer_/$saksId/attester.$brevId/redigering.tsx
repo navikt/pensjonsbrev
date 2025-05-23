@@ -183,6 +183,11 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     oppdaterSaksbehandlerValg,
   );
 
+  const wrappedSaksbehandlerValgMutation = (values: SaksbehandlerValg) => {
+    form.setValue("saksbehandlerValg", values);
+    saksbehandlerValgMutation.mutate(values);
+  };
+
   useEffect(() => {
     const id = setTimeout(() => {
       if (editorState.isDirty) {
@@ -201,6 +206,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       }));
     }
   }, [editorState.isDirty, editorState.redigertBrevHash, props.brev.redigertBrev, props.brev.redigertBrevHash]);
+
+  //Register all existing saksbehandlerValg fields
+  useEffect(() => {
+    Object.entries(props.brev.saksbehandlerValg).forEach(([key, value]) => {
+      form.register(`saksbehandlerValg.${key}`, { value });
+    });
+  }, [form, props.brev.saksbehandlerValg]);
 
   const attesterMutation = useMutation<Blob, AxiosError, OppdaterBrevRequest>({
     mutationFn: (requestData) =>
@@ -289,7 +301,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               <VStack>
                 <BrevmalAlternativer
                   brevkode={props.brev.info.brevkode}
-                  submitOnChange={() => saksbehandlerValgMutation.mutate(form.getValues("saksbehandlerValg"))}
+                  submitOnChange={() => {
+                    const values = form.getValues("saksbehandlerValg");
+                    wrappedSaksbehandlerValgMutation(values);
+                  }}
                   withTitle
                 />
               </VStack>
