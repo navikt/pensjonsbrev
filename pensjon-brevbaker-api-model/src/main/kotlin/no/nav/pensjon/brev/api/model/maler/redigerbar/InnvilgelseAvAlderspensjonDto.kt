@@ -6,10 +6,14 @@ import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlage
 
 
 @Suppress("unused")
-data class InnvilgelseAvAlderspensjonDto(
-    override val pesysData: PesysData, override val saksbehandlerValg: EmptyBrevdata
+data class InnvilgelseAvAlderspensjonDto(override val pesysData: PesysData, override val saksbehandlerValg: EmptyBrevdata
 ) : RedigerbarBrevdata<EmptyBrevdata, InnvilgelseAvAlderspensjonDto, InnvilgelseAvAlderspensjonDto.PesysData> {
     data class PesysData(
+        val alderspensjonVedVirk: AlderspensjonVedVirk,
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
+    ),
+
+    data class AlderspensjonVedVirk(
+
     )
 }
