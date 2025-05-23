@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakOpphor1960til70
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6061
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakForlengelse6061
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpOpphorArskill6070
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakForlengelse1962til70
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6270
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAuto
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalder
@@ -76,6 +77,7 @@ object ProductionTemplates : AllTemplates {
         VarselGjpOpphorArskill6070,
         VedtakOpphor1960til70,
         VedtakForlengelse6061,
+        VedtakForlengelse1962til70
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
