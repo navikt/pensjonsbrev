@@ -25,13 +25,13 @@ data class InnvilgelseAvAlderspensjonDto(
         val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
         val ektefelletilleggVedVirk: EktefelletilleggVedVirk,
         val kravVirkDatoFom: LocalDate,
+        val regelverkType: AlderspensjonRegelverkType,
         val sivilstand: MetaforceSivilstand,
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
     ): BrevbakerBrevdata
 
     data class AlderspensjonVedVirk(
-        val uttaksgrad: Int,
-        val regelverkType: AlderspensjonRegelverkType,
+        val uttaksgrad: Int,  // NB! For AP2025 hentes uttaksgrad fra fra alderspensjonVedVirkKap20
         val totalPensjon: Kroner,
         val uforeKombinertMedAlder: Boolean,
         val innvilgetFor67: Boolean,
