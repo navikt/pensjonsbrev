@@ -4,7 +4,7 @@ import { BodyShort, Box, Button, Heading, Label, Loader, Switch, VStack } from "
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import {
@@ -188,15 +188,18 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     saksbehandlerValgMutation.mutate(values);
   };
 
-  useEffect(() => {
-    const id = setTimeout(() => {
-      if (editorState.isDirty) {
-        brevtekstMutation.mutate(editorState.redigertBrev);
-      }
-    }, 5000);
-    return () => clearTimeout(id);
+  const autoSave = useCallback(() => {
+    if (editorState.isDirty) {
+      brevtekstMutation.mutate(editorState.redigertBrev);
+    }
   }, [brevtekstMutation, editorState.isDirty, editorState.redigertBrev]);
 
+  useEffect(() => {
+    const timeoutId = setTimeout(autoSave, 5000);
+    return () => clearTimeout(timeoutId);
+  }, [autoSave]);
+
+  // If the user isn’t editing and the server’s version has changed, update local redigertBrev and its hash
   useEffect(() => {
     if (!editorState.isDirty && editorState.redigertBrevHash !== props.brev.redigertBrevHash) {
       setEditorState((s) => ({
@@ -207,12 +210,21 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     }
   }, [editorState.isDirty, editorState.redigertBrevHash, props.brev.redigertBrev, props.brev.redigertBrevHash]);
 
-  //Register all existing saksbehandlerValg fields
+  // Dynamically register each key in props.brev.saksbehandlerValg
+  // so React-Hook-Form knows about all those nested fields and their initial values
   useEffect(() => {
     Object.entries(props.brev.saksbehandlerValg).forEach(([key, value]) => {
       form.register(`saksbehandlerValg.${key}`, { value });
     });
   }, [form, props.brev.saksbehandlerValg]);
+
+  // Whenever server-derived defaultValuesModelEditor changes,
+  // reset the form values unless the user has already edited them.
+  useEffect(() => {
+    if (!form.formState.isDirty) {
+      form.reset(defaultValuesModelEditor);
+    }
+  }, [defaultValuesModelEditor, form]);
 
   const attesterMutation = useMutation<Blob, AxiosError, OppdaterBrevRequest>({
     mutationFn: (requestData) =>
@@ -241,10 +253,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     saksbehandlerValgMutation.isError ||
     attestantSignaturMutation.isError ||
     attesterMutation.isError;
-
-  useEffect(() => {
-    form.reset(defaultValuesModelEditor);
-  }, [defaultValuesModelEditor, form]);
 
   return (
     <form
