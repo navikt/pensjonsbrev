@@ -84,9 +84,10 @@ object VedtakOpphor1960til70 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             }
             paragraph {
                 text(
-                    Bokmal to "Inntekten må ha vært under tre ganger gjennomsnittlig grunnbeløp i folketrygden (G) i både 2022 og 2023: "
+                    Bokmal to "Pensjonsgivende inntekt må ha vært under tre ganger gjennomsnittlig grunnbeløp i folketrygden (G) i både 2022 og 2023: "
                 )
             }
+
             paragraph {
                 table(
                     header = {
@@ -131,8 +132,8 @@ object VedtakOpphor1960til70 : AutobrevTemplate<Gjenlevenderett2027Dto> {
 
             paragraph {
                 text(
-                    Bokmal to "I tillegg må inntekten din i 2019 – 2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt disse fem årene. " +
-                            "Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere. "
+                    Bokmal to "I tillegg må inntekten din i 2019 – 2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. " +
+                            "Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere.  "
                 )
             }
 
@@ -222,12 +223,12 @@ object VedtakOpphor1960til70 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             }
             paragraph {
                 text(
-                    Bokmal to "Det er dine reelle inntekter i årene 2019 – 2023 som avgjør om du kan beholde gjenlevendepensjonen. "
+                    Bokmal to "Det er inntekten din i årene 2019 – 2023 som avgjør om du kan beholde gjenlevendepensjonen din til du blir 67 år. "
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Ifølge registrerte opplysninger vi har om deg, har pensjonen din i årene 2019 – 2023 vært redusert etter følgende inntekter: "
+                    Bokmal to "Ifølge registeropplysninger vi har om deg fra Skatteetaten har du i årene 2019 – 2023 hatt følgende inntekter: "
                 )
             }
 
@@ -348,6 +349,17 @@ object VedtakOpphor1960til70 : AutobrevTemplate<Gjenlevenderett2027Dto> {
 
             title1 {
                 text(
+                    Bokmal to "Har du helseutfordringer? "
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Hvis du har helseutfordringer, kan du undersøke mulighetene for andre ytelser eller støtteordninger ved ditt lokale Nav-kontor og på nav.no/helse. "
+                )
+            }
+
+            title1 {
+                text(
                     Bokmal to "Du har rett til å klage "
                 )
             }
@@ -356,6 +368,7 @@ object VedtakOpphor1960til70 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på nav.no/klage. "
                 )
             }
+
             title1 {
                 text(
                     Bokmal to "Du har rett til innsyn "
@@ -366,6 +379,7 @@ object VedtakOpphor1960til70 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                     Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram. "
                 )
             }
+
             title1 {
                 text(
                     Bokmal to "Meld fra om endringer "
@@ -376,6 +390,7 @@ object VedtakOpphor1960til70 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                     Bokmal to "Hvis du får endringer i inntekt eller jobbsituasjon, gifter deg eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav. "
                 )
             }
+
             title1 {
                 text(
                     Bokmal to "Har du spørsmål?  "
