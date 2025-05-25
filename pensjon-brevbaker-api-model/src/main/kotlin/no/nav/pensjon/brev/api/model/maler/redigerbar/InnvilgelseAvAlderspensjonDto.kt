@@ -22,9 +22,9 @@ data class InnvilgelseAvAlderspensjonDto(
 
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
-        val barnetilleggVedVirk: BarnetilleggVedVirk,
+        val barnetilleggVedVirk: BarnetilleggVedVirk?,
         val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
-        val ektefelletilleggVedVirk: EktefelletilleggVedVirk,
+        val ektefelletilleggVedVirk: EktefelletilleggVedVirk?,
         val kravVirkDatoFom: LocalDate,
         val regelverkType: AlderspensjonRegelverkType,
         val sakstype: Sakstype,
@@ -47,10 +47,10 @@ data class InnvilgelseAvAlderspensjonDto(
     )
 
     data class BeregnetPensjonPerManedVedVirk(
-        val barnetilleggFellesbarn: Kroner,
-        val barnetilleggSaerkullsbarn: Kroner,
-        val ektefelletillegg: Kroner,
-        val gjenlevendetilleggKap19: Kroner,
+        val barnetilleggFellesbarn: Kroner?,
+        val barnetilleggSaerkullsbarn: Kroner?,
+        val ektefelletillegg: Kroner?,
+        val gjenlevendetilleggKap19: Kroner?,
     )
 
     data class EktefelletilleggVedVirk(

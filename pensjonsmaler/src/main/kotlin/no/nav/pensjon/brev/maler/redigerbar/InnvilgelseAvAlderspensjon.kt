@@ -8,20 +8,28 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BarnetilleggVedVirkSelectors.innvilgetFellesbarn
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BarnetilleggVedVirkSelectors.innvilgetFellesbarn_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BarnetilleggVedVirkSelectors.innvilgetSaerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BarnetilleggVedVirkSelectors.innvilgetSaerkullsbarn_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.barnetilleggFellesbarn_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.barnetilleggSaerkullsbarn_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.EktefelletilleggVedVirkSelectors.innvilgetEktefelletillegg
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.EktefelletilleggVedVirkSelectors.innvilgetEktefelletillegg_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.barnetilleggVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.ektefelletilleggVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Redigerbar.SaksType
+import no.nav.pensjon.brev.maler.vedlegg.vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
@@ -53,10 +61,12 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
     ) {
         val uttaksgrad = pesysData.alderspensjonVedVirk.ifNull(then = (0))
         val regelverkType = pesysData.regelverkType
-        val innvilgetEktefelletillegg = pesysData.beregnetPensjonPerManedVedVirk
-        val innvilgetSaerkullsbarn = pesysData.barnetilleggVedVirk.innvilgetSaerkullsbarn
-        val innvilgetFellesbarn = pesysData.barnetilleggVedVirk.innvilgetFellesbarn
+        val innvilgetEktefelletillegg = pesysData.ektefelletilleggVedVirk.innvilgetEktefelletillegg_safe
+        val innvilgetSaerkullsbarn = pesysData.barnetilleggVedVirk.innvilgetSaerkullsbarn_safe
+        val innvilgetFellesbarn = pesysData.barnetilleggVedVirk.innvilgetFellesbarn_safe
         val ektefelletillegg = pesysData.beregnetPensjonPerManedVedVirk.ifNull(then = (0))
+        val barnetilleggFellesbarn = pesysData.beregnetPensjonPerManedVedVirk.barnetilleggFellesbarn_safe.ifNull(then = (0))
+        val barnetilleggSaerkullsbarn = pesysData.beregnetPensjonPerManedVedVirk.barnetilleggSaerkullsbarn_safe.ifNull(then = (0))
 
         title {
             textExpr(
@@ -66,19 +76,32 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             )
             includePhrase(SaksType(pesysData.sakstype))
         }
+
         outline {
 
-            showIf(innvilgetEktefelletillegg and ektefelletillegg.notEqualTo(0) and not(innvilgetFellesbarn, or innvilgetSaerkullsbarn)) {
+            showIf(
+                innvilgetEktefelletillegg and ektefelletillegg.notEqualTo(0) and not(innvilgetFellesbarn) and not(
+                    innvilgetSaerkullsbarn)
+            ) {
                 // innvETAP
                 paragraph {
                     val navn = fritekst("navn")
+                    val beloep = fritekst("beløp")
                     textExpr(
-                        Bokmal to "",
-                        Nynorsk to "",
-                        English to ""
+                        Bokmal to "I tillegg til alderspensjonen får du også ektefelletillegg for ".expr() + navn + "." +
+                                " Hvis den samlede inntekten din blir høyere enn ".expr() + beloep + " kroner vil vi redusere dette tillegget.",
+                        Nynorsk to "I tillegg til alderspensjonen får du også ektefelletillegg for ".expr() + navn + "." +
+                                " Dersom den samla inntekta di blir høgare enn ".expr() + beloep + " kroner vil vi redusere dette tillegget.",
+                        English to "In addition to retirement pension, you are also entitled to a spouse supplement for ".expr() + navn + "." +
+                                " If your total income exceeds NOK ".expr() + beloep + ", this supplement will be reduced."
                     )
                 }
             }
+            showIf(
+                innvilgetFellesbarn and
+            )
 
         }
+    }
+}
 
