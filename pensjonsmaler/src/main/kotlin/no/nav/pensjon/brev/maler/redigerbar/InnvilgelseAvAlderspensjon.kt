@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.*
+import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
@@ -30,6 +31,7 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
@@ -63,14 +65,17 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         val regelverkType = pesysData.regelverkType
         val innvilgetEktefelletillegg =
             pesysData.ektefelletilleggVedVirk.innvilgetEktefelletillegg_safe.ifNull(then = false)
-        val innvilgetBarnetilleggSaerkullsbarn = pesysData.barnetilleggVedVirk.innvilgetBarnetilleggSaerkullsbarn_safe.ifNull(then = false)
-        val innvilgetBarnetilleggFellesbarn = pesysData.barnetilleggVedVirk.innvilgetBarnetilleggFellesbarn_safe.ifNull(then = false)
+        val innvilgetBarnetilleggSaerkullsbarn =
+            pesysData.barnetilleggVedVirk.innvilgetBarnetilleggSaerkullsbarn_safe.ifNull(then = false)
+        val innvilgetBarnetilleggFellesbarn =
+            pesysData.barnetilleggVedVirk.innvilgetBarnetilleggFellesbarn_safe.ifNull(then = false)
         val ektefelletillegg = pesysData.beregnetPensjonPerManedVedVirk_safe.ifNull(then = (0))
         val barnetilleggFellesbarn =
             pesysData.beregnetPensjonPerManedVedVirk.barnetilleggFellesbarn_safe.ifNull(then = (0))
         val barnetilleggSaerkullsbarn =
             pesysData.beregnetPensjonPerManedVedVirk.barnetilleggSaerkullsbarn_safe.ifNull(then = (0))
         val sivilstand = pesysData.sivilstand
+
 
 
         title {
@@ -103,7 +108,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     )
                 }
             }.orShowIf(
-                (innvilgetBarnetilleggFellesbarn  and barnetilleggFellesbarn.notEqualTo(0))
+                (innvilgetBarnetilleggFellesbarn and barnetilleggFellesbarn.notEqualTo(0))
                         or (innvilgetBarnetilleggSaerkullsbarn and barnetilleggSaerkullsbarn.notEqualTo(0))
                         and not(innvilgetEktefelletillegg)
             ) {
@@ -137,6 +142,23 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                         English to "In addition to retirement pension, you are also entitled to a spouse supplement and a child supplement for ".expr() + navn + " og ".expr() + navn + "." +
                                 " If your total income exceeds NOK ".expr() + beloep + ", these supplements will be reduced."
                     )
+                }
+            }
+            showIf(
+                sivilstand.isOneOf(MetaforceSivilstand.ENSLIG, MetaforceSivilstand.ENKE, MetaforceSivilstand.UKJENT)
+                        and (innvilgetEktefelletillegg and ektefelletillegg.notEqualTo(0))
+                        or (innvilgetBarnetilleggFellesbarn and barnetilleggFellesbarn.notEqualTo(0))
+                        or (innvilgetBarnetilleggSaerkullsbarn and barnetilleggSaerkullsbarn.notEqualTo(0))
+            ) {
+                // innvFTAPIngunUtbInntekt_002
+                paragraph {
+                    val navn = fritekst("navn")
+                    textExpr(
+                        Bokmal to "I tillegg til alderspensjonen får du også ".expr()  for ".expr() + navn + ", men det vil ikke bli utbetalt fordi den samlede inntekten din er for høy.",
+                        Nynorsk to "I tillegg til alderspensjonen får du også [_Script Script_barnetillegg_ektefelletillegg_] for ".expr() + navn + ", men det vil ikkje bli betalt ut fordi den samla inntekta di er for høg.",
+                        English to "In addition to retirement pension, you are also entitled to a [_Script Script_barnetillegg_ektefelletillegg_] for ".expr() + navn + "; however, this will not be paid, because your total income is above the threshold for this supplement."
+                    )
+
                 }
             }
         }
