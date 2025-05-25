@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
@@ -26,6 +27,7 @@ data class InnvilgelseAvAlderspensjonDto(
         val ektefelletilleggVedVirk: EktefelletilleggVedVirk,
         val kravVirkDatoFom: LocalDate,
         val regelverkType: AlderspensjonRegelverkType,
+        val sakstype: Sakstype,
         val sivilstand: MetaforceSivilstand,
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
     ): BrevbakerBrevdata
