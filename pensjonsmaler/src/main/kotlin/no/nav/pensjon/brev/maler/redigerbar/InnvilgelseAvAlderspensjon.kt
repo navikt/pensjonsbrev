@@ -8,6 +8,8 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.barnetilleggVedVirk
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.pesysData
@@ -15,9 +17,10 @@ import no.nav.pensjon.brev.maler.fraser.common.Redigerbar.SaksType
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -44,23 +47,34 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             brevtype = VEDTAKSBREV
         )
     ) {
-        val uttaksgrad = pesysData.alderspensjonVedVirk.format()
+        val uttaksgrad = pesysData.alderspensjonVedVirk.ifNull(then = (0))
         val regelverkType = pesysData.regelverkType
+        val innvilgetEktefelletillegg = pesysData.beregnetPensjonPerManedVedVirk
+        val innvilgetSaerkullsbarn = pesysData.barnetilleggVedVirk
+        val innvilgetFelles = pesysData.barnetilleggVedVirk
+        val ektefelletillegg = pesysData.beregnetPensjonPerManedVedVirk.ifNull(then = (0))
 
-        title{
+        title {
             textExpr(
-            Bokmal to "Vi har innvilget søknaden din om ".expr() + uttaksgrad + " prosent alderspensjon",
-            Nynorsk to "Vi har innvilga søknaden din om ".expr() + uttaksgrad + " prosent alderspensjon",
-            English to "We have granted your application for ".expr() + uttaksgrad + " percent retirement pension",
+                Bokmal to "Vi har innvilget søknaden din om ".expr() + uttaksgrad + " prosent alderspensjon",
+                Nynorsk to "Vi har innvilga søknaden din om ".expr() + uttaksgrad + " prosent alderspensjon",
+                English to "We have granted your application for ".expr() + uttaksgrad + " percent retirement pension",
             )
             includePhrase(SaksType(pesysData.sakstype))
         }
         outline {
-            paragraph {
-                textExpr(
-                )
 
-    }
+            showIf(innvilgetEktefelletillegg and ektefelletillegg.notEqualTo(0)) {
+                // innvETAP
+                paragraph {
+                    val navn = fritekst("navn")
+                    textExpr(
+                        Bokmal to "",
+                        Nynorsk to "",
+                        English to ""
+                    )
+                }
+            }
 
-}
+        }
 
