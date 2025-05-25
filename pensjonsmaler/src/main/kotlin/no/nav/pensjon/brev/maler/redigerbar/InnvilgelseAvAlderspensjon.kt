@@ -1,9 +1,14 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.MetaforceSivilstand
+import no.nav.pensjon.brev.api.model.MetaforceSivilstand.ENKE
+import no.nav.pensjon.brev.api.model.MetaforceSivilstand.ENSLIG
+import no.nav.pensjon.brev.api.model.MetaforceSivilstand.GIFT
+import no.nav.pensjon.brev.api.model.MetaforceSivilstand.PARTNER
+import no.nav.pensjon.brev.api.model.MetaforceSivilstand.SAMBOER_1_5
+import no.nav.pensjon.brev.api.model.MetaforceSivilstand.SAMBOER_3_2
+import no.nav.pensjon.brev.api.model.MetaforceSivilstand.UKJENT
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.*
-import no.nav.pensjon.brev.api.model.Sivilstand
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
@@ -25,6 +30,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.sivilstand
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Redigerbar.SaksType
+import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -46,6 +52,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
+
 
 
 @TemplateModelHelpers
@@ -79,6 +86,9 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         val barnetilleggSaerkullsbarn =
             pesysData.beregnetPensjonPerManedVedVirk.barnetilleggSaerkullsbarn_safe.ifNull(then = (0))
         val sivilstand = pesysData.sivilstand
+        val sivilstandBestemtStorBokstav = pesysData.sivilstand.bestemtForm(storBokstav = true)
+        val sivilstandBestemtLitenBokstav = pesysData.sivilstand.bestemtForm(storBokstav = false)
+
 
 
 
@@ -149,7 +159,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 }
             }
             showIf(
-                sivilstand.isOneOf(MetaforceSivilstand.ENSLIG, MetaforceSivilstand.ENKE, MetaforceSivilstand.UKJENT)
+                sivilstand.isOneOf(ENSLIG, ENKE, UKJENT)
                         and (innvilgetEktefelletillegg and ektefelletillegg.notEqualTo(0))
                         or (innvilgetBarnetilleggFellesbarn and barnetilleggFellesbarn.notEqualTo(0))
                         or (innvilgetBarnetilleggSaerkullsbarn and barnetilleggSaerkullsbarn.notEqualTo(0))
@@ -177,10 +187,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
                 }
             }.orShowIf(
-                sivilstand.isOneOf(
-                    MetaforceSivilstand.GIFT, MetaforceSivilstand.SAMBOER_1_5, MetaforceSivilstand.SAMBOER_3_2,
-                    MetaforceSivilstand.PARTNER
-                )
+                sivilstand.isOneOf(GIFT, SAMBOER_1_5, SAMBOER_3_2, PARTNER)
                         and (innvilgetEktefelletillegg and ektefelletillegg.isNull())
                         or (innvilgetBarnetilleggFellesbarn and barnetilleggFellesbarn.isNull())
                         or (innvilgetBarnetilleggSaerkullsbarn and barnetilleggSaerkullsbarn.isNull())
