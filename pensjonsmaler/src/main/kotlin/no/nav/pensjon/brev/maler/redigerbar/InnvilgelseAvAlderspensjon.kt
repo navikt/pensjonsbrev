@@ -7,6 +7,9 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FOERSTEGAN
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BarnetilleggVedVirkSelectors.innvilgetFellesbarn
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BarnetilleggVedVirkSelectors.innvilgetSaerkullsbarn
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.EktefelletilleggVedVirkSelectors.innvilgetEktefelletillegg
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.barnetilleggVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
@@ -20,6 +23,7 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -50,8 +54,8 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         val uttaksgrad = pesysData.alderspensjonVedVirk.ifNull(then = (0))
         val regelverkType = pesysData.regelverkType
         val innvilgetEktefelletillegg = pesysData.beregnetPensjonPerManedVedVirk
-        val innvilgetSaerkullsbarn = pesysData.barnetilleggVedVirk
-        val innvilgetFelles = pesysData.barnetilleggVedVirk
+        val innvilgetSaerkullsbarn = pesysData.barnetilleggVedVirk.innvilgetSaerkullsbarn
+        val innvilgetFellesbarn = pesysData.barnetilleggVedVirk.innvilgetFellesbarn
         val ektefelletillegg = pesysData.beregnetPensjonPerManedVedVirk.ifNull(then = (0))
 
         title {
@@ -64,7 +68,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         }
         outline {
 
-            showIf(innvilgetEktefelletillegg and ektefelletillegg.notEqualTo(0)) {
+            showIf(innvilgetEktefelletillegg and ektefelletillegg.notEqualTo(0) and not(innvilgetFellesbarn, or innvilgetSaerkullsbarn)) {
                 // innvETAP
                 paragraph {
                     val navn = fritekst("navn")
