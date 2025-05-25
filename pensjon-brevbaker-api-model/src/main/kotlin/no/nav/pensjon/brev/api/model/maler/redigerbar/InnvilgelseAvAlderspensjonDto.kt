@@ -42,8 +42,8 @@ data class InnvilgelseAvAlderspensjonDto(
     )
 
     data class BarnetilleggVedVirk(
-        val innvilgetFellesbarn: Boolean,
-        val innvilgetSaerkullsbarn: Boolean,
+        val innvilgetBarnetilleggFellesbarn: Boolean,
+        val innvilgetBarnetilleggSaerkullsbarn: Boolean,
     )
 
     data class BeregnetPensjonPerManedVedVirk(
