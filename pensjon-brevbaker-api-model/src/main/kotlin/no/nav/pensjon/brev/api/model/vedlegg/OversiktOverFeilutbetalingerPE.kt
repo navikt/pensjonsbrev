@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.vedlegg
 import no.nav.pensjon.brev.api.model.KonteringType
 import no.nav.pensjon.brev.api.model.TilbakekrevingResultat
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -15,7 +16,7 @@ data class OversiktOverFeilutbetalingPEDto(
     val resultatAvVurderingenForTotalbeloep: TilbakekrevingResultat,  // resultatTotal
     val skattefradragSomInnkrevesTotalbeloep: Kroner,  // skattTotal
     val tilbakekrevingPerMaaned: List<Tilbakekreving>,  // tilbakekrevingPerManedListe
-) : BrevbakerBrevdata {
+) : BrevbakerBrevdata, VedleggBrevdata {
     data class Tilbakekreving(
         val maanedOgAar: LocalDate,  // maned -> feltet returnerer kun måned i dag, utvides med år fra TilbakekrevingTotal
         val bruttobeloepTilbakekrevd: Kroner,  // bruttoTilbakekrevingManed
