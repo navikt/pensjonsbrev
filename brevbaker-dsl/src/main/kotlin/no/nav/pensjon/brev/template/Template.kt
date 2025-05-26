@@ -45,9 +45,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     fun includeAttachment(
         template: AttachmentTemplate<Lang, EmptyVedleggBrevdata>,
         predicate: Expression<Boolean> = true.expr(),
-    ) {
-        attachments.add(IncludeAttachment(EmptyVedleggBrevdata.expr(), template, predicate))
-    }
+    ) = includeAttachment(template, EmptyVedleggBrevdata.expr(), predicate)
 
     fun <AttachmentData : Any> includeAttachmentIfNotNull(
         template: AttachmentTemplate<Lang, AttachmentData>,
