@@ -87,7 +87,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         val barnetilleggSaerkullsbarn =
             pesysData.beregnetPensjonPerManedVedVirk.barnetilleggSaerkullsbarn_safe.ifNull(then = Kroner(0))
         val sivilstand = pesysData.sivilstand
-        val sivilstandBestemtStorBokstav = pesysData.sivilstand.bestemtForm(storBokstav = false)
+        val sivilstandBestemtStorBokstav = pesysData.sivilstand.bestemtForm(storBokstav = true)
         val sivilstandBestemtLitenBokstav = pesysData.sivilstand.bestemtForm(storBokstav = false)
 
 
