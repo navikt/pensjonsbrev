@@ -9,3 +9,5 @@ interface RedigerbarBrevdata<SaksbehandlerValg : BrevbakerBrevdata, PesysData : 
     val saksbehandlerValg: SaksbehandlerValg
     val pesysData: PesysData
 }
+
+interface VedleggBrevdata
