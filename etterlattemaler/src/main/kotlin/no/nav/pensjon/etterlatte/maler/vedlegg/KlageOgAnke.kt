@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg
 
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -18,7 +19,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.postadresse
 fun klageOgAnke(
 	bosattUtland: Boolean,
 	tilbakekreving: Boolean = false,
-): AttachmentTemplate<LangBokmalNynorskEnglish, Any> {
+): AttachmentTemplate<LangBokmalNynorskEnglish, VedleggBrevdata> {
 	return createAttachment(
 		title = newText(
 			Bokmal to "Informasjon om klage og anke",
@@ -39,7 +40,7 @@ fun klageOgAnke(
 	}
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.duKanFaaDekketUtgifter() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, VedleggBrevdata>.duKanFaaDekketUtgifter() {
     title2 {
         text(
             Bokmal to "Du kan få dekket utgifter",
@@ -70,7 +71,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.duKanFaaDekketUtgift
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvaMaaKlagenInneholde(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, VedleggBrevdata>.hvaMaaKlagenInneholde(
     bosattUtland: Expression<Boolean>
 ) {
     title2 {
@@ -144,7 +145,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvaMaaKlagenInnehold
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvordanSendeKlage(
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, VedleggBrevdata>.hvordanSendeKlage(
     bosattUtland: Expression<Boolean>
 ) {
     title2 {
@@ -183,7 +184,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hvordanSendeKlage(
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.klagePaaVedtaket() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, VedleggBrevdata>.klagePaaVedtaket() {
     title2 {
         text(
             Bokmal to "Klage på vedtaket - folketrygdloven § 21-12",
@@ -210,7 +211,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.klagePaaVedtaket() {
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hjelpFraAndre() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, VedleggBrevdata>.hjelpFraAndre() {
     title2 {
         text(
             Bokmal to "Hjelp fra andre - forvaltningsloven § 12",
@@ -236,7 +237,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.hjelpFraAndre() {
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.veiledning() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, VedleggBrevdata>.veiledning() {
     title2 {
         text(
             Bokmal to "Veiledning fra Nav - forvaltningsloven § 11",
@@ -259,7 +260,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.veiledning() {
     }
 }
 
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, Any>.tilbakekreving() {
+private fun OutlineOnlyScope<LangBokmalNynorskEnglish, VedleggBrevdata>.tilbakekreving() {
 	title2 {
 		text(
 			Bokmal to "Tilbakekreving",

@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggBrevdata
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
@@ -172,7 +173,7 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: Str
     return this
 }
 
-fun <AttachmentData : Any, Lang : LanguageSupport> createVedleggTestTemplate(
+fun <AttachmentData : VedleggBrevdata, Lang : LanguageSupport> createVedleggTestTemplate(
     template: AttachmentTemplate<Lang, AttachmentData>,
     attachmentData: Expression<AttachmentData>,
     languages: Lang,

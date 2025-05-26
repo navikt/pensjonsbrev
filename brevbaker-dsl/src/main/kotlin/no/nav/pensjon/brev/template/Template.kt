@@ -34,7 +34,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         outline.addAll(OutlineOnlyScope<Lang, LetterData>().apply(init).elements)
     }
 
-    fun <AttachmentData : Any> includeAttachment(
+    fun <AttachmentData : VedleggBrevdata> includeAttachment(
         template: AttachmentTemplate<Lang, AttachmentData>,
         attachmentData: Expression<AttachmentData>,
         predicate: Expression<Boolean> = true.expr(),
@@ -47,7 +47,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         predicate: Expression<Boolean> = true.expr(),
     ) = includeAttachment(template, EmptyVedleggBrevdata.expr(), predicate)
 
-    fun <AttachmentData : Any> includeAttachmentIfNotNull(
+    fun <AttachmentData : VedleggBrevdata> includeAttachmentIfNotNull(
         template: AttachmentTemplate<Lang, AttachmentData>,
         attachmentData: Expression<AttachmentData?>,
     ) = @Suppress("UNCHECKED_CAST") includeAttachment(template, attachmentData as Expression<AttachmentData>, attachmentData.notNull())

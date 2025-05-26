@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextScope
@@ -32,7 +33,7 @@ fun TextScope<BaseLanguages, *>.namedReference(attachment: AttachmentTemplate<Ba
     text(Language.Bokmal to "»", Language.Nynorsk to "»", Language.English to "'")
 }
 
-class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any> internal constructor(
+class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : VedleggBrevdata> internal constructor(
     val data: Expression<AttachmentData>,
     val template: AttachmentTemplate<Lang, AttachmentData>,
     val predicate: Expression<Boolean> = Expression.Literal(true),

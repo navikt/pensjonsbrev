@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler
 
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -21,7 +22,7 @@ data class BarnepensjonBeregning(
     val erForeldreloes: Boolean = false,
     val forskjelligTrygdetid: ForskjelligTrygdetid? = null,
     val erYrkesskade: Boolean = false,
-) : BrevDTO {
+) : BrevDTO, VedleggBrevdata {
     val harForskjelligMetode = forskjelligTrygdetid?.harForskjelligMetode == true
 }
 
@@ -44,7 +45,7 @@ data class OmstillingsstoenadBeregning(
     val oppphoersdato: LocalDate? = null,
     val opphoerNesteAar: Boolean,
     val erYrkesskade: Boolean = false,
-) : BrevDTO
+) : BrevDTO, VedleggBrevdata
 
 data class OmstillingsstoenadBeregningRevurderingRedigertbartUtfall(
     val virkningsdato: LocalDate,

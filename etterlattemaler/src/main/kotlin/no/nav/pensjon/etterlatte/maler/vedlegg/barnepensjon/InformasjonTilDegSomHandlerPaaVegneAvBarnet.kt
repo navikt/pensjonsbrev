@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -42,7 +43,7 @@ val informasjonTilDegSomHandlerPaaVegneAvBarnetUtland = createAttachment(
     utbetalingUtland()
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.informasjon() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, VedleggBrevdata>.informasjon() {
     paragraph {
         text(
             Bokmal to "Frem til barn fyller 18 år, er det verge som ivaretar barnets interesser. " +
@@ -66,7 +67,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
 }
 
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerUtland() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, VedleggBrevdata>.endringAvKontonummerUtland() {
     title2 {
         text(
             Bokmal to "Skal du endre kontonummer?",
@@ -97,7 +98,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.endringAvKontonummerNasjonal() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, VedleggBrevdata>.endringAvKontonummerNasjonal() {
     title2 {
         text(
             Bokmal to "Skal du endre kontonummer?",
@@ -131,7 +132,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, A
     }
 }
 
-private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, Any>.utbetalingUtland() {
+private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, VedleggBrevdata>.utbetalingUtland() {
     title2 {
         text(
             Bokmal to "Utbetaling av barnepensjon",

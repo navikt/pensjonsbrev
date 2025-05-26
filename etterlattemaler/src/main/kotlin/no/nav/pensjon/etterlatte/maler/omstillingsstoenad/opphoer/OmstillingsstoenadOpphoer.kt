@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer
 
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -38,7 +39,7 @@ data class OmstillingsstoenadOpphoerDTO(
     val virkningsdato: LocalDate,
     val bosattUtland: Boolean,
     val feilutbetaling: FeilutbetalingType
-): FerdigstillingBrevDTO
+): FerdigstillingBrevDTO, VedleggBrevdata
 
 @TemplateModelHelpers
 object OmstillingsstoenadOpphoer : EtterlatteTemplate<OmstillingsstoenadOpphoerDTO>, Hovedmal {

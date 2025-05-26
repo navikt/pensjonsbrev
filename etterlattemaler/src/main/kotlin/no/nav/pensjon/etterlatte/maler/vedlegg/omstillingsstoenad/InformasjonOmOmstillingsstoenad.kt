@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -20,7 +21,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmO
 data class InformasjonOmOmstillingsstoenadData(
     val tidligereFamiliepleier: Boolean = false,
     val bosattUtland: Boolean = false,
-)
+) : VedleggBrevdata
 
 fun informasjonOmOmstillingsstoenad(): AttachmentTemplate<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData> {
     return createAttachment(

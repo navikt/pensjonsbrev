@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering
 
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -22,6 +23,7 @@ import no.nav.pensjon.etterlatte.maler.ElementListe
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
+import no.nav.pensjon.etterlatte.maler.Vedlegg
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.beregning
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.brukerUnder18Aar
@@ -65,7 +67,7 @@ data class BarnepensjonRevurderingDTO(
     val harUtbetaling: Boolean,
     val innholdForhaandsvarsel: ElementListe,
     val kunNyttRegelverk: Boolean,
-) : FerdigstillingBrevDTO
+) : FerdigstillingBrevDTO, VedleggBrevdata
 
 @TemplateModelHelpers
 object BarnepensjonRevurdering : EtterlatteTemplate<BarnepensjonRevurderingDTO>, Hovedmal {

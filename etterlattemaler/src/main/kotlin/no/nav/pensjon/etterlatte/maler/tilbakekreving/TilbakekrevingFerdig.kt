@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -57,7 +58,7 @@ data class TilbakekrevingDTO(
     val helTilbakekreving: Boolean,
     val perioder: List<TilbakekrevingPeriode>,
     val summer: TilbakekrevingBeloeper
-)
+) : VedleggBrevdata
 
 data class TilbakekrevingPeriode(
     val maaned: LocalDate,
