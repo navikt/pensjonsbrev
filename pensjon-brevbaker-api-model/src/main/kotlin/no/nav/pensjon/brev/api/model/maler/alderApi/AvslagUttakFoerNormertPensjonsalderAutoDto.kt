@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.alderApi
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.LocalDate
@@ -68,7 +69,7 @@ data class OpplysningerBruktIBeregningen(
     val trygdeperioderUtland: List<TrygdeperiodeUtland>,
     val opplysningerKap19: OpplysningerBruktIBeregningenKap19?,
     val opplysningerKap20: OpplysningerBruktIBeregningenKap20,
-)
+) : VedleggBrevdata
 
 data class OpplysningerBruktIBeregningenKap20(
     val redusertTrygdetidKap20: Boolean,
