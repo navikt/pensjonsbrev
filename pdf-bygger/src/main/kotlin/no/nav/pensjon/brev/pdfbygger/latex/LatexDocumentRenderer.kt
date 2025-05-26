@@ -221,20 +221,20 @@ internal object LatexDocumentRenderer {
             is LetterMarkup.Block.Paragraph -> renderParagraph(block, previous)
 
             is LetterMarkup.Block.Title1 -> renderIfNonEmptyText(block.content) { titleText ->
-                if (!next.isTable()) {
+                if (!next.startsWithTable()) {
                     appendCmd("lettersectiontitleone", titleText)
                 }
             }
 
             is LetterMarkup.Block.Title2 -> renderIfNonEmptyText(block.content) { titleText ->
-                if (!next.isTable()) {
+                if (!next.startsWithTable()) {
                     appendCmd("lettersectiontitletwo", titleText)
                 }
             }
         }
 
-    private fun LetterMarkup.Block?.isTable(): Boolean =
-        (this as? LetterMarkup.Block.Paragraph)?.content?.firstOrNull()?.type == Type.TABLE
+    private fun LetterMarkup.Block?.startsWithTable(): Boolean =
+        (this is LetterMarkup.Block.Paragraph) && this.content.firstOrNull() is Table
 
     private fun LatexAppendable.renderTextParagraph(text: List<Text>): Unit =
         appendCmd("templateparagraph") {
