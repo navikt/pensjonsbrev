@@ -29,8 +29,8 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.*
 import java.time.LocalDate
 
 data class OmstillingsstoenadRevurderingDTO(
-    override val innhold: List<Element>,
-    val innholdForhaandsvarsel: List<Element>,
+    override val innhold: ElementListe,
+    val innholdForhaandsvarsel: ElementListe,
     val erEndret: Boolean,
     val erOmgjoering: Boolean,
     val datoVedtakOmgjoering: LocalDate?,

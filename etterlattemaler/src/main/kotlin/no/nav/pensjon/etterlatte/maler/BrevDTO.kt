@@ -8,7 +8,7 @@ utvid heller FerdigstillingBrevDTO eller RedigerbartUtfallBrevDTO,
 avhengig av hva du lager
 */
 interface BrevDTO : BrevbakerBrevdata {
-    val innhold: List<Element>
+    val innhold: ElementListe
 }
 
 interface FerdigstillingBrevDTO : BrevDTO

@@ -17,7 +17,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
-import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.ElementListe
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTOSelectors.beregning
@@ -44,7 +44,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSom
 import java.time.LocalDate
 
 data class BarnepensjonForeldreloesDTO(
-    override val innhold: List<Element>,
+    override val innhold: ElementListe,
     val beregning: BarnepensjonBeregning,
     val bosattUtland: Boolean,
     val brukerUnder18Aar: Boolean,

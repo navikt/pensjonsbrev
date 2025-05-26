@@ -14,7 +14,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.ElementListe
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
@@ -38,7 +38,7 @@ data class EtteroppgjoerUtbetalingDTO(
 )
 
 data class EtteroppgjoerForhaandsvarselBrevDTO(
-    override val innhold: List<Element>,
+    override val innhold: ElementListe,
     val data: EtteroppgjoerForhaandsvarselDTO
 ) : FerdigstillingBrevDTO
 
@@ -49,7 +49,7 @@ enum class EtteroppgjoerResultatType{
 }
 
 data class EtteroppgjoerForhaandsvarselDTO(
-    val vedleggInnhold: List<Element>,
+    val vedleggInnhold: ElementListe,
 
     val bosattUtland: Boolean,
     val norskInntekt: Boolean,

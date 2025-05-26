@@ -10,7 +10,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.ElementListe
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
@@ -33,7 +33,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 import java.time.LocalDate
 
 data class TilbakekrevingBrevDTO(
-    override val innhold: List<Element>,
+    override val innhold: ElementListe,
     val data: TilbakekrevingBrevData,
 ) : FerdigstillingBrevDTO
 

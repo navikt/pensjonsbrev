@@ -9,7 +9,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
-import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.ElementListe
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDTOSelectors.beregning
@@ -22,7 +22,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.beregningAvBarnepens
 
 
 data class BarnepensjonVarselDTO(
-    override val innhold: List<Element>,
+    override val innhold: ElementListe,
     val beregning: BarnepensjonBeregning?,
     val erUnder18Aar: Boolean,
     val erBosattUtlandet: Boolean,

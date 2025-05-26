@@ -5,12 +5,12 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonValue
 
 data class ManueltBrevMedTittelDTO(
-    override val innhold: List<Element> = emptyList(),
+    override val innhold: ElementListe = ElementListe.tom(),
     val tittel: String? = null,
 ) : FerdigstillingBrevDTO
 
 data class ManueltBrevDTO(
-    override val innhold: List<Element> = emptyList(),
+    override val innhold: ElementListe = ElementListe.tom(),
 ) : BrevDTO
 
 data class Element(

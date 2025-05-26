@@ -19,7 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.ElementListe
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
@@ -37,12 +37,12 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.praktiskInformasjonOmEtteroppgjoeret
 
 data class EtteroppgjoerVedtakBrevDTO(
-    override val innhold: List<Element>,
+    override val innhold: ElementListe,
     val data: EtteroppgjoerVedtakDataDTO,
 ) : FerdigstillingBrevDTO
 
 data class EtteroppgjoerVedtakDataDTO(
-    val vedleggInnhold: List<Element>,
+    val vedleggInnhold: ElementListe,
     val bosattUtland: Boolean = false,
     val etteroppgjoersAar: Int,
     val avviksBeloep: Kroner,

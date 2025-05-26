@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.ElementListe
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
@@ -22,7 +22,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.Omstillingsstoe
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktDTOSelectors.innhold
 
 data class OmstillingsstoenadVarselAktivitetspliktDTO(
-    override val innhold: List<Element>,
+    override val innhold: ElementListe,
     val bosattUtland: Boolean,
 ) : FerdigstillingBrevDTO
 

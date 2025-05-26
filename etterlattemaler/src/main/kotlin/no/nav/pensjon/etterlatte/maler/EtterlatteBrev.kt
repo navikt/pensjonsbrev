@@ -10,7 +10,7 @@ data class OmstillingsstoenadEtterbetaling(
 )
 
 data class BarnepensjonBeregning(
-    override val innhold: List<Element>,
+    override val innhold: ElementListe,
     val antallBarn: Int,
     val virkningsdato: LocalDate,
     val grunnbeloep: Kroner,
@@ -35,7 +35,7 @@ data class BarnepensjonBeregningsperiode(
 )
 
 data class OmstillingsstoenadBeregning(
-    override val innhold: List<Element>,
+    override val innhold: ElementListe,
     val virkningsdato: LocalDate,
     val beregningsperioder: List<OmstillingsstoenadBeregningsperiode>,
     val sisteBeregningsperiode: OmstillingsstoenadBeregningsperiode,

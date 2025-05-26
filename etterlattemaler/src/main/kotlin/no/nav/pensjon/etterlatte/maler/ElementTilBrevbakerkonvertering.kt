@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.dsl.ListScope
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.etterlatte.maler.ElementListeSelectors.liste
 import no.nav.pensjon.etterlatte.maler.ElementSelectors.children
 import no.nav.pensjon.etterlatte.maler.ElementSelectors.type
 import no.nav.pensjon.etterlatte.maler.InnerElementSelectors.children
@@ -16,9 +17,9 @@ import no.nav.pensjon.etterlatte.maler.InnerElementSelectors.text
 import no.nav.pensjon.etterlatte.maler.InnerElementSelectors.type
 
 fun <D : BrevDTO> OutlineOnlyScope<LangBokmalNynorskEnglish, D>.konverterElementerTilBrevbakerformat(
-    innhold: Expression<List<Element>>,
+    innhold: Expression<ElementListe>,
 ) {
-    forEach(innhold) { element ->
+    forEach(innhold.liste) { element ->
         showIf(element.type.equalTo(ElementType.HEADING_TWO)) {
             forEach(element.children) { inner ->
                 title1 {

@@ -32,7 +32,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmO
 import java.time.LocalDate
 
 data class AarligInntektsjusteringVedtakDTO(
-    override val innhold: List<Element>,
+    override val innhold: ElementListe,
     val beregning: OmstillingsstoenadBeregning,
     val omsRettUtenTidsbegrensning: Boolean = false,
     val tidligereFamiliepleier: Boolean = false,
