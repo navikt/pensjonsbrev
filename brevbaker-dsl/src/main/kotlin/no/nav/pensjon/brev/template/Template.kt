@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggBrevdata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -46,10 +47,10 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     }
 
     fun includeAttachment(
-        template: AttachmentTemplate<Lang, Unit>,
+        template: AttachmentTemplate<Lang, EmptyVedleggBrevdata>,
         predicate: Expression<Boolean> = true.expr(),
     ) {
-        attachments.add(IncludeAttachment(Unit.expr(), template, predicate))
+        attachments.add(IncludeAttachment(EmptyVedleggBrevdata.expr(), template, predicate))
     }
 
     fun <AttachmentData : Any> includeAttachmentIfNotNull(
