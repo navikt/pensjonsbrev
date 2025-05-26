@@ -1217,6 +1217,10 @@ public final class no/nav/pensjon/brev/template/dsl/UtilsKt {
 	public static synthetic fun newTextExpr$default (Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
 }
 
+public abstract interface class no/nav/pensjon/brev/template/dsl/VedleggbarListe : no/nav/pensjon/brev/api/model/maler/VedleggBrevdata {
+	public abstract fun getListe ()Ljava/util/List;
+}
+
 public final class no/nav/pensjon/brev/template/dsl/expression/BaseKt {
 	public static final fun and (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression$BinaryInvoke;
 	public static final fun equalTo (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Object;)Lno/nav/pensjon/brev/template/Expression$BinaryInvoke;

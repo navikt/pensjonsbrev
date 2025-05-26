@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggBrevdata
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -84,3 +85,7 @@ fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, LetterData : Any> Tem
 
 @DslMarker
 internal annotation class LetterTemplateMarker
+
+interface VedleggbarListe<T> : VedleggBrevdata {
+    val liste: List<T>
+}
