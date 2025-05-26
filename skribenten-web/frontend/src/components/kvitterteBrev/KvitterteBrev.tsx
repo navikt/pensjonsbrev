@@ -5,7 +5,7 @@ import type { AxiosError } from "axios";
 
 import { sendBrev } from "~/api/sak-api-endpoints";
 import { useSendtBrev } from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevContext";
-import type { BestillBrevResponse, BrevInfo } from "~/types/brev";
+import { type BestillBrevResponse, type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 
 import AccordionContent from "./KvittertBrevContent";
@@ -79,7 +79,11 @@ const AccordionItem = (props: {
   });
 
   return (
-    <Accordion.Item>
+    <Accordion.Item
+      defaultOpen={
+        props.brevFørHandling.distribusjonstype === Distribusjonstype.LOKALPRINT || props.apiStatus === "error"
+      }
+    >
       <AccordionHeader apiStatus={props.apiStatus} brevInfo={props.brevFørHandling} context={props.context} />
       <AccordionContent
         apiStatus={props.apiStatus}
