@@ -20,8 +20,8 @@ fun createEtteroppgjoerForhaandsvarselBrevDTO() =
             etteroppgjoersAar = 2024,
             rettsgebyrBeloep = Kroner(1234),
             resultatType = EtteroppgjoerResultatType.IKKE_ETTEROPPGJOER,
-            inntekt = Kroner(321),
-            faktiskInntekt = Kroner(4444),
+            stoenad = Kroner(321),
+            faktiskStoenad = Kroner(4444),
             avviksBeloep = Kroner(0),
             grunnlag = EtteroppgjoerGrunnlagDTO(
                 YearMonth.of(2024,1),
@@ -30,7 +30,8 @@ fun createEtteroppgjoerForhaandsvarselBrevDTO() =
                 Kroner(4),
                 Kroner(40),
                 Kroner(400),
-                Kroner(4000)
+                Kroner(4000),
+                Kroner(4444)
             ),
             vedleggInnhold = emptyList()
         ),

@@ -34,6 +34,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.grunnlag
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.utbetalingData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.afp
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.loennsinntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.naeringsinntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.utlandsinntekt
@@ -53,7 +54,8 @@ data class EtteroppgjoerGrunnlagDTO(
     val loennsinntekt: Kroner,
     val naeringsinntekt: Kroner,
     val afp: Kroner,
-    val utlandsinntekt: Kroner
+    val utlandsinntekt: Kroner,
+    val inntekt: Kroner
 )
 
 @TemplateModelHelpers
@@ -319,7 +321,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
 
     paragraph {
         textExpr(
-            Bokmal to "I " .expr() + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + utbetalingData.faktiskInntekt.format() + " kroner inkludert skatt, i følge opplysninger fra Skatteetaten og a-ordningen. Den fordeler seg slik:",
+            Bokmal to "I " .expr() + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + grunnlag.inntekt.format() + " kroner inkludert skatt, i følge opplysninger fra Skatteetaten og a-ordningen. Den fordeler seg slik:",
             Nynorsk to "".expr(),
             English to "".expr(),)
     }
@@ -383,7 +385,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
                     Language.English to "",
                     fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 ) }
-                cell { includePhrase(KronerText(utbetalingData.faktiskInntekt, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
+                cell { includePhrase(KronerText(grunnlag.inntekt, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
             }
         }
     }
