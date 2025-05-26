@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Year
 
@@ -13,7 +14,7 @@ data class OpplysningerOmEtteroppgjoeretDto(
     val totaltAvvik: Kroner,
     val pensjonsgivendeInntektBruktIBeregningen: Kroner,
     val pensjonsgivendeInntekt: InntektOgFratrekk,
-) {
+) : VedleggBrevdata {
     data class AvviksResultat(
         val skulleFaatt: Kroner,
         val fikk: Kroner,

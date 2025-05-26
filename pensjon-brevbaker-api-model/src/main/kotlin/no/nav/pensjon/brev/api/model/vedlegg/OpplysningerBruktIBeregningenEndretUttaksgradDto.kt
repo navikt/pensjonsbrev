@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Beregningsmetode
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Percent
 import no.nav.pensjon.brevbaker.api.model.Year
@@ -18,7 +19,7 @@ data class OpplysningerBruktIBeregningenEndretUttaksgradDto(
     val trygdetidsdetaljerKap20VedVirk: TrygdetidsdetaljerKap20VedVirk?,
     val alderspensjon: Alderspensjon,
     val beregningKap20VedVirk: BeregningKap20VedVirk?
-) {
+) : VedleggBrevdata {
     data class AlderspensjonVedVirk(
         val uttaksgrad: Percent,
         val regelverkType: AlderspensjonRegelverkType,

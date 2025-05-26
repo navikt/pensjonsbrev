@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.vedlegg
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabell.AlderspensjonPerManed
 import java.time.LocalDate
 
@@ -19,7 +20,7 @@ data class MaanedligPensjonFoerSkattDto(
     val bruker: Bruker,
     val krav: Krav,
     val alderspensjonPerManed: List<AlderspensjonPerManed>,
-) : BrevbakerBrevdata {
+) : BrevbakerBrevdata, VedleggBrevdata {
 
     data class Krav(
         val virkDatoFom: LocalDate,

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Beregningsmetode
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brevbaker.api.model.Broek
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import java.time.LocalDate
@@ -22,7 +23,7 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
     val avdoedTrygdetidEOS: List<Trygdetid>,
     val avdoedTrygdetidAvtaleland: List<Trygdetid>,
     val avdoedPoengrekkeVedVirk: AvdoedPoengrekkeVedVirk
-) {
+) : VedleggBrevdata {
     data class AvdoedPoengrekkeVedVirk(
         val inneholderFramtidigPoeng: Boolean,
         val inneholderOmsorgspoeng: Boolean,
