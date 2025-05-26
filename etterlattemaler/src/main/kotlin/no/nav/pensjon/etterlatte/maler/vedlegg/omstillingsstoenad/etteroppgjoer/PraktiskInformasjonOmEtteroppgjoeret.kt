@@ -1,19 +1,18 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer
 
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggBrevdata
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 
 @TemplateModelHelpers
-val praktiskInformasjonOmEtteroppgjoeret: AttachmentTemplate<LangBokmalNynorskEnglish, Unit> =
+val praktiskInformasjonOmEtteroppgjoeret: AttachmentTemplate<LangBokmalNynorskEnglish, EmptyVedleggBrevdata> =
     createAttachment(
         title =
         newText(
