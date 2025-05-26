@@ -21,9 +21,3 @@ sealed class Language : StableHash {
     object Nynorsk : Language(), StableHash by StableHash.of("Language.Nynorsk")
     object English : Language(), StableHash by StableHash.of("Language.English")
 }
-
-fun <Lang1 : Language, Lang2 : Language, LetterData : Any> OutlineOnlyScope<LanguageSupport.Double<Lang1, Lang2>, LetterData>.includePhrase(phrase: OutlinePhrase<out LanguageSupport.Triple<Lang1, *, Lang2>>) {
-    // Det er trygt å caste her fordi receiver og phrase begge har Lang1 og Lang2.
-    @Suppress("UNCHECKED_CAST")
-    (phrase as OutlinePhrase<LanguageSupport.Double<Lang1, Lang2>>).apply(this)
-}

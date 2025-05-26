@@ -1,5 +1,10 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggBrevdata
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.TemplateRootScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import java.util.Objects
 
 internal sealed class LanguageCombination {
@@ -52,3 +57,27 @@ internal sealed class LanguageCombination {
     }
 
 }
+
+
+fun <Lang1 : Language, Lang2 : Language, LetterData : Any> OutlineOnlyScope<LanguageSupport.Double<Lang1, Lang2>, LetterData>.includePhrase(phrase: OutlinePhrase<out LanguageSupport.Triple<Lang1, *, Lang2>>) {
+    // Det er trygt å caste her fordi receiver og phrase begge har Lang1 og Lang2.
+    @Suppress("UNCHECKED_CAST")
+    (phrase as OutlinePhrase<LanguageSupport.Double<Lang1, Lang2>>).apply(this)
+}
+
+fun <Lang1 : Language, Lang2 : Language, AttachmentData: VedleggBrevdata, LetterData: Any>
+        TemplateRootScope<LanguageSupport.Double<Lang1, Lang2>, LetterData>.includeAttachment(
+    attachment: AttachmentTemplate<LanguageSupport.Triple<Lang1, *, Lang2>, AttachmentData>,
+    attachmentData: Expression<AttachmentData>,
+    predicate: Expression<Boolean> = true.expr(),
+) = includeAttachment(castAttachment(attachment), attachmentData, predicate)
+
+fun <Lang1 : Language, Lang2 : Language, LetterData: Any> TemplateRootScope<LanguageSupport.Double<Lang1, Lang2>, LetterData>.includeAttachment(
+    attachment: AttachmentTemplate<LanguageSupport.Triple<Lang1, *, Lang2>, EmptyVedleggBrevdata>,
+    predicate: Expression<Boolean> = true.expr(),
+) = includeAttachment(castAttachment(attachment), EmptyVedleggBrevdata.expr(), predicate)
+
+// Det er trygt å caste her fordi receiver og phrase begge har Lang1 og Lang2.
+@Suppress("UNCHECKED_CAST")
+private fun <Lang1 : Language, Lang2 : Language, AttachmentData: VedleggBrevdata> castAttachment(attachment: AttachmentTemplate<LanguageSupport.Triple<Lang1, *, Lang2>, AttachmentData>) =
+    attachment as AttachmentTemplate<LanguageSupport.Double<Lang1, Lang2>, AttachmentData>
