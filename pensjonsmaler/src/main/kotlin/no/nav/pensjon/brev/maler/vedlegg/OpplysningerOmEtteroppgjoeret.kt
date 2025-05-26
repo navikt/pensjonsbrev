@@ -29,9 +29,7 @@ val vedleggOpplysningerOmEtteroppgjoeret = createAttachment<LangBokmalNynorskEng
 
     includePhrase(Introduksjon(periode))
     includePhrase(FikkSkulleFaattTabell(periode, harFaattForMye, harGjenlevendeTillegg, ufoeretrygd, barnetillegg, totaltAvvik))
-
     includePhrase(DuHarFaattAvviksBeloep(totaltAvvik, harFaattForMye, periode))
-
     includePhrase(OmBeregningAvUfoeretrygd(barnetillegg, harGjenlevendeTillegg, pensjonsgivendeInntekt, periode, pensjonsgivendeInntektBruktIBeregningen, ufoeretrygd))
     ifNotNull(barnetillegg) {
         includePhrase(OmBeregningAvBarnetillegg(it, periode))
