@@ -1,13 +1,14 @@
 package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.ElementListe
 import no.nav.pensjon.etterlatte.maler.ElementType
 import no.nav.pensjon.etterlatte.maler.InnerElement
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 
 fun createManueltBrevDTO() =
     ManueltBrevDTO(
-        listOf(
+        ElementListe(listOf(
             Element(
                 type = ElementType.HEADING_TWO,
                 children = listOf(
@@ -63,5 +64,5 @@ fun createManueltBrevDTO() =
                     )
                 )
             )
-        )
+        ))
     )

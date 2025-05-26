@@ -4,6 +4,7 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.has
 import com.natpryce.hamkrest.isEmpty
 import no.nav.brev.brevbaker.FellesFactory
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -19,14 +20,18 @@ import org.junit.jupiter.api.Nested
 import kotlin.test.Test
 
 class IncludeAttachmentTest {
-    data class NullData(val test: String?)
+    data class NullData(val test: StringWrapper?)
+
+    data class StringWrapper(val string: String): VedleggBrevdata
 
     @TemplateModelHelpers
     object Helpers : HasModel<NullData>
+    @TemplateModelHelpers
+    object HelpersString : HasModel<StringWrapper>
 
     @Nested
     inner class IncludeIfNotNull {
-        private val testVedlegg = createAttachment<LangNynorsk, String>(
+        private val testVedlegg = createAttachment<LangNynorsk, StringWrapper>(
             title = newText(
                 Nynorsk to "Test vedlegg",
             ),
@@ -59,7 +64,7 @@ class IncludeAttachmentTest {
         @Test
         fun `attachment is included when using includeAttachmentIfNotNull and attachmentData is not null`() {
             assertThat(
-                Letter2Markup.render(LetterImpl(testTemplate, NullData("testtekst"), Nynorsk, FellesFactory.felles)),
+                Letter2Markup.render(LetterImpl(testTemplate, NullData(StringWrapper("testtekst")), Nynorsk, FellesFactory.felles)),
                 hasAttachments {
                     attachment {
                         title { literal("Test vedlegg") }

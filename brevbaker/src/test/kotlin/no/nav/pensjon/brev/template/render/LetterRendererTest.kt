@@ -6,6 +6,8 @@ import no.nav.brev.brevbaker.createIncludeAttachment
 import no.nav.brev.brevbaker.createParagraph
 import no.nav.brev.brevbaker.createTextOnlyScope
 import no.nav.brev.brevbaker.createTitle1
+import no.nav.pensjon.brev.api.model.maler.EmptyVedleggBrevdata
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Expression
@@ -31,6 +33,7 @@ import no.nav.pensjon.brev.template.toScope
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
+import kotlin.text.Typography.paragraph
 
 class LetterRendererTest {
 
@@ -204,15 +207,15 @@ class LetterRendererTest {
 
     @Test
     fun `render attachments will only render attachments where predicate is true`() {
-        val attachment1 = createAttachment<LangBokmal, Unit>(newText(Bokmal to "tittel"), false) {
+        val attachment1 = createAttachment<LangBokmal, EmptyVedleggBrevdata>(newText(Bokmal to "tittel"), false) {
             paragraph { text(Bokmal to "Attachment #1") }
         }
-        val attachment2 = createAttachment<LangBokmal, Unit>(newText(Bokmal to "tittel2"), false) {
+        val attachment2 = createAttachment<LangBokmal, EmptyVedleggBrevdata>(newText(Bokmal to "tittel2"), false) {
             paragraph { text(Bokmal to "Attachment #2") }
         }
         val attachments = listOf(
-            createIncludeAttachment(Unit.expr(), attachment1, true.expr()),
-            createIncludeAttachment(Unit.expr(), attachment2, false.expr())
+            createIncludeAttachment(EmptyVedleggBrevdata.expr(), attachment1, true.expr()),
+            createIncludeAttachment(EmptyVedleggBrevdata.expr(), attachment2, false.expr())
         )
 
         val actualAttachments = mutableListOf<AttachmentTemplate<*, *>>()
@@ -228,7 +231,7 @@ class LetterRendererTest {
         assertEquals(listOf(attachment1), actualAttachments)
     }
 
-    data class LetterData(val name: String, val vedlegg: TestVedleggDto)
+    data class LetterData(val name: String, val vedlegg: TestVedleggDto) : VedleggBrevdata
 
     @Test
     fun `render attachments will receive scope based on letterScope and data Expression and can evaluate attachment expressions`() {

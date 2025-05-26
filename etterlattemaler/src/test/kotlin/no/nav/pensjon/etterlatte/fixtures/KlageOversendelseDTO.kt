@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.fixtures
 
+import no.nav.pensjon.etterlatte.maler.ElementListe
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.klage.Formkrav
 import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBlankettDTO
@@ -9,7 +10,7 @@ import no.nav.pensjon.etterlatte.maler.klage.VedtakType
 import java.time.LocalDate
 
 fun createKlageOversendelseBlankettDTO() = KlageOversendelseBlankettDTO(
-    innhold = emptyList(),
+    innhold = ElementListe.tom(),
     formkrav = Formkrav(
         vedtaketKlagenGjelder = VedtakKlagenGjelder(
             datoAttestert = LocalDate.now().minusWeeks(3),

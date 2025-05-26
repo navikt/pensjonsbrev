@@ -1,6 +1,7 @@
 package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.etterlatte.maler.ElementListe
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerResultatType
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakBrevDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTO
@@ -30,7 +31,7 @@ fun createEtteroppgjoerVedtakBrevDTO() =
                 Kroner(4000),
                 Kroner(4444)
             ),
-            vedleggInnhold = emptyList(),
+            vedleggInnhold = ElementListe.tom(),
             utbetaltBeloep = Kroner(4444)
         )
     )

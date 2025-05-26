@@ -1,6 +1,7 @@
 package no.nav.brev.brevbaker
 
 import no.nav.brev.InternKonstruktoer
+import no.nav.pensjon.brev.api.model.maler.VedleggBrevdata
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.ContentOrControlStructure
 import no.nav.pensjon.brev.template.Element
@@ -19,7 +20,7 @@ fun <Lang : LanguageSupport> createTitle1(text: List<TextElement<Lang>>) = Eleme
 
 fun <Lang : LanguageSupport, C : Element<Lang>> createContent(content: C) = ContentOrControlStructure.Content(content)
 
-fun <Lang : LanguageSupport, AttachmentData : Any> createIncludeAttachment(
+fun <Lang : LanguageSupport, AttachmentData : VedleggBrevdata> createIncludeAttachment(
     data: Expression<AttachmentData>,
     template: AttachmentTemplate<Lang, AttachmentData>,
     predicate: Expression<Boolean> = createExpressionLiteral(true),

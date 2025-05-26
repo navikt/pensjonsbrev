@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.template.dsl.TextScope
 import no.nav.pensjon.brev.template.dsl.text
 import java.util.Objects
 
-fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
+fun <Lang : LanguageSupport, LetterData : VedleggBrevdata> createAttachment(
     title: TextElement<Lang>,
     includeSakspart: Boolean = false,
     outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit
@@ -17,7 +17,7 @@ fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
     includeSakspart
 )
 
-fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
+fun <Lang : LanguageSupport, LetterData : VedleggBrevdata> createAttachment(
     title: PlainTextOnlyScope<Lang, LetterData>.() -> Unit,
     includeSakspart: Boolean = false,
     outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit
@@ -46,7 +46,7 @@ class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : VedleggBrev
     override fun toString() = "IncludeAttachment(data=$data, template=$template, predicate=$predicate)"
 }
 
-class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any> internal constructor(
+class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : VedleggBrevdata> internal constructor(
     val title: TextElement<Lang>,
     val outline: List<OutlineElement<Lang>>,
     val includeSakspart: Boolean = false,

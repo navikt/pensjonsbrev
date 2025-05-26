@@ -5,6 +5,7 @@ import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregningsperiode
+import no.nav.pensjon.etterlatte.maler.ElementListe
 import no.nav.pensjon.etterlatte.maler.IntBroek
 import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetid
@@ -45,7 +46,7 @@ fun createBarnepensjonInnvilgelseDTO(): BarnepensjonInnvilgelseDTO {
     return BarnepensjonInnvilgelseDTO(
         innhold = createPlaceholderForRedigerbartInnhold(),
         beregning = BarnepensjonBeregning(
-            innhold = listOf(),
+            innhold = ElementListe.tom(),
             virkningsdato = LocalDate.now(),
             antallBarn = 2,
             grunnbeloep = Kroner(123456),
