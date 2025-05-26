@@ -230,6 +230,13 @@ public final class no/nav/pensjon/brev/api/model/maler/EmptyRedigerbarBrevdata :
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class no/nav/pensjon/brev/api/model/maler/EmptyVedleggBrevdata : no/nav/pensjon/brev/api/model/maler/VedleggBrevdata {
+	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/EmptyVedleggBrevdata;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract interface class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata {
 	public abstract fun getPesysData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
 	public abstract fun getSaksbehandlerValg ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
@@ -248,6 +255,9 @@ public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/n
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggBrevdata {
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Broek {
