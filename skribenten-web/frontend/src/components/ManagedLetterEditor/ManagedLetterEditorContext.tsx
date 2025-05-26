@@ -1,7 +1,7 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { createContext, useCallback, useContext, useState } from "react";
 
-import { getBrev } from "~/api/brev-queries";
+import { attesteringBrevKeys, getBrev } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
@@ -28,6 +28,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
   const onSaveSuccess = useCallback(
     (response: BrevResponse) => {
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
+      queryClient.setQueryData(attesteringBrevKeys.id(response.info.id), response);
       //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
       //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
       queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.info.id) });
