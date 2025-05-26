@@ -75,7 +75,7 @@ fun <Lang1 : Language, Lang2 : Language, AttachmentData: VedleggBrevdata, Letter
 fun <Lang1 : Language, Lang2 : Language, LetterData: Any> TemplateRootScope<LanguageSupport.Double<Lang1, Lang2>, LetterData>.includeAttachment(
     attachment: AttachmentTemplate<LanguageSupport.Triple<Lang1, *, Lang2>, EmptyVedleggBrevdata>,
     predicate: Expression<Boolean> = true.expr(),
-) = includeAttachment(castAttachment(attachment), EmptyVedleggBrevdata.expr(), predicate)
+) = includeAttachment(attachment, EmptyVedleggBrevdata.expr(), predicate)
 
 // Det er trygt å caste her fordi receiver og phrase begge har Lang1 og Lang2.
 @Suppress("UNCHECKED_CAST")
