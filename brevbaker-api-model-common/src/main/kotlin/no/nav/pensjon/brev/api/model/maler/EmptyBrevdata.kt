@@ -8,3 +8,5 @@ data object EmptyRedigerbarBrevdata : RedigerbarBrevdata<EmptyBrevdata, EmptyBre
     override val saksbehandlerValg = EmptyBrevdata
     override val pesysData = EmptyBrevdata
 }
+
+data object EmptyVedleggBrevdata : VedleggBrevdata
