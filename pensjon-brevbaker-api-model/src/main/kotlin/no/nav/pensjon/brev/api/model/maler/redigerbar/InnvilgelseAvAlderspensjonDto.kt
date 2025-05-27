@@ -28,20 +28,20 @@ data class InnvilgelseAvAlderspensjonDto(
         val harGjenlevendetilleggKap19: Boolean,
         @DisplayText("Hvis egen opptjening er best")
         val egenOpptjening: Boolean,
-    ): BrevbakerBrevdata
+    ) : BrevbakerBrevdata
 
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
+        val afpPrivatResultatFellesKontoret: Boolean?,  // v1.afpPrivat
         val avdodNavn: String?,  // v1.Avdod.navn
-        val barnetilleggVedVirk: BarnetilleggVedVirk?,
         val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
-        val ektefelletilleggVedVirk: EktefelletilleggVedVirk?,
+        val faktiskBostedsland: String?,  // v3.Person
         val kravVirkDatoFom: LocalDate,
         val regelverkType: AlderspensjonRegelverkType,
         val sakstype: Sakstype,
         val sivilstand: MetaforceSivilstand,
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
-    ): BrevbakerBrevdata
+    ) : BrevbakerBrevdata
 
     data class AlderspensjonVedVirk(
         val uttaksgrad: Int,  // NB! For AP2025 hentes uttaksgrad fra fra alderspensjonVedVirkKap20
@@ -52,22 +52,28 @@ data class InnvilgelseAvAlderspensjonDto(
         val gjenlevendetilleggKap19Innvilget: Boolean,
         val gjenlevenderettAnvendt: Boolean,
         val privatAFPErBrukt: Boolean,
+        val erEksportberegnet: Boolean,
     )
 
-    data class BarnetilleggVedVirk(
-        val innvilgetBarnetilleggFellesbarn: Boolean,
-        val innvilgetBarnetilleggSaerkullsbarn: Boolean,
+    data class Avdod(
+        val avdodFnr: Int?,
+        val avdodNavn: String?,
     )
 
     data class BeregnetPensjonPerManedVedVirk(
-        val barnetilleggFellesbarn: Kroner?,
-        val barnetilleggSaerkullsbarn: Kroner?,
-        val ektefelletillegg: Kroner?,
         val gjenlevendetilleggKap19: Kroner?,
     )
 
-    data class EktefelletilleggVedVirk(
-        val innvilgetEktefelletillegg: Boolean,
+    data class InngangOgEksportVurdering(
+        val eksportForbud: Boolean?,
+        val minst20ArTrygdetid: Boolean?,
+        val eksportTrygdeavtaleEOS: Boolean?,
+        val eksportTrygdeavtaleAvtaleland: Boolean?,
 
+    )
+
+    data class InngangOgEksportVurderingAvdod(
+        val minst20ArTrygdetid: Boolean?,
+        val minst20ArBotidKap19: Boolean?
     )
 }

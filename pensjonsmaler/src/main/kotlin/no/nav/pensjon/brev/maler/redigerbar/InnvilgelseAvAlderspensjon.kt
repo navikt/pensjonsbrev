@@ -1,18 +1,10 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.MetaforceSivilstand.ENKE
-import no.nav.pensjon.brev.api.model.MetaforceSivilstand.ENSLIG
-import no.nav.pensjon.brev.api.model.MetaforceSivilstand.GIFT
-import no.nav.pensjon.brev.api.model.MetaforceSivilstand.PARTNER
-import no.nav.pensjon.brev.api.model.MetaforceSivilstand.SAMBOER_1_5
-import no.nav.pensjon.brev.api.model.MetaforceSivilstand.SAMBOER_3_2
-import no.nav.pensjon.brev.api.model.MetaforceSivilstand.UKJENT
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
-import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevenderettAnvendt
@@ -22,20 +14,13 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.uforeKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BarnetilleggVedVirkSelectors.innvilgetBarnetilleggFellesbarn_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BarnetilleggVedVirkSelectors.innvilgetBarnetilleggSaerkullsbarn_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.barnetilleggFellesbarn_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.barnetilleggSaerkullsbarn_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.ektefelletillegg_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.gjenlevendetilleggKap19_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.EktefelletilleggVedVirkSelectors.innvilgetEktefelletillegg_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.afpPrivatResultatFellesKontoret
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.afpPrivatResultatFellesKontoret_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.avdodNavn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.avdodNavn_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.barnetilleggVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.ektefelletilleggVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.sakstype
@@ -52,25 +37,18 @@ import no.nav.pensjon.brev.maler.fraser.common.Redigerbar.SaksType
 import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.isNotEmpty
 import no.nav.pensjon.brev.template.dsl.expression.isNull
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notNull
-import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -78,6 +56,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
+// Tekster og logikk mht ektefelletillegg og barnetillegg er fjernet fra brevmalen etter en samtale med Ingrid Strand
 
 @TemplateModelHelpers
 object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjonDto> {
@@ -98,18 +77,6 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
     ) {
         val uttaksgrad = pesysData.alderspensjonVedVirk.uttaksgrad.format()
         val regelverkType = pesysData.regelverkType
-        val innvilgetEktefelletillegg =
-            pesysData.ektefelletilleggVedVirk.innvilgetEktefelletillegg_safe.ifNull(then = false)
-        val innvilgetBarnetilleggSaerkullsbarn =
-            pesysData.barnetilleggVedVirk.innvilgetBarnetilleggSaerkullsbarn_safe.ifNull(then = false)
-        val innvilgetBarnetilleggFellesbarn =
-            pesysData.barnetilleggVedVirk.innvilgetBarnetilleggFellesbarn_safe.ifNull(then = false)
-        val ektefelletillegg =
-            pesysData.beregnetPensjonPerManedVedVirk_safe.ektefelletillegg_safe.ifNull(then = Kroner(0))
-        val barnetilleggFellesbarn =
-            pesysData.beregnetPensjonPerManedVedVirk.barnetilleggFellesbarn_safe.ifNull(then = Kroner(0))
-        val barnetilleggSaerkullsbarn =
-            pesysData.beregnetPensjonPerManedVedVirk.barnetilleggSaerkullsbarn_safe.ifNull(then = Kroner(0))
         val sivilstand = pesysData.sivilstand
         val sivilstandBestemtStorBokstav = pesysData.sivilstand.bestemtForm(storBokstav = true)
         val sivilstandBestemtLitenBokstav = pesysData.sivilstand.bestemtForm(storBokstav = false)
@@ -124,6 +91,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         val gjenlevenderettAnvendt = pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
         val avdodNavn = pesysData.avdodNavn_safe.ifNull(then = String)
         val privatAFPErBrukt = pesysData.alderspensjonVedVirk.privatAFPErBrukt
+        val afpPrivatResultatFellesKontoret = pesysData.afpPrivatResultatFellesKontoret_safe.ifNull(then = false)
 
 
 
@@ -174,25 +142,19 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 paragraph {
                     textExpr(
                         Bokmal to "Du får ".expr() + totalPensjon + " kroner i alderspensjon og gjenlevendetillegg fra folketrygden hver måned før skatt fra ".expr() +
-                                kravVirkDatoFom + "".expr() + ifElse(
-                            gjenlevendetilleggInnvilget,
-                            ifTrue = ".",
-                            ifFalse = ". Av dette er gjenlevendetillegget ".expr() + gjenlevendetilleggKap19.format()
-                                    + " kroner."
-                        ),
+                                kravVirkDatoFom + ".",
                         Nynorsk to "Du får ".expr() + totalPensjon + " kroner i alderspensjon og attlevandetillegg frå folketrygda kvar månad før skatt frå ".expr() +
-                                kravVirkDatoFom + "".expr() + ifElse(
-                            gjenlevendetilleggInnvilget,
-                            ifTrue = ".",
-                            ifFalse = ". Av dette er attlevandetillegget ".expr() + gjenlevendetilleggKap19.format() + " kroner."
-                        ),
+                                kravVirkDatoFom + ".",
                         English to "You will receive NOK ".expr() + totalPensjon + " in retirement pension and survivor’s supplement from the National Insurance Scheme every month before tax from ".expr() +
-                                kravVirkDatoFom + "".expr() + ifElse(
-                            gjenlevendetilleggInnvilget,
-                            ifTrue = ".",
-                            ifFalse = ". Of this, the survivor’s supplement is NOK ".expr() + gjenlevendetilleggKap19.format() + "."
-                        )
+                                kravVirkDatoFom + "."
                     )
+                    showIf(gjenlevendetilleggInnvilget) {
+                        textExpr(
+                            Bokmal to " Av dette er gjenlevendetillegget ".expr() + gjenlevendetilleggKap19.format() + " kroner.",
+                            Nynorsk to " Av dette er attlevandetillegget ".expr() + gjenlevendetilleggKap19.format() + " kroner.",
+                            English to " Of this, the survivor’s supplement is NOK ".expr() + gjenlevendetilleggKap19.format() + "."
+                        )
+                    }
                     showIf(uforeKombinertMedAlder) {
                         text(
                             Bokmal to " Dette er i tillegg til uføretrygden din.",
@@ -217,7 +179,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
             showIf(
                 saksbehandlerValg.harGjenlevenderett
-                        and gjenlevenderettAnvendt and avdodNavn and not(gjenlevendetilleggKap19Innvilget) and not(
+                        and gjenlevenderettAnvendt and avdodNavn.notNull() and not(gjenlevendetilleggKap19Innvilget) and not(
                     gjenlevendetilleggInnvilget
                 )
             ) {
@@ -293,6 +255,17 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                         Nynorsk to "Du får ".expr() + uttaksgrad + " prosent alderspensjon fordi summen av alderspensjonen og den avtalefesta pensjonen din (AFP) gjer at du har rett til alderspensjon før 67 år.",
                         English to "You have been granted ".expr() + uttaksgrad + " percent retirement pension because your total retirement pension and contractual early retirement pension (AFP) makes you eligible for retirement pension before the age of 67."
                     )
+                }
+            }
+            showIf(afpPrivatResultatFellesKontoret) {
+                // soktAFPPrivatInfo
+                paragraph {
+                    text(
+                        Bokmal to "Du har også søkt om avtalefestet pensjon (AFP), og du vil få et eget vedtak om dette.",
+                        Nynorsk to "Du har også søkt om avtalefesta pensjon (AFP), og du vil få eit eige vedtak om dette.",
+                        English to "You have also applied for contractual early retirement pension (AFP) and will receive a separate decision on this.",
+                    )
+
                 }
             }
         }
