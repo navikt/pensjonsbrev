@@ -80,7 +80,7 @@ const AccordionContentSuccess = (props: {
             size="small"
             type="button"
           >
-            Åpne utskrivbar fil i ny fane
+            Åpne PDF i ny fane
           </Button>
         )}
         {pdfForJournalpost.isError && <ApiError error={pdfForJournalpost.error} title={"Klarte ikke å hente PDF"} />}

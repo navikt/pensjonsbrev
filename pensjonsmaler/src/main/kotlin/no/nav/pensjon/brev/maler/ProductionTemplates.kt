@@ -4,7 +4,13 @@ import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakOpphor1960til70
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6061
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakForlengelse6061
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpOpphorArskill6070
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakForlengelse1962til70
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6270
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.*
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAuto
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalder
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAP2016
@@ -68,6 +74,12 @@ object ProductionTemplates : AllTemplates {
         UngUfoerAuto,
         VarselSaksbehandlingstidAuto,
         VarselGjpForlengetArskull6061,
+        VarselGjpForlengetArskull6270,
+        VarselGjpOpphorArskill6070,
+        VedtakOpphor1960til70,
+        VedtakForlengelse6061,
+        VedtakForlengelse1962til70,
+        VarselGjpForlengetArskull6061Utland,
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
@@ -78,6 +90,7 @@ object ProductionTemplates : AllTemplates {
         AvslagUttakFoerNormertPensjonsalder,
         AvslagUttakFoerNormertPensjonsalderAP2016,
         BekreftelsePaaFlyktningstatus,
+        EndringAvAlderspensjonSivilstand,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
         ForhaandsvarselVedTilbakekreving,

@@ -22,10 +22,10 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 
 @TemplateModelHelpers
-object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> {
+object VarselGjpForlengetArskull6270 : AutobrevTemplate<Gjenlevenderett2027Dto> {
 
 
-    override val kode = Pesysbrevkoder.AutoBrev.GJP_VARSEL_FORLENGELSE_60_61
+    override val kode = Pesysbrevkoder.AutoBrev.GJP_VARSEL_FORLENGELSE_62_70
 
     override val template: LetterTemplate<*, Gjenlevenderett2027Dto> = createTemplate(
         name = "GJP_VARSEL_FORLENGELSE",
@@ -40,7 +40,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
     ) {
         title {
             text(
-                Bokmal to "Forhåndsvarsel - Gjenlevendepensjonen din kan bli forlenget",
+                Bokmal to "Forhåndsvarsel - Gjenlevendepensjonen din kan bli forlenget ",
                 Nynorsk to "",
                 English to ""
             )
@@ -48,7 +48,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
         outline {
             paragraph {
                 text(
-                    Bokmal to "Vi viser til tidligere informasjon om at Stortinget har vedtatt endringer i folketrygdlovens regler om ytelser til etterlatte. Endringene gjelder fra 1. januar 2024.",
+                    Bokmal to "Vi viser til tidligere informasjon om at Stortinget har vedtatt endringer i folketrygdlovens regler om ytelser til etterlatte. Endringene gjelder fra 1. januar 2024. ",
                     Nynorsk to "",
                     English to ""
                 )
@@ -57,7 +57,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             title1 {
                 text(
-                    Bokmal to "Hva betyr de nye reglene for deg?",
+                    Bokmal to "Hva betyr de nye reglene for deg? ",
                     Nynorsk to "",
                     English to ""
                 )
@@ -66,16 +66,15 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             paragraph {
                 text(
-                    Bokmal to "Du beholder retten til gjenlevendepensjon. Du får den i tre år fra 1. januar 2024. Det kan bety at siste utbetaling av pensjonen din blir i desember 2026.",
+                    Bokmal to "Du beholder retten til gjenlevendepensjon. Du får den i tre år fra 1. januar 2024. Det kan bety at siste utbetaling av pensjonen din blir i desember 2026. ",
                     Nynorsk to "",
                     English to ""
                 )
-
             }
 
             paragraph {
                 text(
-                    Bokmal to "Hvis du har hatt lav eller ingen pensjonsgivende inntekt de siste fem årene før 2024, kan du beholde gjenlevendepensjonen din til du blir 67 år. ",
+                    Bokmal to "Hvis du har hatt lav eller ingen pensjonsgivende inntekt de siste fem årene før 2024, kan du beholde pengestøtte som gjenlevende til du blir 67 år. ",
                     Nynorsk to "",
                     English to ""
                 )
@@ -91,7 +90,15 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             paragraph {
                 text(
-                    Bokmal to "Pensjonsgivende inntekt må ha vært under tre ganger gjennomsnittliggrunnbeløp i folketrygden (G) i både 2022 og 2023:",
+                    Bokmal to "Pensjonsgivende inntekt må ha vært under tre ganger gjennomsnittlig grunnbeløp i folketrygden (G) i både 2022 og 2023: ",
+                    Nynorsk to "",
+                    English to ""
+                )
+            }
+
+            title2 {
+                text(
+                    Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 3:",
                     Nynorsk to "",
                     English to ""
                 )
@@ -107,7 +114,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
                                 English to ""
                             )
                         }
-                        column{
+                        column {
                             text(
                                 Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 3:",
                                 Nynorsk to "",
@@ -153,7 +160,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             paragraph {
                 text(
-                    Bokmal to "I tillegg må inntekten din i 2019 – 2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. Det vil siat inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere.",
+                    Bokmal to "I tillegg må inntekten din i 2019 – 2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere.",
                     Nynorsk to "",
                     English to ""
                 )
@@ -263,7 +270,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             title1 {
                 text(
-                    Bokmal to "Hvilke opplysninger har vi om deg?",
+                    Bokmal to "Hvilke opplysninger har vi om deg? ",
                     Nynorsk to "",
                     English to ""
                 )
@@ -271,7 +278,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             paragraph {
                 text(
-                    Bokmal to "Det er din pensjonsgivende inntekt i årene 2019 - 2023 som avgjør om du kan beholde gjenlevendepensjonen til du fyller 67 år.",
+                    Bokmal to "Ifølge registeropplysninger vi har om deg fra Skatteetaten har du i årene 2019 – 2023 hatt følgende inntekter:",
                     Nynorsk to "",
                     English to ""
 
@@ -391,7 +398,23 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             paragraph {
                 text(
-                    Bokmal to "Din inntekt har ifølge våre opplysninger vært lavere enn inntektsgrensene. Dersom det er korrekt, beholder du gjenlevendepensjonen din til og med måneden du fyller 67 år. ",
+                    Bokmal to "Det er din pensjonsgivende inntekt i årene 2019 – 2023 som avgjør om du kan beholde pengestøtte som gjenlevende. ",
+                    Nynorsk to "",
+                    English to ""
+                )
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært lavere enn inntektsgrensene. Dersom det er korrekt, beholder du gjenlevendepensjonen din til og med 31. desember 2028. ",
+                    Nynorsk to "",
+                    English to ""
+                )
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "Fra 1. januar 2029 vil gjenlevendepensjonen bli regnet om til omstillingsstønad. Omstillingsstønaden tilsvare 2,25 ganger grunnbeløpet per 1. januar 2029. Dersom gjenlevendepensjonen din er beregnet med mindre enn 40 års trygdetid, vil omstillingsstønaden bli redusert tilsvarende.",
                     Nynorsk to "",
                     English to ""
                 )
@@ -442,7 +465,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             paragraph {
                 text(
-                    Bokmal to "Hvis du får endringer i inntekt, familiesituasjon, jobbsituasjon eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav.",
+                    Bokmal to "Hvis du får endringer i inntekt, familiesituasjon, jobbsituasjon eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav. ",
                     Nynorsk to "",
                     English to ""
                 )
@@ -469,7 +492,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             paragraph {
                 text(
-                    Bokmal to "På nav.no/kontakt kan du chatte eller skrive til oss.",
+                    Bokmal to "På nav.no/kontakt kan du chatte eller skrive til oss. ",
                     Nynorsk to "",
                     English to ""
                 )
