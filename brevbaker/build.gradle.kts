@@ -85,3 +85,7 @@ tasks {
         targetCompatibility = apiModelJavaTarget
     }
 }
+
+apiValidation {
+    nonPublicMarkers.add("no.nav.brev.InterneDataklasser")
+}
