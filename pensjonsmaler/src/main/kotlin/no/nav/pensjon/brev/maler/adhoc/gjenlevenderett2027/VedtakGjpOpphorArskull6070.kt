@@ -25,7 +25,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
 @TemplateModelHelpers
-object VedtakOpphor1960til70 : AutobrevTemplate<Gjenlevenderett2027Dto> {
+object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
     override val kode = Pesysbrevkoder.AutoBrev.GJP_VEDTAK_OPPHOR_60_70
 
     override val template: LetterTemplate<*, Gjenlevenderett2027Dto> = createTemplate(
@@ -412,6 +412,6 @@ object VedtakOpphor1960til70 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                 )
             }
         }
-        includeAttachment(vedleggDineRettigheterOgPlikterGJP)
+        includeAttachment(vedleggGjpDineRettigheterOgPlikter)
     }
 }
