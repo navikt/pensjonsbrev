@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.template.dsl.TemplateRootScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import java.util.Objects
 
 internal sealed class LanguageCombination {
@@ -52,3 +54,15 @@ internal sealed class LanguageCombination {
     }
 
 }
+
+fun <Lang1 : Language, Lang2 : Language, AttachmentData: Any, LetterData: Any>
+        TemplateRootScope<LanguageSupport.Double<Lang1, Lang2>, LetterData>.includeAttachment(
+    attachment: AttachmentTemplate<LanguageSupport.Triple<Lang1, *, Lang2>, AttachmentData>,
+    attachmentData: Expression<AttachmentData>,
+    predicate: Expression<Boolean> = true.expr(),
+) = includeAttachment(castAttachment(attachment), attachmentData, predicate)
+
+// Det er trygt å caste her fordi receiver og phrase begge har Lang1 og Lang2.
+@Suppress("UNCHECKED_CAST")
+private fun <Lang1 : Language, Lang2 : Language, AttachmentData: Any> castAttachment(attachment: AttachmentTemplate<LanguageSupport.Triple<Lang1, *, Lang2>, AttachmentData>) =
+    attachment as AttachmentTemplate<LanguageSupport.Double<Lang1, Lang2>, AttachmentData>
