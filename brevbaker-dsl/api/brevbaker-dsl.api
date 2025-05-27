@@ -611,6 +611,11 @@ public final class no/nav/pensjon/brev/template/Language$Nynorsk : no/nav/pensjo
 	public fun stableHashCode ()I
 }
 
+public final class no/nav/pensjon/brev/template/LanguageCombinationKt {
+	public static final fun includeAttachment (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)V
+	public static synthetic fun includeAttachment$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
+}
+
 public final class no/nav/pensjon/brev/template/LanguageKt {
 	public static final fun includePhrase (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;Lno/nav/pensjon/brev/template/OutlinePhrase;)V
 }
