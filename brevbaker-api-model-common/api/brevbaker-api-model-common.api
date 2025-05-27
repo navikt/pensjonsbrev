@@ -62,11 +62,6 @@ public abstract interface class no/nav/pensjon/brev/api/model/BrevRequest {
 
 public final class no/nav/pensjon/brev/api/model/LetterResponse {
 	public fun <init> ([BLjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;)V
-	public final fun component1 ()[B
-	public final fun component2 ()Ljava/lang/String;
-	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
-	public final fun copy ([BLjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;)Lno/nav/pensjon/brev/api/model/LetterResponse;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brev/api/model/LetterResponse;[BLjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;ILjava/lang/Object;)Lno/nav/pensjon/brev/api/model/LetterResponse;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getContentType ()Ljava/lang/String;
 	public final fun getFile ()[B
