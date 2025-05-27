@@ -65,19 +65,19 @@ class TemplateResourceTest {
     @Test
     fun `fails renderPDF with invalid letterData`(): Unit = runBlocking {
         assertThrows<ParseLetterDataException> {
-            autobrev.renderPDF(validAutobrevRequest.copy(letterData = RandomLetterdata(true)))
+            autobrev.renderPDF(validAutobrevRequest.copy(letterData = SampleLetterData(true)))
         }
     }
 
     @Test
     fun `fails renderHTML with invalid letterData`() {
         assertThrows<ParseLetterDataException> {
-            autobrev.renderHTML(validAutobrevRequest.copy(letterData = RandomLetterdata(true)))
+            autobrev.renderHTML(validAutobrevRequest.copy(letterData = SampleLetterData(true)))
         }
     }
 }
 
-private fun <T: Brevkode<T>> BestillBrevRequest<T>.copy(letterData: RandomLetterdata): BestillBrevRequest<T> =
+private fun <T: Brevkode<T>> BestillBrevRequest<T>.copy(letterData: SampleLetterData): BestillBrevRequest<T> =
     BestillBrevRequest(
         kode = this.kode,
         letterData = letterData,
@@ -85,4 +85,4 @@ private fun <T: Brevkode<T>> BestillBrevRequest<T>.copy(letterData: RandomLetter
         language = this.language
     )
 
-data class RandomLetterdata(val v1: Boolean) : BrevbakerBrevdata
+data class SampleLetterData(val v1: Boolean) : BrevbakerBrevdata
