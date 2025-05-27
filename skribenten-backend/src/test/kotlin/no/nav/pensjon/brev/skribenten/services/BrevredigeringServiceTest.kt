@@ -1354,6 +1354,15 @@ class BrevredigeringServiceTest {
         Condition(predicate, description)
 }
 
+private fun LetterMetadata.copy(brevtype: LetterMetadata.Brevtype): LetterMetadata {
+    return LetterMetadata(
+        displayTitle = this.displayTitle,
+        isSensitiv = this.isSensitiv,
+        distribusjonstype = this.distribusjonstype,
+        brevtype = brevtype,
+    )
+}
+
 
 fun TemplateDescription.Redigerbar.copy(metadata: LetterMetadata) = TemplateDescription.Redigerbar(
     name = this.name,
