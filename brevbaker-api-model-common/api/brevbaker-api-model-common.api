@@ -23,12 +23,6 @@ public final class no/nav/brev/brevbaker/PDFCompilationOutput {
 
 public final class no/nav/pensjon/brev/api/model/BestillBrevRequest : no/nav/pensjon/brev/api/model/BrevRequest {
 	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;)V
-	public final fun component1 ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
-	public final fun component2 ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
-	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/Felles;
-	public final fun component4 ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
-	public final fun copy (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;)Lno/nav/pensjon/brev/api/model/BestillBrevRequest;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brev/api/model/BestillBrevRequest;Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;ILjava/lang/Object;)Lno/nav/pensjon/brev/api/model/BestillBrevRequest;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
 	public final fun getKode ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
@@ -40,14 +34,6 @@ public final class no/nav/pensjon/brev/api/model/BestillBrevRequest : no/nav/pen
 
 public final class no/nav/pensjon/brev/api/model/BestillBrevRequestAsync : no/nav/pensjon/brev/api/model/BrevRequest {
 	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Ljava/lang/String;Ljava/lang/String;)V
-	public final fun component1 ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
-	public final fun component2 ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
-	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/Felles;
-	public final fun component4 ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
-	public final fun component5 ()Ljava/lang/String;
-	public final fun component6 ()Ljava/lang/String;
-	public final fun copy (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Ljava/lang/String;Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/BestillBrevRequestAsync;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brev/api/model/BestillBrevRequestAsync;Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/pensjon/brev/api/model/BestillBrevRequestAsync;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
 	public final fun getKode ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
@@ -61,13 +47,6 @@ public final class no/nav/pensjon/brev/api/model/BestillBrevRequestAsync : no/na
 
 public final class no/nav/pensjon/brev/api/model/BestillRedigertBrevRequest : no/nav/pensjon/brev/api/model/BrevRequest {
 	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)V
-	public final fun component1 ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
-	public final fun component2 ()Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;
-	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/Felles;
-	public final fun component4 ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
-	public final fun component5 ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
-	public final fun copy (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)Lno/nav/pensjon/brev/api/model/BestillRedigertBrevRequest;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brev/api/model/BestillRedigertBrevRequest;Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/RedigerbarBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;ILjava/lang/Object;)Lno/nav/pensjon/brev/api/model/BestillRedigertBrevRequest;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
 	public final fun getKode ()Lno/nav/pensjon/brev/api/model/maler/Brevkode;
@@ -892,12 +871,6 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$SignaturI
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMetadata {
 	public fun <init> (Ljava/lang/String;ZLno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Z
-	public final fun component3 ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;
-	public final fun component4 ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
-	public final fun copy (Ljava/lang/String;ZLno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;)Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Ljava/lang/String;ZLno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;ILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBrevtype ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
 	public final fun getDisplayTitle ()Ljava/lang/String;
