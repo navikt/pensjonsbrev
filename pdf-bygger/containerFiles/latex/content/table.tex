@@ -3,6 +3,8 @@
 \newfontfamily\tablecolumnheadertext[LetterSpace=0.2]{Source Sans 3 SemiBold}
 \newcommand{\tablecolumnheader}{\tablecolumnheadertext \fontsize{\standardtextsize}{\standardtextspacing} \selectfont}
 
+% uses the same spacing between titles and non-titles and formatting as title two.
+\newcommand{\tabletitle}{\spaceabovetitle\titletwo}
 \definecolor{columnheadercolor}{HTML}{E6F0FF}
 \definecolor{linecolor}{HTML}{7C8695}
 \definecolor{headersepcolor}{HTML}{000000}
@@ -10,13 +12,13 @@
 \definecolor{row2color}{HTML}{FFFFFF}
 
 \DefTblrTemplate{contfoot-text}{default}{\felttablenextpagecontinuation\hfill\space}
-\DefTblrTemplate{caption}{default}{} % remove built in header
+\DefTblrTemplate{caption}{default}{\InsertTblrText{caption}\hfill}
 \DefTblrTemplate{capcont}{default}{\felttablecontinuedfrompreviouspage}
 
-\newenvironment{letterTable}[1]{
+\newenvironment{letterTable}[2]{
     \setlength{\parskip}{0pt}
     \standardtext
-    \begin{longtblr}[presep={5.5mm},postsep={3.5mm},footsep={3.5mm}, headsep={3.5mm}]
+    \begin{longtblr}[presep={5.5mm},postsep={3.5mm},footsep={3.5mm}, headsep={3.5mm}, caption={#2}]
     {
         colspec=#1,
         colsep = 8pt,
