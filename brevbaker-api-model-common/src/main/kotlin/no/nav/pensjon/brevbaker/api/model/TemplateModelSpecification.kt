@@ -1,8 +1,10 @@
 package no.nav.pensjon.brevbaker.api.model
 
+import java.util.Objects
+
 typealias ObjectTypeSpecification = Map<String, TemplateModelSpecification.FieldType>
 
-data class TemplateModelSpecification(val types: Map<String, ObjectTypeSpecification>, val letterModelTypeName: String?) {
+class TemplateModelSpecification(val types: Map<String, ObjectTypeSpecification>, val letterModelTypeName: String?) {
     sealed class FieldType {
         abstract val nullable: Boolean
         abstract val type: String
@@ -29,6 +31,15 @@ data class TemplateModelSpecification(val types: Map<String, ObjectTypeSpecifica
         @Suppress("EnumEntryName")
         enum class Type { scalar, enum, array, `object` }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (other !is TemplateModelSpecification) { return false }
+        return types == other.types && letterModelTypeName == other.letterModelTypeName
+    }
+
+    override fun hashCode() = Objects.hash(types, letterModelTypeName)
+
+    override fun toString() = "TemplateModelSpecification(types=$types, letterModelTypeName=$letterModelTypeName)"
 }
 
 
