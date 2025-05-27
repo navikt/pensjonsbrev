@@ -10,22 +10,58 @@ class TemplateModelSpecification(val types: Map<String, ObjectTypeSpecification>
         abstract val type: String
         abstract val displayText: String?
 
-        data class Scalar(override val nullable: Boolean, val kind: Kind, override val displayText: String? = null) : FieldType() {
+        class Scalar(override val nullable: Boolean, val kind: Kind, override val displayText: String? = null) : FieldType() {
             override val type = "scalar"
 
             enum class Kind { NUMBER, DOUBLE, STRING, BOOLEAN, DATE, YEAR }
+
+            override fun equals(other: Any?): Boolean {
+                if (other !is Scalar) return false
+                return nullable == other.nullable && kind == other.kind && displayText == other.displayText && type == other.type
+            }
+
+            override fun hashCode() = Objects.hash(nullable, kind, displayText, type)
+
+            override fun toString() = "Scalar(nullable=$nullable, kind=$kind, displayText=$displayText, type='$type')"
         }
 
-        data class Enum(override val nullable: Boolean, val values: Set<String>, override val displayText: String? = null) : FieldType() {
+        class Enum(override val nullable: Boolean, val values: Set<String>, override val displayText: String? = null) : FieldType() {
             override val type = "enum"
+
+            override fun equals(other: Any?): Boolean {
+                if (other !is Enum) return false
+                return nullable == other.nullable && values == other.values && displayText == other.displayText && type == other.type
+            }
+
+            override fun hashCode() = Objects.hash(nullable, values, displayText, type)
+
+            override fun toString() = "Enum(nullable=$nullable, values=$values, displayText=$displayText, type='$type')"
         }
 
-        data class Array(override val nullable: Boolean, val items: FieldType, override val displayText: String? = null) : FieldType() {
+        class Array(override val nullable: Boolean, val items: FieldType, override val displayText: String? = null) : FieldType() {
             override val type = "array"
+
+            override fun equals(other: Any?): Boolean {
+                if (other !is Array) return false
+                return nullable == other.nullable && items == other.items && displayText == other.displayText && type == other.type
+            }
+
+            override fun hashCode() = Objects.hash(nullable, items, displayText, type)
+
+            override fun toString() = "Array(nullable=$nullable, items=$items, displayText=$displayText, type='$type')"
         }
 
-        data class Object(override val nullable: Boolean, val typeName: String, override val displayText: String? = null) : FieldType() {
+        class Object(override val nullable: Boolean, val typeName: String, override val displayText: String? = null) : FieldType() {
             override val type = "object"
+
+            override fun equals(other: Any?): Boolean {
+                if (other !is Object) return false
+                return nullable == other.nullable && typeName == other.typeName && displayText == other.displayText && type == other.type
+            }
+
+            override fun hashCode() = Objects.hash(nullable, typeName, displayText, type)
+
+            override fun toString() = "Object(nullable=$nullable, typeName='$typeName', displayText=$displayText, type='$type')"
         }
 
         @Suppress("EnumEntryName")
