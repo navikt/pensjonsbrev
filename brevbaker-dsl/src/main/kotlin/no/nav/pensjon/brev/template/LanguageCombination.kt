@@ -55,8 +55,8 @@ internal sealed class LanguageCombination {
 
 }
 
-fun <Lang1 : Language, Lang2 : Language, AttachmentData: Any, LetterData: Any>
-        TemplateRootScope<LanguageSupport.Double<Lang1, Lang2>, LetterData>.includeAttachment(
+fun <Lang1 : Language, Lang2 : Language, AttachmentData: Any>
+        TemplateRootScope<LanguageSupport.Double<Lang1, Lang2>, *>.includeAttachment(
     attachment: AttachmentTemplate<LanguageSupport.Triple<Lang1, *, Lang2>, AttachmentData>,
     attachmentData: Expression<AttachmentData>,
     predicate: Expression<Boolean> = true.expr(),
