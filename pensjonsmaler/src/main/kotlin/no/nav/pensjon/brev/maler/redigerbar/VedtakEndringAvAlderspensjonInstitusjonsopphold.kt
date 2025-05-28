@@ -323,7 +323,7 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                 }
             }
 
-            showIf(pesysData.beregnetPensjonPerManedVedVirk.totalPensjon.greaterThan(1)) {
+            showIf(pesysData.beregnetPensjonPerManedVedVirk.totalPensjon.greaterThan(0)) {
                 // utbetalingsInfoMndUtbet_001
                 paragraph {
                     text(
