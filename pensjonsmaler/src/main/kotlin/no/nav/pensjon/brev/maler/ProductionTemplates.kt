@@ -4,12 +4,12 @@ import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.*
-import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakOpphor1960til70
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpOpphorArskull6070
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6061
-import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakForlengelse6061
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpForlengetArskull6061
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpOpphorArskill6070
-import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakForlengelse1962til70
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6270
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpForlengetArskull6061Utland
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.*
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAuto
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalder
@@ -74,12 +74,13 @@ object ProductionTemplates : AllTemplates {
         UngUfoerAuto,
         VarselSaksbehandlingstidAuto,
         VarselGjpForlengetArskull6061,
+        VarselGjpForlengetArskull6061Utland,
         VarselGjpForlengetArskull6270,
         VarselGjpOpphorArskill6070,
-        VedtakOpphor1960til70,
-        VedtakForlengelse6061,
-        VedtakForlengelse1962til70,
-        VarselGjpForlengetArskull6061Utland,
+        VedtakGjpForlengetArskull6061,
+        VedtakGjpForlengetArskull6061Utland,
+        VedtakGjpForlengetArskull6270,
+        VedtakGjpOpphorArskull6070,
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
