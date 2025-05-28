@@ -6,6 +6,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { groupBy, partition, sortBy } from "lodash";
 import { useState } from "react";
+import { z } from "zod";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { getFavoritterQuery } from "~/api/skribenten-api-endpoints";
@@ -18,21 +19,20 @@ import type { Nullable } from "~/types/Nullable";
 import { erBrevKladdEllerUnderRedigering, erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate } from "~/utils/dateUtils";
 
+import { baseSearchSchema } from "../route";
 import BrevmalPanel from "./-components/BrevmalPanel";
 import BrevvelgerFooter from "./-components/BrevvelgerFooter";
 
-type BrevvelgerSearch = {
-  brevId?: string;
-  idTSSEkstern?: string;
-  templateId?: string;
-};
+const brevvelgerSearchSchema = baseSearchSchema.extend({
+  brevId: z.coerce.number().optional(),
+  idTSSEkstern: z.coerce.string().optional(),
+  templateId: z.coerce.string().optional(),
+});
+
+type BrevvelgerSearch = z.infer<typeof brevvelgerSearchSchema>;
 
 export const Route = createFileRoute("/saksnummer_/$saksId/brevvelger")({
-  validateSearch: (search: Record<string, unknown>): BrevvelgerSearch => ({
-    brevId: search.brevId as string,
-    idTSSEkstern: search.idTSSEkstern as string,
-    templateId: search.templateId as string,
-  }),
+  validateSearch: (search): BrevvelgerSearch => brevvelgerSearchSchema.parse(search),
   loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId }),
   loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
     const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
@@ -321,7 +321,7 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; letterTemplates: LetterM
               <BrevmalButton
                 description={`Opprettet ${formatStringDate(brev.opprettet)}`}
                 extraStyles={
-                  brev.id.toString() === brevId
+                  brev.id === brevId
                     ? css`
                         color: var(--a-text-on-action);
                         background-color: var(--a-surface-action-selected-hover);
@@ -334,7 +334,7 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; letterTemplates: LetterM
                     to: "/saksnummer/$saksId/brevvelger",
                     search: (s) => ({
                       ...s,
-                      brevId: brev.id.toString(),
+                      brevId: brev.id,
                       templateId: undefined,
                     }),
                   })

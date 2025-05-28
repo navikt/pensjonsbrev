@@ -10,9 +10,15 @@ import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { getNavnQuery } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 
+import { baseSearchSchema } from "../route";
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
 import BrevForhåndsvisning from "./-components/BrevForhåndsvisning";
 import { FerdigstillOgSendBrevButton, FerdigstillOgSendBrevModal } from "./-components/FerdigstillBrev";
+
+const brevbehandlerSearchSchema = baseSearchSchema.extend({
+  brevId: z.coerce.number().optional(),
+});
+type BrevbehandlerSearch = z.infer<typeof brevbehandlerSearchSchema>;
 
 export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
   component: Brevbehandler,
@@ -23,11 +29,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
 
     return sakContext;
   },
-  validateSearch: (search: Record<string, unknown>): { brevId?: number; vedtaksId?: string; enhetsId?: string } => ({
-    brevId: search.brevId ? z.number().parse(search.brevId) : undefined,
-    vedtaksId: search.vedtaksId ? z.string().parse(search.vedtaksId) : undefined,
-    enhetsId: search.enhetsId ? z.string().parse(search.enhetsId) : undefined,
-  }),
+  validateSearch: (search): BrevbehandlerSearch => brevbehandlerSearchSchema.parse(search),
 });
 
 function Brevbehandler() {
