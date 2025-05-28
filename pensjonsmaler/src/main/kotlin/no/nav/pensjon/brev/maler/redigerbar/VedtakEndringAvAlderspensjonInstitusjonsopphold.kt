@@ -376,7 +376,7 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                 // pre-selected
                 paragraph {
                     // hjemmelEndrIForbindelseMedInst_001_]
-                    val fritekst = fritekst("<Fritekst: Fyll inn aktuelle paragrafer>.")
+                    val fritekst = fritekst("Fyll inn aktuelle paragrafer>.")
                     textExpr(
                         Bokmal to "Pensjonen din beregnes etter folketrygdloven §§ ".expr() + fritekst + ".",
                         Nynorsk to "Pensjonen din berekna etter folketrygdlova §§ ".expr() + fritekst + ".",
