@@ -157,6 +157,11 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                         }
                     }
                 }.orShowIf(not(pesysData.institusjonsoppholdVedVirk.helseinstitusjon)) {
+                    /* TODO: Nå vises alle avsnittene her.
+                    I praksis skal saksbehandler velge ett av disse, og fjerne det som ikke er relevant.
+                    Vi har ikke ei god løsning for dette per nå, så det må vi finne ut av
+                    i https://trello.com/c/QOgu2fHm/178-unders%C3%B8ke-behov-ved-konvertering-av-preselected-innhold
+                     */
                     paragraph {
                         // meldingUtskrevetInst_001
                         val fritekst = fritekst("Dato fom")
