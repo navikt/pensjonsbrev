@@ -26,6 +26,7 @@ fun isEnabled(kode: String) = when (kode) {
     Pesysbrevkoder.Redigerbar.PE_OMSORG_EGEN_MANUELL.kode() -> FeatureToggles.omsorgEgenManuell
     Pesysbrevkoder.Redigerbar.PE_INFORMASJON_OM_GJENLEVENDERETTIGHETER.kode() -> FeatureToggles.informasjonOmGjenlevenderettigheter
     Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_GJENLEVENDERETT.kode() -> FeatureToggles.vedtakEndringAvAlderspensjonGjenlevenderettigheter
+    Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_INSTITUSJONSOPPHOLD.kode() -> FeatureToggles.vedtakEndringAvAlderspensjonInstitusjonsopphold
     Pesysbrevkoder.Redigerbar.PE_AP_ENDRET_UTTAKSGRAD.kode() -> FeatureToggles.vedtakEndringAvUttaksgrad
     Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SIVILSTAND.kode() -> FeatureToggles.endringAvAlderspensjonSivilstand
     Pesysbrevkoder.Redigerbar.PE_AP_ENDRET_UTTAKSGRAD_STANS_BRUKER_ELLER_VERGE.kode(),
