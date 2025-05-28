@@ -138,6 +138,13 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                             English to "We have received notice that you are ".expr() + fritekst("serving a prison sentence / in custody on remand") + " from and including " + datoFom + ".",
                         )
                     }
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Når du sitter i fengsel, får du alderspensjon i innsettelsesmåneden og måneden etter. Deretter vil utbetalingen av pensjonen bli ".expr() + fritekst("redusert / stanset") + ".",
+                            Nynorsk to "Når du sit i fengsel, får du alderspensjon i den månaden du blei sett inn, og i månaden etter. Deretter blir utbetalinga av pensjonen ".expr() + fritekst("redusert / stansa") + ".",
+                            English to "When you are in prison, you will receive your retirement pension in the month you start your prison sentence and the month after. After that, your pension payments will be ".expr() + fritekst("reduced / suspended") + "."
+                        )
+                    }
 
                     showIf(pesysData.beregnetPensjonPerManedVedVirk.totalPensjon.greaterThan(0)) {
                         // innvilgelseAPSonerInnled_001
