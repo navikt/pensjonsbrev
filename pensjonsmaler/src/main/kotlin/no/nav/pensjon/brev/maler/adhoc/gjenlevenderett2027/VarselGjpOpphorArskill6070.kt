@@ -28,13 +28,17 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
     override val kode = Pesysbrevkoder.AutoBrev.GJP_VARSEL_OPPHOR_60_70
 
     override val template: LetterTemplate<*, Gjenlevenderett2027Dto> = createTemplate(
+<<<<<<< Updated upstream:pensjonsmaler/src/main/kotlin/no/nav/pensjon/brev/maler/adhoc/gjenlevenderett2027/VarselGjpOpphorArskill6070.kt
         name = "GJP_VARSEL_OPPHOR_60_70",
+=======
+        name = "GJP_VARSEL_FORLENGELSE_62_70_UTLAND",
+>>>>>>> Stashed changes:pensjonsmaler/src/main/kotlin/no/nav/pensjon/brev/maler/adhoc/gjenlevenderett2027/VarselGjpForlengetArskull6270Utland.kt
         letterDataType = Gjenlevenderett2027Dto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Forhåndsvarsel - Gjenlevendepensjonen din kan bli tidsbegrenset ",
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {

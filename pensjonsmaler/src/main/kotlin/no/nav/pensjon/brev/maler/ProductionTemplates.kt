@@ -82,6 +82,7 @@ object ProductionTemplates : AllTemplates {
         VedtakGjpForlengetArskull6270,
         VedtakGjpForlengetArskull6270Utland,
         VedtakGjpOpphorArskull6070,
+        VarselGjpOpphorArskull6070Utland
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
