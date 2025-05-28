@@ -14,8 +14,13 @@
 \newlength{\spacebetweentitleandnontitle}
 \setlength{\spacebetweentitleandnontitle}{\dimexpr(25pt-\parskip) plus 8pt minus 8pt}
 
+\newlength{\spacebetweentitles}
+\setlength{\spacebetweentitles}{3pt}
+
+%extra space is added between title and non title elements          %if previous element was title   % if previous was not title
+\newcommand{\spaceabovetitle}{\ifdefstring{\previouselement}{title}{\addvspace{\spacebetweentitles}}{\pagebreak[3]\addvspace{\spacebetweentitleandnontitle}}}
 % do not split the command with newlines. It will be included in the content.
-\newcommand{\lettersectiontitle}[1]{\ifdefstring{\previouselement}{title}{}{\pagebreak[3]\addvspace{\spacebetweentitleandnontitle}}#1\nopagebreak\\[0pt]\addpenalty{10000}\addvspace{3pt}}
+\newcommand{\lettersectiontitle}[1]{\spaceabovetitle#1\nopagebreak\\[0pt]\addpenalty{10000}\addvspace{3pt}}
 
 % Title 1
 \newcommand{\lettersectiontitleone}[1]{\lettersectiontitle{\titleone #1}\setpreviouselement{title}}

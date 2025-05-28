@@ -16,8 +16,12 @@ Bruk følgende for å bygge og kjøre:
 ```
 Dersom du kun skal kjøre brevbaker og pdf-bygger og ikke skribenten må du fortsatt pga en bug i docker-compose generere tomme env files for skribenten:
 ```bash
-(mkdir -p - skribenten-backend/secrets tjenestebuss-integrasjon/secrets skribenten-web/bff)
-(touch skribenten-backend/secrets/azuread.env skribenten-backend/secrets/unleash.env tjenestebuss-integrasjon/secrets/docker.env  skribenten-web/bff/.env)
+(mkdir -p - skribenten-backend/secrets tjenestebuss-integrasjon/secrets skribenten-web/bff pensjon-brevbaker/secrets/kafka)
+(touch skribenten-backend/secrets/azuread.env skribenten-backend/secrets/unleash.env tjenestebuss-integrasjon/secrets/docker.env  skribenten-web/bff/.env\
+  pensjon-brevbaker/secrets/kafka/kafka-secret.env\
+  pensjon-brevbaker/secrets/kafka/client.keystore.p12\
+  pensjon-brevbaker/secrets/kafka/client.truststore.jks
+)
 ```
 ```bash
 docker-compose up -d --build
@@ -159,7 +163,7 @@ En strategi for overgangen kan se slik ut:
 For å fort kunne oppdatere latex filene i pdf-byggeren under kjøring, anbefales det å kjøre følgende kommando som before launch for LatexVisualITest.
 
 ```bash
-docker exec -u 0 -it pensjonsbrev_pdf-bygger_1 rm -rf /app/pensjonsbrev_latex && docker cp ./pdf-bygger/containerFiles/latex pensjonsbrev_pdf-bygger_1:/app/pensjonsbrev_latex/
+docker exec -u 0 -it pensjonsbrev-pdf-bygger-1 rm -rf /app/pensjonsbrev_latex && docker cp ./pdf-bygger/containerFiles/latex pensjonsbrev-pdf-bygger-1:/app/pensjonsbrev_latex/
 ```
 
 Da vil du kunne se på pensjon-brevbaker/build/test_visual/pdf resultatet av endringen fort.
@@ -190,8 +194,10 @@ Deretter kan du kjøre scriptet på nytt og få vite hvor ulike de er, samt en d
 Du vil også kunne se disse endringene i percey ved å lage en pull-request.
 
 ## Oppdatere latex biblioteker
-Ved først bygge pensjon-pdf-bygger/latex.Dockerfile, så sette "from" i pensjon-pdf-bygger/Dockerfile, kan du iterere over det å oppdatere latex imaget/pakker.
-Når du er ferdig med det, så kan du kjøre github action workflowen "update-latex-image" på branchen, så vil den publisere ett nytt dato-stemplet image som kan tas i bruk i pensjon-pdf-bygger/Dockerfile.
+Ved først bygge pdf-bygger/latex.Dockerfile, så sette "from" i pdf-bygger/Dockerfile, kan du iterere over det å oppdatere latex imaget/pakker.
+Når du er ferdig med det, så kan du kjøre github action workflowen "update-latex-image" på branchen, så vil den publisere ett nytt dato-stemplet image som kan tas i bruk i pdf-bygger/Dockerfile.
+
+Vær obs på at pdf-bygger kjører med en egendefinert Java Runtime, bygd opp i pdf-bygger sin Dockerfile, som kun har med modulene fra Java vi bruker. Dermed får vi en så liten runtime som mulig. Ulempa med dette er at vi må passe på litt ekstra ved endringer. For eksempel er `localedata`-modulen viktig for å få norsk dato formatert riktig. Sjekk percy eller ny opp mot gammel pdf fra lokal generering ved endringer i latex-delen, eller tekniske endringer som for eksempel Java-oppgradering, av pdf-bygger for å se at ting ser likt ut.
 
 # Kode generert av GitHub Copilot
 

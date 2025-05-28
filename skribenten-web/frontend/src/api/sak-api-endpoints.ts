@@ -8,6 +8,7 @@ import type {
   BrevInfo,
   DelvisOppdaterBrevRequest,
   DelvisOppdaterBrevResponse,
+  OppdaterBrevRequest,
 } from "~/types/brev";
 
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";
@@ -71,4 +72,24 @@ export const hentPdfForJournalpost = async (argz: { sakId: string; journalpostId
 
 export const fjernOverstyrtMottaker = async (argz: { saksId: string; brevId: string | number }) => {
   return (await axios.delete(`${SKRIBENTEN_API_BASE_PATH}/sak/${argz.saksId}/brev/${argz.brevId}/mottaker`)).data;
+};
+
+export const attesterBrev = async (args: {
+  saksId: string;
+  brevId: string | number;
+  frigiReservasjon?: boolean;
+  request: OppdaterBrevRequest;
+}) => {
+  const frigiReservasjon = args.frigiReservasjon ?? true;
+
+  return (
+    await axios.put<Blob>(
+      `${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}/attestering?frigiReservasjon=${frigiReservasjon}`,
+      {
+        saksbehandlerValg: args.request.saksbehandlerValg,
+        redigertBrev: args.request.redigertBrev,
+        signaturAttestant: args.request.signatur,
+      },
+    )
+  ).data;
 };

@@ -17,10 +17,15 @@ const skribentenBackendApiProxy = {
   scope: requireEnvironment("SKRIBENTEN_API_SCOPE"),
 };
 
+const baseUrls = {
+  psak: requireEnvironment("PSAK_BASE_URL"),
+};
+
 export default {
   app,
   azureApp,
   skribentenBackendApiProxy,
+  baseUrls,
 };
 
 function requireEnvironment(environmentName: string) {

@@ -10,14 +10,16 @@ ENV PATH="${PATH}:/app/tex/bin/x86_64-linux/"
 #Download and install tlmgr (texlive package manager)
 RUN apt -y --allow-releaseinfo-change -o Acquire::Check-Valid-Until=false update
 RUN apt -y install tzdata perl-tk wget
-RUN wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
+RUN wget https://ftp.fagskolen.gjovik.no/pub/tex-archive/systems/texlive/tlnet/install-tl-unx.tar.gz
 RUN tar -xf install-tl-unx.tar.gz
 RUN mv ./install-tl*/ install-tl
 RUN chown -R root install-tl
 RUN ./install-tl/install-tl --no-interaction -s f -portable -texdir /app/tex -texuserdir /app/texlocal
 
 #Install xetex and required packages from uib using texlive package manager
-RUN tlmgr option repository https://mirror.ctan.org/systems/texlive/tlnet/
+RUN tlmgr option repository https://ftp.fagskolen.gjovik.no/pub/tex-archive/systems/texlive/tlnet/
+RUN tlmgr option docfiles 0
+RUN tlmgr option srcfiles 0
 RUN tlmgr install xetex
 RUN tlmgr install collection-latex
 RUN tlmgr install fontspec
@@ -32,3 +34,4 @@ RUN tlmgr install xmpincl
 RUN tlmgr install everyshi
 RUN tlmgr install etoolbox
 
+RUN rm -rf /app/tex/texmf-dist/doc

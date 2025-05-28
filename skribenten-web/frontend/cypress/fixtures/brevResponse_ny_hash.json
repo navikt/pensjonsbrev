@@ -9,7 +9,8 @@
     "status": {
       "type": "UnderRedigering",
       "redigeresAv": "Z993104"
-    }
+    },
+    "mottaker": null
   },
   "redigertBrev": {
     "title": "Informasjon om saksbehandlingstiden vår med ny hash",

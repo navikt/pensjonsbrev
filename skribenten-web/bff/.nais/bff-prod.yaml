@@ -14,6 +14,8 @@ env:
     value: "http://skribenten-backend"
   - name: SKRIBENTEN_API_SCOPE
     value: "api://prod-gcp.pensjonsbrev.skribenten-backend/.default"
+  - name: PSAK_BASE_URL
+    value: "https://pensjon-psak.nais.adeo.no"
 
 groups:
   - "0af3955f-df85-4eb0-b5b2-45bf2c8aeb9e" #0000-GA-PENSJON_SAKSBEHANDLER

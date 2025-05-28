@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
@@ -151,3 +152,10 @@ class LetterRoutesITest {
         assertEquals(ContentType.Application.Pdf.toString(), body.contentType)
     }
 }
+
+private fun <T: Brevkode<T>> BestillBrevRequest<T>.copy(kode: T) = BestillBrevRequest(
+    kode = kode,
+    letterData = this.letterData,
+    felles = this.felles,
+    language = this.language
+)

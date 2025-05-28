@@ -267,7 +267,7 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                     }
                     column(alignment = RIGHT) {}
                 }) {
-                    showIf(opplysningerKap19.avslattKap19.not()) {
+                    showIf(opplysningerKap19.avslattKap19.not() and trygdetid.greaterThan(0)) {
                         row {
                             cell {
                                 text(
