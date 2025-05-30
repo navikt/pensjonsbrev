@@ -48,11 +48,11 @@ data class EtteroppgjoerVedtakDataDTO(
     val avviksBeloep: Kroner,
     val utbetaltBeloep: Kroner,
     val resultatType: EtteroppgjoerResultatType,
-    val inntekt: Kroner,
-    val faktiskInntekt: Kroner,
+    val stoenad: Kroner,
+    val faktiskStoenad: Kroner,
     val grunnlag: EtteroppgjoerGrunnlagDTO
 ) {
-    val utbetalingData = EtteroppgjoerUtbetalingDTO(inntekt, faktiskInntekt, avviksBeloep)
+    val utbetalingData = EtteroppgjoerUtbetalingDTO(stoenad, faktiskStoenad, avviksBeloep)
     val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag)
 }
 
