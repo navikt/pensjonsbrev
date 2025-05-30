@@ -1,20 +1,19 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
-import type { AnyBlock, ItemList } from "~/types/brevbakerTypes";
-
 import {
   addElements,
   getMergeIds,
   newLiteral,
   removeElements,
   text,
-} from "../../../Brevredigering/LetterEditor/actions/common";
-import { ITEM_LIST, LITERAL, NEW_LINE, VARIABLE } from "../../../types/brevbakerTypes";
+} from "~/Brevredigering/LetterEditor/actions/common";
+import type { AnyBlock, ItemList } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
+
 import type { Action } from "../lib/actions";
-import type { Focus, LetterEditorState } from "../model/state";
+import type { Focus, ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem, isTextContent } from "../model/utils";
-import type { ItemContentIndex, LiteralIndex } from "./model";
 
 export enum MergeTarget {
   PREVIOUS = "PREVIOUS",

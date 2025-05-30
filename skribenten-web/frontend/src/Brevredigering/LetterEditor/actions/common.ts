@@ -1,5 +1,8 @@
 import type { Draft } from "immer";
 
+import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
+import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
+import { isFritekst, isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
 import type { BrevResponse } from "~/types/brev";
 import type {
   Content,
@@ -17,13 +20,10 @@ import type {
   Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
+import { FontType, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
-import { MergeTarget } from "../../../Brevredigering/LetterEditor/actions/merge";
-import { updateLiteralText } from "../../../Brevredigering/LetterEditor/actions/updateContentText";
-import { isFritekst, isLiteral } from "../../../Brevredigering/LetterEditor/model/utils";
-import { FontType, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, VARIABLE } from "../../../types/brevbakerTypes";
-import type { LetterEditorState } from "../model/state";
+import type { BlockContentIndex, Focus, ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
 
 export function cleanseText(text: string): string {
   return text.replaceAll("<br>", "").replaceAll("&nbsp;", " ").replaceAll("\n", " ").replaceAll("\r", "");
@@ -31,6 +31,14 @@ export function cleanseText(text: string): string {
 
 export function isEditableContent(content: Content | undefined | null): boolean {
   return content != null && (content.type === VARIABLE || content.type === ITEM_LIST);
+}
+
+export function isBlockContentIndex(f: Focus | LiteralIndex): f is BlockContentIndex {
+  return !isItemContentIndex(f);
+}
+
+export function isItemContentIndex(f: Focus | LiteralIndex): f is ItemContentIndex {
+  return "itemIndex" in f && f.itemIndex !== undefined && "itemContentIndex" in f && f.itemContentIndex !== undefined;
 }
 
 export function text<T extends TextContent | undefined>(
@@ -123,27 +131,16 @@ export function findAdjoiningContent<T extends Content, S extends T>(
     return { startIndex: 0, endIndex: 0, count: 0 };
   }
 
-  let countBefore = 0;
-  for (let i = atIndex - 1; i >= 0; i--) {
-    if (predicate(from[i])) {
-      countBefore++;
-    } else {
-      break;
-    }
-  }
-  let countAfter = 0;
-  for (let i = atIndex + 1; i < from.length; i++) {
-    if (predicate(from[i])) {
-      countAfter++;
-    } else {
-      break;
-    }
-  }
+  const reverseSearchNonMatching = from.slice(0, atIndex).findLastIndex((c) => !predicate(c));
+  const forwardSearchNonMatching = from.slice(atIndex + 1).findIndex((c) => !predicate(c));
+
+  const startIndex = reverseSearchNonMatching >= 0 ? reverseSearchNonMatching + 1 : 0;
+  const endIndex = forwardSearchNonMatching >= 0 ? atIndex + forwardSearchNonMatching : from.length - 1;
 
   return {
-    startIndex: atIndex - countBefore,
-    endIndex: atIndex + countAfter,
-    count: countBefore + 1 + countAfter,
+    startIndex,
+    endIndex,
+    count: endIndex - startIndex + 1,
   };
 }
 
@@ -250,9 +247,9 @@ export const newVariable = (args: {
   };
 };
 
-export function newItem({ content }: { content: TextContent[] }): Item {
+export function newItem({ id, content }: { id?: Nullable<number>; content: TextContent[] }): Item {
   return {
-    id: null,
+    id: id ?? null,
     parentId: null,
     content,
     deletedContent: [],

@@ -23,7 +23,7 @@ describe("Actions.addNewLine", () => {
   });
 
   test("adds new line to paragraph after literal", () => {
-    const state = letter(paragraph(literal({ text: "l1" }), literal({ text: "l2" })));
+    const state = letter(paragraph([literal({ text: "l1" }), literal({ text: "l2" })]));
     const result = Actions.addNewLine(state, { blockIndex: 0, contentIndex: 0, cursorPosition: 2 });
     const block = select<ParagraphBlock>(result, { blockIndex: 0 });
 
@@ -33,7 +33,7 @@ describe("Actions.addNewLine", () => {
   });
 
   test("adds new line to paragraph before literal", () => {
-    const state = letter(paragraph(literal({ text: "l1" })));
+    const state = letter(paragraph([literal({ text: "l1" })]));
     const result = Actions.addNewLine(state, { blockIndex: 0, contentIndex: 0, cursorPosition: 0 });
     const block = select<ParagraphBlock>(result, { blockIndex: 0 });
 
@@ -43,7 +43,7 @@ describe("Actions.addNewLine", () => {
   });
 
   test("splits literal and adds newline in between", () => {
-    const state = letter(paragraph(literal({ text: "l1l2" })));
+    const state = letter(paragraph([literal({ text: "l1l2" })]));
     const result = Actions.addNewLine(state, { blockIndex: 0, contentIndex: 0, cursorPosition: 2 });
     const block = select<ParagraphBlock>(result, { blockIndex: 0 });
 
@@ -54,7 +54,7 @@ describe("Actions.addNewLine", () => {
   });
 
   test("when adding newline at end of last literal a new literal is also added", () => {
-    const state = letter(paragraph(literal({ text: "l1" })));
+    const state = letter(paragraph([literal({ text: "l1" })]));
     const result = Actions.addNewLine(state, { blockIndex: 0, contentIndex: 0, cursorPosition: 2 });
     const block = select<ParagraphBlock>(result, { blockIndex: 0 });
 
