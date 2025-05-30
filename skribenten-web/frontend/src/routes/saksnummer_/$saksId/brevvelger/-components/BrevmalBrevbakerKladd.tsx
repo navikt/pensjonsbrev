@@ -22,14 +22,14 @@ import { Route } from "../route";
 
 export const BrevmalBrevbakerKladd = (props: {
   saksId: string;
-  brevId: string;
+  brevId: number;
   letterTemplates: LetterMetadata[];
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) => {
   const brevQuery = useQuery({
     queryKey: hentAlleBrevForSak.queryKey(props.saksId.toString()),
     queryFn: () => hentAlleBrevForSak.queryFn(props.saksId.toString()),
-    select: (data) => data?.find((b) => b.id.toString() === props.brevId),
+    select: (data) => data?.find((b) => b.id === props.brevId),
   });
 
   const brev = brevQuery.data;
@@ -53,7 +53,7 @@ export const BrevmalBrevbakerKladd = (props: {
   );
 };
 
-const BrevIkkeFunnet = (props: { brevId: string }) => {
+const BrevIkkeFunnet = (props: { brevId: number }) => {
   return (
     <div>
       <BodyShort>Brev med id {props.brevId} ble ikke funnet</BodyShort>

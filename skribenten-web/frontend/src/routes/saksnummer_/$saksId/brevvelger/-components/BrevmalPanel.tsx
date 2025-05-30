@@ -9,7 +9,7 @@ import { TemplateLoader } from "./TemplateLoader";
 const BrevmalPanel = (props: {
   saksId: number;
   templateId?: string;
-  brevId?: string;
+  brevId?: number;
   letterTemplates: LetterMetadata[];
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
   enhetsId: string;

@@ -7,27 +7,49 @@ import { useRef, useState } from "react";
 import { z } from "zod";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getNavnQuery } from "~/api/skribenten-api-endpoints";
+import { getNavnQuery, getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
 import BrevForhåndsvisning from "./-components/BrevForhåndsvisning";
 import { FerdigstillOgSendBrevButton, FerdigstillOgSendBrevModal } from "./-components/FerdigstillBrev";
 
-export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
-  component: Brevbehandler,
-  loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
-    const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
+const brevbehandlerSearchSchema = z.object({
+  brevId: z.coerce.number().optional(),
+});
+type BrevbehandlerSearch = z.infer<typeof brevbehandlerSearchSchema>;
 
-    queryClient.prefetchQuery(getNavnQuery(sakContext.sak.saksId.toString()));
+export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
+  validateSearch: (search): BrevbehandlerSearch => brevbehandlerSearchSchema.parse(search),
+  loaderDeps: ({ search }) => ({ vedtaksId: search.vedtaksId }),
+  loader: async ({ context, params: { saksId }, deps: { vedtaksId } }) => {
+    /*
+     * ParentRoute.beforeLoad injects context.getSakContextQueryOptions
+     * for every navigation.
+     *
+     * On a deep link (e.g. /saksnummer/123456/brevbehandler?brevId=123&vedtaksId=345),
+     * both the parent loader and this child loader fire in parallel
+     * but only after all beforeLoad hooks have completed.
+     *
+     * In normal use the child will always find
+     * context.getSakContextQueryOptions already set by the parent.
+     * However, when arriving directly at this child route from an external system,
+     * it may still be undefined. We therefore rebuild it here
+     * and cache it back into `context`.
+     */
+    let options = context.getSakContextQueryOptions;
+    if (!options) {
+      options = getSakContextQuery(saksId, vedtaksId);
+      context.getSakContextQueryOptions = options;
+    }
+
+    const sakContext = await context.queryClient.ensureQueryData(options);
+
+    context.queryClient.prefetchQuery(getNavnQuery(sakContext.sak.saksId.toString()));
 
     return sakContext;
   },
-  validateSearch: (search: Record<string, unknown>): { brevId?: number; vedtaksId?: string; enhetsId?: string } => ({
-    brevId: search.brevId ? z.number().parse(search.brevId) : undefined,
-    vedtaksId: search.vedtaksId ? z.string().parse(search.vedtaksId) : undefined,
-    enhetsId: search.enhetsId ? z.string().parse(search.enhetsId) : undefined,
-  }),
+  component: Brevbehandler,
 });
 
 function Brevbehandler() {
