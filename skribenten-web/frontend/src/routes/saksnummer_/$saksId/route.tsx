@@ -27,25 +27,27 @@ export const baseSearchSchema = z.object({
 type BaseSearchParamsSchema = z.infer<typeof baseSearchSchema>;
 
 export const Route = createFileRoute("/saksnummer_/$saksId")({
-  beforeLoad: ({ params: { saksId }, search: { vedtaksId } }) => ({
-    getSakContextQueryOptions: getSakContextQuery(saksId, vedtaksId),
+  validateSearch: (search): BaseSearchParamsSchema => baseSearchSchema.parse(search),
+  beforeLoad: ({ params: { saksId }, search }) => ({
+    getSakContextQueryOptions: getSakContextQuery(saksId, search.vedtaksId),
   }),
-  loader: async ({ context: { queryClient, getSakContextQueryOptions }, params: { saksId } }) => {
-    // Adresse is a slow query that will be needed later, therefore we prefetch it here as early as possible.
+  loaderDeps: ({ search }) => ({ vedtaksId: search.vedtaksId }),
+  loader: async ({ context: { queryClient, getSakContextQueryOptions }, params: { saksId }, deps: { vedtaksId } }) => {
+    if (!getSakContextQueryOptions) {
+      getSakContextQueryOptions = getSakContextQuery(saksId, vedtaksId);
+    }
+
     queryClient.prefetchQuery(getKontaktAdresseQuery(saksId));
     queryClient.prefetchQuery(getFavoritterQuery);
     queryClient.prefetchQuery(getPreferredLanguageQuery(saksId));
 
     return await queryClient.ensureQueryData(getSakContextQueryOptions);
   },
+  component: SakLayout,
   errorComponent: ({ error }) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { saksId } = Route.useParams();
     return <ApiError error={error} title={`Klarte ikke hente saksnummer ${saksId}`} />;
-  },
-  component: SakLayout,
-  validateSearch: (search: Record<string, unknown>): BaseSearchParamsSchema => {
-    return baseSearchSchema.parse(search);
   },
 });
 
