@@ -72,6 +72,7 @@ data class LetterMarkupImpl(
         data class ItemListImpl(override val id: Int, override val items: List<ItemList.Item>) : ItemList {
             override val type = ParagraphContent.Type.ITEM_LIST
 
+            @InterneDataklasser
             data class ItemImpl(override val id: Int, override val content: List<ParagraphContent.Text>) : ItemList.Item
         }
 
@@ -127,7 +128,7 @@ data class LetterMarkupImpl(
             data class MultipleChoiceImpl(override val id: Int, override val prompt: List<ParagraphContent.Text>, override val choices: List<MultipleChoice.Choice>, override val vspace: Boolean) : MultipleChoice {
                 override val type = ParagraphContent.Type.FORM_CHOICE
 
-
+                @InterneDataklasser
                 data class ChoiceImpl(override val id: Int, override val text: List<ParagraphContent.Text>) : MultipleChoice.Choice
             }
         }

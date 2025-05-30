@@ -57,3 +57,7 @@ tasks {
         compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")
     }
 }
+
+apiValidation {
+    nonPublicMarkers.add("no.nav.brev.InterneDataklasser")
+}
