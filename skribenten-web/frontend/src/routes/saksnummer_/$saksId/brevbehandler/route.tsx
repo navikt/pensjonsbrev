@@ -10,12 +10,11 @@ import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { getNavnQuery, getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 
-import { baseSearchSchema } from "../route";
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
 import BrevForhåndsvisning from "./-components/BrevForhåndsvisning";
 import { FerdigstillOgSendBrevButton, FerdigstillOgSendBrevModal } from "./-components/FerdigstillBrev";
 
-const brevbehandlerSearchSchema = baseSearchSchema.extend({
+const brevbehandlerSearchSchema = z.object({
   brevId: z.coerce.number().optional(),
 });
 type BrevbehandlerSearch = z.infer<typeof brevbehandlerSearchSchema>;

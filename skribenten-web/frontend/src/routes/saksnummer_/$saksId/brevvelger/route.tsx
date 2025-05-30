@@ -19,11 +19,10 @@ import type { Nullable } from "~/types/Nullable";
 import { erBrevKladdEllerUnderRedigering, erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate } from "~/utils/dateUtils";
 
-import { baseSearchSchema } from "../route";
 import BrevmalPanel from "./-components/BrevmalPanel";
 import BrevvelgerFooter from "./-components/BrevvelgerFooter";
 
-const brevvelgerSearchSchema = baseSearchSchema.extend({
+const brevvelgerSearchSchema = z.object({
   brevId: z.coerce.number().optional(),
   idTSSEkstern: z.coerce.string().optional(),
   templateId: z.coerce.string().optional(),
