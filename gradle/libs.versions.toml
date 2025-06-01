@@ -21,7 +21,7 @@ mockkVersion = "1.14.2"
 postgresqlVersion = "42.7.3"
 testcontainersPostgresqlVersion = "1.21.0"
 unleashVersion = "10.2.2"
-kafkaVersion="3.9.0"
+kafkaVersion="4.0.0"
 
 [plugins]
 ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
