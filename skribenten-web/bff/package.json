@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "@navikt/oasis": "^3.8.0",
-    "@navikt/vite-mode": "0.13.3",
+    "@navikt/vite-mode": "0.13.5",
     "express": "5.1.0",
     "http-proxy-middleware": "^3.0.5",
     "jwt-decode": "4.0.0",
@@ -23,7 +23,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "3.3.1",
     "@eslint/js": "9.25.1",
-    "@types/express": "5.0.1",
+    "@types/express": "5.0.2",
     "@types/morgan": "^1.9.9",
     "@typescript-eslint/eslint-plugin": "8.31.1",
     "@typescript-eslint/parser": "8.31.1",
