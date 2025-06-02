@@ -31,7 +31,7 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
     override val template: LetterTemplate<*, Gjenlevenderett2027Dto> = createTemplate(
         name = kode.name,
         letterDataType = Gjenlevenderett2027Dto::class,
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Gjenlevendepensjonen din er tidsbegrenset",
             isSensitiv = false,
@@ -41,50 +41,59 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
     ) {
         title {
             text(
-                Bokmal to "Vedtak - Gjenlevendepensjonen din er tidsbegrenset "
+                Bokmal to "Vedtak - Gjenlevendepensjonen din er tidsbegrenset ",
+                Nynorsk to "Vedtak – Gjenlevandepensjonen din er tidsavgrensa ",
             )
         }
         outline {
             paragraph {
                 text(
-                    Bokmal to "Vi viser til tidligere informasjon om at Stortinget har vedtatt endringer i folketrygdlovens regler om ytelser til etterlatte. Endringene gjelder fra 1. januar 2024.  "
+                    Bokmal to "Vi viser til tidligere informasjon om at Stortinget har vedtatt endringer i folketrygdlovens regler om ytelser til etterlatte. Endringene gjelder fra 1. januar 2024. ",
+                    Nynorsk to "Vi viser til tidlegare informasjon om at Stortinget har vedteke endringar i reglane i folketrygdlova som gjeld ytingar til etterlatne. Endringa gjeld frå 1. januar 2024.",
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Din rett til gjenlevendepensjon opphører fra 1. januar 2027. "
+                    Bokmal to "Din rett til gjenlevendepensjon opphører fra 1. januar 2027. ",
+                    Nynorsk to "Retten din til gjenlevandepensjon opphøyrer frå 1. januar 2027. "
                 )
             }
 
             title1 {
                 text(
-                    Bokmal to "Begrunnelse for vedtaket "
+                    Bokmal to "Begrunnelse for vedtaket ",
+                    Nynorsk to "Grunngiving for vedtaket "
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Opplysninger om inntekten din i perioden 2019 - 2023, viser at du ikke fyller vilkårene i folketrygdloven § 17 A–3. Din inntekt har vært over inntektsgrensen i denne perioden. "
+                    Bokmal to "Opplysninger om inntekten din i perioden 2019-2023, viser at du ikke fyller vilkårene i folketrygdloven § 17 A–3. Din inntekt har vært over inntektsgrensen i denne perioden. ",
+                    Nynorsk to "Opplysningar om inntekta di i perioden 2019–2023 viser at du ikkje oppfyller vilkåra i folketrygdlova § 17 A–3. Inntekta di har vore over inntektsgrensa i denne perioden."
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du beholder retten til gjenlevendepensjon frem til og med desember 2026, under forutsetning av at øvrige vilkårene er oppfylt. "
+                    Bokmal to "Du beholder retten til gjenlevendepensjon frem til og med desember 2026, under forutsetning av at øvrige vilkårene er oppfylt. ",
+                    Nynorsk to "Du beheld retten til gjenlevandepensjon fram til og med desember 2026, under føresetnad av at dei resterande vilkåra er oppfylte. "
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven § 17 A-3. "
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven § 17 A-3. ",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova § 17 A-3. "
                 )
             }
 
             title1 {
                 text(
-                    Bokmal to "Hva er inntektsgrensene? "
+                    Bokmal to "Hva er inntektsgrensene? ",
+                    Nynorsk to "Kva er inntektsgrensene? "
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Pensjonsgivende inntekt må ha vært under tre ganger gjennomsnittlig grunnbeløp i folketrygden (G) i både 2022 og 2023: "
+                    Bokmal to "Pensjonsgivende inntekt må ha vært under tre ganger gjennomsnittlig grunnbeløp i folketrygden (G) i både 2022 og 2023: ",
+                    Nynorsk to "Pensjonsgivande inntekt må ha vore under tre gongar gjennomsnittleg grunnbeløp i folketrygda (G) i både 2022 og 2023: "
                 )
             }
 
@@ -94,11 +103,13 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         column(1) {
                             text(
                                 Bokmal to "År ",
+                                Nynorsk to "År "
                             )
                         }
                         column(2) {
                             text(
                                 Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 3 ",
+                                Nynorsk to "Gjennomsnittleg grunnbeløp (G) gongar 3 "
                             )
                         }
                     },
@@ -107,11 +118,13 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2022",
+                                Nynorsk to "2022"
                             )
                         }
                         cell {
                             textExpr(
                                 Bokmal to 329352.expr().format(CurrencyFormat) + " kroner",
+                                Nynorsk to 329352.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
@@ -119,11 +132,13 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2023",
+                                Nynorsk to "2023"
                             )
                         }
                         cell {
                             textExpr(
                                 Bokmal to 348717.expr().format(CurrencyFormat) + " kroner",
+                                Nynorsk to 348717.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
@@ -132,8 +147,10 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
 
             paragraph {
                 text(
-                    Bokmal to "I tillegg må inntekten din i 2019 – 2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. " +
-                            "Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere.  "
+                    Bokmal to "I tillegg må inntekten din i 2019–2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. " +
+                           "Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere. ",
+                    Nynorsk to "I tillegg må inntekta di i 2019–2023 ha vore under to gongar grunnbeløpet i folketrygda (G) i gjennomsnitt i desse fem åra. " +
+                           "Det vil seie at inntekta kan overstige to gongar grunnbeløpet i eitt enkelt år, så lenge gjennomsnittet av dei fem åra er lågare. "
                 )
             }
 
@@ -143,11 +160,13 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         column(1) {
                             text(
                                 Bokmal to "År",
+                                Nynorsk to "År"
                             )
                         }
                         column(2) {
                             text(
-                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 2 ",
+                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 2",
+                                Nynorsk to "Gjennomsnittleg grunnbeløp (G) gongar 2 "
                             )
                         }
                     },
@@ -156,11 +175,13 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2019",
+                                Nynorsk to "2019"
                             )
                         }
                         cell {
                             textExpr(
                                 Bokmal to 197732.expr().format(CurrencyFormat) + " kroner",
+                                Nynorsk to 197732.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
@@ -168,11 +189,13 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2020",
+                                Nynorsk to "2020"
                             )
                         }
                         cell {
                             textExpr(
                                 Bokmal to 201706.expr().format(CurrencyFormat) + " kroner",
+                                Nynorsk to 201706.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
@@ -180,11 +203,13 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2021",
+                                Nynorsk to "2021"
                             )
                         }
                         cell {
                             textExpr(
                                 Bokmal to 209432.expr().format(CurrencyFormat) + " kroner",
+                                Nynorsk to 209432.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
@@ -192,11 +217,13 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2022",
+                                Nynorsk to "2022"
                             )
                         }
                         cell {
                             textExpr(
                                 Bokmal to 219568.expr().format(CurrencyFormat) + " kroner",
+                                Nynorsk to 219568.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
@@ -204,11 +231,13 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2023",
+                                Nynorsk to "2023"
                             )
                         }
                         cell {
                             textExpr(
                                 Bokmal to 232478.expr().format(CurrencyFormat) + " kroner",
+                                Nynorsk to 232478.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
@@ -217,17 +246,20 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
 
             title1 {
                 text(
-                    Bokmal to "Hvilke opplysninger har vi om deg? "
+                    Bokmal to "Hvilke opplysninger har vi om deg? ",
+                    Nynorsk to "Kva opplysningar har vi om deg? "
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Det er inntekten din i årene 2019 – 2023 som avgjør om du kan beholde gjenlevendepensjonen din til du blir 67 år. "
+                    Bokmal to "Det er inntekten din i årene 2019–2023 som avgjør om du kan beholde gjenlevendepensjonen din til du blir 67 år. ",
+                    Nynorsk to "Det er inntekta din i åra 2019–2023 som avgjer om du kan behalde gjenlevandepensjonen din til du blir 67 år. "
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Ifølge registeropplysninger vi har om deg fra Skatteetaten har du i årene 2019 – 2023 hatt følgende inntekter: "
+                    Bokmal to "Ifølge registeropplysninger vi har om deg fra Skatteetaten har du i årene 2019–2023 hatt følgende inntekter: ",
+                    Nynorsk to "Ifølgje registeropplysningar vi har om deg frå Skatteetaten, har du i åra 2019–2023 hatt følgjande inntekter: "
                 )
             }
 
@@ -236,12 +268,14 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                     header = {
                         column(1) {
                             text(
-                                Bokmal to "År"
+                                Bokmal to "År",
+                                Nynorsk to "År"
                             )
                         }
                         column(2) {
                             text(
-                                Bokmal to "Din inntekt"
+                                Bokmal to "Din inntekt",
+                                Nynorsk to "Di inntekt"
                             )
                         }
                     },
@@ -249,60 +283,70 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                     row {
                         cell {
                             text(
-                                Bokmal to "2019"
+                                Bokmal to "2019",
+                                Nynorsk to "2019"
                             )
                         }
                         cell {
                             textExpr(
-                                Bokmal to inntekt2019.format(CurrencyFormat) + " kroner"
+                                Bokmal to inntekt2019.format(CurrencyFormat) + " kroner",
+                                Nynorsk to inntekt2019.format(CurrencyFormat) + " kroner"
                             )
                         }
                     }
                     row {
                         cell {
                             text(
-                                Bokmal to "2020"
+                                Bokmal to "2020",
+                                Nynorsk to "2020"
                             )
                         }
                         cell {
                             textExpr(
-                                Bokmal to inntekt2020.format(CurrencyFormat) + " kroner"
+                                Bokmal to inntekt2020.format(CurrencyFormat) + " kroner",
+                                Nynorsk to inntekt2020.format(CurrencyFormat) + " kroner"
                             )
                         }
                     }
                     row {
                         cell {
                             text(
-                                Bokmal to "2021"
+                                Bokmal to "2021",
+                                Nynorsk to "2021"
                             )
                         }
                         cell {
                             textExpr(
-                                Bokmal to inntekt2021.format(CurrencyFormat) + " kroner"
+                                Bokmal to inntekt2021.format(CurrencyFormat) + " kroner",
+                                Nynorsk to inntekt2021.format(CurrencyFormat) + " kroner"
                             )
                         }
                     }
                     row {
                         cell {
                             text(
-                                Bokmal to "2022"
+                                Bokmal to "2022",
+                                Nynorsk to "2022"
                             )
                         }
                         cell {
                             textExpr(
-                                Bokmal to inntekt2022.format(CurrencyFormat) + " kroner"
+                                Bokmal to inntekt2022.format(CurrencyFormat) + " kroner",
+                                Nynorsk to inntekt2022.format(CurrencyFormat) + " kroner"
                             )
                         }
                     }
                     row {
                         cell {
                             text(
-                                Bokmal to "2023"
+                                Bokmal to "2023",
+                                Nynorsk to "2023",
                             )
                         }
                         cell {
                             textExpr(
-                                Bokmal to inntekt2023.format(CurrencyFormat) + " kroner"
+                                Bokmal to inntekt2023.format(CurrencyFormat) + " kroner",
+                                Nynorsk to inntekt2023.format(CurrencyFormat) + " kroner"
                             )
                         }
                     }
@@ -312,102 +356,121 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             paragraph {
                 showIf(inntekt2022Over3g and inntekt2023Over3g) {
                     text(
-                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2022 og 2023. "
+                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2022 og 2023. ",
+                        Nynorsk to "Inntekta di har ifølgje opplysningar frå Skatteetaten vore høgare enn inntektsgrensa i 2022 og 2023."
                     )
                 }.orShowIf(inntekt2022Over3g) {
                     text(
-                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2022. "
+                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2022. ",
+                        Nynorsk to "Inntekta di har ifølgje opplysningar frå Skatteetaten vore høgare enn inntektsgrensa i 2022. "
                     )
                 }.orShowIf(inntekt2023Over3g) {
                     text(
-                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2023. "
+                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2023. ",
+                        Nynorsk to "Inntekta di har ifølgje opplysningar frå Skatteetaten vore høgare enn inntektsgrensa i 2023. "
                     )
                 }.orShow {
                     textExpr(
-                        Bokmal to "Din gjennomsnittlige inntekt mellom 2019 og 2023 har ifølge opplysninger fra Skatteetaten vært høyere enn gjennomsnittlig G de fem årene (".expr() + 212_813.expr().format(CurrencyFormat) + " kroner)"
+                        Bokmal to "Din gjennomsnittlige inntekt mellom 2019 og 2023 har ifølge våre opplysninger vært høyere enn gjennomsnittlig G de fem årene (".expr() + 212_813.expr().format(CurrencyFormat) + " kroner)",
+                        Nynorsk to "Den gjennomsnittlege inntekta di mellom 2019 og 2023 har ifølgje opplysningar frå Skatteetaten vore høgare enn gjennomsnittleg G for dei fem åra (".expr() + 212_813.expr().format(CurrencyFormat) + " kroner)"
                     )
                 }
             }
 
             paragraph {
                 text(
-                    Bokmal to "Under forutsetning av at de øvrige vilkårene for gjenlevendepensjon er oppfylt, vil du få utbetalt gjenlevendepensjonen til og med 31. desember 2026. "
+                    Bokmal to "Under forutsetning av at de øvrige vilkårene for gjenlevendepensjon er oppfylt, vil du få utbetalt gjenlevendepensjonen til og med 31. desember 2026. ",
+                    Nynorsk to "Under føresetnad av at dei resterande vilkåra for gjenlevandepensjon er oppfylte, vil du få utbetalt gjenlevandepensjonen til og med 31. desember 2026. "
                 )
             }
 
             title1 {
                 text(
-                    Bokmal to "Mulighet for å søke utvidet stønadsperiode "
+                    Bokmal to "Mulighet for å søke utvidet stønadsperiode ",
+                    Nynorsk to "Høve til å søkje om utvida stønadsperiode "
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du er under nødvendig og hensiktsmessig utdanning eller har behov for tiltak for å komme i arbeid, kan du søke om å få pensjonen forlenget i inntil to år fra 1. januar 2027. "
+                    Bokmal to "Hvis du er under nødvendig og hensiktsmessig utdanning eller har behov for tiltak for å komme i arbeid, kan du søke om å få pensjonen forlenget i inntil to år fra 1. januar 2027. ",
+                    Nynorsk to "Dersom du er under nødvendig og føremålstenleg utdanning eller har behov for tiltak for å kome i arbeid, kan du søkje om å få pensjonen forlenga i inntil to år frå 1. januar 2027. "
                 )
             }
 
             title1 {
                 text(
-                    Bokmal to "Har du helseutfordringer? "
+                    Bokmal to "Har du helseutfordringer? ",
+                    Nynorsk to "Har du helseutfordringar? "
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du har helseutfordringer, kan du undersøke mulighetene for andre ytelser eller støtteordninger ved ditt lokale Nav-kontor og på nav.no/helse. "
+                    Bokmal to "Hvis du har helseutfordringer, kan du undersøke mulighetene for andre ytelser eller støtteordninger ved ditt lokale Nav-kontor og på nav.no/helse. ",
+                    Nynorsk to "Viss du har helseutfordringar, kan du undersøkje moglegheitene for andre ytingar eller støtteordningar ved ditt lokale Nav-kontor og på nav.no/helse. "
                 )
             }
 
             title1 {
                 text(
-                    Bokmal to "Du har rett til å klage "
+                    Bokmal to "Du har rett til å klage ",
+                    Nynorsk to "Du har rett til å klage "
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på nav.no/klage. "
+                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på nav.no/klage. ",
+                    Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Rettane og pliktene dine» kan du lese meir om korleis du går fram. Du finn skjema og informasjon på nav.no/klage. "
                 )
             }
 
             title1 {
                 text(
-                    Bokmal to "Du har rett til innsyn "
+                    Bokmal to "Du har rett til innsyn ",
+                    Nynorsk to ""
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram. "
+                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram. ",
+                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegget  «Rettane og pliktene dine» for informasjon om korleis du går fram. "
                 )
             }
 
             title1 {
                 text(
-                    Bokmal to "Meld fra om endringer "
+                    Bokmal to "Meld fra om endringer ",
+                    Nynorsk to "Meld frå om endringar "
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du får endringer i inntekt eller jobbsituasjon, gifter deg eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav. "
+                    Bokmal to "Hvis du får endringer i inntekt eller jobbsituasjon, gifter deg eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav. ",
+                    Nynorsk to "Dersom du planlegg å flytte til eit anna land eller du får endra inntekt, familiesituasjon eller jobbsituasjon, kan det påverke gjenlevandepensjonen din. I slike tilfelle må du difor straks melde frå til Nav. "
                 )
             }
 
             title1 {
                 text(
-                    Bokmal to "Har du spørsmål?  "
+                    Bokmal to "Har du spørsmål? ",
+                    Nynorsk to "Har du spørsmål? "
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du finner mer informasjon på nav.no/gjenlevendepensjon. "
+                    Bokmal to "Du finner mer informasjon på nav.no/gjenlevendepensjon. ",
+                    Nynorsk to "Du finn meir informasjon på nav.no/gjenlevendepensjon. "
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "På nav.no/kontakt kan du chatte eller skrive til oss.  "
+                    Bokmal to "På nav.no/kontakt kan du chatte eller skrive til oss. ",
+                    Nynorsk to "Du kan skrive til eller chatte med oss på nav.no/kontakt. "
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 34, hverdager 09:00-15:00.  "
+                    Bokmal to "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 34, hverdager 09:00-15:00. ",
+                    Nynorsk to "Dersom du ikkje finn svar på nav.no, kan du ringje oss på telefon 55 55 33 34, kvardagar 09.00–15.00. "
                 )
             }
         }
