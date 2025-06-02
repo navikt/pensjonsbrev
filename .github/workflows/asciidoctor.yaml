@@ -25,7 +25,7 @@ jobs:
       with:
         distribution: 'adopt'
         java-version: '11'
-    - uses: ruby/setup-ruby@f41e084df884422b269f4c01c3748a9df4431a75
+    - uses: ruby/setup-ruby@13e7a03dc3ac6c3798f4570bfead2aed4d96abfb
       with:
         ruby-version: '2.6'
     - name: Install plantuml
