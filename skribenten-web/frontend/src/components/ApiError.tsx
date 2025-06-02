@@ -6,9 +6,18 @@ import { AxiosError } from "axios";
 
 import type { FailureType } from "~/types/apiTypes";
 import { FAILURE_TYPES } from "~/types/apiTypes";
+import { logger } from "~/utils/logger";
 
 const PORTEN_URL = "https://jira.adeo.no/plugins/servlet/desk/portal/541";
 export function ApiError({ error, title }: { error: unknown; title: string }) {
+  try {
+    logger.error({
+      message: error.message,
+      error: JSON.stringify(error),
+    });
+  } catch {
+    logger.generalError({ msg: "componentDidCatch, kan ikke parse stackframes", err: error });
+  }
   if (error instanceof AxiosError) {
     const correlationId = error.response?.headers["x-request-id"];
     return (

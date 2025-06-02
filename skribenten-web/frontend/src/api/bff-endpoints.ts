@@ -27,3 +27,7 @@ export const getBaseUrls = {
   queryFn: async () => (await axios.get<BaseUrls>(`${BFF_BASE_URL}/baseUrls`)).data,
   staleTime: CACHE_FOR.aDay,
 };
+
+export async function loggFeil(data: unknown) {
+  await axios.post(`${BFF_BASE_URL}/logg`, data);
+}
