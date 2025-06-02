@@ -36,18 +36,21 @@ const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error
     return () => clearTimeout(timoutId);
   }, [editorState.isDirty, editorState.redigertBrev, mutate]);
 
-  // We commneted out this useEffect as we don't know its original intention.
-  // It appears to be creating a race condition.
-
-  // useEffect(() => {
-  //   if (editorState.redigertBrevHash !== props.brev.redigertBrevHash) {
-  //     setEditorState((previousState) => ({
-  //       ...previousState,
-  //       redigertBrev: props.brev.redigertBrev,
-  //       redigertBrevHash: props.brev.redigertBrevHash,
-  //     }));
-  //   }
-  // }, [props.brev.redigertBrev, props.brev.redigertBrevHash, editorState.redigertBrevHash, setEditorState]);
+  useEffect(() => {
+    if (!editorState.isDirty && editorState.redigertBrevHash !== props.brev.redigertBrevHash) {
+      setEditorState((previousState) => ({
+        ...previousState,
+        redigertBrev: props.brev.redigertBrev,
+        redigertBrevHash: props.brev.redigertBrevHash,
+      }));
+    }
+  }, [
+    props.brev.redigertBrev,
+    props.brev.redigertBrevHash,
+    editorState.redigertBrevHash,
+    setEditorState,
+    editorState.isDirty,
+  ]);
 
   return (
     <LetterEditor

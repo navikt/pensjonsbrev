@@ -184,6 +184,7 @@ describe("attestering", () => {
     });
 
     const brevEtterOppdateringAvAttestantNavn = nyBrevResponse({
+      saksbehandlerValg: { land: "Norge" },
       redigertBrev: nyRedigertBrev({
         signatur: nySignatur({
           attesterendeSaksbehandlerNavn: "Dette er det nye attestant navnet mitt",
