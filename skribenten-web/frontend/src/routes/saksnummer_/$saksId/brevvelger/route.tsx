@@ -9,7 +9,7 @@ import { useState } from "react";
 import { z } from "zod";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getFavoritterQuery } from "~/api/skribenten-api-endpoints";
+import { getFavoritterQuery, getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import { BrevbakerIcon, DoksysIcon, ExstreamIcon } from "~/assets/icons";
 import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
@@ -33,8 +33,14 @@ type BrevvelgerSearch = z.infer<typeof brevvelgerSearchSchema>;
 export const Route = createFileRoute("/saksnummer_/$saksId/brevvelger")({
   validateSearch: (search): BrevvelgerSearch => brevvelgerSearchSchema.parse(search),
   loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId }),
-  loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
-    const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
+  loader: async ({ context, params: { saksId }, deps: { vedtaksId } }) => {
+    let options = context.getSakContextQueryOptions;
+    if (!options) {
+      options = getSakContextQuery(saksId, vedtaksId);
+      context.getSakContextQueryOptions = options;
+    }
+
+    const sakContext = await context.queryClient.ensureQueryData(options);
     return { saksId: sakContext.sak.saksId, letterTemplates: sakContext.brevMetadata };
   },
   errorComponent: ({ error }) => <ApiError error={error} title="Klarte ikke hente brevmaler for saken." />,
