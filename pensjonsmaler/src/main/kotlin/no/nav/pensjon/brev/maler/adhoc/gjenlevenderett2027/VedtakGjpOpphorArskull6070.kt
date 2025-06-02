@@ -29,7 +29,7 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
     override val kode = Pesysbrevkoder.AutoBrev.GJP_VEDTAK_OPPHOR_60_70
 
     override val template: LetterTemplate<*, Gjenlevenderett2027Dto> = createTemplate(
-        name = "GJP_VEDTAK_OPPHOR_60_70",
+        name = kode.name,
         letterDataType = Gjenlevenderett2027Dto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
@@ -93,12 +93,12 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                     header = {
                         column(1) {
                             text(
-                                Bokmal to "År "
+                                Bokmal to "År ",
                             )
                         }
                         column(2) {
                             text(
-                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 3 "
+                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 3 ",
                             )
                         }
                     },
@@ -106,24 +106,24 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                     row {
                         cell {
                             text(
-                                Bokmal to "2022"
+                                Bokmal to "2022",
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "329 352 kroner"
+                            textExpr(
+                                Bokmal to 329352.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
                     row {
                         cell {
                             text(
-                                Bokmal to "2023"
+                                Bokmal to "2023",
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "348 717 kroner"
+                            textExpr(
+                                Bokmal to 348717.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
@@ -137,18 +137,17 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                 )
             }
 
-
             paragraph {
                 table(
                     header = {
                         column(1) {
                             text(
-                                Bokmal to "År "
+                                Bokmal to "År",
                             )
                         }
                         column(2) {
                             text(
-                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 2 "
+                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 2 ",
                             )
                         }
                     },
@@ -156,60 +155,60 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                     row {
                         cell {
                             text(
-                                Bokmal to "2019"
+                                Bokmal to "2019",
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "197 732 kroner"
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2020"
-                            )
-                        }
-                        cell {
-                            text(
-                                Bokmal to "201 706 kroner"
+                            textExpr(
+                                Bokmal to 197732.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
                     row {
                         cell {
                             text(
-                                Bokmal to "2021"
+                                Bokmal to "2020",
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "209 432 kroner"
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2022"
-                            )
-                        }
-                        cell {
-                            text(
-                                Bokmal to "219 568 kroner"
+                            textExpr(
+                                Bokmal to 201706.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
                     row {
                         cell {
                             text(
-                                Bokmal to "2023"
+                                Bokmal to "2021",
                             )
                         }
                         cell {
+                            textExpr(
+                                Bokmal to 209432.expr().format(CurrencyFormat) + " kroner",
+                            )
+                        }
+                    }
+                    row {
+                        cell {
                             text(
-                                Bokmal to "232 478 kroner"
+                                Bokmal to "2022",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to 219568.expr().format(CurrencyFormat) + " kroner",
+                            )
+                        }
+                    }
+                    row {
+                        cell {
+                            text(
+                                Bokmal to "2023",
+                            )
+                        }
+                        cell {
+                            textExpr(
+                                Bokmal to 232478.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }

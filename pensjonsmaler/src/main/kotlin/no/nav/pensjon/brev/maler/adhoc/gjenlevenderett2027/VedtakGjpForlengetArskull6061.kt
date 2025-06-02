@@ -2,23 +2,24 @@ package no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
-import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2019
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2020
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2021
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2022
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023
+import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
+import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
 @TemplateModelHelpers
@@ -26,7 +27,7 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
     override val kode = Pesysbrevkoder.AutoBrev.GJP_VEDTAK_FORLENGELSE_60_61
 
     override val template: LetterTemplate<*, Gjenlevenderett2027Dto> = createTemplate(
-        name = "GJP_VEDTAK_FORLENGELSE_60_61",
+        name = kode.name,
         letterDataType = Gjenlevenderett2027Dto::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
@@ -111,8 +112,8 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "329 352 kroner",
+                            textExpr(
+                                Bokmal to 329352.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
@@ -123,14 +124,13 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "348 717 kroner",
+                            textExpr(
+                                Bokmal to 348717.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
                 }
             }
-
             paragraph {
                 text(
                     Bokmal to "I tillegg må inntekten din i 2019 – 2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. " +
@@ -141,14 +141,14 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
             paragraph {
                 table(
                     header = {
-                        column (1) {
+                        column(1) {
                             text(
                                 Bokmal to "År",
                             )
                         }
-                        column (2){
+                        column(2) {
                             text(
-                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 2",
+                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 2 ",
                             )
                         }
                     },
@@ -160,8 +160,8 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "197 732 kroner",
+                            textExpr(
+                                Bokmal to 197732.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
@@ -172,8 +172,8 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "201 706 kroner",
+                            textExpr(
+                                Bokmal to 201706.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
@@ -184,8 +184,8 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "209 432 kroner",
+                            textExpr(
+                                Bokmal to 209432.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
@@ -196,8 +196,8 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "219 568 kroner",
+                            textExpr(
+                                Bokmal to 219568.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
@@ -208,8 +208,8 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "232 478 kroner",
+                            textExpr(
+                                Bokmal to 232478.expr().format(CurrencyFormat) + " kroner",
                             )
                         }
                     }
@@ -237,12 +237,12 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
             paragraph {
                 table(
                     header = {
-                        column (1) {
+                        column(1) {
                             text(
                                 Bokmal to "År"
                             )
                         }
-                        column (2) {
+                        column(2) {
                             text(
                                 Bokmal to "Din inntekt"
                             )
@@ -311,7 +311,6 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
                     }
                 }
             }
-            
 
             paragraph {
                 text(
