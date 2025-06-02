@@ -78,15 +78,17 @@ const AccordionItem = (props: {
     },
   });
 
+  const isDefaultOpen =
+    (props.brevFørHandling.distribusjonstype === Distribusjonstype.LOKALPRINT &&
+      props.brevFørHandling.status.type !== "Attestering") ||
+    props.apiStatus === "error";
+
   return (
-    <Accordion.Item
-      defaultOpen={
-        props.brevFørHandling.distribusjonstype === Distribusjonstype.LOKALPRINT || props.apiStatus === "error"
-      }
-    >
+    <Accordion.Item defaultOpen={isDefaultOpen}>
       <AccordionHeader apiStatus={props.apiStatus} brevInfo={props.brevFørHandling} context={props.context} />
       <AccordionContent
         apiStatus={props.apiStatus}
+        brev={props.brevFørHandling}
         distribusjonstype={props.brevFørHandling.distribusjonstype}
         isPending={sendBrevMutation.isPending}
         journalpostId={props.journalpostId}

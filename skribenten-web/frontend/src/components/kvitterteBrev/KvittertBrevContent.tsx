@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { hentPdfForJournalpostQuery } from "~/api/sak-api-endpoints";
 import { getNavnQuery } from "~/api/skribenten-api-endpoints";
 import Oppsummeringspar from "~/routes/saksnummer_/$saksId/kvittering/-components/Oppsummeringspar";
-import type { Mottaker } from "~/types/brev";
+import type { BrevInfo, Mottaker } from "~/types/brev";
 import { Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { humanizeName } from "~/utils/stringUtils";
@@ -21,6 +21,7 @@ const AccordionContent = (props: {
   distribusjonstype: Distribusjonstype;
   journalpostId: Nullable<number>;
   mottaker: Nullable<Mottaker>;
+  brev: BrevInfo;
 }) => {
   switch (props.apiStatus) {
     case "error":
@@ -29,6 +30,7 @@ const AccordionContent = (props: {
     case "success":
       return (
         <AccordionContentSuccess
+          brev={props.brev}
           distribusjonstype={props.distribusjonstype}
           journalpostId={props.journalpostId}
           mottaker={props.mottaker}
@@ -48,6 +50,7 @@ const AccordionContentSuccess = (props: {
    * defaulter til brukeren
    */
   mottaker: Nullable<Mottaker>;
+  brev: BrevInfo;
 }) => {
   const pdfForJournalpost = useMutation<Blob, Error, number>({
     mutationFn: (journalpostId) => hentPdfForJournalpostQuery.queryFn(props.saksId, journalpostId),
@@ -73,7 +76,7 @@ const AccordionContentSuccess = (props: {
 
         <Oppsummeringspar tittel={"Distribueres via"} verdi={distribusjonstypeTilText(props.distribusjonstype)} />
         {props.journalpostId && <Oppsummeringspar tittel={"Journalpost ID"} verdi={props.journalpostId!} />}
-        {props.distribusjonstype === Distribusjonstype.LOKALPRINT && (
+        {props.distribusjonstype === Distribusjonstype.LOKALPRINT && props.brev.status.type !== "Attestering" && (
           <Button
             loading={pdfForJournalpost.isPending}
             onClick={() => pdfForJournalpost.mutate(props.journalpostId!)}
