@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalder
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAP2016
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAP2016Auto
 import no.nav.pensjon.brev.maler.alder.InfoAldersovergang67AarAuto
+import no.nav.pensjon.brev.maler.alder.aldersovergang.Aldersovergang2016Auto
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalder2016Auto
 import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.AvslagGradsendringFoerNormertPensjonsalderAP2016
@@ -54,6 +55,7 @@ object ProductionTemplates : AllTemplates {
         AdhocVarselOpphoerMedHvilendeRett,
         AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling,
         AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling,
+        Aldersovergang2016Auto,
         AvslagGradsendringFoerNormertPensjonsalder2016Auto,
         AvslagGradsendringFoerNormertPensjonsalderAuto,
         AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto,
