@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArs
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpForlengetArskull6061
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpOpphorArskill6070
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6270
-import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpForlengetArskull6061Utland
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpOpphorArskull6070Utland
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.*
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalderAuto
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalder
@@ -78,7 +78,7 @@ object ProductionTemplates : AllTemplates {
         VarselGjpForlengetArskull6270,
         VarselGjpOpphorArskill6070,
         VedtakGjpForlengetArskull6061,
-        VedtakGjpForlengetArskull6061Utland,
+        VedtakGjpOpphorArskull6070Utland,
         VedtakGjpForlengetArskull6270,
         VedtakGjpForlengetArskull6270Utland,
         VedtakGjpOpphorArskull6070,
