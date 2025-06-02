@@ -80,6 +80,7 @@ object ProductionTemplates : AllTemplates {
         VedtakGjpForlengetArskull6061,
         VedtakGjpForlengetArskull6061Utland,
         VedtakGjpForlengetArskull6270,
+        VedtakGjpForlengetArskull6270Utland,
         VedtakGjpOpphorArskull6070,
     )
 
