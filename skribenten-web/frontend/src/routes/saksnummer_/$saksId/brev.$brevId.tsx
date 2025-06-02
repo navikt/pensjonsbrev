@@ -4,7 +4,7 @@ import { BodyLong, Box, Button, Heading, HStack, Label, Modal, Skeleton, Tabs, V
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { type Dispatch, type SetStateAction, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -12,27 +12,25 @@ import {
   getBrev,
   getBrevReservasjon,
   oppdaterBrev,
-  oppdaterBrevtekst,
   oppdaterSaksbehandlerValg,
   oppdaterSignatur,
   tilbakestillBrev,
 } from "~/api/brev-queries";
-import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
-import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
-import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
 import {
   SaksbehandlerValgModelEditor,
   usePartitionedModelSpecification,
 } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
+import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
+import {
+  ManagedLetterEditorContextProvider,
+  useManagedLetterEditorContext,
+} from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
-import { type EditedLetter } from "~/types/brevbakerTypes";
 import { queryFold } from "~/utils/tanstackUtils";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
@@ -108,7 +106,11 @@ function RedigerBrevPage() {
       }
       return <ApiError error={error} title={"En feil skjedde ved henting av brev"} />;
     },
-    success: (data) => <RedigerBrev brev={data} doReload={brevQuery.refetch} saksId={saksId} vedtaksId={vedtaksId} />,
+    success: (brev) => (
+      <ManagedLetterEditorContextProvider brev={brev}>
+        <RedigerBrev brev={brev} doReload={brevQuery.refetch} saksId={saksId} vedtaksId={vedtaksId} />
+      </ManagedLetterEditorContextProvider>
+    ),
   });
 }
 
@@ -215,11 +217,11 @@ function RedigerBrev({
   saksId: string;
   vedtaksId: string | undefined;
 }) {
-  const queryClient = useQueryClient();
   const navigate = useNavigate({ from: Route.fullPath });
   const { enhetsId } = Route.useSearch();
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
-  const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brev));
+
+  const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
   const brevmal = useQuery({
     ...getSakContextQuery(saksId, vedtaksId),
@@ -231,16 +233,15 @@ function RedigerBrev({
     select: (search: Record<string, unknown>) => search?.["debug"] === "true" || search?.["debug"] === true,
   });
 
-  const saksbehandlerValgMutation = useHurtiglagreMutation(brev.info.id, setEditorState, oppdaterSaksbehandlerValg);
-  const signaturMutation = useHurtiglagreMutation(brev.info.id, setEditorState, oppdaterSignatur);
-  const brevtekstMutation = useHurtiglagreMutation(
-    brev.info.id,
-    setEditorState,
-    (brevId, args: { redigertBrev: EditedLetter; frigiReservasjon?: boolean }) => {
-      applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
-      return oppdaterBrevtekst(brevId, args.redigertBrev, args.frigiReservasjon);
-    },
-  );
+  const saksbehandlerValgMutation = useMutation<BrevResponse, AxiosError, SaksbehandlerValg>({
+    mutationFn: (valg) => oppdaterSaksbehandlerValg(brev.info.id, valg),
+    onSuccess: onSaveSuccess,
+  });
+
+  const signaturMutation = useMutation<BrevResponse, AxiosError, string>({
+    mutationFn: (signatur) => oppdaterSignatur(brev.info.id, signatur),
+    onSuccess: onSaveSuccess,
+  });
 
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
     mutationFn: (values) =>
@@ -253,6 +254,7 @@ function RedigerBrev({
           signatur: values.signatur,
         },
       }),
+    onSuccess: onSaveSuccess,
   });
 
   const defaultValuesModelEditor = useMemo(
@@ -281,7 +283,7 @@ function RedigerBrev({
     });
   };
 
-  const onSubmit = (values: RedigerBrevSidemenyFormData, onSuccess?: () => void) => {
+  const onSubmit = (values: RedigerBrevSidemenyFormData, navigateDone?: () => void) => {
     oppdaterBrevMutation.mutate(
       {
         redigertBrev: editorState.redigertBrev,
@@ -289,12 +291,8 @@ function RedigerBrev({
         signatur: values.signatur,
       },
       {
-        onSuccess: (response) => {
-          queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
-          //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
-          //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
-          queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brev.info.id) });
-          onSuccess?.();
+        onSuccess: () => {
+          navigateDone?.();
         },
       },
     );
@@ -307,39 +305,12 @@ function RedigerBrev({
   });
 
   useEffect(() => {
-    const timoutId = setTimeout(() => {
-      if (editorState.isDirty) {
-        brevtekstMutation.mutate({ redigertBrev: editorState.redigertBrev });
-      }
-    }, 5000);
-    return () => clearTimeout(timoutId);
-  }, [editorState.isDirty, editorState.redigertBrev, brevtekstMutation]);
-
-  useEffect(() => {
-    if (editorState.redigertBrevHash !== brev.redigertBrevHash) {
-      setEditorState((previousState) => ({
-        ...previousState,
-        redigertBrev: brev.redigertBrev,
-        redigertBrevHash: brev.redigertBrevHash,
-      }));
-    }
-  }, [brev.redigertBrev, brev.redigertBrevHash, editorState.redigertBrevHash, setEditorState]);
-
-  useEffect(() => {
     form.reset(defaultValuesModelEditor);
   }, [defaultValuesModelEditor, form]);
 
-  const freeze =
-    brevtekstMutation.isPending ||
-    saksbehandlerValgMutation.isPending ||
-    signaturMutation.isPending ||
-    oppdaterBrevMutation.isPending;
+  const freeze = saksbehandlerValgMutation.isPending || signaturMutation.isPending || oppdaterBrevMutation.isPending;
 
-  const error =
-    brevtekstMutation.isError ||
-    saksbehandlerValgMutation.isError ||
-    signaturMutation.isError ||
-    oppdaterBrevMutation.isError;
+  const error = saksbehandlerValgMutation.isError || signaturMutation.isError || oppdaterBrevMutation.isError;
 
   return (
     <FormProvider {...form}>
@@ -393,14 +364,7 @@ function RedigerBrev({
               <Heading size="small">{brevmal.data?.name}</Heading>
               <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
             </VStack>
-            <LetterEditor
-              editorHeight={"var(--main-page-content-height)"}
-              editorState={editorState}
-              error={error}
-              freeze={freeze}
-              setEditorState={setEditorState}
-              showDebug={showDebug ?? false}
-            />
+            <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
           </div>
           <HStack
             css={css`
@@ -453,32 +417,6 @@ function RedigerBrev({
       </form>
     </FormProvider>
   );
-}
-
-function useHurtiglagreMutation<T>(
-  brevId: number,
-  setEditorState: Dispatch<SetStateAction<LetterEditorState>>,
-  mutationFunction: (brevId: number, body: T) => Promise<BrevResponse>,
-) {
-  const queryClient = useQueryClient();
-
-  return useMutation<BrevResponse, AxiosError, T>({
-    mutationFn: async (body) => mutationFunction(brevId, body),
-    onSuccess: (response: BrevResponse) => {
-      queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
-      //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
-      //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
-      queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(brevId) });
-      setEditorState((previousState) => ({
-        ...previousState,
-        redigertBrev: response.redigertBrev,
-        redigertBrevHash: response.redigertBrevHash,
-        saksbehandlerValg: response.saksbehandlerValg,
-        info: response.info,
-        isDirty: false,
-      }));
-    },
-  });
 }
 
 enum BrevSidemenyTabs {
