@@ -89,10 +89,8 @@ const AccordionItem = (props: {
       <AccordionContent
         apiStatus={props.apiStatus}
         brev={props.brevFørHandling}
-        distribusjonstype={props.brevFørHandling.distribusjonstype}
         isPending={sendBrevMutation.isPending}
         journalpostId={props.journalpostId}
-        mottaker={props.brevFørHandling.mottaker}
         onRetry={() => sendBrevMutation.mutate()}
         saksId={props.saksId}
       />
