@@ -426,7 +426,7 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             title1 {
                 text(
                     Bokmal to "Du har rett til innsyn ",
-                    Nynorsk to ""
+                    Nynorsk to "Du har rett på innsyn "
                 )
             }
             paragraph {
