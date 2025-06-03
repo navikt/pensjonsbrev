@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.alder.aldersovergang
+package no.nav.pensjon.brev.maler.alder.omregning
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
@@ -15,7 +15,7 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 
-data class Aldersovergang2016Felles(
+data class OmregningAlderUfore2016Felles(
     val virkFom: Expression<LocalDate>,
     val uttaksgrad: Expression<Int>,
     val totalPensjon: Expression<Kroner>

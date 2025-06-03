@@ -1,8 +1,8 @@
-package no.nav.pensjon.brev.maler.alder.aldersovergang
+package no.nav.pensjon.brev.maler.alder.omregning
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.alderApi.Aldersovergang2016Dto
-import no.nav.pensjon.brev.api.model.maler.alderApi.Aldersovergang2016DtoSelectors.virkFom
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Dto
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.virkFom
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -13,13 +13,13 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
 @TemplateModelHelpers
-object Aldersovergang2016Auto : AutobrevTemplate<Aldersovergang2016Dto> {
+object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto> {
 
-    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_ALDERSOVERGANG_2016_AUTO
+    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_OMREGNING_ALDER_UFORE_2016_AUTO
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = Aldersovergang2016Dto::class,
+        letterDataType = OmregningAlderUfore2016Dto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag endring av uttaksgrad - AP2016",
@@ -37,7 +37,7 @@ object Aldersovergang2016Auto : AutobrevTemplate<Aldersovergang2016Dto> {
         }
         outline {
             includePhrase(
-                Aldersovergang2016Felles(virkFom = virkFom)
+                OmregningAlderUfore2016Felles(virkFom = virkFom)
             )
         }
     }
