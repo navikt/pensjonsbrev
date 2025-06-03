@@ -140,7 +140,7 @@ object VarselGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
 
             paragraph {
                 text(
-                    Bokmal to "I tillegg må inntekten din i 2019 – 2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt disse fem årene. Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere.",
+                    Bokmal to "I tillegg må inntekten din i 2019–2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt disse fem årene. Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere.",
                     English to "In addition, your income in the period 2019–2023 must not have exceeded two times the National Insurance basic amount (G) on average for this five-year period. This means your income could have exceeded two times the National Insurance basic amount in individual years, provided your average for the five-year period is lower."
                 )
             }
@@ -244,7 +244,7 @@ object VarselGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
 
             paragraph {
                 text(
-                    Bokmal to "Det er din reelle inntekt i årene 2019 – 2023 som avgjør om du kan beholde gjenlevendepensjonen. ",
+                    Bokmal to "Det er din reelle inntekt i årene 2019–2023 som avgjør om du kan beholde gjenlevendepensjonen. ",
                     English to "Your actual income for the period 2019–2023 will determine whether or not you will be able to keep the survivor’s pension. "
 
                 )
@@ -252,7 +252,7 @@ object VarselGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
 
             paragraph {
                 text(
-                    Bokmal to "Ifølge registrerte opplysninger vi har om deg, har pensjonen din i årene 2019 – 2023 vært redusert etter følgende inntekter:",
+                    Bokmal to "Ifølge registrerte opplysninger vi har om deg, har pensjonen din i årene 2019–2023 vært redusert etter følgende inntekter:",
                     English to "According to the information we have registered about you, your pension in the period 2019–2023 has been reduced based on the following income:"
 
                 )
@@ -372,13 +372,13 @@ object VarselGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
             paragraph {
                 text(
                     Bokmal to "Dersom du mener at opplysningene om inntekten din i dette brevet er feil, må du gi oss en tilbakemelding innen fire uker fra du mottok dette forhåndsvarselet. ",
-                    English to "If you believe the information in this letter is incorrect, you must contact us within four weeks of receiving this advance notice. You must send us pay slips from your employer, or a certificate issued by the authorities where you live, specifying your income for the period 2019–2023. "
+                    English to "If you believe the information in this letter is incorrect, you must contact us within four weeks of receiving this advance notice. "
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Du må da sende oss lønnsslipper fra din arbeidsgiver, eller bekreftelse fra myndighetene der du bor, som viser hvilke inntekter du har hatt i perioden 2019 – 2023. ",
+                    Bokmal to "Du må da sende oss lønnsslipper fra din arbeidsgiver, eller bekreftelse fra myndighetene der du bor, som viser hvilke inntekter du har hatt i perioden 2019–2023. ",
                     English to "You must send us pay slips from your employer, or a certificate issued by the authorities where you live, specifying your income for the period 2019–2023. "
                 )
             }
