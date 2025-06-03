@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-import type { ErrorInfo } from "react";
 
 import { loggFeil } from "~/api/bff-endpoints";
 
@@ -25,52 +24,9 @@ const defaultContext = {
   userAgent: globalThis.navigator.userAgent,
 };
 
-export interface IStackLineNoColumnNo {
-  readonly message: unknown;
-  readonly error: unknown;
-}
-
-interface ErrorData {
-  msg: string;
-  errorInfo?: ErrorInfo;
-  apiErrorInfo?: ApiErrorInfo;
-  err?: Error;
-}
-
-interface ApiErrorInfo {
-  url: string;
-  method: string;
-  error?: JsonError;
-}
-
-interface JsonError {
-  status: number;
-  detail: string;
-  code?: string;
-  meta?: Record<string, unknown>;
-}
-
 export const logger = {
-  info: (stackLineNoColumnNo: IStackLineNoColumnNo) => {
-    const data = { type: "info", stackInfo: stackLineNoColumnNo, jsonContent: { ...defaultContext } };
-    loggFeil(data).catch((error: unknown) => {
-      console.error("Unable to log info message: ", data, " err: ", error);
-    });
-  },
-  error: (stackLineNoColumnNo: IStackLineNoColumnNo) => {
-    const data = { type: "error", stackInfo: stackLineNoColumnNo, jsonContent: { ...defaultContext } };
-    loggFeil(data).catch((error: unknown) => {
-      console.error("Unable to log error message: ", data, " err: ", error);
-    });
-  },
-  generalError: (info: ErrorData) => {
-    const data = { type: "Error", data: info, jsonContent: { ...defaultContext } };
-    loggFeil(data).catch((error: unknown) => {
-      console.error("Unable to log error message: ", data, " err: ", error);
-    });
-  },
-  generalWarning: (info: ErrorData) => {
-    const data = { type: "warning", data: info, jsonContent: { ...defaultContext } };
+  error: (error: Error) => {
+    const data = { type: "error", message: error.message, stack: error.stack, jsonContent: { ...defaultContext } };
     loggFeil(data).catch((error: unknown) => {
       console.error("Unable to log error message: ", data, " err: ", error);
     });
@@ -86,7 +42,7 @@ export const setupWindowOnError = () => {
       console.error(error.message, error.stack);
     } else {
       if (message !== "ResizeObserver loop completed with undelivered notifications.") {
-        logger.error({ message, error: JSON.stringify(error) });
+        logger.error(error);
       }
 
       if (error.stack && error.stack?.indexOf("invokeGuardedCallbackDev") >= 0 && !error.alreadySeen) {
