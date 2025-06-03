@@ -13,7 +13,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
   try {
     logger.error(error);
   } catch {
-    // kunne ikke håndtere feil
+    // kunne ikke logge feil
   }
 
   if (error instanceof AxiosError) {
