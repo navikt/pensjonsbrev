@@ -41,7 +41,7 @@ object VarselGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
         title {
             text(
                 Bokmal to "Forhåndsvarsel - Gjenlevendepensjonen din kan bli tidsbegrenset ",
-                Nynorsk to "Førehandsvarsel – Attlevandepensjonen din kan bli tidsavgrensa ",
+                Nynorsk to "Førehandsvarsel – Gjenlevandepensjonen din kan bli tidsavgrensa ",
             )
         }
         outline {
