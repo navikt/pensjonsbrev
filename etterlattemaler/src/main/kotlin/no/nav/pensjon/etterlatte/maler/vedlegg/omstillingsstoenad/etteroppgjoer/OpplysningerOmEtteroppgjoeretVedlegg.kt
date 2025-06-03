@@ -73,7 +73,7 @@ val beregningsVedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, BeregningsVe
         opplysningerOmEtteroppgjoer(argument.etteroppgjoersAar)
         hvaDuFikkUtbetalt(argument.etteroppgjoersAar, argument.utbetalingData)
         omBeregningAvOmstillingsstoenad(argument.etteroppgjoersAar)
-        dinPensjonsgivendeInntekt(argument.etteroppgjoersAar, argument.utbetalingData, argument.grunnlag)
+        dinPensjonsgivendeInntekt(argument.etteroppgjoersAar, argument.grunnlag)
 
         konverterElementerTilBrevbakerformat(argument.innhold)
 
@@ -87,7 +87,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.op
 ) {
     paragraph {
         textExpr(
-            Bokmal to "Omstillingsstønaden din ble beregnet ut fra inntekten du oppga som forventet i ".expr() + etteroppgjoersAar.format() +". Vi har nå gjort en ny beregning basert på opplysninger registrert i a-ordningen og fra Skatteetaten om din faktiske inntekt for "+etteroppgjoersAar.format()+". Du kan se skatteoppgjøret ditt på skatteetaten.no.",
+            Bokmal to "Omstillingsstønaden din ble beregnet ut fra inntekten du oppga som forventet i ".expr() + etteroppgjoersAar.format() +". Vi har nå gjort en ny beregning basert på opplysninger fra Skatteetaten og a-ordningen om din faktiske inntekt for "+etteroppgjoersAar.format()+". Du kan se skatteoppgjøret ditt på skatteetaten.no.",
             Nynorsk to "".expr(),
             English to "".expr(),
         )
@@ -319,7 +319,6 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.om
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.dinPensjonsgivendeInntekt(
     etteroppgjoersAar: Expression<Int>,
-    utbetalingData: Expression<EtteroppgjoerUtbetalingDTO>,
     grunnlag: Expression<EtteroppgjoerGrunnlagDTO>
 ) {
 
