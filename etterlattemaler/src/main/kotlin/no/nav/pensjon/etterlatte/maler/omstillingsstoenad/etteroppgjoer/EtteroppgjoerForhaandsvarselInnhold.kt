@@ -78,7 +78,7 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
                 // felles minus bosatt utland og uten norsk inntekt
                 paragraph {
                     text(
-                        Language.Bokmal to "Hvert år, når skatteoppgjøret er ferdig, sjekker Nav inntekten din for å se om omstillingsstønaden du fikk utbetalt i fjor, er riktig. Omstillingsstønaden din er beregnet basert på nye opplysninger fra Skatteetaten og a-ordningen.",
+                        Language.Bokmal to "Hvert år sjekker Nav inntekten din for å se om du har fått utbetalt riktig beløp i omstillingsstønad året før. Omstillingsstønaden din er beregnet etter opplysninger om inntekt fra Skatteetaten og a-ordningen.",
                         Language.Nynorsk to "",
                         Language.English to "",
                     )
@@ -96,8 +96,22 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
 
             // alle
             paragraph {
+                text(
+                    Language.Bokmal to "Hvis etteroppgjøret viser at for lite utbetalt er mindre enn 25 prosent av rettsgebyret vil du ikke få utbetalt differansen.",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Hvis etteroppgjøret viser at for mye utbetalt er mindre enn ett rettsgebyr, vil du ikke få krav om tilbakebetaling.",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                )
+            }
+            paragraph {
                 textExpr(
-                    Language.Bokmal to "Etteroppgjør skal ikke gjennomføres hvis for lite utbetalt er mindre enn 25 prosent av rettsgebyret, eller hvis for mye utbetalt er mindre enn ett rettsgebyr. Per ".expr() + data.dagensDato.format() + " er ett rettsgebyr " + data.rettsgebyrBeloep.format() + " kroner.",
+                    Language.Bokmal to "Per ".expr() + data.dagensDato.format() + " er ett rettsgebyr " + data.rettsgebyrBeloep.format() + " kroner.",
                     Language.Nynorsk to "".expr(),
                     Language.English to "".expr(),
                 )
@@ -136,7 +150,7 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
                 showIf(data.avviksBeloep.equalTo(0)){
                     paragraph {
                         textExpr(
-                            Language.Bokmal to "Vår beregning viser at utbetalt omstillingsstønad i ".expr() + data.etteroppgjoersAar.format()+ " er lik det du skulle ha fått. Etteroppgjør vil derfor ikke bli gjennomført.",
+                            Language.Bokmal to "Vår beregning viser at utbetalt omstillingsstønad i ".expr() + data.etteroppgjoersAar.format()+ " er lik det du skulle ha fått. Du har fått utbetalt riktig stønad.",
                             Language.Nynorsk to "".expr(),
                             Language.English to "".expr()
                         )
