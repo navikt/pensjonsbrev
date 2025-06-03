@@ -2,20 +2,18 @@ import { css } from "@emotion/react";
 import { FilesIcon } from "@navikt/aksel-icons";
 import { Alert, CopyButton, Heading, Link, VStack } from "@navikt/ds-react";
 import { AxiosError } from "axios";
-import React from "react";
+import React, { useEffect } from "react";
 
 import type { FailureType } from "~/types/apiTypes";
 import { FAILURE_TYPES } from "~/types/apiTypes";
-import { logger } from "~/utils/logger";
+import { logError } from "~/utils/logger";
 
 const PORTEN_URL = "https://jira.adeo.no/plugins/servlet/desk/portal/541";
 export function ApiError({ error, title }: { error: unknown; title: string }) {
-  try {
-    logger.error(error);
-  } catch {
+  useEffect(() => {
     // eslint-disable-next-line no-console
-    console.error("Unable to log error message for: ", title);
-  }
+    logError(error).catch(() => console.error("Unable to log error message"));
+  }, [error]);
 
   if (error instanceof AxiosError) {
     const correlationId = error.response?.headers["x-request-id"];
