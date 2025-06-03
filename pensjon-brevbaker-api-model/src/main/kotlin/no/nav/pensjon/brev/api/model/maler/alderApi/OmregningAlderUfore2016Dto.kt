@@ -7,3 +7,11 @@ import java.time.LocalDate
 data class OmregningAlderUfore2016Dto(
     val virkFom: LocalDate,
 ):BrevbakerBrevdata
+
+data class AlderspensjonPerManed(
+    val virkFom: LocalDate
+)
+
+data class PersongrunnlagAvdod(
+    val navn: String
+)
