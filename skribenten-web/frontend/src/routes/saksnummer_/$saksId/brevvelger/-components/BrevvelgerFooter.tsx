@@ -10,7 +10,7 @@ import type { SubmitTemplateOptions } from "../route";
 import { Route } from "../route";
 
 const BrevvelgerFooter = (props: {
-  saksId: number;
+  saksId: string;
   antallBrevKlarTilSending: number;
   onSubmitClick: Nullable<SubmitTemplateOptions>;
 }) => {

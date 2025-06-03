@@ -7,7 +7,7 @@ import { BrevmalBrevbakerKladd } from "./BrevmalBrevbakerKladd";
 import { TemplateLoader } from "./TemplateLoader";
 
 const BrevmalPanel = (props: {
-  saksId: number;
+  saksId: string;
   templateId?: string;
   brevId?: number;
   letterTemplates: LetterMetadata[];
