@@ -93,13 +93,13 @@ object VarselGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
             paragraph {
                 table(
                     header = {
-                        column {
+                        column(1) {
                             text(
                                 Bokmal to "År",
                                 English to "Year"
                             )
                         }
-                        column{
+                        column(2) {
                             text(
                                 Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 3:",
                                 English to "Average National Insurance basic amount (G) times 3:"
@@ -148,13 +148,13 @@ object VarselGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
             paragraph {
                 table(
                     header = {
-                        column {
+                        column(1) {
                             text(
                                 Bokmal to "År",
                                 English to "Year"
                             )
                         }
-                        column {
+                        column(2) {
                             text(
                                 Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 2:",
                                 English to "Average National Insurance basic amount (G) times 2:"

@@ -86,13 +86,13 @@ object VarselGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             paragraph {
                 table(
                     header = {
-                        column {
+                        column(1) {
                             text(
                                 Bokmal to "År",
                                 Nynorsk to "År",
                             )
                         }
-                        column{
+                        column(2) {
                             text(
                                 Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 3:",
                                 Nynorsk to "Gjennomsnittleg grunnbeløp (G) gongar 3:",
@@ -141,13 +141,13 @@ object VarselGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             paragraph {
                 table(
                     header = {
-                        column {
+                        column(1) {
                             text(
                                 Bokmal to "År",
                                 Nynorsk to "År",
                             )
                         }
-                        column {
+                        column(2) {
                             text(
                                 Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 2:",
                                 Nynorsk to "Gjennomsnittleg grunnbeløp (G) gongar 2:",
@@ -246,13 +246,13 @@ object VarselGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             paragraph {
                 table(
                     header = {
-                        column {
+                        column(1) {
                             text(
                                 Bokmal to "År",
                                 Nynorsk to "År",
                             )
                         }
-                        column {
+                        column(2) {
                             text(
                                 Bokmal to "Din inntekt",
                                 Nynorsk to "Di inntekt:",
