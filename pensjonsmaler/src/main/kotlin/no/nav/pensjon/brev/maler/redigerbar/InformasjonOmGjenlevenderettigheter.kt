@@ -289,15 +289,6 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     )
                 }
             }
-            showIf(pesysData.sakstype.isOneOf(Sakstype.ALDER)) {
-                paragraph {
-                    text(
-                        Bokmal to "Har du barnetillegg i alderspensjonen, kan barnetillegget ditt bli endret. Du vil få et vedtak fra oss dersom barnetillegget endres.",
-                        Nynorsk to "Har du barnetillegg i alderspensjonen, kan barnetillegget ditt bli endra. Du får eit vedtak frå oss dersom barnetillegget blir endra.",
-                        English to "If you have a child supplement to your retirement pension, your child supplement may be changed. You will receive a decision from us if the child supplement changes.",
-                    )
-                }
-            }
 
             includePhrase(Felles.DuKanLeseMer)
 
