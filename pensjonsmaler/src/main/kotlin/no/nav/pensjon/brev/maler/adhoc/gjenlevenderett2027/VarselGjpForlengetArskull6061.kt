@@ -28,13 +28,13 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
     override val kode = Pesysbrevkoder.AutoBrev.GJP_VARSEL_FORLENGELSE_60_61
 
     override val template: LetterTemplate<*, Gjenlevenderett2027Dto> = createTemplate(
-        name = "GJP_VARSEL_FORLENGELSE",
+        name = "GJP_VARSEL_FORLENGELSE_60_61",
         letterDataType = Gjenlevenderett2027Dto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Forhåndsvarsel - Gjenlevendepensjonen din kan bli forlenget",
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {

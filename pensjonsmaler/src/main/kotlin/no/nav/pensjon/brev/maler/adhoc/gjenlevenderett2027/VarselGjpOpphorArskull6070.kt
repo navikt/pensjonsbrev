@@ -22,19 +22,19 @@ import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 @TemplateModelHelpers
-object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
+object VarselGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
 
 
     override val kode = Pesysbrevkoder.AutoBrev.GJP_VARSEL_OPPHOR_60_70
 
     override val template: LetterTemplate<*, Gjenlevenderett2027Dto> = createTemplate(
-        name = "GJP_VARSEL_OPPHOR_60_70",
+        name = "GJP_VARSEL_FORLENGELSE_62_70_UTLAND",
         letterDataType = Gjenlevenderett2027Dto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Forhåndsvarsel - Gjenlevendepensjonen din kan bli tidsbegrenset ",
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
@@ -380,14 +380,6 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
 
             paragraph {
                 text(
-                    Bokmal to "Det er inntekten din i årene 2019 – 2023 som avgjør om du kan beholde gjenlevendepensjonen din til du blir 67 år. ",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
-
-            paragraph {
-                text(
                     Bokmal to "Ut fra våre opplysninger fyller du ikke vilkårene i folketrygdloven § 17 A-3, for å få forlenget stønadsperiode.",
                     Nynorsk to "",
                     English to ""
@@ -414,10 +406,10 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         English to ""
                     )
                 }.orShow {
-                    text(
-                        Bokmal to "Din gjennomsnittlige inntekt mellom 2019 og 2023 har ifølge opplysninger fra Skatteetaten vært høyere enn 212 813 kroner",
-                        Nynorsk to "",
-                        English to ""
+                    textExpr(
+                        Bokmal to "Din gjennomsnittlige inntekt mellom 2019 og 2023 har ifølge opplysninger fra Skatteetaten vært høyere enn gjennomsnittlig G de fem årene (".expr() + 212_813.expr().format(CurrencyFormat) + " kroner)",
+                        Nynorsk to "".expr(),
+                        English to "".expr()
                     )
                 }
             }
