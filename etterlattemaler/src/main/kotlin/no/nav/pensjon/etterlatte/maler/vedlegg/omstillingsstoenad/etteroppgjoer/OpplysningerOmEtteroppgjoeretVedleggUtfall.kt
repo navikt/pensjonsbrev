@@ -1,5 +1,6 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer
 
+import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -50,8 +51,14 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
         }
         outline {
             paragraph {
+                text(
+                    Bokmal to "FORSLAG 1: ",
+                    Nynorsk to "",
+                    English to "",
+                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                )
                 textExpr(
-                    Bokmal to "FORSLAG 1: Du har hatt omstillingsstønad i deler av ".expr() + data.etteroppgjoersAar.format() + ". Det vil si at vi trekker fra inntekt som du hadde før du fikk innvilget stønaden. Vi har trukket fra <HER LEGGES TIL DET SOM TREKKES FRA I ETTEROPPGJØRET>. ",
+                    Bokmal to "Du har hatt omstillingsstønad i deler av ".expr() + data.etteroppgjoersAar.format() + ". Det vil si at vi trekker fra inntekt som du hadde før du fikk innvilget stønaden. Vi har trukket fra <HER LEGGES TIL DET SOM TREKKES FRA I ETTEROPPGJØRET>.",
                     Nynorsk to "".expr(),
                     English to "".expr(),
                 )
@@ -65,16 +72,28 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
             }
 
             paragraph {
+                text(
+                    Bokmal to "FORSLAG 2: ",
+                    Nynorsk to "",
+                    English to "",
+                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                )
                 textExpr(
-                    Bokmal to "FORSLAG 2: Du har hatt omstillingsstønad i hele ".expr() + data.etteroppgjoersAar.format() + ". Det er kun omstillingsstønaden som ikke skal regnes med i inntekten som reduseres omstillingsstønaden din.",
+                    Bokmal to "Du har hatt omstillingsstønad i hele ".expr() + data.etteroppgjoersAar.format() + ". Det er kun omstillingsstønaden som ikke skal regnes med i inntekten som reduseres omstillingsstønaden din.",
                     Nynorsk to "".expr(),
                     English to "".expr(),
                 )
             }
 
             paragraph {
+                text(
+                    Bokmal to "FORSLAG 3: ",
+                    Nynorsk to "",
+                    English to "",
+                    Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                )
                 textExpr(
-                    Bokmal to "FORSLAG 3: Du har hatt omstillingsstønad i deler av ".expr() + data.etteroppgjoersAar.format() + ". Det vil si at vi trekker fra inntekt som du hadde etter stønaden ble opphørt. Vi har trukket fra <HER LEGGES TIL DET SOM TREKKES FRA I ETTEROPPGJØRET>.",
+                    Bokmal to "Du har hatt omstillingsstønad i deler av ".expr() + data.etteroppgjoersAar.format() + ". Det vil si at vi trekker fra inntekt som du hadde etter stønaden ble opphørt. Vi har trukket fra <HER LEGGES TIL DET SOM TREKKES FRA I ETTEROPPGJØRET>.",
                     Nynorsk to "".expr(),
                     English to "".expr(),
                 )

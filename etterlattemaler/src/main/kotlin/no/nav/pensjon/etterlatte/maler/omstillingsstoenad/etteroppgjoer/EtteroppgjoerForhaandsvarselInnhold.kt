@@ -73,9 +73,8 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
 
         outline {
 
-            showIf(
-                data.bosattUtland.not() and data.norskInntekt.not()) {
-                // felles minus bosatt utland og uten norsk inntekt
+            // alle med norsk inntekt
+            showIf(data.norskInntekt) {
                 paragraph {
                     text(
                         Language.Bokmal to "Hvert år sjekker Nav inntekten din for å se om du har fått utbetalt riktig beløp i omstillingsstønad året før. Omstillingsstønaden din er beregnet etter opplysninger om inntekt fra Skatteetaten og a-ordningen.",
@@ -83,8 +82,10 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
                         Language.English to "",
                     )
                 }
-            }.orShow {
-                // hvis bosatt utland med norsk inntekt
+            }
+
+            // hvis bosatt utland
+            showIf(data.bosattUtland){
                 paragraph {
                     textExpr(
                         Language.Bokmal to "Inntektsopplysninger innhentet fra Skatteetaten og a-ordningen, viser kun norsk inntekt. Siden vi ikke mottar opplysninger om utenlandsk inntekt, har vi lagt til grunn det du tidligere oppga som forventet utenlandsk inntekt. Hvis disse opplysningene ikke stemmer, må du sende oss dokumentasjon på din faktiske inntekt fra utlandet i ".expr() +  data.etteroppgjoersAar.format() + ".",
