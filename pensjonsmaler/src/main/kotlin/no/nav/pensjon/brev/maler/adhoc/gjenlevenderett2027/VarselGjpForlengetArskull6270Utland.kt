@@ -71,7 +71,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
 
             paragraph {
                 text(
-                    Bokmal to "Hvis du har hatt lav eller ingen inntekt de siste fem årene før 2024, kan du beholde gjenlevendepensjon til du blir 67 år. ",
+                    Bokmal to "Hvis du har hatt lav eller ingen inntekt de siste fem årene før 2024, kan du beholde pengestøtte som gjenlevende til du blir 67 år. ",
                     English to "If your income has been low or if you have not earned an income in the last five years prior to 2024, you may keep the survivor’s pension until you turn 67 years old. "
                 )
             }
@@ -116,7 +116,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                         }
                         cell {
                             textExpr(
-                                Bokmal to 329_352.expr().format(CurrencyFormat) + "kroner",
+                                Bokmal to 329_352.expr().format(CurrencyFormat) + " kroner",
                                 English to "NOK ".expr() + 329_352.expr().format(CurrencyFormat)
                             )
                         }
@@ -130,7 +130,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                         }
                         cell {
                             textExpr(
-                                Bokmal to 348_717.expr().format(CurrencyFormat) + "kroner",
+                                Bokmal to 348_717.expr().format(CurrencyFormat) + " kroner",
                                 English to "NOK ".expr() + 348_717.expr().format(CurrencyFormat)
                             )
                         }
@@ -171,7 +171,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                         }
                         cell {
                             textExpr(
-                                Bokmal to 197_732.expr().format(CurrencyFormat) + "kroner",
+                                Bokmal to 197_732.expr().format(CurrencyFormat) + " kroner",
                                 English to "NOK ".expr() + 197_732.expr().format(CurrencyFormat)
                             )
                         }
@@ -185,7 +185,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                         }
                         cell {
                             textExpr(
-                                Bokmal to 201_706.expr().format(CurrencyFormat) + "kroner",
+                                Bokmal to 201_706.expr().format(CurrencyFormat) + " kroner",
                                 English to "NOK ".expr() + 201_706.expr().format(CurrencyFormat)
                             )
                         }
@@ -199,7 +199,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                         }
                         cell {
                             textExpr(
-                                Bokmal to 209_432.expr().format(CurrencyFormat) + "kroner",
+                                Bokmal to 209_432.expr().format(CurrencyFormat) + " kroner",
                                 English to "NOK ".expr() + 209_432.expr().format(CurrencyFormat)
                             )
                         }
@@ -213,7 +213,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                         }
                         cell {
                             textExpr(
-                                Bokmal to 219_568.expr().format(CurrencyFormat) + "kroner",
+                                Bokmal to 219_568.expr().format(CurrencyFormat) + " kroner",
                                 English to "NOK ".expr() + 219_568.expr().format(CurrencyFormat)
                             )
                         }
@@ -227,7 +227,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                         }
                         cell {
                             textExpr(
-                                Bokmal to 232_478.expr().format(CurrencyFormat) + "kroner",
+                                Bokmal to 232_478.expr().format(CurrencyFormat) + " kroner",
                                 English to "NOK ".expr() + 232_478.expr().format(CurrencyFormat)
                             )
                         }
@@ -371,7 +371,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
 
             paragraph {
                 text(
-                    Bokmal to "Omstillingsstønaden tilsvare 2,25 ganger grunnbeløpet per 1. januar 2029. Dersom gjenlevendepensjonen din er beregnet med mindre enn 40 års trygdetid, vil omstillingsstønaden bli redusert tilsvarende.",
+                    Bokmal to "Omstillingsstønaden tilsvarer 2,25 ganger grunnbeløpet per 1. januar 2029. Dersom gjenlevendepensjonen din er beregnet med mindre enn 40 års trygdetid, vil omstillingsstønaden bli redusert tilsvarende.",
                     English to "The adjustment allowance is equivalent to 2.25 times the National Insurance basic amount (G) as of 01 January 2029. If your survivor’s pension is based on a period of national insurance coverage of less than 40 years, your adjustment allowance will be reduced correspondingly."
                 )
             }
