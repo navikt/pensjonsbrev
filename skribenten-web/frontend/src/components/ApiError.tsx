@@ -1,8 +1,8 @@
 import { css } from "@emotion/react";
 import { FilesIcon } from "@navikt/aksel-icons";
 import { Alert, CopyButton, Heading, Link, VStack } from "@navikt/ds-react";
-import { ErrorComponent } from "@tanstack/react-router";
 import { AxiosError } from "axios";
+import React from "react";
 
 import type { FailureType } from "~/types/apiTypes";
 import { FAILURE_TYPES } from "~/types/apiTypes";
@@ -11,13 +11,11 @@ import { logger } from "~/utils/logger";
 const PORTEN_URL = "https://jira.adeo.no/plugins/servlet/desk/portal/541";
 export function ApiError({ error, title }: { error: unknown; title: string }) {
   try {
-    logger.error({
-      message: error.message,
-      error: JSON.stringify(error),
-    });
+    logger.error(error);
   } catch {
-    logger.generalError({ msg: "componentDidCatch, kan ikke parse stackframes", err: error });
+    // kunne ikke håndtere feil
   }
+
   if (error instanceof AxiosError) {
     const correlationId = error.response?.headers["x-request-id"];
     return (
@@ -63,8 +61,12 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
     );
   }
 
-  // If the error is not an axios error, then there is a programming error. Fallback to default Router Error
-  return <ErrorComponent error={error} />;
+  // If the error is not an axios error, then there is a programming error. Fallback to simple handling
+  return (
+    <div>
+      <Alert variant={"error"}>En feil har oppstått og blitt logget. Prøv igjen litt senere.</Alert>
+    </div>
+  );
 }
 
 function mapErrorMessage(errorMessage: string) {

@@ -28,6 +28,13 @@ export const getBaseUrls = {
   staleTime: CACHE_FOR.aDay,
 };
 
-export async function loggFeil(data: unknown) {
+export async function loggFeil(data: Feilmelding) {
   await axios.post(`${BFF_BASE_URL}/logg`, data);
 }
+
+export type Feilmelding = {
+  type: string;
+  message: unknown;
+  stack: unknown;
+  jsonContent: unknown;
+};

@@ -25,11 +25,23 @@ const defaultContext = {
 };
 
 export const logger = {
-  error: (error: Error) => {
-    const data = { type: "error", message: error.message, stack: error.stack, jsonContent: { ...defaultContext } };
-    loggFeil(data).catch((error: unknown) => {
-      console.error("Unable to log error message: ", data, " err: ", error);
-    });
+  error: (error: unknown) => {
+    if (error instanceof Error) {
+      const data = { type: "error", message: error.message, stack: error.stack, jsonContent: { ...defaultContext } };
+      loggFeil(data).catch((error: unknown) => {
+        console.error("Unable to log error message: ", data, " err: ", error);
+      });
+    } else {
+      const data = {
+        type: "error",
+        message: "Error som ikke var av type error",
+        stack: "",
+        jsonContent: JSON.stringify(error),
+      };
+      loggFeil(data).catch((error: unknown) => {
+        console.error("Unable to log error message: ", data, " err: ", error);
+      });
+    }
   },
 };
 

@@ -7,10 +7,12 @@ import { internalRoutes } from "./internalRoutes.js";
 import { setupLogging } from "./logging.js";
 import { verifyToken } from "./tokenValidation.js";
 
+import bodyParser from "body-parser";
 const server = express();
 
 // Restricts the server to only accept UTF-8 encoding of bodies
 server.use(express.urlencoded({ extended: true }));
+server.use(bodyParser.json());
 
 setupActuators(server);
 setupLogging(server);

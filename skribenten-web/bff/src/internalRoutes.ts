@@ -35,4 +35,10 @@ export const internalRoutes = (server: Express) => {
       psak: baseUrls.psak,
     });
   });
+
+  server.post("/bff/internal/logg", (request, response) => {
+    const body = request.body;
+    console.error(body.message, JSON.stringify(body.stack), JSON.stringify(body.jsonContent));
+    response.status(200).end();
+  });
 };
