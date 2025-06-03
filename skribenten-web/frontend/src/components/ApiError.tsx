@@ -13,7 +13,8 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
   try {
     logger.error(error);
   } catch {
-    // kunne ikke logge feil
+    // eslint-disable-next-line no-console
+    console.error("Unable to log error message for: ", title);
   }
 
   if (error instanceof AxiosError) {

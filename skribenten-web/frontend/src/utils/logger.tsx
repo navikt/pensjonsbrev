@@ -14,8 +14,8 @@ export const logger = {
           userAgent: globalThis.navigator.userAgent,
         },
       };
-      loggFeil(data).catch((error: unknown) => {
-        console.error("Unable to log error message: ", data, " err: ", error);
+      loggFeil(data).catch(() => {
+        console.error("Unable to log error message");
       });
     } else {
       const data = {
@@ -24,8 +24,8 @@ export const logger = {
         stack: "",
         jsonContent: JSON.stringify(error),
       };
-      loggFeil(data).catch((error: unknown) => {
-        console.error("Unable to log error message: ", data, " err: ", error);
+      loggFeil(data).catch(() => {
+        console.error("Unable to log error message");
       });
     }
   },
