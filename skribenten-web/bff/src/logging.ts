@@ -10,8 +10,8 @@ export function setupLogging(server: Express) {
   };
 
   const errorLoggingFormat = {
-    level: "error",
     ...loggingFormat,
+    level: "error",
   };
 
   server.use(
