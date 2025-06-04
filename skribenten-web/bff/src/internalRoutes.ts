@@ -39,7 +39,7 @@ export const internalRoutes = (server: Express) => {
 
   server.post("/bff/internal/logg", bodyParser.json(), (request, response) => {
     const body = request.body;
-    console.error(body.message, JSON.stringify(body.stack), JSON.stringify(body.jsonContent));
+    console.error(JSON.stringify(body.message), JSON.stringify(body.stack), JSON.stringify(body.jsonContent));
     response.status(200).end();
   });
 };
