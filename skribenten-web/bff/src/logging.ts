@@ -9,9 +9,17 @@ export function setupLogging(server: Express) {
     statusCode: ":status",
   };
 
+  const errorLoggingFormat = {
+    level: "error",
+    ...loggingFormat,
+  };
+
   server.use(
     morgan(JSON.stringify(loggingFormat), {
-      skip: (request) => !request.path.startsWith("/bff"),
+      skip: (request) => !request.path.startsWith("/bff") || request.path.startsWith("/bff/internal/logg"),
+    }),
+    morgan(JSON.stringify(errorLoggingFormat), {
+      skip: (request) => !request.path.startsWith("/bff/internal/logg"),
     }),
   );
 }
