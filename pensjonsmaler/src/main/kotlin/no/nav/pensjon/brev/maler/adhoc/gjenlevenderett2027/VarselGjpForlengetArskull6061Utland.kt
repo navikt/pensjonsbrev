@@ -116,7 +116,7 @@ object VarselGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
                         }
                         cell {
                             textExpr(
-                                Bokmal to 329_352.expr().format(CurrencyFormat) + "kroner",
+                                Bokmal to 329_352.expr().format(CurrencyFormat) + " kroner",
                                 English to "NOK ".expr() + 329_352.expr().format(CurrencyFormat)
                             )
                         }
@@ -130,7 +130,7 @@ object VarselGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
                         }
                         cell {
                             textExpr(
-                                Bokmal to 348_717.expr().format(CurrencyFormat) + "kroner",
+                                Bokmal to 348_717.expr().format(CurrencyFormat) + " kroner",
                                 English to "NOK ".expr() + 348_717.expr().format(CurrencyFormat)
                             )
                         }
@@ -171,7 +171,7 @@ object VarselGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
                         }
                         cell {
                             textExpr(
-                                Bokmal to 197_732.expr().format(CurrencyFormat) + "kroner",
+                                Bokmal to 197_732.expr().format(CurrencyFormat) + " kroner",
                                 English to "NOK ".expr() + 197_732.expr().format(CurrencyFormat)
                             )
                         }
@@ -185,7 +185,7 @@ object VarselGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
                         }
                         cell {
                             textExpr(
-                                Bokmal to 201_706.expr().format(CurrencyFormat) + "kroner",
+                                Bokmal to 201_706.expr().format(CurrencyFormat) + " kroner",
                                 English to "NOK ".expr() + 201_706.expr().format(CurrencyFormat)
                             )
                         }
@@ -199,7 +199,7 @@ object VarselGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
                         }
                         cell {
                             textExpr(
-                                Bokmal to 209_432.expr().format(CurrencyFormat) + "kroner",
+                                Bokmal to 209_432.expr().format(CurrencyFormat) + " kroner",
                                 English to "NOK ".expr() + 209_432.expr().format(CurrencyFormat)
                             )
                         }
@@ -213,7 +213,7 @@ object VarselGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
                         }
                         cell {
                             textExpr(
-                                Bokmal to 219_568.expr().format(CurrencyFormat) + "kroner",
+                                Bokmal to 219_568.expr().format(CurrencyFormat) + " kroner",
                                 English to "NOK ".expr() + 219_568.expr().format(CurrencyFormat)
                             )
                         }
@@ -227,7 +227,7 @@ object VarselGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
                         }
                         cell {
                             textExpr(
-                                Bokmal to 232_478.expr().format(CurrencyFormat) + "kroner",
+                                Bokmal to 232_478.expr().format(CurrencyFormat) + " kroner",
                                 English to "NOK ".expr() + 232_478.expr().format(CurrencyFormat)
                             )
                         }
