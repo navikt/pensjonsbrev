@@ -340,30 +340,30 @@ object VarselGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
             paragraph {
                 text(
                     Bokmal to "Ut fra våre opplysninger fyller du ikke vilkårene i folketrygdloven §17 A-3, for å få forlenget stønadsperiode.",
-                    English to ""
+                    English to "Based on the information we have about you, you do not meet the requirements for an extended benefit period, as established by Section 17 A-3 of the National Insurance Act."
                 )
             }
 
             paragraph {
                 showIf(inntekt2022Over3g and inntekt2023Over3g) {
                     text(
-                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2022 og 2023 ",
-                        English to "According to our information, your income has been higher than the income cap for 2022 and 2023"
+                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2022 og 2023. ",
+                        English to "According to our information, your income has been higher than the income cap for 2022 and 2023."
                     )
                 }.orShowIf(inntekt2022Over3g) {
                     text(
-                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2022 ",
-                        English to "According to our information, your income has been higher than the income cap for 2022"
+                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2022. ",
+                        English to "According to our information, your income has been higher than the income cap for 2022."
                     )
                 }.orShowIf(inntekt2023Over3g) {
                     text(
-                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2023 ",
-                        English to "According to our information, your income has been higher than the income cap for 2023"
+                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2023. ",
+                        English to "According to our information, your income has been higher than the income cap for 2023."
                     )
                 }.orShow {
                     textExpr(
-                        Bokmal to "Din gjennomsnittlige inntekt mellom 2019 og 2023 har ifølge våre opplysninger vært høyere enn gjennomsnittlig G de fem årene (".expr() + 212_813.expr().format(CurrencyFormat) + " kroner)",
-                        English to "According to our information, your average income between 2019 and 2023 has exceeds the average G these 5 years (NOK ".expr() + 212_813.expr().format(CurrencyFormat)
+                        Bokmal to "Din gjennomsnittlige inntekt mellom 2019 og 2023 har ifølge våre opplysninger vært høyere enn gjennomsnittlig G de fem årene (".expr() + 212_813.expr().format(CurrencyFormat) + " kroner).",
+                        English to "According to our information, your average income between 2019 and 2023 has exceeds the average G these 5 years (NOK ".expr() + 212_813.expr().format(CurrencyFormat) + "."
                     )
                 }
             }
