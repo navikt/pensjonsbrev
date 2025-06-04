@@ -207,8 +207,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               </VStack>
               <Divider />
               <VStack gap="5">
-                <Switch size="small">Marker tekst som er lagt til manuelt</Switch>
-                <Switch size="small">Vis slettet tekst</Switch>
+                {/*These are commented out because they are not yet implemented and might confuse user */}
+                {/* <Switch size="small">Marker tekst som er lagt til manuelt</Switch>
+                <Switch size="small">Vis slettet tekst</Switch> */}
                 <AutoSavingTextField
                   autocomplete="Underskrift"
                   field={"attestantSignatur"}
