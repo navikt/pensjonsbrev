@@ -11,8 +11,10 @@ import { logError } from "~/utils/logger";
 const PORTEN_URL = "https://jira.adeo.no/plugins/servlet/desk/portal/541";
 export function ApiError({ error, title }: { error: unknown; title: string }) {
   useEffect(() => {
-    // eslint-disable-next-line no-console
-    logError(error).catch(() => console.error("Unable to log error message"));
+    if (error) {
+      // eslint-disable-next-line no-console
+      logError(error).catch(() => console.error("Unable to log error message"));
+    }
   }, [error]);
 
   if (error instanceof AxiosError) {
