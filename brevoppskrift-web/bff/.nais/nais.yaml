@@ -22,6 +22,10 @@ spec:
   readiness:
     path: /internal/health/readiness
     initialDelay: 5
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: nodejs
 
   accessPolicy:
     outbound:
