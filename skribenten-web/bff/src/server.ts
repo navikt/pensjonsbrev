@@ -1,3 +1,4 @@
+import bodyParser from "body-parser";
 import express from "express";
 
 import { setupActuators } from "./actuators.js";
@@ -6,11 +7,11 @@ import { setupStaticRoutes } from "./frontendRoute.js";
 import { internalRoutes } from "./internalRoutes.js";
 import { setupLogging } from "./logging.js";
 import { verifyToken } from "./tokenValidation.js";
-
 const server = express();
 
 // Restricts the server to only accept UTF-8 encoding of bodies
 server.use(express.urlencoded({ extended: true }));
+server.use(bodyParser.json());
 
 setupActuators(server);
 setupLogging(server);
