@@ -27,14 +27,3 @@ export const getBaseUrls = {
   queryFn: async () => (await axios.get<BaseUrls>(`${BFF_BASE_URL}/baseUrls`)).data,
   staleTime: CACHE_FOR.aDay,
 };
-
-export async function loggFeil(data: Feilmelding) {
-  await axios.post(`${BFF_BASE_URL}/logg`, data);
-}
-
-export type Feilmelding = {
-  type: string;
-  message: unknown;
-  stack: unknown;
-  jsonContent: unknown;
-};
