@@ -11,6 +11,7 @@ export function setupLogging(server: Express) {
 
   const errorLoggingFormat = {
     ...loggingFormat,
+    level: "error",
     statusCode: "error",
   };
 
