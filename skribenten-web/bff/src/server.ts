@@ -1,4 +1,3 @@
-import bodyParser from "body-parser";
 import express from "express";
 
 import { setupActuators } from "./actuators.js";
@@ -11,7 +10,6 @@ const server = express();
 
 // Restricts the server to only accept UTF-8 encoding of bodies
 server.use(express.urlencoded({ extended: true }));
-server.use(bodyParser.json());
 
 setupActuators(server);
 setupLogging(server);
