@@ -22,44 +22,40 @@ import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 @TemplateModelHelpers
-object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
+object VarselGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dto> {
 
 
-    override val kode = Pesysbrevkoder.AutoBrev.GJP_VARSEL_OPPHOR_60_70
+    override val kode = Pesysbrevkoder.AutoBrev.GJP_VARSEL_OPPHOR_60_70_UTLAND
 
     override val template: LetterTemplate<*, Gjenlevenderett2027Dto> = createTemplate(
-        name = "GJP_VARSEL_OPPHOR_60_70",
+        name = "GJP_VARSEL_OPPHOR_60_70_UTLAND",
         letterDataType = Gjenlevenderett2027Dto::class,
-        languages = languages(Bokmal, Nynorsk, English),
+        languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Forhåndsvarsel - Gjenlevendepensjonen din kan bli tidsbegrenset ",
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
         title {
             text(
                 Bokmal to "Forhåndsvarsel - Gjenlevendepensjonen din kan bli tidsbegrenset ",
-                Nynorsk to "",
-                English to ""
+                English to "Advance notice – Your survivor’s pension may become time-limited "
             )
         }
         outline {
             paragraph {
                 text(
                     Bokmal to "Vi viser til tidligere informasjon om at Stortinget har vedtatt endringer i folketrygdlovens regler om ytelser til etterlatte. Endringene gjelder fra 1. januar 2024. ",
-                    Nynorsk to "",
-                    English to ""
+                    English to "We refer to previously provided information that the Norwegian Parliament (the Storting) has adopted amendments to the National Insurance Act’s provisions on survivor’s benefits. These amendments were implemented on 01 January 2024. "
                 )
-
             }
 
             title1 {
                 text(
                     Bokmal to "Hva betyr de nye reglene for deg? ",
-                    Nynorsk to "",
-                    English to ""
+                    English to "What do the new rules mean for you? "
                 )
 
             }
@@ -67,25 +63,21 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             paragraph {
                 text(
                     Bokmal to "Du beholder retten til gjenlevendepensjon. Du får den i tre år fra 1. januar 2024. Det kan bety at siste utbetaling av pensjonen din blir i desember 2026. ",
-                    Nynorsk to "",
-                    English to ""
+                    English to "You retain your right to survivor’s pension. The pension will be paid for a period of three years from 01 January 2024. This could mean that you receive your final pension payment in December 2026. "
                 )
-
             }
 
             title1 {
                 text(
                     Bokmal to "Hva er inntektsgrensene?",
-                    Nynorsk to "",
-                    English to ""
+                    English to "What are the income caps?"
                 )
             }
 
             paragraph {
                 text(
                     Bokmal to "Pensjonsgivende inntekt må ha vært under tre ganger gjennomsnittlig grunnbeløp i folketrygden (G) i både 2022 og 2023: ",
-                    Nynorsk to "",
-                    English to ""
+                    English to "Your income must not have exceeded three times the average National Insurance basic amount (G) in 2022 or 2023: "
                 )
             }
 
@@ -95,16 +87,14 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         column(1) {
                             text(
                                 Bokmal to "År",
-                                Nynorsk to "",
-                                English to ""
+                                English to "Year"
                             )
 
                         }
                         column(2) {
                             text(
                                 Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 3",
-                                Nynorsk to "",
-                                English to ""
+                                English to "Average National Insurance basic amount (G) times 3:"
                             )
 
                         }
@@ -114,15 +104,13 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2022",
-                                Nynorsk to "",
-                                English to ""
+                                English to "2022"
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "329 352 kroner",
-                                Nynorsk to "",
-                                English to ""
+                            textExpr(
+                                Bokmal to 329352.expr().format(CurrencyFormat) + "kroner",
+                                English to "NOK ".expr() + 329352.expr().format(CurrencyFormat)
                             )
                         }
                     }
@@ -130,15 +118,13 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2023",
-                                Nynorsk to "",
-                                English to ""
+                                English to "2023"
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "348 717 kroner",
-                                Nynorsk to "",
-                                English to ""
+                            textExpr(
+                                Bokmal to 348717.expr().format(CurrencyFormat) + "kroner",
+                                English to "NOK ".expr() + 348717.expr().format(CurrencyFormat)
                             )
                         }
                     }
@@ -147,9 +133,8 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
 
             paragraph {
                 text(
-                    Bokmal to "I tillegg må inntekten din i 2019 - 2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere.",
-                    Nynorsk to "",
-                    English to ""
+                    Bokmal to "I tillegg må inntekten din i 2019–2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere.",
+                    English to "In addition, your income in the period 2019–2023 must not have exceeded two times the National Insurance basic amount (G) on average for this five-year period. This means your income could have exceeded two times the National Insurance basic amount in individual years, provided your average for the five-year period is lower. "
                 )
             }
 
@@ -159,16 +144,14 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         column(1) {
                             text(
                                 Bokmal to "År",
-                                Nynorsk to "",
-                                English to ""
+                                English to "Year"
                             )
 
                         }
                         column(2) {
                             text(
                                 Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 2",
-                                Nynorsk to "",
-                                English to ""
+                                English to "Average National Insurance basic amount (G) times 2:"
                             )
 
                         }
@@ -178,15 +161,13 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2019",
-                                Nynorsk to "",
-                                English to ""
+                                English to "2019"
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "197 732 kroner",
-                                Nynorsk to "",
-                                English to ""
+                            textExpr(
+                                Bokmal to 197732.expr().format(CurrencyFormat) + "kroner",
+                                English to "NOK ".expr() + 197732.expr().format(CurrencyFormat)
                             )
                         }
                     }
@@ -194,15 +175,13 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2020",
-                                Nynorsk to "",
-                                English to ""
+                                English to "2020"
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "201 706 kroner",
-                                Nynorsk to "",
-                                English to ""
+                            textExpr(
+                                Bokmal to 201706.expr().format(CurrencyFormat) + "kroner",
+                                English to "NOK ".expr() + 201706.expr().format(CurrencyFormat)
                             )
                         }
                     }
@@ -210,15 +189,13 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2021",
-                                Nynorsk to "",
-                                English to ""
+                                English to "2021"
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "209 432 kroner",
-                                Nynorsk to "",
-                                English to ""
+                            textExpr(
+                                Bokmal to 209432.expr().format(CurrencyFormat) + "kroner",
+                                English to "NOK ".expr() + 209432.expr().format(CurrencyFormat)
                             )
                         }
                     }
@@ -226,15 +203,13 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2022",
-                                Nynorsk to "",
-                                English to ""
+                                English to "2022"
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "219 568 kroner",
-                                Nynorsk to "",
-                                English to ""
+                            textExpr(
+                                Bokmal to 219568.expr().format(CurrencyFormat) + "kroner",
+                                English to "NOK ".expr() + 219568.expr().format(CurrencyFormat)
                             )
                         }
                     }
@@ -242,15 +217,13 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2023",
-                                Nynorsk to "",
-                                English to ""
+                                English to "2023"
                             )
                         }
                         cell {
-                            text(
-                                Bokmal to "232 478 kroner",
-                                Nynorsk to "",
-                                English to ""
+                            textExpr(
+                                Bokmal to 232478.expr().format(CurrencyFormat) + "kroner",
+                                English to "NOK ".expr() + 232478.expr().format(CurrencyFormat)
                             )
                         }
                     }
@@ -260,16 +233,14 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             title1 {
                 text(
                     Bokmal to "Hvilke opplysninger har vi om deg?",
-                    Nynorsk to "",
-                    English to ""
+                    English to "What information do we have about you?"
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Ifølge registeropplysninger vi har om deg fra Skatteetaten har du i årene 2019 – 2023 hatt følgende pensjonsgivende inntekt:",
-                    Nynorsk to "",
-                    English to ""
+                    Bokmal to "Det er inntekten din i årene 2019–2023 som avgjør om du kan beholde gjenlevendepensjonen din til du blir 67 år. Ifølge registrerte opplysninger vi har om deg, har pensjonen din i årene 2019–2023 vært redusert etter følgende inntekter:",
+                    English to "Your income for the period 2019–2023 will determine whether or not you will be able to keep the survivor’s pension until you turn 67 years old. According to the information we have registered about you, your pension in the period 2019–2023 has been reduced based on the following income:"
 
                 )
             }
@@ -280,7 +251,6 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         column(1) {
                             text(
                                 Bokmal to "År",
-                                Nynorsk to "",
                                 English to ""
                             )
 
@@ -288,7 +258,6 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         column(2) {
                             text(
                                 Bokmal to "Din inntekt",
-                                Nynorsk to "",
                                 English to ""
                             )
 
@@ -299,15 +268,13 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2019",
-                                Nynorsk to "",
-                                English to ""
+                                English to "2019"
                             )
                         }
                         cell {
                             textExpr(
                                 Bokmal to inntekt2019.format(CurrencyFormat) + " kroner",
-                                Nynorsk to "".expr(),
-                                English to "".expr(),
+                                English to "NOK ".expr() + inntekt2019.format(CurrencyFormat),
                             )
                         }
                     }
@@ -315,15 +282,13 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2020",
-                                Nynorsk to "",
-                                English to ""
+                                English to "2020"
                             )
                         }
                         cell {
                             textExpr(
                                 Bokmal to inntekt2020.format(CurrencyFormat) + " kroner",
-                                Nynorsk to "".expr(),
-                                English to "".expr(),
+                                English to "NOK ".expr() + inntekt2020.format(CurrencyFormat),
                             )
                         }
                     }
@@ -331,15 +296,13 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2021",
-                                Nynorsk to "",
-                                English to ""
+                                English to "2021"
                             )
                         }
                         cell {
                             textExpr(
                                 Bokmal to inntekt2021.format(CurrencyFormat) + " kroner",
-                                Nynorsk to "".expr(),
-                                English to "".expr(),
+                                English to "NOK ".expr() + inntekt2021.format(CurrencyFormat),
                             )
                         }
                     }
@@ -347,15 +310,13 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2022",
-                                Nynorsk to "",
-                                English to ""
+                                English to "2022"
                             )
                         }
                         cell {
                             textExpr(
                                 Bokmal to inntekt2022.format(CurrencyFormat) + " kroner",
-                                Nynorsk to "".expr(),
-                                English to "".expr(),
+                                English to "NOK ".expr() + inntekt2022.format(CurrencyFormat),
                             )
                         }
                     }
@@ -363,15 +324,13 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                         cell {
                             text(
                                 Bokmal to "2023",
-                                Nynorsk to "",
-                                English to ""
+                                English to "2023"
                             )
                         }
                         cell {
                             textExpr(
                                 Bokmal to inntekt2023.format(CurrencyFormat) + " kroner",
-                                Nynorsk to "".expr(),
-                                English to "".expr(),
+                                English to "NOK ".expr() + inntekt2023.format(CurrencyFormat),
                             )
                         }
                     }
@@ -380,44 +339,31 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
 
             paragraph {
                 text(
-                    Bokmal to "Det er inntekten din i årene 2019 – 2023 som avgjør om du kan beholde gjenlevendepensjonen din til du blir 67 år. ",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
-
-            paragraph {
-                text(
-                    Bokmal to "Ut fra våre opplysninger fyller du ikke vilkårene i folketrygdloven § 17 A-3, for å få forlenget stønadsperiode.",
-                    Nynorsk to "",
-                    English to ""
+                    Bokmal to "Ut fra våre opplysninger fyller du ikke vilkårene i folketrygdloven §17 A-3, for å få forlenget stønadsperiode.",
+                    English to "Based on the information we have about you, you do not meet the requirements for an extended benefit period, as established by Section 17 A-3 of the National Insurance Act."
                 )
             }
 
             paragraph {
                 showIf(inntekt2022Over3g and inntekt2023Over3g) {
                     text(
-                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2022 og 2023 ",
-                        Nynorsk to "",
-                        English to ""
+                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2022 og 2023. ",
+                        English to "According to our information, your income has been higher than the income cap for 2022 and 2023."
                     )
                 }.orShowIf(inntekt2022Over3g) {
                     text(
-                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2022 ",
-                        Nynorsk to "",
-                        English to ""
+                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2022. ",
+                        English to "According to our information, your income has been higher than the income cap for 2022."
                     )
                 }.orShowIf(inntekt2023Over3g) {
                     text(
-                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2023 ",
-                        Nynorsk to "",
-                        English to ""
+                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2023. ",
+                        English to "According to our information, your income has been higher than the income cap for 2023."
                     )
                 }.orShow {
-                    text(
-                        Bokmal to "Din gjennomsnittlige inntekt mellom 2019 og 2023 har ifølge opplysninger fra Skatteetaten vært høyere enn 212 813 kroner",
-                        Nynorsk to "",
-                        English to ""
+                    textExpr(
+                        Bokmal to "Din gjennomsnittlige inntekt mellom 2019 og 2023 har ifølge våre opplysninger vært høyere enn gjennomsnittlig G de fem årene (".expr() + 212_813.expr().format(CurrencyFormat) + " kroner).",
+                        English to "According to our information, your average income between 2019 and 2023 has exceeds the average G these 5 years (NOK ".expr() + 212_813.expr().format(CurrencyFormat) + "."
                     )
                 }
             }
@@ -425,56 +371,49 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             paragraph {
                 text(
                     Bokmal to "Under forutsetning av at de øvrige vilkårene for gjenlevendepensjon er oppfylt, vil du få utbetalt gjenlevendepensjonen til og med 31. desember 2026. ",
-                    Nynorsk to "",
-                    English to ""
+                    English to "Provided the other requirements for survivor’s pension have been met, you will continue to receive survivor’s pension until 31 December 2026. "
                 )
             }
 
             title1 {
                 text(
                     Bokmal to "Mulighet for å søke utvidet stønadsperiode",
-                    Nynorsk to "",
-                    English to ""
+                    English to "Option to apply for extended benefit period"
                 )
             }
 
             paragraph {
                 text(
                     Bokmal to "Hvis du er under nødvendig og hensiktsmessig utdanning eller har behov for tiltak for å komme i arbeid, kan du søke om å få pensjonen forlenget i inntil to år fra 1. januar 2027. ",
-                    Nynorsk to "",
-                    English to ""
+                    English to "If you are currently receiving a necessary and relevant education, or if you need further assistance to find work, you can apply to have the pension extended for a period of up to two years from 01 January 2027."
                 )
             }
 
             title1 {
                 text(
                     Bokmal to "Hva må du gjøre?",
-                    Nynorsk to "",
-                    English to ""
+                    English to "What do you need to do? "
                 )
             }
 
             paragraph {
                 text(
                     Bokmal to "Dersom du mener at opplysningene i dette brevet er korrekt, trenger du ikke å gjøre noe.",
-                    Nynorsk to "",
-                    English to ""
+                    English to "If you believe the information in this letter is correct, you do not have to do anything."
                 )
             }
 
             paragraph {
                 text(
                     Bokmal to "Dersom du mener at opplysningene om inntekten din i dette brevet er feil, og inntekten din har vært lavere de fem siste årene, må du gi oss en tilbakemelding innen fire uker fra du mottok dette forhåndsvarselet. ",
-                    Nynorsk to "",
-                    English to ""
+                    English to "If you believe the information in this letter is incorrect, and your income has been lower in the last five years, you must contact us within four weeks of receiving this advance notice. "
                 )
             }
 
             paragraph {
                 text(
                     Bokmal to "Du må da sende oss bekreftelse på at skattemeldingen din er endret. ",
-                    Nynorsk to "",
-                    English to ""
+                    English to "You must send us pay slips from your employer, or a certificate issued by the authorities where you live, specifying your income for the period 2019–2023. "
                 )
             }
 
@@ -482,34 +421,14 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             paragraph {
                 text(
                     Bokmal to "Vi vil da vurdere de nye opplysningene før vi gjør vedtak i saken din. ",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
-
-
-            title1 {
-                text(
-                    Bokmal to "Har du helseutfordringer? ",
-                    Nynorsk to "",
-                    English to ""
-                )
-            }
-
-
-            paragraph {
-                text(
-                    Bokmal to "Hvis du har helseutfordringer, kan du undersøke mulighetene for andre ytelser eller støtteordninger ved ditt lokale Nav-kontor og på nav.no/helse. ",
-                    Nynorsk to "",
-                    English to ""
+                    English to "We will then consider the new information before we make a decision in your case. "
                 )
             }
 
           title1 {
                 text(
                     Bokmal to "Meld fra om endringer ",
-                    Nynorsk to "",
-                    English to ""
+                    English to "Report changes "
                 )
             }
 
@@ -517,8 +436,7 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             paragraph {
                 text(
                     Bokmal to "Hvis du får endringer i inntekt, familiesituasjon, jobbsituasjon eller planlegger å flytte til et annet land, kan det påvirke gjenlevendepensjonen din. I slike tilfeller må du derfor straks melde fra til Nav. ",
-                    Nynorsk to "",
-                    English to ""
+                    English to "If your income or employment situation changes, if you get married, or if you plan to move to another country, it could affect your survivor’s pension. That is why you must contact Nav immediately if any of these things occur. "
                 )
             }
 
@@ -526,8 +444,7 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             title1 {
                 text(
                     Bokmal to "Har du spørsmål? ",
-                    Nynorsk to "",
-                    English to ""
+                    English to "Do you have questions? "
                 )
             }
 
@@ -535,8 +452,7 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             paragraph {
                 text(
                     Bokmal to "Du finner mer informasjon på nav.no/gjenlevendepensjon. ",
-                    Nynorsk to "",
-                    English to ""
+                    English to "You can read more at nav.no/gjenlevendepensjon. "
                 )
             }
 
@@ -544,8 +460,7 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             paragraph {
                 text(
                     Bokmal to "På nav.no/kontakt kan du chatte eller skrive til oss.",
-                    Nynorsk to "",
-                    English to ""
+                    English to "You can chat with us or write to us at nav.no/kontakt. "
                 )
             }
 
@@ -553,8 +468,7 @@ object VarselGjpOpphorArskill6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             paragraph {
                 text(
                     Bokmal to "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 34, hverdager 09:00-15:00. ",
-                    Nynorsk to "",
-                    English to ""
+                    English to "If you can’t find the answers you need on nav.no, you can call us at tel. 55 55 33 34 on weekdays 09:00–15:00. "
                 )
             }
         }

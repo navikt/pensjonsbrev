@@ -15,7 +15,7 @@ fun createEtteroppgjoerForhaandsvarselBrevDTO() =
     EtteroppgjoerForhaandsvarselBrevDTO(
         innhold = createPlaceholderForRedigerbartInnhold(),
         data = EtteroppgjoerForhaandsvarselDTO(
-            bosattUtland = true,
+            bosattUtland = false,
             norskInntekt = true,
             etteroppgjoersAar = 2024,
             rettsgebyrBeloep = Kroner(1234),
@@ -40,7 +40,7 @@ fun createEtteroppgjoerForhaandsvarselBrevDTO() =
 fun createEtteroppgjoerForhaandsvarselRedigerbartBrevDTO() =
     EtteroppgjoerForhaandsvarselRedigerbartBrevDTO(
         data = EtteroppgjoerForhaandsvarselInnholfDTO(
-            bosattUtland = true,
+            bosattUtland = false,
             norskInntekt = true,
             etteroppgjoersAar = 2024,
             rettsgebyrBeloep = Kroner(1234),

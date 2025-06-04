@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.api.model
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @Suppress("unused")
-data class LetterResponse(val file: ByteArray, val contentType: String, val letterMetadata: LetterMetadata) {
+class LetterResponse(val file: ByteArray, val contentType: String, val letterMetadata: LetterMetadata) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -23,4 +23,6 @@ data class LetterResponse(val file: ByteArray, val contentType: String, val lett
         result = 31 * result + letterMetadata.hashCode()
         return result
     }
+
+    override fun toString() = "LetterResponse(file=${file.contentToString()}, contentType='$contentType', letterMetadata=$letterMetadata)"
 }

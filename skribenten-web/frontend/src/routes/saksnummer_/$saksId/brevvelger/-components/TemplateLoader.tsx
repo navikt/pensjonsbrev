@@ -17,7 +17,7 @@ import { hentDefaultValueForSpråk } from "./brevmal/TemplateUtils";
 import FavoriteButton from "./FavoriteButton";
 
 export const TemplateLoader = (props: {
-  saksId: number;
+  saksId: string;
   templateId: string;
   letterTemplate: LetterMetadata;
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;

@@ -5,7 +5,7 @@ import type { AxiosError } from "axios";
 
 import { sendBrev } from "~/api/sak-api-endpoints";
 import { useSendtBrev } from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevContext";
-import type { BestillBrevResponse, BrevInfo } from "~/types/brev";
+import { type BestillBrevResponse, type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 
 import AccordionContent from "./KvittertBrevContent";
@@ -78,15 +78,19 @@ const AccordionItem = (props: {
     },
   });
 
+  const isDefaultOpen =
+    (props.brevFørHandling.distribusjonstype === Distribusjonstype.LOKALPRINT &&
+      props.brevFørHandling.status.type !== "Attestering") ||
+    props.apiStatus === "error";
+
   return (
-    <Accordion.Item>
+    <Accordion.Item defaultOpen={isDefaultOpen}>
       <AccordionHeader apiStatus={props.apiStatus} brevInfo={props.brevFørHandling} context={props.context} />
       <AccordionContent
         apiStatus={props.apiStatus}
-        distribusjonstype={props.brevFørHandling.distribusjonstype}
+        brev={props.brevFørHandling}
         isPending={sendBrevMutation.isPending}
         journalpostId={props.journalpostId}
-        mottaker={props.brevFørHandling.mottaker}
         onRetry={() => sendBrevMutation.mutate()}
         saksId={props.saksId}
       />
