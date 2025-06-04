@@ -285,7 +285,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                         cell {
                             textExpr(
                                 Bokmal to inntekt2019.format(CurrencyFormat) + " kroner",
-                                English to "NOK".expr() + inntekt2019.format(CurrencyFormat),
+                                English to "NOK ".expr() + inntekt2019.format(CurrencyFormat),
                             )
                         }
                     }
@@ -299,7 +299,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                         cell {
                             textExpr(
                                 Bokmal to inntekt2020.format(CurrencyFormat) + " kroner",
-                                English to "NOK".expr() + inntekt2020.format(CurrencyFormat),
+                                English to "NOK ".expr() + inntekt2020.format(CurrencyFormat),
                             )
                         }
                     }
@@ -313,7 +313,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                         cell {
                             textExpr(
                                 Bokmal to inntekt2021.format(CurrencyFormat) + " kroner",
-                                English to "NOK".expr() + inntekt2021.format(CurrencyFormat),
+                                English to "NOK ".expr() + inntekt2021.format(CurrencyFormat),
                             )
                         }
                     }
@@ -327,7 +327,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                         cell {
                             textExpr(
                                 Bokmal to inntekt2022.format(CurrencyFormat) + " kroner",
-                                English to "NOK".expr() + inntekt2022.format(CurrencyFormat),
+                                English to "NOK ".expr() + inntekt2022.format(CurrencyFormat),
                             )
                         }
                     }
@@ -341,7 +341,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                         cell {
                             textExpr(
                                 Bokmal to inntekt2023.format(CurrencyFormat) + " kroner",
-                                English to "NOK".expr() + inntekt2023.format(CurrencyFormat),
+                                English to "NOK ".expr() + inntekt2023.format(CurrencyFormat),
                             )
                         }
                     }
