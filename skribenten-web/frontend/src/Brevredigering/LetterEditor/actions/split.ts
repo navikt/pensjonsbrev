@@ -7,7 +7,16 @@ import { ITEM_LIST } from "~/types/brevbakerTypes";
 import type { Action } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem, isItemList, isLiteral, isVariable } from "../model/utils";
-import { addElements, newItem, newLiteral, newParagraph, removeElements, splitLiteralAtOffset, text } from "./common";
+import {
+  addElements,
+  isAtStartOfBlock,
+  newItem,
+  newLiteral,
+  newParagraph,
+  removeElements,
+  splitLiteralAtOffset,
+  text,
+} from "./common";
 
 export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number]> = produce(splitRecipe);
 
@@ -34,12 +43,11 @@ function splitBlockAtLiteral(
 ) {
   const editedLetter = draft.redigertBrev;
   const previousBlock = editedLetter.blocks[literalIndex.blockIndex - 1];
-  const isAtStartOfBlock = literalIndex.contentIndex === 0 && offset === 0;
   const previousBlockIsNotEmpty = previousBlock && !isEmptyBlock(previousBlock);
   const isAtFirstBlock = literalIndex.blockIndex === 0;
 
-  if (!isEmptyBlock(block) && (!isAtStartOfBlock || previousBlockIsNotEmpty || isAtFirstBlock)) {
-    if (isAtStartOfBlock) {
+  if (!isEmptyBlock(block) && (!isAtStartOfBlock(literalIndex, offset) || previousBlockIsNotEmpty || isAtFirstBlock)) {
+    if (isAtStartOfBlock(literalIndex, offset)) {
       // Since we're at the very beginning of a block, it makes sense that we create a new block and push `block`
       // one position.
       addElements(

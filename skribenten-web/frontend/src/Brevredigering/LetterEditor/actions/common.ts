@@ -41,6 +41,14 @@ export function isItemContentIndex(f: Focus | LiteralIndex): f is ItemContentInd
   return "itemIndex" in f && f.itemIndex !== undefined && "itemContentIndex" in f && f.itemContentIndex !== undefined;
 }
 
+export function isAtStartOfBlock(f: Focus, offset?: number): boolean {
+  return (
+    f.contentIndex === 0 &&
+    (offset ?? f.cursorPosition) === 0 &&
+    (isItemContentIndex(f) ? f.itemIndex === 0 && f.itemContentIndex === 0 : true)
+  );
+}
+
 export function text<T extends TextContent | undefined>(
   content: T,
 ): string | (undefined extends T ? undefined : never) {
@@ -51,6 +59,18 @@ export function text<T extends TextContent | undefined>(
   } else {
     return undefined as undefined extends T ? undefined : never;
   }
+}
+
+export function fontTypeOf(content: LiteralValue | VariableValue): FontType {
+  if (content.type === VARIABLE) {
+    return content.fontType;
+  } else {
+    return content.editedFontType ?? content.fontType;
+  }
+}
+
+export function isNew(obj: Identifiable): boolean {
+  return obj.id === null;
 }
 
 export function create(brev: BrevResponse): LetterEditorState {
@@ -145,8 +165,13 @@ export function findAdjoiningContent<T extends Content, S extends T>(
 }
 
 export function mergeLiteralsIfPossible<T extends Identifiable>(first: Draft<T>, second: Draft<T>): Draft<T[]> {
-  // TODO: Legg til sjekk for `first.fontType === second.fontType`
-  if (isLiteral(first) && isLiteral(second) && !isFritekst(first) && !isFritekst(second)) {
+  if (
+    isLiteral(first) &&
+    isLiteral(second) &&
+    !isFritekst(first) &&
+    !isFritekst(second) &&
+    fontTypeOf(first) === fontTypeOf(second)
+  ) {
     const mergedText = text(first) + text(second);
     if (first.id !== null && second.id !== null) {
       return [first, second];
@@ -176,7 +201,7 @@ export function splitLiteralAtOffset(literal: Draft<LiteralValue>, offset: numbe
 
   updateLiteralText(literal, newText);
 
-  return newLiteral({ text: "", editedText: nextText });
+  return newLiteral({ editedText: nextText, fontType: literal.fontType, editedFontType: literal.editedFontType });
 }
 
 export function newTitle(args: {
@@ -214,9 +239,10 @@ export function newParagraph(args: {
 export function newLiteral(args: {
   id?: Nullable<number>;
   parentId?: Nullable<number>;
-  text: string;
+  text?: string;
   editedText?: Nullable<string>;
   fontType?: Nullable<FontType>;
+  // TODO: Gir ikke mening å sette editedFontType i nye literals.
   editedFontType?: Nullable<FontType>;
   tags?: ElementTags[];
 }): LiteralValue {
@@ -224,10 +250,10 @@ export function newLiteral(args: {
     type: LITERAL,
     id: args.id ?? null,
     parentId: args.parentId ?? null,
-    text: args.text,
+    text: args.text ?? "",
     editedText: args.editedText ?? null,
     editedFontType: args.editedFontType ?? null,
-    fontType: FontType.PLAIN,
+    fontType: args.fontType ?? FontType.PLAIN,
     tags: args.tags ?? [],
   };
 }
