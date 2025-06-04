@@ -29,7 +29,7 @@ export const getBaseUrls = {
 };
 
 export async function loggFeil(data: Feilmelding) {
-  await axios.post(`${BFF_BASE_URL}/logg`, data);
+  return await axios.post(`${BFF_BASE_URL}/logg`, data);
 }
 
 export type Feilmelding = {
