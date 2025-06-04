@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FOERSTEGAN
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.erEksportberegnet_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevenderettAnvendt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevendetilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
@@ -14,13 +15,24 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.uforeKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AvdodSelectors.avdodNavn
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AvdodSelectors.avdodNavn_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AvdodSelectors.harAvdod_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.gjenlevendetilleggKap19_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.afpPrivatResultatFellesKontoret
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingAvdodSelectors.minst20ArBotidKap19_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingAvdodSelectors.minst20ArTrygdetidKap20_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.eksportForbud_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.eksportTrygdeavtaleAvtaleland_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.eksportTrygdeavtaleEOS_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.minst20ArTrygdetid_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.afpPrivatResultatFellesKontoret_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.avdodNavn
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.avdodNavn_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.avdod
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.avdod_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.faktiskBostedsland_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.inngangOgEksportVurdering
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.inngangOgEksportVurderingAvdod
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.sakstype
@@ -42,11 +54,17 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNull
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -89,9 +107,21 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         val gjenlevendetilleggKap19 =
             pesysData.beregnetPensjonPerManedVedVirk.gjenlevendetilleggKap19_safe.ifNull(then = Kroner(0))
         val gjenlevenderettAnvendt = pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
-        val avdodNavn = pesysData.avdodNavn_safe.ifNull(then = String)
+        val avdodNavn = pesysData.avdod.avdodNavn_safe.ifNull(then = "avdødsnavn mangler")
         val privatAFPErBrukt = pesysData.alderspensjonVedVirk.privatAFPErBrukt
         val afpPrivatResultatFellesKontoret = pesysData.afpPrivatResultatFellesKontoret_safe.ifNull(then = false)
+        val erEksportberegnet = pesysData.alderspensjonVedVirk.erEksportberegnet_safe.ifNull(then = false)
+        val eksportForbud = pesysData.inngangOgEksportVurdering.eksportForbud_safe.ifNull(then = false)
+        val minst20ArTrygdetid = pesysData.inngangOgEksportVurdering.minst20ArTrygdetid_safe.ifNull(then = false)
+        val minst20ArTrygdetidKap20 =
+            pesysData.inngangOgEksportVurderingAvdod.minst20ArTrygdetidKap20_safe.ifNull(then = false)
+        val minst20ArBotidKap19 = pesysData.inngangOgEksportVurderingAvdod.minst20ArBotidKap19_safe.ifNull(then = false)
+        val fakstiskBostedsland = pesysData.faktiskBostedsland_safe.ifNull(then = "bostedsland mangler")
+        val harAvdod = pesysData.avdod.harAvdod_safe.ifNull(then = false)
+        val eksportTrygdeavtaleEOS =
+            pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleEOS_safe.ifNull(then = false)
+        val eksportTrygdeavtaleAvtaleland =
+            pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland_safe.ifNull(then = false)
 
 
 
@@ -212,7 +242,8 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     )
                 }
             }
-            showIf(saksbehandlerValg.harGjenlevendetilleggKap19 and gjenlevendetilleggKap19Innvilget and avdodNavn) {
+
+            showIf(saksbehandlerValg.harGjenlevendetilleggKap19 and gjenlevendetilleggKap19Innvilget and avdodNavn.notNull()) {
                 // beregningAPGjtKap19
                 paragraph {
                     textExpr(
@@ -229,6 +260,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     )
                 }
             }
+
             showIf(saksbehandlerValg.egenOpptjening and not(gjenlevenderettAnvendt and avdodNavn.isNull())) {
                 // beregningAPGjRettOpptjEgen_002
                 title1 {
@@ -257,6 +289,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     )
                 }
             }
+
             showIf(afpPrivatResultatFellesKontoret) {
                 // soktAFPPrivatInfo
                 paragraph {
@@ -268,6 +301,66 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
                 }
             }
+
+            showIf(erEksportberegnet and not(eksportForbud) and not(minst20ArTrygdetid)) {
+                // innvilgelseAPUnder20aar
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du har ikke vært medlem i folketrygden i minst 20 år. Da har du ikke rett til å få utbetalt hele alderspensjonen din når du bor i ".expr() + fakstiskBostedsland + ".",
+                        Nynorsk to "Du har ikkje vore medlem i folketrygda i minst 20 år. Da har du ikkje rett til å få utbetalt heile alderspensjonen din når du bur i ".expr() + fakstiskBostedsland + ".",
+                        English to "You have not been a member of the National Insurance Scheme for at least 20 years. You are therefore not eligible for a full retirement pension while living in ".expr() + fakstiskBostedsland + ".",
+                    )
+                }
+            }
+
+            showIf(
+                erEksportberegnet and not(eksportForbud) and harAvdod and not(minst20ArTrygdetidKap20) and not(
+                    minst20ArBotidKap19
+                )
+            ) {
+                // innvilgelseAPUnder20aarAvdod
+                paragraph {
+                    textExpr(
+                        Bokmal to "Verken du eller avdøde har vært medlem i folketrygden i minst 20 år. Da har du ikke rett til å få utbetalt hele alderspensjonen din når du når du bor i ".expr() + fakstiskBostedsland + ".",
+                        Nynorsk to "Verken du eller avdøde har vore medlem i folketrygda i minst 20 år. Da har du ikkje rett til å få utbetalt heile alderspensjonen din når du bur i ".expr() + fakstiskBostedsland + ".",
+                        English to "Neither you nor the deceased have been a member of the National Insurance Scheme for at least 20 years. You are therefore not eligible for a full retirement pension while living in ".expr() + fakstiskBostedsland + ".",
+                    )
+                }
+            }
+
+            showIf(uttaksgrad.lessThan(compareTo = 100) and not(uforeKombinertMedAlder)) {
+                paragraph {
+                    text(
+                        Bokmal to "Du må sende oss en ny søknad når du ønsker å ta ut mer alderspensjon. En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden.",
+                        Nynorsk to "Du må sende oss ein ny søknad når du ønskjer å ta ut meir alderspensjon. Ei eventuell endring kan tidlegast skje månaden etter at vi har mottatt søknaden.",
+                        English to "You have to submit an application when you want to increase your retirement pension. Any change will be implemented at the earliest the month after we have received the application."
+                    )
+                }
+            }
+
+            showIf(eksportTrygdeavtaleEOS or eksportTrygdeavtaleAvtaleland) {
+                // hvisFlyttetBosattEØS / hvisFlyttetBosattAvtaleland
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vi forutsetter at du bor i ".expr() + fakstiskBostedsland + ". Hvis du skal flytte til et ".expr() + ifElse(
+                            eksportTrygdeavtaleEOS,
+                            ifTrue = "land utenfor EØS-området",
+                            ifFalse = "annet land"
+                        ) + ", må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon.",
+                        Nynorsk to "Vi føreset at du bur i ".expr() + fakstiskBostedsland + ". Dersom du skal flytte til eit ".expr() + ifElse(
+                            eksportTrygdeavtaleEOS,
+                            ifTrue = "land utanfor EØS-området",
+                            ifFalse = "anna land"
+                        ) + ", må du kontakte oss slik at vi kan vurdere om du framleis har rett til alderspensjon.",
+                        English to "We presume that you live in ".expr() + fakstiskBostedsland + ". If you are moving to ".expr() + ifElse(
+                            eksportTrygdeavtaleEOS,
+                            ifTrue = "a country outside the EEA region",
+                            ifFalse = "another country"
+                        ) + ", it is important that you contact Nav. We will then reassess your eligibility for retirement pension."
+                    )
+                }
+            }
+
         }
     }
 }

@@ -33,9 +33,11 @@ data class InnvilgelseAvAlderspensjonDto(
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val afpPrivatResultatFellesKontoret: Boolean?,  // v1.afpPrivat
-        val avdodNavn: String?,  // v1.Avdod.navn
+        val avdod: Avdod?,
         val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
         val faktiskBostedsland: String?,  // v3.Person
+        val inngangOgEksportVurdering: InngangOgEksportVurdering?,
+        val inngangOgEksportVurderingAvdod: InngangOgEksportVurderingAvdod?,
         val kravVirkDatoFom: LocalDate,
         val regelverkType: AlderspensjonRegelverkType,
         val sakstype: Sakstype,
@@ -56,8 +58,9 @@ data class InnvilgelseAvAlderspensjonDto(
     )
 
     data class Avdod(
-        val avdodFnr: Int?,
-        val avdodNavn: String?,
+        val avdodFnr: Int,
+        val avdodNavn: String,
+        val harAvdod: Boolean,  // -> har avdodFnr
     )
 
     data class BeregnetPensjonPerManedVedVirk(
@@ -65,15 +68,14 @@ data class InnvilgelseAvAlderspensjonDto(
     )
 
     data class InngangOgEksportVurdering(
-        val eksportForbud: Boolean?,
-        val minst20ArTrygdetid: Boolean?,
-        val eksportTrygdeavtaleEOS: Boolean?,
-        val eksportTrygdeavtaleAvtaleland: Boolean?,
-
+        val eksportForbud: Boolean,
+        val minst20ArTrygdetid: Boolean,
+        val eksportTrygdeavtaleEOS: Boolean,
+        val eksportTrygdeavtaleAvtaleland: Boolean,
     )
 
     data class InngangOgEksportVurderingAvdod(
-        val minst20ArTrygdetid: Boolean?,
-        val minst20ArBotidKap19: Boolean?
+        val minst20ArTrygdetidKap20: Boolean,  // minst20ArTrygdetidKap20Avdod
+        val minst20ArBotidKap19: Boolean  // minst20ArBotidKap19Avdod
     )
 }
