@@ -35,8 +35,6 @@ spec:
       enabled: true
       singlePageApplication: true
       allowAllUsers: true
-      replyURLs:
-        - "http://localhost:8080/oauth2/callback"
 
   accessPolicy:
     outbound:
