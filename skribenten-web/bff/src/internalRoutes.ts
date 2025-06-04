@@ -44,7 +44,7 @@ export const internalRoutes = (server: Express) => {
         level: "ERROR",
         statusCode: "500",
         timestamp: body.jsonContent.timestamp,
-        message: body.jsonContent.url + ": " + body.message,
+        message: body.message + ": " + body.jsonContent.url,
         stack_trace: body.stack,
       }),
     );
