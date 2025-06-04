@@ -86,7 +86,7 @@ object VedtakGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven § 17 A-3. ",
-                    English to "This decision has been made in accordance with Section 17 A -3 of the National Insurance Act. "
+                    English to "This decision has been made in accordance with Section 17 A-3 of the National Insurance Act. "
                 )
             }
 
