@@ -7,5 +7,7 @@ fun createGjenlevenderett2027Dto() = Gjenlevenderett2027Dto(
     200000,
     200000,
     200000,
-    200000
+    200000,
+    false,
+    true,
 )

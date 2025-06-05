@@ -6,9 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { groupBy, partition, sortBy } from "lodash";
 import { useState } from "react";
+import { z } from "zod";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getFavoritterQuery } from "~/api/skribenten-api-endpoints";
+import { getFavoritterQuery, getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import { BrevbakerIcon, DoksysIcon, ExstreamIcon } from "~/assets/icons";
 import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
@@ -21,22 +22,20 @@ import { formatStringDate } from "~/utils/dateUtils";
 import BrevmalPanel from "./-components/BrevmalPanel";
 import BrevvelgerFooter from "./-components/BrevvelgerFooter";
 
-type BrevvelgerSearch = {
-  brevId?: string;
-  idTSSEkstern?: string;
-  templateId?: string;
-};
+const brevvelgerSearchSchema = z.object({
+  brevId: z.coerce.number().optional(),
+  idTSSEkstern: z.coerce.string().optional(),
+  templateId: z.coerce.string().optional(),
+});
+
+type BrevvelgerSearch = z.infer<typeof brevvelgerSearchSchema>;
 
 export const Route = createFileRoute("/saksnummer_/$saksId/brevvelger")({
-  validateSearch: (search: Record<string, unknown>): BrevvelgerSearch => ({
-    brevId: search.brevId as string,
-    idTSSEkstern: search.idTSSEkstern as string,
-    templateId: search.templateId as string,
-  }),
+  validateSearch: (search): BrevvelgerSearch => brevvelgerSearchSchema.parse(search),
   loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId }),
-  loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
-    const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
-    return { saksId: sakContext.sak.saksId, letterTemplates: sakContext.brevMetadata };
+  loader: async ({ context, params: { saksId }, deps: { vedtaksId } }) => {
+    const getSakContextQueryOptions = getSakContextQuery(saksId, vedtaksId);
+    return await context.queryClient.ensureQueryData(getSakContextQueryOptions);
   },
   errorComponent: ({ error }) => <ApiError error={error} title="Klarte ikke hente brevmaler for saken." />,
   component: BrevvelgerPage,
@@ -47,7 +46,9 @@ export interface SubmitTemplateOptions {
 }
 
 export function BrevvelgerPage() {
-  const { saksId, letterTemplates } = Route.useLoaderData();
+  const { saksId } = Route.useParams();
+  const { brevMetadata: letterTemplates } = Route.useLoaderData();
+
   const [onSubmitClick, setOnSubmitClick] = useState<Nullable<SubmitTemplateOptions>>(null);
 
   const alleSaksbrevQuery = useQuery({
@@ -81,7 +82,7 @@ export function BrevvelgerPage() {
 }
 
 const BrevvelgerMainContent = (props: {
-  saksId: number;
+  saksId: string;
   letterTemplates: LetterMetadata[];
   alleSaksbrevQuery: UseQueryResult<BrevInfo[], Error>;
   setOnSubmitClick: (v: SubmitTemplateOptions) => void;
@@ -321,7 +322,7 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; letterTemplates: LetterM
               <BrevmalButton
                 description={`Opprettet ${formatStringDate(brev.opprettet)}`}
                 extraStyles={
-                  brev.id.toString() === brevId
+                  brev.id === brevId
                     ? css`
                         color: var(--a-text-on-action);
                         background-color: var(--a-surface-action-selected-hover);
@@ -334,7 +335,7 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; letterTemplates: LetterM
                     to: "/saksnummer/$saksId/brevvelger",
                     search: (s) => ({
                       ...s,
-                      brevId: brev.id.toString(),
+                      brevId: brev.id,
                       templateId: undefined,
                     }),
                   })

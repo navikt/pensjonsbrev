@@ -23,7 +23,7 @@ private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
 
 internal object LatexDocumentRenderer {
 
-    internal fun render(pdfRequest: PDFRequest) : LatexDocument = render(
+    internal fun render(pdfRequest: PDFRequest): LatexDocument = render(
         letter = pdfRequest.letterMarkup,
         attachments = pdfRequest.attachments,
         language = pdfRequest.language.toLanguage(),
@@ -195,33 +195,46 @@ internal object LatexDocumentRenderer {
     }
 
     private fun LatexAppendable.renderIfNonEmptyText(content: List<Text>, render: LatexAppendable.(String) -> Unit) {
-        val text = String(StringBuilder().also { LatexAppendable(it).renderText(content) })
+        val text = renderTextsToString(content)
         if (text.isNotEmpty()) {
             render(text)
         }
     }
 
-    //
-    // Element rendering
-    //
-    private fun LatexAppendable.renderBlocks(blocks: List<LetterMarkup.Block>): Unit =
-        blocks.forEach { renderBlock(it) }
+    private fun LatexAppendable.renderBlocks(blocks: List<LetterMarkup.Block>) {
+        blocks.forEachIndexed { index, block ->
+            val previous = blocks.getOrNull(index - 1)
+            val next = blocks.getOrNull(index + 1)
+            renderBlock(block, previous, next)
+        }
+    }
 
     private fun LatexAppendable.renderText(elements: List<Text>): Unit =
         elements.forEach { renderTextContent(it) }
 
-    private fun LatexAppendable.renderBlock(block: LetterMarkup.Block): Unit =
+    private fun LatexAppendable.renderBlock(
+        block: LetterMarkup.Block,
+        previous: LetterMarkup.Block?,
+        next: LetterMarkup.Block?
+    ): Unit =
         when (block) {
-            is LetterMarkup.Block.Paragraph -> renderParagraph(block)
+            is LetterMarkup.Block.Paragraph -> renderParagraph(block, previous)
 
             is LetterMarkup.Block.Title1 -> renderIfNonEmptyText(block.content) { titleText ->
-                appendCmd("lettersectiontitleone", titleText)
+                if (!next.startsWithTable()) {
+                    appendCmd("lettersectiontitleone", titleText)
+                }
             }
 
             is LetterMarkup.Block.Title2 -> renderIfNonEmptyText(block.content) { titleText ->
-                appendCmd("lettersectiontitletwo", titleText)
+                if (!next.startsWithTable()) {
+                    appendCmd("lettersectiontitletwo", titleText)
+                }
             }
         }
+
+    private fun LetterMarkup.Block?.startsWithTable(): Boolean =
+        (this is LetterMarkup.Block.Paragraph) && this.content.firstOrNull() is Table
 
     private fun LatexAppendable.renderTextParagraph(text: List<Text>): Unit =
         appendCmd("templateparagraph") {
@@ -230,7 +243,10 @@ internal object LatexDocumentRenderer {
 
     //TODO depricate table/itemlist/form inside paragraph and make them available outside.
     // there should not be a different space between elements if within/outside paragraphs.
-    private fun LatexAppendable.renderParagraph(element: LetterMarkup.Block.Paragraph) {
+    private fun LatexAppendable.renderParagraph(
+        element: LetterMarkup.Block.Paragraph,
+        previous: LetterMarkup.Block?,
+    ) {
         var continousTextContent = mutableListOf<Text>()
 
         element.content.forEach { current ->
@@ -242,7 +258,7 @@ internal object LatexDocumentRenderer {
             when (current) {
                 is Form -> renderForm(current)
                 is ItemList -> renderList(current)
-                is Table -> renderTable(current)
+                is Table -> renderTable(current, previous)
                 is Text -> continousTextContent.add(current)
             }
         }
@@ -262,12 +278,14 @@ internal object LatexDocumentRenderer {
         }
     }
 
-    private fun LatexAppendable.renderTable(table: Table) {
+    private fun LatexAppendable.renderTable(table: Table, previous: LetterMarkup.Block?) {
         if (table.rows.isNotEmpty()) {
             val columnSpec = table.header.colSpec
-
-            appendCmd("begin", "letterTable", columnHeadersLatexString(columnSpec))
-
+            appendCmd(
+                "begin", "letterTable", columnHeadersLatexString(columnSpec),
+                titleTextOrNull(previous)?.let { "\\tabletitle $it" } ?: ""
+                , escape = false
+            )
             renderTableCells(columnSpec.map { it.headerContent }, columnSpec)
 
             table.rows.forEach {
@@ -277,6 +295,15 @@ internal object LatexDocumentRenderer {
             appendCmd("end", "letterTable")
         }
     }
+
+    private fun titleTextOrNull(previous: LetterMarkup.Block?): String? = when (previous) {
+        is LetterMarkup.Block.Title1 -> renderTextsToString(previous.content)
+        is LetterMarkup.Block.Title2 -> renderTextsToString(previous.content)
+        else -> null
+    }?.takeIf { it.isNotBlank() }
+
+    private fun renderTextsToString(texts: List<Text>): String =
+        String(StringBuilder().also { LatexAppendable(it).renderText(texts) })
 
     private fun LatexAppendable.renderTableCells(cells: List<Table.Cell>, colSpec: List<Table.ColumnSpec>) {
         cells.forEachIndexed { index, cell ->

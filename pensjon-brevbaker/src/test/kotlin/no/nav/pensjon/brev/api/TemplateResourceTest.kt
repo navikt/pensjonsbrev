@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.maler.example.LetterExample
@@ -64,16 +65,24 @@ class TemplateResourceTest {
     @Test
     fun `fails renderPDF with invalid letterData`(): Unit = runBlocking {
         assertThrows<ParseLetterDataException> {
-            autobrev.renderPDF(validAutobrevRequest.copy(letterData = RandomLetterdata(true)))
+            autobrev.renderPDF(validAutobrevRequest.copy(letterData = SampleLetterData(true)))
         }
     }
 
     @Test
     fun `fails renderHTML with invalid letterData`() {
         assertThrows<ParseLetterDataException> {
-            autobrev.renderHTML(validAutobrevRequest.copy(letterData = RandomLetterdata(true)))
+            autobrev.renderHTML(validAutobrevRequest.copy(letterData = SampleLetterData(true)))
         }
     }
 }
 
-data class RandomLetterdata(val v1: Boolean) : BrevbakerBrevdata
+private fun <T: Brevkode<T>> BestillBrevRequest<T>.copy(letterData: SampleLetterData): BestillBrevRequest<T> =
+    BestillBrevRequest(
+        kode = this.kode,
+        letterData = letterData,
+        felles = this.felles,
+        language = this.language
+    )
+
+data class SampleLetterData(val v1: Boolean) : BrevbakerBrevdata

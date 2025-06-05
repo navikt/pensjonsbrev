@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
@@ -34,6 +35,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.grunnlag
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.utbetalingData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.afp
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.loennsinntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.naeringsinntekt
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.utlandsinntekt
@@ -53,7 +55,8 @@ data class EtteroppgjoerGrunnlagDTO(
     val loennsinntekt: Kroner,
     val naeringsinntekt: Kroner,
     val afp: Kroner,
-    val utlandsinntekt: Kroner
+    val utlandsinntekt: Kroner,
+    val inntekt: Kroner
 )
 
 @TemplateModelHelpers
@@ -70,11 +73,10 @@ val beregningsVedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, BeregningsVe
         opplysningerOmEtteroppgjoer(argument.etteroppgjoersAar)
         hvaDuFikkUtbetalt(argument.etteroppgjoersAar, argument.utbetalingData)
         omBeregningAvOmstillingsstoenad(argument.etteroppgjoersAar)
-        dinPensjonsgivendeInntekt(argument.etteroppgjoersAar, argument.utbetalingData, argument.grunnlag)
+        dinPensjonsgivendeInntekt(argument.etteroppgjoersAar, argument.grunnlag)
 
         konverterElementerTilBrevbakerformat(argument.innhold)
 
-        beloepTrukketFraDinPensjonsgivendeInntekt()
         inntektBruktIBeregningenAvOms(argument.etteroppgjoersAar, argument.utbetalingData)
     }
 
@@ -84,7 +86,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.op
 ) {
     paragraph {
         textExpr(
-            Bokmal to "Omstillingsstønaden din ble beregnet ut fra inntekten du oppga som forventet i ".expr() + etteroppgjoersAar.format() +". Vi har nå gjort en ny beregning basert på opplysninger registrert i a-ordningen og fra Skatteetaten om din faktiske inntekt for "+etteroppgjoersAar.format()+". Du kan se skatteoppgjøret ditt på skatteetaten.no.",
+            Bokmal to "Omstillingsstønaden din ble beregnet ut fra inntekten du oppga som forventet i ".expr() + etteroppgjoersAar.format() +". Vi har nå gjort en ny beregning basert på opplysninger fra Skatteetaten og a-ordningen om din faktiske inntekt for "+etteroppgjoersAar.format()+". Du kan se skatteoppgjøret ditt på skatteetaten.no.",
             Nynorsk to "".expr(),
             English to "".expr(),
         )
@@ -110,7 +112,6 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hv
         )
     }
 
-    // TODO include
     paragraph {
         table(
             header = {
@@ -144,7 +145,6 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hv
                 }
             }
         ) {
-
             row {
                 cell { text(
                     Language.Bokmal to "Omstillingsstønad",
@@ -159,12 +159,25 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hv
         }
     }
 
-    paragraph {
-        textExpr(
-            Bokmal to "Du fikk utbetalt ".expr() + utbetalingData.avviksBeloep.absoluteValue().format() + " kroner for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mye", "lite") + " i " + etteroppgjoersAar.format() + " inkludert skatt.",
-            Nynorsk to "".expr(),
-            English to "".expr(),
-        )
+    // ingen avvik
+    showIf(utbetalingData.avviksBeloep.absoluteValue().equalTo(0)) {
+        paragraph {
+            textExpr(
+                Bokmal to "Tabellen viser at du har fått utbetalt riktig stønad i ".expr() + etteroppgjoersAar.format(),
+                Nynorsk to "".expr(),
+                English to "".expr(),
+            )
+        }
+    }
+    // avvik
+    .orShow {
+        paragraph {
+            textExpr(
+                Bokmal to "Tabellen viser at du fikk utbetalt ".expr() + utbetalingData.avviksBeloep.absoluteValue().format() + " kroner for " + ifElse(utbetalingData.avviksBeloep.greaterThan(0), "mye", "lite") + " i " + etteroppgjoersAar.format() + " inkludert skatt.",
+                Nynorsk to "".expr(),
+                English to "".expr(),
+            )
+        }
     }
 }
 
@@ -305,7 +318,6 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.om
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.dinPensjonsgivendeInntekt(
     etteroppgjoersAar: Expression<Int>,
-    utbetalingData: Expression<EtteroppgjoerUtbetalingDTO>,
     grunnlag: Expression<EtteroppgjoerGrunnlagDTO>
 ) {
 
@@ -319,7 +331,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
 
     paragraph {
         textExpr(
-            Bokmal to "I " .expr() + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + utbetalingData.faktiskInntekt.format() + " kroner inkludert skatt, i følge opplysninger fra Skatteetaten og a-ordningen. Den fordeler seg slik:",
+            Bokmal to "I " .expr() + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + grunnlag.inntekt.format() + " kroner inkludert skatt, i følge opplysninger fra Skatteetaten og a-ordningen. Den fordeler seg slik:",
             Nynorsk to "".expr(),
             English to "".expr(),)
     }
@@ -353,19 +365,19 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
             }
             row {
                 cell { text(
-                    Language.Bokmal to "Næringsinntekt",
-                    Language.Nynorsk to "",
-                    Language.English to "",
-                ) }
-                cell { includePhrase(KronerText(grunnlag.naeringsinntekt)) }
-            }
-            row {
-                cell { text(
                     Language.Bokmal to "AFP",
                     Language.Nynorsk to "",
                     Language.English to "",
                 ) }
                 cell { includePhrase(KronerText(grunnlag.afp)) }
+            }
+            row {
+                cell { text(
+                    Language.Bokmal to "Næringsinntekt",
+                    Language.Nynorsk to "",
+                    Language.English to "",
+                ) }
+                cell { includePhrase(KronerText(grunnlag.naeringsinntekt)) }
             }
             row {
                 cell { text(
@@ -383,29 +395,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
                     Language.English to "",
                     fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
                 ) }
-                cell { includePhrase(KronerText(utbetalingData.faktiskInntekt, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
+                cell { includePhrase(KronerText(grunnlag.inntekt, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
             }
         }
-    }
-}
-
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.beloepTrukketFraDinPensjonsgivendeInntekt() {
-    title2 {
-        text(
-            Bokmal to "Beløp trukket fra din pensjonsgivende inntekt",
-            Nynorsk to "",
-            English to "",
-        )
-    }
-
-    // TODO: tabell
-
-    paragraph {
-        text(
-            Bokmal to "Hvis du har hatt andre inntekter som kan trekkes fra, må du sende oss dokumentasjon på det innen tre uker.",
-            Nynorsk to "",
-            English to "",
-        )
     }
 }
 
