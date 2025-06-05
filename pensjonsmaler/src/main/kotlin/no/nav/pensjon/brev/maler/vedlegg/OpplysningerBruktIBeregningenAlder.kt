@@ -41,6 +41,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
+// V00004 i metaforce
 @TemplateModelHelpers
 val vedleggOpplysningerBruktIBeregningenAlder =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningenAlderDto>(
