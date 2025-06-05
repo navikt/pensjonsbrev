@@ -77,7 +77,6 @@ val beregningsVedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, BeregningsVe
 
         konverterElementerTilBrevbakerformat(argument.innhold)
 
-        beloepTrukketFraDinPensjonsgivendeInntekt()
         inntektBruktIBeregningenAvOms(argument.etteroppgjoersAar, argument.utbetalingData)
     }
 
@@ -399,26 +398,6 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
                 cell { includePhrase(KronerText(grunnlag.inntekt, fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD)) }
             }
         }
-    }
-}
-
-private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.beloepTrukketFraDinPensjonsgivendeInntekt() {
-    title2 {
-        text(
-            Bokmal to "Beløp trukket fra din pensjonsgivende inntekt",
-            Nynorsk to "",
-            English to "",
-        )
-    }
-
-    // TODO: tabell
-
-    paragraph {
-        text(
-            Bokmal to "Hvis du har hatt andre inntekter som kan trekkes fra, må du sende oss dokumentasjon på det innen tre uker.",
-            Nynorsk to "",
-            English to "",
-        )
     }
 }
 
