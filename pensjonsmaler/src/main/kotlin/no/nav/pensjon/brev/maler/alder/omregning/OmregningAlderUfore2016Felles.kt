@@ -39,6 +39,8 @@ data class OmregningAlderUfore2016Felles(
     val oppfyltVedSammenleggingFemArKap20: Expression<Boolean>,
     val borINorge: Expression<Boolean>,
     val erEOSLand: Expression<Boolean>,
+    val eksportTrygdeavtaleEOS: Expression<Boolean>,
+    val avtaleland: Expression<String>
 
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -292,14 +294,74 @@ data class OmregningAlderUfore2016Felles(
                 text(
                     Bokmal to "Du er også innvilget garantitillegg for opptjente rettigheter etter folketrygdloven § 20-20.",
                     Nynorsk to "Du er også innvilga garantitillegg for opptente rettar etter folketrygdlova § 20-20.",
-                    English to "You have also been granted the guarantee supplement for accumulated rights pursuant to the provisions of § 20-20 of the National Insurance Act.."
+                    English to "You have also been granted the guarantee supplement for accumulated rights pursuant to the provisions of § 20-20 of the National Insurance Act."
                 )
             }
         }
 
-        showIf((oppfyltVedSammenleggingKap19  or oppfyltVedSammenleggingKap20  or oppfyltVedSammenleggingFemArKap19 or oppfyltVedSammenleggingFemArKap20) and borINorge and erEOSLand ) {
+        showIf((
+                oppfyltVedSammenleggingKap19
+                or oppfyltVedSammenleggingKap20
+                or oppfyltVedSammenleggingFemArKap19
+                or oppfyltVedSammenleggingFemArKap20)
+                and borINorge
+                and erEOSLand ) {
             paragraph {
+                    text(
+                        Bokmal to "Vedtaket er også gjort etter EØS-avtalens regler i forordning 883/2004.",
+                        Nynorsk to "Vedtaket er også gjort etter reglane i EØS-avtalen i forordning 883/2004.",
+                        English to "This decision was also made pursuant to the provisions of Regulation (EC) 883/2004."
+                    )
+            }
+        }
 
+        showIf(
+            oppfyltVedSammenleggingKap19.not()
+                    and oppfyltVedSammenleggingKap20.not()
+                    and oppfyltVedSammenleggingFemArKap19.not()
+                    and oppfyltVedSammenleggingFemArKap20.not()
+                    and eksportTrygdeavtaleEOS
+                    and borINorge.not()
+                    and erEOSLand.not() ) {
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er også gjort etter EØS-avtalens regler i forordning 883/2004, artikkel 7.",
+                    Nynorsk to "Vedtaket er også gjort etter EØS-avtalens reglar i forordning 883/2004, artikkel 7.",
+                    English to "This decision was also made pursuant to the provisions of Article 7 of Regulation (EC) 883/2004."
+                )
+            }
+        }
+
+        showIf((
+            oppfyltVedSammenleggingKap19
+                    or oppfyltVedSammenleggingKap20
+                    or oppfyltVedSammenleggingFemArKap19
+                    or oppfyltVedSammenleggingFemArKap20)
+                    and eksportTrygdeavtaleEOS
+                    and borINorge.not()
+                    and erEOSLand) {
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er også gjort etter EØS-avtalens regler i forordning 883/2004.",
+                    Nynorsk to "Vedtaket er også gjort etter reglane i EØS-avtalen i forordning 883/2004.",
+                    English to "This decision was also made pursuant to the provision of Regulation (EC) 883/2004."
+                )
+            }
+        }
+
+        showIf((
+                oppfyltVedSammenleggingKap19
+                        or oppfyltVedSammenleggingKap20
+                        or oppfyltVedSammenleggingFemArKap19
+                        or oppfyltVedSammenleggingFemArKap20
+                        or eksportTrygdeavtaleAvtaleland)
+                and erEOSLand.not()) { //TODO: Her bryr vi oss ikke om bor i norge?
+            paragraph {
+                textExpr(
+                    Bokmal to "Vedtaket er også gjort etter reglene i trygdeavtalen med ".expr() + avtaleland,
+                    Nynorsk to "Vedtaket er også gjort etter reglane i trygdeavtalen med ".expr() + avtaleland,
+                    English to "This decision was also made pursuant the provisions of the Social Security Agreement with ".expr() + avtaleland,
+                )
             }
         }
 
