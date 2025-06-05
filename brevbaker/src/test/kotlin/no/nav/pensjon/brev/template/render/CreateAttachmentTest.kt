@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
+import no.nav.brev.brevbaker.Fixtures
 import no.nav.pensjon.brev.template.LangNynorsk
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterImpl
