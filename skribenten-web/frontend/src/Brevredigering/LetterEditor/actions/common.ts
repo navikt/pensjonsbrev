@@ -61,11 +61,14 @@ export function text<T extends TextContent | undefined>(
   }
 }
 
-export function fontTypeOf(content: LiteralValue | VariableValue): FontType {
-  if (content.type === VARIABLE) {
-    return content.fontType;
-  } else {
-    return content.editedFontType ?? content.fontType;
+export function fontTypeOf(content: TextContent): FontType {
+  switch (content.type) {
+    case "NEW_LINE":
+      return FontType.PLAIN;
+    case "LITERAL":
+      return content.editedFontType ?? content.fontType;
+    case "VARIABLE":
+      return content.fontType;
   }
 }
 

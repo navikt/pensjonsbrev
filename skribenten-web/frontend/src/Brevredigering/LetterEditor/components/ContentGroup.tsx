@@ -2,7 +2,12 @@ import { css } from "@emotion/react";
 import React, { useEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import { isBlockContentIndex, isItemContentIndex } from "~/Brevredigering/LetterEditor/actions/common";
+import {
+  fontTypeOf,
+  isBlockContentIndex,
+  isItemContentIndex,
+  text as textOf,
+} from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { logPastedClipboard } from "~/Brevredigering/LetterEditor/actions/paste";
 import { Text } from "~/Brevredigering/LetterEditor/components/Text";
@@ -114,7 +119,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   //hvis teksten har endret seg, skal elementet oppføre seg som en helt vanlig literal
   const erFritekst = content.tags.includes(ElementTags.FRITEKST) && content.editedText === null;
 
-  const text = (content.editedText ?? content.text) || "​";
+  const text = textOf(content) || "​";
   useEffect(() => {
     if (contentEditableReference.current !== null && contentEditableReference.current.textContent !== text) {
       contentEditableReference.current.textContent = text;
@@ -338,8 +343,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           text-decoration: underline;
           cursor: pointer;
         `}
-        ${content.editedFontType === FontType.BOLD && "font-weight: bold;"}
-        ${content.editedFontType === FontType.ITALIC && "font-style: italic;"}
+        ${fontTypeOf(content) === FontType.BOLD && "font-weight: bold;"}
+        ${fontTypeOf(content) === FontType.ITALIC && "font-style: italic;"}
       `}
       onClick={handleOnclick}
       onFocus={handleOnFocus}

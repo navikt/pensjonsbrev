@@ -48,7 +48,7 @@ export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
   });
 
 export function logPastedClipboard(clipboardData: DataTransfer) {
-  log("available paste types - " + JSON.stringify(clipboardData.types));
+  log("available paste types - ", clipboardData.types);
   log("pasted html content - " + clipboardData.getData("text/html"));
   log("pasted plain content - " + clipboardData.getData("text/plain"));
 }
@@ -72,7 +72,7 @@ function insertTextInLetter(
 ) {
   const updateContent = getInsertTextContentContext(draft);
   if (updateContent === undefined) {
-    log("literalIndex is invalid " + JSON.stringify(draft.focus));
+    log("literalIndex is invalid ", { ...draft.focus });
     return;
   }
   const { content, parent, getContentIndex, setContentIndex } = updateContent;
@@ -171,6 +171,7 @@ function shouldModifyExistingLiteral(
  */
 function insertHtmlClipboardInLetter(draft: Draft<LetterEditorState>, clipboard: DataTransfer) {
   const parsedAndCombinedHtml = parseAndCombineHTML(clipboard);
+  log("interpreted pasted content", parsedAndCombinedHtml);
 
   if (parsedAndCombinedHtml.length === 0) {
     //trenger ikke å lime inn tomt innhold
@@ -463,7 +464,8 @@ function cleansePastedText(str: string): string {
   return cleanseText(str).replaceAll(/\s+/g, " ");
 }
 
-function log(message: string) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function log(message: string, ...obj: any[]) {
   // eslint-disable-next-line no-console
-  console.log("Skribenten:pasteHandler: " + message);
+  console.log("Skribenten:pasteHandler: " + message, ...obj);
 }

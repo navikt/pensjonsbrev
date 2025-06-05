@@ -1,13 +1,13 @@
 import { css } from "@emotion/react";
 
 import type { LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
-import type { TextContent } from "~/types/brevbakerTypes";
-import { FontType, LITERAL, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
+import type { NewLine, VariableValue } from "~/types/brevbakerTypes";
+import { FontType, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
 
 import { useEditor } from "../LetterEditor";
 
 export type TextProperties = {
-  content: TextContent;
+  content: VariableValue | NewLine;
   literalIndex: LiteralIndex;
 };
 
@@ -18,9 +18,6 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
     editorState.focus.contentIndex === literalIndex.contentIndex;
 
   switch (content.type) {
-    case LITERAL: {
-      return <span>{content.text}</span>;
-    }
     case NEW_LINE: {
       return <br />;
     }
