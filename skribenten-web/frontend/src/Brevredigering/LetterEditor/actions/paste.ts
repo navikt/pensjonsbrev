@@ -171,7 +171,6 @@ function shouldModifyExistingLiteral(
  */
 function insertHtmlClipboardInLetter(draft: Draft<LetterEditorState>, clipboard: DataTransfer) {
   const parsedAndCombinedHtml = parseAndCombineHTML(clipboard);
-  log("interpreted pasted content", parsedAndCombinedHtml);
 
   if (parsedAndCombinedHtml.length === 0) {
     //trenger ikke å lime inn tomt innhold
@@ -323,8 +322,30 @@ function parseAndCombineHTML(clipboard: DataTransfer): TraversedElement[] {
   return moveOuterTextIntoNeighbouringParagraphs(elements);
 }
 
+function isOnlyWhitespace(node: Node) {
+  return !!node.textContent && !/[^\t\n\r ]/.test(node.textContent);
+}
+
 function traverseChildren(element: Element, font: FontType): TraversedElement[] {
-  return mergeNeighbouringText([...element.children].flatMap((c) => traverse(c, font)));
+  const traversedChildNodes: TraversedElement[] = [...element.childNodes].flatMap((node) => {
+    switch (node.nodeType) {
+      case Node.TEXT_NODE: {
+        if (!isOnlyWhitespace(node)) {
+          const text = cleansePastedText(element.textContent ?? "");
+          return text.length > 0 ? [{ type: "TEXT", font, text }] : [];
+        } else {
+          return [];
+        }
+      }
+      case Node.ELEMENT_NODE: {
+        return traverse(node as Element, font);
+      }
+      default: {
+        return [];
+      }
+    }
+  });
+  return mergeNeighbouringText(traversedChildNodes);
 }
 
 function traverse(element: Element, font: FontType): TraversedElement[] {

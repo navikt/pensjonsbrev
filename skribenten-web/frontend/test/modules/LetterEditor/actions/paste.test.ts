@@ -181,6 +181,16 @@ describe("LetterEditorActions.paste", () => {
           expect(select<ParagraphBlock>(result, { blockIndex: 0 }).id).toEqual(1);
           expect(result.redigertBrev.deletedBlocks).toEqual([]);
         });
+        test("paste with textnodes mixed with elements", () => {
+          const idx = { blockIndex: 0, contentIndex: 0 };
+          const state = letter(paragraph([literal({ id: 1, text: "Teksten min" })]));
+          const clipboard = new MockDataTransfer({
+            "text/html": "<span>1<span></span></span><span>2<span></span></span",
+          });
+          const result = Actions.paste(state, idx, 0, clipboard);
+
+          expect(select<LiteralValue>(result, idx)).toMatchObject({ id: 1, editedText: "12Teksten min" });
+        });
         describe("inserts single paragraph", () => {
           test("single paste", () => {
             const idx = { blockIndex: 0, contentIndex: 0 };
