@@ -50,6 +50,13 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
             )
         }
         outline {
+            title2 {
+                text(
+                    Bokmal to "Beløp trukket fra din pensjonsgivende inntekt",
+                    Nynorsk to "",
+                    English to "",
+                )
+            }
             paragraph {
                 text(
                     Bokmal to "FORSLAG 1: ",
