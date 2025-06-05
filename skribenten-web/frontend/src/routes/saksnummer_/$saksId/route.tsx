@@ -28,14 +28,10 @@ type BaseSearchParamsSchema = z.infer<typeof baseSearchSchema>;
 
 export const Route = createFileRoute("/saksnummer_/$saksId")({
   validateSearch: (search): BaseSearchParamsSchema => baseSearchSchema.parse(search),
-  beforeLoad: ({ params: { saksId }, search }) => ({
-    getSakContextQueryOptions: getSakContextQuery(saksId, search.vedtaksId),
-  }),
+
   loaderDeps: ({ search }) => ({ vedtaksId: search.vedtaksId }),
-  loader: async ({ context: { queryClient, getSakContextQueryOptions }, params: { saksId }, deps: { vedtaksId } }) => {
-    if (!getSakContextQueryOptions) {
-      getSakContextQueryOptions = getSakContextQuery(saksId, vedtaksId);
-    }
+  loader: async ({ context: { queryClient }, params: { saksId }, deps: { vedtaksId } }) => {
+    const getSakContextQueryOptions = getSakContextQuery(saksId, vedtaksId);
 
     queryClient.prefetchQuery(getKontaktAdresseQuery(saksId));
     queryClient.prefetchQuery(getFavoritterQuery);

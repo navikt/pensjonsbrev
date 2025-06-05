@@ -41,7 +41,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
         title {
             text(
                 Bokmal to "Forhåndsvarsel - Gjenlevendepensjonen din kan bli forlenget",
-                Nynorsk to "Førehandsvarsel – Attlevandepensjonen din kan bli forlenga "
+                Nynorsk to "Førehandsvarsel – Gjenlevandepensjonen din kan bli forlenga "
             )
         }
         outline {
@@ -85,7 +85,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             paragraph {
                 text(
-                    Bokmal to "Pensjonsgivende inntekt må ha vært under tre ganger gjennomsnittliggrunnbeløp i folketrygden (G) i både 2022 og 2023:",
+                    Bokmal to "Pensjonsgivende inntekt må ha vært under tre ganger gjennomsnittlig grunnbeløp i folketrygden (G) i både 2022 og 2023:",
                     Nynorsk to "Pensjonsgivande inntekt må ha vore under tre gongar gjennomsnittleg grunnbeløp i folketrygda (G) i både 2022 og 2023: ",
                 )
             }
@@ -140,7 +140,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             paragraph {
                 text(
-                    Bokmal to "I tillegg må inntekten din i 2019 – 2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. Det vil siat inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere.",
+                    Bokmal to "I tillegg må inntekten din i 2019–2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. Det vil siat inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere.",
                     Nynorsk to "I tillegg må inntekta di i 2019–2023 ha vore under to gongar grunnbeløpet i folketrygda (G) i gjennomsnitt i desse fem åra. Det vil seie at inntekta kan overstige to gongar grunnbeløpet i eitt enkelt år, så lenge gjennomsnittet av dei fem åra er lågare. ",
                 )
             }
@@ -244,7 +244,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             paragraph {
                 text(
-                    Bokmal to "Det er din pensjonsgivende inntekt i årene 2019 - 2023 som avgjør om du kan beholde gjenlevendepensjonen til du fyller 67 år.",
+                    Bokmal to "Det er din pensjonsgivende inntekt i årene 2019–2023 som avgjør om du kan beholde gjenlevendepensjonen til du fyller 67 år.",
                     Nynorsk to "Det er den pensjonsgivande inntekta di i åra 2019–2023 som avgjer om du kan behalde gjenlevandepensjonen til du fyller 67 år. ",
 
                 )
@@ -252,7 +252,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             paragraph {
                 text(
-                    Bokmal to "Ifølge registeropplysninger vi har om deg fra Skatteetaten, har du i årene 2019 – 2023 hatt følgende inntekter:",
+                    Bokmal to "Ifølge registeropplysninger vi har om deg fra Skatteetaten, har du i årene 2019–2023 hatt følgende inntekter:",
                     Nynorsk to "Ifølgje registeropplysningar vi har om deg frå Skatteetaten, har du i åra 2019–2023 hatt følgjande inntekter:",
 
                 )
