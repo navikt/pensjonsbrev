@@ -21,21 +21,27 @@ import {
 import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
 import type { Action } from "~/Brevredigering/LetterEditor/lib/actions";
-import type { Focus, LetterEditorState, LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
-import type { AnyBlock, LiteralValue, TextContent } from "~/types/brevbakerTypes";
+import type {
+  Focus,
+  ItemContentIndex,
+  LetterEditorState,
+  LiteralIndex,
+} from "~/Brevredigering/LetterEditor/model/state";
+import type { AnyBlock, Content, LiteralValue, TextContent } from "~/types/brevbakerTypes";
 import { FontType } from "~/types/brevbakerTypes";
 
 import { isItemList, isLiteral, isTextContent } from "../model/utils";
 
 export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number, clipboard: DataTransfer]> =
   produce((draft, literalIndex, offset, clipboard) => {
-    // Siden man alltid limer inn der markøren står, så må focus være det samme som literalIndex (tester bryter typisk med denne forutsetningen).
+    // Since we always paste where the cursor is, then focus has to be at literalIndex and offset.
+    // (Tests typically break this assertions)
     draft.focus = { ...literalIndex, cursorPosition: offset };
 
     if (clipboard.types.includes("text/html")) {
-      insertHtmlClipboardInLetter(draft, literalIndex, offset, clipboard);
+      insertHtmlClipboardInLetter(draft, clipboard);
     } else if (clipboard.types.includes("text/plain")) {
-      insertTextInLetter(draft, literalIndex, offset, clipboard.getData("text/plain"), FontType.PLAIN, false);
+      insertTextInLetter(draft, clipboard.getData("text/plain"), FontType.PLAIN, false);
     } else {
       log("unsupported clipboard datatype(s) - " + JSON.stringify(clipboard.types));
     }
@@ -54,74 +60,93 @@ export function logPastedClipboard(clipboardData: DataTransfer) {
  * - will add a new literal instead of modifying current if offset is 0
  *
  * @param draft state to update
- * @param literalIndex to insert at
- * @param offset in literal to insert at
  * @param str text to insert
  * @param fontType fontType of text to insert
  * @param multipartPaste str is part of larger paste
  */
 function insertTextInLetter(
   draft: Draft<LetterEditorState>,
-  literalIndex: LiteralIndex,
-  offset: number,
   str: string,
   fontType: FontType,
   multipartPaste: boolean = true,
 ) {
-  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
-  const content = block?.content[literalIndex.contentIndex];
+  const updateContent = getInsertTextContentContext(draft);
+  if (updateContent === undefined) {
+    log("literalIndex is invalid " + JSON.stringify(draft.focus));
+    return;
+  }
+  const { content, parent, getContentIndex, setContentIndex } = updateContent;
+  const offset = draft.focus.cursorPosition ?? 0;
 
-  // TODO: Klarer jeg å generalisere for content og itemContent?
-  if (isItemList(content) && isItemContentIndex(literalIndex)) {
-    const item = content.items[literalIndex.itemIndex];
-    const itemContent = item?.content[literalIndex?.itemContentIndex];
-    if (item && isLiteral(itemContent)) {
-      if (shouldModifyExistingLiteral(itemContent, offset, multipartPaste, fontType)) {
-        insertText(itemContent, draft.focus, offset, str);
-      } else if (offset > 0 && offset < text(itemContent).length) {
-        // We can't modify existing literal due to other fontType, so we need to split it and insert pasted text in between.
-        const literalPart2 = splitLiteralAtOffset(itemContent, offset);
-        const itemContentIndex = literalIndex.itemContentIndex + 1;
-        addElements(
-          [newLiteral({ editedText: str, fontType }), literalPart2],
-          itemContentIndex,
-          item.content,
-          item.deletedContent,
-        );
-        draft.focus = { ...literalIndex, itemContentIndex, cursorPosition: str.length };
-      } else {
-        const itemContentIndex = offset <= 0 ? literalIndex.itemContentIndex : literalIndex.itemContentIndex + 1;
-        addElements([newLiteral({ editedText: str, fontType })], itemContentIndex, item.content, item.deletedContent);
-        draft.focus = { ...literalIndex, itemContentIndex, cursorPosition: str.length };
-      }
-      draft.isDirty = true;
-    } else {
-      log("cannot insert text into variable - " + str);
-    }
-  } else if (isLiteral(content) && !isItemContentIndex(literalIndex)) {
+  if (isLiteral(content)) {
     if (shouldModifyExistingLiteral(content, offset, multipartPaste, fontType)) {
-      insertText(content, draft.focus, offset, str);
+      const existingText = text(content);
+      const safeOffset = Math.min(Math.max(0, offset), existingText.length);
+
+      const newText = existingText.slice(0, safeOffset) + str + existingText.slice(safeOffset);
+      updateLiteralText(content, newText);
+      draft.focus.cursorPosition = safeOffset + str.length;
     } else if (offset > 0 && offset < text(content).length) {
       // We can't modify existing literal due to other fontType, so we need to split it and insert pasted text in between.
       const literalPart2 = splitLiteralAtOffset(content, offset);
-      const contentIndex = literalIndex.contentIndex + 1;
+      const contentIndex = getContentIndex(draft.focus) + 1;
+
       addElements(
         [newLiteral({ editedText: str, fontType }), literalPart2],
         contentIndex,
-        block.content,
-        block.deletedContent,
+        parent.content,
+        parent.deletedContent,
       );
-      draft.focus = { ...literalIndex, contentIndex, cursorPosition: str.length };
+      setContentIndex(draft.focus, contentIndex);
+      draft.focus.cursorPosition = str.length;
     } else {
-      // are we inserting before or after existing literal
-      const contentIndex = offset <= 0 ? literalIndex.contentIndex : literalIndex.contentIndex + 1;
-      addElements([newLiteral({ editedText: str, fontType })], contentIndex, block.content, block.deletedContent);
-      draft.focus = { ...literalIndex, contentIndex, cursorPosition: str.length };
+      const insertAtIndex = offset <= 0 ? getContentIndex(draft.focus) : getContentIndex(draft.focus) + 1;
+      addElements([newLiteral({ editedText: str, fontType })], insertAtIndex, parent.content, parent.deletedContent);
+      setContentIndex(draft.focus, insertAtIndex);
+      draft.focus.cursorPosition = str.length;
     }
     draft.isDirty = true;
+  } else if (content !== undefined) {
+    log(`cannot paste text into ${content.type}, must be literal.`);
+  }
+}
+
+type InsertTextContext = {
+  content: Draft<TextContent>;
+  parent: {
+    content: Draft<Content[]>;
+    deletedContent: Draft<number[]>;
+  };
+  getContentIndex(focus: Focus): number;
+  setContentIndex(focus: Draft<Focus>, value: number): void;
+};
+
+function getInsertTextContentContext(draft: Draft<LetterEditorState>): InsertTextContext | undefined {
+  const literalIndex = draft.focus;
+  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
+  const blockContent = block?.content[literalIndex.contentIndex];
+
+  if (isItemList(blockContent) && isItemContentIndex(literalIndex)) {
+    const item = blockContent.items[literalIndex.itemIndex];
+    return {
+      content: item?.content[literalIndex.itemContentIndex],
+      parent: item,
+      getContentIndex: (focus) => (focus as ItemContentIndex).itemContentIndex,
+      setContentIndex: (focus: Draft<Focus>, value: number) => {
+        (focus as Draft<ItemContentIndex>).itemContentIndex = value;
+      },
+    };
+  } else if (isTextContent(blockContent) && isBlockContentIndex(literalIndex)) {
+    return {
+      content: blockContent,
+      parent: block,
+      getContentIndex: (focus) => focus.contentIndex,
+      setContentIndex: (focus: Draft<Focus>, value: number) => {
+        focus.contentIndex = value;
+      },
+    };
   } else {
-    log("literalIndex is invalid " + JSON.stringify(literalIndex));
-    log("text - " + str);
+    return undefined;
   }
 }
 
@@ -138,35 +163,22 @@ function shouldModifyExistingLiteral(
   return (isNew(literal) || offset > 0 || !multipartPaste) && fontType === fontTypeOf(literal);
 }
 
-function insertText(draft: Draft<LiteralValue>, focus: Draft<Focus>, offset: number, str: string) {
-  const existingText = text(draft);
-  const safeOffset = Math.min(Math.max(0, offset), existingText.length);
-
-  const newText = existingText.slice(0, safeOffset) + str + existingText.slice(safeOffset);
-  updateLiteralText(draft, newText);
-  focus.cursorPosition = safeOffset + str.length;
-}
-
 /**
  * Pasting funksjonalitet skal etterligne hvordan det fungerer i microsoft word.
  * Merk da at det er forskjellige regler hvis man limer inn i start/midten/slutt, på en literal, eller punktliste,
  * og om det kopierte innholdet er bare literal eller punktliste, eller begge.
  *
  */
-function insertHtmlClipboardInLetter(
-  draft: Draft<LetterEditorState>,
-  literalIndex: LiteralIndex,
-  offset: number,
-  clipboard: DataTransfer,
-) {
+function insertHtmlClipboardInLetter(draft: Draft<LetterEditorState>, clipboard: DataTransfer) {
   const parsedAndCombinedHtml = parseAndCombineHTML(clipboard);
 
   if (parsedAndCombinedHtml.length === 0) {
     //trenger ikke å lime inn tomt innhold
     return;
-  } else if (parsedAndCombinedHtml.length === 1 && parsedAndCombinedHtml[0].type === "TEXT") {
-    const element = parsedAndCombinedHtml[0];
-    insertTextInLetter(draft, literalIndex, offset, element.text, element.font, false);
+  } else if (parsedAndCombinedHtml.every((e) => e.type === "TEXT")) {
+    parsedAndCombinedHtml.forEach((e) => {
+      insertTextInLetter(draft, e.text, e.font, false);
+    });
   } else {
     insertTraversedElements(draft, parsedAndCombinedHtml);
   }
@@ -177,7 +189,7 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
   elements.forEach((el) => {
     switch (el.type) {
       case "TEXT": {
-        insertTextInLetter(draft, draft.focus, draft.focus.cursorPosition ?? 0, el.text, el.font);
+        insertTextInLetter(draft, el.text, el.font);
         break;
       }
       case "P": {
@@ -193,7 +205,7 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
           draft.focus.blockIndex += 1;
         } else {
           el.content.forEach((t) => {
-            insertTextInLetter(draft, draft.focus, draft.focus.cursorPosition ?? 0, t.text, t.font);
+            insertTextInLetter(draft, t.text, t.font);
           });
           splitRecipe(draft, draft.focus, draft.focus.cursorPosition! ?? 0);
         }
@@ -204,7 +216,7 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
 
         if (isItemContentIndex(draft.focus) && isItemList(currentBlock.content[draft.focus.contentIndex])) {
           el.content.forEach((t) => {
-            insertTextInLetter(draft, draft.focus, draft.focus.cursorPosition ?? 0, t.text, t.font);
+            insertTextInLetter(draft, t.text, t.font);
           });
           splitRecipe(draft, draft.focus, draft.focus.cursorPosition! ?? 0);
         } else if (!isItemContentIndex(draft.focus) && !isItemList(currentBlock.content[draft.focus.contentIndex])) {
@@ -212,7 +224,7 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
           toggleItemListAndSplitAtCursor(draft, currentBlock);
 
           el.content.forEach((t) => {
-            insertTextInLetter(draft, draft.focus, draft.focus.cursorPosition ?? 0, t.text, t.font);
+            insertTextInLetter(draft, t.text, t.font);
           });
           splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
         }
@@ -284,14 +296,6 @@ function toggleItemListAndSplitAtCursor(draft: Draft<LetterEditorState>, current
   }
 }
 
-function parseAndCombineHTML(clipboard: DataTransfer): TraversedElement[] {
-  const parser = new DOMParser();
-  const document = parser.parseFromString(clipboard.getData("text/html"), "text/html");
-
-  const elements = traverseChildren(document.body, FontType.PLAIN);
-  return moveOuterTextIntoNeighbouringParagraphs(elements);
-}
-
 interface Text {
   type: "TEXT";
   font: FontType;
@@ -309,6 +313,18 @@ interface Paragraph {
 }
 
 type TraversedElement = Paragraph | Text | Item;
+
+function parseAndCombineHTML(clipboard: DataTransfer): TraversedElement[] {
+  const parser = new DOMParser();
+  const document = parser.parseFromString(clipboard.getData("text/html"), "text/html");
+
+  const elements = traverseChildren(document.body, FontType.PLAIN);
+  return moveOuterTextIntoNeighbouringParagraphs(elements);
+}
+
+function traverseChildren(element: Element, font: FontType): TraversedElement[] {
+  return mergeNeighbouringText([...element.children].flatMap((c) => traverse(c, font)));
+}
 
 function traverse(element: Element, font: FontType): TraversedElement[] {
   switch (element.tagName) {
@@ -340,7 +356,7 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
         return text.length >= 0 ? [{ type: "P", content: [{ type: "TEXT", font, text }] }] : [];
       } else {
         // traverse children, merge neighbouring plain text, and flatten any nested paragraphs and items
-        return wrapTextIntoParagraph(traverseChildren(element, font));
+        return traverseParagraphChildren(element, font);
       }
     }
 
@@ -350,8 +366,7 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
         // allowed with empty list items
         return text.length >= 0 ? [{ type: "ITEM", content: [{ type: "TEXT", font: font, text }] }] : [];
       } else {
-        const traversedChildren = traverseChildren(element, font);
-        return [{ type: "ITEM", content: convertToText(traversedChildren) }];
+        return [{ type: "ITEM", content: traverseItemChildren(element, font) }];
       }
     }
     case "DIV": {
@@ -368,12 +383,21 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
   }
 }
 
-function traverseChildren(element: Element, font: FontType): TraversedElement[] {
-  return mergeNeighbouringText([...element.children].flatMap((c) => traverse(c, font)));
+// Since we break (to new paragraph) AFTER a p-element, any preceding text-element will belong to it. So we modify
+// our structure to reflect that.
+function moveOuterTextIntoNeighbouringParagraphs(elements: TraversedElement[]): TraversedElement[] {
+  return elements.reduceRight<TraversedElement[]>((acc, current) => {
+    const next = acc?.at(0);
+    if (current.type === "TEXT" && next?.type === "P") {
+      return [{ ...next, content: mergeNeighbouringText([current, ...next.content]) }, ...acc.slice(1)];
+    } else {
+      return [current, ...acc];
+    }
+  }, []);
 }
 
-function convertToText(elements: TraversedElement[]): Text[] {
-  return elements.flatMap((e) => {
+function traverseItemChildren(item: Element, font: FontType): Text[] {
+  return traverseChildren(item, font).flatMap((e) => {
     switch (e.type) {
       case "TEXT": {
         return e;
@@ -388,22 +412,9 @@ function convertToText(elements: TraversedElement[]): Text[] {
   });
 }
 
-// Since we break (to new paragraph) AFTER a p-element, any preceding text-element will belong to it. So we modify
-// our structure to reflect that.
-function moveOuterTextIntoNeighbouringParagraphs(elements: TraversedElement[]): TraversedElement[] {
-  return elements.reduceRight<TraversedElement[]>((acc, current) => {
-    const next = acc?.at(0);
-    if (current.type === "TEXT" && next?.type === "P") {
-      return [{ ...next, content: mergeNeighbouringText([current, ...next.content]) }, ...acc.slice(1)];
-    } else {
-      return [current, ...acc];
-    }
-  }, []);
-}
-
 // Will package any Text-elements into a Paragraph, and make sure we don't have nested paragraphs and items.
-function wrapTextIntoParagraph(elements: TraversedElement[]): (Paragraph | Item)[] {
-  return elements.reduce<(Paragraph | Item)[]>((acc, current) => {
+function traverseParagraphChildren(paragraph: Element, font: FontType): (Paragraph | Item)[] {
+  return traverseChildren(paragraph, font).reduce<(Paragraph | Item)[]>((acc, current) => {
     const previous = acc.at(-1);
 
     switch (current.type) {
