@@ -33,7 +33,7 @@ object VedtakGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
         letterDataType = Gjenlevenderett2027Dto::class,
         languages = languages(Bokmal, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - Gjenlevendepensjonen din er tidsbegrenset",
+            displayTitle = "Vedtak - Gjenlevendepensjonen din forlenges",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
