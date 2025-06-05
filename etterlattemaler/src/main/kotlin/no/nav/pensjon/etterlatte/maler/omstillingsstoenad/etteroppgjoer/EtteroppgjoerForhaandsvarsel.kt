@@ -139,7 +139,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                 }
                 paragraph {
                     text(
-                        Language.Bokmal to "Hvis opplysningene er feil, må du gi beskjed innen tre uker. Hvis du ikke svarer, får du et vedtak basert på de opplysningene som står i vedlegget. Hvis du melder fra om feil, vil vi vurdere de nye opplysningene før du får et vedtak.",
+                        Language.Bokmal to "Hvis opplysningene er feil, må du gi beskjed innen tre uker. Nye opplysninger må dokumenteres. Hvis du ikke svarer, får du et vedtak basert på de opplysningene som står i vedlegget. Hvis du melder fra om feil, vil vi vurdere de nye opplysningene før du får et vedtak.",
                         Language.Nynorsk to "",
                         Language.English to "",
                     )
