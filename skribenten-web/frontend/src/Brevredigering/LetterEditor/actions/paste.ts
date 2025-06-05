@@ -329,24 +329,21 @@ function traverseChildren(element: Element, font: FontType): TraversedElement[] 
 function traverse(element: Element, font: FontType): TraversedElement[] {
   switch (element.tagName) {
     case "SPAN": {
-      if (element.children.length === 0) {
-        const text = cleansePastedText(element.textContent ?? "");
-        return text.length > 0 ? [{ type: "TEXT", font, text }] : [];
-      } else {
-        return traverseChildren(element, font);
-      }
+      return traverseTextContainer(element, font);
     }
 
     case "STRONG":
     case "B": {
+      // Since text in brevbaker-brev cannot be both bold (strong) and italic (emphasized) simultaneously, we pass along the first change (away from plain).
       const nextFont = font === FontType.PLAIN ? FontType.BOLD : font;
-      if (element.children.length === 0) {
-        const text = cleansePastedText(element.textContent ?? "");
-        return text.length > 0 ? [{ type: "TEXT", font: nextFont, text }] : [];
-      } else {
-        // Since text in brevbaker-brev cannot be both bold (strong) and italic (emphasized) simultaneously, we pass along the first change.
-        return traverseChildren(element, nextFont);
-      }
+      return traverseTextContainer(element, nextFont);
+    }
+
+    case "EM":
+    case "I": {
+      // Since text in brevbaker-brev cannot be both bold (strong) and italic (emphasized) simultaneously, we pass along the first change (away from plain).
+      const nextFont = font === FontType.PLAIN ? FontType.ITALIC : font;
+      return traverseTextContainer(element, nextFont);
     }
 
     case "P": {
@@ -369,13 +366,15 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
         return [{ type: "ITEM", content: traverseItemChildren(element, font) }];
       }
     }
-    case "DIV": {
-      // skip and traverse children
-      return traverseChildren(element, font);
-    }
+
     case "TABLE": {
       // TODO: ignore until support for table is implemented
       return [];
+    }
+
+    case "DIV": {
+      // skip and traverse children
+      return traverseChildren(element, font);
     }
     default: {
       return traverseChildren(element, font);
@@ -394,6 +393,15 @@ function moveOuterTextIntoNeighbouringParagraphs(elements: TraversedElement[]): 
       return [current, ...acc];
     }
   }, []);
+}
+
+function traverseTextContainer(element: Element, font: FontType): TraversedElement[] {
+  if (element.children.length === 0) {
+    const text = cleansePastedText(element.textContent ?? "");
+    return text.length > 0 ? [{ type: "TEXT", font, text }] : [];
+  } else {
+    return traverseChildren(element, font);
+  }
 }
 
 function traverseItemChildren(item: Element, font: FontType): Text[] {

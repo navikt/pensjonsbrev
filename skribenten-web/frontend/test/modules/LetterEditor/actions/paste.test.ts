@@ -128,7 +128,7 @@ describe("LetterEditorActions.paste", () => {
             expect(result.redigertBrev.deletedBlocks).toEqual([]);
           });
         });
-        test("bold text 11", () => {
+        test("bold text", () => {
           const idx = { blockIndex: 0, contentIndex: 0 };
           const clipboard = new MockDataTransfer({
             "text/html": "<strong><span>b1</span><span>b2</span><p><span>44</span></p></strong><span>s1</span>",
@@ -139,6 +139,26 @@ describe("LetterEditorActions.paste", () => {
           expect(select<ParagraphBlock>(result, { blockIndex: 1 }).content).toHaveLength(2);
 
           expect(select(result, idx)).toMatchObject({ editedText: "b1b244", fontType: FontType.BOLD });
+          expect(select(result, { blockIndex: 1, contentIndex: 0 })).toMatchObject({
+            editedText: "s1",
+            fontType: FontType.PLAIN,
+          });
+          expect(select<LiteralValue>(result, { blockIndex: 1, contentIndex: 1 })).toMatchObject({
+            text: "l1",
+            fontType: FontType.PLAIN,
+          });
+        });
+        test("italic text", () => {
+          const idx = { blockIndex: 0, contentIndex: 0 };
+          const clipboard = new MockDataTransfer({
+            "text/html": "<em><span>b1</span><span>b2</span><p><span>44</span></p></em><span>s1</span>",
+          });
+          const state = letter(paragraph([literal({ text: "l1" })]));
+          const result = Actions.paste(state, idx, 0, clipboard);
+          expect(select<ParagraphBlock>(result, { blockIndex: 0 }).content).toHaveLength(1);
+          expect(select<ParagraphBlock>(result, { blockIndex: 1 }).content).toHaveLength(2);
+
+          expect(select(result, idx)).toMatchObject({ editedText: "b1b244", fontType: FontType.ITALIC });
           expect(select(result, { blockIndex: 1, contentIndex: 0 })).toMatchObject({
             editedText: "s1",
             fontType: FontType.PLAIN,
@@ -551,6 +571,27 @@ describe("LetterEditorActions.paste", () => {
           expect(select(result, { ...idx, contentIndex: 1 })).toMatchObject({
             editedText: "b1b244",
             fontType: FontType.BOLD,
+          });
+          expect(select(result, { blockIndex: 1, contentIndex: 0 })).toMatchObject({
+            editedText: "s1 min",
+            fontType: FontType.PLAIN,
+          });
+        });
+        test("italic text", () => {
+          const idx = { blockIndex: 0, contentIndex: 0 };
+          const clipboard = new MockDataTransfer({
+            "text/html": "<em><span>b1</span><span>b2</span><p><span>44</span></p></em><span>s1</span>",
+          });
+          const state = letter(paragraph({ id: 1, content: [literal({ id: 10, text: "Teksten min" })] }));
+          const result = Actions.paste(state, idx, 7, clipboard);
+
+          expect(select<ParagraphBlock>(result, { blockIndex: 0 }).content).toHaveLength(2);
+          expect(select<ParagraphBlock>(result, { blockIndex: 1 }).content).toHaveLength(1);
+
+          expect(select(result, idx)).toMatchObject({ editedText: "Teksten", fontType: FontType.PLAIN });
+          expect(select(result, { ...idx, contentIndex: 1 })).toMatchObject({
+            editedText: "b1b244",
+            fontType: FontType.ITALIC,
           });
           expect(select(result, { blockIndex: 1, contentIndex: 0 })).toMatchObject({
             editedText: "s1 min",
@@ -1105,6 +1146,25 @@ describe("LetterEditorActions.paste", () => {
           expect(select(result, { ...idx, contentIndex: 1 })).toMatchObject({
             editedText: "b1b244",
             fontType: FontType.BOLD,
+          });
+          expect(select(result, { blockIndex: 1, contentIndex: 0 })).toMatchObject({
+            editedText: "s1",
+            fontType: FontType.PLAIN,
+          });
+        });
+        test("italic text", () => {
+          const idx = { blockIndex: 0, contentIndex: 0 };
+          const clipboard = new MockDataTransfer({
+            "text/html": "<em><span>b1</span><span>b2</span><p><span>44</span></p></em><span>s1</span>",
+          });
+          const state = letter(paragraph([literal({ text: "Teksten min" })]));
+          const result = Actions.paste(state, idx, 11, clipboard);
+
+          expect(select<ParagraphBlock>(result, { blockIndex: 0 }).content).toHaveLength(2);
+          expect(select(result, idx)).toMatchObject({ text: "Teksten min", fontType: FontType.PLAIN });
+          expect(select(result, { ...idx, contentIndex: 1 })).toMatchObject({
+            editedText: "b1b244",
+            fontType: FontType.ITALIC,
           });
           expect(select(result, { blockIndex: 1, contentIndex: 0 })).toMatchObject({
             editedText: "s1",
@@ -1747,6 +1807,25 @@ describe("LetterEditorActions.paste", () => {
             fontType: FontType.PLAIN,
           });
         });
+        test("italic text", () => {
+          const idx = { blockIndex: 0, contentIndex: 0 };
+          const clipboard = new MockDataTransfer({
+            "text/html": "<em><span>b1</span><span>b2</span><p><span>44</span></p></em><span>s1</span>",
+          });
+          const state = letter(paragraph([literal({ text: "Teksten min" })]));
+          const result = Actions.paste(state, idx, 11, clipboard);
+
+          expect(select<ParagraphBlock>(result, { blockIndex: 0 }).content).toHaveLength(2);
+          expect(select(result, idx)).toMatchObject({ text: "Teksten min", fontType: FontType.PLAIN });
+          expect(select(result, { ...idx, contentIndex: 1 })).toMatchObject({
+            editedText: "b1b244",
+            fontType: FontType.ITALIC,
+          });
+          expect(select(result, { blockIndex: 1, contentIndex: 0 })).toMatchObject({
+            editedText: "s1",
+            fontType: FontType.PLAIN,
+          });
+        });
         test("inserts multiple words", () => {
           const index = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
           const state = letter(
@@ -2182,6 +2261,33 @@ describe("LetterEditorActions.paste", () => {
           expect(select(result, { ...idx, itemContentIndex: 1 })).toMatchObject({
             editedText: "b1b244",
             fontType: FontType.BOLD,
+          });
+          expect(select(result, { ...idx, itemIndex: 1 })).toMatchObject({
+            editedText: "s1 min",
+            fontType: FontType.PLAIN,
+          });
+        });
+        test("italic text", () => {
+          const idx = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const clipboard = new MockDataTransfer({
+            "text/html": "<em><span>b1</span><span>b2</span><p><span>44</span></p></em><span>s1</span>",
+          });
+          const state = letter(
+            paragraph([
+              itemList({
+                items: [item(literal({ text: "Teksten min" }))],
+              }),
+            ]),
+          );
+          const result = Actions.paste(state, idx, 7, clipboard);
+          expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(2);
+          expect(select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0 }).content).toHaveLength(2);
+          expect(select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 1 }).content).toHaveLength(1);
+
+          expect(select<LiteralValue>(result, idx)).toMatchObject({ editedText: "Teksten", fontType: FontType.PLAIN });
+          expect(select(result, { ...idx, itemContentIndex: 1 })).toMatchObject({
+            editedText: "b1b244",
+            fontType: FontType.ITALIC,
           });
           expect(select(result, { ...idx, itemIndex: 1 })).toMatchObject({
             editedText: "s1 min",
@@ -2820,6 +2926,26 @@ describe("LetterEditorActions.paste", () => {
           expect(select(result, { ...idx, itemContentIndex: 1 })).toMatchObject({
             editedText: "b1b244",
             fontType: FontType.BOLD,
+          });
+          expect(select(result, { ...idx, itemIndex: 1 })).toMatchObject({
+            editedText: "s1",
+            fontType: FontType.PLAIN,
+          });
+        });
+        test("italic text", () => {
+          const idx = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
+          const clipboard = new MockDataTransfer({
+            "text/html": "<em><span>b1</span><span>b2</span><p><span>44</span></p></em><span>s1</span>",
+          });
+          const state = letter(paragraph([itemList({ items: [item(literal({ text: "Teksten min" }))] })]));
+          const result = Actions.paste(state, idx, 11, clipboard);
+
+          expect(select<ItemList>(result, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(2);
+          expect(select<Item>(result, { ...idx, itemContentIndex: undefined }).content).toHaveLength(2);
+          expect(select(result, idx)).toMatchObject({ text: "Teksten min", fontType: FontType.PLAIN });
+          expect(select(result, { ...idx, itemContentIndex: 1 })).toMatchObject({
+            editedText: "b1b244",
+            fontType: FontType.ITALIC,
           });
           expect(select(result, { ...idx, itemIndex: 1 })).toMatchObject({
             editedText: "s1",
