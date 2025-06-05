@@ -9,9 +9,11 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.erEksportberegnet_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.garantitilleeggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevenderettAnvendt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevendetilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.godkjentYrkesskade
@@ -19,6 +21,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.privatAFPErBrukt
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.skjermingstilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.uforeKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
@@ -84,6 +87,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
 // Tekster og logikk mht ektefelletillegg og barnetillegg er fjernet fra brevmalen etter en samtale med Ingrid Strand
+// innvilgetETAPHjemmel, innvilgetBTAPHjemmel, InnvilgetETBTAHjemmel, innvilgetGjrettOgTilleggKap20 fjernet
 
 @TemplateModelHelpers
 object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjonDto> {
@@ -134,6 +138,8 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         val godkjentYrkesskade = pesysData.alderspensjonVedVirk.godkjentYrkesskade
         val pensjonstilleggInnvilget = pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget
         val garantipensjonInnvilget = pesysData.alderspensjonVedVirk.garantipensjonInnvilget
+        val skjermingstilleggInnvilget = pesysData.alderspensjonVedVirk.skjermingstilleggInnvilget
+        val garantitilleggInnvilget = pesysData.alderspensjonVedVirk.garantitilleeggInnvilget
 
 
 
@@ -374,37 +380,39 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             }
 
             showIf(regelverkType.isNotAnyOf(AP2025)) {
-                // AP2011TidligUttakPenTHjemmel, AP2011TidligUttakHjemmel
+                // AP2011TidligUttakHjemmel, AP2011TidligUttakPenHjemmel, AP2011Hjemmel, AP2011PenTHjemmel, AP2011YrkeskadeHjemmel, AP2011YrkesskadePenTHjemmel
+                // AP2016TidligUttakHjemmel, AP2016TidligUttakPenTHjemmel, AP2016TidligUttakPenTGarantiPensjonHjemmel, AP2016TidligUttakGarantiPensjonHjemmel, AP2016Hjemmel, AP2016YrksesskadeHjemmel, AP2016MNTHjemmel, AP2016YrkesskadeMNTHjemmel, AP2016MNTGarantiPensjonHjemmel, AP2016YrkesskadeMNTGarantiPensjonHjemmel, AP2016GarantiPensjonHjemmel, AP2016YrkesskadeGarantiPensjonHjemmel
                 paragraph {
-                    textExpr(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2 til ".expr() + ifElse(
-                            pensjonstilleggInnvilget,
-                            ifTrue = "19-9",
-                            ifFalse = "19-8"
-                        ) + ", 19-10".expr() + ifElse(
-                            innvilgetFor67,
-                            ifTrue = ", 19-11",
-                            ifFalse = ""
-                        ),
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2 til ".expr() + ifElse(
-                            pensjonstilleggInnvilget,
-                            ifTrue = "19-9",
-                            " 19-8"
-                        ) + ", 19-10".expr() + ifElse(
-                            innvilgetFor67,
-                            ", 19-11",
-                            ""
-                        ),
-                        English to "This decision was made pursuant to the provisions of §§ 19-2 to ".expr() + ifElse(
-                            pensjonstilleggInnvilget,
-                            ifTrue = "19-9",
-                            ifFalse = "19-8"
-                        ) + ", 19-10".expr() + ifElse(
-                            innvilgetFor67,
-                            ", 19-11",
-                            ifFalse = ""
-                        )
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2 til ",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2 til ",
+                        English to "This decision was made pursuant to the provisions of §§ 19-2 to "
                     )
+                    showIf(pensjonstilleggInnvilget) {
+                        text(
+                            Bokmal to "19-9",
+                            Nynorsk to "19-9",
+                            English to "19-9",
+                        )
+                    }.orShow {
+                        text(
+                            Bokmal to "19-8",
+                            Nynorsk to "19-8",
+                            English to "19-8",
+                        )
+                    }
+                    text(
+                        Bokmal to ", 19-10",
+                        Nynorsk to ", 19-10",
+                        English to ", 19-10",
+                    )
+                    showIf(innvilgetFor67) {
+                        text(
+                            Bokmal to ", 19-11",
+                            Nynorsk to ", 19-11",
+                            English to ", 19-11",
+                        )
+                    }
                     showIf(regelverkType.isOneOf(AP2016)) {
                         text(
                             Bokmal to ", 19-15",
@@ -412,93 +420,101 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                             English to ", 19-15"
 
                         )
-                        textExpr(
-                            Bokmal to ifElse(
-                                godkjentYrkesskade,
-                                ifTrue = ", 19-20",
-                                ifFalse = ""
-                            ),
-                            Nynorsk to ifElse(
-                                godkjentYrkesskade,
-                                ifTrue = ", 19-20",
-                                ifFalse = ""
-                            ),
-                            English to ifElse(
-                                godkjentYrkesskade,
-                                ifTrue = ", 19-20",
-                                ifFalse = ""
-                            )
+                    }
+                    showIf(godkjentYrkesskade) {
+                        text(
+                            Bokmal to ", 19-20",
+                            Nynorsk to ", 19-20",
+                            English to ", 19-20",
                         )
+                    }
+                    showIf(regelverkType.isOneOf(AP2016)) {
                         text(
                             Bokmal to ", 20-3",
                             Nynorsk to ", 20-3",
                             English to ", 20-3"
                         )
-                        showIf(
-                            garantipensjonInnvilget and not(innvilgetFor67) {
-
-                            }
-                        )
-                        ) + "".expr() + ifElse(
-                            regelverkType.isOneOf(AP2016) and garantipensjonInnvilget and innvilgetFor67,
-                            ifTrue = ", 20-9 til 20-15",
-                            ifFalse = ""
-                        ) + "".expr() + ifElse(
-                            regelverkType.isOneOf(AP2016) and garantipensjonInnvilget and not(innvilgetFor67),
-                            ifTrue = ", 20-9 til 20-14",
-                            ifFalse = ""
-                        ) + " og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2 til ".expr() + ifElse(
-                            pensjonstilleggInnvilget,
-                            ifTrue = "19-9",
-                            ifFalse = "19-8"
-                        ) + ", 19-10".expr() + ifElse(
-                            innvilgetFor67,
-                            ifTrue = ", 19-11",
-                            ifFalse = ""
-                        ) + "".expr() + ifElse(
-                            regelverkType.isOneOf(AP2016),
-                            ifTrue = ", 19-15",
-                            ifFalse = ""
-                        ) + "".expr() + ifElse(
-                            godkjentYrkesskade,
-                            ifTrue = ", 19-20",
-                            ifFalse = ""
-                        ) + "".expr() + ifElse(
-                            regelverkType.isOneOf(AP2016),
-                            ifTrue = ", 20-3",
-                            ifFalse = ", 20-3"
-                        ) + " og 22-12.",
-                        English to "This decision was made pursuant to the provisions of §§ 19-2 to ".expr() + ifElse(
-                            pensjonstilleggInnvilget,
-                            ifTrue = "19-9",
-                            ifFalse = "19-8"
-                        ) + ", 19-10".expr() + ifElse(
-                            innvilgetFor67,
-                            ifTrue = ", 19-11",
-                            ifFalse = ""
-                        ) + "".expr() + ifElse(
-                            regelverkType.isOneOf(AP2016),
-                            ifTrue = ", 19-15",
-                            ifFalse = ""
-                        ) + "".expr() + ifElse(
-                            godkjentYrkesskade,
-                            ifTrue = ", 19-20",
-                            ifFalse = ""
-                        ) + "".expr() + ifElse(
-                            regelverkType.isOneOf(AP2016),
-                            ifTrue = ", 20-3",
-                            ifFalse = ""
-                        ) + " og 22-12 of the National Insurance Act.",
+                        showIf(garantipensjonInnvilget) {
+                            text(
+                                Bokmal to ", 20-9",
+                                Nynorsk to ", 20-9",
+                                English to ", 20-9",
+                            )
+                        }.orShow {
+                            text(
+                                Bokmal to ", 20-12",
+                                Nynorsk to ", 20-12",
+                                English to ", 20-12",
+                            )
+                        }
+                        showIf(innvilgetFor67) {
+                            text(
+                                Bokmal to " til 20-15",
+                                Nynorsk to " til 20-15",
+                                English to " to 20-15",
+                            )
+                        }.orShow {
+                            text(
+                                Bokmal to " til 20-14",
+                                Nynorsk to " til 20-14",
+                                English to " to 20-14",
+                            )
+                        }
+                        text(
+                            Bokmal to ", 20-19",
+                            Nynorsk to ", 20-19",
+                            English to ", 20-19",
                         )
                     }
-                }.orShowIf(regelverkType.isOneOf(AP2016)) {
-
+                    text(
+                        Bokmal to " og 22-12.",
+                        Nynorsk to " og 22-12.",
+                        English to " and 22-12 of the National Insurance Act.",
+                    )
+                }
+            }
+            showIf(skjermingstilleggInnvilget) {
+                // skjermingstilleggHjemmel
+                paragraph {
+                    text(
+                        Bokmal to "Du er også innvilget skjermingstillegg etter folketrygdloven § 19-9a.",
+                        Nynorsk to "Du er også innvilga skjermingstillegg etter folketrygdlova § 19-9a.",
+                        English to "You have also been granted the supplement for the disabled pursuant to the provisions of § 19-9a of the National Insurance Act.",
+                    )
+                }
+                showIf(regelverkType.isOneOf(AP2025) and innvilgetFor67) {
+                    paragraph {
+                        text(
+                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13",
+                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13.",
+                            English to "This decision was made pursuant to the provisions of §§ 20-2, 20-3, 20-9 to 20-15, 22-12 and 22-13 of the National Insurance Act.",
+                        )
+                    }
+                }
+                showIf(garantitilleggInnvilget) {
+                    // garantitilleggHjemmel
+                    paragraph {
+                        text(
+                            Bokmal to "Du er også innvilget garantitillegg for opptjente rettigheter etter folketrygdloven § 20-20.",
+                            Nynorsk to "Du er også innvilga garantitillegg for opptente rettar etter folketrygdlova § 20-20.",
+                            English to "You have also been granted the guarantee supplement for accumulated rights pursuant to the provisions of § 20-20 of the National Insurance Act.",
+                        )
+                    }
+                }
+                showIf(gjenlevendetilleggKap19Innvilget) {
+                    paragraph {
+                        text(
+                            Bokmal to "Gjenlevendetillegg er gitt etter nye bestemmelser i folketrygdloven § 19-16 og kapittel 10A i tilhørende forskrift om alderspensjon i folketrygden som gjelder fra 1. januar 2024.",
+                            Nynorsk to "Attlevandetillegg er innvilga etter nye reglar i folketrygdlova § 19-16 og forskrift om alderspensjon i folketrygda kapittel 10A som gjeld frå 1. januar 2024.",
+                            English to "The survivor's supplement in your retirement pension has been granted in accordance with the changes to the provisions of the National Insurance Act § 19-16 and the regulations on retirement pension in the National Insurance chapter 10A, which apply from 1 January 2024"
+                        )
+                    }
                 }
             }
         }
     }
 }
+
 
 
 

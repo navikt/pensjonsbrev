@@ -58,6 +58,8 @@ data class InnvilgelseAvAlderspensjonDto(
         val pensjonstilleggInnvilget: Boolean,
         val godkjentYrkesskade: Boolean,
         val garantipensjonInnvilget: Boolean,
+        val skjermingstilleggInnvilget: Boolean,
+        val garantitilleeggInnvilget: Boolean,
     )
 
     data class Avdod(
