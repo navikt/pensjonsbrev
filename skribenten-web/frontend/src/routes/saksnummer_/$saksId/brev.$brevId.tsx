@@ -361,7 +361,9 @@ function RedigerBrev({
             `}
           >
             <VStack gap="3">
-              <Heading size="small">{brevmal.data?.name}</Heading>
+              <Heading size="small" spacing>
+                {brevmal.data?.name}
+              </Heading>
               <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
             </VStack>
             <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
@@ -429,7 +431,6 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
 
   const optionalFields = specificationFormElements.status === "success" ? specificationFormElements.optionalFields : [];
   const requiredFields = specificationFormElements.status === "success" ? specificationFormElements.requiredfields : [];
-
   const hasOptional = optionalFields.length > 0;
   const hasRequired = requiredFields.length > 0;
 
@@ -461,8 +462,8 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
       display: flex;
     }
     flex-direction: column;
-    gap: var(--a-spacing-6);
-    margin-top: 12px;
+    gap: 1.125rem;
+    margin-top: 1.125rem;
   `;
 
   if (!hasOptional && !hasRequired) return panelContent("optional");
@@ -470,9 +471,7 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
   if (hasOptional && !hasRequired) {
     return (
       <>
-        <Heading size="xsmall" spacing>
-          Tekstvalg
-        </Heading>
+        <Heading size="xsmall">Tekstvalg</Heading>
         {panelContent("optional")}
       </>
     );
@@ -481,9 +480,7 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
   if (hasRequired && !hasOptional)
     return (
       <>
-        <Heading size="xsmall" spacing>
-          Overstyring
-        </Heading>
+        <Heading size="xsmall">Overstyring</Heading>
         {panelContent("required")}
       </>
     );
@@ -507,7 +504,7 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
       <Tabs.List
         css={css`
           display: grid;
-          grid-template-columns: repeat(${hasOptional && hasRequired ? 2 : 1}, 1fr);
+          grid-template-columns: repeat(2, 1fr);
         `}
       >
         <Tabs.Tab label="Tekstvalg" value={BrevSidemenyTabs.TEKSTVALG} />
