@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.gjennomsnitt
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -243,95 +244,7 @@ object VarselGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                 )
             }
 
-            paragraph {
-                table(
-                    header = {
-                        column(1) {
-                            text(
-                                Bokmal to "År",
-                                Nynorsk to "År",
-                            )
-                        }
-                        column(2) {
-                            text(
-                                Bokmal to "Din inntekt",
-                                Nynorsk to "Di inntekt:",
-                            )
-                        }
-                    },
-                ) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2019",
-                                Nynorsk to "2019",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2019.format(CurrencyFormat) + " kroner",
-                                Nynorsk to inntekt2019.format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2020",
-                                Nynorsk to "2020",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2020.format(CurrencyFormat) + " kroner",
-                                Nynorsk to inntekt2020.format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2021",
-                                Nynorsk to "2021",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2021.format(CurrencyFormat) + " kroner",
-                                Nynorsk to inntekt2021.format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2022",
-                                Nynorsk to "2022",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2022.format(CurrencyFormat) + " kroner",
-                                Nynorsk to inntekt2022.format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2023",
-                                Nynorsk to "2023",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2023.format(CurrencyFormat) + " kroner",
-                                Nynorsk to inntekt2023.format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                }
-            }
+            includePhrase(DineInntekterTabell(inntekt2019, inntekt2020, inntekt2021, inntekt2022, inntekt2023, gjennomsnitt))
 
             paragraph {
                 text(
@@ -365,8 +278,8 @@ object VarselGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                     )
                 }.orShow {
                     textExpr(
-                        Bokmal to "Din gjennomsnittlige inntekt mellom 2019 og 2023 har ifølge våre opplysninger vært høyere enn gjennomsnittlig G de fem årene (".expr() + 212_813.expr().format(CurrencyFormat) + " kroner)".expr() + 212_813.expr().format(CurrencyFormat) + " kroner)",
-                        Nynorsk to "Den gjennomsnittlege inntekta di mellom 2019 og 2023 har ifølgje opplysningar frå Skatteetaten vore høgare enn gjennomsnittleg G for dei fem åra (".expr() + 212_813.expr().format(CurrencyFormat) + " kroner)",
+                        Bokmal to "Din gjennomsnittlige inntekt har vært over inntektsgrensen i perioden 2019-2023. Inntektsgrensen er to ganger gjennomsnittlig G for perioden, som tilsvarer ".expr() + 212_813.expr().format(CurrencyFormat) + " kroner.",
+                        Nynorsk to "Den gjennomsnittlege inntekta di har vore over inntektsgrensa i perioden 2019–2023. Inntektsgrensa er to gonger gjennomsnittleg G for perioden, som tilsvarar".expr() + 212_813.expr().format(CurrencyFormat) + " kroner.",
                     )
                 }
             }
