@@ -55,6 +55,9 @@ data class InnvilgelseAvAlderspensjonDto(
         val gjenlevenderettAnvendt: Boolean,
         val privatAFPErBrukt: Boolean,
         val erEksportberegnet: Boolean,
+        val pensjonstilleggInnvilget: Boolean,
+        val godkjentYrkesskade: Boolean,
+        val garantipensjonInnvilget: Boolean,
     )
 
     data class Avdod(

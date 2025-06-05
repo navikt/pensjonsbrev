@@ -1,5 +1,8 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
+import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -8,9 +11,13 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.erEksportberegnet_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevenderettAnvendt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevendetilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.godkjentYrkesskade
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.godkjentYrkesskade_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.privatAFPErBrukt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.uforeKombinertMedAlder
@@ -57,7 +64,9 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isNull
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
@@ -93,7 +102,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             brevtype = VEDTAKSBREV
         )
     ) {
-        val uttaksgrad = pesysData.alderspensjonVedVirk.uttaksgrad.format()
+        val uttaksgrad = pesysData.alderspensjonVedVirk.uttaksgrad
         val regelverkType = pesysData.regelverkType
         val sivilstand = pesysData.sivilstand
         val sivilstandBestemtStorBokstav = pesysData.sivilstand.bestemtForm(storBokstav = true)
@@ -122,6 +131,9 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleEOS_safe.ifNull(then = false)
         val eksportTrygdeavtaleAvtaleland =
             pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland_safe.ifNull(then = false)
+        val godkjentYrkesskade = pesysData.alderspensjonVedVirk.godkjentYrkesskade
+        val pensjonstilleggInnvilget = pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget
+        val garantipensjonInnvilget = pesysData.alderspensjonVedVirk.garantipensjonInnvilget
 
 
 
@@ -129,9 +141,9 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
         title {
             textExpr(
-                Bokmal to "Vi har innvilget søknaden din om ".expr() + uttaksgrad + " prosent alderspensjon",
-                Nynorsk to "Vi har innvilga søknaden din om ".expr() + uttaksgrad + " prosent alderspensjon",
-                English to "We have granted your application for ".expr() + uttaksgrad + " percent retirement pension",
+                Bokmal to "Vi har innvilget søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
+                Nynorsk to "Vi har innvilga søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
+                English to "We have granted your application for ".expr() + uttaksgrad.format() + " percent retirement pension",
             )
             includePhrase(SaksType(pesysData.sakstype))
         }
@@ -283,9 +295,9 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 // innvilgelseAPogAFPPrivat
                 paragraph {
                     textExpr(
-                        Bokmal to "Du får ".expr() + uttaksgrad + " prosent alderspensjon fordi summen av alderspensjonen og den avtalefestede pensjonen din (AFP) gjør at du har rett til alderspensjon før du fyller 67 år.",
-                        Nynorsk to "Du får ".expr() + uttaksgrad + " prosent alderspensjon fordi summen av alderspensjonen og den avtalefesta pensjonen din (AFP) gjer at du har rett til alderspensjon før 67 år.",
-                        English to "You have been granted ".expr() + uttaksgrad + " percent retirement pension because your total retirement pension and contractual early retirement pension (AFP) makes you eligible for retirement pension before the age of 67."
+                        Bokmal to "Du får ".expr() + uttaksgrad.format() + " prosent alderspensjon fordi summen av alderspensjonen og den avtalefestede pensjonen din (AFP) gjør at du har rett til alderspensjon før du fyller 67 år.",
+                        Nynorsk to "Du får ".expr() + uttaksgrad.format() + " prosent alderspensjon fordi summen av alderspensjonen og den avtalefesta pensjonen din (AFP) gjer at du har rett til alderspensjon før 67 år.",
+                        English to "You have been granted ".expr() + uttaksgrad.format() + " percent retirement pension because your total retirement pension and contractual early retirement pension (AFP) makes you eligible for retirement pension before the age of 67."
                     )
                 }
             }
@@ -328,7 +340,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 }
             }
 
-            showIf(uttaksgrad.lessThan(compareTo = 100) and not(uforeKombinertMedAlder)) {
+            showIf(uttaksgrad.lessThan(100) and not(uforeKombinertMedAlder)) {
                 paragraph {
                     text(
                         Bokmal to "Du må sende oss en ny søknad når du ønsker å ta ut mer alderspensjon. En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden.",
@@ -361,6 +373,129 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 }
             }
 
+            showIf(regelverkType.isNotAnyOf(AP2025)) {
+                // AP2011TidligUttakPenTHjemmel, AP2011TidligUttakHjemmel
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2 til ".expr() + ifElse(
+                            pensjonstilleggInnvilget,
+                            ifTrue = "19-9",
+                            ifFalse = "19-8"
+                        ) + ", 19-10".expr() + ifElse(
+                            innvilgetFor67,
+                            ifTrue = ", 19-11",
+                            ifFalse = ""
+                        ),
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2 til ".expr() + ifElse(
+                            pensjonstilleggInnvilget,
+                            ifTrue = "19-9",
+                            " 19-8"
+                        ) + ", 19-10".expr() + ifElse(
+                            innvilgetFor67,
+                            ", 19-11",
+                            ""
+                        ),
+                        English to "This decision was made pursuant to the provisions of §§ 19-2 to ".expr() + ifElse(
+                            pensjonstilleggInnvilget,
+                            ifTrue = "19-9",
+                            ifFalse = "19-8"
+                        ) + ", 19-10".expr() + ifElse(
+                            innvilgetFor67,
+                            ", 19-11",
+                            ifFalse = ""
+                        )
+                    )
+                    showIf(regelverkType.isOneOf(AP2016)) {
+                        text(
+                            Bokmal to ", 19-15",
+                            Nynorsk to ", 19-15",
+                            English to ", 19-15"
+
+                        )
+                        textExpr(
+                            Bokmal to ifElse(
+                                godkjentYrkesskade,
+                                ifTrue = ", 19-20",
+                                ifFalse = ""
+                            ),
+                            Nynorsk to ifElse(
+                                godkjentYrkesskade,
+                                ifTrue = ", 19-20",
+                                ifFalse = ""
+                            ),
+                            English to ifElse(
+                                godkjentYrkesskade,
+                                ifTrue = ", 19-20",
+                                ifFalse = ""
+                            )
+                        )
+                        text(
+                            Bokmal to ", 20-3",
+                            Nynorsk to ", 20-3",
+                            English to ", 20-3"
+                        )
+                        showIf(
+                            garantipensjonInnvilget and not(innvilgetFor67) {
+
+                            }
+                        )
+                        ) + "".expr() + ifElse(
+                            regelverkType.isOneOf(AP2016) and garantipensjonInnvilget and innvilgetFor67,
+                            ifTrue = ", 20-9 til 20-15",
+                            ifFalse = ""
+                        ) + "".expr() + ifElse(
+                            regelverkType.isOneOf(AP2016) and garantipensjonInnvilget and not(innvilgetFor67),
+                            ifTrue = ", 20-9 til 20-14",
+                            ifFalse = ""
+                        ) + " og 22-12.",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2 til ".expr() + ifElse(
+                            pensjonstilleggInnvilget,
+                            ifTrue = "19-9",
+                            ifFalse = "19-8"
+                        ) + ", 19-10".expr() + ifElse(
+                            innvilgetFor67,
+                            ifTrue = ", 19-11",
+                            ifFalse = ""
+                        ) + "".expr() + ifElse(
+                            regelverkType.isOneOf(AP2016),
+                            ifTrue = ", 19-15",
+                            ifFalse = ""
+                        ) + "".expr() + ifElse(
+                            godkjentYrkesskade,
+                            ifTrue = ", 19-20",
+                            ifFalse = ""
+                        ) + "".expr() + ifElse(
+                            regelverkType.isOneOf(AP2016),
+                            ifTrue = ", 20-3",
+                            ifFalse = ", 20-3"
+                        ) + " og 22-12.",
+                        English to "This decision was made pursuant to the provisions of §§ 19-2 to ".expr() + ifElse(
+                            pensjonstilleggInnvilget,
+                            ifTrue = "19-9",
+                            ifFalse = "19-8"
+                        ) + ", 19-10".expr() + ifElse(
+                            innvilgetFor67,
+                            ifTrue = ", 19-11",
+                            ifFalse = ""
+                        ) + "".expr() + ifElse(
+                            regelverkType.isOneOf(AP2016),
+                            ifTrue = ", 19-15",
+                            ifFalse = ""
+                        ) + "".expr() + ifElse(
+                            godkjentYrkesskade,
+                            ifTrue = ", 19-20",
+                            ifFalse = ""
+                        ) + "".expr() + ifElse(
+                            regelverkType.isOneOf(AP2016),
+                            ifTrue = ", 20-3",
+                            ifFalse = ""
+                        ) + " og 22-12 of the National Insurance Act.",
+                        )
+                    }
+                }.orShowIf(regelverkType.isOneOf(AP2016)) {
+
+                }
+            }
         }
     }
 }
