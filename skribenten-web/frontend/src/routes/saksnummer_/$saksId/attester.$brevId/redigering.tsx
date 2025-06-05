@@ -209,7 +209,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               <VStack gap="5">
                 <Switch
                   css={css`
-                    display: none; // This switch is hidden, but can be used for future features
+                    display: none;
                   `}
                   size="small"
                 >
@@ -217,7 +217,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 </Switch>
                 <Switch
                   css={css`
-                    display: none; // This switch is hidden, but can be used for future features
+                    display: none;
                   `}
                   size="small"
                 >
