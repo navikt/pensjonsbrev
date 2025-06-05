@@ -58,7 +58,7 @@ public final class no/nav/pensjon/brev/template/AttachmentTemplate : no/nav/pens
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getIncludeSakspart ()Z
 	public final fun getOutline ()Ljava/util/List;
-	public final fun getTitle ()Lno/nav/pensjon/brev/template/ContentOrControlStructure;
+	public final fun getTitle ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
 	public fun toString ()Ljava/lang/String;
