@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.maler.alder.omregning
 
 import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonPerManed
+import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -40,7 +42,10 @@ data class OmregningAlderUfore2016Felles(
     val borINorge: Expression<Boolean>,
     val erEOSLand: Expression<Boolean>,
     val eksportTrygdeavtaleEOS: Expression<Boolean>,
-    val avtaleland: Expression<String>
+    val avtaleland: Expression<String>,
+    val innvilgetFor67: Expression<Boolean>,
+    val fullTrygdetid: Expression<Boolean>,
+
 
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -179,7 +184,10 @@ data class OmregningAlderUfore2016Felles(
             }
         }
 
-        showIf(pensjonstilleggInnvilget.not() and garantipensjonInnvilget.not() and godkjentYrkesskade.not()) {
+        showIf(
+            pensjonstilleggInnvilget.not()
+                    and garantipensjonInnvilget.not()
+                    and godkjentYrkesskade.not()) {
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2 til 19-8, 19-10, 19-15, 20-2, 20-3, 20-12 til 20-14, 20-19 og 22-12.",
@@ -189,7 +197,10 @@ data class OmregningAlderUfore2016Felles(
             }
         }
 
-        showIf(pensjonstilleggInnvilget.not() and garantipensjonInnvilget.not() and godkjentYrkesskade) {
+        showIf(
+            pensjonstilleggInnvilget.not()
+                    and garantipensjonInnvilget.not()
+                    and godkjentYrkesskade) {
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2 til 19-8, 19-10, 19-15, 19-20, 20-2, 20-3, 20-12 til 20-14, 20-19 og 22-12.",
@@ -199,7 +210,10 @@ data class OmregningAlderUfore2016Felles(
             }
         }
 
-        showIf(pensjonstilleggInnvilget and garantipensjonInnvilget.not() and godkjentYrkesskade.not()) {
+        showIf(
+            pensjonstilleggInnvilget
+                    and garantipensjonInnvilget.not()
+                    and godkjentYrkesskade.not()) {
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2 til 19-10, 19-15, 20-2, 20-3, 20-12 til 20-14, 20-19 og 22-12.",
@@ -209,7 +223,10 @@ data class OmregningAlderUfore2016Felles(
             }
         }
 
-        showIf(pensjonstilleggInnvilget and garantipensjonInnvilget.not() and godkjentYrkesskade) {
+        showIf(
+            pensjonstilleggInnvilget
+                    and garantipensjonInnvilget.not()
+                    and godkjentYrkesskade) {
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2 til 19-10, 19-15, 19-20, 20-2, 20-3, 20-12 til 20-14, 20-19 og 22-12.",
@@ -219,7 +236,10 @@ data class OmregningAlderUfore2016Felles(
             }
         }
 
-        showIf(pensjonstilleggInnvilget and garantipensjonInnvilget and godkjentYrkesskade.not()) {
+        showIf(
+            pensjonstilleggInnvilget
+                    and garantipensjonInnvilget
+                    and godkjentYrkesskade.not()) {
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2 til 19-10, 19-15, 20-2, 20-3, 20-9 til 20-14, 20-19 og 22-12.",
@@ -229,7 +249,10 @@ data class OmregningAlderUfore2016Felles(
             }
         }
 
-        showIf(pensjonstilleggInnvilget and garantipensjonInnvilget and godkjentYrkesskade) {
+        showIf(
+            pensjonstilleggInnvilget
+                    and garantipensjonInnvilget
+                    and godkjentYrkesskade) {
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2 til 19-10, 19-15, 19-20, 20-2, 20-3, 20-9 til 20-14, 20-19 og 22-12.",
@@ -239,7 +262,10 @@ data class OmregningAlderUfore2016Felles(
             }
         }
 
-        showIf(pensjonstilleggInnvilget.not() and garantipensjonInnvilget and godkjentYrkesskade.not()) {
+        showIf(
+            pensjonstilleggInnvilget.not()
+                    and garantipensjonInnvilget
+                    and godkjentYrkesskade.not()) {
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2 til 19-8, 19-10, 19-15, 20-2, 20-3, 20-9 til 20-14, 20-19 og 22-12.",
@@ -249,7 +275,10 @@ data class OmregningAlderUfore2016Felles(
             }
         }
 
-        showIf(pensjonstilleggInnvilget.not() and garantipensjonInnvilget and godkjentYrkesskade) {
+        showIf(
+            pensjonstilleggInnvilget.not()
+                    and garantipensjonInnvilget
+                    and godkjentYrkesskade) {
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2 til 19-8, 19-10, 19-15, 19-20, 20-2, 20-3, 20-9 til 20-14, 20-19 og 22-12.",
@@ -364,6 +393,98 @@ data class OmregningAlderUfore2016Felles(
                 )
             }
         }
+
+        title2 {
+            text(
+                Bokmal to "Andre pensjonsordninger",
+                Nynorsk to "Andre pensjonsordningar",
+                English to "Other pension schemes"
+            )
+        }
+
+        paragraph {
+            text(
+                Bokmal to "Mange er tilknyttet en eller flere offentlige eller private pensjonsordninger som de har pensjonsrettigheter fra. " +
+                        "Du bør kontakte de du har slike ordninger med for å undersøke hvilke rettigheter du kan ha. " +
+                        "Du kan også undersøke med siste arbeidsgiver.",
+                Nynorsk to "Mange er knytte til ei eller fleire offentlege eller private pensjonsordningar som de har pensjonsrettar frå. " +
+                        "Du bør kontakte dei du har slike ordningar med for å undersøke kva for rettar du har. " +
+                        "Du kan også undersøkje med siste arbeidsgivar.",
+                English to "Many people are also members of one or more public or private pension schemes where they also have pension rights." +
+                        " You must contact the company/ies you have pension arrangements with, if you have any questions about this." +
+                        " You can also contact your most recent employer."
+            )
+        }
+
+        showIf(
+            innvilgetFor67.not()
+                and uttaksgrad.equalTo(100)
+                and fullTrygdetid.not()
+                and borINorge) {
+
+            title2 {
+                text(
+                    Bokmal to "Supplerende stønad",
+                    Nynorsk to "Supplerande stønad",
+                    English to "Supplementary benefit"
+                )
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "Hvis du har kort botid i Norge når du fyller 67 år, kan du søke om supplerende stønad. " +
+                            "Stønaden er behovsprøvd og all inntekt fra Norge og utlandet blir regnet med. " +
+                            "Inntekten til eventuell ektefelle, samboer eller registrert partner blir også regnet med. " +
+                            "Du kan lese mer om supplerende stønad på nettsiden vår ", //TODO Supplerende URL
+                    Nynorsk to "Dersom du har kort butid i Noreg når du fyller 67 år, kan du søkje om supplerande stønad. " +
+                            "Stønaden er behovsprøvd, og all inntekt frå Noreg og utlandet blir rekna med. " +
+                            "Inntekta til eventuell ektefelle, sambuar eller registrert partnar skal også reknast med. " +
+                            "Du kan lese meir om supplerande stønad på nettsida vår ",
+                    English to "If you have only lived a short period in Norway before reaching 67 years of age, you can apply for supplementary benefit. " +
+                            "The benefit is means-tested and your total income from Norway and abroad is taken into account. " +
+                            "The income of any spouse, cohabitant or registered partner will also be taken into account. " +
+                            "You can read more about supplementary benefit at our website ",
+                )
+            }
+        }
+
+        title2 {
+            text(
+                Bokmal to "Det er egne skatteregler for pensjon",
+                Nynorsk to "Det er eigne skattereglar for pensjon",
+                English to "Pensions are subject to special tax rules"
+            )
+        }
+
+        paragraph {
+            text(
+                Bokmal to "Du bør endre skattekortet når du begynner å ta ut alderspensjon. Dette kan du gjøre selv på $SKATTEETATEN_PENSJONIST_URL. " +
+                        "Der får du også mer informasjon om skattekort for pensjonister. " +
+                        "Vi får skattekortet elektronisk. Du skal derfor ikke sende det til oss. ",
+                Nynorsk to "Du bør endre skattekortet når du byrjar å ta ut alderspensjon. Dette kan du gjere sjølv på $SKATTEETATEN_PENSJONIST_URL. " +
+                        "Der får du også meir informasjon om skattekort for pensjonistar. " +
+                        "Vi får skattekortet elektronisk. Du skal derfor ikkje sende det til oss.",
+                English to "When you start draw retirement pension, you should change your tax deduction card. " +
+                        "You can change your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL. " +
+                        "There you will find more information regarding tax deduction card for pensioners. " +
+                        "We will receive the tax card directly from the Norwegian Tax Administration, meaning you do not need to send it to us.",
+            )
+        }
+
+        paragraph {
+            text(
+                Bokmal to "På $DIN_PENSJON_URL kan du se hva du betaler i skatt. " +
+                        "Her kan du også legge inn ekstra skattetrekk om du ønsker det. " +
+                        "Dersom du endrer skattetrekket, vil dette gjelde fra måneden etter at vi har fått beskjed.",
+                Nynorsk to "På $DIN_PENSJON_URL kan du sjå kva du betaler i skatt. " +
+                        "Her kan du også leggje inn tilleggsskatt om du ønskjer det. " +
+                        "Dersom du endrar skattetrekket, vil dette gjelde frå månaden etter at vi har fått beskjed.",
+                English to "At $DIN_PENSJON_URL you can see how much tax you are paying. " +
+                        "Here you can also add surtax, if you want. If you change your income tax rate, this will be applied from the month after we have been notified of the change.",
+            )
+        }
+
+
 
     }
 }
