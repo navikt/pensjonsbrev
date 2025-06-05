@@ -1,7 +1,5 @@
 import type { Draft } from "immer";
 
-import type { BlockContentIndex, ItemContentIndex, LiteralIndex } from "~/Brevredigering/LetterEditor/actions/model";
-import type { Focus } from "~/Brevredigering/LetterEditor/model/state";
 import type { Content, ItemList, LiteralValue, NewLine, TextContent, VariableValue } from "~/types/brevbakerTypes";
 
 export const handleSwitchContent = <T, U, V, W>(args: {
@@ -45,8 +43,3 @@ export const handleSwitchTextContent = <T>(args: {
     }
   }
 };
-
-export const isBlockContentIndex = (f: Focus | LiteralIndex): f is BlockContentIndex => !isItemContentIndex(f);
-
-export const isItemContentIndex = (f: Focus | LiteralIndex): f is ItemContentIndex =>
-  "itemIndex" in f && "itemContentIndex" in f;

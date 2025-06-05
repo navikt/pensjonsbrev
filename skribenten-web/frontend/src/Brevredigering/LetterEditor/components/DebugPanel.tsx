@@ -2,8 +2,8 @@ import { css } from "@emotion/react";
 import { HStack } from "@navikt/ds-react";
 import { useEffect, useState } from "react";
 
-import type { LiteralIndex } from "~/Brevredigering/LetterEditor/actions/model";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
+import type { LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import { getCaretRect, getRange } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import type { AnyBlock, Content, Item } from "~/types/brevbakerTypes";
 
