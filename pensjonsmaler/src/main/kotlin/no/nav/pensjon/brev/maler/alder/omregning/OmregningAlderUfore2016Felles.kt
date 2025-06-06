@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.alder.omregning
 
 import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonPerManed
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
@@ -484,6 +485,56 @@ data class OmregningAlderUfore2016Felles(
             )
         }
 
+        title2 {
+            text(
+                Bokmal to "Alderspensjonen din reguleres årlig",
+                Nynorsk to "Alderspensjonen din blir regulert årleg",
+                English to "Your retirement pension will be adjusted annually"
+            )
+        }
+
+        paragraph {
+            text(
+                Bokmal to "Reguleringen skjer med virkning fra 1. mai og selve økningen blir vanligvis etterbetalt i juni. " +
+                        "Du får informasjon om dette på utbetalingsmeldingen din. " +
+                        "På $NAV_URL kan du lese mer om hvordan pensjonene reguleres.",
+                Nynorsk to "Reguleringa skjer med verknad frå 1. mai, og sjølve auken blir vanlegvis etterbetalt i juni. " +
+                        "Du får informasjon om dette på utbetalingsmeldinga di. " +
+                        "På $NAV_URL kan du lese meir om korleis pensjonane blir regulerte.",
+                English to "The pension amount will be adjusted with effect from 1 May, and the actual increase is usually paid retroactively in June. " +
+                        "You will be informed about this on your payout notice. " +
+                        "You can read more about how pensions are adjusted at $NAV_URL.",
+            )
+        }
+
+        showIf(gjenlevendetilleggKap19Innvilget) {
+            paragraph {
+                text(
+                    Bokmal to "Gjenlevendetillegg skal ikke reguleres når pensjonen øker fra 1. mai hvert år.",
+                    Nynorsk to "Attlevendetillegg skal ikkje regulerast når pensjonen aukar frå 1. mai kvart år.",
+                    English to "The survivor’s supplement will not be adjusted when the pension increases from May 1st each year."
+                )
+            }
+        }
+
+        title2 {
+            text(
+                Bokmal to "Arbeidsinntekt ved siden av alderspensjonen kan gi høyere pensjon",
+                Nynorsk to "Arbeidsinntekt ved sida av alderspensjonen kan gi høgare pensjon",
+                English to "Income from employment in addition to your retirement pension may increase your future pension"
+            )
+        }
+
+        paragraph {
+            text(
+                Bokmal to "Du kan arbeide så mye du vil selv om du tar ut alderspensjon, uten at pensjonen din blir redusert." +
+                        " Fram til og med det året du fyller 75 år, kan arbeidsinntekt i tillegg føre til at pensjonen din øker.",
+                Nynorsk to "Du kan arbeide så mykje du vil sjølv om du tek ut alderspensjon, utan at pensjonen din blir redusert. " +
+                        "Fram til og med det året du fyller 75 år, kan arbeidsinntekt i tillegg føre til at pensjonen din aukar.",
+                English to "You may combine work with drawing a pension, without deductions being made  in your pension. " +
+                        "If you continue to work, you may accumulate additional pension rights. This will apply up to and including the year you turn 75."
+            )
+        }
 
 
     }
