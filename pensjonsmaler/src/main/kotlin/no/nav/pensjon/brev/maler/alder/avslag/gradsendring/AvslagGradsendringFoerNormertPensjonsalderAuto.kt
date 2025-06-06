@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.alder.avslag.gradsendring
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.afpBruktIBeregning
+import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.avtaleland
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.borINorge
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.harEOSLand
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.minstePensjonssats
@@ -61,6 +62,7 @@ object AvslagGradsendringFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagU
                     borINorge = borINorge,
                     harEOSLand = harEOSLand,
                     regelverkType = regelverkType,
+                    avtaleland = avtaleland,
                 )
             )
         }
