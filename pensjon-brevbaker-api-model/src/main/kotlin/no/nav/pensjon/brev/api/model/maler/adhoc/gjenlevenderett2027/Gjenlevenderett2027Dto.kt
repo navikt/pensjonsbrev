@@ -8,6 +8,7 @@ data class Gjenlevenderett2027Dto(
     val inntekt2021: Int,
     val inntekt2022: Int,
     val inntekt2023: Int,
+    val gjennomsnitt: Int,
 
     val inntekt2019G: Double,
     val inntekt2020G: Double,
