@@ -60,5 +60,6 @@ fun createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() =
             )
         ),
         borINorge = false,
-        harEOSLand = true
+        harEOSLand = false,
+        avtaleland = "Danmark",
     )
