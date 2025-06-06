@@ -2,6 +2,12 @@ package no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2019G
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2020G
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2021G
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2022G
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023G
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.gjennomsnittInntektG
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2019
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2020
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2021
@@ -148,9 +154,9 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             paragraph {
                 text(
                     Bokmal to "I tillegg må inntekten din i 2019–2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. " +
-                           "Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere. ",
+                            "Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere. ",
                     Nynorsk to "I tillegg må inntekta di i 2019–2023 ha vore under to gongar grunnbeløpet i folketrygda (G) i gjennomsnitt i desse fem åra. " +
-                           "Det vil seie at inntekta kan overstige to gongar grunnbeløpet i eitt enkelt år, så lenge gjennomsnittet av dei fem åra er lågare. "
+                            "Det vil seie at inntekta kan overstige to gongar grunnbeløpet i eitt enkelt år, så lenge gjennomsnittet av dei fem åra er lågare. "
                 )
             }
 
@@ -263,116 +269,42 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                 )
             }
 
-            paragraph {
-                table(
-                    header = {
-                        column(1) {
-                            text(
-                                Bokmal to "År",
-                                Nynorsk to "År"
-                            )
-                        }
-                        column(2) {
-                            text(
-                                Bokmal to "Din inntekt",
-                                Nynorsk to "Di inntekt"
-                            )
-                        }
-                    },
-                ) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2019",
-                                Nynorsk to "2019"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2019.format(CurrencyFormat) + " kroner",
-                                Nynorsk to inntekt2019.format(CurrencyFormat) + " kroner"
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2020",
-                                Nynorsk to "2020"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2020.format(CurrencyFormat) + " kroner",
-                                Nynorsk to inntekt2020.format(CurrencyFormat) + " kroner"
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2021",
-                                Nynorsk to "2021"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2021.format(CurrencyFormat) + " kroner",
-                                Nynorsk to inntekt2021.format(CurrencyFormat) + " kroner"
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2022",
-                                Nynorsk to "2022"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2022.format(CurrencyFormat) + " kroner",
-                                Nynorsk to inntekt2022.format(CurrencyFormat) + " kroner"
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2023",
-                                Nynorsk to "2023",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2023.format(CurrencyFormat) + " kroner",
-                                Nynorsk to inntekt2023.format(CurrencyFormat) + " kroner"
-                            )
-                        }
-                    }
-                }
-            }
+            includePhrase(DineInntekterTabell(inntekt2019, inntekt2020, inntekt2021, inntekt2022, inntekt2023, gjennomsnittInntektG, inntekt2019G, inntekt2020G, inntekt2021G, inntekt2022G, inntekt2023G))
 
-            paragraph {
-                showIf(inntekt2022Over3g and inntekt2023Over3g) {
+            showIf(inntekt2022Over3g and inntekt2023Over3g) {
+                paragraph {
                     text(
                         Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2022 og 2023. ",
-                        Nynorsk to "Inntekta di har ifølgje opplysningar frå Skatteetaten vore høgare enn inntektsgrensa i 2022 og 2023."
+                        Nynorsk to "Inntekta di har ifølgje opplysningar frå Skatteetaten vore høgare enn inntektsgrensa i 2022 og 2023.",
                     )
-                }.orShowIf(inntekt2022Over3g) {
+                }
+            }.orShowIf(inntekt2022Over3g) {
+                paragraph {
                     text(
                         Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2022. ",
-                        Nynorsk to "Inntekta di har ifølgje opplysningar frå Skatteetaten vore høgare enn inntektsgrensa i 2022. "
+                        Nynorsk to "Inntekta di har ifølgje opplysningar frå Skatteetaten vore høgare enn inntektsgrensa i 2022.",
                     )
-                }.orShowIf(inntekt2023Over3g) {
+                }
+            }.orShowIf(inntekt2023Over3g) {
+                paragraph {
                     text(
                         Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2023. ",
-                        Nynorsk to "Inntekta di har ifølgje opplysningar frå Skatteetaten vore høgare enn inntektsgrensa i 2023. "
+                        Nynorsk to "Inntekta di har ifølgje opplysningar frå Skatteetaten vore høgare enn inntektsgrensa i 2023.",
                     )
-                }.orShow {
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i perioden 2019–2023. ",
+                        Nynorsk to "Inntekta di har ifølgje opplysningar frå Skatteetaten vore høgare enn inntektsgrensa i perioden 2019–2023. ",
+                    )
+                }
+                paragraph {
                     textExpr(
-                        Bokmal to "Din gjennomsnittlige inntekt mellom 2019 og 2023 har ifølge våre opplysninger vært høyere enn gjennomsnittlig G de fem årene (".expr() + 212_813.expr().format(CurrencyFormat) + " kroner)",
-                        Nynorsk to "Den gjennomsnittlege inntekta di mellom 2019 og 2023 har ifølgje opplysningar frå Skatteetaten vore høgare enn gjennomsnittleg G for dei fem åra (".expr() + 212_813.expr().format(CurrencyFormat) + " kroner)"
+                        Bokmal to "Vi har vurdert om gjennomsnittet av din inntekt som antall G for disse årene har vært høyere enn 2 G. Resultatet viser at din gjennomsnittlige inntekt har vært ".expr() + gjennomsnittInntektG.format(6) + " G. " +
+                                "Kravet om at inntekten må ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene, er derfor ikke oppfylt.",
+                        Nynorsk to "Vi har vurdert om gjennomsnittet av inntekta di som talet på G for desse åra har vore høgare enn 2 G. Resultatet viser at den gjennomsnittlege inntekta di har vore ".expr() + gjennomsnittInntektG.format(6) + " G. " +
+                                "Kravet om at inntekta må ha vore under to gonger grunnbeløpet i folketrygda (G) i gjennomsnitt i desse fem åra, er difor ikkje oppfylt."
                     )
                 }
             }
