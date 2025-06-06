@@ -16,12 +16,12 @@ data class DineInntekterTabell(
     val inntekt2021: Expression<Int>,
     val inntekt2022: Expression<Int>,
     val inntekt2023: Expression<Int>,
-    val gInntekt2023: Expression<Double>,
-    val gInntekt2022: Expression<Double>,
-    val gInntekt2021: Expression<Double>,
-    val gInntekt2020: Expression<Double>,
-    val gInntekt2019: Expression<Double>,
-    val gjennomsnitt: Expression<Double>,
+    val gjennomsnittInntektG: Expression<Double>,
+    val inntekt2019G: Expression<Double>,
+    val inntekt2020G: Expression<Double>,
+    val inntekt2021G: Expression<Double>,
+    val inntekt2022G: Expression<Double>,
+    val inntekt2023G: Expression<Double>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
@@ -69,9 +69,9 @@ data class DineInntekterTabell(
                     }
                     cell {
                         textExpr(
-                            Bokmal to gInntekt2019.format(6) + " G",
-                            Nynorsk to gInntekt2019.format(6) + " G",
-                            English to gInntekt2019.format(6) + " G",
+                            Bokmal to inntekt2019G.format(6) + " G",
+                            Nynorsk to inntekt2019G.format(6) + " G",
+                            English to inntekt2019G.format(6) + " G",
 
                             )
                     }
@@ -93,9 +93,9 @@ data class DineInntekterTabell(
                     }
                     cell {
                         textExpr(
-                            Bokmal to gInntekt2020.format(6) + " G",
-                            Nynorsk to gInntekt2020.format(6) + " G",
-                            English to gInntekt2020.format(6) + " G",
+                            Bokmal to inntekt2020G.format(6) + " G",
+                            Nynorsk to inntekt2020G.format(6) + " G",
+                            English to inntekt2020G.format(6) + " G",
 
                             )
                     }
@@ -118,9 +118,9 @@ data class DineInntekterTabell(
                     }
                     cell {
                         textExpr(
-                            Bokmal to gInntekt2021.format(6) + " G",
-                            Nynorsk to gInntekt2021.format(6) + " G",
-                            English to gInntekt2021.format(6) + " G",
+                            Bokmal to inntekt2021G.format(6) + " G",
+                            Nynorsk to inntekt2021G.format(6) + " G",
+                            English to inntekt2021G.format(6) + " G",
 
                             )
                     }
@@ -142,9 +142,9 @@ data class DineInntekterTabell(
                     }
                     cell {
                         textExpr(
-                            Bokmal to gInntekt2022.format(6) + " G",
-                            Nynorsk to gInntekt2022.format(6) + " G",
-                            English to gInntekt2022.format(6) + " G",
+                            Bokmal to inntekt2022G.format(6) + " G",
+                            Nynorsk to inntekt2022G.format(6) + " G",
+                            English to inntekt2022G.format(6) + " G",
 
                             )
                     }
@@ -166,9 +166,9 @@ data class DineInntekterTabell(
                     }
                     cell {
                         textExpr(
-                            Bokmal to gInntekt2023.format(6) + " G",
-                            Nynorsk to gInntekt2023.format(6) + " G",
-                            English to gInntekt2023.format(6) + " G",
+                            Bokmal to inntekt2023G.format(6) + " G",
+                            Nynorsk to inntekt2023G.format(6) + " G",
+                            English to inntekt2023G.format(6) + " G",
                         )
                     }
                 }
@@ -185,9 +185,9 @@ data class DineInntekterTabell(
                     }
                     cell {
                         textExpr(
-                            Bokmal to gjennomsnitt.format(6) + " G",
-                            Nynorsk to gjennomsnitt.format(6) + " G",
-                            English to gjennomsnitt.format(6) + " G",
+                            Bokmal to gjennomsnittInntektG.format(6) + " G",
+                            Nynorsk to gjennomsnittInntektG.format(6) + " G",
+                            English to gjennomsnittInntektG.format(6) + " G",
                             Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                         )
                     }
