@@ -1,10 +1,10 @@
 import { getToken } from "@navikt/oasis";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import { Express } from "express";
 import { jwtDecode } from "jwt-decode";
 
 import config from "./config.js";
-import cookieParser from "cookie-parser";
 
 export const internalRoutes = (server: Express) => {
   server.get("/bff/internal/logout", (request, response) => {
