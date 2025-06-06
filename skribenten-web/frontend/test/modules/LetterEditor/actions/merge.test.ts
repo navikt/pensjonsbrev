@@ -590,6 +590,20 @@ describe("LetterEditorActions.merge", () => {
           expect(result.focus).toStrictEqual({ blockIndex: 0, contentIndex: 0, cursorPosition: "before list".length });
         });
       });
+
+      test("from empty itemList to otherwise empty block", () => {
+        const state = letter(
+          paragraph([literal({ text: "hei" })]),
+          paragraph([itemList({ items: [item(literal({ text: "" }))] })]),
+        );
+        const result = Actions.merge(
+          state,
+          { blockIndex: 1, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 },
+          MergeTarget.PREVIOUS,
+        );
+        expect(select<ParagraphBlock>(result, { blockIndex: 1 }).content).toHaveLength(1);
+        expect(result.focus).toEqual({ blockIndex: 1, contentIndex: 0, cursorPosition: 0 });
+      });
     });
   });
 
