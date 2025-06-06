@@ -1,8 +1,10 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
+import no.nav.pensjon.brev.maler.fraser.common.Constants.SUPPLERENDE_STOENAD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -11,6 +13,7 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.text
+import kotlin.math.E
 
 
 // infoAPinntekt_001
@@ -189,3 +192,64 @@ object PensjonsopptjeningInformasjon : OutlinePhrase<LangBokmalNynorskEnglish>()
         }
     }
 }
+
+object ReguleringAvAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        // reguleringAPOverskrift
+        title1 {
+            text(
+                Bokmal to "Alderspensjonen din reguleres årlig",
+                Nynorsk to "Alderspensjonen din blir regulert årleg",
+                English to "Your retirement pension will be adjusted annually",
+            )
+        }
+        // reguleringPen
+        paragraph {
+            text(
+                Bokmal to "Reguleringen skjer med virkning fra 1. mai og selve økningen blir vanligvis etterbetalt i juni. " +
+                        "Du får informasjon om dette på utbetalingsmeldingen din. På Nav.no kan du lese mer om hvordan pensjonene reguleres.",
+                Nynorsk to "Reguleringa skjer med verknad frå 1. mai, og sjølve auken blir vanlegvis etterbetalt i juni. " +
+                        "Du får informasjon om dette på utbetalingsmeldinga di. På Nav.no kan du lese meir om korleis pensjonane blir regulerte.",
+                English to "The pension amount will be adjusted with effect from 1 May, and the actual increase is usually paid retroactively in June. " +
+                        "You will be informed about this on your payout notice. You can read more about how pensions are adjusted at Nav.no.",
+            )
+        }
+    }
+}
+
+object ReguleringAvGjenlevendetillegg : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            text(
+                Bokmal to "Gjenlevendetillegg skal ikke reguleres når pensjonen øker fra 1. mai hvert år.",
+                Nynorsk to "Attlevendetillegg skal ikkje regulerast når pensjonen aukar frå 1. mai kvart år.",
+                English to "The survivor’s supplement will not be adjusted when the pension increases from May 1st each year.",
+            )
+        }
+    }
+}
+
+// infoInnvilgSupplerendeStonad
+object SupplerendeStoenadAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(Bokmal to "Supplerende stønad", Nynorsk to "Supplerande stønad", English to "Supplementary benefit")
+        }
+        paragraph {
+            text(
+                Bokmal to "Hvis du har kort botid i Norge når du fyller 67 år, kan du søke om supplerende stønad. " +
+                        "Stønaden er behovsprøvd og all inntekt fra Norge og utlandet blir regnet med. Inntekten til eventuell ektefelle, " + "" +
+                        "samboer eller registrert partner blir også regnet med. Du kan lese mer om supplerende stønad på nettsiden vår ${SUPPLERENDE_STOENAD_URL}.",
+                Nynorsk to "Dersom du har kort butid i Noreg når du fyller 67 år, kan du søkje om supplerande stønad. " +
+                        "Stønaden er behovsprøvd, og all inntekt frå Noreg og utlandet blir rekna med. Inntekta til eventuell ektefelle, " +
+                        "sambuar eller registrert partnar skal også reknast med. Du kan lese meir om supplerande stønad på nettsida vår ${SUPPLERENDE_STOENAD_URL}.",
+                English to "If you have only lived a short period in Norway before reaching 67 years of age, you can apply for supplementary benefit. " +
+                        "The benefit is means-tested and your total income from Norway and abroad is taken into account. " +
+                        "The income of any spouse, cohabitant or registered partner will also be taken into account. " +
+                        "You can read more about supplementary benefit at our website ${SUPPLERENDE_STOENAD_URL}.",
+            )
+        }
+    }
+}
+
+

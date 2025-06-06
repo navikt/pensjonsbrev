@@ -1,15 +1,16 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
-import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.kravVirkDatoFom
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.erEksportberegnet_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
@@ -17,7 +18,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevenderettAnvendt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevendetilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.godkjentYrkesskade
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.godkjentYrkesskade_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.privatAFPErBrukt
@@ -25,46 +25,71 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.uforeKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AvdodSelectors.avdodNavn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AvdodSelectors.avdodNavn_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AvdodSelectors.harAvdod_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.fullTrygdtid
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.BeregnetPensjonPerManedVedVirkSelectors.gjenlevendetilleggKap19_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingAvdodSelectors.minst20ArBotidKap19_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingAvdodSelectors.minst20ArTrygdetidKap20_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.eksportForbud_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.eksportTrygdeavtaleAvtaleland_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.eksportTrygdeavtaleEOS_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.harOppfyltVedSammenlegging_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.minst20ArTrygdetid_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.afpPrivatResultatFellesKontoret_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.avdod
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.avdod_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.avtalelandNavn_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.beregnetPensjonPerManedVedVirk
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.borIAvtaleland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.borINorge
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.erEOSLand
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.erForstegangsbehandletNorgeUtland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.faktiskBostedsland_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.inngangOgEksportVurdering
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.inngangOgEksportVurderingAvdod
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.kravVirkDatoFom
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.norgeBehandlendeLand
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.sivilstand
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.egenOpptjening
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.harGjenlevenderett
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.harGjenlevendetillegg
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.harGjenlevendetilleggKap19
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.ikkeKildeskatt
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.kildeskatt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.kravVirkDatoFomSenereEnnOensketUttakstidspunkt
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.supplerendeStoenad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoPensjonFraAndreAP
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoSkattAP
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvAlderspensjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvGjenlevendetillegg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenadAP
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
+import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Redigerbar.SaksType
+import no.nav.pensjon.brev.maler.fraser.common.Vedtak
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
@@ -72,22 +97,23 @@ import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.includeAttachment
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
+import kotlin.math.E
 
-// Tekster og logikk mht ektefelletillegg og barnetillegg er fjernet fra brevmalen etter en samtale med Ingrid Strand
-// innvilgetETAPHjemmel, innvilgetBTAPHjemmel, InnvilgetETBTAHjemmel, innvilgetGjrettOgTilleggKap20 fjernet
+/* Tekster og logikk mht ektefelletillegg og barnetillegg er fjernet fra brevmalen etter en samtale med Ingrid Strand:
+innvilgetETAPHjemmel, innvilgetBTAPHjemmel, InnvilgetETBTAHjemmel, innvilgetGjrettOgTilleggKap20 fjernet
+hvisFlyttetET, hvisFlyttetBT, hvisFlyttetETogBT */
 
 @TemplateModelHelpers
 object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjonDto> {
@@ -140,9 +166,16 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         val garantipensjonInnvilget = pesysData.alderspensjonVedVirk.garantipensjonInnvilget
         val skjermingstilleggInnvilget = pesysData.alderspensjonVedVirk.skjermingstilleggInnvilget
         val garantitilleggInnvilget = pesysData.alderspensjonVedVirk.garantitilleeggInnvilget
-
-
-
+        val brukerBorINorge = pesysData.borINorge
+        val erEOSLand = pesysData.erEOSLand
+        val harOppfyltVedSammenlegging =
+            pesysData.inngangOgEksportVurdering.harOppfyltVedSammenlegging_safe.ifNull(then = false)
+        val avtalelandNavn = pesysData.avtalelandNavn_safe.ifNull(then = "avtaleland navn mangler")
+        val fullTrygdetid = pesysData.beregnetPensjonPerManedVedVirk.fullTrygdtid
+        val erForstegangsbehandlingNorgeUtland = pesysData.erForstegangsbehandletNorgeUtland
+        val norgeBehandlendeLand = pesysData.norgeBehandlendeLand
+        val vedtakEtterbetaling = pesysData.vedtakEtterbetaling
+        val brukerBorIAvtaleland = pesysData.borIAvtaleland
 
 
         title {
@@ -380,8 +413,10 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             }
 
             showIf(regelverkType.isNotAnyOf(AP2025)) {
-                // AP2011TidligUttakHjemmel, AP2011TidligUttakPenHjemmel, AP2011Hjemmel, AP2011PenTHjemmel, AP2011YrkeskadeHjemmel, AP2011YrkesskadePenTHjemmel
-                // AP2016TidligUttakHjemmel, AP2016TidligUttakPenTHjemmel, AP2016TidligUttakPenTGarantiPensjonHjemmel, AP2016TidligUttakGarantiPensjonHjemmel, AP2016Hjemmel, AP2016YrksesskadeHjemmel, AP2016MNTHjemmel, AP2016YrkesskadeMNTHjemmel, AP2016MNTGarantiPensjonHjemmel, AP2016YrkesskadeMNTGarantiPensjonHjemmel, AP2016GarantiPensjonHjemmel, AP2016YrkesskadeGarantiPensjonHjemmel
+                /* AP2011TidligUttakHjemmel, AP2011TidligUttakPenHjemmel, AP2011Hjemmel, AP2011PenTHjemmel, AP2011YrkeskadeHjemmel, AP2011YrkesskadePenTHjemmel
+                AP2016TidligUttakHjemmel, AP2016TidligUttakPenTHjemmel, AP2016TidligUttakPenTGarantiPensjonHjemmel, AP2016TidligUttakGarantiPensjonHjemmel,
+                AP2016Hjemmel, AP2016YrksesskadeHjemmel, AP2016MNTHjemmel, AP2016YrkesskadeMNTHjemmel, AP2016MNTGarantiPensjonHjemmel,
+                AP2016YrkesskadeMNTGarantiPensjonHjemmel, AP2016GarantiPensjonHjemmel, AP2016YrkesskadeGarantiPensjonHjemmel */
                 paragraph {
                     text(
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2 til ",
@@ -482,38 +517,251 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                         English to "You have also been granted the supplement for the disabled pursuant to the provisions of § 19-9a of the National Insurance Act.",
                     )
                 }
-                showIf(regelverkType.isOneOf(AP2025) and innvilgetFor67) {
+            }
+            showIf(regelverkType.isOneOf(AP2025) and innvilgetFor67) {
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13.",
+                        English to "This decision was made pursuant to the provisions of §§ 20-2, 20-3, 20-9 to 20-15, 22-12 and 22-13 of the National Insurance Act.",
+                    )
+                }
+            }
+            showIf(garantitilleggInnvilget) {
+                // garantitilleggHjemmel
+                paragraph {
+                    text(
+                        Bokmal to "Du er også innvilget garantitillegg for opptjente rettigheter etter folketrygdloven § 20-20.",
+                        Nynorsk to "Du er også innvilga garantitillegg for opptente rettar etter folketrygdlova § 20-20.",
+                        English to "You have also been granted the guarantee supplement for accumulated rights pursuant to the provisions of § 20-20 of the National Insurance Act.",
+                    )
+                }
+            }
+            showIf(gjenlevendetilleggKap19Innvilget) {
+                // innvilgetGjtKap19Hjemmel
+                paragraph {
+                    text(
+                        Bokmal to "Gjenlevendetillegg er gitt etter nye bestemmelser i folketrygdloven § 19-16 og kapittel 10A i tilhørende forskrift om alderspensjon i folketrygden som gjelder fra 1. januar 2024.",
+                        Nynorsk to "Attlevandetillegg er innvilga etter nye reglar i folketrygdlova § 19-16 og forskrift om alderspensjon i folketrygda kapittel 10A som gjeld frå 1. januar 2024.",
+                        English to "The survivor's supplement in your retirement pension has been granted in accordance with the changes to the provisions of the National Insurance Act § 19-16 " +
+                                "and the regulations on retirement pension in the National Insurance chapter 10A, which apply from 1 January 2024"
+                    )
+                }
+            }
+            showIf(gjenlevenderettAnvendt and not(gjenlevendetilleggKap19Innvilget)) {
+                // innvilgetGjRettKap19For2024
+                paragraph {
+                    text(
+                        Bokmal to "Gjenlevenderett er innvilget etter § 19-16 i folketrygdloven.",
+                        Nynorsk to "Attlevanderett er innvilga etter § 19-16 i folketrygdlova.",
+                        English to "The survivor's rights in your retirement pension has been granted pursuant to the provisions of § 19-16 of the National Insurance Act",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Gjenlevendetillegg er gitt etter nye bestemmelser i folketrygdloven § 19-16 og kapittel 10A i tilhørende forskrift om alderspensjon i folketrygden som gjelder fra 1. januar 2024.",
+                        Nynorsk to "Attlevandetillegg er innvilga etter nye reglar i folketrygdlova § 19-16 og forskrift om alderspensjon i folketrygda kapittel 10A som gjeld frå 1. januar 2024.",
+                        English to "The survivor's supplement in your retirement pension has been granted in accordance with the changes to the provisions of the " +
+                                "National Insurance Act § 19-16 and the regulations on retirement pension in the National Insurance chapter 10A, which apply from 1 January 2024.",
+                    )
+                }
+            }
+            showIf(harOppfyltVedSammenlegging) {
+                // euArt6Og7Hjemmel
+                showIf(erEOSLand and brukerBorINorge) {
                     paragraph {
                         text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13.",
-                            English to "This decision was made pursuant to the provisions of §§ 20-2, 20-3, 20-9 to 20-15, 22-12 and 22-13 of the National Insurance Act.",
+                            Bokmal to "Vedtaket er også gjort etter EØS-avtalens regler i forordning 883/2004, artikkel 6 og 7.",
+                            Nynorsk to "Vedtaket er også gjort etter reglane i EØS-avtalen i forordning 883/2004, artikkel 6 og 7.",
+                            English to "This decision was also made pursuant to the provisions of Regulation (EC) 883/2004, articles 6 and 7.",
                         )
                     }
-                }
-                showIf(garantitilleggInnvilget) {
-                    // garantitilleggHjemmel
+                }.orShowIf(
+                    (harOppfyltVedSammenlegging or eksportTrygdeavtaleAvtaleland) and not(erEksportberegnet)
+                ) {
                     paragraph {
-                        text(
-                            Bokmal to "Du er også innvilget garantitillegg for opptjente rettigheter etter folketrygdloven § 20-20.",
-                            Nynorsk to "Du er også innvilga garantitillegg for opptente rettar etter folketrygdlova § 20-20.",
-                            English to "You have also been granted the guarantee supplement for accumulated rights pursuant to the provisions of § 20-20 of the National Insurance Act.",
-                        )
-                    }
-                }
-                showIf(gjenlevendetilleggKap19Innvilget) {
-                    paragraph {
-                        text(
-                            Bokmal to "Gjenlevendetillegg er gitt etter nye bestemmelser i folketrygdloven § 19-16 og kapittel 10A i tilhørende forskrift om alderspensjon i folketrygden som gjelder fra 1. januar 2024.",
-                            Nynorsk to "Attlevandetillegg er innvilga etter nye reglar i folketrygdlova § 19-16 og forskrift om alderspensjon i folketrygda kapittel 10A som gjeld frå 1. januar 2024.",
-                            English to "The survivor's supplement in your retirement pension has been granted in accordance with the changes to the provisions of the National Insurance Act § 19-16 and the regulations on retirement pension in the National Insurance chapter 10A, which apply from 1 January 2024"
+                        textExpr(
+                            Bokmal to "Vedtaket er også gjort etter reglene i trygdeavtalen med ".expr() + avtalelandNavn + ".",
+                            Nynorsk to "Vedtaket er også gjort etter reglane i trygdeavtalen med ".expr() + avtalelandNavn + ".",
+                            English to "This decision was also made pursuant the provisions of the Social Security Agreement with ".expr() + avtalelandNavn + ".",
                         )
                     }
                 }
             }
+            showIf(
+                not(harOppfyltVedSammenlegging) and eksportTrygdeavtaleEOS and erEOSLand and not(
+                    brukerBorINorge
+                )
+            ) {
+                // euArt7Hjemmel
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er også gjort etter EØS-avtalens regler i forordning 883/2004, artikkel 7.",
+                        Nynorsk to "Vedtaket er også gjort etter EØS-avtalens reglar i forordning 883/2004, artikkel 7.",
+                        English to "This decision was also made pursuant to the provisions of Article 7 of Regulation (EC) 883/2004.",
+                    )
+                }
+            }
+
+            includePhrase(Utbetalingsinformasjon)
+            includePhrase(ReguleringAvAlderspensjon)
+            showIf(gjenlevendetilleggKap19Innvilget) { includePhrase(ReguleringAvGjenlevendetillegg) }
+
+            showIf(
+                saksbehandlerValg.supplerendeStoenad and uttaksgrad.equalTo(100) and brukerBorINorge and not(
+                    fullTrygdetid
+                ) and not(innvilgetFor67)
+            ) {
+                includePhrase(SupplerendeStoenadAP)
+            }
+
+            showIf(erForstegangsbehandlingNorgeUtland and norgeBehandlendeLand) {
+                title1 {
+                    text(
+                        Bokmal to "Dette er en foreløpig beregning",
+                        Nynorsk to "Dette er ei førebels berekning",
+                        English to "This is a preliminary calculation",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Fordi du har arbeidet eller bodd i et land Norge har trygdeavtale med, er dette en foreløpig beregning basert på trygdetiden din i Norge. " +
+                                "Når vi har mottatt nødvendig informasjon fra andre land som du har bodd eller arbeidet i, vil vi beregne pensjonen din på nytt og sende deg et endelig vedtak.",
+                        Nynorsk to "Fordi du har arbeidd eller budd i eit land Noreg har trygdeavtale med, er dette ei førebels berekning basert på trygdetida di i Noreg. " +
+                                "Når vi har fått nødvendig informasjon frå andre land som du har budd eller arbeidd i, bereknar vi pensjonen din på nytt og sender deg eit endeleg vedtak.",
+                        English to "Because you have worked or lived in a country that Norway has a social security agreement with, this is a preliminary calculation based on your period of national insurance cover in Norway. " +
+                                "Once we have received the necessary information from the other countries that you have lived or worked in, we will re-calculate your pension and send you a final decision.",
+                    )
+                }
+            }
+
+            showIf(brukerBorINorge) { includePhrase(InfoSkattAP) }.orShow {
+                {
+                    saksbehandlerValg.ikkeKildeskatt
+                    title1 {
+                        text(
+                            Bokmal to "Det er egne skatteregler for pensjon",
+                            Nynorsk to "Det er eigne skattereglar for pensjon",
+                            English to "Pensions are subject to special tax rules"
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Du bør endre skattekortet når du begynner å ta ut alderspensjon. Dette kan du gjøre selv på ${SKATTEETATEN_PENSJONIST_URL}. Der får du også mer informasjon om skattekort for pensjonister. Vi får skattekortet elektronisk. Du skal derfor ikke sende det til oss.",
+                            Nynorsk to "Du bør endre skattekortet når du byrjar å ta ut alderspensjon. Dette kan du gjere sjølv på ${SKATTEETATEN_PENSJONIST_URL}. Der får du også meir informasjon om skattekort for pensjonistar. Vi får skattekortet elektronisk. Du skal derfor ikkje sende det til oss.",
+                            English to "When you start draw retirement pension, you should change your tax deduction card. You can change your tax card by logging on to ${SKATTEETATEN_PENSJONIST_URL}. There you will find more information regarding tax deduction card for pensioners. We will receive the tax card directly from the Norwegian Tax Administration, meaning you do not need to send it to us.",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "På ${DIN_PENSJON_URL} kan du se hva du betaler i skatt. Her kan du også legge inn ekstra skattetrekk om du ønsker det. Dersom du endrer skattetrekket, vil dette gjelde fra måneden etter at vi har fått beskjed.",
+                            Nynorsk to "På ${DIN_PENSJON_URL} kan du sjå kva du betaler i skatt. Her kan du også leggje inn tilleggsskatt om du ønskjer det. Dersom du endrar skattetrekket, vil dette gjelde frå månaden etter at vi har fått beskjed.",
+                            English to "At ${DIN_PENSJON_URL} you can see how much tax you are paying. Here you can also add surtax, if you want. If you change your income tax rate, this will be applied from the month after we have been notified of the change.",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Spørsmål om skatteplikt til Norge etter flytting til utlandet må rettes til skatteetaten. Du må selv avklare spørsmål om skatteplikt til det landet du bor i med skattemyndighetene der.",
+                            Nynorsk to "Spørsmål om skatteplikt til Noreg etter flytting til utlandet må rettast til skatteetaten. Du må sjølv avklare spørsmål om skatteplikt til det landet du bur i med skatteorgana der.",
+                            English to "Questions about tax liability to Norway after moving abroad must be directed to the Norwegian Tax Administration. You must clarify questions about tax liability to your country of residence with the local tax authorities.",
+                        )
+                    }
+                }
+                saksbehandlerValg.kildeskatt
+                title1 {
+                    text(
+                        Bokmal to "Skatteregler for deg som bor i utlandet",
+                        Nynorsk to "Skattereglar for deg som bur i utlandet",
+                        English to "Tax rules for people who live abroad",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Du må i utgangspunktet betale kildeskatt til Norge når du bor i utlandet. Vi trekker derfor 15 prosent i skatt av pensjonen din.",
+                        Nynorsk to "Du må i utgangspunktet betale kjeldeskatt til Noreg når du bur i utlandet. Vi trekkjer derfor 15 prosent i skatt av pensjonen din.",
+                        English to "As a general rule you have to pay withholding tax when you live abroad. We therefor deduct 15 percent tax from your pension.",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Questions about tax liability to Norway after moving abroad must be directed to the Norwegian Tax Administration. " +
+                                "You must clarify questions about tax liability to your country of residence with the local tax authorities.",
+                        Nynorsk to "Spørsmål om skatteplikt til Noreg etter flytting til utlandet må rettast til skatteetaten. " +
+                                "Du må sjølv avklare spørsmål om skatteplikt til det landet du bur i med skatteorgana der.",
+                        English to "Questions about tax liability to Norway after moving abroad must be directed to the Norwegian Tax Administration. " +
+                                "You must clarify questions about tax liability to your country of residence with the local tax authorities.",
+                    )
+                }
+            }
+
+            showIf(saksbehandlerValg.etterbetaling or vedtakEtterbetaling) {
+                includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
+            }
+
+            title1 {
+                text(
+                    Bokmal to "Du kan søke om å endre pensjonen din",
+                    Nynorsk to "Du kan søkje om å endre pensjonen din",
+                    English to "You can apply to change your pension",
+                )
+            }
+            // innvilgelseAPUttakEndr
+            paragraph {
+                text(
+                    Bokmal to "Du kan ha mulighet til å ta ut 20, 40, 50, 60, 80 eller 100 prosent alderspensjon. Etter at du har begynt å ta ut alderspensjon, kan du gjøre endringer med 12 måneders mellomrom. Hvis du har høy nok opptjening, kan du ta ut 100 prosent alderspensjon når du selv ønsker det. Du kan alltid stanse pensjonen.",
+                    Nynorsk to "Du kan ha høve til å ta ut 20, 40, 50, 60, 80 eller 100 prosent alderspensjon. Etter at du har starta med å ta ut alderspensjon, kan du gjere endringar med tolv månaders mellomrom. Dersom du har høg nok opptening, kan du ta ut 100 prosent alderspensjon når du sjølv ønskjer det. Du kan alltid stanse pensjonen.",
+                    English to "You are entitled to draw retirement pension at a rate of 20, 40, 50, 60, 80 or 100 percent. Once you have started drawing your pension, you can make changes at 12-monthly intervals. If you have high enough pension earnings, you can withdraw your full retirement pension whenever you want. You can stop drawing your pension at any time.",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Du kan bruke pensjonskalkulatoren på ${DIN_PENSJON_URL} for å se om du kan endre alderspensjonen din.",
+                    Nynorsk to "Du kan bruke pensjonskalkulatoren på ${DIN_PENSJON_URL} for å sjå om du kan endre alderspensjonen din.",
+                    English to "Use the pension calculator on ${DIN_PENSJON_URL} to see if you can change your retirement pension.",
+                )
+            }
+
+            showIf(uforeKombinertMedAlder and innvilgetFor67) {
+                // innvilgelseAPUttakEndrUT
+                paragraph {
+                    text(
+                        Bokmal to "Summen av uføregraden og alderspensjonen din kan ikke overstige 100 prosent.",
+                        Nynorsk to "Summen av uføregraden og alderspensjonen din kan ikkje gå over 100 prosent.",
+                        English to "The percentage of disability benefit and the percentage of retirement pension combined may not exceed 100 percent.",
+                    )
+                }
+            }
+
+            includePhrase(ArbeidsinntektOgAlderspensjon(
+                uttaksgrad = uttaksgrad, uforeKombinertMedAlder = uforeKombinertMedAlder))
+
+            includePhrase(InfoPensjonFraAndreAP)
+            includePhrase(MeldeFraOmEndringer)
+            includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+
+            showIf(brukerBorIAvtaleland) {
+                // rettTilKlageUtland
+                paragraph {
+                    text(
+                        Bokmal to "Hvis du ønsker å klage på vedtak fra utenlandske trygdemyndigheter, må du kontakte trygdemyndighetene i det enkelte landet.",
+                        Nynorsk to "Dersom du ynskjer å klage på vedtak frå utanlandske trygdeorgan, må du kontakte trygdeorganet i det enkelte landet.",
+                        English to "If you want to appeal a decision made by a foreign national insurance authority, you must get in contact with the national insurance authority in the relevant country.",
+                    )
+                }
+            }
+
+            includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.HarDuSpoersmaal.alder)
+
         }
+        includeAttachment(
+            vedleggDineRettigheterOgMulighetTilAaKlage,
+            pesysData.dineRettigheterOgMulighetTilAaKlageDto
+
+        )
     }
 }
+
 
 
 

@@ -18,30 +18,45 @@ data class InnvilgelseAvAlderspensjonDto(
 ) : RedigerbarBrevdata<InnvilgelseAvAlderspensjonDto.SaksbehandlerValg, InnvilgelseAvAlderspensjonDto.PesysData> {
 
     data class SaksbehandlerValg(
-        @DisplayText("Hvis virkningstidspunktet er senere enn ønsket uttakstidspunkt")
+        @DisplayText("Virkningstidspunktet er senere enn ønsket uttakstidspunkt")
         val kravVirkDatoFomSenereEnnOensketUttakstidspunkt: Boolean,
-        @DisplayText("Hvis gjenlevenderett er brukt i beregningen")
+        @DisplayText("Gjenlevenderett er brukt i beregningen")
         val harGjenlevenderett: Boolean,
-        @DisplayText("Hvis gjenlevendetillegg er større enn 0")
+        @DisplayText("Gjenlevendetillegg er større enn 0")
         val harGjenlevendetillegg: Boolean,
-        @DisplayText("Hvis gjenlevendetilleggKap19 kommer til utbetaling")
+        @DisplayText("GjenlevendetilleggKap19 kommer til utbetaling")
         val harGjenlevendetilleggKap19: Boolean,
-        @DisplayText("Hvis egen opptjening er best")
+        @DisplayText("Egen opptjening er best")
         val egenOpptjening: Boolean,
+        @DisplayText("Supplerende stønad")
+        val supplerendeStoenad: Boolean,
+        @DisplayText("Bruker ikke skal betale kildeskatt")
+        val ikkeKildeskatt: Boolean,
+        @DisplayText("Bruker skal betale kildeskatt")
+        val kildeskatt: Boolean,
+        @DisplayText("Etterbetaling")
+        val etterbetaling: Boolean,
     ) : BrevbakerBrevdata
 
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val afpPrivatResultatFellesKontoret: Boolean?,  // v1.afpPrivat
         val avdod: Avdod?,
+        val avtalelandNavn: String?,
         val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
+        val borIAvtaleland: Boolean,  // v3.Person
+        val borINorge: Boolean,  // v3.Person
+        val erEOSLand: Boolean,  // v1.Land
+        val erForstegangsbehandletNorgeUtland: Boolean,  // v3.Krav
         val faktiskBostedsland: String?,  // v3.Person
         val inngangOgEksportVurdering: InngangOgEksportVurdering?,
         val inngangOgEksportVurderingAvdod: InngangOgEksportVurderingAvdod?,
         val kravVirkDatoFom: LocalDate,
+        val norgeBehandlendeLand: Boolean,  // v3.Krav
         val regelverkType: AlderspensjonRegelverkType,
         val sakstype: Sakstype,
         val sivilstand: MetaforceSivilstand,
+        val vedtakEtterbetaling: Boolean,  // v1.Vedtak
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
     ) : BrevbakerBrevdata
 
@@ -65,11 +80,12 @@ data class InnvilgelseAvAlderspensjonDto(
     data class Avdod(
         val avdodFnr: Int,
         val avdodNavn: String,
-        val harAvdod: Boolean,  // -> har avdodFnr
+        val harAvdod: Boolean,  // -> "true" når avdodFnr finnes
     )
 
-    data class BeregnetPensjonPerManedVedVirk(
+    data class BeregnetPensjonPerManedVedVirk(  // v4.AlderspensjonPerManed
         val gjenlevendetilleggKap19: Kroner?,
+        val fullTrygdtid: Boolean,
     )
 
     data class InngangOgEksportVurdering(
@@ -77,6 +93,7 @@ data class InnvilgelseAvAlderspensjonDto(
         val minst20ArTrygdetid: Boolean,
         val eksportTrygdeavtaleEOS: Boolean,
         val eksportTrygdeavtaleAvtaleland: Boolean,
+        val harOppfyltVedSammenlegging: Boolean,  // If (oppfyltVedSammenleggingKap19 or oppfyltVedSammenleggingKap20 or oppfyltVedSammenleggingFemArKap19 or oppfyltVedSammenleggingFemArKap20) = true
     )
 
     data class InngangOgEksportVurderingAvdod(
