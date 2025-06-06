@@ -2,26 +2,31 @@ package no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.gjennomsnitt
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.gjennomsnittInntektG
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2019
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2019G
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2020
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2020G
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2021
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2021G
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2022
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2022G
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2022Over3g
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023G
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023Over3g
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2019
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2020
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2021
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2022
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2022Over3g
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023Over3g
-import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
-import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.includePhrase
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object VarselGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dto> {
@@ -247,7 +252,7 @@ object VarselGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
                 )
             }
 
-            includePhrase(DineInntekterTabell(inntekt2019, inntekt2020, inntekt2021, inntekt2022, inntekt2023, gjennomsnitt))
+            includePhrase(DineInntekterTabell(inntekt2019, inntekt2020, inntekt2021, inntekt2022, inntekt2023, gjennomsnittInntektG, inntekt2019G, inntekt2020G, inntekt2021G, inntekt2022G, inntekt2023G))
 
             paragraph {
                 text(
@@ -256,29 +261,45 @@ object VarselGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
                 )
             }
 
-            paragraph {
-                showIf(inntekt2022Over3g and inntekt2023Over3g) {
+            showIf(inntekt2022Over3g and inntekt2023Over3g) {
+                paragraph {
                     text(
-                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2022 og 2023. ",
+                        Bokmal to "Din inntekt har ifølge våre opplysninger vært høyere enn inntektsgrensen i 2022 og 2023. ",
                         English to "According to our information, your income has been higher than the income cap for 2022 and 2023."
                     )
-                }.orShowIf(inntekt2022Over3g) {
+                }
+
+            }.orShowIf(inntekt2022Over3g) {
+                paragraph {
                     text(
-                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2022. ",
+                        Bokmal to "Din inntekt har ifølge våre opplysninger vært høyere enn inntektsgrensen i 2022. ",
                         English to "According to our information, your income has been higher than the income cap for 2022."
                     )
-                }.orShowIf(inntekt2023Over3g) {
+                }
+            }.orShowIf(inntekt2023Over3g) {
+                paragraph {
                     text(
-                        Bokmal to "Din inntekt har ifølge opplysninger fra Skatteetaten vært høyere enn inntektsgrensen i 2023. ",
+                        Bokmal to "Din inntekt har ifølge våre opplysninger vært høyere enn inntektsgrensen i 2023. ",
                         English to "According to our information, your income has been higher than the income cap for 2023."
                     )
-                }.orShow {
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        Bokmal to "Din inntekt har ifølge våre opplysninger vært høyere enn inntektsgrensen i perioden 2019–2023. ",
+                        English to "According to our information, your income has been higher than the income cap during the period 2019–2023. ",
+                    )
+                }
+                paragraph {
                     textExpr(
-                        Bokmal to "Din gjennomsnittlige inntekt mellom 2019 og 2023 har ifølge våre opplysninger vært høyere enn gjennomsnittlig G de fem årene (".expr() + 212_813.expr().format(CurrencyFormat) + " kroner).",
-                        English to "Your average income between 2019 and 2023 has exceeds the income cap. The income cap it two times average G in the period 2019-2023, which amounts to NOK ".expr() + 212_813.expr().format(CurrencyFormat) + "."
+                        Bokmal to "Vi har vurdert om gjennomsnittet av din inntekt som antall G for disse årene har vært høyere enn 2 G. Resultatet viser at din gjennomsnittlige inntekt har vært ".expr() + gjennomsnittInntektG.format(6) + " G. " +
+                                "Kravet om at inntekten må ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene, er derfor ikke oppfylt.",
+                        English to "We have assessed whether the average of your income, expressed as a number of G for these years, has been higher than 2 G. The result shows that your average income has been ".expr() + gjennomsnittInntektG.format(6) + " G. " +
+                                "The requirement that the income must have been below twice the average National Insurance basic amount (G) on average during these five years is therefore not met."
                     )
                 }
             }
+
 
             paragraph {
                 text(
@@ -337,7 +358,7 @@ object VarselGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
                 )
             }
 
-          title1 {
+            title1 {
                 text(
                     Bokmal to "Meld fra om endringer ",
                     English to "Report changes "

@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -17,7 +16,12 @@ data class DineInntekterTabell(
     val inntekt2021: Expression<Int>,
     val inntekt2022: Expression<Int>,
     val inntekt2023: Expression<Int>,
-    val gjennomsnitt: Expression<Int>,
+    val gInntekt2023: Expression<Double>,
+    val gInntekt2022: Expression<Double>,
+    val gInntekt2021: Expression<Double>,
+    val gInntekt2020: Expression<Double>,
+    val gInntekt2019: Expression<Double>,
+    val gjennomsnitt: Expression<Double>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
@@ -34,8 +38,15 @@ data class DineInntekterTabell(
                     column(2) {
                         text(
                             Bokmal to "Din inntekt",
-                            Nynorsk to "Di inntekt:",
+                            Nynorsk to "Di inntekt",
                             English to "Your income"
+                        )
+                    }
+                    column(2) {
+                        text(
+                            Bokmal to "Din inntekt i G",
+                            Nynorsk to "Di inntekt i G",
+                            English to "Your income in G"
                         )
                     }
                 },
@@ -56,6 +67,14 @@ data class DineInntekterTabell(
 
                             )
                     }
+                    cell {
+                        textExpr(
+                            Bokmal to gInntekt2019.format(6) + " G",
+                            Nynorsk to gInntekt2019.format(6) + " G",
+                            English to gInntekt2019.format(6) + " G",
+
+                            )
+                    }
                 }
                 row {
                     cell {
@@ -71,6 +90,14 @@ data class DineInntekterTabell(
                             Nynorsk to inntekt2020.format(CurrencyFormat) + " kroner",
                             English to "NOK ".expr() + inntekt2020.format(CurrencyFormat)
                         )
+                    }
+                    cell {
+                        textExpr(
+                            Bokmal to gInntekt2020.format(6) + " G",
+                            Nynorsk to gInntekt2020.format(6) + " G",
+                            English to gInntekt2020.format(6) + " G",
+
+                            )
                     }
                 }
                 row {
@@ -89,6 +116,14 @@ data class DineInntekterTabell(
 
                         )
                     }
+                    cell {
+                        textExpr(
+                            Bokmal to gInntekt2021.format(6) + " G",
+                            Nynorsk to gInntekt2021.format(6) + " G",
+                            English to gInntekt2021.format(6) + " G",
+
+                            )
+                    }
                 }
                 row {
                     cell {
@@ -104,6 +139,14 @@ data class DineInntekterTabell(
                             Nynorsk to inntekt2022.format(CurrencyFormat) + " kroner",
                             English to "NOK ".expr() + inntekt2022.format(CurrencyFormat)
                         )
+                    }
+                    cell {
+                        textExpr(
+                            Bokmal to gInntekt2022.format(6) + " G",
+                            Nynorsk to gInntekt2022.format(6) + " G",
+                            English to gInntekt2022.format(6) + " G",
+
+                            )
                     }
                 }
                 row {
@@ -121,22 +164,30 @@ data class DineInntekterTabell(
                             English to "NOK ".expr() + inntekt2023.format(CurrencyFormat)
                         )
                     }
+                    cell {
+                        textExpr(
+                            Bokmal to gInntekt2023.format(6) + " G",
+                            Nynorsk to gInntekt2023.format(6) + " G",
+                            English to gInntekt2023.format(6) + " G",
+                        )
+                    }
                 }
                 row {
+
+                    cell {}
                     cell {
                         text(
-                            Bokmal to "Din gjennomsnitt",
-                            Nynorsk to "Din gjennomsnitt",
-                            English to "Your average",
-
+                            Bokmal to "Ditt gjennomsnitt: ",
+                            Nynorsk to "Gjennomsnittet ditt: ",
+                            English to "Your average: ",
                             Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                         )
                     }
                     cell {
                         textExpr(
-                            Bokmal to gjennomsnitt.format(CurrencyFormat) + " kroner",
-                            Nynorsk to gjennomsnitt.format(CurrencyFormat) + " kroner",
-                            English to "NOK ".expr() + gjennomsnitt.format(CurrencyFormat),
+                            Bokmal to gjennomsnitt.format(6) + " G",
+                            Nynorsk to gjennomsnitt.format(6) + " G",
+                            English to gjennomsnitt.format(6) + " G",
                             Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                         )
                     }
