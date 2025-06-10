@@ -83,7 +83,7 @@ object VedtakGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
             }
             paragraph {
                 text(
-                    Bokmal to "Du beholder retten til gjenlevendepensjon frem til og med desember 2026, under forutsetning av at øvrige vilkårene er oppfylt.  ",
+                    Bokmal to "Du beholder retten til gjenlevendepensjon frem til og med desember 2026, under forutsetning av at øvrige vilkår er oppfylt ",
                     English to "You will retain your right to survivor’s pension until the end of December 2026, provided the other conditions have been met.  "
                 )
             }
