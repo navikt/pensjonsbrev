@@ -139,7 +139,7 @@ data class InnholdLavOpptjening(
                         text(
                             Bokmal to "I denne beregningen har vi inkludert AFP.",
                             Nynorsk to "I denne berekninga har vi inkludert AFP.",
-                            English to "This amount includes contractual early retirement pension."
+                            English to "This amount includes contractual pension (AFP)."
                         )
                     }
                 }
