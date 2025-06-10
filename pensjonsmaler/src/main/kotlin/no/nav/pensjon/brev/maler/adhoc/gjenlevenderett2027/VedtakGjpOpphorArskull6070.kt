@@ -47,7 +47,7 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
     ) {
         title {
             text(
-                Bokmal to "Vedtak - Gjenlevendepensjonen din er tidsbegrenset ",
+                Bokmal to "Vedtak – Gjenlevendepensjonen din er tidsbegrenset ",
                 Nynorsk to "Vedtak – Gjenlevandepensjonen din er tidsavgrensa ",
             )
         }
@@ -73,8 +73,8 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             }
             paragraph {
                 text(
-                    Bokmal to "Opplysninger om inntekten din i perioden 2019-2023, viser at du ikke fyller vilkårene i folketrygdloven § 17 A–3. Din inntekt har vært over inntektsgrensen i denne perioden. ",
-                    Nynorsk to "Opplysningar om inntekta di i perioden 2019–2023 viser at du ikkje oppfyller vilkåra i folketrygdlova § 17 A–3. Inntekta di har vore over inntektsgrensa i denne perioden."
+                    Bokmal to "Opplysninger om inntekten din i perioden 2019-2023, viser at du ikke fyller vilkårene i folketrygdloven § 17 A-3. Din inntekt har vært over inntektsgrensen i denne perioden. ",
+                    Nynorsk to "Opplysningar om inntekta di i perioden 2019–2023 viser at du ikkje oppfyller vilkåra i folketrygdlova § 17 A-3. Inntekta di har vore over inntektsgrensa i denne perioden."
                 )
             }
             paragraph {

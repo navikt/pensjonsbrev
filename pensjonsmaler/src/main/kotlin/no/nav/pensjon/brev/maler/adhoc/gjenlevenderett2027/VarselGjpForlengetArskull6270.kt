@@ -46,7 +46,7 @@ object VarselGjpForlengetArskull6270 : AutobrevTemplate<Gjenlevenderett2027Dto> 
     ) {
         title {
             text(
-                Bokmal to "Forhåndsvarsel - Gjenlevendepensjonen din kan bli forlenget ",
+                Bokmal to "Forhåndsvarsel – Gjenlevendepensjonen din kan bli forlenget ",
                 Nynorsk to "Førehandsvarsel – Gjenlevandepensjonen din kan bli forlenga ",
             )
         }
