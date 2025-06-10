@@ -45,8 +45,8 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
     ) {
         title {
             text(
-                Bokmal to "Vedtak - Gjenlevendepensjonen din forlenges ",
-                Nynorsk to "Vedtak – gjenlevandepensjonen din blir forlenga "
+                Bokmal to "Vedtak – Gjenlevendepensjonen din forlenges ",
+                Nynorsk to "Vedtak – Gjenlevandepensjonen din blir forlenga "
             )
         }
         outline {
@@ -72,8 +72,8 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
 
             paragraph {
                 text(
-                    Bokmal to "Opplysninger om inntekten din i perioden 2019–2023, viser at du fyller vilkårene i folketrygdloven § 17 A–3. ",
-                    Nynorsk to "Opplysningar om inntekta di i perioden 2019–2023 viser at du oppfyller vilkåra i folketrygdlova § 17 A–3. "
+                    Bokmal to "Opplysninger om inntekten din i perioden 2019–2023, viser at du fyller vilkårene i folketrygdloven § 17 A-3. ",
+                    Nynorsk to "Opplysningar om inntekta di i perioden 2019–2023 viser at du oppfyller vilkåra i folketrygdlova § 17 A-3. "
                 )
             }
 

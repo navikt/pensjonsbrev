@@ -47,7 +47,7 @@ object VarselGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
     ) {
         title {
             text(
-                Bokmal to "Forhåndsvarsel - Gjenlevendepensjonen din kan bli tidsbegrenset ",
+                Bokmal to "Forhåndsvarsel – Gjenlevendepensjonen din kan bli tidsbegrenset ",
                 English to "Advance notice – Your survivor’s pension may become time-limited "
             )
         }

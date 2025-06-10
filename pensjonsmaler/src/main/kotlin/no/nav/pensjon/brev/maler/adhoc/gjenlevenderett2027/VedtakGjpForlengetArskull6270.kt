@@ -44,7 +44,7 @@ object VedtakGjpForlengetArskull6270 : AutobrevTemplate<Gjenlevenderett2027Dto> 
     ) {
         title {
             text(
-                Bokmal to "Vedtak - Gjenlevendepensjonen din forlenges ",
+                Bokmal to "Vedtak – Gjenlevendepensjonen din forlenges ",
                 Nynorsk to "Vedtak – Gjenlevandepensjonen din blir forlenga "
             )
         }

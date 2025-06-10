@@ -51,7 +51,7 @@ object VedtakGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
     ) {
         title {
             text(
-                Bokmal to "Vedtak - Gjenlevendepensjonen din er tidsbegrenset ",
+                Bokmal to "Vedtak – Gjenlevendepensjonen din er tidsbegrenset ",
                 English to "Decision – Your survivor’s pension has been made time-limited "
             )
         }

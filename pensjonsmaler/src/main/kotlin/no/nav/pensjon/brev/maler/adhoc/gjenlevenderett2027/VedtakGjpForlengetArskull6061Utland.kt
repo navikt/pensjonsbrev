@@ -48,7 +48,7 @@ object VedtakGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
     ) {
         title {
             text(
-                Bokmal to "Vedtak - Gjenlevendepensjonen din forlenges ",
+                Bokmal to "Vedtak – Gjenlevendepensjonen din forlenges ",
                 English to "Decision – Your survivor’s pension is extended "
             )
         }
@@ -74,7 +74,7 @@ object VedtakGjpForlengetArskull6061Utland : AutobrevTemplate<Gjenlevenderett202
             }
             paragraph {
                 text(
-                    Bokmal to "Opplysninger om inntekten din i perioden 2019–2023, viser at du fyller vilkårene i folketrygdloven § 17 A–3. ",
+                    Bokmal to "Opplysninger om inntekten din i perioden 2019–2023, viser at du fyller vilkårene i folketrygdloven § 17 A-3. ",
                     English to "Your income information for the period 2019–2023 shows that you fulfil the requirements established by Section 17 A-3 of the National Insurance Act."
                 )
             }
