@@ -25,8 +25,9 @@ import {
   getCursorOffsetOrRange,
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
+import TableView from "~/Brevredigering/ModelEditor/TableView";
 import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
-import { NEW_LINE } from "~/types/brevbakerTypes";
+import { NEW_LINE, TABLE } from "~/types/brevbakerTypes";
 import { ElementTags, FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
 /**
@@ -89,6 +90,15 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
               </ul>
             );
           }
+          case TABLE:
+            return (
+              <TableView
+                blockIndex={literalIndex.blockIndex}
+                contentIndex={_contentIndex}
+                key={_contentIndex}
+                node={content}
+              />
+            );
         }
       })}
     </div>

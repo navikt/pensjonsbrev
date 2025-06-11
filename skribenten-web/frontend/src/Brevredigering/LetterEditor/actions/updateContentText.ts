@@ -11,27 +11,27 @@ import { cleanseText, isItemContentIndex } from "./common";
 export const updateContentText: Action<LetterEditorState, [literalIndex: LiteralIndex, text: string]> = produce(
   (draft, literalIndex, text) => {
     const focus = literalIndex;
-    const block = draft.redigertBrev.blocks[focus.blockIndex];
+    const paragraph = draft.redigertBrev.blocks[focus.blockIndex];
 
-    if (block.type === TABLE && isItemContentIndex(focus)) {
-      const row = block.rows[focus.contentIndex];
-      const cell = row.cells[focus.itemIndex];
-      const literal = cell.text[focus.itemContentIndex];
+    const paraContent = paragraph.content[focus.contentIndex];
 
+    if (paraContent?.type === TABLE && isItemContentIndex(focus)) {
+      const row = paraContent.rows[focus.itemIndex];
+      const cell = row?.cells[focus.itemContentIndex];
+      const literal = cell?.text[0];
       if (literal?.type === LITERAL) {
-        literal.editedText = text;
+        updateLiteralText(literal, text);
         draft.isDirty = true;
       }
       return;
     }
-    const content = draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex];
 
-    if (content.type === LITERAL) {
-      updateLiteralText(content, text);
+    if (paraContent.type === LITERAL) {
+      updateLiteralText(paraContent, text);
       draft.isDirty = true;
-    } else if (content.type === ITEM_LIST) {
+    } else if (paraContent.type === ITEM_LIST) {
       if ("itemIndex" in literalIndex) {
-        const itemContent = content.items[literalIndex.itemIndex].content[literalIndex.itemContentIndex];
+        const itemContent = paraContent.items[literalIndex.itemIndex].content[literalIndex.itemContentIndex];
         if (itemContent.type === LITERAL) {
           updateLiteralText(itemContent, text);
           draft.isDirty = true;

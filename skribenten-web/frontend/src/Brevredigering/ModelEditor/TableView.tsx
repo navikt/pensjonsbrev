@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
 import React from "react";
 
-import type { Table } from "~/types/brevbakerTypes";
+import { LITERAL, type Table } from "~/types/brevbakerTypes";
 
 import { TableCellContent } from "./TableCellContent";
 
@@ -18,25 +18,31 @@ const tableStyles = css`
   }
 `;
 
-const TableView: React.FC<{ node: Table; blockIndex: number }> = ({ node, blockIndex }) => (
+const TableView: React.FC<{
+  node: Table;
+  blockIndex: number;
+  contentIndex: number;
+}> = ({ node, blockIndex, contentIndex }) => (
   <table css={tableStyles}>
     <tbody>
       {node.rows.map((row, rIdx) => (
         <tr key={rIdx}>
           {row.cells.map((cell, cIdx) => (
             <td key={cIdx}>
-              {cell.text.map((lit, idx) => (
-                <TableCellContent
-                  key={idx}
-                  lit={lit}
-                  litIndex={{
-                    blockIndex,
-                    contentIndex: rIdx,
-                    itemIndex: cIdx,
-                    itemContentIndex: idx,
-                  }}
-                />
-              ))}
+              {cell.text
+                .filter((txt) => txt.type === LITERAL)
+                .map((lit, idx) => (
+                  <TableCellContent
+                    key={idx}
+                    lit={lit}
+                    litIndex={{
+                      blockIndex,
+                      contentIndex,
+                      itemIndex: rIdx,
+                      itemContentIndex: cIdx,
+                    }}
+                  />
+                ))}
             </td>
           ))}
         </tr>

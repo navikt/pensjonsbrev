@@ -29,7 +29,7 @@ import type {
   LiteralIndex,
 } from "~/Brevredigering/LetterEditor/model/state";
 import type { AnyBlock, Content, LiteralValue, Row, TextContent } from "~/types/brevbakerTypes";
-import { FontType, TABLE } from "~/types/brevbakerTypes";
+import { FontType, PARAGRAPH, TABLE } from "~/types/brevbakerTypes";
 
 import { isItemList, isLiteral, isTextContent } from "../model/utils";
 
@@ -126,23 +126,27 @@ function getInsertTextContentContext(draft: Draft<LetterEditorState>): InsertTex
   const litIdx = draft.focus;
   const block = draft.redigertBrev.blocks[litIdx.blockIndex];
 
-  if (block.type === TABLE) {
-    const row = block.rows[litIdx.contentIndex];
-    const cell = row?.cells[litIdx.itemIndex];
+  const blockContent = block.content[litIdx.contentIndex];
+
+  if (blockContent?.type === TABLE && isItemContentIndex(litIdx)) {
+    const row = blockContent.rows[litIdx.itemIndex];
+    const cell = row?.cells[litIdx.itemContentIndex];
 
     if (!cell) return undefined;
 
     return {
-      content: cell.text[litIdx.itemContentIndex],
-      parent: { content: cell.text as Draft<TextContent[]>, deletedContent: [] as Draft<number[]> },
-      getContentIndex: (f) => (f as ItemContentIndex).itemContentIndex,
-      setContentIndex: (f: Draft<Focus>, v: number) => {
-        (f as Draft<ItemContentIndex>).itemContentIndex = v;
+      content: cell.text[0],
+      parent: {
+        content: cell.text as Draft<TextContent[]>,
+        deletedContent: [] as Draft<number[]>,
+      },
+      getContentIndex: (currentFocus) => (currentFocus as ItemContentIndex).itemContentIndex,
+
+      setContentIndex: (focusToUpdate: Draft<Focus>, newItemContentIndex: number) => {
+        (focusToUpdate as Draft<ItemContentIndex>).itemContentIndex = newItemContentIndex;
       },
     };
   }
-
-  const blockContent = block.content[litIdx.contentIndex];
 
   if (isItemList(blockContent) && isItemContentIndex(litIdx)) {
     const item = blockContent.items[litIdx.itemIndex];
@@ -251,34 +255,42 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
         break;
       }
       case "TABLE": {
-        // Clipboard AST to Brevbaker Rows/Cells
-        const rows: Row[] = el.rows.map((row) => ({
-          type: undefined,
+        const tableContent: Table = {
+          type: TABLE,
           id: null,
           parentId: null,
-          cells: row.cells.map((cell) => ({
+          header: { id: null, parentId: null, colSpec: [] },
+          deletedRows: [],
+          rows: el.rows.map((r) => ({
             id: null,
             parentId: null,
-            text: cell.content.map((txt) => newLiteral({ editedText: txt.text, fontType: txt.font })),
+            cells: r.cells.map((c) => ({
+              id: null,
+              parentId: null,
+              text: c.content.map((t) => newLiteral({ editedText: t.text, fontType: t.font })),
+            })),
           })),
-        }));
-
-        const tableBlock = newTable(rows);
-
-        addElements(
-          [tableBlock, newParagraph({ content: [newLiteral({ editedText: "", fontType: FontType.PLAIN })] })],
-          draft.focus.blockIndex + 1,
-          draft.redigertBrev.blocks,
-          draft.redigertBrev.deletedBlocks,
-        );
-
-        draft.focus = {
-          blockIndex: draft.focus.blockIndex + 1,
-          contentIndex: 0,
-          itemIndex: 0,
-          itemContentIndex: 0,
-          cursorPosition: 0,
         };
+
+        /* Insert table *inside* the current paragraph’s content[].  
+           We split paragraph first if caret is mid-literal. */
+        const curBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
+
+        if (isBlockContentIndex(draft.focus) && curBlock.type === PARAGRAPH) {
+          // split at cursor so we insert after the current literal
+          splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
+
+          addElements([tableContent], draft.focus.contentIndex + 1, curBlock.content, curBlock.deletedContent);
+
+          // focus now points to the first cell
+          draft.focus = {
+            blockIndex: draft.focus.blockIndex, // same paragraph
+            contentIndex: draft.focus.contentIndex + 1, // the table element
+            itemIndex: 0, // row 0
+            itemContentIndex: 0, // cell 0
+            cursorPosition: 0,
+          };
+        }
         break;
       }
     }

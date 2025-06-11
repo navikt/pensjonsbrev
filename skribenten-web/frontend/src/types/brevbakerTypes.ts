@@ -59,7 +59,7 @@ export type Signatur = {
   readonly navAvsenderEnhet: string;
 };
 
-export type AnyBlock = Title1Block | Title2Block | ParagraphBlock | Table;
+export type AnyBlock = Title1Block | Title2Block | ParagraphBlock;
 
 export type Identifiable = {
   readonly id: number | null;
@@ -133,7 +133,7 @@ export type ColumnSpec = Identifiable & {
 export type ColumnAlignment = "LEFT" | "RIGHT";
 
 export type TextContent = LiteralValue | VariableValue | NewLine;
-export type Content = ItemList | TextContent;
+export type Content = ItemList | TextContent | Table;
 
 export type Block = Identifiable & {
   readonly type: string;

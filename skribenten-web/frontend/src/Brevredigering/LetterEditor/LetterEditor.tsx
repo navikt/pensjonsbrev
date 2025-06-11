@@ -7,9 +7,7 @@ import { createContext, useContext } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
-import { PARAGRAPH, TABLE, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
 
-import TableView from "../ModelEditor/TableView";
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
@@ -76,25 +74,11 @@ export const LetterEditor = ({
             {letter.title}
           </Heading>
           <div onKeyDown={editorKeyboardShortcuts}>
-            {blocks.map((block, blockIndex) => {
-              switch (block.type) {
-                case PARAGRAPH:
-                case TITLE1:
-                case TITLE2:
-                  return (
-                    <div className={block.type} key={blockIndex}>
-                      <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
-                    </div>
-                  );
-
-                case TABLE:
-                  return (
-                    <div className="TABLE" key={blockIndex}>
-                      <TableView blockIndex={blockIndex} node={block} />
-                    </div>
-                  );
-              }
-            })}
+            {blocks.map((block, blockIndex) => (
+              <div className={block.type} key={blockIndex}>
+                <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
+              </div>
+            ))}
           </div>
           <SignaturView
             signatur={letter.signatur}
