@@ -1,9 +1,12 @@
 package no.nav.pensjon.brev.maler.alder.omregning
 
 import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonPerManed
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
+import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -536,6 +539,97 @@ data class OmregningAlderUfore2016Felles(
             )
         }
 
+        showIf(uttaksgrad.equalTo(100)) {
+            paragraph {
+                text(
+                    Bokmal to "En eventuell økning vil gjelde fra 1. januar året etter at skatteoppgjøret ditt er ferdig.",
+                    Nynorsk to "Ein eventuell auke vil gjelde frå 1. januar året etter at skatteoppgjeret ditt er ferdig.",
+                    English to "Any increase, if applicable, will take effect as of 1 January of the year after the tax assessment of your income is complete."
+                )
+            }
+        }.orShow {
+            paragraph {
+                text(
+                    Bokmal to "Den nye opptjeningen vil bli lagt til den utbetalte alderspensjonen din når du søker om endret uttaksgrad eller ny beregning av den uttaksgraden du har nå.",
+                    Nynorsk to "Den nye oppteninga blir lagd til den utbetalte alderspensjonen din når du søkjer om endra uttaksgrad eller ny berekning av den uttaksgraden du har no.",
+                    English to "Any new accumulation of rights will be added to your pension payments when you apply to have your retirement percentage amended or apply to have your pension recalculated at your current retirement percentage."
+                )
+            }
+        }
+
+        title2 {
+            text(
+                Bokmal to "Du må melde fra om endringer",
+                Nynorsk to "Du må melde frå om endringar",
+                English to "You must notify NAV if anything changes "
+            )
+        }
+
+        paragraph {
+            text(
+                Bokmal to "Hvis du får endringer i familiesituasjon, planlegger opphold i utlandet, eller ektefellen eller samboeren din får endringer i inntekten, kan det ha betydning for beløpet du får utbetalt fra NAV. " +//TODO: Skal NAV byttes ut med noe kontakt info?
+                        "I slike tilfeller må du derfor straks melde fra til oss. I vedlegget ser du hvilke endringer du må si fra om. ",
+                Nynorsk to "Dersom du får endringar i familiesituasjonen, planlegg opphald i utlandet, eller ektefellen, partnaren eller sambuaren din får endringar i inntekta, kan det få noko å seie for beløpet du får utbetalt frå NAV. " +
+                        "I slike tilfelle må du derfor straks melde frå til oss. I vedlegget ser du kva endringar du må seie frå om. ",
+                English to "If there are changes in your family situation or you are planning a long-term stay abroad, or there are changes in the income of your spouse or co-habiting partner, these might affect the payments you receive from NAV. " +
+                        "In such cases, you must notify NAV immediately. The appendix specifies which changes you are obligated to notify us of. "
+            )
+        }
+
+        paragraph {
+            text(
+                Bokmal to "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. " +
+                        "Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til NAV.",//TODO: Skal NAV byttes ut med noe kontakt info?
+                Nynorsk to "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. " +
+                        "Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til NAV.",
+                English to "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. " +
+                        "It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to NAV."
+            )
+        }
+
+        title2 {
+            text(
+                Bokmal to "Du har rett til å klage",
+                Nynorsk to "Du har rett til å klage",
+                English to "You have the right to appeal"
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. " +
+                        "Klagen skal være skriftlig. Du finner skjema og informasjon på ${Constants.KLAGE_URL}.",
+                Nynorsk to "Om du meiner vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. " +
+                        "Klagen skal vere skriftleg. Du finn skjema og informasjon på ${Constants.KLAGE_URL}.",
+                English to "If you think the decision is wrong, you may appeal the decision within six weeks of the date on which " +
+                        "you received notice of the decision. Your appeal must be made in writing. You will find a form you can use and more " +
+                        "information about appeals at ${Constants.KLAGE_URL}."
+            )
+        }
+
+        paragraph {
+            text(
+                Bokmal to "I vedlegget får du vite mer om hvordan du går fram.",
+                Nynorsk to "I vedlegget får du vite meir om korleis du går fram.",
+                English to "The appendix includes information on how to proceed."
+            )
+        }
+
+        title2 {
+            text(
+                Bokmal to "Du har rett til innsyn",
+                Nynorsk to "Du har rett til innsyn",
+                English to "You have the right to access your file"
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Du har rett til å se dokumentene i saken din. I vedlegget får du vite hvordan du går fram.",
+                Nynorsk to "Du har rett til å sjå dokumenta i saka di. I vedlegget får du vite korleis du går fram.",
+                English to "You have the right to access all documents pertaining to your case. The attachment includes information on how to proceed."
+            )
+        }
+
+        includePhrase(Felles.HarDuSpoersmaal.alder)
 
     }
 }
