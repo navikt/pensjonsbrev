@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSel
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.periode
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDtoSelectors.totaltAvvik
 import no.nav.pensjon.brev.maler.fraser.common.Constants
-import no.nav.pensjon.brev.maler.fraser.ufoer.*
 import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
@@ -139,9 +138,9 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                     }
                     paragraph {
                         text(
-                            Bokmal to "Det er mulig at du ikke trenger å betale tilbake hele/deler av beløpet du har fått for mye utbetalt. Dette vil vi vurdere. Dette forutsetter at inntekten din i starten av året var under inntektsgrensen, jf. forskrift om uføretrygd § 4-1. Er dette aktuelt for deg, vil du få et eget brev.",
-                            Nynorsk to "Det er mogleg at du ikkje treng å betale tilbake heile/delar av beløpet du har fått for mykje utbetalt. Dette vil vi vurdere. Føresetnaden er at inntekta di i starten av året var under inntektsgrensa, jf. forskrift om uføretrygd § 4-1. Dersom dette gjeld deg, vil du få eit eige brev.",
-                            English to "It is possible that you may not need to repay the entire or part of the amount that you have been overpaid. We will assess this based on whether your income at the start of the year was below the specified threshold, as specified in Section 4-1 of the regulations from the National Insurance Scheme. If this applies to your situation, you will receive a separate letter."
+                            Bokmal to "Det er mulig at du ikke trenger å betale tilbake hele/deler av beløpet du har fått for mye utbetalt dersom inntektsøkningen skyldes arbeidsforsøk, jf. forskrift om uføretrygd § 4-1. Er dette aktuelt for deg, vil du få et eget brev.",
+                            Nynorsk to "Det er mogleg at du ikkje treng å betale tilbake heile/delar av beløpet du har fått for mykje utbetalt dersom inntektsauken kjem av eit arbeidsforsøk, jf. forskrift om uføretrygd § 4-1. Dersom dette gjeld deg, vil du få eit eige brev.",
+                            English to "It is possible that you may not need to repay the entire or part of the amount that you have been overpaid if the increase in income is due to a work attempt, as specified in Section 4-1 of the regulations from the National Insurance Scheme. If this applies to your situation, you will receive a separate letter."
                         )
                     }
                     paragraph {
