@@ -5,6 +5,7 @@ import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateC
 import { isFritekst, isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
 import type { BrevResponse } from "~/types/brev";
 import type {
+  ColumnSpec,
   Content,
   ElementTags,
   Identifiable,
@@ -13,6 +14,8 @@ import type {
   LiteralValue,
   NewLine,
   ParagraphBlock,
+  Row,
+  Table,
   TextContent,
   TITLE1,
   Title1Block,
@@ -20,7 +23,7 @@ import type {
   Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { FontType, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
+import { FontType, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, TABLE, VARIABLE } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
 import type { BlockContentIndex, Focus, ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
@@ -239,6 +242,24 @@ export function newParagraph(args: {
   };
 }
 
+export function newTable(rows: Row[]): Table {
+  return {
+    type: TABLE,
+    id: null,
+    parentId: null,
+
+    header: {
+      id: null,
+      parentId: null,
+      colSpec: [] as ColumnSpec[],
+    },
+
+    rows,
+
+    deletedRows: [],
+  };
+}
+
 export function newLiteral(args: {
   id?: Nullable<number>;
   parentId?: Nullable<number>;
@@ -313,4 +334,18 @@ export function getMergeIds(sourceId: number, target: MergeTarget): [number, num
       return [sourceId, sourceId + 1];
     }
   }
+}
+
+export function insertEmptyParagraphAfterBlock(draft: Draft<LetterEditorState>, blockIndex: number) {
+  const emptyPara = newParagraph({
+    content: [newLiteral({ editedText: "", fontType: FontType.PLAIN })],
+  });
+
+  addElements([emptyPara], blockIndex + 1, draft.redigertBrev.blocks, draft.redigertBrev.deletedBlocks);
+
+  draft.focus = {
+    blockIndex: blockIndex + 1,
+    contentIndex: 0,
+    cursorPosition: 0,
+  };
 }

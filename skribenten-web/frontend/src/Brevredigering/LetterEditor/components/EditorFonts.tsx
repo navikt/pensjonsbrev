@@ -5,7 +5,7 @@ import React from "react";
 
 import { fontTypeOf, isItemContentIndex } from "~/Brevredigering/LetterEditor/actions/common";
 import { isItemList, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
-import { FontType } from "~/types/brevbakerTypes";
+import { FontType, TABLE } from "~/types/brevbakerTypes";
 
 import Actions from "../actions";
 import type { CallbackReceiver } from "../lib/actions";
@@ -14,6 +14,15 @@ import type { LetterEditorState } from "../model/state";
 
 const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontType => {
   const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
+  const cur = editorState.focus;
+  if (block.type === TABLE) {
+    if (isItemContentIndex(cur) && block.rows[cur.contentIndex] && block.rows[cur.contentIndex].cells[cur.itemIndex]) {
+      const cell = block.rows[cur.contentIndex].cells[cur.itemIndex];
+      const literal = cell.text[cur.itemContentIndex];
+      return isTextContent(literal) ? fontTypeOf(literal) : FontType.PLAIN;
+    }
+    return FontType.PLAIN;
+  }
   const blockContent = block.content[editorState.focus.contentIndex];
   const textContent =
     isItemContentIndex(editorState.focus) && isItemList(blockContent)

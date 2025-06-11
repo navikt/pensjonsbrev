@@ -1,9 +1,9 @@
+import DOMPurify from "dompurify";
 import type { Draft } from "immer";
 import { produce } from "immer";
 
 import {
   addElements,
-  cleanseText,
   findAdjoiningContent,
   fontTypeOf,
   isAtStartOfBlock,
@@ -14,6 +14,7 @@ import {
   newItemList,
   newLiteral,
   newParagraph,
+  newTable,
   removeElements,
   splitLiteralAtOffset,
   text,
@@ -27,7 +28,7 @@ import type {
   LetterEditorState,
   LiteralIndex,
 } from "~/Brevredigering/LetterEditor/model/state";
-import type { AnyBlock, Content, LiteralValue, TextContent } from "~/types/brevbakerTypes";
+import type { AnyBlock, Content, LiteralValue, Row, TextContent } from "~/types/brevbakerTypes";
 import { FontType } from "~/types/brevbakerTypes";
 
 import { isItemList, isLiteral, isTextContent } from "../model/utils";
@@ -230,6 +231,37 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
         }
         break;
       }
+      case "TABLE": {
+        // Clipboard AST to Brevbaker Rows/Cells
+        const rows: Row[] = el.rows.map((row) => ({
+          type: undefined,
+          id: null,
+          parentId: null,
+          cells: row.cells.map((cell) => ({
+            id: null,
+            parentId: null,
+            text: cell.content.map((txt) => newLiteral({ editedText: txt.text, fontType: txt.font })),
+          })),
+        }));
+
+        const tableBlock = newTable(rows);
+
+        addElements(
+          [tableBlock, newParagraph({ content: [newLiteral({ editedText: "", fontType: FontType.PLAIN })] })],
+          draft.focus.blockIndex + 1,
+          draft.redigertBrev.blocks,
+          draft.redigertBrev.deletedBlocks,
+        );
+
+        draft.focus = {
+          blockIndex: draft.focus.blockIndex + 1,
+          contentIndex: 0,
+          itemIndex: 0,
+          itemContentIndex: 0,
+          cursorPosition: 0,
+        };
+        break;
+      }
     }
   });
 }
@@ -312,30 +344,63 @@ interface Paragraph {
   content: Text[];
 }
 
-type TraversedElement = Paragraph | Text | Item;
+interface TableCell {
+  content: Text[];
+}
+
+interface TableRow {
+  cells: TableCell[];
+}
+
+interface Table {
+  type: "TABLE";
+  rows: TableRow[];
+}
+
+type TraversedElement = Paragraph | Text | Item | Table;
+
+/** Return clipboard HTML or plain text, sanitised through DOMPurify. */
+function getCleanClipboardMarkup(dt: DataTransfer): string {
+  const raw = dt.types.includes("text/html") ? dt.getData("text/html") : dt.getData("text/plain");
+
+  return DOMPurify.sanitize(raw, {
+    ALLOWED_TAGS: [
+      "p",
+      "br",
+      "strong",
+      "b",
+      "em",
+      "i",
+      "ul",
+      "ol",
+      "li",
+      "table",
+      "thead",
+      "tbody",
+      "tr",
+      "td",
+      "th",
+      "span",
+    ],
+    ALLOWED_ATTR: ["rowspan", "colspan"],
+  });
+}
 
 function parseAndCombineHTML(clipboard: DataTransfer): TraversedElement[] {
-  const parser = new DOMParser();
-  const document = parser.parseFromString(clipboard.getData("text/html"), "text/html");
+  const cleanHtml = getCleanClipboardMarkup(clipboard);
+  const document = new DOMParser().parseFromString(cleanHtml, "text/html");
 
   const elements = traverseChildren(document.body, FontType.PLAIN);
   return moveOuterTextIntoNeighbouringParagraphs(elements);
-}
-
-function isOnlyWhitespace(node: Node) {
-  return !!node.textContent && !/[^\t\n\r ]/.test(node.textContent);
 }
 
 function traverseChildren(element: Element, font: FontType): TraversedElement[] {
   const traversedChildNodes: TraversedElement[] = [...element.childNodes].flatMap((node) => {
     switch (node.nodeType) {
       case Node.TEXT_NODE: {
-        if (!isOnlyWhitespace(node)) {
-          const text = cleansePastedText(element.textContent ?? "");
-          return text.length > 0 ? [{ type: "TEXT", font, text }] : [];
-        } else {
-          return [];
-        }
+        const txt = cleansePastedText((node.textContent ?? "").trim());
+
+        return txt.length > 0 ? [{ type: "TEXT", font, text: txt }] : [];
       }
       case Node.ELEMENT_NODE: {
         return traverse(node as Element, font);
@@ -348,6 +413,35 @@ function traverseChildren(element: Element, font: FontType): TraversedElement[] 
   return mergeNeighbouringText(traversedChildNodes);
 }
 
+function traverseTable(element: HTMLTableElement, font: FontType): Table {
+  const rows: TableRow[] = [];
+
+  element.querySelectorAll("tr").forEach((tr) => {
+    const cells: TableCell[] = [];
+
+    tr.querySelectorAll("th,td").forEach((td) => {
+      const content = traverseChildren(td, font).flatMap((e) => {
+        if (e.type === "TEXT") return [e];
+        if (e.type === "P") return e.content;
+        if (e.type === "ITEM") return e.content;
+        return [];
+      });
+      cells.push({ content });
+    });
+
+    if (cells.length > 0) rows.push({ cells });
+  });
+
+  // eslint-disable-next-line no-console
+  console.log("Paste traversal to Table node:", {
+    rows: rows.length,
+    cellsPerRow: rows.map((r) => r.cells.length),
+    sampleCell: rows[0]?.cells[0]?.content?.[0],
+  });
+
+  return { type: "TABLE", rows };
+}
+
 function traverse(element: Element, font: FontType): TraversedElement[] {
   switch (element.tagName) {
     case "SPAN": {
@@ -356,14 +450,12 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
 
     case "STRONG":
     case "B": {
-      // Since text in brevbaker-brev cannot be both bold (strong) and italic (emphasized) simultaneously, we pass along the first change (away from plain).
       const nextFont = font === FontType.PLAIN ? FontType.BOLD : font;
       return traverseTextContainer(element, nextFont);
     }
 
     case "EM":
     case "I": {
-      // Since text in brevbaker-brev cannot be both bold (strong) and italic (emphasized) simultaneously, we pass along the first change (away from plain).
       const nextFont = font === FontType.PLAIN ? FontType.ITALIC : font;
       return traverseTextContainer(element, nextFont);
     }
@@ -371,10 +463,9 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
     case "P": {
       if (element.children.length === 0) {
         const text = cleansePastedText(element.textContent ?? "");
-        // Allowed with empty p-elements for line break
+
         return text.length >= 0 ? [{ type: "P", content: [{ type: "TEXT", font, text }] }] : [];
       } else {
-        // traverse children, merge neighbouring plain text, and flatten any nested paragraphs and items
         return traverseParagraphChildren(element, font);
       }
     }
@@ -382,7 +473,7 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
     case "LI": {
       if (element.children.length === 0) {
         const text = cleansePastedText(element.textContent ?? "");
-        // allowed with empty list items
+
         return text.length >= 0 ? [{ type: "ITEM", content: [{ type: "TEXT", font: font, text }] }] : [];
       } else {
         return [{ type: "ITEM", content: traverseItemChildren(element, font) }];
@@ -390,21 +481,20 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
     }
 
     case "TABLE": {
-      // TODO: ignore until support for table is implemented
-      return [];
+      return [traverseTable(element as HTMLTableElement, font)];
     }
 
-    case "DIV": {
-      // skip and traverse children
-      return traverseChildren(element, font);
-    }
+    // case "DIV": {
+    //   // skip and traverse children
+    //   return traverseChildren(element, font);
+    // }
     default: {
       return traverseChildren(element, font);
     }
   }
 }
 
-// Since we break (to new paragraph) AFTER a p-element, any preceding text-element will belong to it. So we modify
+// Since we break (to new paragraph) after a p-element, any preceding text-element will belong to it. So we modify
 // our structure to reflect that.
 function moveOuterTextIntoNeighbouringParagraphs(elements: TraversedElement[]): TraversedElement[] {
   return elements.reduceRight<TraversedElement[]>((acc, current) => {
@@ -443,48 +533,86 @@ function traverseItemChildren(item: Element, font: FontType): Text[] {
 }
 
 // Will package any Text-elements into a Paragraph, and make sure we don't have nested paragraphs and items.
-function traverseParagraphChildren(paragraph: Element, font: FontType): (Paragraph | Item)[] {
-  return traverseChildren(paragraph, font).reduce<(Paragraph | Item)[]>((acc, current) => {
-    const previous = acc.at(-1);
+// function traverseParagraphChildren(paragraph: Element, font: FontType): (Paragraph | Item)[] {
+//   return traverseChildren(paragraph, font).reduce<(Paragraph | Item)[]>((acc, current) => {
+//     const previous = acc.at(-1);
 
-    switch (current.type) {
-      case "P": {
-        // should probably not be possible, since it would mean nested p-elements, but html-structures can be weird.
-        // append paragraph
-        return [...acc, current];
-      }
+//     switch (current.type) {
+//       case "P": {
+//         // should probably not be possible, since it would mean nested p-elements, but html-structures can be weird.
+//         // append paragraph
+//         return [...acc, current];
+//       }
+//       case "TEXT": {
+//         if (previous?.type === "P") {
+//           // insert into existing paragraph
+//           return [...acc.slice(0, -1), { ...previous, content: mergeNeighbouringText([...previous.content, current]) }];
+//         } else {
+//           // create a paragraph to contain the text
+//           return [...acc, { type: "P", content: [current] }];
+//         }
+//       }
+//       case "ITEM": {
+//         return [...acc, current];
+//       }
+//     }
+//   }, []);
+// }
+
+function traverseParagraphChildren(paragraph: Element, font: FontType): (Paragraph | Item)[] {
+  const result: (Paragraph | Item)[] = [];
+  let buffer: Text[] = [];
+
+  /** Flush any buffered TEXT nodes into a Paragraph element. */
+  const flushBuffer = () => {
+    if (buffer.length > 0) {
+      result.push({ type: "P", content: buffer });
+      buffer = [];
+    }
+  };
+
+  // Walk immediate children that our earlier traversal returned
+  for (const node of traverseChildren(paragraph, font)) {
+    switch (node.type) {
       case "TEXT": {
-        if (previous?.type === "P") {
-          // insert into existing paragraph
-          return [...acc.slice(0, -1), { ...previous, content: mergeNeighbouringText([...previous.content, current]) }];
-        } else {
-          // create a paragraph to contain the text
-          return [...acc, { type: "P", content: [current] }];
-        }
+        buffer = mergeNeighbouringText([...buffer, node]) as Text[];
+        break;
       }
+
       case "ITEM": {
-        return [...acc, current];
+        flushBuffer();
+        result.push(node);
+        break;
+      }
+
+      case "P": {
+        flushBuffer();
+        result.push(node);
+        break;
       }
     }
-  }, []);
+  }
+
+  flushBuffer();
+  return result;
 }
 
 function mergeNeighbouringText<T extends TraversedElement>(elements: T[]): T[] {
   return elements.reduce<T[]>((acc, curr) => {
-    const previous = acc.at(-1);
+    const prev = acc.at(-1);
 
-    if (previous?.type === "TEXT" && curr.type === "TEXT" && previous?.font === curr.font) {
-      return [...acc.slice(0, -1), { ...previous, text: cleansePastedText(previous.text + curr.text) }];
-    } else {
-      return [...acc, curr];
+    if (prev?.type === "TEXT" && curr.type === "TEXT" && prev.font === curr.font) {
+      // We already sanitised both text nodes earlier, so just concatenate.
+      return [...acc.slice(0, -1), { ...prev, text: prev.text + curr.text }];
     }
+
+    return [...acc, curr];
   }, []);
 }
 
 function cleansePastedText(str: string): string {
-  return cleanseText(str).replaceAll(/\s+/g, " ");
+  return str.replace(/\u00A0/g, " ").replace(/\s+/g, " ");
 }
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function log(message: string, ...obj: any[]) {
   // eslint-disable-next-line no-console

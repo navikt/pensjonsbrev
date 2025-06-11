@@ -2,6 +2,8 @@ import { css } from "@emotion/react";
 import { BulletListIcon } from "@navikt/aksel-icons";
 import { Button } from "@navikt/ds-react";
 
+import { ITEM_LIST, TABLE } from "~/types/brevbakerTypes";
+
 import Actions from "../actions";
 import type { CallbackReceiver } from "../lib/actions";
 import { applyAction } from "../lib/actions";
@@ -15,7 +17,11 @@ const EditorBulletList = (props: {
   //TODO - bug - om du bare taster i vei i tastaturet mens du lager nye avsnitt, og trykker fortsett før lagring, vil focus være på et avsnitt som ikke eksister i blocks
   //dette fører til en error
   const block = props.editorState.redigertBrev.blocks[props.editorState.focus.blockIndex];
-  const erAlleElementerIBlockenItemList = block.content.every((contentItem) => contentItem.type === "ITEM_LIST");
+
+  const erAlleElementerIBlockenItemList =
+    block.type !== TABLE &&
+    Array.isArray((block as { content?: unknown[] }).content) &&
+    block.content!.every((c) => (c as { type?: string }).type === ITEM_LIST);
 
   return (
     <div>

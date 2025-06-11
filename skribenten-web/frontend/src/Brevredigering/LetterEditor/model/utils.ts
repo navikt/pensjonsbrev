@@ -62,11 +62,18 @@ export function isEmptyItem(item: Item): boolean {
   return item.content.length === 0 || (item.content.length === 1 && isEmptyContent(item.content[0]));
 }
 
-export function isEmptyContentList(content: Content[]) {
+export function isEmptyContentList(content: Content[] | undefined | null): boolean {
+  if (!Array.isArray(content)) return true;
   return content.length === 0 || (content.length === 1 && isEmptyContent(content[0]));
 }
+
 export function isEmptyBlock(block: AnyBlock): boolean {
-  return isEmptyContentList(block.content);
+  if ("content" in block && Array.isArray(block.content)) {
+    return isEmptyContentList(block.content);
+  }
+  /* TABLE (and any future block with rows/cells) is never “empty”
+     for the purposes of split/merge. */
+  return false;
 }
 
 export function isParagraph(block: AnyBlock | undefined | null): block is ParagraphBlock {
