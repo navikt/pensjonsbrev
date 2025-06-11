@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.alder.omregning
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.virkFom
+import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -39,6 +40,8 @@ object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto
             includePhrase(
                 OmregningAlderUfore2016Felles(virkFom = virkFom)
             )
+
         }
+        includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
     }
 }
