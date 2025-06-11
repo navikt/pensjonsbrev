@@ -2,14 +2,28 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 
 import type { LiteralValue } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, TABLE } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
-import { cleanseText } from "./common";
+import { cleanseText, isItemContentIndex } from "./common";
 
 export const updateContentText: Action<LetterEditorState, [literalIndex: LiteralIndex, text: string]> = produce(
   (draft, literalIndex, text) => {
+    const focus = literalIndex;
+    const block = draft.redigertBrev.blocks[focus.blockIndex];
+
+    if (block.type === TABLE && isItemContentIndex(focus)) {
+      const row = block.rows[focus.contentIndex];
+      const cell = row.cells[focus.itemIndex];
+      const literal = cell.text[focus.itemContentIndex];
+
+      if (literal?.type === LITERAL) {
+        literal.editedText = text;
+        draft.isDirty = true;
+      }
+      return;
+    }
     const content = draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex];
 
     if (content.type === LITERAL) {

@@ -29,7 +29,7 @@ import type {
   LiteralIndex,
 } from "~/Brevredigering/LetterEditor/model/state";
 import type { AnyBlock, Content, LiteralValue, Row, TextContent } from "~/types/brevbakerTypes";
-import { FontType } from "~/types/brevbakerTypes";
+import { FontType, TABLE } from "~/types/brevbakerTypes";
 
 import { isItemList, isLiteral, isTextContent } from "../model/utils";
 
@@ -123,32 +123,51 @@ type InsertTextContext = {
 };
 
 function getInsertTextContentContext(draft: Draft<LetterEditorState>): InsertTextContext | undefined {
-  const literalIndex = draft.focus;
-  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
-  const blockContent = block?.content[literalIndex.contentIndex];
+  const litIdx = draft.focus;
+  const block = draft.redigertBrev.blocks[litIdx.blockIndex];
 
-  if (isItemList(blockContent) && isItemContentIndex(literalIndex)) {
-    const item = blockContent.items[literalIndex.itemIndex];
+  if (block.type === TABLE) {
+    const row = block.rows[litIdx.contentIndex];
+    const cell = row?.cells[litIdx.itemIndex];
+
+    if (!cell) return undefined;
+
     return {
-      content: item?.content[literalIndex.itemContentIndex],
-      parent: item,
-      getContentIndex: (focus) => (focus as ItemContentIndex).itemContentIndex,
-      setContentIndex: (focus: Draft<Focus>, value: number) => {
-        (focus as Draft<ItemContentIndex>).itemContentIndex = value;
+      content: cell.text[litIdx.itemContentIndex],
+      parent: { content: cell.text as Draft<TextContent[]>, deletedContent: [] as Draft<number[]> },
+      getContentIndex: (f) => (f as ItemContentIndex).itemContentIndex,
+      setContentIndex: (f: Draft<Focus>, v: number) => {
+        (f as Draft<ItemContentIndex>).itemContentIndex = v;
       },
     };
-  } else if (isTextContent(blockContent) && isBlockContentIndex(literalIndex)) {
+  }
+
+  const blockContent = block.content[litIdx.contentIndex];
+
+  if (isItemList(blockContent) && isItemContentIndex(litIdx)) {
+    const item = blockContent.items[litIdx.itemIndex];
+    return {
+      content: item.content[litIdx.itemContentIndex],
+      parent: item,
+      getContentIndex: (f) => (f as ItemContentIndex).itemContentIndex,
+      setContentIndex: (f: Draft<Focus>, v: number) => {
+        (f as Draft<ItemContentIndex>).itemContentIndex = v;
+      },
+    };
+  }
+
+  if (isTextContent(blockContent) && isBlockContentIndex(litIdx)) {
     return {
       content: blockContent,
       parent: block,
-      getContentIndex: (focus) => focus.contentIndex,
-      setContentIndex: (focus: Draft<Focus>, value: number) => {
-        focus.contentIndex = value;
+      getContentIndex: (f) => f.contentIndex,
+      setContentIndex: (f: Draft<Focus>, v: number) => {
+        f.contentIndex = v;
       },
     };
-  } else {
-    return undefined;
   }
+
+  return undefined;
 }
 
 // We want to modify existing literal only if fontTypes matches, and it is either:
