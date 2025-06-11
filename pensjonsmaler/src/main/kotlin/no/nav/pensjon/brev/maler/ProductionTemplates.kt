@@ -105,6 +105,7 @@ object ProductionTemplates : AllTemplates {
         InnhentingDokumentasjonFraBruker,
         InnhentingInformasjonFraBruker,
         InnhentingOpplysningerFraBruker,
+        InnvilgelseAvAlderspensjon,
         OmsorgEgenManuell,
         OrienteringOmSaksbehandlingstid,
         TilbakekrevingAvFeilutbetaltBeloep,
