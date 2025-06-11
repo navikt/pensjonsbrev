@@ -218,7 +218,7 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                                 "Du kan også sende uttalelsen din til oss i posten. Adressen finner du på $ETTERSENDELSE_URL.",
                         Nynorsk to "Du kan sende uttalen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velje “Send beskjed til Nav”. " + "" +
                                 "Du kan også sende uttalen din til oss i posten. Adressa finn du på $ETTERSENDELSE_URL.",
-                        English to "You can submit your statement by logging in to [_Value URL_beskjedtilnav_] and selecting “Send beskjed til [_Value NAV_]”. You can also send us your statement by post. You can find the address at [_Value URL_ettersendelse_].",
+                        English to "You can submit your statement by logging in to Value $BESKJED_TIL_NAV_URL and selecting “Send beskjed til Nav”. You can also send us your statement by post. You can find the address at $ETTERSENDELSE_URL.",
                     )
                 }
             }
