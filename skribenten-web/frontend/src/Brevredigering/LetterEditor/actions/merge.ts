@@ -1,20 +1,19 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
-import type { AnyBlock, ItemList } from "~/types/brevbakerTypes";
-
 import {
   addElements,
   getMergeIds,
   newLiteral,
   removeElements,
   text,
-} from "../../../Brevredigering/LetterEditor/actions/common";
-import { ITEM_LIST, LITERAL, NEW_LINE, VARIABLE } from "../../../types/brevbakerTypes";
+} from "~/Brevredigering/LetterEditor/actions/common";
+import type { AnyBlock, ItemList } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
+
 import type { Action } from "../lib/actions";
-import type { Focus, LetterEditorState } from "../model/state";
+import type { Focus, ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem, isTextContent } from "../model/utils";
-import type { ItemContentIndex, LiteralIndex } from "./model";
 
 export enum MergeTarget {
   PREVIOUS = "PREVIOUS",
@@ -183,14 +182,10 @@ function mergeFromItemList(draft: Draft<LetterEditorState>, literalIndex: ItemCo
       const block = blocks[literalIndex.blockIndex];
       const contentBeforeItemList = block.content[literalIndex.contentIndex - 1];
 
-      removeElements(literalIndex.contentIndex, 1, {
-        content: block.content,
-        deletedContent: block.deletedContent,
-        id: block.id,
-      });
+      removeElements(literalIndex.contentIndex, 1, block);
 
       // TODO: Denne burde nok være en switch, slik at vi får håndtert andre typer content.
-      if (contentBeforeItemList?.type === VARIABLE) {
+      if (contentBeforeItemList?.type === VARIABLE || contentBeforeItemList === undefined) {
         addElements([newLiteral({ text: "" })], literalIndex.contentIndex, block.content, block.deletedContent);
         draft.focus = {
           blockIndex: literalIndex.blockIndex,

@@ -34,14 +34,8 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevvelger")({
   validateSearch: (search): BrevvelgerSearch => brevvelgerSearchSchema.parse(search),
   loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId }),
   loader: async ({ context, params: { saksId }, deps: { vedtaksId } }) => {
-    let options = context.getSakContextQueryOptions;
-    if (!options) {
-      options = getSakContextQuery(saksId, vedtaksId);
-      context.getSakContextQueryOptions = options;
-    }
-
-    const sakContext = await context.queryClient.ensureQueryData(options);
-    return { saksId: sakContext.sak.saksId, letterTemplates: sakContext.brevMetadata };
+    const getSakContextQueryOptions = getSakContextQuery(saksId, vedtaksId);
+    return await context.queryClient.ensureQueryData(getSakContextQueryOptions);
   },
   errorComponent: ({ error }) => <ApiError error={error} title="Klarte ikke hente brevmaler for saken." />,
   component: BrevvelgerPage,
@@ -52,7 +46,9 @@ export interface SubmitTemplateOptions {
 }
 
 export function BrevvelgerPage() {
-  const { saksId, letterTemplates } = Route.useLoaderData();
+  const { saksId } = Route.useParams();
+  const { brevMetadata: letterTemplates } = Route.useLoaderData();
+
   const [onSubmitClick, setOnSubmitClick] = useState<Nullable<SubmitTemplateOptions>>(null);
 
   const alleSaksbrevQuery = useQuery({
@@ -86,7 +82,7 @@ export function BrevvelgerPage() {
 }
 
 const BrevvelgerMainContent = (props: {
-  saksId: number;
+  saksId: string;
   letterTemplates: LetterMetadata[];
   alleSaksbrevQuery: UseQueryResult<BrevInfo[], Error>;
   setOnSubmitClick: (v: SubmitTemplateOptions) => void;

@@ -56,7 +56,7 @@ jobs:
         id: docker-build-push
         with:
           team: pensjonsbrev
-          image_suffix: web
+          image_suffix: brevoppskrift-web
           docker_context: brevoppskrift-web/bff
           dockerfile: brevoppskrift-web/bff/Dockerfile
     outputs:

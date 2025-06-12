@@ -73,7 +73,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         render(scope, template.attachments) { scope, _, attachment ->
             add(
                 AttachmentImpl(
-                    renderText(scope, listOf(attachment.title)),
+                    renderText(scope, attachment.title),
                     renderOutline(scope, attachment.outline),
                     attachment.includeSakspart,
                 )
