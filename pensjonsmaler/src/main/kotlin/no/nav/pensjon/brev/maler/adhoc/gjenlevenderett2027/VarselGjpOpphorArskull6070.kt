@@ -15,10 +15,12 @@ import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevende
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023G
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023Over3g
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.DineInntekterTabell
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig2GTabell
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig3GTabell
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -46,7 +48,7 @@ object VarselGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
     ) {
         title {
             text(
-                Bokmal to "Forhåndsvarsel - Gjenlevendepensjonen din kan bli tidsbegrenset ",
+                Bokmal to "Forhåndsvarsel – Gjenlevendepensjonen din kan bli tidsbegrenset ",
                 Nynorsk to "Førehandsvarsel – Gjenlevandepensjonen din kan bli tidsavgrensa ",
             )
         }
@@ -89,53 +91,7 @@ object VarselGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                 )
             }
 
-            paragraph {
-                table(
-                    header = {
-                        column(1) {
-                            text(
-                                Bokmal to "År",
-                                Nynorsk to "År",
-                            )
-                        }
-                        column(2) {
-                            text(
-                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 3:",
-                                Nynorsk to "Gjennomsnittleg grunnbeløp (G) gongar 3:",
-                            )
-                        }
-                    },
-                ) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2022",
-                                Nynorsk to "2022",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 329_352.expr().format(CurrencyFormat) + " kroner",
-                                Nynorsk to 329_352.expr().format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2023",
-                                Nynorsk to "2023",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 348_717.expr().format(CurrencyFormat) + " kroner",
-                                Nynorsk to 348_717.expr().format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                }
-            }
+            includePhrase(Gjennomsnittlig3GTabell)
 
             paragraph {
                 text(
@@ -144,95 +100,7 @@ object VarselGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                 )
             }
 
-            paragraph {
-                table(
-                    header = {
-                        column(1) {
-                            text(
-                                Bokmal to "År",
-                                Nynorsk to "År",
-                            )
-                        }
-                        column(2) {
-                            text(
-                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 2:",
-                                Nynorsk to "Gjennomsnittleg grunnbeløp (G) gongar 2:",
-                            )
-                        }
-                    },
-                ) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2019",
-                                Nynorsk to "2019",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 197_732.expr().format(CurrencyFormat) + " kroner",
-                                Nynorsk to 197_732.expr().format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2020",
-                                Nynorsk to "2020",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 201_706.expr().format(CurrencyFormat) + " kroner",
-                                Nynorsk to 201_706.expr().format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2021",
-                                Nynorsk to "2021",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 209_432.expr().format(CurrencyFormat) + " kroner",
-                                Nynorsk to 209_432.expr().format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2022",
-                                Nynorsk to "2022",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 219_568.expr().format(CurrencyFormat) + " kroner",
-                                Nynorsk to 219_568.expr().format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2023",
-                                Nynorsk to "2023",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 232_478.expr().format(CurrencyFormat) + " kroner",
-                                Nynorsk to 232_478.expr().format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                }
-            }
+            includePhrase(Gjennomsnittlig2GTabell)
 
             title1 {
                 text(

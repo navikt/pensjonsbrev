@@ -2,34 +2,31 @@ package no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2019G
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2020G
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2021G
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2022G
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023G
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.gjennomsnittInntektG
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2019
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2019G
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2020
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2020G
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2021
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2021G
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2022
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2022G
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023G
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.DineInntekterTabell
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig2GTabell
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig3GTabell
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> {
-
 
     override val kode = Pesysbrevkoder.AutoBrev.GJP_VARSEL_FORLENGELSE_60_61
 
@@ -46,7 +43,7 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
     ) {
         title {
             text(
-                Bokmal to "Forhåndsvarsel - Gjenlevendepensjonen din kan bli forlenget",
+                Bokmal to "Forhåndsvarsel – Gjenlevendepensjonen din kan bli forlenget",
                 Nynorsk to "Førehandsvarsel – Gjenlevandepensjonen din kan bli forlenga "
             )
         }
@@ -96,150 +93,16 @@ object VarselGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
                 )
             }
 
-            paragraph {
-                table(
-                    header = {
-                        column(1) {
-                            text(
-                                Bokmal to "År",
-                                Nynorsk to "År",
-                            )
-                        }
-                        column(2) {
-                            text(
-                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 3:",
-                                Nynorsk to "Gjennomsnittleg grunnbeløp (G) gongar 3:",
-                            )
-                        }
-                    },
-                ) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2022",
-                                Nynorsk to "2022",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 329_352.expr().format(CurrencyFormat) + " kroner",
-                                Nynorsk to 329_352.expr().format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2023",
-                                Nynorsk to "2023",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 348_717.expr().format(CurrencyFormat) + " kroner",
-                                Nynorsk to 348_717.expr().format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                }
-            }
+            includePhrase(Gjennomsnittlig3GTabell)
 
             paragraph {
                 text(
-                    Bokmal to "I tillegg må inntekten din i 2019–2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. Det vil siat inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere.",
+                    Bokmal to "I tillegg må inntekten din i 2019–2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene. Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere.",
                     Nynorsk to "I tillegg må inntekta di i 2019–2023 ha vore under to gongar grunnbeløpet i folketrygda (G) i gjennomsnitt i desse fem åra. Det vil seie at inntekta kan overstige to gongar grunnbeløpet i eitt enkelt år, så lenge gjennomsnittet av dei fem åra er lågare. ",
                 )
             }
 
-            paragraph {
-                table(
-                    header = {
-                        column(1) {
-                            text(
-                                Bokmal to "År",
-                                Nynorsk to "År",
-                            )
-                        }
-                        column(2) {
-                            text(
-                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 2:",
-                                Nynorsk to "Gjennomsnittleg grunnbeløp (G) gongar 2:",
-                            )
-                        }
-                    },
-                ) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2019",
-                                Nynorsk to "2019",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 197_732.expr().format(CurrencyFormat) + " kroner",
-                                Nynorsk to 197_732.expr().format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2020",
-                                Nynorsk to "2020",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 201_706.expr().format(CurrencyFormat) + " kroner",
-                                Nynorsk to 201_706.expr().format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2021",
-                                Nynorsk to "2021",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 209_432.expr().format(CurrencyFormat) + " kroner",
-                                Nynorsk to 209_432.expr().format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2022",
-                                Nynorsk to "2022",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 219_568.expr().format(CurrencyFormat) + " kroner",
-                                Nynorsk to 219_568.expr().format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2023",
-                                Nynorsk to "2023",
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 232_478.expr().format(CurrencyFormat) + " kroner",
-                                Nynorsk to 232_478.expr().format(CurrencyFormat) + " kroner",
-                            )
-                        }
-                    }
-                }
-            }
+            includePhrase(Gjennomsnittlig2GTabell)
 
             title1 {
                 text(

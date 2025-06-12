@@ -37,8 +37,14 @@ export function isBlockContentIndex(f: Focus | LiteralIndex): f is BlockContentI
   return !isItemContentIndex(f);
 }
 
-export function isItemContentIndex(f: Focus | LiteralIndex): f is ItemContentIndex {
-  return "itemIndex" in f && f.itemIndex !== undefined && "itemContentIndex" in f && f.itemContentIndex !== undefined;
+export function isItemContentIndex(f: Focus | LiteralIndex | undefined): f is ItemContentIndex {
+  return (
+    f !== undefined &&
+    "itemIndex" in f &&
+    f.itemIndex !== undefined &&
+    "itemContentIndex" in f &&
+    f.itemContentIndex !== undefined
+  );
 }
 
 export function isAtStartOfBlock(f: Focus, offset?: number): boolean {

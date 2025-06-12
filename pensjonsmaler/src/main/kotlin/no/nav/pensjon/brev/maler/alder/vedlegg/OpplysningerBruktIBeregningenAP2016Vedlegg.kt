@@ -391,9 +391,9 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
             showIf((opplysningerKap19.redusertTrygdetidKap19 or opplysningerKap20.redusertTrygdetidKap20) and opplysningerKap19.avslattKap19.not()) {
                 paragraph {
                     text(
-                        Bokmal to "Trygdetid baserer seg på perioder du har bodd og/eller arbeidet i Norge, og har betydning for beregning avpensjonen din. Full trygdetid er 40 år." +
+                        Bokmal to "Trygdetid baserer seg på perioder du har bodd og/eller arbeidet i Norge, og har betydning for beregning av pensjonen din. Full trygdetid er 40 år." +
                                 " Unntaket kan være hvis du har pensjonsopptjening fra et land Norge har trygdeavtale med.",
-                        Nynorsk to "Trygdetid baserer seg på periodar du har budd og/eller arbeidd i Noreg, og har betydning for berekning avpensjonen din. Full trygdetid er 40 år." +
+                        Nynorsk to "Trygdetid baserer seg på periodar du har budd og/eller arbeidd i Noreg, og har betydning for berekning av pensjonen din. Full trygdetid er 40 år." +
                                 " Unntaket kan vere om du har pensjonsopptening frå eit land Noreg har trygdeavtale med.",
                         English to "The period of national insurance coverage is based on periods you have lived and/or worked in Norway, and these years affect pension eligibility. Full pension eligibility is 40 years." +
                                 " The exception may be if you have pension accrual from a country that Norway has a social security agreement with."
