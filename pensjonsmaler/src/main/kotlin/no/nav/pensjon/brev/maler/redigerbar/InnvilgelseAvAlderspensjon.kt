@@ -89,11 +89,9 @@ import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
-import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -107,6 +105,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
 
 /* Tekster og logikk mht ektefelletillegg og barnetillegg er fjernet fra brevmalen etter en samtale med Ingrid Strand:
+innvETAP, innvBTAP, innvETBTAP, innvFTAPIngenUtbInntekt, innvFTAPIngenUtbSamletInntekt, innvETBTAIngenUtbInntekt, innvETBTAIngenUtbSamletInntekt,
 innvilgetETAPHjemmel, innvilgetBTAPHjemmel, InnvilgetETBTAHjemmel, innvilgetGjrettOgTilleggKap20 fjernet
 hvisFlyttetET, hvisFlyttetBT, hvisFlyttetETogBT */
 
@@ -207,6 +206,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     }
                 }
             }
+
             showIf(not(gjenlevendetilleggInnvilget) and not(gjenlevendetilleggKap19Innvilget)) {
                 paragraph {
                     textExpr(
@@ -233,6 +233,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     }
                 }
             }
+
             showIf(saksbehandlerValg.kravVirkDatoFomSenereEnnOensketUttakstidspunkt) {
                 // invilgelseAPVirkfom
                 paragraph {
@@ -248,85 +249,87 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 includePhrase(Felles.FlereBeregningsperioder)
             }
 
-            showIf(
-                saksbehandlerValg.harGjenlevenderett
-                        and gjenlevenderettAnvendt and avdodNavn.notNull() and not(gjenlevendetilleggKap19Innvilget) and not(
-                    gjenlevendetilleggInnvilget
-                )
-            ) {
-                paragraph {
-                    textExpr(
-                        Bokmal to "I beregningen vår har vi tatt utgangspunkt i pensjonsrettigheter du har etter ".expr() + avdodNavn + ". Dette gir deg en høyere pensjon enn om vi bare hadde tatt utgangspunkt i din egen opptjening.",
-                        Nynorsk to "I beregninga vår har vi teke utgangspunkt i pensjonsrettar du har etter ".expr() + avdodNavn + ". Dette gir deg ein høgare pensjon enn om vi berre hadde teke utgangspunkt i di eiga opptening.",
-                        English to "We have based the calculation on the pension rights you have after ".expr() + avdodNavn + ". This gives you a higher pension than if we had only based the calculation on your own earnings."
+            showIf(harAvdod) {
+                showIf(
+                    saksbehandlerValg.harGjenlevenderett
+                            and gjenlevenderettAnvendt and not(gjenlevendetilleggKap19Innvilget) and not(
+                        gjenlevendetilleggInnvilget
                     )
+                ) {
+                    paragraph {
+                        textExpr(
+                            Bokmal to "I beregningen vår har vi tatt utgangspunkt i pensjonsrettigheter du har etter ".expr() + avdodNavn + ". Dette gir deg en høyere pensjon enn om vi bare hadde tatt utgangspunkt i din egen opptjening.",
+                            Nynorsk to "I beregninga vår har vi teke utgangspunkt i pensjonsrettar du har etter ".expr() + avdodNavn + ". Dette gir deg ein høgare pensjon enn om vi berre hadde teke utgangspunkt i di eiga opptening.",
+                            English to "We have based the calculation on the pension rights you have after ".expr() + avdodNavn + ". This gives you a higher pension than if we had only based the calculation on your own earnings."
+                        )
+                    }
                 }
-            }
-            // TODO is this correct?
-            showIf(
-                saksbehandlerValg.harGjenlevendetillegg and gjenlevenderettAnvendt and gjenlevendetilleggKap19.greaterThan(
-                    0
-                )
-            ) {
-                // beregningAPGjtOpptj
-                paragraph {
-                    text(
-                        Bokmal to "Fra januar 2024 er gjenlevenderett i alderspensjonen din skilt ut som et eget gjenlevendetillegg." +
-                                " Alderspensjonen er basert på din egen pensjonsopptjening. Gjenlevendetillegget er differansen mellom alderspensjon basert på din egen pensjonsopptjening og opptjening fra den avdøde, og alderspensjon du har tjent opp selv.",
-                        Nynorsk to "Frå januar 2024 er attlevanderett i alderspensjonen din skild ut som eit eige attlevandetillegg." +
-                                " Alderspensjonen er basert på di eiga pensjonsopptening. Attlevandetillegget er differansen mellom alderspensjon basert på di eiga pensjonsopptening og opptening frå den avdøde, og alderspensjon du har tent opp sjølv.",
-                        English to "From January 2024, the survivor’s right in your retirement pension is separated out as a separate survivor’s supplement." +
-                                " The retirement pension is based on your own pension earnings. The survivor’s supplement is the difference between retirement pension based on your own pension earnings and earnings from the deceased, and retirement pension you have earned yourself."
-                    )
-                }
-                paragraph {
-                    text(
-                        Bokmal to "Gjenlevendetillegg skal ikke reguleres når pensjonen øker fra 1. mai hvert år.",
-                        Nynorsk to "Attlevendetillegg skal ikkje regulerast når pensjonen aukar frå 1. mai kvart år.",
-                        English to "The survivor's supplement will not be adjusted when the pension increases from 1 May every year."
-                    )
-                }
-            }
 
-            showIf(saksbehandlerValg.harGjenlevendetilleggKap19 and gjenlevendetilleggKap19Innvilget and avdodNavn.notNull()) {
-                // beregningAPGjtKap19
-                paragraph {
-                    textExpr(
-                        Bokmal to "Du får et gjenlevendetillegg i alderspensjonen fordi du har pensjonsrettigheter etter ".expr()
-                                + avdodNavn + ".",
-                        Nynorsk to "Du får eit attlevandetillegg i alderspensjonen fordi du har pensjonsrettar etter ".expr()
-                                + avdodNavn + ".",
-                        English to "You receive a survivor’s supplement in retirement pension because you have pension rights after ".expr()
-                                + avdodNavn + "."
+                showIf(
+                    saksbehandlerValg.harGjenlevendetillegg and gjenlevenderettAnvendt and gjenlevendetilleggKap19.greaterThan(
+                        0
                     )
+                ) {
+                    // beregningAPGjtOpptj
+                    paragraph {
+                        text(
+                            Bokmal to "Fra januar 2024 er gjenlevenderett i alderspensjonen din skilt ut som et eget gjenlevendetillegg." +
+                                    " Alderspensjonen er basert på din egen pensjonsopptjening. Gjenlevendetillegget er differansen mellom alderspensjon basert på din egen pensjonsopptjening og opptjening fra den avdøde, og alderspensjon du har tjent opp selv.",
+                            Nynorsk to "Frå januar 2024 er attlevanderett i alderspensjonen din skild ut som eit eige attlevandetillegg." +
+                                    " Alderspensjonen er basert på di eiga pensjonsopptening. Attlevandetillegget er differansen mellom alderspensjon basert på di eiga pensjonsopptening og opptening frå den avdøde, og alderspensjon du har tent opp sjølv.",
+                            English to "From January 2024, the survivor’s right in your retirement pension is separated out as a separate survivor’s supplement." +
+                                    " The retirement pension is based on your own pension earnings. The survivor’s supplement is the difference between retirement pension based on your own pension earnings and earnings from the deceased, and retirement pension you have earned yourself."
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Gjenlevendetillegg skal ikke reguleres når pensjonen øker fra 1. mai hvert år.",
+                            Nynorsk to "Attlevendetillegg skal ikkje regulerast når pensjonen aukar frå 1. mai kvart år.",
+                            English to "The survivor's supplement will not be adjusted when the pension increases from 1 May every year."
+                        )
+                    }
                 }
-                paragraph {
-                    text(
-                        Bokmal to "Alderspensjonen er basert på din egen pensjonsopptjening. Gjenlevendetillegget er differansen mellom alderspensjon basert på din egen pensjonsopptjening og opptjening fra den avdøde, og alderspensjon du har tjent opp selv.",
-                        Nynorsk to "Alderspensjonen er basert på di eiga pensjonsopptening. Attlevandetillegget er skilnaden mellom alderspensjon basert på di eiga pensjonsopptening og opptening frå den avdøde, og alderspensjon du har tent opp sjølv.",
-                        English to "The retirement pension is based on your own pension earnings. The survivor’s supplement is the difference between retirement pension based on your own pension earnings and earnings from the deceased, and retirement pension you have earned yourself."
-                    )
-                }
-            }
 
-            showIf(saksbehandlerValg.egenOpptjening and not(gjenlevenderettAnvendt and avdodNavn.isNull())) {
-                // beregningAPGjRettOpptjEgen_002
-                title1 {
-                    text(
-                        Bokmal to "Gjenlevenderett i alderspensjon",
-                        Nynorsk to "Attlevenderett i alderspensjon",
-                        English to "Survivor's rights in retirement pension"
-                    )
+                showIf(saksbehandlerValg.harGjenlevendetilleggKap19 and gjenlevendetilleggKap19Innvilget) {
+                    // beregningAPGjtKap19
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Du får et gjenlevendetillegg i alderspensjonen fordi du har pensjonsrettigheter etter ".expr()
+                                    + avdodNavn + ".",
+                            Nynorsk to "Du får eit attlevandetillegg i alderspensjonen fordi du har pensjonsrettar etter ".expr()
+                                    + avdodNavn + ".",
+                            English to "You receive a survivor’s supplement in retirement pension because you have pension rights after ".expr()
+                                    + avdodNavn + "."
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Alderspensjonen er basert på din egen pensjonsopptjening. Gjenlevendetillegget er differansen mellom alderspensjon basert på din egen pensjonsopptjening og opptjening fra den avdøde, og alderspensjon du har tjent opp selv.",
+                            Nynorsk to "Alderspensjonen er basert på di eiga pensjonsopptening. Attlevandetillegget er skilnaden mellom alderspensjon basert på di eiga pensjonsopptening og opptening frå den avdøde, og alderspensjon du har tent opp sjølv.",
+                            English to "The retirement pension is based on your own pension earnings. The survivor’s supplement is the difference between retirement pension based on your own pension earnings and earnings from the deceased, and retirement pension you have earned yourself."
+                        )
+                    }
                 }
-                paragraph {
-                    textExpr(
-                        Bokmal to "I beregningen vår har vi tatt utgangspunkt i din egen opptjening. Dette gir deg en høyere pensjon enn om vi hadde tatt utgangspunkt i pensjonsrettighetene du har etter ".expr()
-                                + avdodNavn + ".",
-                        Nynorsk to "I vår berekning har vi teke utgangspunkt i di eiga opptening. Dette gir deg ein høgare pensjon enn om vi hadde teke utgangspunkt i pensjonsrettane du har etter ".expr()
-                                + avdodNavn + ".",
-                        English to "We have based our calculation on your own earnings. This gives you a higher pension than if we had based it on the pension rights you have after ".expr()
-                                + avdodNavn + "."
-                    )
+
+                showIf(saksbehandlerValg.egenOpptjening and not(gjenlevenderettAnvendt)) {
+                    // beregningAPGjRettOpptjEgen_002
+                    title1 {
+                        text(
+                            Bokmal to "Gjenlevenderett i alderspensjon",
+                            Nynorsk to "Attlevenderett i alderspensjon",
+                            English to "Survivor's rights in retirement pension"
+                        )
+                    }
+                    paragraph {
+                        textExpr(
+                            Bokmal to "I beregningen vår har vi tatt utgangspunkt i din egen opptjening. Dette gir deg en høyere pensjon enn om vi hadde tatt utgangspunkt i pensjonsrettighetene du har etter ".expr()
+                                    + avdodNavn + ".",
+                            Nynorsk to "I vår berekning har vi teke utgangspunkt i di eiga opptening. Dette gir deg ein høgare pensjon enn om vi hadde teke utgangspunkt i pensjonsrettane du har etter ".expr()
+                                    + avdodNavn + ".",
+                            English to "We have based our calculation on your own earnings. This gives you a higher pension than if we had based it on the pension rights you have after ".expr()
+                                    + avdodNavn + "."
+                        )
+                    }
                 }
             }
 
@@ -514,6 +517,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     )
                 }
             }
+
             showIf(skjermingstilleggInnvilget) {
                 // skjermingstilleggHjemmel
                 paragraph {
@@ -524,7 +528,9 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     )
                 }
             }
+
             showIf(regelverkType.isOneOf(AP2025) and innvilgetFor67) {
+                // AP2025TidligUttakHjemmel
                 paragraph {
                     text(
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13.",
@@ -533,6 +539,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     )
                 }
             }
+
             showIf(garantitilleggInnvilget) {
                 // garantitilleggHjemmel
                 paragraph {
@@ -543,6 +550,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     )
                 }
             }
+
             showIf(gjenlevendetilleggKap19Innvilget) {
                 // innvilgetGjtKap19Hjemmel
                 paragraph {
@@ -554,6 +562,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     )
                 }
             }
+
             showIf(gjenlevenderettAnvendt and not(gjenlevendetilleggKap19Innvilget)) {
                 // innvilgetGjRettKap19For2024
                 paragraph {
@@ -596,17 +605,18 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             }
 
             showIf((harOppfyltVedSammenlegging or eksportTrygdeavtaleAvtaleland) and not(erEOSLand)) {
-                    paragraph {
-                        textExpr(
-                            Bokmal to "Vedtaket er også gjort etter reglene i trygdeavtalen med ".expr() + avtalelandNavn + ".",
-                            Nynorsk to "Vedtaket er også gjort etter reglane i trygdeavtalen med ".expr() + avtalelandNavn + ".",
-                            English to "This decision was also made pursuant the provisions of the Social Security Agreement with ".expr() + avtalelandNavn + "."
-                        )
-                    }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vedtaket er også gjort etter reglene i trygdeavtalen med ".expr() + avtalelandNavn + ".",
+                        Nynorsk to "Vedtaket er også gjort etter reglane i trygdeavtalen med ".expr() + avtalelandNavn + ".",
+                        English to "This decision was also made pursuant the provisions of the Social Security Agreement with ".expr() + avtalelandNavn + "."
+                    )
                 }
+            }
 
             includePhrase(Utbetalingsinformasjon)
             includePhrase(ReguleringAvAlderspensjon)
+
             showIf(gjenlevendetilleggKap19Innvilget) { includePhrase(ReguleringAvGjenlevendetillegg) }
 
             showIf(
