@@ -20,6 +20,7 @@ data class OmregningAlderUfore2016Dto(
     val garantitilleggInnvilget: Boolean,
     val innvilgetFor67: Boolean,
     val fullTrygdetid: Boolean,
+    val persongrunnlagAvdod: PersongrunnlagAvdod
 ):BrevbakerBrevdata
 
 data class AlderspensjonPerManed(
