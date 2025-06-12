@@ -7,6 +7,7 @@ import {
   findAdjoiningContent,
   fontTypeOf,
   isAtStartOfBlock,
+  isAtStartOfItem,
   isBlockContentIndex,
   isItemContentIndex,
   isNew,
@@ -14,6 +15,7 @@ import {
   newItemList,
   newLiteral,
   newParagraph,
+  newTitle,
   removeElements,
   splitLiteralAtOffset,
   text,
@@ -192,46 +194,75 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
         insertTextInLetter(draft, el.text, el.font);
         break;
       }
+      case "H1": {
+        insertBlock(draft, "TITLE1", el.content);
+        break;
+      }
+      case "H2": {
+        insertBlock(draft, "TITLE2", el.content);
+        break;
+      }
       case "P": {
-        // Om vi er på starten av en blokk så ønsker vi å sette inn en ny blokk før den for preservere ID'er på gjeldende
-        if (isBlockContentIndex(draft.focus) && isAtStartOfBlock(draft.focus)) {
-          const literals = el.content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }));
-          addElements(
-            [newParagraph({ content: literals })],
-            draft.focus.blockIndex,
-            draft.redigertBrev.blocks,
-            draft.redigertBrev.deletedBlocks,
-          );
-          draft.focus.blockIndex += 1;
-        } else {
-          el.content.forEach((t) => {
-            insertTextInLetter(draft, t.text, t.font);
-          });
-          splitRecipe(draft, draft.focus, draft.focus.cursorPosition! ?? 0);
-        }
+        insertBlock(draft, "PARAGRAPH", el.content);
         break;
       }
       case "ITEM": {
-        const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
-
-        if (isItemContentIndex(draft.focus) && isItemList(currentBlock.content[draft.focus.contentIndex])) {
-          el.content.forEach((t) => {
-            insertTextInLetter(draft, t.text, t.font);
-          });
-          splitRecipe(draft, draft.focus, draft.focus.cursorPosition! ?? 0);
-        } else if (!isItemContentIndex(draft.focus) && !isItemList(currentBlock.content[draft.focus.contentIndex])) {
-          // vi sjekker også at gjeldende ikke er itemList fordi da _må_ også focus være ItemContentIndex.
-          toggleItemListAndSplitAtCursor(draft, currentBlock);
-
-          el.content.forEach((t) => {
-            insertTextInLetter(draft, t.text, t.font);
-          });
-          splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
-        }
+        insertItem(draft, el);
         break;
       }
     }
   });
+}
+
+function insertBlock(draft: Draft<LetterEditorState>, type: "TITLE1" | "TITLE2" | "PARAGRAPH", content: Text[]) {
+  const blockContent = draft.redigertBrev.blocks[draft.focus.blockIndex]?.content[draft.focus.contentIndex];
+
+  if (isBlockContentIndex(draft.focus) && isAtStartOfBlock(draft.focus)) {
+    // If we're at the start of a block then we want to insert a new block to preserve IDs of existing block and it's content.
+    const literals = content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }));
+    const block = type === "PARAGRAPH" ? newParagraph({ content: literals }) : newTitle({ type, content: literals });
+    addElements([block], draft.focus.blockIndex, draft.redigertBrev.blocks, draft.redigertBrev.deletedBlocks);
+    draft.focus.blockIndex += 1;
+  } else if (isItemContentIndex(draft.focus) && isAtStartOfItem(draft.focus) && isItemList(blockContent)) {
+    // If we're at the start of an Item then we want to preserve any potential existing IDs, so we instead insert a new item.
+    const literals = content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }));
+    addElements([newItem({ content: literals })], draft.focus.itemIndex, blockContent.items, blockContent.deletedItems);
+    draft.focus.itemIndex++;
+  } else {
+    insertTextElement(draft, content);
+  }
+}
+
+function insertTextElement(draft: Draft<LetterEditorState>, content: Text[]) {
+  content.forEach((t) => {
+    insertTextInLetter(draft, t.text, t.font);
+  });
+  splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
+}
+
+function insertItem(draft: Draft<LetterEditorState>, el: ItemElement) {
+  const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
+  const blockContent = currentBlock.content[draft.focus.contentIndex];
+
+  if (isItemContentIndex(draft.focus) && isItemList(blockContent)) {
+    if (isAtStartOfItem(draft.focus)) {
+      // If we're at the start of an Item then we want to preserve any potential existing IDs, so we instead insert a new item.
+      const literals = el.content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }));
+      addElements(
+        [newItem({ content: literals })],
+        draft.focus.itemIndex,
+        blockContent.items,
+        blockContent.deletedItems,
+      );
+      draft.focus.itemIndex++;
+    } else {
+      insertTextElement(draft, el.content);
+    }
+  } else if (!isItemContentIndex(draft.focus) && !isItemList(blockContent)) {
+    // We're also validating that current blockContent isn't an ItemList, because then the focus should also have been an ItemContentIndex.
+    toggleItemListAndSplitAtCursor(draft, currentBlock);
+    insertTextElement(draft, el.content);
+  }
 }
 
 function toggleItemListAndSplitAtCursor(draft: Draft<LetterEditorState>, currentBlock: Draft<AnyBlock>) {
@@ -302,17 +333,27 @@ interface Text {
   text: string;
 }
 
-interface Item {
+interface ItemElement {
   type: "ITEM";
   content: Text[];
 }
 
-interface Paragraph {
+interface ParagraphElement {
   type: "P";
   content: Text[];
 }
 
-type TraversedElement = Paragraph | Text | Item;
+interface Title1Element {
+  type: "H1";
+  content: Text[];
+}
+
+interface Title2Element {
+  type: "H2";
+  content: Text[];
+}
+type TextContainer = ParagraphElement | Title1Element | Title2Element | ItemElement;
+type TraversedElement = TextContainer | Text;
 
 function parseAndCombineHTML(clipboard: DataTransfer): TraversedElement[] {
   const parser = new DOMParser();
@@ -351,21 +392,21 @@ function traverseChildren(element: Element, font: FontType): TraversedElement[] 
 function traverse(element: Element, font: FontType): TraversedElement[] {
   switch (element.tagName) {
     case "SPAN": {
-      return traverseTextContainer(element, font);
+      return traverseContainer(element, font);
     }
 
     case "STRONG":
     case "B": {
       // Since text in brevbaker-brev cannot be both bold (strong) and italic (emphasized) simultaneously, we pass along the first change (away from plain).
       const nextFont = font === FontType.PLAIN ? FontType.BOLD : font;
-      return traverseTextContainer(element, nextFont);
+      return traverseContainer(element, nextFont);
     }
 
     case "EM":
     case "I": {
       // Since text in brevbaker-brev cannot be both bold (strong) and italic (emphasized) simultaneously, we pass along the first change (away from plain).
       const nextFont = font === FontType.PLAIN ? FontType.ITALIC : font;
-      return traverseTextContainer(element, nextFont);
+      return traverseContainer(element, nextFont);
     }
 
     case "P": {
@@ -380,13 +421,15 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
     }
 
     case "LI": {
-      if (element.children.length === 0) {
-        const text = cleansePastedText(element.textContent ?? "");
-        // allowed with empty list items
-        return text.length >= 0 ? [{ type: "ITEM", content: [{ type: "TEXT", font: font, text }] }] : [];
-      } else {
-        return [{ type: "ITEM", content: traverseItemChildren(element, font) }];
-      }
+      return traverseTextContainer(element, "ITEM", font);
+    }
+
+    case "H1": {
+      return traverseTextContainer(element, "H1", font);
+    }
+
+    case "H2": {
+      return traverseTextContainer(element, "H2", font);
     }
 
     case "TABLE": {
@@ -417,7 +460,7 @@ function moveOuterTextIntoNeighbouringParagraphs(elements: TraversedElement[]): 
   }, []);
 }
 
-function traverseTextContainer(element: Element, font: FontType): TraversedElement[] {
+function traverseContainer(element: Element, font: FontType): TraversedElement[] {
   if (element.children.length === 0) {
     const text = cleansePastedText(element.textContent ?? "");
     return text.length > 0 ? [{ type: "TEXT", font, text }] : [];
@@ -426,28 +469,37 @@ function traverseTextContainer(element: Element, font: FontType): TraversedEleme
   }
 }
 
-function traverseItemChildren(item: Element, font: FontType): Text[] {
-  return traverseChildren(item, font).flatMap((e) => {
-    switch (e.type) {
-      case "TEXT": {
-        return e;
+function traverseTextContainer(element: Element, type: "ITEM" | "H1" | "H2", font: FontType): TraversedElement[] {
+  if (element.children.length === 0) {
+    const text = cleansePastedText(element.textContent ?? "");
+    // allowed with empty list items
+    return text.length >= 0 ? [{ type, content: [{ type: "TEXT", font, text }] }] : [];
+  } else {
+    const content = traverseChildren(element, font).flatMap((e) => {
+      switch (e.type) {
+        case "TEXT": {
+          return e;
+        }
+        case "P":
+        case "H2":
+        case "H1":
+        case "ITEM": {
+          return e.content;
+        }
       }
-      case "ITEM": {
-        return e.content;
-      }
-      case "P": {
-        return e.content;
-      }
-    }
-  });
+    });
+    return [{ type, content }];
+  }
 }
 
 // Will package any Text-elements into a Paragraph, and make sure we don't have nested paragraphs and items.
-function traverseParagraphChildren(paragraph: Element, font: FontType): (Paragraph | Item)[] {
-  return traverseChildren(paragraph, font).reduce<(Paragraph | Item)[]>((acc, current) => {
+function traverseParagraphChildren(paragraph: Element, font: FontType): TextContainer[] {
+  return traverseChildren(paragraph, font).reduce<TextContainer[]>((acc, current) => {
     const previous = acc.at(-1);
 
     switch (current.type) {
+      case "H1":
+      case "H2":
       case "P": {
         // should probably not be possible, since it would mean nested p-elements, but html-structures can be weird.
         // append paragraph

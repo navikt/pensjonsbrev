@@ -49,6 +49,10 @@ export function isAtStartOfBlock(f: Focus, offset?: number): boolean {
   );
 }
 
+export function isAtStartOfItem(f: Focus, offset?: number): boolean {
+  return isItemContentIndex(f) && f.itemContentIndex === 0 && (offset ?? f.cursorPosition) === 0;
+}
+
 export function text<T extends TextContent | undefined>(
   content: T,
 ): string | (undefined extends T ? undefined : never) {
@@ -204,7 +208,7 @@ export function splitLiteralAtOffset(literal: Draft<LiteralValue>, offset: numbe
 
   updateLiteralText(literal, newText);
 
-  return newLiteral({ editedText: nextText, fontType: literal.fontType, editedFontType: literal.editedFontType });
+  return newLiteral({ editedText: nextText, fontType: literal.editedFontType ?? literal.fontType });
 }
 
 export function newTitle(args: {
@@ -239,7 +243,7 @@ export function newParagraph(args: {
   };
 }
 
-export function newLiteral(args: {
+export function newLiteral(args?: {
   id?: Nullable<number>;
   parentId?: Nullable<number>;
   text?: string;
@@ -251,13 +255,13 @@ export function newLiteral(args: {
 }): LiteralValue {
   return {
     type: LITERAL,
-    id: args.id ?? null,
-    parentId: args.parentId ?? null,
-    text: args.text ?? "",
-    editedText: args.editedText ?? null,
-    editedFontType: args.editedFontType ?? null,
-    fontType: args.fontType ?? FontType.PLAIN,
-    tags: args.tags ?? [],
+    id: args?.id ?? null,
+    parentId: args?.parentId ?? null,
+    text: args?.text ?? "",
+    editedText: args?.editedText ?? null,
+    editedFontType: args?.editedFontType ?? null,
+    fontType: args?.fontType ?? FontType.PLAIN,
+    tags: args?.tags ?? [],
   };
 }
 
@@ -276,10 +280,18 @@ export const newVariable = (args: {
   };
 };
 
-export function newItem({ id, content }: { id?: Nullable<number>; content: TextContent[] }): Item {
+export function newItem({
+  id,
+  content,
+  parentId,
+}: {
+  id?: Nullable<number>;
+  content: TextContent[];
+  parentId?: Nullable<number>;
+}): Item {
   return {
     id: id ?? null,
-    parentId: null,
+    parentId: parentId ?? null,
     content,
     deletedContent: [],
   };
