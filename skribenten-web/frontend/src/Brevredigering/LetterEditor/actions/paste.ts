@@ -32,7 +32,7 @@ import type {
 import type { AnyBlock, Content, LiteralValue, TextContent } from "~/types/brevbakerTypes";
 import { FontType } from "~/types/brevbakerTypes";
 
-import { isItemList, isLiteral, isTextContent } from "../model/utils";
+import { isEmptyBlock, isItemList, isLiteral, isTextContent } from "../model/utils";
 
 export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number, clipboard: DataTransfer]> =
   produce((draft, literalIndex, offset, clipboard) => {
@@ -215,14 +215,21 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
 }
 
 function insertBlock(draft: Draft<LetterEditorState>, type: "TITLE1" | "TITLE2" | "PARAGRAPH", content: Text[]) {
-  const blockContent = draft.redigertBrev.blocks[draft.focus.blockIndex]?.content[draft.focus.contentIndex];
+  const focusedBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
+  const blockContent = focusedBlock?.content[draft.focus.contentIndex];
 
   if (isBlockContentIndex(draft.focus) && isAtStartOfBlock(draft.focus)) {
-    // If we're at the start of a block then we want to insert a new block to preserve IDs of existing block and it's content.
-    const literals = content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }));
-    const block = type === "PARAGRAPH" ? newParagraph({ content: literals }) : newTitle({ type, content: literals });
-    addElements([block], draft.focus.blockIndex, draft.redigertBrev.blocks, draft.redigertBrev.deletedBlocks);
-    draft.focus.blockIndex += 1;
+    if (isEmptyBlock(focusedBlock)) {
+      // If we're at the start of an empty block, we want to change it to whatever type we're inserting
+      focusedBlock.type = type;
+      insertTextElement(draft, content);
+    } else {
+      // If we're at the start of a non-empty block then we want to insert a new block to preserve IDs of existing block and it's content.
+      const literals = content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }));
+      const block = type === "PARAGRAPH" ? newParagraph({ content: literals }) : newTitle({ type, content: literals });
+      addElements([block], draft.focus.blockIndex, draft.redigertBrev.blocks, draft.redigertBrev.deletedBlocks);
+      draft.focus.blockIndex += 1;
+    }
   } else if (isItemContentIndex(draft.focus) && isAtStartOfItem(draft.focus) && isItemList(blockContent)) {
     // If we're at the start of an Item then we want to preserve any potential existing IDs, so we instead insert a new item.
     const literals = content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }));

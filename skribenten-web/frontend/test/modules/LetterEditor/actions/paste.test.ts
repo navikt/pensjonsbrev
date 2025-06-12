@@ -73,6 +73,23 @@ describe("LetterEditorActions.paste", () => {
             state.redigertBrev.blocks[0],
           ]);
         });
+        test("avsnitt med titler i tomt avsnitt", () => {
+          const idx = { blockIndex: 1, contentIndex: 0 };
+          const state = letter(
+            paragraph({ id: 1, content: [literal({ id: 11, text: "Teksten min" })] }),
+            newParagraph({ content: [newLiteral({ editedText: "" })] }),
+          );
+          const clipboard = new MockDataTransfer({ "text/html": "<h1>T1</h1><h2>T2</h2><p>P1</p>" });
+          const result = Actions.paste(state, idx, 0, clipboard);
+
+          expect(result.redigertBrev.blocks).toMatchObject([
+            state.redigertBrev.blocks[0],
+            newTitle({ type: "TITLE1", content: [newLiteral({ editedText: "T1" })] }),
+            newTitle({ type: "TITLE2", content: [newLiteral({ editedText: "T2" })] }),
+            newParagraph({ content: [newLiteral({ editedText: "P1" })] }),
+            newParagraph({ content: [newLiteral({ editedText: "" })] }),
+          ]);
+        });
         describe("inserts a single word", () => {
           test("single paste", () => {
             const index = { blockIndex: 0, contentIndex: 0 };
