@@ -1,5 +1,7 @@
 import { css } from "@emotion/react";
 import { Accordion, ExpansionCard, HStack } from "@navikt/ds-react";
+import type { Dispatch } from "react";
+import React from "react";
 import { useEffect, useState } from "react";
 
 import { isItemContentIndex, isNew, text as textOf } from "~/Brevredigering/LetterEditor/actions/common";
@@ -82,6 +84,19 @@ const LetterTree = ({ state: { focus, redigertBrev } }: { state: LetterEditorSta
   );
 };
 
+const useToggleWithFocusUpdate = (
+  currentFocus: number | undefined,
+  thisIndex: number,
+): [boolean, Dispatch<React.SetStateAction<boolean>>] => {
+  const [isOpen, setIsOpen] = useState(currentFocus === thisIndex);
+  const [prevFocus, setPrevFocus] = useState(currentFocus);
+  if (currentFocus !== prevFocus) {
+    setPrevFocus(currentFocus);
+    setIsOpen(currentFocus === thisIndex);
+  }
+  return [isOpen, setIsOpen];
+};
+
 const Block = ({ block, focus, index }: { block: AnyBlock; focus: Focus; index: number }) => {
   const blockText = block.content
     .map((c) => (isTextContent(c) ? textOf(c) : null))
@@ -89,10 +104,7 @@ const Block = ({ block, focus, index }: { block: AnyBlock; focus: Focus; index: 
     .join("");
   const highlightColor = getHighlightColor(isNew(block), isEdited(block));
 
-  const [isOpen, setIsOpen] = useState(focus.blockIndex === index);
-  useEffect(() => {
-    setIsOpen(focus.blockIndex === index);
-  }, [focus, index]);
+  const [isOpen, setIsOpen] = useToggleWithFocusUpdate(focus.blockIndex, index);
 
   return (
     <ExpansionCard
@@ -129,10 +141,7 @@ const Content = ({ content, focus, index }: { content: Content; focus?: Focus; i
   const extract = isTextContent(content) ? textExtract(textOf(content)) : "";
   const highlightColor = getHighlightColor(isNew(content), isEdited(content));
 
-  const [isOpen, setIsOpen] = useState(focus?.contentIndex === index);
-  useEffect(() => {
-    setIsOpen(focus?.contentIndex === index);
-  }, [focus, index]);
+  const [isOpen, setIsOpen] = useToggleWithFocusUpdate(focus?.contentIndex, index);
 
   return (
     <Accordion.Item
@@ -184,10 +193,10 @@ const ItemBody = ({ focus, index, item }: { focus?: Focus; index: number; item: 
       ? { blockIndex: focus.blockIndex, contentIndex: focus.itemContentIndex }
       : undefined;
 
-  const [isOpen, setIsOpen] = useState(focus && isItemContentIndex(focus) && focus.itemIndex === index);
-  useEffect(() => {
-    setIsOpen(focus && isItemContentIndex(focus) && focus.itemIndex === index);
-  }, [focus, index]);
+  const [isOpen, setIsOpen] = useToggleWithFocusUpdate(
+    isItemContentIndex(focus) ? focus.itemContentIndex : undefined,
+    index,
+  );
 
   const itemText = item.content.map(textOf).join("");
   const highlightColor = getHighlightColor(isNew(item), isEditedItem(item));
