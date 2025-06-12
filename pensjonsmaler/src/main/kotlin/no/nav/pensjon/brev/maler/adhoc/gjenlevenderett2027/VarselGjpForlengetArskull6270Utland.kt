@@ -2,24 +2,29 @@ package no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.gjennomsnittInntektG
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2019
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2019G
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2020
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2020G
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2021
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2021G
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2022
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2022G
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023G
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.DineInntekterTabell
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig2GTabell
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig3GTabell
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.includePhrase
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2019
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2020
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2021
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2022
-import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023
-import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 
 @TemplateModelHelpers
 object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett2027Dto> {
@@ -40,7 +45,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
     ) {
         title {
             text(
-                Bokmal to "Forhåndsvarsel - Gjenlevendepensjonen din kan bli forlenget",
+                Bokmal to "Forhåndsvarsel – Gjenlevendepensjonen din kan bli forlenget",
                 English to "Advance notice – Your survivor’s pension may become extended "
             )
         }
@@ -90,53 +95,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                 )
             }
 
-            paragraph {
-                table(
-                    header = {
-                        column(1) {
-                            text(
-                                Bokmal to "År",
-                                English to "Year"
-                            )
-                        }
-                        column(2) {
-                            text(
-                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 3:",
-                                English to "Average National Insurance basic amount (G) times 3:"
-                            )
-                        }
-                    },
-                ) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2022",
-                                English to "2022"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 329_352.expr().format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + 329_352.expr().format(CurrencyFormat)
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2023",
-                                English to "2023"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 348_717.expr().format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + 348_717.expr().format(CurrencyFormat)
-                            )
-                        }
-                    }
-                }
-            }
+            includePhrase(Gjennomsnittlig3GTabell)
 
             paragraph {
                 text(
@@ -145,95 +104,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                 )
             }
 
-            paragraph {
-                table(
-                    header = {
-                        column(1) {
-                            text(
-                                Bokmal to "År",
-                                English to "Year"
-                            )
-                        }
-                        column(2) {
-                            text(
-                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 2:",
-                                English to "Average National Insurance basic amount (G) times 2:"
-                            )
-                        }
-                    },
-                ) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2019",
-                                English to "2019"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 197_732.expr().format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + 197_732.expr().format(CurrencyFormat)
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2020",
-                                English to "2020"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 201_706.expr().format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + 201_706.expr().format(CurrencyFormat)
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2021",
-                                English to "2021"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 209_432.expr().format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + 209_432.expr().format(CurrencyFormat)
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2022",
-                                English to "2022"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 219_568.expr().format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + 219_568.expr().format(CurrencyFormat)
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2023",
-                                English to "2023"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 232_478.expr().format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + 232_478.expr().format(CurrencyFormat)
-                            )
-                        }
-                    }
-                }
-            }
+            includePhrase(Gjennomsnittlig2GTabell)
 
             title1 {
                 text(
@@ -258,95 +129,7 @@ object VarselGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
                 )
             }
 
-            paragraph {
-                table(
-                    header = {
-                        column(1) {
-                            text(
-                                Bokmal to "År",
-                                English to "Year"
-                            )
-                        }
-                        column(2) {
-                            text(
-                                Bokmal to "Din inntekt",
-                                English to "Your income"
-                            )
-                        }
-                    },
-                ) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2019",
-                                English to "2019"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2019.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + inntekt2019.format(CurrencyFormat),
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2020",
-                                English to "2020"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2020.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + inntekt2020.format(CurrencyFormat),
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2021",
-                                English to "2021"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2021.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + inntekt2021.format(CurrencyFormat),
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2022",
-                                English to "2022"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2022.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + inntekt2022.format(CurrencyFormat),
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2023",
-                                English to "2023"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2023.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + inntekt2023.format(CurrencyFormat),
-                            )
-                        }
-                    }
-                }
-            }
+            includePhrase(DineInntekterTabell(inntekt2019, inntekt2020, inntekt2021, inntekt2022, inntekt2023, gjennomsnittInntektG, inntekt2019G, inntekt2020G, inntekt2021G, inntekt2022G, inntekt2023G))
 
             paragraph {
                 text(

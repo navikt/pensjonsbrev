@@ -3,10 +3,10 @@ package no.nav.pensjon.brev.maler.alder.avslag.gradsendring
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
+import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.fraser.AvslagHjemler
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025Vedlegg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
-import no.nav.pensjon.brev.maler.redigerbar.InnhentingInformasjonFraBruker.fritekst
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -30,7 +30,8 @@ data class InnholdLavOpptjening(
     val totalPensjon: Expression<Kroner>,
     val borINorge: Expression<Boolean>,
     val harEOSLand: Expression<Boolean>,
-    val regelverkType : Expression<AlderspensjonRegelverkType>
+    val regelverkType : Expression<AlderspensjonRegelverkType>,
+    val avtaleland: Expression<String?>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -46,46 +47,8 @@ data class InnholdLavOpptjening(
                         " percent from ".expr() + virkFom.format() + ". Therefore, we have declined your application.",
             )
         }
-        showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2025)) {
-            paragraph {
-                text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-15 og 22-13.",
-                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-15 og 22-13.",
-                    English to "This decision was made pursuant to the provisions of §§ 20-15 and 22-13 of the National Insurance Act."
-                )
-            }
-        }.orShowIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2016)) {
-            paragraph {
-                text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-11, 19-15, 20-15, 20-19 og 22-13.",
-                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-11, 19-15, 20-15, 20-19 og 22-13.",
-                    English to "This decision was made pursuant to the provisions of §§ 19-11, 19-15, 20-15, 20-19 and 22-13 of the National Insurance Act."
-                )
-            }
-        }
 
-        showIf(harEOSLand and prorataBruktIBeregningen) {
-            paragraph {
-                text(
-                    Bokmal to "Vedtaket er også gjort etter EØS-avtalens regler i forordning 883/2004, artikkel 6.",
-                    Nynorsk to "Vedtaket er også gjort etter reglane i EØS-avtalen i forordning 883/2004, artikkel 6.",
-                    English to "This decision was also made pursuant to the provisions of Regulation (EC) 883/2004, article 6.",
-                )
-            }
-        }
-
-        showIf(harEOSLand.not() and prorataBruktIBeregningen) {
-            paragraph {
-                textExpr(
-                    Bokmal to "Vedtaket er også gjort etter artikkel ".expr() + fritekst("legg inn aktuelle artikler om sammenlegging og eksport") +
-                            " i trygdeavtalen med " + fritekst("avtaleland") + ".",
-                    Nynorsk to "Vedtaket er også gjort etter artikkel ".expr() + fritekst("legg inn aktuelle artikler om sammenlegging og eksport") +
-                            " i trygdeavtalen med " + fritekst("avtaleland") + ".",
-                    English to "This decision was also made pursuant to the provisions of Article ".expr() + fritekst("legg inn aktuelle artikler om sammenlegging og eksport") +
-                            "  in the social security agreement with " + fritekst("avtaleland") + ".",
-                )
-            }
-        }
+        includePhrase(AvslagHjemler(regelverkType, harEOSLand, prorataBruktIBeregningen, avtaleland))
 
         title2 {
             text(
@@ -139,7 +102,7 @@ data class InnholdLavOpptjening(
                         text(
                             Bokmal to "I denne beregningen har vi inkludert AFP.",
                             Nynorsk to "I denne berekninga har vi inkludert AFP.",
-                            English to "This amount includes contractual early retirement pension."
+                            English to "This amount includes contractual pension (AFP)."
                         )
                     }
                 }

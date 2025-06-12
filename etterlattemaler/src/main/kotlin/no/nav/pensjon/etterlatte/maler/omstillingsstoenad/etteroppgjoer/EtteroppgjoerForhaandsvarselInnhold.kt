@@ -160,7 +160,7 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
                     // for lite utbetalt mindre en 0,25 RG eller for mye utbetalt mindre en 1 RG
                     paragraph {
                         textExpr(
-                            Language.Bokmal to "Vår beregning viser at du har fått utbetalt ".expr() + data.avviksBeloep.absoluteValue().format() +" kroner "+ ifElse(data.avviksBeloep.greaterThan(0), "for lite", "for mye") +" i omstillingsstønad for "+data.etteroppgjoersAar.format()+". Dette er innenfor toleransegrensen, og det vil derfor ikke bli "+ ifElse(data.avviksBeloep.greaterThan(0),"tilbakekrevd","etterbetalt") +" omstillingsstønad for "+data.etteroppgjoersAar.format()+".",
+                            Language.Bokmal to "Vår beregning viser at du har fått utbetalt ".expr() + data.avviksBeloep.absoluteValue().format() +" kroner "+ ifElse(data.avviksBeloep.greaterThan(0), "for mye", "for lite") +" i omstillingsstønad for "+data.etteroppgjoersAar.format()+". Dette er innenfor toleransegrensen, og det vil derfor ikke bli "+ ifElse(data.avviksBeloep.greaterThan(0),"tilbakekrevd","etterbetalt") +" omstillingsstønad for "+data.etteroppgjoersAar.format()+".",
                             Language.Nynorsk to "".expr(),
                             Language.English to "".expr()
                         )

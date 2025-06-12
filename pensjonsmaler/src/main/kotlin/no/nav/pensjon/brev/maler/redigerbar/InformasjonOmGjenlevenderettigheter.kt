@@ -16,22 +16,19 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGjenlevenderettigheterDto> {
     override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
-    override val sakstyper: Set<Sakstype> = setOf(Sakstype.BARNEP, Sakstype.UFOREP, Sakstype.GJENLEV, Sakstype.ALDER)
+    override val sakstyper: Set<Sakstype> = setOf(Sakstype.UFOREP, Sakstype.ALDER)
 
     // 000069 / DOD_INFO_RETT_MAN
     override val kode = Pesysbrevkoder.Redigerbar.PE_INFORMASJON_OM_GJENLEVENDERETTIGHETER
@@ -47,56 +44,31 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
         ),
     ) {
         title {
-            showIf(pesysData.sakstype.isOneOf(Sakstype.GJENLEV, Sakstype.UFOREP, Sakstype.ALDER)) {
-                text(
-                    Bokmal to "Informasjon om gjenlevenderettigheter",
-                    Nynorsk to "Informasjon om attlevanderettar",
-                    English to "Information about survivor's rights",
-                )
-            }.orShowIf(pesysData.sakstype.isOneOf(Sakstype.BARNEP)) {
-                text(
-                    Bokmal to "Informasjon om barnepensjon",
-                    Nynorsk to "Informasjon om barnepensjon",
-                    English to "Information about children's pension",
-                )
-            }
+            text(
+                Bokmal to "Informasjon om gjenlevenderettigheter",
+                Nynorsk to "Informasjon om attlevanderettar",
+                English to "Information about survivor's rights",
+            )
         }
         outline {
-            showIf(pesysData.sakstype.isOneOf(Sakstype.GJENLEV, Sakstype.UFOREP, Sakstype.ALDER)) {
-                paragraph {
-                    text(
-                        Bokmal to "Vi skriver til deg fordi vi har mottatt melding om at ",
-                        Nynorsk to "Vi skriv til deg fordi vi har fått melding om at ",
-                        English to "We are writing to you because we have received notice that "
-                    )
-                    ifNotNull(pesysData.avdoedNavn) {
-                        eval(it)
-                    }.orShow {
-                        eval(fritekst("avdød navn"))
-                    }
-                    text(
-                        Bokmal to " er død, og du kan ha rettigheter etter avdøde.",
-                        Nynorsk to " er død, og du kan ha rettar etter avdøde.",
-                        English to " has died ,and you may have rights as a surviving spouse."
-                    )
+            paragraph {
+                text(
+                    Bokmal to "Vi skriver til deg fordi vi har mottatt melding om at ",
+                    Nynorsk to "Vi skriv til deg fordi vi har fått melding om at ",
+                    English to "We are writing to you because we have received notice that "
+                )
+                ifNotNull(pesysData.avdoedNavn) {
+                    eval(it)
+                }.orShow {
+                    eval(fritekst("avdød navn"))
                 }
+                text(
+                    Bokmal to " er død, og du kan ha rettigheter etter avdøde.",
+                    Nynorsk to " er død, og du kan ha rettar etter avdøde.",
+                    English to " has died ,and you may have rights as a surviving spouse."
+                )
             }
-            showIf(pesysData.sakstype.isOneOf(Sakstype.BARNEP)) {
-                paragraph {
-                    val fritekst = fritekst("avdød navn")
-                    textExpr(
-                        Bokmal to "Vi skriver til deg fordi vi har mottatt melding om at ".expr() + fritekst + " er død, og du kan ha rett til barnepensjon.",
-                        Nynorsk to "Vi skriv til deg fordi vi har fått melding om at ".expr() + fritekst + " er død, og du kan ha rett til barnepensjon.",
-                        English to "We are writing to you because we have received notice that ".expr() + fritekst + " has died ,and we would like to inform you about children's pension."
-                    )
-                }
-            }
-            showIf(pesysData.sakstype.isOneOf(Sakstype.ALDER, Sakstype.UFOREP)) {
-                paragraph {
-                    eval(fritekst("Opplysninger/forhold du vil informere bruker om i saken"))
-                }
-            }
-            showIf(pesysData.sakstype.isOneOf(Sakstype.GJENLEV, Sakstype.ALDER)) {
+            showIf(pesysData.sakstype.isOneOf(Sakstype.ALDER)) {
                 title2 {
                     text(
                         Bokmal to "Hvem kan ha rett til ytelser etter avdøde?",
@@ -228,40 +200,6 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                 }
                 includePhrase(Felles.DuKanLeseMer)
             }
-            showIf(pesysData.sakstype.isOneOf(Sakstype.BARNEP)) {
-                title2 {
-                    text(
-                        Bokmal to "Hvem kan ha rett til barnepensjon?",
-                        Nynorsk to "Kven kan ha rett til barnepensjon?",
-                        English to "Who may be entitled to a children’s pension?",
-                    )
-                }
-                paragraph {
-                    list {
-                        item {
-                            text(
-                                Bokmal to "For å ha rett til barnepensjon, må du som hovedregel være medlem i folketrygden og under 20 år.",
-                                Nynorsk to "For å ha rett til barnepensjon må du som hovudregel vere medlem i folketrygda og under 20 år.",
-                                English to "To be entitled to a children’s pension, you must as a rule have been a member of the National Insurance Scheme and under the age of 20.",
-                            )
-                        }
-                        item {
-                            text(
-                                Bokmal to "Du kan ha rett til barnepensjon hvis du er under 20 år, foreldreløs og under utdanning.",
-                                Nynorsk to "Du kan ha rett til barnepensjon dersom du er under 20 år, foreldrelaus og under utdanning.",
-                                English to "You may be entitled to a children’s pension if you are under the age of 20, orphaned or in an education programme."
-                            )
-                        }
-                        item {
-                            text(
-                                Bokmal to "Du kan ha rett til barnepensjon hvis du er under 21 år, har mistet en eller begge foreldrene, er under utdanning og forelderen døde av yrkesskade.",
-                                Nynorsk to "Du kan ha rett til barnepensjon dersom du er under 21 år, har mista éin av eller begge foreldra, er under utdanning og forelderen har døydd av yrkesskade.",
-                                English to "You may be entitled to a children's pension if you are under the age of 21, have lost one or both of your parents, are in an education programme or your parent died from an occupational injury."
-                            )
-                        }
-                    }
-                }
-            }
             showIf(pesysData.sakstype.isOneOf(Sakstype.UFOREP)) {
                 title2 {
                     text(
@@ -323,26 +261,10 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     )
                 }
             }
-            showIf(pesysData.sakstype.isOneOf(Sakstype.BARNEP)) {
-                paragraph {
-                    text(
-                        Bokmal to "Du finner informasjon og søknadsskjema på ${Constants.BARNEPENSJON_URL}. Er du under 18 år, må vergen din søke om barnepensjon på vegne av deg.",
-                        Nynorsk to "Du finn informasjon og søknadsskjema på ${Constants.BARNEPENSJON_URL}. Er du under 18 år, må verja di søkje om barnepensjon på dine vegner.",
-                        English to "You will find information and the application form at ${Constants.BARNEPENSJON_URL}. If you are under the age of 18, your guardian must apply for a children's pension on your behalf.",
-                    )
-                }
-                paragraph {
-                    text(
-                        Bokmal to "Dersom du bor i utlandet, må du kontakte trygdemyndigheter i bostedslandet ditt og søke om pensjon. Du kan lese mer om dette på ${Constants.NAV_URL}.",
-                        Nynorsk to "Dersom du bor i utlandet, må du kontakte trygdeorgana i bustedslandet ditt og søkje om pensjon. Du kan lese meir om dette på ${Constants.NAV_URL}.",
-                        English to "If you live outside Norway, you must contact the National Insurance authorities in your country of residence and apply for a pension.",
-                    )
-                }
-            }
-            showIf(pesysData.sakstype.isOneOf(Sakstype.GJENLEV, Sakstype.UFOREP)) {
+            showIf(pesysData.sakstype.isOneOf(Sakstype.UFOREP)) {
                 includePhrase(Felles.DuKanLeseMer)
             }
-            showIf(pesysData.sakstype.isOneOf(Sakstype.GJENLEV, Sakstype.UFOREP, Sakstype.ALDER)) {
+            showIf(pesysData.sakstype.isOneOf(Sakstype.UFOREP, Sakstype.ALDER)) {
                 title2 {
                     text(
                         Bokmal to "For deg som har barn under 18 år",
@@ -367,18 +289,9 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     )
                 }
             }
-            showIf(pesysData.sakstype.isOneOf(Sakstype.ALDER)) {
-                paragraph {
-                    text(
-                        Bokmal to "Har du barnetillegg i alderspensjonen, kan barnetillegget ditt bli endret. Du vil få et vedtak fra oss dersom barnetillegget endres.",
-                        Nynorsk to "Har du barnetillegg i alderspensjonen, kan barnetillegget ditt bli endra. Du får eit vedtak frå oss dersom barnetillegget blir endra.",
-                        English to "If you have a child supplement to your retirement pension, your child supplement may be changed. You will receive a decision from us if the child supplement changes.",
-                    )
-                }
-            }
-            showIf(pesysData.sakstype.isOneOf(Sakstype.UFOREP, Sakstype.ALDER)) {
-                includePhrase(Felles.DuKanLeseMer)
-            }
+
+            includePhrase(Felles.DuKanLeseMer)
+
             showIf(pesysData.gjenlevendesAlder.lessThan(67).and(pesysData.gjenlevendesAlder.greaterThanOrEqual(61))) {
                 title2 {
                     text(
@@ -400,7 +313,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                         Bokmal to "AFP i privat sektor og rettigheter som gjenlevende",
                         Nynorsk to "AFP i privat sektor og rettar som attlevande",
                         English to "Tariff-based early retirement pensions (AFP) in the private sector and your rights as a surviving spouse",
-                        )
+                    )
                 }
                 paragraph {
                     text(
@@ -426,31 +339,23 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                 )
             }
 
+            title2 {
+                text(
+                    Bokmal to "Andre pensjonsordninger",
+                    Nynorsk to "Andre pensjonsordningar",
+                    English to "Other pension schemes"
+                )
+            }
 
-
-
-
-
-            showIf(pesysData.sakstype.isOneOf(Sakstype.GJENLEV, Sakstype.UFOREP, Sakstype.ALDER)) {
-                title2 {
-                    text(
-                        Bokmal to "Andre pensjonsordninger",
-                        Nynorsk to "Andre pensjonsordningar",
-                        English to "Other pension schemes"
-                    )
-                }
-
-                paragraph {
-                    text(
-                        Bokmal to "Dersom avdøde hadde en privat eller offentlig pensjonsordning og du har spørsmål om dette, kan du kontakte avdødes arbeidsgiver. Du kan også ta kontakt med pensjonsordningen eller forsikringsselskapet.",
-                        Nynorsk to "Dersom avdøde hadde ei privat eller offentleg pensjonsordning og du har spørsmål om dette, kan du kontakte arbeidsgivaren til den avdøde. Du kan også ta kontakt med pensjonsordninga eller forsikringsselskapet.",
-                        English to "If the deceased was a member of a private or publicpension scheme and you have questions about this, you can contact the deceased's employer. You can also contact the pension scheme or insurance company."
-                    )
-                }
+            paragraph {
+                text(
+                    Bokmal to "Dersom avdøde hadde en privat eller offentlig pensjonsordning og du har spørsmål om dette, kan du kontakte avdødes arbeidsgiver. Du kan også ta kontakt med pensjonsordningen eller forsikringsselskapet.",
+                    Nynorsk to "Dersom avdøde hadde ei privat eller offentleg pensjonsordning og du har spørsmål om dette, kan du kontakte arbeidsgivaren til den avdøde. Du kan også ta kontakt med pensjonsordninga eller forsikringsselskapet.",
+                    English to "If the deceased was a member of a private or publicpension scheme and you have questions about this, you can contact the deceased's employer. You can also contact the pension scheme or insurance company."
+                )
             }
 
             includePhrase(Felles.HarDuSpoersmaal.alder)
-
         }
     }
 }

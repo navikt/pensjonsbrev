@@ -1,8 +1,11 @@
 import { css } from "@emotion/react";
 import { Button, Label } from "@navikt/ds-react";
+import type { ReactNode } from "react";
+import React from "react";
 
+import { fontTypeOf, isItemContentIndex } from "~/Brevredigering/LetterEditor/actions/common";
+import { isItemList, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import { FontType } from "~/types/brevbakerTypes";
-import { handleSwitchContent, handleSwitchTextContent, isItemContentIndex } from "~/utils/brevbakerUtils";
 
 import Actions from "../actions";
 import type { CallbackReceiver } from "../lib/actions";
@@ -11,27 +14,17 @@ import type { LetterEditorState } from "../model/state";
 
 const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontType => {
   const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
-  const theContentWeAreOn = block.content[editorState.focus.contentIndex];
+  const blockContent = block.content[editorState.focus.contentIndex];
+  const textContent =
+    isItemContentIndex(editorState.focus) && isItemList(blockContent)
+      ? blockContent.items[editorState.focus.itemIndex]?.content[editorState.focus.itemContentIndex]
+      : blockContent;
 
-  return handleSwitchContent({
-    content: theContentWeAreOn,
-    onLiteral: (literal) => literal.editedFontType ?? literal.fontType,
-    onVariable: (variable) => variable.fontType,
-    onNewLine: () => FontType.PLAIN,
-    onItemList: (itemList) => {
-      if (!isItemContentIndex(editorState.focus)) {
-        return FontType.PLAIN;
-      }
-      const item = itemList.items[editorState.focus.itemIndex].content[editorState.focus.itemContentIndex];
-
-      return handleSwitchTextContent({
-        content: item,
-        onLiteral: (literal) => literal.editedFontType ?? literal.fontType,
-        onVariable: (variable) => variable.fontType,
-        onNewLine: () => FontType.PLAIN,
-      });
-    },
-  });
+  if (isTextContent(textContent)) {
+    return fontTypeOf(textContent);
+  } else {
+    return FontType.PLAIN;
+  }
 };
 
 const EditorFonts = (props: {
@@ -83,7 +76,7 @@ export default EditorFonts;
 const FontButton = (props: {
   active: boolean;
   onClick: () => void;
-  text: React.ReactNode;
+  text: ReactNode;
   disabled?: boolean;
   dataCy: string;
 }) => {

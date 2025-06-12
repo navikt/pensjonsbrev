@@ -361,7 +361,9 @@ function RedigerBrev({
             `}
           >
             <VStack gap="3">
-              <Heading size="small">{brevmal.data?.name}</Heading>
+              <Heading size="small" spacing>
+                {brevmal.data?.name}
+              </Heading>
               <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
             </VStack>
             <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
@@ -426,6 +428,65 @@ enum BrevSidemenyTabs {
 
 const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?: () => void }) => {
   const specificationFormElements = usePartitionedModelSpecification(props.brev.info.brevkode);
+
+  const optionalFields = specificationFormElements.status === "success" ? specificationFormElements.optionalFields : [];
+  const requiredFields = specificationFormElements.status === "success" ? specificationFormElements.requiredfields : [];
+  const hasOptional = optionalFields.length > 0;
+  const hasRequired = requiredFields.length > 0;
+
+  const panelContent = (fieldsToRender: "optional" | "required") => (
+    <>
+      <SaksbehandlerValgModelEditor
+        brevkode={props.brev.info.brevkode}
+        fieldsToRender={fieldsToRender}
+        specificationFormElements={specificationFormElements}
+        submitOnChange={props.submitOnChange}
+      />
+      <AutoSavingTextField
+        field={"signatur"}
+        fieldType={{
+          type: "scalar",
+          nullable: false,
+          kind: "STRING",
+          displayText: null,
+        }}
+        onSubmit={props.submitOnChange}
+        timeoutTimer={2500}
+        type={"text"}
+      />
+    </>
+  );
+
+  const panelStyle = css`
+    &[data-state="active"] {
+      display: flex;
+    }
+    flex-direction: column;
+    gap: 1.125rem;
+    margin-top: 1.125rem;
+  `;
+
+  if (!hasOptional && !hasRequired) return panelContent("optional");
+
+  if (hasOptional && !hasRequired) {
+    return (
+      <>
+        <Heading size="xsmall">Tekstvalg</Heading>
+        {panelContent("optional")}
+      </>
+    );
+  }
+
+  if (hasRequired && !hasOptional)
+    return (
+      <>
+        <Heading size="xsmall">Overstyring</Heading>
+        {panelContent("required")}
+      </>
+    );
+
+  const defaultTab = hasOptional ? BrevSidemenyTabs.TEKSTVALG : BrevSidemenyTabs.OVERSTYRING;
+
   return (
     <Tabs
       css={css`
@@ -436,7 +497,7 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
           display: none;
         }
       `}
-      defaultValue={BrevSidemenyTabs.TEKSTVALG}
+      defaultValue={defaultTab}
       fill
       size="small"
     >
@@ -449,15 +510,8 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
         <Tabs.Tab label="Tekstvalg" value={BrevSidemenyTabs.TEKSTVALG} />
         <Tabs.Tab label="Overstyring" value={BrevSidemenyTabs.OVERSTYRING} />
       </Tabs.List>
-      <Tabs.Panel
-        css={css`
-          display: flex;
-          flex-direction: column;
-          gap: var(--a-spacing-6);
-          margin-top: 12px;
-        `}
-        value={BrevSidemenyTabs.TEKSTVALG}
-      >
+
+      <Tabs.Panel css={panelStyle} value={BrevSidemenyTabs.TEKSTVALG}>
         <SaksbehandlerValgModelEditor
           brevkode={props.brev.info.brevkode}
           fieldsToRender={"optional"}
@@ -477,15 +531,8 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
           type={"text"}
         />
       </Tabs.Panel>
-      <Tabs.Panel
-        css={css`
-          display: flex;
-          flex-direction: column;
-          gap: var(--a-spacing-6);
-          margin-top: 12px;
-        `}
-        value={BrevSidemenyTabs.OVERSTYRING}
-      >
+
+      <Tabs.Panel css={panelStyle} value={BrevSidemenyTabs.OVERSTYRING}>
         <SaksbehandlerValgModelEditor
           brevkode={props.brev.info.brevkode}
           fieldsToRender={"required"}

@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.fixtures.alder
 
 import no.nav.pensjon.brev.api.model.maler.alderApi.*
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.brevbaker.api.model.Year
 import java.time.LocalDate
 
 fun createAvslagUttakFoerNormertPensjonsalderAutoDto() =
@@ -46,5 +45,6 @@ fun createAvslagUttakFoerNormertPensjonsalderAutoDto() =
             ),
         ),
         borINorge = false,
-        harEOSLand = true
+        harEOSLand = false,
+        avtaleland = "Danmark",
     )

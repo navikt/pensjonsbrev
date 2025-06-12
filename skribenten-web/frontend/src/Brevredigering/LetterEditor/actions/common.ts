@@ -1,5 +1,8 @@
 import type { Draft } from "immer";
 
+import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
+import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
+import { isFritekst, isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
 import type { BrevResponse } from "~/types/brev";
 import type {
   Content,
@@ -17,13 +20,10 @@ import type {
   Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
+import { FontType, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
-import { MergeTarget } from "../../../Brevredigering/LetterEditor/actions/merge";
-import { updateLiteralText } from "../../../Brevredigering/LetterEditor/actions/updateContentText";
-import { isFritekst, isLiteral } from "../../../Brevredigering/LetterEditor/model/utils";
-import { FontType, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, VARIABLE } from "../../../types/brevbakerTypes";
-import type { LetterEditorState } from "../model/state";
+import type { BlockContentIndex, Focus, ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
 
 export function cleanseText(text: string): string {
   return text.replaceAll("<br>", "").replaceAll("&nbsp;", " ").replaceAll("\n", " ").replaceAll("\r", "");
@@ -31,6 +31,22 @@ export function cleanseText(text: string): string {
 
 export function isEditableContent(content: Content | undefined | null): boolean {
   return content != null && (content.type === VARIABLE || content.type === ITEM_LIST);
+}
+
+export function isBlockContentIndex(f: Focus | LiteralIndex): f is BlockContentIndex {
+  return !isItemContentIndex(f);
+}
+
+export function isItemContentIndex(f: Focus | LiteralIndex): f is ItemContentIndex {
+  return "itemIndex" in f && f.itemIndex !== undefined && "itemContentIndex" in f && f.itemContentIndex !== undefined;
+}
+
+export function isAtStartOfBlock(f: Focus, offset?: number): boolean {
+  return (
+    f.contentIndex === 0 &&
+    (offset ?? f.cursorPosition) === 0 &&
+    (isItemContentIndex(f) ? f.itemIndex === 0 && f.itemContentIndex === 0 : true)
+  );
 }
 
 export function text<T extends TextContent | undefined>(
@@ -43,6 +59,21 @@ export function text<T extends TextContent | undefined>(
   } else {
     return undefined as undefined extends T ? undefined : never;
   }
+}
+
+export function fontTypeOf(content: TextContent): FontType {
+  switch (content.type) {
+    case "NEW_LINE":
+      return FontType.PLAIN;
+    case "LITERAL":
+      return content.editedFontType ?? content.fontType;
+    case "VARIABLE":
+      return content.fontType;
+  }
+}
+
+export function isNew(obj: Identifiable): boolean {
+  return obj.id === null;
 }
 
 export function create(brev: BrevResponse): LetterEditorState {
@@ -123,33 +154,27 @@ export function findAdjoiningContent<T extends Content, S extends T>(
     return { startIndex: 0, endIndex: 0, count: 0 };
   }
 
-  let countBefore = 0;
-  for (let i = atIndex - 1; i >= 0; i--) {
-    if (predicate(from[i])) {
-      countBefore++;
-    } else {
-      break;
-    }
-  }
-  let countAfter = 0;
-  for (let i = atIndex + 1; i < from.length; i++) {
-    if (predicate(from[i])) {
-      countAfter++;
-    } else {
-      break;
-    }
-  }
+  const reverseSearchNonMatching = from.slice(0, atIndex).findLastIndex((c) => !predicate(c));
+  const forwardSearchNonMatching = from.slice(atIndex + 1).findIndex((c) => !predicate(c));
+
+  const startIndex = reverseSearchNonMatching >= 0 ? reverseSearchNonMatching + 1 : 0;
+  const endIndex = forwardSearchNonMatching >= 0 ? atIndex + forwardSearchNonMatching : from.length - 1;
 
   return {
-    startIndex: atIndex - countBefore,
-    endIndex: atIndex + countAfter,
-    count: countBefore + 1 + countAfter,
+    startIndex,
+    endIndex,
+    count: endIndex - startIndex + 1,
   };
 }
 
 export function mergeLiteralsIfPossible<T extends Identifiable>(first: Draft<T>, second: Draft<T>): Draft<T[]> {
-  // TODO: Legg til sjekk for `first.fontType === second.fontType`
-  if (isLiteral(first) && isLiteral(second) && !isFritekst(first) && !isFritekst(second)) {
+  if (
+    isLiteral(first) &&
+    isLiteral(second) &&
+    !isFritekst(first) &&
+    !isFritekst(second) &&
+    fontTypeOf(first) === fontTypeOf(second)
+  ) {
     const mergedText = text(first) + text(second);
     if (first.id !== null && second.id !== null) {
       return [first, second];
@@ -179,7 +204,7 @@ export function splitLiteralAtOffset(literal: Draft<LiteralValue>, offset: numbe
 
   updateLiteralText(literal, newText);
 
-  return newLiteral({ text: "", editedText: nextText });
+  return newLiteral({ editedText: nextText, fontType: literal.fontType, editedFontType: literal.editedFontType });
 }
 
 export function newTitle(args: {
@@ -217,9 +242,10 @@ export function newParagraph(args: {
 export function newLiteral(args: {
   id?: Nullable<number>;
   parentId?: Nullable<number>;
-  text: string;
+  text?: string;
   editedText?: Nullable<string>;
   fontType?: Nullable<FontType>;
+  // TODO: Gir ikke mening å sette editedFontType i nye literals.
   editedFontType?: Nullable<FontType>;
   tags?: ElementTags[];
 }): LiteralValue {
@@ -227,10 +253,10 @@ export function newLiteral(args: {
     type: LITERAL,
     id: args.id ?? null,
     parentId: args.parentId ?? null,
-    text: args.text,
+    text: args.text ?? "",
     editedText: args.editedText ?? null,
     editedFontType: args.editedFontType ?? null,
-    fontType: FontType.PLAIN,
+    fontType: args.fontType ?? FontType.PLAIN,
     tags: args.tags ?? [],
   };
 }
@@ -250,9 +276,9 @@ export const newVariable = (args: {
   };
 };
 
-export function newItem({ content }: { content: TextContent[] }): Item {
+export function newItem({ id, content }: { id?: Nullable<number>; content: TextContent[] }): Item {
   return {
-    id: null,
+    id: id ?? null,
     parentId: null,
     content,
     deletedContent: [],

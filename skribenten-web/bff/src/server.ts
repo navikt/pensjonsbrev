@@ -6,7 +6,6 @@ import { setupStaticRoutes } from "./frontendRoute.js";
 import { internalRoutes } from "./internalRoutes.js";
 import { setupLogging } from "./logging.js";
 import { verifyToken } from "./tokenValidation.js";
-
 const server = express();
 
 // Restricts the server to only accept UTF-8 encoding of bodies

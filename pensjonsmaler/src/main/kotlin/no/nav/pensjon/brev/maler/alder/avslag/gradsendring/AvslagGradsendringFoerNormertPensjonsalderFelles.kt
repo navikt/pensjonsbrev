@@ -25,6 +25,7 @@ data class AvslagGradsendringFoerNormertPensjonsalderFelles(
     val regelverkType: Expression<AlderspensjonRegelverkType>,
     val uttaksgrad: Expression<Int>,
     val prorataBruktIBeregningen: Expression<Boolean>,
+    val avtaleland: Expression<String?>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title2 {
@@ -46,7 +47,8 @@ data class AvslagGradsendringFoerNormertPensjonsalderFelles(
                 totalPensjon = totalPensjon,
                 borINorge = borINorge,
                 harEOSLand = harEOSLand,
-                regelverkType = regelverkType
+                regelverkType = regelverkType,
+                avtaleland = avtaleland,
             )
         )
 

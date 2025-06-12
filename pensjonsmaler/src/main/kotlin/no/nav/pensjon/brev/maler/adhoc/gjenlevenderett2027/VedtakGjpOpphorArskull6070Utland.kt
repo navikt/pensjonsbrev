@@ -3,13 +3,22 @@ package no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.gjennomsnittInntektG
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2019
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2019G
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2020
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2020G
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2021
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2021G
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2022
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2022G
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2022Over3g
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023
+import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023G
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027DtoSelectors.inntekt2023Over3g
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.DineInntekterTabell
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig2GTabell
+import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig3GTabell
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -24,8 +33,8 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.includeAttachment
+import no.nav.pensjon.brev.template.includePhrase
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-
 
 @TemplateModelHelpers
 object VedtakGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dto> {
@@ -44,7 +53,7 @@ object VedtakGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
     ) {
         title {
             text(
-                Bokmal to "Vedtak - Gjenlevendepensjonen din er tidsbegrenset ",
+                Bokmal to "Vedtak – Gjenlevendepensjonen din er tidsbegrenset ",
                 English to "Decision – Your survivor’s pension has been made time-limited "
             )
         }
@@ -70,20 +79,20 @@ object VedtakGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
             }
             paragraph {
                 text(
-                    Bokmal to "Opplysninger om inntekten din i perioden 2019 - 2023, viser at du ikke fyller vilkårene i folketrygdloven § 17 A–3. Din inntekt har vært over inntektsgrensen i denne perioden.  ",
+                    Bokmal to "Opplysninger om inntekten din i perioden 2019–2023, viser at du ikke fyller vilkårene i folketrygdloven § 17 A-3. Din inntekt har vært over inntektsgrensen i denne perioden.  ",
                     English to "Your income information for the period 2019–2023 shows that you do not meet the conditions established by Section 17 A-3 of the National Insurance Act. Your income has exceeded the income cap for this period.  "
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Du beholder retten til gjenlevendepensjon frem til og med desember 2026, under forutsetning av at øvrige vilkårene er oppfylt.  ",
+                    Bokmal to "Du beholder retten til gjenlevendepensjon frem til og med desember 2026, under forutsetning av at øvrige vilkår er oppfylt ",
                     English to "You will retain your right to survivor’s pension until the end of December 2026, provided the other conditions have been met.  "
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven § 17 A-3. ",
-                    English to "This decision has been made in accordance with Section 17 A -3 of the National Insurance Act. "
+                    English to "This decision has been made in accordance with Section 17 A-3 of the National Insurance Act. "
                 )
             }
 
@@ -100,151 +109,18 @@ object VedtakGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
                 )
             }
 
-            paragraph {
-                table(
-                    header = {
-                        column(1) {
-                            text(
-                                Bokmal to "År ", 
-                                English to "Year "
-                            )
-                        }
-                        column(2) {
-                            text(
-                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 3 ", 
-                                English to "Average National Insurance basic amount (G) times 3"
-                            )
-                        }
-                    },
-                ) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2022", English to "2022"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 329352.expr().format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + 329352.expr().format(CurrencyFormat)
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2023",
-                                English to "2023"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 348717.expr().format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + 348717.expr().format(CurrencyFormat)
-                            )
-                        }
-                    }
-                }
-            }
+            includePhrase(Gjennomsnittlig3GTabell)
 
             paragraph {
                 text(
-                    Bokmal to "I tillegg må inntekten din i 2019 – 2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt disse fem årene. " +
+                    Bokmal to "I tillegg må inntekten din i 2019–2023 ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt disse fem årene. " +
                             "Det vil si at inntekten kan overstige to ganger grunnbeløpet i et enkelt år, så lenge gjennomsnittet av de fem årene er lavere. ",
                     English to "In addition, your income in the period 2019–2023 must not have exceeded two times the National Insurance basic amount (G) on average for this five-year period. " +
                             "This means your income could have exceeded two times the National Insurance basic amount in individual years, provided your average for the five-year period is lower. "
                 )
             }
 
-            paragraph {
-                table(
-                    header = {
-                        column(1) {
-                            text(
-                                Bokmal to "År",
-                                English to "Year"
-                            )
-                        }
-                        column(2) {
-                            text(
-                                Bokmal to "Gjennomsnittlig grunnbeløp (G) ganger 2 ",
-                                English to "Average National Insurance basic amount (G) times 2 "
-                            )
-                        }
-                    },
-                ) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2019",
-                                English to "2019"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 197732.expr().format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + 197732.expr().format(CurrencyFormat)
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2020",
-                                English to "2020"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 201706.expr().format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + 201706.expr().format(CurrencyFormat)
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2021",
-                                English to "2021"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 209432.expr().format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + 209432.expr().format(CurrencyFormat)
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2022",
-                                English to "2022"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 219568.expr().format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + 219568.expr().format(CurrencyFormat)
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2023",
-                                English to "2023"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to 232478.expr().format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + 232478.expr().format(CurrencyFormat)
-                            )
-                        }
-                    }
-                }
-            }
+            includePhrase(Gjennomsnittlig2GTabell)
 
             title1 {
                 text(
@@ -254,127 +130,54 @@ object VedtakGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
             }
             paragraph {
                 text(
-                    Bokmal to "Det er dine reelle inntekter i årene 2019 – 2023 som avgjør om du kan beholde gjenlevendepensjonen.  ",
+                    Bokmal to "Det er dine reelle inntekter i årene 2019–2023 som avgjør om du kan beholde gjenlevendepensjonen.  ",
                     English to "Your actual income for the period 2019–2023 will determine whether or not you will be able to keep the survivor’s pension.  "
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Ifølge registrerte opplysninger vi har om deg, har pensjonen din i årene 2019 – 2023 vært redusert etter følgende inntekter: ",
+                    Bokmal to "Ifølge registrerte opplysninger vi har om deg, har pensjonen din i årene 2019–2023 vært redusert etter følgende inntekter: ",
                     English to "According to the information we have registered about you, your pension in the period 2019–2023 has been reduced based on the following income: "
                 )
             }
 
-            paragraph {
-                table(
-                    header = {
-                        column(1) {
-                            text(
-                                Bokmal to "År",
-                                English to "Year"
-                            )
-                        }
-                        column(2) {
-                            text(
-                                Bokmal to "Din inntekt",
-                                English to "Your income"
-                            )
-                        }
-                    },
-                ) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2019",
-                                English to "2019"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2019.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + inntekt2019.format(CurrencyFormat)
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2020",
-                                English to "2020"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2020.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + inntekt2020.format(CurrencyFormat)
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2021",
-                                English to "2021"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2021.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + inntekt2021.format(CurrencyFormat)
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2022",
-                                English to "2022"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2022.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + inntekt2022.format(CurrencyFormat)
-                            )
-                        }
-                    }
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "2023",
-                                English to "2023"
-                            )
-                        }
-                        cell {
-                            textExpr(
-                                Bokmal to inntekt2023.format(CurrencyFormat) + " kroner",
-                                English to "NOK ".expr() + inntekt2023.format(CurrencyFormat)
-                            )
-                        }
-                    }
-                }
-            }
+            includePhrase(DineInntekterTabell(inntekt2019, inntekt2020, inntekt2021, inntekt2022, inntekt2023, gjennomsnittInntektG, inntekt2019G, inntekt2020G, inntekt2021G, inntekt2022G, inntekt2023G))
 
-            paragraph {
-                showIf(inntekt2022Over3g and inntekt2023Over3g) {
+            showIf(inntekt2022Over3g and inntekt2023Over3g) {
+                paragraph {
                     text(
                         Bokmal to "Din inntekt har ifølge våre opplysninger vært høyere enn inntektsgrensen i 2022 og 2023. ",
-                        English to "According to our information, your income was higher than the income limit in 2022 and 2023. "
+                        English to "According to our information, your income has been higher than the income cap for 2022 and 2023."
                     )
-                }.orShowIf(inntekt2022Over3g) {
+                }
+
+            }.orShowIf(inntekt2022Over3g) {
+                paragraph {
                     text(
                         Bokmal to "Din inntekt har ifølge våre opplysninger vært høyere enn inntektsgrensen i 2022. ",
-                        English to "According to our information, your income was higher than the income limit in 2022. "
+                        English to "According to our information, your income has been higher than the income cap for 2022."
                     )
-                }.orShowIf(inntekt2023Over3g) {
+                }
+            }.orShowIf(inntekt2023Over3g) {
+                paragraph {
                     text(
                         Bokmal to "Din inntekt har ifølge våre opplysninger vært høyere enn inntektsgrensen i 2023. ",
-                        English to "According to our information, your income was higher than the income limit in 2023."
+                        English to "According to our information, your income has been higher than the income cap for 2023."
                     )
-                }.orShow {
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        Bokmal to "Din inntekt har ifølge våre opplysninger vært høyere enn inntektsgrensen i perioden 2019–2023. ",
+                        English to "According to our information, your income has been higher than the income cap during the period 2019–2023. ",
+                    )
+                }
+                paragraph {
                     textExpr(
-                        Bokmal to "Din gjennomsnittlige inntekt mellom 2019 og 2023 har ifølge våre opplysninger vært høyere enn gjennomsnittlig G de fem årene (".expr() + 212_813.expr().format(CurrencyFormat) + " kroner)",
-                        English to "Your average income between 2019 and 2023 has, according to our information, been higher than the average G during those five years (NOK ".expr() + 212_813.expr().format(CurrencyFormat) + ")"
+                        Bokmal to "Vi har vurdert om gjennomsnittet av din inntekt som antall G for disse årene har vært høyere enn 2 G. Resultatet viser at din gjennomsnittlige inntekt har vært ".expr() + gjennomsnittInntektG.format(6) + " G. " +
+                                "Kravet om at inntekten må ha vært under to ganger grunnbeløpet i folketrygden (G) i gjennomsnitt i disse fem årene, er derfor ikke oppfylt.",
+                        English to "We have assessed whether the average of your income, expressed as a number of G for these years, has been higher than 2 G. The result shows that your average income has been ".expr() + gjennomsnittInntektG.format(6) + " G. " +
+                                "The requirement that the income must have been below twice the average National Insurance basic amount (G) on average during these five years is therefore not met."
                     )
                 }
             }
