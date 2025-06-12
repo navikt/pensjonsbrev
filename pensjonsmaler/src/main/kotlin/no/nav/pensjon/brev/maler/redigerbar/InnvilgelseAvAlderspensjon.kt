@@ -103,7 +103,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
-
+// MF_000092 / AP_INNV_MAN
 /* Tekster og logikk mht ektefelletillegg og barnetillegg er fjernet fra brevmalen etter en samtale med Ingrid Strand:
 innvETAP, innvBTAP, innvETBTAP, innvFTAPIngenUtbInntekt, innvFTAPIngenUtbSamletInntekt, innvETBTAIngenUtbInntekt, innvETBTAIngenUtbSamletInntekt,
 innvilgetETAPHjemmel, innvilgetBTAPHjemmel, InnvilgetETBTAHjemmel, innvilgetGjrettOgTilleggKap20 fjernet
