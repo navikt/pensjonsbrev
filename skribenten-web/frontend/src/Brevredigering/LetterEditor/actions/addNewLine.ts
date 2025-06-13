@@ -27,7 +27,7 @@ export const addNewLine: Action<LetterEditorState, [focus: Focus]> = produce((dr
             addElements([createNewLine()], focus.contentIndex, block.content, block.deletedContent);
           } else if (offset >= text(content).length) {
             const isAtEndOfBlock = focus.contentIndex + 1 === block.content.length;
-            const toAdd = isAtEndOfBlock ? [createNewLine(), newLiteral({ text: "" })] : [createNewLine()];
+            const toAdd = isAtEndOfBlock ? [createNewLine(), newLiteral()] : [createNewLine()];
             addElements(toAdd, focus.contentIndex + 1, block.content, block.deletedContent);
           } else {
             const newLiteral = splitLiteralAtOffset(content, offset);
