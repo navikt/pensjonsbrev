@@ -219,4 +219,17 @@ object Felles {
         }
 
     }
+
+    object FlereBeregningsperioder : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "Du kan lese mer om andre beregningsperioder i vedlegget.",
+                    Nynorsk to "Du kan lese meir om andre berekningsperiodar i vedlegget.",
+                    English to "There is more information about other calculation periods in the attachment."
+                )
+            }
+        }
+    }
+
 }
