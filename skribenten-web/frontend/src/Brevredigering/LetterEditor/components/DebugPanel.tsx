@@ -107,6 +107,7 @@ function findEditsContent(content: Content): { contentIndex: number; itemIndex?:
       return content?.id === null ? [] : [{ contentIndex: content.id }];
     }
   }
+  return [];
 }
 
 function findEditsItem(item: Item): { itemIndex: number; itemContentIndex: number }[] {
