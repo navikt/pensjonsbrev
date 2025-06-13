@@ -1,5 +1,8 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2025
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
@@ -14,6 +17,8 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -278,6 +283,113 @@ object soktAFPPrivatInfo :  OutlinePhrase<LangBokmalNynorskEnglish>() {
                 Nynorsk to "Du har også søkt om avtalefesta pensjon (AFP), og du vil få eit eige vedtak om dette.",
                 English to "You have also applied for contractual early retirement pension (AFP) and will receive a separate decision on this."
             )
+        }
+    }
+}
+
+data class HjemlerInnvilgelseForAP2011AP2016(
+    val garantipensjonInnvilget: Expression<Boolean>,
+    val godkjentYrkesskade: Expression<Boolean>,
+    val innvilgetFor67: Expression<Boolean>,
+    val pensjonstilleggInnvilget: Expression<Boolean>,
+    val regelverkType: Expression<AlderspensjonRegelverkType>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(regelverkType.isNotAnyOf(AP2025)) {
+            /* AP2011TidligUttakHjemmel, AP2011TidligUttakPenHjemmel, AP2011Hjemmel, AP2011PenTHjemmel, AP2011YrkeskadeHjemmel, AP2011YrkesskadePenTHjemmel
+            AP2016TidligUttakHjemmel, AP2016TidligUttakPenTHjemmel, AP2016TidligUttakPenTGarantiPensjonHjemmel, AP2016TidligUttakGarantiPensjonHjemmel,
+            AP2016Hjemmel, AP2016YrksesskadeHjemmel, AP2016MNTHjemmel, AP2016YrkesskadeMNTHjemmel, AP2016MNTGarantiPensjonHjemmel,
+            AP2016YrkesskadeMNTGarantiPensjonHjemmel, AP2016GarantiPensjonHjemmel, AP2016YrkesskadeGarantiPensjonHjemmel */
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2 til ",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2 til ",
+                    English to "This decision was made pursuant to the provisions of §§ 19-2 to "
+                )
+                showIf(pensjonstilleggInnvilget) {
+                    text(
+                        Bokmal to "19-9",
+                        Nynorsk to "19-9",
+                        English to "19-9"
+                    )
+                }.orShow {
+                    text(
+                        Bokmal to "19-8",
+                        Nynorsk to "19-8",
+                        English to "19-8"
+                    )
+                }
+                text(
+                    Bokmal to ", 19-10",
+                    Nynorsk to ", 19-10",
+                    English to ", 19-10"
+                )
+                showIf(innvilgetFor67) {
+                    text(
+                        Bokmal to ", 19-11",
+                        Nynorsk to ", 19-11",
+                        English to ", 19-11"
+                    )
+                }
+                showIf(regelverkType.isOneOf(AP2016)) {
+                    text(
+                        Bokmal to ", 19-15",
+                        Nynorsk to ", 19-15",
+                        English to ", 19-15"
+
+                    )
+                }
+                showIf(godkjentYrkesskade) {
+                    text(
+                        Bokmal to ", 19-20",
+                        Nynorsk to ", 19-20",
+                        English to ", 19-20"
+                    )
+                }
+                showIf(regelverkType.isOneOf(AP2016)) {
+                    text(
+                        Bokmal to ", 20-2, 20-3",
+                        Nynorsk to ", 20-2, 20-3",
+                        English to ", 20-2, 20-3"
+                    )
+                    showIf(garantipensjonInnvilget) {
+                        text(
+                            Bokmal to ", 20-9",
+                            Nynorsk to ", 20-9",
+                            English to ", 20-9"
+                        )
+                    }.orShow {
+                        text(
+                            Bokmal to ", 20-12",
+                            Nynorsk to ", 20-12",
+                            English to ", 20-12"
+                        )
+                    }
+                    showIf(innvilgetFor67) {
+                        text(
+                            Bokmal to " til 20-15",
+                            Nynorsk to " til 20-15",
+                            English to " to 20-15"
+                        )
+                    }.orShow {
+                        text(
+                            Bokmal to " til 20-14",
+                            Nynorsk to " til 20-14",
+                            English to " to 20-14"
+                        )
+                    }
+                    text(
+                        Bokmal to ", 20-19",
+                        Nynorsk to ", 20-19",
+                        English to ", 20-19"
+                    )
+                }
+                text(
+                    Bokmal to " og 22-12.",
+                    Nynorsk to " og 22-12.",
+                    English to " and 22-12 of the National Insurance Act."
+                )
+            }
         }
     }
 }
