@@ -270,4 +270,16 @@ data class AfpPrivatErBrukt(
     }
 }
 
+object soktAFPPrivatInfo :  OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            text(
+                Bokmal to "Du har også søkt om avtalefestet pensjon (AFP), og du vil få et eget vedtak om dette.",
+                Nynorsk to "Du har også søkt om avtalefesta pensjon (AFP), og du vil få eit eige vedtak om dette.",
+                English to "You have also applied for contractual early retirement pension (AFP) and will receive a separate decision on this."
+            )
+        }
+    }
+}
+
 
