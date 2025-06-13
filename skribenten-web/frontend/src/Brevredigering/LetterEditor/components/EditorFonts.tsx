@@ -15,13 +15,14 @@ import type { LetterEditorState } from "../model/state";
 const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontType => {
   const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
   const cur = editorState.focus;
-  if (block.type === TABLE) {
-    if (isItemContentIndex(cur) && block.rows[cur.contentIndex] && block.rows[cur.contentIndex].cells[cur.itemIndex]) {
-      const cell = block.rows[cur.contentIndex].cells[cur.itemIndex];
-      const literal = cell.text[cur.itemContentIndex];
-      return isTextContent(literal) ? fontTypeOf(literal) : FontType.PLAIN;
-    }
-    return FontType.PLAIN;
+  const paraContent = block.content[cur.contentIndex];
+
+  if (paraContent?.type === TABLE && isItemContentIndex(cur)) {
+    const row = paraContent.rows[cur.itemIndex];
+    const cell = row?.cells[cur.itemContentIndex];
+    const lit = cell?.text[0];
+
+    return isTextContent(lit) ? fontTypeOf(lit) : FontType.PLAIN;
   }
   const blockContent = block.content[editorState.focus.contentIndex];
   const textContent =
