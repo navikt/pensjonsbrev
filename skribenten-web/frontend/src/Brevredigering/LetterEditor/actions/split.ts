@@ -1,4 +1,4 @@
-import type { Draft, WritableDraft } from "immer";
+import type { Draft } from "immer";
 import { produce } from "immer";
 
 import type { AnyBlock, Content, ItemList, TextContent } from "~/types/brevbakerTypes";
@@ -26,7 +26,7 @@ export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
   const block = editedLetter.blocks[literalIndex.blockIndex];
   const content = block.content[literalIndex.contentIndex];
 
-  if (block.type === TABLE) {
+  if (content.type === TABLE) {
     insertEmptyParagraphAfterBlock(draft, literalIndex.blockIndex);
     return;
   }
