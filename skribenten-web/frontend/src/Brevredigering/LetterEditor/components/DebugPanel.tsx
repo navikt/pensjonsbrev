@@ -106,6 +106,11 @@ function findEditsContent(content: Content): { contentIndex: number; itemIndex?:
     case "NEW_LINE": {
       return content?.id === null ? [] : [{ contentIndex: content.id }];
     }
+    case "TABLE": {
+      // A table element itself doesn’t carry edited text;
+      // any edits happen inside its cells → return empty.
+      return [];
+    }
   }
   return [];
 }
