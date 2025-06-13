@@ -12,7 +12,11 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import kotlin.math.E
 
 
@@ -247,6 +251,20 @@ object SupplerendeStoenadAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
                         "The benefit is means-tested and your total income from Norway and abroad is taken into account. " +
                         "The income of any spouse, cohabitant or registered partner will also be taken into account. " +
                         "You can read more about supplementary benefit at our website ${SUPPLERENDE_STOENAD_URL}.",
+            )
+        }
+    }
+}
+// innvilgelseAPogAFPPrivat
+data class AfpPrivatErBrukt(
+    val uttaksgrad: Expression<Int>
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            textExpr(
+                Bokmal to "Du får ".expr() + uttaksgrad.format() + " prosent alderspensjon fordi summen av alderspensjonen og den avtalefestede pensjonen din (AFP) gjør at du har rett til alderspensjon før du fyller 67 år.",
+                Nynorsk to "Du får ".expr() + uttaksgrad.format() + " prosent alderspensjon fordi summen av alderspensjonen og den avtalefesta pensjonen din (AFP) gjer at du har rett til alderspensjon før 67 år.",
+                English to "You have been granted ".expr() + uttaksgrad.format() + " percent retirement pension because your total retirement pension and contractual early retirement pension (AFP) makes you eligible for retirement pension before the age of 67."
             )
         }
     }
