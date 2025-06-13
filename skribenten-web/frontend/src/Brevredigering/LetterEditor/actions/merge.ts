@@ -109,7 +109,7 @@ function mergeBlocks(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex
     } else if (isEmptyBlock(second)) {
       removeElements(secondId, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks, id: null });
       if (first.content.at(-1)?.type === VARIABLE) {
-        first.content.push(newLiteral({ text: "" }));
+        first.content.push(newLiteral());
       }
       draft.focus = focusEndOfBlock(firstId, first);
     } else {
@@ -186,7 +186,7 @@ function mergeFromItemList(draft: Draft<LetterEditorState>, literalIndex: ItemCo
 
       // TODO: Denne burde nok være en switch, slik at vi får håndtert andre typer content.
       if (contentBeforeItemList?.type === VARIABLE || contentBeforeItemList === undefined) {
-        addElements([newLiteral({ text: "" })], literalIndex.contentIndex, block.content, block.deletedContent);
+        addElements([newLiteral()], literalIndex.contentIndex, block.content, block.deletedContent);
         draft.focus = {
           blockIndex: literalIndex.blockIndex,
           contentIndex: literalIndex.contentIndex,
