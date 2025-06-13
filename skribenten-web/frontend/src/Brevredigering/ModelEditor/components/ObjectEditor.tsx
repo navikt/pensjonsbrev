@@ -54,7 +54,13 @@ export const FieldEditor = ({
       return <div>ARRAY TODO</div>;
     }
     case "enum": {
-      return <EnumEditor spec={fieldType} />;
+      return (
+        <EnumEditor
+          fieldName={prependedName ? `${prependedName}.${field}` : field}
+          spec={fieldType}
+          submitOnChange={submitOnChange}
+        />
+      );
     }
   }
 };
