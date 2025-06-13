@@ -22,6 +22,9 @@ export const handleSwitchContent = <T, U, V, W>(args: {
     case "NEW_LINE": {
       return args.onNewLine(args.content);
     }
+    case "TABLE": {
+      throw new Error("handleSwitchContent: TABLE is not supported here");
+    }
   }
 };
 
