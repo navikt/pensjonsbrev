@@ -24,7 +24,14 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val nyBeregningAvInnvilgetAP: Boolean,
         @DisplayText("Innvilgelse av alderspensjon eller økt uttaksgrad")
         val innvilgelseAPellerOektUttaksgrad: Boolean,
-
+        @DisplayText("Ingen endring i pensjonen")
+        val ingenEndringIPensjonen: Boolean,
+        @DisplayText("Innvilgelse av alderspensjon eller økt uttaksgrad")
+        val innvilgelseAvAPEllerOektUttaksgrad: Boolean,
+        @DisplayText("Økning i pensjonen")
+        val oekningIPensjonen: Boolean,
+        @DisplayText("Reduksjon i pensjonen")
+        val reduksjonIPensjonen: Boolean,
         /*  @DisplayText("Virkningstidspunktet er senere enn ønsket uttakstidspunkt")
           val kravVirkDatoFomSenereEnnOensketUttakstidspunkt: Boolean,
           @DisplayText("Gjenlevenderett er brukt i beregningen")
@@ -57,8 +64,8 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val borINorge: Boolean,  // v3.Person
         val erEOSLand: Boolean,  // v1.Land
         val erForstegangsbehandletNorgeUtland: Boolean,  // v3.Krav
-        val erMellombehandling: Boolean,  // v3.Krav
-        val erSluttbehandlingNorgeUtland: Boolean,  // v3.Krav
+        val erMellombehandling: Boolean,  // v3.Krav  NY
+        val erSluttbehandlingNorgeUtland: Boolean,  // v3.Krav  NY
         val faktiskBostedsland: String?,  // v3.Person
         val fullTrygdtid: Boolean,  // v4.AlderspensjonPerManed
         val gjenlevendetilleggKap19: Kroner?,  // v4.AlderspensjonPerManed
@@ -69,6 +76,7 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val regelverkType: AlderspensjonRegelverkType,
         val sakstype: Sakstype,
         val vedtakEtterbetaling: Boolean,  // v1.Vedtak
+        val vedtaksresultatUtland: VedtaksresultatUtland?, // NY
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
@@ -104,5 +112,11 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val minst20ArBotidKap19: Boolean,  // minst20ArBotidKap19Avdod
         val minst20ArTrygdetid: Boolean,
         val minst20ArTrygdetidKap20: Boolean,  // minst20ArTrygdetidKap20Avdod
+    )
+
+    // v1.VedtaksresultatUtland
+    data class VedtaksresultatUtland(
+        val antallLandVilkarsprovd: Int,
+        val landNavnListe: List<VedtaksresultatUtland>
     )
 }
