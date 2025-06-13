@@ -70,6 +70,7 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvGjenlevendetillegg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenadAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.soktAFPPrivatInfo
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -340,17 +341,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 )
             }
 
-            showIf(afpPrivatResultatFellesKontoret) {
-                // soktAFPPrivatInfo
-                paragraph {
-                    text(
-                        Bokmal to "Du har også søkt om avtalefestet pensjon (AFP), og du vil få et eget vedtak om dette.",
-                        Nynorsk to "Du har også søkt om avtalefesta pensjon (AFP), og du vil få eit eige vedtak om dette.",
-                        English to "You have also applied for contractual early retirement pension (AFP) and will receive a separate decision on this."
-                    )
-
-                }
-            }
+            showIf(afpPrivatResultatFellesKontoret) { includePhrase(soktAFPPrivatInfo) }
 
             showIf(erEksportberegnet and not(eksportForbud) and not(minst20ArTrygdetid)) {
                 // innvilgelseAPUnder20aar
