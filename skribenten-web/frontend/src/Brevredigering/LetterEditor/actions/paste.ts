@@ -14,7 +14,6 @@ import {
   newItemList,
   newLiteral,
   newParagraph,
-  newTable,
   removeElements,
   splitLiteralAtOffset,
   text,
@@ -28,7 +27,15 @@ import type {
   LetterEditorState,
   LiteralIndex,
 } from "~/Brevredigering/LetterEditor/model/state";
-import type { AnyBlock, Content, LiteralValue, Row, TextContent } from "~/types/brevbakerTypes";
+import type {
+  AnyBlock,
+  Cell,
+  Content,
+  LiteralValue,
+  Row,
+  Table as BrevbakerTable,
+  TextContent,
+} from "~/types/brevbakerTypes";
 import { FontType, PARAGRAPH, TABLE } from "~/types/brevbakerTypes";
 
 import { isItemList, isLiteral, isTextContent } from "../model/utils";
@@ -255,16 +262,17 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
         break;
       }
       case "TABLE": {
-        const tableContent: Table = {
+        const tableContent: BrevbakerTable = {
           type: TABLE,
           id: null,
           parentId: null,
           header: { id: null, parentId: null, colSpec: [] },
           deletedRows: [],
-          rows: el.rows.map((r) => ({
+
+          rows: el.rows.map<Row>((r) => ({
             id: null,
             parentId: null,
-            cells: r.cells.map((c) => ({
+            cells: r.cells.map<Cell>((c) => ({
               id: null,
               parentId: null,
               text: c.content.map((t) => newLiteral({ editedText: t.text, fontType: t.font })),
@@ -515,10 +523,6 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
       return [traverseTable(element as HTMLTableElement, font)];
     }
 
-    // case "DIV": {
-    //   // skip and traverse children
-    //   return traverseChildren(element, font);
-    // }
     default: {
       return traverseChildren(element, font);
     }
@@ -551,7 +555,7 @@ function traverseItemChildren(item: Element, font: FontType): Text[] {
   return traverseChildren(item, font).flatMap((e) => {
     switch (e.type) {
       case "TEXT": {
-        return e;
+        return [e];
       }
       case "ITEM": {
         return e.content;
@@ -559,36 +563,17 @@ function traverseItemChildren(item: Element, font: FontType): Text[] {
       case "P": {
         return e.content;
       }
+      case "TABLE": {
+        // Should not happen, but if it does, we just ignore it.
+        return [];
+      }
+      default: {
+        // Should not happen, but if it does, we just ignore it.
+        return [];
+      }
     }
   });
 }
-
-// Will package any Text-elements into a Paragraph, and make sure we don't have nested paragraphs and items.
-// function traverseParagraphChildren(paragraph: Element, font: FontType): (Paragraph | Item)[] {
-//   return traverseChildren(paragraph, font).reduce<(Paragraph | Item)[]>((acc, current) => {
-//     const previous = acc.at(-1);
-
-//     switch (current.type) {
-//       case "P": {
-//         // should probably not be possible, since it would mean nested p-elements, but html-structures can be weird.
-//         // append paragraph
-//         return [...acc, current];
-//       }
-//       case "TEXT": {
-//         if (previous?.type === "P") {
-//           // insert into existing paragraph
-//           return [...acc.slice(0, -1), { ...previous, content: mergeNeighbouringText([...previous.content, current]) }];
-//         } else {
-//           // create a paragraph to contain the text
-//           return [...acc, { type: "P", content: [current] }];
-//         }
-//       }
-//       case "ITEM": {
-//         return [...acc, current];
-//       }
-//     }
-//   }, []);
-// }
 
 function traverseParagraphChildren(paragraph: Element, font: FontType): (Paragraph | Item)[] {
   const result: (Paragraph | Item)[] = [];
@@ -619,6 +604,11 @@ function traverseParagraphChildren(paragraph: Element, font: FontType): (Paragra
       case "P": {
         flushBuffer();
         result.push(node);
+        break;
+      }
+      case "TABLE": {
+        // Tables should not be nested inside <p>. Ignore.
+        flushBuffer();
         break;
       }
     }
