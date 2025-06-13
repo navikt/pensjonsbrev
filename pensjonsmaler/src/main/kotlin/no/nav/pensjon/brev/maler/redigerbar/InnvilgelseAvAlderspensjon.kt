@@ -63,6 +63,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AfpPrivatErBrukt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.HjemlerInnvilgelseForAP2011AP2016
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoPensjonFraAndreAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoSkattAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
@@ -408,102 +409,15 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 }
             }
 
-            showIf(regelverkType.isNotAnyOf(AP2025)) {
-                /* AP2011TidligUttakHjemmel, AP2011TidligUttakPenHjemmel, AP2011Hjemmel, AP2011PenTHjemmel, AP2011YrkeskadeHjemmel, AP2011YrkesskadePenTHjemmel
-                AP2016TidligUttakHjemmel, AP2016TidligUttakPenTHjemmel, AP2016TidligUttakPenTGarantiPensjonHjemmel, AP2016TidligUttakGarantiPensjonHjemmel,
-                AP2016Hjemmel, AP2016YrksesskadeHjemmel, AP2016MNTHjemmel, AP2016YrkesskadeMNTHjemmel, AP2016MNTGarantiPensjonHjemmel,
-                AP2016YrkesskadeMNTGarantiPensjonHjemmel, AP2016GarantiPensjonHjemmel, AP2016YrkesskadeGarantiPensjonHjemmel */
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2 til ",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2 til ",
-                        English to "This decision was made pursuant to the provisions of §§ 19-2 to "
-                    )
-                    showIf(pensjonstilleggInnvilget) {
-                        text(
-                            Bokmal to "19-9",
-                            Nynorsk to "19-9",
-                            English to "19-9"
-                        )
-                    }.orShow {
-                        text(
-                            Bokmal to "19-8",
-                            Nynorsk to "19-8",
-                            English to "19-8"
-                        )
-                    }
-                    text(
-                        Bokmal to ", 19-10",
-                        Nynorsk to ", 19-10",
-                        English to ", 19-10"
-                    )
-                    showIf(innvilgetFor67) {
-                        text(
-                            Bokmal to ", 19-11",
-                            Nynorsk to ", 19-11",
-                            English to ", 19-11"
-                        )
-                    }
-                    showIf(regelverkType.isOneOf(AP2016)) {
-                        text(
-                            Bokmal to ", 19-15",
-                            Nynorsk to ", 19-15",
-                            English to ", 19-15"
-
-                        )
-                    }
-                    showIf(godkjentYrkesskade) {
-                        text(
-                            Bokmal to ", 19-20",
-                            Nynorsk to ", 19-20",
-                            English to ", 19-20"
-                        )
-                    }
-                    showIf(regelverkType.isOneOf(AP2016)) {
-                        text(
-                            Bokmal to ", 20-2, 20-3",
-                            Nynorsk to ", 20-2, 20-3",
-                            English to ", 20-2, 20-3"
-                        )
-                        showIf(garantipensjonInnvilget) {
-                            text(
-                                Bokmal to ", 20-9",
-                                Nynorsk to ", 20-9",
-                                English to ", 20-9"
-                            )
-                        }.orShow {
-                            text(
-                                Bokmal to ", 20-12",
-                                Nynorsk to ", 20-12",
-                                English to ", 20-12"
-                            )
-                        }
-                        showIf(innvilgetFor67) {
-                            text(
-                                Bokmal to " til 20-15",
-                                Nynorsk to " til 20-15",
-                                English to " to 20-15"
-                            )
-                        }.orShow {
-                            text(
-                                Bokmal to " til 20-14",
-                                Nynorsk to " til 20-14",
-                                English to " to 20-14"
-                            )
-                        }
-                        text(
-                            Bokmal to ", 20-19",
-                            Nynorsk to ", 20-19",
-                            English to ", 20-19"
-                        )
-                    }
-                    text(
-                        Bokmal to " og 22-12.",
-                        Nynorsk to " og 22-12.",
-                        English to " and 22-12 of the National Insurance Act."
-                    )
-                }
-            }
+            includePhrase(
+                HjemlerInnvilgelseForAP2011AP2016(
+                    garantipensjonInnvilget = garantipensjonInnvilget,
+                    godkjentYrkesskade = godkjentYrkesskade,
+                    innvilgetFor67 = innvilgetFor67,
+                    pensjonstilleggInnvilget = pensjonstilleggInnvilget,
+                    regelverkType = regelverkType,
+                )
+            )
 
             showIf(skjermingstilleggInnvilget) {
                 // skjermingstilleggHjemmel
@@ -585,9 +499,10 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                             Nynorsk to " artikkel 6 og 7.",
                             English to " articles 6 and 7."
                         )
-                    }.orShowIf(not(harOppfyltVedSammenlegging) and eksportTrygdeavtaleEOS and not(brukerBorINorge)) {
-                        text(Bokmal to " artikkel 7.", Nynorsk to " artikkel 7.", English to " article 7.")
                     }
+                        .orShowIf(not(harOppfyltVedSammenlegging) and eksportTrygdeavtaleEOS and not(brukerBorINorge)) {
+                            text(Bokmal to " artikkel 7.", Nynorsk to " artikkel 7.", English to " article 7.")
+                        }
                 }
             }
 
