@@ -24,7 +24,6 @@ paths:
               items:
                 type: string
                 description: Pesys saksnummer
-
       responses:
         200:
           description: En liste over brev på angitt sak med url for å åpne brevet i Skribenten
@@ -34,6 +33,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/brevinfo"
+
   /external/api/sak/{saksId}/:
     get:
       description: Henter alle brev for pesys sak
