@@ -11,9 +11,32 @@ servers:
   - url: 'http://skribenten-backend.pensjonsbrev'
     description: Brukes fra dev-gcp og prod-gcp
 paths:
-  /external/sak/{saksId}/:
+  /external/api/sak:
+    post:
+      description: Henter alle brev for en liste av pesys saker
+      requestBody:
+        description: Liste av (PESYS) saksnummer det skal hentes brev for
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+                description: Pesys saksnummer
+
+      responses:
+        200:
+          description: En liste over brev på angitt sak med url for å åpne brevet i Skribenten
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/brevinfo"
+  /external/api/sak/{saksId}/:
     get:
-      description: "Henter alle brev for pesys sak (for ekstern bruk)"
+      description: Henter alle brev for pesys sak
       parameters:
         - name: saksId
           description: Pesys-saksnummer
@@ -23,11 +46,11 @@ paths:
             type: string
       responses:
         200:
-          description: "En liste over brev på angitt sak med url for å åpne brevet i Skribenten"
+          description: En liste over brev på angitt sak med url for å åpne brevet i Skribenten
           content:
             application/json:
               schema:
-                type: "array"
+                type: array
                 items:
                   $ref: "#/components/schemas/brevinfo"
 
@@ -56,6 +79,10 @@ components:
           type: number
           format: int64
           description: BrevId
+        saksId:
+          type: number
+          format: int64
+          description: Saksnummer i PESYS
         vedtaksId:
           type: number
           format: int64
