@@ -38,7 +38,8 @@ import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
 fun main() {
     val skribentenConfig: Config =
         ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-            .resolveWith(ConfigFactory.load("azuread")) // loads azuread secrets for local
+            .resolveWith(ConfigFactory.load("azuread"), ConfigResolveOptions.defaults().setAllowUnresolved(true)) // loads azuread secrets for local
+            .resolveWith(ConfigFactory.load("unleash"))
             .getConfig("skribenten")
 
     ADGroups.init(skribentenConfig.getConfig("groups"))
