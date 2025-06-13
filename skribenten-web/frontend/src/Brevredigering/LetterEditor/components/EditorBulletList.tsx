@@ -2,7 +2,8 @@ import { css } from "@emotion/react";
 import { BulletListIcon } from "@navikt/aksel-icons";
 import { Button } from "@navikt/ds-react";
 
-import { ITEM_LIST, TABLE } from "~/types/brevbakerTypes";
+import type { Content, ItemList } from "~/types/brevbakerTypes";
+import { ITEM_LIST } from "~/types/brevbakerTypes";
 
 import Actions from "../actions";
 import type { CallbackReceiver } from "../lib/actions";
@@ -18,10 +19,9 @@ const EditorBulletList = (props: {
   //dette fører til en error
   const block = props.editorState.redigertBrev.blocks[props.editorState.focus.blockIndex];
 
-  const erAlleElementerIBlockenItemList =
-    block.type !== TABLE &&
-    Array.isArray((block as { content?: unknown[] }).content) &&
-    block.content!.every((c) => (c as { type?: string }).type === ITEM_LIST);
+  const erAlleElementerIBlockenItemList = block.content.every(
+    (contentItem): contentItem is ItemList => (contentItem as Content).type === ITEM_LIST,
+  );
 
   return (
     <div>
