@@ -1,15 +1,12 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2025
-import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SUPPLERENDE_STOENAD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -17,12 +14,9 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import kotlin.math.E
 
 
 // infoAPinntekt_001
@@ -260,6 +254,7 @@ object SupplerendeStoenadAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
     }
 }
+
 // innvilgelseAPogAFPPrivat
 data class AfpPrivatErBrukt(
     val uttaksgrad: Expression<Int>
@@ -275,7 +270,7 @@ data class AfpPrivatErBrukt(
     }
 }
 
-object soktAFPPrivatInfo :  OutlinePhrase<LangBokmalNynorskEnglish>() {
+object SoktAFPPrivatInfo : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
@@ -287,111 +282,39 @@ object soktAFPPrivatInfo :  OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-data class HjemlerInnvilgelseForAP2011AP2016(
-    val garantipensjonInnvilget: Expression<Boolean>,
-    val godkjentYrkesskade: Expression<Boolean>,
-    val innvilgetFor67: Expression<Boolean>,
-    val pensjonstilleggInnvilget: Expression<Boolean>,
-    val regelverkType: Expression<AlderspensjonRegelverkType>,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object Skatteplikt : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(regelverkType.isNotAnyOf(AP2025)) {
-            /* AP2011TidligUttakHjemmel, AP2011TidligUttakPenHjemmel, AP2011Hjemmel, AP2011PenTHjemmel, AP2011YrkeskadeHjemmel, AP2011YrkesskadePenTHjemmel
-            AP2016TidligUttakHjemmel, AP2016TidligUttakPenTHjemmel, AP2016TidligUttakPenTGarantiPensjonHjemmel, AP2016TidligUttakGarantiPensjonHjemmel,
-            AP2016Hjemmel, AP2016YrksesskadeHjemmel, AP2016MNTHjemmel, AP2016YrkesskadeMNTHjemmel, AP2016MNTGarantiPensjonHjemmel,
-            AP2016YrkesskadeMNTGarantiPensjonHjemmel, AP2016GarantiPensjonHjemmel, AP2016YrkesskadeGarantiPensjonHjemmel */
-            paragraph {
-                text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2 til ",
-                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2 til ",
-                    English to "This decision was made pursuant to the provisions of §§ 19-2 to "
-                )
-                showIf(pensjonstilleggInnvilget) {
-                    text(
-                        Bokmal to "19-9",
-                        Nynorsk to "19-9",
-                        English to "19-9"
-                    )
-                }.orShow {
-                    text(
-                        Bokmal to "19-8",
-                        Nynorsk to "19-8",
-                        English to "19-8"
-                    )
-                }
-                text(
-                    Bokmal to ", 19-10",
-                    Nynorsk to ", 19-10",
-                    English to ", 19-10"
-                )
-                showIf(innvilgetFor67) {
-                    text(
-                        Bokmal to ", 19-11",
-                        Nynorsk to ", 19-11",
-                        English to ", 19-11"
-                    )
-                }
-                showIf(regelverkType.isOneOf(AP2016)) {
-                    text(
-                        Bokmal to ", 19-15",
-                        Nynorsk to ", 19-15",
-                        English to ", 19-15"
-
-                    )
-                }
-                showIf(godkjentYrkesskade) {
-                    text(
-                        Bokmal to ", 19-20",
-                        Nynorsk to ", 19-20",
-                        English to ", 19-20"
-                    )
-                }
-                showIf(regelverkType.isOneOf(AP2016)) {
-                    text(
-                        Bokmal to ", 20-2, 20-3",
-                        Nynorsk to ", 20-2, 20-3",
-                        English to ", 20-2, 20-3"
-                    )
-                    showIf(garantipensjonInnvilget) {
-                        text(
-                            Bokmal to ", 20-9",
-                            Nynorsk to ", 20-9",
-                            English to ", 20-9"
-                        )
-                    }.orShow {
-                        text(
-                            Bokmal to ", 20-12",
-                            Nynorsk to ", 20-12",
-                            English to ", 20-12"
-                        )
-                    }
-                    showIf(innvilgetFor67) {
-                        text(
-                            Bokmal to " til 20-15",
-                            Nynorsk to " til 20-15",
-                            English to " to 20-15"
-                        )
-                    }.orShow {
-                        text(
-                            Bokmal to " til 20-14",
-                            Nynorsk to " til 20-14",
-                            English to " to 20-14"
-                        )
-                    }
-                    text(
-                        Bokmal to ", 20-19",
-                        Nynorsk to ", 20-19",
-                        English to ", 20-19"
-                    )
-                }
-                text(
-                    Bokmal to " og 22-12.",
-                    Nynorsk to " og 22-12.",
-                    English to " and 22-12 of the National Insurance Act."
-                )
-            }
+        paragraph {
+            text(
+                Bokmal to "Spørsmål om skatteplikt til Norge etter flytting til utlandet må rettes til skatteetaten." +
+                        " Du må selv avklare spørsmål om skatteplikt til det landet du bor i med skattemyndighetene der.",
+                Nynorsk to "Spørsmål om skatteplikt til Noreg etter flytting til utlandet må rettast til skatteetaten. " +
+                        " Du må sjølv avklare spørsmål om skatteplikt til det landet du bur i med skatteorgana der.",
+                English to "Questions about tax liability to Norway after moving abroad must be directed to the Norwegian Tax Administration." +
+                        " You must clarify questions about tax liability to your country of residence with the local tax authorities."
+            )
         }
     }
 }
 
-
+object InnvilgelseAPForeloepigBeregning :  OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Dette er en foreløpig beregning",
+                Nynorsk to "Dette er ei førebels berekning",
+                English to "This is a preliminary calculation"
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Fordi du har arbeidet eller bodd i et land Norge har trygdeavtale med, er dette en foreløpig beregning basert på trygdetiden din i Norge. " +
+                        "Når vi har mottatt nødvendig informasjon fra andre land som du har bodd eller arbeidet i, vil vi beregne pensjonen din på nytt og sende deg et endelig vedtak.",
+                Nynorsk to "Fordi du har arbeidd eller budd i eit land Noreg har trygdeavtale med, er dette ei førebels berekning basert på trygdetida di i Noreg. " +
+                        "Når vi har fått nødvendig informasjon frå andre land som du har budd eller arbeidd i, bereknar vi pensjonen din på nytt og sender deg eit endeleg vedtak.",
+                English to "Because you have worked or lived in a country that Norway has a social security agreement with, this is a preliminary calculation based on your period of national insurance cover in Norway. " +
+                        "Once we have received the necessary information from the other countries that you have lived or worked in, we will re-calculate your pension and send you a final decision."
+            )
+        }
+    }
+}

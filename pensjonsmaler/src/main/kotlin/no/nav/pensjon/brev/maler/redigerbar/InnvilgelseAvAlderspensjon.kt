@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.garantitilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevenderettAnvendt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevendetilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevendetilleggKap19Innvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.godkjentYrkesskade
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
@@ -66,12 +67,14 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspens
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.HjemlerInnvilgelseForAP2011AP2016
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoPensjonFraAndreAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoSkattAP
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPForeloepigBeregning
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvGjenlevendetillegg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.Skatteplikt
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.SoktAFPPrivatInfo
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenadAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.soktAFPPrivatInfo
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -149,7 +152,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         val gjenlevenderettAnvendt = pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
         val gjenlevendetilleggInnvilget = pesysData.alderspensjonVedVirk.gjenlevendetilleggInnvilget
         val gjenlevendetilleggKap19 = pesysData.gjenlevendetilleggKap19_safe.ifNull(then = Kroner(0))
-        val gjenlevendetilleggKap19Innvilget = pesysData.alderspensjonVedVirk.gjenlevendetilleggInnvilget
+        val gjenlevendetilleggKap19Innvilget = pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
         val godkjentYrkesskade = pesysData.alderspensjonVedVirk.godkjentYrkesskade
         val harAvdod = pesysData.harAvdod_safe.ifNull(then = false)
         val harFlereBeregningsperioder = pesysData.harFlereBeregningsperioder
@@ -342,7 +345,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 )
             }
 
-            showIf(afpPrivatResultatFellesKontoret) { includePhrase(soktAFPPrivatInfo) }
+            showIf(afpPrivatResultatFellesKontoret) { includePhrase(SoktAFPPrivatInfo) }
 
             showIf(erEksportberegnet and not(eksportForbud) and not(minst20ArTrygdetid)) {
                 // innvilgelseAPUnder20aar
@@ -506,6 +509,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 }
             }
 
+// bilateralAvtaleHjemmel
             showIf((harOppfyltVedSammenlegging or eksportTrygdeavtaleAvtaleland) and not(erEOSLand)) {
                 paragraph {
                     textExpr(
@@ -530,23 +534,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             }
 
             showIf(erForstegangsbehandlingNorgeUtland and norgeBehandlendeLand) {
-                title1 {
-                    text(
-                        Bokmal to "Dette er en foreløpig beregning",
-                        Nynorsk to "Dette er ei førebels berekning",
-                        English to "This is a preliminary calculation"
-                    )
-                }
-                paragraph {
-                    text(
-                        Bokmal to "Fordi du har arbeidet eller bodd i et land Norge har trygdeavtale med, er dette en foreløpig beregning basert på trygdetiden din i Norge. " +
-                                "Når vi har mottatt nødvendig informasjon fra andre land som du har bodd eller arbeidet i, vil vi beregne pensjonen din på nytt og sende deg et endelig vedtak.",
-                        Nynorsk to "Fordi du har arbeidd eller budd i eit land Noreg har trygdeavtale med, er dette ei førebels berekning basert på trygdetida di i Noreg. " +
-                                "Når vi har fått nødvendig informasjon frå andre land som du har budd eller arbeidd i, bereknar vi pensjonen din på nytt og sender deg eit endeleg vedtak.",
-                        English to "Because you have worked or lived in a country that Norway has a social security agreement with, this is a preliminary calculation based on your period of national insurance cover in Norway. " +
-                                "Once we have received the necessary information from the other countries that you have lived or worked in, we will re-calculate your pension and send you a final decision."
-                    )
-                }
+               includePhrase(InnvilgelseAPForeloepigBeregning)
             }
 
             showIf(brukerBorINorge) {
@@ -566,16 +554,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                         English to "As a general rule you have to pay withholding tax when you live abroad. We therefor deduct 15 percent tax from your pension."
                     )
                 }
-                paragraph {
-                    text(
-                        Bokmal to "Spørsmål om skatteplikt til Norge etter flytting til utlandet må rettes til skatteetaten." +
-                                " Du må selv avklare spørsmål om skatteplikt til det landet du bor i med skattemyndighetene der.",
-                        Nynorsk to "Spørsmål om skatteplikt til Noreg etter flytting til utlandet må rettast til skatteetaten. " +
-                                " Du må sjølv avklare spørsmål om skatteplikt til det landet du bur i med skatteorgana der.",
-                        English to "Questions about tax liability to Norway after moving abroad must be directed to the Norwegian Tax Administration." +
-                                " You must clarify questions about tax liability to your country of residence with the local tax authorities."
-                    )
-                }
+                includePhrase(Skatteplikt)
             }.orShowIf(saksbehandlerValg.ikkeKildeskatt) {
                 title1 {
                     text(

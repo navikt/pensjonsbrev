@@ -32,6 +32,8 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val oekningIPensjonen: Boolean,
         @DisplayText("Reduksjon i pensjonen")
         val reduksjonIPensjonen: Boolean,
+        @DisplayText("Hvis supplerende stønad")
+        val supplerendeStoenad: Boolean,
         /*  @DisplayText("Virkningstidspunktet er senere enn ønsket uttakstidspunkt")
           val kravVirkDatoFomSenereEnnOensketUttakstidspunkt: Boolean,
           @DisplayText("Gjenlevenderett er brukt i beregningen")
@@ -42,8 +44,6 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
           val harGjenlevendetilleggKap19: Boolean,
           @DisplayText("Hvis egen opptjening er best")
           val egenOpptjening: Boolean,
-          @DisplayText("Hvis supplerende stønad")
-          val supplerendeStoenad: Boolean,
           @DisplayText("Hvis kildeskatt")
           val kildeskatt: Boolean,
           @DisplayText("Hvis ikke kildeskatt")
@@ -70,6 +70,7 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val fullTrygdtid: Boolean,  // v4.AlderspensjonPerManed
         val gjenlevendetilleggKap19: Kroner?,  // v4.AlderspensjonPerManed
         val harAvdod: Boolean,  // -> "true" når avdodFnr finnes
+        val harOppfyltVedSammenlegging: Boolean,
         val inngangOgEksportVurdering: InngangOgEksportVurdering?,
         val kravVirkDatoFom: LocalDate,
         val norgeBehandlendeLand: Boolean,  // v3.Krav
