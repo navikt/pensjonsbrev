@@ -32,24 +32,10 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val oekningIPensjonen: Boolean,
         @DisplayText("Reduksjon i pensjonen")
         val reduksjonIPensjonen: Boolean,
-        @DisplayText("Hvis supplerende stønad")
+        @DisplayText("Supplerende stønad")
         val supplerendeStoenad: Boolean,
-        /*  @DisplayText("Virkningstidspunktet er senere enn ønsket uttakstidspunkt")
-          val kravVirkDatoFomSenereEnnOensketUttakstidspunkt: Boolean,
-          @DisplayText("Gjenlevenderett er brukt i beregningen")
-          val harGjenlevenderett: Boolean,
-          @DisplayText("Gjenlevendetillegg er større enn 0")
-          val harGjenlevendetillegg: Boolean,
-          @DisplayText("GjenlevendetilleggKap19 kommer til utbetaling")
-          val harGjenlevendetilleggKap19: Boolean,
-          @DisplayText("Hvis egen opptjening er best")
-          val egenOpptjening: Boolean,
-          @DisplayText("Hvis kildeskatt")
-          val kildeskatt: Boolean,
-          @DisplayText("Hvis ikke kildeskatt")
-          val ikkeKildeskatt: Boolean,
-          @DisplayText("Etterbetaling")
-          val etterbetaling: Boolean, */
+        @DisplayText("Etterbetaling")
+        val etterbetaling: Boolean,
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -77,7 +63,7 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val regelverkType: AlderspensjonRegelverkType,
         val sakstype: Sakstype,
         val vedtakEtterbetaling: Boolean,  // v1.Vedtak
-        val vedtaksresultatUtland: VedtaksresultatUtland?, // NY
+        val vedtaksresultatUtland: VedtaksresultatUtland?,
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
@@ -118,6 +104,6 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
     // v1.VedtaksresultatUtland
     data class VedtaksresultatUtland(
         val antallLandVilkarsprovd: Int,
-        val landNavnListe: List<VedtaksresultatUtland>
+        val landNavn: String?,  // Kan være flere land som snedes i en string, komma separert
     )
 }

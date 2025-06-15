@@ -68,9 +68,11 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.HjemlerInnvilgelseForAP201
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoPensjonFraAndreAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoSkattAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPForeloepigBeregning
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPUttakEndr
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvGjenlevendetillegg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilKlageUtland
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Skatteplikt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SoktAFPPrivatInfo
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenadAP
@@ -135,7 +137,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         val afpPrivatResultatFellesKontoret = pesysData.afpPrivatResultatFellesKontoret_safe.ifNull(then = false)
         val avdodNavn = pesysData.avdodNavn_safe.ifNull(then = "AVDØDSNAVN")
         val avtalelandNavn = pesysData.avtalelandNavn_safe.ifNull(then = "AVTALELAND")
-        val brukerBorIAvtaleland = pesysData.borIAvtaleland
+        val borIAvtaleland = pesysData.borIAvtaleland
         val brukerBorINorge = pesysData.borINorge
         val eksportForbud = pesysData.inngangOgEksportVurdering.eksportForbud_safe.ifNull(then = false)
         val eksportTrygdeavtaleAvtaleland =
@@ -534,7 +536,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             }
 
             showIf(erForstegangsbehandlingNorgeUtland and norgeBehandlendeLand) {
-               includePhrase(InnvilgelseAPForeloepigBeregning)
+                includePhrase(InnvilgelseAPForeloepigBeregning)
             }
 
             showIf(brukerBorINorge) {
@@ -583,50 +585,14 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                                 " If you change your income tax rate, this will be applied from the month after we have been notified of the change."
                     )
                 }
-                paragraph {
-                    text(
-                        Bokmal to "Spørsmål om skatteplikt til Norge etter flytting til utlandet må rettes til skatteetaten." +
-                                " Du må selv avklare spørsmål om skatteplikt til det landet du bor i med skattemyndighetene der.",
-                        Nynorsk to "Spørsmål om skatteplikt til Noreg etter flytting til utlandet må rettast til skatteetaten. " +
-                                " Du må sjølv avklare spørsmål om skatteplikt til det landet du bur i med skatteorgana der.",
-                        English to "Questions about tax liability to Norway after moving abroad must be directed to the Norwegian Tax Administration. " +
-                                " You must clarify questions about tax liability to your country of residence with the local tax authorities."
-                    )
-                }
+                includePhrase(Skatteplikt)
             }
 
             showIf(saksbehandlerValg.etterbetaling or vedtakEtterbetaling) {
                 includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
             }
 
-            title1 {
-                text(
-                    Bokmal to "Du kan søke om å endre pensjonen din",
-                    Nynorsk to "Du kan søkje om å endre pensjonen din",
-                    English to "You can apply to change your pension"
-                )
-            }
-            // innvilgelseAPUttakEndr
-            paragraph {
-                text(
-                    Bokmal to "Du kan ha mulighet til å ta ut 20, 40, 50, 60, 80 eller 100 prosent alderspensjon." +
-                            " Etter at du har begynt å ta ut alderspensjon, kan du gjøre endringer med 12 måneders mellomrom." +
-                            " Hvis du har høy nok opptjening, kan du ta ut 100 prosent alderspensjon når du selv ønsker det. Du kan alltid stanse pensjonen.",
-                    Nynorsk to "Du kan ha høve til å ta ut 20, 40, 50, 60, 80 eller 100 prosent alderspensjon." +
-                            " Etter at du har starta med å ta ut alderspensjon, kan du gjere endringar med tolv månaders mellomrom." +
-                            " Dersom du har høg nok opptening, kan du ta ut 100 prosent alderspensjon når du sjølv ønskjer det. Du kan alltid stanse pensjonen.",
-                    English to "You are entitled to draw retirement pension at a rate of 20, 40, 50, 60, 80 or 100 percent." +
-                            " Once you have started drawing your pension, you can make changes at 12-monthly intervals." +
-                            " If you have high enough pension earnings, you can withdraw your full retirement pension whenever you want. You can stop drawing your pension at any time."
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du kan bruke pensjonskalkulatoren på $DIN_PENSJON_URL for å se om du kan endre alderspensjonen din.",
-                    Nynorsk to "Du kan bruke pensjonskalkulatoren på $DIN_PENSJON_URL for å sjå om du kan endre alderspensjonen din.",
-                    English to "Use the pension calculator on $DIN_PENSJON_URL to see if you can change your retirement pension."
-                )
-            }
+            includePhrase(InnvilgelseAPUttakEndr)
 
             showIf(uforeKombinertMedAlder and innvilgetFor67) {
                 // innvilgelseAPUttakEndrUT
@@ -649,16 +615,8 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             includePhrase(MeldeFraOmEndringer)
             includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
 
-            showIf(brukerBorIAvtaleland) {
-                // rettTilKlageUtland
-                paragraph {
-                    text(
-                        Bokmal to "Hvis du ønsker å klage på vedtak fra utenlandske trygdemyndigheter, må du kontakte trygdemyndighetene i det enkelte landet.",
-                        Nynorsk to "Dersom du ynskjer å klage på vedtak frå utanlandske trygdeorgan, må du kontakte trygdeorganet i det enkelte landet.",
-                        English to "If you want to appeal a decision made by a foreign national insurance authority, you must get in contact with the national insurance authority in the relevant country."
-                    )
-                }
-            }
+            showIf(borIAvtaleland) { includePhrase(RettTilKlageUtland) }
+
             includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }

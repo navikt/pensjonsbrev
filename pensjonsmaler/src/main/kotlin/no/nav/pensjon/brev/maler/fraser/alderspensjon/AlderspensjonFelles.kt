@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.borIAvtaleland
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SUPPLERENDE_STOENAD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -314,6 +314,59 @@ object InnvilgelseAPForeloepigBeregning :  OutlinePhrase<LangBokmalNynorskEnglis
                         "Når vi har fått nødvendig informasjon frå andre land som du har budd eller arbeidd i, bereknar vi pensjonen din på nytt og sender deg eit endeleg vedtak.",
                 English to "Because you have worked or lived in a country that Norway has a social security agreement with, this is a preliminary calculation based on your period of national insurance cover in Norway. " +
                         "Once we have received the necessary information from the other countries that you have lived or worked in, we will re-calculate your pension and send you a final decision."
+            )
+        }
+    }
+}
+
+object Skattplikt : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            text(
+                Bokmal to "Spørsmål om skatteplikt til Norge etter flytting til utlandet må rettes til skatteetaten." +
+                        " Du må selv avklare spørsmål om skatteplikt til det landet du bor i med skattemyndighetene der.",
+                Nynorsk to "Spørsmål om skatteplikt til Noreg etter flytting til utlandet må rettast til skatteetaten. " +
+                        " Du må sjølv avklare spørsmål om skatteplikt til det landet du bur i med skatteorgana der.",
+                English to "Questions about tax liability to Norway after moving abroad must be directed to the Norwegian Tax Administration. " +
+                        " You must clarify questions about tax liability to your country of residence with the local tax authorities."
+            )
+        }
+    }
+}
+
+object InnvilgelseAPUttakEndr : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Du kan søke om å endre pensjonen din",
+                Nynorsk to "Du kan søkje om å endre pensjonen din",
+                English to "You can apply to change your pension"
+            )
+        }
+        // innvilgelseAPUttakEndr
+        paragraph {
+            text(
+                Bokmal to "Du kan ha mulighet til å ta ut 20, 40, 50, 60, 80 eller 100 prosent alderspensjon." +
+                        " Etter at du har begynt å ta ut alderspensjon, kan du gjøre endringer med 12 måneders mellomrom." +
+                        " Hvis du har høy nok opptjening, kan du ta ut 100 prosent alderspensjon når du selv ønsker det. Du kan alltid stanse pensjonen.",
+                Nynorsk to "Du kan ha høve til å ta ut 20, 40, 50, 60, 80 eller 100 prosent alderspensjon." +
+                        " Etter at du har starta med å ta ut alderspensjon, kan du gjere endringar med tolv månaders mellomrom." +
+                        " Dersom du har høg nok opptening, kan du ta ut 100 prosent alderspensjon når du sjølv ønskjer det. Du kan alltid stanse pensjonen.",
+                English to "You are entitled to draw retirement pension at a rate of 20, 40, 50, 60, 80 or 100 percent." +
+                        " Once you have started drawing your pension, you can make changes at 12-monthly intervals." +
+                        " If you have high enough pension earnings, you can withdraw your full retirement pension whenever you want. You can stop drawing your pension at any time."
+            )
+        }
+    }
+}
+
+object RettTilKlageUtland : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            text(
+                Bokmal to "Hvis du ønsker å klage på vedtak fra utenlandske trygdemyndigheter, må du kontakte trygdemyndighetene i det enkelte landet.",
+                Nynorsk to "Dersom du ynskjer å klage på vedtak frå utanlandske trygdeorgan, må du kontakte trygdeorganet i det enkelte landet.",
+                English to "If you want to appeal a decision made by a foreign national insurance authority, you must get in contact with the national insurance authority in the relevant country."
             )
         }
     }
