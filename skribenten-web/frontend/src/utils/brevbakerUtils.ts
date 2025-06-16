@@ -23,7 +23,31 @@ export const handleSwitchContent = <T, U, V, W>(args: {
       return args.onNewLine(args.content);
     }
     case "TABLE": {
-      throw new Error("handleSwitchContent: TABLE is not supported here");
+      args.content.header.colSpec.forEach((col) =>
+        col.headerContent.text.forEach((txtContent) =>
+          handleSwitchTextContent({
+            content: txtContent,
+            onLiteral: args.onLiteral,
+            onVariable: (variable) => args.onVariable(variable) as unknown as T,
+            onNewLine: (newLine) => args.onNewLine(newLine) as unknown as T,
+          }),
+        ),
+      );
+
+      args.content.rows.forEach((row) =>
+        row.cells.forEach((cell) =>
+          cell.text.forEach((txtContent) =>
+            handleSwitchTextContent({
+              content: txtContent,
+              onLiteral: args.onLiteral,
+              onVariable: (variable) => args.onVariable(variable) as unknown as T,
+              onNewLine: (newLine) => args.onNewLine(newLine) as unknown as T,
+            }),
+          ),
+        ),
+      );
+
+      return args.content as unknown as T | U | V | W;
     }
   }
 };
