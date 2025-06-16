@@ -5,6 +5,7 @@ package no.nav.pensjon.brev.template
 import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.pensjon.brevbaker.api.model.DisplayText
+import no.nav.pensjon.brevbaker.api.model.EnumMedDisplayText
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType.Scalar.Kind
 import org.junit.jupiter.api.*
@@ -112,13 +113,16 @@ class TemplateModelSpecificationFactoryTest {
 
     data class WithEnumeration(val navn: String, val anEnum: AnEnum) {
         @Suppress("unused")
-        enum class AnEnum { FLAG1, FLAG2 }
+        enum class AnEnum(private val displayText: String) : EnumMedDisplayText { FLAG1("Flag 1"), FLAG2("Flag 2");
+
+            override fun displayText() = displayText
+        }
     }
 
     @Test
     fun `enum fields have Enum type with all enum-values`() {
         val spec = TemplateModelSpecificationFactory(WithEnumeration::class).build().types[WithEnumeration::class.qualifiedName!!]!!
-        assertThat(spec["anEnum"], equalTo(FieldType.Enum(false, WithEnumeration.AnEnum.entries.map { FieldType.EnumEntry(it.name, it.mapEnumTekst()) }.toSet())))
+        assertThat(spec["anEnum"], equalTo(FieldType.Enum(false, WithEnumeration.AnEnum.entries.map { FieldType.EnumEntry(it.name, (it as? EnumMedDisplayText)?.displayText()) }.toList())))
     }
 
     data class WithValueClass(val navn: String, val aValueClass: TheValue) {

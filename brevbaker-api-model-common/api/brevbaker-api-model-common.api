@@ -657,13 +657,13 @@ public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Enum : no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType {
-	public fun <init> (ZLjava/util/Set;Ljava/lang/String;)V
-	public synthetic fun <init> (ZLjava/util/Set;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (ZLjava/util/List;Ljava/lang/String;)V
+	public synthetic fun <init> (ZLjava/util/List;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getDisplayText ()Ljava/lang/String;
 	public fun getNullable ()Z
 	public fun getType ()Ljava/lang/String;
-	public final fun getValues ()Ljava/util/Set;
+	public final fun getValues ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
