@@ -270,10 +270,6 @@ public final class no/nav/pensjon/brevbaker/api/model/ElementTags : java/lang/En
 	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/ElementTags;
 }
 
-public abstract interface class no/nav/pensjon/brevbaker/api/model/EnumMedDisplayText {
-	public abstract fun displayText ()Ljava/lang/String;
-}
-
 public final class no/nav/pensjon/brevbaker/api/model/Felles {
 	public fun <init> (Ljava/time/LocalDate;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/NavEnhet;Lno/nav/pensjon/brevbaker/api/model/Bruker;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;)V
 	public synthetic fun <init> (Ljava/time/LocalDate;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/NavEnhet;Lno/nav/pensjon/brevbaker/api/model/Bruker;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere;ILkotlin/jvm/internal/DefaultConstructorMarker;)V

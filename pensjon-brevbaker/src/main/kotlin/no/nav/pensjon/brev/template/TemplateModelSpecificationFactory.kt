@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.DisplayText
-import no.nav.pensjon.brevbaker.api.model.EnumMedDisplayText
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.ObjectTypeSpecification
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
@@ -122,7 +121,7 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
     }
 
     private fun enumVerdier(theClassifier: KClass<*>) =
-        theClassifier.java.enumConstants.map {
-            FieldType.EnumEntry(it.toString(), (it as? EnumMedDisplayText)?.displayText)
-        }.sortedBy { it.displayText ?: it.value }.toList()
+        theClassifier.java.fields.map {
+            FieldType.EnumEntry(it.name, it.annotations.filterIsInstance<DisplayText>().firstOrNull()?.text)
+        }
 }

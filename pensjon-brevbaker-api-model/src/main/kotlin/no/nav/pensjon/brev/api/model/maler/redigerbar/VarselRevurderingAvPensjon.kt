@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.DisplayText
-import no.nav.pensjon.brevbaker.api.model.EnumMedDisplayText
 
 @Suppress("unused")
 data class VarselRevurderingAvPensjonDto(
@@ -14,9 +13,9 @@ data class VarselRevurderingAvPensjonDto(
     data class SaksbehandlerValg(
         @DisplayText("Tittelvalg") val tittelValg: TittelValg
     ) : BrevbakerBrevdata{
-        enum class TittelValg(override val displayText: String) : EnumMedDisplayText {
-            RevurderingAvRett("Revurdering av rett"),
-            RevurderingReduksjon("Revurdering reduksjon");
+        enum class TittelValg {
+            @DisplayText("Revurdering av rett") RevurderingAvRett,
+            @DisplayText("Revurdering reduksjon") RevurderingReduksjon;
         }
     }
 
