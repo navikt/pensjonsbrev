@@ -123,9 +123,6 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
 
     private fun enumVerdier(theClassifier: KClass<*>) =
         theClassifier.java.enumConstants.map {
-            FieldType.EnumEntry(
-                it.toString(),
-                (it as? EnumMedDisplayText)?.displayText()
-            )
+            FieldType.EnumEntry(it.toString(), (it as? EnumMedDisplayText)?.displayText)
         }.sortedBy { it.displayText ?: it.value }.toList()
 }

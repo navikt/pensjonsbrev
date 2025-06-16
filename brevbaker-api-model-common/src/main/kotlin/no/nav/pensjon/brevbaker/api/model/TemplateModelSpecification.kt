@@ -94,5 +94,5 @@ class TemplateModelSpecification(val types: Map<String, ObjectTypeSpecification>
 annotation class DisplayText(val text: String)
 
 interface EnumMedDisplayText {
-    fun displayText(): String
+    val displayText: String
 }

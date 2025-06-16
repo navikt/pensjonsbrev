@@ -14,11 +14,9 @@ data class VarselRevurderingAvPensjonDto(
     data class SaksbehandlerValg(
         @DisplayText("Tittelvalg") val tittelValg: TittelValg
     ) : BrevbakerBrevdata{
-        enum class TittelValg(private val displayText: String) : EnumMedDisplayText {
+        enum class TittelValg(override val displayText: String) : EnumMedDisplayText {
             RevurderingAvRett("Revurdering av rett"),
             RevurderingReduksjon("Revurdering reduksjon");
-
-            override fun displayText() = displayText
         }
     }
 
