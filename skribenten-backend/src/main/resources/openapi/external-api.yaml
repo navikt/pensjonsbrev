@@ -4,9 +4,9 @@ info:
   description: Skribenten API som kan brukes av andre systemer
   version: 1.0.0
 servers:
-  - url: 'https://skribenten.intern.dev.nav.no'
+  - url: 'https://skribenten-api.intern.dev.nav.no'
     description: Brukes fra dev-fss
-  - url: 'https://skribenten.intern.nav.no'
+  - url: 'https://skribenten-api.intern.nav.no'
     description: Brukes fra prod-fss
   - url: 'http://skribenten-backend.pensjonsbrev'
     description: Brukes fra dev-gcp og prod-gcp

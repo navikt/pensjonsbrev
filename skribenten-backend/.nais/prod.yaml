@@ -1,5 +1,8 @@
 app-name: "skribenten-backend"
 
+ingresses:
+  - "https://skribenten-api.intern.nav.no"
+
 groups:
   #0000-GA-PENSJON_BRUKERHJELPA
   - name: "PENSJON_BRUKERHJELPA"

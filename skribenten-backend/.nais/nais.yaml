@@ -80,6 +80,10 @@ spec:
             namespace: {{rule.namespace}}
             cluster: {{rule.cluster}}
         {{/each}}
+  ingresses:
+    {{#each ingresses as |url|}}
+    - {{url}}
+    {{/each}}
   env:
     {{#each env as |e|}}
       - name: {{e.name}}
