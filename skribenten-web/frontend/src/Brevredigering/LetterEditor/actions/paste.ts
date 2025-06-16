@@ -10,6 +10,7 @@ import {
   isBlockContentIndex,
   isItemContentIndex,
   isNew,
+  makeDefaultColSpec,
   newItem,
   newItemList,
   newLiteral,
@@ -266,29 +267,40 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
           type: TABLE,
           id: null,
           parentId: null,
-          header: { id: null, parentId: null, colSpec: [] },
-          deletedRows: [],
-
-          rows: el.rows.map<Row>((r) => ({
+          header: {
             id: null,
             parentId: null,
-            cells: r.cells.map<Cell>((c) => ({
+            colSpec: makeDefaultColSpec(el.rows[0]?.cells.length ?? 1),
+          },
+          deletedRows: [],
+
+          rows: el.rows.map<Row>((row) => ({
+            id: null,
+            parentId: null,
+            cells: row.cells.map<Cell>((cell) => ({
               id: null,
               parentId: null,
-              text: c.content.map((t) => newLiteral({ editedText: t.text, fontType: t.font })),
+              text: cell.content.map((textContent) =>
+                newLiteral({ editedText: textContent.text, fontType: textContent.font }),
+              ),
             })),
           })),
         };
 
         /* Insert table *inside* the current paragraph’s content[].  
            We split paragraph first if caret is mid-literal. */
-        const curBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
+        const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
 
-        if (isBlockContentIndex(draft.focus) && curBlock.type === PARAGRAPH) {
+        if (isBlockContentIndex(draft.focus) && currentBlock.type === PARAGRAPH) {
           // split at cursor so we insert after the current literal
           splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
 
-          addElements([tableContent], draft.focus.contentIndex + 1, curBlock.content, curBlock.deletedContent);
+          addElements(
+            [tableContent, newLiteral({ editedText: "" })],
+            draft.focus.contentIndex + 1,
+            currentBlock.content,
+            currentBlock.deletedContent,
+          );
 
           // focus now points to the first cell
           draft.focus = {

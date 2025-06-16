@@ -349,3 +349,33 @@ export function insertEmptyParagraphAfterBlock(draft: Draft<LetterEditorState>, 
     cursorPosition: 0,
   };
 }
+
+export function makeBlankRow(colCount: number): Row {
+  return {
+    id: null,
+    parentId: null,
+    cells: Array.from({ length: colCount }, () => ({
+      id: null,
+      parentId: null,
+      text: [newLiteral({ editedText: "" })],
+    })),
+  };
+}
+export function makeDefaultColSpec(colCount: number): ColumnSpec[] {
+  return Array.from({ length: colCount }, (_, i) => ({
+    id: null,
+    parentId: null,
+    alignment: "LEFT" as const,
+    span: 1,
+    headerContent: {
+      id: null,
+      parentId: null,
+      text: [
+        newLiteral({
+          editedText: `Kolonne ${i + 1}`,
+          fontType: FontType.PLAIN,
+        }),
+      ],
+    },
+  }));
+}

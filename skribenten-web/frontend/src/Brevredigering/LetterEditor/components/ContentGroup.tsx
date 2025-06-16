@@ -30,6 +30,8 @@ import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
 import { NEW_LINE, TABLE } from "~/types/brevbakerTypes";
 import { ElementTags, FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
+import { addRow, nextTableFocus } from "../services/tableCaretUtils";
+
 /**
  * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
  * If y-coord is exactly at the edge it sometimes misses. To avoid that we move the point a little bit away from the line.
@@ -301,6 +303,48 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
   };
 
+  const handleTab = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    const currentFocus = editorState.focus;
+    const currentBlock = editorState.redigertBrev.blocks[currentFocus.blockIndex];
+    const currentContent = currentBlock.content[currentFocus.contentIndex];
+    const isInsideTableCell = currentContent?.type === TABLE && isItemContentIndex(currentFocus);
+
+    if (!isInsideTableCell) {
+      // Let the browser handle the Tab key
+      return false;
+    }
+
+    event.preventDefault();
+
+    const direction = event.shiftKey ? "backward" : "forward";
+    const nextFocus = nextTableFocus(editorState, direction);
+
+    setEditorState((prevState) => {
+      if (nextFocus === "EXIT_FORWARD") {
+        return {
+          ...prevState,
+          focus: {
+            blockIndex: prevState.focus.blockIndex,
+            contentIndex: prevState.focus.contentIndex + 1,
+            cursorPosition: 0,
+          },
+        };
+      }
+      if (nextFocus === "EXIT_BACKWARD") {
+        return {
+          ...prevState,
+          focus: {
+            blockIndex: prevState.focus.blockIndex,
+            contentIndex: prevState.focus.contentIndex - 1,
+            cursorPosition: 0,
+          },
+        };
+      }
+      return { ...prevState, focus: nextFocus };
+    });
+    return;
+  };
+
   const handlePaste = (event: React.ClipboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
     // TODO: for debugging frem til vi er ferdig å teste liming
@@ -367,7 +411,11 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         );
       }}
       onKeyDown={(event) => {
+        if (event.key === "Tab") {
+          handleTab(event);
+        }
         if (event.key === "Enter") {
+          if (addRow(editorState, setEditorState, event)) return;
           handleEnter(event);
         }
         if (event.key === "Backspace") {
