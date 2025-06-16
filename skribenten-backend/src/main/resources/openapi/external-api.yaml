@@ -11,7 +11,7 @@ servers:
   - url: 'http://skribenten-backend.pensjonsbrev'
     description: Brukes fra dev-gcp og prod-gcp
 paths:
-  /external/api/brev:
+  /external/api/v1/brev:
     get:
       description: Henter alle brev for pesys sak(er)
       parameters:
