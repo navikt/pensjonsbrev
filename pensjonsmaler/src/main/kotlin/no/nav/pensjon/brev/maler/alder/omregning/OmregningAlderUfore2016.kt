@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.maler.alder.omregning
 
+import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.avtaleland
 import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.borINorge
@@ -14,7 +16,6 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSel
 import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.oppfyltVedSammenleggingFemArKap20
 import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.oppfyltVedSammenleggingKap19
 import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.oppfyltVedSammenleggingKap20
-import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.beregningsperioder
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.fullTrygdetid
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.garantipensjonInnvilget
@@ -30,11 +31,13 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSe
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.virkFom
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016RedigerbarDto
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016RedigerbarDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdodSelectors.avdodFnr
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdodSelectors.avdodNavn
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
-import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -43,13 +46,13 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 
 @TemplateModelHelpers
-object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto> {
+object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016RedigerbarDto> {
 
-    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_OMREGNING_ALDER_UFORE_2016_AUTO
+    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_OMREGNING_ALDER_UFORE_2016
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = OmregningAlderUfore2016Dto::class,
+        letterDataType = OmregningAlderUfore2016RedigerbarDto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Omregning fra Uføre til Alder",
@@ -68,38 +71,44 @@ object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto
         outline {
             includePhrase(
                 OmregningAlderUfore2016Felles(
-                    virkFom = virkFom,
-                    uttaksgrad = uttaksgrad,
-                    totalPensjon = totalPensjon,
-                    beregningsperioder = beregningsperioder,
-                    gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget,
-                    avdodNavn = persongrunnlagAvdod.avdodNavn,
-                    avdodFnr = persongrunnlagAvdod.avdodFnr,
-                    gjenlevenderettAnvendt = gjenlevenderettAnvendt,
-                    eksportTrygdeavtaleEos = inngangOgEksportVurdering.eksportTrygdeavtaleEos,
-                    eksportTrygdeavtaleAvtaleland = inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland,
-                    faktiskBostedsland = inngangOgEksportVurdering.faktiskBostedsland,
-                    erEksportberegnet = inngangOgEksportVurdering.erEksportberegnet,
-                    eksportberegnetUtenGarantipensjon = inngangOgEksportVurdering.eksportberegnetUtenGarantipensjon,
-                    pensjonstilleggInnvilget = pensjonstilleggInnvilget,
-                    garantipensjonInnvilget = garantipensjonInnvilget,
-                    godkjentYrkesskade = godkjentYrkesskade,
-                    skjermingstilleggInnvilget = skjermingstilleggInnvilget,
-                    garantitilleggInnvilget = garantitilleggInnvilget,
-                    oppfyltVedSammenleggingKap19 = inngangOgEksportVurdering.oppfyltVedSammenleggingKap19,
-                    oppfyltVedSammenleggingKap20 = inngangOgEksportVurdering.oppfyltVedSammenleggingKap20,
-                    oppfyltVedSammenleggingFemArKap19 = inngangOgEksportVurdering.oppfyltVedSammenleggingFemArKap19,
-                    oppfyltVedSammenleggingFemArKap20 = inngangOgEksportVurdering.oppfyltVedSammenleggingFemArKap20,
-                    borINorge = inngangOgEksportVurdering.borINorge,
-                    erEOSLand = inngangOgEksportVurdering.erEOSLand,
-                    eksportTrygdeavtaleEOS = inngangOgEksportVurdering.eksportTrygdeavtaleEOS,
-                    avtaleland = inngangOgEksportVurdering.avtaleland,
-                    innvilgetFor67 = innvilgetFor67,
-                    fullTrygdetid = fullTrygdetid,
+                    virkFom = pesysData.virkFom,
+                    uttaksgrad = pesysData.uttaksgrad,
+                    totalPensjon = pesysData.totalPensjon,
+                    beregningsperioder = pesysData.beregningsperioder,
+                    gjenlevendetilleggKap19Innvilget = pesysData.gjenlevendetilleggKap19Innvilget,
+                    avdodNavn = pesysData.persongrunnlagAvdod.avdodNavn,
+                    avdodFnr = pesysData.persongrunnlagAvdod.avdodFnr,
+                    gjenlevenderettAnvendt = pesysData.gjenlevenderettAnvendt,
+                    eksportTrygdeavtaleEos = pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleEos,
+                    eksportTrygdeavtaleAvtaleland = pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland,
+                    faktiskBostedsland = pesysData.inngangOgEksportVurdering.faktiskBostedsland,
+                    erEksportberegnet = pesysData.inngangOgEksportVurdering.erEksportberegnet,
+                    eksportberegnetUtenGarantipensjon = pesysData.inngangOgEksportVurdering.eksportberegnetUtenGarantipensjon,
+                    pensjonstilleggInnvilget = pesysData.pensjonstilleggInnvilget,
+                    garantipensjonInnvilget = pesysData.garantipensjonInnvilget,
+                    godkjentYrkesskade = pesysData.godkjentYrkesskade,
+                    skjermingstilleggInnvilget = pesysData.skjermingstilleggInnvilget,
+                    garantitilleggInnvilget = pesysData.garantitilleggInnvilget,
+                    oppfyltVedSammenleggingKap19 = pesysData.inngangOgEksportVurdering.oppfyltVedSammenleggingKap19,
+                    oppfyltVedSammenleggingKap20 = pesysData.inngangOgEksportVurdering.oppfyltVedSammenleggingKap20,
+                    oppfyltVedSammenleggingFemArKap19 = pesysData.inngangOgEksportVurdering.oppfyltVedSammenleggingFemArKap19,
+                    oppfyltVedSammenleggingFemArKap20 = pesysData.inngangOgEksportVurdering.oppfyltVedSammenleggingFemArKap20,
+                    borINorge = pesysData.inngangOgEksportVurdering.borINorge,
+                    erEOSLand = pesysData.inngangOgEksportVurdering.erEOSLand,
+                    eksportTrygdeavtaleEOS = pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleEOS,
+                    avtaleland = pesysData.inngangOgEksportVurdering.avtaleland,
+                    innvilgetFor67 = pesysData.innvilgetFor67,
+                    fullTrygdetid = pesysData.fullTrygdetid,
                 )
             )
 
         }
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
     }
+
+    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
+
+    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
+
+    override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
 }
