@@ -147,7 +147,7 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
             }
 
             // dersom ingen endring
-            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.IKKE_ETTEROPPGJOER)){
+            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING)){
                 showIf(data.avviksBeloep.equalTo(0)){
                     paragraph {
                         textExpr(
