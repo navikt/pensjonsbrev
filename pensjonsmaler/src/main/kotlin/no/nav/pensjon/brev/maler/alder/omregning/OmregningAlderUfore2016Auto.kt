@@ -1,8 +1,37 @@
 package no.nav.pensjon.brev.maler.alder.omregning
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.avtaleland
+import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.borINorge
+import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.eksportTrygdeavtaleAvtaleland
+import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.eksportTrygdeavtaleEOS
+import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.eksportTrygdeavtaleEos
+import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.eksportberegnetUtenGarantipensjon
+import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.erEOSLand
+import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.erEksportberegnet
+import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.faktiskBostedsland
+import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.oppfyltVedSammenleggingFemArKap19
+import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.oppfyltVedSammenleggingFemArKap20
+import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.oppfyltVedSammenleggingKap19
+import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurderingSelectors.oppfyltVedSammenleggingKap20
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Dto
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.beregningsperioder
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.fullTrygdetid
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.garantipensjonInnvilget
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.garantitilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.gjenlevenderettAnvendt
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.gjenlevendetilleggKap19Innvilget
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.godkjentYrkesskade
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.inngangOgEksportVurdering
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.innvilgetFor67
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.pensjonstilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.persongrunnlagAvdod
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.skjermingstilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.totalPensjon
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.virkFom
+import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdodSelectors.avdodFnr
+import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdodSelectors.avdodNavn
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
@@ -38,7 +67,36 @@ object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto
         }
         outline {
             includePhrase(
-                OmregningAlderUfore2016Felles(virkFom = virkFom)
+                OmregningAlderUfore2016Felles(
+                    virkFom = virkFom,
+                    uttaksgrad = uttaksgrad,
+                    totalPensjon = totalPensjon,
+                    beregningsperioder = beregningsperioder,
+                    gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget,
+                    avdodNavn = persongrunnlagAvdod.avdodNavn,
+                    avdodFnr = persongrunnlagAvdod.avdodFnr,
+                    gjenlevenderettAnvendt = gjenlevenderettAnvendt,
+                    eksportTrygdeavtaleEos = inngangOgEksportVurdering.eksportTrygdeavtaleEos,
+                    eksportTrygdeavtaleAvtaleland = inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland,
+                    faktiskBostedsland = inngangOgEksportVurdering.faktiskBostedsland,
+                    erEksportberegnet = inngangOgEksportVurdering.erEksportberegnet,
+                    eksportberegnetUtenGarantipensjon = inngangOgEksportVurdering.eksportberegnetUtenGarantipensjon,
+                    pensjonstilleggInnvilget = pensjonstilleggInnvilget,
+                    garantipensjonInnvilget = garantipensjonInnvilget,
+                    godkjentYrkesskade = godkjentYrkesskade,
+                    skjermingstilleggInnvilget = skjermingstilleggInnvilget,
+                    garantitilleggInnvilget = garantitilleggInnvilget,
+                    oppfyltVedSammenleggingKap19 = inngangOgEksportVurdering.oppfyltVedSammenleggingKap19,
+                    oppfyltVedSammenleggingKap20 = inngangOgEksportVurdering.oppfyltVedSammenleggingKap20,
+                    oppfyltVedSammenleggingFemArKap19 = inngangOgEksportVurdering.oppfyltVedSammenleggingFemArKap19,
+                    oppfyltVedSammenleggingFemArKap20 = inngangOgEksportVurdering.oppfyltVedSammenleggingFemArKap20,
+                    borINorge = inngangOgEksportVurdering.borINorge,
+                    erEOSLand = inngangOgEksportVurdering.erEOSLand,
+                    eksportTrygdeavtaleEOS = inngangOgEksportVurdering.eksportTrygdeavtaleEOS,
+                    avtaleland = inngangOgEksportVurdering.avtaleland,
+                    innvilgetFor67 = innvilgetFor67,
+                    fullTrygdetid = fullTrygdetid,
+                )
             )
 
         }

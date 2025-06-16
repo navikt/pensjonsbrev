@@ -28,7 +28,7 @@ data class AlderspensjonPerManed(
 )
 
 data class PersongrunnlagAvdod(
-    val navn: String,
+    val avdodNavn: String,
     val avdodFnr: String,
 )
 
