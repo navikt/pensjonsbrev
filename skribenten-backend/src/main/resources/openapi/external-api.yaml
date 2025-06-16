@@ -11,29 +11,6 @@ servers:
   - url: 'http://skribenten-backend.pensjonsbrev'
     description: Brukes fra dev-gcp og prod-gcp
 paths:
-  /external/api/sak/brev:
-    post:
-      description: Henter alle brev for en liste av pesys saker
-      requestBody:
-        description: Liste av (PESYS) saksnummer det skal hentes brev for
-        required: true
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: string
-                description: Pesys saksnummer
-      responses:
-        200:
-          description: En liste over brev på angitte saker med url for å åpne brevet i Skribenten
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/brevinfo"
-
   /external/api/brev:
     get:
       description: Henter alle brev for pesys sak(er)
