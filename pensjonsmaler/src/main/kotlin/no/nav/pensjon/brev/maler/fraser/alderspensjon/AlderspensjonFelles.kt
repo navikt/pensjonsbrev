@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.borIAvtaleland
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
-import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SUPPLERENDE_STOENAD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
@@ -175,27 +173,6 @@ data class ArbeidsinntektOgAlderspensjon(
     }
 }
 
-object PensjonsopptjeningInformasjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        // vedleggBeregnPensjonsOpptjeningOverskrift
-        title1 {
-            text(
-                Bokmal to "Pensjonsopptjeningen din",
-                Nynorsk to "Pensjonsoppteninga di",
-                English to "Your accumulated pension capital"
-            )
-        }
-        // vedleggBeregnPensjonsOpptjening
-        paragraph {
-            text(
-                Bokmal to "I nettjenesten Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsopptjeningen din for hvert enkelt år. Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg.",
-                Nynorsk to "I nettenesta Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsoppteninga di for kvart enkelt år. Der kan du sjå kva andre typar pensjonsopptening som er registrert på deg.",
-                English to "Our online service 'Din pensjon' at $DIN_PENSJON_URL provides details on your accumulated rights for each year. Here you will be able to see your other types of pension rights we have registered."
-            )
-        }
-    }
-}
-
 object ReguleringAvAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         // reguleringAPOverskrift
@@ -314,21 +291,6 @@ object InnvilgelseAPForeloepigBeregning :  OutlinePhrase<LangBokmalNynorskEnglis
                         "Når vi har fått nødvendig informasjon frå andre land som du har budd eller arbeidd i, bereknar vi pensjonen din på nytt og sender deg eit endeleg vedtak.",
                 English to "Because you have worked or lived in a country that Norway has a social security agreement with, this is a preliminary calculation based on your period of national insurance cover in Norway. " +
                         "Once we have received the necessary information from the other countries that you have lived or worked in, we will re-calculate your pension and send you a final decision."
-            )
-        }
-    }
-}
-
-object Skattplikt : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {
-            text(
-                Bokmal to "Spørsmål om skatteplikt til Norge etter flytting til utlandet må rettes til skatteetaten." +
-                        " Du må selv avklare spørsmål om skatteplikt til det landet du bor i med skattemyndighetene der.",
-                Nynorsk to "Spørsmål om skatteplikt til Noreg etter flytting til utlandet må rettast til skatteetaten. " +
-                        " Du må sjølv avklare spørsmål om skatteplikt til det landet du bur i med skatteorgana der.",
-                English to "Questions about tax liability to Norway after moving abroad must be directed to the Norwegian Tax Administration. " +
-                        " You must clarify questions about tax liability to your country of residence with the local tax authorities."
             )
         }
     }

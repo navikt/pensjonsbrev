@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -62,17 +61,24 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.supplerendeStoenad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.AP2025TidligUttakHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AfpPrivatErBrukt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.BilateralAvtaleHjemmel
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.EOSLandAvtaleHjemmel
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.GarantitilleggHjemmel
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.GjenlevendetilleggKap19Hjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.HjemlerInnvilgelseForAP2011AP2016
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoPensjonFraAndreAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoSkattAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPForeloepigBeregning
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPUttakEndr
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgetGjRettKap19For2024
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvGjenlevendetillegg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilKlageUtland
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.SKjermingstilleggHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Skatteplikt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SoktAFPPrivatInfo
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenadAP
@@ -96,8 +102,6 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
@@ -138,7 +142,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         val avdodNavn = pesysData.avdodNavn_safe.ifNull(then = "AVDØDSNAVN")
         val avtalelandNavn = pesysData.avtalelandNavn_safe.ifNull(then = "AVTALELAND")
         val borIAvtaleland = pesysData.borIAvtaleland
-        val brukerBorINorge = pesysData.borINorge
+        val borINorge = pesysData.borINorge
         val eksportForbud = pesysData.inngangOgEksportVurdering.eksportForbud_safe.ifNull(then = false)
         val eksportTrygdeavtaleAvtaleland =
             pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland_safe.ifNull(then = false)
@@ -424,52 +428,11 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 )
             )
 
-            showIf(skjermingstilleggInnvilget) {
-                // skjermingstilleggHjemmel
-                paragraph {
-                    text(
-                        Bokmal to "Du er også innvilget skjermingstillegg etter folketrygdloven § 19-9a.",
-                        Nynorsk to "Du er også innvilga skjermingstillegg etter folketrygdlova § 19-9a.",
-                        English to "You have also been granted the supplement for the disabled pursuant to the provisions of § 19-9a of the National Insurance Act."
-                    )
-                }
-            }
+            includePhrase(SKjermingstilleggHjemmel(skjermingstilleggInnvilget = skjermingstilleggInnvilget))
+            includePhrase(AP2025TidligUttakHjemmel(innvilgetFor67 = innvilgetFor67, regelverkType = regelverkType))
+            includePhrase(GarantitilleggHjemmel(garantitilleggInnvilget = garantitilleggInnvilget))
 
-            showIf(regelverkType.isOneOf(AP2025) and innvilgetFor67) {
-                // AP2025TidligUttakHjemmel
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13.",
-                        English to "This decision was made pursuant to the provisions of §§ 20-2, 20-3, 20-9 to 20-15, 22-12 and 22-13 of the National Insurance Act."
-                    )
-                }
-            }
-
-            showIf(garantitilleggInnvilget) {
-                // garantitilleggHjemmel
-                paragraph {
-                    text(
-                        Bokmal to "Du er også innvilget garantitillegg for opptjente rettigheter etter folketrygdloven § 20-20.",
-                        Nynorsk to "Du er også innvilga garantitillegg for opptente rettar etter folketrygdlova § 20-20.",
-                        English to "You have also been granted the guarantee supplement for accumulated rights pursuant to the provisions of § 20-20 of the National Insurance Act."
-                    )
-                }
-            }
-
-            showIf(gjenlevendetilleggKap19Innvilget) {
-                // innvilgetGjtKap19Hjemmel
-                paragraph {
-                    text(
-                        Bokmal to "Gjenlevendetillegg er gitt etter nye bestemmelser i folketrygdloven § 19-16 og kapittel 10A i tilhørende forskrift om alderspensjon i folketrygden som gjelder fra 1. januar 2024.",
-                        Nynorsk to "Attlevandetillegg er innvilga etter nye reglar i folketrygdlova § 19-16 og forskrift om alderspensjon i folketrygda kapittel 10A som gjeld frå 1. januar 2024.",
-                        English to "The survivor's supplement in your retirement pension has been granted in accordance with the changes to the provisions of the National Insurance Act § 19-16 " +
-                                "and the regulations on retirement pension in the National Insurance chapter 10A, which apply from 1 January 2024."
-                    )
-                }
-            }
-
-            showIf(gjenlevenderettAnvendt and not(gjenlevendetilleggKap19Innvilget)) {
+            showIf(gjenlevenderettAnvendt) {
                 // innvilgetGjRettKap19For2024
                 paragraph {
                     text(
@@ -478,57 +441,38 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                         English to "The survivor's rights in your retirement pension has been granted pursuant to the provisions of § 19-16 of the National Insurance Act"
                     )
                 }
-                paragraph {
-                    text(
-                        Bokmal to "Gjenlevendetillegg er gitt etter nye bestemmelser i folketrygdloven § 19-16 og kapittel 10A i tilhørende forskrift om alderspensjon i folketrygden som gjelder fra 1. januar 2024.",
-                        Nynorsk to "Attlevandetillegg er innvilga etter nye reglar i folketrygdlova § 19-16 og forskrift om alderspensjon i folketrygda kapittel 10A som gjeld frå 1. januar 2024.",
-                        English to "The survivor's supplement in your retirement pension has been granted in accordance with the changes to the provisions of the " +
-                                "National Insurance Act § 19-16 and the regulations on retirement pension in the National Insurance chapter 10A, which apply from 1 January 2024."
-                    )
-                }
             }
 
-            showIf(erEOSLand) {
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er også gjort etter EØS-avtalens regler i forordning 883/2004,",
-                        Nynorsk to "Vedtaket er også gjort etter reglane i EØS-avtalen i forordning 883/2004,",
-                        English to "This decision was also made pursuant to the provisions of Regulation (EC) 883/2004,"
-                    )
-                    showIf(harOppfyltVedSammenlegging and brukerBorINorge) {
-                        // euArt6Og7Hjemmel
-                        text(Bokmal to " artikkel 6.", Nynorsk to " artikkel 6.", English to " article 6.")
-                    }.orShowIf(harOppfyltVedSammenlegging and eksportTrygdeavtaleEOS and not(brukerBorINorge)) {
-                        text(
-                            Bokmal to " artikkel 6 og 7.",
-                            Nynorsk to " artikkel 6 og 7.",
-                            English to " articles 6 and 7."
-                        )
-                    }
-                        .orShowIf(not(harOppfyltVedSammenlegging) and eksportTrygdeavtaleEOS and not(brukerBorINorge)) {
-                            text(Bokmal to " artikkel 7.", Nynorsk to " artikkel 7.", English to " article 7.")
-                        }
-                }
-            }
-
-// bilateralAvtaleHjemmel
-            showIf((harOppfyltVedSammenlegging or eksportTrygdeavtaleAvtaleland) and not(erEOSLand)) {
-                paragraph {
-                    textExpr(
-                        Bokmal to "Vedtaket er også gjort etter reglene i trygdeavtalen med ".expr() + avtalelandNavn + ".",
-                        Nynorsk to "Vedtaket er også gjort etter reglane i trygdeavtalen med ".expr() + avtalelandNavn + ".",
-                        English to "This decision was also made pursuant the provisions of the Social Security Agreement with ".expr() + avtalelandNavn + "."
-                    )
-                }
-            }
-
+            includePhrase(GjenlevendetilleggKap19Hjemmel(gjenlevendetilleggKap19Innvilget = garantipensjonInnvilget))
+            includePhrase(
+                InnvilgetGjRettKap19For2024(
+                    gjenlevenderettAnvendt = gjenlevenderettAnvendt,
+                    gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget
+                )
+            )
+            includePhrase(
+                EOSLandAvtaleHjemmel(
+                    borINorge = borINorge,
+                    eksportTrygdeavtaleEOS = eksportTrygdeavtaleEOS,
+                    erEOSLand = erEOSLand,
+                    harOppfyltVedSammenlegging = harOppfyltVedSammenlegging
+                )
+            )
+            includePhrase(
+                BilateralAvtaleHjemmel(
+                    avtalelandNavn = avtalelandNavn,
+                    eksportTrygdeavtaleAvtaleland = eksportTrygdeavtaleAvtaleland,
+                    erEOSLand = erEOSLand,
+                    harOppfyltVedSammenlegging = borINorge
+                )
+            )
             includePhrase(Utbetalingsinformasjon)
             includePhrase(ReguleringAvAlderspensjon)
 
             showIf(gjenlevendetilleggKap19Innvilget) { includePhrase(ReguleringAvGjenlevendetillegg) }
 
             showIf(
-                saksbehandlerValg.supplerendeStoenad and uttaksgrad.equalTo(100) and brukerBorINorge and not(
+                saksbehandlerValg.supplerendeStoenad and uttaksgrad.equalTo(100) and borINorge and not(
                     fullTrygdetid
                 ) and not(innvilgetFor67)
             ) {
@@ -539,7 +483,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 includePhrase(InnvilgelseAPForeloepigBeregning)
             }
 
-            showIf(brukerBorINorge) {
+            showIf(borINorge) {
                 includePhrase(InfoSkattAP)
             }.orShowIf(saksbehandlerValg.kildeskatt) {
                 title1 {

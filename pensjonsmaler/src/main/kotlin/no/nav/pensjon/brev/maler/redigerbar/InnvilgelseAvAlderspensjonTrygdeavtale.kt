@@ -8,8 +8,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevenderettAnvendt
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevendetilleggKap19Innvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.AlderspensjonVedVirkSelectors.godkjentYrkesskade
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
@@ -56,13 +54,11 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspens
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.BilateralAvtaleHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.EOSLandAvtaleHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.GarantitilleggHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.GjenlevendetilleggKap19Hjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.HjemlerInnvilgelseForAP2011AP2016
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoPensjonFraAndreAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoSkattAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPForeloepigBeregning
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPUttakEndr
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgetGjRettKap19For2024
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilKlageUtland
@@ -100,7 +96,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 // MF_000097 / AP_INNV_AVT_MAN
-// Tekst med forsørgingstillegg har utgått og er fjernet: soktFTInfo
 
 @TemplateModelHelpers
 object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAvAlderspensjonTrygdeavtaleDto> {
@@ -124,18 +119,19 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
         val avtalelandNavn = pesysData.avtalelandNavn_safe.ifNull(then = "AVTALELAND")
         val borIAvtaleland = pesysData.borIAvtaleland
         val borINorge = pesysData.borINorge
-        val eksportTrygdeavtaleAvtaleland = pesysData.inngangOgEksportVurdering_safe.eksportTrygdeavtaleAvtaleland_safe.ifNull(then = false)
-        val eksportTrygdeavtaleEOS = pesysData.inngangOgEksportVurdering_safe.eksportTrygdeavtaleEOS_safe.ifNull(then = false)
+        val eksportTrygdeavtaleAvtaleland =
+            pesysData.inngangOgEksportVurdering_safe.eksportTrygdeavtaleAvtaleland_safe.ifNull(then = false)
+        val eksportTrygdeavtaleEOS =
+            pesysData.inngangOgEksportVurdering_safe.eksportTrygdeavtaleEOS_safe.ifNull(then = false)
         val erEOSLand = pesysData.borINorge
         val erMellombehandling = pesysData.erMellombehandling
         val erSluttbehandlingNorgeUtland = pesysData.erSluttbehandlingNorgeUtland
         val fullTrygdetid = pesysData.fullTrygdtid
         val garantipensjonInnvilget = pesysData.alderspensjonVedVirk.garantipensjonInnvilget
-        val gjenlevenderettAnvendt = pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
-        val gjenlevendetilleggKap19Innvilget = pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
         val godkjentYrkesskade = pesysData.alderspensjonVedVirk.godkjentYrkesskade
         val harFlereBeregningsperioder = pesysData.harFlereBeregningsperioder
-        val harOppfyltVedSammenlegging = pesysData.inngangOgEksportVurdering_safe.harOppfyltVedSammenlegging_safe.ifNull(then = false)
+        val harOppfyltVedSammenlegging =
+            pesysData.inngangOgEksportVurdering_safe.harOppfyltVedSammenlegging_safe.ifNull(then = false)
         val innvilgetFor67 = pesysData.alderspensjonVedVirk.innvilgetFor67
         val kravVirkDatoFom = pesysData.kravVirkDatoFom.format()
         val landNavn = pesysData.vedtaksresultatUtland_safe.landNavn_safe.ifNull(then = "LANDNAVN")
@@ -147,8 +143,6 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
         val uforeKombinertMedAlder = pesysData.alderspensjonVedVirk.uforeKombinertMedAlder
         val uttaksgrad = pesysData.alderspensjonVedVirk.uttaksgrad
         val vedtakEtterbetaling = pesysData.vedtakEtterbetaling
-
-
 
 
         title {
@@ -183,27 +177,22 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
         }
 
         outline {
-            showIf(antallLandVikarsprovd.equalTo(1)) {
-                // mottattInfoFraEttLand
+
+            showIf(antallLandVikarsprovd.greaterThan(0)) {
+                // mottattInfoFraEttLand / mottattInfoFraFlereLan
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi har fått opplysninger fra utenlandske trygdemyndigheter om opptjeningen din i ".expr() + landNavn + ".",
-                        Nynorsk to "Vi har fått opplysningar frå utanlandske trygdeorgan om oppteninga di i ".expr() + landNavn + ".",
-                        English to "We have received information from ".expr() + landNavn + " regarding your accumulated rights abroad",
-                    )
-                }
-            }.orShowIf(antallLandVikarsprovd.greaterThan(1)) {
-                // mottattInfoFraFlereLand
-                paragraph {
-                    textExpr(
-                        Bokmal to "Vi har fått opplysninger fra utenlandske trygdemyndigheter om opptjeningen din i: ".expr() + landNavn + ".",
-                        Nynorsk to "Vi har fått opplysningar frå utanlandske trygdeorgan om oppteninga di i: ".expr() + landNavn + ".",
-                        English to "We have received information from foreign national insurance authorities regarding your accumulated rights in: ".expr() + landNavn + "."
+                        Bokmal to "Vi har fått opplysninger fra utenlandske trygdemyndigheter om opptjeningen din i ".expr()
+                                + landNavn + ".",
+                        Nynorsk to "Vi har fått opplysningar frå utanlandske trygdeorgan om oppteninga di i ".expr()
+                                + landNavn + ".",
+                        English to "We have received information from foreign national insurance authorities regarding your accumulated rights in ".expr()
+                                + landNavn + "."
                     )
                 }
             }
 
-            showIf(erMellombehandling) {
+            showIf(erMellombehandling or saksbehandlerValg.innvilgelseAPellerOektUttaksgrad) {
                 // nyBeregningAPInnledn
                 paragraph {
                     textExpr(
@@ -228,15 +217,6 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                             Bokmal to "Dette fører ikke til endringer i alderspensjonen din.",
                             Nynorsk to "Dette fører ikkje til endring av alderspensjonen din.",
                             English to "This does not result in any changes in your retirement pension.",
-                        )
-                    }
-                }.orShowIf(saksbehandlerValg.innvilgelseAPellerOektUttaksgrad) {
-                    // nyBeregningAPInnledn
-                    paragraph {
-                        textExpr(
-                            Bokmal to "Dette gjør at du har rett til ".expr() + uttaksgrad.format() + " prosent alderspensjon fra ".expr() + kravVirkDatoFom + ".",
-                            Nynorsk to "Dette gjer at du har rett til ".expr() + uttaksgrad.format() + " prosent alderspensjon frå ".expr() + kravVirkDatoFom + ".",
-                            English to "This makes you eligible for ".expr() + uttaksgrad.format() + " percent retirement pension from ".expr() + kravVirkDatoFom + ".",
                         )
                     }
                 }.orShowIf(saksbehandlerValg.oekningIPensjonen) {
@@ -326,17 +306,6 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                 )
             )
             includePhrase(
-                GjenlevendetilleggKap19Hjemmel(
-                    gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget
-                )
-            )
-            includePhrase(
-                InnvilgetGjRettKap19For2024(
-                    gjenlevenderettAnvendt = gjenlevenderettAnvendt,
-                    gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget
-                )
-            )
-            includePhrase(
                 EOSLandAvtaleHjemmel(
                     borINorge = borINorge,
                     eksportTrygdeavtaleEOS = eksportTrygdeavtaleEOS,
@@ -361,6 +330,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                         English to "This is a preliminary calculation",
                     )
                 }
+                // innvilgelseAPForeløpigBeregn
                 paragraph {
                     text(
                         Bokmal to "Fordi du har arbeidet eller bodd i et land Norge har trygdeavtale med, er dette en foreløpig beregning basert på trygdetiden din i Norge. "
@@ -396,7 +366,10 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             includePhrase(ReguleringAvAlderspensjon)
             includePhrase(InnvilgelseAPUttakEndr)
             includePhrase(
-                ArbeidsinntektOgAlderspensjon(uforeKombinertMedAlder = uforeKombinertMedAlder, uttaksgrad = uttaksgrad)
+                ArbeidsinntektOgAlderspensjon(
+                    uforeKombinertMedAlder = uforeKombinertMedAlder,
+                    uttaksgrad = uttaksgrad
+                )
             )
             includePhrase(InfoPensjonFraAndreAP)
             includePhrase(MeldeFraOmEndringer)
