@@ -92,3 +92,7 @@ class TemplateModelSpecification(val types: Map<String, ObjectTypeSpecification>
 
 @Target(AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 annotation class DisplayText(val text: String)
+
+interface EnumMedDisplayText {
+    fun displayText(): String
+}
