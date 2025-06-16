@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.ObjectTypeSpecification
@@ -109,7 +110,7 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
                         toProcess.add(theClassifier)
                         FieldType.Object(isMarkedNullable, qname!!, displayText = displayText.firstOrNull())
                     } else if (theClassifier.java.isEnum) {
-                        FieldType.Enum(isMarkedNullable, theClassifier.java.enumConstants.map { it.toString() }.toSet(), displayText = displayText.firstOrNull())
+                        FieldType.Enum(isMarkedNullable, theClassifier.java.enumConstants.map { FieldType.EnumEntry(it.toString(), (it as? Enum<*>)?.mapEnumTekst()) }.toSet(), displayText = displayText.firstOrNull())
                     } else {
                         throw TemplateModelSpecificationError("Don't know how to handle type: $qname")
                     }
@@ -119,4 +120,10 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
             throw TemplateModelSpecificationError("Unable to create FieldType of: $this")
         }
     }
+}
+
+internal fun Enum<*>.mapEnumTekst(): String? = when (this) {
+    VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett -> "Revurdering av rett"
+    VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon -> "Revurdering reduksjon"
+    else -> null
 }

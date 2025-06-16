@@ -32,8 +32,8 @@ export const EnumEditor = ({
           }}
         >
           {spec.values.map((value) => (
-            <option key={value} value={value}>
-              {value}
+            <option key={value.value} value={value.value}>
+              {value.displayText ?? value.value}
             </option>
           ))}
         </Select>
