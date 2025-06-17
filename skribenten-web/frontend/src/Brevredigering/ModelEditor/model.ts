@@ -66,7 +66,7 @@ export function initValueFromSpec(
         }
       }
       case "enum": {
-        return spec.values[0];
+        return spec.values[0].value;
       }
       case "array": {
         return [];
