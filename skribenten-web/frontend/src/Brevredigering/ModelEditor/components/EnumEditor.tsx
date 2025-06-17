@@ -16,10 +16,14 @@ export const EnumEditor = ({
 }) => {
   const { control } = useFormContext();
 
+  const values = spec.values.toSorted((v1, v2) =>
+    (v1.displayText || v1.value) > (v2.displayText || v2.value) ? 1 : -1,
+  );
+
   return (
     <Controller
       control={control}
-      defaultValue={spec.values[0]}
+      defaultValue={values[0]}
       name={fieldName}
       render={({ field }) => (
         <Select
@@ -31,9 +35,9 @@ export const EnumEditor = ({
             submitOnChange?.();
           }}
         >
-          {spec.values.map((value) => (
-            <option key={value} value={value}>
-              {value}
+          {values.map((value) => (
+            <option key={value.value} value={value.value}>
+              {value.displayText ?? value.value}
             </option>
           ))}
         </Select>

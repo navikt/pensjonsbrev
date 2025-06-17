@@ -73,7 +73,12 @@ tasks {
     // Dette er delvis henta fra https://robjohnson.dev/posts/thin-jars/
     // Vi trigger denne oppgava fra GitHub Actions-arbeidsflyten, men den kan fint kjøres lokalt også - men den er tilpassa å fjerne alt unntatt amd64, så da er du avhengig av å ha rett plattform.
     task<Exec>("rydd") {
-        commandLine("zip", "--delete", "./build/libs/pdf-bygger.jar",
-            "librocksdbjni-linux32-musl.so", "librocksdbjni-linux32.so", "librocksdbjni-linux64.so", "librocksdbjni-linux-ppc64le.so", "librocksdbjni-linux-ppc64le-musl.so", "librocksdbjni-linux-aarch64.so", "librocksdbjni-linux-aarch64-musl.so", "librocksdbjni-linux-s390x.so", "librocksdbjni-linux-s390x-musl.so", "librocksdbjni-win64.dll", "librocksdbjni-osx-arm64.jnilib", "librocksdbjni-osx-x86_64.jnilib")
+        if (file("./build/libs/pdf-bygger.jar").exists()) {
+            commandLine("zip", "--delete", "./build/libs/pdf-bygger.jar",
+                "librocksdbjni-linux32-musl.so", "librocksdbjni-linux32.so", "librocksdbjni-linux64.so", "librocksdbjni-linux-ppc64le.so", "librocksdbjni-linux-ppc64le-musl.so", "librocksdbjni-linux-aarch64.so", "librocksdbjni-linux-aarch64-musl.so", "librocksdbjni-linux-s390x.so", "librocksdbjni-linux-s390x-musl.so", "librocksdbjni-win64.dll", "librocksdbjni-osx-arm64.jnilib", "librocksdbjni-osx-x86_64.jnilib")
+                .also { it.setIgnoreExitValue(true) }
+        } else {
+            commandLine("echo", "pdf-bygger-jar fins ikke, gjør ingenting")
+        }
     }
 }
