@@ -39,7 +39,12 @@ object Dto {
         val journalpostId: Long?,
         val attestertAv: NavIdent?,
         val signaturAttestant: String?,
+        val status: BrevStatus,
     )
+
+    enum class BrevStatus {
+        KLADD, ATTESTERING, KLAR, ARKIVERT
+    }
 
     data class Document(
         val brevredigeringId: Long,

@@ -71,6 +71,8 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             brev(brevredigeringService, dto2ApiService)
             tjenestebussIntegrasjonRoute(samhandlerService, tjenestebussIntegrasjonService)
             meRoute(navansattService)
+
+            externalAPI(brevredigeringService, brevbakerService)
         }
     }
 }

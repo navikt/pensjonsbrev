@@ -85,6 +85,7 @@ object BrevredigeringTable : LongIdTable() {
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var saksId by BrevredigeringTable.saksId
+    // Det er forventet at vedtaksId kun har verdi om brevet er Vedtaksbrev
     var vedtaksId by BrevredigeringTable.vedtaksId
     var brevkode by BrevredigeringTable.brevkode
     var spraak by BrevredigeringTable.spraak
@@ -115,6 +116,8 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
                 find { (BrevredigeringTable.id eq id) and (BrevredigeringTable.saksId eq saksId) }.firstOrNull()
             }
     }
+
+    val isVedtaksbrev get() = vedtaksId != null
 }
 
 object DocumentTable : LongIdTable() {

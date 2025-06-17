@@ -40,6 +40,7 @@ components:
       required:
         - url
         - id
+        - saksId
         - brevkode
         - tittel
         - brevtype
@@ -48,6 +49,7 @@ components:
         - opprettetAv
         - sistRedigertAv
         - opprettet
+        - sistRedigert
         - status
       properties:
         url:
@@ -82,17 +84,10 @@ components:
             - INFORMASJONSBREV
             - VEDTAKSBREV
           description: Om det er et informasjonsbrev eller vedtaksbrev
-        distribusjonstype:
-          type: string
-          enum:
-            - ANNET
-            - VEDTAK
-            - VIKTIG
-          description: Hvilken type distribusjon brevet sendes som
         avsenderEnhetsId:
           type: string
           description: NavEnhetsID (Norg2) for avsender
-        språk:
+        spraak:
           type: string
           enum:
             - EN
@@ -116,14 +111,14 @@ components:
         redigeresAv:
           type: string
           description: NavIdent på saksbehandler som redigerer brevet nå og kan ikke åpnes av andre
-        sistRedigert:
-          type: string
-          format: date-time
-          description: ISO-8601 formattert tidspunkt for når brevet sist ble lagret
         opprettet:
           type: string
           format: date-time
           description: ISO-8601 formattert tidspunkt for når brevet ble opprettet
+        sistRedigert:
+          type: string
+          format: date-time
+          description: ISO-8601 formattert tidspunkt for når brevet sist ble lagret
         overstyrtMottaker:
           description: Brevet skal distribueres til annen adresse eller mottaker
           $ref: "#/components/schemas/mottaker"
@@ -139,7 +134,7 @@ components:
             * `KLADD` - Brevkladd
             * `ATTESTERING` - Attestant må lese gjennom og sende brevet
             * `KLAR` - Brevet er market som klar til å sendes, men er ikke arkivert enda
-            * `ARKIVERT` - Brevet er journalført og journalposten er ferdigstilt, og distribusjon må forsøkes på nytt  
+            * `ARKIVERT` - Brevet er journalført og journalposten er ferdigstilt, men distribusjon må forsøkes på nytt  
 
     mottaker:
       oneOf:
@@ -155,9 +150,6 @@ components:
             tssId:
               type: string
               description: Ekstern TSS ID for samhandler
-            navn:
-              type: String
-              description: Navn på samhandler
         - type: object
           description: Norsk adresse
           required:

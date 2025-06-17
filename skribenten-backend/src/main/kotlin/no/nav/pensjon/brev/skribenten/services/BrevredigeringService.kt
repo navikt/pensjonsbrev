@@ -78,8 +78,6 @@ class BrevredigeringService(
         val RESERVASJON_TIMEOUT = 10.minutes.toJavaDuration()
     }
 
-    private val logger = LoggerFactory.getLogger(this::class.java)
-
     suspend fun opprettBrev(
         sak: Pen.SakSelection,
         brevkode: Brevkode.Redigerbart,
@@ -96,11 +94,15 @@ class BrevredigeringService(
                 ?.let { "${it.fornavn} ${it.etternavn}" }
                 ?: principal.fullName
 
+            val vedtaksIdOmVedtaksbrev = vedtaksId?.takeIf {
+                brevbakerService.getRedigerbarTemplate(brevkode)?.metadata?.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV
+            }
+
             rendreBrev(
                 brevkode = brevkode,
                 spraak = spraak,
                 saksId = sak.saksId,
-                vedtaksId = vedtaksId,
+                vedtaksId = vedtaksIdOmVedtaksbrev,
                 saksbehandlerValg = saksbehandlerValg,
                 avsenderEnhetsId = avsenderEnhetsId,
                 signaturSignerende = signerendeSaksbehandler,
@@ -108,7 +110,7 @@ class BrevredigeringService(
                 transaction {
                     Brevredigering.new {
                         saksId = sak.saksId
-                        this.vedtaksId = vedtaksId
+                        this.vedtaksId = vedtaksIdOmVedtaksbrev
                         opprettetAvNavIdent = principal.navIdent
                         this.brevkode = brevkode
                         this.spraak = spraak
@@ -626,6 +628,17 @@ private fun Brevredigering.toBrevInfo(): Dto.BrevInfo =
         journalpostId = journalpostId,
         attestertAv = attestertAvNavIdent,
         signaturAttestant = signaturAttestant,
+        status = when {
+            journalpostId != null -> Dto.BrevStatus.ARKIVERT
+            attestertAvNavIdent != null -> Dto.BrevStatus.KLAR
+            laastForRedigering ->
+                if (isVedtaksbrev) {
+                    Dto.BrevStatus.ATTESTERING
+                } else {
+                    Dto.BrevStatus.KLAR
+                }
+            else -> Dto.BrevStatus.KLADD
+        }
     )
 
 private fun Mottaker.toDto(): Dto.Mottaker =

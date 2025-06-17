@@ -37,17 +37,17 @@ class Dto2ApiService(
             brevkode = info.brevkode,
             brevtittel = template.metadata.displayTitle,
             brevtype = template.metadata.brevtype,
-            status = when {
-                info.journalpostId != null -> BrevStatus.Arkivert
-                info.attestertAv != null -> BrevStatus.Klar(attestertAv = hentNavAnsatt(info.attestertAv))
-                info.laastForRedigering ->
-                    if (info.vedtaksId != null && template.metadata.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
-                        BrevStatus.Attestering
+            status = when (info.status) {
+                Dto.BrevStatus.KLADD ->
+                    if (info.redigeresAv != null) {
+                        BrevStatus.UnderRedigering(hentNavAnsatt(info.redigeresAv))
                     } else {
-                        BrevStatus.Klar()
+                        BrevStatus.Kladd
                     }
-                info.redigeresAv != null -> BrevStatus.UnderRedigering(hentNavAnsatt(info.redigeresAv))
-                else -> BrevStatus.Kladd
+
+                Dto.BrevStatus.ATTESTERING -> BrevStatus.Attestering
+                Dto.BrevStatus.KLAR -> BrevStatus.Klar(info.attestertAv?.let { hentNavAnsatt(it) })
+                Dto.BrevStatus.ARKIVERT -> BrevStatus.Arkivert
             },
             distribusjonstype = info.distribusjonstype,
             mottaker = info.mottaker?.toApi(),
@@ -58,15 +58,21 @@ class Dto2ApiService(
         )
     }
 
-    private fun LanguageCode.toApi() = when (this) {
-        LanguageCode.BOKMAL -> SpraakKode.NB
-        LanguageCode.NYNORSK -> SpraakKode.NN
-        LanguageCode.ENGLISH -> SpraakKode.EN
-    }
-
     private suspend fun Dto.Mottaker.toApi(): Api.OverstyrtMottaker = when (type) {
-        MottakerType.SAMHANDLER -> Api.OverstyrtMottaker.Samhandler(tssId!!, samhandlerService.hentSamhandlerNavn(tssId))
-        MottakerType.NORSK_ADRESSE -> Api.OverstyrtMottaker.NorskAdresse(navn!!, postnummer!!, poststed!!, adresselinje1, adresselinje2, adresselinje3)
+        MottakerType.SAMHANDLER -> Api.OverstyrtMottaker.Samhandler(
+            tssId!!,
+            samhandlerService.hentSamhandlerNavn(tssId)
+        )
+
+        MottakerType.NORSK_ADRESSE -> Api.OverstyrtMottaker.NorskAdresse(
+            navn!!,
+            postnummer!!,
+            poststed!!,
+            adresselinje1,
+            adresselinje2,
+            adresselinje3
+        )
+
         MottakerType.UTENLANDSK_ADRESSE -> Api.OverstyrtMottaker.UtenlandskAdresse(
             navn!!,
             postnummer,
@@ -81,4 +87,10 @@ class Dto2ApiService(
     suspend fun hentNavAnsatt(navIdent: NavIdent): NavAnsatt =
         NavAnsatt(navIdent, navansattService.hentNavansatt(navIdent.id)?.navn)
 
+}
+
+fun LanguageCode.toApi() = when (this) {
+    LanguageCode.BOKMAL -> SpraakKode.NB
+    LanguageCode.NYNORSK -> SpraakKode.NN
+    LanguageCode.ENGLISH -> SpraakKode.EN
 }
