@@ -146,31 +146,17 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
 
 
         title {
-            showIf(erMellombehandling) {
+            showIf(erMellombehandling or (saksbehandlerValg.innvilgelseAPellerOektUttaksgrad and erSluttbehandlingNorgeUtland or (not(erSluttbehandlingNorgeUtland) and not(erMellombehandling)))) {
                 textExpr(
                     Bokmal to "Vi har innvilget søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
                     Nynorsk to "Vi har innvilga søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
                     English to "We have granted your application for ".expr() + uttaksgrad.format() + " percent retirement pension"
                 )
-            }.orShowIf(
-                saksbehandlerValg.nyBeregningAvInnvilgetAP and erSluttbehandlingNorgeUtland or (not(
-                    erSluttbehandlingNorgeUtland
-                ) and not(erMellombehandling))
-            ) {
+            }.orShowIf(saksbehandlerValg.nyBeregningAvInnvilgetAP and erSluttbehandlingNorgeUtland or (not(erSluttbehandlingNorgeUtland) and not(erMellombehandling))) {
                 textExpr(
                     Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ".expr() + kravVirkDatoFom,
                     Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + kravVirkDatoFom,
                     English to "We have recalculated your retirement pension from ".expr() + kravVirkDatoFom
-                )
-            }.orShowIf(
-                saksbehandlerValg.innvilgelseAPellerOektUttaksgrad and erSluttbehandlingNorgeUtland or (not(
-                    erSluttbehandlingNorgeUtland
-                ) and not(erMellombehandling))
-            ) {
-                textExpr(
-                    Bokmal to "Vi har innvilget søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
-                    Nynorsk to "Vi har innvilga søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
-                    English to "We have granted your application for ".expr() + uttaksgrad.format() + " percent retirement pension"
                 )
             }
             includePhrase(SaksType(pesysData.sakstype))
