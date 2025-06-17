@@ -74,7 +74,6 @@ interface LetterMetadata {
 
         private fun BrevdataDto.BrevkategoriCode.toKategoriTekst() =
             when (this) {
-                BrevdataDto.BrevkategoriCode.BREV_MED_SKJEMA -> "Brev med skjema"
                 BrevdataDto.BrevkategoriCode.INFORMASJON -> "Informasjon"
                 BrevdataDto.BrevkategoriCode.INNHENTE_OPPL -> "Innhente opplysninger"
                 BrevdataDto.BrevkategoriCode.NOTAT -> "Notat"
@@ -140,5 +139,4 @@ private fun Brevkategori.toKategoriTekst() =
         Brevkategori.KLAGE_OG_ANKE -> "Klage og anke"
         Brevkategori.POSTERINGSGRUNNLAG -> "Posteringsgrunnlag"
         Brevkategori.FRITEKSTBREV -> "Fritekstbrev"
-        Brevkategori.BREV_MED_SKJEMA -> "Brev med skjema"
     }

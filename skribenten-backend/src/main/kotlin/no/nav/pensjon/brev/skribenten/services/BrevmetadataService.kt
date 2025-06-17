@@ -93,7 +93,7 @@ data class BrevdataDto(
     enum class DokumentkategoriCode { B, E_BLANKETT, IB, SED, VB }
 
     @Suppress("unused")
-    enum class BrevkategoriCode { BREV_MED_SKJEMA, INFORMASJON, INNHENTE_OPPL, NOTAT, OVRIG, VARSEL, VEDTAK }
+    enum class BrevkategoriCode { INFORMASJON, INNHENTE_OPPL, NOTAT, OVRIG, VARSEL, VEDTAK }
     enum class BrevSystem { DOKSYS, GAMMEL /*EXSTREAM*/, }
     enum class BrevkontekstCode { ALLTID, SAK, VEDTAK }
 

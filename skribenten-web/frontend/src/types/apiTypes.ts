@@ -33,7 +33,6 @@ export type SakType =
   | "UFOREP";
 
 export type BrevkategoriCode =
-  | "BREV_MED_SKJEMA"
   | "INFORMASJON"
   | "INNHENTE_OPPL"
   | "NOTAT"

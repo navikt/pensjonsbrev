@@ -23,7 +23,7 @@ object OmsorgEgenManuell : RedigerbarTemplate<OmsorgEgenManuellDto> {
 
     override val kode = Pesysbrevkoder.Redigerbar.PE_OMSORG_EGEN_MANUELL
 
-    override val kategori = TemplateDescription.Brevkategori.BREV_MED_SKJEMA
+    override val kategori = TemplateDescription.Brevkategori.OMSORGSOPPTJENING
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.OMSORG)
     override val template = createTemplate(
