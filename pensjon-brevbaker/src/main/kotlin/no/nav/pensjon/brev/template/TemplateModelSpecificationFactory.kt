@@ -123,5 +123,5 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
     private fun enumVerdier(theClassifier: KClass<*>) =
         theClassifier.java.fields.map {
             FieldType.EnumEntry(it.name, it.annotations.filterIsInstance<DisplayText>().firstOrNull()?.text)
-        }
+        }.toSet()
 }

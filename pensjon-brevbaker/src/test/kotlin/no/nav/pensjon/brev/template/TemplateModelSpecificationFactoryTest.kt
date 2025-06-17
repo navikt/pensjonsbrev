@@ -121,7 +121,7 @@ class TemplateModelSpecificationFactoryTest {
     fun `enum fields have Enum type with all enum-values`() {
 
         val spec = TemplateModelSpecificationFactory(WithEnumeration::class).build().types[WithEnumeration::class.qualifiedName!!]!!
-        assertThat(spec["anEnum"], equalTo(FieldType.Enum(false, WithEnumeration.AnEnum::class.java.fields.map { FieldType.EnumEntry(it.name, it.annotations.filterIsInstance<DisplayText>().map { it.text }.first()) }.toList())))
+        assertThat(spec["anEnum"], equalTo(FieldType.Enum(false, WithEnumeration.AnEnum::class.java.fields.map { FieldType.EnumEntry(it.name, it.annotations.filterIsInstance<DisplayText>().map { it.text }.first()) }.toSet())))
     }
 
     data class WithValueClass(val navn: String, val aValueClass: TheValue) {
