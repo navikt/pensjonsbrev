@@ -32,13 +32,7 @@ export type SakType =
   | "OMSORG"
   | "UFOREP";
 
-export type BrevkategoriCode =
-  | "INFORMASJON"
-  | "INNHENTE_OPPL"
-  | "NOTAT"
-  | "OVRIG"
-  | "VARSEL"
-  | "VEDTAK";
+export type BrevkategoriCode = "INFORMASJON" | "INNHENTE_OPPL" | "NOTAT" | "OVRIG" | "VARSEL" | "VEDTAK";
 
 export type DokumentkategoriCode = "B" | "E_BLANKETT" | "IB" | "SED" | "VB";
 
