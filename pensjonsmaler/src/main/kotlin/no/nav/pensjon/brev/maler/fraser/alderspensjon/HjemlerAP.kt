@@ -133,12 +133,14 @@ data class SKjermingstilleggHjemmel(
     val skjermingstilleggInnvilget: Expression<Boolean>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {
-            text(
-                Bokmal to "Du er også innvilget skjermingstillegg etter folketrygdloven § 19-9a.",
-                Nynorsk to "Du er også innvilga skjermingstillegg etter folketrygdlova § 19-9a.",
-                English to "You have also been granted the supplement for the disabled pursuant to the provisions of § 19-9a of the National Insurance Act."
-            )
+        showIf(skjermingstilleggInnvilget) {
+            paragraph {
+                text(
+                    Bokmal to "Du er også innvilget skjermingstillegg etter folketrygdloven § 19-9a.",
+                    Nynorsk to "Du er også innvilga skjermingstillegg etter folketrygdlova § 19-9a.",
+                    English to "You have also been granted the supplement for the disabled pursuant to the provisions of § 19-9a of the National Insurance Act."
+                )
+            }
         }
     }
 }
@@ -159,6 +161,7 @@ data class AP2025TidligUttakHjemmel(
         }
     }
 }
+
 
 data class GarantitilleggHjemmel(
     val garantitilleggInnvilget: Expression<Boolean>
@@ -261,9 +264,15 @@ data class BilateralAvtaleHjemmel(
         showIf((harOppfyltVedSammenlegging or eksportTrygdeavtaleAvtaleland) and not(erEOSLand)) {
             paragraph {
                 textExpr(
-                    Bokmal to "Vedtaket er også gjort etter reglene i trygdeavtalen med ".expr() + avtalelandNavn.ifNull(then = "AVTALELAND") + ".",
-                    Nynorsk to "Vedtaket er også gjort etter reglane i trygdeavtalen med ".expr() + avtalelandNavn.ifNull(then = "AVTALELAND") + ".",
-                    English to "This decision was also made pursuant the provisions of the Social Security Agreement with ".expr() + avtalelandNavn.ifNull(then = "AVTALELAND") + "."
+                    Bokmal to "Vedtaket er også gjort etter reglene i trygdeavtalen med ".expr() + avtalelandNavn.ifNull(
+                        then = "AVTALELAND"
+                    ) + ".",
+                    Nynorsk to "Vedtaket er også gjort etter reglane i trygdeavtalen med ".expr() + avtalelandNavn.ifNull(
+                        then = "AVTALELAND"
+                    ) + ".",
+                    English to "This decision was also made pursuant the provisions of the Social Security Agreement with ".expr() + avtalelandNavn.ifNull(
+                        then = "AVTALELAND"
+                    ) + "."
                 )
             }
         }

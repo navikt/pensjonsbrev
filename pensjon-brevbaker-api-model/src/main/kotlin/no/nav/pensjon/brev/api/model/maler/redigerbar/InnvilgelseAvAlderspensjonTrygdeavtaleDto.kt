@@ -66,6 +66,7 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
     // v5.Alderspensjon / v1.AlderspensjonKap20
     data class AlderspensjonVedVirk(
         val garantipensjonInnvilget: Boolean,
+        val garantitilleggInnvilget: Boolean,
         val gjenlevenderettAnvendt: Boolean,
         val gjenlevendetilleggKap19Innvilget: Boolean,
         val godkjentYrkesskade: Boolean,

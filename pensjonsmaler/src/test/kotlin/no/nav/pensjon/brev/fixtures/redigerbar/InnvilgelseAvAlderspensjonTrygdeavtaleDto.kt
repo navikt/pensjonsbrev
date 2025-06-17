@@ -25,6 +25,7 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
             afpPrivatResultatFellesKontoret = false,
             alderspensjonVedVirk = InnvilgelseAvAlderspensjonTrygdeavtaleDto.AlderspensjonVedVirk(
                 garantipensjonInnvilget = false,
+                garantitilleggInnvilget = false,
                 gjenlevenderettAnvendt = false,
                 gjenlevendetilleggKap19Innvilget = false,
                 godkjentYrkesskade = false,
