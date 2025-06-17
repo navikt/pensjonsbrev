@@ -44,15 +44,15 @@ function setup() {
 }
 
 const complexEditorState = letter(
-  paragraph(
+  paragraph([
     variable("Dokumentet starter med variable"),
     literal({ text: "første literal" }),
     variable("X"),
     literal({ text: "andre literal", tags: [ElementTags.FRITEKST] }),
-  ),
-  paragraph(variable("Paragraf med kun variable")),
-  paragraph(literal({ text: "paragraf med kun tekst" })),
-  paragraph(
+  ]),
+  paragraph([variable("Paragraf med kun variable")]),
+  paragraph([literal({ text: "paragraf med kun tekst" })]),
+  paragraph([
     itemList({
       items: [
         item(literal({ text: "1. item" })),
@@ -61,8 +61,8 @@ const complexEditorState = letter(
         item(literal({ text: "nth item" })),
       ],
     }),
-  ),
-  paragraph(literal({ text: "Dokumentet avsluttes med literal" })),
+  ]),
+  paragraph([literal({ text: "Dokumentet avsluttes med literal" })]),
 );
 
 function setupComplex(stateOverride?: LetterEditorState) {
@@ -412,11 +412,11 @@ describe("onClickHandler", () => {
 
   test("clicking on a fritekst variable that has been edited should not select the whole element", async () => {
     const state = letter(
-      paragraph(
+      paragraph([
         literal({ text: "første literal" }),
         variable("X"),
         newLiteral({ text: "andre literal", editedText: "Hei på deg", tags: [ElementTags.FRITEKST] }),
-      ),
+      ]),
     );
     const { user } = setupComplex(state);
 
@@ -439,7 +439,7 @@ describe("onFocusHandler", () => {
   });
   test("tabbing through a fritkest variable that has been edited should not be focused", async () => {
     const state = letter(
-      paragraph(
+      paragraph([
         literal({ text: "første literal" }),
         variable("X"),
         newLiteral({
@@ -448,7 +448,7 @@ describe("onFocusHandler", () => {
           tags: [ElementTags.FRITEKST],
         }),
         newLiteral({ text: "tredje literal", tags: [ElementTags.FRITEKST] }),
-      ),
+      ]),
     );
     const { user } = setupComplex(state);
 

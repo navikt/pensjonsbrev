@@ -7,11 +7,10 @@ import {
   newTitle,
   removeElements,
 } from "~/Brevredigering/LetterEditor/actions/common";
-import type { BlockContentIndex } from "~/Brevredigering/LetterEditor/actions/model";
 import { PARAGRAPH, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
-import type { LetterEditorState } from "../model/state";
+import type { BlockContentIndex, LetterEditorState } from "../model/state";
 import { isTextContent } from "../model/utils";
 
 export const switchTypography: Action<

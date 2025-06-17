@@ -15,11 +15,11 @@ fun createEtteroppgjoerForhaandsvarselBrevDTO() =
     EtteroppgjoerForhaandsvarselBrevDTO(
         innhold = createPlaceholderForRedigerbartInnhold(),
         data = EtteroppgjoerForhaandsvarselDTO(
-            bosattUtland = true,
+            bosattUtland = false,
             norskInntekt = true,
             etteroppgjoersAar = 2024,
             rettsgebyrBeloep = Kroner(1234),
-            resultatType = EtteroppgjoerResultatType.IKKE_ETTEROPPGJOER,
+            resultatType = EtteroppgjoerResultatType.INGEN_ENDRING,
             stoenad = Kroner(321),
             faktiskStoenad = Kroner(4444),
             avviksBeloep = Kroner(0),
@@ -40,11 +40,11 @@ fun createEtteroppgjoerForhaandsvarselBrevDTO() =
 fun createEtteroppgjoerForhaandsvarselRedigerbartBrevDTO() =
     EtteroppgjoerForhaandsvarselRedigerbartBrevDTO(
         data = EtteroppgjoerForhaandsvarselInnholfDTO(
-            bosattUtland = true,
+            bosattUtland = false,
             norskInntekt = true,
             etteroppgjoersAar = 2024,
             rettsgebyrBeloep = Kroner(1234),
-            resultatType = EtteroppgjoerResultatType.IKKE_ETTEROPPGJOER,
+            resultatType = EtteroppgjoerResultatType.INGEN_ENDRING,
             avviksBeloep = Kroner(0),
         )
     )

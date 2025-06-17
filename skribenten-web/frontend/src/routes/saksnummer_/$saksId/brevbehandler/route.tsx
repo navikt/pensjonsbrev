@@ -7,27 +7,27 @@ import { useRef, useState } from "react";
 import { z } from "zod";
 
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getNavnQuery } from "~/api/skribenten-api-endpoints";
+import { getNavnQuery, getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
 import BrevForhåndsvisning from "./-components/BrevForhåndsvisning";
 import { FerdigstillOgSendBrevButton, FerdigstillOgSendBrevModal } from "./-components/FerdigstillBrev";
 
+const brevbehandlerSearchSchema = z.object({
+  brevId: z.coerce.number().optional(),
+});
+type BrevbehandlerSearch = z.infer<typeof brevbehandlerSearchSchema>;
+
 export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
-  component: Brevbehandler,
-  loader: async ({ context: { queryClient, getSakContextQueryOptions } }) => {
-    const sakContext = await queryClient.ensureQueryData(getSakContextQueryOptions);
-
-    queryClient.prefetchQuery(getNavnQuery(sakContext.sak.saksId.toString()));
-
-    return sakContext;
+  validateSearch: (search): BrevbehandlerSearch => brevbehandlerSearchSchema.parse(search),
+  loaderDeps: ({ search }) => ({ vedtaksId: search.vedtaksId }),
+  loader: async ({ context, params: { saksId }, deps: { vedtaksId } }) => {
+    const getSakContextQueryOptions = getSakContextQuery(saksId, vedtaksId);
+    context.queryClient.prefetchQuery(getNavnQuery(saksId));
+    return await context.queryClient.ensureQueryData(getSakContextQueryOptions);
   },
-  validateSearch: (search: Record<string, unknown>): { brevId?: number; vedtaksId?: string; enhetsId?: string } => ({
-    brevId: search.brevId ? z.number().parse(search.brevId) : undefined,
-    vedtaksId: search.vedtaksId ? z.string().parse(search.vedtaksId) : undefined,
-    enhetsId: search.enhetsId ? z.string().parse(search.enhetsId) : undefined,
-  }),
+  component: Brevbehandler,
 });
 
 function Brevbehandler() {

@@ -165,7 +165,7 @@ describe("Kladd", () => {
       ]);
     }).as("getAlleBrevForSak");
 
-    cy.visit('/saksnummer/123456/brevvelger?brevId="1"');
+    cy.visit("/saksnummer/123456/brevvelger?brevId=1");
     cy.wait("@getAlleBrevForSak");
     //det er visst noe timing issues her, selv om vi venter på aki-kallet, så er ikke ting ferdig rendret når vi begynner sjekkene
     cy.wait(1000);

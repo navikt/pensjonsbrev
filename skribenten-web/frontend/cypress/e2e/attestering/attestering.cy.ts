@@ -13,10 +13,10 @@ import {
 } from "../../utils/brevredigeringTestUtils";
 
 const defaultBrev = nyBrevResponse({});
-const bekreftelsePåFlyktningstatusBrev = brev as unknown as BrevResponse;
+const bekreftelsePaaFlyktningstatusBrev = brev as unknown as BrevResponse;
 const vedtaksBrev = nyBrevResponse({
-  ...bekreftelsePåFlyktningstatusBrev,
-  info: { ...bekreftelsePåFlyktningstatusBrev.info, brevtype: "VEDTAKSBREV" },
+  ...bekreftelsePaaFlyktningstatusBrev,
+  info: { ...bekreftelsePaaFlyktningstatusBrev.info, brevtype: "VEDTAKSBREV" },
 });
 
 describe("attestering", () => {
@@ -57,7 +57,7 @@ describe("attestering", () => {
       }),
     };
 
-    const brevEtterLås: BrevResponse = {
+    const brevEtterLaas: BrevResponse = {
       ...brevEtterLagringAvSignatur,
       info: nyBrevInfo({ ...brevEtterLagringAvSignatur.info, status: { type: "Attestering" } }),
     };
@@ -81,7 +81,7 @@ describe("attestering", () => {
         req.reply([vedtaksBrev.info]);
       } else {
         hentAlleSakBrevKallNr++;
-        req.reply([brevEtterLås.info]);
+        req.reply([brevEtterLaas.info]);
       }
     }).as("alleBrevPåSak");
 
@@ -148,7 +148,7 @@ describe("attestering", () => {
     //brevbehandler
     cy.intercept("PATCH", "/bff/skribenten-backend/sak/123456/brev/1", (req) => {
       expect(req.body).to.deep.equal({ saksId: "123456", brevId: 1, laastForRedigering: true });
-      req.reply(brevEtterLås);
+      req.reply(brevEtterLaas);
     }).as("låsBrev");
 
     cy.contains("Brevet er klart for attestering").click();
@@ -184,6 +184,7 @@ describe("attestering", () => {
     });
 
     const brevEtterOppdateringAvAttestantNavn = nyBrevResponse({
+      saksbehandlerValg: { land: "Norge" },
       redigertBrev: nyRedigertBrev({
         signatur: nySignatur({
           attesterendeSaksbehandlerNavn: "Dette er det nye attestant navnet mitt",
