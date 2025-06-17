@@ -45,8 +45,18 @@ internal object LetterMarkupModule : SimpleModule() {
         addInterfaceDeserializer<LetterMarkup.ParagraphContent.Form.MultipleChoice.Choice, ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl>()
         addInterfaceDeserializer<LetterMarkup.ParagraphContent.Form.MultipleChoice, ParagraphContentImpl.Form.MultipleChoiceImpl>()
         addInterfaceDeserializer<LetterMarkup.ParagraphContent.Form.Text, ParagraphContentImpl.Form.TextImpl>()
-        addInterfaceDeserializer<LetterMarkup, LetterMarkupImpl>()
+        addDeserializer(LetterMarkup::class.java, letterMarkupDeserializer())
     }
+
+
+    private fun letterMarkupDeserializer() =
+        object : StdDeserializer<LetterMarkup>(LetterMarkup::class.java) {
+            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): LetterMarkup {
+                val node = p.codec.readTree<JsonNode>(p)
+                val value = p.codec.treeToValue(node, LetterMarkupImpl::class.java)
+                return value
+            }
+        }
 
     private fun blockDeserializer() =
         object : StdDeserializer<LetterMarkup.Block>(LetterMarkup.Block::class.java) {
