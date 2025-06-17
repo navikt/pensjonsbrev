@@ -53,7 +53,7 @@ internal object LetterMarkupModule : SimpleModule() {
         object : StdDeserializer<LetterMarkup>(LetterMarkup::class.java) {
             override fun deserialize(p: JsonParser, ctxt: DeserializationContext): LetterMarkup {
                 val node = p.codec.readTree<JsonNode>(p)
-                val value = p.codec.treeToValue(node, LetterMarkupImpl::class.java)
+                val value = p.codec.treeToValue(node, LetterMarkupImpl::class.java).also { it.validate() }
                 return value
             }
         }
