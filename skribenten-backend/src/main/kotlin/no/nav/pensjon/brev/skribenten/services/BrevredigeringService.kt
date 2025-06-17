@@ -314,6 +314,8 @@ class BrevredigeringService(
             brevDto.validerErFerdigRedigert()
             brevDto.validerKanAttestere(principal)
 
+            // TODO: burde vi sjekke om brevet er et vedtaksbrev før vi gjennomfører attestering?
+
             val signaturAttestant = signaturAttestant
                 ?: brevDto.info.signaturAttestant
                 ?: navansattService.hentNavansatt(principal.navIdent.id)?.let { "${it.fornavn} ${it.etternavn}" }

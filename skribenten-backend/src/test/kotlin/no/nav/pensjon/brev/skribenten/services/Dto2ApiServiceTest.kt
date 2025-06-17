@@ -29,7 +29,7 @@ class Dto2ApiServiceTest {
     private val dto2ApiService = Dto2ApiService(
         brevbakerService = mockk {
             coEvery { getRedigerbarTemplate(eq(Testbrevkoder.TESTBREV)) } returns TemplateDescription.Redigerbar(
-                name = Testbrevkoder.TESTBREV.name,
+                name = Testbrevkoder.TESTBREV.kode(),
                 letterDataClass = EksempelRedigerbartDto::class.java.name,
                 languages = listOf(LanguageCode.BOKMAL),
                 metadata = LetterMetadata(
@@ -139,6 +139,7 @@ class Dto2ApiServiceTest {
         journalpostId = null,
         attestertAv = attestertAv,
         signaturAttestant = "Peder Ås",
+        status = TODO()
     )
 
     private fun stageAnsatt(id: NavIdent, fornavn: String, etternavn: String) {

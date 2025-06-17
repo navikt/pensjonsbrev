@@ -32,7 +32,7 @@ fun Route.externalAPI(brevredigeringService: BrevredigeringService, brevbakerSer
 private fun Dto.BrevInfo.toExternal(template: TemplateDescription.Redigerbar?) =
     if (template != null) {
         ExternalAPI.BrevInfo(
-            url = "",
+            url = TODO(),
             id = id,
             saksId = saksId,
             vedtaksId = vedtaksId,
