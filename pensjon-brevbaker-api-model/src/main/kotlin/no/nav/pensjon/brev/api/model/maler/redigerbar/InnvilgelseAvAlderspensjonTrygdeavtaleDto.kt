@@ -19,21 +19,21 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
 ) : RedigerbarBrevdata<InnvilgelseAvAlderspensjonTrygdeavtaleDto.SaksbehandlerValg, InnvilgelseAvAlderspensjonTrygdeavtaleDto.PesysData> {
 
     data class SaksbehandlerValg(
-        @DisplayText("Ny beregning av innvilget alderspensjon. Ingen endring av uttaksgraden")
+        @DisplayText("Tittel - Ny beregning av innvilget alderspensjon. Ingen endring av uttaksgraden")
         val nyBeregningAvInnvilgetAP: Boolean,
-        @DisplayText("Innvilgelse av alderspensjon eller økt uttaksgrad")
+        @DisplayText("Tittel - Innvilgelse av alderspensjon eller økt uttaksgrad")
         val innvilgelseAPellerOektUttaksgrad: Boolean,
-        @DisplayText("Ingen endring i pensjonen")
+        @DisplayText("Slutthandling medfører: Ingen endring i pensjonen")
         val ingenEndringIPensjonen: Boolean,
-        @DisplayText("Innvilgelse av alderspensjon eller økt uttaksgrad")
-        val innvilgelseAvAPEllerOektUttaksgrad: Boolean,
-        @DisplayText("Økning i pensjonen")
+        @DisplayText("Slutthandling medfører: Innvilgelse av alderspensjon eller økt uttaksgrad")
+        val medfoererInnvilgelseAvAPellerOektUttaksgrad: Boolean,
+        @DisplayText("Slutthandling medfører: Økning i pensjonen")
         val oekningIPensjonen: Boolean,
-        @DisplayText("Reduksjon i pensjonen")
+        @DisplayText("Slutthandling medfører: Reduksjon i pensjonen")
         val reduksjonIPensjonen: Boolean,
-        @DisplayText("Supplerende stønad")
+        @DisplayText("Hvis supplerende stønad")
         val supplerendeStoenad: Boolean,
-        @DisplayText("Etterbetaling")
+        @DisplayText("Hvis etterbetaling")
         val etterbetaling: Boolean,
     ) : BrevbakerBrevdata
 

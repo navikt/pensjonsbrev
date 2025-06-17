@@ -26,6 +26,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.borIAvtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.borINorge
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.erEOSLand
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.erMellombehandling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.erSluttbehandlingNorgeUtland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.fullTrygdtid
@@ -124,11 +125,12 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             pesysData.inngangOgEksportVurdering_safe.eksportTrygdeavtaleAvtaleland_safe.ifNull(then = false)
         val eksportTrygdeavtaleEOS =
             pesysData.inngangOgEksportVurdering_safe.eksportTrygdeavtaleEOS_safe.ifNull(then = false)
-        val erEOSLand = pesysData.borINorge
+        val erEOSLand = pesysData.erEOSLand
         val erMellombehandling = pesysData.erMellombehandling
         val erSluttbehandlingNorgeUtland = pesysData.erSluttbehandlingNorgeUtland
         val fullTrygdetid = pesysData.fullTrygdtid
         val garantipensjonInnvilget = pesysData.alderspensjonVedVirk.garantipensjonInnvilget
+        val garantitilleggInnvilget = pesysData.alderspensjonVedVirk.garantitilleggInnvilget
         val godkjentYrkesskade = pesysData.alderspensjonVedVirk.godkjentYrkesskade
         val harFlereBeregningsperioder = pesysData.harFlereBeregningsperioder
         val harOppfyltVedSammenlegging =
@@ -147,24 +149,31 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
 
 
         title {
-            showIf(erMellombehandling or (saksbehandlerValg.innvilgelseAPellerOektUttaksgrad and erSluttbehandlingNorgeUtland or (not(erSluttbehandlingNorgeUtland) and not(erMellombehandling)))) {
+            showIf(
+                erMellombehandling or (saksbehandlerValg.innvilgelseAPellerOektUttaksgrad and erSluttbehandlingNorgeUtland or (not(
+                    erSluttbehandlingNorgeUtland
+                ) and not(erMellombehandling)))
+            ) {
                 textExpr(
                     Bokmal to "Vi har innvilget søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
                     Nynorsk to "Vi har innvilga søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
                     English to "We have granted your application for ".expr() + uttaksgrad.format() + " percent retirement pension"
                 )
-            }.orShowIf(saksbehandlerValg.nyBeregningAvInnvilgetAP and erSluttbehandlingNorgeUtland or (not(erSluttbehandlingNorgeUtland) and not(erMellombehandling))) {
+            }.orShowIf(
+                saksbehandlerValg.nyBeregningAvInnvilgetAP and erSluttbehandlingNorgeUtland or (not(
+                    erSluttbehandlingNorgeUtland
+                ) and not(erMellombehandling))
+            ) {
                 textExpr(
                     Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ".expr() + kravVirkDatoFom,
                     Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + kravVirkDatoFom,
                     English to "We have recalculated your retirement pension from ".expr() + kravVirkDatoFom
                 )
             }
-            includePhrase(SaksType(pesysData.sakstype))
         }
 
         outline {
-
+            includePhrase(Vedtak.Overskrift)
             showIf(antallLandVilkarsprovd.greaterThan(0)) {
                 // mottattInfoFraEttLand / mottattInfoFraFlereLan
                 paragraph {
@@ -192,7 +201,6 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                     )
                 }
             }
-
             showIf(
                 erSluttbehandlingNorgeUtland or
                         (not(erSluttbehandlingNorgeUtland) and erMellombehandling)
@@ -206,7 +214,8 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                             English to "This does not result in any changes in your retirement pension.",
                         )
                     }
-                }.orShowIf(saksbehandlerValg.oekningIPensjonen) {
+                }
+                showIf(saksbehandlerValg.oekningIPensjonen) {
                     // nyBeregningAPØkning
                     paragraph {
                         text(
@@ -215,7 +224,8 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                             English to "This leads to an increase in your retirement pension."
                         )
                     }
-                }.orShowIf(saksbehandlerValg.reduksjonIPensjonen) {
+                }
+                showIf(saksbehandlerValg.reduksjonIPensjonen) {
                     // nyBeregningAPReduksjon
                     paragraph {
                         text(
@@ -282,13 +292,13 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                 )
             )
             includePhrase(
-                (AP2025TidligUttakHjemmel(
+                AP2025TidligUttakHjemmel(
                     innvilgetFor67 = innvilgetFor67,
                     regelverkType = regelverkType
                 )
             )
             includePhrase(
-                        GarantitilleggHjemmel(
+                GarantitilleggHjemmel(
                     garantitilleggInnvilget = garantitilleggInnvilget,
                 )
             )
@@ -308,27 +318,6 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                     harOppfyltVedSammenlegging = borINorge
                 )
             )
-
-            showIf(not(erSluttbehandlingNorgeUtland)) {
-                title1 {
-                    text(
-                        Bokmal to "Dette er en foreløpig beregning",
-                        Nynorsk to "Dette er ei førebels berekning",
-                        English to "This is a preliminary calculation",
-                    )
-                }
-                // innvilgelseAPForeløpigBeregn
-                paragraph {
-                    text(
-                        Bokmal to "Fordi du har arbeidet eller bodd i et land Norge har trygdeavtale med, er dette en foreløpig beregning basert på trygdetiden din i Norge. "
-                                + "Når vi har mottatt nødvendig informasjon fra andre land som du har bodd eller arbeidet i, vil vi beregne pensjonen din på nytt og sende deg et endelig vedtak.",
-                        Nynorsk to "Fordi du har arbeidd eller budd i eit land Noreg har trygdeavtale med, er dette ei førebels berekning basert på trygdetida di i Noreg. "
-                                + "Når vi har fått nødvendig informasjon frå andre land som du har budd eller arbeidd i, bereknar vi pensjonen din på nytt og sender deg eit endeleg vedtak.",
-                        English to "Because you have worked or lived in a country that Norway has a social security agreement with, this is a preliminary calculation based on your period of national insurance cover in Norway. "
-                                + "Once we have received the necessary information from the other countries that you have lived or worked in, we will recalculate your pension and send you a final decision.",
-                    )
-                }
-            }
 
             showIf(not(erSluttbehandlingNorgeUtland)) {
                 includePhrase(InnvilgelseAPForeloepigBeregning)

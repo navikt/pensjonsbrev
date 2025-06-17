@@ -43,9 +43,9 @@ data class HjemlerInnvilgelseForAP2011AP2016(
                 )
                 showIf(pensjonstilleggInnvilget) {
                     text(
-                        Bokmal to "19-9",
-                        Nynorsk to "19-9",
-                        English to "19-9"
+                        Bokmal to "19-10",
+                        Nynorsk to "19-10",
+                        English to "19-10"
                     )
                 }.orShow {
                     text(
@@ -54,11 +54,13 @@ data class HjemlerInnvilgelseForAP2011AP2016(
                         English to "19-8"
                     )
                 }
-                text(
-                    Bokmal to ", 19-10",
-                    Nynorsk to ", 19-10",
-                    English to ", 19-10"
-                )
+                showIf(not(pensjonstilleggInnvilget)) {
+                    text(
+                        Bokmal to ", 19-10",
+                        Nynorsk to ", 19-10",
+                        English to ", 19-10"
+                    )
+                }
                 showIf(innvilgetFor67) {
                     text(
                         Bokmal to ", 19-11",
@@ -120,8 +122,8 @@ data class HjemlerInnvilgelseForAP2011AP2016(
                     )
                 }
                 text(
-                    Bokmal to " og 22-12.",
-                    Nynorsk to " og 22-12.",
+                    Bokmal to " og 22-12.",
+                    Nynorsk to " og 22-12.",
                     English to " and 22-12 of the National Insurance Act."
                 )
             }
@@ -239,16 +241,11 @@ data class EOSLandAvtaleHjemmel(
                 showIf(harOppfyltVedSammenlegging and borINorge) {
                     // euArt6Og7Hjemmel
                     text(Bokmal to " artikkel 6.", Nynorsk to " artikkel 6.", English to " article 6.")
-                }.orShowIf(harOppfyltVedSammenlegging and eksportTrygdeavtaleEOS and not(borINorge)) {
-                    text(
-                        Bokmal to " artikkel 6 og 7.",
-                        Nynorsk to " artikkel 6 og 7.",
-                        English to " articles 6 and 7."
-                    )
+                }.orShowIf(harOppfyltVedSammenlegging and not(borINorge) and eksportTrygdeavtaleEOS) {
+                    text(Bokmal to " artikkel 6 og 7.", Nynorsk to " artikkel 6 og 7.", English to " articles 6 and 7.")
+                }.orShowIf(not(harOppfyltVedSammenlegging) and not(borINorge) and eksportTrygdeavtaleEOS) {
+                    text(Bokmal to " artikkel 7.", Nynorsk to " artikkel 7.", English to " article 7.")
                 }
-                    .orShowIf(not(harOppfyltVedSammenlegging) and eksportTrygdeavtaleEOS and not(borINorge)) {
-                        text(Bokmal to " artikkel 7.", Nynorsk to " artikkel 7.", English to " article 7.")
-                    }
             }
         }
     }

@@ -13,12 +13,12 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
     InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         saksbehandlerValg = InnvilgelseAvAlderspensjonTrygdeavtaleDto.SaksbehandlerValg(
             nyBeregningAvInnvilgetAP = false,
-            innvilgelseAvAPEllerOektUttaksgrad = false,
+            innvilgelseAPellerOektUttaksgrad = true,
             ingenEndringIPensjonen = false,
-            innvilgelseAPellerOektUttaksgrad = false,
+            medfoererInnvilgelseAvAPellerOektUttaksgrad = false,
             oekningIPensjonen = false,
             reduksjonIPensjonen = false,
-            supplerendeStoenad = false,
+            supplerendeStoenad = true,
             etterbetaling = false,
         ),
         pesysData = InnvilgelseAvAlderspensjonTrygdeavtaleDto.PesysData(
@@ -30,7 +30,7 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
                 gjenlevendetilleggKap19Innvilget = false,
                 godkjentYrkesskade = false,
                 innvilgetFor67 = false,
-                pensjonstilleggInnvilget = true,
+                pensjonstilleggInnvilget = false,
                 privatAFPErBrukt = false,
                 skjermingstilleggInnvilget = false,
                 totalPensjon = Kroner(30000),
@@ -39,23 +39,23 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
             ),
             avtalelandNavn = null,
             borIAvtaleland = false,
-            borINorge = false,
+            borINorge = true,
             erEOSLand = false,
             erMellombehandling = true,
-            erSluttbehandlingNorgeUtland = true,
+            erSluttbehandlingNorgeUtland = false,
             fullTrygdtid = false,
             harFlereBeregningsperioder = false,
             inngangOgEksportVurdering = InnvilgelseAvAlderspensjonTrygdeavtaleDto.InngangOgEksportVurdering(
-                eksportTrygdeavtaleAvtaleland = false,
+                eksportTrygdeavtaleAvtaleland = true,
                 eksportTrygdeavtaleEOS = true,
-                harOppfyltVedSammenlegging = true, // hvis oppfyltVedSammenleggingKap19 eller oppfyltVedSammenleggingKap20
+                harOppfyltVedSammenlegging = false, // If one of these is true: oppfyltVedSammenleggingKap19 or oppfyltVedSammenleggingKap20 or oppfyltVedSammenleggingFemArKap19 or oppfyltVedSammenleggingFemArKap20
             ),
             kravVirkDatoFom = LocalDate.of(2025, 6, 1),
-            regelverkType = AlderspensjonRegelverkType.AP2016,
+            regelverkType = AlderspensjonRegelverkType.AP2025,
             sakstype = Sakstype.ALDER,
             vedtakEtterbetaling = false,
             vedtaksresultatUtland = InnvilgelseAvAlderspensjonTrygdeavtaleDto.VedtaksresultatUtland(
-                antallLandVilkarsprovd = 1,
+                antallLandVilkarsprovd = 0,
                 landNavn = "Sverige",
             ),
             dineRettigheterOgMulighetTilAaKlageDto = DineRettigheterOgMulighetTilAaKlageDto(
