@@ -9,8 +9,27 @@ import type { table } from "../utils";
 import { letter, literal, paragraph } from "../utils";
 
 function createClipboardWithHtml(htmlContent: string): DataTransfer {
-  const sanitizedHtml = DOMPurify.sanitize(htmlContent);
-  // jsdom doesn’t expose DataTransfer, so we fake the bits we need:
+  const sanitizedHtml = DOMPurify.sanitize(htmlContent, {
+    ALLOWED_TAGS: [
+      "p",
+      "br",
+      "strong",
+      "b",
+      "em",
+      "i",
+      "ul",
+      "ol",
+      "li",
+      "table",
+      "thead",
+      "tbody",
+      "tr",
+      "td",
+      "th",
+      "span",
+    ],
+    ALLOWED_ATTR: ["rowspan", "colspan"],
+  });
   return {
     types: ["text/html"],
     getData: (type: string) => (type === "text/html" ? sanitizedHtml : ""),
@@ -23,12 +42,15 @@ function createEmptyLetterState(): LetterEditorState {
   letterState.focus = { blockIndex: 0, contentIndex: 0, cursorPosition: 0 };
   return letterState;
 }
-
+// Here we define a simple HTML table with a header and one row.
+// Notice that the top tr tag is malformed and the img tag is included to test sanitization.
+// After sanitaization, the img tag should be removed, the tr tag should be closed, and the table should be valid.
 const htmlTable = `
-  <table>
-    <tr><th>Header 1</th></tr>
-    <tr><td>Row 1</td></tr>
-  </table>
+ <table>
+  <tr><th>Header 1</th></tr
+  <tr><td>Row 1</td></tr>
+  <img src=x onerror=alert(1)>
+</table>
 `;
 
 describe("paste handler inserts TABLE", () => {
