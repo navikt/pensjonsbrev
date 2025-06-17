@@ -23,7 +23,7 @@ export const EnumEditor = ({
   return (
     <Controller
       control={control}
-      defaultValue={values[0]}
+      defaultValue={values[0].value}
       name={fieldName}
       render={({ field }) => (
         <Select
