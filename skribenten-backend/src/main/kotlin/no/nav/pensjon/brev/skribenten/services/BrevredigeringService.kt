@@ -632,13 +632,15 @@ private fun Brevredigering.toBrevInfo(): Dto.BrevInfo =
         signaturAttestant = signaturAttestant,
         status = when {
             journalpostId != null -> Dto.BrevStatus.ARKIVERT
-            attestertAvNavIdent != null -> Dto.BrevStatus.KLAR
-            laastForRedigering ->
-                if (isVedtaksbrev) {
-                    Dto.BrevStatus.ATTESTERING
-                } else {
+            laastForRedigering && isVedtaksbrev ->
+                if (attestertAvNavIdent != null) {
                     Dto.BrevStatus.KLAR
                 }
+                else {
+                    Dto.BrevStatus.ATTESTERING
+                }
+            laastForRedigering -> Dto.BrevStatus.KLAR
+
             else -> Dto.BrevStatus.KLADD
         }
     )

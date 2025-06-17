@@ -310,6 +310,64 @@ class BrevredigeringServiceTest {
     }
 
     @Test
+    fun `vedtaksbrev maa ha vedtaksId`(): Unit = runBlocking {
+        assertThrows<BrevredigeringException> {
+            opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV)
+        }
+    }
+
+    @Test
+    fun `status er KLADD for et nytt brev`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+
+        assertThat(brev.info.status).isEqualTo(Dto.BrevStatus.KLADD)
+    }
+
+    @Test
+    fun `status er KLAR om brev er laast`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        val brevEtterLaas = withPrincipal(saksbehandler1Principal) {
+            brevredigeringService.delvisOppdaterBrev(saksId = brev.info.saksId, brevId = brev.info.id, laastForRedigering = true)!!
+        }
+
+        assertThat(brevEtterLaas.info.status).isEqualTo(Dto.BrevStatus.KLAR)
+    }
+
+    @Test
+    fun `status er ATTESTERING om vedtaksbrev er laast`(): Unit = runBlocking {
+        val brev = opprettBrev(vedtaksId = 1, brevkode = Testbrevkoder.VEDTAKSBREV).resultOrNull()!!
+
+        val brevEtterLaas = withPrincipal(saksbehandler1Principal) {
+            brevredigeringService.delvisOppdaterBrev(saksId = brev.info.saksId, brevId = brev.info.id, laastForRedigering = true)!!
+        }
+        assertThat(brevEtterLaas.info.status).isEqualTo(Dto.BrevStatus.ATTESTERING)
+    }
+
+    @Test
+    fun `status er KLAR om vedtaksbrev er laast og det er attestert`(): Unit = runBlocking {
+        val brev = opprettBrev(vedtaksId = 1, brevkode = Testbrevkoder.VEDTAKSBREV).resultOrNull()!!
+
+        withPrincipal(saksbehandler1Principal) {
+            brevredigeringService.delvisOppdaterBrev(saksId = brev.info.saksId, brevId = brev.info.id, laastForRedigering = true)!!
+        }
+        val brevEtterAttestering = withPrincipal(attestantPrincipal) {
+            brevredigeringService.attester(saksId = brev.info.saksId, brevId = brev.info.id, null, null, null)?.resultOrNull()!!
+        }
+        assertThat(brevEtterAttestering.info.status).isEqualTo(Dto.BrevStatus.KLAR)
+    }
+
+    @Test
+    fun `status er ARKIVERT om brev har journalpost`(): Unit = runBlocking {
+        val brev = opprettBrev().resultOrNull()!!
+        transaction { Brevredigering[brev.info.id].journalpostId = 123L }
+
+        val oppdatertBrev = withPrincipal(saksbehandler1Principal) {
+            brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)?.resultOrNull()!!
+        }
+        assertThat(oppdatertBrev.info.status).isEqualTo(Dto.BrevStatus.ARKIVERT)
+    }
+
+    @Test
     fun `cannot create brevredigering for a NavEnhet without access to it`(): Unit = runBlocking {
         val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
         val result = withPrincipal(saksbehandler1Principal) {

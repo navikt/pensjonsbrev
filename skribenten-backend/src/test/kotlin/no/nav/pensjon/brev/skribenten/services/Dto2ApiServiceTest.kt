@@ -55,30 +55,6 @@ class Dto2ApiServiceTest {
     }
 
     @Test
-    fun `status er kladd om brev ikke er laast og ikke redigeres`(): Unit = runBlocking {
-        val brev = createBrev(redigeresAv = null, laastForRedigering = false)
-        assertThat(dto2ApiService.toApi(brev).status).isEqualTo(Api.BrevStatus.Kladd)
-    }
-
-    @Test
-    fun `status er Klar om brev er laast`(): Unit = runBlocking {
-        val brev = createBrev(laastForRedigering = true)
-        assertThat(dto2ApiService.toApi(brev).status).isEqualTo(Api.BrevStatus.Klar())
-    }
-
-    @Test
-    fun `status er UnderRedigering om brev ikke er laast og er reservert for redigering`(): Unit = runBlocking {
-        val redigeresAv = NavIdent("Z99")
-        val brev = createBrev(redigeresAv = redigeresAv, laastForRedigering = false)
-        stageAnsatt(redigeresAv, "Annen", "Saksbehandler")
-        assertThat(dto2ApiService.toApi(brev).status).isEqualTo(
-            Api.BrevStatus.UnderRedigering(
-                Api.NavAnsatt(redigeresAv,"Annen Saksbehandler")
-            )
-        )
-    }
-
-    @Test
     fun `henter navn for opprettetAv og sistredigertAv`(): Unit = runBlocking {
         val opprettetAv = NavIdent("Z100")
         val sistredigertAv = NavIdent("Z101")
@@ -139,7 +115,7 @@ class Dto2ApiServiceTest {
         journalpostId = null,
         attestertAv = attestertAv,
         signaturAttestant = "Peder Ås",
-        status = TODO()
+        status = Dto.BrevStatus.KLADD
     )
 
     private fun stageAnsatt(id: NavIdent, fornavn: String, etternavn: String) {
