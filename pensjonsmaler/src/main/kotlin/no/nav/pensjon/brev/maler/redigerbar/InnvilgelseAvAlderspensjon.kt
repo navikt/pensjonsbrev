@@ -79,6 +79,7 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvGjenlevendetillegg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilKlageUtland
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SKjermingstilleggHjemmel
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.SkattAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Skatteplikt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SoktAFPPrivatInfo
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenadAP
@@ -484,7 +485,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             }
 
             showIf(borINorge) {
-                includePhrase(InfoSkattAP)
+                includePhrase(SkattAP)
             }.orShowIf(saksbehandlerValg.kildeskatt) {
                 title1 {
                     text(
