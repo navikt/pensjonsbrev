@@ -291,12 +291,7 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
         if (isBlockContentIndex(draft.focus) && currentBlock.type === PARAGRAPH) {
           splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
 
-          addElements(
-            [tableContent, newLiteral({ editedText: "" })],
-            draft.focus.contentIndex + 1,
-            currentBlock.content,
-            currentBlock.deletedContent,
-          );
+          addElements([tableContent], draft.focus.contentIndex + 1, currentBlock.content, currentBlock.deletedContent);
 
           draft.focus = {
             blockIndex: draft.focus.blockIndex,
