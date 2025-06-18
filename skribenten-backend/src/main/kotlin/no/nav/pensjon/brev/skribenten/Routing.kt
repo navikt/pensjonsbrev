@@ -32,6 +32,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val brevredigeringService =
         BrevredigeringService(brevbakerService, navansattService, penService)
     val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
+    val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringService, brevbakerService)
 
     Features.initUnleash(servicesConfig.getConfig("unleash"))
 
@@ -72,7 +73,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             tjenestebussIntegrasjonRoute(samhandlerService, tjenestebussIntegrasjonService)
             meRoute(navansattService)
 
-            externalAPI(brevredigeringService, brevbakerService)
+            externalAPI(externalAPIService)
         }
     }
 }
