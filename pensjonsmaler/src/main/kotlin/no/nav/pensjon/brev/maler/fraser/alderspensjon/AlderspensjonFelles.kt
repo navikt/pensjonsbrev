@@ -1,10 +1,14 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
+import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
+import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SUPPLERENDE_STOENAD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -274,7 +278,7 @@ object Skatteplikt : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-object InnvilgelseAPForeloepigBeregning :  OutlinePhrase<LangBokmalNynorskEnglish>() {
+object InnvilgelseAPForeloepigBeregning : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
@@ -329,6 +333,41 @@ object RettTilKlageUtland : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 Bokmal to "Hvis du ønsker å klage på vedtak fra utenlandske trygdemyndigheter, må du kontakte trygdemyndighetene i det enkelte landet.",
                 Nynorsk to "Dersom du ynskjer å klage på vedtak frå utanlandske trygdeorgan, må du kontakte trygdeorganet i det enkelte landet.",
                 English to "If you want to appeal a decision made by a foreign national insurance authority, you must get in contact with the national insurance authority in the relevant country."
+            )
+        }
+    }
+}
+
+object SkattAP :  OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Det er egne skatteregler for pensjon",
+                Nynorsk to "Det er eigne skattereglar for pensjon",
+                English to "Pensions are subject to special tax rules"
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Du bør endre skattekortet når du begynner å ta ut alderspensjon."
+                        + " Dette kan du gjøre selv på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister."
+                        + " Vi får skattekortet elektronisk. Du skal derfor ikke sende det til oss.",
+                Nynorsk to "Du bør endre skattekortet når du begynner å ta ut alderspensjon. "
+                        + " Dette kan du gjøre selv på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister."
+                        + " Vi får skattekortet elektronisk. Du skal derfor ikke sende det til oss.",
+                English to "When you start draw retirement pension, you should change your tax deduction card."
+                        + " You can change your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL. There you will find more information regarding tax deduction card for pensioners."
+                        + " We will receive the tax card directly from the Norwegian Tax Administration, meaning you do not need to send it to us."
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "På $DIN_PENSJON_URL kan du se hva du betaler i skatt. Her kan du også legge inn ekstra skattetrekk om du ønsker det."
+                        + " Dersom du endrer skattetrekket, vil dette gjelde fra måneden etter at vi har fått beskjed.",
+                Nynorsk to "På $DIN_PENSJON_URL kan du sjå kva du betaler i skatt. Her kan du også leggje inn tilleggsskatt om du ønskjer det."
+                        + " Dersom du endrar skattetrekket, vil dette gjelde frå månaden etter at vi har fått beskjed.",
+                English to "At $DIN_PENSJON_URL you can see how much tax you are paying. Here you can also add surtax, if you want."
+                        + " If you change your income tax rate, this will be applied from the month after we have been notified of the change.",
             )
         }
     }

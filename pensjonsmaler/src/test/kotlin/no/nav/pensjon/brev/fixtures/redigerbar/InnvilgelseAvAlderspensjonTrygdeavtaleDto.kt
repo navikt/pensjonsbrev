@@ -39,7 +39,7 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
             ),
             avtalelandNavn = null,
             borIAvtaleland = false,
-            borINorge = true,
+            borINorge = false,
             erEOSLand = false,
             erMellombehandling = true,
             erSluttbehandlingNorgeUtland = false,
@@ -53,7 +53,7 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
             kravVirkDatoFom = LocalDate.of(2025, 6, 1),
             regelverkType = AlderspensjonRegelverkType.AP2025,
             sakstype = Sakstype.ALDER,
-            vedtakEtterbetaling = false,
+            vedtakEtterbetaling = true,
             vedtaksresultatUtland = InnvilgelseAvAlderspensjonTrygdeavtaleDto.VedtaksresultatUtland(
                 antallLandVilkarsprovd = 0,
                 landNavn = "Sverige",
