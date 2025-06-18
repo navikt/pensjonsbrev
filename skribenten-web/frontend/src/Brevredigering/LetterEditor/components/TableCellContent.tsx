@@ -3,7 +3,7 @@ import React from "react";
 import type { LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import type { LiteralValue } from "~/types/brevbakerTypes";
 
-import { EditableText } from "../LetterEditor/components/ContentGroup";
+import { EditableText } from "./ContentGroup";
 
 export const TableCellContent: React.FC<{
   lit: LiteralValue;
