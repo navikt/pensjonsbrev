@@ -247,15 +247,12 @@ export function newTable(rows: Row[]): Table {
     type: TABLE,
     id: null,
     parentId: null,
-
     header: {
       id: null,
       parentId: null,
       colSpec: [] as ColumnSpec[],
     },
-
     rows,
-
     deletedRows: [],
   };
 }

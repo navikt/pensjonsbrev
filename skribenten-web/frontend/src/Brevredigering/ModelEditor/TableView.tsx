@@ -9,7 +9,6 @@ const tableStyles = css`
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
-
   td,
   th {
     border: 1px solid #000;
@@ -25,21 +24,21 @@ const TableView: React.FC<{
 }> = ({ node, blockIndex, contentIndex }) => (
   <table css={tableStyles}>
     <tbody>
-      {node.rows.map((row, rIdx) => (
-        <tr key={rIdx}>
-          {row.cells.map((cell, cIdx) => (
-            <td key={cIdx}>
+      {node.rows.map((row, rowIndex) => (
+        <tr key={rowIndex}>
+          {row.cells.map((cell, cellIndex) => (
+            <td key={cellIndex}>
               {cell.text
-                .filter((txt) => txt.type === LITERAL)
-                .map((lit, idx) => (
+                .filter((textItem) => textItem.type === LITERAL)
+                .map((literal, literalIndex) => (
                   <TableCellContent
-                    key={idx}
-                    lit={lit}
+                    key={literalIndex}
+                    lit={literal}
                     litIndex={{
                       blockIndex,
                       contentIndex,
-                      itemIndex: rIdx,
-                      itemContentIndex: cIdx,
+                      itemIndex: rowIndex,
+                      itemContentIndex: cellIndex,
                     }}
                   />
                 ))}

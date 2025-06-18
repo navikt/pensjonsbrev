@@ -52,7 +52,7 @@ export function isEmptyContent(content: Content) {
       return content.items.length === 1 && isEmptyItem(content.items[0]);
     }
     case TABLE: {
-      // A table counts as “non-empty” if it has at least one row / cell.
+      // A table counts as “non-empty” if it has at least one row.
       return content.rows.length === 0;
     }
   }
@@ -75,8 +75,6 @@ export function isEmptyBlock(block: AnyBlock): boolean {
   if ("content" in block && Array.isArray(block.content)) {
     return isEmptyContentList(block.content);
   }
-  /* TABLE (and any future block with rows/cells) is never “empty”
-     for the purposes of split/merge. */
   return false;
 }
 
