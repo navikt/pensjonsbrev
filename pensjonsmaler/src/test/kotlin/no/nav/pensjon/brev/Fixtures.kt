@@ -10,14 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.OpptjeningVedForhoeyetHjelpesatsDto
 import no.nav.pensjon.brev.api.model.maler.UfoerOmregningEnsligDto
 import no.nav.pensjon.brev.api.model.maler.UngUfoerAutoDto
 import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
-import no.nav.pensjon.brev.api.model.maler.alderApi.AdhocAlderspensjonGjtOppryddingAutoDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016AutoDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAP2016Dto
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto
-import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDto
+import no.nav.pensjon.brev.api.model.maler.alderApi.*
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDto
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
@@ -83,6 +76,8 @@ object Fixtures {
             MaanedligPensjonFoerSkattAlderspensjonDto::class -> createMaanedligPensjonFoerSkattAlderspensjonDto() as T
             MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned::class -> createMaanedligUfoeretrygdFoerSkattDtoUfoeretrygdPerMaaned() as T
             MaanedligUfoeretrygdFoerSkattDto::class -> createMaanedligUfoeretrygdFoerSkattDto() as T
+            OmregningAlderUfore2016Dto::class -> createOmregningAlderUfore2016Dto() as T
+            OmregningAlderUfore2016RedigerbarDto::class -> createOmregningAlderUfore2016RedigerbarDto() as T
             OmsorgEgenAutoDto::class -> createOmsorgEgenAutoDto() as T
             OmsorgEgenManuellDto::class -> createOmsorgManuellDto() as T
             OpphoerBarnetilleggAutoDto::class -> createOpphoerBarnetilleggAutoDto() as T
