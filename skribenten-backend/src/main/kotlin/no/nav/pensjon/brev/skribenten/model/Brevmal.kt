@@ -74,6 +74,7 @@ interface LetterMetadata {
 
         private fun BrevdataDto.BrevkategoriCode.toKategoriTekst() =
             when (this) {
+                BrevdataDto.BrevkategoriCode.BREV_MED_SKJEMA -> "Brev med skjema"
                 BrevdataDto.BrevkategoriCode.INFORMASJON -> "Informasjon"
                 BrevdataDto.BrevkategoriCode.INNHENTE_OPPL -> "Innhente opplysninger"
                 BrevdataDto.BrevkategoriCode.NOTAT -> "Notat"
