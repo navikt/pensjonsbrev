@@ -1,7 +1,7 @@
 app-name: "skribenten-backend"
 
 database:
-  auditlog: "off"
+  auditlog: off
 
 ingresses:
   - "https://pensjon-skribenten-api.intern.dev.nav.no"
