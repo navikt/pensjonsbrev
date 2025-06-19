@@ -12,7 +12,6 @@ data class OmsorgEgenManuellDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<OmsorgEgenManuellDto.SaksbehandlerValg, OmsorgEgenManuellDto.PesysData> {
     data class SaksbehandlerValg(
-        val avdoedNavn: String,
         @DisplayText("År egenerklæring omsorgspoeng")
         val aarEgenerklaringOmsorgspoeng: Year,
         @DisplayText("År innvilget omsorgspoeng")

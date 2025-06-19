@@ -216,13 +216,13 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                             " +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} hvis du trenger hjelp til dette. ",
                     Nynorsk to "Logg inn på ${Constants.DIN_PENSJON_URL} for å sjekke når du tidlegast kan ta ut ".expr() +
                             "alderspensjon. Der kan du også sjå kva pensjonen din blir, avhengig av når og kor mykje du " +
-                            "tek ut. Du kan logge inn med BankID, Buypass eller Commfides. Kontakt oss gjerne på telefon" +
+                            "tar ut. Du kan logge inn med BankID, Buypass eller Commfides. Kontakt oss gjerne på telefon" +
                             " +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} om du treng hjelp til dette. ",
                     English to "Log in to ${Constants.DIN_PENSJON_URL} to check the earliest date you can withdraw your retirement pension. ".expr() +
                             "There, you can also see how your pension will vary depending on when and how much you choose to withdraw. " +
-                            "You can log in using BankID, Buypass, or Commfides. If you need assistance, please contact us by phone at +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}." +
+                            "You can log in using BankID, Buypass, or Commfides. If you need assistance, please contact us by phone at +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}. " +
                             "Even though we have rejected this application, you may still have the right to withdraw your retirement pension before turning" + normertPensjonsalder.aarOgMaanederFormattert() + ". " +
-                            "To do so, you would need to choose a lower withdrawal rate or postpone your pension withdrawal to a later date.",
+                                "To do so, you would need to choose a lower withdrawal rate or postpone your pension withdrawal to a later date.",
                 )
                 textExpr(
                     Bokmal to "Selv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før ".expr() +

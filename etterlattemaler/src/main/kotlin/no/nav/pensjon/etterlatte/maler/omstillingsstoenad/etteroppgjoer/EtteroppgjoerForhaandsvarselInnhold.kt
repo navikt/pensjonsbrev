@@ -112,7 +112,7 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
             }
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Per ".expr() + data.dagensDato.format() + " er ett rettsgebyr " + data.rettsgebyrBeloep.format() + " kroner.",
+                    Language.Bokmal to "Per 31. Desember ".expr() + data.etteroppgjoersAar.format() + " er ett rettsgebyr " + data.rettsgebyrBeloep.format() + " kroner.",
                     Language.Nynorsk to "".expr(),
                     Language.English to "".expr(),
                 )
@@ -147,7 +147,7 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
             }
 
             // dersom ingen endring
-            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.IKKE_ETTEROPPGJOER)){
+            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING)){
                 showIf(data.avviksBeloep.equalTo(0)){
                     paragraph {
                         textExpr(
