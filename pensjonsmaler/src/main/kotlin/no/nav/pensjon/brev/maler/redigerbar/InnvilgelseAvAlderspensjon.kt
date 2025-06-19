@@ -70,7 +70,6 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.GarantitilleggHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.GjenlevendetilleggKap19Hjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.HjemlerInnvilgelseForAP2011AP2016
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoPensjonFraAndreAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoSkattAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPForeloepigBeregning
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPUttakEndr
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgetGjRettKap19For2024
@@ -530,7 +529,6 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                                 " If you change your income tax rate, this will be applied from the month after we have been notified of the change."
                     )
                 }
-                includePhrase(Skatteplikt)
             }
 
             showIf(saksbehandlerValg.etterbetaling or vedtakEtterbetaling) {

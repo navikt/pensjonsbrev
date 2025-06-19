@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
-import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
@@ -8,7 +7,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SUPPLERENDE_STOENAD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -223,14 +221,14 @@ object SupplerendeStoenadAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
             text(
                 Bokmal to "Hvis du har kort botid i Norge når du fyller 67 år, kan du søke om supplerende stønad. " +
                         "Stønaden er behovsprøvd og all inntekt fra Norge og utlandet blir regnet med. Inntekten til eventuell ektefelle, " + "" +
-                        "samboer eller registrert partner blir også regnet med. Du kan lese mer om supplerende stønad på nettsiden vår ${SUPPLERENDE_STOENAD_URL}.",
+                        "samboer eller registrert partner blir også regnet med. Du kan lese mer om supplerende stønad på nettsiden vår $SUPPLERENDE_STOENAD_URL.",
                 Nynorsk to "Dersom du har kort butid i Noreg når du fyller 67 år, kan du søkje om supplerande stønad. " +
                         "Stønaden er behovsprøvd, og all inntekt frå Noreg og utlandet blir rekna med. Inntekta til eventuell ektefelle, " +
-                        "sambuar eller registrert partnar skal også reknast med. Du kan lese meir om supplerande stønad på nettsida vår ${SUPPLERENDE_STOENAD_URL}.",
+                        "sambuar eller registrert partnar skal også reknast med. Du kan lese meir om supplerande stønad på nettsida vår $SUPPLERENDE_STOENAD_URL.",
                 English to "If you have only lived a short period in Norway before reaching 67 years of age, you can apply for supplementary benefit. " +
                         "The benefit is means-tested and your total income from Norway and abroad is taken into account. " +
                         "The income of any spouse, cohabitant or registered partner will also be taken into account. " +
-                        "You can read more about supplementary benefit at our website ${SUPPLERENDE_STOENAD_URL}.",
+                        "You can read more about supplementary benefit at our website $SUPPLERENDE_STOENAD_URL.",
             )
         }
     }
