@@ -50,7 +50,7 @@ spec:
             name: skribentendb
         flags:
           - name: "cloudsql.enable_pgaudit"
-            value: {{database.auditlog}}
+            value: "{{database.auditlog}}"
           - name: "pgaudit.log"
             value: "read,write,ddl,role"
   azure:
