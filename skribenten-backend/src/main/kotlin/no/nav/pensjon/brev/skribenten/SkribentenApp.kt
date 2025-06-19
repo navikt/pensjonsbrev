@@ -84,11 +84,7 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
         }
         exception<BrevredigeringException> { call, cause ->
             when (cause) {
-                is ArkivertBrevException -> call.respond(
-                    HttpStatusCode.Conflict,
-                    cause.message ?: "Brev er allerede arkivert"
-                )
-
+                is ArkivertBrevException -> call.respond(HttpStatusCode.Conflict, cause.message)
                 is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.BadRequest, cause.message)
                 is BrevLaastForRedigeringException -> call.respond(HttpStatusCode.Locked, cause.message)
                 is KanIkkeReservereBrevredigeringException -> call.respond(HttpStatusCode.Locked, cause.response)
@@ -97,6 +93,7 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
                 is AlleredeAttestertException -> call.respond(HttpStatusCode.Conflict, cause.message)
                 is KanIkkeAttestereException -> call.respond(HttpStatusCode.InternalServerError, cause.message)
                 is BrevmalFinnesIkke -> call.respond(HttpStatusCode.InternalServerError, cause.message)
+                is VedtaksbrevKreverVedtaksId -> call.respond(HttpStatusCode.BadRequest, cause.message)
             }
         }
         exception<Exception> { call, cause ->

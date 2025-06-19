@@ -140,5 +140,4 @@ private fun Brevkategori.toKategoriTekst() =
         Brevkategori.KLAGE_OG_ANKE -> "Klage og anke"
         Brevkategori.POSTERINGSGRUNNLAG -> "Posteringsgrunnlag"
         Brevkategori.FRITEKSTBREV -> "Fritekstbrev"
-        Brevkategori.BREV_MED_SKJEMA -> "Brev med skjema"
     }

@@ -113,7 +113,6 @@ public final class no/nav/pensjon/brev/api/model/TemplateDescription$Autobrev : 
 }
 
 public final class no/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori : java/lang/Enum {
-	public static final field BREV_MED_SKJEMA Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
 	public static final field ETTEROPPGJOER Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
 	public static final field FEILUTBETALING Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
 	public static final field FOERSTEGANGSBEHANDLING Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
