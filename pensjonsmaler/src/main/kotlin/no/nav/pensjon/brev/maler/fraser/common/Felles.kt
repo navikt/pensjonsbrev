@@ -73,6 +73,8 @@ object Felles {
         }
 
         companion object {
+            val familiepleie = HarDuSpoersmaal(Constants.FAMILIEPLEIER_URL, Constants.NAV_KONTAKTSENTER_TELEFON)
+            val gjenlevende = HarDuSpoersmaal(Constants.GJENLEVENDEPENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON)
             val ufoeretrygd = HarDuSpoersmaal(Constants.UFOERETRYGD_URL, Constants.NAV_KONTAKTSENTER_TELEFON)
             val omsorg = HarDuSpoersmaal(Constants.OMSORGSOPPTJENING_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON)
             val alder = HarDuSpoersmaal(Constants.PENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON)
