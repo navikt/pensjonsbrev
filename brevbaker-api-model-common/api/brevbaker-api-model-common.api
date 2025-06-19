@@ -720,10 +720,24 @@ public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Year : no/nav/pensjon/brevbaker/api/model/IntValue {
+	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/Year;
+	public static fun constructor-impl (I)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public fun getValue ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/YearWrapper : no/nav/pensjon/brevbaker/api/model/IntValue {
 	public fun <init> (I)V
 	public final fun component1 ()I
-	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/Year;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/Year;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/Year;
+	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/YearWrapper;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/YearWrapper;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/YearWrapper;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
 	public fun hashCode ()I

@@ -28,7 +28,10 @@ class Foedselsnummer(val value: String) {
 
 data class Kroner(override val value: Int) : IntValue
 
-data class Year(override val value: Int) : IntValue
+@JvmInline
+value class Year(override val value: Int) : IntValue
+
+data class YearWrapper(override val value: Int) : IntValue
 
 data class Months(override val value: Int) : IntValue
 
