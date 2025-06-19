@@ -52,7 +52,6 @@ interface TemplateDescription {
 
     // TODO: Gjer om denne til interface, fleire av desse er pensjonsspesifikke
     enum class Brevkategori {
-        BREV_MED_SKJEMA,
         ETTEROPPGJOER,
         FEILUTBETALING,
         FOERSTEGANGSBEHANDLING,
