@@ -61,22 +61,22 @@ class ExternalAPIService(
     private fun Dto.Mottaker.toExternal(): ExternalAPI.OverstyrtMottaker = when (type) {
         MottakerType.SAMHANDLER -> ExternalAPI.OverstyrtMottaker.Samhandler(tssId!!)
         MottakerType.NORSK_ADRESSE -> ExternalAPI.OverstyrtMottaker.NorskAdresse(
-            navn!!,
-            postnummer!!,
-            poststed!!,
-            adresselinje1,
-            adresselinje2,
-            adresselinje3
+            navn = navn!!,
+            postnummer = postnummer!!,
+            poststed = poststed!!,
+            adresselinje1 = adresselinje1,
+            adresselinje2 = adresselinje2,
+            adresselinje3 = adresselinje3
         )
 
         MottakerType.UTENLANDSK_ADRESSE -> ExternalAPI.OverstyrtMottaker.UtenlandskAdresse(
-            navn!!,
-            postnummer,
-            poststed,
-            adresselinje1!!,
-            adresselinje2,
-            adresselinje3,
-            landkode!!
+            navn = navn!!,
+            postnummer = postnummer,
+            poststed = poststed,
+            adresselinje1 = adresselinje1!!,
+            adresselinje2 = adresselinje2,
+            adresselinje3 = adresselinje3,
+            landkode = landkode!!
         )
     }
 }
