@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.skribenten.model.Api.NavAnsatt
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 class Dto2ApiService(
     private val brevbakerService: BrevbakerService,
@@ -60,27 +59,27 @@ class Dto2ApiService(
 
     private suspend fun Dto.Mottaker.toApi(): Api.OverstyrtMottaker = when (type) {
         MottakerType.SAMHANDLER -> Api.OverstyrtMottaker.Samhandler(
-            tssId!!,
-            samhandlerService.hentSamhandlerNavn(tssId)
+            tssId = tssId!!,
+            navn = samhandlerService.hentSamhandlerNavn(tssId)
         )
 
         MottakerType.NORSK_ADRESSE -> Api.OverstyrtMottaker.NorskAdresse(
-            navn!!,
-            postnummer!!,
-            poststed!!,
-            adresselinje1,
-            adresselinje2,
-            adresselinje3
+            navn = navn!!,
+            postnummer = postnummer!!,
+            poststed = poststed!!,
+            adresselinje1 = adresselinje1,
+            adresselinje2 = adresselinje2,
+            adresselinje3 = adresselinje3
         )
 
         MottakerType.UTENLANDSK_ADRESSE -> Api.OverstyrtMottaker.UtenlandskAdresse(
-            navn!!,
-            postnummer,
-            poststed,
-            adresselinje1!!,
-            adresselinje2,
-            adresselinje3,
-            landkode!!
+            navn = navn!!,
+            postnummer = postnummer,
+            poststed = poststed,
+            adresselinje1 = adresselinje1!!,
+            adresselinje2 = adresselinje2,
+            adresselinje3 = adresselinje3,
+            landkode = landkode!!
         )
     }
 
