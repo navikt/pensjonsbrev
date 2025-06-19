@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten
 import com.typesafe.config.Config
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.plugins.swagger.swaggerUI
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
@@ -32,11 +33,13 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val brevredigeringService =
         BrevredigeringService(brevbakerService, navansattService, penService)
     val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
+    val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringService, brevbakerService)
 
     Features.initUnleash(servicesConfig.getConfig("unleash"))
 
     routing {
         healthRoute()
+        swaggerUI("/swagger", "openapi/external-api.yaml")
 
         authenticate(authConfig.name) {
             install(PrincipalInContext)
@@ -71,6 +74,8 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             brev(brevredigeringService, dto2ApiService)
             tjenestebussIntegrasjonRoute(samhandlerService, tjenestebussIntegrasjonService)
             meRoute(navansattService)
+
+            externalAPI(externalAPIService)
         }
     }
 }

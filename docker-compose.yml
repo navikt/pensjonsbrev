@@ -82,6 +82,7 @@ services:
       - AD_GROUP_EndreStrengtFortroligUtland=fc792042-93d8-4d5e-a501-55c45c03c576
       - AD_GROUP_Attestant=63f46f74-84a8-4d1c-87a8-78532ab3ae60
       - NORG2_URL=https://norg2.intern.dev.nav.no/norg2/
+      - SKRIBENTEN_WEB_URL=https://pensjon-skribenten-web-q2.intern.dev.nav.no
 
   skribenten-backend-db:
     profiles:
