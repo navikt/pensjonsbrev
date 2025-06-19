@@ -7,9 +7,8 @@ import no.nav.pensjon.brevbaker.api.model.Year
 fun createOmsorgManuellDto() =
     OmsorgEgenManuellDto(
         saksbehandlerValg = OmsorgEgenManuellDto.SaksbehandlerValg(
-            "Peder Ås",
-            Year(3),
-            Year(1)
+            Year(2024),
+            Year(2023)
         ),
         pesysData = OmsorgEgenManuellDto.PesysData(
             ReturAdresse(

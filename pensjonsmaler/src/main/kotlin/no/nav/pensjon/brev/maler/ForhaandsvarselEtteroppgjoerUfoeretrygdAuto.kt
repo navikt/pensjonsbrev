@@ -157,6 +157,14 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                     }
                 }
 
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven § 12-14. ",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova § 12-14. ",
+                        English to "This decision is made in accordance with Section 12-14 of the National Insurance Act.",
+                    )
+                }
+
                 showIf(kanSoekeOmNyInntektsgrense) {
                     title1 {
                         text(
