@@ -14,6 +14,8 @@ paths:
   /external/api/v1/brev:
     get:
       description: Henter alle brev for pesys sak(er)
+      security:
+        - entraId: []
       parameters:
         - name: saksId
           description: >
@@ -212,3 +214,15 @@ components:
               type: string
               description: To-bokstavers landkode ihht iso3166-1 alfa-2
 
+
+  securitySchemes:
+    entraId:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Bruker [Entra ID](https://docs.nais.io/auth/entra-id). 
+        Token må ha `audience` satt til `[cluster].pensjonsbrev.skribenten-backend`.
+        
+        For å teste APIet kan du lage et gyldig OBO-token ved å bruke:
+        - [dev-gcp](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp.pensjonsbrev.skribenten-backend)

@@ -31,8 +31,7 @@ inboundRules:
     namespace: pensjonsbrev
     cluster: dev-gcp
   - application: azure-token-generator
-    namespace: aura
-    cluster: dev-gcp
+    namespace: nais
 
 outboundRules:
   - application: pensjon-brevbaker
