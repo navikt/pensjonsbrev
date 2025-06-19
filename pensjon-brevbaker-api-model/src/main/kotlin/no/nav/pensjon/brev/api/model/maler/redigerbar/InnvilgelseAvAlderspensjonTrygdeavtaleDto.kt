@@ -41,12 +41,12 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
 
         val afpPrivatResultatFellesKontoret: Boolean?,  // v1.afpPrivat
         val alderspensjonVedVirk: AlderspensjonVedVirk,
-        val avtalelandNavn: String?,  //
+        val avtalelandNavn: String?,  // v1.Land
         val borIAvtaleland: Boolean,  // v3.Person
         val borINorge: Boolean,  // v3.Person
         val erEOSLand: Boolean,  // v1.Land
-        val erMellombehandling: Boolean,  // v3.Krav  NY
-        val erSluttbehandlingNorgeUtland: Boolean,  // v3.Krav  NY
+        val erMellombehandling: Boolean,  // v3.Krav
+        val erSluttbehandlingNorgeUtland: Boolean,  // v3.Krav
         val fullTrygdtid: Boolean,  // v4.AlderspensjonPerManed
         val harFlereBeregningsperioder: Boolean,  // Har flere enn 1 beregningsperiode > v2.BeregnetPensjonPerManed / v1.BeregnetPensjonPerManedKap20
         val inngangOgEksportVurdering: InngangOgEksportVurdering?,
@@ -90,6 +90,6 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
     // v1.VedtaksresultatUtland
     data class VedtaksresultatUtland(
         val antallLandVilkarsprovd: Int,
-        val landNavn: String?,  // Kan være flere land som snedes i en string, komma separert
+        val landNavn: String?,  // Ett eller flere land som sendes i en string, komma separert
     )
 }
