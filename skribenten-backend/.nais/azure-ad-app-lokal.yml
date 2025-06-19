@@ -13,6 +13,8 @@ metadata:
   namespace: pensjonsbrev
   labels:
     team: pensjonsbrev
+database:
+  auditlog: "off"
 spec:
   secretName: azure-skribenten-backend-lokal
   replyUrls:

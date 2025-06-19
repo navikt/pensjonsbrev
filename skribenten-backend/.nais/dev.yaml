@@ -1,5 +1,8 @@
 app-name: "skribenten-backend"
 
+database:
+  auditlog: "off"
+
 groups:
   #0000-GA-PENSJON_BRUKERHJELPA
   - name: "PENSJON_BRUKERHJELPA"
