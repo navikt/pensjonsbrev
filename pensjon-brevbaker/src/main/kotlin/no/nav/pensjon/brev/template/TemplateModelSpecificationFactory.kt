@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brevbaker.api.model.Broek
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.ObjectTypeSpecification
@@ -99,7 +100,7 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
                     FieldType.Object(isMarkedNullable, qname, displayText = displayText.firstOrNull())
                 }
 
-                Telefonnummer::class.qualifiedName, Foedselsnummer::class.qualifiedName -> {
+                Telefonnummer::class.qualifiedName, Foedselsnummer::class.qualifiedName, Broek::class.qualifiedName -> {
                     toProcess.add(theClassifier)
                     FieldType.Object(isMarkedNullable, qname!!, displayText = displayText.firstOrNull())
                 }
