@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { BodyShort, Heading, Tabs, VStack } from "@navikt/ds-react";
+import { Heading, Tabs, VStack } from "@navikt/ds-react";
 
 import {
   SaksbehandlerValgModelEditor,
