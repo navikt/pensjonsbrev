@@ -2,6 +2,8 @@
 
 package no.nav.pensjon.brevbaker.api.model
 
+import java.util.Objects
+
 interface IntValue {
     val value: Int
 }
@@ -40,8 +42,16 @@ value class Days(override val value: Int) : IntValue
 @JvmInline
 value class Percent(override val value: Int) : IntValue
 
-// TODO: Ta stilling til denne
-data class Broek(val teller: Int, val nevner: Int)
+class Broek(val teller: Int, val nevner: Int) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is Broek) return false
+        return teller == other.teller && nevner == other.nevner
+    }
+
+    override fun hashCode() = Objects.hash(teller, nevner)
+
+    override fun toString() = "Broek(teller=$teller, nevner=$nevner)"
+}
 
 
 // TODO: Alle disse under her skal slettes når pesys er oppdatert til ny modell

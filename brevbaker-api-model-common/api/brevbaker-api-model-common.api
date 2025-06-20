@@ -225,10 +225,6 @@ public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/n
 
 public final class no/nav/pensjon/brevbaker/api/model/Broek {
 	public fun <init> (II)V
-	public final fun component1 ()I
-	public final fun component2 ()I
-	public final fun copy (II)Lno/nav/pensjon/brevbaker/api/model/Broek;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/Broek;IIILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/Broek;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getNevner ()I
 	public final fun getTeller ()I
