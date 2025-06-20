@@ -23,10 +23,15 @@ const BrevmalAlternativer = (props: {
 
   switch (specificationFormElements.status) {
     case "error": {
-      return <ApiError error={specificationFormElements.error} title={"En feil skjedde"} />;
+      return (
+        <ApiError
+          error={specificationFormElements.error}
+          title={"Feil oppstod ved henting av alternativer for brevmal"}
+        />
+      );
     }
     case "pending": {
-      return <BodyShort size="small">Henter skjema for saksbehandler valg...</BodyShort>;
+      return null;
     }
     case "success": {
       if (
