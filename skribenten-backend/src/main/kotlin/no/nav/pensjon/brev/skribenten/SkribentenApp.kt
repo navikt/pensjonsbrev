@@ -151,25 +151,3 @@ fun Application.skribentenContenNegotiation() {
         }
     }
 }
-
-
-object PrimitiveModule : SimpleModule() {
-    private fun readResolve(): Any = PrimitiveModule
-
-    init {
-        addDeserializer(Year::class.java, yearDeserializer())
-    }
-
-    private fun yearDeserializer() =
-        object : StdDeserializer<Year>(Year::class.java) {
-            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Year {
-                val node = p.codec.readTree<JsonNode>(p)
-                return if (node is IntNode) {
-                    Year(p.codec.treeToValue(node, Int::class.java))
-                } else if (node is TextNode) {
-                    Year(p.codec.treeToValue(node, String::class.java).toInt())
-                } else {
-                    Year(p.codec.treeToValue(node, YearWrapper::class.java).value)                }
-            }
-        }
-}

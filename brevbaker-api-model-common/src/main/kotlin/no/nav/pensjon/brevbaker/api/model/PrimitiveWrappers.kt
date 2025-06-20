@@ -31,12 +31,29 @@ data class Kroner(override val value: Int) : IntValue
 @JvmInline
 value class Year(override val value: Int) : IntValue
 
-data class YearWrapper(override val value: Int) : IntValue
+@JvmInline
+value class Months(override val value: Int) : IntValue
 
-data class Months(override val value: Int) : IntValue
+@JvmInline
+value class Days(override val value: Int) : IntValue
 
-data class Days(override val value: Int) : IntValue
+@JvmInline
+value class Percent(override val value: Int) : IntValue
 
-data class Percent(override val value: Int) : IntValue
-
+// TODO: Ta stilling til denne
 data class Broek(val teller: Int, val nevner: Int)
+
+
+// TODO: Alle disse under her skal slettes når pesys er oppdatert til ny modell
+data class YearWrapper(override val value: Int) : IntWrapper
+
+data class MonthsWrapper(override val value: Int) : IntWrapper
+
+data class DaysWrapper(override val value: Int) : IntWrapper
+
+data class PercentWrapper(override val value: Int) : IntWrapper
+
+interface IntWrapper {
+    val value: Int
+}
+
