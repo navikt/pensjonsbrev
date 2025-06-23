@@ -26,26 +26,39 @@ fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
     includeSakspart
 )
 
+private const val bokmalstart = "«"
+private const val nynorskstart = "«"
+private const val englishstart = "'"
+
+private const val bokmalend = "»"
+private const val nynorskend = "»"
+private const val englishend = "'"
+
 fun TextScope<BaseLanguages, *>.namedReference(attachment: AttachmentTemplate<BaseLanguages, *>) {
-    text(Language.Bokmal to "«", Language.Nynorsk to "«", Language.English to "'")
+    text(Language.Bokmal to bokmalstart, Language.Nynorsk to nynorskstart, Language.English to englishstart)
     attachment.title.forEach { addTextContent(it) }
-    text(Language.Bokmal to "»", Language.Nynorsk to "»", Language.English to "'")
+    text(Language.Bokmal to bokmalend, Language.Nynorsk to nynorskend, Language.English to englishend)
 }
 
+@JvmName("namedReferenceBokmalNynorsk")
 fun TextScope<LangBokmalNynorsk, *>.namedReference(attachment: AttachmentTemplate<BaseLanguages, *>) {
-    text(Language.Bokmal to "«", Language.Nynorsk to "«")
+    text(Language.Bokmal to bokmalstart, Language.Nynorsk to nynorskstart)
     attachment.title.forEach { addTextContent(it) }
-    text(Language.Bokmal to "»", Language.Nynorsk to "»")
+    text(Language.Bokmal to bokmalend, Language.Nynorsk to nynorskend)
 }
+
+@JvmName("namedReferenceBokmalEnglish")
 fun TextScope<LangBokmalEnglish, *>.namedReference(attachment: AttachmentTemplate<BaseLanguages, *>) {
-    text(Language.Bokmal to "«", Language.English to "'")
+    text(Language.Bokmal to bokmalstart, Language.English to englishstart)
     attachment.title.forEach { addTextContent(it as TextElement<LangBokmalEnglish>) }
-    text(Language.Bokmal to "»", Language.English to "'")
+    text(Language.Bokmal to bokmalend, Language.English to englishend)
 }
+
+@JvmName("namedReferenceBokmal")
 fun TextScope<LangBokmal, *>.namedReference(attachment: AttachmentTemplate<BaseLanguages, *>) {
-    text(Language.Bokmal to "«")
+    text(Language.Bokmal to bokmalstart)
     attachment.title.forEach { addTextContent(it as TextElement<LangBokmal>) }
-    text(Language.Bokmal to "»")
+    text(Language.Bokmal to bokmalend)
 }
 
 class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any> internal constructor(
