@@ -3,9 +3,12 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.Broek
+import no.nav.pensjon.brevbaker.api.model.Days
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.Months
 import no.nav.pensjon.brevbaker.api.model.ObjectTypeSpecification
+import no.nav.pensjon.brevbaker.api.model.Percent
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
@@ -15,7 +18,7 @@ import kotlin.reflect.full.primaryConstructor
 
 class TemplateModelSpecificationError(msg: String) : Error(msg)
 
-class TemplateModelSpecificationFactory(val from: KClass<*>) {
+class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     private val toProcess = mutableListOf<KClass<*>>()
 
     fun build(): TemplateModelSpecification =
@@ -94,6 +97,9 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
 
                 Year::class.qualifiedName ->
                     FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.YEAR, displayText = displayText.firstOrNull())
+
+                Percent::class.qualifiedName, Months::class.qualifiedName, Days::class.qualifiedName ->
+                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.NUMBER, displayText = displayText.firstOrNull())
 
                 "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata" -> {
                     toProcess.add(theClassifier)
