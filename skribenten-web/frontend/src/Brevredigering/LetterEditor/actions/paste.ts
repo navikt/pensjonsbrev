@@ -4,6 +4,7 @@ import { produce } from "immer";
 
 import {
   addElements,
+  cleanseText,
   findAdjoiningContent,
   fontTypeOf,
   isAtStartOfBlock,
@@ -727,8 +728,9 @@ function mergeNeighbouringText<T extends TraversedElement>(elements: T[]): T[] {
 }
 
 function cleansePastedText(str: string): string {
-  return str.replace(/\u00A0/g, " ").replace(/\s+/g, " ");
+  return cleanseText(str).replaceAll(/\s+/g, " ");
 }
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function log(message: string, ...obj: any[]) {
   // eslint-disable-next-line no-console
