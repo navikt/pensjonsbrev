@@ -42,6 +42,11 @@ fun TextScope<LangBokmalEnglish, *>.namedReference(attachment: AttachmentTemplat
     attachment.title.forEach { addTextContent(it as TextElement<LangBokmalEnglish>) }
     text(Language.Bokmal to "»", Language.English to "'")
 }
+fun TextScope<LangBokmal, *>.namedReference(attachment: AttachmentTemplate<BaseLanguages, *>) {
+    text(Language.Bokmal to "«")
+    attachment.title.forEach { addTextContent(it as TextElement<LangBokmal>) }
+    text(Language.Bokmal to "»")
+}
 
 class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any> internal constructor(
     val data: Expression<AttachmentData>,
