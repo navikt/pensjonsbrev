@@ -3,20 +3,11 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.dsl.QuotationMarks.end
+import no.nav.pensjon.brev.template.dsl.QuotationMarks.start
 import no.nav.pensjon.brev.template.dsl.TextScope
 import no.nav.pensjon.brev.template.dsl.text
 
-
-private fun start(language: Language) = when (language) {
-    Bokmal -> "«"
-    Nynorsk -> "«"
-    English -> "'"
-}
-private fun end(language: Language) = when (language) {
-    Bokmal -> "»"
-    Nynorsk -> "»"
-    English -> "'"
-}
 
 fun TextScope<BaseLanguages, *>.namedReference(attachment: AttachmentTemplate<BaseLanguages, *>) {
     text(Bokmal to start(Bokmal), Nynorsk to start(Nynorsk), English to start(English))
