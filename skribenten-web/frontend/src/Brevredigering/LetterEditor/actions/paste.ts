@@ -468,6 +468,8 @@ function getCleanClipboardMarkup(dt: DataTransfer): string {
       "td",
       "th",
       "span",
+      "h1",
+      "h2",
     ],
     ALLOWED_ATTR: ["rowspan", "colspan"],
   });
