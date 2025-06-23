@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.fraser.ufoer
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -255,9 +256,15 @@ object Ufoeretrygd {
             }
             paragraph {
                 text(
-                    Bokmal to "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
-                    Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget «Dine rettar og plikter» ser du kva endringar du må seie frå om.",
-                    English to "You must notify us immediately of any changes in your situation. In the attachment «Your rights and obligations» you will see which changes you must report."
+                    Bokmal to "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget ",
+                    Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget ",
+                    English to "You must notify us immediately of any changes in your situation. In the attachment "
+                )
+                namedReference(vedleggDineRettigheterOgPlikterUfoere)
+                text(
+                    Bokmal to " ser du hvilke endringer du må si fra om.",
+                    Nynorsk to " ser du kva endringar du må seie frå om.",
+                    English to " you will see which changes you must report."
                 )
             }
         }
