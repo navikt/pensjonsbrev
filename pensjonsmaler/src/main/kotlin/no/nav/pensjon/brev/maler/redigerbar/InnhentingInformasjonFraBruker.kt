@@ -198,7 +198,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                     textExpr(
                         Bokmal to "Dokumentasjon på din ".expr() + fritekst("ektefelle/partner/samboer") + " sin inntekt",
                         Nynorsk to "Dokumentasjon på din ".expr() + fritekst("ektefelle/partnar/sambuar") + " si inntekt",
-                        English to "Documentation of your ".expr() + fritekst("spouse/partner/cohabitant") + "`s income",
+                        English to "Documentation of your ".expr() + fritekst("spouse/partner/cohabitant") + "'s income",
                     )
                 }
                 paragraph {
@@ -379,7 +379,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                     text(
                         Bokmal to "Dokumentasjon på din ektefelle/partner/samboer sin inntekt",
                         Nynorsk to "Dokumentasjon på din ektefelle/partnar/sambuar si inntekt",
-                        English to "Documentation of your spouse/partner/cohabitant`s income",
+                        English to "Documentation of your spouse/partner/cohabitant's income",
                     )
                 }
                 paragraph {
