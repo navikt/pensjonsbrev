@@ -41,6 +41,6 @@ fun TextScope<LangBokmalEnglish, *>.namedReference(attachment: AttachmentTemplat
 @JvmName("namedReferenceBokmal")
 fun TextScope<LangBokmal, *>.namedReference(attachment: AttachmentTemplate<BaseLanguages, *>) {
     text(Bokmal to start(Bokmal))
-    attachment.title.forEach { addTextContent(it as TextElement<LangBokmal>) }
+    attachment.title.forEach { addTextContent(it) }
     text(Bokmal to end(Bokmal))
 }
