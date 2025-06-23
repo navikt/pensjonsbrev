@@ -139,10 +139,10 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                     )
                 }
                 paragraph {
-                    text(
-                        Bokmal to "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysninger. Gå inn på Din Profil og velg ${quoted("Bankkonto for utbetaling")}. Du kan logge inn med BankID, Buypass, MinID eller Commfides.",
-                        Nynorsk to "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysningar. Gå inn på Din Profil og vel ${quoted("Bankkonto for utbetaling")}. Du kan logge inn med BankID, Buypass, MinID eller Commfides.",
-                        English to "You can register the necessary bank details in the ${quoted("Din pensjon")} portal at $DIN_PENSJON_URL. Log in on your personal page ${quoted("Din Profil")} and select ${quoted("Bank account for payment")}. You can log in using BankID, Buypass, MinID or Commfides.",
+                    textExpr(
+                        Bokmal to "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysninger. Gå inn på Din Profil og velg ".expr() + quoted("Bankkonto for utbetaling") +". Du kan logge inn med BankID, Buypass, MinID eller Commfides.",
+                        Nynorsk to "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysningar. Gå inn på Din Profil og vel ".expr() + quoted("Bankkonto for utbetaling") +". Du kan logge inn med BankID, Buypass, MinID eller Commfides.",
+                        English to "You can register the necessary bank details in the ".expr() + quoted("Din pensjon") +" portal at $DIN_PENSJON_URL. Log in on your personal page " + quoted("Din Profil") + " and select " + quoted("Bank account for payment") +". You can log in using BankID, Buypass, MinID or Commfides.",
                     )
                 }
             }
@@ -608,10 +608,10 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
             }
 
             paragraph {
-                text(
-                    Bokmal to "Du kan gi tilbakemelding via Nav sin nettside $DITT_NAV. Velg ${quoted("Send beskjed til Nav")}, tema ${quoted("Beskjed – pensjon")}.",
-                    Nynorsk to "Du kan gi tilbakemelding via Nav si nettside $DITT_NAV. Vel ${quoted("Send beskjed til Nav")}, tema ${quoted("Beskjed – pensjon")}.",
-                    English to "Feel free to contact us and give us the required information at Nav’s online service $DITT_NAV. Select ${quoted("Send beskjed til Nav")} and the theme ${quoted("Beskjed – pensjon")}.",
+                textExpr(
+                    Bokmal to "Du kan gi tilbakemelding via Nav sin nettside $DITT_NAV. Velg ".expr() + quoted("Send beskjed til Nav") + ", tema " + quoted("Beskjed – pensjon") + ".",
+                    Nynorsk to "Du kan gi tilbakemelding via Nav si nettside $DITT_NAV. Vel ".expr() + quoted("Send beskjed til Nav") +", tema " + quoted("Beskjed – pensjon") + ".",
+                    English to "Feel free to contact us and give us the required information at Nav’s online service $DITT_NAV. Select ".expr() + quoted("Send beskjed til Nav") +" and the theme " + quoted("Beskjed – pensjon") + ".",
                 )
             }
             paragraph {

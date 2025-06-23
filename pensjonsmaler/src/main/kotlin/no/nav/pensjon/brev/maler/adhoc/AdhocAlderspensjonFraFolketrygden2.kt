@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -55,9 +56,14 @@ object AdhocAlderspensjonFraFolketrygden2 : AutobrevTemplate<EmptyBrevdata> {
             }
             paragraph {
                 text(
-                    Bokmal to "Metoden for beregningen av alderspensjonen din gjør at du nå får et gjenlevendetillegg. Dette erstatter det som før het ${quoted("minstenivåtillegg individuelt")}.",
-                    Nynorsk to "Metoden for utrekninga av alderspensjonen din gjer at du no får eit attlevandetillegg. Dette erstattar det som før heitte ${quoted("minstenivåtillegg individuelt")}.",
-                    English to "The method for calculating your retirement pension means that you now receive a survivor’s supplement. This replaces what was previously called ${quoted("minimum pension supplement")}.",
+                    Bokmal to "Metoden for beregningen av alderspensjonen din gjør at du nå får et gjenlevendetillegg. Dette erstatter det som før het ",
+                    Nynorsk to "Metoden for utrekninga av alderspensjonen din gjer at du no får eit attlevandetillegg. Dette erstattar det som før heitte ",
+                    English to "The method for calculating your retirement pension means that you now receive a survivor’s supplement. This replaces what was previously called ",
+                )
+                textExpr(
+                    Bokmal to quoted("minstenivåtillegg individuelt") + ".",
+                    Nynorsk to quoted("minstenivåtillegg individuelt") + ".",
+                    English to quoted("minimum pension supplement") + "."
                 )
             }
             paragraph {
