@@ -26,7 +26,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
 
 @TemplateModelHelpers
 object AvslagGradsendringFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUttakFoerNormertPensjonsalderDto> {
@@ -41,7 +40,7 @@ object AvslagGradsendringFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUtt
             displayTitle = "Vedtak - avslag endring av uttaksgrad - AP2025",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-            brevtype = INFORMASJONSBREV, // todo: skal være vedtaksbrev (når attestering er ferdig)
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
         title {
