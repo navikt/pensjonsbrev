@@ -113,7 +113,6 @@ public final class no/nav/pensjon/brev/api/model/TemplateDescription$Autobrev : 
 }
 
 public final class no/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori : java/lang/Enum {
-	public static final field BREV_MED_SKJEMA Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
 	public static final field ETTEROPPGJOER Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
 	public static final field FEILUTBETALING Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
 	public static final field FOERSTEGANGSBEHANDLING Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
@@ -660,6 +659,16 @@ public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification
 	public fun getNullable ()Z
 	public fun getType ()Ljava/lang/String;
 	public final fun getValues ()Ljava/util/Set;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$EnumEntry {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDisplayText ()Ljava/lang/String;
+	public final fun getValue ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }

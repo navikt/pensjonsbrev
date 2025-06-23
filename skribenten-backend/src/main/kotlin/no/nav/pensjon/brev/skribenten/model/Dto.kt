@@ -39,7 +39,12 @@ object Dto {
         val journalpostId: Long?,
         val attestertAv: NavIdent?,
         val signaturAttestant: String?,
+        val status: BrevStatus,
     )
+
+    enum class BrevStatus {
+        KLADD, ATTESTERING, KLAR, ARKIVERT
+    }
 
     data class Document(
         val brevredigeringId: Long,
@@ -80,7 +85,7 @@ object Dto {
         val adresselinje1: String? = null,
         val adresselinje2: String? = null,
         val adresselinje3: String? = null,
-        val landkode: String? = null,
+        val landkode: Landkode? = null,
     ) {
         companion object {
             fun samhandler(tssId: String) = Mottaker(
@@ -106,7 +111,7 @@ object Dto {
                 adresselinje1: String,
                 adresselinje2: String?,
                 adresselinje3: String?,
-                landkode: String,
+                landkode: Landkode,
             ) = Mottaker(
                 type = MottakerType.UTENLANDSK_ADRESSE,
                 navn = navn,

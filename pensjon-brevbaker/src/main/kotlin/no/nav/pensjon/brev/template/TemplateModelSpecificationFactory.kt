@@ -109,7 +109,7 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
                         toProcess.add(theClassifier)
                         FieldType.Object(isMarkedNullable, qname!!, displayText = displayText.firstOrNull())
                     } else if (theClassifier.java.isEnum) {
-                        FieldType.Enum(isMarkedNullable, theClassifier.java.enumConstants.map { it.toString() }.toSet(), displayText = displayText.firstOrNull())
+                        FieldType.Enum(isMarkedNullable, enumVerdier(theClassifier), displayText = displayText.firstOrNull())
                     } else {
                         throw TemplateModelSpecificationError("Don't know how to handle type: $qname")
                     }
@@ -119,4 +119,9 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
             throw TemplateModelSpecificationError("Unable to create FieldType of: $this")
         }
     }
+
+    private fun enumVerdier(theClassifier: KClass<*>) =
+        theClassifier.java.fields.map {
+            FieldType.EnumEntry(it.name, it.annotations.filterIsInstance<DisplayText>().firstOrNull()?.text)
+        }.toSet()
 }

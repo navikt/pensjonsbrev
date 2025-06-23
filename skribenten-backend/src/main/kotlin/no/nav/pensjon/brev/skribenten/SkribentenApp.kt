@@ -38,7 +38,8 @@ import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
 fun main() {
     val skribentenConfig: Config =
         ConfigFactory.load(ConfigParseOptions.defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
-            .resolveWith(ConfigFactory.load("azuread")) // loads azuread secrets for local
+            .resolveWith(ConfigFactory.load("azuread"), ConfigResolveOptions.defaults().setAllowUnresolved(true)) // loads azuread secrets for local
+            .resolveWith(ConfigFactory.load("unleash"))
             .getConfig("skribenten")
 
     ADGroups.init(skribentenConfig.getConfig("groups"))
@@ -83,11 +84,7 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
         }
         exception<BrevredigeringException> { call, cause ->
             when (cause) {
-                is ArkivertBrevException -> call.respond(
-                    HttpStatusCode.Conflict,
-                    cause.message ?: "Brev er allerede arkivert"
-                )
-
+                is ArkivertBrevException -> call.respond(HttpStatusCode.Conflict, cause.message)
                 is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.BadRequest, cause.message)
                 is BrevLaastForRedigeringException -> call.respond(HttpStatusCode.Locked, cause.message)
                 is KanIkkeReservereBrevredigeringException -> call.respond(HttpStatusCode.Locked, cause.response)
@@ -96,6 +93,7 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
                 is AlleredeAttestertException -> call.respond(HttpStatusCode.Conflict, cause.message)
                 is KanIkkeAttestereException -> call.respond(HttpStatusCode.InternalServerError, cause.message)
                 is BrevmalFinnesIkke -> call.respond(HttpStatusCode.InternalServerError, cause.message)
+                is VedtaksbrevKreverVedtaksId -> call.respond(HttpStatusCode.BadRequest, cause.message)
             }
         }
         exception<Exception> { call, cause ->

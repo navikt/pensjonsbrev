@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.skribenten.services.PenService.KravStoettetAvDatabygg
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype
 import org.slf4j.LoggerFactory
 
-private val ekskluderteBrev = hashSetOf("PE_IY_05_301", "PE_BA_01_108", "PE_GP_01_010", "PE_AP_04_922", "PE_IY_03_169", "PE_IY_03_171", "PE_IY_03_172", "PE_IY_03_173")
+private val ekskluderteBrev = hashSetOf("PE_IY_05_301", "PE_BA_01_108", "PE_GP_01_010", "PE_AP_04_922", "PE_IY_03_169")
 
 class BrevmalService(
     private val penService: PenService,

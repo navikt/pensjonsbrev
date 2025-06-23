@@ -112,13 +112,15 @@ class TemplateModelSpecificationFactoryTest {
 
     data class WithEnumeration(val navn: String, val anEnum: AnEnum) {
         @Suppress("unused")
-        enum class AnEnum { FLAG1, FLAG2 }
+        enum class AnEnum {
+            @DisplayText("Flag 1") FLAG1, @DisplayText("Flag 2") FLAG2;
+        }
     }
 
     @Test
     fun `enum fields have Enum type with all enum-values`() {
         val spec = TemplateModelSpecificationFactory(WithEnumeration::class).build().types[WithEnumeration::class.qualifiedName!!]!!
-        assertThat(spec["anEnum"], equalTo(FieldType.Enum(false, WithEnumeration.AnEnum.entries.map { it.name }.toSet())))
+        assertThat(spec["anEnum"], equalTo(FieldType.Enum(false, setOf(FieldType.EnumEntry("FLAG1", "Flag 1"), FieldType.EnumEntry("FLAG2", "Flag 2")))))
     }
 
     data class WithValueClass(val navn: String, val aValueClass: TheValue) {

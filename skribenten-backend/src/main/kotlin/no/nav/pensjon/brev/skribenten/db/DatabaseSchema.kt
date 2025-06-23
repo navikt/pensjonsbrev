@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
+import no.nav.pensjon.brev.skribenten.model.Landkode
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
@@ -85,6 +86,7 @@ object BrevredigeringTable : LongIdTable() {
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var saksId by BrevredigeringTable.saksId
+    // Det er forventet at vedtaksId kun har verdi om brevet er Vedtaksbrev
     var vedtaksId by BrevredigeringTable.vedtaksId
     var brevkode by BrevredigeringTable.brevkode
     var spraak by BrevredigeringTable.spraak
@@ -115,6 +117,8 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
                 find { (BrevredigeringTable.id eq id) and (BrevredigeringTable.saksId eq saksId) }.firstOrNull()
             }
     }
+
+    val isVedtaksbrev get() = vedtaksId != null
 }
 
 object DocumentTable : LongIdTable() {
@@ -159,7 +163,7 @@ class Mottaker(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) 
     var adresselinje1 by MottakerTable.adresselinje1
     var adresselinje2 by MottakerTable.adresselinje2
     var adresselinje3 by MottakerTable.adresselinje3
-    var landkode by MottakerTable.landkode
+    var landkode by MottakerTable.landkode.wrap(::Landkode, Landkode::landkode)
 
     companion object : LongEntityClass<Mottaker>(MottakerTable)
 }

@@ -40,8 +40,14 @@ export function isBlockContentIndex(f: Focus | LiteralIndex): f is BlockContentI
   return !isItemContentIndex(f);
 }
 
-export function isItemContentIndex(f: Focus | LiteralIndex): f is ItemContentIndex {
-  return "itemIndex" in f && f.itemIndex !== undefined && "itemContentIndex" in f && f.itemContentIndex !== undefined;
+export function isItemContentIndex(f: Focus | LiteralIndex | undefined): f is ItemContentIndex {
+  return (
+    f !== undefined &&
+    "itemIndex" in f &&
+    f.itemIndex !== undefined &&
+    "itemContentIndex" in f &&
+    f.itemContentIndex !== undefined
+  );
 }
 
 export function isAtStartOfBlock(f: Focus, offset?: number): boolean {
@@ -50,6 +56,10 @@ export function isAtStartOfBlock(f: Focus, offset?: number): boolean {
     (offset ?? f.cursorPosition) === 0 &&
     (isItemContentIndex(f) ? f.itemIndex === 0 && f.itemContentIndex === 0 : true)
   );
+}
+
+export function isAtStartOfItem(f: Focus, offset?: number): boolean {
+  return isItemContentIndex(f) && f.itemContentIndex === 0 && (offset ?? f.cursorPosition) === 0;
 }
 
 export function text<T extends TextContent | undefined>(
@@ -207,7 +217,7 @@ export function splitLiteralAtOffset(literal: Draft<LiteralValue>, offset: numbe
 
   updateLiteralText(literal, newText);
 
-  return newLiteral({ editedText: nextText, fontType: literal.fontType, editedFontType: literal.editedFontType });
+  return newLiteral({ editedText: nextText, fontType: literal.editedFontType ?? literal.fontType });
 }
 
 export function newTitle(args: {
@@ -269,13 +279,13 @@ export function newLiteral(args: {
 }): LiteralValue {
   return {
     type: LITERAL,
-    id: args.id ?? null,
-    parentId: args.parentId ?? null,
-    text: args.text ?? "",
-    editedText: args.editedText ?? null,
-    editedFontType: args.editedFontType ?? null,
-    fontType: args.fontType ?? FontType.PLAIN,
-    tags: args.tags ?? [],
+    id: args?.id ?? null,
+    parentId: args?.parentId ?? null,
+    text: args?.text ?? "",
+    editedText: args?.editedText ?? null,
+    editedFontType: args?.editedFontType ?? null,
+    fontType: args?.fontType ?? FontType.PLAIN,
+    tags: args?.tags ?? [],
   };
 }
 
@@ -294,10 +304,18 @@ export const newVariable = (args: {
   };
 };
 
-export function newItem({ id, content }: { id?: Nullable<number>; content: TextContent[] }): Item {
+export function newItem({
+  id,
+  content,
+  parentId,
+}: {
+  id?: Nullable<number>;
+  content: TextContent[];
+  parentId?: Nullable<number>;
+}): Item {
   return {
     id: id ?? null,
-    parentId: null,
+    parentId: parentId ?? null,
     content,
     deletedContent: [],
   };

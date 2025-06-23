@@ -7,6 +7,7 @@ import {
   findAdjoiningContent,
   fontTypeOf,
   isAtStartOfBlock,
+  isAtStartOfItem,
   isBlockContentIndex,
   isItemContentIndex,
   isNew,
@@ -15,6 +16,7 @@ import {
   newItemList,
   newLiteral,
   newParagraph,
+  newTitle,
   removeElements,
   splitLiteralAtOffset,
   text,
@@ -39,7 +41,7 @@ import type {
 } from "~/types/brevbakerTypes";
 import { FontType, PARAGRAPH, TABLE } from "~/types/brevbakerTypes";
 
-import { isItemList, isLiteral, isTextContent } from "../model/utils";
+import { isEmptyBlock, isItemList, isLiteral, isTextContent } from "../model/utils";
 
 export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number, clipboard: DataTransfer]> =
   produce((draft, literalIndex, offset, clipboard) => {
@@ -224,42 +226,20 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
         insertTextInLetter(draft, el.text, el.font);
         break;
       }
+      case "H1": {
+        insertBlock(draft, "TITLE1", el.content);
+        break;
+      }
+      case "H2": {
+        insertBlock(draft, "TITLE2", el.content);
+        break;
+      }
       case "P": {
-        // Om vi er på starten av en blokk så ønsker vi å sette inn en ny blokk før den for preservere ID'er på gjeldende
-        if (isBlockContentIndex(draft.focus) && isAtStartOfBlock(draft.focus)) {
-          const literals = el.content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }));
-          addElements(
-            [newParagraph({ content: literals })],
-            draft.focus.blockIndex,
-            draft.redigertBrev.blocks,
-            draft.redigertBrev.deletedBlocks,
-          );
-          draft.focus.blockIndex += 1;
-        } else {
-          el.content.forEach((t) => {
-            insertTextInLetter(draft, t.text, t.font);
-          });
-          splitRecipe(draft, draft.focus, draft.focus.cursorPosition! ?? 0);
-        }
+        insertBlock(draft, "PARAGRAPH", el.content);
         break;
       }
       case "ITEM": {
-        const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
-
-        if (isItemContentIndex(draft.focus) && isItemList(currentBlock.content[draft.focus.contentIndex])) {
-          el.content.forEach((t) => {
-            insertTextInLetter(draft, t.text, t.font);
-          });
-          splitRecipe(draft, draft.focus, draft.focus.cursorPosition! ?? 0);
-        } else if (!isItemContentIndex(draft.focus) && !isItemList(currentBlock.content[draft.focus.contentIndex])) {
-          // vi sjekker også at gjeldende ikke er itemList fordi da _må_ også focus være ItemContentIndex.
-          toggleItemListAndSplitAtCursor(draft, currentBlock);
-
-          el.content.forEach((t) => {
-            insertTextInLetter(draft, t.text, t.font);
-          });
-          splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
-        }
+        insertItem(draft, el);
         break;
       }
       case "TABLE": {
@@ -305,6 +285,64 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
       }
     }
   });
+}
+
+function insertBlock(draft: Draft<LetterEditorState>, type: "TITLE1" | "TITLE2" | "PARAGRAPH", content: Text[]) {
+  const focusedBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
+  const blockContent = focusedBlock?.content[draft.focus.contentIndex];
+
+  if (isBlockContentIndex(draft.focus) && isAtStartOfBlock(draft.focus)) {
+    if (isEmptyBlock(focusedBlock)) {
+      // If we're at the start of an empty block, we want to change it to whatever type we're inserting
+      focusedBlock.type = type;
+      insertTextElement(draft, content);
+    } else {
+      // If we're at the start of a non-empty block then we want to insert a new block to preserve IDs of existing block and it's content.
+      const literals = content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }));
+      const block = type === "PARAGRAPH" ? newParagraph({ content: literals }) : newTitle({ type, content: literals });
+      addElements([block], draft.focus.blockIndex, draft.redigertBrev.blocks, draft.redigertBrev.deletedBlocks);
+      draft.focus.blockIndex += 1;
+    }
+  } else if (isItemContentIndex(draft.focus) && isAtStartOfItem(draft.focus) && isItemList(blockContent)) {
+    // If we're at the start of an Item then we want to preserve any potential existing IDs, so we instead insert a new item.
+    const literals = content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }));
+    addElements([newItem({ content: literals })], draft.focus.itemIndex, blockContent.items, blockContent.deletedItems);
+    draft.focus.itemIndex++;
+  } else {
+    insertTextElement(draft, content);
+  }
+}
+
+function insertTextElement(draft: Draft<LetterEditorState>, content: Text[]) {
+  content.forEach((t) => {
+    insertTextInLetter(draft, t.text, t.font);
+  });
+  splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
+}
+
+function insertItem(draft: Draft<LetterEditorState>, el: ItemElement) {
+  const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
+  const blockContent = currentBlock.content[draft.focus.contentIndex];
+
+  if (isItemContentIndex(draft.focus) && isItemList(blockContent)) {
+    if (isAtStartOfItem(draft.focus)) {
+      // If we're at the start of an Item then we want to preserve any potential existing IDs, so we instead insert a new item.
+      const literals = el.content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }));
+      addElements(
+        [newItem({ content: literals })],
+        draft.focus.itemIndex,
+        blockContent.items,
+        blockContent.deletedItems,
+      );
+      draft.focus.itemIndex++;
+    } else {
+      insertTextElement(draft, el.content);
+    }
+  } else if (!isItemContentIndex(draft.focus) && !isItemList(blockContent)) {
+    // We're also validating that current blockContent isn't an ItemList, because then the focus should also have been an ItemContentIndex.
+    toggleItemListAndSplitAtCursor(draft, currentBlock);
+    insertTextElement(draft, el.content);
+  }
 }
 
 function toggleItemListAndSplitAtCursor(draft: Draft<LetterEditorState>, currentBlock: Draft<AnyBlock>) {
@@ -375,16 +413,24 @@ interface Text {
   text: string;
 }
 
-interface Item {
+interface ItemElement {
   type: "ITEM";
   content: Text[];
 }
 
-interface Paragraph {
+interface ParagraphElement {
   type: "P";
   content: Text[];
 }
+interface Title1Element {
+  type: "H1";
+  content: Text[];
+}
 
+interface Title2Element {
+  type: "H2";
+  content: Text[];
+}
 interface TableCell {
   content: Text[];
 }
@@ -398,7 +444,7 @@ interface Table {
   rows: TableRow[];
 }
 
-type TraversedElement = Paragraph | Text | Item | Table;
+type TraversedElement = ParagraphElement | Text | ItemElement | Title1Element | Title2Element | Table;
 
 /** Return clipboard HTML or plain text, sanitised through DOMPurify. */
 function getCleanClipboardMarkup(dt: DataTransfer): string {
@@ -483,24 +529,51 @@ function traverseTable(element: HTMLTableElement, font: FontType): Table {
   return { type: "TABLE", rows: tableRows };
 }
 
+function traverseTextContainer(element: Element, type: "ITEM" | "H1" | "H2", font: FontType): TraversedElement[] {
+  if (element.children.length === 0) {
+    const sanitizedText = cleansePastedText(element.textContent ?? "");
+    // Reject empty headings
+    if (sanitizedText.length === 0 && type !== "ITEM") return [];
+    // allowed with empty list items
+    return sanitizedText.length >= 0 ? [{ type, content: [{ type: "TEXT", font, text: sanitizedText }] }] : [];
+  } else {
+    const childElements = traverseChildren(element, font).flatMap((child) => {
+      switch (child.type) {
+        case "TEXT": {
+          return [child];
+        }
+        case "P":
+        case "H2":
+        case "H1":
+        case "ITEM": {
+          return child.content;
+        }
+        case "TABLE":
+          return [];
+      }
+    });
+    return [{ type, content: childElements }];
+  }
+}
+
 function traverse(element: Element, font: FontType): TraversedElement[] {
   switch (element.tagName) {
     case "SPAN": {
-      return traverseTextContainer(element, font);
+      return traverseContainer(element, font);
     }
 
     case "STRONG":
     case "B": {
       // Since text in brevbaker-brev cannot be both bold (strong) and italic (emphasized) simultaneously, we pass along the first change (away from plain).
       const nextFont = font === FontType.PLAIN ? FontType.BOLD : font;
-      return traverseTextContainer(element, nextFont);
+      return traverseContainer(element, nextFont);
     }
 
     case "EM":
     case "I": {
       // Since text in brevbaker-brev cannot be both bold (strong) and italic (emphasized) simultaneously, we pass along the first change (away from plain).
       const nextFont = font === FontType.PLAIN ? FontType.ITALIC : font;
-      return traverseTextContainer(element, nextFont);
+      return traverseContainer(element, nextFont);
     }
 
     case "P": {
@@ -522,6 +595,14 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
       } else {
         return [{ type: "ITEM", content: traverseItemChildren(element, font) }];
       }
+    }
+
+    case "H1": {
+      return traverseTextContainer(element, "H1", font);
+    }
+
+    case "H2": {
+      return traverseTextContainer(element, "H2", font);
     }
 
     case "TABLE": {
@@ -547,7 +628,7 @@ function moveOuterTextIntoNeighbouringParagraphs(elements: TraversedElement[]): 
   }, []);
 }
 
-function traverseTextContainer(element: Element, font: FontType): TraversedElement[] {
+function traverseContainer(element: Element, font: FontType): TraversedElement[] {
   if (element.children.length === 0) {
     const text = cleansePastedText(element.textContent ?? "");
     return text.length > 0 ? [{ type: "TEXT", font, text }] : [];
@@ -562,10 +643,10 @@ function traverseItemChildren(item: Element, font: FontType): Text[] {
       case "TEXT": {
         return [traversedElement];
       }
-      case "ITEM": {
-        return traversedElement.content;
-      }
-      case "P": {
+      case "ITEM":
+      case "P":
+      case "H1":
+      case "H2": {
         return traversedElement.content;
       }
       case "TABLE": {
@@ -581,23 +662,16 @@ function traverseItemChildren(item: Element, font: FontType): Text[] {
 }
 
 /**
- * Processes the children of a given paragraph element and organizes them into a structured array
- * of `Paragraph` or `Item` objects. This function ensures that text nodes are grouped into
- * paragraphs, while other types of nodes (e.g., items or tables) are handled appropriately.
- *
- * @param paragraph - The paragraph element whose children will be traversed and processed.
- * @param font - The font type to be applied during traversal and processing.
- * @returns An array of `Paragraph` or `Item` objects representing the structured content of the paragraph.
- *
- * The function performs the following steps:
  * - Traverses the immediate children of the paragraph using `traverseChildren`.
  * - Buffers consecutive text nodes and groups them into a `Paragraph` object.
  * - Handles other node types (`ITEM`, `P`, `TABLE`) by flushing the text buffer and adding them directly to the result.
  * - Ensures that tables are not nested inside paragraphs by ignoring them during processing.
  *
  */
-function traverseParagraphChildren(paragraph: Element, font: FontType): (Paragraph | Item)[] {
-  const result: (Paragraph | Item)[] = [];
+type ParagraphChild = ParagraphElement | ItemElement | Title1Element | Title2Element;
+
+function traverseParagraphChildren(paragraph: Element, font: FontType): ParagraphChild[] {
+  const result: ParagraphChild[] = [];
   let buffer: Text[] = [];
 
   const flushBuffer = () => {
@@ -619,7 +693,8 @@ function traverseParagraphChildren(paragraph: Element, font: FontType): (Paragra
         result.push(node);
         break;
       }
-
+      case "H1":
+      case "H2":
       case "P": {
         flushBuffer();
         result.push(node);

@@ -98,7 +98,7 @@ jobs:
       - name: "compile and run tests"
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal
-          ./gradlew :pdf-bygger:build
+          ./gradlew :pdf-bygger:build :pdf-bygger:rydd
       - name: "Build and publish container image to GAR"
         uses: nais/docker-build-push@v0
         id: docker-push

@@ -24,7 +24,11 @@ export type TScalar = {
 export type TEnum = {
   readonly type: "enum";
   readonly nullable: boolean;
-  readonly values: string[];
+  readonly values: TEnumEntry[];
+  readonly displayText: Nullable<string>;
+};
+export type TEnumEntry = {
+  readonly value: string;
   readonly displayText: Nullable<string>;
 };
 export type TArray = {
