@@ -7,7 +7,9 @@ import no.nav.pensjon.brev.template.StringExpression
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 
+@JvmName("quotedStr")
 fun String.quoted(): StringExpression = expr().quoted()
+@JvmName("quotedExpr")
 fun StringExpression.quoted(): StringExpression = format(QuotedText)
 fun quoted(str: String): StringExpression = str.quoted()
 fun quoted(str: StringExpression): StringExpression = str.quoted()
