@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -139,9 +140,9 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
                 paragraph {
                     text(
-                        Bokmal to "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysninger. Gå inn på Din Profil og velg «Bankkonto for utbetaling». Du kan logge inn med BankID, Buypass, MinID eller Commfides.",
-                        Nynorsk to "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysningar. Gå inn på Din Profil og vel «Bankkonto for utbetaling». Du kan logge inn med BankID, Buypass, MinID eller Commfides.",
-                        English to "You can register the necessary bank details in the “Din pensjon” portal at $DIN_PENSJON_URL. Log in on your personal page “Din Profil” and select “Bank account for payment”. You can log in using BankID, Buypass, MinID or Commfides.",
+                        Bokmal to "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysninger. Gå inn på Din Profil og velg ${quoted("Bankkonto for utbetaling")}. Du kan logge inn med BankID, Buypass, MinID eller Commfides.",
+                        Nynorsk to "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysningar. Gå inn på Din Profil og vel ${quoted("Bankkonto for utbetaling")}. Du kan logge inn med BankID, Buypass, MinID eller Commfides.",
+                        English to "You can register the necessary bank details in the ${quoted("Din pensjon")} portal at $DIN_PENSJON_URL. Log in on your personal page ${quoted("Din Profil")} and select ${quoted("Bank account for payment")}. You can log in using BankID, Buypass, MinID or Commfides.",
                     )
                 }
             }
@@ -608,9 +609,9 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
 
             paragraph {
                 text(
-                    Bokmal to "Du kan gi tilbakemelding via Nav sin nettside $DITT_NAV. Velg «Send beskjed til Nav», tema «Beskjed – pensjon».",
-                    Nynorsk to "Du kan gi tilbakemelding via Nav si nettside $DITT_NAV. Vel «Send beskjed til Nav», tema «Beskjed – pensjon».",
-                    English to "Feel free to contact us and give us the required information at Nav’s online service $DITT_NAV. Select «Send beskjed til Nav» and the theme «Beskjed – pensjon».",
+                    Bokmal to "Du kan gi tilbakemelding via Nav sin nettside $DITT_NAV. Velg ${quoted("Send beskjed til Nav")}, tema ${quoted("Beskjed – pensjon")}.",
+                    Nynorsk to "Du kan gi tilbakemelding via Nav si nettside $DITT_NAV. Vel ${quoted("Send beskjed til Nav")}, tema ${quoted("Beskjed – pensjon")}.",
+                    English to "Feel free to contact us and give us the required information at Nav’s online service $DITT_NAV. Select ${quoted("Send beskjed til Nav")} and the theme ${quoted("Beskjed – pensjon")}.",
                 )
             }
             paragraph {

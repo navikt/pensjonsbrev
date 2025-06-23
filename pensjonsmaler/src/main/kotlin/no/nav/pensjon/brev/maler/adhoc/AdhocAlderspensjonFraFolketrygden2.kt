@@ -55,9 +55,9 @@ object AdhocAlderspensjonFraFolketrygden2 : AutobrevTemplate<EmptyBrevdata> {
             }
             paragraph {
                 text(
-                    Bokmal to "Metoden for beregningen av alderspensjonen din gjør at du nå får et gjenlevendetillegg. Dette erstatter det som før het «minstenivåtillegg individuelt».",
-                    Nynorsk to "Metoden for utrekninga av alderspensjonen din gjer at du no får eit attlevandetillegg. Dette erstattar det som før heitte «minstenivåtillegg individuelt».",
-                    English to "The method for calculating your retirement pension means that you now receive a survivor’s supplement. This replaces what was previously called ‘minimum pension supplement’.",
+                    Bokmal to "Metoden for beregningen av alderspensjonen din gjør at du nå får et gjenlevendetillegg. Dette erstatter det som før het ${quoted("minstenivåtillegg individuelt")}.",
+                    Nynorsk to "Metoden for utrekninga av alderspensjonen din gjer at du no får eit attlevandetillegg. Dette erstattar det som før heitte ${quoted("minstenivåtillegg individuelt")}.",
+                    English to "The method for calculating your retirement pension means that you now receive a survivor’s supplement. This replaces what was previously called ${quoted("minimum pension supplement")}.",
                 )
             }
             paragraph {

@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 
 object TBU1288_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -12,9 +13,9 @@ object TBU1288_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
         paragraph {
             text(
-                Bokmal to "Du kan lese mer om beregningen av barnetillegg i vedlegget «Opplysninger om beregningen».",
-                Nynorsk to "Du kan lese meir om berekninga av barnetillegg i vedlegget «Opplysningar om berekninga».",
-                English to "Read more about how child supplements are calculated in the attachment called \"Information about calculations\".",
+                Bokmal to "Du kan lese mer om beregningen av barnetillegg i vedlegget ${quoted("Opplysninger om beregningen")}.",
+                Nynorsk to "Du kan lese meir om berekninga av barnetillegg i vedlegget ${quoted("Opplysningar om berekninga")}.",
+                English to "Read more about how child supplements are calculated in the attachment called ${quoted("Information about calculations")}.",
             )
         }
     }

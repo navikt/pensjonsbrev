@@ -10,8 +10,8 @@ object TBU3305_Generated : OutlinePhrase<LangBokmalNynorsk>() {
 
 		paragraph {
 			text (
-				Bokmal to "Du kan lese mer om etteroppgjør i vedlegget «Opplysninger om etteroppgjøret».",
-				Nynorsk to "Du kan lese meir om etteroppgjer i vedlegget «Opplysningar om etteroppgjeret». ",
+				Bokmal to "Du kan lese mer om etteroppgjør i vedlegget ${quoted("Opplysninger om etteroppgjøret")}.",
+				Nynorsk to "Du kan lese meir om etteroppgjer i vedlegget ${quoted("Opplysningar om etteroppgjeret")}.",
 			)
 		}
     }

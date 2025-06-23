@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 
 
@@ -32,8 +33,8 @@ data class TBU2278_Generated(val pe: Expression<PE>) : OutlinePhrase<LangBokmalN
 				)
 			}
 			text (
-				Bokmal to "blir så riktig som mulig. Du kan enkelt melde fra om inntektsendringer under menyvalget «uføretrygd» når du logger deg inn på $NAV_URL.",
-				Nynorsk to "blir så riktig som mogleg. Du kan enkelt melde frå om inntektsendringar under menyvalet «uføretrygd» når du loggar deg inn på $NAV_URL.",
+				Bokmal to "blir så riktig som mulig. Du kan enkelt melde fra om inntektsendringer under menyvalget ${quoted("uføretrygd")} når du logger deg inn på $NAV_URL.",
+				Nynorsk to "blir så riktig som mogleg. Du kan enkelt melde frå om inntektsendringar under menyvalet ${quoted("uføretrygd")} når du loggar deg inn på $NAV_URL.",
 			)
 		}
     }

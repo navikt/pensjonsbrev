@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -56,9 +57,9 @@ object VarselSaksbehandlingstidAutoV2 : AutobrevTemplate<VarselSaksbehandlingsti
             // TBU3015
             paragraph {
                 text(
-                    Bokmal to "Søknaden din blir behandlet så snart som mulig. Når søknaden er ferdig behandlet, får du et svar fra oss på «Min side» på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL.",
-                    Nynorsk to "Søknaden din vert handsama så snart som mogleg. Når søknaden er ferdig behandla, får du eit svar frå oss på «Mi side» på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL.",
-                    English to "Your application will be processed as soon as possible. When your application has been processed, you will receive a response from us on «My Page» at $NAV_URL. You can check the processing times at $SAKSBEHANDLINGSTID_URL."
+                    Bokmal to "Søknaden din blir behandlet så snart som mulig. Når søknaden er ferdig behandlet, får du et svar fra oss på ${quoted("Min side")} på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL.",
+                    Nynorsk to "Søknaden din vert handsama så snart som mogleg. Når søknaden er ferdig behandla, får du eit svar frå oss på ${quoted("Mi side")} på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL.",
+                    English to "Your application will be processed as soon as possible. When your application has been processed, you will receive a response from us on ${quoted("My Page")} at $NAV_URL. You can check the processing times at $SAKSBEHANDLINGSTID_URL."
                 )
             }
 

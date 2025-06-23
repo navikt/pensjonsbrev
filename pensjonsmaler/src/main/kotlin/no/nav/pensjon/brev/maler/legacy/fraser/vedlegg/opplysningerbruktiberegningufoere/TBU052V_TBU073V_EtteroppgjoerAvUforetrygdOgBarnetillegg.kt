@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 
 data class TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(
@@ -171,7 +172,7 @@ data class TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(
             text(
                 Bokmal to "Det er viktig at du melder fra om inntektsendringer slik at uføretrygden",
                 Nynorsk to "Det er viktig at du melder frå om inntektsendringar slik at uføretrygda ",
-                English to "It is important that you report changes in income, so that you receive the correct disability benefit payments and child supplement. You can easily register change in income under the option “uføretrygd” at nav.no.",
+                English to "It is important that you report changes in income, so that you receive the correct disability benefit payments and child supplement. You can easily register change in income under the option ${quoted("uføretrygd")} at nav.no.",
             )
             //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true )) THEN   INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()))){
@@ -182,8 +183,8 @@ data class TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(
                 )
             }
             text (
-                Bokmal to " blir så riktig som mulig. Du kan enkelt melde fra om inntektsendringer under menyvalget «uføretrygd» når du logger deg inn på nav.no.",
-                Nynorsk to "blir riktig utbetalt. Du kan enkelt melde frå om inntektsendringar under menyvalet «uføretrygd» når du loggar deg inn på nav.no.",
+                Bokmal to " blir så riktig som mulig. Du kan enkelt melde fra om inntektsendringer under menyvalget ${quoted("uføretrygd")} når du logger deg inn på nav.no.",
+                Nynorsk to "blir riktig utbetalt. Du kan enkelt melde frå om inntektsendringar under menyvalet ${quoted("uføretrygd")} når du loggar deg inn på nav.no.",
                 English to "",
             )
         }

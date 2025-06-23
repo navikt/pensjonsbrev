@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -63,8 +64,8 @@ object OrienteringOmSaksbehandlingstidV2 : RedigerbarTemplate<OrienteringOmSaksb
 
             paragraph {
                 text(
-                    Bokmal to "Søknaden vil bli behandlet så snart som mulig. Når søknaden er ferdig behandlet, får du et svar fra oss på «Min side» på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL. ",
-                    Nynorsk to "Søknaden vil bli behandla så snart som mogleg. Når søknaden er ferdig behandla, får du eit svar frå oss på «Mi side» på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL. ",
+                    Bokmal to "Søknaden vil bli behandlet så snart som mulig. Når søknaden er ferdig behandlet, får du et svar fra oss på ${quoted("Min side")} på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL. ",
+                    Nynorsk to "Søknaden vil bli behandla så snart som mogleg. Når søknaden er ferdig behandla, får du eit svar frå oss på ${quoted("Mi side")} på $NAV_URL. Du kan sjekke saksbehandlingstidene på $SAKSBEHANDLINGSTID_URL. ",
                 )
             }
 
