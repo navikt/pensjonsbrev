@@ -267,16 +267,18 @@ export function newTable(rows: Row[]): Table {
   };
 }
 
-export function newLiteral(args: {
-  id?: Nullable<number>;
-  parentId?: Nullable<number>;
-  text?: string;
-  editedText?: Nullable<string>;
-  fontType?: Nullable<FontType>;
-  // TODO: Gir ikke mening å sette editedFontType i nye literals.
-  editedFontType?: Nullable<FontType>;
-  tags?: ElementTags[];
-}): LiteralValue {
+export function newLiteral(
+  args: {
+    id?: Nullable<number>;
+    parentId?: Nullable<number>;
+    text?: string;
+    editedText?: Nullable<string>;
+    fontType?: Nullable<FontType>;
+    // TODO: Gir ikke mening å sette editedFontType i nye literals.
+    editedFontType?: Nullable<FontType>;
+    tags?: ElementTags[];
+  } = {},
+): LiteralValue {
   return {
     type: LITERAL,
     id: args?.id ?? null,
