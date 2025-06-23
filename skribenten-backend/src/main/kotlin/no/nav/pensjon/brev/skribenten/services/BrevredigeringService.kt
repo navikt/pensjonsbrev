@@ -522,7 +522,10 @@ class BrevredigeringService(
                     pesysData = pesysData.brevdata,
                     saksbehandlerValg = brevredigering.saksbehandlerValg,
                 ),
-                felles = pesysData.felles.medSignerendeSaksbehandlere(signerendeSaksbehandlere = SignerendeSaksbehandlere(brevredigering.info.signaturSignerende)),
+                felles = pesysData.felles.medSignerendeSaksbehandlere(SignerendeSaksbehandlere(
+                    saksbehandler = brevredigering.info.signaturSignerende,
+                    attesterendeSaksbehandler = brevredigering.info.signaturAttestant,
+                )),
                 redigertBrev = brevredigering.redigertBrev.toMarkup()
             ).map {
                 transaction {
