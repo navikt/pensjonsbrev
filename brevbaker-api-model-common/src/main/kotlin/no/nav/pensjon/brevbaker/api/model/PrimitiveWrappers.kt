@@ -8,27 +8,14 @@ interface IntValue {
     val value: Int
 }
 
-class Telefonnummer(val value: String) {
-    override fun equals(other: Any?): Boolean {
-        if (other !is Telefonnummer) return false
-        return value == other.value
-    }
+@JvmInline
+value class Telefonnummer(val value: String)
 
-    override fun hashCode() = value.hashCode()
+@JvmInline
+value class Foedselsnummer(val value: String)
 
-    override fun toString(): String = "Telefonnummer(value='$value')"
-}
-
-class Foedselsnummer(val value: String) {
-    override fun equals(other: Any?): Boolean {
-        if (other !is Foedselsnummer) return false
-        return value == other.value
-    }
-
-    override fun hashCode() = value.hashCode()
-}
-
-data class Kroner(override val value: Int) : IntValue
+@JvmInline
+value class Kroner(override val value: Int) : IntValue
 
 @JvmInline
 value class Year(override val value: Int) : IntValue
@@ -67,3 +54,6 @@ interface IntWrapper {
     val value: Int
 }
 
+data class FoedselsnummerWrapper(val value: String)
+data class TelefonnummerWrapper(val value: String)
+data class KronerWrapper(val value: Int)
