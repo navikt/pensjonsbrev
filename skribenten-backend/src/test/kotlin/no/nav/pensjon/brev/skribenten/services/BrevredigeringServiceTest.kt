@@ -738,7 +738,6 @@ class BrevredigeringServiceTest {
             vedtaksId = 1,
         ).resultOrNull()!!
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
             brevredigeringService.delvisOppdaterBrev(
                 brev.info.saksId,
                 brev.info.id,
@@ -749,7 +748,17 @@ class BrevredigeringServiceTest {
 
         withPrincipal(attestantPrincipal) {
             brevredigeringService.attester(sak1.saksId, brev.info.id, null, null, null, true)
+            brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
             assertThat(brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)).isEqualTo(bestillBrevresponse)
+        }
+        coVerify {
+            brevbakerMock.renderPdf(
+                any(),
+                any(),
+                any(),
+                match { it.signerendeSaksbehandlere?.attesterendeSaksbehandler == attestantPrincipal.fullName },
+                any()
+            )
         }
     }
 
