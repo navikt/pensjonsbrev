@@ -129,11 +129,11 @@ class TemplateModelSpecificationFactoryTest {
     }
 
     @Test
-    fun `value class fields have Object type that can be looked up in specifiaction types`() {
+    fun `value class fields have Scalar type`() {
         val spec = TemplateModelSpecificationFactory(WithValueClass::class).build()
         val withValueClassSpec = spec.types[WithValueClass::class.qualifiedName!!]!!
-        assertThat(withValueClassSpec["aValueClass"], equalTo(FieldType.Object(false, WithValueClass.TheValue::class.qualifiedName!!)))
-        assertThat(spec.types[WithValueClass.TheValue::class.qualifiedName!!]!!, equalTo(mapOf("value" to FieldType.Scalar(false, Kind.NUMBER))))
+        assertThat(withValueClassSpec["aValueClass"], equalTo(FieldType.Scalar(false, Kind.NUMBER)))
+        assertThat(spec.types[WithValueClass::class.qualifiedName!!]!!, equalTo(mapOf("navn" to FieldType.Scalar(false, Kind.STRING), "aValueClass" to FieldType.Scalar(false, Kind.NUMBER))))
     }
 
     data class WithNullable(val scalar: String?, val objekt: AModel.SubModel?, val listNullable: List<String>?, val listWithNullable: List<String?>, val list: List<String?>?)
