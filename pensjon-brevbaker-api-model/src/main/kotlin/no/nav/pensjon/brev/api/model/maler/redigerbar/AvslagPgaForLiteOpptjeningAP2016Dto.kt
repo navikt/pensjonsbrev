@@ -7,11 +7,11 @@ import no.nav.pensjon.brevbaker.api.model.DisplayText
 
 @Suppress("unused")
 
-data class AvslagAvAlderspensjonPgaForLiteOpptjeningAP2016Dto(
+data class AvslagPgaForLiteOpptjeningAP2016Dto(
     override val pesysData: PesysData,
     override val saksbehandlerValg: SaksbehandlerValg,
-) : RedigerbarBrevdata<AvslagAvAlderspensjonPgaForLiteOpptjeningAP2016Dto.SaksbehandlerValg,
-        AvslagAvAlderspensjonPgaForLiteOpptjeningAP2016Dto.PesysData> {
+) : RedigerbarBrevdata<AvslagPgaForLiteOpptjeningAP2016Dto.SaksbehandlerValg,
+        AvslagPgaForLiteOpptjeningAP2016Dto.PesysData> {
 
     data class SaksbehandlerValg(
         @DisplayText("ABC")
@@ -22,6 +22,7 @@ data class AvslagAvAlderspensjonPgaForLiteOpptjeningAP2016Dto(
         val erEOSland: Boolean = false,
         val vedtaksBegrunnelse: VedtaksBegrunnelse,
         val avtalelandNavn: String?,
+        val harAvtaleland: Boolean
     ) : BrevbakerBrevdata
 
 }
