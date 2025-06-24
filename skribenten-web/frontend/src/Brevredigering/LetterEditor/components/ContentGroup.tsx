@@ -292,6 +292,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handlePaste = (event: React.ClipboardEvent<HTMLSpanElement>) => {
+    if (freeze) {
+      // A save is in progress means editor is read-only.
+      // Ingnore this paste so no content slips in.
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
     event.preventDefault();
     // TODO: for debugging frem til vi er ferdig å teste liming
     logPastedClipboard(event.clipboardData);
