@@ -13,7 +13,7 @@ class TemplateModelSpecification(val types: Map<String, ObjectTypeSpecification>
         class Scalar(override val nullable: Boolean, val kind: Kind, override val displayText: String? = null) : FieldType() {
             override val type = "scalar"
 
-            enum class Kind { NUMBER, DOUBLE, STRING, BOOLEAN, DATE, YEAR }
+            enum class Kind { NUMBER, DOUBLE, STRING, BOOLEAN, DATE }
 
             override fun equals(other: Any?): Boolean {
                 if (other !is Scalar) return false

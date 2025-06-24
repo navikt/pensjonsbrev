@@ -745,7 +745,6 @@ public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification
 	public static final field DOUBLE Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
 	public static final field NUMBER Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
 	public static final field STRING Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
-	public static final field YEAR Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
 	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
