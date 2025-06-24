@@ -293,6 +293,11 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handlePaste = (event: React.ClipboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
+
+    if (freeze) {
+      event.stopPropagation();
+      return;
+    }
     // TODO: for debugging frem til vi er ferdig å teste liming
     logPastedClipboard(event.clipboardData);
 
