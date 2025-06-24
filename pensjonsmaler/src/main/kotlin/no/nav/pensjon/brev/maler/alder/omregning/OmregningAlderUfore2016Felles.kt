@@ -28,7 +28,6 @@ data class OmregningAlderUfore2016Felles(
     val avdodNavn: Expression<String>,
     val avdodFnr: Expression<String>,
     val gjenlevenderettAnvendt: Expression<Boolean>,
-    val eksportTrygdeavtaleEos: Expression<Boolean>,
     val eksportTrygdeavtaleAvtaleland: Expression<Boolean>,
     val faktiskBostedsland: Expression<String>,
     val erEksportberegnet: Expression<Boolean>,
@@ -143,7 +142,7 @@ data class OmregningAlderUfore2016Felles(
             }
         }
 
-        showIf(eksportTrygdeavtaleEos) {
+        showIf(eksportTrygdeavtaleEOS) {
             paragraph {
                 textExpr(
                     Bokmal to "Vi forutsetter at du bor i ".expr() + faktiskBostedsland +"Hvis du skal flytte til et land utenfor EØS-området, må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon.",

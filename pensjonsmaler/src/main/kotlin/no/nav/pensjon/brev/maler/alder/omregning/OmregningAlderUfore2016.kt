@@ -79,7 +79,6 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
                     avdodNavn = pesysData.persongrunnlagAvdod.avdodNavn,
                     avdodFnr = pesysData.persongrunnlagAvdod.avdodFnr,
                     gjenlevenderettAnvendt = pesysData.gjenlevenderettAnvendt,
-                    eksportTrygdeavtaleEos = pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleEos,
                     eksportTrygdeavtaleAvtaleland = pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland,
                     faktiskBostedsland = pesysData.inngangOgEksportVurdering.faktiskBostedsland,
                     erEksportberegnet = pesysData.inngangOgEksportVurdering.erEksportberegnet,

@@ -12,7 +12,7 @@ data class OmregningAlderUfore2016Dto(
     val beregningsperioder: List<AlderspensjonPerManed>,
     val gjenlevendetilleggKap19Innvilget: Boolean,
     val gjenlevenderettAnvendt: Boolean,
-    val inngangOgEksportVurdering: InngangOgEksportVurdering,
+    val inngangOgEksportVurdering: InngangOgEksportVurdering?,
     val pensjonstilleggInnvilget: Boolean,
     val garantipensjonInnvilget: Boolean,
     val godkjentYrkesskade: Boolean,
@@ -33,19 +33,18 @@ data class PersongrunnlagAvdod(
 )
 
 data class InngangOgEksportVurdering(
-    val eksportTrygdeavtaleEos: Boolean,
-    val eksportTrygdeavtaleAvtaleland: Boolean,
-    val faktiskBostedsland: String,
-    val erEksportberegnet: Boolean,
-    val eksportberegnetUtenGarantipensjon: Boolean,
-    val borINorge: Boolean,
-    val erEOSLand: Boolean,
-    val eksportTrygdeavtaleEOS: Boolean,
-    val avtaleland: String,
-    val oppfyltVedSammenleggingKap19: Boolean,
-    val oppfyltVedSammenleggingKap20: Boolean,
-    val oppfyltVedSammenleggingFemArKap19: Boolean,
-    val oppfyltVedSammenleggingFemArKap20: Boolean,
+    val eksportTrygdeavtaleAvtaleland: Boolean?,
+    val faktiskBostedsland: String?,
+    val erEksportberegnet: Boolean?,
+    val eksportberegnetUtenGarantipensjon: Boolean?,
+    val borINorge: Boolean?,
+    val erEOSLand: Boolean?,
+    val eksportTrygdeavtaleEOS: Boolean?,
+    val avtaleland: String?,
+    val oppfyltVedSammenleggingKap19: Boolean?,
+    val oppfyltVedSammenleggingKap20: Boolean?,
+    val oppfyltVedSammenleggingFemArKap19: Boolean?,
+    val oppfyltVedSammenleggingFemArKap20: Boolean?,
 )
 
 

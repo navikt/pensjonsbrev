@@ -76,7 +76,6 @@ object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto
                     avdodNavn = persongrunnlagAvdod.avdodNavn,
                     avdodFnr = persongrunnlagAvdod.avdodFnr,
                     gjenlevenderettAnvendt = gjenlevenderettAnvendt,
-                    eksportTrygdeavtaleEos = inngangOgEksportVurdering.eksportTrygdeavtaleEos,
                     eksportTrygdeavtaleAvtaleland = inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland,
                     faktiskBostedsland = inngangOgEksportVurdering.faktiskBostedsland,
                     erEksportberegnet = inngangOgEksportVurdering.erEksportberegnet,
