@@ -34,6 +34,10 @@ inboundRules:
     namespace: pensjonsbrev
     cluster: prod-gcp
 
+  - application: pensjon-pen
+    namespace: pensjondeployer
+    cluster: prod-fss
+
 outboundRules:
   - application: pensjon-brevbaker
     namespace: pensjonsbrev
