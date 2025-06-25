@@ -749,9 +749,7 @@ public final class no/nav/pensjon/brev/template/MissingTitleInTemplateException 
 
 public final class no/nav/pensjon/brev/template/NamedReferenceKt {
 	public static final fun namedReference (Lno/nav/pensjon/brev/template/dsl/TextScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;)V
-	public static final fun namedReferenceBokmal (Lno/nav/pensjon/brev/template/dsl/TextScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;)V
 	public static final fun namedReferenceBokmalEnglish (Lno/nav/pensjon/brev/template/dsl/TextScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;)V
-	public static final fun namedReferenceBokmalNynorsk (Lno/nav/pensjon/brev/template/dsl/TextScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;)V
 }
 
 public abstract class no/nav/pensjon/brev/template/Operation : no/nav/pensjon/brev/template/StableHash {
@@ -903,6 +901,20 @@ public final class no/nav/pensjon/brev/template/UnaryOperation$Not : no/nav/pens
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$Not;
 	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
 	public fun apply (Z)Ljava/lang/Boolean;
+	public fun stableHashCode ()I
+}
+
+public final class no/nav/pensjon/brev/template/UnaryOperation$QuotationEnd : no/nav/pensjon/brev/template/UnaryOperation, no/nav/pensjon/brev/template/StableHash {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$QuotationEnd;
+	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun apply (Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
+	public fun stableHashCode ()I
+}
+
+public final class no/nav/pensjon/brev/template/UnaryOperation$QuotationStart : no/nav/pensjon/brev/template/UnaryOperation, no/nav/pensjon/brev/template/StableHash {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$QuotationStart;
+	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun apply (Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
 	public fun stableHashCode ()I
 }
 
@@ -1077,8 +1089,8 @@ public final class no/nav/pensjon/brev/template/dsl/PlainTextScope$DefaultImpls 
 
 public final class no/nav/pensjon/brev/template/dsl/QuotationMarks {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/dsl/QuotationMarks;
-	public final fun end (Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
-	public final fun start (Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
+	public final fun getEnd ()Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
+	public final fun getStart ()Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/QuoteKt {
@@ -1086,13 +1098,6 @@ public final class no/nav/pensjon/brev/template/dsl/QuoteKt {
 	public static final fun quoted (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun quotedExpr (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun quotedStr (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
-}
-
-public final class no/nav/pensjon/brev/template/dsl/QuotedText : no/nav/pensjon/brev/template/LocalizedFormatter, no/nav/pensjon/brev/template/StableHash {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/dsl/QuotedText;
-	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply (Ljava/lang/String;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
-	public fun stableHashCode ()I
 }
 
 public final class no/nav/pensjon/brev/template/dsl/ShowElseScope {
