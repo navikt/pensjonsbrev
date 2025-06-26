@@ -79,7 +79,6 @@ services:
       - AD_GROUP_Pensjon_Utland=bda6bd68-77e6-4c00-96b9-7ecf5df7413c
       - AD_GROUP_Fortrolig_Adresse=ea930b6b-9397-44d9-b9e6-f4cf527a632a
       - AD_GROUP_Strengt_Fortrolig_Adresse=5ef775f2-61f8-4283-bf3d-8d03f428aa14
-      - AD_GROUP_EndreStrengtFortroligUtland=fc792042-93d8-4d5e-a501-55c45c03c576
       - AD_GROUP_Attestant=63f46f74-84a8-4d1c-87a8-78532ab3ae60
       - NORG2_URL=https://norg2.intern.dev.nav.no/norg2/
       - SKRIBENTEN_WEB_URL=https://pensjon-skribenten-web-q2.intern.dev.nav.no
