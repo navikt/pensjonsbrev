@@ -90,9 +90,6 @@ fun createOpplysningerBruktIBeregningenEndretUttaksgradDto(alderspensjonRegelver
         trygdetidsdetaljerKap20VedVirk = OpplysningerBruktIBeregningenEndretUttaksgradDto.TrygdetidsdetaljerKap20VedVirk(
             anvendtTT = 40
         ),
-        alderspensjon = OpplysningerBruktIBeregningenEndretUttaksgradDto.Alderspensjon(
-            regelverkType = alderspensjonRegelverkType
-        ),
         beregningKap20VedVirk = OpplysningerBruktIBeregningenEndretUttaksgradDto.BeregningKap20VedVirk(
             delingstallLevealder = 1.0
         )
