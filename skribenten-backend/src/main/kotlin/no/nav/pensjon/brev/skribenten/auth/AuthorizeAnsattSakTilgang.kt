@@ -65,7 +65,6 @@ private data class AuthAnsattSakTilgangResponse(val melding: String, val status:
 private fun Pdl.Gradering?.toADGruppe(): ADGroup? =
     when (this) {
         Pdl.Gradering.FORTROLIG -> ADGroups.fortroligAdresse
-        Pdl.Gradering.STRENGT_FORTROLIG -> ADGroups.strengtFortroligAdresse
-        Pdl.Gradering.STRENGT_FORTROLIG_UTLAND -> ADGroups.strengtFortroligUtland
+        Pdl.Gradering.STRENGT_FORTROLIG, Pdl.Gradering.STRENGT_FORTROLIG_UTLAND -> ADGroups.strengtFortroligAdresse
         Pdl.Gradering.INGEN, null -> null
     }
