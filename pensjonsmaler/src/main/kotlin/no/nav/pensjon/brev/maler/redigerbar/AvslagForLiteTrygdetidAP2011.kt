@@ -3,16 +3,20 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.ALDER
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse.UNDER_1_AR_TT
+import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse.UNDER_3_AR_TT
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.avtalelandNavn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.bostedsland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.erEOSland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.harAvtaleland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.vedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Alderspensjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder1aarHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder1aarTT
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -69,7 +73,26 @@ object AvslagForLiteTrygdetidAP2011 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                     )
                 }
                 includePhrase(AvslagUnder1aarTT)
+                includePhrase(
+                    AvslagUnder1aarHjemmel(
+                        avtalelandNavn = avtalelandNavn,
+                        erEOSland = erEOSland,
+                        regelverkType = pesysData.regelverkType
+                    )
+                )
+            }
 
+            showIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT)) {
+                paragraph {
+                    text(
+                        Bokmal to "For å ha rett til alderspensjon må du ha minst tre års trygdetid. " +
+                                "Det har du ikke, og derfor har vi avslått søknaden din.",
+                        Nynorsk to "For å ha rett til alderspensjon må du ha minst tre års trygdetid. " +
+                                "Det har du ikkje, og derfor har vi avslått søknaden din.",
+                        English to "To be eligible for retirement pension, you must have at least three years of national insurance coverage. " +
+                                "You do not meet this requirement, therefore we have declined your application."
+                    )
+                }
             }
 
         }

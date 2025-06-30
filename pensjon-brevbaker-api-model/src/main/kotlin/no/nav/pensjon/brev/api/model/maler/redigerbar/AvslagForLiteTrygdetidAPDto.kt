@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -24,8 +25,9 @@ data class AvslagForLiteTrygdetidAPDto(
         val bostedsland: String?,
         val erEOSland: Boolean,
         val harAvtaleland: Boolean,
-        val vedtaksBegrunnelse: VedtaksBegrunnelse,
+        val regelverkType: AlderspensjonRegelverkType,
         val trygdetid: Trygdetid,
+        val vedtaksBegrunnelse: VedtaksBegrunnelse,
     ) : BrevbakerBrevdata
 
 }
