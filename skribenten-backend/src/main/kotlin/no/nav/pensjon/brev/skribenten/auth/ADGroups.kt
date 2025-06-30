@@ -10,7 +10,6 @@ object ADGroups {
     private lateinit var _pensjonSaksbehandler: String
     private lateinit var _fortroligAdresse: String
     private lateinit var _strengtFortroligAdresse: String
-    private lateinit var _strengtFortroligUtland: String
     private lateinit var _attestant: String
 
     val pensjonUtland: ADGroup
@@ -21,8 +20,6 @@ object ADGroups {
         get() = ADGroup(_fortroligAdresse)
     val strengtFortroligAdresse: ADGroup
         get() = ADGroup(_strengtFortroligAdresse)
-    val strengtFortroligUtland: ADGroup
-        get() = ADGroup(_strengtFortroligUtland)
     val attestant: ADGroup
         get() = ADGroup(_attestant)
 
@@ -31,7 +28,6 @@ object ADGroups {
         _pensjonSaksbehandler = groupsConfig.getString("pensjonSaksbehandler")
         _fortroligAdresse = groupsConfig.getString("fortroligAdresse")
         _strengtFortroligAdresse = groupsConfig.getString("strengtFortroligAdresse")
-        _strengtFortroligUtland = groupsConfig.getString("strengtFortroligUtland")
         _attestant = groupsConfig.getString("attestant")
     }
 }

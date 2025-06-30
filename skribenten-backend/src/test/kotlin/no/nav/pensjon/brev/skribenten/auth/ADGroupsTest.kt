@@ -17,7 +17,6 @@ class ADGroupsTest {
         assertThat(ADGroups.pensjonSaksbehandler.id).isNotBlank()
         assertThat(ADGroups.fortroligAdresse.id).isNotBlank()
         assertThat(ADGroups.strengtFortroligAdresse.id).isNotBlank()
-        assertThat(ADGroups.strengtFortroligUtland.id).isNotBlank()
         assertThat(ADGroups.attestant.id).isNotBlank()
     }
 

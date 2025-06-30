@@ -73,7 +73,6 @@ class AuthorizeAnsattSakTilgangTest {
                     "pensjonSaksbehandler" to "ad gruppe id for PENSJON_SAKSBEHANDLER",
                     "fortroligAdresse" to "ad gruppe id for Fortrolig_Adresse",
                     "strengtFortroligAdresse" to "ad gruppe id for Strengt_Fortrolig_Adresse",
-                    "strengtFortroligUtland" to "ad gruppe id for EndreStrengtFortroligUtland",
                     "attestant" to "ad gruppe id for Attestant",
                 )
             ).toConfig()
@@ -178,7 +177,7 @@ class AuthorizeAnsattSakTilgangTest {
     }
 
     @Test
-    fun `krever at ansatt har gruppe for StrengtFortroligUtland`() = basicAuthTestApplication { client ->
+    fun `krever at ansatt har gruppe for StrengtFortrolig for utland`() = basicAuthTestApplication { client ->
         coEvery {
             pdlService.hentAdressebeskyttelse(testSak.foedselsnr, ALDER.behandlingsnummer)
         } returns ServiceResult.Ok(listOf(Pdl.Gradering.STRENGT_FORTROLIG_UTLAND))
@@ -213,7 +212,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `ansatt med gruppe for StrengtFortroligUtland faar svar`() =
-        basicAuthTestApplication(MockPrincipal(navIdent, "Hemmelig ansatt", setOf(ADGroups.strengtFortroligUtland))) { client ->
+        basicAuthTestApplication(MockPrincipal(navIdent, "Hemmelig ansatt", setOf(ADGroups.strengtFortroligAdresse))) { client ->
             coEvery {
                 pdlService.hentAdressebeskyttelse(testSak.foedselsnr, ALDER.behandlingsnummer)
             } returns ServiceResult.Ok(listOf(Pdl.Gradering.STRENGT_FORTROLIG_UTLAND))
