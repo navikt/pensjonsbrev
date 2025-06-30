@@ -17,9 +17,12 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
@@ -200,26 +203,26 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
             }
             showIf(sakstype.equalTo(ALDER)) {
                 paragraph {
-                    text(
-                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på $DIN_PENSJON_URL og velge «Kontakt Nav om pensjon», " +
-                                "eller logge deg inn på $BESKJED_TIL_NAV_URL og velge «Send beskjed til Nav». Du kan også sende uttalelsen din til oss i posten. " +
+                    textExpr(
+                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på $DIN_PENSJON_URL og velge ".expr() + quoted("Kontakt Nav om pensjon") +", " +
+                                "eller logge deg inn på $BESKJED_TIL_NAV_URL og velge " + quoted("Send beskjed til Nav") +". Du kan også sende uttalelsen din til oss i posten. " +
                                 "Adressen finner du på $ETTERSENDELSE_URL.",
-                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på $DIN_PENSJON_URL og velje «Kontakt Nav om pensjon», " +
-                                "eller logge deg inn på $BESKJED_TIL_NAV_URL og velje «Send beskjed til Nav». Du kan også sende uttalen din til oss i posten. " +
+                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på $DIN_PENSJON_URL og velje ".expr() + quoted("Kontakt Nav om pensjon") + ", " +
+                                "eller logge deg inn på $BESKJED_TIL_NAV_URL og velje " +  quoted("Send beskjed til Nav") + ". Du kan også sende uttalen din til oss i posten. " +
                                 "Adressa finn du på $ETTERSENDELSE_URL.",
-                        English to "You can submit your statement by logging in to your personal $DIN_PENSJON_URL  pension page and selecting «Kontakt Nav om pensjon», " +
-                                "or by logging in to $BESKJED_TIL_NAV_URL and selecting «Send beskjed til Nav». You can also send us your statement by post. " +
+                        English to "You can submit your statement by logging in to your personal $DIN_PENSJON_URL pension page and selecting ".expr() + quoted("Kontakt Nav om pensjon") +", " +
+                                "or by logging in to $BESKJED_TIL_NAV_URL and selecting " + quoted("Send beskjed til Nav") +". You can also send us your statement by post. " +
                                 "You can find the address at $ETTERSENDELSE_URL.",
                     )
                 }
             }.orShow {
                 paragraph {
-                    text(
-                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velge «Send beskjed til Nav». " +
+                    textExpr(
+                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velge ".expr() + quoted("Send beskjed til Nav") +". " +
                                 "Du kan også sende uttalelsen din til oss i posten. Adressen finner du på $ETTERSENDELSE_URL.",
-                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velje «Send beskjed til Nav». " + "" +
+                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velje ".expr() + quoted("Send beskjed til Nav") +". " +
                                 "Du kan også sende uttalen din til oss i posten. Adressa finn du på $ETTERSENDELSE_URL.",
-                        English to "You can submit your statement by logging in to $BESKJED_TIL_NAV_URL and selecting «Send beskjed til Nav». You can also send us your statement by post. You can find the address at $ETTERSENDELSE_URL.",
+                        English to "You can submit your statement by logging in to $BESKJED_TIL_NAV_URL and selecting ".expr() + quoted("Send beskjed til Nav") +". You can also send us your statement by post. You can find the address at $ETTERSENDELSE_URL.",
                     )
                 }
             }

@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.namedReference
@@ -138,12 +139,12 @@ data class InnholdLavOpptjening(
             )
         }
         paragraph {
-            text(
-                Bokmal to "I Din pensjon på $DIN_PENSJON_URL kan du sjekke når du har mulighet til å ta ut mer alderspensjon. " +
+            textExpr(
+                Bokmal to "I Din pensjon på $DIN_PENSJON_URL kan du sjekke når du har mulighet til å ta ut mer alderspensjon. ".expr() +
                         "Du kan også se hva pensjonen din blir, avhengig av når og hvor mye du tar ut.",
-                Nynorsk to "I Din pensjon på $DIN_PENSJON_URL kan du sjekke når du har høve til å ta ut meir alderspensjon. " +
+                Nynorsk to "I Din pensjon på $DIN_PENSJON_URL kan du sjekke når du har høve til å ta ut meir alderspensjon. ".expr() +
                         "Du kan også sjå kva pensjonen din blir, avhengig av når og kor mykje du tek ut.",
-                English to "Log on to \"Din pensjon\" at $DIN_PENSJON_URL  to find out more about your pension payments. " +
+                English to "Log on to ".expr() + quoted("Din pensjon") + " at $DIN_PENSJON_URL  to find out more about your pension payments. " +
                         "You can also see how your payments change depending on when you start drawing a retirement pension and what percentage of retirement pension you choose.",
             )
         }

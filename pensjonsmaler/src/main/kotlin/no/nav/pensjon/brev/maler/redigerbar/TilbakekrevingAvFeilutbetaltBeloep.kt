@@ -27,6 +27,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -126,9 +127,15 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
             }
             paragraph {
                 text(
-                    Bokmal to "I vedlegget «Oversikt over feilutbetalinger» finner du en oversikt over periodene med feilutbetalinger og beløpet du må betale tilbake.",
-                    Nynorsk to "I vedlegget «Oversikt over feilutbetalinger» finn du ei oversikt over periodane med feilutbetalingar og beløpet du må betale tilbake.",
-                    English to "The attachment titled 'Overview of Incorrect Payments' provides details on the periods with payment errors and the amounts that need to be repaid."
+                    Bokmal to "I vedlegget ",
+                    Nynorsk to "I vedlegget ",
+                    English to "The attachment titled "
+                )
+                namedReference(oversiktOverFeilutbetalingerPE)
+                text(
+                    Bokmal to " finner du en oversikt over periodene med feilutbetalinger og beløpet du må betale tilbake.",
+                    Nynorsk to " finn du ei oversikt over periodane med feilutbetalingar og beløpet du må betale tilbake.",
+                    English to " provides details on the periods with payment errors and the amounts that need to be repaid."
                 )
             }
             title1 {

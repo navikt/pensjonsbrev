@@ -2,8 +2,6 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
-import no.nav.pensjon.brev.template.dsl.TextScope
-import no.nav.pensjon.brev.template.dsl.text
 import java.util.Objects
 
 fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
@@ -25,12 +23,6 @@ fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
     OutlineOnlyScope<Lang, LetterData>().apply(outline).elements,
     includeSakspart
 )
-
-fun TextScope<BaseLanguages, *>.namedReference(attachment: AttachmentTemplate<BaseLanguages, *>) {
-    text(Language.Bokmal to "«", Language.Nynorsk to "«", Language.English to "'")
-    attachment.title.forEach { addTextContent(it) }
-    text(Language.Bokmal to "»", Language.Nynorsk to "»", Language.English to "'")
-}
 
 class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any> internal constructor(
     val data: Expression<AttachmentData>,

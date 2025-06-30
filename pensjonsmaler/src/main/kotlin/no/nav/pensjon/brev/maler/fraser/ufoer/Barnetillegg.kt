@@ -157,10 +157,10 @@ object Barnetillegg {
                             English to "Changes in income may affect your child supplement. "
                         )
                     }
-                    text(
-                        Bokmal to "Du kan enkelt melde fra om inntektsendringer under menyvalget «uføretrygd» på ${Constants.NAV_URL}.",
-                        Nynorsk to "Du kan enkelt melde frå om inntektsendringar under menyvalet «uføretrygd» på ${Constants.NAV_URL}.",
-                        English to "You can easily report income changes under the menu option “disability benefit” at ${Constants.NAV_URL}."
+                    textExpr(
+                        Bokmal to "Du kan enkelt melde fra om inntektsendringer under menyvalget ".expr() + quoted("uføretrygd") +" på ${Constants.NAV_URL}.",
+                        Nynorsk to "Du kan enkelt melde frå om inntektsendringar under menyvalet ".expr() + quoted("uføretrygd") +" på ${Constants.NAV_URL}.",
+                        English to "You can easily report income changes under the menu option ".expr() + quoted("disability benefit") + " at ${Constants.NAV_URL}."
                     )
                 }
             }
@@ -633,9 +633,14 @@ object Barnetillegg {
             showIf(harBarnetilleggFellesbarn or harBarnetilleggSaerkullsbarn) {
                 paragraph {
                     text(
-                        Bokmal to "Du kan lese mer om beregningen av barnetillegg i vedlegget «Opplysninger om beregningen».",
-                        Nynorsk to "Du kan lese meir om berekninga av barnetillegg i vedlegget «Opplysningar om berekninga».",
-                        English to "Read more about how child supplements are calculated in the attachment called “Information about calculations”."
+                        Bokmal to "Du kan lese mer om beregningen av barnetillegg i vedlegget ",
+                        Nynorsk to "Du kan lese meir om berekninga av barnetillegg i vedlegget ",
+                        English to "Read more about how child supplements are calculated in the attachment called "
+                    )
+                    textExpr(
+                        Bokmal to quoted("Opplysninger om beregningen") +".",
+                        Nynorsk to quoted("Opplysningar om berekninga") +".",
+                        English to quoted("Information about calculations") +"."
                     )
                 }
             }

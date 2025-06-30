@@ -65,6 +65,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
@@ -517,10 +518,10 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
 
         //  infoAPhenvNav.no_001
         paragraph {
-            text(
-                Bokmal to "På $PENSJON_URL kan du lese mer om regelverket for alderspensjon og hvordan opplysningene vi har lagt til grunn har betydning for beregningen. I nettjenesten Din pensjon på $DIN_PENSJON_URL kan du se hvilke inntekter og opplysninger om opptjening som vi har registrert.",
-                Nynorsk to "På $PENSJON_URL kan du lese meir om regelverket for alderspensjon og kva opplysningane vi har lagt til grunn, har å seie for berekninga. I nettenesta Din pensjon på $DIN_PENSJON_URL kan du sjå kva inntekter og opplysningar om opptening vi har registrert.",
-                English to "Go to $PENSJON_URL to read more about these regulations that apply to retirement pension and how these affect your calculation. Logon to our online service \"Din pensjon\" at $DIN_PENSJON_URL to see your income and accumulated pension capital."
+            textExpr(
+                Bokmal to "På $PENSJON_URL kan du lese mer om regelverket for alderspensjon og hvordan opplysningene vi har lagt til grunn har betydning for beregningen. I nettjenesten Din pensjon på $DIN_PENSJON_URL kan du se hvilke inntekter og opplysninger om opptjening som vi har registrert.".expr(),
+                Nynorsk to "På $PENSJON_URL kan du lese meir om regelverket for alderspensjon og kva opplysningane vi har lagt til grunn, har å seie for berekninga. I nettenesta Din pensjon på $DIN_PENSJON_URL kan du sjå kva inntekter og opplysningar om opptening vi har registrert.".expr(),
+                English to "Go to $PENSJON_URL to read more about these regulations that apply to retirement pension and how these affect your calculation. Logon to our online service ".expr() + quoted("Din pensjon") + " at $DIN_PENSJON_URL to see your income and accumulated pension capital."
             )
         }
 
