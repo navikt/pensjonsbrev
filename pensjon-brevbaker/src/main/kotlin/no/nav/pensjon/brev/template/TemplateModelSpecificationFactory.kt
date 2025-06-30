@@ -95,7 +95,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                     toProcess.add(theClassifier)
                     FieldType.Object(isMarkedNullable, qname, displayText = displayText.firstOrNull())
                 }
-                Telefonnummer::class.qualifiedName, Foedselsnummer::class.qualifiedName, Broek::class.qualifiedName -> {
+                Broek::class.qualifiedName -> {
                     toProcess.add(theClassifier)
                     FieldType.Object(isMarkedNullable, qname!!, displayText = displayText.firstOrNull())
                 }
