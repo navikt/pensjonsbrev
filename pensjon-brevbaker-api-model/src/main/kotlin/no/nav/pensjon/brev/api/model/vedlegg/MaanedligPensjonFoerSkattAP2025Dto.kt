@@ -12,7 +12,6 @@ data class MaanedligPensjonFoerSkattAP2025Dto(
     data class AlderspensjonPerManed(
         val inntektspensjon: Kroner,
         val totalPensjon: Kroner,
-        val garantipensjonInnvilget: Kroner?,
         val garantipensjon: Kroner?,
         val minstenivaIndividuell: Kroner?,
         val virkDatoFom: LocalDate,
