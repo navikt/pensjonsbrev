@@ -61,7 +61,7 @@ jobs:
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
           ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal 
-          ./gradlew :pensjon-brevbaker:buildNeeded --debug
+          ./gradlew :pensjon-brevbaker:buildNeeded --stacktrace --info
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
       - name: "Build and publish container image to GAR"
