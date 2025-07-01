@@ -36,6 +36,7 @@ tasks.test {
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.fromTarget(apiModelJavaTarget))
+        freeCompilerArgs.add("-Xannotation-default-target=param-property")
     }
     sourceSets {
         main {
