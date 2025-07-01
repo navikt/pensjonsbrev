@@ -67,7 +67,6 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
                 beregnetPensjonPerManedGjeldende = MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed(
                     inntektspensjon = Kroner(1000),
                     totalPensjon = Kroner(2000),
-                    garantipensjonInnvilget = Kroner(500),
                     garantipensjon = Kroner(1000),
                     minstenivaIndividuell = Kroner(0),
                     virkDatoFom = LocalDate.now(),
