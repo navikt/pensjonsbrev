@@ -34,7 +34,7 @@ on:
 env:
   "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
   JavaDistribution: "temurin"
-  JavaVersion: 21
+  JavaVersion: "21.0.6+7.0.LTS"
 
 jobs:
   "build-brevbaker":
@@ -52,8 +52,6 @@ jobs:
       - uses: gradle/actions/wrapper-validation@v4
       - name: "Setup Gradle"
         uses: gradle/actions/setup-gradle@v4
-        with:
-          cache-disabled: true
       - uses: actions/setup-java@v4
         with:
           "distribution": ${{ env.JavaDistribution }}
