@@ -25,9 +25,11 @@ import {
   getCursorOffsetOrRange,
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
-import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
-import { NEW_LINE } from "~/types/brevbakerTypes";
+import type { EditedLetter, LiteralValue, Table } from "~/types/brevbakerTypes";
+import { NEW_LINE, TABLE } from "~/types/brevbakerTypes";
 import { ElementTags, FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+
+import { TableView } from "./TableView";
 
 /**
  * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
@@ -89,6 +91,8 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
               </ul>
             );
           }
+          case TABLE:
+            return <TableView key={_contentIndex} node={content as Table} />;
         }
       })}
     </div>

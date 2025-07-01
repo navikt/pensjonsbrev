@@ -1,6 +1,7 @@
 import { addNewLine } from "~/Brevredigering/LetterEditor/actions/addNewLine";
 import { cursorPosition } from "~/Brevredigering/LetterEditor/actions/cursorPosition";
 import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
+import { addTableColumn, addTableRow, insertTable } from "~/Brevredigering/LetterEditor/actions/table";
 
 import { create } from "./common";
 import { merge } from "./merge";
@@ -21,5 +22,8 @@ const Actions = {
   updateContentText,
   toggleBulletList,
   switchFontType,
+  insertTable,
+  addTableRow,
+  addTableColumn,
 };
 export default Actions;
