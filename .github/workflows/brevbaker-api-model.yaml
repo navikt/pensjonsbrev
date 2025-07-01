@@ -1,13 +1,6 @@
 name: "Build and release pensjon-brevbaker-api-model"
 on:
   workflow_dispatch:
-  pull_request:
-    branches:
-      - "main"
-    paths:
-      - "pensjon-brevbaker-api-model/**"
-      - "brevbaker-api-model-common/**"
-      - ".github/workflows/brevbaker-api-model.yaml"
   push:
     branches:
       - "main"

@@ -3,9 +3,6 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - "build.gradle.kts"
-      - "gradle.properties"
-      - "gradle/libs.versions.toml"
       - "skribenten-backend/**"
       - ".github/workflows/skribenten.yml"
   push:
