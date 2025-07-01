@@ -199,7 +199,7 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
             title1 {
                 text(
                     Bokmal to "Derfor endres utbetalingen ",
-                    Nynorsk to "Difor vert utbetalinga di endra "
+                    Nynorsk to "Difor blir utbetalinga endra "
                 )
             }
 
@@ -224,9 +224,9 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                             Bokmal to "Ny forventet inntekt for deg er ".expr() + forventetInntekt.format(CurrencyFormat) + " kroner " +
                                     "og barnets andre forelder er " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
                                     "Inntekten til den andre forelderen påvirker bare størrelsen på barnetillegg. ",
-                            Nynorsk to "Ny forventa inntekt for deg er ".expr() + forventetInntekt.format(CurrencyFormat) + " kroner" +
+                            Nynorsk to "Ny forventa inntekt for deg er ".expr() + forventetInntekt.format(CurrencyFormat) + " kroner " +
                                     "og barnet sin andre forelder er " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
-                                    "Inntekt til den andre forelderen påverkar berre storleiken på barnetillegg.",
+                                    "Inntekta til den andre forelderen påverkar berre storleiken på barnetillegg.",
                         )
                     }
                 }.orShowIf(not(endretUt) and btfbEndret) {
@@ -283,9 +283,9 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                     paragraph {
                         textExpr(
                             Bokmal to "Fordi du allerede har fått utbetalt ".expr() + uforetrygd.nettoAkkumulert.format(CurrencyFormat) +
-                                    " i år, vil du ikke få utbetalt uføretrygd resten av året. ",
+                                    " kroner i uføretrygd i år, vil du ikke få utbetalt uføretrygd resten av året. ",
                             Nynorsk to "Då du allereie har fått utbetalt ".expr() + uforetrygd.nettoAkkumulert.format(CurrencyFormat) +
-                                    " i år, vil du ikkje få utbetalt uføretrygd resten av året. ",
+                                    " kroner i uføretrygd i år, vil du ikkje få utbetalt uføretrygd resten av året. ",
                         )
                     }
                 }
@@ -306,28 +306,29 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                                 "kroner per år, får du ikkje utbetalt uføretrygd. Du beheld likevel retten til uføretrygd utan utbetaling, og du kan igjen få utbetaling av uføretrygd dersom inntekta di seinare skulle endre seg. "
                     )
                 }
-            }
 
-            ifNotNull(gjenlevendetillegg) {
-                title1 {
-                    text(
-                        Bokmal to "Ditt gjenlevendetillegg ",
-                        Nynorsk to "Ditt gjenlevandetillegg ",
-                    )
+                ifNotNull(gjenlevendetillegg) {
+                    title1 {
+                        text(
+                            Bokmal to "Ditt gjenlevendetillegg ",
+                            Nynorsk to "Ditt gjenlevandetillegg ",
+                        )
+                    }
+                    paragraph {
+                        text(
+                            Bokmal to "Du får gjenlevendetillegg i uføretrygden din. Endringen i din inntekt påvirker utbetalingen av gjenlevendetillegget. Gjenlevendetillegget endres med samme prosent som uføretrygden. ",
+                            Nynorsk to "Du får gjenlevandetillegg i uføretrygda di. Endringa i di inntekt påverkar utbetalinga av gjenlevandetillegg. Gjenlevandetillegget endrast med same prosent som uføretrygda. ",
+                        )
+                    }
                 }
-                paragraph {
-                    text(
-                        Bokmal to "Du får gjenlevendetillegg i uføretrygden din. Endringen i din inntekt påvirker utbetalingen av gjenlevendetillegget. Gjenlevendetillegget endres med samme prosent som uføretrygden. ",
-                        Nynorsk to "Du får gjenlevandetillegg i uføretrygda di. Endringa i di inntekt påverkar utbetalinga av gjenlevandetillegg. Gjenlevandetillegget endrast med same prosent som uføretrygda. ",
-                    )
-                }
+
             }
 
             showIf(barnetilleggSaerkullsbarn.notNull() or barnetilleggFellesbarn.notNull()) {
                 title1 {
                     text(
-                        Bokmal to "Endring i utbetaling av barnetillegg ",
-                        Nynorsk to "Endring i utbetalinga av barnetillegg ",
+                        Bokmal to "Barnetillegg ",
+                        Nynorsk to "Barnetillegg ",
                     )
                 }
                 paragraph {
@@ -342,7 +343,7 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
 
             }
 
-            showIf(btfbEndret and barnetilleggFellesbarn.notNull() and barnetilleggSaerkullsbarn.isNull()) {
+            showIf(btfbEndret and not(btsbEndret) and barnetilleggFellesbarn.notNull() and barnetilleggSaerkullsbarn.isNull()) {
                 ifNotNull(barnetilleggFellesbarn) { btfb ->
                     title2 {
                         text(
@@ -352,22 +353,20 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                     }
                     paragraph {
                         textExpr(
-                            Bokmal to "Du får barnetillegg for fellesbarn når du bor sammen med barnets andre forelder. ".expr() +
+                            Bokmal to "Du får barnetillegg for fellesbarn fordi du bor sammen med barnets andre forelder. ".expr() +
                                     "Vi har endret barnetillegget ut fra din personinntekt på " + btfb.inntektBruker.format(CurrencyFormat) +
                                     " kroner og personinntekten til barnets andre forelder på " + btfb.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
                                     "Når vi beregner nytt barnetillegg, tar vi hensyn til hvor mye du har fått utbetalt i barnetillegg hittil i år." +
-                                    "Du får derfor en utbetaling av barnetillegg på " + btfb.netto.format(CurrencyFormat) +
-                                    " kroner per måned fra neste måned. ",
-                            Nynorsk to "Du får barnetillegg for fellesbarn når du bur saman med den andre forelderen til barnet. ".expr() +
+                                    "Du får derfor en utbetaling av barnetillegg på " + btfb.netto.format(CurrencyFormat) + " kroner per måned fra neste måned. ",
+                            Nynorsk to "Du får barnetillegg for fellesbarn fordi du bur saman med den andre forelderen til barnet. ".expr() +
                                     "Vi har endra barnetillegget ut frå personinntekta di på " + btfb.inntektBruker.format(CurrencyFormat) +
                                     " kroner og personinntekta til den andre forelderen på" + btfb.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
                                     "Når vi reknar ut nytt barnetillegg, tek vi omsyn til kor mykje du har fått utbetalt i barnetillegg hittil i år. " +
-                                    "Du får difor ei utbetaling av barnetillegg på " + btfb.netto.format(CurrencyFormat) +
-                                    "kroner per månad frå neste månad. "
+                                    "Du får difor ei utbetaling av barnetillegg på " + btfb.netto.format(CurrencyFormat) + "kroner per månad frå neste månad. "
                         )
                     }
                 }
-            }.orShowIf(btsbEndret and barnetilleggSaerkullsbarn.notNull() and barnetilleggFellesbarn.isNull()) {
+            }.orShowIf(btsbEndret and not(btfbEndret) and barnetilleggSaerkullsbarn.notNull() and barnetilleggFellesbarn.isNull()) {
                 ifNotNull(barnetilleggSaerkullsbarn) { btsb ->
                     title2 {
                         text(
@@ -377,11 +376,11 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                     }
                     paragraph {
                         textExpr(
-                            Bokmal to "Du får barnetillegg for særkullsbarn når du ikke bor sammen med barnets andre forelder. ".expr() +
+                            Bokmal to "Du får barnetillegg for særkullsbarn fordi du ikke bor sammen med barnets andre forelder. ".expr() +
                                     "Vi har endret barnetillegget ut fra din personinntekt på " + btsb.inntektBruktIAvkortning.format(CurrencyFormat) +
                                     " kroner. Når vi beregner nytt barnetillegg, tar vi hensyn til hvor mye du har fått utbetalt i barnetillegg hittil i år." +
                                     "Du får derfor en utbetaling av barnetillegg på " + btsb.netto.format(CurrencyFormat) + " kroner per måned fra neste måned. ",
-                            Nynorsk to "Du får barnetillegg for særkullsbarn når du ikkje bur saman med den andre forelderen til barnet. ".expr() +
+                            Nynorsk to "Du får barnetillegg for særkullsbarn fordi du ikkje bur saman med den andre forelderen til barnet. ".expr() +
                                     "Vi har endra barnetillegget ut frå personinntekta di på ".expr() + btsb.inntektBruktIAvkortning.format(CurrencyFormat) +
                                     " kroner. Når vi reknar ut nytt barnetillegg, tek vi omsyn til kor mykje du har fått utbetalt i barnetillegg hittil i år. " +
                                     "Du får difor ei utbetaling av barnetillegg på " + btsb.netto.format(CurrencyFormat) + " kroner per månad frå neste månad. "
@@ -397,15 +396,20 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                         )
                     }
                     paragraph {
+                        text(
+                            Bokmal to "Du får barnetillegg for særkullsbarn og fellesbarn. Du får barnetillegg for fellesbarn når du bor sammen med barnets andre forelder. Du får barnetillegg for særkullsbarn når du ikke bor sammen med barnets andre forelder. ",
+                            Nynorsk to "Du får barnetillegg for særkullsbarn og fellesbarn. Du får barnetillegg for fellesbarn når du bur saman med den andre forelderen til barnet. Du får barnetillegg for særkullsbarn når du ikkje bur saman med den andre forelderen til barnet. "
+                        )
+                    }
+                    paragraph {
                         textExpr(
-                            Bokmal to "Du får barnetillegg for særkullsbarn og fellesbarn. ".expr() +
-                                    "Barnetillegg for særkullsbarn er beregnet ut fra din inntekt på " + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) + " kroner. " +
+                            Bokmal to "Barnetillegg for særkullsbarn er beregnet ut fra din inntekt på ".expr() + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) + " kroner. " +
                                     "Barnetillegg for fellesbarn er i tillegg beregnet ut fra den andre forelderens inntekt på " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
-                                    "Du får barnetillegg for fellesbarn når du bor sammen med barnets andre forelder. Du får barnetillegg for særkullsbarn når du ikke bor sammen med barnets andre forelder. ",
-                            Nynorsk to "Du får barnetillegg for særkullsbarn og fellesbarn. ".expr() +
-                                    "Barnetillegg for særkullsbarn, er rekna ut med utgangspunkt i inntekta di på " + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) + " kroner. " +
+                                    "Når vi beregner nytt barnetillegg, tar vi hensyn til hvor mye du har fått utbetalt i barnetillegg hittil i år. Du får derfor en utbetaling av barnetillegg på " + barnetilleggFellesbarn.netto.plus(barnetilleggSaerkullsbarn.netto).format(CurrencyFormat) + " kroner per måned fra neste år. ",
+                            Nynorsk to "Barnetillegg for særkullsbarn, er rekna ut med utgangspunkt i inntekta di på ".expr() + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) + " kroner. " +
                                     "Barnetillegget for fellesbarn, er i tillegg rekna ut frå inntekta til den andre forelderen på " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
-                                    "Du får barnetillegg for fellesbarn når du bur saman med den andre forelderen til barnet. Du får barnetillegg for særkullsbarn når du ikkje bur saman med den andre forelderen til barnet. "
+                                    "Når vi reknar ut nytt barnetillegg, tek vi omsyn til kor mykje du har fått utbetalt i barnetillegg hittil i år. \n" +
+                                    "Du får difor ei utbetaling av barnetillegg på " + barnetilleggFellesbarn.netto.plus(barnetilleggSaerkullsbarn.netto).format(CurrencyFormat) + " kroner per månad frå neste månad."
                         )
                     }
                 }
@@ -622,9 +626,7 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                             text (
                                 Bokmal to "Erstatningsoppgjør for inntektstap dersom den andre forelderen får uføretrygd eller alderspensjon fra Nav ",
                                 Nynorsk to "Erstatningsoppgjer for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon frå Nav "
-                                )
-
-
+                            )
                         }
                     }
                     text(
