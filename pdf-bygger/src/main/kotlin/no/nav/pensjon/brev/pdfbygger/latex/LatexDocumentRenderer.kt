@@ -249,7 +249,7 @@ internal object LatexDocumentRenderer {
     ) {
         var continousTextContent = mutableListOf<Text>()
 
-        element.content.forEach { current ->
+        element.content.forEachIndexed { index, current ->
             if (current !is Text && continousTextContent.isNotEmpty()) {
                 renderTextParagraph(continousTextContent)
                 continousTextContent = mutableListOf()
@@ -258,7 +258,7 @@ internal object LatexDocumentRenderer {
             when (current) {
                 is Form -> renderForm(current)
                 is ItemList -> renderList(current)
-                is Table -> renderTable(current, previous)
+                is Table -> renderTable(current, previous, index == 0)
                 is Text -> continousTextContent.add(current)
             }
         }
@@ -278,12 +278,12 @@ internal object LatexDocumentRenderer {
         }
     }
 
-    private fun LatexAppendable.renderTable(table: Table, previous: LetterMarkup.Block?) {
+    private fun LatexAppendable.renderTable(table: Table, previous: LetterMarkup.Block?, isFirstElementInParagraph: Boolean) {
         if (table.rows.isNotEmpty()) {
             val columnSpec = table.header.colSpec
             appendCmd(
                 "begin", "letterTable", columnHeadersLatexString(columnSpec),
-                titleTextOrNull(previous)?.let { "\\tabletitle $it" } ?: ""
+                titleTextOrNull(previous, isFirstElementInParagraph)?.let { "\\tabletitle $it" } ?: ""
                 , escape = false
             )
             renderTableCells(columnSpec.map { it.headerContent }, columnSpec)
@@ -296,11 +296,14 @@ internal object LatexDocumentRenderer {
         }
     }
 
-    private fun titleTextOrNull(previous: LetterMarkup.Block?): String? = when (previous) {
-        is LetterMarkup.Block.Title1 -> renderTextsToString(previous.content)
-        is LetterMarkup.Block.Title2 -> renderTextsToString(previous.content)
-        else -> null
-    }?.takeIf { it.isNotBlank() }
+    private fun titleTextOrNull(previous: LetterMarkup.Block?, isFirstElementInParagraph: Boolean): String? =
+        if(isFirstElementInParagraph) {
+            when (previous) {
+                is LetterMarkup.Block.Title1 -> renderTextsToString(previous.content)
+                is LetterMarkup.Block.Title2 -> renderTextsToString(previous.content)
+                else -> null
+            }?.takeIf { it.isNotBlank() }
+        } else null
 
     private fun renderTextsToString(texts: List<Text>): String =
         String(StringBuilder().also { LatexAppendable(it).renderText(texts) })
