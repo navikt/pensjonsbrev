@@ -382,7 +382,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Paragraph : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block {
 	public abstract fun getContent ()Ljava/util/List;
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Paragraph$DefaultImpls {
@@ -391,7 +391,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Paragra
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title1 : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block {
 	public abstract fun getContent ()Ljava/util/List;
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title1$DefaultImpls {
@@ -400,7 +400,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title1$
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title2 : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block {
 	public abstract fun getContent ()Ljava/util/List;
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title2$DefaultImpls {
@@ -427,7 +427,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$MultipleChoice : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form {
 	public abstract fun getChoices ()Ljava/util/List;
 	public abstract fun getPrompt ()Ljava/util/List;
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 	public abstract fun getVspace ()Z
 }
 
@@ -443,7 +443,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form {
 	public abstract fun getPrompt ()Ljava/util/List;
 	public abstract fun getSize ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 	public abstract fun getVspace ()Z
 }
 
@@ -472,7 +472,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {
 	public abstract fun getHeader ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Header;
 	public abstract fun getRows ()Ljava/util/List;
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Cell {
@@ -525,7 +525,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Literal : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text {
 	public abstract fun getTags ()Ljava/util/Set;
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Literal$DefaultImpls {
@@ -533,7 +533,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$NewLine : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text {
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$NewLine$DefaultImpls {
@@ -541,7 +541,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Variable : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text {
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Variable$DefaultImpls {
