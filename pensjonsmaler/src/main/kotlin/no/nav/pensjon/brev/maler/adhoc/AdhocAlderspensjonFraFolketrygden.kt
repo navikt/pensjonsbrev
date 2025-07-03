@@ -8,8 +8,12 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
@@ -59,13 +63,13 @@ object AdhocAlderspensjonFraFolketrygden : AutobrevTemplate<EmptyBrevdata> {
                 )
             }
             paragraph {
-                text(
-                    Bokmal to "Metoden for beregningen av alderspensjonen din gjør at du nå får et gjenlevendetillegg. "
-                            + "Dette erstatter det som før het «minstenivåtillegg individuelt».",
-                    Nynorsk to "Metoden for utrekninga av alderspensjonen din gjer at du no får eit attlevandetillegg. "
-                            + "Dette erstattar det som før heitte «minstenivåtillegg individuelt».",
-                    English to "The method for calculating your retirement pension means that you now receive a survivor’s supplement. "
-                            + "This replaces what was previously called ‘minimum pension supplement’."
+                textExpr(
+                    Bokmal to "Metoden for beregningen av alderspensjonen din gjør at du nå får et gjenlevendetillegg. ".expr()
+                            + "Dette erstatter det som før het " + quoted("minstenivåtillegg individuelt") + ".",
+                    Nynorsk to "Metoden for utrekninga av alderspensjonen din gjer at du no får eit attlevandetillegg. ".expr()
+                            + "Dette erstattar det som før heitte " + quoted("minstenivåtillegg individuelt") + ".",
+                    English to "The method for calculating your retirement pension means that you now receive a survivor’s supplement. ".expr()
+                            + "This replaces what was previously called " + quoted("minimum pension supplement") + "."
                 )
             }
             paragraph {

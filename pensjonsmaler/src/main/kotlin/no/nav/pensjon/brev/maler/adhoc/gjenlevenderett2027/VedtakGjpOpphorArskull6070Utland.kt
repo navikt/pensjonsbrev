@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevende
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.DineInntekterTabell
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig2GTabell
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig3GTabell
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -34,6 +35,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.includeAttachment
 import no.nav.pensjon.brev.template.includePhrase
+import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -202,18 +204,7 @@ object VedtakGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
                 )
             }
 
-            title1 {
-                text(
-                    Bokmal to "Du har rett til å klage  ",
-                    English to "You have the right to appeal  "
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på nav.no/klage. ",
-                    English to "If you believe a decision was made in error, you have the right to appeal. The term of appeal is six weeks from the date on which you received notice of the decision. In the attached documents «Your rights and obligations», you can read more about how to proceed. The appeal form and more information can be found at nav.no/klage. "
-                )
-            }
+            includePhrase(Felles.RettTilAAKlage(vedleggGjpDineRettigheterOgPlikter))
 
             title1 {
                 text(
@@ -223,8 +214,13 @@ object VedtakGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
             }
             paragraph {
                 text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram.   ",
-                    English to "You have the right to access all the documents relevant to your case. In the attached «Your rights and obligations», you can read more about how to proceed.   "
+                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg ",
+                    English to "You have the right to access all the documents relevant to your case. In the attached "
+                )
+                namedReference(vedleggGjpDineRettigheterOgPlikter)
+                text(
+                    Bokmal to " for informasjon om hvordan du går fram.",
+                    English to ", you can read more about how to proceed."
                 )
             }
 

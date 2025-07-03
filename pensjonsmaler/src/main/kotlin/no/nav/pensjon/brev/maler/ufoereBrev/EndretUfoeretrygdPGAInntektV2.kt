@@ -42,8 +42,10 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
@@ -417,9 +419,11 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
 
             paragraph {
                 text(
-                    Bokmal to "Du finner fullstendige beregninger i vedlegget «Slik er uføretrygden din beregnet». ",
-                    Nynorsk to "Du finn dei fullstendige utrekningane i vedlegget «Slik er uføretrygda di rekna ut». "
+                    Bokmal to "Du finner fullstendige beregninger i vedlegget ",
+                    Nynorsk to "Du finn dei fullstendige utrekningane i vedlegget "
                 )
+                namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
+                text(Bokmal to ".", Nynorsk to ".")
             }
 
             showIf(endretUt and (btfbEndret or btsbEndret) and gjenlevendetillegg.notNull()) {
@@ -502,9 +506,11 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
 
             paragraph {
                 text(
-                    Bokmal to "Les mer om dette i vedlegget «Dine rettigheter og plikter». ",
-                    Nynorsk to "Les meir om dette i vedlegget «Dine rettar og plikter». "
+                    Bokmal to "Les mer om dette i vedlegget ",
+                    Nynorsk to "Les meir om dette i vedlegget "
                 )
+                namedReference(vedleggDineRettigheterOgPlikterUfoere)
+                text(Bokmal to ".", Nynorsk to ".")
             }
 
             title1 {
@@ -645,9 +651,14 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
             paragraph {
                 text(
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du fikk vedtaket. " +
-                            "I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på nav.no/klage. ",
+                            "I vedlegget ",
                     Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. " +
-                            "I vedlegget «Dine rettar og plikter» kan du lese meir om korleis du går fram. Du finn skjema og informasjon på nav.no/klage. "
+                            "I vedlegget "
+                )
+                namedReference(vedleggDineRettigheterOgPlikterUfoere)
+                text(
+                    Bokmal to " får du vite mer om hvordan du går fram. Du finner skjema og informasjon på nav.no/klage.",
+                    Nynorsk to " kan du lese meir om korleis du går fram. Du finn skjema og informasjon på nav.no/klage."
                 )
             }
 
@@ -659,8 +670,13 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
             }
             paragraph {
                 text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram. ",
-                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegget «Dine rettar og plikter» for meir informasjon om korleis du går fram. "
+                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg ",
+                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegget "
+                )
+                namedReference(vedleggDineRettigheterOgPlikterUfoere)
+                text(
+                    Bokmal to " for informasjon om hvordan du går fram. ",
+                    Nynorsk to " for meir informasjon om korleis du går fram. "
                 )
             }
 

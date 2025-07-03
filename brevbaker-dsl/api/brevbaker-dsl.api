@@ -79,6 +79,7 @@ public abstract class no/nav/pensjon/brev/template/BinaryOperation : no/nav/pens
 	public synthetic fun <init> (Lno/nav/pensjon/brev/template/BinaryOperation$Documentation;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public abstract fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public final fun getDoc ()Lno/nav/pensjon/brev/template/BinaryOperation$Documentation;
+	public final fun invoke (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/BinaryOperation$And : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
@@ -576,7 +577,6 @@ public final class no/nav/pensjon/brev/template/IncludeAttachmentKt {
 	public static final fun createAttachment (Lno/nav/pensjon/brev/template/ContentOrControlStructure;ZLkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/AttachmentTemplate;
 	public static synthetic fun createAttachment$default (Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/AttachmentTemplate;
 	public static synthetic fun createAttachment$default (Lno/nav/pensjon/brev/template/ContentOrControlStructure;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/AttachmentTemplate;
-	public static final fun namedReference (Lno/nav/pensjon/brev/template/dsl/TextScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;)V
 }
 
 public final class no/nav/pensjon/brev/template/InvalidListDeclarationException : no/nav/pensjon/brev/template/TemplateValidationException {
@@ -749,6 +749,11 @@ public final class no/nav/pensjon/brev/template/MissingTitleInTemplateException 
 	public fun <init> (Ljava/lang/String;)V
 }
 
+public final class no/nav/pensjon/brev/template/NamedReferenceKt {
+	public static final fun namedReference (Lno/nav/pensjon/brev/template/dsl/TextScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;)V
+	public static final fun namedReferenceBokmalEnglish (Lno/nav/pensjon/brev/template/dsl/TextScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;)V
+}
+
 public abstract class no/nav/pensjon/brev/template/Operation : no/nav/pensjon/brev/template/StableHash {
 	public fun <init> ()V
 	public fun equals (Ljava/lang/Object;)Z
@@ -839,6 +844,7 @@ public abstract class no/nav/pensjon/brev/template/TextOnlyPhrase {
 
 public abstract class no/nav/pensjon/brev/template/UnaryOperation : no/nav/pensjon/brev/template/Operation {
 	public abstract fun apply (Ljava/lang/Object;)Ljava/lang/Object;
+	public final fun invoke (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/UnaryOperation$AbsoluteValue : no/nav/pensjon/brev/template/UnaryOperation, no/nav/pensjon/brev/template/StableHash {
@@ -899,6 +905,20 @@ public final class no/nav/pensjon/brev/template/UnaryOperation$Not : no/nav/pens
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$Not;
 	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
 	public fun apply (Z)Ljava/lang/Boolean;
+	public fun stableHashCode ()I
+}
+
+public final class no/nav/pensjon/brev/template/UnaryOperation$QuotationEnd : no/nav/pensjon/brev/template/UnaryOperation, no/nav/pensjon/brev/template/StableHash {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$QuotationEnd;
+	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun apply (Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
+	public fun stableHashCode ()I
+}
+
+public final class no/nav/pensjon/brev/template/UnaryOperation$QuotationStart : no/nav/pensjon/brev/template/UnaryOperation, no/nav/pensjon/brev/template/StableHash {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$QuotationStart;
+	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun apply (Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
 	public fun stableHashCode ()I
 }
 
@@ -1073,6 +1093,19 @@ public final class no/nav/pensjon/brev/template/dsl/PlainTextScope$DefaultImpls 
 	public static fun getFelles (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;)Lno/nav/pensjon/brev/template/Expression;
 }
 
+public final class no/nav/pensjon/brev/template/dsl/QuotationMarks {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/dsl/QuotationMarks;
+	public final fun getEnd ()Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
+	public final fun getStart ()Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
+}
+
+public final class no/nav/pensjon/brev/template/dsl/QuoteKt {
+	public static final fun quoted (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun quoted (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun quotedExpr (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun quotedStr (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
+}
+
 public final class no/nav/pensjon/brev/template/dsl/ShowElseScope {
 	public final fun getScope ()Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;
 	public final fun orIfNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
@@ -1229,9 +1262,9 @@ public final class no/nav/pensjon/brev/template/dsl/UtilsKt {
 }
 
 public final class no/nav/pensjon/brev/template/dsl/expression/BaseKt {
-	public static final fun and (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression$BinaryInvoke;
-	public static final fun equalTo (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Object;)Lno/nav/pensjon/brev/template/Expression$BinaryInvoke;
-	public static final fun equalTo (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression$BinaryInvoke;
+	public static final fun and (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalTo (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalTo (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun expr (Ljava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun format (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/LocalizedFormatter;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun getOrNull (Lno/nav/pensjon/brev/template/Expression;I)Lno/nav/pensjon/brev/template/Expression;
@@ -1247,11 +1280,11 @@ public final class no/nav/pensjon/brev/template/dsl/expression/BaseKt {
 	public static final fun notEqualTo (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notNull (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notOperator (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun or (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression$BinaryInvoke;
-	public static final fun plus (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression$BinaryInvoke;
-	public static final fun plus (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression$BinaryInvoke;
+	public static final fun or (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun plus (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun plus (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun select (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/TemplateModelSelector;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun tuple (Lkotlin/Pair;)Lno/nav/pensjon/brev/template/Expression$BinaryInvoke;
+	public static final fun tuple (Lkotlin/Pair;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/expression/CollectionKt {
