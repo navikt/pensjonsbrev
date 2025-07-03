@@ -1,13 +1,13 @@
 package no.nav.pensjon.brev.skribenten.auth
 
-import io.ktor.http.*
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.util.*
 import io.ktor.util.*
-import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.ServiceResult
@@ -18,25 +18,47 @@ val SakKey = AttributeKey<Pen.SakSelection>("AuthorizeAnsattSakTilgang:sak")
 
 private val logger = LoggerFactory.getLogger("AuthorizeAnsattSakTilgang")
 
-class AuthorizeAnsattSakTilgangConfiguration {
+open class AuthorizeAnsattSakTilgangConfiguration {
     lateinit var pdlService: PdlService
     lateinit var penService: PenService
 }
 
-val AuthorizeAnsattSakTilgang = createRouteScopedPlugin("AuthorizeAnsattSakTilgang", ::AuthorizeAnsattSakTilgangConfiguration) {
-    on(PrincipalInContext.Hook) { call ->
-        val saksId = call.parameters.getOrFail(SAKSID_PARAM)
-        val pdlService = pluginConfig.pdlService
-        val penService = pluginConfig.penService
+val AuthorizeAnsattSakTilgang =
+    createRouteScopedPlugin("AuthorizeAnsattSakTilgang", ::AuthorizeAnsattSakTilgangConfiguration) {
+        on(PrincipalInContext.Hook) { call ->
+            val saksId = call.parameters.getOrFail(SAKSID_PARAM)
 
-        val ikkeTilgang = penService.hentSak(saksId).map { sak ->
-            call.attributes.put(SakKey, sak)
-            sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(sak.foedselsnr, sak.sakType.behandlingsnummer), PrincipalInContext.require())
-        }.catch(::AuthAnsattSakTilgangResponse)
-
-        if (ikkeTilgang != null) {
-            call.respond(ikkeTilgang.status, ikkeTilgang.melding)
+            validerTilgangTilSak(call, saksId)
         }
+    }
+
+class AuthorizeAnsattSakTilgangForBrevConfiguration : AuthorizeAnsattSakTilgangConfiguration() {
+    lateinit var brevredigeringService: BrevredigeringService
+}
+
+val AuthorizeAnsattSakTilgangForBrev =
+    createRouteScopedPlugin("AuthorizeAnsattSakTilgangForBrev", ::AuthorizeAnsattSakTilgangForBrevConfiguration) {
+        on(PrincipalInContext.Hook) { call ->
+            val brevId = call.parameters.getOrFail<Long>("brevId")
+            val brev = pluginConfig.brevredigeringService.hentBrevInfo(brevId)
+
+            if (brev != null) {
+                validerTilgangTilSak(call, brev.saksId.toString())
+            }
+        }
+    }
+
+private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfiguration>.validerTilgangTilSak(call: ApplicationCall, saksId: String) {
+    val pdlService = pluginConfig.pdlService
+    val penService = pluginConfig.penService
+
+    val ikkeTilgang = penService.hentSak(saksId).map { sak ->
+        call.attributes.put(SakKey, sak)
+        sjekkAdressebeskyttelse(pdlService.hentAdressebeskyttelse(sak.foedselsnr, sak.sakType.behandlingsnummer), PrincipalInContext.require())
+    }.catch(::AuthAnsattSakTilgangResponse)
+
+    if (ikkeTilgang != null) {
+        call.respond(ikkeTilgang.status, ikkeTilgang.melding)
     }
 }
 
