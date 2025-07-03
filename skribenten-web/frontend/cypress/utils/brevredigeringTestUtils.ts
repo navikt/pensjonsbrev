@@ -1,12 +1,16 @@
+import { newLiteral, newParagraph, newVariable } from "~/Brevredigering/LetterEditor/actions/common";
+import { SpraakKode } from "~/types/apiTypes";
 import type {
   BrevInfo,
   BrevResponse,
   BrevStatus,
+  BrevType,
   Mottaker,
   NavAnsatt,
   NAVEnhet,
   SaksbehandlerValg,
 } from "~/types/brev";
+import { Distribusjonstype } from "~/types/brev";
 import type {
   AnyBlock,
   Content,
@@ -22,12 +26,8 @@ import type {
   Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
+import { FontType } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
-
-import { newLiteral, newParagraph, newVariable } from "../../src/Brevredigering/LetterEditor/actions/common";
-import { SpraakKode } from "../../src/types/apiTypes";
-import { Distribusjonstype } from "../../src/types/brev";
-import { FontType } from "../../src/types/brevbakerTypes";
 
 export const nyBrevResponse = ({
   info = nyBrevInfo({}),
@@ -48,7 +48,13 @@ export const nyBrevResponse = ({
   };
 };
 
-export const nyRedigertBrev = (args: {
+export const nyRedigertBrev = ({
+  title,
+  sakspart,
+  blocks,
+  signatur = nySignatur({}),
+  deletedBlocks,
+}: {
   title?: string;
   sakspart?: Sakspart;
   blocks?: AnyBlock[];
@@ -56,14 +62,14 @@ export const nyRedigertBrev = (args: {
   deletedBlocks?: number[];
 }): EditedLetter => {
   return {
-    title: args.title ?? "Information about application processing time",
-    sakspart: args.sakspart ?? {
+    title: title ?? "Information about application processing time",
+    sakspart: sakspart ?? {
       gjelderNavn: "TRYGG ANBEFALING",
       gjelderFoedselsnummer: "21418744917",
       saksnummer: "22981081",
       dokumentDato: "25/09/2024",
     },
-    blocks: args.blocks ?? [
+    blocks: blocks ?? [
       {
         id: 272_720_182,
         parentId: null,
@@ -99,14 +105,8 @@ export const nyRedigertBrev = (args: {
         type: "PARAGRAPH",
       },
     ],
-    signatur: {
-      hilsenTekst: args.signatur?.hilsenTekst ?? "Yours sincerely",
-      saksbehandlerRolleTekst: args.signatur?.saksbehandlerRolleTekst ?? "Caseworker",
-      saksbehandlerNavn: args.signatur?.saksbehandlerNavn ?? "Sak S. Behandler",
-      attesterendeSaksbehandlerNavn: args.signatur?.attesterendeSaksbehandlerNavn ?? "Attest S. Behandler",
-      navAvsenderEnhet: args.signatur?.navAvsenderEnhet ?? "Nav Arbeid og ytelser Sørlandet",
-    },
-    deletedBlocks: [],
+    signatur: signatur,
+    deletedBlocks: deletedBlocks ?? [],
   };
 };
 
@@ -118,12 +118,14 @@ export const nyBrevInfo = (args: {
   sistredigert?: string;
   brevkode?: string;
   brevtittel?: string;
+  brevtype?: BrevType;
   status?: BrevStatus;
   distribusjonstype?: Distribusjonstype;
   mottaker?: Nullable<Mottaker>;
   avsenderEnhet?: Nullable<NAVEnhet>;
   spraak?: SpraakKode;
   journalpostId?: Nullable<number>;
+  vedtaksId?: Nullable<number>;
 }): BrevInfo => {
   return {
     id: args.id ?? 1,
@@ -133,6 +135,7 @@ export const nyBrevInfo = (args: {
     sistredigert: args.sistredigert ?? "2024-09-25T08:54:51.520Z",
     brevkode: args.brevkode ?? "INFORMASJON_OM_SAKSBEHANDLINGSTID",
     brevtittel: args.brevtittel ?? "Informasjon om saksbehandlingstid",
+    brevtype: args.brevtype ?? "INFORMASJONSBREV",
     status: args.status ?? {
       type: "Kladd",
     },
@@ -141,19 +144,20 @@ export const nyBrevInfo = (args: {
     avsenderEnhet: args.avsenderEnhet ?? null,
     spraak: args.spraak ?? SpraakKode.Engelsk,
     journalpostId: args.journalpostId ?? null,
+    vedtaksId: args.vedtaksId ?? null,
   };
 };
 
 //TODO - kan heller bruke newLiteral fra common.ts
-export const nyLiteral = (args: { id?: Nullable<number>; text?: string }): LiteralValue => ({
+export const nyLiteral = (args: { id?: Nullable<number>; text?: string; editedText?: string }): LiteralValue => ({
   type: "LITERAL",
   id: args.id ?? null,
   parentId: null,
   text: args.text ?? "ny literal default text",
-  editedText: args.text ?? "ny literal default edited-text",
+  editedText: args.editedText ?? args.text ?? "ny literal default edited-text",
+  tags: [],
   fontType: FontType.PLAIN,
   editedFontType: null,
-  tags: [],
 });
 
 export const nyVariable = (args: { id?: Nullable<number>; name?: string; text?: string }): VariableValue => ({
@@ -213,3 +217,17 @@ export const nyParagraphBlock = (args: { id?: Nullable<number>; content?: Conten
     id: args.id,
     content: args.content ?? [],
   });
+
+export const nySignatur = (args: {
+  hilsenTekst?: string;
+  saksbehandlerRolleTekst?: string;
+  saksbehandlerNavn?: string;
+  attesterendeSaksbehandlerNavn?: string;
+  navAvsenderEnhet?: string;
+}): Signatur => ({
+  hilsenTekst: args.hilsenTekst ?? "Yours sincerely",
+  saksbehandlerRolleTekst: args.saksbehandlerRolleTekst ?? "Caseworker",
+  saksbehandlerNavn: args.saksbehandlerNavn ?? "Sak S. Behandler",
+  attesterendeSaksbehandlerNavn: args.attesterendeSaksbehandlerNavn ?? "Attest S. Behandler",
+  navAvsenderEnhet: args.navAvsenderEnhet ?? "Nav Arbeid og ytelser Sørlandet",
+});

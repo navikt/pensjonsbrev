@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.*
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.andelKap19
@@ -10,29 +10,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelecto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.regelverkstype
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BarnetilleggGjeldendeSelectors.innvilgetBarnetilleggFB_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BarnetilleggGjeldendeSelectors.innvilgetBarnetilleggSB_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.barnetilleggFBbrutto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.barnetilleggSBbrutto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.foedselsDato
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.BrukerSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.brukersSivilstand
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.ektefelletillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.flyktningstatusErBrukt
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.fribelopET
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.fribelopFB
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.fribelopSB
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.fullTrygdetid
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.garantipensjon
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.garantitillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.gjenlevendetillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.gjenlevendetilleggKap19_safe
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.inntektBruktIavkortningET
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.inntektBruktIavkortningFB
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.inntektBruktIavkortningSB
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.inntektspensjon
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.minstenivaIndividuell
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.minstenivaPensjonistPar
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.skjermingstillegg
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.virkDatoFom
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.EktefelletilleggGjeldendeSelectors.innvilgetEktefelletillegg_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.aldersEllerSykehjem_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.InstitusjonsoppholdGjeldendeSelectors.ensligPaInst_safe
@@ -52,6 +31,27 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelecto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.krav
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.saerskiltSatsGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.tilleggspensjonGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.barnetilleggFBbrutto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.barnetilleggSBbrutto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.brukersSivilstand
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.ektefelletillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.flyktningstatusErBrukt
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.fribelopET
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.fribelopFB
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.fribelopSB
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.fullTrygdetid
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.garantipensjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.garantitillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.gjenlevendetillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.gjenlevendetilleggKap19_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.inntektBruktIavkortningET
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.inntektBruktIavkortningFB
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.inntektBruktIavkortningSB
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.inntektspensjon
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.minstenivaIndividuell
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.minstenivaPensjonistPar
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.skjermingstillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.virkDatoFom
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.*
 import no.nav.pensjon.brev.model.bestemtForm
@@ -701,25 +701,8 @@ val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish
 
 
         // vedlegg del 2
-
         showIf(alderspensjonPerManed.size().greaterThan(1)) {
-            //vedleggBelopFlerePerioderTittel_001
-            title1 {
-                textExpr(
-                    Bokmal to "Oversikt over pensjonen fra ".expr() + krav.virkDatoFom.format(),
-                    Nynorsk to "Oversikt over pensjonen frå ".expr() + krav.virkDatoFom.format(),
-                    English to "Pension specifications as of ".expr() + krav.virkDatoFom.format(),
-                )
-            }
-
-            // veldeggBelopFlerePerioder_001
-            paragraph {
-                text(
-                    Bokmal to "Hvis det har vært endringer i noen av opplysningene som ligger til grunn for beregningen eller pensjonen har vært regulert, kan dette føre til en endring i hvor mye du får utbetalt. Nedenfor følger en oversikt over de månedlige pensjonsbeløpene dine.",
-                    Nynorsk to "Dersom det har vore endringar i nokre av opplysningane som ligg til grunn for utrekninga eller pensjonen har vore regulert, kan det føre til ei endring i kor mykje du får utbetalt. Nedanfor fylgjer ei oversikt over dei månadlege pensjonsbeløpa dine.",
-                    English to "If there have been changes affecting how your pension is calculated in the period or amendments in the National Insurance basic amount, your pension may be adjusted accordingly. Below is a list of your monthly pension payments.",
-                )
-            }
+            includePhrase(TabellMaanedligPensjonFlerePerioderInnledning(krav.virkDatoFom))
 
             forEach(alderspensjonPerManed) { alderspensjon ->
                 showIf(regelverkstype.isOneOf(AP1967, AP2011)) {

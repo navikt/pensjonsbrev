@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.Duration
 import java.time.Instant
 
@@ -45,18 +46,21 @@ object Api {
 
     data class BrevInfo(
         val id: Long,
+        val saksId: Long,
         val opprettetAv: NavAnsatt,
         val opprettet: Instant,
         val sistredigertAv: NavAnsatt,
         val sistredigert: Instant,
         val brevkode: Brevkode.Redigerbart,
         val brevtittel: String,
+        val brevtype: LetterMetadata.Brevtype,
         val status: BrevStatus,
         val distribusjonstype: Distribusjonstype,
         val mottaker: OverstyrtMottaker?,
         val avsenderEnhet: NavEnhet?,
         val spraak: SpraakKode,
         val journalpostId: Long?,
+        val vedtaksId: Long?,
     )
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -100,7 +104,7 @@ object Api {
             val adresselinje1: String,
             val adresselinje2: String?,
             val adresselinje3: String?,
-            val landkode: String,
+            val landkode: Landkode,
         ) : OverstyrtMottaker()
     }
 

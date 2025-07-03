@@ -2,6 +2,7 @@ import { css } from "@emotion/react";
 import { BodyShort, CopyButton, HStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { z } from "zod";
 
 import {
   getFavoritterQuery,
@@ -16,46 +17,49 @@ import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 import { queryFold } from "~/utils/tanstackUtils";
 
 import { MottakerContextProvider } from "./brevvelger/-components/endreMottaker/MottakerContext";
-import { FerdigstillResultatContextProvider } from "./kvittering/-components/FerdigstillResultatContext";
+import { BrevInfoKlarTilAttesteringProvider } from "./kvittering/-components/KlarTilAttesteringContext";
+import { SendtBrevProvider } from "./kvittering/-components/SendtBrevContext";
 
-// Typer er deklarert som `: string | undefined` heller enn `?: string` for å kreve at disse parametrene overføres i lenker.
-type SaksnummerSearch = { vedtaksId: string | undefined; enhetsId: string | undefined };
+export const baseSearchSchema = z.object({
+  vedtaksId: z.coerce.string().optional(),
+  enhetsId: z.coerce.string().optional(),
+});
+type BaseSearchParamsSchema = z.infer<typeof baseSearchSchema>;
 
 export const Route = createFileRoute("/saksnummer_/$saksId")({
-  beforeLoad: ({ params: { saksId }, search: { vedtaksId } }) => ({
-    getSakContextQueryOptions: getSakContextQuery(saksId, vedtaksId),
-  }),
-  loader: async ({ context: { queryClient, getSakContextQueryOptions }, params: { saksId } }) => {
-    // Adresse is a slow query that will be needed later, therefore we prefetch it here as early as possible.
+  validateSearch: (search): BaseSearchParamsSchema => baseSearchSchema.parse(search),
+
+  loaderDeps: ({ search }) => ({ vedtaksId: search.vedtaksId }),
+  loader: async ({ context: { queryClient }, params: { saksId }, deps: { vedtaksId } }) => {
+    const getSakContextQueryOptions = getSakContextQuery(saksId, vedtaksId);
+
     queryClient.prefetchQuery(getKontaktAdresseQuery(saksId));
     queryClient.prefetchQuery(getFavoritterQuery);
     queryClient.prefetchQuery(getPreferredLanguageQuery(saksId));
 
     return await queryClient.ensureQueryData(getSakContextQueryOptions);
   },
+  component: SakLayout,
   errorComponent: ({ error }) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { saksId } = Route.useParams();
     return <ApiError error={error} title={`Klarte ikke hente saksnummer ${saksId}`} />;
   },
-  component: SakLayout,
-  validateSearch: (search: Record<string, unknown>): SaksnummerSearch => ({
-    vedtaksId: search.vedtaksId as string,
-    enhetsId: search.enhetsId as string,
-  }),
 });
 
 function SakLayout() {
   const sakContext = Route.useLoaderData();
   return (
-    <FerdigstillResultatContextProvider>
-      <MottakerContextProvider>
-        {sakContext && <Subheader sak={sakContext.sak} />}
-        <div className="page-margins">
-          <Outlet />
-        </div>
-      </MottakerContextProvider>
-    </FerdigstillResultatContextProvider>
+    <BrevInfoKlarTilAttesteringProvider>
+      <SendtBrevProvider>
+        <MottakerContextProvider>
+          {sakContext && <Subheader sak={sakContext.sak} />}
+          <div className="page-margins">
+            <Outlet />
+          </div>
+        </MottakerContextProvider>
+      </SendtBrevProvider>
+    </BrevInfoKlarTilAttesteringProvider>
   );
 }
 

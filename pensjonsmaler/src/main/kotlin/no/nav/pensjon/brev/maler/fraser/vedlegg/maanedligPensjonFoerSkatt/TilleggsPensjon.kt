@@ -1,15 +1,16 @@
 package no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype.*
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.erRedusert_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.kombinertMedAvdod_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUforeAvdod_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaUngUfore_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaYrkesskadeAvdod_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.TilleggspensjonGjeldendeSelectors.pgaYrkesskade_safe
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabell
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.*
@@ -32,8 +33,8 @@ private object TilleggspensjonenBold : ParagraphPhrase<LangBokmalNynorskEnglish>
 
 data class MaanedligPensjonFoerSkattTilleggsPensjon(
     val tilleggspensjonGjeldende: Expression<MaanedligPensjonFoerSkattDto.TilleggspensjonGjeldende?>,
-    val beregnetPensjonPerManedGjeldende: Expression<MaanedligPensjonFoerSkattDto.AlderspensjonPerManed>,
-    val regelverkstype: Expression<AlderspensjonRegelverkstype>,
+    val beregnetPensjonPerManedGjeldende: Expression<MaanedligPensjonFoerSkattTabell.AlderspensjonPerManed>,
+    val regelverkstype: Expression<AlderspensjonRegelverkType>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>(){
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 

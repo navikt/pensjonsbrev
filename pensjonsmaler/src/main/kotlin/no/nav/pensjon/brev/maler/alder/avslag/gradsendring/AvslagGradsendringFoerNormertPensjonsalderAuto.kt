@@ -3,16 +3,19 @@ package no.nav.pensjon.brev.maler.alder.avslag.gradsendring
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.afpBruktIBeregning
+import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.avtaleland
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.borINorge
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.harEOSLand
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.minstePensjonssats
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.normertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.opplysningerBruktIBeregningen
+import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.vedtakBegrunnelseLavOpptjening
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.virkFom
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
-import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP
+import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025Vedlegg
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -25,7 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 @TemplateModelHelpers
 object AvslagGradsendringFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoerNormertPensjonsalderAutoDto> {
 
-    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_AVSLAG_GRAD_FOER_NORMERT_PENSJONSALDER_AUTO
+    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_AUTO
 
     override val template = createTemplate(
         name = kode.name,
@@ -51,22 +54,23 @@ object AvslagGradsendringFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagU
                 AvslagGradsendringFoerNormertPensjonsalderFelles(
                     afpBruktIBeregning = afpBruktIBeregning,
                     normertPensjonsalder = normertPensjonsalder,
-                    opplysningerBruktIBeregningen = opplysningerBruktIBeregningen,
+                    uttaksgrad = opplysningerBruktIBeregningen.uttaksgrad,
+                    prorataBruktIBeregningen = opplysningerBruktIBeregningen.prorataBruktIBeregningen,
                     virkFom = virkFom,
                     minstePensjonssats = minstePensjonssats,
                     totalPensjon = totalPensjon,
                     borINorge = borINorge,
                     harEOSLand = harEOSLand,
-                    vedtakBegrunnelseLavOpptjening = vedtakBegrunnelseLavOpptjening,
+                    regelverkType = regelverkType,
+                    avtaleland = avtaleland,
                 )
             )
         }
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
         includeAttachment(
-            template = opplysningerBruktIBeregningenAP,
-            attachmentData = opplysningerBruktIBeregningen,
-            predicate = vedtakBegrunnelseLavOpptjening
+            template = opplysningerBruktIBeregningenAP2025Vedlegg,
+            attachmentData = opplysningerBruktIBeregningen
         )
     }
 }

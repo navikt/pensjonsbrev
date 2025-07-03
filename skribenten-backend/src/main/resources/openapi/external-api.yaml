@@ -1,0 +1,228 @@
+openapi: 3.1.0
+info:
+  title: Eksternt Skribenten API
+  description: Skribenten API som kan brukes av andre systemer
+  version: 1.0.0
+servers:
+  - url: 'https://pensjon-skribenten-api.intern.dev.nav.no'
+    description: Brukes fra dev-fss
+  - url: 'https://pensjon-skribenten-api.intern.nav.no'
+    description: Brukes fra prod-fss
+  - url: 'http://skribenten-backend.pensjonsbrev'
+    description: Brukes fra dev-gcp og prod-gcp
+paths:
+  /external/api/v1/brev:
+    get:
+      description: Henter alle brev for pesys sak(er)
+      security:
+        - entraId: []
+      parameters:
+        - name: saksId
+          description: >
+            PESYS Saksnummer, kan angi flere saker som en komma-separert liste `?saksId=123,456`,
+            eller som flere parametre `?saksId=123&saksId=456`
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: En liste over brev på angitt sak(er) med url for å åpne brevet i Skribenten
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/brevinfo"
+
+components:
+  schemas:
+    brevinfo:
+      type: object
+      required:
+        - url
+        - id
+        - saksId
+        - brevkode
+        - tittel
+        - brevtype
+        - distribusjonstype
+        - språk
+        - opprettetAv
+        - sistRedigertAv
+        - opprettet
+        - sistRedigert
+        - status
+      properties:
+        url:
+          type: string
+          format: uri
+          description: URL for å åpne brevet i Skribenten
+        id:
+          type: number
+          format: int64
+          description: BrevId
+        saksId:
+          type: number
+          format: int64
+          description: Saksnummer i PESYS
+        vedtaksId:
+          type: number
+          format: int64
+          description: Inkluderes kun om brevet er et vedtaksbrev
+        journalpostId:
+          type: number
+          format: int64
+          description: JournalpostId om brevet er arkivert (alltid ferdigstilt). Vil kun være inkludert om distribusjon må forsøkes nytt.
+        brevkode:
+          type: string
+          description: Brevkode for brevmalen til brevet
+        tittel:
+          type: string
+          description: Visningsnavn for brevmalen til brevet
+        brevtype:
+          type: string
+          enum:
+            - INFORMASJONSBREV
+            - VEDTAKSBREV
+          description: Om det er et informasjonsbrev eller vedtaksbrev
+        avsenderEnhetsId:
+          type: string
+          description: NavEnhetsID (Norg2) for avsender
+        spraak:
+          type: string
+          enum:
+            - EN
+            - NB
+            - NN
+            - FR
+            - SE
+          description: >
+            Språk i brevet
+            * `EN` - Engelsk
+            * `NB` - Bokmål
+            * `NN` - Nynorsk
+            * `FR` - Fransk
+            * `SE` - Nord-samisk
+        opprettetAv:
+          type: string
+          description: NavIdent på saksbehandler som opprettet brevet
+        sistRedigertAv:
+          type: string
+          description: NavIdent på saksbehandler som sist redigerte brevet
+        redigeresAv:
+          type: string
+          description: NavIdent på saksbehandler som redigerer brevet nå og kan ikke åpnes av andre
+        opprettet:
+          type: string
+          format: date-time
+          description: ISO-8601 formattert tidspunkt for når brevet ble opprettet
+        sistRedigert:
+          type: string
+          format: date-time
+          description: ISO-8601 formattert tidspunkt for når brevet sist ble lagret
+        overstyrtMottaker:
+          description: Brevet skal distribueres til annen adresse eller mottaker
+          $ref: "#/components/schemas/mottaker"
+        status:
+          type: string
+          enum:
+            - KLADD
+            - ATTESTERING
+            - KLAR
+            - ARKIVERT
+          description: >
+            Status på brevet i Skribenten
+            * `KLADD` - Brevkladd
+            * `ATTESTERING` - Attestant må lese gjennom og sende brevet
+            * `KLAR` - Brevet er market som klar til å sendes, men er ikke arkivert enda
+            * `ARKIVERT` - Brevet er journalført og journalposten er ferdigstilt, men distribusjon må forsøkes på nytt  
+
+    mottaker:
+      oneOf:
+        - type: object
+          description: Samhandler
+          required:
+            - type
+            - tssId
+          properties:
+            type:
+              type: string
+              enum: [ "Samhandler" ]
+            tssId:
+              type: string
+              description: Ekstern TSS ID for samhandler
+        - type: object
+          description: Norsk adresse
+          required:
+            - type
+            - navn
+            - postnummer
+            - poststed
+          properties:
+            type:
+              type: string
+              enum: [ "NorskAdresse" ]
+            navn:
+              type: string
+              description: Navn på mottaker
+            postnummer:
+              type: string
+              description: Postnummer
+            poststed:
+              type: string
+              description: Poststed
+            adresselinje1:
+              type: string
+              description: Adresselinje 1
+            adresselinje2:
+              type: string
+              description: Adresselinje 2
+            adresselinje3:
+              type: string
+              description: Adresselinje 3
+        - type: object
+          description: Utenlandsk adresse
+          required:
+            - type
+            - navn
+            - adresselinje1
+            - landkode
+          properties:
+            type:
+              type: string
+              enum: [ "UtenlandskAdresse" ]
+            navn:
+              type: string
+              description: Navn på mottaker
+            postnummer:
+              type: string
+              description: Postnummer
+            poststed:
+              type: string
+              description: Poststed
+            adresselinje1:
+              type: string
+              description: Adresselinje 1
+            adresselinje2:
+              type: string
+              description: Adresselinje 2
+            adresselinje3:
+              type: string
+              description: Adresselinje 3
+            landkode:
+              type: string
+              description: To-bokstavers landkode ihht iso3166-1 alfa-2
+
+
+  securitySchemes:
+    entraId:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Bruker [Entra ID](https://docs.nais.io/auth/entra-id). 
+        Token må ha `audience` satt til `[cluster].pensjonsbrev.skribenten-backend`.
+        
+        For å teste APIet kan du lage et gyldig OBO-token ved å bruke:
+        - [dev-gcp](https://azure-token-generator.intern.dev.nav.no/api/obo?aud=dev-gcp.pensjonsbrev.skribenten-backend)

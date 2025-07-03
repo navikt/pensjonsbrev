@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlereImpl
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -209,8 +209,8 @@ class LatexVisualITest {
     @Test
     fun `brev med saksbehandler underskrift`() {
         render(
-            felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(
+            felles = Fixtures.felles.medSignerendeSaksbehandlere(
+                signerendeSaksbehandlere = SignerendeSaksbehandlere(
                     saksbehandler = "Ole Saksbehandler"
                 )
             )
@@ -222,8 +222,8 @@ class LatexVisualITest {
     @Test
     fun `brev med saksbehandler og attestant underskrift`() {
         render(
-            felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(
+            felles = Fixtures.felles.medSignerendeSaksbehandlere(
+                signerendeSaksbehandlere = SignerendeSaksbehandlere(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Saksbehandler"
                 )
@@ -237,7 +237,7 @@ class LatexVisualITest {
     fun `test av ulike `() {
         render(
             felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(
+                signerendeSaksbehandlere = SignerendeSaksbehandlere(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Saksbehandler"
                 )
@@ -251,7 +251,7 @@ class LatexVisualITest {
     fun `vedtaksbrev med saksbehandler underskrift`() {
         render(
             felles = Fixtures.felles.copy(
-                signerendeSaksbehandlere = SignerendeSaksbehandlereImpl(
+                signerendeSaksbehandlere = SignerendeSaksbehandlere(
                     saksbehandler = "Ole Saksbehandler",
                     attesterendeSaksbehandler = "Per Attesterende"
                 )
@@ -293,6 +293,44 @@ class LatexVisualITest {
                     }
                 }
             }
+        }
+    }
+
+    @Test
+    fun `Table title should have the correct spacing when sticking to a table that was shipped to the next page`() {
+        render {
+            repeat(5) {
+                paragraph {
+                    text(
+                        Bokmal to "Padding text bla bla. ".repeat(18),
+                    )
+                }
+            }
+            paragraph {
+                text(Bokmal to "Padding text bla bla. ".repeat(14))
+            }
+            title1 {
+                text(Bokmal to "Test-tittel")
+            }
+            paragraph { testTable(5) }        }
+    }
+
+    @Test
+    fun `table title and other content`() {
+        render {
+            paragraph { text(Bokmal to "asdf") }
+            title1 { text(Bokmal to "Test-tittel") }
+            paragraph { testTable(5) }
+        }
+    }
+
+
+    @Test
+    fun `table title and other title`() {
+        render {
+            title1 { text(Bokmal to "Test-tittel") }
+            title1 { text(Bokmal to "Test-tittel") }
+            paragraph { testTable(5) }
         }
     }
 
@@ -339,16 +377,18 @@ class LatexVisualITest {
         }
     }
 
-    private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testTable() {
+    private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testTable(numRows: Int = 1) {
         table(
             header = {
                 column { text(Bokmal to "Column A") }
                 column { text(Bokmal to "Column B") }
             }
         ) {
-            row {
-                cell { text(Bokmal to "Cell A-1") }
-                cell { text(Bokmal to "Cell B-1") }
+            for (i in 1..numRows) {
+                row {
+                    cell { text(Bokmal to "Cell A-$i") }
+                    cell { text(Bokmal to "Cell B-$i") }
+                }
             }
         }
     }

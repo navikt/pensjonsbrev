@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.maler.fraser.common.BroekText
+import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.maler.legacy.avdod_fremtidig_trygdetid_under_40_aar
 import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagavdod_brukerflyktning
 import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagavdod_fodselsnummer
@@ -170,11 +172,7 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                                 )
                             }
                             cell {
-                                text(
-                                    Bokmal to "Ja",
-                                    Nynorsk to "Ja",
-                                    English to "Yes",
-                                )
+                                includePhrase(Ja)
                             }
                         }
                     }
@@ -215,11 +213,7 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                                 )
                             }
                             cell {
-                                text(
-                                    Bokmal to "Ja",
-                                    Nynorsk to "Ja",
-                                    English to "Yes",
-                                )
+                                includePhrase(Ja)
                             }
                         }
                     }
@@ -392,13 +386,11 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                                 )
                             }
                             cell {
-                                textExpr(
-                                    Bokmal to pe.vedtaksdata_trygdetidavdod_tttellereos().format() + "/" + pe.vedtaksdata_trygdetidavdod_ttnevnereos()
-                                        .format(),
-                                    Nynorsk to pe.vedtaksdata_trygdetidavdod_tttellereos()
-                                        .format() + "/" + pe.vedtaksdata_trygdetidavdod_ttnevnereos().format(),
-                                    English to pe.vedtaksdata_trygdetidavdod_tttellereos()
-                                        .format() + "/" + pe.vedtaksdata_trygdetidavdod_ttnevnereos().format(),
+                                includePhrase(
+                                    BroekText(
+                                        pe.vedtaksdata_trygdetidavdod_tttellereos(),
+                                        pe.vedtaksdata_trygdetidavdod_ttnevnereos(),
+                                    )
                                 )
                             }
                         }
@@ -456,13 +448,11 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                                 )
                             }
                             cell {
-                                textExpr(
-                                    Bokmal to pe.vedtaksdata_trygdetidavdod_tttellernordisk()
-                                        .format() + "/" + pe.vedtaksdata_trygdetidavdod_ttnevnernordisk().format(),
-                                    Nynorsk to pe.vedtaksdata_trygdetidavdod_tttellernordisk()
-                                        .format() + "/" + pe.vedtaksdata_trygdetidavdod_ttnevnernordisk().format(),
-                                    English to pe.vedtaksdata_trygdetidavdod_tttellernordisk()
-                                        .format() + "/" + pe.vedtaksdata_trygdetidavdod_ttnevnernordisk().format(),
+                                includePhrase(
+                                    BroekText(
+                                        pe.vedtaksdata_trygdetidavdod_tttellernordisk(),
+                                        pe.vedtaksdata_trygdetidavdod_ttnevnernordisk(),
+                                    )
                                 )
                             }
                         }
@@ -564,13 +554,11 @@ data class TBUxx1V (val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorskEng
                                 )
                             }
                             cell {
-                                textExpr(
-                                    Bokmal to pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_tttellerbilateral()
-                                        .format() + "/" + pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_ttnevnerbilateral().format(),
-                                    Nynorsk to pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_tttellerbilateral()
-                                        .format() + "/" + pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_ttnevnerbilateral().format(),
-                                    English to pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_tttellerbilateral()
-                                        .format() + "/" + pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_ttnevnerbilateral().format(),
+                                includePhrase(
+                                    BroekText(
+                                        pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_tttellerbilateral(),
+                                        pe.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_ttnevnerbilateral()
+                                    )
                                 )
                             }
                         }

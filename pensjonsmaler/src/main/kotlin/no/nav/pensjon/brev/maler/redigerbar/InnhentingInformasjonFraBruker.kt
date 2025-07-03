@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.amerikanskSocialSecurityNumber
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.bankOpplysninger
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.bankopplysninger
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.boOgArbeidsperioder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.bosattIEoesLandSedErEoesBlanketter
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBrukerDtoSelectors.SaksbehandlerValgSelectors.eps60aarOgInntektUnder1g
@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -52,21 +53,28 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
         ),
     ) {
         title {
-            textExpr(
-                Bokmal to "Vi har mottatt ".expr() +
-                        fritekst("søknad/blankett/brev/henvendelse")
-                        + " fra deg " + fritekst("dato") + ".",
-
-                Nynorsk to "Vi har fått ".expr() +
-                        fritekst("søknad/blankett/brev/henvendelse")
-                        + " frå deg " + fritekst("dato") + ".",
-
-                English to "We have received ".expr() +
-                        fritekst("an application/a form/a letter/an inquiry")
-                        + " from you " + fritekst("dato") + ".",
+            text(
+                Bokmal to "Du må sende oss flere opplysninger",
+                Nynorsk to "Du må sende oss fleire opplysningar",
+                English to "We need more information from you",
             )
         }
         outline {
+            paragraph {
+                textExpr(
+                    Bokmal to "Vi har mottatt ".expr() +
+                            fritekst("søknad/blankett/brev/henvendelse")
+                            + " fra deg " + fritekst("dato") + ".",
+
+                    Nynorsk to "Vi har fått ".expr() +
+                            fritekst("søknad/blankett/brev/henvendelse")
+                            + " frå deg " + fritekst("dato") + ".",
+
+                    English to "We have received ".expr() +
+                            fritekst("an application/a form/a letter/an inquiry")
+                            + " from you " + fritekst("dato") + ".",
+                )
+            }
             paragraph {
                 val fritekst = fritekst("Utfyllende informasjon til bruker om årsak til brevet.")
                 textExpr(
@@ -115,7 +123,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.bankOpplysninger) {
+            showIf(saksbehandlerValg.bankopplysninger) {
                 title1 {
                     text(
                         Bokmal to "Bankopplysninger",
@@ -131,10 +139,10 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                     )
                 }
                 paragraph {
-                    text(
-                        Bokmal to "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysninger. Gå inn på Din Profil og velg «Bankkonto for utbetaling». Du kan logge inn med BankID, Buypass, MinID eller Commfides.",
-                        Nynorsk to "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysningar. Gå inn på Din Profil og vel «Bankkonto for utbetaling». Du kan logge inn med BankID, Buypass, MinID eller Commfides.",
-                        English to "You can register the necessary bank details in the “Din pensjon” portal at $DIN_PENSJON_URL. Log in on your personal page “Din Profil” and select “Bank account for payment”. You can log in using BankID, Buypass, MinID or Commfides.",
+                    textExpr(
+                        Bokmal to "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysninger. Gå inn på Din Profil og velg ".expr() + quoted("Bankkonto for utbetaling") +". Du kan logge inn med BankID, Buypass, MinID eller Commfides.",
+                        Nynorsk to "I Din pensjon på $DIN_PENSJON_URL kan du registrere nødvendige bankopplysningar. Gå inn på Din Profil og vel ".expr() + quoted("Bankkonto for utbetaling") +". Du kan logge inn med BankID, Buypass, MinID eller Commfides.",
+                        English to "You can register the necessary bank details in the ".expr() + quoted("Din pensjon") +" portal at $DIN_PENSJON_URL. Log in on your personal page " + quoted("Din Profil") + " and select " + quoted("Bank account for payment") +". You can log in using BankID, Buypass, MinID or Commfides.",
                     )
                 }
             }
@@ -190,7 +198,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                     textExpr(
                         Bokmal to "Dokumentasjon på din ".expr() + fritekst("ektefelle/partner/samboer") + " sin inntekt",
                         Nynorsk to "Dokumentasjon på din ".expr() + fritekst("ektefelle/partnar/sambuar") + " si inntekt",
-                        English to "Documentation of your ".expr() + fritekst("spouse/partner/cohabitant") + "`s income",
+                        English to "Documentation of your ".expr() + fritekst("spouse/partner/cohabitant") + "'s income",
                     )
                 }
                 paragraph {
@@ -371,7 +379,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                     text(
                         Bokmal to "Dokumentasjon på din ektefelle/partner/samboer sin inntekt",
                         Nynorsk to "Dokumentasjon på din ektefelle/partnar/sambuar si inntekt",
-                        English to "Documentation of your spouse/partner/cohabitant`s income",
+                        English to "Documentation of your spouse/partner/cohabitant's income",
                     )
                 }
                 paragraph {
@@ -600,10 +608,10 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
             }
 
             paragraph {
-                text(
-                    Bokmal to "Du kan gi tilbakemelding via Nav sin nettside $DITT_NAV. Velg «Send beskjed til Nav», tema «Beskjed – pensjon».",
-                    Nynorsk to "Du kan gi tilbakemelding via Nav si nettside $DITT_NAV. Vel «Send beskjed til Nav», tema «Beskjed – pensjon».",
-                    English to "Feel free to contact us and give us the required information at Nav’s online service $DITT_NAV. Select «Send beskjed til Nav» and the theme «Beskjed – pensjon».",
+                textExpr(
+                    Bokmal to "Du kan gi tilbakemelding via Nav sin nettside $DITT_NAV. Velg ".expr() + quoted("Send beskjed til Nav") + ", tema " + quoted("Beskjed – pensjon") + ".",
+                    Nynorsk to "Du kan gi tilbakemelding via Nav si nettside $DITT_NAV. Vel ".expr() + quoted("Send beskjed til Nav") +", tema " + quoted("Beskjed – pensjon") + ".",
+                    English to "Feel free to contact us and give us the required information at Nav’s online service $DITT_NAV. Select ".expr() + quoted("Send beskjed til Nav") +" and the theme " + quoted("Beskjed – pensjon") + ".",
                 )
             }
             paragraph {

@@ -1,6 +1,9 @@
 # Pensjonsbrev
 This is a mono-repo for the microservices that together form the new letter ordering system.
 
+## Dokumentasjon
+Dokumentasjonen fra ``docs``-mappa i dette repoet blir automatisk publisert til https://navikt.github.io/pensjonsbrev/
+
 ## Lokal kjøring av brevbaker og pdf-bygger
 
 For å kjøre løsningen lokalt må man ha docker og docker compose installert.
@@ -13,8 +16,12 @@ Bruk følgende for å bygge og kjøre:
 ```
 Dersom du kun skal kjøre brevbaker og pdf-bygger og ikke skribenten må du fortsatt pga en bug i docker-compose generere tomme env files for skribenten:
 ```bash
-(mkdir -p - skribenten-backend/secrets tjenestebuss-integrasjon/secrets skribenten-web/bff)
-(touch skribenten-backend/secrets/azuread.env skribenten-backend/secrets/unleash.env tjenestebuss-integrasjon/secrets/docker.env  skribenten-web/bff/.env)
+(mkdir -p - skribenten-backend/secrets tjenestebuss-integrasjon/secrets skribenten-web/bff pensjon-brevbaker/secrets/kafka)
+(touch skribenten-backend/secrets/azuread.env skribenten-backend/secrets/unleash.env tjenestebuss-integrasjon/secrets/docker.env  skribenten-web/bff/.env\
+  pensjon-brevbaker/secrets/kafka/kafka-secret.env\
+  pensjon-brevbaker/secrets/kafka/client.keystore.p12\
+  pensjon-brevbaker/secrets/kafka/client.truststore.jks
+)
 ```
 ```bash
 docker-compose up -d --build
@@ -90,6 +97,13 @@ For å hente npm pakker ved å legge inn brukernavn og samme token som passord m
 npm login --registry=https://npm.pkg.github.com --auth-type=legacy
 ```
 
+### Endringer i biblioteks-koden
+Vi bruker gradle-pluginen `binary-compatibility-validator` for å se etter endringer i koden i modulene som inngår i biblioteket (per nå `brevbaker-api-model-common`, `brevbaker-dsl` og `brevbaker). Denne holder oversikt representert i .api-filer i disse modulene.
+
+Ved endringer av public-kode i disse modulene - inkludert sletting av metoder eller nye metoder - må du huske å kjøre `gradle apiDump` og sjekke inn de oppdaterte .api-filene. Glemmer du dette vil bygget feile - det kjører automatisk `gradle apiCheck`-kommandoen.
+
+Mer om dette på https://kotlinlang.org/docs/api-guidelines-backward-compatibility.html
+
 ### Ytelsestesting med locust
 Ytelsestesten er i utgangspunktet satt opp til å teste vedtaksbrevet UNG_UFOER_AUTO.
 1. Evt. rediger `locust/autobrev_request.json` om du ønsker å teste et annet brev.
@@ -149,7 +163,7 @@ En strategi for overgangen kan se slik ut:
 For å fort kunne oppdatere latex filene i pdf-byggeren under kjøring, anbefales det å kjøre følgende kommando som before launch for LatexVisualITest.
 
 ```bash
-docker exec -u 0 -it pensjonsbrev_pdf-bygger_1 rm -rf /app/pensjonsbrev_latex && docker cp ./pdf-bygger/containerFiles/latex pensjonsbrev_pdf-bygger_1:/app/pensjonsbrev_latex/
+docker exec -u 0 -it pensjonsbrev-pdf-bygger-1 rm -rf /app/pensjonsbrev_latex && docker cp ./pdf-bygger/containerFiles/latex pensjonsbrev-pdf-bygger-1:/app/pensjonsbrev_latex/
 ```
 
 Da vil du kunne se på pensjon-brevbaker/build/test_visual/pdf resultatet av endringen fort.
@@ -180,8 +194,10 @@ Deretter kan du kjøre scriptet på nytt og få vite hvor ulike de er, samt en d
 Du vil også kunne se disse endringene i percey ved å lage en pull-request.
 
 ## Oppdatere latex biblioteker
-Ved først bygge pensjon-pdf-bygger/latex.Dockerfile, så sette "from" i pensjon-pdf-bygger/Dockerfile, kan du iterere over det å oppdatere latex imaget/pakker.
-Når du er ferdig med det, så kan du kjøre github action workflowen "update-latex-image" på branchen, så vil den publisere ett nytt dato-stemplet image som kan tas i bruk i pensjon-pdf-bygger/Dockerfile.
+Ved først bygge pdf-bygger/latex.Dockerfile, så sette "from" i pdf-bygger/Dockerfile, kan du iterere over det å oppdatere latex imaget/pakker.
+Når du er ferdig med det, så kan du kjøre github action workflowen "update-latex-image" på branchen, så vil den publisere ett nytt dato-stemplet image som kan tas i bruk i pdf-bygger/Dockerfile.
+
+Vær obs på at pdf-bygger kjører med en egendefinert Java Runtime, bygd opp i pdf-bygger sin Dockerfile, som kun har med modulene fra Java vi bruker. Dermed får vi en så liten runtime som mulig. Ulempa med dette er at vi må passe på litt ekstra ved endringer. For eksempel er `localedata`-modulen viktig for å få norsk dato formatert riktig. Sjekk percy eller ny opp mot gammel pdf fra lokal generering ved endringer i latex-delen, eller tekniske endringer som for eksempel Java-oppgradering, av pdf-bygger for å se at ting ser likt ut.
 
 # Kode generert av GitHub Copilot
 

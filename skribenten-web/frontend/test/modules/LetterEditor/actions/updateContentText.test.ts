@@ -6,7 +6,7 @@ import type { LiteralValue, TextContent } from "~/types/brevbakerTypes";
 import { item, itemList, letter, literal, paragraph, select } from "../utils";
 
 const state = letter(
-  paragraph(literal({ text: "heisann" }), itemList({ items: [item(literal({ text: "punkt 1" }))] })),
+  paragraph([literal({ text: "heisann" }), itemList({ items: [item(literal({ text: "punkt 1" }))] })]),
 );
 const contentIndex = { blockIndex: 0, contentIndex: 0 };
 describe("updateContentText", () => {
@@ -27,7 +27,7 @@ describe("updateContentText", () => {
   });
 
   test("changing back to original text sets editedText to null", () => {
-    const editedState = letter(paragraph(literal({ text: "heisann" }), literal({ text: "hello" })));
+    const editedState = letter(paragraph([literal({ text: "heisann" }), literal({ text: "hello" })]));
     const result = Actions.updateContentText(editedState, { blockIndex: 0, contentIndex: 0 }, "heisann");
     expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).editedText).toBeNull();
   });

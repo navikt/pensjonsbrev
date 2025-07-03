@@ -38,12 +38,34 @@ updates:
     groups:
       tjenestebuss:
         patterns:
-          - "org.apache.cxf:*"
+          - "org.apache.cxf*"
           - "com.sun.xml.messaging.saaj:saaj-impl"
           - "com.sun.xml.bind:jaxb-core"
+      postgresql:
+        patterns:
+          - "org.postgresql:postgresql"
       backend:
         patterns:
-          - "*"
+          - "ch.qos.logback:logback-classic"
+          - "com.fasterxml.jackson*"
+          - "com.google*"
+          - "commons-codec:commons-codec"
+          - "com.natpryce:hamkrest"
+          - "com.zaxxer:HikariCP"
+          - "dev.zacsweers.kctfork:ksp"
+          - "io.getunleash*"
+          - "io.ktor*"
+          - "io.micrometer*"
+          - "io.mockk*"
+          - "net.logstash.logback:logstash-logback-encoder"
+          - "no.nav*"
+          - "org.assertj:assertj-core"
+          - "org.flyway*"
+          - "org.jetbrains*"
+          - "org.junit*"
+          - "org.testcontainers:postgresql"
+          - "io.github.classgraph:classgraph"
+
 
   # =============
   # FRONTEND

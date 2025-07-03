@@ -5,10 +5,18 @@ import type { AnyBlock, Content, ItemList, TextContent } from "~/types/brevbaker
 import { ITEM_LIST } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
-import type { LetterEditorState } from "../model/state";
+import type { LetterEditorState, LiteralIndex } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem, isItemList, isLiteral, isVariable } from "../model/utils";
-import { addElements, newItem, newLiteral, newParagraph, removeElements, splitLiteralAtOffset, text } from "./common";
-import type { LiteralIndex } from "./model";
+import {
+  addElements,
+  isAtStartOfBlock,
+  newItem,
+  newLiteral,
+  newParagraph,
+  removeElements,
+  splitLiteralAtOffset,
+  text,
+} from "./common";
 
 export const split: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number]> = produce(splitRecipe);
 
@@ -35,16 +43,15 @@ function splitBlockAtLiteral(
 ) {
   const editedLetter = draft.redigertBrev;
   const previousBlock = editedLetter.blocks[literalIndex.blockIndex - 1];
-  const isAtStartOfBlock = literalIndex.contentIndex === 0 && offset === 0;
   const previousBlockIsNotEmpty = previousBlock && !isEmptyBlock(previousBlock);
   const isAtFirstBlock = literalIndex.blockIndex === 0;
 
-  if (!isEmptyBlock(block) && (!isAtStartOfBlock || previousBlockIsNotEmpty || isAtFirstBlock)) {
-    if (isAtStartOfBlock) {
+  if (!isEmptyBlock(block) && (!isAtStartOfBlock(literalIndex, offset) || previousBlockIsNotEmpty || isAtFirstBlock)) {
+    if (isAtStartOfBlock(literalIndex, offset)) {
       // Since we're at the very beginning of a block, it makes sense that we create a new block and push `block`
       // one position.
       addElements(
-        [newParagraph({ content: [newLiteral({ text: "", editedText: "" })] })],
+        [newParagraph({ content: [newLiteral()] })],
         literalIndex.blockIndex,
         editedLetter.blocks,
         editedLetter.deletedBlocks,
@@ -93,12 +100,7 @@ function splitItemList(
         id: content.id,
       });
       if (literalIndex.contentIndex >= block.content.length - 1) {
-        addElements(
-          [newLiteral({ text: "", editedText: "" })],
-          block.content.length,
-          block.content,
-          block.deletedContent,
-        );
+        addElements([newLiteral()], block.content.length, block.content, block.deletedContent);
       }
       draft.focus = {
         blockIndex: literalIndex.blockIndex,
@@ -130,7 +132,7 @@ function splitItemList(
 
       if (literalIndex.itemContentIndex === 0 && offset === 0) {
         // We're at the very beginning of an item, so it makes sense to insert a new item before it instead of splitting
-        const item = newItem({ content: [newLiteral({ text: "", editedText: "" })] });
+        const item = newItem({ content: [newLiteral()] });
         addElements([item], literalIndex.itemIndex, content.items, content.deletedItems);
       } else {
         // Update content of current item, and build content of new item
@@ -178,7 +180,7 @@ function splitContentArrayAtLiteral<T extends Content | TextContent>(
       }
     } else {
       contentAfterSplit = removeElements(atIndex, from.content.length, from);
-      addElements([newLiteral({ text: "", editedText: "" }) as T], from.content.length, from.content, []);
+      addElements([newLiteral() as T], from.content.length, from.content, []);
     }
 
     // prevent dangling empty content at end of from.content after itemList.

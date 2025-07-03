@@ -67,4 +67,6 @@ getSecret "$secret_name" azuread
 # Unleash ApiToken
 getSecret pensjon-brevbaker-unleash-api-token unleash
 
-echo "All secrets are fetched and stored in the \"secrets\" folder."
+# Workaround for kafka secrets
+mkdir -p secrets/kafka
+touch secrets/kafka/kafka-secret.env secrets/kafka/client.keystore.p12 secrets/kafka/client.truststore.jks

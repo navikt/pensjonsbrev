@@ -7,6 +7,7 @@ plugins {
     id("java-library")
     id("java-test-fixtures")
     alias(libs.plugins.ksp) apply true
+    alias(libs.plugins.binary.compatibility.validator) apply true
 }
 
 group = "no.nav.brev.brevbaker"
@@ -27,6 +28,7 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(libs.hamkrest)
 
+    testImplementation(testFixtures(libs.brevbaker.common))
     testImplementation(testFixtures(project(":brevbaker-dsl")))
 
     testFixturesImplementation(libs.ktor.serialization.jackson)
@@ -35,6 +37,7 @@ dependencies {
     testFixturesImplementation(libs.ktor.client.encoding)
     testFixturesImplementation(libs.ktor.server.callId)
 
+    testFixturesImplementation(testFixtures(libs.brevbaker.common))
     testFixturesImplementation(libs.bundles.logging)
 
     testFixturesImplementation(libs.jackson.datatype.jsr310) {
@@ -81,4 +84,8 @@ tasks {
     compileTestJava {
         targetCompatibility = apiModelJavaTarget
     }
+}
+
+apiValidation {
+    nonPublicMarkers.add("no.nav.brev.InterneDataklasser")
 }

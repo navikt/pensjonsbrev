@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt
 
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
+import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import java.time.LocalDate
 
 data class EndretUTPgaInntektDtoV2 (
@@ -13,9 +15,12 @@ data class EndretUTPgaInntektDtoV2 (
     val forventetInntekt: Int?,
     val virkningFom: LocalDate,
     val totalNetto: Int,
+    val totalNettoAr: Int,
     val datoForNormertPensjonsalder: LocalDate,
     val sokerMottarApIlaAret: Boolean,
-    val settingAvInntektForNesteAar: Boolean,
+    val brukerBorINorge: Boolean,
+    val pe: PE,
+    val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto
 
     ) : BrevbakerBrevdata
 {
@@ -26,6 +31,9 @@ data class EndretUTPgaInntektDtoV2 (
         val uforegrad: Int,
         val inntektstak: Int,
         val inntektsgrense: Int,
+        val nettoPerAr: Int,
+        val nettoAkkumulert: Int,
+        val nettoRestbelop: Int,
     )
 
     data class BarnetilleggFellesbarn(

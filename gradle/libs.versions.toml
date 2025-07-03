@@ -1,42 +1,46 @@
 [versions]
-kotlinVersion = "2.1.20"
-kotlinKspVersion = "2.1.20-1.0.32" # TODO: Denne er kombinasjon av kotlinVersion og kspVersion. Har ikkje funne ein måte å slå saman desse to automatisk på
-ktorVersion = "3.1.2"
-
+kotlinVersion = "2.2.0"
+kotlinKspVersion = "2.2.0-2.0.2"
+ktorVersion = "3.2.0"
 assertJVersion = "3.27.3"
+binaryCompatibilityValidatorVersion = "0.18.0"
+classGraphVersion = "4.8.180"
 commonsCodecVersion = "1.18.0"
-commonVersion = "1.9.2"
-exposedVersion = "0.60.0"
-flywayVersion = "11.5.0"
+commonVersion = "1.16.0"
+exposedVersion = "0.61.0"
+flywayVersion = "11.10.0"
 hamkrestVersion = "1.8.0.1"
 hikariVersion = "6.3.0"
-jacksonJsr310Version = "2.18.3"
-jupiterVersion = "5.12.1"
+jacksonJsr310Version = "2.19.1"
+jupiterVersion = "5.13.2"
 kotlinxHtmlVersion = "0.12.0"
-kspKctVersion = "0.7.0"
 logbackVersion = "1.5.18"
-logstashVersion = "8.0"
-micrometerVersion = "1.14.5"
-mockkVersion = "1.13.17"
+logstashVersion = "8.1"
+micrometerVersion = "1.15.1"
+mockkVersion = "1.14.4"
 pdfboxVersion = "2.0.33"
-postgresqlVersion = "42.7.3"
-testcontainersPostgresqlVersion = "1.20.6"
-unleashVersion = "10.2.2"
+postgresqlVersion = "42.7.7"
+testcontainersPostgresqlVersion = "1.21.3"
+unleashVersion = "11.0.0"
+kafkaVersion="3.9.0"
 
 [plugins]
 ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKspVersion" }
+binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref="binaryCompatibilityValidatorVersion" }
 
 [libraries]
 brevbaker-common = { module = "no.nav.pensjon.brevbaker:brevbaker-api-model-common", version.ref = "commonVersion" }
 commons-codec = { module = "commons-codec:commons-codec", version.ref = "commonsCodecVersion" }
 hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikariVersion" }
+io-github-classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classGraphVersion" }
+jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jacksonJsr310Version" }
 kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version.ref = "kotlinxHtmlVersion" }
 ksp-symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "kotlinKspVersion"}
-ksp-kotlin-compile-testing = { module = "dev.zacsweers.kctfork:ksp", version.ref = "kspKctVersion" }
+ksp-symbol-processing-aa = { module = "com.google.devtools.ksp:symbol-processing-aa", version.ref = "kotlinKspVersion"}
+ksp-symbol-processing-common = { module = "com.google.devtools.ksp:symbol-processing-common-deps", version.ref = "kotlinKspVersion"}
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logbackVersion" }
 logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstashVersion" }
-jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jacksonJsr310Version" }
 micrometer-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "micrometerVersion" }
 pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfboxVersion" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresqlVersion" }
@@ -69,6 +73,10 @@ ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", versio
 ktor-server-swagger = { module = "io.ktor:ktor-server-swagger", version.ref = "ktorVersion" }
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktorVersion" }
 
+# Kafka
+kafka-streams = { module = "org.apache.kafka:kafka-streams", version.ref = "kafkaVersion" }
+connect-runtime = { module = "org.apache.kafka:connect-runtime", version.ref = "kafkaVersion" }
+
 # Exposed
 exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposedVersion" }
 exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposedVersion" }
@@ -85,7 +93,7 @@ assertJ = { module = "org.assertj:assertj-core", version.ref = "assertJVersion" 
 hamkrest = { module = "com.natpryce:hamkrest", version.ref = "hamkrestVersion" }
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "jupiterVersion" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter",  version.ref = "jupiterVersion" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "1.12.1" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "1.13.2" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlinVersion" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockkVersion" }
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainersPostgresqlVersion"}

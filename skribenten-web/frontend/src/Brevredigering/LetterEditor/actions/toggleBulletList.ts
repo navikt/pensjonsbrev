@@ -5,10 +5,9 @@ import { isEqual } from "lodash";
 import type { ItemList } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
-import type { LetterEditorState } from "../model/state";
+import type { ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
 import { isItemList, isTextContent } from "../model/utils";
 import { addElements, findAdjoiningContent, newItem, newItemList, removeElements } from "./common";
-import type { ItemContentIndex, LiteralIndex } from "./model";
 
 export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralIndex]> = produce(
   (draft, literalIndex) => {

@@ -1,14 +1,15 @@
 package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.api.model.AlderspensjonBeregnetEtter
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkstype
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabell
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
 
-private fun createAlderspensjonPerManed() = MaanedligPensjonFoerSkattDto.AlderspensjonPerManed(
+internal fun createAlderspensjonPerManed() = MaanedligPensjonFoerSkattTabell.AlderspensjonPerManed(
     virkDatoFom = LocalDate.of(2020, 1, 1),
     virkDatoTom = LocalDate.of(2020, 1, 2),
     grunnpensjon = Kroner(12),
@@ -48,7 +49,7 @@ private fun createAlderspensjonPerManed() = MaanedligPensjonFoerSkattDto.Aldersp
 internal fun createMaanedligPensjonFoerSkatt() = MaanedligPensjonFoerSkattDto(
     beregnetPensjonPerManedGjeldende = createAlderspensjonPerManed(),
     alderspensjonGjeldende = MaanedligPensjonFoerSkattDto.AlderspensjonGjeldende(
-        regelverkstype = AlderspensjonRegelverkstype.AP2016,
+        regelverkstype = AlderspensjonRegelverkType.AP2016,
         erEksportberegnet = true,
         andelKap19 = 50,
         andelKap20 = 50,

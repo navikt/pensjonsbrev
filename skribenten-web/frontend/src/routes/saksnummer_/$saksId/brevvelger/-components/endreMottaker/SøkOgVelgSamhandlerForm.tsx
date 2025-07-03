@@ -25,7 +25,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
 
   return (
     <VStack gap="6">
-      <VStack gap="4">
+      <VStack gap="6">
         <Controller
           control={properties.control}
           name="finnSamhandler.søketype"
@@ -102,7 +102,7 @@ export default SøkOgVelgSamhandlerForm;
 
 const SamhandlerDirekteOppslag = (properties: { control: Control<CombinedFormData> }) => {
   return (
-    <VStack gap="4">
+    <VStack gap="6">
       <Controller
         control={properties.control}
         name="finnSamhandler.samhandlerType"
@@ -151,7 +151,7 @@ const SamhandlerDirekteOppslag = (properties: { control: Control<CombinedFormDat
 
 const SamhandlerOrganisasjonsnavn = (properties: { control: Control<CombinedFormData> }) => {
   return (
-    <VStack gap="4">
+    <VStack gap="6">
       <Controller
         control={properties.control}
         name="finnSamhandler.organisasjonsnavn.innOgUtland"
@@ -190,7 +190,7 @@ const SamhandlerOrganisasjonsnavn = (properties: { control: Control<CombinedForm
 
 const SamhandlerPersonnavn = (properties: { control: Control<CombinedFormData> }) => {
   return (
-    <VStack gap="4">
+    <VStack gap="6">
       <Controller
         control={properties.control}
         name="finnSamhandler.samhandlerType"

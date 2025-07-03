@@ -1,8 +1,7 @@
 import { randomInt } from "node:crypto";
 
 import { newLiteral, newVariable } from "~/Brevredigering/LetterEditor/actions/common";
-import type { ItemContentIndex } from "~/Brevredigering/LetterEditor/actions/model";
-import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import type { ItemContentIndex, LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { SpraakKode } from "~/types/apiTypes";
 import { Distribusjonstype } from "~/types/brev";
 import type {
@@ -46,6 +45,8 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
       avsenderEnhet: null,
       spraak: SpraakKode.Bokmaal,
       journalpostId: null,
+      vedtaksId: null,
+      brevtype: "INFORMASJONSBREV",
     },
     redigertBrev: {
       title: "tittel",
@@ -68,16 +69,32 @@ function randomId() {
   return randomInt(1_000_000);
 }
 
-export function paragraph(...content: Content[]): ParagraphBlock {
-  const id = randomId();
-  return {
-    id,
-    parentId: null,
-    editable: true,
-    type: PARAGRAPH,
-    deletedContent: [],
-    content: withParent(content, id),
-  };
+export type ParagraphArgs = {
+  id?: number;
+  content: Content[];
+  deletedContent?: number[];
+};
+export function paragraph(content?: Content[] | ParagraphArgs): ParagraphBlock {
+  if (Array.isArray(content) || content === undefined) {
+    const id = randomId();
+    return {
+      id,
+      parentId: null,
+      editable: true,
+      type: PARAGRAPH,
+      deletedContent: [],
+      content: withParent(content ?? [], id),
+    };
+  } else {
+    return {
+      id: content.id ?? null,
+      parentId: null,
+      editable: true,
+      type: PARAGRAPH,
+      deletedContent: [],
+      content: withParent(content.content, content.id ?? null),
+    };
+  }
 }
 
 export function withDeleted<T extends AnyBlock>(block: T, deletedContent: number[]): T {

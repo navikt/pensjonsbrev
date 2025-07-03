@@ -65,15 +65,16 @@ dependencies {
     implementation(libs.ktor.serialization.jackson)
     implementation(libs.ktor.server.auth)
     implementation(libs.ktor.server.auth.jwt)
+    implementation(libs.ktor.server.caching.headers)
     implementation(libs.ktor.server.callId)
     implementation(libs.ktor.server.callLogging)
     implementation(libs.ktor.server.content.negotiation)
     implementation(libs.ktor.server.core.jvm)
     implementation(libs.ktor.server.cors)
     implementation(libs.ktor.server.netty.jvm)
-    implementation(libs.ktor.server.status.pages)
-    implementation(libs.ktor.server.caching.headers)
     implementation(libs.ktor.server.request.validation)
+    implementation(libs.ktor.server.status.pages)
+    implementation(libs.ktor.server.swagger)
 
     // Exposed
     implementation(libs.exposed.core)
@@ -113,5 +114,7 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.assertJ)
     testImplementation(libs.testcontainers.postgresql)
+
+    testImplementation(testFixtures(libs.brevbaker.common))
 
 }

@@ -1,0 +1,171 @@
+public abstract interface class no/nav/brev/brevbaker/AllTemplates {
+	public abstract fun hentAutobrevmaler ()Ljava/util/Set;
+	public abstract fun hentRedigerbareMaler ()Ljava/util/Set;
+}
+
+public final class no/nav/brev/brevbaker/Brevbaker {
+	public fun <init> (Lno/nav/brev/brevbaker/PDFByggerService;)V
+	public final fun renderHTML (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brev/api/model/LetterResponse;
+	public final fun renderLetterMarkup (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
+	public final fun renderLetterWithAttachmentsMarkup (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brev/template/render/LetterWithAttachmentsMarkup;
+	public final fun renderPDF (Lno/nav/pensjon/brev/template/Letter;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun renderRedigertBrevHTML (Lno/nav/pensjon/brev/template/Letter;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)Lno/nav/pensjon/brev/api/model/LetterResponse;
+	public final fun renderRedigertBrevPDF (Lno/nav/pensjon/brev/template/Letter;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class no/nav/brev/brevbaker/ContentTypes {
+	public static final field INSTANCE Lno/nav/brev/brevbaker/ContentTypes;
+	public static final field PDF Ljava/lang/String;
+	public static final field TEXT_HTML_UTF8 Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/HttpStatusCodes : java/lang/Enum {
+	public static final field BadRequest Lno/nav/brev/brevbaker/HttpStatusCodes;
+	public static final field InternalServerError Lno/nav/brev/brevbaker/HttpStatusCodes;
+	public static final field ServiceUnavailable Lno/nav/brev/brevbaker/HttpStatusCodes;
+	public final fun getCode ()I
+	public final fun getDescription ()Ljava/lang/String;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/HttpStatusCodes;
+	public static fun values ()[Lno/nav/brev/brevbaker/HttpStatusCodes;
+}
+
+public final class no/nav/brev/brevbaker/LatexCompileException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class no/nav/brev/brevbaker/LatexInvalidException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class no/nav/brev/brevbaker/LatexTimeoutException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public abstract interface class no/nav/brev/brevbaker/PDFByggerService {
+	public abstract fun producePDF (Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun producePDF$default (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun validateResponse (ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class no/nav/brev/brevbaker/PDFByggerService$DefaultImpls {
+	public static synthetic fun producePDF$default (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static fun validateResponse (Lno/nav/brev/brevbaker/PDFByggerService;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public abstract interface class no/nav/pensjon/brev/template/Letter {
+	public abstract fun getArgument ()Ljava/lang/Object;
+	public abstract fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public abstract fun getLanguage ()Lno/nav/pensjon/brev/template/Language;
+	public abstract fun getTemplate ()Lno/nav/pensjon/brev/template/LetterTemplate;
+}
+
+public final class no/nav/pensjon/brev/template/render/HTMLDocument : no/nav/pensjon/brev/template/render/Document {
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public fun getFiles ()Ljava/util/List;
+	public final fun getIndexHTML ()Lno/nav/pensjon/brev/template/render/DocumentFile;
+}
+
+public final class no/nav/pensjon/brev/template/render/LetterWithAttachmentsMarkup {
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttachments ()Ljava/util/List;
+	public final fun getLetterMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
+	public fun hashCode ()I
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/BrukerSelectors {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrukerSelectors;
+	public final fun getEtternavn (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getEtternavn (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getEtternavnSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getEtternavn_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getFoedselsnummer (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getFoedselsnummer (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getFoedselsnummerSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getFoedselsnummer_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getFornavn (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getFornavn (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getFornavnSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getFornavn_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getMellomnavn (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getMellomnavn (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getMellomnavnSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getMellomnavn_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/FellesSelectors {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/FellesSelectors;
+	public final fun getAvsenderEnhet (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getAvsenderEnhet (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getAvsenderEnhetSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getAvsenderEnhet_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getBruker (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getBruker (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getBrukerSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getBruker_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getDokumentDato (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getDokumentDato (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getDokumentDatoSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getDokumentDato_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getSaksnummer (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getSaksnummer (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getSaksnummerSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getSaksnummer_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getSignerendeSaksbehandlere (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getSignerendeSaksbehandlere (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getSignerendeSaksbehandlereSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getSignerendeSaksbehandlere_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getVergeNavn (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getVergeNavn (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getVergeNavnSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getVergeNavn_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/FoedselsnummerSelectors {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/FoedselsnummerSelectors;
+	public final fun getValue (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getValue (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getValueSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getValue_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/NavEnhetSelectors {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/NavEnhetSelectors;
+	public final fun getNavn (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getNavn (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getNavnSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getNavn_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getNettside (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getNettside (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getNettsideSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getNettside_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getTelefonnummer (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getTelefonnummer (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getTelefonnummerSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getTelefonnummer_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlereSelectors {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlereSelectors;
+	public final fun getAttesterendeSaksbehandler (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getAttesterendeSaksbehandler (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getAttesterendeSaksbehandlerSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getAttesterendeSaksbehandler_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getSaksbehandler (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getSaksbehandler (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getSaksbehandlerSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getSaksbehandler_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/TelefonnummerSelectors {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/TelefonnummerSelectors;
+	public final fun getValue (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getValue (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getValueSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public final fun getValue_safe (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+}
+

@@ -1,9 +1,11 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.text.NumberFormat
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
@@ -30,10 +32,18 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
         override fun stableHashCode(): Int =  StableHash.of("MaanedAarFormatter").hashCode()
     }
 
-    object DoubleFormat : LocalizedFormatter<Double>() {
-        override fun stableHashCode(): Int = "DoubleFormat".hashCode()
+    object YearMonthFormatter : LocalizedFormatter<YearMonth>() {
+        override fun apply(date: YearMonth, second: Language): String {
+            return MonthYearFormatter.apply(date.atDay(1), second)
+        }
+
+        override fun stableHashCode(): Int =  StableHash.of("MaanedAarFormatter").hashCode()
+    }
+
+    class DoubleFormat(private val scale: Int) : LocalizedFormatter<Double>() {
+        override fun stableHashCode(): Int = "DoubleFormat($scale)".hashCode()
         override fun apply(first: Double, second: Language): String =
-            String.format(second.locale(), "%.2f", first)
+            String.format(second.locale(), "%.${scale.coerceIn(0..16)}f", first)
     }
 
     object IntFormat : LocalizedFormatter<Int>() {
@@ -55,6 +65,12 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
         override fun stableHashCode(): Int = "TelefonnummerFormat".hashCode()
         override fun apply(first: Telefonnummer, second: Language): String = first.format()
     }
+
+    object FoedselsnummerFormat : LocalizedFormatter<Foedselsnummer>() {
+        override fun stableHashCode(): Int = "FoedselsnummerFormat".hashCode()
+        override fun apply(first: Foedselsnummer, second: Language): String = first.format()
+    }
+
 
     object CollectionFormat : LocalizedFormatter<Collection<String>>() {
         override fun stableHashCode(): Int = "CollectionFormat".hashCode()

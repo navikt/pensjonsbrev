@@ -68,6 +68,5 @@ interface TemplateDescription {
         KLAGE_OG_ANKE,
         POSTERINGSGRUNNLAG,
         FRITEKSTBREV,
-        BREV_MED_SKJEMA,
     }
 }

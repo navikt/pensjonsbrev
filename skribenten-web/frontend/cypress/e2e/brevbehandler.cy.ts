@@ -134,12 +134,12 @@ describe("Brevbehandler", () => {
     //verifisering av kvittering
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
     cy.contains("Lokalprint - sendt til joark").should("be.visible");
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.contains(kladdBrev.brevtittel);
     cy.contains("Distribueres via").should("be.visible");
     cy.contains("Lokal print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
     cy.contains("80912").should("be.visible");
-    cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
+    cy.contains("Åpne PDF i ny fane").should("be.visible");
   });
 
   it("kan ferdigstille og sende brev med lokalprint selv om henting av pdf feiler", () => {
@@ -194,12 +194,12 @@ describe("Brevbehandler", () => {
     //verifisering av kvittering
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
     cy.contains("Lokalprint - sendt til joark").should("be.visible");
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.contains(kladdBrev.brevtittel);
     cy.contains("Distribueres via").should("be.visible");
     cy.contains("Lokal print").should("be.visible");
     cy.contains("Journalpost ID").should("be.visible");
     cy.contains("80912").should("be.visible");
-    cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
+    cy.contains("Åpne PDF i ny fane").should("be.visible");
   });
 
   it("kan sende flere ferdigstilte brev samtidig", () => {
@@ -225,19 +225,19 @@ describe("Brevbehandler", () => {
 
     cy.contains("Sendt til mottaker").should("be.visible");
     cy.contains(kladdBrev.brevtittel).click();
-    cy.contains("Distribueres via").should("be.visible");
-    cy.contains("Sentral print").should("be.visible");
-    cy.contains("Journalpost ID").should("be.visible");
-    cy.contains("80912").should("be.visible");
+    cy.get('[data-cy="journalpostId-80912"]').contains("Distribueres via").should("be.visible");
+    cy.get('[data-cy="journalpostId-80912"]').contains("Sentral print").should("be.visible");
+    cy.get('[data-cy="journalpostId-80912"]').contains("Journalpost ID").should("be.visible");
+    cy.get('[data-cy="journalpostId-80912"]').contains("80912").should("be.visible");
     cy.contains(kladdBrev.brevtittel).click();
 
     cy.contains("Lokalprint - sendt til joark").should("be.visible");
-    cy.contains(brevSomSendesSomLokalPrint.brevtittel).click();
-    cy.get('p:contains("Distribueres via")').eq(1).should("be.visible");
-    cy.contains("Lokal print").should("be.visible");
-    cy.get('p:contains("Journalpost ID")').eq(1).should("be.visible");
-    cy.contains("80913").should("be.visible");
-    cy.contains("Åpne utskrivbar fil i ny fane").should("be.visible");
+    cy.contains(brevSomSendesSomLokalPrint.brevtittel);
+    cy.get('[data-cy="journalpostId-80913"]').contains("Distribueres via").should("be.visible");
+    cy.get('[data-cy="journalpostId-80913"]').contains("Lokal print").should("be.visible");
+    cy.get('[data-cy="journalpostId-80913"]').contains("Journalpost ID").should("be.visible");
+    cy.get('[data-cy="journalpostId-80913"]').contains("80913").should("be.visible");
+    cy.contains("Åpne PDF i ny fane").should("be.visible");
   });
 
   it("velger hvilke brev som skal sendes", () => {
@@ -327,14 +327,12 @@ describe("Brevbehandler", () => {
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/kvittering");
 
     cy.contains("Kunne ikke sende brev").should("be.visible");
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.contains(kladdBrev.brevtittel);
 
-    cy.contains("Brevet ble ikke sendt pga Her er det en teknisk grunn. Prøv igjen.").should("be.visible");
-    cy.contains(
-      "Her kommer det også en veldig god, og begrunnende beskrivelse. Denne skal kanskje være litt lenger, siden den forklarer mer om hva som har skjedd?",
-    ).should("be.visible");
-    cy.contains("Prøv igjen").should("be.visible");
-    cy.get("button").contains("Prøv igjen").click();
+    cy.contains("Skribenten klarte ikke å sende brevet.").should("be.visible");
+    cy.contains("Brevet ligger lagret i brevbehandler til brevet er sendt.").should("be.visible");
+    cy.contains("Prøv å sende igjen").should("be.visible");
+    cy.get("button").contains("Prøv å sende igjen").click();
 
     cy.contains("Sendt til mottaker").should("be.visible");
     cy.contains("Distribueres via").should("be.visible");

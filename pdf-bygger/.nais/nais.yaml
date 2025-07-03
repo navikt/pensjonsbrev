@@ -59,4 +59,6 @@ spec:
       value: "1s"
     - name: PDF_BYGGER_COMPILE_TMP_DIR
       value: "/app/tmp"
+    - name: PDF_BYGGER_IS_ASYNC
+      value: "false"
   ingresses: [{{#each ingresses as |url|}}{{url}},{{/each}}]

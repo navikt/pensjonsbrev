@@ -4,18 +4,21 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.afpBruktIBeregning
+import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.avtaleland
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.borINorge
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.harEOSLand
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.minstePensjonssats
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.normertPensjonsalder
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.opplysningerBruktIBeregningen
+import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.vedtakBegrunnelseLavOpptjening
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.prorataBruktIBeregningen
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.uttaksgrad
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
-import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP
+import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025Vedlegg
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -23,12 +26,11 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
 
 @TemplateModelHelpers
 object AvslagGradsendringFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUttakFoerNormertPensjonsalderDto> {
 
-    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORMERT_PENSJONSALDER
+    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER
 
     override val template = createTemplate(
         name = kode.name,
@@ -38,7 +40,7 @@ object AvslagGradsendringFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUtt
             displayTitle = "Vedtak - avslag endring av uttaksgrad - AP2025",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-            brevtype = INFORMASJONSBREV, // todo: skal være vedtaksbrev (når attestering er ferdig)
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
         title {
@@ -54,22 +56,23 @@ object AvslagGradsendringFoerNormertPensjonsalder : RedigerbarTemplate<AvslagUtt
                 AvslagGradsendringFoerNormertPensjonsalderFelles(
                     afpBruktIBeregning = pesysData.afpBruktIBeregning,
                     normertPensjonsalder = pesysData.normertPensjonsalder,
-                    opplysningerBruktIBeregningen = pesysData.opplysningerBruktIBeregningen,
+                    uttaksgrad = pesysData.opplysningerBruktIBeregningen.uttaksgrad,
+                    prorataBruktIBeregningen = pesysData.opplysningerBruktIBeregningen.prorataBruktIBeregningen,
                     virkFom = pesysData.virkFom,
                     minstePensjonssats = pesysData.minstePensjonssats,
                     totalPensjon = pesysData.totalPensjon,
                     borINorge = pesysData.borINorge,
                     harEOSLand = pesysData.harEOSLand,
-                    vedtakBegrunnelseLavOpptjening = pesysData.vedtakBegrunnelseLavOpptjening,
+                    regelverkType = pesysData.regelverkType,
+                    avtaleland = pesysData.avtaleland,
                 )
             )
         }
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
         includeAttachment(
-            template = opplysningerBruktIBeregningenAP,
-            attachmentData = pesysData.opplysningerBruktIBeregningen,
-            predicate = pesysData.vedtakBegrunnelseLavOpptjening
+            template = opplysningerBruktIBeregningenAP2025Vedlegg,
+            attachmentData = pesysData.opplysningerBruktIBeregningen
         )
     }
 

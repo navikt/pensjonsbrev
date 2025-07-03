@@ -22,11 +22,15 @@ import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.converters.LetterResponseFileConverter
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
 
-fun Application.brevbakerModule(templates: AllTemplates) {
+fun Application.brevbakerModule(
+    templates: AllTemplates,
+    brukAsyncProducer: Boolean = true
+) {
     val brevbakerConfig = environment.config.config("brevbaker")
 
     monitor.subscribe(ApplicationStopPreparing) {
@@ -49,15 +53,17 @@ fun Application.brevbakerModule(templates: AllTemplates) {
 
     install(StatusPages) {
         exception<JacksonException> { call, cause ->
-            call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown cause")
+            val message = cause.message ?: "Failed to deserialize json body: unknown cause"
+            call.application.log.info(message)
+            call.respond(HttpStatusCode.BadRequest, message)
         }
         // Work-around to print proper error message when call.receive<T> fails.
         exception<BadRequestException> { call, cause ->
-            if (cause.cause is JacksonException) {
-                call.respond(
-                    HttpStatusCode.BadRequest,
-                    cause.cause?.message ?: "Failed to deserialize json body: unknown reason"
-                )
+            val jacksonCause = cause.findJacksonCause()
+            if (jacksonCause != null) {
+                val message = jacksonCause.message ?: "Failed to deserialize json body: unknown reason"
+                call.application.log.info(message)
+                call.respond(HttpStatusCode.BadRequest, message)
             } else {
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Unknown failure")
             }
@@ -119,10 +125,16 @@ fun Application.brevbakerModule(templates: AllTemplates) {
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
 
+    val kafkaConfig = brevbakerConfig.config("kafka")
+    val kafkaIsEnabled = kafkaConfig.propertyOrNull("enabled")?.getString() == "true"
+    val latexAsyncCompilerService = if (brukAsyncProducer && kafkaIsEnabled) {
+        LatexAsyncCompilerService(kafkaConfig)
+    } else null
+
     konfigurerUnleash(brevbakerConfig)
 
     configureMetrics()
-    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerService, templates)
+    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerService, templates, latexAsyncCompilerService)
 }
 
 private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
@@ -140,3 +152,6 @@ private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
 
 private fun ApplicationConfig.booleanProperty(path: String, default: Boolean = false): Boolean = propertyOrNull(path)?.getString()?.toBoolean() ?: default
 private fun ApplicationConfig.stringProperty(path: String): String? = propertyOrNull(path)?.getString()
+
+private fun Throwable.findJacksonCause(): JacksonException? =
+    cause as? JacksonException ?: cause?.findJacksonCause()

@@ -11,7 +11,7 @@ import { asNew, item, itemList, letter, literal, paragraph, select, variable } f
 describe("LetterEditorActions.split", () => {
   describe("at literal", () => {
     test("specified block is split at contentIndex and offset", () => {
-      const state = letter(paragraph(variable("var1"), literal({ text: "lit1" }), variable("var2")));
+      const state = letter(paragraph([variable("var1"), literal({ text: "lit1" }), variable("var2")]));
       const splitId = { blockIndex: 0, contentIndex: 1 };
       const result = Actions.split(state, splitId, 2);
       const resultBlocks = result.redigertBrev.blocks;
@@ -34,14 +34,14 @@ describe("LetterEditorActions.split", () => {
     });
 
     test("result is not the original array", () => {
-      const state = letter(paragraph(literal({ text: "lit1" })));
+      const state = letter(paragraph([literal({ text: "lit1" })]));
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 0 }, 2);
 
       expect(result.redigertBrev.blocks).not.toBe(state.redigertBrev.blocks);
     });
 
     test("when the offset is at the end of the current content, the new block will have one content element with an empty string", () => {
-      const state = letter(paragraph(literal({ text: "lit1" })));
+      const state = letter(paragraph([literal({ text: "lit1" })]));
       const splitId = { blockIndex: 0, contentIndex: 0 };
       const offset = select<TextContent>(state, splitId).text.length;
 
@@ -56,19 +56,19 @@ describe("LetterEditorActions.split", () => {
     });
 
     test("does not split an emptyBlock", () => {
-      const state = letter(paragraph(literal({ text: "" })));
+      const state = letter(paragraph([literal({ text: "" })]));
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 0 }, 0);
       expect(result.redigertBrev).toBe(state.redigertBrev);
     });
 
     test("does not split at the very beginning of block when previous is empty", () => {
-      const state = letter(paragraph(literal({ text: "" })), paragraph(literal({ text: "lit2" })));
+      const state = letter(paragraph([literal({ text: "" })]), paragraph([literal({ text: "lit2" })]));
       const result = Actions.split(state, { blockIndex: 1, contentIndex: 0 }, 0);
       expect(result.redigertBrev).toBe(state.redigertBrev);
     });
 
     test("when splitting at the very end of a block the new block and content gets no ID (new)", () => {
-      const state = letter(paragraph(variable("var1"), variable("var2"), literal({ text: "lit1" })));
+      const state = letter(paragraph([variable("var1"), variable("var2"), literal({ text: "lit1" })]));
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 2 }, 4);
 
       expect(result.redigertBrev.blocks).toHaveLength(2);
@@ -79,7 +79,7 @@ describe("LetterEditorActions.split", () => {
     });
 
     test("when splitting in the last content of a block the new block and content gets no ID (new)", () => {
-      const state = letter(paragraph(variable("var1"), variable("var2"), literal({ text: "lit1" })));
+      const state = letter(paragraph([variable("var1"), variable("var2"), literal({ text: "lit1" })]));
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 2 }, 2);
 
       expect(result.redigertBrev.blocks).toHaveLength(2);
@@ -88,7 +88,7 @@ describe("LetterEditorActions.split", () => {
     });
 
     test("when splitting at the very beginning of the last content of a block the content retains id in new block", () => {
-      const state = letter(paragraph(variable("var1"), variable("var2"), literal({ text: "lit1" })));
+      const state = letter(paragraph([variable("var1"), variable("var2"), literal({ text: "lit1" })]));
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 2 }, 0);
 
       expect(result.redigertBrev.blocks).toHaveLength(2);
@@ -99,14 +99,14 @@ describe("LetterEditorActions.split", () => {
     });
 
     test("when splitting at the end of a literal there are no changes to editedText", () => {
-      const state = letter(paragraph(literal({ text: "lit1" })));
+      const state = letter(paragraph([literal({ text: "lit1" })]));
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 0 }, "lit1".length);
 
       expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).editedText).toBeNull();
     });
 
     test("splitting uses editedText if present", () => {
-      const state = letter(paragraph(literal({ text: "lit1", editedText: "new text" })));
+      const state = letter(paragraph([literal({ text: "lit1", editedText: "new text" })]));
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 0 }, 4);
 
       expect(select<LiteralValue>(result, { blockIndex: 0, contentIndex: 0 }).editedText).toEqual("new ");
@@ -115,7 +115,7 @@ describe("LetterEditorActions.split", () => {
 
     test("splitting at the end of a content not last in block will not result in a block with an empty content as first element", () => {
       const state = letter(
-        paragraph(literal({ text: "heisann" }), itemList({ items: [item(literal({ text: "item 1" }))] })),
+        paragraph([literal({ text: "heisann" }), itemList({ items: [item(literal({ text: "item 1" }))] })]),
       );
 
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 0 }, "heisann".length);
@@ -129,7 +129,7 @@ describe("LetterEditorActions.split", () => {
     });
 
     test("when splitting a block the content moved to the next block is marked as deleted", () => {
-      const state = letter(paragraph(literal({ text: "before split" }), literal({ text: "after split" })));
+      const state = letter(paragraph([literal({ text: "before split" }), literal({ text: "after split" })]));
 
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 0 }, "before split".length);
 
@@ -141,8 +141,8 @@ describe("LetterEditorActions.split", () => {
 
     test("can split a block at offset 0 when not at the first content", () => {
       const state = letter(
-        paragraph(literal({ text: "" })),
-        paragraph(variable("before split"), literal({ text: "after split" })),
+        paragraph([literal({ text: "" })]),
+        paragraph([variable("before split"), literal({ text: "after split" })]),
       );
 
       const result = Actions.split(state, { blockIndex: 1, contentIndex: 1 }, 0);
@@ -151,7 +151,7 @@ describe("LetterEditorActions.split", () => {
     });
 
     test("when splitting at the very beginning of a block then an new block should be inserted at cursor", () => {
-      const state = letter(paragraph(literal({ text: "begynnelse av block" }), variable("slutten")));
+      const state = letter(paragraph([literal({ text: "begynnelse av block" }), variable("slutten")]));
 
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 0 }, 0);
 
@@ -168,8 +168,8 @@ describe("LetterEditorActions.split", () => {
 
     test("cannot split from an empty block", () => {
       const state = letter(
-        paragraph(literal({ text: "ikke tom" }), itemList({ items: [item(literal({ text: "ikke tom" }))] })),
-        paragraph(literal({ text: "" })),
+        paragraph([literal({ text: "ikke tom" }), itemList({ items: [item(literal({ text: "ikke tom" }))] })]),
+        paragraph([literal({ text: "" })]),
       );
 
       const result = Actions.split(state, { blockIndex: 1, contentIndex: 0 }, 0);
@@ -178,7 +178,7 @@ describe("LetterEditorActions.split", () => {
     });
 
     test("when splitting from beginning of block then focus shifts with the block", () => {
-      const state = letter(paragraph(literal({ text: "ikke tom" })));
+      const state = letter(paragraph([literal({ text: "ikke tom" })]));
 
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 0 }, 0);
 
@@ -190,7 +190,7 @@ describe("LetterEditorActions.split", () => {
   describe("at itemList", () => {
     test("specified item is split at contentIndex and offset", () => {
       const state = letter(
-        paragraph(itemList({ items: [item(variable("var1"), literal({ text: "lit1" }), variable("var2"))] })),
+        paragraph([itemList({ items: [item(variable("var1"), literal({ text: "lit1" }), variable("var2"))] })]),
       );
       const splitId = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 1 };
       const offset = 2;
@@ -228,7 +228,7 @@ describe("LetterEditorActions.split", () => {
     });
 
     test("when the offset is at the end of the item content, the new item will have one content element with an empty string", () => {
-      const state = letter(paragraph(itemList({ items: [item(variable("var1"), literal({ text: "lit1" }))] })));
+      const state = letter(paragraph([itemList({ items: [item(variable("var1"), literal({ text: "lit1" }))] })]));
       const splitId = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 1 };
       const original = select<ItemList>(state, { blockIndex: 0, contentIndex: 0 });
 
@@ -243,7 +243,7 @@ describe("LetterEditorActions.split", () => {
 
     test("can create new item around non-empty new item", () => {
       const state = letter(
-        paragraph(
+        paragraph([
           itemList({
             items: [
               item(literal({ text: "p1" })),
@@ -251,7 +251,7 @@ describe("LetterEditorActions.split", () => {
               item(literal({ text: "p3" })),
             ],
           }),
-        ),
+        ]),
       );
       const splitBefore = { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 };
       const splitAt = { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 };
@@ -270,11 +270,11 @@ describe("LetterEditorActions.split", () => {
 
     test("does not split so that we get multiple empty items", () => {
       const state = letter(
-        paragraph(
+        paragraph([
           itemList({
             items: [item(literal({ text: "item1" })), item(literal({ text: "" })), item(literal({ text: "item3" }))],
           }),
-        ),
+        ]),
       );
 
       // The following assertions also assert that we don't move focus
@@ -295,7 +295,7 @@ describe("LetterEditorActions.split", () => {
 
     test("splits the last empty item as a Literal after the list in the parent block", () => {
       const state = letter(
-        paragraph(itemList({ items: [item(literal({ text: "lit1" })), item(literal({ text: "" }))] })),
+        paragraph([itemList({ items: [item(literal({ text: "lit1" })), item(literal({ text: "" }))] })]),
       );
 
       // Split at the empty item
@@ -314,10 +314,10 @@ describe("LetterEditorActions.split", () => {
 
     test("when splitting the last empty item and parent block already has a subsequent literal then no new literal will be added", () => {
       const state = letter(
-        paragraph(
+        paragraph([
           itemList({ items: [item(literal({ text: "lit1" })), item(literal({ text: "" }))] }),
           literal({ text: "" }),
-        ),
+        ]),
       );
 
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 1, itemContentIndex: 0 }, 0);
@@ -328,7 +328,7 @@ describe("LetterEditorActions.split", () => {
 
     test("splitting from the last (empty) item in itemlist results in content in block and another split results in new block", () => {
       const state = letter(
-        paragraph(itemList({ items: [item(literal({ text: "item1" })), item(literal({ text: "" }))] })),
+        paragraph([itemList({ items: [item(literal({ text: "item1" })), item(literal({ text: "" }))] })]),
       );
 
       const splitFromEmptyItem = Actions.split(
@@ -339,22 +339,20 @@ describe("LetterEditorActions.split", () => {
       expect(splitFromEmptyItem.redigertBrev.blocks).toHaveLength(1);
       expect(select<ParagraphBlock>(splitFromEmptyItem, { blockIndex: 0 }).content).toHaveLength(2);
       expect(select<ItemList>(splitFromEmptyItem, { blockIndex: 0, contentIndex: 0 }).items).toHaveLength(1);
-      expect(select<LiteralValue>(splitFromEmptyItem, { blockIndex: 0, contentIndex: 1 })).toStrictEqual(
-        newLiteral({ text: "", editedText: "" }),
-      );
+      expect(select<LiteralValue>(splitFromEmptyItem, { blockIndex: 0, contentIndex: 1 })).toStrictEqual(newLiteral());
 
       const splitFromEmptyLastContent = Actions.split(splitFromEmptyItem, { blockIndex: 0, contentIndex: 1 }, 0);
       expect(splitFromEmptyLastContent.redigertBrev.blocks).toHaveLength(2);
       expect(select<ParagraphBlock>(splitFromEmptyLastContent, { blockIndex: 0 }).content).toHaveLength(1);
       expect(select<ParagraphBlock>(splitFromEmptyLastContent, { blockIndex: 1 }).content).toHaveLength(1);
       expect(select<LiteralValue>(splitFromEmptyLastContent, { blockIndex: 1, contentIndex: 0 })).toStrictEqual(
-        newLiteral({ text: "", editedText: "" }),
+        newLiteral(),
       );
     });
 
     test("splitting from last new empty item in itemlist results in in content after itemlist", () => {
       const state = letter(
-        paragraph(
+        paragraph([
           itemList({
             items: [
               item(literal({ text: "item1" })),
@@ -362,7 +360,7 @@ describe("LetterEditorActions.split", () => {
               asNew(item(literal({ text: "​" }))),
             ],
           }),
-        ),
+        ]),
       );
 
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 2, itemContentIndex: 0 }, 0);
@@ -371,7 +369,7 @@ describe("LetterEditorActions.split", () => {
 
     test("splitting at the beginning an item keeps id", () => {
       const item1 = item(literal({ text: "hei" }), variable("joda"));
-      const state = letter(paragraph(itemList({ items: [item1] })));
+      const state = letter(paragraph([itemList({ items: [item1] })]));
 
       const result = Actions.split(state, { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 }, 0);
       expect(select<Item>(result, { blockIndex: 0, contentIndex: 0, itemIndex: 0, itemContentIndex: 0 }).id).toBeNull();

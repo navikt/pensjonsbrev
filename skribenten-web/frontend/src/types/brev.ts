@@ -59,6 +59,7 @@ export type NavAnsatt = {
   id: string;
   navn: string | null;
 };
+export type BrevType = "VEDTAKSBREV" | "INFORMASJONSBREV";
 
 export type BrevInfo = {
   id: number;
@@ -68,17 +69,20 @@ export type BrevInfo = {
   sistredigert: string;
   brevkode: string;
   brevtittel: string;
+  brevtype: BrevType;
   status: BrevStatus;
   distribusjonstype: Distribusjonstype;
   mottaker: Nullable<Mottaker>;
   avsenderEnhet: Nullable<NAVEnhet>;
   spraak: SpraakKode;
   journalpostId: Nullable<number>;
+  vedtaksId: Nullable<number>;
 };
 
-export type BrevStatus = Kladd | UnderRedigering | Klar | Arkivert;
+export type BrevStatus = Kladd | UnderRedigering | Attestering | Klar | Arkivert;
 export type Kladd = { type: "Kladd" };
 export type UnderRedigering = { type: "UnderRedigering"; redigeresAv: NavAnsatt };
+export type Attestering = { type: "Attestering" };
 export type Klar = { type: "Klar" };
 export type Arkivert = { type: "Arkivert" };
 

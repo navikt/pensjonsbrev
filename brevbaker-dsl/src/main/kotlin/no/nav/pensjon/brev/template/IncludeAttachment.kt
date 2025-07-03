@@ -2,9 +2,8 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.TextScope
-import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggType
+import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import java.util.Objects
 
 fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
@@ -12,16 +11,20 @@ fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
     includeSakspart: Boolean = false,
     outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit
 ) = AttachmentTemplate<Lang, LetterData>(
-    title,
+    listOf(title),
     OutlineOnlyScope<Lang, LetterData>().apply(outline).elements,
     includeSakspart
 )
 
-fun TextScope<BaseLanguages, *>.namedReference(attachment: AttachmentTemplate<BaseLanguages, *>) {
-    text(Language.Bokmal to "«", Language.Nynorsk to "«", Language.English to "“")
-    addTextContent(attachment.title)
-    text(Language.Bokmal to "»", Language.Nynorsk to "»", Language.English to "”")
-}
+fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
+    title: PlainTextOnlyScope<Lang, LetterData>.() -> Unit,
+    includeSakspart: Boolean = false,
+    outline: OutlineOnlyScope<Lang, LetterData>.() -> Unit
+) = AttachmentTemplate<Lang, LetterData>(
+    PlainTextOnlyScope<Lang, LetterData>().apply(title).elements,
+    OutlineOnlyScope<Lang, LetterData>().apply(outline).elements,
+    includeSakspart
+)
 
 class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any> internal constructor(
     val data: Expression<AttachmentData>,
@@ -37,10 +40,10 @@ class IncludeAttachment<out Lang : LanguageSupport, AttachmentData : Any> intern
 }
 
 class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any> internal constructor(
-    val title: TextElement<Lang>,
+    val title: List<TextElement<Lang>>,
     val outline: List<OutlineElement<Lang>>,
     val includeSakspart: Boolean = false,
-): HasModel<AttachmentData>, StableHash by StableHash.of(title, StableHash.of(outline), StableHash.of(includeSakspart)) {
+): HasModel<AttachmentData>, StableHash by StableHash.of(StableHash.of(title), StableHash.of(outline), StableHash.of(includeSakspart)) {
     override fun equals(other: Any?): Boolean {
         if (other !is AttachmentTemplate<*, *>) return false
         return title == other.title && outline == other.outline && includeSakspart == other.includeSakspart

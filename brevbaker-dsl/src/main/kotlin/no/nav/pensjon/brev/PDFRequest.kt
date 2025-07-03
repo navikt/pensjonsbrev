@@ -31,3 +31,21 @@ class PDFRequest(
         return "PDFRequest(letterMarkup=$letterMarkup, attachments=$attachments, language=$language, felles=$felles, brevtype=$brevtype, pdfVedlegg=$pdfVedlegg)"
     }
 }
+
+class PDFRequestAsync(
+    val request: PDFRequest,
+    val messageId: String,
+    val replyTopic: String,
+) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is PDFRequestAsync) return false
+        return request == other.request
+                && messageId == other.messageId
+                && replyTopic == other.replyTopic
+    }
+
+    override fun hashCode() = Objects.hash(request, messageId, replyTopic)
+
+    override fun toString(): String = "PDFRequestAsync(request=$request, messageId='$messageId', replyTopic='$replyTopic')"
+
+}

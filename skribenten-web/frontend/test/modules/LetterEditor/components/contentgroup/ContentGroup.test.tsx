@@ -44,15 +44,15 @@ function setup() {
 }
 
 const complexEditorState = letter(
-  paragraph(
+  paragraph([
     variable("Dokumentet starter med variable"),
     literal({ text: "første literal" }),
     variable("X"),
     literal({ text: "andre literal", tags: [ElementTags.FRITEKST] }),
-  ),
-  paragraph(variable("Paragraf med kun variable")),
-  paragraph(literal({ text: "paragraf med kun tekst" })),
-  paragraph(
+  ]),
+  paragraph([variable("Paragraf med kun variable")]),
+  paragraph([literal({ text: "paragraf med kun tekst" })]),
+  paragraph([
     itemList({
       items: [
         item(literal({ text: "1. item" })),
@@ -61,8 +61,8 @@ const complexEditorState = letter(
         item(literal({ text: "nth item" })),
       ],
     }),
-  ),
-  paragraph(literal({ text: "Dokumentet avsluttes med literal" })),
+  ]),
+  paragraph([literal({ text: "Dokumentet avsluttes med literal" })]),
 );
 
 function setupComplex(stateOverride?: LetterEditorState) {
@@ -97,7 +97,8 @@ describe("updateContent", () => {
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{End}{Enter}asd");
 
-    // Enter does cause a splitAction-event, but we're only rendering the original block, so the focus is still in the span we clicked.
+    // The expectation is that the Enter key does not insert a line break
+    // in the final text, so we expect only "asd" to be appended.
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
       Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, content[0].text + "asd"),
     );
@@ -316,7 +317,18 @@ describe("ArrowRight will move focus to next editable content", () => {
 
   test("will skip variables in the same block", async () => {
     const { user } = setupComplex();
-    await user.click(screen.getByText("første literal"));
+    const element = screen.getByText("første literal");
+    await user.click(element);
+
+    // Explicitly set the caret at the end of the element.
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    range.collapse(false); // collapse to the end
+    const selection = globalThis.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+
+    // After clicking, the component's focus should be at { blockIndex: 0, contentIndex: 1 }.
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 1,
@@ -324,6 +336,8 @@ describe("ArrowRight will move focus to next editable content", () => {
 
     await user.keyboard("{End}{ArrowRight}");
 
+    // Now, with the caret correctly at the end of "første literal",
+    // ArrowRight should update the focus to skip variables and move to contentIndex 3.
     expect(setEditorState.mock.lastCall?.[0](editorState)?.focus).toEqual({
       blockIndex: 0,
       contentIndex: 3,
@@ -398,11 +412,11 @@ describe("onClickHandler", () => {
 
   test("clicking on a fritekst variable that has been edited should not select the whole element", async () => {
     const state = letter(
-      paragraph(
+      paragraph([
         literal({ text: "første literal" }),
         variable("X"),
         newLiteral({ text: "andre literal", editedText: "Hei på deg", tags: [ElementTags.FRITEKST] }),
-      ),
+      ]),
     );
     const { user } = setupComplex(state);
 
@@ -425,7 +439,7 @@ describe("onFocusHandler", () => {
   });
   test("tabbing through a fritkest variable that has been edited should not be focused", async () => {
     const state = letter(
-      paragraph(
+      paragraph([
         literal({ text: "første literal" }),
         variable("X"),
         newLiteral({
@@ -434,7 +448,7 @@ describe("onFocusHandler", () => {
           tags: [ElementTags.FRITEKST],
         }),
         newLiteral({ text: "tredje literal", tags: [ElementTags.FRITEKST] }),
-      ),
+      ]),
     );
     const { user } = setupComplex(state);
 

@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.NAVEnhetSelectors.navn
+import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.navn
 
 
 object Felles {
@@ -73,6 +73,8 @@ object Felles {
         }
 
         companion object {
+            val familiepleie = HarDuSpoersmaal(Constants.FAMILIEPLEIER_URL, Constants.NAV_KONTAKTSENTER_TELEFON)
+            val gjenlevende = HarDuSpoersmaal(Constants.GJENLEVENDEPENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON)
             val ufoeretrygd = HarDuSpoersmaal(Constants.UFOERETRYGD_URL, Constants.NAV_KONTAKTSENTER_TELEFON)
             val omsorg = HarDuSpoersmaal(Constants.OMSORGSOPPTJENING_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON)
             val alder = HarDuSpoersmaal(Constants.PENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON)
@@ -111,7 +113,7 @@ object Felles {
         override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() =
             textExpr(
                 Bokmal to antall.format() + " måneder",
-                Nynorsk to antall.format() + " måneder",
+                Nynorsk to antall.format() + " månadar",
                 English to antall.format() + " months"
             )
     }
@@ -138,10 +140,7 @@ object Felles {
     }
 
     fun Expression<Bruker>.fulltNavn(): Expression<String> =
-        Expression.UnaryInvoke(
-            value = this,
-            operation = UnaryOperation.BrukerFulltNavn
-        )
+        UnaryOperation.BrukerFulltNavn(this)
 
     object ReturTilEtterstadOslo : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
