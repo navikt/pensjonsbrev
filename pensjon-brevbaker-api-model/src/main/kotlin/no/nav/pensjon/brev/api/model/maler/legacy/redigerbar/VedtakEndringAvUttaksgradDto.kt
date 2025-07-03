@@ -28,7 +28,7 @@ data class VedtakEndringAvUttaksgradDto(
         val beregnetPensjonPerManed: BeregnetPensjonPerManed,
         val vedtak: Vedtak,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
-        val opplysningerBruktIBeregningenEndretUttaksgradDto: OpplysningerBruktIBeregningenEndretUttaksgradDto
+        val opplysningerBruktIBeregningenEndretUttaksgradDto: OpplysningerBruktIBeregningenEndretUttaksgradDto?
     ) : BrevbakerBrevdata
 
     data class Krav(

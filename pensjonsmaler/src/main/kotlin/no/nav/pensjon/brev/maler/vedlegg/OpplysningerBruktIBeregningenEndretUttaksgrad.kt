@@ -6,13 +6,12 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2025
 import no.nav.pensjon.brev.api.model.Beregningsmetode.FOLKETRYGD
 import no.nav.pensjon.brev.api.model.Beregningsmetode.NORDISK
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDto
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.andelKap19_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.andelKap20_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.forholdstallLevealder
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.poengAr
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.forholdstallLevealder_safe
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.poengAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.poengAre91_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.poengArf92_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.BeregningKap19VedVirkSelectors.sluttpoengtall_safe
@@ -29,8 +28,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndret
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.OppfrisketOpptjeningVedVirkSelectors.sisteGyldigeOpptjeningsAr_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.TrygdetidsdetaljerKap19VedVirkSelectors.beregningsmetode_safe
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.alderspensjon
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.beregningKap19VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndretUttaksgradDtoSelectors.beregningKap20VedVirk
@@ -185,17 +184,22 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
         showIf(alderspensjonVedVirk.regelverkType.notEqualTo(AP2025)) {
             paragraph {
                 table(header = tabellheader()) {
-                    showIf(trygdetidsdetaljerKap19VedVirk.anvendtTT.greaterThan(0) and trygdetidsdetaljerKap19VedVirk.beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Trygdetid",
-                                    Nynorsk to "Trygdetid",
-                                    English to "National insurance coverage"
-                                )
-                            }
-                            cell {
-                                includePhrase(AntallAarText(trygdetidsdetaljerKap19VedVirk.anvendtTT))
+                    ifNotNull(trygdetidsdetaljerKap19VedVirk) { trygdetidsdetaljerKap19VedVirk ->
+                        showIf(
+                            trygdetidsdetaljerKap19VedVirk.anvendtTT.greaterThan(0) and
+                                    trygdetidsdetaljerKap19VedVirk.beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)
+                        ) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Trygdetid",
+                                        Nynorsk to "Trygdetid",
+                                        English to "National insurance coverage"
+                                    )
+                                }
+                                cell {
+                                    includePhrase(AntallAarText(trygdetidsdetaljerKap19VedVirk.anvendtTT))
+                                }
                             }
                         }
                     }
@@ -246,76 +250,80 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                             }
                         }
                     }
-                    ifNotNull(beregningKap19VedVirk.sluttpoengtall_safe) {
-                        showIf(it.greaterThan(0.0) and trygdetidsdetaljerKap19VedVirk.beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
-                            // vedleggTabellKap19Sluttpoengtall_001_]
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Sluttpoengtall",
-                                        Nynorsk to "Sluttpoengtal",
-                                        English to "Final pension point score"
-                                    )
+
+                    ifNotNull(trygdetidsdetaljerKap19VedVirk.beregningsmetode_safe) { beregningsmetode ->
+                        ifNotNull(beregningKap19VedVirk.sluttpoengtall_safe) {
+                            showIf(it.greaterThan(0.0) and beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
+                                // vedleggTabellKap19Sluttpoengtall_001_]
+                                row {
+                                    cell {
+                                        text(
+                                            Bokmal to "Sluttpoengtall",
+                                            Nynorsk to "Sluttpoengtal",
+                                            English to "Final pension point score"
+                                        )
+                                    }
+                                    cell {
+                                        eval(it.format())
+                                    }
                                 }
-                                cell {
-                                    eval(it.format())
+                            }
+                        }
+                        ifNotNull(beregningKap19VedVirk.poengAr_safe) {
+                            showIf(it.greaterThan(0) and beregningsmetode.equalTo(FOLKETRYGD)) {
+                                // vedleggTabellKap19PoengAr_001
+                                row {
+                                    cell {
+                                        text(
+                                            Bokmal to "Antall poengår",
+                                            Nynorsk to "Talet på poengår",
+                                            English to "Number of pension point earning years"
+                                        )
+                                    }
+                                    cell {
+                                        includePhrase(AntallAarText(it))
+                                    }
+                                }
+                            }
+                        }
+                        ifNotNull(beregningKap19VedVirk.poengArf92_safe) {
+                            showIf(it.greaterThan(0) and beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
+                                // vedleggTabellKap19PoengArf92_001
+                                row {
+                                    cell {
+                                        text(
+                                            Bokmal to "Antall år med pensjonsprosent 45",
+                                            Nynorsk to "Talet på år med pensjonsprosent 45",
+                                            English to "Number of years calculated with pension percentage 45"
+                                        )
+                                    }
+                                    cell {
+                                        includePhrase(AntallAarText(it))
+                                    }
+                                }
+                            }
+
+                        }
+
+                        ifNotNull(beregningKap19VedVirk.poengAre91_safe) {
+                            showIf(it.greaterThan(0) and beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
+                                // vedleggTabellKap19PoengAre91_001
+                                row {
+                                    cell {
+                                        text(
+                                            Bokmal to "Antall år med pensjonsprosent 42",
+                                            Nynorsk to "Talet på år med pensjonsprosent 42",
+                                            English to "Number of years calculated with pension percentage 42"
+                                        )
+                                    }
+                                    cell {
+                                        includePhrase(AntallAarText(it))
+                                    }
                                 }
                             }
                         }
                     }
 
-                    showIf(beregningKap19VedVirk.poengAr.greaterThan(0) and trygdetidsdetaljerKap19VedVirk.beregningsmetode.equalTo(FOLKETRYGD)) {
-                        // vedleggTabellKap19PoengAr_001
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Antall poengår",
-                                    Nynorsk to "Talet på poengår",
-                                    English to "Number of pension point earning years"
-                                )
-                            }
-                            cell {
-                                includePhrase(AntallAarText(beregningKap19VedVirk.poengAr))
-                            }
-                        }
-                    }
-
-                    ifNotNull(beregningKap19VedVirk.poengArf92_safe) {
-                        showIf(it.greaterThan(0) and trygdetidsdetaljerKap19VedVirk.beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
-                            // vedleggTabellKap19PoengArf92_001
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Antall år med pensjonsprosent 45",
-                                        Nynorsk to "Talet på år med pensjonsprosent 45",
-                                        English to "Number of years calculated with pension percentage 45"
-                                    )
-                                }
-                                cell {
-                                    includePhrase(AntallAarText(it))
-                                }
-                            }
-                        }
-
-                    }
-
-                    ifNotNull(beregningKap19VedVirk.poengAre91_safe) {
-                        showIf(it.greaterThan(0) and trygdetidsdetaljerKap19VedVirk.beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
-                            // vedleggTabellKap19PoengAre91_001
-                            row {
-                                cell {
-                                    text(
-                                        Bokmal to "Antall år med pensjonsprosent 42",
-                                        Nynorsk to "Talet på år med pensjonsprosent 42",
-                                        English to "Number of years calculated with pension percentage 42"
-                                    )
-                                }
-                                cell {
-                                    includePhrase(AntallAarText(it))
-                                }
-                            }
-                        }
-                    }
 
                     ifNotNull(endretUttaksgradVedVirk.restGrunnpensjon) {
                         //  vedleggTabellRestGP_001
@@ -349,18 +357,20 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                         }
                     }
 
-                    showIf(beregningKap19VedVirk.forholdstallLevealder.greaterThan(0.0)) {
-                        // vedleggTabellKap19Forholdstall_001
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Forholdstall ved uttak",
-                                    Nynorsk to "Forholdstal ved uttak",
-                                    English to "Ratio at withdrawal"
-                                )
-                            }
-                            cell {
-                                eval(beregningKap19VedVirk.forholdstallLevealder.format(scale = 3))
+                    ifNotNull(beregningKap19VedVirk.forholdstallLevealder_safe) { forholdstallLevealder ->
+                        showIf(forholdstallLevealder.greaterThan(0.0)) {
+                            // vedleggTabellKap19Forholdstall_001
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Forholdstall ved uttak",
+                                        Nynorsk to "Forholdstal ved uttak",
+                                        English to "Ratio at withdrawal"
+                                    )
+                                }
+                                cell {
+                                    eval(forholdstallLevealder.format(scale = 3))
+                                }
                             }
                         }
                     }
@@ -391,17 +401,17 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                                 cell {
                                     textExpr(
                                         Bokmal to "Trygdetid".expr() + ifElse(
-                                            alderspensjon.regelverkType.equalTo(AP2016),
+                                            alderspensjonVedVirk.regelverkType.equalTo(AP2016),
                                             " etter kapittel 20",
                                             ""
                                         ),
                                         Nynorsk to "Trygdetid".expr() + ifElse(
-                                            alderspensjon.regelverkType.equalTo(
+                                            alderspensjonVedVirk.regelverkType.equalTo(
                                                 AP2016
                                             ), " etter kapittel 20", ""
                                         ),
                                         English to "National insurance coverage".expr() + ifElse(
-                                            alderspensjon.regelverkType.equalTo(
+                                            alderspensjonVedVirk.regelverkType.equalTo(
                                                 AP2016
                                             ), " pursuant to Chapter 20", ""
                                         )

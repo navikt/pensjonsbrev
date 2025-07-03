@@ -2,19 +2,19 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brevbaker.api.model.Broek
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.ObjectTypeSpecification
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
-import no.nav.pensjon.brevbaker.api.model.Year
 import kotlin.reflect.*
 import kotlin.reflect.full.primaryConstructor
 
 class TemplateModelSpecificationError(msg: String) : Error(msg)
 
-class TemplateModelSpecificationFactory(val from: KClass<*>) {
+class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     private val toProcess = mutableListOf<KClass<*>>()
 
     fun build(): TemplateModelSpecification =
@@ -91,21 +91,21 @@ class TemplateModelSpecificationFactory(val from: KClass<*>) {
                 "java.time.LocalDate" ->
                     FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DATE, displayText = displayText.firstOrNull())
 
-                Year::class.qualifiedName ->
-                    FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.YEAR, displayText = displayText.firstOrNull())
-
                 "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata" -> {
                     toProcess.add(theClassifier)
                     FieldType.Object(isMarkedNullable, qname, displayText = displayText.firstOrNull())
                 }
-
-                Telefonnummer::class.qualifiedName, Foedselsnummer::class.qualifiedName -> {
+                Telefonnummer::class.qualifiedName, Foedselsnummer::class.qualifiedName, Broek::class.qualifiedName -> {
                     toProcess.add(theClassifier)
                     FieldType.Object(isMarkedNullable, qname!!, displayText = displayText.firstOrNull())
                 }
 
                 else -> {
-                    if (theClassifier.isData || theClassifier.isValue || theClassifier.java.isInterface) {
+                    if (theClassifier.isValue) {
+                        theClassifier.primaryConstructor!!.parameters.first().type.toFieldType(annotations)
+                            .takeIf { it is FieldType.Scalar } ?: throw TemplateModelSpecificationError("Expected value class to be scalar, but was not")
+                    }
+                    else if (theClassifier.isData || theClassifier.java.isInterface) {
                         toProcess.add(theClassifier)
                         FieldType.Object(isMarkedNullable, qname!!, displayText = displayText.firstOrNull())
                     } else if (theClassifier.java.isEnum) {

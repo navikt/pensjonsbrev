@@ -64,6 +64,7 @@ updates:
           - "org.jetbrains*"
           - "org.junit*"
           - "org.testcontainers:postgresql"
+          - "io.github.classgraph:classgraph"
 
 
   # =============

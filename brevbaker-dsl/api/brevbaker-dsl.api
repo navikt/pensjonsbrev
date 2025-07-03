@@ -65,7 +65,8 @@ public final class no/nav/pensjon/brev/template/AttachmentTemplate : no/nav/pens
 }
 
 public abstract interface class no/nav/pensjon/brev/template/AutobrevTemplate : no/nav/pensjon/brev/template/BrevTemplate {
-	public abstract fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Autobrev;
+	public fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Autobrev;
+	public synthetic fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription;
 }
 
 public final class no/nav/pensjon/brev/template/AutobrevTemplate$DefaultImpls {
@@ -784,9 +785,10 @@ public final class no/nav/pensjon/brev/template/PreventToStringForExpressionExce
 }
 
 public abstract interface class no/nav/pensjon/brev/template/RedigerbarTemplate : no/nav/pensjon/brev/template/BrevTemplate {
-	public abstract fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar;
-	public abstract fun fritekst (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
-	public abstract fun fritekst (Lno/nav/pensjon/brev/template/dsl/TextScope;Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
+	public fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar;
+	public synthetic fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription;
+	public fun fritekst (Lno/nav/pensjon/brev/template/dsl/PlainTextScope;Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
+	public fun fritekst (Lno/nav/pensjon/brev/template/dsl/TextScope;Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
 	public abstract fun getBrevkontekst ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
 	public abstract fun getKategori ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
 	public abstract fun getSakstyper ()Ljava/util/Set;
@@ -821,7 +823,7 @@ public abstract interface class no/nav/pensjon/brev/template/TemplateModelSelect
 	public abstract fun getPropertyName ()Ljava/lang/String;
 	public abstract fun getPropertyType ()Ljava/lang/String;
 	public abstract fun getSelector ()Lkotlin/jvm/functions/Function1;
-	public abstract fun stableHashCode ()I
+	public fun stableHashCode ()I
 }
 
 public final class no/nav/pensjon/brev/template/TemplateModelSelector$DefaultImpls {
@@ -948,13 +950,13 @@ public final class no/nav/pensjon/brev/template/UnaryOperation$ToString : no/nav
 
 public abstract interface class no/nav/pensjon/brev/template/dsl/ControlStructureScope : no/nav/pensjon/brev/template/dsl/TemplateGlobalScope {
 	public abstract fun addControlStructure (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
-	public abstract fun forEach (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)V
+	public fun forEach (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)V
 	public abstract fun getElements ()Ljava/util/List;
-	public abstract fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public abstract fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public abstract fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
+	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
+	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
+	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public abstract fun scopeFactory ()Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;
-	public abstract fun showIf (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
+	public fun showIf (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/ControlStructureScope$DefaultImpls {
@@ -1003,9 +1005,9 @@ public final class no/nav/pensjon/brev/template/dsl/OutlineOnlyScope : no/nav/pe
 
 public abstract interface class no/nav/pensjon/brev/template/dsl/OutlineScope {
 	public abstract fun addOutlineContent (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
-	public abstract fun paragraph (Lkotlin/jvm/functions/Function1;)V
-	public abstract fun title1 (Lkotlin/jvm/functions/Function1;)V
-	public abstract fun title2 (Lkotlin/jvm/functions/Function1;)V
+	public fun paragraph (Lkotlin/jvm/functions/Function1;)V
+	public fun title1 (Lkotlin/jvm/functions/Function1;)V
+	public fun title2 (Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class no/nav/pensjon/brev/template/dsl/OutlineScope$DefaultImpls {
@@ -1041,10 +1043,12 @@ public final class no/nav/pensjon/brev/template/dsl/ParagraphOnlyScope : no/nav/
 
 public abstract interface class no/nav/pensjon/brev/template/dsl/ParagraphScope : no/nav/pensjon/brev/template/dsl/TextScope {
 	public abstract fun addParagraphContent (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
-	public abstract fun formChoice (Lno/nav/pensjon/brev/template/ContentOrControlStructure;ZLkotlin/jvm/functions/Function1;)V
-	public abstract fun formText (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;Lno/nav/pensjon/brev/template/ContentOrControlStructure;Z)V
-	public abstract fun list (Lkotlin/jvm/functions/Function1;)V
-	public abstract fun table (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
+	public fun formChoice (Lno/nav/pensjon/brev/template/ContentOrControlStructure;ZLkotlin/jvm/functions/Function1;)V
+	public static synthetic fun formChoice$default (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lno/nav/pensjon/brev/template/ContentOrControlStructure;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public fun formText (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;Lno/nav/pensjon/brev/template/ContentOrControlStructure;Z)V
+	public static synthetic fun formText$default (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;Lno/nav/pensjon/brev/template/ContentOrControlStructure;ZILjava/lang/Object;)V
+	public fun list (Lkotlin/jvm/functions/Function1;)V
+	public fun table (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
 }
 
 public final class no/nav/pensjon/brev/template/dsl/ParagraphScope$DefaultImpls {
@@ -1078,7 +1082,7 @@ public final class no/nav/pensjon/brev/template/dsl/PlainTextOnlyScope : no/nav/
 
 public abstract interface class no/nav/pensjon/brev/template/dsl/PlainTextScope : no/nav/pensjon/brev/template/dsl/TemplateGlobalScope {
 	public abstract fun addTextContent (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
-	public abstract fun eval (Lno/nav/pensjon/brev/template/Expression;)V
+	public fun eval (Lno/nav/pensjon/brev/template/Expression;)V
 }
 
 public final class no/nav/pensjon/brev/template/dsl/PlainTextScope$DefaultImpls {
@@ -1147,8 +1151,8 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateFormChoiceScope : no
 }
 
 public abstract interface class no/nav/pensjon/brev/template/dsl/TemplateGlobalScope {
-	public abstract fun getArgument ()Lno/nav/pensjon/brev/template/Expression;
-	public abstract fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
+	public fun getArgument ()Lno/nav/pensjon/brev/template/Expression;
+	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/TemplateGlobalScope$DefaultImpls {
@@ -1225,7 +1229,8 @@ public final class no/nav/pensjon/brev/template/dsl/TextOnlyScope : no/nav/pensj
 
 public abstract interface class no/nav/pensjon/brev/template/dsl/TextScope : no/nav/pensjon/brev/template/dsl/TemplateGlobalScope {
 	public abstract fun addTextContent (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
-	public abstract fun eval (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
+	public fun eval (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
+	public static synthetic fun eval$default (Lno/nav/pensjon/brev/template/dsl/TextScope;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)V
 	public abstract fun newline ()V
 }
 
@@ -1358,7 +1363,7 @@ public abstract interface annotation class no/nav/pensjon/brev/template/dsl/help
 public abstract interface class no/nav/pensjon/brev/template/expression/ExpressionMapper : no/nav/pensjon/brev/template/StableHash {
 	public abstract fun getApply ()Lkotlin/jvm/functions/Function1;
 	public abstract fun getName ()Ljava/lang/String;
-	public abstract fun stableHashCode ()I
+	public fun stableHashCode ()I
 }
 
 public final class no/nav/pensjon/brev/template/expression/ExpressionMapper$DefaultImpls {

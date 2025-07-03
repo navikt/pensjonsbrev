@@ -183,7 +183,7 @@ fun initDatabase(jdbcUrl: String, username: String, password: String) =
         validate()
     })
         .also { konfigurerFlyway(it) }
-        .let { Database.connect(it) }
+        .also { Database.connect(it) }
 
 private fun konfigurerFlyway(dataSource: DataSource) = Flyway
     .configure()
