@@ -56,4 +56,4 @@ interface IntWrapper {
 
 data class FoedselsnummerWrapper(val value: String)
 data class TelefonnummerWrapper(val value: String)
-data class KronerWrapper(val value: Int)
+data class KronerWrapper(override val value: Int) : IntWrapper
