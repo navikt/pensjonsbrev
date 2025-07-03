@@ -23,7 +23,7 @@ import io.ktor.server.request.path
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
-import io.ktor.server.routing.RoutingCall
+import io.ktor.server.routing.RoutingContext
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
@@ -117,7 +117,7 @@ fun Application.restModule(
                     .let { LatexDocumentRenderer.render(it) }
                     .let { blockingLatexService.producePDF(it.files) }
             }
-            handleResult(call, result, pdfRequest.pdfVedlegg, call.application.environment.log, pdfRequest.language)
+            handleResult(result, pdfRequest.pdfVedlegg, call.application.environment.log, pdfRequest.language)
         }
 
         get("/isAlive") {
@@ -138,8 +138,7 @@ fun Application.restModule(
     }
 }
 
-private suspend fun handleResult(
-    call: RoutingCall,
+private suspend fun RoutingContext.handleResult(
     result: PDFCompilationResponse,
     pdfvedlegg: List<PDFVedlegg>,
     logger: Logger,
