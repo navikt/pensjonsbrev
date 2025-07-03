@@ -31,7 +31,7 @@ class ExpressionTest {
     fun `plus creates a concat expression of expression operands`() {
         val op1 = "hei".expr()
         val op2 = " du".expr()
-        val expected = Expression.BinaryInvoke(op1, op2, BinaryOperation.Concat)
+        val expected = BinaryOperation.Concat(op1, op2)
 
         assertEquals(expected, op1 + op2)
     }
