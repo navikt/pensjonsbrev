@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy.fraser
 
+import no.nav.pensjon.brev.maler.legacy.vedlegg.opplysningerOmETteroppgjoeretUTLegacy
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
@@ -11,10 +12,12 @@ object TBU3305_Generated : OutlinePhrase<LangBokmalNynorsk>() {
 		//[TBU3305_NN, TBU3305]
 
 		paragraph {
-			textExpr (
-				Bokmal to "Du kan lese mer om etteroppgjør i vedlegget ".expr() + quoted("Opplysninger om etteroppgjøret") +".",
-				Nynorsk to "Du kan lese meir om etteroppgjer i vedlegget ".expr() + quoted("Opplysningar om etteroppgjeret") + ".",
+			text (
+				Bokmal to "Du kan lese mer om etteroppgjør i vedlegget ",
+				Nynorsk to "Du kan lese meir om etteroppgjer i vedlegget ",
 			)
+			namedReference(opplysningerOmETteroppgjoeretUTLegacy)
+			text(Bokmal to ".", Nynorsk to ".")
 		}
     }
 }
