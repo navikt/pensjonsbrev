@@ -623,6 +623,24 @@ public final class no/nav/pensjon/brevbaker/api/model/NavEnhet {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class no/nav/pensjon/brevbaker/api/model/PDFVedlegg {
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
+	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/PDFVedleggType : java/lang/Enum {
+	public static final field InformasjonOmP1 Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;
+	public static final field P1 Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getTittel ()Ljava/lang/String;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;
+	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;
+}
+
 public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/brevbaker/api/model/IntValue {
 	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/Percent;
 	public static fun constructor-impl (I)I

@@ -23,7 +23,6 @@ import io.ktor.server.request.path
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
-import io.ktor.server.routing.RoutingContext
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
@@ -38,6 +37,9 @@ import no.nav.pensjon.brev.pdfbygger.getPropertyOrNull
 import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 import no.nav.pensjon.brev.pdfbygger.pdfByggerConfig
+import no.nav.pensjon.brev.pdfbygger.vedlegg.PDFVedleggAppender
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
@@ -108,12 +110,13 @@ fun Application.restModule(
     routing {
 
         post("/produserBrev") {
+            val pdfRequest = call.receive<PDFRequest>()
             val result = activityCounter.count {
-                call.receive<PDFRequest>()
+                pdfRequest
                     .let { LatexDocumentRenderer.render(it) }
-                    .let { blockingLatexService.producePDF(it.files) }
+                    .let { blockingLatexService.producePDF(it.files.associate { it.fileName to it.content }) }
             }
-            handleResult(result, call.application.environment.log)
+            handleResult(result, pdfRequest.pdfVedlegg, call.application.environment.log, pdfRequest.language)
         }
 
         get("/isAlive") {
@@ -134,12 +137,20 @@ fun Application.restModule(
     }
 }
 
-private suspend fun RoutingContext.handleResult(
+private suspend fun handleResult(
     result: PDFCompilationResponse,
+    pdfvedlegg: List<PDFVedlegg>,
     logger: Logger,
+    spraak: LanguageCode,
 ) {
     when (result) {
-        is PDFCompilationResponse.Success -> call.respond(result.pdfCompilationOutput)
+        is PDFCompilationResponse.Success -> {
+            if (pdfvedlegg.isNotEmpty()) {
+                call.respond(PDFVedleggAppender.leggPaaVedlegg(result, pdfvedlegg, spraak).pdfCompilationOutput)
+            } else {
+                call.respond(result.pdfCompilationOutput)
+            }
+        }
         is PDFCompilationResponse.Failure.Client -> {
             logger.info("Client error: ${result.reason}")
             if (result.output?.isNotBlank() == true) {

@@ -8,7 +8,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
-import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.api.restModule
 import no.nav.pensjon.brev.pdfbygger.kafka.kafkaModule
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService

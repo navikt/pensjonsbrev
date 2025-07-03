@@ -1,11 +1,13 @@
 public final class no/nav/pensjon/brev/PDFRequest {
-	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;)V
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;Ljava/util/List;)V
+	public synthetic fun <init> (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAttachments ()Ljava/util/List;
 	public final fun getBrevtype ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
 	public final fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
 	public final fun getLanguage ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
 	public final fun getLetterMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
+	public final fun getPdfVedlegg ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -656,6 +658,7 @@ public final class no/nav/pensjon/brev/template/LetterTemplate {
 	public final fun getLetterMetadata ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
 	public final fun getName ()Ljava/lang/String;
 	public final fun getOutline ()Ljava/util/List;
+	public final fun getPdfAttachments ()Ljava/util/List;
 	public final fun getTitle ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -765,6 +768,16 @@ public abstract class no/nav/pensjon/brev/template/OutlinePhrase {
 	public fun <init> ()V
 	public final fun apply (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;)V
 	public abstract fun template (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;)V
+}
+
+public final class no/nav/pensjon/brev/template/PDFTemplate : no/nav/pensjon/brev/template/StableHash {
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;Lno/nav/pensjon/brev/template/Expression;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getData ()Lno/nav/pensjon/brev/template/Expression;
+	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;
+	public fun hashCode ()I
+	public fun stableHashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class no/nav/pensjon/brev/template/ParagraphPhrase {
@@ -1178,10 +1191,13 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 	public final fun getAttachments ()Ljava/util/List;
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun getOutline ()Ljava/util/List;
+	public final fun getPdfAttachments ()Ljava/util/List;
 	public final fun getTitle ()Ljava/util/List;
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)V
+	public final fun includeAttachment (Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;)V
+	public final fun includeAttachment (Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;Lno/nav/pensjon/brev/template/Expression;)V
 	public static synthetic fun includeAttachment$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
 	public static synthetic fun includeAttachment$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
 	public final fun includeAttachmentIfNotNull (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
