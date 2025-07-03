@@ -418,10 +418,12 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
             }
 
             paragraph {
-                textExpr(
-                    Bokmal to "Du finner fullstendige beregninger i vedlegget ".expr() + quoted("Slik er uføretrygden din beregnet") +". ",
-                    Nynorsk to "Du finn dei fullstendige utrekningane i vedlegget ".expr() + quoted("Slik er uføretrygda di rekna ut") + "."
+                text(
+                    Bokmal to "Du finner fullstendige beregninger i vedlegget ",
+                    Nynorsk to "Du finn dei fullstendige utrekningane i vedlegget "
                 )
+                namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
+                text(Bokmal to ".", Nynorsk to ".")
             }
 
             showIf(endretUt and (btfbEndret or btsbEndret) and gjenlevendetillegg.notNull()) {
