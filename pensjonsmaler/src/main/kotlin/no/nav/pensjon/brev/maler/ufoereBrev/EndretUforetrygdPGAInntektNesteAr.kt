@@ -326,7 +326,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
             showIf(barnetilleggFellesbarn.notNull() or barnetilleggSaerkullsbarn.notNull()) {
                 title1 {
                     text(
-                        Bokmal to "Endring i utbetaling av barnetillegg",
+                        Bokmal to "Barnetillegg",
                         Nynorsk to ""
                     )
                 }
@@ -344,17 +344,17 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                         )
                     }
                     paragraph {
-                        textExpr(
-                            Bokmal to "Du får barnetillegg for særkullsbarn og fellesbarn. Barnetillegg for særkullsbarn er beregnet ut fra din inntekt på ".expr() +
-                                    barnetilleggSB.inntektBruktIAvkortning.format(CurrencyFormat) + " kroner. Barnetillegg for fellesbarn er i tillegg beregnet ut fra den andre forelderens inntekt på " +
-                                    barnetilleggFB.inntektAnnenForelder.format(CurrencyFormat) + " kroner.",
-                            Nynorsk to "".expr()
+                        text(
+                            Bokmal to "Du får barnetillegg for særkullsbarn og fellesbarn. Du får barnetillegg for fellesbarn når du bor sammen med barnets andre forelder. Du får barnetillegg for særkullsbarn når du ikke bor sammen med barnets andre forelder.",
+                            Nynorsk to ""
                         )
                     }
                     paragraph {
-                        text(
-                            Bokmal to "Du får barnetillegg for fellesbarn når du bor sammen med barnets andre forelder. Du får barnetillegg for særkullsbarn når du ikke bor sammen med barnets andre forelder.",
-                            Nynorsk to ""
+                        textExpr(
+                            Bokmal to "Barnetillegg for særkullsbarn er beregnet ut fra din inntekt på ".expr() + barnetilleggSB.inntektBruktIAvkortning.format(CurrencyFormat) + " kroner. Barnetillegg for " +
+                                    "fellesbarn er i tillegg beregnet ut fra den andre forelderens inntekt på " + barnetilleggFB.inntektAnnenForelder.format(CurrencyFormat) +
+                                    " kroner. Du får derfor en utbetaling av barnetillegg på kroner " + barnetilleggSB.netto.plus(barnetilleggFB.netto).format(CurrencyFormat) + " kroner per måned fra neste år.", //TODO Endre i mapping
+                            Nynorsk to "".expr()
                         )
                     }
                 }.orShow {
@@ -367,10 +367,9 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                         }
                         paragraph {
                             textExpr(
-                                Bokmal to "Du får barnetillegg for fellesbarn når du bor sammen med barnets andre forelder. Vi har endret barnetillegget ut fra din personinntekt på ".expr() + //TODO Hvorfor brukes personinntekt her og ikke over?
-                                        barnetilleggFB.inntektBruker.format(CurrencyFormat) + " kroner og personinntekten til barnets andre forelder på " +
-                                        barnetilleggFB.inntektAnnenForelder.format(CurrencyFormat) + " kroner. Du får derfor en utbetaling av barnetillegg på kroner " +
-                                        barnetilleggFB.netto.format(CurrencyFormat) + " kroner per måned fra neste år. ",
+                                Bokmal to "Du får barnetillegg for fellesbarn fordi du bor sammen med barnets andre forelder. Vi har endret barnetillegget ut fra din personinntekt på ".expr() +
+                                barnetilleggFB.inntektBruker.format(CurrencyFormat) + " kroner og personinntekten til barnets andre forelder på " + barnetilleggFB.inntektAnnenForelder.format(CurrencyFormat) +
+                                        " kroner. Du får derfor en utbetaling av barnetillegg på kroner" + barnetilleggFB.netto.format(CurrencyFormat) +" kroner per måned fra neste år.",
                                 Nynorsk to "".expr()
                             )
                         }
@@ -384,9 +383,9 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                         }
                         paragraph {
                             textExpr(
-                                Bokmal to "Du får barnetillegg for særkullsbarn når du ikke bor sammen med barnets andre forelder. Vi har endret barnetillegget ut fra din personinntekt på ".expr() +
-                                        barnetilleggSB.inntektBruktIAvkortning.format(CurrencyFormat) + " Du får derfor en utbetaling av barnetillegg på " +
-                                        barnetilleggSB.netto.format(CurrencyFormat) + " kroner per måned fra neste år. ",
+                                Bokmal to "Du får barnetillegg for særkullsbarn fordi du ikke bor sammen med barnets andre forelder. ".expr() +
+                                        "Vi har endret barnetillegget ut fra din personinntekt på " + barnetilleggSB.inntektBruktIAvkortning.format(CurrencyFormat) +
+                                        " kroner. Du får derfor en utbetaling av barnetillegg på kroner 2310 kroner per måned fra neste år.",
                                 Nynorsk to "".expr()
                             )
                         }
