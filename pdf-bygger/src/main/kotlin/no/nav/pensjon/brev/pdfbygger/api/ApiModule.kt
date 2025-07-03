@@ -23,6 +23,7 @@ import io.ktor.server.request.path
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
+import io.ktor.server.routing.RoutingCall
 import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.routing
@@ -114,9 +115,9 @@ fun Application.restModule(
             val result = activityCounter.count {
                 pdfRequest
                     .let { LatexDocumentRenderer.render(it) }
-                    .let { blockingLatexService.producePDF(it.files.associate { it.fileName to it.content }) }
+                    .let { blockingLatexService.producePDF(it.files) }
             }
-            handleResult(result, pdfRequest.pdfVedlegg, call.application.environment.log, pdfRequest.language)
+            handleResult(call, result, pdfRequest.pdfVedlegg, call.application.environment.log, pdfRequest.language)
         }
 
         get("/isAlive") {
@@ -138,6 +139,7 @@ fun Application.restModule(
 }
 
 private suspend fun handleResult(
+    call: RoutingCall,
     result: PDFCompilationResponse,
     pdfvedlegg: List<PDFVedlegg>,
     logger: Logger,
