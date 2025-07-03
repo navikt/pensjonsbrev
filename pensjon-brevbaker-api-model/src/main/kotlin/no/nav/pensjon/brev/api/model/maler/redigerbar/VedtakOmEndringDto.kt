@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -17,5 +19,9 @@ data class VedtakOmEndringDto(
         val skulleVaertRedusertFraDato: LocalDate,
     ) : BrevbakerBrevdata
 
-    data class PesysData(val grunnbeloep: Kroner) : BrevbakerBrevdata
+    data class PesysData(
+        val grunnbeloep: Kroner,
+        val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto,
+        val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto
+    ) : BrevbakerBrevdata
 }
