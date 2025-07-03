@@ -341,13 +341,13 @@ public final class no/nav/pensjon/brevbaker/api/model/Kroner : no/nav/pensjon/br
 	public final synthetic fun unbox-impl ()I
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/KronerWrapper {
+public final class no/nav/pensjon/brevbaker/api/model/KronerWrapper : no/nav/pensjon/brevbaker/api/model/IntWrapper {
 	public fun <init> (I)V
 	public final fun component1 ()I
 	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/KronerWrapper;
 	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/KronerWrapper;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/KronerWrapper;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getValue ()I
+	public fun getValue ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
