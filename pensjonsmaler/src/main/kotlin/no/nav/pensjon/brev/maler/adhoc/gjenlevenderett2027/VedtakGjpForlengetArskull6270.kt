@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevende
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.DineInntekterTabell
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig2GTabell
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig3GTabell
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -23,6 +24,7 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.includePhrase
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -151,23 +153,7 @@ object VedtakGjpForlengetArskull6270 : AutobrevTemplate<Gjenlevenderett2027Dto> 
                 )
             }
 
-            title1 {
-                text(
-                    Bokmal to "Du har rett til å klage ",
-                    Nynorsk to "Du har rett til å klage "
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du mottok vedtaket. I vedlegget ",
-                    Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget "
-                )
-                namedReference(vedleggGjpDineRettigheterOgPlikter)
-                text(
-                    Bokmal to " får du vite mer om hvordan du går fram. Du finner skjema og informasjon på nav.no/klage.",
-                    Nynorsk to " kan du lese meir om korleis du går fram. Du finn skjema og informasjon på nav.no/klage."
-                )
-            }
+            includePhrase(Felles.RettTilAAKlage(vedleggGjpDineRettigheterOgPlikter))
 
             title1 {
                 text(
