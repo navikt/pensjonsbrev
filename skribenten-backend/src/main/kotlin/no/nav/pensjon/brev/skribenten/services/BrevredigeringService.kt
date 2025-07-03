@@ -225,6 +225,9 @@ class BrevredigeringService(
         }
     }
 
+    fun hentBrevInfo(brevId: Long): Dto.BrevInfo? =
+        transaction { Brevredigering[brevId].toBrevInfo() }
+
     suspend fun hentBrev(saksId: Long, brevId: Long, reserverForRedigering: Boolean = false): ServiceResult<Dto.Brevredigering>? =
         if (reserverForRedigering) {
             hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
