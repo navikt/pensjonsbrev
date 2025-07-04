@@ -6,6 +6,11 @@ interface LetterMarkup {
     val blocks: List<Block>
     val signatur: Signatur
 
+    fun validate() {
+        require(title.isNotEmpty()) { "Title cannot be empty" }
+        blocks.forEach { it.validate() }
+    }
+
     interface Attachment {
         val title: List<ParagraphContent.Text>
         val blocks: List<Block>
@@ -52,7 +57,11 @@ interface LetterMarkup {
             val content: List<ParagraphContent>
             override val type: Type
                 get() = Type.PARAGRAPH
+
+            override fun validate() = content.forEach { it.validate() }
         }
+
+        fun validate() {}
     }
 
     sealed interface ParagraphContent {
@@ -62,12 +71,16 @@ interface LetterMarkup {
             ITEM_LIST, LITERAL, VARIABLE, TABLE, FORM_TEXT, FORM_CHOICE, NEW_LINE
         }
 
+        fun validate() {}
+
         interface ItemList : ParagraphContent {
             val items: List<Item>
             interface Item {
                 val id: Int
                 val content: List<Text>
             }
+
+            override fun validate() = require(items.isNotEmpty()) { "Items must not be empty" }
         }
 
         sealed interface Text : ParagraphContent {
@@ -97,12 +110,23 @@ interface LetterMarkup {
             val rows: List<Row>
             val header: Header
 
+            override fun validate() {
+                require(rows.isNotEmpty()) { "Must have at least one row" }
+                require(rows.map { it.cells.size }.all { it == header.colSpec.size }) { "Must have at least one row" }
+                rows.forEach { it.validate() }
+                header.validate()
+            }
+
             override val type: Type
                 get() = Type.TABLE
 
             interface Row {
                 val id: Int
                 val cells: List<Cell>
+
+                fun validate() {
+                    require(cells.isNotEmpty()) { "Must have at least one cell" }
+                }
             }
 
             interface Cell {
@@ -113,6 +137,8 @@ interface LetterMarkup {
             interface Header {
                 val id: Int
                 val colSpec: List<ColumnSpec>
+
+                fun validate() = require(colSpec.isNotEmpty()) { "Must have at least one header" }
             }
 
             interface ColumnSpec {

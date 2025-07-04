@@ -12,11 +12,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
 
-@InterneDataklasser
-interface ValidatedLetter {
-    fun validate()
-}
-
 @Suppress("unused")
 @InterneDataklasser
 data class LetterMarkupImpl(
@@ -24,11 +19,7 @@ data class LetterMarkupImpl(
     override val sakspart: LetterMarkup.Sakspart,
     override val blocks: List<Block>,
     override val signatur: LetterMarkup.Signatur
-) : LetterMarkup, ValidatedLetter {
-
-    override fun validate() {
-        TODO("Not yet implemented")
-    }
+) : LetterMarkup {
 
     @InterneDataklasser
     data class AttachmentImpl(
