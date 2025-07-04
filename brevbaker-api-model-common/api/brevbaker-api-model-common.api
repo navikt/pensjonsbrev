@@ -334,6 +334,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup 
 	public abstract fun getSakspart ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart;
 	public abstract fun getSignatur ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur;
 	public abstract fun getTitle ()Ljava/lang/String;
+	public fun validate ()V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Attachment {
@@ -346,15 +347,22 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 	public abstract fun getEditable ()Z
 	public abstract fun getId ()I
 	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public fun validate ()V
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$DefaultImpls {
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block;)V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Paragraph : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block {
 	public abstract fun getContent ()Ljava/util/List;
 	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public fun validate ()V
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Paragraph$DefaultImpls {
 	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Paragraph;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Paragraph;)V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title1 : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block {
@@ -364,6 +372,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title1$DefaultImpls {
 	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title1;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title1;)V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title2 : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block {
@@ -373,6 +382,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title2$DefaultImpls {
 	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title2;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title2;)V
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type : java/lang/Enum {
@@ -384,12 +394,25 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type : 
 	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
 }
 
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$DefaultImpls {
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)V
+}
+
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {
 	public abstract fun getId ()I
 	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun validate ()V
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$DefaultImpls {
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent;)V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$DefaultImpls {
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form;)V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$MultipleChoice : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form {
@@ -406,6 +429,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$MultipleChoice$DefaultImpls {
 	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$MultipleChoice;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$MultipleChoice;)V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form {
@@ -417,6 +441,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$DefaultImpls {
 	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text;)V
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size : java/lang/Enum {
@@ -430,6 +455,11 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$ItemList : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {
 	public abstract fun getItems ()Ljava/util/List;
+	public fun validate ()V
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$ItemList$DefaultImpls {
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$ItemList;)V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$ItemList$Item {
@@ -441,6 +471,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 	public abstract fun getHeader ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Header;
 	public abstract fun getRows ()Ljava/util/List;
 	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun validate ()V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Cell {
@@ -465,21 +496,36 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$DefaultImpls {
 	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table;)V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Header {
 	public abstract fun getColSpec ()Ljava/util/List;
 	public abstract fun getId ()I
+	public fun validate ()V
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Header$DefaultImpls {
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Header;)V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Row {
 	public abstract fun getCells ()Ljava/util/List;
 	public abstract fun getId ()I
+	public fun validate ()V
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Row$DefaultImpls {
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Row;)V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {
 	public abstract fun getFontType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType;
 	public abstract fun getText ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$DefaultImpls {
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text;)V
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$FontType : java/lang/Enum {
@@ -498,6 +544,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Literal$DefaultImpls {
 	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Literal;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Literal;)V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$NewLine : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text {
@@ -506,6 +553,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$NewLine$DefaultImpls {
 	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$NewLine;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$NewLine;)V
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Variable : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text {
@@ -514,6 +562,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Variable$DefaultImpls {
 	public static fun getType (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Variable;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public static fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Variable;)V
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type : java/lang/Enum {
