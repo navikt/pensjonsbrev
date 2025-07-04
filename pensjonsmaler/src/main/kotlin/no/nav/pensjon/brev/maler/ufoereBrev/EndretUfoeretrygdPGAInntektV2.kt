@@ -345,7 +345,7 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
 
             }
 
-            showIf(btfbEndret and not(btsbEndret) and barnetilleggFellesbarn.notNull() and barnetilleggSaerkullsbarn.isNull()) {
+            showIf(btfbEndret and not(btsbEndret) and barnetilleggFellesbarn.notNull()) {
                 ifNotNull(barnetilleggFellesbarn) { btfb ->
                     title2 {
                         text(
@@ -368,7 +368,7 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                         )
                     }
                 }
-            }.orShowIf(btsbEndret and not(btfbEndret) and barnetilleggSaerkullsbarn.notNull() and barnetilleggFellesbarn.isNull()) {
+            }.orShowIf(btsbEndret and not(btfbEndret) and barnetilleggSaerkullsbarn.notNull()) {
                 ifNotNull(barnetilleggSaerkullsbarn) { btsb ->
                     title2 {
                         text(
