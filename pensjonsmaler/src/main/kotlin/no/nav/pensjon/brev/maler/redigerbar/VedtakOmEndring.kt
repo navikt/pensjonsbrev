@@ -7,12 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDtoSelectors.PesysDataSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDtoSelectors.SaksbehandlerValgSelectors.alderspensjonPerMaanedFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDtoSelectors.SaksbehandlerValgSelectors.inntektskontrollDato
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDtoSelectors.SaksbehandlerValgSelectors.skulleVaertRedusertFraDato
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDtoSelectors.SaksbehandlerValgSelectors.virkFom
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
@@ -21,7 +16,6 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -57,8 +51,8 @@ object VedtakOmEndring : RedigerbarTemplate<VedtakOmEndringDto> {
         outline {
             paragraph {
                 textExpr(
-                    Bokmal to "Nav viser til varsel om inntektskontroll datert ".expr() + saksbehandlerValg.inntektskontrollDato.format() +". Vi har endret alderspensjonen din fordi inntekten til ektefellen din er høyere enn tidligere registrert. Endringen gjelder fra " + saksbehandlerValg.virkFom.format() + ". Du får " + saksbehandlerValg.alderspensjonPerMaanedFoerSkatt.format() + " kroner i alderspensjon hver måned før skatt.",
-                    Nynorsk to "Nav viser til varsel om inntektskontroll datert ".expr() + saksbehandlerValg.inntektskontrollDato.format() + ". Vi har endra alderspensjonen din fordi inntekta til ektefellen din er høgare enn tidlegare registrert. Endringa gjeld frå " + saksbehandlerValg.virkFom.format() + ". Du får " + saksbehandlerValg.alderspensjonPerMaanedFoerSkatt.format() + " kroner i alderspensjon kvar månad før skatt."
+                    Bokmal to "Nav viser til varsel om inntektskontroll datert ".expr() + fritekst("dato") +". Vi har endret alderspensjonen din fordi inntekten til ektefellen din er høyere enn tidligere registrert. Endringen gjelder fra " + fritekst("dato") + ". Du får " + fritekst("sum") + " kroner i alderspensjon hver måned før skatt.",
+                    Nynorsk to "Nav viser til varsel om inntektskontroll datert ".expr() + fritekst("dato") + ". Vi har endra alderspensjonen din fordi inntekta til ektefellen din er høgare enn tidlegare registrert. Endringa gjeld frå " + fritekst("dato") + ". Du får " + fritekst("sum") + " kroner i alderspensjon kvar månad før skatt."
                 )
             }
             includePhrase(Vedtak.BegrunnelseOverskrift)
@@ -86,8 +80,8 @@ object VedtakOmEndring : RedigerbarTemplate<VedtakOmEndringDto> {
             }
             paragraph {
                 textExpr(
-                    Bokmal to fritekst("Da du søkte om alderspensjon, oppga du at / Da pensjonen din ble konvertert til alderspensjon ble det lagt til grunn at ektefellen/samboeren/partneren") + "din hadde inntekt under to ganger grunnbeløpet. Opplysninger fra Skatteetaten viser at " + fritekst("ektefellen/samboeren/partneren") + " din har hatt inntekt over to ganger grunnbeløpet i årene " + fritekst("(sett inn riktig år/perioder)") + ". Grunnpensjonen din " + fritekst("(og legg til eventuelle andre endringer)") + " skulle vært redusert fra " + saksbehandlerValg.skulleVaertRedusertFraDato.format() + ".",
-                    Nynorsk to fritekst("Då du søkte om alderspensjon, opplyste du at / Då pensjonen din vart konvertert til alderspensjon vart det lagt til grunn at ektefellen/sambuaren/partnaren") + " din hadde inntekt under to gangar grunnbeløpet. Opplysningar frå Skatteetaten viser at " + fritekst("ektefellen/sambuaren/partnaren") + " din har hatt inntekt over to gangar grunnbeløpet i åra " + fritekst("(set inn riktig år/periodar)") + ". Grunnpensjonen din " + fritekst("(og legg til eventuelle andre endringar)") + " skulle vore redusert frå " + saksbehandlerValg.skulleVaertRedusertFraDato.format( ) + "."
+                    Bokmal to fritekst("Da du søkte om alderspensjon, oppga du at / Da pensjonen din ble konvertert til alderspensjon ble det lagt til grunn at ektefellen/samboeren/partneren") + "din hadde inntekt under to ganger grunnbeløpet. Opplysninger fra Skatteetaten viser at " + fritekst("ektefellen/samboeren/partneren") + " din har hatt inntekt over to ganger grunnbeløpet i årene " + fritekst("(sett inn riktig år/perioder)") + ". Grunnpensjonen din " + fritekst("(og legg til eventuelle andre endringer)") + " skulle vært redusert fra " + fritekst("dato") + ".",
+                    Nynorsk to fritekst("Då du søkte om alderspensjon, opplyste du at / Då pensjonen din vart konvertert til alderspensjon vart det lagt til grunn at ektefellen/sambuaren/partnaren") + " din hadde inntekt under to gangar grunnbeløpet. Opplysningar frå Skatteetaten viser at " + fritekst("ektefellen/sambuaren/partnaren") + " din har hatt inntekt over to gangar grunnbeløpet i åra " + fritekst("(set inn riktig år/periodar)") + ". Grunnpensjonen din " + fritekst("(og legg til eventuelle andre endringar)") + " skulle vore redusert frå " + fritekst("dato") + "."
                 )
             }
             paragraph {
