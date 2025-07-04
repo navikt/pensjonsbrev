@@ -275,9 +275,9 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                 paragraph {
                     textExpr(
                         Bokmal to "Den årlige inntekten vi har brukt i beregningen er ".expr() + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) +
-                                " kroner. Det gir deg rett til en årlig utbetaling av uføretrygd på " + uforetrygd.nettoPerAr.format(CurrencyFormat) + ". ",
+                                " kroner. Det gir deg rett til en årlig utbetaling av uføretrygd på " + uforetrygd.nettoPerAr.format(CurrencyFormat) + " kroner. ",
                         Nynorsk to "Den årlege inntekta vi har lagt til grunn i utrekninga, er ".expr() + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) +
-                                " kroner. Det gir deg rett til ei årleg utbetaling av uføretrygd på " + uforetrygd.nettoPerAr.format(CurrencyFormat) + ". ",
+                                " kroner. Det gir deg rett til ei årleg utbetaling av uføretrygd på " + uforetrygd.nettoPerAr.format(CurrencyFormat) + " kroner. ",
                     )
                 }
 
@@ -407,7 +407,7 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                         textExpr(
                             Bokmal to "Barnetillegg for særkullsbarn er beregnet ut fra din inntekt på ".expr() + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) + " kroner. " +
                                     "Barnetillegg for fellesbarn er i tillegg beregnet ut fra den andre forelderens inntekt på " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
-                                    "Når vi beregner nytt barnetillegg, tar vi hensyn til hvor mye du har fått utbetalt i barnetillegg hittil i år. Du får derfor en utbetaling av barnetillegg på " + barnetilleggFellesbarn.netto.plus(barnetilleggSaerkullsbarn.netto).format(CurrencyFormat) + " kroner per måned fra neste år. ",
+                                    "Når vi beregner nytt barnetillegg, tar vi hensyn til hvor mye du har fått utbetalt i barnetillegg hittil i år. Du får derfor en utbetaling av barnetillegg på " + barnetilleggFellesbarn.netto.plus(barnetilleggSaerkullsbarn.netto).format(CurrencyFormat) + " kroner per måned fra neste måned. ",
                             Nynorsk to "Barnetillegg for særkullsbarn, er rekna ut med utgangspunkt i inntekta di på ".expr() + uforetrygd.inntektBruktIAvkortning.format(CurrencyFormat) + " kroner. " +
                                     "Barnetillegget for fellesbarn, er i tillegg rekna ut frå inntekta til den andre forelderen på " + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
                                     "Når vi reknar ut nytt barnetillegg, tek vi omsyn til kor mykje du har fått utbetalt i barnetillegg hittil i år. \n" +
