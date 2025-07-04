@@ -21,6 +21,10 @@ data class LetterMarkupImpl(
     override val signatur: LetterMarkup.Signatur
 ) : LetterMarkup {
 
+    init {
+        validate()
+    }
+
     @InterneDataklasser
     data class AttachmentImpl(
         override val title: List<ParagraphContent.Text>,
