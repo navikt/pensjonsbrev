@@ -2,13 +2,14 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 
 import type { AnyBlock, Content, ItemList, TextContent } from "~/types/brevbakerTypes";
-import { ITEM_LIST } from "~/types/brevbakerTypes";
+import { ITEM_LIST, TABLE } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem, isItemList, isLiteral, isVariable } from "../model/utils";
 import {
   addElements,
+  insertEmptyParagraphAfterBlock,
   isAtStartOfBlock,
   newItem,
   newLiteral,
@@ -24,6 +25,11 @@ export function splitRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
   const editedLetter = draft.redigertBrev;
   const block = editedLetter.blocks[literalIndex.blockIndex];
   const content = block.content[literalIndex.contentIndex];
+
+  if (content.type === TABLE) {
+    insertEmptyParagraphAfterBlock(draft, literalIndex.blockIndex);
+    return;
+  }
 
   if (isLiteral(content)) {
     splitBlockAtLiteral(draft, literalIndex, offset, block);
