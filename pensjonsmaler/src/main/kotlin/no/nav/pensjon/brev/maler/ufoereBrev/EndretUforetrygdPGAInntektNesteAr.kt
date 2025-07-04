@@ -267,9 +267,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 showIf(barnetilleggFellesbarn.inntektAnnenForelder.greaterThan(0)) {
                     paragraph {
                         textExpr(
-                            Bokmal to "Den årlige inntekten vi vil bruke for annen forelder er ".expr() + barnetilleggFellesbarn.inntektAnnenForelder.format(
-                                CurrencyFormat
-                            ) + "kroner. Dette påvirker bare utbetalingen av barnetillegget.",
+                            Bokmal to "Den årlige inntekten vi vil bruke for annen forelder er ".expr() + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
+                                    "Dette påvirker bare utbetalingen av barnetillegget.",
                             Nynorsk to "".expr()
                         )
                     }
