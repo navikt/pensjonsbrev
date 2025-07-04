@@ -164,8 +164,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     Nynorsk to "Dersom du får utbetalt for mykje stønad fordi du ikkje har meldt frå om endringar, kan vi krevje at du betaler tilbake det du ikkje hadde rett på.",
                     English to "If you fail to report changes and/or are paid too much allowance, Nav has the right to collect the incorrect amount.",
                 )
-            }<<
-
+            }
         }
     }
 
