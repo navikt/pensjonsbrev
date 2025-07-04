@@ -38,6 +38,7 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.createVedtakEndringAvUttaksgr
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakEndringAvUttaksgradStansBrukerEllerVergeDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakOmEndringDto
+import no.nav.pensjon.brev.maler.redigerbar.createVedtakOmFjerningAvOmsorgspoengDto
 import no.nav.pensjon.brev.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.maler.vedlegg.createMaanedligPensjonFoerSkattAlderspensjonDto
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
@@ -116,6 +117,7 @@ object Fixtures {
             VedtakEndringAvUttaksgradStansBrukerEllerVergeDto::class -> createVedtakEndringAvUttaksgradStansBrukerEllerVergeDto() as T
             VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto::class -> createVedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto() as T
             VedtakOmEndringDto::class -> createVedtakOmEndringDto() as T
+            VedtakOmFjerningAvOmsorgspoengDto::class -> createVedtakOmFjerningAvOmsorgspoengDto() as T
             Gjenlevenderett2027Dto::class -> createGjenlevenderett2027Dto() as T
             EndringAvAlderspensjonSivilstandDto::class -> createEndringAvAlderspensjonSivilstandDto() as T
 

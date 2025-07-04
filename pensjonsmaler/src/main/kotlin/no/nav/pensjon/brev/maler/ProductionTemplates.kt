@@ -118,6 +118,7 @@ object ProductionTemplates : AllTemplates {
         VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,
         VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,
         VedtakOmEndring,
+        VedtakOmFjerningAvOmsorgspoeng,
     )
 
     override fun hentAutobrevmaler() = autobrev

@@ -31,5 +31,6 @@ fun isEnabled(kode: String) = when (kode) {
     Pesysbrevkoder.Redigerbar.PE_AP_ENDRET_UTTAKSGRAD_STANS_BRUKER_ELLER_VERGE.kode(),
         Pesysbrevkoder.Redigerbar.PE_AP_ENDRET_UTTAKSGRAD_STANS_IKKE_BRUKER_VERGE.kode() -> FeatureToggles.vedtakEndringAvUttaksgradStans
     Pesysbrevkoder.Redigerbar.PE_VEDTAK_OM_ENDRING.kode() -> FeatureToggles.vedtakOmEndring
+    Pesysbrevkoder.Redigerbar.PE_VEDTAK_OM_FJERNING_AV_OMSORGSPOENG.kode() -> FeatureToggles.vedtakOmFjerningAvOmsorgspoeng
     else -> null
 }?.let { FeatureToggleSingleton.isEnabled(it) } ?: true
