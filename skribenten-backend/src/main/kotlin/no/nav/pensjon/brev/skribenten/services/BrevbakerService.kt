@@ -23,6 +23,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Cache
+import no.nav.pensjon.brev.skribenten.PrimitiveModule
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -50,6 +51,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
                 registerModule(JavaTimeModule())
                 registerModule(LetterMarkupModule)
                 registerModule(TemplateModelSpecificationModule)
+                registerModule(PrimitiveModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
