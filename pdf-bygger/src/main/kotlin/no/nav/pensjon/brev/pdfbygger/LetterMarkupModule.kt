@@ -48,7 +48,6 @@ internal object LetterMarkupModule : SimpleModule() {
         addInterfaceDeserializer<LetterMarkup, LetterMarkupImpl>()
     }
 
-
     private fun blockDeserializer() =
         object : StdDeserializer<LetterMarkup.Block>(LetterMarkup.Block::class.java) {
             override fun deserialize(p: JsonParser, ctxt: DeserializationContext): LetterMarkup.Block {
