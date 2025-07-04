@@ -164,7 +164,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     Nynorsk to "Dersom du får utbetalt for mykje stønad fordi du ikkje har meldt frå om endringar, kan vi krevje at du betaler tilbake det du ikkje hadde rett på.",
                     English to "If you fail to report changes and/or are paid too much allowance, Nav has the right to collect the incorrect amount.",
                 )
-            }
+            }<<
 
         }
     }
@@ -271,17 +271,19 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     )
                 }
             } orShow {
+
+                // Grunnbeløpe = 0.5 av G
                 paragraph {
                     text(
                         Bokmal to "For at du skal motta korrekt utbetaling, er det viktig at du informerer oss hvis " +
-                                "du får en forventet årsinntekt som vil overstige et halvt grunnbeløp. Dette er per i dag 62 014 kroner. " +
+                                "du får en forventet årsinntekt som vil overstige et halvt grunnbeløp. Dette er per i dag 65 080 kroner. " +
                                 "Grunnbeløpet blir justert hvert år fra 1. mai.",
                         Nynorsk to "For at du få rett utbetaling, er det viktig at du gir oss beskjed viss du får ei " +
-                                "forventa årsinntekt som vil overstige eit halvt grunnbeløp. Dette er per i dag 62 014 kroner. " +
+                                "forventa årsinntekt som vil overstige eit halvt grunnbeløp. Dette er per i dag 65 080 kroner. " +
                                 "Grunnbeløpet blir justert kvart år frå 1. mai.",
                         English to "To receive the correct amount, you are obligated to inform us about any changes to " +
                                 "your anticipated annual income that exceeds one half of the basic amount. This is currently " +
-                                "NOK 62 014. The basic amount is adjusted on 1 May each year.",
+                                "NOK 65 080. The basic amount is adjusted on 1 May each year.",
                     )
                 }
             }
