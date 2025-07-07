@@ -1,72 +1,31 @@
-import type {
-  Cell,
-  ColumnAlignment,
-  ColumnSpec,
-  Header,
-  LiteralValue,
-  Row,
-  Table,
-  TextContent,
-} from "~/types/brevbakerTypes";
-import { FontType, LITERAL } from "~/types/brevbakerTypes";
-import type { Nullable } from "~/types/Nullable";
+import { makeBlankRow, makeDefaultColSpec } from "~/Brevredigering/LetterEditor/actions/common";
+import type { Table } from "~/types/brevbakerTypes";
 
-const nullId = (): Nullable<number> => null;
-
-const newLiteral = (): LiteralValue => ({
-  id: nullId(),
-  parentId: nullId(),
-  type: LITERAL,
-  text: "",
-  editedText: null,
-  fontType: FontType.PLAIN,
-  editedFontType: null,
-  tags: [],
-});
-
-const emptyTextArray = (): TextContent[] => [newLiteral()];
-
-export const newCell = (): Cell => ({
-  id: nullId(),
-  parentId: nullId(),
-  text: emptyTextArray(),
-});
-
-export const newRow = (cols: number): Row => ({
-  id: nullId(),
-  parentId: nullId(),
-  cells: Array.from({ length: cols }, newCell),
-});
-
-const newColSpec = (): ColumnSpec => ({
-  id: nullId(),
-  parentId: nullId(),
-  headerContent: newCell(),
-  alignment: "LEFT" satisfies ColumnAlignment,
-  span: 1,
-});
-
-const newHeader = (cols: number): Header => ({
-  id: nullId(),
-  parentId: nullId(),
-  colSpec: Array.from({ length: cols }, newColSpec),
-});
-
+/**
+ * Create a new table with the specified number of rows and columns.
+ * Defaults to 2 rows and 2 columns if not specified.
+ */
 export const newTable = (rows = 2, cols = 2): Table => ({
-  id: nullId(),
-  parentId: nullId(),
+  id: null,
+  parentId: null,
   type: "TABLE",
-  header: newHeader(cols),
-  rows: Array.from({ length: rows }, () => newRow(cols)),
+  header: {
+    id: null,
+    parentId: null,
+    colSpec: makeDefaultColSpec(cols),
+  },
+  rows: Array.from({ length: rows }, () => makeBlankRow(cols)),
   deletedRows: [],
 });
 
+/** Add an empty row to the bottom of the table */
 export const pushRow = (table: Table): void => {
-  table.rows.push(newRow(table.header.colSpec.length));
+  table.rows.push(makeBlankRow(table.header.colSpec.length));
 };
 
+/** Add one column to the right side of the table */
 export const pushCol = (table: Table): void => {
-  table.header.colSpec.push(newColSpec());
-
-  table.rows.forEach((r) => r.cells.push(newCell()));
+  table.header.colSpec.push(...makeDefaultColSpec(1));
+  const blankCell = makeBlankRow(1).cells[0];
+  table.rows.forEach((row) => row.cells.push({ ...blankCell }));
 };

@@ -1,51 +1,72 @@
 import { css } from "@emotion/react";
-import { Table as AkselTable } from "@navikt/ds-react";
+import React from "react";
 
-import type { LiteralValue, Table as TableNode, TextContent, VariableValue } from "~/types/brevbakerTypes";
+import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
+import { LITERAL, type Table } from "~/types/brevbakerTypes";
 
-function renderText(textArr: TextContent[]) {
-  return textArr
-    .map((t) => {
-      switch (t.type) {
-        case "LITERAL":
-          return (t as LiteralValue).editedText ?? t.text;
-        case "VARIABLE":
-          return (t as VariableValue).text;
-        default:
-          return "";
-      }
-    })
-    .join("");
-}
+import { TableCellContent } from "./TableCellContent";
 
-export const TableView = ({ node }: { node: TableNode }) => (
-  <AkselTable
-    css={css`
-      td,
-      th {
-        border: 1px solid var(--a-gray-300);
-      }
-    `}
-    size="medium"
-  >
-    <AkselTable.Header>
-      <AkselTable.Row>
-        {node.header.colSpec.map((col, idx) => (
-          <AkselTable.ColumnHeader align={col.alignment === "RIGHT" ? "right" : "left"} key={idx}>
-            {renderText(col.headerContent.text)}
-          </AkselTable.ColumnHeader>
-        ))}
-      </AkselTable.Row>
-    </AkselTable.Header>
+const tableStyles = css`
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
 
-    <AkselTable.Body>
-      {node.rows.map((row, rIdx) => (
-        <AkselTable.Row key={rIdx}>
-          {row.cells.map((cell, cIdx) => (
-            <AkselTable.DataCell key={cIdx}>{renderText(cell.text)}</AkselTable.DataCell>
-          ))}
-        </AkselTable.Row>
-      ))}
-    </AkselTable.Body>
-  </AkselTable>
-);
+  td,
+  th {
+    border: 1px solid #000;
+    padding: 2mm;
+    word-wrap: break-word;
+  }
+`;
+
+const selectedRowStyles = css`
+  background: var(--a-surface-info-subtle, #d0e7ff); /* light blue */
+`;
+
+const TableView: React.FC<{
+  node: Table;
+  blockIndex: number;
+  contentIndex: number;
+}> = ({ node, blockIndex, contentIndex }) => {
+  const { editorState } = useEditor();
+  const { tableSelection } = editorState;
+
+  return (
+    <table css={tableStyles}>
+      <tbody>
+        {node.rows.map((row, rowIndex) => {
+          const isSelected =
+            tableSelection &&
+            tableSelection.blockIndex === blockIndex &&
+            tableSelection.contentIndex === contentIndex &&
+            tableSelection.rowIndex === rowIndex;
+
+          return (
+            <tr css={isSelected && selectedRowStyles} key={rowIndex}>
+              {row.cells.map((cell, cellIndex) => (
+                <td key={cellIndex}>
+                  {cell.text
+                    .filter((textContent) => textContent.type === LITERAL)
+                    .map((litValue, litIdx) => (
+                      <TableCellContent
+                        key={litIdx}
+                        lit={litValue}
+                        litIndex={{
+                          blockIndex,
+                          contentIndex,
+                          itemIndex: rowIndex,
+                          itemContentIndex: cellIndex,
+                        }}
+                      />
+                    ))}
+                </td>
+              ))}
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  );
+};
+
+export default TableView;
