@@ -1,8 +1,12 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import kotlin.random.Random
 
 class LetterValidationTest {
 
@@ -27,7 +31,7 @@ class LetterValidationTest {
         }
 
         @Test
-        fun `element skal feile for 0 kolonner i tabell`() {
+        fun `skal feile for 0 kolonner i tabell`() {
             assertThrows<InvalidTableDeclarationException> {
                 Element.OutlineContent.ParagraphContent.Table.Row<LangNynorsk>(
                     cells = listOf(), colSpec = listOf()
@@ -65,4 +69,110 @@ class LetterValidationTest {
         }
     }
 
+    @Nested
+    @OptIn(InterneDataklasser::class)
+    inner class LetterMarkupTest {
+        @Test
+        fun `tom ItemList skal feile`() {
+            val element = LetterMarkupImpl.ParagraphContentImpl.ItemListImpl(2, listOf())
+            assertThrows<InvalidListDeclarationException> {
+                lagLetterMarkupImpl(element)
+            }
+        }
+
+        @Test
+        fun `tabell skal feile for 0 rader`() {
+            assertThrows<InvalidTableDeclarationException> {
+                lagLetterMarkupImpl(
+                    LetterMarkupImpl.ParagraphContentImpl.TableImpl(
+                        id = Random.nextInt(),
+                        rows = listOf(),
+                        header = LetterMarkupImpl.ParagraphContentImpl.TableImpl.HeaderImpl(
+                            id = Random.nextInt(),
+                            colSpec = listOf()
+                        )
+                    )
+                )
+            }
+        }
+
+        @Test
+        fun `skal feile for 0 kolonner i tabell`() {
+            assertThrows<InvalidTableDeclarationException> {
+                lagLetterMarkupImpl(
+                    LetterMarkupImpl.ParagraphContentImpl.TableImpl(
+                        id = Random.nextInt(),
+                        rows = listOf(
+                            LetterMarkupImpl.ParagraphContentImpl.TableImpl.RowImpl(
+                                id = Random.nextInt(),
+                                cells = listOf()
+                            )
+                        ),
+                        header = LetterMarkupImpl.ParagraphContentImpl.TableImpl.HeaderImpl(
+                            id = Random.nextInt(),
+                            colSpec = listOf()
+                        )
+                    )
+                )
+            }
+        }
+
+        @Test
+        fun `skal feile hvis ulikt antall kolonner`() {
+            assertThrows<InvalidTableDeclarationException> {
+                val cell = LetterMarkupImpl.ParagraphContentImpl.TableImpl.CellImpl(
+                    id = Random.nextInt(),
+                    text = listOf()
+                )
+                lagLetterMarkupImpl(
+                    LetterMarkupImpl.ParagraphContentImpl.TableImpl(
+                        id = Random.nextInt(),
+                        rows = listOf(
+                            LetterMarkupImpl.ParagraphContentImpl.TableImpl.RowImpl(
+                                id = Random.nextInt(),
+                                cells = listOf(cell, cell)
+                            )
+                        ),
+                        header = LetterMarkupImpl.ParagraphContentImpl.TableImpl.HeaderImpl(
+                            id = Random.nextInt(),
+                            colSpec = listOf(
+                                LetterMarkupImpl.ParagraphContentImpl.TableImpl.ColumnSpecImpl(
+                                    id = Random.nextInt(),
+                                    headerContent = cell,
+                                    alignment = LetterMarkup.ParagraphContent.Table.ColumnAlignment.LEFT,
+                                    span = 1
+                                )
+                            )
+                        )
+                    )
+                )
+            }
+        }
+    }
 }
+
+@OptIn(InterneDataklasser::class)
+private fun lagLetterMarkupImpl(content: LetterMarkup.ParagraphContent) = LetterMarkupImpl(
+    "redigert markup",
+    LetterMarkupImpl.SakspartImpl(
+        "gjelder bruker",
+        "123abc",
+        "001",
+        "en dato"
+    ),
+    listOf(
+        LetterMarkupImpl.BlockImpl.ParagraphImpl(
+            id = Random.nextInt(),
+            editable = false,
+            content = listOf(content)
+        )
+    ),
+    LetterMarkupImpl.SignaturImpl(
+        "hilsen oss",
+        "en rolle",
+        "Saksbehandlersen",
+        null,
+        "Akersgata"
+    )
+)
+
