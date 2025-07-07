@@ -221,7 +221,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                 val items: List<ListItemElement<Lang>>
             ) : ParagraphContent<Lang>(), LetterStructure.ParagraphContent.ItemList, StableHash by StableHash.of(items) {
                 init {
-                    if (items.flatMap { getItems(it) }.isEmpty()) throw InvalidListDeclarationException("List has no items")
+                    validate()
                 }
 
                 override fun equals(other: Any?): Boolean {
@@ -242,6 +242,8 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                     override fun toString() = "Item(text=$text)"
                 }
 
+                override fun listItems() = items.flatMap { getItems(it) }
+
                 private fun getItems(item: ListItemElement<Lang>): List<Item<Lang>> =
                     when (item) {
                         is ContentOrControlStructure.Conditional -> item.showIf.plus(item.showElse).flatMap { getItems(it) }
@@ -254,13 +256,11 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
             // TODO: Siden tabellene skal passe inn i et brev, så bør vi ha en maksimumsgrense på antall-kolonner (evt. bare total bredde)
             class Table<out Lang : LanguageSupport> internal constructor(
                 val rows: List<TableRowElement<Lang>>,
-                val header: Header<Lang>,
+                override val header: Header<Lang>,
             ) : ParagraphContent<Lang>(), LetterStructure.ParagraphContent.Table, StableHash by StableHash.of(StableHash.of(rows), header) {
 
                 init {
-                    if (rows.flatMap { getRows(it) }.isEmpty()) {
-                        throw InvalidTableDeclarationException("A table must have at least one row")
-                    }
+                    validate()
                 }
 
                 override fun equals(other: Any?): Boolean {
@@ -276,17 +276,15 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                         is ContentOrControlStructure.Content -> listOf(row.content)
                     }
 
+                override fun listRows() = rows.flatMap { getRows(it) }
+
                 class Row<out Lang : LanguageSupport> internal constructor(
-                    val cells: List<Cell<Lang>>,
+                    override val cells: List<Cell<Lang>>,
                     val colSpec: List<ColumnSpec<Lang>>
                 ) : Element<Lang>(), LetterStructure.ParagraphContent.Table.Row, StableHash by StableHash.of(StableHash.of(cells), StableHash.of(colSpec)) {
+
                     init {
-                        if (cells.isEmpty()) {
-                            throw InvalidTableDeclarationException("Rows need at least one cell")
-                        }
-                        if (cells.size != colSpec.size) {
-                            throw InvalidTableDeclarationException("The number of cells in the row(${cells.size}) does not match the number of columns in the specification(${colSpec.size})")
-                        }
+                        validate()
                     }
 
                     override fun equals(other: Any?): Boolean {
@@ -297,11 +295,9 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                     override fun toString(): String = "Row(cells=$cells, colSpec=$colSpec)"
                 }
 
-                class Header<out Lang : LanguageSupport> internal constructor(val colSpec: List<ColumnSpec<Lang>>) : LetterStructure.ParagraphContent.Table.Header, StableHash by StableHash.of(colSpec) {
+                class Header<out Lang : LanguageSupport> internal constructor(override val colSpec: List<ColumnSpec<Lang>>) : LetterStructure.ParagraphContent.Table.Header, StableHash by StableHash.of(colSpec) {
                     init {
-                        if (colSpec.isEmpty()) {
-                            throw InvalidTableDeclarationException("Table column specification needs at least one column")
-                        }
+                        validate()
                     }
 
                     override fun equals(other: Any?): Boolean {

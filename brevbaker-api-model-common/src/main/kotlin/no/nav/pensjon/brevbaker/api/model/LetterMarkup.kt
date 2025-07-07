@@ -1,5 +1,7 @@
 package no.nav.pensjon.brevbaker.api.model
 
+import kotlin.collections.isNotEmpty
+
 interface LetterMarkup {
     val title: String
     val sakspart: Sakspart
@@ -72,16 +74,12 @@ interface LetterMarkup {
             ITEM_LIST, LITERAL, VARIABLE, TABLE, FORM_TEXT, FORM_CHOICE, NEW_LINE
         }
 
-        fun validate() {}
-
         interface ItemList : ParagraphContent, LetterStructure.ParagraphContent.ItemList {
             val items: List<Item>
-            interface Item {
+            interface Item : LetterStructure.ParagraphContent.ItemList.Item {
                 val id: Int
                 val content: List<Text>
             }
-
-            override fun validate() = require(items.isNotEmpty()) { "Items must not be empty" }
         }
 
         sealed interface Text : ParagraphContent, LetterStructure.ParagraphContent.Text {
@@ -109,25 +107,14 @@ interface LetterMarkup {
 
         interface Table : ParagraphContent, LetterStructure.ParagraphContent.Table {
             val rows: List<Row>
-            val header: Header
-
-            override fun validate() {
-                require(rows.isNotEmpty()) { "Must have at least one row" }
-                require(rows.map { it.cells.size }.all { it == header.colSpec.size }) { "Must have at least one row" }
-                rows.forEach { it.validate() }
-                header.validate()
-            }
+            override val header: Header
 
             override val type: Type
                 get() = Type.TABLE
 
             interface Row : LetterStructure.ParagraphContent.Table.Row {
                 val id: Int
-                val cells: List<Cell>
-
-                fun validate() {
-                    require(cells.isNotEmpty()) { "Must have at least one cell" }
-                }
+                override val cells: List<Cell>
             }
 
             interface Cell : LetterStructure.ParagraphContent.Table.Cell {
@@ -137,9 +124,7 @@ interface LetterMarkup {
 
             interface Header : LetterStructure.ParagraphContent.Table.Header {
                 val id: Int
-                val colSpec: List<ColumnSpec>
-
-                fun validate() = require(colSpec.isNotEmpty()) { "Must have at least one header" }
+                override val colSpec: List<ColumnSpec>
             }
 
             interface ColumnSpec : LetterStructure.ParagraphContent.Table.ColumnSpec {

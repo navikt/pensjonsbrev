@@ -283,6 +283,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 }
 
 public abstract class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent : no/nav/pensjon/brev/template/Element, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent {
+	public fun validate ()V
 }
 
 public abstract class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Form {
@@ -321,8 +322,10 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getItems ()Ljava/util/List;
 	public fun hashCode ()I
+	public fun listItems ()Ljava/util/List;
 	public fun stableHashCode ()I
 	public fun toString ()Ljava/lang/String;
+	public fun validate ()V
 }
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$ItemList$Item : no/nav/pensjon/brev/template/Element, no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$ItemList$Item {
@@ -335,10 +338,13 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent, no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Table {
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getHeader ()Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table$Header;
+	public fun getHeader ()Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table$Header;
+	public synthetic fun getHeader ()Lno/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Table$Header;
 	public final fun getRows ()Ljava/util/List;
 	public fun hashCode ()I
+	public fun listRows ()Ljava/util/List;
 	public fun stableHashCode ()I
+	public fun validate ()V
 }
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table$Cell : no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Table$Cell {
@@ -369,19 +375,21 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table$Header : no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Table$Header {
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getColSpec ()Ljava/util/List;
+	public fun getColSpec ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
 	public fun toString ()Ljava/lang/String;
+	public fun validate ()V
 }
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table$Row : no/nav/pensjon/brev/template/Element, no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Table$Row {
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getCells ()Ljava/util/List;
+	public fun getCells ()Ljava/util/List;
 	public final fun getColSpec ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
 	public fun toString ()Ljava/lang/String;
+	public fun validate ()V
 }
 
 public abstract class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Text {
@@ -579,18 +587,6 @@ public final class no/nav/pensjon/brev/template/IncludeAttachmentKt {
 	public static synthetic fun createAttachment$default (Lno/nav/pensjon/brev/template/ContentOrControlStructure;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/AttachmentTemplate;
 }
 
-public final class no/nav/pensjon/brev/template/InvalidListDeclarationException : no/nav/pensjon/brev/template/TemplateValidationException {
-	public fun <init> (Ljava/lang/String;)V
-}
-
-public final class no/nav/pensjon/brev/template/InvalidScopeTypeException : no/nav/pensjon/brev/template/TemplateValidationException {
-	public fun <init> (Ljava/lang/String;)V
-}
-
-public final class no/nav/pensjon/brev/template/InvalidTableDeclarationException : no/nav/pensjon/brev/template/TemplateValidationException {
-	public fun <init> (Ljava/lang/String;)V
-}
-
 public abstract class no/nav/pensjon/brev/template/Language : no/nav/pensjon/brev/template/StableHash {
 	public final fun getName ()Ljava/lang/String;
 	public final fun locale ()Ljava/util/Locale;
@@ -741,14 +737,6 @@ public final class no/nav/pensjon/brev/template/LocalizedFormatterKt {
 	public static final field NON_BREAKING_SPACE C
 }
 
-public final class no/nav/pensjon/brev/template/MissingScopeForNextItemEvaluationException : no/nav/pensjon/brev/template/TemplateValidationException {
-	public fun <init> (Ljava/lang/String;)V
-}
-
-public final class no/nav/pensjon/brev/template/MissingTitleInTemplateException : no/nav/pensjon/brev/template/TemplateValidationException {
-	public fun <init> (Ljava/lang/String;)V
-}
-
 public final class no/nav/pensjon/brev/template/NamedReferenceKt {
 	public static final fun namedReference (Lno/nav/pensjon/brev/template/dsl/TextScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;)V
 	public static final fun namedReferenceBokmalEnglish (Lno/nav/pensjon/brev/template/dsl/TextScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;)V
@@ -829,10 +817,6 @@ public abstract interface class no/nav/pensjon/brev/template/TemplateModelSelect
 
 public final class no/nav/pensjon/brev/template/TemplateModelSelector$DefaultImpls {
 	public static fun stableHashCode (Lno/nav/pensjon/brev/template/TemplateModelSelector;)I
-}
-
-public abstract class no/nav/pensjon/brev/template/TemplateValidationException : java/lang/Exception {
-	public fun <init> (Ljava/lang/String;)V
 }
 
 public abstract class no/nav/pensjon/brev/template/TextOnlyPhrase {

@@ -75,6 +75,7 @@ data class LetterMarkupImpl(
         @InterneDataklasser
         data class ItemListImpl(override val id: Int, override val items: List<ItemList.Item>) : ItemList {
             override val type = ParagraphContent.Type.ITEM_LIST
+            override fun listItems() = items
 
             @InterneDataklasser
             data class ItemImpl(override val id: Int, override val content: List<ParagraphContent.Text>) : ItemList.Item
@@ -111,9 +112,11 @@ data class LetterMarkupImpl(
         @InterneDataklasser
         data class TableImpl(override val id: Int, override val rows: List<Table.Row>, override val header: Table.Header) : Table {
             override val type = ParagraphContent.Type.TABLE
+            override fun listRows() = rows
 
             @InterneDataklasser
             data class RowImpl(override val id: Int, override val cells: List<Table.Cell>) : Table.Row
+
             @InterneDataklasser
             data class CellImpl(override val id: Int, override val text: List<ParagraphContent.Text>) : Table.Cell
             @InterneDataklasser
