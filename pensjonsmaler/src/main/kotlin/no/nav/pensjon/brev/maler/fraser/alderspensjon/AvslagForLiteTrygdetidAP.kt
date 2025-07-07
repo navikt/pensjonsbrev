@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDt
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalder.fritekst
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SUPPLERENDE_STOENAD
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.languages
@@ -169,13 +170,13 @@ data class RettTilAPFolketrygdsak(
         paragraph {
             textExpr(
                 Bokmal to "For å ha rett til alderspensjon må du ha minst ".expr()
-                        + ifElse(avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT,), ifTrue = "tre", ifFalse = "fem")
+                        + ifElse(avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT), ifTrue = "tre", ifFalse = "fem")
                         + " års trygdetid. Det har du ikke, og derfor har vi avslått søknaden din.",
                 Nynorsk to "For å ha rett til alderspensjon må du ha minst ".expr()
-                        + ifElse(avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT,), ifTrue = "tre", ifFalse = "fem")
+                        + ifElse(avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT), ifTrue = "tre", ifFalse = "fem")
                         + " års trygdetid. Det har du ikkje, og derfor har vi avslått søknaden din.",
                 English to "To be eligible for retirement pension, you must have at least ".expr()
-                        + ifElse(avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT,), ifTrue = "three", ifFalse = "five")
+                        + ifElse(avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT), ifTrue = "three", ifFalse = "five")
                         + " years of national insurance coverage. You do not meet this requirement, therefore we have declined your application.",
             )
         }
@@ -342,6 +343,30 @@ data class TrygdeperioderNorgeTabell(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
         showIf(trygdeperioderNorge.isNotEmpty()) {
+            //trygdetidOverskrift
+            title1 {
+                text(
+                    Bokmal to "Trygdetid",
+                    Nynorsk to "Trygdetid",
+                    English to "Period of national insurance coverage"
+                )
+            }
+            //norskTTInfoGenerell_001
+            paragraph {
+                text(
+                    Bokmal to "Trygdetid er perioder du har vært medlem i folketrygden. Som hovedregel er dette perioder du har bodd eller arbeidet i Norge. Trygdetid har betydning for beregning av pensjonen din. Full trygdetid er 40 år.",
+                    Nynorsk to "Trygdetid er periodar du har vore medlem i folketrygda. Som hovudregel er dette periodar du har budd eller arbeidd i Noreg. Trygdetid har betydning for berekninga av pensjonen din. Full trygdetid er 40 år.",
+                    English to "The period of national insurance coverage is the periods in which you have been a member of the Norwegian National Insurance Scheme. As a general rule, these are periods when you have been registered as living or working in Norway. The period of national insurance coverage affects the calculation of your pension. The full insurance period is 40 years.",
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Tabellen nedenfor viser perioder vi har brukt for å fastsette din norske trygdetid.",
+                    Nynorsk to "Tabellen nedanfor viser periodar vi har brukt for å fastsetje den norske trygdetida di.",
+                    English to "The table below shows the time periods used to establish your Norwegian national insurance coverage.",
+                )
+            }
+
             paragraph {
                 table(header = {
                     column {
@@ -383,7 +408,7 @@ data class TrygdeperioderNorgeTabell(
     }
 }
 
-data class TrygdeperioderEOSland(
+data class TrygdeperioderEOSlandTabell(
     val trygdeperioderEOSland: Expression<List<AvslagForLiteTrygdetidAPDto.Trygdetid>>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -452,7 +477,7 @@ data class TrygdeperioderEOSland(
     }
 }
 
-data class TrygdeperioderAvtaleland(
+data class TrygdeperioderAvtalelandTabell(
     val trygdeperioderAvtaleland: Expression<List<AvslagForLiteTrygdetidAPDto.Trygdetid>>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -517,6 +542,49 @@ data class TrygdeperioderAvtaleland(
                     }
                 }
             }
+        }
+    }
+}
+
+object AvslagAPUttakAlderU62Begrunn : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            text(
+                Bokmal to "Du har søkt om å ta ut alderspensjon før du fyller 62 år. For å ha rett til alderspensjon må du være 62 år. Derfor har vi avslått søknaden din.",
+                Nynorsk to "For å ha rett til alderspensjon må du vere 62 år. Du har søkt om å ta ut alderspensjon før du fyller 62 år. Derfor har vi avslått søknaden din.",
+                English to "In order to be eligible for retirement pension you have to be 62 years. You have applied for retirement pension from a date prior to having turned 62. Therefore, we have declined your application.",
+            )
+        }
+    }
+}
+
+object AvslagAPUttakAlderU62Info : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Du kan selv sjekke når du kan få alderspensjon",
+                Nynorsk to "Du kan sjølv sjekke når du kan få alderspensjon",
+                English to "You can find out when you are eligible for retirement pension",
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Du kan ta ut alderspensjon før du fyller 67 år hvis du har hatt høy nok pensjonsopptjening. I Din pensjon på $DIN_PENSJON_URL kan du se hva pensjonen din blir, avhengig av når og hvor mye du tar ut. Slik kan du sjekke når du tidligst kan ta ut alderspensjon.",
+                Nynorsk to "Du kan ta ut alderspensjon før du fyller 67 år dersom du har hatt høg nok pensjonsopptening. I Din pensjon på $DIN_PENSJON_URL kan du sjå kva pensjonen din blir, avhengig av når og kor mykje du tek ut. Slik kan du sjekke når du tidlegast kan ta ut alderspensjon.",
+                English to "You may be eligible for retirement pension before the age of 67, provided your accumulated pension capital is sufficiently high. Log on to Din pensjon at $DIN_PENSJON_URL to find out more about your pension payments. You can also see how your payments change depending on when you start drawing a retirement pension and what percentage of retirement pension you choose."
+            )
+        }
+    }
+}
+
+object NysoknadAPInfo : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            text(
+                Bokmal to "Du må sende oss en ny søknad når du ønsker å ta ut alderspensjon. En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden.2",
+                Nynorsk to "Du må sende oss ein ny søknad når du ønskjer å ta ut alderspensjonen. Ei eventuell endring kan tidlegast skje månaden etter at vi har mottatt søknaden.",
+                English to "You have to submit an application when you want to start drawing your retirement pension. Any change will be implemented at the earliest the month after we have received the application."
+            )
         }
     }
 }

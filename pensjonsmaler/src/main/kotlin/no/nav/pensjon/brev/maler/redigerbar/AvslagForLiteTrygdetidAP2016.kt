@@ -8,14 +8,23 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.avtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.bostedsland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.erAvtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.erEOSland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderAvtaleland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderEOSland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderNorge
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.vedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagAPUttakAlderU62Begrunn
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagAPUttakAlderU62Info
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder1aarTT
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder3aarTT
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.NysoknadAPInfo
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenad
-import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.TrygdeperioderAvtalelandTabell
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.TrygdeperioderEOSlandTabell
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.TrygdeperioderNorgeTabell
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
@@ -57,10 +66,13 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
         )
     ) {
         val avslagsBegrunnelse = pesysData.vedtaksBegrunnelse
-        val erEOSland = pesysData.erEOSland
         val avtaleland = pesysData.avtaleland
-        val erAvtaleland = pesysData.erAvtaleland
         val bostedsland = pesysData.bostedsland
+        val erAvtaleland = pesysData.erAvtaleland
+        val erEOSland = pesysData.erEOSland
+        val trygdeperioderAvtaleland = pesysData.trygdeperioderAvtaleland
+        val trygdeperioderEOSland = pesysData.trygdeperioderEOSland
+        val trygdeperioderNorge = pesysData.trygdeperioderNorge
 
         title {
             text(
@@ -284,22 +296,33 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                         )
                     }
                 }
+                showIf(
+                    avslagsBegrunnelse.isOneOf(
+                        UNDER_20_AR_BO_2016,
+                        UNDER_20_AR_BO,
+                        UNDER_5_AR_TT,
+                        UNDER_3_AR_TT,
+                        UNDER_1_AR_TT
+                    )
+                ) {
+                    includePhrase(
+                        TrygdeperioderNorgeTabell(
+                            trygdeperioderNorge = trygdeperioderNorge
+                        )
+                    )
+                    includePhrase(
+                        TrygdeperioderEOSlandTabell(
+                            trygdeperioderEOSland = trygdeperioderEOSland
+                        )
+                    )
+                    includePhrase(
+                        TrygdeperioderAvtalelandTabell(
+                            trygdeperioderAvtaleland = trygdeperioderAvtaleland
+                        )
+                    )
+                }
             }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_62)) {
-                // avslagAPUttakAlderU62Begrunn
-                paragraph {
-                    text(
-                        Bokmal to "Du har søkt om å ta ut alderspensjon før du fyller 62 år. For å ha rett til alderspensjon må du være 62 år. Derfor har vi avslått søknaden din.",
-                        Nynorsk to "For å ha rett til alderspensjon må du vere 62 år. Du har søkt om å ta ut alderspensjon før du fyller 62 år. Derfor har vi avslått søknaden din.",
-                        English to "In order to be eligible for retirement pension you have to be 62 years. You have applied for retirement pension from a date prior to having turned 62. Therefore, we have declined your application.",
-                    )
-                }
-                paragraph {
-                    text(
-                        Bokmal to "Vi har ikke vurdert om du oppfyller de andre kravene for å få alderspensjon fra folketrygden.",
-                        Nynorsk to "Vi har ikkje vurdert om du fyller dei andre vilkåra for å få alderspensjon frå folketrygda.",
-                        English to "We have not assessed whether you meet the other requirements for retirement pension through the National Insurance Act.",
-                    )
-                }
+                includePhrase(AvslagAPUttakAlderU62Begrunn)
                 // avslagAP2016UttakAlderU62Hjemmel
                 paragraph {
                     text(
@@ -308,35 +331,15 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                         English to "This decision was made pursuant to the provisions of §§ 19-4 and 20-2 of the National Insurance Act.",
                     )
                 }
-                // avslagAPUttakAlderU62Info
-                title1 {
-                    text(
-                        Bokmal to "Du kan selv sjekke når du kan få alderspensjon",
-                        Nynorsk to "Du kan sjølv sjekke når du kan få alderspensjon",
-                        English to "You can find out when you are eligible for retirement pension",
-                    )
-                }
-                paragraph {
-                    text(
-                        Bokmal to "Du kan ta ut alderspensjon før du fyller 67 år hvis du har hatt høy nok pensjonsopptjening. I Din pensjon på $DIN_PENSJON_URL kan du se hva pensjonen din blir, avhengig av når og hvor mye du tar ut. Slik kan du sjekke når du tidligst kan ta ut alderspensjon.",
-                        Nynorsk to "Du kan ta ut alderspensjon før du fyller 67 år dersom du har hatt høg nok pensjonsopptening. I Din pensjon på $DIN_PENSJON_URL kan du sjå kva pensjonen din blir, avhengig av når og kor mykje du tek ut. Slik kan du sjekke når du tidlegast kan ta ut alderspensjon.",
-                        English to "You may be eligible for retirement pension before the age of 67, provided your accumulated pension capital is sufficiently high. Log on to Din pensjon at $DIN_PENSJON_URL to find out more about your pension payments. You can also see how your payments change depending on when you start drawing a retirement pension and what percentage of retirement pension you choose."
-                    )
-                }
-                // nySoknadAPInfo
-                paragraph {
-                    text(
-                        Bokmal to "Du må sende oss en ny søknad når du ønsker å ta ut alderspensjon. En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden.2",
-                        Nynorsk to "Du må sende oss ein ny søknad når du ønskjer å ta ut alderspensjonen. Ei eventuell endring kan tidlegast skje månaden etter at vi har mottatt søknaden.",
-                        English to "You have to submit an application when you want to start drawing your retirement pension. Any change will be implemented at the earliest the month after we have received the application."
-                    )
-                }
-                includePhrase(SupplerendeStoenad)
-                includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
-                includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
-                includePhrase(Felles.HarDuSpoersmaal.alder)
+                includePhrase(AvslagAPUttakAlderU62Info)
+                includePhrase(NysoknadAPInfo)
             }
+            includePhrase(SupplerendeStoenad)
+            includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.HarDuSpoersmaal.alder)
         }
+        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, pesysData.dineRettigheterOgMulighetTilAaKlageDto)
     }
 }
 

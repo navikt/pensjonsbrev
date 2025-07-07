@@ -23,9 +23,9 @@ data class AvslagForLiteTrygdetidAPDto(
         val erAvtaleland: Boolean,
         val erEOSland: Boolean,
         val regelverkType: AlderspensjonRegelverkType,
-        val trygdeperioderNorge: List<Trygdetid?>,
-        val trygdeperioderEOSland: List<Trygdetid?>,
-        val trygdeperioderAvtaleland: List<Trygdetid?>,
+        val trygdeperioderNorge: List<Trygdetid>,
+        val trygdeperioderEOSland: List<Trygdetid>,
+        val trygdeperioderAvtaleland: List<Trygdetid>,
         val vedtaksBegrunnelse: VedtaksBegrunnelse,
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
     ) : BrevbakerBrevdata

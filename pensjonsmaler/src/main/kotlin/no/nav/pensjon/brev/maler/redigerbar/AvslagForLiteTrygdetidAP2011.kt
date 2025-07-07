@@ -8,9 +8,13 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.avtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.bostedsland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.erAvtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.erEOSland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.regelverkType
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderAvtaleland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderEOSland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderNorge
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.vedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagAP2011FolketrygdsakHjemmel
@@ -22,7 +26,13 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder3aarTT
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.OpptjeningstidEOSAvtaleland
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilAPFolketrygdsak
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilAPMedEOSAvtalelandOg3aar5aarTT
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenad
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.TrygdeperioderAvtalelandTabell
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.TrygdeperioderEOSlandTabell
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.TrygdeperioderNorgeTabell
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -62,10 +72,14 @@ object AvslagForLiteTrygdetidAP2011 : RedigerbarTemplate<AvslagForLiteTrygdetidA
         )
     ) {
         val avslagsBegrunnelse = pesysData.vedtaksBegrunnelse
-        val erEOSland = pesysData.erEOSland
         val avtaleland = pesysData.avtaleland.ifNull(then = "angi avtaleland")
-        val erAvtaleland = pesysData.erAvtaleland
         val bostedsland = pesysData.bostedsland.ifNull(then = "angi bostedsland")
+        val erAvtaleland = pesysData.erAvtaleland
+        val erEOSland = pesysData.erEOSland
+        val trygdeperioderAvtaleland = pesysData.trygdeperioderAvtaleland
+        val trygdeperioderEOSland = pesysData.trygdeperioderEOSland
+        val trygdeperioderNorge = pesysData.trygdeperioderNorge
+
 
         title {
             text(
@@ -153,7 +167,56 @@ object AvslagForLiteTrygdetidAP2011 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                         }
                     }
                 }
+
+                showIf(avslagsBegrunnelse.isOneOf(UNDER_20_AR_BO)) {
+                    //avslagAP2011Under20aar
+                    paragraph {
+                        textExpr(
+                            Bokmal to "For å få utbetalt alderspensjonen din når du bor i ".expr() + bostedsland + " må du ha vært medlem i folketrygden i minst 20 år eller ha rett til tilleggspensjon. Det har du ikke, og derfor har vi avslått søknaden din.",
+                            Nynorsk to "For å få utbetalt alderspensjonen din når du bur i ".expr() + bostedsland + " må du ha vært medlem i folketrygda i minst 20 år eller ha rett til tilleggspensjon. Det har du ikkje, og derfor har vi avslått søknaden din.",
+                            English to "To be eligible for your retirement pension while living in ".expr() + bostedsland + ", you must have been a member of the Norwegian National Insurance Scheme for at least 20 years. You do not meet this requirement, therefore we have declined your application."
+                        )
+                    }
+                    //avslagAP2011Under20aarHjemmel
+                    paragraph {
+                        text(
+                            Bokmal to "Vedtaket er gjort etter folketrygdloven § 19-3.",
+                            Nynorsk to "Vedtaket er gjort etter folketrygdlova § 19-3.",
+                            English to "This decision was made pursuant to the provisions of § 19-3 of the National Insurance Act.",
+                        )
+                    }
+                }
+                showIf(
+                    avslagsBegrunnelse.isOneOf(
+                        UNDER_20_AR_BO_2016,
+                        UNDER_20_AR_BO,
+                        UNDER_5_AR_TT,
+                        UNDER_3_AR_TT,
+                        UNDER_1_AR_TT
+                    )
+                ) {
+                    includePhrase(
+                        TrygdeperioderNorgeTabell(
+                            trygdeperioderNorge = trygdeperioderNorge
+                        )
+                    )
+                    includePhrase(
+                        TrygdeperioderEOSlandTabell(
+                            trygdeperioderEOSland = trygdeperioderEOSland
+                        )
+                    )
+                    includePhrase(
+                        TrygdeperioderAvtalelandTabell(
+                            trygdeperioderAvtaleland = trygdeperioderAvtaleland
+                        )
+                    )
+                }
             }
+            includePhrase(SupplerendeStoenad)
+            includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.HarDuSpoersmaal.alder)
         }
+        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, pesysData.dineRettigheterOgMulighetTilAaKlageDto)
     }
 }
