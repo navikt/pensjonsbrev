@@ -7,7 +7,8 @@ interface LetterMarkup {
     val signatur: Signatur
 
     fun validate() {
-        require(title.isNotEmpty()) { "Title cannot be empty" }
+        // Åpner bevisst for tom tittel her, med etterlatte sine redigerbare deler har de med vilje tom tittel
+        // require(title.isNotEmpty()) { "Title cannot be empty" }
         blocks.forEach { it.validate() }
     }
 
