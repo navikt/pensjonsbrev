@@ -22,9 +22,6 @@ groups:
   #0000-GA-Strengt_Fortrolig_Adresse
   - name: "Strengt_Fortrolig_Adresse"
     id: "5ef775f2-61f8-4283-bf3d-8d03f428aa14"
-  #0000-GA-Person-EndreStrengtFortroligUtland
-  - name: "EndreStrengtFortroligUtland"
-    id: "fc792042-93d8-4d5e-a501-55c45c03c576"
   #0000-GA-PENSJON_ATTESTERING
   - name: "Attestant"
     id: "63f46f74-84a8-4d1c-87a8-78532ab3ae60"
@@ -33,8 +30,24 @@ inboundRules:
   - application: skribenten-web
     namespace: pensjonsbrev
     cluster: dev-gcp
+
+  # PEN
+  - application: pensjon-pen-q0
+    namespace: pensjon-q0
+    cluster: dev-fss
+  - application: pensjon-pen-q1
+    namespace: pensjon-q1
+    cluster: dev-fss
+  - application: pensjon-pen-q2
+    namespace: pensjon-q2
+    cluster: dev-fss
+  - application: pensjon-pen-q5
+    namespace: pensjon-q5
+    cluster: dev-fss
+
   - application: azure-token-generator
     namespace: nais
+    cluster: dev-gcp
 
 outboundRules:
   - application: pensjon-brevbaker

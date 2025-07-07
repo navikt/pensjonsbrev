@@ -267,6 +267,16 @@ object TemplateDocumentationRenderer {
             )
 
             is UnaryOperation.MapValue<*, *> -> renderExpression(expr.value)
+
+            is UnaryOperation.QuotationEnd -> Invoke(
+                operator = Operation(text = "\"", Documentation.Notation.POSTFIX),
+                first = renderExpression(expr.value),
+            )
+
+            is UnaryOperation.QuotationStart -> Invoke(
+                operator = Operation(text = "\"", Documentation.Notation.PREFIX),
+                first = renderExpression(expr.value),
+            )
         }
 
     private fun renderOperation(operation: BinaryOperation<*, *, *>): Operation =

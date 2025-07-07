@@ -86,9 +86,15 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                 }
                 paragraph {
                     text(
-                        Bokmal to "Dette brevet er et forhåndsvarsel, slik at du kan sjekke at beregningene i vedlegg «Opplysninger om etteroppgjøret» er korrekte, og melde fra til oss hvis noe er feil eller mangler.",
-                        Nynorsk to "Dette brevet er eit førehandsvarsel, og du har såleis høve til å sjekke at utrekningane i vedlegget «Opplysningar om etteroppgjeret» er korrekte, og melde frå til oss dersom noko er feil eller manglar.",
-                        English to "This letter is an advance notice regarding the calculations provided in the appendix «Information about the settlement». Please review the calculations and inform us of any errors or missing information.",
+                        Bokmal to "Dette brevet er et forhåndsvarsel, slik at du kan sjekke at beregningene i vedlegg ",
+                        Nynorsk to "Dette brevet er eit førehandsvarsel, og du har såleis høve til å sjekke at utrekningane i vedlegget ",
+                        English to "This letter is an advance notice regarding the calculations provided in the appendix ",
+                    )
+                    namedReference(vedleggOpplysningerOmEtteroppgjoeret)
+                    text(
+                        Bokmal to " er korrekte, og melde fra til oss hvis noe er feil eller mangler.",
+                        Nynorsk to " er korrekte, og melde frå til oss dersom noko er feil eller manglar.",
+                        English to ". Please review the calculations and inform us of any errors or missing information.",
                     )
                 }
                 paragraph {
@@ -122,10 +128,12 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                 }
                 paragraph {
                     text(
-                        Bokmal to "Du kan lese mer om tilbakebetaling i vedlegget «Praktisk informasjon om etteroppgjøret».",
-                        Nynorsk to "Du kan lese meir om tilbakebetaling i vedlegget «Praktisk informasjon om etteroppgjeret».",
-                        English to "You can read more about repayment in the appendix «Practical information about settlement»."
+                        Bokmal to "Du kan lese mer om tilbakebetaling i vedlegget ",
+                        Nynorsk to "Du kan lese meir om tilbakebetaling i vedlegget ",
+                        English to "You can read more about repayment in the appendix "
                     )
+                    namedReference(vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd)
+                    text(Bokmal to ".", Nynorsk to ".", English to ".")
                 }
 
                 showIf(harTjentOver80prosentAvOIFU) {
@@ -208,9 +216,15 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                 }
                 paragraph {
                     text(
-                        Bokmal to "For at du skal få utbetalt riktig uføretrygd fremover, er det viktig at du oppdaterer inntekten din. Dette gjør du på ${Constants.INNTEKTSPLANLEGGEREN_URL}. I vedlegget «Dine rettigheter og plikter» ser du hvilke endringer du må si fra om.",
-                        Nynorsk to "For at du skal få utbetalt rett uføretrygd framover, er det viktig at du oppdaterer inntekta di. Dette gjer du på ${Constants.INNTEKTSPLANLEGGEREN_URL}. I vedlegget «Rettane og pliktene dine» ser du kva endringar du må seie frå om.",
-                        English to "To ensure that you receive the correct amount of disability benefit in the future, it is important that you update your income information. You can do this at ${Constants.INNTEKTSPLANLEGGEREN_URL}. In the appendix «Your rights and obligations», you can find the changes you need to report."
+                        Bokmal to "For at du skal få utbetalt riktig uføretrygd fremover, er det viktig at du oppdaterer inntekten din. Dette gjør du på ${Constants.INNTEKTSPLANLEGGEREN_URL}. I vedlegget ",
+                        Nynorsk to "For at du skal få utbetalt rett uføretrygd framover, er det viktig at du oppdaterer inntekta di. Dette gjer du på ${Constants.INNTEKTSPLANLEGGEREN_URL}. I vedlegget ",
+                        English to "To ensure that you receive the correct amount of disability benefit in the future, it is important that you update your income information. You can do this at ${Constants.INNTEKTSPLANLEGGEREN_URL}. In the appendix "
+                    )
+                    namedReference(vedleggDineRettigheterOgPlikterUfoere)
+                    text(
+                        Bokmal to " ser du hvilke endringer du må si fra om.",
+                        Nynorsk to " ser du kva endringar du må seie frå om.",
+                        English to ", you can find the changes you need to report."
                     )
                 }
 
@@ -223,16 +237,26 @@ object ForhaandsvarselEtteroppgjoerUfoeretrygdAuto : AutobrevTemplate<Forhaandsv
                 }
                 paragraph {
                     text(
-                        Bokmal to "Hvis du mener at beregningene i vedlegg «Opplysninger om etteroppgjøret» er feil, må du melde fra til oss innen 3 uker fra du fikk dette brevet. Du vil da få en ny vurdering og et nytt vedtak.",
-                        Nynorsk to "Dersom du meiner at utrekningane i vedlegg «Opplysningar om etteroppgjer» er feil, må du melde frå til oss innan 3 veker frå du fekk dette brevet. Du vil då få ei ny vurdering og eit nytt vedtak.",
-                        English to "If you believe that the calculations in appendix «Information about the settlement» are incorrect, please notify us within 3 weeks from the date you received this letter. You will then receive a new assessment and a new decision."
+                        Bokmal to "Hvis du mener at beregningene i vedlegg ",
+                        Nynorsk to "Dersom du meiner at utrekningane i vedlegg ",
+                        English to "If you believe that the calculations in appendix "
                     )
+                    namedReference(vedleggOpplysningerOmEtteroppgjoeret)
+                    text(Bokmal to " er feil, må du melde fra til oss innen 3 uker fra du fikk dette brevet. Du vil da få en ny vurdering og et nytt vedtak.",
+                        Nynorsk to " er feil, må du melde frå til oss innan 3 veker frå du fekk dette brevet. Du vil då få ei ny vurdering og eit nytt vedtak.",
+                        English to " are incorrect, please notify us within 3 weeks from the date you received this letter. You will then receive a new assessment and a new decision.")
                 }
                 paragraph {
                     text(
-                        Bokmal to "I vedlegget «Praktisk informasjon om etteroppgjøret» kan du lese om hvordan du ettersender dokumentasjon.",
-                        Nynorsk to "I vedlegget «Praktisk informasjon om etteroppgjeret» kan du lese om korleis du ettersendar dokumentasjon.",
-                        English to "You can read about how to submit documentation in the appendix «Practical information about the settlement»."
+                        Bokmal to "I vedlegget ",
+                        Nynorsk to "I vedlegget ",
+                        English to "You can read about how to submit documentation in the appendix "
+                    )
+                    namedReference(vedleggPraktiskInformasjonEtteroppgjoerUfoeretrygd)
+                    text(
+                        Bokmal to " kan du lese om hvordan du ettersender dokumentasjon.",
+                        Nynorsk to " kan du lese om korleis du ettersendar dokumentasjon.",
+                        English to "."
                     )
                 }
 

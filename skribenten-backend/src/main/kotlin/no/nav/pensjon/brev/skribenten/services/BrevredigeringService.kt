@@ -225,6 +225,9 @@ class BrevredigeringService(
         }
     }
 
+    fun hentBrevInfo(brevId: Long): Dto.BrevInfo? =
+        transaction { Brevredigering[brevId].toBrevInfo() }
+
     suspend fun hentBrev(saksId: Long, brevId: Long, reserverForRedigering: Boolean = false): ServiceResult<Dto.Brevredigering>? =
         if (reserverForRedigering) {
             hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
@@ -522,7 +525,10 @@ class BrevredigeringService(
                     pesysData = pesysData.brevdata,
                     saksbehandlerValg = brevredigering.saksbehandlerValg,
                 ),
-                felles = pesysData.felles.medSignerendeSaksbehandlere(signerendeSaksbehandlere = SignerendeSaksbehandlere(brevredigering.info.signaturSignerende)),
+                felles = pesysData.felles.medSignerendeSaksbehandlere(SignerendeSaksbehandlere(
+                    saksbehandler = brevredigering.info.signaturSignerende,
+                    attesterendeSaksbehandler = brevredigering.info.signaturAttestant,
+                )),
                 redigertBrev = brevredigering.redigertBrev.toMarkup()
             ).map {
                 transaction {

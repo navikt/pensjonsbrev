@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.PesysDataSelectors.avdoedNavn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.PesysDataSelectors.gjenlevendesAlder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.PesysDataSelectors.sakstype
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevenderettigheterDtoSelectors.pesysData
@@ -57,11 +56,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     Nynorsk to "Vi skriv til deg fordi vi har fått melding om at ",
                     English to "We are writing to you because we have received notice that "
                 )
-                ifNotNull(pesysData.avdoedNavn) {
-                    eval(it)
-                }.orShow {
-                    eval(fritekst("avdød navn"))
-                }
+                fritekst("avdød navn")
                 text(
                     Bokmal to " er død, og du kan ha rettigheter etter avdøde.",
                     Nynorsk to " er død, og du kan ha rettar etter avdøde.",

@@ -29,6 +29,7 @@ class Dto2ApiService(
 
         return Api.BrevInfo(
             id = info.id,
+            saksId = info.saksId,
             opprettetAv = hentNavAnsatt(info.opprettetAv),
             opprettet = info.opprettet,
             sistredigertAv = hentNavAnsatt(info.sistredigertAv),
