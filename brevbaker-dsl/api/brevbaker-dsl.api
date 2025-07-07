@@ -274,7 +274,7 @@ public abstract class no/nav/pensjon/brev/template/Element : no/nav/pensjon/brev
 public abstract class no/nav/pensjon/brev/template/Element$OutlineContent : no/nav/pensjon/brev/template/Element {
 }
 
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph : no/nav/pensjon/brev/template/Element$OutlineContent, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph : no/nav/pensjon/brev/template/Element$OutlineContent, no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$Block$Paragraph {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getParagraph ()Ljava/util/List;
 	public fun hashCode ()I
@@ -282,13 +282,13 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent : no/nav/pensjon/brev/template/Element {
+public abstract class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent : no/nav/pensjon/brev/template/Element, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent {
 }
 
-public abstract class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent {
+public abstract class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Form {
 }
 
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$MultipleChoice : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$MultipleChoice : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form, no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Form$MultipleChoice {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getChoices ()Ljava/util/List;
 	public final fun getPrompt ()Lno/nav/pensjon/brev/template/ContentOrControlStructure;
@@ -298,7 +298,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form, no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Form$Text {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getPrompt ()Lno/nav/pensjon/brev/template/ContentOrControlStructure;
 	public final fun getSize ()Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;
@@ -317,7 +317,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public static fun values ()[Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;
 }
 
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$ItemList : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$ItemList : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent, no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$ItemList {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getItems ()Ljava/util/List;
 	public fun hashCode ()I
@@ -325,7 +325,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$ItemList$Item : no/nav/pensjon/brev/template/Element, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$ItemList$Item : no/nav/pensjon/brev/template/Element, no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$ItemList$Item {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getText ()Ljava/util/List;
 	public fun hashCode ()I
@@ -333,7 +333,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent, no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Table {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getHeader ()Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table$Header;
 	public final fun getRows ()Ljava/util/List;
@@ -341,7 +341,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public fun stableHashCode ()I
 }
 
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table$Cell : no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table$Cell : no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Table$Cell {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getText ()Ljava/util/List;
 	public fun hashCode ()I
@@ -357,7 +357,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public static fun values ()[Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table$ColumnAlignment;
 }
 
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table$ColumnSpec : no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table$ColumnSpec : no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Table$ColumnSpec {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAlignment ()Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table$ColumnAlignment;
 	public final fun getColumnSpan ()I
@@ -367,7 +367,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table$Header : no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table$Header : no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Table$Header {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getColSpec ()Ljava/util/List;
 	public fun hashCode ()I
@@ -375,7 +375,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table$Row : no/nav/pensjon/brev/template/Element, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Table$Row : no/nav/pensjon/brev/template/Element, no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Table$Row {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCells ()Ljava/util/List;
 	public final fun getColSpec ()Ljava/util/List;
@@ -384,7 +384,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent {
+public abstract class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Text {
 	public abstract fun getFontType ()Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;
 }
 
@@ -428,7 +428,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public static fun values ()[Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;
 }
 
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text, no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Text$Literal {
 	public static final field Companion Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal$Companion;
 	public synthetic fun <init> (Ljava/util/Map;Lno/nav/pensjon/brev/template/LanguageSupport;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -450,7 +450,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public static synthetic fun create$default (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal$Companion;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal;
 }
 
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$NewLine : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$NewLine : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text, no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$ParagraphContent$Text$NewLine {
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getFontType ()Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;
 	public final fun getIndex ()I
@@ -459,7 +459,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$Title1 : no/nav/pensjon/brev/template/Element$OutlineContent, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/Element$OutlineContent$Title1 : no/nav/pensjon/brev/template/Element$OutlineContent, no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$Block$Title1 {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getText ()Ljava/util/List;
 	public fun hashCode ()I
@@ -467,7 +467,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Title1 : 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$Title2 : no/nav/pensjon/brev/template/Element$OutlineContent, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/Element$OutlineContent$Title2 : no/nav/pensjon/brev/template/Element$OutlineContent, no/nav/pensjon/brev/template/StableHash, no/nav/pensjon/brevbaker/api/model/LetterStructure$Block$Title2 {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getText ()Ljava/util/List;
 	public fun hashCode ()I

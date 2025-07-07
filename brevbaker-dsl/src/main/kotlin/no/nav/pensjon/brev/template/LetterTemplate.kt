@@ -4,6 +4,7 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterStructure
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
 import java.util.Objects
@@ -187,7 +188,7 @@ typealias OutlineElement<Lang> = ContentOrControlStructure<Lang, Element.Outline
 sealed class Element<out Lang : LanguageSupport> : StableHash {
 
     sealed class OutlineContent<out Lang : LanguageSupport> : Element<Lang>() {
-        class Title1<out Lang : LanguageSupport> internal constructor(val text: List<TextElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(text) {
+        class Title1<out Lang : LanguageSupport> internal constructor(val text: List<TextElement<Lang>>) : OutlineContent<Lang>(), LetterStructure.Block.Title1, StableHash by StableHash.of(text) {
             override fun equals(other: Any?): Boolean {
                 if (other !is Title1<*>) return false
                 return text == other.text
@@ -196,7 +197,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
             override fun toString() = "Title1(text=$text)"
         }
 
-        class Title2<out Lang : LanguageSupport> internal constructor(val text: List<TextElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(text) {
+        class Title2<out Lang : LanguageSupport> internal constructor(val text: List<TextElement<Lang>>) : OutlineContent<Lang>(), LetterStructure.Block.Title2, StableHash by StableHash.of(text) {
             override fun equals(other: Any?): Boolean {
                 if (other !is Title2<*>) return false
                 return text == other.text
@@ -205,7 +206,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
             override fun toString(): String = "Title2(text=$text)"
         }
 
-        class Paragraph<out Lang : LanguageSupport> internal constructor(val paragraph: List<ParagraphContentElement<Lang>>) : OutlineContent<Lang>(), StableHash by StableHash.of(paragraph) {
+        class Paragraph<out Lang : LanguageSupport> internal constructor(val paragraph: List<ParagraphContentElement<Lang>>) : OutlineContent<Lang>(), LetterStructure.Block.Paragraph, StableHash by StableHash.of(paragraph) {
             override fun equals(other: Any?): Boolean {
                 if (other !is Paragraph<*>) return false
                 return paragraph == other.paragraph
@@ -214,11 +215,11 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
             override fun toString(): String = "Paragraph(paragraph=$paragraph)"
         }
 
-        sealed class ParagraphContent<out Lang : LanguageSupport> : Element<Lang>() {
+        sealed class ParagraphContent<out Lang : LanguageSupport> : Element<Lang>(), LetterStructure.ParagraphContent {
 
             class ItemList<out Lang : LanguageSupport> internal constructor(
                 val items: List<ListItemElement<Lang>>
-            ) : ParagraphContent<Lang>(), StableHash by StableHash.of(items) {
+            ) : ParagraphContent<Lang>(), LetterStructure.ParagraphContent.ItemList, StableHash by StableHash.of(items) {
                 init {
                     if (items.flatMap { getItems(it) }.isEmpty()) throw InvalidListDeclarationException("List has no items")
                 }
@@ -232,7 +233,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
 
                 class Item<out Lang : LanguageSupport> internal constructor(
                     val text: List<TextElement<Lang>>
-                ) : Element<Lang>(), StableHash by StableHash.of(text) {
+                ) : Element<Lang>(), LetterStructure.ParagraphContent.ItemList.Item, StableHash by StableHash.of(text) {
                     override fun equals(other: Any?): Boolean {
                         if (other !is Item<*>) return false
                         return text == other.text
@@ -254,7 +255,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
             class Table<out Lang : LanguageSupport> internal constructor(
                 val rows: List<TableRowElement<Lang>>,
                 val header: Header<Lang>,
-            ) : ParagraphContent<Lang>(), StableHash by StableHash.of(StableHash.of(rows), header) {
+            ) : ParagraphContent<Lang>(), LetterStructure.ParagraphContent.Table, StableHash by StableHash.of(StableHash.of(rows), header) {
 
                 init {
                     if (rows.flatMap { getRows(it) }.isEmpty()) {
@@ -278,7 +279,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                 class Row<out Lang : LanguageSupport> internal constructor(
                     val cells: List<Cell<Lang>>,
                     val colSpec: List<ColumnSpec<Lang>>
-                ) : Element<Lang>(), StableHash by StableHash.of(StableHash.of(cells), StableHash.of(colSpec)) {
+                ) : Element<Lang>(), LetterStructure.ParagraphContent.Table.Row, StableHash by StableHash.of(StableHash.of(cells), StableHash.of(colSpec)) {
                     init {
                         if (cells.isEmpty()) {
                             throw InvalidTableDeclarationException("Rows need at least one cell")
@@ -296,7 +297,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                     override fun toString(): String = "Row(cells=$cells, colSpec=$colSpec)"
                 }
 
-                class Header<out Lang : LanguageSupport> internal constructor(val colSpec: List<ColumnSpec<Lang>>) : StableHash by StableHash.of(colSpec) {
+                class Header<out Lang : LanguageSupport> internal constructor(val colSpec: List<ColumnSpec<Lang>>) : LetterStructure.ParagraphContent.Table.Header, StableHash by StableHash.of(colSpec) {
                     init {
                         if (colSpec.isEmpty()) {
                             throw InvalidTableDeclarationException("Table column specification needs at least one column")
@@ -313,7 +314,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
 
                 class Cell<out Lang : LanguageSupport> internal constructor(
                     val text: List<TextElement<Lang>>
-                ) : StableHash by StableHash.of(text) {
+                ) : LetterStructure.ParagraphContent.Table.Cell, StableHash by StableHash.of(text) {
                     override fun equals(other: Any?): Boolean {
                         if (other !is Cell<*>) return false
                         return text == other.text
@@ -326,7 +327,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                     val headerContent: Cell<Lang>,
                     val alignment: ColumnAlignment,
                     val columnSpan: Int = 1
-                ) : StableHash by StableHash.of(headerContent, StableHash.of(alignment), StableHash.of(columnSpan)) {
+                ) : LetterStructure.ParagraphContent.Table.ColumnSpec, StableHash by StableHash.of(headerContent, StableHash.of(alignment), StableHash.of(columnSpan)) {
                     override fun equals(other: Any?): Boolean {
                         if (other !is ColumnSpec<*>) return false
                         return headerContent == other.headerContent && alignment == other.alignment && columnSpan == other.columnSpan
@@ -340,14 +341,14 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                 }
             }
 
-            sealed class Text<out Lang : LanguageSupport> : ParagraphContent<Lang>() {
+            sealed class Text<out Lang : LanguageSupport> : ParagraphContent<Lang>(), LetterStructure.ParagraphContent.Text {
                 abstract val fontType: FontType
 
                 class Literal<out Lang : LanguageSupport> private constructor(
                     val text: Map<Language, String>,
                     val languages: Lang,
                     override val fontType: FontType,
-                ) : Text<Lang>(), StableHash by StableHash.of(StableHash.of(text), StableHash.of(languages), StableHash.of(fontType)) {
+                ) : Text<Lang>(), LetterStructure.ParagraphContent.Text.Literal, StableHash by StableHash.of(StableHash.of(text), StableHash.of(languages), StableHash.of(fontType)) {
 
                     override fun equals(other: Any?): Boolean {
                         if (other !is Literal<*>) return false
@@ -455,7 +456,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
 
                 class NewLine<out Lang : LanguageSupport> internal constructor(
                     val index: Int, // To be able to distinguish between newLine-elements
-                ) : Text<Lang>(), StableHash by StableHash.of(StableHash.of("Element.OutlineContent.ParagraphContent.Text.NewLine"), StableHash.of(index)) {
+                ) : Text<Lang>(), LetterStructure.ParagraphContent.Text.NewLine, StableHash by StableHash.of(StableHash.of("Element.OutlineContent.ParagraphContent.Text.NewLine"), StableHash.of(index)) {
                     override val fontType = FontType.PLAIN
 
                     override fun equals(other: Any?): Boolean {
@@ -467,12 +468,12 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                 }
             }
 
-            sealed class Form<out Lang : LanguageSupport> : ParagraphContent<Lang>() {
+            sealed class Form<out Lang : LanguageSupport> : ParagraphContent<Lang>(), LetterStructure.ParagraphContent.Form {
                 class Text<out Lang : LanguageSupport> internal constructor(
                     val prompt: TextElement<Lang>,
                     val size: Size,
                     val vspace: Boolean = true,
-                ) : Form<Lang>(), StableHash by StableHash.of(prompt, StableHash.of(size), StableHash.of(vspace)) {
+                ) : Form<Lang>(), LetterStructure.ParagraphContent.Form.Text, StableHash by StableHash.of(prompt, StableHash.of(size), StableHash.of(vspace)) {
                     enum class Size { NONE, SHORT, LONG }
 
                     override fun equals(other: Any?): Boolean {
@@ -488,7 +489,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                     val prompt: TextElement<Lang>,
                     val choices: List<ParagraphContent.Text<Lang>>,
                     val vspace: Boolean = true,
-                ) : Form<Lang>(), StableHash by StableHash.of(prompt, StableHash.of(choices), StableHash.of(vspace)) {
+                ) : Form<Lang>(), LetterStructure.ParagraphContent.Form.MultipleChoice, StableHash by StableHash.of(prompt, StableHash.of(choices), StableHash.of(vspace)) {
                     override fun equals(other: Any?): Boolean {
                         if (other !is MultipleChoice<*>) return false
                         return prompt == other.prompt && choices == other.choices && vspace == other.vspace
