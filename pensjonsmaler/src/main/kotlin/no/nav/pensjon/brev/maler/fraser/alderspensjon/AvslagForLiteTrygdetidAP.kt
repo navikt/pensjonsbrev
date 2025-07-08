@@ -4,27 +4,14 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse.*
-import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.normertPensjonsalder
-import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.trygdeperioderNorge
-import no.nav.pensjon.brev.api.model.maler.alderApi.OpplysningerBruktIBeregningenSelectors.trygdeperioderUtland
-import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeNorgeSelectors.fom
-import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeNorgeSelectors.tom
-import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors.fom
-import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors.land
-import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors.tom
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.TrygdetidSelectors.fom
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.TrygdetidSelectors.fom_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.TrygdetidSelectors.land
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.TrygdetidSelectors.tom
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.TrygdetidSelectors.tom_safe
-import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalder.fritekst
-import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SUPPLERENDE_STOENAD
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -38,8 +25,7 @@ import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+
 
 object AvslagUnder1aarTT : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -105,18 +91,18 @@ data class AvslagUnder1aarHjemmel(
     }
 }
 
-object AvslagUnder3aarTT : OutlinePhrase<LangBokmalNynorskEnglish>() {
+object AvslagUnder3aar5aarTT : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             textExpr(
                 Bokmal to "Våre opplysninger viser at du har bodd eller arbeidet i Norge i ".expr() + fritekst(
-                    "angi trygdetid"
+                    "Angi trygdetid"
                 ) + ". Våre opplysninger viser at du ikke har bodd eller arbeidet i Norge.",
                 Nynorsk to "Våre opplysningar viser at du har budd eller arbeidd i Noreg i ".expr() + fritekst(
-                    "angi trygdetid"
+                    "Angi trygdetid"
                 ) + ". I følgje våre opplysningar har du ikkje budd eller arbeidd i Noreg.",
                 English to "We have registered that you have been living or working in Norway for ".expr() + fritekst(
-                    "angi trygdetid"
+                    "Angi trygdetid"
                 ) + ". We have no record of you living or working in Norway.",
             )
         }
@@ -124,60 +110,91 @@ object AvslagUnder3aarTT : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 data class OpptjeningstidEOSAvtaleland(
+    val erAvtaleland: Expression<Boolean>,
     val erEOSland: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             textExpr(
-                Bokmal to "Vi har fått opplyst at du har ".expr() + fritekst("angi antall") + " måneder opptjeningstid i ".expr()
-                        + ifElse(
-                    erEOSland,
-                    ifTrue = "annet EØS-land",
-                    ifFalse = "annet avtaleland"
-                ) + ". Den samlede trygdetiden din i Norge og ".expr()
-                        + ifElse(erEOSland, ifTrue = "annet EØS-land", ifFalse = "annet avtaleland") + " er ".expr()
-                        + fritekst("angi samlet trygdetid i Norge og EØS/avtale-land") + " år.",
-                Nynorsk to "Vi har fått opplyst at du har ".expr() + fritekst("angi antall") + " månader oppteningstid i ".expr()
-                        + ifElse(
-                    erEOSland,
-                    ifTrue = "anna EØS-land",
-                    ifFalse = "anna avtaleland"
-                ) + ". Den samla trygdetida din i Noreg og ".expr()
-                        + ifElse(erEOSland, ifTrue = "anna EØS-land", ifFalse = "anna avtaleland") + ". er ".expr()
-                        + fritekst("angi samlet trygdetid i Norge og EØS/Avtale-land") + " år.",
-                English to "We have been informed that you have ".expr() + fritekst("angi antall") + " months of national insurance coverage in ".expr()
-                        + ifElse(
-                    erEOSland,
-                    ifTrue = "an other EEA",
-                    ifFalse = "an other signatory"
-                ) + " country. Your total national insurance coverage in Norway and ".expr()
-                        + ifElse(
-                    erEOSland,
-                    ifTrue = "an other EEA",
-                    ifFalse = "an other signatory"
-                ) + " country is ".expr()
-                        + fritekst("angi samlet trygdetid i Norge og EEA/signatory country") + " years."
+                Bokmal to "Vi har fått opplyst at du har ".expr() + fritekst("Angi antall") + " måneder opptjeningstid i annet ",
+                Nynorsk to "Vi har fått opplyst at du har ".expr() + fritekst("Angi antall") + " månader oppteningstid i anna ",
+                English to "We have been informed that you have ".expr() + fritekst("Angi antall") + " months of national insurance coverage in "
+            )
+            showIf(erEOSland and not(erAvtaleland)) {
+                text(Bokmal to "EØS-land. ", Nynorsk to "EØS-land. ", English to "an other EEA country. ")
+            }
+            showIf(erAvtaleland and not(erEOSland)) {
+                text(Bokmal to "avtaleland. ", Nynorsk to "avtaleland. ", English to "an other signatory country. ")
+            }
+            showIf(erEOSland and erAvtaleland) {
+                text(
+                    Bokmal to "EØS- og avtaleland. ",
+                    Nynorsk to "EØS- og avtaleland. ",
+                    English to "other EEA and signatory countries. "
+                )
+            }
+            text(
+                Bokmal to "Den samlede trygdetiden din i Norge og ",
+                Nynorsk to "Den samla trygdetida din i Noreg og ",
+                English to "Your total national insurance coverage in Norway and "
+            )
+            showIf(erEOSland and not(erAvtaleland)) {
+                text(Bokmal to "EØS-land", Nynorsk to "EØS-land", English to "an other EEA country")
+            }
+            showIf(erAvtaleland and not(erEOSland)) {
+                text(Bokmal to "avtaleland", Nynorsk to "avtaleland", English to "an other signatory country")
+            }
+            showIf(erEOSland and erAvtaleland) {
+                text(
+                    Bokmal to "EØS- og avtaleland",
+                    Nynorsk to "EØS- og avtaleland",
+                    English to "other EEA and signatory countries"
+                )
+            }
+            textExpr(
+                Bokmal to " er ".expr() + fritekst("Angi samlet trygdetid") + ".",
+                Nynorsk to " er ".expr() + fritekst("Angi samlet trygdetid") + ".",
+                English to " is ".expr() + fritekst("Angi samlet trygdetid") + " years/months of national insurance coverage."
             )
         }
     }
 }
 
-// avslagAP2011Under3aar, avslagAP2011Under5aar
+// avslagAP2011Under3aar, avslagAP2011Under5aar, avslagAP2016Under3aar, avslagAP2016Under5aar
 data class RettTilAPFolketrygdsak(
-    val avslagsbegrunnelse: Expression<VedtaksBegrunnelse>
+    val avslagsbegrunnelse: Expression<VedtaksBegrunnelse>,
+    val regelverkType: Expression<AlderspensjonRegelverkType>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             textExpr(
                 Bokmal to "For å ha rett til alderspensjon må du ha minst ".expr()
                         + ifElse(avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT), ifTrue = "tre", ifFalse = "fem")
-                        + " års trygdetid. Det har du ikke, og derfor har vi avslått søknaden din.",
+                        + " års trygdetid".expr()
+                        + ifElse(
+                    regelverkType.isOneOf(AP2016),
+                    ifTrue = ", eller ha tjent opp inntektspensjon.",
+                    ifFalse = "."
+                )
+                        + " Det har du ikke, og derfor har vi avslått søknaden din.",
                 Nynorsk to "For å ha rett til alderspensjon må du ha minst ".expr()
                         + ifElse(avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT), ifTrue = "tre", ifFalse = "fem")
-                        + " års trygdetid. Det har du ikkje, og derfor har vi avslått søknaden din.",
+                        + " års trygdetid".expr()
+                        + ifElse(
+                    regelverkType.isOneOf(AP2016),
+                    ifTrue = ", eller ha tent opp inntektspensjon.",
+                    ifFalse = "."
+                )
+                        + " Det har du ikkje, og derfor har vi avslått søknaden din.",
                 English to "To be eligible for retirement pension, you must have at least ".expr()
                         + ifElse(avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT), ifTrue = "three", ifFalse = "five")
-                        + " years of national insurance coverage. You do not meet this requirement, therefore we have declined your application.",
+                        + " years of national insurance coverage".expr()
+                        + ifElse(
+                    regelverkType.isOneOf(AP2016),
+                    ifTrue = ", or have had a pensionable income.",
+                    ifFalse = "."
+                )
+                        + " You do not meet this requirement, therefore we have declined your application.",
             )
         }
     }
@@ -185,7 +202,9 @@ data class RettTilAPFolketrygdsak(
 
 data class RettTilAPMedEOSAvtalelandOg3aar5aarTT(
     val avslagsbegrunnelse: Expression<VedtaksBegrunnelse>,
+    val erAvtaleland: Expression<Boolean>,
     val erEOSland: Expression<Boolean>,
+    val regelverkType: Expression<AlderspensjonRegelverkType>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -195,67 +214,54 @@ data class RettTilAPMedEOSAvtalelandOg3aar5aarTT(
                     avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT),
                     ifTrue = "tre",
                     ifFalse = "fem"
-                ) + " års trygdetid i Norge og annet ".expr()
-                        + ifElse(
-                    erEOSland,
-                    ifTrue = "EØS-land",
-                    ifFalse = "avtaleland"
-                ) + ". Det har du ikke, og derfor har vi avslått søknaden din.",
+                ) + " års trygdetid i Norge og annet ",
                 Nynorsk to "For å ha rett til alderspensjon må du til saman ha minst ".expr()
                         + ifElse(
                     avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT),
                     ifTrue = "tre",
                     ifFalse = "fem"
-                ) + " års trygdetid i Noreg og anna ".expr()
-                        + ifElse(
-                    erEOSland,
-                    ifTrue = "EØS-land",
-                    ifFalse = "avtaleland"
-                ) + ". Det har du ikkje, og derfor har vi avslått søknaden din.",
+                ) + " års trygdetid i Noreg og anna ",
                 English to "To be eligible for retirement pension, you must have in total at least ".expr()
                         + ifElse(
                     avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT),
                     ifTrue = "three",
                     ifFalse = "five"
-                ) + " years of national insurance coverage in Norway and an other ".expr()
-                        + ifElse(
-                    erEOSland,
-                    ifTrue = "EEA",
-                    ifFalse = "signatory"
-                ) + " country. You do not meet this requirement, therefore we have declined your application.",
+                ) + " years of national insurance coverage in Norway and "
             )
-        }
-    }
-}
-
-object AvslagUnder3aar5aarTTEOS : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {
-            textExpr(
-                Bokmal to "Vi har fått opplyst at du har ".expr() + fritekst("angi antall") + " måneder opptjeningstid i annet EØS-land. Den samlede trygdetiden din i Norge og annet EØS-land er ".expr()
-                        + fritekst("angi samlet trygdetid i Norge og EØS-land") + ".",
-                Nynorsk to "Vi har fått opplyst at du har ".expr() + fritekst("angi antall") + " månader oppteningstid i anna avtaleland. Den samla trygdetida din i Noreg og anna avtaleland er ".expr()
-                        + fritekst("angi samlet trygdetid i Norge og EØS-land") + ".",
-                English to "We have been informed that you have <FRITEKST: angi antall> months of national insurance coverage in an other EEA country. Your total national insurance coverage in Norway and an other EEA country is ".expr()
-                        + fritekst("angi samlet trygdetid i Norge og EEA-country") + "."
-            )
-        }
-    }
-}
-
-object AvslagUnder3aar5aarTTAvtale : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {
-            textExpr(
-                Bokmal to "Vi har fått opplyst at du har ".expr() + fritekst("angi antall") + " måneder opptjeningstid i annet avtaleland. Den samlede trygdetiden din i Norge og annet avtaleland er ".expr() + fritekst(
-                    "angi samlet trygdetid i Norge og avtaleland"
-                ) + ".",
-                Nynorsk to "Vi har fått opplyst at du har ".expr() + fritekst("angi antall") + " månader oppteningstid i anna avtaleland. Den samla trygdetida din i Noreg og anna avtaleland er ".expr() + fritekst(
-                    "angi samlet trygdetid i Norge og avtaleland"
-                ) + ".",
-                English to "We have been informed that you have ".expr() + fritekst("angi antall") + " months of national insurance coverage in an other signatory country. Your total national insurance coverage in Norway and an other signatory country is".expr() + fritekst(
-                    "angi samlet trygdetid i Norge og avtaleland"
-                ) + "."
+            showIf(erEOSland and not(erAvtaleland)) {
+                textExpr(
+                    Bokmal to "EØS-land".expr()
+                            + ifElse(
+                        regelverkType.isOneOf(AP2016),
+                        ifTrue = ", eller ha tjent opp inntektspensjon. ",
+                        ifFalse = ". "
+                    ),
+                    Nynorsk to "EØS-land".expr()
+                            + ifElse(
+                        regelverkType.isOneOf(AP2016),
+                        ifTrue = ", eller ha tent opp inntektspensjon. ",
+                        ifFalse = ". "
+                    ),
+                    English to "an other EEA country".expr()
+                            + ifElse(
+                        regelverkType.isOneOf(AP2016),
+                        ifTrue = ", or have had a pensionable income. ",
+                        ifFalse = ". "
+                    )
+                )
+            }.orShowIf(erAvtaleland and not(erEOSland)) {
+                text(Bokmal to "avtaleland. ", Nynorsk to "avtaleland. ", English to "an other signatory country. ")
+            }.orShowIf(erEOSland and erAvtaleland) {
+                text(
+                    Bokmal to "EØS- og avtaleland. ",
+                    Nynorsk to "EØS- og avtaleland. ",
+                    English to "other EEA and signatory countries. "
+                )
+            }
+            text(
+                Bokmal to "Det har du ikke, og derfor har vi avslått søknaden din.",
+                Nynorsk to "Det har du ikkje, og derfor har vi avslått søknaden din.",
+                English to "You do not meet this requirement, therefore we have declined your application.",
             )
         }
     }
@@ -269,56 +275,6 @@ object AvslagAP2011FolketrygdsakHjemmel : OutlinePhrase<LangBokmalNynorskEnglish
                 Nynorsk to "Vedtaket er gjort etter folketrygdlova § 19-2.",
                 English to "This decision was made pursuant to the provisions of § 19-2 of the National Insurance Act."
             )
-        }
-    }
-}
-
-data class AvslagUnder3aarHjemmel(
-    val avtaleland: Expression<String>,
-    val erEOSland: Expression<Boolean>,
-    val regelverkType: Expression<AlderspensjonRegelverkType>
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(erEOSland) {
-            paragraph {
-                textExpr(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven §".expr() + ifElse(
-                        regelverkType.isOneOf(AP2016),
-                        ifTrue = "§ 19-2, 20-5 til 20-8 og 20-10",
-                        ifFalse = " 19-2"
-                    ) + " og EØS-avtalens forordning 883/2004 artikkel 6.",
-                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §".expr() + ifElse(
-                        regelverkType.isOneOf(AP2016),
-                        ifTrue = "§ 19-2, 20-5 til 20-8 og 20-10",
-                        ifFalse = " 19-2"
-                    ) + " og EØS-avtalens forordning 883/2004 artikkel 6.",
-                    English to "This decision was made pursuant to the provisions of §".expr() + ifElse(
-                        regelverkType.isOneOf(
-                            AP2016
-                        ), ifTrue = "§ 19-2, 20-5 to 20-8 and 20-10", ifFalse = " 19-2"
-                    ) + " of the National Insurance Act and Article 6 of Regulation (EC) 883/2004",
-                )
-            }
-        }.orShow {
-            paragraph {
-                textExpr(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven §".expr() + ifElse(
-                        regelverkType.isOneOf(AP2016),
-                        ifTrue = "§ 19-2, 20-5 til 20-8, og 20-10.",
-                        ifFalse = " 19-2."
-                    ),
-                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §".expr() + ifElse(
-                        regelverkType.isOneOf(AP2016),
-                        ifTrue = "§ 19-2, 20-5 til 20-8 og 20-10.",
-                        ifFalse = " 19-2."
-                    ),
-                    English to "This decision was made pursuant to the provisions of §".expr() + ifElse(
-                        regelverkType.isOneOf(
-                            AP2016
-                        ), ifTrue = "§ 19-2, 20-5 to 20-8 and 20-10", ifFalse = " 19-2"
-                    ) + " of the National Insurance Act.",
-                )
-            }
         }
     }
 }
@@ -343,7 +299,7 @@ data class TrygdeperioderNorgeTabell(
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
         showIf(trygdeperioderNorge.isNotEmpty()) {
-            //trygdetidOverskrift
+//trygdetidOverskrift
             title1 {
                 text(
                     Bokmal to "Trygdetid",
@@ -351,7 +307,7 @@ data class TrygdeperioderNorgeTabell(
                     English to "Period of national insurance coverage"
                 )
             }
-            //norskTTInfoGenerell_001
+//norskTTInfoGenerell_001
             paragraph {
                 text(
                     Bokmal to "Trygdetid er perioder du har vært medlem i folketrygden. Som hovedregel er dette perioder du har bodd eller arbeidet i Norge. Trygdetid har betydning for beregning av pensjonen din. Full trygdetid er 40 år.",
@@ -605,6 +561,50 @@ object SupplerendeStoenad : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 English to "If you have only lived a short period in Norway before reaching 67 years of age, you can apply for supplementary benefit. You can read more about supplementary benefit at our website $SUPPLERENDE_STOENAD.",
             )
 
+        }
+    }
+}
+
+data class AvslagUnder3aar5aarHjemmelAvtaleAuto(
+    val avtaleland: Expression<String>,
+    val erAvtaleland: Expression<Boolean>,
+    val erEOSland: Expression<Boolean>,
+    val regelverkType: Expression<AlderspensjonRegelverkType>
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            textExpr(
+                Bokmal to "Vedtaket er gjort etter folketrygdloven ".expr()
+                        + ifElse(
+                    regelverkType.isOneOf(AP2016),
+                    ifTrue = "§§ 19-2, 20-5 til 20-8 og 20-10,",
+                    ifFalse = "§ 19-2"
+                ) + " og reglene i trygdeavtalen med ".expr()
+                        + avtaleland,
+                Nynorsk to "Vedtaket er gjort etter folketrygdlova ".expr()
+                        + ifElse(
+                    regelverkType.isOneOf(AP2016),
+                    ifTrue = "§§ 19-2, 20-5 til 20-8 og 20-10,",
+                    ifFalse = "§ 19-2"
+                ) + " og reglane i trygdeavtalen med ".expr()
+                        + avtaleland,
+                English to "This decision was made pursuant to the provision of ".expr()
+                        + ifElse(
+                    regelverkType.isOneOf(AP2016),
+                    ifTrue = "§§ 19-2, 20-5 til 20-8 og 20-10,",
+                    ifFalse = "§ 19-2"
+                ) + " of the National Insurance Act and to the provisions of the social security agreement with ".expr()
+                        + avtaleland
+            )
+            showIf(erAvtaleland and not(erEOSland)) {
+                text(Bokmal to ".", Nynorsk to ".", English to ".")
+            }.orShowIf(erAvtaleland and erEOSland) {
+                text(
+                    Bokmal to ", og EØS-avtalens forordning 883/2004 artikkel 6.",
+                    Nynorsk to ", og EØS-avtalens forordning 883/2004 artikkel 6.",
+                    English to " and Article 6 of regulation (EC) 883/2004."
+                )
+            }
         }
     }
 }

@@ -14,9 +14,10 @@ fun createAvslagForLiteTrygdetidDto() =
         pesysData = AvslagForLiteTrygdetidAPDto.PesysData(
             avtaleland = "Avtaleland",
             bostedsland = "Bostedsland",
-            erAvtaleland = false,
-            erEOSland = false,
-            regelverkType = AlderspensjonRegelverkType.AP2011,
+            erAvtaleland = true,
+            erEOSland = false
+            ,
+            regelverkType = AlderspensjonRegelverkType.AP2016,
             trygdeperioderNorge = listOf(
                 AvslagForLiteTrygdetidAPDto.Trygdetid(
                     fom = LocalDate.of(2024, 1, 1),
@@ -32,7 +33,7 @@ fun createAvslagForLiteTrygdetidDto() =
                 )
             ),
             trygdeperioderAvtaleland = emptyList(),
-            vedtaksBegrunnelse = VedtaksBegrunnelse.UNDER_1_AR_TT,
+            vedtaksBegrunnelse = VedtaksBegrunnelse.UNDER_3_AR_TT,
             dineRettigheterOgMulighetTilAaKlageDto = DineRettigheterOgMulighetTilAaKlageDto(
                 sakstype = Sakstype.ALDER,
                 brukerUnder18Aar = false

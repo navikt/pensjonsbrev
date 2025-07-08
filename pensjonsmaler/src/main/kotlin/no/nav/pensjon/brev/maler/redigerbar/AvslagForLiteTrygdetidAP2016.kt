@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.erAvtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.erEOSland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderAvtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderEOSland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderNorge
@@ -18,9 +19,14 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagAPUttakAlderU62Begrunn
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagAPUttakAlderU62Info
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder1aarHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder1aarTT
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder3aarTT
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder3aar5aarHjemmelAvtaleAuto
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder3aar5aarTT
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.NysoknadAPInfo
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.OpptjeningstidEOSAvtaleland
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilAPFolketrygdsak
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilAPMedEOSAvtalelandOg3aar5aarTT
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenad
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.TrygdeperioderAvtalelandTabell
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.TrygdeperioderEOSlandTabell
@@ -98,56 +104,35 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                         )
                     }
                     includePhrase(AvslagUnder1aarTT)
-
-                    // avslagAP2016Under1aarHjemmelAvtale, avslagAP2016Under1aarHjemmelEOS
-                    paragraph {
-                        text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova",
-                            English to "This decision was made pursuant to the provisions of",
+                    includePhrase(
+                        AvslagUnder1aarHjemmel(
+                            avtaleland,
+                            erEOSland,
+                            regelverkType = pesysData.regelverkType
                         )
-                        showIf(erEOSland) {
-                            text(
-                                Bokmal to " §§ 19-2, 20-5 til 20-8, 20-10 og EØS-avtalens forordning 883/2004 artikkel 57.",
-                                Nynorsk to " §§ 19-2, 20-5 til 20-8, 20-10 og EØS-avtalens forordning 883/2004 artikkel 57.",
-                                English to "§§ 19-2, 20-5 to 20-8 and 20-10 of the National Insurance Act and Article 57 of Regulation (EC) 883/2004.",
-                            )
-                        }.orShow {
-                            textExpr(
-                                Bokmal to " §§ 19-2, 20-5 til 20-8, 20-10 og artikkel ".expr()
-                                        + fritekst("Legg inn aktuelle artikler om sammenlegging og eksport") + " i trygdeavtalen med ".expr()
-                                        + avtaleland + ".",
-                                Nynorsk to " §§ 19-2, 20-5 til 20-8, 20-10 og artikkel ".expr()
-                                        + fritekst("Legg inn aktuelle artikler om sammenlegging og eksport") + " i trygdeavtalen med ".expr()
-                                        + avtaleland + ".",
-                                English to " §§ 19-2, 20-5 to 20-8 and 20-10 of the National Insurance Act and Article ".expr()
-                                        + fritekst("Legg inn aktuelle artikler om sammenlegging og eksport") + " of the Social Security Agreement with ".expr()
-                                        + avtaleland + "."
-                            )
-                        }
-                    }
-                }
+                    )
 
-                showIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT)) {
-                    showIf(erEOSland) {
-                        paragraph {
-                            textExpr(
-                                Bokmal to "Vi har fått opplyst at du har ".expr() + fritekst("angi antall") + " måneder opptjeningstid i annet EØS-land. Den samlede trygdetiden din i Norge og annet EØS-land er ".expr()
-                                        + fritekst("anggi samlet trygdetid i Norge og avtaleland") + ".",
-                                Nynorsk to "Vi har fått opplyst at du har ".expr() + fritekst("angi antall") + " månader oppteningstid i anna EØS-land. Den samla trygdetid di i Noreg og anna EØS-land er ".expr()
-                                        + fritekst("angi samlet trygdetid i Norge og avtaleland") + ".",
-                                English to "We have been informed that you have ".expr() + fritekst("angi antall") + " months of national insurance coverage in an other EEA country. Your total national insurance coverage in Norway and an other EEA country is ".expr()
-                                        + fritekst("angi antall") + ".",
+                }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT)) {
+
+                    showIf(not(erAvtaleland) and not(erEOSland)) { // Mindre enn tre års trygdetid - folketrygdsak:
+                        includePhrase(
+                            RettTilAPFolketrygdsak(
+                                avslagsBegrunnelse,
+                                regelverkType = pesysData.regelverkType
                             )
-                        }
-                        // avslagAP2016Under3aarEOS
-                        paragraph {
-                            text(
-                                Bokmal to "For å ha rett til alderspensjon må du til sammen ha minst tre års trygdetid i Norge og annet EØS-land, eller ha tjent opp inntektspensjon. Det har du ikke, og derfor har vi avslått søknaden din.",
-                                Nynorsk to "For å ha rett til alderspensjon må du til saman ha minst tre års trygdetid i Noreg og anna EØS-land, eller ha tent opp inntektspensjon. Det har du ikkje, og derfor har vi avslått søknaden din.",
-                                English to "To be eligible for retirement pension, you must have in total at least three years of national insurance coverage in Norway and an other EEA country, or have had a pensionable income. You do not meet any of these requirements, therefore we have declined your application.",
-                            )
-                        }
+                        )
+                        includePhrase(AvslagUnder3aar5aarTT)
+
+                    }.orShowIf(erEOSland and not(erAvtaleland)) { // Mindre enn tre års trygdetid - EØSsak:
+                        includePhrase(OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
+                        includePhrase(
+                            RettTilAPMedEOSAvtalelandOg3aar5aarTT(
+                                avslagsBegrunnelse,
+                                erAvtaleland,
+                                erEOSland,
+                                regelverkType = pesysData.regelverkType
+                            ),
+                        )
                         // avslagAP2016Under3aarHjemmelEOS
                         paragraph {
                             text(
@@ -156,111 +141,29 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                                 English to "This decision was made pursuant to the provisions of §§ 19-2, 20-5 to 20-8 and 20-10 of the National Insurance Act and Article 6 of Regulation (EC) 883/2004",
                             )
                         }
-
-                    }.orShow {
-                        // avslagAP2016Under3aar
-                        paragraph {
-                            text(
-                                Bokmal to "For å ha rett til alderspensjon må du ha minst tre års trygdetid eller ha tjent opp inntektspensjon. Det har du ikke, og derfor har vi avslått søknaden din.",
-                                Nynorsk to "For å ha rett til alderspensjon må du ha minst tre års trygdetid eller ha tent opp inntektspensjon. Det har du ikkje, og derfor har vi avslått søknaden din.",
-                                English to "To be eligible for retirement pension, you must have at least three years of national insurance coverage or have had a pensionable income. "
-                                        + "You do not meet these requirements, therefore we have declined your application.",
+                    }.orShow { // Mindre enn tre års avtalesak, eller både avtaleland og EØSland
+                        includePhrase(OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
+                        includePhrase(
+                            RettTilAPMedEOSAvtalelandOg3aar5aarTT(
+                                avslagsBegrunnelse,
+                                erAvtaleland,
+                                erEOSland,
+                                regelverkType = pesysData.regelverkType
                             )
-                        }
-                        includePhrase(AvslagUnder3aarTT)
-                        paragraph {
-                            text(
-                                Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2, 20-5 til 20-8 og 20-10.",
-                                Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2, 20-5 til 20-8 og 20-10.",
-                                English to "This decision was made pursuant to the provisions of §§ 19-2, 20-5 to 20-8 and 20-10 of the National Insurance Act.",
-                            )
-                        }
+                        )
                     }
-                }
+                }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_5_AR_TT)) {
 
-                showIf(avslagsBegrunnelse.isOneOf(UNDER_5_AR_TT)) {
-                    showIf(erEOSland) {
-                        // avslagUnder5aarTTEOS
-                        paragraph {
-                            textExpr(
-                                Bokmal to "Vi har fått opplyst at du har ".expr() + fritekst("angi antall") + " måneder opptjeningstid i annet EØS-land. Den samlede trygdetiden din i Norge og annet EØS-land er ".expr()
-                                        + fritekst("angi samlet trygdetid i Norge og EØS-land") + ".",
-                                Nynorsk to "Vi har fått opplyst at du har ".expr() + fritekst("angi antall") + " månader oppteningstid i anna avtaleland. Den samla trygdetida din i Noreg og anna avtaleland er ".expr()
-                                        + fritekst("angi samlet trygdetid i Norge og EØS-land") + ".",
-                                English to "We have been informed that you have <FRITEKST: angi antall> months of national insurance coverage in an other EEA country. Your total national insurance coverage in Norway and an other EEA country is ".expr()
-                                        + fritekst("angi samlet trygdetid i Norge og EEA-country") + "."
+                    showIf(not(erAvtaleland) and not(erEOSland)) { // Mindre enn fem års trygdetid - folketrygdsak:
+
+                        includePhrase(
+                            RettTilAPFolketrygdsak(
+                                avslagsBegrunnelse,
+                                regelverkType = pesysData.regelverkType
                             )
-                        }
-                        // avslagAP2016Under5aarEOS
-                        paragraph {
-                            text(
-                                Bokmal to "For å ha rett til alderspensjon må du til sammen ha minst fem års trygdetid i Norge og annet EØS-land, eller ha tjent opp inntektspensjon. Det har du ikke, og derfor har vi avslått søknaden din.",
-                                Nynorsk to "For å ha rett til alderspensjon må du til saman ha minst fem års trygdetid i Noreg og anna EØS-land, eller ha tent opp inntektspensjon. Det har du ikkje, og derfor har vi avslått søknaden din.",
-                                English to "To be eligible for retirement pension, you must have in total at least five years of national insurance coverage in Norway and an other EEA country, or have had a pensionable income. You do not meet any of these requirements, therefore we have declined your application.",
-                            )
-                        }
-                        // avslagAP2016Under5aarHjemmelEOS
-                        paragraph {
-                            text(
-                                Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2, 20-5 til 20-8 og 20-10 og EØS-avtalens forordning 883/2004 artikkel 6.",
-                                Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2, 20-5 til 20-8 og 20-10 og EØS-avtalens forordning 883/2004 artikkel 6.",
-                                English to "This decision was made pursuant to the provisions of §§ 19-2, 20-5 to 20-8 and 20-10 of the National Insurance Act and Article 6 of Regulation (EC) 883/2004.",
-                            )
-                        }
-                    }.orShowIf(erAvtaleland and not(erEOSland)) {
-                        // avslagUnder5aarTTAvtale
-                        paragraph {
-                            textExpr(
-                                Bokmal to "Vi har fått opplyst at du har ".expr() + fritekst("angi antall") + " måneder opptjeningstid i annet avtaleland. Den samlede trygdetiden din i Norge og annet avtaleland er ".expr()
-                                        + fritekst("angi samlet trygdetid i Norge og avtaleland") + ".",
-                                Nynorsk to "Vi har fått opplyst at du har ".expr() + fritekst("angi antall") + " månader oppteningstid i anna avtaleland. Den samla trygdetida din i Noreg og anna avtaleland er ".expr()
-                                        + fritekst("angi samlet trygdetid i Norge og avtaleland") + ".",
-                                English to "We have been informed that you have <FRITEKST: angi antall> months of national insurance coverage in an other signatory country. Your total national insurance coverage in Norway and an other signatory country is ".expr()
-                                        + fritekst("angi samlet trygdetid i Norge og avtaleland") + "."
-                            )
-                        }
-                        // avslagAP2016Under5aarAvtale
-                        paragraph {
-                            text(
-                                Bokmal to "For å ha rett til alderspensjon må du til sammen ha minst fem års trygdetid i Norge og annet avtaleland, eller ha tjent opp inntektspensjon. Det har du ikke, og derfor har vi avslått søknaden din.",
-                                Nynorsk to "For å ha rett til alderspensjon må du til saman ha minst fem års trygdetid i Noreg og anna avtaleland, eller ha tent opp inntektspensjon. Det har du ikkje, og derfor har vi avslått søknaden din.",
-                                English to "To be eligible for retirement pension, you must have in total at least five years of national insurance coverage in Norway and an other signatory country, or have had a pensionable income. You do not meet these requirements, therefore we have declined your application.",
-                            )
-                        }
-                        // avslagAP2016Under5aarHjemmelAvtaleAuto
-                        paragraph {
-                            textExpr(
-                                Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2, 20-5 til 20-8 og 20-10, og reglene i trygdeavtalen med ".expr()
-                                        + avtaleland + ".",
-                                Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2, 20-5 til 20-8 og 20-10, og reglane i trygdeavtalen med ".expr()
-                                        + avtaleland + ".",
-                                English to "This decision was made pursuant to the provisions of §§ 19-2, 20-5 to 20-8 and 20-10 of the National Insurance Act, and to the provisions of the social security agreement with ".expr()
-                                        + avtaleland + ".",
-                            )
-                        }
-                    }.orShow {
-                        // avslagUnder5aarTT
-                        paragraph {
-                            textExpr(
-                                Bokmal to "Våre opplysninger viser at du har bodd eller arbeidet i Norge i ".expr() + fritekst(
-                                    "angi antall dager/måneder"
-                                ) + ". Vi har ikke registrert at du har bodd eller arbeidet i Norge.",
-                                Nynorsk to "Ifølgje våre opplysningar har du budd eller arbeidd i Noreg i ".expr() + fritekst(
-                                    "angi antall dager/måneder"
-                                ) + ". I følgje våre opplysningar har du ikkje budd eller arbeidd i Noreg.",
-                                English to "We have registered that you have been living or working in Norway for ".expr() + fritekst(
-                                    "angi antall dager/måneder"
-                                ) + ". We have no record of you living or working in Norway."
-                            )
-                        }
-                        // avslagAP2016Under5aar
-                        paragraph {
-                            text(
-                                Bokmal to "For å ha rett til alderspensjon må du til sammen ha minst fem års trygdetid eller ha tjent opp inntektspensjon. Det har du ikke, og derfor har vi avslått søknaden din.",
-                                Nynorsk to "For å ha rett til alderspensjon må du til saman ha minst fem års trygdetid eller ha tent opp inntektspensjon. Det har du ikkje, og derfor har vi avslått søknaden din.",
-                                English to "To be eligible for retirement pension, you must have in total at least five years of national insurance coverage or have had a pensionable income. You do not meet these requirements, therefore we have declined your application.",
-                            )
-                        }
+                        )
+                        includePhrase(AvslagUnder3aar5aarTT)
+
                         // avslagAP2016Under5aarHjemmel
                         paragraph {
                             text(
@@ -269,77 +172,120 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                                 English to "This decision was made pursuant to the provisions of §§ 19-2, 20-5 to 20-8 and 20-10 of the National Insurance Act",
                             )
                         }
-                    }
-                }
-
-                showIf(avslagsBegrunnelse.isOneOf(UNDER_20_AR_BO_2016)) {
-                    // avslagAP2016Under20aar
-                    paragraph {
-                        textExpr(
-                            Bokmal to "For å få utbetalt alderspensjonen din når du bor i ".expr()
-                                    + bostedsland + " må du enten ha vært medlem i folketrygden i minst 20 år, ha rett til tilleggspensjon eller ha tjent opp inntektspensjon."
-                                    + " Det har du ikke, og derfor har vi avslått søknaden din.",
-                            Nynorsk to "For å få utbetalt alderspensjonen din når du bur i ".expr()
-                                    + bostedsland + " må du enten ha vært medlem i folketrygda i minst 20 år, ha rett til tilleggspensjon eller ha tent opp inntektspensjon."
-                                    + " Det har du ikkje, og derfor har vi avslått søknaden din.",
-                            English to "To be eligible for your retirement pension while living in ".expr()
-                                    + bostedsland + ", you must either have been a member of the Norwegian National Insurance Scheme for at least 20 years, be entitled to supplementary pension or be entitled to income-based pension."
-                                    + " You do not meet any of these requirements, therefore we have declined your application."
+                    }.orShowIf(erEOSland and not(erAvtaleland)) { // Mindre enn fem års trygdetid - EØSsak:
+                        includePhrase(OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
+                        includePhrase(
+                            RettTilAPMedEOSAvtalelandOg3aar5aarTT(
+                                avslagsBegrunnelse,
+                                erAvtaleland,
+                                erEOSland,
+                                regelverkType = pesysData.regelverkType
+                            )
+                        )
+                        // avslagAP2016Under5aarHjemmelEOS
+                        paragraph {
+                            text(
+                                Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2, 20-5 til 20-8 og 20-10 og EØS-avtalens forordning 883/2004 artikkel 6.",
+                                Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2, 20-5 til 20-8 og 20-10 og EØS-avtalens forordning 883/2004 artikkel 6.",
+                                English to "This decision was made pursuant to the provisions of §§ 19-2, 20-5 to 20-8 and 20-10 of the National Insurance Act and Article 6 of Regulation (EC) 883/2004.",
+                            )
+                        }
+                    }.orShow { // avtalelandsak eller (sak med både EØS- og avtaleland)
+                        includePhrase(OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
+                        includePhrase(
+                            RettTilAPMedEOSAvtalelandOg3aar5aarTT(
+                                avslagsBegrunnelse,
+                                erAvtaleland,
+                                erEOSland,
+                                regelverkType = pesysData.regelverkType
+                            )
                         )
                     }
-                    // avslagAP2016Under20aarHjemmel
+
+                    showIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT) and erAvtaleland) {
+                        includePhrase(
+                            AvslagUnder3aar5aarHjemmelAvtaleAuto(
+                                avtaleland,
+                                erAvtaleland,
+                                erEOSland,
+                                regelverkType = pesysData.regelverkType
+
+                            )
+                        )
+                    }
+
+                    showIf(avslagsBegrunnelse.isOneOf(UNDER_20_AR_BO_2016)) {
+                        // avslagAP2016Under20aar
+                        paragraph {
+                            textExpr(
+                                Bokmal to "For å få utbetalt alderspensjonen din når du bor i ".expr()
+                                        + bostedsland + " må du enten ha vært medlem i folketrygden i minst 20 år, ha rett til tilleggspensjon eller ha tjent opp inntektspensjon."
+                                        + " Det har du ikke, og derfor har vi avslått søknaden din.",
+                                Nynorsk to "For å få utbetalt alderspensjonen din når du bur i ".expr()
+                                        + bostedsland + " må du enten ha vært medlem i folketrygda i minst 20 år, ha rett til tilleggspensjon eller ha tent opp inntektspensjon."
+                                        + " Det har du ikkje, og derfor har vi avslått søknaden din.",
+                                English to "To be eligible for your retirement pension while living in ".expr()
+                                        + bostedsland + ", you must either have been a member of the Norwegian National Insurance Scheme for at least 20 years, be entitled to supplementary pension or be entitled to income-based pension."
+                                        + " You do not meet any of these requirements, therefore we have declined your application."
+                            )
+                        }
+                        // avslagAP2016Under20aarHjemmel
+                        paragraph {
+                            text(
+                                Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3, 20-5 til 20-8 og 20-10.",
+                                Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-3, 20-5 til 20-8 og 20-10.",
+                                English to "This decision was made pursuant to the provisions of § 19-3, 20-5 to 20-8 and 20-10 of the National Insurance Act.",
+                            )
+                        }
+                    }
+                    showIf(
+                        avslagsBegrunnelse.isOneOf(
+                            UNDER_20_AR_BO_2016,
+                            UNDER_20_AR_BO,
+                            UNDER_5_AR_TT,
+                            UNDER_3_AR_TT,
+                            UNDER_1_AR_TT
+                        )
+                    ) {
+                        includePhrase(
+                            TrygdeperioderNorgeTabell(
+                                trygdeperioderNorge = trygdeperioderNorge
+                            )
+                        )
+                        includePhrase(
+                            TrygdeperioderEOSlandTabell(
+                                trygdeperioderEOSland = trygdeperioderEOSland
+                            )
+                        )
+                        includePhrase(
+                            TrygdeperioderAvtalelandTabell(
+                                trygdeperioderAvtaleland = trygdeperioderAvtaleland
+                            )
+                        )
+                    }
+                }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_62)) {
+                    includePhrase(AvslagAPUttakAlderU62Begrunn)
+                    // avslagAP2016UttakAlderU62Hjemmel
                     paragraph {
                         text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3, 20-5 til 20-8 og 20-10.",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-3, 20-5 til 20-8 og 20-10.",
-                            English to "This decision was made pursuant to the provisions of § 19-3, 20-5 to 20-8 and 20-10 of the National Insurance Act.",
+                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-4 og 20-2.",
+                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-4 og 20-2.",
+                            English to "This decision was made pursuant to the provisions of §§ 19-4 and 20-2 of the National Insurance Act.",
                         )
                     }
+                    includePhrase(AvslagAPUttakAlderU62Info)
+                    includePhrase(NysoknadAPInfo)
                 }
-                showIf(
-                    avslagsBegrunnelse.isOneOf(
-                        UNDER_20_AR_BO_2016,
-                        UNDER_20_AR_BO,
-                        UNDER_5_AR_TT,
-                        UNDER_3_AR_TT,
-                        UNDER_1_AR_TT
-                    )
-                ) {
-                    includePhrase(
-                        TrygdeperioderNorgeTabell(
-                            trygdeperioderNorge = trygdeperioderNorge
-                        )
-                    )
-                    includePhrase(
-                        TrygdeperioderEOSlandTabell(
-                            trygdeperioderEOSland = trygdeperioderEOSland
-                        )
-                    )
-                    includePhrase(
-                        TrygdeperioderAvtalelandTabell(
-                            trygdeperioderAvtaleland = trygdeperioderAvtaleland
-                        )
-                    )
-                }
-            }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_62)) {
-                includePhrase(AvslagAPUttakAlderU62Begrunn)
-                // avslagAP2016UttakAlderU62Hjemmel
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-4 og 20-2.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-4 og 20-2.",
-                        English to "This decision was made pursuant to the provisions of §§ 19-4 and 20-2 of the National Insurance Act.",
-                    )
-                }
-                includePhrase(AvslagAPUttakAlderU62Info)
-                includePhrase(NysoknadAPInfo)
+                includePhrase(SupplerendeStoenad)
+                includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+                includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+                includePhrase(Felles.HarDuSpoersmaal.alder)
             }
-            includePhrase(SupplerendeStoenad)
-            includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
-            includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
-            includePhrase(Felles.HarDuSpoersmaal.alder)
         }
-        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, pesysData.dineRettigheterOgMulighetTilAaKlageDto)
+        includeAttachment(
+            vedleggDineRettigheterOgMulighetTilAaKlage,
+            pesysData.dineRettigheterOgMulighetTilAaKlageDto
+        )
     }
 }
 

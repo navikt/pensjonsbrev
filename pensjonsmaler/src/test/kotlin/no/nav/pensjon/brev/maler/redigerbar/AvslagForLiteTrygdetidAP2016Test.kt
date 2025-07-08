@@ -30,7 +30,7 @@ class AvslagForLiteTrygdetidAP2016Test {
             Fixtures.create<AvslagForLiteTrygdetidAPDto>(),
             Language.Bokmal,
             Fixtures.felles
-        ).renderTestHtml(AvslagForLiteTrygdetidAP2011.kode.name)
+        ).renderTestHtml(AvslagForLiteTrygdetidAP2016.kode.name)
     }
 }
 
