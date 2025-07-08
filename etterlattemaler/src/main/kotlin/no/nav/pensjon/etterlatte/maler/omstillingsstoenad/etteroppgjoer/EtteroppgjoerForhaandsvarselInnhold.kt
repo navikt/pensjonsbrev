@@ -133,7 +133,7 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
                 paragraph {
                     textExpr(
                         Language.Bokmal to "Vår beregning viser at du har fått utbetalt ".expr() + data.avviksBeloep.absoluteValue().format() +" kroner for lite omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger 25 prosent av rettsgebyret.",
-                        Language.Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + data.avviksBeloep.absoluteValue().format() +" kroner for lite i omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstig 25 prosent av rettsgebyret",
+                        Language.Nynorsk to "Utrekninga vår viser at du har fått utbetalt ".expr() + data.avviksBeloep.absoluteValue().format() +" kroner for lite i omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstig 25 prosent av rettsgebyret.",
                         Language.English to "Our calculations show that you have been paid NOK ".expr() + data.avviksBeloep.absoluteValue().format() +" too little in adjustment allowance in " + data.etteroppgjoersAar.format() + ". This exceeds 25 percent of a standard court fee."
                     )
                 }
