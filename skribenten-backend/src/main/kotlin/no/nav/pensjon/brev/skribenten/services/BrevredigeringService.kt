@@ -27,10 +27,7 @@ import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.model.toPen
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.ArkivertBrevException
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.BrevIkkeKlartTilSendingException
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.BrevLaastForRedigeringException
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.KanIkkeReservereBrevredigeringException
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.FeilType
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brev.skribenten.services.ServiceResult.Ok
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -52,17 +49,26 @@ data class GeneriskRedigerbarBrevdata(
     override val saksbehandlerValg: BrevbakerBrevdata,
 ) : RedigerbarBrevdata<BrevbakerBrevdata, BrevbakerBrevdata>
 
-sealed class BrevredigeringException(override val message: String) : Exception() {
-    class KanIkkeReservereBrevredigeringException(message: String, val response: Api.ReservasjonResponse) : BrevredigeringException(message)
-    class ArkivertBrevException(val brevId: Long, val journalpostId: Long) : BrevredigeringException("Brev med id $brevId er allerede arkivert i journalpost $journalpostId")
-    class BrevIkkeKlartTilSendingException(message: String) : BrevredigeringException(message)
-    class BrevLaastForRedigeringException(message: String) : BrevredigeringException(message)
-    class HarIkkeAttestantrolleException(message: String) : BrevredigeringException(message)
-    class KanIkkeAttestereEgetBrevException(message: String) : BrevredigeringException(message)
-    class KanIkkeAttestereException(message: String) : BrevredigeringException(message)
-    class AlleredeAttestertException(message: String) : BrevredigeringException(message)
-    class BrevmalFinnesIkke(message: String) : BrevredigeringException(message)
-    class VedtaksbrevKreverVedtaksId(message: String): BrevredigeringException(message)
+open class BrevredigeringException(val type: FeilType, override val message: String) : Exception(message) {
+
+    class KanIkkeReservereBrevredigering(
+        val response: Api.ReservasjonResponse,
+    ) : BrevredigeringException(
+        FeilType.BREV_REDIGERES_AV_ANNEN_BRUKER,
+        "Brev er allerede reservert av: ${response.reservertAv}",
+    )
+
+    enum class FeilType(val statusCode: HttpStatusCode) {
+        ALLEREDE_ATTESTERT(HttpStatusCode.Conflict),
+        ARKIVERT_BREV(HttpStatusCode.Conflict),
+        BREV_IKKE_KLART_TIL_SENDING(HttpStatusCode.BadRequest),
+        BREV_LAAST_FOR_REDIGERING(HttpStatusCode.Locked),
+        BREV_REDIGERES_AV_ANNEN_BRUKER(HttpStatusCode.Locked),
+        BREVMAL_FINNES_IKKE(HttpStatusCode.InternalServerError),
+        KAN_IKKE_ATTESTERE_EGET_BREV(HttpStatusCode.Forbidden),
+        HAR_IKKE_ATTESTANTROLLE(HttpStatusCode.Forbidden),
+        VEDTAKSBREV_KREVER_VEDTAKSID(HttpStatusCode.BadRequest),
+    }
 }
 
 class BrevredigeringService(
@@ -158,7 +164,10 @@ class BrevredigeringService(
                     }
                 }
             } else {
-                throw BrevLaastForRedigeringException("Kan ikke oppdatere brev markert som 'klar til sending'/'klar til attestering'.")
+                throw BrevredigeringException(
+                    FeilType.BREV_LAAST_FOR_REDIGERING,
+                    "Kan ikke oppdatere brev markert som 'klar til sending'/'klar til attestering'.",
+                )
             }
         }
 
@@ -228,7 +237,11 @@ class BrevredigeringService(
     fun hentBrevInfo(brevId: Long): Dto.BrevInfo? =
         transaction { Brevredigering[brevId].toBrevInfo() }
 
-    suspend fun hentBrev(saksId: Long, brevId: Long, reserverForRedigering: Boolean = false): ServiceResult<Dto.Brevredigering>? =
+    suspend fun hentBrev(
+        saksId: Long,
+        brevId: Long,
+        reserverForRedigering: Boolean = false
+    ): ServiceResult<Dto.Brevredigering>? =
         if (reserverForRedigering) {
             hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
                 rendreBrev(brev = brevDto).map { rendretBrev ->
@@ -242,7 +255,11 @@ class BrevredigeringService(
                 ?.let { Ok(it) }
         }
 
-    suspend fun hentBrevAttestering(saksId: Long, brevId: Long, reserverForRedigering: Boolean = false): ServiceResult<Dto.Brevredigering>? =
+    suspend fun hentBrevAttestering(
+        saksId: Long,
+        brevId: Long,
+        reserverForRedigering: Boolean = false
+    ): ServiceResult<Dto.Brevredigering>? =
         if (reserverForRedigering) {
             hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
                 val principal = PrincipalInContext.require()
@@ -352,7 +369,10 @@ class BrevredigeringService(
 
         return if (brev != null && document != null) {
             if (!brev.info.laastForRedigering) {
-                throw BrevIkkeKlartTilSendingException("Brev må være markert som klar til sending")
+                throw BrevredigeringException(
+                    FeilType.BREV_IKKE_KLART_TIL_SENDING,
+                    "Brev må være markert som klar til sending",
+                )
             }
             brev.validerErFerdigRedigert()
 
@@ -394,7 +414,10 @@ class BrevredigeringService(
 
     private suspend fun validerVedtaksbrevAttestert(brev: Dto.Brevredigering, brevtype: LetterMetadata.Brevtype) {
         if (Features.attestant.isEnabled() && brevtype == LetterMetadata.Brevtype.VEDTAKSBREV && brev.info.attestertAv == null) {
-            throw BrevIkkeKlartTilSendingException("Brev med id ${brev.info.id} er ikke attestert.")
+            throw BrevredigeringException(
+                FeilType.BREV_IKKE_KLART_TIL_SENDING,
+                "Brev med id ${brev.info.id} er ikke attestert.",
+            )
         }
     }
 
@@ -419,7 +442,11 @@ class BrevredigeringService(
                 }
         }
 
-    private suspend fun <T> hentBrevMedReservasjon(brevId: Long, saksId: Long? = null, block: suspend ReservertBrevScope.() -> T): T? {
+    private suspend fun <T> hentBrevMedReservasjon(
+        brevId: Long,
+        saksId: Long? = null,
+        block: suspend ReservertBrevScope.() -> T
+    ): T? {
         val principal = PrincipalInContext.require()
 
         return transaction(Connection.TRANSACTION_REPEATABLE_READ) {
@@ -434,11 +461,15 @@ class BrevredigeringService(
             val redigeresAv = reservertBrevScope.brevDto.info.redigeresAv
 
             if (reservertBrevScope.brevDto.info.journalpostId != null) {
-                throw ArkivertBrevException(reservertBrevScope.brevDto.info.id, journalpostId = reservertBrevScope.brevDto.info.journalpostId)
+                throw BrevredigeringException(
+                    FeilType.ARKIVERT_BREV,
+                    "Brev med id ${reservertBrevScope.brevDto.info.id} er allerede arkivert i journalpost ${
+                        reservertBrevScope.brevDto.info.journalpostId
+                    }",
+                )
             } else if (redigeresAv == principal.navIdent) {
                 reservertBrevScope.block()
-            } else throw KanIkkeReservereBrevredigeringException(
-                message = "Brev er allerede reservert av: ${reservertBrevScope.brevDto.info.redigeresAv}",
+            } else throw BrevredigeringException.KanIkkeReservereBrevredigering(
                 response = Api.ReservasjonResponse(
                     vellykket = false,
                     reservertAv = redigeresAv?.let {
@@ -483,21 +514,33 @@ class BrevredigeringService(
         signaturSignerende: String,
         signaturAttestant: String? = null,
     ): ServiceResult<LetterMarkup> = coroutineScope {
-        penService.hentPesysBrevdata(saksId = saksId, vedtaksId = vedtaksId, brevkode = brevkode, avsenderEnhetsId = avsenderEnhetsId)
-            .then { pesysData ->
-                brevbakerService.renderMarkup(
-                    brevkode = brevkode,
-                    spraak = spraak,
-                    brevdata = GeneriskRedigerbarBrevdata(
-                        pesysData = pesysData.brevdata,
-                        saksbehandlerValg = saksbehandlerValg,
-                    ),
-                    felles = pesysData.felles.medSignerendeSaksbehandlere(signerendeSaksbehandlere = SignerendeSaksbehandlere(signaturSignerende, signaturAttestant))
+        penService.hentPesysBrevdata(
+            saksId = saksId,
+            vedtaksId = vedtaksId,
+            brevkode = brevkode,
+            avsenderEnhetsId = avsenderEnhetsId
+        ).then { pesysData ->
+            brevbakerService.renderMarkup(
+                brevkode = brevkode,
+                spraak = spraak,
+                brevdata = GeneriskRedigerbarBrevdata(
+                    pesysData = pesysData.brevdata,
+                    saksbehandlerValg = saksbehandlerValg,
+                ),
+                felles = pesysData.felles.medSignerendeSaksbehandlere(
+                    SignerendeSaksbehandlere(
+                        saksbehandler = signaturSignerende,
+                        attesterendeSaksbehandler = signaturAttestant
+                    )
                 )
-            }
+            )
+        }
     }
 
-    private suspend fun <T> harTilgangTilEnhet(enhetsId: String?, then: suspend () -> ServiceResult<T>): ServiceResult<T> {
+    private suspend fun <T> harTilgangTilEnhet(
+        enhetsId: String?,
+        then: suspend () -> ServiceResult<T>
+    ): ServiceResult<T> {
         return if (enhetsId == null) {
             then()
         } else {
@@ -525,10 +568,12 @@ class BrevredigeringService(
                     pesysData = pesysData.brevdata,
                     saksbehandlerValg = brevredigering.saksbehandlerValg,
                 ),
-                felles = pesysData.felles.medSignerendeSaksbehandlere(SignerendeSaksbehandlere(
-                    saksbehandler = brevredigering.info.signaturSignerende,
-                    attesterendeSaksbehandler = brevredigering.info.signaturAttestant,
-                )),
+                felles = pesysData.felles.medSignerendeSaksbehandlere(
+                    SignerendeSaksbehandlere(
+                        saksbehandler = brevredigering.info.signaturSignerende,
+                        attesterendeSaksbehandler = brevredigering.info.signaturAttestant,
+                    )
+                ),
                 redigertBrev = brevredigering.redigertBrev.toMarkup()
             ).map {
                 transaction {
@@ -538,7 +583,10 @@ class BrevredigeringService(
                         dokumentDato = pesysData.felles.dokumentDato
                         this.redigertBrevHash = brevredigering.redigertBrevHash
                     }
-                    Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf?.bytes
+                    Document.findSingleByAndUpdate(
+                        DocumentTable.brevredigering eq brevredigering.info.id,
+                        update
+                    )?.pdf?.bytes
                         ?: Document.new(update).pdf.bytes
                 }
             }
@@ -565,7 +613,10 @@ class BrevredigeringService(
         val template = brevbakerService.getRedigerbarTemplate(brevkode)
 
         return if (template?.metadata?.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
-            vedtaksId ?: throw BrevredigeringException.VedtaksbrevKreverVedtaksId("Kan ikke opprette brev for vedtaksmal ${brevkode.kode()}: mangler vedtaksId")
+            vedtaksId ?: throw BrevredigeringException(
+                FeilType.VEDTAKSBREV_KREVER_VEDTAKSID,
+                "Kan ikke opprette brev for vedtaksmal ${brevkode.kode()}: mangler vedtaksId",
+            )
         } else {
             null
         }
@@ -578,21 +629,29 @@ class BrevredigeringService(
 }
 
 private fun Dto.Brevredigering.validerErFerdigRedigert(): Boolean =
-    redigertBrev.klarTilSending() || throw BrevIkkeKlartTilSendingException("Brevet inneholder fritekst-felter som ikke er endret")
+    redigertBrev.klarTilSending() || throw BrevredigeringException(
+        FeilType.BREV_IKKE_KLART_TIL_SENDING,
+        "Brevet inneholder fritekst-felter som ikke er endret",
+    )
 
 private fun Dto.Brevredigering.validerKanAttestere(userPrincipal: UserPrincipal) {
     if (!userPrincipal.isAttestant()) {
-        throw BrevredigeringException.HarIkkeAttestantrolleException(
+        throw BrevredigeringException(
+            FeilType.HAR_IKKE_ATTESTANTROLLE,
             "Bruker ${userPrincipal.navIdent} har ikke attestantrolle, brev ${info.id}",
         )
     }
     if (userPrincipal.navIdent == info.opprettetAv) {
-        throw BrevredigeringException.KanIkkeAttestereEgetBrevException(
+        throw BrevredigeringException(
+            FeilType.KAN_IKKE_ATTESTERE_EGET_BREV,
             "Bruker ${userPrincipal.navIdent} prøver å attestere sitt eget brev, brev ${info.id}",
         )
     }
     if (info.attestertAv != null && info.attestertAv != userPrincipal.navIdent) {
-        throw BrevredigeringException.AlleredeAttestertException("Brev ${info.id} er allerede attestert av ${info.attestertAv}")
+        throw BrevredigeringException(
+            FeilType.ALLEREDE_ATTESTERT,
+            "Brev ${info.id} er allerede attestert av ${info.attestertAv}",
+        )
     }
 }
 
@@ -654,12 +713,10 @@ private fun Brevredigering.toBrevInfo(): Dto.BrevInfo =
             laastForRedigering && isVedtaksbrev ->
                 if (attestertAvNavIdent != null) {
                     Dto.BrevStatus.KLAR
-                }
-                else {
+                } else {
                     Dto.BrevStatus.ATTESTERING
                 }
             laastForRedigering -> Dto.BrevStatus.KLAR
-
             else -> Dto.BrevStatus.KLADD
         }
     )

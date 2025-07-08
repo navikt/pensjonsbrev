@@ -1,15 +1,8 @@
 package no.nav.pensjon.brev.skribenten
 
 import com.fasterxml.jackson.core.JacksonException
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.deser.std.StdDeserializer
-import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.databind.node.IntNode
-import com.fasterxml.jackson.databind.node.TextNode
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
@@ -36,12 +29,11 @@ import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
 import no.nav.pensjon.brev.skribenten.auth.requireAzureADConfig
 import no.nav.pensjon.brev.skribenten.auth.skribentenJwt
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.routes.BrevkodeModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
-import no.nav.pensjon.brevbaker.api.model.Year
-import no.nav.pensjon.brevbaker.api.model.YearWrapper
 
 
 fun main() {
@@ -92,17 +84,16 @@ private fun Application.skribentenApp(skribentenConfig: Config) {
             }
         }
         exception<BrevredigeringException> { call, cause ->
-            when (cause) {
-                is ArkivertBrevException -> call.respond(HttpStatusCode.Conflict, cause.message)
-                is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.BadRequest, cause.message)
-                is BrevLaastForRedigeringException -> call.respond(HttpStatusCode.Locked, cause.message)
-                is KanIkkeReservereBrevredigeringException -> call.respond(HttpStatusCode.Locked, cause.response)
-                is HarIkkeAttestantrolleException -> call.respond(HttpStatusCode.Forbidden, cause.message)
-                is KanIkkeAttestereEgetBrevException -> call.respond(HttpStatusCode.Forbidden, cause.message)
-                is AlleredeAttestertException -> call.respond(HttpStatusCode.Conflict, cause.message)
-                is KanIkkeAttestereException -> call.respond(HttpStatusCode.InternalServerError, cause.message)
-                is BrevmalFinnesIkke -> call.respond(HttpStatusCode.InternalServerError, cause.message)
-                is VedtaksbrevKreverVedtaksId -> call.respond(HttpStatusCode.BadRequest, cause.message)
+            if (cause is KanIkkeReservereBrevredigering) {
+                call.respond(
+                    cause.type.statusCode,
+                    Api.ErrorResponse.Brevredigering(cause.type, cause.message, cause.response)
+                )
+            } else {
+                call.respond(
+                    cause.type.statusCode,
+                    Api.ErrorResponse.Brevredigering(cause.type, cause.message)
+                )
             }
         }
         exception<Exception> { call, cause ->
