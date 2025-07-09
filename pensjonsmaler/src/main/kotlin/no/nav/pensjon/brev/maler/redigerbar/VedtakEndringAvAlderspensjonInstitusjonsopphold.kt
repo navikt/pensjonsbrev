@@ -335,7 +335,6 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
             }
 
 
-            // pre-selected, 2
             showIf(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP1967)) {
                 // hjemmelBrukerAP2011Inst_001
                 paragraph {
@@ -373,7 +372,6 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
             }
 
             showIf(pesysData.beregnetPensjonPerManedVedVirk.antallBeregningsperioderPensjon.greaterThan(1) and not(pesysData.institusjonsoppholdVedVirk.fengsel) and not (pesysData.institusjonsoppholdVedVirk.helseinstitusjon)) {
-                // pre-selected
                 paragraph {
                     // hjemmelEndrIForbindelseMedInst_001_]
                     val fritekst = fritekst("Fyll inn aktuelle paragrafer>.")
