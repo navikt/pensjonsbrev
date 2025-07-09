@@ -746,16 +746,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
             showIf(uforeKombinertMedAlder) {
                 // innvilgelseAPogUTInnledn
-                paragraph {
-                    textExpr(
-                        Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom + "." +
-                                " Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
-                        Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom + "." +
-                                " Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
-                        English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from ".expr() + kravVirkDatoFom + "." +
-                                " You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit."
-                    )
-                }
+                includePhrase(UfoereAlder.DuFaar(pesysData.beregnetPensjonPerManedVedVirk.totalPensjon, pesysData.kravVirkDatoFom))
             }.orShow {
                 paragraph {
                     // innvilgelseAPInnledn

@@ -144,14 +144,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             }
 
             showIf(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder) {
-                // Phrase innvilgelseAPogUTInnledn_001
-                paragraph {
-                    textExpr(
-                        Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
-                        Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner kvar månad før skatt frå " + pesysData.krav.virkDatoFom.format() + ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
-                        English to "You will receive NOK ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " every month before tax from " + pesysData.krav.virkDatoFom.format() + ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit.",
-                    )
-                }
+                includePhrase(UfoereAlder.DuFaar(pesysData.alderspensjonVedVirk.totalPensjon, pesysData.krav.virkDatoFom))
             }.orShow {
                 // innvilgelseAPInnledn_001
                 paragraph {
