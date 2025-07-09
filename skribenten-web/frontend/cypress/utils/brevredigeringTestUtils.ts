@@ -126,6 +126,7 @@ export const nyBrevInfo = (args: {
   spraak?: SpraakKode;
   journalpostId?: Nullable<number>;
   vedtaksId?: Nullable<number>;
+  sadsId?: string;
 }): BrevInfo => {
   return {
     id: args.id ?? 1,
@@ -145,6 +146,7 @@ export const nyBrevInfo = (args: {
     spraak: args.spraak ?? SpraakKode.Engelsk,
     journalpostId: args.journalpostId ?? null,
     vedtaksId: args.vedtaksId ?? null,
+    saksId: args.sadsId ?? "22981081",
   };
 };
 
