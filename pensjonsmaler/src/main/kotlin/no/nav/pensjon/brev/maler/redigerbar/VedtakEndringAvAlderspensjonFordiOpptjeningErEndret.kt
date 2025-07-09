@@ -177,7 +177,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                     val fritekst = fritekst("år")
                     textExpr(
                         Bokmal to "Pensjonsopptjeningen for ".expr() + fritekst + " er endret.",
-                        Nynorsk to "Pensjonsoppteninga  for ".expr() + fritekst + " er endra.",
+                        Nynorsk to "Pensjonsoppteninga for ".expr() + fritekst + " er endra.",
                         English to "Your pension earnings for the income year(s) ".expr() + fritekst + " has(have) been changed."
                     )
                 }
