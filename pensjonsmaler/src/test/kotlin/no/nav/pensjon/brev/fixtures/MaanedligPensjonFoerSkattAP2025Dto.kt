@@ -12,7 +12,6 @@ private fun createAlderspensjonPerManedAP2025() = MaanedligPensjonFoerSkattAP202
     inntektspensjon = Kroner(12),
     garantipensjon = Kroner(12),
     totalPensjon = Kroner(12),
-    garantipensjonInnvilget = Kroner(10),
 )
 
 fun createMaanedligPensjonFoerSkattAP2025Dto() =

@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
-import no.nav.pensjon.brev.api.model.BelopEndring
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
@@ -182,7 +182,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                     )
                 }
 
-                showIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BelopEndring.UENDRET) or saksbehandlerValg.visUendretOpptjening) {
+                showIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.UENDRET) or saksbehandlerValg.visUendretOpptjening) {
                     // ingenEndringPensjon_001
                     paragraph {
                         text(
@@ -191,7 +191,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                             English to "This does not affect your pension."
                         )
                     }
-                }.orShowIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BelopEndring.ENDR_OKT) or saksbehandlerValg.visOektOpptjening) {
+                }.orShowIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.ENDR_OKT) or saksbehandlerValg.visOektOpptjening) {
                     //  nyBeregningAPØkning_001
                     paragraph {
                         text(
@@ -200,7 +200,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                             English to "This leads to an increase in your retirement pension."
                         )
                     }
-                }.orShowIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BelopEndring.ENDR_RED) or saksbehandlerValg.visRedusertOpptjening) {
+                }.orShowIf(pesysData.ytelseskomponentInformasjon.belopEndring.equalTo(BeloepEndring.ENDR_RED) or saksbehandlerValg.visRedusertOpptjening) {
                     // nyBeregningAPReduksjon_001
                     paragraph {
                         text(

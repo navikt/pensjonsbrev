@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.BelopEndring
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
@@ -50,7 +50,7 @@ data class VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto(
     )
 
     data class YtelseskomponentInformasjon(
-        val belopEndring: BelopEndring
+        val belopEndring: BeloepEndring
     )
 
     data class BehandlingKontekst(
