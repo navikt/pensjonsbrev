@@ -308,37 +308,21 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
 
 
             showIf(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP1967)) {
-                // hjemmelBrukerAP2011Inst_001
+                // hjemmelBrukerAP2011Inst_001 / hjemmelBrukerAP2011Straff_001
                 paragraph {
-                    text(
-                        Bokmal to "Pensjonen din beregnes etter folketrygdloven § 19-21 så lenge du er på institusjon.",
-                        Nynorsk to "Pensjonen din blir berekna etter folketrygdlova § 19-21 så lenge du er på institusjon.",
-                        English to "Your retirement pension is calculated according to the provisions of § 19-21 of the National Insurance Act, as long as you are institutionalized."
-                    )
-                }
-                paragraph {
-                    // hjemmelBrukerAP2011Straff_001
-                    text(
-                        Bokmal to "Pensjonen din beregnes etter folketrygdloven § 19-22 så lenge du er under straffegjennomføring.",
-                        Nynorsk to "Pensjonen din blir berekna etter folketrygdlova § 19-22 så lenge du er under straffegjennomføring.",
-                        English to "Your retirement pension is calculated according to the provisions of § 19-22 of the National Insurance Act, as long as you are serving a criminal sentence."
+                    textExpr(
+                        Bokmal to "Pensjonen din beregnes etter folketrygdloven § ".expr() + fritekst("19-21 så lenge du er på institusjon / 19-22 så lenge du er under straffegjennomføring") + ".",
+                        Nynorsk to "Pensjonen din blir berekna etter folketrygdlova § ".expr() + fritekst("19-21 så lenge du er på institusjon / 19-22 så lenge du er under straffegjennomføring") + ".",
+                        English to "Your retirement pension is calculated according to the provisions of § ".expr() + fritekst("19-21 of the National Insurance Act, as long as you are institutionalized / 19-22 of the National Insurance Act, as long as you are serving a criminal sentence") + "."
                     )
                 }
             }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2016)) {
                 paragraph {
-                    // hjemmelBrukerAP2016Inst_001
-                    text(
-                        Bokmal to "Pensjonen din beregnes etter folketrygdloven §§ 19-21 og 20-22 så lenge du er på institusjon.",
-                        Nynorsk to "Pensjonen din blir berekna etter folketrygdlova §§ 19-21 og 20-22 så lenge du er på institusjon.",
-                        English to "Your retirement pension is calculated according to the provisions of §§ 19-21 and 20-22 of the National Insurance Act, as long as you are institutionalized."
-                    )
-                }
-                paragraph {
-                    // hjemmelBrukerAP2016Straff_001
-                    text(
-                        Bokmal to "Pensjonen din beregnes etter folketrygdloven §§ 19-22 og 20-23 så lenge du er under straffegjennomføring.",
-                        Nynorsk to "Pensjonen din blir berekna etter folketrygdlova §§ 19-22 og 20-23 så lenge du er under straffegjennomføring.",
-                        English to "Your retirement pension is calculated according to the provisions of §§ 19-22 and 20-23 of the National Insurance Act, as long as you are serving a criminal sentence."
+                    // hjemmelBrukerAP2016Inst_001 / hjemmelBrukerAP2016Straff_001
+                    textExpr(
+                        Bokmal to "Pensjonen din beregnes etter folketrygdloven §§ ".expr() + fritekst("19-21 og 20-22 så lenge du er på institusjon / 19-22 og 20-23 så lenge du er under straffegjennomføring") + ".",
+                        Nynorsk to "Pensjonen din blir berekna etter folketrygdlova §§ ".expr() + fritekst("19-21 og 20-22 så lenge du er på institusjon / 19-22 og 20-23 så lenge du er under straffegjennomføring") + ".",
+                        English to "Your retirement pension is calculated according to the provisions of §§ ".expr() + fritekst("19-21 and 20-22 of the National Insurance Act, as long as you are institutionalized / 19-22 and 20-23 of the National Insurance Act, as long as you are serving a criminal sentence.") + "."
                     )
                 }
             }
