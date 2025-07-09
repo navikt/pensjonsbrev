@@ -256,7 +256,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                     text(
                         Bokmal to "I vedlegget ",
                         Nynorsk to "I vedlegget ",
-                        English to "In the appendix"
+                        English to "In the appendix "
                     )
                     showIf (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
                         namedReference(vedleggOpplysningerBruktIBeregningenAlder)
