@@ -65,6 +65,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
+// 119 i doksys
 @TemplateModelHelpers
 object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto> {
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
@@ -344,47 +345,51 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                         English to "This decision was made pursuant to the provisions of § 19-13 of the National Insurance Act."
                     )
                 }
-            }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2016) and pesysData.krav.arsakErEndretOpptjening) {
-                // hjemmelAP2016Opptjening_001
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-13, 19-15, 20-17 og 20-19.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-13, 19-15, 20-17 og 20-19.",
-                        English to "This decision was made pursuant to the provisions of §§ 19-13, 19-15, 20-17 and 20-19 of the National Insurance Act."
-                    )
+            }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2016)) {
+                showIf(pesysData.krav.arsakErEndretOpptjening) {
+                    // hjemmelAP2016Opptjening_001
+                    paragraph {
+                        text(
+                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-13, 19-15, 20-17 og 20-19.",
+                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-13, 19-15, 20-17 og 20-19.",
+                            English to "This decision was made pursuant to the provisions of §§ 19-13, 19-15, 20-17 and 20-19 of the National Insurance Act."
+                        )
+                    }
                 }
-            }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025) and pesysData.krav.erForstegangsbehandling and not(pesysData.behandlingKontekst.konteksttypeErKorrigeringopptjening)) {
-                // AP2025TidligUttakHjemmel_001
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13.",
-                        English to "This decision was made pursuant to the provisions of §§ 20-2, 20-3, 20-9 to 20-15, 22-12 and 22-13 of the National Insurance Act."
-                    )
+                showIf(pesysData.alderspensjonVedVirk.skjermingstilleggInnvilget) {
+                    // skjermTillHjemmel_001
+                    paragraph {
+                        text(
+                            Bokmal to "Vedtaket er gjort etter reglene i folketrygdloven §§ 19-9 a, og 4-7 i tilhørende forskrift om alderspensjon i folketrygden.",
+                            Nynorsk to "Vedtaket er gjort etter reglane i folketrygdlova §§ 19-9 a, og 4-7 i tilhøyrande forskrift om alderspensjon i folketrygda.",
+                            English to "The decision is made in accordance with the provisions of the National Insurance Act § 19-9a and § 4-7 in the associated regulations on retirement pension in the National Insurance Scheme."
+                        )
+                    }
+                }
+            }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025)) {
+                showIf(not(pesysData.behandlingKontekst.konteksttypeErKorrigeringopptjening)) {
+                    showIf(pesysData.krav.erForstegangsbehandling) {
+                        // AP2025TidligUttakHjemmel_001
+                        paragraph {
+                            text(
+                                Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13.",
+                                Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13.",
+                                English to "This decision was made pursuant to the provisions of §§ 20-2, 20-3, 20-9 to 20-15, 22-12 and 22-13 of the National Insurance Act."
+                            )
+                        }
+                    }.orShow {
+                        // hjemmelAP2025Opptjening_001
+                        paragraph {
+                            text(
+                                Bokmal to "Vedtaket er gjort etter folketrygdloven § 20-17.",
+                                Nynorsk to "Vedtaket er gjort etter folketrygdlova § 20-17.",
+                                English to "This decision was made pursuant to the provision of § 20-7 of the National Insurance Act."
+                            )
+                        }
+                    }
                 }
             }
 
-            showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2016) and pesysData.alderspensjonVedVirk.skjermingstilleggInnvilget) {
-                // skjermTillHjemmel_001
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter reglene i folketrygdloven §§ 19-9 a, og 4-7 i tilhørende forskrift om alderspensjon i folketrygden.",
-                        Nynorsk to "Vedtaket er gjort etter reglane i folketrygdlova §§ 19-9 a, og 4-7 i tilhøyrande forskrift om alderspensjon i folketrygda.",
-                        English to "The decision is made in accordance with the provisions of the National Insurance Act § 19-9a and § 4-7 in the associated regulations on retirement pension in the National Insurance Scheme."
-                    )
-                }
-            }
-
-            showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025) and not(pesysData.krav.erForstegangsbehandling) and not(pesysData.behandlingKontekst.konteksttypeErKorrigeringopptjening)) {
-                // hjemmelAP2025Opptjening_001
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven § 20-17.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova § 20-17.",
-                        English to "This decision was made pursuant to the provision of § 20-7 of the National Insurance Act."
-                    )
-                }
-            }
 
             showIf(pesysData.alderspensjonVedVirk.skjermingstilleggInnvilget) {
                 // skjermTillForklaring_001
