@@ -11,7 +11,6 @@ plugins {
 }
 
 group = "no.nav.pensjon.brevbaker"
-version = "1.11.1"
 
 java {
     withSourcesJar()
@@ -56,4 +55,8 @@ tasks {
     compileTestJava {
         targetCompatibility = apiModelJavaTarget
     }
+}
+
+apiValidation {
+    nonPublicMarkers.add("no.nav.brev.InterneDataklasser")
 }

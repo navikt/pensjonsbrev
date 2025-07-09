@@ -15,6 +15,7 @@ data class EndretUTPgaInntektDtoV2 (
     val forventetInntekt: Int?,
     val virkningFom: LocalDate,
     val totalNetto: Int,
+    val totalNettoAr: Int,
     val datoForNormertPensjonsalder: LocalDate,
     val sokerMottarApIlaAret: Boolean,
     val brukerBorINorge: Boolean,

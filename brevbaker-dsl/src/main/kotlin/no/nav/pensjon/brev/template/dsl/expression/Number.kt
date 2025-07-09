@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.dsl.expression.toKroner
 import no.nav.pensjon.brev.template.expression.IntToKroner
 import no.nav.pensjon.brev.template.expression.IntToYear
 import no.nav.pensjon.brevbaker.api.model.IntValue
@@ -15,22 +16,13 @@ val intValueSelector = object : TemplateModelSelector<IntValue, Int> {
 }
 
 private val Expression<IntValue>.value: Expression<Int>
-    get() = Expression.UnaryInvoke(
-        this,
-        UnaryOperation.Select(intValueSelector)
-    )
+    get() = UnaryOperation.Select(intValueSelector).invoke(this)
 
 fun Expression<Int>.toKroner(): Expression<Kroner> =
-    Expression.UnaryInvoke(
-        this,
-        UnaryOperation.MapValue(IntToKroner)
-    )
+    UnaryOperation.MapValue(IntToKroner).invoke(this)
 
 fun Expression<Int>.toYear(): Expression<Year> =
-    Expression.UnaryInvoke(
-        this,
-        UnaryOperation.MapValue(IntToYear)
-    )
+    UnaryOperation.MapValue(IntToYear).invoke(this)
 
 fun Expression<Double>.format(scale: Int = 2): Expression<String> =
     format(formatter = LocalizedFormatter.DoubleFormat(scale))
@@ -38,62 +30,48 @@ fun Expression<Double>.format(scale: Int = 2): Expression<String> =
 @JvmName("formatInt")
 fun Expression<Int>.format(): Expression<String> = format(formatter = LocalizedFormatter.IntFormat)
 
+operator fun Expression<Int>.plus(other: Int) = plus(other.expr())
+
 operator fun Expression<Int>.plus(other: Expression<Int>): Expression<Int> =
-    Expression.BinaryInvoke(
-        this,
-        other,
-        BinaryOperation.IntPlus
-    )
+    BinaryOperation.IntPlus(this, other)
+
+@JvmName("kronerPlusInt")
+operator fun Expression<Kroner>.plus(other: Int) = plus(other.expr().toKroner())
 
 @JvmName("kronerPlus")
 operator fun Expression<Kroner>.plus(other: Expression<Kroner>): Expression<Kroner> =
     (this.value + other.value).toKroner()
 
 @JvmName("yearPlus")
-operator fun Expression<Year>.plus(other: Expression<Year>): Expression<Year> = (this.value + other.value).toYear()
+operator fun Expression<Year>.plus(other: Int): Expression<Year> = (this.value + other).toYear()
+
+operator fun Expression<Int>.minus(other: Int): Expression<Int> = minus(other.expr())
 
 operator fun Expression<Int>.minus(other: Expression<Int>): Expression<Int> =
-    Expression.BinaryInvoke(
-        this,
-        other,
-        BinaryOperation.IntMinus
-    )
+    BinaryOperation.IntMinus(this, other)
+
+@JvmName("kronerMinusInt")
+operator fun Expression<Kroner>.minus(other: Int): Expression<Kroner> = minus(other.expr().toKroner())
 
 @JvmName("kronerMinus")
 operator fun Expression<Kroner>.minus(other: Expression<Kroner>): Expression<Kroner> =
     (this.value - other.value).toKroner()
 
 @JvmName("yearMinus")
-operator fun Expression<Year>.minus(other: Expression<Year>): Expression<Year> = (this.value - other.value).toYear()
-
+operator fun Expression<Year>.minus(other: Int): Expression<Year> =
+    (this.value - other).toYear()
 
 infix fun <T : Comparable<T>> Expression<T>.greaterThan(compareTo: Expression<T>): Expression<Boolean> =
-    Expression.BinaryInvoke(
-        first = this,
-        second = compareTo,
-        operation = BinaryOperation.GreaterThan(),
-    )
+    BinaryOperation.GreaterThan<T>().invoke(this, compareTo)
 
 infix fun <T : Comparable<T>> Expression<T>.greaterThanOrEqual(compareTo: Expression<T>): Expression<Boolean> =
-    Expression.BinaryInvoke(
-        first = this,
-        second = compareTo,
-        operation = BinaryOperation.GreaterThanOrEqual(),
-    )
+    BinaryOperation.GreaterThanOrEqual<T>().invoke(this, compareTo)
 
 infix fun <T : Comparable<T>> Expression<T>.lessThanOrEqual(compareTo: Expression<T>): Expression<Boolean> =
-    Expression.BinaryInvoke(
-        first = this,
-        second = compareTo,
-        operation = BinaryOperation.LessThanOrEqual(),
-    )
+    BinaryOperation.LessThanOrEqual<T>().invoke(this, compareTo)
 
 infix fun <T : Comparable<T>> Expression<T>.lessThan(compareTo: Expression<T>): Expression<Boolean> =
-    Expression.BinaryInvoke(
-        first = this,
-        second = compareTo,
-        operation = BinaryOperation.LessThan(),
-    )
+    BinaryOperation.LessThan<T>().invoke(this, compareTo)
 
 // Literal compareTo value
 infix fun <T : Comparable<T>> Expression<T>.greaterThan(compareTo: T): Expression<Boolean> =
@@ -105,10 +83,13 @@ infix fun <T : Comparable<T>> Expression<T>.greaterThanOrEqual(compareTo: T): Ex
 infix fun <T : Comparable<T>> Expression<T>.lessThanOrEqual(compareTo: T): Expression<Boolean> =
     lessThanOrEqual(compareTo.expr())
 
-infix fun <T : Comparable<T>> Expression<T>.lessThan(compareTo: T): Expression<Boolean> = lessThan(compareTo.expr())
+infix fun <T : Comparable<T>> Expression<T>.lessThan(compareTo: T): Expression<Boolean> =
+    lessThan(compareTo.expr())
 
 // IntValue compareTo literal
-infix fun Expression<IntValue>.greaterThan(compareTo: Int): Expression<Boolean> = value.greaterThan(compareTo)
+infix fun Expression<IntValue>.greaterThan(compareTo: Int): Expression<Boolean> =
+    value.greaterThan(compareTo)
+
 infix fun Expression<IntValue>.greaterThanOrEqual(compareTo: Int): Expression<Boolean> =
     value.greaterThanOrEqual(compareTo)
 

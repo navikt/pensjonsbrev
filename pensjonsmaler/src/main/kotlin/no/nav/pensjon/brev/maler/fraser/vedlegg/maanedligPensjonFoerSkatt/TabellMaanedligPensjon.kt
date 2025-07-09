@@ -9,12 +9,16 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025DtoS
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025DtoSelectors.AlderspensjonPerManedSelectors.virkDatoTom
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabell
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.barnetilleggFB
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.barnetilleggFB_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.barnetilleggSB
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.barnetilleggSB_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.ektefelletillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.ektefelletillegg_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.familieTillegg
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.fasteUtgifter
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.garantipensjon
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.garantitillegg
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.garantitillegg_safe
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.gjenlevendetillegg
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.gjenlevendetilleggKap19
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattTabellSelectors.AlderspensjonPerManedSelectors.grunnpensjon
@@ -471,15 +475,17 @@ data class TabellMaanedligPensjonKap19og20(
                 garantipensjon(beregnetPensjon.garantipensjon)
 
                 ifNotNull(beregnetPensjon.garantitillegg) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Garantitillegg for opptjente rettigheter",
-                                Nynorsk to "Garantitillegg for opptente rettar",
-                                English to "Guarantee supplements for accumulated rights",
-                            )
+                    showIf(it.greaterThan(0)) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Garantitillegg for opptjente rettigheter",
+                                    Nynorsk to "Garantitillegg for opptente rettar",
+                                    English to "Guarantee supplements for accumulated rights",
+                                )
+                            }
+                            cell { includePhrase(KronerText(it)) }
                         }
-                        cell { includePhrase(KronerText(it)) }
                     }
                 }
 
@@ -527,7 +533,9 @@ data class TabellMaanedligPensjonKap19og20(
                 }
             }
             showIf(
-                beregnetPensjon.ektefelletillegg.notNull() or beregnetPensjon.barnetilleggSB.notNull() or beregnetPensjon.barnetilleggFB.notNull()
+                beregnetPensjon.ektefelletillegg_safe .ifNull(Kroner(0)).greaterThan(0)
+                        or beregnetPensjon.barnetilleggSB_safe.ifNull(Kroner(0)).greaterThan(0)
+                        or beregnetPensjon.barnetilleggFB_safe.ifNull(Kroner(0)).greaterThan(0)
                         and beregnetPensjon.virkDatoFom.year.lessThan(2025)
             ) {
                 table(header = {
@@ -543,41 +551,47 @@ data class TabellMaanedligPensjonKap19og20(
                     }
                 }) {
                     ifNotNull(beregnetPensjon.ektefelletillegg) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Ektefelletillegg",
-                                    Nynorsk to "Ektefelletillegg",
-                                    English to "Spouse supplement",
-                                )
+                        showIf(it.greaterThan(0)) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Ektefelletillegg",
+                                        Nynorsk to "Ektefelletillegg",
+                                        English to "Spouse supplement",
+                                    )
+                                }
+                                cell { includePhrase(KronerText(it)) }
                             }
-                            cell { includePhrase(KronerText(it)) }
                         }
                     }
 
                     ifNotNull(beregnetPensjon.barnetilleggSB) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Barnetillegg særkullsbarn",
-                                    Nynorsk to "Barnetillegg særkullsbarn",
-                                    English to "Supplement for child(ren) of former marriages/relationships",
-                                )
+                        showIf(it.greaterThan(0)) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Barnetillegg særkullsbarn",
+                                        Nynorsk to "Barnetillegg særkullsbarn",
+                                        English to "Supplement for child(ren) of former marriages/relationships",
+                                    )
+                                }
+                                cell { includePhrase(KronerText(it)) }
                             }
-                            cell { includePhrase(KronerText(it)) }
                         }
                     }
 
                     ifNotNull(beregnetPensjon.barnetilleggFB) {
-                        row {
-                            cell {
-                                text(
-                                    Bokmal to "Barnetillegg fellesbarn",
-                                    Nynorsk to "Barnetillegg fellesbarn",
-                                    English to "Supplement for child(ren) of the marriages/relationship",
-                                )
+                        showIf(it.greaterThan(0)) {
+                            row {
+                                cell {
+                                    text(
+                                        Bokmal to "Barnetillegg fellesbarn",
+                                        Nynorsk to "Barnetillegg fellesbarn",
+                                        English to "Supplement for child(ren) of the marriages/relationship",
+                                    )
+                                }
+                                cell { includePhrase(KronerText(it)) }
                             }
-                            cell { includePhrase(KronerText(it)) }
                         }
                     }
                 }

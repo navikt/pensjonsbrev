@@ -288,7 +288,12 @@ data class InfoSivilstandAP(
                     Nynorsk to "Dersom ektefellen, partnaren eller sambuaren din ikkje får eigen pensjon eller eiga uføretrygd, vil vi i de fleste sakene ikkje ha korrekte inntektsopplysningar. " +
                             "Vi vil derfor leggje til grunn ei inntekt på to gonger grunnbeløpet i folketrygda når vi bereknar alderspensjonen.",
                     English to "If your spouse/partner/cohabitant does not receive a separate pension or disability benefit, in most cases we will not have the correct income information. " +
-                            "We will therefore use an income of two times the National Insurance basic amount (“G”) as the starting point when calculating retirement pension. ",
+                            "We will therefore use an income of two times the National Insurance basic amount (",
+                )
+                textExpr(
+                    Bokmal to "".expr(),
+                    Nynorsk to "".expr(),
+                    English to quoted("G") + ") as the starting point when calculating retirement pension."
                 )
             }
             paragraph {
@@ -593,4 +598,3 @@ object InfoPensjonFraAndreAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
     }
 }
-

@@ -47,7 +47,8 @@ public final class no/nav/brev/brevbaker/LatexTimeoutException : java/lang/Excep
 
 public abstract interface class no/nav/brev/brevbaker/PDFByggerService {
 	public abstract fun producePDF (Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun validateResponse (ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun producePDF$default (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun validateResponse (ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class no/nav/brev/brevbaker/PDFByggerService$DefaultImpls {
@@ -60,23 +61,6 @@ public abstract interface class no/nav/pensjon/brev/template/Letter {
 	public abstract fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
 	public abstract fun getLanguage ()Lno/nav/pensjon/brev/template/Language;
 	public abstract fun getTemplate ()Lno/nav/pensjon/brev/template/LetterTemplate;
-}
-
-public final class no/nav/pensjon/brev/template/LetterImpl : no/nav/pensjon/brev/template/Letter {
-	public fun <init> (Lno/nav/pensjon/brev/template/LetterTemplate;Ljava/lang/Object;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brevbaker/api/model/Felles;)V
-	public final fun component1 ()Lno/nav/pensjon/brev/template/LetterTemplate;
-	public final fun component2 ()Ljava/lang/Object;
-	public final fun component3 ()Lno/nav/pensjon/brev/template/Language;
-	public final fun component4 ()Lno/nav/pensjon/brevbaker/api/model/Felles;
-	public final fun copy (Lno/nav/pensjon/brev/template/LetterTemplate;Ljava/lang/Object;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brevbaker/api/model/Felles;)Lno/nav/pensjon/brev/template/LetterImpl;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brev/template/LetterImpl;Lno/nav/pensjon/brev/template/LetterTemplate;Ljava/lang/Object;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brevbaker/api/model/Felles;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/LetterImpl;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getArgument ()Ljava/lang/Object;
-	public fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
-	public fun getLanguage ()Lno/nav/pensjon/brev/template/Language;
-	public fun getTemplate ()Lno/nav/pensjon/brev/template/LetterTemplate;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/template/render/HTMLDocument : no/nav/pensjon/brev/template/render/Document {

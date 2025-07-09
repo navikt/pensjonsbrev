@@ -48,6 +48,21 @@ class TemplateRoutesTest {
     }
 
     @Test
+    fun `brevkoder of all redigerbare brev are unique`() =
+        assertEquals(
+            alleRedigerbareMaler
+                .map { it.kode.kode() }.distinct().toSet().size, alleRedigerbareMaler.size, "Alle redigerbare maler skal ha unike brevkoder"
+        )
+
+    @Test
+    fun `brevkoder of all autobrev are unique`() =
+        assertEquals(
+            alleAutobrevmaler
+                .map { it.kode.kode() }.distinct().toSet().size, alleAutobrevmaler.size, "Alle autobrev maler skal ha unike brevkoder"
+        )
+
+
+    @Test
     fun `can get description of all autobrev`() = testBrevbakerApp { client ->
         val response = client.get("/templates/autobrev?includeMetadata=true")
         assertEquals(HttpStatusCode.OK, response.status)

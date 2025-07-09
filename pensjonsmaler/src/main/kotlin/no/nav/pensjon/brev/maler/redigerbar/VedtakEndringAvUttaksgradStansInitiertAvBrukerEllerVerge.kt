@@ -60,9 +60,9 @@ object VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge :
             // stansAPInnledn_001
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Vi viser til søknaden din, og stanser utbetalingen av alderspensjonen fra ".expr() + pesysData.krav.virkDatoFom.format(),
-                    Language.Nynorsk to "Vi viser til søknaden din, og stansar utbetalinga av alderspensjonen frå ".expr() + pesysData.krav.virkDatoFom.format(),
-                    Language.English to "This is in reference to your application. We are stopping payment of your retirement pension from ".expr() + pesysData.krav.virkDatoFom.format(),
+                    Language.Bokmal to "Vi viser til søknaden din, og stanser utbetalingen av alderspensjonen fra ".expr() + pesysData.krav.virkDatoFom.format() + ".",
+                    Language.Nynorsk to "Vi viser til søknaden din, og stansar utbetalinga av alderspensjonen frå ".expr() + pesysData.krav.virkDatoFom.format() + ".",
+                    Language.English to "This is in reference to your application. We are stopping payment of your retirement pension from ".expr() + pesysData.krav.virkDatoFom.format() + ".",
                 )
             }
 

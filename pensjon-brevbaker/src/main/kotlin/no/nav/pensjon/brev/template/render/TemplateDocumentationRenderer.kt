@@ -24,7 +24,7 @@ object TemplateDocumentationRenderer {
 
     private fun renderAttachment(attachment: IncludeAttachment<*, *>, lang: Language): TemplateDocumentation.Attachment =
         TemplateDocumentation.Attachment(
-            title = renderText(listOf(attachment.template.title), lang),
+            title = renderText(attachment.template.title, lang),
             outline = renderOutline(attachment.template.outline, lang),
             include = renderExpression(attachment.predicate),
             attachmentData = renderExpression(attachment.data),
@@ -267,6 +267,16 @@ object TemplateDocumentationRenderer {
             )
 
             is UnaryOperation.MapValue<*, *> -> renderExpression(expr.value)
+
+            is UnaryOperation.QuotationEnd -> Invoke(
+                operator = Operation(text = "\"", Documentation.Notation.POSTFIX),
+                first = renderExpression(expr.value),
+            )
+
+            is UnaryOperation.QuotationStart -> Invoke(
+                operator = Operation(text = "\"", Documentation.Notation.PREFIX),
+                first = renderExpression(expr.value),
+            )
         }
 
     private fun renderOperation(operation: BinaryOperation<*, *, *>): Operation =

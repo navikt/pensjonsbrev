@@ -62,38 +62,21 @@ object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<Omstillingss
                 }
                 paragraph {
                     text(
-                        Bokmal to "Du kan melde fra om endringer og sende dokumentasjon ved å",
-                        Nynorsk to "Du kan melde frå om endringar og sende dokumentasjon ved å",
-                        English to "You can report changes and submit documentation by",
+                        Bokmal to "Du kan melde fra til oss om endringer ved å benytte endringsskjema eller ettersende dokumentasjon på ${Constants.OMS_MELD_INN_ENDRING_URL}.",
+                        Nynorsk to "Du kan melde frå om endringar ved å bruke endringsskjema eller ettersende dokumentasjon på ${Constants.OMS_MELD_INN_ENDRING_URL}.",
+                        English to "You can report changes by use the change form or submit information on ${Constants.OMS_MELD_INN_ENDRING_URL}.",
                     )
-
-                    val postadresse = ifElse(bosattUtland, Constants.Utland.POSTADRESSE, Constants.POSTADRESSE)
-
-                    list {
-                        item {
-                            text(
-                                Bokmal to "benytte endringsskjema på ${Constants.OMS_MELD_INN_ENDRING_URL}",
-                                Nynorsk to "bruke endringsskjema på ${Constants.OMS_MELD_INN_ENDRING_URL}",
-                                English to "use the change form on ${Constants.OMS_MELD_INN_ENDRING_URL}",
-                            )
-                        }
-                        item {
-                            text(
-                                Bokmal to "ettersende dokumentasjon angående omstillingsstønad ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}",
-                                Nynorsk to "ettersend dokumentasjon angående omstillingsstønad ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}.",
-                                English to
-                                        "submit additional documentation regarding adjustment allowance by going to: ${Constants.Engelsk.ETTERSENDE_OMS_URL}.",
-                            )
-                        }
-                        item {
-                            textExpr(
-                                Bokmal to "sende brev til ".expr() + postadresse,
-                                Nynorsk to "send brev til ".expr() + postadresse,
-                                English to "send a letter to ".expr() + postadresse,
-                            )
-                        }
-                    }
                 }
+
+                paragraph {
+                    val postadresse = ifElse(bosattUtland, Constants.Utland.POSTADRESSE, Constants.POSTADRESSE)
+                    textExpr(
+                        Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du sende brev til ".expr() + postadresse + ".",
+                        Nynorsk to "Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår nav.no, må du sende dokumentasjon per post til ".expr() + postadresse + ".",
+                        English to "Please send documentation as normal post if you do not use BankID or another login option. Send to ".expr() + postadresse + ".",
+                    )
+                }
+
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
         }

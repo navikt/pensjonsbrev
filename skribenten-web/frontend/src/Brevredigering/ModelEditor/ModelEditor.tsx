@@ -6,7 +6,7 @@ import { useModelSpecification } from "~/api/brev-queries";
 import type { FieldType, LetterModelSpecification } from "~/types/brevbakerTypes";
 
 import { FieldEditor } from "./components/ObjectEditor";
-import { isFieldNullableOrBoolean } from "./components/utils";
+import { isBooleanField, isFieldNullableOrBoolean } from "./components/utils";
 
 const useModelSpecificationForm = (brevkode: string) => {
   const brevKodeSpecification = useModelSpecification(brevkode, (s) => s);
@@ -102,29 +102,29 @@ export const SaksbehandlerValgModelEditor = (props: {
   switch (props.fieldsToRender) {
     case "required": {
       /**
-       * Boolean felter er spesielle
-       * Det at et felt er non-nullable, betyr at den er påkrevd ved innsending av skjemaet
-       * Derimot, så er boolean felter stort sett kun brukt for brev-tekst, og er ikke et påkrevd felt som saksbehandler skal
-       * forholde seg til ved opprettelse av brev.
+       * Boolean felter har spesialbehandling. De er (nesten) alltid non-nullable og er flagg som styrer tekstvalg i malene
+       * som regnes som utenfor normen. Vi ønsker derfor ikke å vise dem i Brevvelger, da det ikke er særlig relevant der.
        *
-       * Tidligere har vi mekket opp et objekt ved innsending som inneholdt boolean feltene ved opprettelse av brev, som ikke
-       * har vært registrert i formet.
-       *
-       * Dette er litt fordi at feltene blir først registrert når dem blit rendret, og boolean felter skal ikke bli rendret under opprettelse av brev.
-       *
-       * Derfor, så registrerer vi boolean felter her.
-       *
-       * Merk at dette er på mange måter bare en ny hack
+       * Siden disse feltene er non-nullable så betyr det at vi må sende med en verdi for dem i Saksbehandlervalg-objektet,
+       * og derfor må de registreres i form-et med false som verdi.
        */
       for (const field of optionalFields) {
-        if (field.fieldType.type === "scalar" && field.fieldType.kind === "BOOLEAN") {
+        if (isBooleanField(field.fieldType)) {
           register(`saksbehandlerValg.${field.field}`, { value: false });
         }
       }
-      return <VStack gap="5">{requiredFields.map((field) => field.element)}</VStack>;
+      return (
+        <VStack gap="5" marginBlock="space-0 space-16">
+          {requiredFields.map((field) => field.element)}
+        </VStack>
+      );
     }
     case "optional": {
-      return <VStack gap="5">{optionalFields.map((field) => field.element)}</VStack>;
+      return (
+        <VStack gap="5" marginBlock="space-0 space-16">
+          {optionalFields.map((field) => field.element)}
+        </VStack>
+      );
     }
   }
 };

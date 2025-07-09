@@ -1,4 +1,6 @@
 import { getToken } from "@navikt/oasis";
+import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import { Express } from "express";
 import { jwtDecode } from "jwt-decode";
 
@@ -34,5 +36,24 @@ export const internalRoutes = (server: Express) => {
     response.json({
       psak: baseUrls.psak,
     });
+  });
+
+  server.post("/bff/internal/logg", bodyParser.json(), cookieParser(), (request, response) => {
+    if (request.cookies["use-local-vite-server"] === "true") {
+      response.status(200).end();
+      return;
+    }
+
+    const body = request.body;
+    console.error(
+      JSON.stringify({
+        level: "ERROR",
+        statusCode: "500",
+        timestamp: body.jsonContent.timestamp,
+        message: body.message + ": " + body.jsonContent.url,
+        stack_trace: body.stack,
+      }),
+    );
+    response.status(200).end();
   });
 };

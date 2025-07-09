@@ -138,8 +138,7 @@ object Felles {
             }
             paragraph {
                 text(
-                    Bokmal to "Meld fra til oss ved å benytte endringsskjema på ${Constants.OMS_MELD_INN_ENDRING_URL}. " +
-                            "Du må sende dokumentasjon på ${Constants.ETTERSENDE_OMS_URL}.",
+                    Bokmal to "Meld fra til oss ved å benytte endringsskjema eller ettersende dokumentasjon på ${Constants.ETTERSENDE_OMS_URL}.",
                     Nynorsk to "",
                     English to "",
                 )

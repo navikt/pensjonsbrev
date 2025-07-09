@@ -25,11 +25,11 @@ jobs:
       with:
         distribution: 'adopt'
         java-version: '11'
-    - uses: ruby/setup-ruby@f41e084df884422b269f4c01c3748a9df4431a75
+    - uses: ruby/setup-ruby@a4effe49ee8ee5b8b5091268c473a4628afb5651
       with:
         ruby-version: '2.6'
     - name: Install plantuml
-      run: "sudo gem install asciidoctor-diagram"
+      run: "sudo gem install asciidoctor-diagram asciidoctor-diagram-plantuml"
     - name: Install asciidoctor
       run: "sudo apt-get install asciidoctor"
     - name: Install graphviz

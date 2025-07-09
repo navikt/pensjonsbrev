@@ -2,12 +2,12 @@ package no.nav.pensjon.brev.maler.alder
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.NormertPensjonsalder
+import no.nav.pensjon.brev.maler.alder.avslag.gradsendring.fraser.AvslagHjemler
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2016Vedlegg
 import no.nav.pensjon.brev.maler.alder.vedlegg.opplysningerBruktIBeregningenAP2025Vedlegg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.redigerbar.InnhentingInformasjonFraBruker.fritekst
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -32,6 +32,7 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
     val borINorge: Expression<Boolean>,
     val regelverkType: Expression<AlderspensjonRegelverkType>,
     val harEOSLand: Expression<Boolean>,
+    val avtaleland: Expression<String?>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title2 {
@@ -58,46 +59,7 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
             )
         }
 
-        showIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2025)) {
-            paragraph {
-                text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-15 og 22-13.",
-                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-15 og 22-13.",
-                    English to "This decision was made pursuant to the provisions of §§ 20-15 and 22-13 of the National Insurance Act."
-                )
-            }
-        }.orShowIf(regelverkType.isOneOf(AlderspensjonRegelverkType.AP2016)) {
-            paragraph {
-                text(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-11, 19-15, 20-15, 20-19 og 22-13.",
-                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-11, 19-15, 20-15, 20-19 og 22-13.",
-                    English to "This decision was made pursuant to the provisions of §§ 19-11, 19-15, 20-15, 20-19 and 22-13 of the National Insurance Act."
-                )
-            }
-        }
-
-        showIf(harEOSLand and prorataBruktIBeregningen) {
-            paragraph {
-                text(
-                    Bokmal to "Vedtaket er også gjort etter EØS-avtalens regler i forordning 883/2004, artikkel 6.",
-                    Nynorsk to "Vedtaket er også gjort etter reglane i EØS-avtalen i forordning 883/2004, artikkel 6.",
-                    English to "This decision was also made pursuant to the provisions of Regulation (EC) 883/2004, article 6.",
-                )
-            }
-        }
-
-        showIf(harEOSLand.not() and prorataBruktIBeregningen) {
-            paragraph {
-                textExpr(
-                    Bokmal to "Vedtaket er også gjort etter artikkel ".expr() + fritekst("legg inn aktuelle artikler om sammenlegging og eksport") +
-                            " i trygdeavtalen med " + fritekst("avtaleland") + ".",
-                    Nynorsk to "Vedtaket er også gjort etter artikkel ".expr() + fritekst("legg inn aktuelle artikler om sammenlegging og eksport") +
-                            " i trygdeavtalen med " + fritekst("avtaleland") + ".",
-                    English to "This decision was also made pursuant to the provisions of Article ".expr() + fritekst("legg inn aktuelle artikler om sammenlegging og eksport") +
-                            "  in the social security agreement with " + fritekst("avtaleland") + ".",
-                )
-            }
-        }
+        includePhrase(AvslagHjemler(regelverkType, harEOSLand, prorataBruktIBeregningen, avtaleland))
 
         title2 {
             text(
@@ -141,7 +103,7 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                             text(
                                 Bokmal to "I denne beregningen har vi inkludert AFP.",
                                 Nynorsk to "I denne berekninga har vi inkludert AFP.",
-                                English to "This amount includes contractual pension (AFP).."
+                                English to "This amount includes contractual pension (AFP)."
                             )
                         }
                     }
@@ -187,7 +149,7 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                             text(
                                 Bokmal to "I denne beregningen har vi inkludert AFP.",
                                 Nynorsk to "I denne berekninga har vi inkludert AFP.",
-                                English to "This amount includes contractual early retirement pension."
+                                English to "This amount includes contractual pension (AFP)."
                             )
                         }
                     }
@@ -254,13 +216,13 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
                             " +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} hvis du trenger hjelp til dette. ",
                     Nynorsk to "Logg inn på ${Constants.DIN_PENSJON_URL} for å sjekke når du tidlegast kan ta ut ".expr() +
                             "alderspensjon. Der kan du også sjå kva pensjonen din blir, avhengig av når og kor mykje du " +
-                            "tek ut. Du kan logge inn med BankID, Buypass eller Commfides. Kontakt oss gjerne på telefon" +
+                            "tar ut. Du kan logge inn med BankID, Buypass eller Commfides. Kontakt oss gjerne på telefon" +
                             " +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON} om du treng hjelp til dette. ",
                     English to "Log in to ${Constants.DIN_PENSJON_URL} to check the earliest date you can withdraw your retirement pension. ".expr() +
                             "There, you can also see how your pension will vary depending on when and how much you choose to withdraw. " +
-                            "You can log in using BankID, Buypass, or Commfides. If you need assistance, please contact us by phone at +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}." +
+                            "You can log in using BankID, Buypass, or Commfides. If you need assistance, please contact us by phone at +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}. " +
                             "Even though we have rejected this application, you may still have the right to withdraw your retirement pension before turning" + normertPensjonsalder.aarOgMaanederFormattert() + ". " +
-                            "To do so, you would need to choose a lower withdrawal rate or postpone your pension withdrawal to a later date.",
+                                "To do so, you would need to choose a lower withdrawal rate or postpone your pension withdrawal to a later date.",
                 )
                 textExpr(
                     Bokmal to "Selv om vi har avslått denne søknaden, kan du likevel ha rett til å ta ut alderspensjon før ".expr() +
