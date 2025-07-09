@@ -160,7 +160,7 @@ data class ArbeidsinntektOgAlderspensjon(
                 )
             }
         }
-        includePhrase(UfoereKombinertMedAlder(uforeKombinertMedAlder))
+        includePhrase(UfoereAlder.UfoereKombinertMedAlder(uforeKombinertMedAlder))
     }
 }
 
@@ -185,17 +185,18 @@ object PensjonsopptjeningInformasjon : OutlinePhrase<LangBokmalNynorskEnglish>()
     }
 }
 
-class UfoereKombinertMedAlder(val ufoereKombinertMedAlder: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(ufoereKombinertMedAlder) {
-            paragraph {
-                text(
-                    Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
-                    Nynorsk to "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd.",
-                    English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit."
-                )
+object UfoereAlder {
+    class UfoereKombinertMedAlder(val ufoereKombinertMedAlder: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(ufoereKombinertMedAlder) {
+                paragraph {
+                    text(
+                        Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
+                        Nynorsk to "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd.",
+                        English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit."
+                    )
+                }
             }
         }
     }
-
 }
