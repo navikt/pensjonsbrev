@@ -110,6 +110,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
         val brukerFoedtEtter1944 = pesysData.bruker.fodselsdato.greaterThanOrEqual(LocalDate.of(1944, Month.JANUARY, 1))
 
         title {
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(virkDatoFomEtter2023 and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget and saksbehandlerValg.gjenlevendetilleggTittel) {
                 text(
                     Bokmal to "Gjenlevendetillegg i alderspensjonen fra ",
@@ -211,6 +212,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // beregningAPGjtKap19_001
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget and saksbehandlerValg.visGjenlevendetilleggPensjonsrettigheter) {
                 paragraph {
                     textExpr(
@@ -367,6 +369,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // omregnetTPAvdod_001
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP1967) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt and saksbehandlerValg.visTilleggspensjonavsnittAP1967) {
                 paragraph {
                     text(
@@ -713,6 +716,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // infoAPopptjRedusPoengUnder67Aar_001
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(
                 pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
                         and saksbehandlerValg.brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar
@@ -726,7 +730,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             // infoAPopptjRedusPoengOver67Aar_001
             showIf(
                 pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
@@ -742,6 +746,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // skattAPendring_001
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(pesysData.alderspensjonVedVirk.harEndretPensjon and saksbehandlerValg.endringIPensjonsutbetaling) {
                 includePhrase(Vedtak.EndringKanHaBetydningForSkatt)
             }

@@ -311,6 +311,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             // skattAPendring_001
             includePhrase(Vedtak.EndringKanHaBetydningForSkatt)
 
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(pesysData.vedtak.etterbetaling or saksbehandlerValg.visEtterbetaling) {
                 // etterbetalingAP_002
                 includePhrase(Vedtak.Etterbetaling(pesysData.krav.virkDatoFom))
