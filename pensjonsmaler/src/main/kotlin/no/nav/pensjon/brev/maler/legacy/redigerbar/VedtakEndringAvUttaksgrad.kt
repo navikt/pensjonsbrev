@@ -28,6 +28,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUtta
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.VedtakSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.UfoereKombinertMedAlder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -341,16 +342,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
                 }
             }
 
-            showIf(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder) {
-                // arbInntektAPogUT_001
-                paragraph {
-                    text(
-                        Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
-                        Nynorsk to "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd.",
-                        English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit."
-                    )
-                }
-            }
+            includePhrase(UfoereKombinertMedAlder(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder))
 
             // meldEndringerPesys_002
             // TODO: Denne er så godt som lik mange av dei andre meld fra om endringer. Bør samkjøres og legges i felles.
