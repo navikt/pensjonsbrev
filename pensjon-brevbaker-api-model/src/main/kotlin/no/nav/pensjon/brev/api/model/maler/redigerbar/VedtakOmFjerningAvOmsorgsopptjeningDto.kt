@@ -5,10 +5,10 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 
 @Suppress("unused")
-data class VedtakOmFjerningAvOmsorgspoengDto(
+data class VedtakOmFjerningAvOmsorgsopptjeningDto(
     override val saksbehandlerValg: SaksbehandlerValg,
     override val pesysData: PesysData,
-) : RedigerbarBrevdata<VedtakOmFjerningAvOmsorgspoengDto.SaksbehandlerValg, VedtakOmFjerningAvOmsorgspoengDto.PesysData> {
+) : RedigerbarBrevdata<VedtakOmFjerningAvOmsorgsopptjeningDto.SaksbehandlerValg, VedtakOmFjerningAvOmsorgsopptjeningDto.PesysData> {
     data class SaksbehandlerValg(
         val aktuelleAar: String,
     ) : BrevbakerBrevdata

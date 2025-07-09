@@ -3,11 +3,11 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmFjerningAvOmsorgspoengDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmFjerningAvOmsorgspoengDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmFjerningAvOmsorgspoengDtoSelectors.SaksbehandlerValgSelectors.aktuelleAar
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmFjerningAvOmsorgspoengDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmFjerningAvOmsorgspoengDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmFjerningAvOmsorgsopptjeningDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmFjerningAvOmsorgsopptjeningDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmFjerningAvOmsorgsopptjeningDtoSelectors.SaksbehandlerValgSelectors.aktuelleAar
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmFjerningAvOmsorgsopptjeningDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmFjerningAvOmsorgsopptjeningDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
@@ -25,19 +25,19 @@ import no.nav.pensjon.brev.template.includePhrase
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object VedtakOmFjerningAvOmsorgspoeng : RedigerbarTemplate<VedtakOmFjerningAvOmsorgspoengDto> {
+object VedtakOmFjerningAvOmsorgsopptjening : RedigerbarTemplate<VedtakOmFjerningAvOmsorgsopptjeningDto> {
 
-    override val kode = Pesysbrevkoder.Redigerbar.PE_VEDTAK_OM_FJERNING_AV_OMSORGSPOENG
+    override val kode = Pesysbrevkoder.Redigerbar.PE_VEDTAK_OM_FJERNING_AV_OMSORGSOPPTJENING
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = Sakstype.pensjon // Litt usikker på denne
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = VedtakOmFjerningAvOmsorgspoengDto::class,
+        letterDataType = VedtakOmFjerningAvOmsorgsopptjeningDto::class,
         languages(Bokmal, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak om fjerning av omsorgspoeng",
+            displayTitle = "Vedtak om fjerning av omsorgsopptjening",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
