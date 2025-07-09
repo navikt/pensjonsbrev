@@ -19,10 +19,9 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagAP2011FolketrygdsakHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagAP2011Under3aar5aarHjemmel
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder1aar3aar5aarTT
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder1aarHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder1aarTT
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder3aar5aarHjemmelAvtaleAuto
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder3aar5aarTT
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.OpptjeningstidEOSAvtaleland
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilAPFolketrygdsak
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilAPMedEOSAvtalelandOg3aar5aarTT
@@ -41,7 +40,6 @@ import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -102,13 +100,13 @@ object AvslagForLiteTrygdetidAP2011 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                         English to "To be eligible for retirement pension, you must have been registered as living or working in Norway for at least one year. You do not meet this requirement, therefore we have declined your application.",
                     )
                 }
-                includePhrase(AvslagUnder1aarTT)
+                includePhrase(AvslagUnder1aar3aar5aarTT)
                 includePhrase(AvslagUnder1aarHjemmel(avtaleland, erEOSland, regelverkType = pesysData.regelverkType))
 
             }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT)) {
                 showIf(not(erAvtaleland) and not(erEOSland)) { // Mindre enn tre års trygdetid - folketrygdsak:
                     includePhrase(RettTilAPFolketrygdsak(avslagsBegrunnelse, regelverkType = pesysData.regelverkType))
-                    includePhrase(AvslagUnder3aar5aarTT)
+                    includePhrase(AvslagUnder1aar3aar5aarTT)
                     includePhrase(AvslagAP2011FolketrygdsakHjemmel)
 
                 }.orShowIf(erEOSland and not(erAvtaleland)) { // Mindre enn tre års trygdetid - EØSsak:
@@ -138,7 +136,7 @@ object AvslagForLiteTrygdetidAP2011 : RedigerbarTemplate<AvslagForLiteTrygdetidA
 
                 showIf(not(erAvtaleland) and not(erEOSland)) { // Mindre enn fem års trygdetid - folketrygdsak:
                     includePhrase(RettTilAPFolketrygdsak(avslagsBegrunnelse, regelverkType = pesysData.regelverkType))
-                    includePhrase(AvslagUnder3aar5aarTT)
+                    includePhrase(AvslagUnder1aar3aar5aarTT)
                     includePhrase(AvslagAP2011FolketrygdsakHjemmel)
 
                 }.orShowIf(erEOSland and not(erAvtaleland)) { // Mindre enn fem års trygdetid - EØSsak:
@@ -198,7 +196,6 @@ object AvslagForLiteTrygdetidAP2011 : RedigerbarTemplate<AvslagForLiteTrygdetidA
 
             showIf(
                 avslagsBegrunnelse.isOneOf(
-                    UNDER_20_AR_BO,
                     UNDER_20_AR_BO,
                     UNDER_5_AR_TT,
                     UNDER_3_AR_TT,

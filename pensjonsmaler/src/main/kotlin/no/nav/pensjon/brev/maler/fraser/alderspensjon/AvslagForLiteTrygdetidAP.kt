@@ -27,7 +27,8 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 
-object AvslagUnder1aarTT : OutlinePhrase<LangBokmalNynorskEnglish>() {
+// avslagAP2011Under1aar, avslagAP2016Under1aar, avslagUnder3aarTT, avslagUnder5aarTT
+object AvslagUnder1aar3aar5aarTT : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
@@ -40,7 +41,7 @@ object AvslagUnder1aarTT : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-
+// avslagAP2011Under1aarHjemmelEOS, avslagAP2016Under1aarHjemmelEOS, avslagAP2011Under1aarHjemmelAvtale, avslagAP2016Under1aarHjemmelAvtale
 data class AvslagUnder1aarHjemmel(
     val avtaleland: Expression<String>,
     val erEOSland: Expression<Boolean>,
@@ -87,24 +88,6 @@ data class AvslagUnder1aarHjemmel(
                             + avtaleland + ".",
                 )
             }
-        }
-    }
-}
-
-object AvslagUnder3aar5aarTT : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        paragraph {
-            textExpr(
-                Bokmal to "Våre opplysninger viser at du har bodd eller arbeidet i Norge i ".expr() + fritekst(
-                    "Angi trygdetid"
-                ) + ". Våre opplysninger viser at du ikke har bodd eller arbeidet i Norge.",
-                Nynorsk to "Våre opplysningar viser at du har budd eller arbeidd i Noreg i ".expr() + fritekst(
-                    "Angi trygdetid"
-                ) + ". I følgje våre opplysningar har du ikkje budd eller arbeidd i Noreg.",
-                English to "We have registered that you have been living or working in Norway for ".expr() + fritekst(
-                    "Angi trygdetid"
-                ) + ". We have no record of you living or working in Norway.",
-            )
         }
     }
 }
@@ -200,6 +183,8 @@ data class RettTilAPFolketrygdsak(
     }
 }
 
+// avslagAP2011Under3aarEOS, avslagAP2011Under3aarAvtale, avslagAP2016Under3aarEOS, avslagAP2016Under3aarAvtale,
+// avslagAP2011Under5aarEOS, avslagAP2011Under5aarAvtale, avslagAP2016Under5aarEOS, avslagAP2016Under5aarAvtale
 data class RettTilAPMedEOSAvtalelandOg3aar5aarTT(
     val avslagsbegrunnelse: Expression<VedtaksBegrunnelse>,
     val erAvtaleland: Expression<Boolean>,
@@ -250,12 +235,46 @@ data class RettTilAPMedEOSAvtalelandOg3aar5aarTT(
                     )
                 )
             }.orShowIf(erAvtaleland and not(erEOSland)) {
-                text(Bokmal to "avtaleland. ", Nynorsk to "avtaleland. ", English to "an other signatory country. ")
+                textExpr(
+                    Bokmal to "avtaleland".expr()
+                            + ifElse(
+                        regelverkType.isOneOf(AP2016),
+                        ifTrue = ", eller ha tjent opp inntektspensjon. ",
+                        ifFalse = ". "
+                    ),
+                    Nynorsk to "avtaleland".expr()
+                            + ifElse(
+                        regelverkType.isOneOf(AP2016),
+                        ifTrue = ", eller ha tent opp inntektspensjon. ",
+                        ifFalse = ". "
+                    ),
+                    English to "an other signatory country".expr()
+                            + ifElse(
+                        regelverkType.isOneOf(AP2016),
+                        ifTrue = ", or have had a pensionable income. ",
+                        ifFalse = ". "
+                    )
+                )
             }.orShowIf(erEOSland and erAvtaleland) {
-                text(
-                    Bokmal to "EØS- og avtaleland. ",
-                    Nynorsk to "EØS- og avtaleland. ",
-                    English to "other EEA and signatory countries. "
+                textExpr(
+                    Bokmal to "EØS- og avtaleland".expr()
+                            + ifElse(
+                        regelverkType.isOneOf(AP2016),
+                        ifTrue = ", eller ha tjent opp inntektspensjon. ",
+                        ifFalse = ". "
+                    ),
+                    Nynorsk to "EØS- og avtaleland".expr()
+                            + ifElse(
+                        regelverkType.isOneOf(AP2016),
+                        ifTrue = ", eller ha tent opp inntektspensjon. ",
+                        ifFalse = ". "
+                    ),
+                    English to "other EEA and signatory countries".expr()
+                            + ifElse(
+                        regelverkType.isOneOf(AP2016),
+                        ifTrue = ", or have had a pensionable income. ",
+                        ifFalse = ". "
+                    )
                 )
             }
             text(
@@ -267,6 +286,7 @@ data class RettTilAPMedEOSAvtalelandOg3aar5aarTT(
     }
 }
 
+// avslagAP2011Under3aarHjemmel,
 object AvslagAP2011FolketrygdsakHjemmel : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
@@ -602,7 +622,7 @@ data class AvslagUnder3aar5aarHjemmelAvtaleAuto(
                 text(
                     Bokmal to ", og EØS-avtalens forordning 883/2004 artikkel 6.",
                     Nynorsk to ", og EØS-avtalens forordning 883/2004 artikkel 6.",
-                    English to " and Article 6 of regulation (EC) 883/2004."
+                    English to ", and Article 6 of regulation (EC) 883/2004."
                 )
             }
         }

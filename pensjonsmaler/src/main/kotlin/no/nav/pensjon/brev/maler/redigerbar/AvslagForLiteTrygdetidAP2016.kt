@@ -19,10 +19,9 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagAPUttakAlderU62Begrunn
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagAPUttakAlderU62Info
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder1aar3aar5aarTT
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder1aarHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder1aarTT
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder3aar5aarHjemmelAvtaleAuto
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder3aar5aarTT
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.NysoknadAPInfo
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.OpptjeningstidEOSAvtaleland
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilAPFolketrygdsak
@@ -103,7 +102,7 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                                     + "You do not meet any of these requirements, therefore we have declined your application.",
                         )
                     }
-                    includePhrase(AvslagUnder1aarTT)
+                    includePhrase(AvslagUnder1aar3aar5aarTT)
                     includePhrase(
                         AvslagUnder1aarHjemmel(
                             avtaleland,
@@ -121,7 +120,7 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                                 regelverkType = pesysData.regelverkType
                             )
                         )
-                        includePhrase(AvslagUnder3aar5aarTT)
+                        includePhrase(AvslagUnder1aar3aar5aarTT)
 
                     }.orShowIf(erEOSland and not(erAvtaleland)) { // Mindre enn tre års trygdetid - EØSsak:
                         includePhrase(OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
@@ -162,7 +161,7 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                                 regelverkType = pesysData.regelverkType
                             )
                         )
-                        includePhrase(AvslagUnder3aar5aarTT)
+                        includePhrase(AvslagUnder1aar3aar5aarTT)
 
                         // avslagAP2016Under5aarHjemmel
                         paragraph {
@@ -201,86 +200,85 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                             )
                         )
                     }
+                }
 
-                    showIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT) and erAvtaleland) {
-                        includePhrase(
-                            AvslagUnder3aar5aarHjemmelAvtaleAuto(
-                                avtaleland,
-                                erAvtaleland,
-                                erEOSland,
-                                regelverkType = pesysData.regelverkType
+                showIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT) and erAvtaleland) {
+                    includePhrase(
+                        AvslagUnder3aar5aarHjemmelAvtaleAuto(
+                            avtaleland,
+                            erAvtaleland,
+                            erEOSland,
+                            regelverkType = pesysData.regelverkType
 
-                            )
+                        )
+                    )
+                }
+
+                showIf(avslagsBegrunnelse.isOneOf(UNDER_20_AR_BO_2016)) {
+                    // avslagAP2016Under20aar
+                    paragraph {
+                        textExpr(
+                            Bokmal to "For å få utbetalt alderspensjonen din når du bor i ".expr()
+                                    + bostedsland + " må du enten ha vært medlem i folketrygden i minst 20 år, ha rett til tilleggspensjon eller ha tjent opp inntektspensjon."
+                                    + " Det har du ikke, og derfor har vi avslått søknaden din.",
+                            Nynorsk to "For å få utbetalt alderspensjonen din når du bur i ".expr()
+                                    + bostedsland + " må du enten ha vært medlem i folketrygda i minst 20 år, ha rett til tilleggspensjon eller ha tent opp inntektspensjon."
+                                    + " Det har du ikkje, og derfor har vi avslått søknaden din.",
+                            English to "To be eligible for your retirement pension while living in ".expr()
+                                    + bostedsland + ", you must either have been a member of the Norwegian National Insurance Scheme for at least 20 years, be entitled to supplementary pension or be entitled to income-based pension."
+                                    + " You do not meet any of these requirements, therefore we have declined your application."
                         )
                     }
-
-                    showIf(avslagsBegrunnelse.isOneOf(UNDER_20_AR_BO_2016)) {
-                        // avslagAP2016Under20aar
-                        paragraph {
-                            textExpr(
-                                Bokmal to "For å få utbetalt alderspensjonen din når du bor i ".expr()
-                                        + bostedsland + " må du enten ha vært medlem i folketrygden i minst 20 år, ha rett til tilleggspensjon eller ha tjent opp inntektspensjon."
-                                        + " Det har du ikke, og derfor har vi avslått søknaden din.",
-                                Nynorsk to "For å få utbetalt alderspensjonen din når du bur i ".expr()
-                                        + bostedsland + " må du enten ha vært medlem i folketrygda i minst 20 år, ha rett til tilleggspensjon eller ha tent opp inntektspensjon."
-                                        + " Det har du ikkje, og derfor har vi avslått søknaden din.",
-                                English to "To be eligible for your retirement pension while living in ".expr()
-                                        + bostedsland + ", you must either have been a member of the Norwegian National Insurance Scheme for at least 20 years, be entitled to supplementary pension or be entitled to income-based pension."
-                                        + " You do not meet any of these requirements, therefore we have declined your application."
-                            )
-                        }
-                        // avslagAP2016Under20aarHjemmel
-                        paragraph {
-                            text(
-                                Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3, 20-5 til 20-8 og 20-10.",
-                                Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-3, 20-5 til 20-8 og 20-10.",
-                                English to "This decision was made pursuant to the provisions of § 19-3, 20-5 to 20-8 and 20-10 of the National Insurance Act.",
-                            )
-                        }
-                    }
-                    showIf(
-                        avslagsBegrunnelse.isOneOf(
-                            UNDER_20_AR_BO_2016,
-                            UNDER_20_AR_BO,
-                            UNDER_5_AR_TT,
-                            UNDER_3_AR_TT,
-                            UNDER_1_AR_TT
-                        )
-                    ) {
-                        includePhrase(
-                            TrygdeperioderNorgeTabell(
-                                trygdeperioderNorge = trygdeperioderNorge
-                            )
-                        )
-                        includePhrase(
-                            TrygdeperioderEOSlandTabell(
-                                trygdeperioderEOSland = trygdeperioderEOSland
-                            )
-                        )
-                        includePhrase(
-                            TrygdeperioderAvtalelandTabell(
-                                trygdeperioderAvtaleland = trygdeperioderAvtaleland
-                            )
-                        )
-                    }
-                }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_62)) {
-                    includePhrase(AvslagAPUttakAlderU62Begrunn)
-                    // avslagAP2016UttakAlderU62Hjemmel
+                    // avslagAP2016Under20aarHjemmel
                     paragraph {
                         text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-4 og 20-2.",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-4 og 20-2.",
-                            English to "This decision was made pursuant to the provisions of §§ 19-4 and 20-2 of the National Insurance Act.",
+                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3, 20-5 til 20-8 og 20-10.",
+                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-3, 20-5 til 20-8 og 20-10.",
+                            English to "This decision was made pursuant to the provisions of § 19-3, 20-5 to 20-8 and 20-10 of the National Insurance Act.",
                         )
                     }
-                    includePhrase(AvslagAPUttakAlderU62Info)
-                    includePhrase(NysoknadAPInfo)
                 }
-                includePhrase(SupplerendeStoenad)
-                includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
-                includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
-                includePhrase(Felles.HarDuSpoersmaal.alder)
+                showIf(
+                    avslagsBegrunnelse.isOneOf(
+                        UNDER_20_AR_BO_2016,
+                        UNDER_5_AR_TT,
+                        UNDER_3_AR_TT,
+                        UNDER_1_AR_TT
+                    )
+                ) {
+                    includePhrase(
+                        TrygdeperioderNorgeTabell(
+                            trygdeperioderNorge = trygdeperioderNorge
+                        )
+                    )
+                    includePhrase(
+                        TrygdeperioderEOSlandTabell(
+                            trygdeperioderEOSland = trygdeperioderEOSland
+                        )
+                    )
+                    includePhrase(
+                        TrygdeperioderAvtalelandTabell(
+                            trygdeperioderAvtaleland = trygdeperioderAvtaleland
+                        )
+                    )
+                }
+            }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_62)) {
+                includePhrase(AvslagAPUttakAlderU62Begrunn)
+                // avslagAP2016UttakAlderU62Hjemmel
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-4 og 20-2.",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-4 og 20-2.",
+                        English to "This decision was made pursuant to the provisions of §§ 19-4 and 20-2 of the National Insurance Act.",
+                    )
+                }
+                includePhrase(AvslagAPUttakAlderU62Info)
+                includePhrase(NysoknadAPInfo)
             }
+            includePhrase(SupplerendeStoenad)
+            includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.HarDuSpoersmaal.alder)
         }
         includeAttachment(
             vedleggDineRettigheterOgMulighetTilAaKlage,

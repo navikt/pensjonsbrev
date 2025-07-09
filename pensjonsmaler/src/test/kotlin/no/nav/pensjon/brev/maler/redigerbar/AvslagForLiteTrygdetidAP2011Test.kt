@@ -18,7 +18,7 @@ class AvslagForLiteTrygdetidAP2011Test {
         LetterTestImpl(
             AvslagForLiteTrygdetidAP2011.template,
             Fixtures.create<AvslagForLiteTrygdetidAPDto>(),
-            Language.Bokmal,
+            Language.English,
             Fixtures.felles
         ).renderTestPDF(AvslagForLiteTrygdetidAP2011.kode.name)
     }
