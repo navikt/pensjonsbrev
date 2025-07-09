@@ -6,7 +6,7 @@
 export type AttestForbiddenReason = "MISSING_ATTESTANT_ROLE" | "SELF_ATTESTATION" | "ALREADY_ATTESTED" | "UNKNOWN_403";
 
 /**
- * Map backend 403 text → enum value.
+ * Map backend 403 text to enum value.
  * Extend or tweak the substrings as backend messages change.
  */
 export function parseAttest403(msg?: string): AttestForbiddenReason {

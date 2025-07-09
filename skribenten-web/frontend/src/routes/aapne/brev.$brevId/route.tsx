@@ -1,9 +1,9 @@
-import { Alert, BodyLong, Button, Heading, Modal } from "@navikt/ds-react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { useState } from "react";
 
 import { getBrevInfoQuery } from "~/api/brev-queries";
+import { ApiError } from "~/components/ApiError";
+import AttestForbiddenModal from "~/components/AttestForbiddenModal";
 import { queryClient } from "~/routes/__root";
 import type { AttestForbiddenReason } from "~/utils/parseAttest403";
 
@@ -49,59 +49,21 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
   },
 
   component: () => {
-    return <ForbiddenModal />;
+    return <AttestGuard />;
   },
 
-  errorComponent: ({ error }) => (
-    <Alert size="small" variant="error">
-      Kunne ikke åpne brevet: {String((error as AxiosError).message)}
-    </Alert>
-  ),
+  errorComponent: BrevOpenError,
 });
 
-function ForbiddenModal() {
-  const [open, setOpen] = useState(true);
-  const data = Route.useLoaderData() as { reason?: AttestForbiddenReason };
+function AttestGuard() {
+  const data = Route.useLoaderData() as { reason?: AttestForbiddenReason; saksId?: string };
 
   if (!data?.reason) return null;
 
-  let heading: string;
-  let body: string;
+  return <AttestForbiddenModal onClose={() => null} reason={data.reason} />;
+}
 
-  switch (data.reason) {
-    case "MISSING_ATTESTANT_ROLE":
-      heading = "Du kan ikke attestere dette brevet";
-      body = "Du har ikke rollen som attestant.";
-      break;
-
-    case "SELF_ATTESTATION":
-      heading = "Du kan ikke attestere dette brevet";
-      body = "Du kan ikke attestere ditt eget brev.";
-      break;
-    case "ALREADY_ATTESTED":
-      heading = "Brevet er allerede attestert";
-      body = "Brevet er allerede attestert av en annen saksbehandler.";
-      break;
-    case "UNKNOWN_403": {
-      throw new Error("Ukjent 403-feil");
-    }
-  }
-
-  return (
-    <Modal aria-label={heading} onClose={() => setOpen(false)} open={open}>
-      <Modal.Header>
-        <Heading size="large">{heading}</Heading>
-      </Modal.Header>
-
-      <Modal.Body>
-        <BodyLong>{body}</BodyLong>
-      </Modal.Body>
-
-      <Modal.Footer>
-        <Button onClick={() => setOpen(false)} variant="tertiary">
-          Lukk
-        </Button>
-      </Modal.Footer>
-    </Modal>
-  );
+function BrevOpenError({ error }: { error: unknown }) {
+  const { brevId } = Route.useParams();
+  return <ApiError error={error as AxiosError} title={`Kunne ikke åpne brev ${brevId}`} />;
 }
