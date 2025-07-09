@@ -4,7 +4,7 @@ import { BodyShort, Box, Button, Heading, Label, Loader, Switch, VStack } from "
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import {
@@ -17,6 +17,7 @@ import { attesterBrev } from "~/api/sak-api-endpoints";
 import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
+import AttestForbiddenModal from "~/components/AttestForbiddenModal";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { Divider } from "~/components/Divider";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
@@ -28,6 +29,7 @@ import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
+import type { AttestForbiddenReason } from "~/utils/parseAttest403";
 import { queryFold } from "~/utils/tanstackUtils";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/redigering")({
@@ -116,6 +118,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const navigate = useNavigate({ from: Route.fullPath });
   const { editorState, onSaveSuccess } = useManagedLetterEditorContext();
 
+  const [forbidReason, setForbidReason] = useState<AttestForbiddenReason | null>(null);
+  const [unexpectedError, setUnexpectedError] = useState<AxiosError | null>(null);
+
   const showDebug = useSearch({
     strict: false,
     select: (search: Record<string, unknown>) => search?.["debug"] === "true" || search?.["debug"] === true,
@@ -152,6 +157,16 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const attesterMutation = useMutation<Blob, AxiosError, OppdaterBrevRequest>({
     mutationFn: (requestData) =>
       attesterBrev({ saksId: props.saksId, brevId: props.brev.info.id, request: requestData }),
+
+    onError: (err) => {
+      const reason = (err as AxiosError & { forbidReason?: AttestForbiddenReason }).forbidReason;
+
+      if (reason) {
+        setForbidReason(reason);
+        return;
+      }
+      setUnexpectedError(err);
+    },
   });
 
   const onSubmit = (values: VedtakSidemenyFormData, onSuccess?: () => void) => {
@@ -188,6 +203,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         });
       })}
     >
+      {forbidReason && <AttestForbiddenModal onClose={() => setForbidReason(null)} reason={forbidReason} />}
+
+      {unexpectedError && <ApiError error={unexpectedError} title="Uventet feil ved attestering" />}
+
       <ThreeSectionLayout
         bottom={
           <Button icon={<ArrowRightIcon />} iconPosition="right" loading={freeze} size="small">
