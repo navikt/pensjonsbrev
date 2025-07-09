@@ -61,6 +61,11 @@ jobs:
         run: "./gradlew :brevbaker-api-model-common:publish"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+      - name: "Release maven manually"
+        if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/main'
+        run: ./gradlew -Pversion="0-$(TZ="Europe/Oslo" date +%Y.%m.%d-%H.%M)-$(git rev-parse --short=12 HEAD)" :brevbaker-api-model-common:publish
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
   "release-pensjon":
     name: "pensjon-brevbaker-api-model"

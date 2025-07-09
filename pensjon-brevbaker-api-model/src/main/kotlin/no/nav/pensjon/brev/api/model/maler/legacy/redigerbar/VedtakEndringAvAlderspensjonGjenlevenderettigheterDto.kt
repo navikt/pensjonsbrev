@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -84,16 +85,9 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
     )
 
     data class BeregnetPensjonPerManedVedVirk(
-        val inntektspensjon: Int?,
+        val inntektspensjon: Kroner?,
         val gjenlevendetilleggKap19: Kroner?,
         val gjenlevendetillegg: Kroner?,
         val antallBeregningsperioderPensjon: Int,
     )
-
-    @Suppress("EnumEntryName")
-    enum class BeloepEndring {
-        ENDR_OKT,
-        ENDR_RED,
-        UENDRET
-    }
 }

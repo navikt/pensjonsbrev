@@ -3,12 +3,12 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP1967
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
+import no.nav.pensjon.brev.api.model.BeloepEndring.*
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.BeloepEndring.ENDR_OKT
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevenderettAnvendt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevendetilleggInnvilget
@@ -277,7 +277,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 English to "You will not receive a retirement pension based on your own earnings because you have no or low pension earnings."
                             )
                         }
-                    }.orShowIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0).greaterThan(0)) {
+                    }.orShowIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(Kroner(0)).greaterThan(0)) {
                         // forklaringberegningGjtKap19_148_12
                         paragraph {
                             text(
@@ -300,7 +300,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                         )
                         showIf(
                             pesysData.gjenlevendetilleggKapittel19VedVirk.apKap19utenGJR.greaterThan(0)
-                                    and pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0)
+                                    and pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(Kroner(0))
                                 .greaterThan(0)
                         ) {
                             text(

@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brevbaker.api.model.DisplayText
 
 @Suppress("unused")
 data class VarselRevurderingAvPensjonDto(
@@ -10,10 +11,11 @@ data class VarselRevurderingAvPensjonDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<VarselRevurderingAvPensjonDto.SaksbehandlerValg, VarselRevurderingAvPensjonDto.PesysData> {
     data class SaksbehandlerValg(
-      val tittelValg: TittelValg
+        @DisplayText("Tittelvalg") val tittelValg: TittelValg
     ) : BrevbakerBrevdata{
-        enum class TittelValg{
-            RevurderingAvRett, RevurderingReduksjon
+        enum class TittelValg {
+            @DisplayText("Revurdering av rett") RevurderingAvRett,
+            @DisplayText("Revurdering reduksjon") RevurderingReduksjon;
         }
     }
 
