@@ -41,7 +41,6 @@ import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.slf4j.LoggerFactory
 import java.sql.Connection
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -53,20 +52,17 @@ data class GeneriskRedigerbarBrevdata(
     override val saksbehandlerValg: BrevbakerBrevdata,
 ) : RedigerbarBrevdata<BrevbakerBrevdata, BrevbakerBrevdata>
 
-sealed class BrevredigeringException(message: String) : Exception(message) {
-    class KanIkkeReservereBrevredigeringException(override val message: String, val response: Api.ReservasjonResponse) :
-        BrevredigeringException(message)
-
-    class ArkivertBrevException(val brevId: Long, val journalpostId: Long) :
-        BrevredigeringException("Brev med id $brevId er allerede arkivert i journalpost $journalpostId")
-
-    class BrevIkkeKlartTilSendingException(override val message: String) : BrevredigeringException(message)
-    class BrevLaastForRedigeringException(override val message: String) : BrevredigeringException(message)
-    class HarIkkeAttestantrolleException(override val message: String) : BrevredigeringException(message)
-    class KanIkkeAttestereEgetBrevException(override val message: String) : BrevredigeringException(message)
-    class KanIkkeAttestereException(override val message: String) : BrevredigeringException(message)
-    class AlleredeAttestertException(override val message: String) : BrevredigeringException(message)
-    class BrevmalFinnesIkke(override val message: String) : BrevredigeringException(message)
+sealed class BrevredigeringException(override val message: String) : Exception() {
+    class KanIkkeReservereBrevredigeringException(message: String, val response: Api.ReservasjonResponse) : BrevredigeringException(message)
+    class ArkivertBrevException(val brevId: Long, val journalpostId: Long) : BrevredigeringException("Brev med id $brevId er allerede arkivert i journalpost $journalpostId")
+    class BrevIkkeKlartTilSendingException(message: String) : BrevredigeringException(message)
+    class BrevLaastForRedigeringException(message: String) : BrevredigeringException(message)
+    class HarIkkeAttestantrolleException(message: String) : BrevredigeringException(message)
+    class KanIkkeAttestereEgetBrevException(message: String) : BrevredigeringException(message)
+    class KanIkkeAttestereException(message: String) : BrevredigeringException(message)
+    class AlleredeAttestertException(message: String) : BrevredigeringException(message)
+    class BrevmalFinnesIkke(message: String) : BrevredigeringException(message)
+    class VedtaksbrevKreverVedtaksId(message: String): BrevredigeringException(message)
 }
 
 class BrevredigeringService(
@@ -77,8 +73,6 @@ class BrevredigeringService(
     companion object {
         val RESERVASJON_TIMEOUT = 10.minutes.toJavaDuration()
     }
-
-    private val logger = LoggerFactory.getLogger(this::class.java)
 
     suspend fun opprettBrev(
         sak: Pen.SakSelection,
@@ -96,11 +90,13 @@ class BrevredigeringService(
                 ?.let { "${it.fornavn} ${it.etternavn}" }
                 ?: principal.fullName
 
+            val vedtaksIdOmVedtaksbrev = beholdOgKrevVedtaksIdOmVedtaksbrev(vedtaksId, brevkode)
+
             rendreBrev(
                 brevkode = brevkode,
                 spraak = spraak,
                 saksId = sak.saksId,
-                vedtaksId = vedtaksId,
+                vedtaksId = vedtaksIdOmVedtaksbrev,
                 saksbehandlerValg = saksbehandlerValg,
                 avsenderEnhetsId = avsenderEnhetsId,
                 signaturSignerende = signerendeSaksbehandler,
@@ -108,7 +104,7 @@ class BrevredigeringService(
                 transaction {
                     Brevredigering.new {
                         saksId = sak.saksId
-                        this.vedtaksId = vedtaksId
+                        this.vedtaksId = vedtaksIdOmVedtaksbrev
                         opprettetAvNavIdent = principal.navIdent
                         this.brevkode = brevkode
                         this.spraak = spraak
@@ -229,6 +225,9 @@ class BrevredigeringService(
         }
     }
 
+    fun hentBrevInfo(brevId: Long): Dto.BrevInfo? =
+        transaction { Brevredigering.findById(brevId)?.toBrevInfo() }
+
     suspend fun hentBrev(saksId: Long, brevId: Long, reserverForRedigering: Boolean = false): ServiceResult<Dto.Brevredigering>? =
         if (reserverForRedigering) {
             hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
@@ -272,6 +271,12 @@ class BrevredigeringService(
                 .map { it.toBrevInfo() }
         }
 
+    fun hentBrevForAlleSaker(saksIder: Set<Long>): List<Dto.BrevInfo> =
+        transaction {
+            Brevredigering.find { BrevredigeringTable.saksId inList saksIder }
+                .map { it.toBrevInfo() }
+        }
+
     suspend fun fornyReservasjon(brevId: Long): Api.ReservasjonResponse? =
         hentBrevMedReservasjon(brevId = brevId) {
             val principal = PrincipalInContext.require()
@@ -311,6 +316,8 @@ class BrevredigeringService(
             val principal = PrincipalInContext.require()
             brevDto.validerErFerdigRedigert()
             brevDto.validerKanAttestere(principal)
+
+            // TODO: burde vi sjekke om brevet er et vedtaksbrev før vi gjennomfører attestering?
 
             val signaturAttestant = signaturAttestant
                 ?: brevDto.info.signaturAttestant
@@ -518,7 +525,10 @@ class BrevredigeringService(
                     pesysData = pesysData.brevdata,
                     saksbehandlerValg = brevredigering.saksbehandlerValg,
                 ),
-                felles = pesysData.felles.medSignerendeSaksbehandlere(signerendeSaksbehandlere = SignerendeSaksbehandlere(brevredigering.info.signaturSignerende)),
+                felles = pesysData.felles.medSignerendeSaksbehandlere(SignerendeSaksbehandlere(
+                    saksbehandler = brevredigering.info.signaturSignerende,
+                    attesterendeSaksbehandler = brevredigering.info.signaturAttestant,
+                )),
                 redigertBrev = brevredigering.redigertBrev.toMarkup()
             ).map {
                 transaction {
@@ -547,6 +557,19 @@ class BrevredigeringService(
             adresselinje3 = mottaker.adresselinje3
             landkode = mottaker.landkode
         } else delete()
+
+    /**
+     * Krever vedtaksId om brevet er vedtaksbrev, men forkaster om ikke.
+     */
+    private suspend fun beholdOgKrevVedtaksIdOmVedtaksbrev(vedtaksId: Long?, brevkode: Brevkode.Redigerbart): Long? {
+        val template = brevbakerService.getRedigerbarTemplate(brevkode)
+
+        return if (template?.metadata?.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
+            vedtaksId ?: throw BrevredigeringException.VedtaksbrevKreverVedtaksId("Kan ikke opprette brev for vedtaksmal ${brevkode.kode()}: mangler vedtaksId")
+        } else {
+            null
+        }
+    }
 
     suspend fun hentSignaturAttestant(saksId: Long, brevId: Long): ServiceResult<String?>? =
         hentBrev(saksId = saksId, brevId = brevId)?.map {
@@ -626,6 +649,19 @@ private fun Brevredigering.toBrevInfo(): Dto.BrevInfo =
         journalpostId = journalpostId,
         attestertAv = attestertAvNavIdent,
         signaturAttestant = signaturAttestant,
+        status = when {
+            journalpostId != null -> Dto.BrevStatus.ARKIVERT
+            laastForRedigering && isVedtaksbrev ->
+                if (attestertAvNavIdent != null) {
+                    Dto.BrevStatus.KLAR
+                }
+                else {
+                    Dto.BrevStatus.ATTESTERING
+                }
+            laastForRedigering -> Dto.BrevStatus.KLAR
+
+            else -> Dto.BrevStatus.KLADD
+        }
     )
 
 private fun Mottaker.toDto(): Dto.Mottaker =

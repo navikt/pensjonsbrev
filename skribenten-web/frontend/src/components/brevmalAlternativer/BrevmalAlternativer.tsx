@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { BodyShort, Heading, Tabs, VStack } from "@navikt/ds-react";
+import { Heading, Tabs, VStack } from "@navikt/ds-react";
 
 import {
   SaksbehandlerValgModelEditor,
@@ -16,33 +16,36 @@ const BrevmalAlternativer = (props: {
   /**
    * Kan velge hvilke felter som skal vises. Default er at begge vises (dersom dem finnes, ellers bare den som finnes)
    */
-  displaySingle?: "required" | "optional";
+  onlyShowRequired?: boolean;
   withTitle?: boolean;
 }) => {
   const specificationFormElements = usePartitionedModelSpecification(props.brevkode);
 
   switch (specificationFormElements.status) {
     case "error": {
-      return <ApiError error={specificationFormElements.error} title={"En feil skjedde"} />;
+      return (
+        <ApiError
+          error={specificationFormElements.error}
+          title={"Feil oppstod ved henting av alternativer for brevmal"}
+        />
+      );
     }
     case "pending": {
-      return <BodyShort size="small">Henter skjema for saksbehandler valg...</BodyShort>;
+      return null;
     }
     case "success": {
       if (
         specificationFormElements.optionalFields.length === 0 &&
         specificationFormElements.requiredfields.length === 0
       ) {
-        return (
-          <VStack gap="3">
-            {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
-            <BodyShort size="small">Det finnes ikke tekstalternativer i denne malen.</BodyShort>
-          </VStack>
-        );
+        return null;
       }
 
-      if (props.displaySingle) {
-        if (props.displaySingle === "required" && specificationFormElements.requiredfields.length > 0) {
+      if (props.onlyShowRequired) {
+        if (
+          specificationFormElements.requiredfields.length > 0 ||
+          specificationFormElements.optionalFields.length > 0
+        ) {
           return (
             <VStack gap="3">
               {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
@@ -54,20 +57,8 @@ const BrevmalAlternativer = (props: {
               />
             </VStack>
           );
-        }
-
-        if (props.displaySingle === "optional" && specificationFormElements.optionalFields.length > 0) {
-          return (
-            <VStack gap="3">
-              {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
-              <SaksbehandlerValgModelEditor
-                brevkode={props.brevkode}
-                fieldsToRender={"optional"}
-                specificationFormElements={specificationFormElements}
-                submitOnChange={props.submitOnChange}
-              />
-            </VStack>
-          );
+        } else {
+          return null;
         }
       } else {
         if (specificationFormElements.optionalFields.length === 0) {
@@ -161,7 +152,6 @@ const BrevmalAlternativer = (props: {
           </VStack>
         );
       }
-      return null;
     }
   }
 };

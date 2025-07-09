@@ -47,7 +47,8 @@ public final class no/nav/brev/brevbaker/LatexTimeoutException : java/lang/Excep
 
 public abstract interface class no/nav/brev/brevbaker/PDFByggerService {
 	public abstract fun producePDF (Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun validateResponse (ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun producePDF$default (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public fun validateResponse (ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class no/nav/brev/brevbaker/PDFByggerService$DefaultImpls {

@@ -13,7 +13,7 @@ class TemplateModelSpecification(val types: Map<String, ObjectTypeSpecification>
         class Scalar(override val nullable: Boolean, val kind: Kind, override val displayText: String? = null) : FieldType() {
             override val type = "scalar"
 
-            enum class Kind { NUMBER, DOUBLE, STRING, BOOLEAN, DATE, YEAR }
+            enum class Kind { NUMBER, DOUBLE, STRING, BOOLEAN, DATE }
 
             override fun equals(other: Any?): Boolean {
                 if (other !is Scalar) return false
@@ -25,7 +25,7 @@ class TemplateModelSpecification(val types: Map<String, ObjectTypeSpecification>
             override fun toString() = "Scalar(nullable=$nullable, kind=$kind, displayText=$displayText, type='$type')"
         }
 
-        class Enum(override val nullable: Boolean, val values: Set<String>, override val displayText: String? = null) : FieldType() {
+        class Enum(override val nullable: Boolean, val values: Set<EnumEntry>, override val displayText: String? = null) : FieldType() {
             override val type = "enum"
 
             override fun equals(other: Any?): Boolean {
@@ -36,6 +36,17 @@ class TemplateModelSpecification(val types: Map<String, ObjectTypeSpecification>
             override fun hashCode() = Objects.hash(nullable, values, displayText, type)
 
             override fun toString() = "Enum(nullable=$nullable, values=$values, displayText=$displayText, type='$type')"
+        }
+
+        class EnumEntry(val value: String, val displayText: String? = null) {
+            override fun equals(other: Any?): Boolean {
+                if (other !is EnumEntry) return false
+                return value == other.value && displayText == other.displayText
+            }
+
+            override fun hashCode() = Objects.hash(value, displayText)
+
+            override fun toString() = "EnumEntry(value=$value, displayText=$displayText)"
         }
 
         class Array(override val nullable: Boolean, val items: FieldType, override val displayText: String? = null) : FieldType() {

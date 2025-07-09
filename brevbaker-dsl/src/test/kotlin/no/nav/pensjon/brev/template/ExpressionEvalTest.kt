@@ -19,7 +19,7 @@ class ExpressionEvalTest {
     }
 
     private val Expression<SomeDto>.name
-        get() = Expression.UnaryInvoke(this, UnaryOperation.Select(nameSelector))
+        get() = UnaryOperation.Select(nameSelector).invoke(this)
 
     private val kortNavnSelector = object : TemplateModelSelector<SomeDto, String?> {
         override val className = "FakeKortNavnSelector"
@@ -28,7 +28,7 @@ class ExpressionEvalTest {
         override val selector = SomeDto::kortNavn
     }
     private val Expression<SomeDto>.kortNavn
-        get() = Expression.UnaryInvoke(this, UnaryOperation.Select(kortNavnSelector))
+        get() = UnaryOperation.Select(kortNavnSelector).invoke(this)
 
     private val saksnummerSelector = object : TemplateModelSelector<Felles, String> {
         override val className = "FakeFellesSelector"
@@ -38,7 +38,7 @@ class ExpressionEvalTest {
     }
 
     private val Expression<Felles>.saksnummer
-        get() = Expression.UnaryInvoke(this, UnaryOperation.Select(saksnummerSelector))
+        get() = UnaryOperation.Select(saksnummerSelector).invoke(this)
 
     private val scope = ExpressionScope(SomeDto("Ole", null), FellesFactory.felles, Language.Bokmal)
     private val argumentExpr = Expression.FromScope.Argument<SomeDto>()
@@ -83,22 +83,14 @@ class ExpressionEvalTest {
 
     @Test
     fun `eval BinaryInvoke returns expected value`() {
-        val evaluated: String = Expression.BinaryInvoke(
-            Expression.Literal("h"),
-            Expression.Literal("ei"),
-            BinaryOperation.Concat
-        ).eval(scope)
+        val evaluated: String = BinaryOperation.Concat("h".expr(), "ei".expr()).eval(scope)
 
         assertEquals("hei", evaluated)
     }
 
     @Test
     fun `eval UnaryInvoke returns expected value`() {
-        val evaluated: String = Expression.UnaryInvoke(
-            Expression.Literal(4),
-            UnaryOperation.ToString
-        ).eval(scope)
-
+        val evaluated: String = UnaryOperation.ToString(4.expr()).eval(scope)
         assertEquals("4", evaluated)
     }
 

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.Sakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto
@@ -16,9 +17,12 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
@@ -52,19 +56,19 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                     Nynorsk to "Vi vurderer om du framleis har rett til ",
                     English to "We are considering if you are still entitled to "
                 )
-                showIf(sakstype.isOneOf(Sakstype.AFP)) {
+                showIf(sakstype.isOneOf(AFP)) {
                     text(
                         Bokmal to "AFP",
                         Nynorsk to "AFP",
                         English to "contractual pension (AFP)",
                     )
-                }.orShowIf(sakstype.isOneOf(Sakstype.AFP_PRIVAT)) {
+                }.orShowIf(sakstype.isOneOf(AFP_PRIVAT)) {
                     text(
                         Bokmal to "AFP i privat sektor",
                         Nynorsk to "AFP i privat sektor",
                         English to "contractual pension (AFP) in the private sector",
                     )
-                }.orShowIf(sakstype.isOneOf(Sakstype.ALDER)) {
+                }.orShowIf(sakstype.isOneOf(ALDER)) {
                     text(
                         Bokmal to "alderspensjon",
                         Nynorsk to "alderspensjon",
@@ -95,19 +99,19 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                         Nynorsk to "Dette er eit varsel om at vi vurderer om du framleis har rett til ",
                         English to "This letter is a notification that we are considering if you are still entitled to receive ",
                     )
-                    showIf(sakstype.isOneOf(Sakstype.AFP)) {
+                    showIf(sakstype.isOneOf(AFP)) {
                         text(
                             Bokmal to "AFP",
                             Nynorsk to "AFP",
                             English to "contractual pension (AFP)",
                         )
-                    }.orShowIf(sakstype.isOneOf(Sakstype.AFP_PRIVAT)) {
+                    }.orShowIf(sakstype.isOneOf(AFP_PRIVAT)) {
                         text(
                             Bokmal to "AFP i privat sektor",
                             Nynorsk to "AFP i privat sektor",
                             English to "contractual pension (AFP) in the private sector",
                         )
-                    }.orShowIf(sakstype.isOneOf(Sakstype.ALDER)) {
+                    }.orShowIf(sakstype.isOneOf(ALDER)) {
                         text(
                             Bokmal to "alderspensjon",
                             Nynorsk to "alderspensjon",
@@ -135,19 +139,19 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                         Nynorsk to "Dette er eit varsel om at vi vurderer om din ",
                         English to "This letter is a notification that we are considering if your ",
                     )
-                    showIf(sakstype.isOneOf(Sakstype.AFP)) {
+                    showIf(sakstype.isOneOf(AFP)) {
                         text(
                             Bokmal to "AFP",
                             Nynorsk to "AFP",
                             English to "contractual pension (AFP)",
                         )
-                    }.orShowIf(sakstype.isOneOf(Sakstype.AFP_PRIVAT)) {
+                    }.orShowIf(sakstype.isOneOf(AFP_PRIVAT)) {
                         text(
                             Bokmal to "AFP i privat sektor",
                             Nynorsk to "AFP i privat sektor",
                             English to "contractual pension (AFP) in the private sector",
                         )
-                    }.orShowIf(sakstype.isOneOf(Sakstype.ALDER)) {
+                    }.orShowIf(sakstype.isOneOf(ALDER)) {
                         text(
                             Bokmal to "alderspensjon",
                             Nynorsk to "alderspensjon",
@@ -197,33 +201,35 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                     English to "How to make a statement",
                 )
             }
-            showIf(sakstype.equalTo(Sakstype.ALDER)) {
+            showIf(sakstype.equalTo(ALDER)) {
                 paragraph {
-                    text(
-                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på $DIN_PENSJON_URL og velge “Kontakt Nav om pensjon”, " +
-                                "eller logge deg inn på $BESKJED_TIL_NAV_URL og velge “Send beskjed til Nav”. Du kan også sende uttalelsen din til oss i posten. " +
+                    textExpr(
+                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på $DIN_PENSJON_URL og velge ".expr() + quoted("Kontakt Nav om pensjon") +", " +
+                                "eller logge deg inn på $BESKJED_TIL_NAV_URL og velge " + quoted("Send beskjed til Nav") +". Du kan også sende uttalelsen din til oss i posten. " +
                                 "Adressen finner du på $ETTERSENDELSE_URL.",
-                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på $DIN_PENSJON_URL og velje “Kontakt Nav om pensjon”, " +
-                                "eller logge deg inn på $BESKJED_TIL_NAV_URL og velje “Send beskjed til Nav”. Du kan også sende uttalen din til oss i posten. " +
+                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på $DIN_PENSJON_URL og velje ".expr() + quoted("Kontakt Nav om pensjon") + ", " +
+                                "eller logge deg inn på $BESKJED_TIL_NAV_URL og velje " +  quoted("Send beskjed til Nav") + ". Du kan også sende uttalen din til oss i posten. " +
                                 "Adressa finn du på $ETTERSENDELSE_URL.",
-                        English to "You can submit your statement by logging in to your personal $DIN_PENSJON_URL  pension page and selecting “Kontakt Nav om pensjon”, " +
-                                "or by logging in to $BESKJED_TIL_NAV_URL and selecting “Send beskjed til Nav”. You can also send us your statement by post. " +
+                        English to "You can submit your statement by logging in to your personal $DIN_PENSJON_URL pension page and selecting ".expr() + quoted("Kontakt Nav om pensjon") +", " +
+                                "or by logging in to $BESKJED_TIL_NAV_URL and selecting " + quoted("Send beskjed til Nav") +". You can also send us your statement by post. " +
                                 "You can find the address at $ETTERSENDELSE_URL.",
                     )
                 }
             }.orShow {
                 paragraph {
-                    text(
-                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velge “Send beskjed til Nav”. " +
+                    textExpr(
+                        Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velge ".expr() + quoted("Send beskjed til Nav") +". " +
                                 "Du kan også sende uttalelsen din til oss i posten. Adressen finner du på $ETTERSENDELSE_URL.",
-                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velje “Send beskjed til Nav”. " + "" +
+                        Nynorsk to "Du kan sende uttalen din ved å logge deg inn på $BESKJED_TIL_NAV_URL og velje ".expr() + quoted("Send beskjed til Nav") +". " +
                                 "Du kan også sende uttalen din til oss i posten. Adressa finn du på $ETTERSENDELSE_URL.",
-                        English to "You can submit your statement by logging in to [_Value URL_beskjedtilnav_] and selecting “Send beskjed til [_Value NAV_]”. You can also send us your statement by post. You can find the address at [_Value URL_ettersendelse_].",
+                        English to "You can submit your statement by logging in to $BESKJED_TIL_NAV_URL and selecting ".expr() + quoted("Send beskjed til Nav") +". You can also send us your statement by post. You can find the address at $ETTERSENDELSE_URL.",
                     )
                 }
             }
             includePhrase(Felles.RettTilInnsynRedigerbarebrev)
-            includePhrase(Felles.HarDuSpoersmaal.alder)
+            showIf(sakstype.equalTo(FAM_PL)) {includePhrase(Felles.HarDuSpoersmaal.familiepleie)
+            }.orShowIf(sakstype.equalTo(GJENLEV)) {includePhrase(Felles.HarDuSpoersmaal.gjenlevende)
+            }.orShow{includePhrase(Felles.HarDuSpoersmaal.alder)}
         }
     }
 }

@@ -45,7 +45,7 @@ data class EtteroppgjoerForhaandsvarselBrevDTO(
 enum class EtteroppgjoerResultatType {
     TILBAKEKREVING,
     ETTERBETALING,
-    IKKE_ETTEROPPGJOER
+    INGEN_ENDRING
 }
 
 data class EtteroppgjoerForhaandsvarselDTO(
@@ -86,19 +86,19 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
     ) {
         title {
             // Ingen endring
-            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.IKKE_ETTEROPPGJOER)) {
+            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING)) {
                 textExpr(
                     Language.Bokmal to "Informasjon om etteroppgjør av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
-                    Language.Nynorsk to "".expr() + data.etteroppgjoersAar.format(),
-                    Language.English to "".expr() + data.etteroppgjoersAar.format(),
+                    Language.Nynorsk to "Informasjon om etteroppgjer av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
+                    Language.English to "Information concerning final settlement of adjustment allowance for ".expr() + data.etteroppgjoersAar.format(),
                 )
             }
                 // Tilbakekreving eller Etterbetaling
                 .orShow {
                     textExpr(
                         Language.Bokmal to "Forhåndsvarsel om etteroppgjør av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
-                        Language.Nynorsk to "".expr() + data.etteroppgjoersAar.format(),
-                        Language.English to "".expr() + data.etteroppgjoersAar.format(),
+                        Language.Nynorsk to "Førehandsvarsel om etteroppgjer av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
+                        Language.English to "Advance notice of final settlement of adjustment allowance for ".expr() + data.etteroppgjoersAar.format(),
                     )
                 }
         }
@@ -108,7 +108,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
             konverterElementerTilBrevbakerformat(innhold)
 
             // Ingen endring
-            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.IKKE_ETTEROPPGJOER)) {
+            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING)) {
                 title2 {
                     textExpr(
                         Language.Bokmal to "Etteroppgjøret for ".expr() + data.etteroppgjoersAar.format() + " er nå avsluttet",

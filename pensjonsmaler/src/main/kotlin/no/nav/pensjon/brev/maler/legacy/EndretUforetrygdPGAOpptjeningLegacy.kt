@@ -68,6 +68,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 
@@ -202,7 +203,11 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
             paragraph {
                 text (
-                    Bokmal to "I vedlegget «Opplysninger om beregningen» kan du lese mer om beregningen av uføretrygden din.",
+                    Bokmal to "I vedlegget ",
+                )
+                namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
+                text(
+                    Bokmal to " kan du lese mer om beregningen av uføretrygden din.",
                 )
             }
 

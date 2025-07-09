@@ -396,6 +396,6 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
         includeAttachmentIfNotNull(vedleggOrienteringOmRettigheterOgPlikter, pesysData.orienteringOmRettigheterOgPlikterDto)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, pesysData.maanedligPensjonFoerSkattDto)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025Dto)
-        includeAttachment(vedleggOpplysningerBruktIBeregningenEndretUttaksgrad, pesysData.opplysningerBruktIBeregningenEndretUttaksgradDto)
+        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenEndretUttaksgrad, pesysData.opplysningerBruktIBeregningenEndretUttaksgradDto)
     }
 }

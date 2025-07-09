@@ -181,3 +181,9 @@ enum class KravArsakType{
     UTVANDRET,
     VURDER_SERSKILT_SATS
 }
+
+enum class BeloepEndring {
+    ENDR_OKT,
+    ENDR_RED,
+    UENDRET
+}

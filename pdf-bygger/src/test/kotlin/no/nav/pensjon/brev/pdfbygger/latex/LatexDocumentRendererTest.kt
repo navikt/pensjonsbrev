@@ -37,6 +37,41 @@ class LatexDocumentRendererTest {
     }
 
     @Test
+    fun `title should be combined once with adjacent table`() {
+        val titleText = "Test tittel 1234"
+        assertNumberOfTextOccurrences(1, titleText) {
+            title1 { text(Language.Bokmal to titleText) }
+            paragraph { testTable() }
+        }
+    }
+
+    @Test
+    fun `table should not grab the title of previous title if there are other elements between them in the same paragraph`() {
+        val titleText = "Test tittel 1234"
+        assertNumberOfTextOccurrences(1, titleText) {
+            title1 { text(Language.Bokmal to titleText) }
+            paragraph {
+                testText()
+                testTable()
+            }
+        }
+    }
+
+    @Test
+    fun `table should not grab the title of previous title if there are other elements between them`() {
+        val titleText = "Test tittel 1234"
+        assertNumberOfTextOccurrences(1, titleText) {
+            title1 { text(Language.Bokmal to titleText) }
+            paragraph { testText() }
+            paragraph {
+                testText()
+                testTable()
+            }
+        }
+    }
+
+
+    @Test
     fun `paragraph is split in two using tables`() {
         assertNumberOfParagraphs(2) {
             paragraph {
@@ -109,6 +144,12 @@ class LatexDocumentRendererTest {
     fun assertNumberOfParagraphs(
         expectedParagraphs: Int,
         outline: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit
+    ) = assertNumberOfTextOccurrences(expectedParagraphs, "templateparagraph", outline)
+
+    fun assertNumberOfTextOccurrences(
+        expectedOccurrences: Int,
+        expectedText: String,
+        outline: OutlineOnlyScope<LangBokmal, EmptyBrevdata>.() -> Unit
     ) {
         val letter = LetterTestImpl(
             LetterExample.template,
@@ -130,9 +171,10 @@ class LatexDocumentRendererTest {
                 )
             )
             val tex = latexDocument.files.find { it.fileName == "letter.tex" } as DocumentFile
-            assertThat(tex.content.lines().count { it.contains("templateparagraph") }, equalTo(expectedParagraphs))
+            assertThat(tex.content.lines().count { it.contains(expectedText) }, equalTo(expectedOccurrences))
         }
     }
+
 
 
     private fun ParagraphOnlyScope<LangBokmal, EmptyBrevdata>.testItemList() {
