@@ -54,6 +54,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -258,9 +259,11 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                         Nynorsk to "I vedlegget ",
                         English to "In the appendix "
                     )
-                    showIf (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
+                    showIf (
+
+                        pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
                         namedReference(vedleggOpplysningerBruktIBeregningenAlder)
-                    }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025)) {
+                    }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025) and pesysData.opplysningerBruktIBeregningenAlderAP2025Dto.notNull()) {
                         namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
                     }
                     text(
@@ -332,7 +335,7 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 )
                 showIf (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
                     namedReference(vedleggOpplysningerBruktIBeregningenAlder)
-                }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025)) {
+                }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025) and pesysData.opplysningerBruktIBeregningenAlderAP2025Dto.notNull()) {
                     namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
                 }
                 text(Bokmal to ".", Nynorsk to ".", English to ".")
