@@ -157,41 +157,13 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                         }
                     }
                 }.orShowIf(not(pesysData.institusjonsoppholdVedVirk.helseinstitusjon)) {
-                    /* TODO: Nå vises alle avsnittene her.
-                    I praksis skal saksbehandler velge ett av disse, og fjerne det som ikke er relevant.
-                    Vi har ikke ei god løsning for dette per nå, så det må vi finne ut av
-                    i https://trello.com/c/QOgu2fHm/178-unders%C3%B8ke-behov-ved-konvertering-av-preselected-innhold
-                     */
                     paragraph {
-                        // meldingUtskrevetInst_001
+                        // meldingUtskrevetInst_001 / meldingUtskrevetSoning_001 / meldingUtskrevetVaretekt_001
                         val fritekst = fritekst("Dato fom")
-                        // preselected
                         textExpr(
-                            Bokmal to "Vi har mottatt melding om at du er utskrevet fra helseinstitusjon fra og med ".expr() + fritekst + ".",
-                            Nynorsk to "Vi har fått melding om at du er utskriven frå helseinstitusjon frå og med ".expr() + fritekst + ".",
-                            English to "We have received notice that you were discharged from a health institution from and including ".expr() + fritekst + "."
-                        )
-                    }
-
-                    paragraph {
-                        // meldingUtskrevetSoning_001
-                        val fritekst = fritekst("Dato fom")
-                        // preselected
-                        textExpr(
-                            Bokmal to "Vi har mottatt melding om at du er ferdig med å sone straffen fra og med ".expr() + fritekst + ".",
-                            Nynorsk to "Vi har fått melding om at du er ferdig med å sone straffa frå og med ".expr() + fritekst + ".",
-                            English to "We have received notice that you completed serving your prison sentence from and including ".expr() + fritekst + "."
-                        )
-                    }
-
-                    paragraph {
-                        // meldingUtskrevetVaretekt_001
-                        val fritekst = fritekst("Dato fom")
-                        // preselected
-                        textExpr(
-                            Bokmal to "Vi har mottatt melding om at du er løslatt fra varetekt fra og med ".expr() + fritekst + ".",
-                            Nynorsk to "Vi har fått melding om at du er lauslaten frå varetekt frå og med ".expr() + fritekst + ".",
-                            English to "We have received notice that you were released from custody on remand from and including ".expr() + fritekst + "."
+                            Bokmal to "Vi har mottatt melding om at du er ".expr() + fritekst("utskrevet fra helseinstitusjon / ferdig med å sone straffen / løslatt fra varetekt") + " fra og med " + fritekst + ".",
+                            Nynorsk to "Vi har fått melding om at du er ".expr() + fritekst("utskriven frå helseinstitusjon / ferdig med å sone straffa / lauslaten frå varetekt") + " frå og med ".expr() + fritekst + ".",
+                            English to "We have received notice that you ".expr() + fritekst("were discharged from a health institution / completed serving your prison sentence / were released from custody on remand") + " from and including " + fritekst + "."
                         )
                     }
 
