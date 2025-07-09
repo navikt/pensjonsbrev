@@ -262,6 +262,8 @@ class BrevredigeringService(
     ): ServiceResult<Dto.Brevredigering>? =
         if (reserverForRedigering) {
             hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
+                brevDto.validerKanAttestere(PrincipalInContext.require())
+
                 val principal = PrincipalInContext.require()
                 val signaturAttestant = brevDb.signaturAttestant
                     ?: navansattService.hentNavansatt(principal.navIdent.id)?.let { "${it.fornavn} ${it.etternavn}" }
