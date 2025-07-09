@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.fradrag
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.AlderspensjonVedVirkSelectors.fullUttaksgrad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
@@ -32,6 +33,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensj
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.MINSIDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
@@ -118,15 +120,26 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                 }
             }
 
-            // etterbetalingSkjermTill_001
+            // etterbetalingSkjermTill_003
             paragraph {
                 textExpr(
-                    Bokmal to "Du får etterbetalt skjermingstillegget for ".expr() + ifElse(pesysData.krav.virkDatoFom.equalTo(
-                        LocalDate.of(2025, Month.JANUARY, 1)), "januar og ", "") + "februar 2025. Vanligvis blir det utbetalt i løpet av sju virkedager. Du kan sjekke eventuelle fradrag som skatt og andre trekk på $MINSIDE_URL. Fra mars kommer det månedlige tillegget sammen med alderspensjonen din.",
-                    Nynorsk to "Du får etterbetalt skjermingstillegget for ".expr() + ifElse(pesysData.krav.virkDatoFom.equalTo(
-                        LocalDate.of(2025, Month.JANUARY, 1)), "januar og ", "") + "februar 2025. Vanlegvis blir det utbetalt i løpet av sju vyrkedagar. Du kan sjekke eventuelle frådrag som skatt og andre trekk på $MINSIDE_URL. Frå mars kjem det månadlege tillegget saman med alderspensjonen din.",
-                    English to "Du får etterbetalt skjermingstillegget for ".expr() + ifElse(pesysData.krav.virkDatoFom.equalTo(
-                        LocalDate.of(2025, Month.JANUARY, 1)), "January and ", "February 2025. It is usually paid out within seven working days. You can check any deductions such as tax and other withholdings on $MINSIDE_URL. From March, the monthly supplement will be paid together with your retirement pension."),
+                    Bokmal to "Du får etterbetalt skjermingstillegg fra ".expr() + pesysData.krav.virkDatoFom.format() + ". Etterbetalingen blir vanligvis utbetalt i løpet av 7 virkedager. Skattetrekk kan gjøre at etterbetalingen blir redusert. Du kan sjekke fradrag i utbetalingsmeldingen på $MINSIDE_URL.",
+                    Nynorsk to "Du får etterbetalt skjermingstillegget frå ".expr() + pesysData.krav.virkDatoFom.format() + ". Etterbetalinga blir vanlegvis utbetalt i løpet av 7 vyrkedagar. Skattetrekk kan gjere at etterbetalinga blir redusert. Du kan sjekke frådrag i utbetalingsmeldinga på $MINSIDE_URL.",
+                    English to "You will receive a retroactive payment of the supplement for the disabled from ".expr() + pesysData.krav.virkDatoFom.format() + ". Retroactive payments are normally made in the course of 7 working days. Tax deductions may reduce the retroactive payment. You can check the deductions in the payment notification at $MINSIDE_URL."
+                )
+            }
+            title1 {
+                text(
+                    Bokmal to "Har du offentlig tjenestepensjon?",
+                    Nynorsk to "Har du offentleg tenestepensjon?",
+                    English to "Do you have a public service pension?"
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Hvis pensjon fra folketrygden (Nav) endres, må tjenestepensjonsordningen også beregne sin pensjon på nytt. Derfor kan det ta inntil 9 uker før Nav kan starte utbetaling av nytt beløp. Krav fra tjenestepensjonsordningen kan også gjøre at etterbetalingen blir redusert.",
+                    Nynorsk to "Om pensjon frå folketrygda (Nav) blir endra, må tenestepensjonsordninga også berekne pensjonen sin på nytt. Difor kan det ta inntil 9 veker før Nav kan starte utbetaling av nytt beløp. Krav frå tenestepensjonsordninga kan også gjere at etterbetalinga blir redusert.",
+                    English to "If the pension from the National Insurance Scheme (Nav) changes, the public service pension scheme must also recalculate its pension. Therefore, it may take up to 9 weeks before Nav can start paying the new amount. Claims from the public service pension scheme may also reduce the retroactive payment."
                 )
             }
 
