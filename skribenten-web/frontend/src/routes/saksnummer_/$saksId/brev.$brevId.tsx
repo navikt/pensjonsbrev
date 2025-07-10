@@ -37,7 +37,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
   params: {
     parse: ({ brevId }) => ({ brevId: z.coerce.number().parse(brevId) }),
   },
-  component: RedigerBrevPage,
+  component: () => <RedigerBrevPage />,
 });
 
 function RedigerBrevPage() {
