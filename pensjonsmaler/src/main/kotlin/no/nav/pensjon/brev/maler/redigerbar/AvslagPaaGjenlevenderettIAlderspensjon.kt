@@ -1,5 +1,8 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
+import no.nav.pensjon.brev.api.model.BeloepEndring
+import no.nav.pensjon.brev.api.model.BeloepEndring.ENDR_OKT
+import no.nav.pensjon.brev.api.model.BeloepEndring.UENDRET
 import no.nav.pensjon.brev.api.model.KravInitiertAv.BRUKER
 import no.nav.pensjon.brev.api.model.KravInitiertAv.NAV
 import no.nav.pensjon.brev.api.model.KravInitiertAv.VERGE
@@ -8,14 +11,22 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.totalPensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvdoedSelectors.navn
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.BeregnetPensjonPerManedSelectors.antallBeregningsperioderPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.KravSelectors.kravInitiertAv
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.avdoed
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.beregnetPensjonPerManed
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.krav
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.samboerUtenFellesBarn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.DuFaarHverMaaned
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -179,6 +190,42 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                     }
                 }
             }
+            // omregnetEnsligAP_002
+            paragraph {
+                text(
+                    Bokmal to "Vi har regnet om pensjonen din fordi du har blitt enslig pensjonist. Dette er gjort etter folketrygdloven § 3-2.",
+                    Nynorsk to "Vi har rekna om pensjonen din fordi du har blitt einsleg pensjonist. Dette er gjort etter folketrygdlova § 3-2.",
+                    English to "We have recalculated your pension because you have become a single pensioner. This decision was made pursuant to the provisions of § 3-2 of the National Insurance Act."
+                )
+            }
+
+            showIf(pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(UENDRET) and pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0)) {
+                // ingenEndringBelop_002
+                paragraph {
+                    text(
+                        Bokmal to "Dette får derfor ingen betydning for utbetalingen din.",
+                        Nynorsk to "Dette får derfor ingen følgjer for utbetalinga di.",
+                        English to "Therefore, this does not affect the amount you will receive."
+                    )
+                }
+            }.orShowIf(pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(ENDR_OKT)) {
+                // nyBeregningAPØkning_001
+                paragraph {
+                    text(
+                        Bokmal to "Dette fører til at pensjonen din øker.",
+                        Nynorsk to "Dette fører til at pensjonen din aukar.",
+                        English to "This leads to an increase in your retirement pension."
+                    )
+                }
+            }
+            includePhrase(DuFaarHverMaaned(pesysData.alderspensjonVedVirk.totalPensjon))
+
+            showIf(pesysData.beregnetPensjonPerManed.antallBeregningsperioderPensjon.greaterThan(0)
+                and pesysData.alderspensjonVedVirk.uttaksgrad.greaterThan(0)) {
+                includePhrase(Utbetalingsinformasjon)
+            }
+
+            includePhrase(FlereBeregningsperioder(pesysData.beregnetPensjonPerManed.antallBeregningsperioderPensjon, pesysData.alderspensjonVedVirk.totalPensjon))
         }
     }
 }

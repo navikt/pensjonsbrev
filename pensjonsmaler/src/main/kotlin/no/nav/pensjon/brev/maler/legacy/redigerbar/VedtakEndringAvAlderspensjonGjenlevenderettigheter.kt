@@ -51,6 +51,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlde
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.DuFaarHverMaaned
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.HvorKanDuFaaViteMerOmAlderspensjonenDin
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -411,19 +413,11 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-            // beløpAP_001
             showIf(
-                pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0)
-                        and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)
+                not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)
                         and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggInnvilget)
             ) {
-                paragraph {
-                    textExpr(
-                        Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon fra folketrygden hver måned før skatt.",
-                        Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " i alderspensjon frå folketrygda kvar månad før skatt.",
-                        English to "You will receive ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " every month before tax as retirement pension through the National Insurance Act."
-                    )
-                }
+                includePhrase(DuFaarHverMaaned(pesysData.alderspensjonVedVirk.totalPensjon))
             }
 
             // beloepApOgGjtvedVirk_001
@@ -491,21 +485,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-            // flereBeregningsperioderVedlegg_001
-                // TODO: Bør vi ikke heller her sjekke om dataene til vedlegget er med?
-            showIf(
-                pesysData.beregnetPensjonPerManedVedVirk.antallBeregningsperioderPensjon.greaterThan(1)
-                        and pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0)
-            ) {
-                paragraph {
-                    text(
-                        Bokmal to "Du kan lese mer om andre beregningsperioder i vedlegget.",
-                        Nynorsk to "Du kan lese meir om andre berekningsperiodar i vedlegget.",
-                        English to "There is more information about other calculation periods in the attachment."
-                    )
-                }
-            }
-
+            includePhrase(FlereBeregningsperioder(pesysData.beregnetPensjonPerManedVedVirk.antallBeregningsperioderPensjon, pesysData.alderspensjonVedVirk.totalPensjon))
 
             showIf(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967, AP2011, AP2016)) {
                 paragraph {

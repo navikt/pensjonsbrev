@@ -1,20 +1,27 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.totalPensjon
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
 // infoAPinntekt_001
@@ -52,6 +59,22 @@ object Utbetalingsinformasjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 English to "If you have occupational pensions from other schemes, this will be paid in addition to your retirement pension. " +
                         "Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at $UTBETALINGER_URL."
             )
+        }
+    }
+}
+
+class FlereBeregningsperioder(val antallPerioder: Expression<Int>, val totalPensjon: Expression<Kroner>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    // flereBeregningsperioderVedlegg_001
+    // TODO: Bør vi ikke heller her sjekke om dataene til vedlegget er med?
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(antallPerioder.greaterThan(1) and totalPensjon.greaterThan(0)) {
+            paragraph {
+                text(
+                    Bokmal to "Du kan lese mer om andre beregningsperioder i vedlegget.",
+                    Nynorsk to "Du kan lese meir om andre berekningsperiodar i vedlegget.",
+                    English to "There is more information about other calculation periods in the attachment."
+                )
+            }
         }
     }
 }
@@ -192,4 +215,20 @@ object PensjonsopptjeningInformasjon : OutlinePhrase<LangBokmalNynorskEnglish>()
             )
         }
     }
+}
+
+// beløpAP_001
+class DuFaarHverMaaned(val totalPensjon: Expression<Kroner>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(totalPensjon.greaterThan(0)) {
+            paragraph {
+                textExpr(
+                    Bokmal to "Du får ".expr() + totalPensjon.format() + " i alderspensjon fra folketrygden hver måned før skatt.",
+                    Nynorsk to "Du får ".expr() + totalPensjon.format() + " i alderspensjon frå folketrygda kvar månad før skatt.",
+                    English to "You will receive ".expr() + totalPensjon.format() + " every month before tax as retirement pension through the National Insurance Act."
+                )
+            }
+        }
+    }
+
 }
