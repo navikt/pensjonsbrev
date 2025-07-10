@@ -302,7 +302,9 @@ object InnvilgelseAPForeloepigBeregning : OutlinePhrase<LangBokmalNynorskEnglish
     }
 }
 
-object InnvilgelseAPUttakEndr : OutlinePhrase<LangBokmalNynorskEnglish>() {
+data class InnvilgelseAPUttakEndr(
+    val uforeKombinertMedAlder: Expression<Boolean>
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(
@@ -325,6 +327,22 @@ object InnvilgelseAPUttakEndr : OutlinePhrase<LangBokmalNynorskEnglish>() {
                         " If you have high enough pension earnings, you can withdraw your full retirement pension whenever you want. You can stop drawing your pension at any time."
             )
         }
+        paragraph {
+            text(
+                Bokmal to "Du kan bruke pensjonskalkulatoren på $DIN_PENSJON_URL for å se om du kan endre alderspensjonen din.",
+                Nynorsk to "Du kan bruke pensjonskalkulatoren på $DIN_PENSJON_URL for å sjå om du kan endre alderspensjonen din.",
+                English to "Use the pension calculator on $DIN_PENSJON_URL to see if you can change your retirement pension.",
+            )
+        }
+        showIf(uforeKombinertMedAlder) {
+            paragraph {
+                text(
+                    Bokmal to "Summen av uføregraden og alderspensjonen din kan ikke overstige 100 prosent.",
+                    Nynorsk to "Summen av uføregraden og alderspensjonen din kan ikkje gå over 100 prosent.",
+                    English to "The percentage of disability benefit and the percentage of retirement pension combined may not exceed 100 percent.",
+                )
+            }
+        }
     }
 }
 
@@ -340,7 +358,7 @@ object RettTilKlageUtland : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
-object SkattAP :  OutlinePhrase<LangBokmalNynorskEnglish>() {
+object SkattAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
             text(

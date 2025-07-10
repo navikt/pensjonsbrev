@@ -19,7 +19,6 @@ fun createInnvilgelseAvAlderspensjonDto() =
             egenOpptjening = false,
             supplerendeStoenad = false,
             kildeskatt = false,
-            ikkeKildeskatt = false,
             etterbetaling = false,
         ),
         pesysData = InnvilgelseAvAlderspensjonDto.PesysData(
@@ -57,9 +56,9 @@ fun createInnvilgelseAvAlderspensjonDto() =
                 eksportTrygdeavtaleAvtaleland = false,
                 eksportTrygdeavtaleEOS = true,
                 harOppfyltVedSammenlegging = true, // hvis oppfyltVedSammenleggingKap19 eller oppfyltVedSammenleggingKap20
-                minst20ArBotidKap19 = false,
+                minst20ArBotidKap19Avdod = false,
                 minst20ArTrygdetid = false,
-                minst20ArTrygdetidKap20 = false,
+                minst20ArTrygdetidKap20Avdod = false,
             ),
             kravVirkDatoFom = LocalDate.of(2025, 6, 1),
             norgeBehandlendeLand = false,

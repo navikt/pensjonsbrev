@@ -537,14 +537,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 includePhrase(Vedtak.Etterbetaling(pesysData.kravVirkDatoFom))
             }
 
-            includePhrase(InnvilgelseAPUttakEndr)
-            paragraph {
-                text(
-                    Bokmal to "Du kan bruke pensjonskalkulatoren på $DIN_PENSJON_URL for å se om du kan endre alderspensjonen din.",
-                    Nynorsk to "Du kan bruke pensjonskalkulatoren på $DIN_PENSJON_URL for å sjå om du kan endre alderspensjonen din.",
-                    English to "Use the pension calculator on $DIN_PENSJON_URL to see if you can change your retirement pension.",
-                )
-            }
+            includePhrase(InnvilgelseAPUttakEndr(uforeKombinertMedAlder))
 
             showIf(uforeKombinertMedAlder and innvilgetFor67) {
                 // innvilgelseAPUttakEndrUT

@@ -148,26 +148,29 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
 
 
         title {
-            showIf(
-                erMellombehandling or (saksbehandlerValg.innvilgelseAPellerOektUttaksgrad and erSluttbehandlingNorgeUtland or (not(
-                    erSluttbehandlingNorgeUtland
-                ) and not(erMellombehandling)))
-            ) {
+            showIf(erMellombehandling) {
                 textExpr(
                     Bokmal to "Vi har innvilget søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
                     Nynorsk to "Vi har innvilga søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
                     English to "We have granted your application for ".expr() + uttaksgrad.format() + " percent retirement pension"
                 )
             }.orShowIf(
-                saksbehandlerValg.nyBeregningAvInnvilgetAP and erSluttbehandlingNorgeUtland or (not(
-                    erSluttbehandlingNorgeUtland
-                ) and not(erMellombehandling))
+                erSluttbehandlingNorgeUtland or not(erMellombehandling and not(erSluttbehandlingNorgeUtland))
             ) {
-                textExpr(
-                    Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ".expr() + kravVirkDatoFom,
-                    Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + kravVirkDatoFom,
-                    English to "We have recalculated your retirement pension from ".expr() + kravVirkDatoFom
-                )
+                showIf(saksbehandlerValg.innvilgelseAPellerOektUttaksgrad) {
+                    textExpr(
+                        Bokmal to "Vi har innvilget søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
+                        Nynorsk to "Vi har innvilga søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
+                        English to "We have granted your application for ".expr() + uttaksgrad.format() + " percent retirement pension"
+                    )
+                }
+                showIf(saksbehandlerValg.nyBeregningAvInnvilgetAP) {
+                    textExpr(
+                        Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ".expr() + kravVirkDatoFom,
+                        Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + kravVirkDatoFom,
+                        English to "We have recalculated your retirement pension from ".expr() + kravVirkDatoFom
+                    )
+                }
             }
         }
 
@@ -202,7 +205,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             }
             showIf(
                 erSluttbehandlingNorgeUtland or
-                        (not(erSluttbehandlingNorgeUtland) and erMellombehandling)
+                        (not(erSluttbehandlingNorgeUtland) and not(erMellombehandling))
             ) {
                 showIf(saksbehandlerValg.ingenEndringIPensjonen) {
                     // nyBeregningAPIngenEndring
@@ -235,7 +238,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                     }
                 }
             }
-            // innvilgelseAPogUTInnledn,innvilgelseAPInnledn,
+// innvilgelseAPogUTInnledn,innvilgelseAPInnledn,
             paragraph {
                 textExpr(
                     Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner hver måned før skatt fra ".expr()
@@ -264,7 +267,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
 
             showIf(privatAFPErBrukt) {
                 includePhrase(
-                    AfpPrivatErBrukt(uttaksgrad = uttaksgrad)
+                    AfpPrivatErBrukt(uttaksgrad)
                 )
             }
 
@@ -278,22 +281,17 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
 
             includePhrase(
                 HjemlerInnvilgelseForAP2011AP2016(
-                    garantipensjonInnvilget = garantipensjonInnvilget,
-                    godkjentYrkesskade = godkjentYrkesskade,
-                    innvilgetFor67 = innvilgetFor67,
-                    pensjonstilleggInnvilget = pensjonstilleggInnvilget,
-                    regelverkType = regelverkType
+                    garantipensjonInnvilget, godkjentYrkesskade, innvilgetFor67, pensjonstilleggInnvilget, regelverkType
                 )
             )
             includePhrase(
                 SKjermingstilleggHjemmel(
-                    skjermingstilleggInnvilget = skjermingstilleggInnvilget
+                    skjermingstilleggInnvilget
                 )
             )
             includePhrase(
                 AP2025TidligUttakHjemmel(
-                    innvilgetFor67 = innvilgetFor67,
-                    regelverkType = regelverkType
+                    innvilgetFor67, regelverkType
                 )
             )
             includePhrase(
@@ -321,9 +319,9 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
             ) {
                 includePhrase(SupplerendeStoenadAP)
             }
-showIf(borINorge) {
+            showIf(borINorge) {
 
-}
+            }
             includePhrase(SkattAP)
 
             showIf(not(borINorge)) { includePhrase(Skatteplikt) }
@@ -333,7 +331,8 @@ showIf(borINorge) {
             }
 
             includePhrase(ReguleringAvAlderspensjon)
-            includePhrase(InnvilgelseAPUttakEndr)
+            includePhrase(InnvilgelseAPUttakEndr(uforeKombinertMedAlder))
+
             includePhrase(
                 ArbeidsinntektOgAlderspensjon(innvilgetFor67, uttaksgrad, uforeKombinertMedAlder)
             )
@@ -347,10 +346,16 @@ showIf(borINorge) {
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, pesysData.maanedligPensjonFoerSkattDto)
-        includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025Dto)
-        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, pesysData.dineRettigheterOgMulighetTilAaKlageDto)
-        // includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, pesysData.)
-        // includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025, pesysData.)
-        // includeAttachmentIfNotNull(vedleggOpplysningerOmAvdodBruktIBeregning, pesysData.
+        includeAttachmentIfNotNull(
+            vedleggMaanedligPensjonFoerSkattAp2025,
+            pesysData.maanedligPensjonFoerSkattAP2025Dto
+        )
+        includeAttachment(
+            vedleggDineRettigheterOgMulighetTilAaKlage,
+            pesysData.dineRettigheterOgMulighetTilAaKlageDto
+        )
+// includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, pesysData.)
+// includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025, pesysData.)
+// includeAttachmentIfNotNull(vedleggOpplysningerOmAvdodBruktIBeregning, pesysData.
     }
 }
