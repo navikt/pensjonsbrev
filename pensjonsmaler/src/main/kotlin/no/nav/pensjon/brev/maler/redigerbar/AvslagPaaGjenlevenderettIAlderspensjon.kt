@@ -13,7 +13,9 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIA
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.avdoed
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.krav
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.samboerUtenFellesBarn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -38,6 +40,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.ALDER)
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GJENLEVENDERETT
+
     override val template = createTemplate(
         name = kode.name,
         letterDataType = AvslagPaaGjenlevenderettIAlderspensjonDto::class,
@@ -49,13 +52,13 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
+        val initiertAvBrukerEllerVerge = pesysData.krav.kravInitiertAv.isOneOf(BRUKER, VERGE)
+        val initiertAvNav = pesysData.krav.kravInitiertAv.equalTo(NAV)
+
         title {
             // avslagGjRettAPTittel_001
             showIf(
-                pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0) and pesysData.krav.kravInitiertAv.isOneOf(
-                    BRUKER,
-                    VERGE
-                )
+                pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0) and initiertAvBrukerEllerVerge
             ) {
                 text(
                     Bokmal to "Vi har avslått søknaden din om gjenlevenderett i alderspensjonen",
@@ -64,9 +67,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 )
             }.orShowIf(
                 // avslagGjRettAPTittel_002
-                pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0) and pesysData.krav.kravInitiertAv.isOneOf(
-                    NAV
-                )
+                pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0) and initiertAvNav
             ) {
                 text(
                     Bokmal to "Vi har vurdert om du har pensjonsrettigheter etter avdøde",
@@ -84,7 +85,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
         }
         outline {
             includePhrase(Vedtak.Overskrift)
-            showIf(pesysData.krav.kravInitiertAv.equalTo(NAV)) {
+            showIf(initiertAvNav) {
                 // avslagGjRettAPAvdod_001
                 paragraph {
                     textExpr(
@@ -95,27 +96,88 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                         ) + "."
                     )
                 }
+            }
 
-                // TODO: Her kjem alle Under x års medlemstid-blokkene, som har returnverdi 1 i doksys
-                // Må finne ut av korleis vi handterer dei
-                // Heilt fram til og med Under 20 år-blokkene
+            // TODO: Her kjem alle Under x års medlemstid-blokkene, som har returnverdi 1 i doksys
+            // Må finne ut av korleis vi handterer dei
+            // Heilt fram til og med Under 20 år-blokkene
 
-                showIf(pesysData.krav.kravInitiertAv.isOneOf(BRUKER, VERGE)) {
-                    // avslagGJRettAPGiftUnder5aarSøknad_001
-                    paragraph {
+            showIf(initiertAvBrukerEllerVerge) {
+                // avslagGJRettAPGiftUnder5aarSøknad_001
+                paragraph {
+                    text(
+                        Bokmal to "For å ha rettigheter som gift må du og avdøde ha vært gift i minst fem år eller ha felles barn.",
+                        Nynorsk to "For å ha rettar som gift må du og avdøde ha vore gifte i minst fem år eller ha felles barn.",
+                        English to "To have rights as a married person, you and the deceased must have been married for at least five years or have joint children."
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du og ".expr() + pesysData.avdoed.navn + " har ikke vært gift i minst fem år. Ekteskapet ble inngått " + fritekst(
+                            "dato"
+                        ) + " og ektefellen din døde " + fritekst("dato") + ". Dere har heller ikke felles barn. Derfor har vi avslått søknaden din.",
+                        Nynorsk to "Du og ".expr() + pesysData.avdoed.navn + " har ikkje vore gifte i minst fem år. Ekteskapet blei inngått " + fritekst(
+                            "dato"
+                        ) + ", og ektefellen din døydde " + fritekst("dato") + ". De har heller ikkje felles barn. Derfor har vi avslått søknaden din.",
+                        English to "You and ".expr() + pesysData.avdoed.navn + " have not been married for at least five years. Your marriage took place on " + fritekst(
+                            "dato"
+                        ) + " and your spouse died on " + fritekst("dato") + ". You also have no joint children. We have declined your application for this reason."
+                    )
+                }
+            }.orShowIf(initiertAvNav) {
+                // avslagGjRettAPVilkårGift5aarNav_001
+                paragraph {
+                    text(
+                        Bokmal to "For å ha rettigheter som gift må du og avdøde ha vært gift i minst fem år eller ha felles barn.",
+                        Nynorsk to "For å ha rettar som gift må du og avdøde ha vore gifte i minst fem år eller ha felles barn.",
+                        English to "To have rights as a married person, you and the deceased must have been married for at least five years or have joint children."
+                    )
+                }
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du og ".expr() + pesysData.avdoed.navn + " har ikke vært gift i minst fem år. Ekteskapet ble inngått " + fritekst(
+                            "dato"
+                        ) + " og ektefellen din døde " + fritekst("dato") + ". Dere har heller ikke felles barn. Derfor har du ikke rettigheter etter avdøde.",
+                        Nynorsk to "Du og ".expr() + pesysData.avdoed.navn + " har ikkje vore gifte i minst fem år. Ekteskapet blei inngått " + fritekst(
+                            "dato"
+                        ) + ", og ektefellen din døydde " + fritekst("dato") + ". De har heller ikkje felles barn. Derfor har du ikkje rettar etter avdøde.",
+                        English to "You and ".expr() + pesysData.avdoed.navn + " have not been married for at least five years. Your marriage took place on " + fritekst(
+                            "dato"
+                        ) + " and your spouse died on " + fritekst("dato") + ". You also have no joint children. You have no survivor’s rights in your retirement pension for this reason."
+                    )
+                }
+            }
+
+            showIf(saksbehandlerValg.samboerUtenFellesBarn) {
+                // avslagGjRettAPVilkårSamboMFB_001 / avslagGjRettAPVilkårSamboMFBNav_001
+                paragraph {
+                    text(
+                        Bokmal to "For å ha rettigheter som samboer må du og avdøde tidligere ha vært gift i minst fem år eller ha/hatt felles barn.",
+                        Nynorsk to "For å ha rettar som sambuar må du og avdøde tidlegare ha vore gifte i minst fem år eller ha/hatt felles barn.",
+                        English to "To have rights as a cohabiting partner, you and the deceased must have been previously married for at least five years or have/had joint children."
+                    )
+                }
+
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du og ".expr() + pesysData.avdoed.navn + " har ikke tidligere vært gift i minst fem år. Dere var heller ikke samboere med felles barn.",
+                        Nynorsk to "Du og ".expr() + pesysData.avdoed.navn + " har ikkje tidlegare vore gifte i minst fem år. De var heller ikkje sambuarar med felles barn.",
+                        English to "You and ".expr() + pesysData.avdoed.navn + " have not been previously married for at least five years. You were also not cohabiting partners with joint children."
+                    )
+                    showIf(initiertAvBrukerEllerVerge) {
                         text(
-                            Bokmal to "For å ha rettigheter som gift må du og avdøde ha vært gift i minst fem år eller ha felles barn.",
-                            Nynorsk to "For å ha rettar som gift må du og avdøde ha vore gifte i minst fem år eller ha felles barn.",
-                            English to "To have rights as a married person, you and the deceased must have been married for at least five years or have joint children."
+                            Bokmal to "Derfor har vi avslått søknaden din.",
+                            Nynorsk to "Derfor har vi avslått søknaden din.",
+                            English to "We have declined your application for this reason."
                         )
-                    }
-                    paragraph {
+                    }.orShowIf(initiertAvNav) {
                         text(
-                            
+                            Bokmal to "Derfor har du ikke rettigheter etter avdøde.",
+                            Nynorsk to "Derfor har du ikkje rettar etter avdøde.",
+                            English to "You have no survivor’s rights in your retirement pension for this reason."
                         )
                     }
                 }
-
             }
         }
     }
