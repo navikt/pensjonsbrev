@@ -5,6 +5,9 @@ import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.trygdetidavdod.TrygdetidAvdod
+import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Percent
 
@@ -21,6 +24,9 @@ data class AvslagPaaGjenlevenderettIAlderspensjonDto(
         val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
         val beregnetPensjonPerManed: BeregnetPensjonPerManed,
         val avtaleland: Avtaleland?,
+        val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
+        val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
+        val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto,
     ) : BrevbakerBrevdata {
         data class AlderspensjonVedVirk(val totalPensjon: Kroner, val uttaksgrad: Percent)
         data class Krav(val kravInitiertAv: KravInitiertAv)
