@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.trygdetidavdod.TrygdetidAvdod
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Percent
 
@@ -19,11 +20,11 @@ data class AvslagPaaGjenlevenderettIAlderspensjonDto(
         val avdoed: Avdoed,
         val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
         val beregnetPensjonPerManed: BeregnetPensjonPerManed,
-        val avtaleland: Avtaleland?
+        val avtaleland: Avtaleland?,
     ) : BrevbakerBrevdata {
         data class AlderspensjonVedVirk(val totalPensjon: Kroner, val uttaksgrad: Percent)
         data class Krav(val kravInitiertAv: KravInitiertAv)
-        data class Avdoed(val navn: String)
+        data class Avdoed(val navn: String, val redusertTrygdetidNorge: Boolean, val redusertTrygdetidEOS: Boolean, val redusertTrygdetidAvtaleland: Boolean)
         data class YtelseskomponentInformasjon(val beloepEndring: BeloepEndring)
         data class BeregnetPensjonPerManed(val antallBeregningsperioderPensjon: Int)
         data class Avtaleland(val erEOSLand: Boolean, val navn: String?)

@@ -232,3 +232,15 @@ class DuFaarHverMaaned(val totalPensjon: Expression<Kroner>) : OutlinePhrase<Lan
     }
 
 }
+
+object TrygdetidTittel : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Trygdetid",
+                Nynorsk to "Trygdetid",
+                English to "National insurance coverage"
+            )
+        }
+    }
+}

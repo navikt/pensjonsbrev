@@ -12,6 +12,9 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIA
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvdoedSelectors.navn
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvdoedSelectors.redusertTrygdetidAvtaleland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvdoedSelectors.redusertTrygdetidEOS
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvdoedSelectors.redusertTrygdetidNorge
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvtalelandSelectors.erEOSLand
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvtalelandSelectors.navn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.BeregnetPensjonPerManedSelectors.antallBeregningsperioderPensjon
@@ -28,6 +31,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIA
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.DuFaarHverMaaned
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.TrygdetidTittel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -40,11 +44,13 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -265,6 +271,66 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                         }
                     }
                 }
+            }
+
+            showIf(pesysData.avdoed.redusertTrygdetidNorge or pesysData.avdoed.redusertTrygdetidEOS or pesysData.avdoed.redusertTrygdetidAvtaleland) {
+                // norskTTAvdodInfoAvslag_001
+                includePhrase(TrygdetidTittel)
+                paragraph {
+                    text(
+                        Bokmal to "Trygdetid er perioder med medlemskap i folketrygden. Som hovedregel er dette bo- eller arbeidsperioder i Norge.",
+                        Nynorsk to "Trygdetid er periodar med medlemskap i folketrygda. Som hovudregel er dette bu- eller arbeidsperiodar i Noreg.",
+                        English to "The period of national insurance coverage is periods as a member of the National Insurance Scheme. As a general rule, these are periods registered as living or working in Norway."
+                    )
+                }
+
+                showIf(pesysData.avdoed.redusertTrygdetidNorge) {
+                    // avslagUnder1aarTTAvdod_001
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Våre opplysninger viser at ".expr() + pesysData.avdoed.navn + " " + fritekst("har bodd eller arbeidet i Norge i angi antall dager/ måneder / ikke har bodd eller arbeidet i Norge") + ".",
+                            Nynorsk to "Ifølgje våre opplysningar har ".expr() + pesysData.avdoed.navn + " " + fritekst(" budd eller arbeidd i Noreg i angi antall dagar/ månader / ikkje budd eller arbeidd i Noreg") + ".",
+                            English to fritekst("We have registered that / We have no record of") + " " + pesysData.avdoed.navn + " " + fritekst(" has been living or working in Norway for angi antall days/ months /  living or working in Norway.") + ".",
+                        )
+                    }
+                }
+                showIf(pesysData.avdoed.redusertTrygdetidEOS) {
+                    // avslagUnder3aarTTAvdodEOS_001
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Vi har fått opplyst at ".expr() + pesysData.avdoed.navn + " har " + fritekst("angi antall") + " måneder opptjeningstid i annet EØS-land. Den samlede trygdetiden i Norge og annet EØS-land er " + fritekst("angi samlet trygdetid i Norge og EØS-land") + ".",
+                            Nynorsk to "Vi har fått opplyst at ".expr() + pesysData.avdoed.navn + " har " + fritekst("angi antall") + " månader oppteningstid i anna EØS-land. Den samla trygdetiden i Norge og anna EØS-land er " + fritekst("angi samlet trygdetid i Norge og EØS-land") + ".",
+                            English to "We have been informed that ".expr() + pesysData.avdoed.navn + " has " + fritekst("angi antall") + " months of national insurance coverage in an other EEA country. The total national insurance coverage in Norway and an other EEA country is " + fritekst("angi samlet trygdetid i Norge og EØS-land") + "."
+                        )
+                    }
+                }
+
+                showIf(pesysData.avdoed.redusertTrygdetidAvtaleland) {
+                    // avslagUnder3aarTTAvdodAvtale_001
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Vi har fått opplyst at ".expr() + pesysData.avdoed.navn + " har " + fritekst("angi antall") + " måneder opptjeningstid i annet avtaleland. Den samlede trygdetiden i Norge og annet avtaleland er " + fritekst("angi samlet trygdetid i Norge og avtaleland") + ".",
+                            Nynorsk to "Vi har fått opplyst at ".expr() + pesysData.avdoed.navn + " har " + fritekst("angi antall") + " månader oppteningstid i anna avtaleland. Den samla trygdetiden i Norge og anna avtaleland er " + fritekst("angi samlet trygdetid i Norge og avtaleland") + ".",
+                            English to "We have been informed that ".expr() + pesysData.avdoed.navn + " has " + fritekst("angi antall") + " months of national insurance coverage in an other signatory country. The total national insurance coverage in Norway and an other signatory country is " + fritekst("angi samlet trygdetid i Norge og avtaleland") + "."
+                        )
+                    }
+                }
+
+                paragraph {
+                    textExpr(
+                        Bokmal to fritekst("Våre opplysninger viser at / Vi har fått opplyst at" + " "),
+                        Nynorsk to fritekst("Ifølgje våre opplysningar har / Vi har fått opplyst at" +" "),
+                        English to fritekst("We have registered that / We have been informed that" + " ")
+                    )
+                    textExpr(
+                        Bokmal to pesysData.avdoed.navn,
+                        Nynorsk to pesysData.avdoed.navn,
+                        English to pesysData.avdoed.navn,
+                    )
+//                        Bokmal to " har bodd eller arbeidet i Norge i <FRITEKST angi antall dager/ måneder> / ikke har bodd eller arbeidet i Norge / har <FRITEKST angi antall> måneder opptjeningstid i annet EØS-land. Den samlede trygdetiden i Norge og annet EØS-land er <FRITEKST angi samlet trygdetid i Norge og EØS-land> / har <FRITEKST angi antall> måneder opptjeningstid i annet avtaleland. Den samlede trygdetiden i Norge og annet avtaleland er <FRITEKST angi samlet trygdetid i Norge og avtaleland>") + ".",
+//                    Nynorsk to
+                }
+
             }
 
         }
