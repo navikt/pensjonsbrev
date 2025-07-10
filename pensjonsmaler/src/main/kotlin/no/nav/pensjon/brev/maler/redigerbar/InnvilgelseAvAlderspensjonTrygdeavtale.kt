@@ -297,24 +297,16 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                 )
             )
             includePhrase(
-                GarantitilleggHjemmel(
-                    garantitilleggInnvilget = garantitilleggInnvilget,
-                )
+                GarantitilleggHjemmel(garantitilleggInnvilget)
             )
             includePhrase(
                 EOSLandAvtaleHjemmel(
-                    borINorge = borINorge,
-                    eksportTrygdeavtaleEOS = eksportTrygdeavtaleEOS,
-                    erEOSLand = erEOSLand,
-                    harOppfyltVedSammenlegging = harOppfyltVedSammenlegging
+                    borINorge, eksportTrygdeavtaleEOS, erEOSLand, harOppfyltVedSammenlegging
                 )
             )
             includePhrase(
                 BilateralAvtaleHjemmel(
-                    avtalelandNavn = avtalelandNavn,
-                    eksportTrygdeavtaleAvtaleland = eksportTrygdeavtaleAvtaleland,
-                    erEOSLand = erEOSLand,
-                    harOppfyltVedSammenlegging = borINorge
+                    avtalelandNavn, eksportTrygdeavtaleAvtaleland, erEOSLand, borINorge
                 )
             )
 
@@ -343,10 +335,7 @@ showIf(borINorge) {
             includePhrase(ReguleringAvAlderspensjon)
             includePhrase(InnvilgelseAPUttakEndr)
             includePhrase(
-                ArbeidsinntektOgAlderspensjon(
-                    uforeKombinertMedAlder = uforeKombinertMedAlder,
-                    uttaksgrad = uttaksgrad
-                )
+                ArbeidsinntektOgAlderspensjon(innvilgetFor67, uttaksgrad, uforeKombinertMedAlder)
             )
             includePhrase(InfoPensjonFraAndreAP)
             includePhrase(MeldeFraOmEndringer)

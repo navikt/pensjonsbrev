@@ -34,8 +34,6 @@ data class InnvilgelseAvAlderspensjonDto(
         val supplerendeStoenad: Boolean,
         @DisplayText("Hvis kildeskatt")
         val kildeskatt: Boolean,
-        @DisplayText("Hvis ikke kildeskatt")
-        val ikkeKildeskatt: Boolean,
         @DisplayText("Etterbetaling")
         val etterbetaling: Boolean,
     ) : BrevbakerBrevdata
@@ -91,8 +89,8 @@ data class InnvilgelseAvAlderspensjonDto(
         val eksportTrygdeavtaleAvtaleland: Boolean,
         val eksportTrygdeavtaleEOS: Boolean,
         val harOppfyltVedSammenlegging: Boolean,  // If (oppfyltVedSammenleggingKap19 or oppfyltVedSammenleggingKap20 or oppfyltVedSammenleggingFemArKap19 or oppfyltVedSammenleggingFemArKap20) = true
-        val minst20ArBotidKap19: Boolean,  // minst20ArBotidKap19Avdod
+        val minst20ArBotidKap19Avdod: Boolean,  // // hentes fra v1.InngangOgEksportVurderingAvdod
         val minst20ArTrygdetid: Boolean,
-        val minst20ArTrygdetidKap20: Boolean,  // minst20ArTrygdetidKap20Avdod
+        val minst20ArTrygdetidKap20Avdod: Boolean,  // hentes fra v1.InngangOgEksportVurderingAvdod
     )
 }

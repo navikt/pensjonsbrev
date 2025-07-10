@@ -101,6 +101,7 @@ data class EndringAvAlderspensjonSivilstandDto(
 
     data class AlderspensjonVedVirk(
         val garantipensjonInnvilget: Boolean,
+        val innvilgetFor67: Boolean,
         val minstenivaaIndividuellInnvilget: Boolean,
         val minstenivaaPensjonsistParInnvilget: Boolean,
         val pensjonstilleggInnvilget: Boolean,

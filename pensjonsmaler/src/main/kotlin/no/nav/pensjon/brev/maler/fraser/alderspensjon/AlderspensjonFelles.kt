@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.uforeKombinertMedAlder
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
@@ -11,9 +12,12 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -124,6 +128,7 @@ object MeldeFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 data class ArbeidsinntektOgAlderspensjon(
+    val innvilgetFor67: Expression<Boolean>,
     val uttaksgrad: Expression<Int>,
     val uforeKombinertMedAlder: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -152,7 +157,7 @@ data class ArbeidsinntektOgAlderspensjon(
                     English to "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed.",
                 )
             }
-        }.orShow {
+        }.orShowIf(uttaksgrad.lessThan(100) and not(uforeKombinertMedAlder)) {
             // nyOpptjeningGradertAP
             paragraph {
                 text(
@@ -161,9 +166,8 @@ data class ArbeidsinntektOgAlderspensjon(
                     English to "If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated.",
                 )
             }
-        }
-        // arbInntektAPogUT
-        showIf(uforeKombinertMedAlder) {
+            // arbInntektAPogUT
+        }.orShowIf(uforeKombinertMedAlder and innvilgetFor67) {
             paragraph {
                 text(
                     Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
@@ -307,7 +311,7 @@ object InnvilgelseAPUttakEndr : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 English to "You can apply to change your pension"
             )
         }
-        // innvilgelseAPUttakEndr
+        // innvilgelseAPUttakEndr_002
         paragraph {
             text(
                 Bokmal to "Du kan ha mulighet til å ta ut 20, 40, 50, 60, 80 eller 100 prosent alderspensjon." +
