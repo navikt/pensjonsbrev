@@ -16,7 +16,7 @@ data class AvslagPaaGjenlevenderettIAlderspensjonDto(
     override val saksbehandlerValg: SaksbehandlerValg,
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<AvslagPaaGjenlevenderettIAlderspensjonDto.SaksbehandlerValg, AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData> {
-    data class SaksbehandlerValg(val samboerUtenFellesBarn: Boolean) : BrevbakerBrevdata
+    data class SaksbehandlerValg(val samboerUtenFellesBarn: Boolean, val avdoedNavn: String) : BrevbakerBrevdata
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val krav: Krav,
@@ -30,7 +30,7 @@ data class AvslagPaaGjenlevenderettIAlderspensjonDto(
     ) : BrevbakerBrevdata {
         data class AlderspensjonVedVirk(val totalPensjon: Kroner, val uttaksgrad: Percent)
         data class Krav(val kravInitiertAv: KravInitiertAv)
-        data class Avdoed(val navn: String, val redusertTrygdetidNorge: Boolean, val redusertTrygdetidEOS: Boolean, val redusertTrygdetidAvtaleland: Boolean)
+        data class Avdoed(val redusertTrygdetidNorge: Boolean, val redusertTrygdetidEOS: Boolean, val redusertTrygdetidAvtaleland: Boolean)
         data class YtelseskomponentInformasjon(val beloepEndring: BeloepEndring)
         data class BeregnetPensjonPerManed(val antallBeregningsperioderPensjon: Int)
         data class Avtaleland(val erEOSLand: Boolean, val navn: String?)

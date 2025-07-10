@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvdoedSelectors.navn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvdoedSelectors.redusertTrygdetidAvtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvdoedSelectors.redusertTrygdetidEOS
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvdoedSelectors.redusertTrygdetidNorge
@@ -30,6 +29,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIA
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.avdoedNavn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.samboerUtenFellesBarn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.saksbehandlerValg
@@ -115,9 +115,9 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 // avslagGjRettAPAvdod_001
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi har fått beskjed om at ".expr() + pesysData.avdoed.navn + " døde " + fritekst("dato") + ".",
-                        Nynorsk to "Vi har fått beskjed om at ".expr() + pesysData.avdoed.navn + " døydde " + fritekst("dato") + ".",
-                        English to "We have received notice that ".expr() + pesysData.avdoed.navn + " died " + fritekst(
+                        Bokmal to "Vi har fått beskjed om at ".expr() + saksbehandlerValg.avdoedNavn + " døde " + fritekst("dato") + ".",
+                        Nynorsk to "Vi har fått beskjed om at ".expr() + saksbehandlerValg.avdoedNavn + " døydde " + fritekst("dato") + ".",
+                        English to "We have received notice that ".expr() + saksbehandlerValg.avdoedNavn + " died " + fritekst(
                             "dato"
                         ) + "."
                     )
@@ -139,13 +139,13 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 }
                 paragraph {
                     textExpr(
-                        Bokmal to "Du og ".expr() + pesysData.avdoed.navn + " har ikke vært gift i minst fem år. Ekteskapet ble inngått " + fritekst(
+                        Bokmal to "Du og ".expr() + saksbehandlerValg.avdoedNavn + " har ikke vært gift i minst fem år. Ekteskapet ble inngått " + fritekst(
                             "dato"
                         ) + " og ektefellen din døde " + fritekst("dato") + ". Dere har heller ikke felles barn. Derfor har vi avslått søknaden din.",
-                        Nynorsk to "Du og ".expr() + pesysData.avdoed.navn + " har ikkje vore gifte i minst fem år. Ekteskapet blei inngått " + fritekst(
+                        Nynorsk to "Du og ".expr() + saksbehandlerValg.avdoedNavn + " har ikkje vore gifte i minst fem år. Ekteskapet blei inngått " + fritekst(
                             "dato"
                         ) + ", og ektefellen din døydde " + fritekst("dato") + ". De har heller ikkje felles barn. Derfor har vi avslått søknaden din.",
-                        English to "You and ".expr() + pesysData.avdoed.navn + " have not been married for at least five years. Your marriage took place on " + fritekst(
+                        English to "You and ".expr() + saksbehandlerValg.avdoedNavn + " have not been married for at least five years. Your marriage took place on " + fritekst(
                             "dato"
                         ) + " and your spouse died on " + fritekst("dato") + ". You also have no joint children. We have declined your application for this reason."
                     )
@@ -161,13 +161,13 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 }
                 paragraph {
                     textExpr(
-                        Bokmal to "Du og ".expr() + pesysData.avdoed.navn + " har ikke vært gift i minst fem år. Ekteskapet ble inngått " + fritekst(
+                        Bokmal to "Du og ".expr() + saksbehandlerValg.avdoedNavn + " har ikke vært gift i minst fem år. Ekteskapet ble inngått " + fritekst(
                             "dato"
                         ) + " og ektefellen din døde " + fritekst("dato") + ". Dere har heller ikke felles barn. Derfor har du ikke rettigheter etter avdøde.",
-                        Nynorsk to "Du og ".expr() + pesysData.avdoed.navn + " har ikkje vore gifte i minst fem år. Ekteskapet blei inngått " + fritekst(
+                        Nynorsk to "Du og ".expr() + saksbehandlerValg.avdoedNavn + " har ikkje vore gifte i minst fem år. Ekteskapet blei inngått " + fritekst(
                             "dato"
                         ) + ", og ektefellen din døydde " + fritekst("dato") + ". De har heller ikkje felles barn. Derfor har du ikkje rettar etter avdøde.",
-                        English to "You and ".expr() + pesysData.avdoed.navn + " have not been married for at least five years. Your marriage took place on " + fritekst(
+                        English to "You and ".expr() + saksbehandlerValg.avdoedNavn + " have not been married for at least five years. Your marriage took place on " + fritekst(
                             "dato"
                         ) + " and your spouse died on " + fritekst("dato") + ". You also have no joint children. You have no survivor’s rights in your retirement pension for this reason."
                     )
@@ -186,9 +186,9 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
 
                 paragraph {
                     textExpr(
-                        Bokmal to "Du og ".expr() + pesysData.avdoed.navn + " har ikke tidligere vært gift i minst fem år. Dere var heller ikke samboere med felles barn.",
-                        Nynorsk to "Du og ".expr() + pesysData.avdoed.navn + " har ikkje tidlegare vore gifte i minst fem år. De var heller ikkje sambuarar med felles barn.",
-                        English to "You and ".expr() + pesysData.avdoed.navn + " have not been previously married for at least five years. You were also not cohabiting partners with joint children."
+                        Bokmal to "Du og ".expr() + saksbehandlerValg.avdoedNavn + " har ikke tidligere vært gift i minst fem år. Dere var heller ikke samboere med felles barn.",
+                        Nynorsk to "Du og ".expr() + saksbehandlerValg.avdoedNavn + " har ikkje tidlegare vore gifte i minst fem år. De var heller ikkje sambuarar med felles barn.",
+                        English to "You and ".expr() + saksbehandlerValg.avdoedNavn + " have not been previously married for at least five years. You were also not cohabiting partners with joint children."
                     )
                     showIf(initiertAvBrukerEllerVerge) {
                         text(
@@ -295,9 +295,9 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                     // avslagUnder1aarTTAvdod_001
                     paragraph {
                         textExpr(
-                            Bokmal to "Våre opplysninger viser at ".expr() + pesysData.avdoed.navn + " " + fritekst("har bodd eller arbeidet i Norge i angi antall dager/ måneder / ikke har bodd eller arbeidet i Norge") + ".",
-                            Nynorsk to "Ifølgje våre opplysningar har ".expr() + pesysData.avdoed.navn + " " + fritekst(" budd eller arbeidd i Noreg i angi antall dagar/ månader / ikkje budd eller arbeidd i Noreg") + ".",
-                            English to fritekst("We have registered that / We have no record of") + " " + pesysData.avdoed.navn + " " + fritekst(" has been living or working in Norway for angi antall days/ months /  living or working in Norway.") + ".",
+                            Bokmal to "Våre opplysninger viser at ".expr() + saksbehandlerValg.avdoedNavn + " " + fritekst("har bodd eller arbeidet i Norge i angi antall dager/ måneder / ikke har bodd eller arbeidet i Norge") + ".",
+                            Nynorsk to "Ifølgje våre opplysningar har ".expr() + saksbehandlerValg.avdoedNavn + " " + fritekst(" budd eller arbeidd i Noreg i angi antall dagar/ månader / ikkje budd eller arbeidd i Noreg") + ".",
+                            English to fritekst("We have registered that / We have no record of") + " " + saksbehandlerValg.avdoedNavn + " " + fritekst(" has been living or working in Norway for angi antall days/ months /  living or working in Norway.") + ".",
                         )
                     }
                 }
@@ -305,9 +305,9 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                     // avslagUnder3aarTTAvdodEOS_001
                     paragraph {
                         textExpr(
-                            Bokmal to "Vi har fått opplyst at ".expr() + pesysData.avdoed.navn + " har " + fritekst("angi antall") + " måneder opptjeningstid i annet EØS-land. Den samlede trygdetiden i Norge og annet EØS-land er " + fritekst("angi samlet trygdetid i Norge og EØS-land") + ".",
-                            Nynorsk to "Vi har fått opplyst at ".expr() + pesysData.avdoed.navn + " har " + fritekst("angi antall") + " månader oppteningstid i anna EØS-land. Den samla trygdetiden i Norge og anna EØS-land er " + fritekst("angi samlet trygdetid i Norge og EØS-land") + ".",
-                            English to "We have been informed that ".expr() + pesysData.avdoed.navn + " has " + fritekst("angi antall") + " months of national insurance coverage in an other EEA country. The total national insurance coverage in Norway and an other EEA country is " + fritekst("angi samlet trygdetid i Norge og EØS-land") + "."
+                            Bokmal to "Vi har fått opplyst at ".expr() + saksbehandlerValg.avdoedNavn + " har " + fritekst("angi antall") + " måneder opptjeningstid i annet EØS-land. Den samlede trygdetiden i Norge og annet EØS-land er " + fritekst("angi samlet trygdetid i Norge og EØS-land") + ".",
+                            Nynorsk to "Vi har fått opplyst at ".expr() + saksbehandlerValg.avdoedNavn + " har " + fritekst("angi antall") + " månader oppteningstid i anna EØS-land. Den samla trygdetiden i Norge og anna EØS-land er " + fritekst("angi samlet trygdetid i Norge og EØS-land") + ".",
+                            English to "We have been informed that ".expr() + saksbehandlerValg.avdoedNavn + " has " + fritekst("angi antall") + " months of national insurance coverage in an other EEA country. The total national insurance coverage in Norway and an other EEA country is " + fritekst("angi samlet trygdetid i Norge og EØS-land") + "."
                         )
                     }
                 }
@@ -316,9 +316,9 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                     // avslagUnder3aarTTAvdodAvtale_001
                     paragraph {
                         textExpr(
-                            Bokmal to "Vi har fått opplyst at ".expr() + pesysData.avdoed.navn + " har " + fritekst("angi antall") + " måneder opptjeningstid i annet avtaleland. Den samlede trygdetiden i Norge og annet avtaleland er " + fritekst("angi samlet trygdetid i Norge og avtaleland") + ".",
-                            Nynorsk to "Vi har fått opplyst at ".expr() + pesysData.avdoed.navn + " har " + fritekst("angi antall") + " månader oppteningstid i anna avtaleland. Den samla trygdetiden i Norge og anna avtaleland er " + fritekst("angi samlet trygdetid i Norge og avtaleland") + ".",
-                            English to "We have been informed that ".expr() + pesysData.avdoed.navn + " has " + fritekst("angi antall") + " months of national insurance coverage in an other signatory country. The total national insurance coverage in Norway and an other signatory country is " + fritekst("angi samlet trygdetid i Norge og avtaleland") + "."
+                            Bokmal to "Vi har fått opplyst at ".expr() + saksbehandlerValg.avdoedNavn + " har " + fritekst("angi antall") + " måneder opptjeningstid i annet avtaleland. Den samlede trygdetiden i Norge og annet avtaleland er " + fritekst("angi samlet trygdetid i Norge og avtaleland") + ".",
+                            Nynorsk to "Vi har fått opplyst at ".expr() + saksbehandlerValg.avdoedNavn + " har " + fritekst("angi antall") + " månader oppteningstid i anna avtaleland. Den samla trygdetiden i Norge og anna avtaleland er " + fritekst("angi samlet trygdetid i Norge og avtaleland") + ".",
+                            English to "We have been informed that ".expr() + saksbehandlerValg.avdoedNavn + " has " + fritekst("angi antall") + " months of national insurance coverage in an other signatory country. The total national insurance coverage in Norway and an other signatory country is " + fritekst("angi samlet trygdetid i Norge og avtaleland") + "."
                         )
                     }
                 }
