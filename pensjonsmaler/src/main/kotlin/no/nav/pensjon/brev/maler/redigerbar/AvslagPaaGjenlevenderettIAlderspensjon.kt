@@ -42,10 +42,15 @@ import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.LanguageSupport
+import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
@@ -120,6 +125,50 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                         English to "We have received notice that ".expr() + saksbehandlerValg.avdoedNavn + " died " + fritekst(
                             "dato"
                         ) + "."
+                    )
+                }
+            }
+
+            showIf(initiertAvBrukerEllerVerge) {
+                // avslagGjRettAPUnder1aarTTSøknad_001
+                paragraph {
+                    text(
+                        Bokmal to "For at du skal ha rett til alderspensjon med gjenlevenderett må avdøde ha bodd eller arbeidet i Norge i minst ett år.",
+                        Nynorsk to "For at du skal ha rett til alderspensjon med attlevanderett, må avdøde ha budd eller arbeidd i Noreg i minst eitt år.",
+                        English to "To be entitled to a retirement pension with survivor’s rights, the deceased must have lived or worked in Norway for at least one year."
+                    )
+                    textExpr(
+                        Bokmal to "Ifølge opplysningene våre har ".expr() + saksbehandlerValg.avdoedNavn + " bodd eller arbeidet i Norge i " + fritekst("angi antall dager/måneder") + ".",
+                        Nynorsk to "Ifølgje opplysningane våre har ".expr() + saksbehandlerValg.avdoedNavn + " budd eller arbeidd i Noreg i " + fritekst("angi antall dagar/månader") + ".",
+                        English to "According to our information, ".expr() + saksbehandlerValg.avdoedNavn + " has lived or worked in Norway for " + fritekst("angi antall dager/måneder") + "."
+                    )
+                    textExpr(
+                        Bokmal to "I følge opplysningene våre har ".expr() + saksbehandlerValg.avdoedNavn + " aldri bodd eller arbeidet i Norge. Derfor har vi avslått søknaden din.",
+                        Nynorsk to "Ifølgje opplysningane våre har ".expr() + saksbehandlerValg.avdoedNavn + " aldri budd eller arbeidd i Noreg. Derfor har vi avslått søknaden din.",
+                        English to "According to our information, ".expr() + saksbehandlerValg.avdoedNavn + " has never lived or worked in Norway. We have declined your application for this reason."
+                    )
+                }
+
+                // avslagGjRettAPUnder3aar_001
+                paragraph {
+                    textExpr(
+                        Bokmal to "For at du skal ha rett til alderspensjon med gjenlevenderett må avdøde ha vært medlem i folketrygden eller ha mottatt pensjon eller uføretrygd de siste ".expr() + fritekst("tre / fem") + " årene fram til dødsfallet.",
+                        Nynorsk to "For at du skal ha rett til alderspensjon med attlevanderett, må avdøde ha vore medlem i folketrygda eller ha mottatt pensjon eller uføretrygd dei siste ".expr() + fritekst("tre / fem") + " åra fram til dødsfallet.",
+                        English to "To be entitled to survivor’s rights in your retirement pension, the deceased must have been a member of the National Insurance Scheme or have received a pension or disability benefit for the last ".expr() + fritekst("three / five") + " years prior to his or her death."
+                    )
+                }
+
+                // avslagGjRettAPUnder3aarEOS_001
+                Under3Eller5Aar(EOSLand)
+
+                // avslagAPGjRettUnder3aarAvtale_001
+                Under3Eller5Aar(Avtaleland)
+
+                paragraph {
+                    textExpr(
+                        Bokmal to "Dette har ikke ".expr() + saksbehandlerValg.avdoedNavn + ". Derfor har vi avslått søknaden din.",
+                        Nynorsk to "Dette har ikkje ".expr() + saksbehandlerValg.avdoedNavn + ". Derfor har vi avslått søknaden din.",
+                        English to "Neither of these applies to ".expr() + saksbehandlerValg.avdoedNavn + ". We have declined your application for this reason."
                     )
                 }
             }
@@ -336,5 +385,65 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, pesysData.dineRettigheterOgMulighetTilAaKlageDto)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, pesysData.maanedligPensjonFoerSkattDto)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025Dto)
+    }
+
+    private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, AvslagPaaGjenlevenderettIAlderspensjonDto>.Under3Eller5Aar(land: PlainTextOnlyPhrase<LangBokmalNynorskEnglish>) {
+        paragraph {
+            text(
+                Bokmal to "For at du skal ha rett til alderspensjon med gjenlevenderett må avdøde",
+                Nynorsk to "For at du skal ha rett til alderspensjon med attlevanderett må avdøde",
+                English to "To be entitled to survivor’s rights in your retirement pension, the deceased must have"
+            )
+            list {
+                item {
+                    textExpr(
+                        Bokmal to "ha vært medlem i folketrygden de siste ".expr() + fritekst("tre / fem") + " årene fram til dødsfallet eller",
+                        Nynorsk to "ha vore medlem i folketrygda dei siste ".expr() + fritekst("tre / fem") + " åra fram til dødsfallet eller",
+                        English to "been a member of the National Insurance Scheme in the last ".expr() + fritekst(
+                            "three / five"
+                        ) + " years prior to his or her death or"
+                    )
+                }
+                item {
+                    textExpr(
+                        Bokmal to "ha mottatt pensjon eller uføretrygd de siste ".expr() + fritekst("tre / fem") + " årene fram til dødsfallet eller",
+                        Nynorsk to "ha mottatt pensjon eller uføretrygd dei siste ".expr() + fritekst("tre / fem") + " åra fram til dødsfallet eller",
+                        English to "received a pension or disability benefit in the last ".expr() + fritekst("three / five") + " years prior to his or her death or"
+                    )
+                }
+                item {
+                    text(
+                        Bokmal to "ha hatt pensjonsopptjening både i Norge og andre ",
+                        Nynorsk to "ha hatt pensjonsopptening både i Noreg og andre ",
+                        English to "had accrued pension rights both in Norway and other "
+                    )
+                    includePhrase(land)
+                    textExpr(
+                        Bokmal to " i de siste ".expr() + fritekst("tre / fem") + " årene fram til dødsfallet.",
+                        Nynorsk to " i dei siste ".expr() + fritekst("tre / fem") + " åra fram til dødsfallet.",
+                        English to " in the last ".expr() + fritekst("three / five") + " years prior to his or her death."
+                    )
+                }
+            }
+        }
+    }
+
+    private object EOSLand : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
+        override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            text(
+                Bokmal to "EØS-land",
+                Nynorsk to "EØS-land",
+                English to "EEA member states"
+            )
+        }
+    }
+    private object Avtaleland : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
+        override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            text(
+                Bokmal to "avtaleland",
+                Nynorsk to "avtaleland",
+                English to "contracting states"
+            )
+        }
     }
 }
