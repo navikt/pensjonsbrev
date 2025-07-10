@@ -34,6 +34,7 @@ import no.nav.pensjon.brev.fixtures.redigerbar.*
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
+import no.nav.pensjon.brev.maler.redigerbar.createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
 import no.nav.pensjon.brev.maler.legacy.redigerbar.createVedtakEndringAvUttaksgradDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakEndringAvUttaksgradStansBrukerEllerVergeDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto
@@ -106,11 +107,13 @@ object Fixtures {
             TilbakekrevingAvFeilutbetaltBeloepDto::class -> createTilbakekrevingAvFeilutbetaltBeloepDto() as T
             VarselTilbakekrevingAvFeilutbetaltBeloepDto::class -> createVarselTilbakekrevingAvFeilutbetaltBeloep() as T
             MaanedligPensjonFoerSkattDto::class -> createMaanedligPensjonFoerSkatt() as T
+            MaanedligPensjonFoerSkattAP2025Dto::class -> createMaanedligPensjonFoerSkattAP2025Dto() as T
             PE::class -> createPE() as T
             UfoerOmregningEnsligDto::class -> createUfoerOmregningEnsligDto() as T
             UngUfoerAutoDto::class -> createUngUfoerAutoDto() as T
             VarselRevurderingAvPensjonDto::class -> createVarselRevurderingAvPensjonDto() as T
             VarselSaksbehandlingstidAutoDto::class -> createVarselSaksbehandlingstidAutoDto() as T
+            VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto::class -> createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() as T
             VedtakEndringAvAlderspensjonInstitusjonsoppholdDto::class -> createVedtakEndringAvAlderspensjonInstitusjonsoppholdDto() as T
             VedtakEndringAvAlderspensjonGjenlevenderettigheterDto::class -> createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() as T
             VedtakEndringAvUttaksgradDto::class -> createVedtakEndringAvUttaksgradDto() as T
