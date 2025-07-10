@@ -47,6 +47,7 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
       journalpostId: null,
       vedtaksId: null,
       brevtype: "INFORMASJONSBREV",
+      saksId: "22981081",
     },
     redigertBrev: {
       title: "tittel",
