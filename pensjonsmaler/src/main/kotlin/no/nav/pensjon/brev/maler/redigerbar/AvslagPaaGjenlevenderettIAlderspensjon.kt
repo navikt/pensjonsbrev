@@ -18,12 +18,14 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIA
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvtalelandSelectors.erEOSLand
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvtalelandSelectors.navn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.BeregnetPensjonPerManedSelectors.antallBeregningsperioderPensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.BrukerSelectors.faktiskBostedsland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.KravSelectors.kravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.avdoed
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.avtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.beregnetPensjonPerManed
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.bruker
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.krav
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025Dto
@@ -120,8 +122,12 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 // avslagGjRettAPAvdod_001
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi har fått beskjed om at ".expr() + saksbehandlerValg.avdoedNavn + " døde " + fritekst("dato") + ".",
-                        Nynorsk to "Vi har fått beskjed om at ".expr() + saksbehandlerValg.avdoedNavn + " døydde " + fritekst("dato") + ".",
+                        Bokmal to "Vi har fått beskjed om at ".expr() + saksbehandlerValg.avdoedNavn + " døde " + fritekst(
+                            "dato"
+                        ) + ".",
+                        Nynorsk to "Vi har fått beskjed om at ".expr() + saksbehandlerValg.avdoedNavn + " døydde " + fritekst(
+                            "dato"
+                        ) + ".",
                         English to "We have received notice that ".expr() + saksbehandlerValg.avdoedNavn + " died " + fritekst(
                             "dato"
                         ) + "."
@@ -129,53 +135,93 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 }
             }
 
-            showIf(initiertAvBrukerEllerVerge) {
-                // avslagGjRettAPUnder1aarTTSøknad_001
-                paragraph {
+            // avslagGjRettAPUnder1aarTTSøknad_001
+            paragraph {
+                text(
+                    Bokmal to "For at du skal ha rett til alderspensjon med gjenlevenderett må avdøde ha bodd eller arbeidet i Norge i minst ett år.",
+                    Nynorsk to "For at du skal ha rett til alderspensjon med attlevanderett, må avdøde ha budd eller arbeidd i Noreg i minst eitt år.",
+                    English to "To be entitled to a retirement pension with survivor’s rights, the deceased must have lived or worked in Norway for at least one year."
+                )
+            }
+            paragraph {
+                textExpr(
+                    Bokmal to "Ifølge opplysningene våre har ".expr() + saksbehandlerValg.avdoedNavn + " bodd eller arbeidet i Norge i " + fritekst(
+                        "angi antall dager/måneder"
+                    ) + ".",
+                    Nynorsk to "Ifølgje opplysningane våre har ".expr() + saksbehandlerValg.avdoedNavn + " budd eller arbeidd i Noreg i " + fritekst(
+                        "angi antall dagar/månader"
+                    ) + ".",
+                    English to "According to our information, ".expr() + saksbehandlerValg.avdoedNavn + " has lived or worked in Norway for " + fritekst(
+                        "angi antall dager/måneder"
+                    ) + "."
+                )
+                textExpr(
+                    Bokmal to "I følge opplysningene våre har ".expr() + saksbehandlerValg.avdoedNavn + " aldri bodd eller arbeidet i Norge.",
+                    Nynorsk to "Ifølgje opplysningane våre har ".expr() + saksbehandlerValg.avdoedNavn + " aldri budd eller arbeidd i Noreg.",
+                    English to "According to our information, ".expr() + saksbehandlerValg.avdoedNavn + " has never lived or worked in Norway."
+                )
+
+                showIf(initiertAvBrukerEllerVerge) {
                     text(
-                        Bokmal to "For at du skal ha rett til alderspensjon med gjenlevenderett må avdøde ha bodd eller arbeidet i Norge i minst ett år.",
-                        Nynorsk to "For at du skal ha rett til alderspensjon med attlevanderett, må avdøde ha budd eller arbeidd i Noreg i minst eitt år.",
-                        English to "To be entitled to a retirement pension with survivor’s rights, the deceased must have lived or worked in Norway for at least one year."
+                        Bokmal to " Derfor har vi avslått søknaden din.",
+                        Nynorsk to " Derfor har vi avslått søknaden din.",
+                        English to " We have declined your application for this reason."
                     )
-                    textExpr(
-                        Bokmal to "Ifølge opplysningene våre har ".expr() + saksbehandlerValg.avdoedNavn + " bodd eller arbeidet i Norge i " + fritekst("angi antall dager/måneder") + ".",
-                        Nynorsk to "Ifølgje opplysningane våre har ".expr() + saksbehandlerValg.avdoedNavn + " budd eller arbeidd i Noreg i " + fritekst("angi antall dagar/månader") + ".",
-                        English to "According to our information, ".expr() + saksbehandlerValg.avdoedNavn + " has lived or worked in Norway for " + fritekst("angi antall dager/måneder") + "."
-                    )
-                    textExpr(
-                        Bokmal to "I følge opplysningene våre har ".expr() + saksbehandlerValg.avdoedNavn + " aldri bodd eller arbeidet i Norge. Derfor har vi avslått søknaden din.",
-                        Nynorsk to "Ifølgje opplysningane våre har ".expr() + saksbehandlerValg.avdoedNavn + " aldri budd eller arbeidd i Noreg. Derfor har vi avslått søknaden din.",
-                        English to "According to our information, ".expr() + saksbehandlerValg.avdoedNavn + " has never lived or worked in Norway. We have declined your application for this reason."
+                }.orShowIf(initiertAvNav) {
+                    text(
+                        Bokmal to " Du har derfor ikke rettigheter etter avdøde.",
+                        Nynorsk to " Du har derfor ikkje rettar etter avdøde.",
+                        English to " Therefore, you do not have survivor’s rights in your retirement pension."
                     )
                 }
+            }
 
-                // avslagGjRettAPUnder3aar_001
+            // avslagGjRettAPUnder3aar_001
+            paragraph {
+                textExpr(
+                    Bokmal to "For at du skal ha rett til alderspensjon med gjenlevenderett må avdøde ha vært medlem i folketrygden eller ha mottatt pensjon eller uføretrygd de siste ".expr() + fritekst(
+                        "tre / fem"
+                    ) + " årene fram til dødsfallet.",
+                    Nynorsk to "For at du skal ha rett til alderspensjon med attlevanderett, må avdøde ha vore medlem i folketrygda eller ha mottatt pensjon eller uføretrygd dei siste ".expr() + fritekst(
+                        "tre / fem"
+                    ) + " åra fram til dødsfallet.",
+                    English to "To be entitled to survivor’s rights in your retirement pension, the deceased must have been a member of the National Insurance Scheme or have received a pension or disability benefit for the last ".expr() + fritekst(
+                        "three / five"
+                    ) + " years prior to his or her death."
+                )
+            }
+
+            // avslagGjRettAPUnder3aarEOS_001
+            Under3Eller5Aar(EOSLand)
+
+            // avslagAPGjRettUnder3aarAvtale_001
+            Under3Eller5Aar(Avtaleland)
+
+            // avslagGjRettAPUnder20aar_001
+            ifNotNull(pesysData.bruker.faktiskBostedsland) { bostedsland ->
                 paragraph {
                     textExpr(
-                        Bokmal to "For at du skal ha rett til alderspensjon med gjenlevenderett må avdøde ha vært medlem i folketrygden eller ha mottatt pensjon eller uføretrygd de siste ".expr() + fritekst("tre / fem") + " årene fram til dødsfallet.",
-                        Nynorsk to "For at du skal ha rett til alderspensjon med attlevanderett, må avdøde ha vore medlem i folketrygda eller ha mottatt pensjon eller uføretrygd dei siste ".expr() + fritekst("tre / fem") + " åra fram til dødsfallet.",
-                        English to "To be entitled to survivor’s rights in your retirement pension, the deceased must have been a member of the National Insurance Scheme or have received a pension or disability benefit for the last ".expr() + fritekst("three / five") + " years prior to his or her death."
+                        Bokmal to "For at du skal ha rett til å få utbetalt alderspensjon med gjenlevenderett når du bor i ".expr() + bostedsland + ", må avdøde ha hatt 20 års botid i Norge eller rett til tilleggspensjon.",
+                        Nynorsk to "For at du skal ha rett til å få utbetalt alderspensjon med attlevanderett når du bur i ".expr() + bostedsland + ", må avdøde ha hatt 20 års butid i Noreg eller ha rett til tilleggspensjon.",
+                        English to "To be eligible for your retirement pension with survivor`s rights when you live in ".expr() + bostedsland + ", the deceased must have 20 years of residence in Norway or be entitled to a supplementary pension."
                     )
                 }
-
-                // avslagGjRettAPUnder3aarEOS_001
-                Under3Eller5Aar(EOSLand)
-
-                // avslagAPGjRettUnder3aarAvtale_001
-                Under3Eller5Aar(Avtaleland)
-
-                paragraph {
+            }
+            paragraph {
+                showIf(initiertAvBrukerEllerVerge) {
                     textExpr(
                         Bokmal to "Dette har ikke ".expr() + saksbehandlerValg.avdoedNavn + ". Derfor har vi avslått søknaden din.",
                         Nynorsk to "Dette har ikkje ".expr() + saksbehandlerValg.avdoedNavn + ". Derfor har vi avslått søknaden din.",
                         English to "Neither of these applies to ".expr() + saksbehandlerValg.avdoedNavn + ". We have declined your application for this reason."
                     )
+                }.orShowIf(initiertAvNav) {
+                    textExpr(
+                        Bokmal to "Dette har ikke ".expr() + saksbehandlerValg.avdoedNavn + ". Derfor har du ikke rett til alderspensjon med gjenlevenderett.",
+                        Nynorsk to "Dette har ikkje ".expr() + saksbehandlerValg.avdoedNavn + ". Derfor har du ikkje rett til alderspensjon med attlevanderett.",
+                        English to "Neither of these applies to ".expr() + saksbehandlerValg.avdoedNavn + ". You are not entitled to survivor’s rights in your retirement pension for this reason."
+                    )
                 }
             }
-
-            // TODO: Her kjem alle Under x års medlemstid-blokkene, som har returnverdi 1 i doksys
-            // Må finne ut av korleis vi handterer dei
-            // Heilt fram til og med Under 20 år-blokkene
 
             showIf(initiertAvBrukerEllerVerge) {
                 // avslagGJRettAPGiftUnder5aarSøknad_001
@@ -263,7 +309,11 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 )
             }
 
-            showIf(pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(UENDRET) and pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(0)) {
+            showIf(
+                pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(UENDRET) and pesysData.alderspensjonVedVirk.totalPensjon.greaterThan(
+                    0
+                )
+            ) {
                 // ingenEndringBelop_002
                 paragraph {
                     text(
@@ -284,12 +334,19 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
             }
             includePhrase(DuFaarHverMaaned(pesysData.alderspensjonVedVirk.totalPensjon))
 
-            showIf(pesysData.beregnetPensjonPerManed.antallBeregningsperioderPensjon.greaterThan(0)
-                and pesysData.alderspensjonVedVirk.uttaksgrad.greaterThan(0)) {
+            showIf(
+                pesysData.beregnetPensjonPerManed.antallBeregningsperioderPensjon.greaterThan(0)
+                        and pesysData.alderspensjonVedVirk.uttaksgrad.greaterThan(0)
+            ) {
                 includePhrase(Utbetalingsinformasjon)
             }
 
-            includePhrase(FlereBeregningsperioder(pesysData.beregnetPensjonPerManed.antallBeregningsperioderPensjon, pesysData.alderspensjonVedVirk.totalPensjon))
+            includePhrase(
+                FlereBeregningsperioder(
+                    pesysData.beregnetPensjonPerManed.antallBeregningsperioderPensjon,
+                    pesysData.alderspensjonVedVirk.totalPensjon
+                )
+            )
 
             // avslagGjRettAPHjemmel_001
             paragraph {
@@ -316,7 +373,9 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                         textExpr(
                             Bokmal to "Vedtaket er også gjort etter artikkel ".expr() + fritekst("Legg inn aktuelle artikler om sammenlegging og eksport") + " i trygdeavtalen med ",
                             Nynorsk to "Vedtaket er også gjort etter artikkel".expr() + fritekst("Legg inn aktuelle artikler om sammenlegging og eksport") + " i trygdeavtalen med ",
-                            English to "This decision was also made pursuant to the provisions of Article ".expr() + fritekst("Legg inn aktuelle artikler om sammenlegging og eksport") + " in the social security agreement with "
+                            English to "This decision was also made pursuant to the provisions of Article ".expr() + fritekst(
+                                "Legg inn aktuelle artikler om sammenlegging og eksport"
+                            ) + " in the social security agreement with "
                         )
                         ifNotNull(land.navn) { navn ->
                             textExpr(
@@ -344,9 +403,15 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                     // avslagUnder1aarTTAvdod_001
                     paragraph {
                         textExpr(
-                            Bokmal to "Våre opplysninger viser at ".expr() + saksbehandlerValg.avdoedNavn + " " + fritekst("har bodd eller arbeidet i Norge i angi antall dager/ måneder / ikke har bodd eller arbeidet i Norge") + ".",
-                            Nynorsk to "Ifølgje våre opplysningar har ".expr() + saksbehandlerValg.avdoedNavn + " " + fritekst(" budd eller arbeidd i Noreg i angi antall dagar/ månader / ikkje budd eller arbeidd i Noreg") + ".",
-                            English to fritekst("We have registered that / We have no record of") + " " + saksbehandlerValg.avdoedNavn + " " + fritekst(" has been living or working in Norway for angi antall days/ months /  living or working in Norway.") + ".",
+                            Bokmal to "Våre opplysninger viser at ".expr() + saksbehandlerValg.avdoedNavn + " " + fritekst(
+                                "har bodd eller arbeidet i Norge i angi antall dager/ måneder / ikke har bodd eller arbeidet i Norge"
+                            ) + ".",
+                            Nynorsk to "Ifølgje våre opplysningar har ".expr() + saksbehandlerValg.avdoedNavn + " " + fritekst(
+                                " budd eller arbeidd i Noreg i angi antall dagar/ månader / ikkje budd eller arbeidd i Noreg"
+                            ) + ".",
+                            English to fritekst("We have registered that / We have no record of") + " " + saksbehandlerValg.avdoedNavn + " " + fritekst(
+                                " has been living or working in Norway for angi antall days/ months /  living or working in Norway."
+                            ) + ".",
                         )
                     }
                 }
@@ -354,9 +419,21 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                     // avslagUnder3aarTTAvdodEOS_001
                     paragraph {
                         textExpr(
-                            Bokmal to "Vi har fått opplyst at ".expr() + saksbehandlerValg.avdoedNavn + " har " + fritekst("angi antall") + " måneder opptjeningstid i annet EØS-land. Den samlede trygdetiden i Norge og annet EØS-land er " + fritekst("angi samlet trygdetid i Norge og EØS-land") + ".",
-                            Nynorsk to "Vi har fått opplyst at ".expr() + saksbehandlerValg.avdoedNavn + " har " + fritekst("angi antall") + " månader oppteningstid i anna EØS-land. Den samla trygdetiden i Norge og anna EØS-land er " + fritekst("angi samlet trygdetid i Norge og EØS-land") + ".",
-                            English to "We have been informed that ".expr() + saksbehandlerValg.avdoedNavn + " has " + fritekst("angi antall") + " months of national insurance coverage in an other EEA country. The total national insurance coverage in Norway and an other EEA country is " + fritekst("angi samlet trygdetid i Norge og EØS-land") + "."
+                            Bokmal to "Vi har fått opplyst at ".expr() + saksbehandlerValg.avdoedNavn + " har " + fritekst(
+                                "angi antall"
+                            ) + " måneder opptjeningstid i annet EØS-land. Den samlede trygdetiden i Norge og annet EØS-land er " + fritekst(
+                                "angi samlet trygdetid i Norge og EØS-land"
+                            ) + ".",
+                            Nynorsk to "Vi har fått opplyst at ".expr() + saksbehandlerValg.avdoedNavn + " har " + fritekst(
+                                "angi antall"
+                            ) + " månader oppteningstid i anna EØS-land. Den samla trygdetiden i Norge og anna EØS-land er " + fritekst(
+                                "angi samlet trygdetid i Norge og EØS-land"
+                            ) + ".",
+                            English to "We have been informed that ".expr() + saksbehandlerValg.avdoedNavn + " has " + fritekst(
+                                "angi antall"
+                            ) + " months of national insurance coverage in an other EEA country. The total national insurance coverage in Norway and an other EEA country is " + fritekst(
+                                "angi samlet trygdetid i Norge og EØS-land"
+                            ) + "."
                         )
                     }
                 }
@@ -365,9 +442,21 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                     // avslagUnder3aarTTAvdodAvtale_001
                     paragraph {
                         textExpr(
-                            Bokmal to "Vi har fått opplyst at ".expr() + saksbehandlerValg.avdoedNavn + " har " + fritekst("angi antall") + " måneder opptjeningstid i annet avtaleland. Den samlede trygdetiden i Norge og annet avtaleland er " + fritekst("angi samlet trygdetid i Norge og avtaleland") + ".",
-                            Nynorsk to "Vi har fått opplyst at ".expr() + saksbehandlerValg.avdoedNavn + " har " + fritekst("angi antall") + " månader oppteningstid i anna avtaleland. Den samla trygdetiden i Norge og anna avtaleland er " + fritekst("angi samlet trygdetid i Norge og avtaleland") + ".",
-                            English to "We have been informed that ".expr() + saksbehandlerValg.avdoedNavn + " has " + fritekst("angi antall") + " months of national insurance coverage in an other signatory country. The total national insurance coverage in Norway and an other signatory country is " + fritekst("angi samlet trygdetid i Norge og avtaleland") + "."
+                            Bokmal to "Vi har fått opplyst at ".expr() + saksbehandlerValg.avdoedNavn + " har " + fritekst(
+                                "angi antall"
+                            ) + " måneder opptjeningstid i annet avtaleland. Den samlede trygdetiden i Norge og annet avtaleland er " + fritekst(
+                                "angi samlet trygdetid i Norge og avtaleland"
+                            ) + ".",
+                            Nynorsk to "Vi har fått opplyst at ".expr() + saksbehandlerValg.avdoedNavn + " har " + fritekst(
+                                "angi antall"
+                            ) + " månader oppteningstid i anna avtaleland. Den samla trygdetiden i Norge og anna avtaleland er " + fritekst(
+                                "angi samlet trygdetid i Norge og avtaleland"
+                            ) + ".",
+                            English to "We have been informed that ".expr() + saksbehandlerValg.avdoedNavn + " has " + fritekst(
+                                "angi antall"
+                            ) + " months of national insurance coverage in an other signatory country. The total national insurance coverage in Norway and an other signatory country is " + fritekst(
+                                "angi samlet trygdetid i Norge og avtaleland"
+                            ) + "."
                         )
                     }
                 }
@@ -387,7 +476,9 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025Dto)
     }
 
-    private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, AvslagPaaGjenlevenderettIAlderspensjonDto>.Under3Eller5Aar(land: PlainTextOnlyPhrase<LangBokmalNynorskEnglish>) {
+    private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, AvslagPaaGjenlevenderettIAlderspensjonDto>.Under3Eller5Aar(
+        land: PlainTextOnlyPhrase<LangBokmalNynorskEnglish>,
+    ) {
         paragraph {
             text(
                 Bokmal to "For at du skal ha rett til alderspensjon med gjenlevenderett må avdøde",
@@ -437,6 +528,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
             )
         }
     }
+
     private object Avtaleland : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
         override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             text(

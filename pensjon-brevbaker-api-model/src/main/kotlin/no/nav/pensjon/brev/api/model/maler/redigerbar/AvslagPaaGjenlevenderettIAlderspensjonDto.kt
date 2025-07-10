@@ -24,6 +24,7 @@ data class AvslagPaaGjenlevenderettIAlderspensjonDto(
         val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
         val beregnetPensjonPerManed: BeregnetPensjonPerManed,
         val avtaleland: Avtaleland?,
+        val bruker: Bruker,
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
         val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto,
@@ -34,5 +35,6 @@ data class AvslagPaaGjenlevenderettIAlderspensjonDto(
         data class YtelseskomponentInformasjon(val beloepEndring: BeloepEndring)
         data class BeregnetPensjonPerManed(val antallBeregningsperioderPensjon: Int)
         data class Avtaleland(val erEOSLand: Boolean, val navn: String?)
+        data class Bruker(val faktiskBostedsland: String?)
     }
 }
