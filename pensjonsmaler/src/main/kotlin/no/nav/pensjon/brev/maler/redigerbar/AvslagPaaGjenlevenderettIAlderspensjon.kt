@@ -316,21 +316,6 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                     }
                 }
 
-                paragraph {
-                    textExpr(
-                        Bokmal to fritekst("Våre opplysninger viser at / Vi har fått opplyst at" + " "),
-                        Nynorsk to fritekst("Ifølgje våre opplysningar har / Vi har fått opplyst at" +" "),
-                        English to fritekst("We have registered that / We have been informed that" + " ")
-                    )
-                    textExpr(
-                        Bokmal to pesysData.avdoed.navn,
-                        Nynorsk to pesysData.avdoed.navn,
-                        English to pesysData.avdoed.navn,
-                    )
-//                        Bokmal to " har bodd eller arbeidet i Norge i <FRITEKST angi antall dager/ måneder> / ikke har bodd eller arbeidet i Norge / har <FRITEKST angi antall> måneder opptjeningstid i annet EØS-land. Den samlede trygdetiden i Norge og annet EØS-land er <FRITEKST angi samlet trygdetid i Norge og EØS-land> / har <FRITEKST angi antall> måneder opptjeningstid i annet avtaleland. Den samlede trygdetiden i Norge og annet avtaleland er <FRITEKST angi samlet trygdetid i Norge og avtaleland>") + ".",
-//                    Nynorsk to
-                }
-
             }
 
         }
