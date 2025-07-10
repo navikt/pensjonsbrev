@@ -3,12 +3,12 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP1967
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
+import no.nav.pensjon.brev.api.model.BeloepEndring.*
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.BeloepEndring.ENDR_OKT
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevenderettAnvendt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevendetilleggInnvilget
@@ -51,8 +51,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlde
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
-import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.HvorKanDuFaaViteMerOmAlderspensjonenDin
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -110,6 +109,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
         val brukerFoedtEtter1944 = pesysData.bruker.fodselsdato.greaterThanOrEqual(LocalDate.of(1944, Month.JANUARY, 1))
 
         title {
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(virkDatoFomEtter2023 and pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget and saksbehandlerValg.gjenlevendetilleggTittel) {
                 text(
                     Bokmal to "Gjenlevendetillegg i alderspensjonen fra ",
@@ -211,6 +211,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // beregningAPGjtKap19_001
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget and saksbehandlerValg.visGjenlevendetilleggPensjonsrettigheter) {
                 paragraph {
                     textExpr(
@@ -278,7 +279,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 English to "You will not receive a retirement pension based on your own earnings because you have no or low pension earnings."
                             )
                         }
-                    }.orShowIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0).greaterThan(0)) {
+                    }.orShowIf(pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(Kroner(0)).greaterThan(0)) {
                         // forklaringberegningGjtKap19_148_12
                         paragraph {
                             text(
@@ -301,7 +302,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                         )
                         showIf(
                             pesysData.gjenlevendetilleggKapittel19VedVirk.apKap19utenGJR.greaterThan(0)
-                                    and pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(0)
+                                    and pesysData.beregnetPensjonPerManedVedVirk.inntektspensjon_safe.ifNull(Kroner(0))
                                 .greaterThan(0)
                         ) {
                             text(
@@ -367,6 +368,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // omregnetTPAvdod_001
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP1967) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt and saksbehandlerValg.visTilleggspensjonavsnittAP1967) {
                 paragraph {
                     text(
@@ -713,6 +715,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // infoAPopptjRedusPoengUnder67Aar_001
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(
                 pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
                         and saksbehandlerValg.brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar
@@ -726,7 +729,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             // infoAPopptjRedusPoengOver67Aar_001
             showIf(
                 pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
@@ -742,6 +745,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // skattAPendring_001
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(pesysData.alderspensjonVedVirk.harEndretPensjon and saksbehandlerValg.endringIPensjonsutbetaling) {
                 includePhrase(Vedtak.EndringKanHaBetydningForSkatt)
             }
@@ -770,28 +774,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // infoAPOverskrift_001
-            title1 {
-                text(
-                    Bokmal to "Hvor kan du få vite mer om alderspensjonen din?",
-                    Nynorsk to "Kvar kan du få vite meir om alderspensjonen din?",
-                    English to "Where can you find out more about your retirement pension?"
-                )
-            }
-            // infoAP_001
-            paragraph {
-                text(
-                    Bokmal to "Du finner mer informasjon om hvordan alderspensjon er satt sammen og oversikter over grunnbeløp og aktuelle satser på $ALDERSPENSJON.",
-                    Nynorsk to "Du finn meir informasjon om korleis alderspensjonen er sett saman, og oversikter over grunnbeløp og aktuelle satsar på $ALDERSPENSJON.",
-                    English to "There is more information on how retirement pension is calculated, with overviews of basic amounts and relevant rates, at $ALDERSPENSJON."
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Informasjon om utbetalingene dine finner du på $DITT_NAV. Her kan du også endre kontonummeret ditt.",
-                    Nynorsk to "Informasjon om utbetalingane dine finn du på $DITT_NAV. Her kan du også endre kontonummeret ditt.",
-                    English to "You can find more detailed information on what you will receive at $DITT_NAV. Here you can also change your bank account number."
-                )
-            }
+            includePhrase(HvorKanDuFaaViteMerOmAlderspensjonenDin)
 
             // meldEndringerPesysGjenlevende_001
             title1 {

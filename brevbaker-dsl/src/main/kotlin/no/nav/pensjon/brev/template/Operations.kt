@@ -25,6 +25,8 @@ abstract class Operation : StableHash {
 sealed class UnaryOperation<In, out Out> : Operation() {
     abstract fun apply(input: In): Out
 
+    operator fun invoke(input: Expression<In>): Expression<Out> = Expression.UnaryInvoke(input, this)
+
     object AbsoluteValue : UnaryOperation<Int, Int>(), StableHash by StableHash.of("UnaryOperation.AbsoluteValue") {
         override fun apply(input: Int): Int = input.absoluteValue
     }
@@ -89,6 +91,24 @@ sealed class UnaryOperation<In, out Out> : Operation() {
     object ToString : UnaryOperation<Any, String>(), StableHash by StableHash.of("UnaryOperation.ToString") {
         override fun apply(input: Any): String = input.toString()
     }
+
+    object QuotationStart : UnaryOperation<Language, String>(), StableHash by StableHash.of("QuotationStart") {
+        override fun apply(input: Language): String =
+            when (input) {
+                Language.Bokmal -> "«"
+                Language.Nynorsk -> "«"
+                Language.English -> "'"
+            }
+    }
+
+    object QuotationEnd : UnaryOperation<Language, String>(), StableHash by StableHash.of("QuotationEnd") {
+        override fun apply(input: Language): String =
+            when (input) {
+                Language.Bokmal -> "»"
+                Language.Nynorsk -> "»"
+                Language.English -> "'"
+            }
+    }
 }
 
 abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? = null) : Operation() {
@@ -104,6 +124,9 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
     }
 
     abstract fun apply(first: In1, second: In2): Out
+
+    operator fun invoke(first: Expression<In1>, second: Expression<In2>): Expression<Out> =
+        Expression.BinaryInvoke(first, second, this)
 
     class Equal<In> internal constructor(): BinaryOperation<In, In, Boolean>(Documentation("==", Documentation.Notation.INFIX)),
         StableHash by StableHash.of("BinaryOperation.Equal") {
@@ -181,8 +204,8 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun apply(first: Boolean, second: Pair<Out, Out>): Out = if (first) second.first else second.second
     }
 
-    class Tuple<Out> internal constructor(): BinaryOperation<Out, Out, Pair<Out, Out>>(), StableHash by StableHash.of("BinaryOperation.Tuple") {
-        override fun apply(first: Out, second: Out): Pair<Out, Out> = first to second
+    class Tuple<In1, In2> internal constructor(): BinaryOperation<In1, In2, Pair<In1, In2>>(), StableHash by StableHash.of("BinaryOperation.Tuple") {
+        override fun apply(first: In1, second: In2): Pair<In1, In2> = first to second
     }
 
     class Flip<In1, In2, Out> internal constructor(val operation: BinaryOperation<In2, In1, Out>) : BinaryOperation<In1, In2, Out>() {

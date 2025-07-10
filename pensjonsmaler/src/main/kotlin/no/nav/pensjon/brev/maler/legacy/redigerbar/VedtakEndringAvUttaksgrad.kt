@@ -311,6 +311,7 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
             // skattAPendring_001
             includePhrase(Vedtak.EndringKanHaBetydningForSkatt)
 
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(pesysData.vedtak.etterbetaling or saksbehandlerValg.visEtterbetaling) {
                 // etterbetalingAP_002
                 includePhrase(Vedtak.Etterbetaling(pesysData.krav.virkDatoFom))
@@ -396,6 +397,6 @@ object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradD
         includeAttachmentIfNotNull(vedleggOrienteringOmRettigheterOgPlikter, pesysData.orienteringOmRettigheterOgPlikterDto)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, pesysData.maanedligPensjonFoerSkattDto)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025Dto)
-        includeAttachment(vedleggOpplysningerBruktIBeregningenEndretUttaksgrad, pesysData.opplysningerBruktIBeregningenEndretUttaksgradDto)
+        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenEndretUttaksgrad, pesysData.opplysningerBruktIBeregningenEndretUttaksgradDto)
     }
 }
