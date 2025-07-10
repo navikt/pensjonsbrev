@@ -187,7 +187,6 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 Nynorsk to "Vi har innvilga søknaden din om ".expr() + uttaksgrad.format() + " prosent alderspensjon",
                 English to "We have granted your application for ".expr() + uttaksgrad.format() + " percent retirement pension"
             )
-            includePhrase(SaksType(pesysData.sakstype))
         }
 
         outline {
