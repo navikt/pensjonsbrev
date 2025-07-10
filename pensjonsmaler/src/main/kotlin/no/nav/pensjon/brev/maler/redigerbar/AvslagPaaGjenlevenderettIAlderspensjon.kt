@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.BeloepEndring.ENDR_OKT
 import no.nav.pensjon.brev.api.model.BeloepEndring.UENDRET
 import no.nav.pensjon.brev.api.model.KravInitiertAv.BRUKER
@@ -13,11 +12,14 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIA
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvdoedSelectors.navn
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvtalelandSelectors.erEOSLand
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvtalelandSelectors.navn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.BeregnetPensjonPerManedSelectors.antallBeregningsperioderPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.KravSelectors.kravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.avdoed
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.avtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.beregnetPensjonPerManed
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.krav
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon
@@ -226,6 +228,46 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
             }
 
             includePhrase(FlereBeregningsperioder(pesysData.beregnetPensjonPerManed.antallBeregningsperioderPensjon, pesysData.alderspensjonVedVirk.totalPensjon))
+
+            // avslagGjRettAPHjemmel_001
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 17-2, 17-11, 19-3, 19-16 og 22-12.",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 17-2, 17-11, 19-3, 19-16 og 22-12.",
+                    English to "This decision was made pursuant to the provisions of §§ 17-2, 17-11, 19-3, 19-16 and 22-12 of the National Insurance Act."
+                )
+            }
+
+            ifNotNull(pesysData.avtaleland) { land ->
+                showIf(land.erEOSLand) {
+                    // avslagGjRettAPHjemmelEOS_001
+                    paragraph {
+                        text(
+                            Bokmal to "Vedtaket er også gjort etter EØS-avtalens forordning 883/2004 artikkel 6 og 57.",
+                            Nynorsk to "Vedtaket er også gjort etter EØS-avtalens forordning 883/2004 artikkel 6 og 57.",
+                            English to "This decision was also made pursuant to the provisions of Articles 6 and 57 of the Regulation (EC) no. 883/2004."
+                        )
+                    }
+                }.orShow {
+                    // avslagGjRettAPHjemmelAvtale_001
+                    paragraph {
+                        textExpr(
+                            Bokmal to "Vedtaket er også gjort etter artikkel ".expr() + fritekst("Legg inn aktuelle artikler om sammenlegging og eksport") + " i trygdeavtalen med ",
+                            Nynorsk to "Vedtaket er også gjort etter artikkel".expr() + fritekst("Legg inn aktuelle artikler om sammenlegging og eksport") + " i trygdeavtalen med ",
+                            English to "This decision was also made pursuant to the provisions of Article ".expr() + fritekst("Legg inn aktuelle artikler om sammenlegging og eksport") + " in the social security agreement with "
+                        )
+                        ifNotNull(land.navn) { navn ->
+                            textExpr(
+                                Bokmal to navn + ".",
+                                Nynorsk to navn + ".",
+                                English to navn + "."
+                            )
+                        }
+                    }
+                }
+            }
+
         }
+
     }
 }

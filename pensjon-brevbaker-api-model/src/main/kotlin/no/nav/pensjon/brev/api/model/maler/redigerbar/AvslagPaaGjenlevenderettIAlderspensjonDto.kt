@@ -18,12 +18,14 @@ data class AvslagPaaGjenlevenderettIAlderspensjonDto(
         val krav: Krav,
         val avdoed: Avdoed,
         val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
-        val beregnetPensjonPerManed: BeregnetPensjonPerManed
+        val beregnetPensjonPerManed: BeregnetPensjonPerManed,
+        val avtaleland: Avtaleland?
     ) : BrevbakerBrevdata {
         data class AlderspensjonVedVirk(val totalPensjon: Kroner, val uttaksgrad: Percent)
         data class Krav(val kravInitiertAv: KravInitiertAv)
         data class Avdoed(val navn: String)
         data class YtelseskomponentInformasjon(val beloepEndring: BeloepEndring)
         data class BeregnetPensjonPerManed(val antallBeregningsperioderPensjon: Int)
+        data class Avtaleland(val erEOSLand: Boolean, val navn: String?)
     }
 }
