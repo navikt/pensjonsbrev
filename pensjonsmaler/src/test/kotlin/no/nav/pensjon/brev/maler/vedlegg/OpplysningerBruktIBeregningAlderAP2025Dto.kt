@@ -10,8 +10,7 @@ import java.time.Month
 fun createOpplysningerBruktIBeregningAlderAP2025Dto() = OpplysningerBruktIBeregningenAlderAP2025Dto(
     alderspensjonVedVirk = OpplysningerBruktIBeregningenAlderAP2025Dto.AlderspensjonVedVirk(
         uttaksgrad = 100,
-        garantipensjonInnvilget = true,
-        nettoUtbetaltPerManed = Kroner(1000)
+        garantipensjonInnvilget = true
     ),
     beregnetPensjonPerManedVedVirk = OpplysningerBruktIBeregningenAlderAP2025Dto.BeregnetPensjonPerManedVedVirk(
         virkDatoFom = LocalDate.of(2024, Month.JANUARY, 5),
