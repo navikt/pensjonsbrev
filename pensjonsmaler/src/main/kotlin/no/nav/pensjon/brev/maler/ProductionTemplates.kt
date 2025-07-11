@@ -113,6 +113,8 @@ object ProductionTemplates : AllTemplates {
         VarselOmMuligAvslag,
         VarselRevurderingAvPensjon,
         VarselTilbakekrevingAvFeilutbetaltBeloep,
+        VedtakEndringAvAlderspensjonFordiOpptjeningErEndret,
+        VedtakEndringAvAlderspensjonInstitusjonsopphold,
         VedtakEndringAvAlderspensjonGjenlevenderettigheter,
         VedtakEndringAvUttaksgrad,
         VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,

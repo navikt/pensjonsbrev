@@ -163,7 +163,6 @@ enum class KravInitiertAv {
     KONV,
     ADVOKAT
 }
-
 enum class KravArsakType{
     ALDERSOVERGANG,
     ENDRET_OPPTJENING,

@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -11,10 +12,13 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.Kroner
+import java.time.LocalDate
 
 
 // infoAPinntekt_001
@@ -160,16 +164,7 @@ data class ArbeidsinntektOgAlderspensjon(
                 )
             }
         }
-        // arbInntektAPogUT
-        showIf(uforeKombinertMedAlder) {
-            paragraph {
-                text(
-                    Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
-                    Nynorsk to "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd.",
-                    English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit.",
-                )
-            }
-        }
+        includePhrase(UfoereAlder.UfoereKombinertMedAlder(uforeKombinertMedAlder))
     }
 }
 
@@ -192,4 +187,37 @@ object PensjonsopptjeningInformasjon : OutlinePhrase<LangBokmalNynorskEnglish>()
             )
         }
     }
+}
+
+object UfoereAlder {
+    class UfoereKombinertMedAlder(val ufoereKombinertMedAlder: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(ufoereKombinertMedAlder) {
+                paragraph {
+                    text(
+                        Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
+                        Nynorsk to "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd.",
+                        English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit."
+                    )
+                }
+            }
+        }
+    }
+
+    class DuFaar(
+        val totalPensjon: Expression<Kroner>,
+        val virkDatoFom: Expression<LocalDate>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                textExpr(
+                    Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner hver måned før skatt fra " + virkDatoFom.format() + ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
+                    Nynorsk to "Du får ".expr() + totalPensjon.format() + " kroner kvar månad før skatt frå " + virkDatoFom.format() + ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
+                    English to "You will receive NOK ".expr() + totalPensjon.format() + " every month before tax from " + virkDatoFom.format() + ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit.",
+                )
+            }
+        }
+
+    }
+
 }
