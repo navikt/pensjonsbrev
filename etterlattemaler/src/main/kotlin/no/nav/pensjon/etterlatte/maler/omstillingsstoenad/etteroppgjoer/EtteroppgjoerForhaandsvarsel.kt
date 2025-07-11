@@ -89,16 +89,16 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
             showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING)) {
                 textExpr(
                     Language.Bokmal to "Informasjon om etteroppgjør av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
-                    Language.Nynorsk to "".expr() + data.etteroppgjoersAar.format(),
-                    Language.English to "".expr() + data.etteroppgjoersAar.format(),
+                    Language.Nynorsk to "Informasjon om etteroppgjer av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
+                    Language.English to "Information concerning final settlement of adjustment allowance for ".expr() + data.etteroppgjoersAar.format(),
                 )
             }
                 // Tilbakekreving eller Etterbetaling
                 .orShow {
                     textExpr(
                         Language.Bokmal to "Forhåndsvarsel om etteroppgjør av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
-                        Language.Nynorsk to "".expr() + data.etteroppgjoersAar.format(),
-                        Language.English to "".expr() + data.etteroppgjoersAar.format(),
+                        Language.Nynorsk to "Førehandsvarsel om etteroppgjer av omstillingsstønad for ".expr() + data.etteroppgjoersAar.format(),
+                        Language.English to "Advance notice of final settlement of adjustment allowance for ".expr() + data.etteroppgjoersAar.format(),
                     )
                 }
         }

@@ -71,7 +71,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 pensjonPersonDataService,
                 safService,
             )
-            brev(brevredigeringService, dto2ApiService)
+            brev(brevredigeringService, dto2ApiService, pdlService, penService)
             tjenestebussIntegrasjonRoute(samhandlerService, tjenestebussIntegrasjonService)
             meRoute(navansattService)
 

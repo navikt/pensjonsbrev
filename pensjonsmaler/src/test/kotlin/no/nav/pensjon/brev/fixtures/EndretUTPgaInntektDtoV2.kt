@@ -24,6 +24,7 @@ fun createEndretUTPgaInntektDtoV2() =
         forventetInntekt = 1,
         virkningFom = LocalDate.now(),
         totalNetto = 1,
+        totalNettoAr = 12,
         datoForNormertPensjonsalder = LocalDate.now(),
         sokerMottarApIlaAret = false,
         btfbEndret = false,
