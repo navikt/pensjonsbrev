@@ -22,8 +22,8 @@ fun createAvslagPaaGjenlevenderettIAlderspensjon() = AvslagPaaGjenlevenderettIAl
             kravInitiertAv = KravInitiertAv.BRUKER
         ),
         avdoed = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.Avdoed(
-            redusertTrygdetidNorge = true,
-            redusertTrygdetidEOS = true,
+            redusertTrygdetidNorge = false,
+            redusertTrygdetidEOS = false,
             redusertTrygdetidAvtaleland = true
         ),
         ytelseskomponentInformasjon = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.YtelseskomponentInformasjon(
