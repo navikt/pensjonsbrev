@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.expression.IntToYear
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Year
+import java.math.BigDecimal
 
 val intValueSelector = object : TemplateModelSelector<IntValue, Int> {
     override val className: String = "no.nav.pensjon.brev.api.model.IntValue"
@@ -24,8 +25,13 @@ fun Expression<Int>.toKroner(): Expression<Kroner> =
 fun Expression<Int>.toYear(): Expression<Year> =
     UnaryOperation.MapValue(IntToYear).invoke(this)
 
+@JvmName("formatDouble")
 fun Expression<Double>.format(scale: Int = 2): Expression<String> =
     format(formatter = LocalizedFormatter.DoubleFormat(scale))
+
+@JvmName("formatBigDecimal")
+fun Expression<BigDecimal>.format(scale: Int = 2): Expression<String> =
+    format(formatter = LocalizedFormatter.BigDecimalFormat(scale))
 
 @JvmName("formatInt")
 fun Expression<Int>.format(): Expression<String> = format(formatter = LocalizedFormatter.IntFormat)
