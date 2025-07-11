@@ -41,6 +41,7 @@ fun createEndringAvAlderspensjonSivilstandDto() =
         pesysData = EndringAvAlderspensjonSivilstandDto.PesysData(
             alderspensjonVedVirk = EndringAvAlderspensjonSivilstandDto.AlderspensjonVedVirk(
                 garantipensjonInnvilget = false,
+                innvilgetFor67 = false,
                 minstenivaaIndividuellInnvilget = true,
                 minstenivaaPensjonsistParInnvilget = false,
                 pensjonstilleggInnvilget = false,
