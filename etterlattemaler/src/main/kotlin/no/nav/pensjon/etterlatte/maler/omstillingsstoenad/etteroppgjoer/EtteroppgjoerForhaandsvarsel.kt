@@ -118,8 +118,8 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
                 }
                 paragraph {
                     text(
-                        Language.Bokmal to "Du finner beregningen av omstillingsstønaden din i vedlegget “Opplysninger om etteroppgjøret”.  Vennligst gi oss beskjed dersom noen av opplysningene ikke stemmer.",
-                        Language.Nynorsk to "Du finn utrekninga av omstillingsstønaden din i vedlegget «Opplysningar om etteroppgjeret».  Gi oss beskjed dersom opplysningane inneheld feil.",
+                        Language.Bokmal to "Du finner beregningen av omstillingsstønaden din i vedlegget “Opplysninger om etteroppgjøret”. Vennligst gi oss beskjed dersom noen av opplysningene ikke stemmer.",
+                        Language.Nynorsk to "Du finn utrekninga av omstillingsstønaden din i vedlegget «Opplysningar om etteroppgjeret». Gi oss beskjed dersom opplysningane inneheld feil.",
                         Language.English to "You will find the calculation of your adjustment allowance in the appendix «Information concerning final settlement». Please notify us if you find that any of the information is incorrect.",
                     )
                 }
