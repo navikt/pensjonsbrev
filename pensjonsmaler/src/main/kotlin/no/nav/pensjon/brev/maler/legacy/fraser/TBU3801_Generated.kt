@@ -41,10 +41,10 @@ data class TBU3801_Generated(
 					English to "",
 				)
 			}
-			text (
-				Bokmal to "kan ha betydning for barnetillegget ditt. Du kan enkelt melde fra om inntektsendringer under menyvalget «uføretrygd» på $NAV_URL.",
-				Nynorsk to "kan ha betydning for barnetillegget ditt. Du kan enkelt melde frå om inntektsendringar under menyvalet «uføretrygd» på $NAV_URL.",
-				English to "income may affect your child supplement. You can easily report income changes under the menu option “disability benefit” at $NAV_URL.",
+			textExpr (
+				Bokmal to "kan ha betydning for barnetillegget ditt. Du kan enkelt melde fra om inntektsendringer under menyvalget ".expr() + quoted("uføretrygd") +" på $NAV_URL.",
+				Nynorsk to "kan ha betydning for barnetillegget ditt. Du kan enkelt melde frå om inntektsendringar under menyvalet ".expr() + quoted("uføretrygd") +" på $NAV_URL.",
+				English to "income may affect your child supplement. You can easily report income changes under the menu option ".expr() + quoted("disability benefit") +" at $NAV_URL.",
 			)
 		}
     }

@@ -77,6 +77,7 @@ export type BrevInfo = {
   spraak: SpraakKode;
   journalpostId: Nullable<number>;
   vedtaksId: Nullable<number>;
+  saksId: string;
 };
 
 export type BrevStatus = Kladd | UnderRedigering | Attestering | Klar | Arkivert;

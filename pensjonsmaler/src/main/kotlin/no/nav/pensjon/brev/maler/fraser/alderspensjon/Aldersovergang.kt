@@ -5,8 +5,8 @@ import no.nav.pensjon.brev.api.model.YtelseForAldersovergangKode
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
@@ -288,7 +288,12 @@ data class InfoSivilstandAP(
                     Nynorsk to "Dersom ektefellen, partnaren eller sambuaren din ikkje får eigen pensjon eller eiga uføretrygd, vil vi i de fleste sakene ikkje ha korrekte inntektsopplysningar. " +
                             "Vi vil derfor leggje til grunn ei inntekt på to gonger grunnbeløpet i folketrygda når vi bereknar alderspensjonen.",
                     English to "If your spouse/partner/cohabitant does not receive a separate pension or disability benefit, in most cases we will not have the correct income information. " +
-                            "We will therefore use an income of two times the National Insurance basic amount (“G”) as the starting point when calculating retirement pension. ",
+                            "We will therefore use an income of two times the National Insurance basic amount (",
+                )
+                textExpr(
+                    Bokmal to "".expr(),
+                    Nynorsk to "".expr(),
+                    English to quoted("G") + ") as the starting point when calculating retirement pension."
                 )
             }
             paragraph {
@@ -589,6 +594,33 @@ object InfoPensjonFraAndreAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
                         "Du bør kontakte dei du har slike ordningar med for å undersøke kva for rettar du har. Du kan også undersøkje med siste arbeidsgivar.",
                 English to "Many people are also members of one or more public or private pension schemes where they also have pension rights. " +
                         "You must contact the company/ies you have pension arrangements with, if you have any questions about this. You can also contact your most recent employer."
+            )
+        }
+    }
+}
+
+object HvorKanDuFaaViteMerOmAlderspensjonenDin : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Hvor kan du få vite mer om alderspensjonen din?",
+                Nynorsk to "Kvar kan du få vite meir om alderspensjonen din?",
+                English to "Where can you find out more about your retirement pension?"
+            )
+        }
+        // infoAP_001
+        paragraph {
+            text(
+                Bokmal to "Du finner mer informasjon om hvordan alderspensjon er satt sammen og oversikter over grunnbeløp og aktuelle satser på $ALDERSPENSJON.",
+                Nynorsk to "Du finn meir informasjon om korleis alderspensjonen er sett saman, og oversikter over grunnbeløp og aktuelle satsar på $ALDERSPENSJON.",
+                English to "There is more information on how retirement pension is calculated, with overviews of basic amounts and relevant rates, at $ALDERSPENSJON."
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Informasjon om utbetalingene dine finner du på $DITT_NAV. Her kan du også endre kontonummeret ditt.",
+                Nynorsk to "Informasjon om utbetalingane dine finn du på $DITT_NAV. Her kan du også endre kontonummeret ditt.",
+                English to "You can find more detailed information on what you will receive at $DITT_NAV. Here you can also change your bank account number."
             )
         }
     }

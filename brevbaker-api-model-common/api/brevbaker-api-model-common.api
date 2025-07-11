@@ -225,10 +225,6 @@ public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/n
 
 public final class no/nav/pensjon/brevbaker/api/model/Broek {
 	public fun <init> (II)V
-	public final fun component1 ()I
-	public final fun component2 ()I
-	public final fun copy (II)Lno/nav/pensjon/brevbaker/api/model/Broek;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/Broek;IIILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/Broek;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getNevner ()I
 	public final fun getTeller ()I
@@ -248,10 +244,24 @@ public final class no/nav/pensjon/brevbaker/api/model/Bruker {
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Days : no/nav/pensjon/brevbaker/api/model/IntValue {
+	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/Days;
+	public static fun constructor-impl (I)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public fun getValue ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/DaysWrapper : no/nav/pensjon/brevbaker/api/model/IntWrapper {
 	public fun <init> (I)V
 	public final fun component1 ()I
-	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/Days;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/Days;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/Days;
+	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/DaysWrapper;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/DaysWrapper;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/DaysWrapper;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
 	public fun hashCode ()I
@@ -292,6 +302,10 @@ public final class no/nav/pensjon/brevbaker/api/model/Foedselsnummer {
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/IntValue {
+	public abstract fun getValue ()I
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/IntWrapper {
 	public abstract fun getValue ()I
 }
 
@@ -336,7 +350,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Paragraph : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block {
 	public abstract fun getContent ()Ljava/util/List;
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Paragraph$DefaultImpls {
@@ -345,7 +359,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Paragra
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title1 : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block {
 	public abstract fun getContent ()Ljava/util/List;
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title1$DefaultImpls {
@@ -354,7 +368,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title1$
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title2 : no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block {
 	public abstract fun getContent ()Ljava/util/List;
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Type;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Block$Title2$DefaultImpls {
@@ -381,7 +395,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$MultipleChoice : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form {
 	public abstract fun getChoices ()Ljava/util/List;
 	public abstract fun getPrompt ()Ljava/util/List;
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 	public abstract fun getVspace ()Z
 }
 
@@ -397,7 +411,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form {
 	public abstract fun getPrompt ()Ljava/util/List;
 	public abstract fun getSize ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Form$Text$Size;
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 	public abstract fun getVspace ()Z
 }
 
@@ -426,7 +440,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {
 	public abstract fun getHeader ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Header;
 	public abstract fun getRows ()Ljava/util/List;
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Cell {
@@ -479,7 +493,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Literal : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text {
 	public abstract fun getTags ()Ljava/util/Set;
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Literal$DefaultImpls {
@@ -487,7 +501,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$NewLine : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text {
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$NewLine$DefaultImpls {
@@ -495,7 +509,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Variable : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text {
-	public abstract fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Variable$DefaultImpls {
@@ -575,10 +589,24 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjo
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Months : no/nav/pensjon/brevbaker/api/model/IntValue {
+	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/Months;
+	public static fun constructor-impl (I)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public fun getValue ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/MonthsWrapper : no/nav/pensjon/brevbaker/api/model/IntWrapper {
 	public fun <init> (I)V
 	public final fun component1 ()I
-	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/Months;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/Months;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/Months;
+	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/MonthsWrapper;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/MonthsWrapper;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/MonthsWrapper;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
 	public fun hashCode ()I
@@ -596,10 +624,24 @@ public final class no/nav/pensjon/brevbaker/api/model/NavEnhet {
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/brevbaker/api/model/IntValue {
+	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/Percent;
+	public static fun constructor-impl (I)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public fun getValue ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/PercentWrapper : no/nav/pensjon/brevbaker/api/model/IntWrapper {
 	public fun <init> (I)V
 	public final fun component1 ()I
-	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/Percent;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/Percent;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/Percent;
+	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/PercentWrapper;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/PercentWrapper;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/PercentWrapper;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
 	public fun hashCode ()I
@@ -703,7 +745,6 @@ public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification
 	public static final field DOUBLE Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
 	public static final field NUMBER Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
 	public static final field STRING Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
-	public static final field YEAR Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
 	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Scalar$Kind;
@@ -720,10 +761,24 @@ public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Year : no/nav/pensjon/brevbaker/api/model/IntValue {
+	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/Year;
+	public static fun constructor-impl (I)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public fun getValue ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/YearWrapper : no/nav/pensjon/brevbaker/api/model/IntWrapper {
 	public fun <init> (I)V
 	public final fun component1 ()I
-	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/Year;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/Year;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/Year;
+	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/YearWrapper;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/YearWrapper;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/YearWrapper;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getValue ()I
 	public fun hashCode ()I

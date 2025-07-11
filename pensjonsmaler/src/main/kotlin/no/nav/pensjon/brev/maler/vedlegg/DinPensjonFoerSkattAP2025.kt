@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.newText
 
 
+// V00010 i metaforce
 @TemplateModelHelpers
 val vedleggMaanedligPensjonFoerSkattAp2025 =
     createAttachment<LangBokmalNynorskEnglish, MaanedligPensjonFoerSkattAP2025Dto>(
@@ -27,8 +28,8 @@ val vedleggMaanedligPensjonFoerSkattAp2025 =
     ) {
         includePhrase(TabellMaanedligPensjonKap20(beregnetPensjonPerManedGjeldende))
 
-        includePhrase(TabellMaanedligPensjonFlerePerioderInnledning(kravVirkFom))
         showIf(beregnetPensjonperManed.size().greaterThan(1)) {
+            includePhrase(TabellMaanedligPensjonFlerePerioderInnledning(kravVirkFom))
             forEach(beregnetPensjonperManed) {
                 TabellMaanedligPensjonKap20(it)
             }

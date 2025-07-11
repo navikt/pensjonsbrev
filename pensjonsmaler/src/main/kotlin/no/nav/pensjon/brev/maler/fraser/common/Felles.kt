@@ -140,10 +140,7 @@ object Felles {
     }
 
     fun Expression<Bruker>.fulltNavn(): Expression<String> =
-        Expression.UnaryInvoke(
-            value = this,
-            operation = UnaryOperation.BrukerFulltNavn
-        )
+        UnaryOperation.BrukerFulltNavn(this)
 
     object ReturTilEtterstadOslo : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

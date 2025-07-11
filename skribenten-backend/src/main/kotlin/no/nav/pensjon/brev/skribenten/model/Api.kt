@@ -46,6 +46,7 @@ object Api {
 
     data class BrevInfo(
         val id: Long,
+        val saksId: Long,
         val opprettetAv: NavAnsatt,
         val opprettet: Instant,
         val sistredigertAv: NavAnsatt,
@@ -103,7 +104,7 @@ object Api {
             val adresselinje1: String,
             val adresselinje2: String?,
             val adresselinje3: String?,
-            val landkode: String,
+            val landkode: Landkode,
         ) : OverstyrtMottaker()
     }
 

@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten
 import com.typesafe.config.Config
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
+import io.ktor.server.plugins.swagger.swaggerUI
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
@@ -15,7 +16,7 @@ import no.nav.pensjon.brev.skribenten.services.*
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
     val authService = AzureADService(authConfig)
     val servicesConfig = skribentenConfig.getConfig("services")
-    initDatabase(servicesConfig)
+    initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopping) { db.close() } }
     val safService = SafService(servicesConfig.getConfig("saf"), authService)
     val penService = PenService(servicesConfig.getConfig("pen"), authService)
     val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
@@ -32,11 +33,13 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val brevredigeringService =
         BrevredigeringService(brevbakerService, navansattService, penService)
     val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
+    val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringService, brevbakerService)
 
     Features.initUnleash(servicesConfig.getConfig("unleash"))
 
     routing {
         healthRoute()
+        swaggerUI("/swagger", "openapi/external-api.yaml")
 
         authenticate(authConfig.name) {
             install(PrincipalInContext)
@@ -68,9 +71,11 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
                 pensjonPersonDataService,
                 safService,
             )
-            brev(brevredigeringService, dto2ApiService)
+            brev(brevredigeringService, dto2ApiService, pdlService, penService)
             tjenestebussIntegrasjonRoute(samhandlerService, tjenestebussIntegrasjonService)
             meRoute(navansattService)
+
+            externalAPI(externalAPIService)
         }
     }
 }

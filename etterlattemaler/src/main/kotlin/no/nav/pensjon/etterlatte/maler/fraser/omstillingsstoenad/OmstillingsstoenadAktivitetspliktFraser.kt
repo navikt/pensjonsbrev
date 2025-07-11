@@ -114,48 +114,29 @@ class OmstillingsstoenadAktivitetspliktFraser {
                 }
             }
 
-            paragraph {
+            title2 {
                 text(
-                    Bokmal to "Du kan melde fra om endringer på følgende måter:",
-                    Nynorsk to "Du kan melde frå om endringar på følgjande måtar:",
-                    English to "You can report changes in the following ways:",
+                    Bokmal to "Hvordan kan du melde fra?",
+                    Nynorsk to "Korleis kan du melde frå?",
+                    English to "How do i report changes?",
                 )
-
-                val postadresse = ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND), Constants.Utland.POSTADRESSE, Constants.POSTADRESSE)
-
-                list {
-                    item {
-                        text(
-                            Bokmal to "benytte endringsskjema på ${Constants.OMS_MELD_INN_ENDRING_URL}",
-                            Nynorsk to "bruk endringsskjema på ${Constants.OMS_MELD_INN_ENDRING_URL}",
-                            English to "use the change form on ${Constants.OMS_MELD_INN_ENDRING_URL}"
-                        )
-                    }
-                    item {
-                        text(
-                            Bokmal to "ettersende dokumentasjon angående omstillingsstønad ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}",
-                            Nynorsk to "ettersend dokumentasjon angående omstillingsstønad ved å gå inn på ${Constants.ETTERSENDE_OMS_URL}",
-                            English to "submit documentation regarding adjustment allowance by going to ${Constants.ETTERSENDE_OMS_URL}"
-                        )
-                    }
-                    item {
-                        textExpr(
-                            Bokmal to "sende brev til ".expr() + postadresse,
-                            Nynorsk to "Send brev til ".expr() + postadresse,
-                            English to "send a letter to ".expr() + postadresse,
-                        )
-                    }
-                }
             }
 
-            showIf(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)) {
-                paragraph {
-                    text(
-                        Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside ${Constants.NAV_URL}, må du sende dokumentasjonen i posten.",
-                        Nynorsk to "Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår ${Constants.NAV_URL}, må du sende dokumentasjon per post.",
-                        English to "Please send documentation as normal post if you do not use BankID or another login option.",
-                    )
-                }
+            paragraph {
+                text(
+                    Bokmal to "Du kan melde fra til oss om endringer ved å benytte endringsskjema eller ettersende dokumentasjon på ${Constants.OMS_MELD_INN_ENDRING_URL}",
+                    Nynorsk to "Du kan melde frå om endringar ved å bruke endringsskjema eller ettersende dokumentasjon på ${Constants.OMS_MELD_INN_ENDRING_URL}",
+                    English to "You can report changes by use the change form or submit information on ${Constants.OMS_MELD_INN_ENDRING_URL}",
+                )
+            }
+
+            paragraph {
+                val postadresse = ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND), Constants.Utland.POSTADRESSE, Constants.POSTADRESSE)
+                textExpr(
+                    Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du sende brev til ".expr() + postadresse + ".",
+                    Nynorsk to "Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår nav.no, må du sende dokumentasjon per post til ".expr() + postadresse + ".",
+                    English to "Please send documentation as normal post if you do not use BankID or another login option. Send to ".expr() + postadresse + ".",
+                )
             }
 
             paragraph {
@@ -165,7 +146,6 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     English to "If you fail to report changes and/or are paid too much allowance, Nav has the right to collect the incorrect amount.",
                 )
             }
-
         }
     }
 
@@ -271,17 +251,19 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     )
                 }
             } orShow {
+
+                // Grunnbeløpe = 0.5 av G
                 paragraph {
                     text(
                         Bokmal to "For at du skal motta korrekt utbetaling, er det viktig at du informerer oss hvis " +
-                                "du får en forventet årsinntekt som vil overstige et halvt grunnbeløp. Dette er per i dag 62 014 kroner. " +
+                                "du får en forventet årsinntekt som vil overstige et halvt grunnbeløp. Dette er per i dag 65 080 kroner. " +
                                 "Grunnbeløpet blir justert hvert år fra 1. mai.",
                         Nynorsk to "For at du få rett utbetaling, er det viktig at du gir oss beskjed viss du får ei " +
-                                "forventa årsinntekt som vil overstige eit halvt grunnbeløp. Dette er per i dag 62 014 kroner. " +
+                                "forventa årsinntekt som vil overstige eit halvt grunnbeløp. Dette er per i dag 65 080 kroner. " +
                                 "Grunnbeløpet blir justert kvart år frå 1. mai.",
                         English to "To receive the correct amount, you are obligated to inform us about any changes to " +
                                 "your anticipated annual income that exceeds one half of the basic amount. This is currently " +
-                                "NOK 62 014. The basic amount is adjusted on 1 May each year.",
+                                "NOK 65 080. The basic amount is adjusted on 1 May each year.",
                     )
                 }
             }

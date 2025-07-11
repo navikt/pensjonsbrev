@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SUPPLERENDE_STOENAD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
@@ -16,10 +17,17 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.quoted
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.Kroner
+import java.time.LocalDate
 import no.nav.pensjon.brev.template.dsl.textExpr
 
 
@@ -152,9 +160,9 @@ data class ArbeidsinntektOgAlderspensjon(
         showIf(uttaksgrad.equalTo(100)) {
             paragraph {
                 text(
-                    Bokmal to "Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig.",
-                    Nynorsk to "Dersom du har 100 prosent alderspensjon, gjeld auken frå 1. januar året etter at skatteoppgjeret ditt er ferdig.",
-                    English to "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed.",
+                    Bokmal to "Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig.",
+                    Nynorsk to "Dersom du har 100 prosent alderspensjon, gjeld auken frå 1. januar året etter at skatteoppgjeret ditt er ferdig.",
+                    English to "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed.",
                 )
             }
         }.orShowIf(uttaksgrad.lessThan(100) and not(uforeKombinertMedAlder)) {
@@ -166,18 +174,12 @@ data class ArbeidsinntektOgAlderspensjon(
                     English to "If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated.",
                 )
             }
-            // arbInntektAPogUT
-        }.orShowIf(uforeKombinertMedAlder and innvilgetFor67) {
-            paragraph {
-                text(
-                    Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
-                    Nynorsk to "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd.",
-                    English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit.",
-                )
-            }
+        }.orShowIf(innvilgetFor67) {
+            includePhrase(UfoereAlder.UfoereKombinertMedAlder(uforeKombinertMedAlder))
         }
     }
 }
+
 
 object ReguleringAvAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -391,4 +393,55 @@ object SkattAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
             )
         }
     }
+
+object PensjonsopptjeningInformasjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        // vedleggBeregnPensjonsOpptjeningOverskrift
+        title1 {
+            text(
+                Bokmal to "Pensjonsopptjeningen din",
+                Nynorsk to "Pensjonsoppteninga di",
+                English to "Your accumulated pension capital"
+            )
+        }
+        // vedleggBeregnPensjonsOpptjening
+        paragraph {
+            textExpr(
+                Bokmal to "I nettjenesten Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsopptjeningen din for hvert enkelt år. Der vil du kunne se hvilke andre typer pensjonsopptjening som er registrert på deg.".expr(),
+                Nynorsk to "I nettenesta Din pensjon på $DIN_PENSJON_URL kan du få oversikt over pensjonsoppteninga di for kvart enkelt år. Der kan du sjå kva andre typar pensjonsopptening som er registrert på deg.".expr(),
+                English to "Our online service ".expr() + quoted("Din pensjon") +" at $DIN_PENSJON_URL provides details on your accumulated rights for each year. Here you will be able to see your other types of pension rights we have registered."
+            )
+        }
+    }
+
+    object UfoereAlder {
+        class UfoereKombinertMedAlder(val ufoereKombinertMedAlder: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+            override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+                showIf(ufoereKombinertMedAlder) {
+                    paragraph {
+                        text(
+                            Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
+                            Nynorsk to "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd.",
+                            English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit."
+                        )
+                    }
+                }
+            }
+        }
+
+        class DuFaar(
+            val totalPensjon: Expression<Kroner>,
+            val virkDatoFom: Expression<LocalDate>,
+        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+            override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner hver måned før skatt fra " + virkDatoFom.format() + ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
+                        Nynorsk to "Du får ".expr() + totalPensjon.format() + " kroner kvar månad før skatt frå " + virkDatoFom.format() + ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
+                        English to "You will receive NOK ".expr() + totalPensjon.format() + " every month before tax from " + virkDatoFom.format() + ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit.",
+                    )
+                }
+            }
+
+        }
 }

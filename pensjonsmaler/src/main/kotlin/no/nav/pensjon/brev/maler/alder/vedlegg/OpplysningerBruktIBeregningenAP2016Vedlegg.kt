@@ -101,9 +101,9 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                         row {
                             cell {
                                 text(
-                                    Bokmal to "Trygdetid etter kapittel 19",
-                                    Nynorsk to "Trygdetid etter kapittel 19",
-                                    English to "National insurance coverage pursuant to Chapter 19"
+                                    Bokmal to "Trygdetid",
+                                    Nynorsk to "Trygdetid",
+                                    English to "National insurance coverage"
                                 )
                             }
                             cell {
@@ -465,7 +465,7 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                                 " har trygdeavtale med. Desse periodane er brukt i vurderinga av retten til alderspensjon" +
                                 " før du blir ").expr() + normertPensjonsalder.aarOgMaanederFormattert() + ".",
                         English to ("The table below shows your insurance coverage in countries with which Norway" +
-                                " has a social security agreement. These periods has been used to assess whether" +
+                                " has a social security agreement. These periods have been used to assess whether" +
                                 " you are eligible for retirement pension before the age of ").expr() + normertPensjonsalder.aarOgMaanederFormattert() + ".",
                     )
                 }
