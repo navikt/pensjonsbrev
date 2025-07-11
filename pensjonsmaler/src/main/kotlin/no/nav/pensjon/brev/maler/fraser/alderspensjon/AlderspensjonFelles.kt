@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDtoSelectors.AlderspensjonVedVirkSelectors.uforeKombinertMedAlder
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
@@ -19,16 +18,12 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.quoted
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
-import no.nav.pensjon.brev.template.dsl.textExpr
 
 
 // infoAPinntekt_001
@@ -393,6 +388,7 @@ object SkattAP : OutlinePhrase<LangBokmalNynorskEnglish>() {
             )
         }
     }
+}
 
 object PensjonsopptjeningInformasjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -413,35 +409,36 @@ object PensjonsopptjeningInformasjon : OutlinePhrase<LangBokmalNynorskEnglish>()
             )
         }
     }
+}
 
-    object UfoereAlder {
-        class UfoereKombinertMedAlder(val ufoereKombinertMedAlder: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-            override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-                showIf(ufoereKombinertMedAlder) {
-                    paragraph {
-                        text(
-                            Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
-                            Nynorsk to "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd.",
-                            English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit."
-                        )
-                    }
-                }
-            }
-        }
-
-        class DuFaar(
-            val totalPensjon: Expression<Kroner>,
-            val virkDatoFom: Expression<LocalDate>,
-        ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-            override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+object UfoereAlder {
+    class UfoereKombinertMedAlder(val ufoereKombinertMedAlder: Expression<Boolean>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(ufoereKombinertMedAlder) {
                 paragraph {
-                    textExpr(
-                        Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner hver måned før skatt fra " + virkDatoFom.format() + ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
-                        Nynorsk to "Du får ".expr() + totalPensjon.format() + " kroner kvar månad før skatt frå " + virkDatoFom.format() + ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
-                        English to "You will receive NOK ".expr() + totalPensjon.format() + " every month before tax from " + virkDatoFom.format() + ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit.",
+                    text(
+                        Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
+                        Nynorsk to "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd.",
+                        English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit."
                     )
                 }
             }
-
         }
+    }
+
+    class DuFaar(
+        val totalPensjon: Expression<Kroner>,
+        val virkDatoFom: Expression<LocalDate>,
+    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                textExpr(
+                    Bokmal to "Du får ".expr() + totalPensjon.format() + " kroner hver måned før skatt fra " + virkDatoFom.format() + ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
+                    Nynorsk to "Du får ".expr() + totalPensjon.format() + " kroner kvar månad før skatt frå " + virkDatoFom.format() + ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
+                    English to "You will receive NOK ".expr() + totalPensjon.format() + " every month before tax from " + virkDatoFom.format() + ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit.",
+                )
+            }
+        }
+
+    }
 }
