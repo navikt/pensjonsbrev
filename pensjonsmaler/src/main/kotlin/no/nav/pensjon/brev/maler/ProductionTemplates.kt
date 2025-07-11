@@ -119,6 +119,7 @@ object ProductionTemplates : AllTemplates {
         VedtakEndringAvUttaksgrad,
         VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,
         VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,
+        VedtakOmEndring,
         VedtakOmFjerningAvOmsorgsopptjening,
     )
 
