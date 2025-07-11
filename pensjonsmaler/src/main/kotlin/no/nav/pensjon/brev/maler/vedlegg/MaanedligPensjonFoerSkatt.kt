@@ -65,6 +65,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
+// V00003 i metaforce
 @TemplateModelHelpers
 val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish, MaanedligPensjonFoerSkattDto>(
     title = newText(

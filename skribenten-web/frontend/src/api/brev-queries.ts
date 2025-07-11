@@ -4,6 +4,7 @@ import axios from "axios";
 
 import { SKRIBENTEN_API_BASE_PATH } from "~/api/skribenten-api-endpoints";
 import type {
+  BrevInfo,
   BrevResponse,
   OppdaterBrevRequest,
   OpprettBrevRequest,
@@ -52,6 +53,16 @@ export const getBrevAttesteringQuery = (saksId: string, brevId: number, reserver
         `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/attestering?reserver=${reserver}`,
       )
     ).data,
+});
+
+export const brevInfoKeys = {
+  all: ["BREV_META"] as const,
+  id: (brevId: number) => [...brevInfoKeys.all, brevId] as const,
+};
+
+export const getBrevInfoQuery = (brevId: number) => ({
+  queryKey: brevInfoKeys.id(brevId),
+  queryFn: async () => (await axios.get<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/info`)).data,
 });
 
 export async function createBrev(saksId: string, request: OpprettBrevRequest) {
