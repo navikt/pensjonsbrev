@@ -118,7 +118,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
                 text(
                     Bokmal to "Hvordan kan du melde fra?",
                     Nynorsk to "Korleis kan du melde frå?",
-                    English to "How can I submit information?",
+                    English to "How do i report changes?",
                 )
             }
 
@@ -133,9 +133,9 @@ class OmstillingsstoenadAktivitetspliktFraser {
             paragraph {
                 val postadresse = ifElse(nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND), Constants.Utland.POSTADRESSE, Constants.POSTADRESSE)
                 textExpr(
-                    Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du sende brev til ".expr() + postadresse,
-                    Nynorsk to "Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår nav.no, må du sende dokumentasjon per post til ".expr() + postadresse,
-                    English to "Please send documentation as normal post if you do not use BankID or another login option. Send to ".expr() + postadresse,
+                    Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du sende brev til ".expr() + postadresse + ".",
+                    Nynorsk to "Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår nav.no, må du sende dokumentasjon per post til ".expr() + postadresse + ".",
+                    English to "Please send documentation as normal post if you do not use BankID or another login option. Send to ".expr() + postadresse + ".",
                 )
             }
 

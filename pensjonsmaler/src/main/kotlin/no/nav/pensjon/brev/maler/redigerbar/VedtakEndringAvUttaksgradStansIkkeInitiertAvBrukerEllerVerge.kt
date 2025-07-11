@@ -105,9 +105,10 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                     Language.English to "You are no longer entitled to draw your retirement pension because your degree of disability is higher than 80 percent. We have therefore stopped your retirement pension."
                 )
             }
-
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt., men valgene gjenbrukes i alle cases, så det går fint.
             showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2011)) { // radiobutton i doksys
                 // endrUtaksgradAP2011_001 - Uføretrygd er innvilget eller uføregrad er økt
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(saksbehandlerValg.ufoeregradErOekt or saksbehandlerValg.ufoeretrygdErInnvilget) {
                     paragraph {
                         text(
@@ -118,6 +119,7 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                     }
                 }
                 // avslagAP2011TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(saksbehandlerValg.pensjonsopptjeningenErEndret) {
                     paragraph {
                         text(

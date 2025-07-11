@@ -57,23 +57,23 @@ object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<Omstillingss
                     text(
                         Bokmal to "Hvordan kan du melde fra?",
                         Nynorsk to "Korleis kan du melde frå?",
-                        English to "How can I submit information?",
+                        English to "How do i report changes?",
                     )
                 }
                 paragraph {
                     text(
-                        Bokmal to "Du kan melde fra til oss om endringer ved å benytte endringsskjema eller ettersende dokumentasjon på ${Constants.OMS_MELD_INN_ENDRING_URL}",
-                        Nynorsk to "Du kan melde frå om endringar ved å bruke endringsskjema eller ettersende dokumentasjon på ${Constants.OMS_MELD_INN_ENDRING_URL}",
-                        English to "You can report changes by use the change form or submit information on ${Constants.OMS_MELD_INN_ENDRING_URL}",
+                        Bokmal to "Du kan melde fra til oss om endringer ved å benytte endringsskjema eller ettersende dokumentasjon på ${Constants.OMS_MELD_INN_ENDRING_URL}.",
+                        Nynorsk to "Du kan melde frå om endringar ved å bruke endringsskjema eller ettersende dokumentasjon på ${Constants.OMS_MELD_INN_ENDRING_URL}.",
+                        English to "You can report changes by use the change form or submit information on ${Constants.OMS_MELD_INN_ENDRING_URL}.",
                     )
                 }
 
                 paragraph {
                     val postadresse = ifElse(bosattUtland, Constants.Utland.POSTADRESSE, Constants.POSTADRESSE)
                     textExpr(
-                        Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du sende brev til ".expr() + postadresse,
-                        Nynorsk to "Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår nav.no, må du sende dokumentasjon per post til ".expr() + postadresse,
-                        English to "Please send documentation as normal post if you do not use BankID or another login option. Send to ".expr() + postadresse,
+                        Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du sende brev til ".expr() + postadresse + ".",
+                        Nynorsk to "Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår nav.no, må du sende dokumentasjon per post til ".expr() + postadresse + ".",
+                        English to "Please send documentation as normal post if you do not use BankID or another login option. Send to ".expr() + postadresse + ".",
                     )
                 }
 
