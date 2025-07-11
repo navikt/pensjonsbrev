@@ -54,6 +54,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlde
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.DuFaarHverMaaned
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.HvorKanDuFaaViteMerOmAlderspensjonenDin
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -727,7 +728,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             // skattAPendring_001
             // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(pesysData.alderspensjonVedVirk.harEndretPensjon and saksbehandlerValg.endringIPensjonsutbetaling) {
-                includePhrase(Vedtak.EndringKanHaBetydningForSkatt)
+                includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
             }
 
             // pensjonFraAndreOverskrift_001
