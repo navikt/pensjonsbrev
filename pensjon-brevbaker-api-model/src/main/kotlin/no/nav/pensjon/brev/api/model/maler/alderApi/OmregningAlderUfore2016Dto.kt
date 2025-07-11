@@ -9,7 +9,7 @@ data class OmregningAlderUfore2016Dto(
     val virkFom: LocalDate,
     val uttaksgrad: Int,
     val totalPensjon: Kroner,
-    val beregningsperioder: List<AlderspensjonPerManed>,
+    val antallBeregningsperioder: Int,
     val gjenlevendetilleggKap19Innvilget: Boolean,
     val gjenlevenderettAnvendt: Boolean,
     val inngangOgEksportVurdering: InngangOgEksportVurdering?,
@@ -20,12 +20,9 @@ data class OmregningAlderUfore2016Dto(
     val garantitilleggInnvilget: Boolean,
     val innvilgetFor67: Boolean,
     val fullTrygdetid: Boolean,
-    val persongrunnlagAvdod: PersongrunnlagAvdod
+    val persongrunnlagAvdod: PersongrunnlagAvdod,
+    val faktiskBostedsland: String,
 ):BrevbakerBrevdata
-
-data class AlderspensjonPerManed(
-    val virkFom: LocalDate
-)
 
 data class PersongrunnlagAvdod(
     val avdodNavn: String,
@@ -34,7 +31,6 @@ data class PersongrunnlagAvdod(
 
 data class InngangOgEksportVurdering(
     val eksportTrygdeavtaleAvtaleland: Boolean?,
-    val faktiskBostedsland: String?,
     val erEksportberegnet: Boolean?,
     val eksportberegnetUtenGarantipensjon: Boolean?,
     val borINorge: Boolean?,

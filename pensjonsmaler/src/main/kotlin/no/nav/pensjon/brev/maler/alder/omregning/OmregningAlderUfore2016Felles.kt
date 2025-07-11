@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.alder.omregning
 
-import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonPerManed
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
@@ -23,7 +22,7 @@ data class OmregningAlderUfore2016Felles(
     val virkFom: Expression<LocalDate>,
     val uttaksgrad: Expression<Int>,
     val totalPensjon: Expression<Kroner>,
-    val beregningsperioder: Expression<List<AlderspensjonPerManed>>,
+    val antallBeregningsperioder: Expression<Int>,
     val gjenlevendetilleggKap19Innvilget: Expression<Boolean>,
     val avdodNavn: Expression<String>,
     val avdodFnr: Expression<String>,
@@ -91,7 +90,7 @@ data class OmregningAlderUfore2016Felles(
             )
         }
 
-        showIf(beregningsperioder.size().greaterThan(1) and totalPensjon.greaterThan(0)) {
+        showIf(beregningsperioder.greaterThan(1) and totalPensjon.greaterThan(0)) {
             paragraph {
                 text(
                     Bokmal to "Du kan lese mer om andre beregningsperioder i vedlegget.",
@@ -147,7 +146,7 @@ data class OmregningAlderUfore2016Felles(
                 textExpr(
                     Bokmal to "Vi forutsetter at du bor i ".expr() + faktiskBostedsland +"Hvis du skal flytte til et land utenfor EØS-området, må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon.",
                     Nynorsk to "Vi føreset at du bur i ".expr() + faktiskBostedsland +"Dersom du skal flytte til eit land utanfor EØS-området, må du kontakte oss slik at vi kan vurdere om du framleis har rett til alderspensjon.",
-                    English to "We presume that you live in ".expr() + faktiskBostedsland +"If you are moving to a country outside the EEA region, it is important that you contact NAV We will then reassess your eligibility for retirement pension." //TODO: Skal NAV byttes ut med noe kontakt info?
+                    English to "We presume that you live in ".expr() + faktiskBostedsland +"If you are moving to a country outside the EEA region, it is important that you contact Nav We will then reassess your eligibility for retirement pension."
                 )
             }
         }
@@ -157,7 +156,7 @@ data class OmregningAlderUfore2016Felles(
                 textExpr(
                     Bokmal to "Vi forutsetter at du bor i ".expr() + faktiskBostedsland +"Hvis du skal flytte til et annet land, må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon.",
                     Nynorsk to "Vi føreset at du bur i ".expr() + faktiskBostedsland +"Dersom du skal flytte til eit anna land, må du kontakte oss slik at vi kan vurdere om du framleis har rett til alderspensjon.",
-                    English to "We presume that you live in ".expr() + faktiskBostedsland +"If you are moving to another country, it is important that you contact NAV We will then reassess your eligibility for retirement pension." //TODO: Skal NAV byttes ut med noe kontakt info?
+                    English to "We presume that you live in ".expr() + faktiskBostedsland +"If you are moving to another country, it is important that you contact Nav We will then reassess your eligibility for retirement pension."
                 )
             }
         }
@@ -437,7 +436,7 @@ data class OmregningAlderUfore2016Felles(
                     Bokmal to "Hvis du har kort botid i Norge når du fyller 67 år, kan du søke om supplerende stønad. " +
                             "Stønaden er behovsprøvd og all inntekt fra Norge og utlandet blir regnet med. " +
                             "Inntekten til eventuell ektefelle, samboer eller registrert partner blir også regnet med. " +
-                            "Du kan lese mer om supplerende stønad på nettsiden vår ", //TODO Supplerende URL
+                            "Du kan lese mer om supplerende stønad på nettsiden vår ",
                     Nynorsk to "Dersom du har kort butid i Noreg når du fyller 67 år, kan du søkje om supplerande stønad. " +
                             "Stønaden er behovsprøvd, og all inntekt frå Noreg og utlandet blir rekna med. " +
                             "Inntekta til eventuell ektefelle, sambuar eller registrert partnar skal også reknast med. " +
@@ -565,7 +564,7 @@ data class OmregningAlderUfore2016Felles(
 
         paragraph {
             text(
-                Bokmal to "Hvis du får endringer i familiesituasjon, planlegger opphold i utlandet, eller ektefellen eller samboeren din får endringer i inntekten, kan det ha betydning for beløpet du får utbetalt fra NAV. " +//TODO: Skal NAV byttes ut med noe kontakt info?
+                Bokmal to "Hvis du får endringer i familiesituasjon, planlegger opphold i utlandet, eller ektefellen eller samboeren din får endringer i inntekten, kan det ha betydning for beløpet du får utbetalt fra Nav. " +
                         "I slike tilfeller må du derfor straks melde fra til oss. I vedlegget ser du hvilke endringer du må si fra om. ",
                 Nynorsk to "Dersom du får endringar i familiesituasjonen, planlegg opphald i utlandet, eller ektefellen, partnaren eller sambuaren din får endringar i inntekta, kan det få noko å seie for beløpet du får utbetalt frå NAV. " +
                         "I slike tilfelle må du derfor straks melde frå til oss. I vedlegget ser du kva endringar du må seie frå om. ",
@@ -577,7 +576,7 @@ data class OmregningAlderUfore2016Felles(
         paragraph {
             text(
                 Bokmal to "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. " +
-                        "Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til NAV.",//TODO: Skal NAV byttes ut med noe kontakt info?
+                        "Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav.",
                 Nynorsk to "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. " +
                         "Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til NAV.",
                 English to "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. " +
