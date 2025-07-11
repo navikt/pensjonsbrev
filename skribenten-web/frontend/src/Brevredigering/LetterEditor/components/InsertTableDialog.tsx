@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { Button, HStack, Label, Modal, TextField, VStack } from "@navikt/ds-react";
 import { useState } from "react";
 
@@ -13,11 +14,24 @@ export default function InsertTableDialog({ open, onCancel, onInsert }: InsertTa
 
   return (
     <Modal header={{ heading: "Sett inn tabell" }} onClose={onCancel} open={open} width={360}>
-      <Modal.Body>
+      <Modal.Body style={{ paddingTop: "0.5rem" }}>
         <VStack gap="4">
-          <div>
-            <Label>Antall kolonner:</Label>
+          <HStack align="center" gap="4">
+            <Label
+              css={css`
+                min-width: 8rem;
+                text-align: right;
+                font-weight: 400;
+              `}
+              htmlFor="num-cols"
+              size="small"
+            >
+              Antall kolonner:
+            </Label>
             <TextField
+              css={css`
+                width: 5rem;
+              `}
               hideLabel
               label="Antall kolonner"
               max={20}
@@ -28,10 +42,24 @@ export default function InsertTableDialog({ open, onCancel, onInsert }: InsertTa
               type="number"
               value={columnCount}
             />
-          </div>
-          <div>
-            <Label>Antall rader:</Label>
+          </HStack>
+          <HStack gap="4">
+            <Label
+              css={css`
+                min-width: 8rem;
+                text-align: right;
+                font-weight: 400;
+                align-content: center;
+              `}
+              htmlFor="num-rows"
+              size="small"
+            >
+              Antall rader:
+            </Label>
             <TextField
+              css={css`
+                width: 5rem;
+              `}
               hideLabel
               label="Antall rader"
               max={20}
@@ -42,16 +70,16 @@ export default function InsertTableDialog({ open, onCancel, onInsert }: InsertTa
               type="number"
               value={rowCount}
             />
-          </div>
+          </HStack>
         </VStack>
       </Modal.Body>
 
       <Modal.Footer>
         <HStack gap="4">
-          <Button onClick={onCancel} type="button" variant="tertiary">
+          <Button onClick={onCancel} size="small" type="button" variant="secondary">
             Avbryt
           </Button>
-          <Button onClick={() => onInsert(columnCount, rowCount)} type="button">
+          <Button onClick={() => onInsert(columnCount, rowCount)} size="small" type="button">
             Sett inn tabell
           </Button>
         </HStack>

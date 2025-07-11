@@ -19,7 +19,7 @@ const EditorTableTools = () => {
           onClick={() => setIsInsertTableDialogOpen(true)}
           size="small"
           type="button"
-          variant="tertiary"
+          variant="tertiary-neutral"
         />
       </HStack>
 
