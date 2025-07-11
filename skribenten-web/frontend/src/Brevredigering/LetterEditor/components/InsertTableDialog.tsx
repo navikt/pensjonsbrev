@@ -9,8 +9,11 @@ interface InsertTableDialogProps {
 }
 
 export default function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps) {
-  const [columnCount, setColumnCount] = useState(3);
-  const [rowCount, setRowCount] = useState(2);
+  const [columnCount, setColumnCount] = useState("3");
+  const [rowCount, setRowCount] = useState("2");
+
+  const numCols = Number(columnCount) || 0;
+  const numRows = Number(rowCount) || 0;
 
   return (
     <Modal header={{ heading: "Sett inn tabell" }} onClose={onCancel} open={open} width={360}>
@@ -36,7 +39,12 @@ export default function InsertTableDialog({ open, onCancel, onInsert }: InsertTa
               label="Antall kolonner"
               max={20}
               min={1}
-              onChange={(e) => setColumnCount(Number(e.target.value))}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === "" || (/^\d+$/.test(value) && Number(value) <= 20)) {
+                  setColumnCount(value);
+                }
+              }}
               size="small"
               step={1}
               type="number"
@@ -64,7 +72,12 @@ export default function InsertTableDialog({ open, onCancel, onInsert }: InsertTa
               label="Antall rader"
               max={20}
               min={1}
-              onChange={(e) => setRowCount(Number(e.target.value))}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value === "" || (/^\d+$/.test(value) && Number(value) <= 20)) {
+                  setRowCount(value);
+                }
+              }}
               size="small"
               step={1}
               type="number"
@@ -79,7 +92,12 @@ export default function InsertTableDialog({ open, onCancel, onInsert }: InsertTa
           <Button onClick={onCancel} size="small" type="button" variant="secondary">
             Avbryt
           </Button>
-          <Button onClick={() => onInsert(columnCount, rowCount)} size="small" type="button">
+          <Button
+            disabled={numCols < 1 || numRows < 1}
+            onClick={() => onInsert(Math.max(1, numCols), Math.max(1, numRows))}
+            size="small"
+            type="button"
+          >
             Sett inn tabell
           </Button>
         </HStack>
