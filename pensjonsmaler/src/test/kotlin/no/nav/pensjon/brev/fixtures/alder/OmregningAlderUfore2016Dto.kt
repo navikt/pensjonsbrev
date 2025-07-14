@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.fixtures.alder
 
-import no.nav.pensjon.brev.api.model.maler.alderApi.AlderspensjonPerManed
 import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurdering
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdod
@@ -12,16 +11,13 @@ fun createOmregningAlderUfore2016Dto() =
             virkFom = LocalDate.now(),
             uttaksgrad = 100,
             totalPensjon = Kroner(1000),
-            beregningsperioder = listOf(
-                AlderspensjonPerManed(
-                    virkFom = LocalDate.now()
-                )
-            ),
+            antallBeregningsperioder = 2,
+            faktiskBostedsland = "Skottland",
             gjenlevendetilleggKap19Innvilget = true,
             gjenlevenderettAnvendt = true,
             inngangOgEksportVurdering = InngangOgEksportVurdering(
                 eksportTrygdeavtaleAvtaleland = true,
-                faktiskBostedsland = "Skottland",
+
                 erEksportberegnet = true,
                 eksportberegnetUtenGarantipensjon = true,
                 borINorge = true,
