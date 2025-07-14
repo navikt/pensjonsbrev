@@ -15,7 +15,14 @@ export type Focus = LiteralIndex & { cursorPosition?: number };
 export type TableRowSelection = {
   blockIndex: number;
   contentIndex: number;
+  rowIndex?: number;
+  colIndex?: number;
+};
+export type CellTarget = {
+  blockIndex: number;
+  contentIndex: number;
   rowIndex: number;
+  colIndex: number;
 };
 
 export type LetterEditorState = {
@@ -25,4 +32,5 @@ export type LetterEditorState = {
   isDirty: boolean;
   focus: Focus;
   tableSelection?: TableRowSelection;
+  contextMenuCell?: CellTarget;
 };
