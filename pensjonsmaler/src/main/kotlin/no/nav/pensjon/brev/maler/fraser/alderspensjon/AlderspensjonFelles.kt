@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.fraser.alderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SUPPLERENDE_STOENAD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
@@ -190,11 +191,11 @@ object ReguleringAvAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
         paragraph {
             text(
                 Bokmal to "Reguleringen skjer med virkning fra 1. mai og selve økningen blir vanligvis etterbetalt i juni. " +
-                        "Du får informasjon om dette på utbetalingsmeldingen din. På Nav.no kan du lese mer om hvordan pensjonene reguleres.",
+                        "Du får informasjon om dette på utbetalingsmeldingen din. På $NAV_URL kan du lese mer om hvordan pensjonene reguleres.",
                 Nynorsk to "Reguleringa skjer med verknad frå 1. mai, og sjølve auken blir vanlegvis etterbetalt i juni. " +
-                        "Du får informasjon om dette på utbetalingsmeldinga di. På Nav.no kan du lese meir om korleis pensjonane blir regulerte.",
+                        "Du får informasjon om dette på utbetalingsmeldinga di. På $NAV_URL kan du lese meir om korleis pensjonane blir regulerte.",
                 English to "The pension amount will be adjusted with effect from 1 May, and the actual increase is usually paid retroactively in June. " +
-                        "You will be informed about this on your payout notice. You can read more about how pensions are adjusted at Nav.no.",
+                        "You will be informed about this on your payout notice. You can read more about how pensions are adjusted at $NAV_URL.",
             )
         }
     }

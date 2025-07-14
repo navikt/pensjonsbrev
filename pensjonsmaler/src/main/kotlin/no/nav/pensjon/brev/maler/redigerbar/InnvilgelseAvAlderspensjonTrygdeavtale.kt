@@ -39,7 +39,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.vedtakEtterbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.PesysDataSelectors.vedtaksresultatUtland_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.SaksbehandlerValgSelectors.ingenEndringIPensjonen
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.SaksbehandlerValgSelectors.innvilgelseAPellerOektUttaksgrad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.SaksbehandlerValgSelectors.nyBeregningAvInnvilgetAP
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.SaksbehandlerValgSelectors.oekningIPensjonen
@@ -62,7 +61,7 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPUttakEndr
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilKlageUtland
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.SKjermingstilleggHjemmel
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.SkjermingstilleggHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SkattAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Skatteplikt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SoktAFPPrivatInfo
@@ -207,33 +206,31 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                 erSluttbehandlingNorgeUtland or
                         (not(erSluttbehandlingNorgeUtland) and not(erMellombehandling))
             ) {
-                showIf(saksbehandlerValg.ingenEndringIPensjonen) {
+                showIf(saksbehandlerValg.oekningIPensjonen) {
+                        // nyBeregningAPØkning
+                        paragraph {
+                            text(
+                                Bokmal to "Dette fører til at pensjonen din øker.",
+                                Nynorsk to "Dette fører til at pensjonen din aukar.",
+                                English to "This leads to an increase in your retirement pension."
+                            )
+                        }
+                    }.orShowIf(saksbehandlerValg.reduksjonIPensjonen) {
+                        // nyBeregningAPReduksjon
+                        paragraph {
+                            text(
+                                Bokmal to "Dette fører til at pensjonen din blir redusert.",
+                                Nynorsk to "Dette fører til at pensjonen din blir redusert.",
+                                English to "This leads to a reduction in your retirement pension."
+                            )
+                        }
+                    }.orShow {
                     // nyBeregningAPIngenEndring
                     paragraph {
                         text(
                             Bokmal to "Dette fører ikke til endringer i alderspensjonen din.",
                             Nynorsk to "Dette fører ikkje til endring av alderspensjonen din.",
                             English to "This does not result in any changes in your retirement pension.",
-                        )
-                    }
-                }
-                showIf(saksbehandlerValg.oekningIPensjonen) {
-                    // nyBeregningAPØkning
-                    paragraph {
-                        text(
-                            Bokmal to "Dette fører til at pensjonen din øker.",
-                            Nynorsk to "Dette fører til at pensjonen din aukar.",
-                            English to "This leads to an increase in your retirement pension."
-                        )
-                    }
-                }
-                showIf(saksbehandlerValg.reduksjonIPensjonen) {
-                    // nyBeregningAPReduksjon
-                    paragraph {
-                        text(
-                            Bokmal to "Dette fører til at pensjonen din blir redusert.",
-                            Nynorsk to "Dette fører til at pensjonen din blir redusert.",
-                            English to "This leads to a reduction in your retirement pension."
                         )
                     }
                 }
@@ -284,19 +281,9 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                     garantipensjonInnvilget, godkjentYrkesskade, innvilgetFor67, pensjonstilleggInnvilget, regelverkType
                 )
             )
-            includePhrase(
-                SKjermingstilleggHjemmel(
-                    skjermingstilleggInnvilget
-                )
-            )
-            includePhrase(
-                AP2025TidligUttakHjemmel(
-                    innvilgetFor67, regelverkType
-                )
-            )
-            includePhrase(
-                GarantitilleggHjemmel(garantitilleggInnvilget)
-            )
+            includePhrase(SkjermingstilleggHjemmel(skjermingstilleggInnvilget))
+            includePhrase(AP2025TidligUttakHjemmel(regelverkType))
+            includePhrase(GarantitilleggHjemmel(garantitilleggInnvilget))
             includePhrase(
                 EOSLandAvtaleHjemmel(
                     borINorge, eksportTrygdeavtaleEOS, erEOSLand, harOppfyltVedSammenlegging

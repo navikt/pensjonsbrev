@@ -23,8 +23,6 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val nyBeregningAvInnvilgetAP: Boolean,
         @DisplayText("Tittel - Innvilgelse av alderspensjon eller økt uttaksgrad")
         val innvilgelseAPellerOektUttaksgrad: Boolean,
-        @DisplayText("Slutthandling medfører: Ingen endring i pensjonen")
-        val ingenEndringIPensjonen: Boolean,
         @DisplayText("Slutthandling medfører: Innvilgelse av alderspensjon eller økt uttaksgrad")
         val medfoererInnvilgelseAvAPellerOektUttaksgrad: Boolean,
         @DisplayText("Slutthandling medfører: Økning i pensjonen")

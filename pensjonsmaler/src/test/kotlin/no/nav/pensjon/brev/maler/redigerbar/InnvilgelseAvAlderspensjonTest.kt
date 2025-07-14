@@ -19,7 +19,7 @@ class InnvilgelseAvAlderspensjonTest {
         LetterTestImpl(
             InnvilgelseAvAlderspensjon.template,
             Fixtures.create<InnvilgelseAvAlderspensjonDto>(),
-            Language.English,
+            Language.Bokmal,
             Fixtures.felles
         ).renderTestPDF(InnvilgelseAvAlderspensjon.kode.name)
     }

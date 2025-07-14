@@ -1,8 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2025
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -30,12 +29,13 @@ data class HjemlerInnvilgelseForAP2011AP2016(
     val regelverkType: Expression<AlderspensjonRegelverkType>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(regelverkType.isNotAnyOf(AP2025)) {
+        showIf(regelverkType.isNotAnyOf(AP2025, AP1967)) {
             /* AP2011TidligUttakHjemmel, AP2011TidligUttakPenHjemmel, AP2011Hjemmel, AP2011PenTHjemmel, AP2011YrkeskadeHjemmel, AP2011YrkesskadePenTHjemmel
             AP2016TidligUttakHjemmel, AP2016TidligUttakPenTHjemmel, AP2016TidligUttakPenTGarantiPensjonHjemmel, AP2016TidligUttakGarantiPensjonHjemmel,
             AP2016Hjemmel, AP2016YrksesskadeHjemmel, AP2016MNTHjemmel, AP2016YrkesskadeMNTHjemmel, AP2016MNTGarantiPensjonHjemmel,
             AP2016YrkesskadeMNTGarantiPensjonHjemmel, AP2016GarantiPensjonHjemmel, AP2016YrkesskadeGarantiPensjonHjemmel */
             paragraph {
+                // vilkårene for minste trygdetid må oppfylles
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2 til ",
                     Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2 til ",
@@ -48,17 +48,11 @@ data class HjemlerInnvilgelseForAP2011AP2016(
                         English to "19-10"
                     )
                 }.orShow {
+                    // minste pensjonsnivå
                     text(
-                        Bokmal to "19-8",
-                        Nynorsk to "19-8",
-                        English to "19-8"
-                    )
-                }
-                showIf(not(pensjonstilleggInnvilget)) {
-                    text(
-                        Bokmal to ", 19-10",
-                        Nynorsk to ", 19-10",
-                        English to ", 19-10"
+                        Bokmal to "19-8, 19-10",
+                        Nynorsk to "19-8, 19-10",
+                        English to "19-8, 19-10"
                     )
                 }
                 showIf(innvilgetFor67) {
@@ -131,7 +125,7 @@ data class HjemlerInnvilgelseForAP2011AP2016(
     }
 }
 
-data class SKjermingstilleggHjemmel(
+data class SkjermingstilleggHjemmel(
     val skjermingstilleggInnvilget: Expression<Boolean>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -148,11 +142,10 @@ data class SKjermingstilleggHjemmel(
 }
 
 data class AP2025TidligUttakHjemmel(
-    val innvilgetFor67: Expression<Boolean>,
     val regelverkType: Expression<AlderspensjonRegelverkType>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(regelverkType.isOneOf(AP2025) and innvilgetFor67) {
+        showIf(regelverkType.isOneOf(AP2025)) {
             paragraph {
                 text(
                     Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13.",
