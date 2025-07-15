@@ -247,25 +247,27 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
                     )
                 }
 
-                paragraph {
-                    // flereBeregningsperioderVedleggOpptjening_001
-                    text(
-                        Bokmal to "I vedlegget ",
-                        Nynorsk to "I vedlegget ",
-                        English to "In the appendix "
-                    )
-                    showIf (
-
-                        pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)) {
-                        namedReference(vedleggOpplysningerBruktIBeregningenAlder)
-                    }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AP2025) and pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()) {
-                        namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
+                val harOpplysningerBruktIBeregningenAlder = pesysData.opplysningerBruktIBeregningenAlder.notNull()
+                val harOpplysningerBruktIBeregningenAlderAP2025 = pesysData.opplysningerBruktIBeregningenAlderAP2025.notNull()
+                showIf(harOpplysningerBruktIBeregningenAlder or harOpplysningerBruktIBeregningenAlderAP2025) {
+                    paragraph {
+                        // flereBeregningsperioderVedleggOpptjening_001
+                        text(
+                            Bokmal to "I vedlegget ",
+                            Nynorsk to "I vedlegget ",
+                            English to "In the appendix "
+                        )
+                        showIf(harOpplysningerBruktIBeregningenAlder) {
+                            namedReference(vedleggOpplysningerBruktIBeregningenAlder)
+                        }.orShowIf(harOpplysningerBruktIBeregningenAlderAP2025) {
+                            namedReference(vedleggOpplysningerBruktIBeregningenAlderAP2025)
+                        }
+                        text(
+                            Bokmal to " finner du detaljer om din månedlige pensjon.",
+                            Nynorsk to " finn du detaljar om din månadlege pensjon.",
+                            English to " you will find more details about your monthly pension."
+                        )
                     }
-                    text(
-                        Bokmal to " finner du detaljer om din månedlige pensjon.",
-                        Nynorsk to " finn du detaljar om din månadlege pensjon.",
-                        English to " you will find more details about your monthly pension."
-                    )
                 }
             }
 
