@@ -1,15 +1,15 @@
 import { css } from "@emotion/react";
-import { ChevronRightIcon } from "@navikt/aksel-icons";
-import * as CM from "@radix-ui/react-context-menu";
-import React from "react";
+import { TrashIcon } from "@navikt/aksel-icons";
+import { ActionMenu } from "@navikt/ds-react";
+import React, { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type Cell as CellType, type ColumnSpec, LITERAL, type Table } from "~/types/brevbakerTypes";
 
-import DeleteCellsSubMenu from "./DeleteCellsSubMenu";
 import { TableCellContent } from "./TableCellContent";
+import TableContextMenu from "./TableContextMenu";
 
 const tableStyles = css`
   width: 100%;
@@ -28,57 +28,16 @@ const tableStyles = css`
     font-weight: 600;
   }
 `;
-
 const selectedRowStyles = css`
   background: var(--a-surface-info-subtle, #d0e7ff);
 `;
-
 const cellSelectedStyles = css`
   background: var(--a-surface-info-subtle, #d0e7ff);
 `;
 
-const menuContentStyles = css`
-  background: var(--a-surface-default);
-  border: 1px solid var(--a-border-subtle);
-  border-radius: 6px;
-  padding: 0.25rem;
-  box-shadow: 0 2px 6px rgba(0 0 0 / 0.15);
-  display: flex;
-  flex-direction: column;
-  min-width: 220px;
-`;
-
-const menuItemStyles = css`
-  font-size: 1rem;
-  line-height: 1.375rem;
-  padding: 4px 12px;
-  border-radius: 6px;
-  cursor: default;
-  user-select: none;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  &[data-highlighted] {
-    background: var(--a-surface-action-subtle);
-    color: var(--a-text-default);
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: none;
-  }
-
-  &[data-disabled] {
-    opacity: 0.45;
-    cursor: not-allowed;
-  }
-`;
-
-const menuSeparatorStyles = css`
-  height: 1px;
-  margin: 4px 0;
-  background: var(--a-border-subtle);
+const menuSize = css`
+  width: 260px;
+  min-width: 260px;
 `;
 
 type CellIndexes = {
@@ -87,11 +46,8 @@ type CellIndexes = {
   itemIndex: number;
   itemContentIndex: number;
 };
-
-const renderCellText = (cell: CellType, idx: number, indexes: CellIndexes) =>
-  cell.text
-    .filter((t) => t.type === LITERAL)
-    .map((lit, litIdx) => <TableCellContent key={litIdx} lit={lit} litIndex={indexes} />);
+const renderCellText = (cell: CellType, _: number, idx: CellIndexes) =>
+  cell.text.filter((t) => t.type === LITERAL).map((lit, i) => <TableCellContent key={i} lit={lit} litIndex={idx} />);
 
 const TableView: React.FC<{
   node: Table;
@@ -101,123 +57,141 @@ const TableView: React.FC<{
   const { editorState, setEditorState } = useEditor();
   const { tableSelection } = editorState;
 
+  const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | null>(null);
+
   return (
-    <CM.Root
-      onOpenChange={(open) => {
-        if (!open) {
-          setEditorState((prev) => ({ ...prev, contextMenuCell: undefined }));
-        }
-      }}
-    >
-      <CM.Trigger asChild>
-        <table
-          css={tableStyles}
-          onContextMenu={(e) => {
-            const cell = (e.target as HTMLElement).closest("td,th");
-            if (!cell) return;
+    <>
+      <table
+        css={tableStyles}
+        onContextMenu={(e) => {
+          e.preventDefault();
 
-            const rowIndex = (cell.parentElement as HTMLTableRowElement).rowIndex - 1;
-            const colIndex = (cell as HTMLTableCellElement).cellIndex;
+          const cell = (e.target as HTMLElement).closest("td,th");
+          if (!cell) return;
 
-            setEditorState((prev) => ({
-              ...prev,
-              contextMenuCell: { blockIndex, contentIndex, rowIndex, colIndex },
-            }));
-          }}
-        >
-          <thead>
-            <tr>
-              {node.header.colSpec.map((col: ColumnSpec, colIdx: number) => (
-                <th key={colIdx}>
-                  {renderCellText(col.headerContent, colIdx, {
-                    blockIndex,
-                    contentIndex,
-                    itemIndex: -1,
-                    itemContentIndex: colIdx,
-                  })}
-                </th>
-              ))}
-            </tr>
-          </thead>
+          const rowIndex = (cell.parentElement as HTMLTableRowElement).rowIndex - 1;
+          const colIndex = (cell as HTMLTableCellElement).cellIndex;
 
-          <tbody>
-            {node.rows.map((row, rowIdx) => {
-              const isSelected =
-                tableSelection &&
-                tableSelection.blockIndex === blockIndex &&
-                tableSelection.contentIndex === contentIndex &&
-                tableSelection.rowIndex === rowIdx;
+          //save selection so actions know what to delete/insert
+          setEditorState((prev) => ({
+            ...prev,
+            contextMenuCell: { blockIndex, contentIndex, rowIndex, colIndex },
+          }));
+          // open context-menu at mouse position
+          setMenuAnchor({ x: e.clientX, y: e.clientY });
+        }}
+      >
+        <thead>
+          <tr>
+            {node.header.colSpec.map((col: ColumnSpec, colIdx) => (
+              <th key={colIdx}>
+                {renderCellText(col.headerContent, colIdx, {
+                  blockIndex,
+                  contentIndex,
+                  itemIndex: -1,
+                  itemContentIndex: colIdx,
+                })}
+              </th>
+            ))}
+          </tr>
+        </thead>
 
-              return (
-                <tr css={isSelected && selectedRowStyles} key={rowIdx}>
-                  {row.cells.map((cell, cellIdx) => {
-                    const isCellSelected =
-                      editorState.contextMenuCell &&
-                      editorState.contextMenuCell.blockIndex === blockIndex &&
-                      editorState.contextMenuCell.contentIndex === contentIndex &&
-                      editorState.contextMenuCell.rowIndex === rowIdx &&
-                      editorState.contextMenuCell.colIndex === cellIdx;
+        <tbody>
+          {node.rows.map((row, rowIdx) => {
+            const isRowSelected =
+              tableSelection &&
+              tableSelection.blockIndex === blockIndex &&
+              tableSelection.contentIndex === contentIndex &&
+              tableSelection.rowIndex === rowIdx;
 
-                    return (
-                      <td css={isCellSelected && cellSelectedStyles} key={cellIdx}>
-                        {renderCellText(cell, cellIdx, {
-                          blockIndex,
-                          contentIndex,
-                          itemIndex: rowIdx,
-                          itemContentIndex: cellIdx,
-                        })}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </CM.Trigger>
+            return (
+              <tr css={isRowSelected && selectedRowStyles} key={rowIdx}>
+                {row.cells.map((cell, cellIdx) => {
+                  const isCellSelected =
+                    editorState.contextMenuCell &&
+                    editorState.contextMenuCell.blockIndex === blockIndex &&
+                    editorState.contextMenuCell.contentIndex === contentIndex &&
+                    editorState.contextMenuCell.rowIndex === rowIdx &&
+                    editorState.contextMenuCell.colIndex === cellIdx;
 
-      <CM.Portal>
-        <CM.Content css={menuContentStyles}>
-          <CM.Item css={menuItemStyles} onSelect={() => applyAction(Actions.insertTableColumnLeft, setEditorState)}>
-            Sett inn kolonne til venstre
-          </CM.Item>
-          <CM.Item css={menuItemStyles} onSelect={() => applyAction(Actions.insertTableColumnRight, setEditorState)}>
-            Sett inn kolonne til høyre
-          </CM.Item>
+                  return (
+                    <td css={isCellSelected && cellSelectedStyles} key={cellIdx}>
+                      {renderCellText(cell, cellIdx, {
+                        blockIndex,
+                        contentIndex,
+                        itemIndex: rowIdx,
+                        itemContentIndex: cellIdx,
+                      })}
+                    </td>
+                  );
+                })}
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
 
-          <CM.Item css={menuItemStyles} onSelect={() => applyAction(Actions.insertTableRowAbove, setEditorState)}>
-            Sett inn rad over
-          </CM.Item>
-          <CM.Item css={menuItemStyles} onSelect={() => applyAction(Actions.insertTableRowBelow, setEditorState)}>
-            Sett inn rad under
-          </CM.Item>
-          <CM.Separator css={menuSeparatorStyles} />
+      <TableContextMenu
+        anchor={menuAnchor}
+        onClose={() => {
+          setMenuAnchor(null);
+          setEditorState((prevState) => ({ ...prevState, contextMenuCell: undefined }));
+        }}
+      >
+        <ActionMenu.Sub>
+          <ActionMenu.SubTrigger>Sett inn kolonne</ActionMenu.SubTrigger>
+          <ActionMenu.SubContent css={menuSize}>
+            <ActionMenu.Item onSelect={() => applyAction(Actions.insertTableColumnLeft, setEditorState)}>
+              Sett inn kolonne til venstre
+            </ActionMenu.Item>
+            <ActionMenu.Item onSelect={() => applyAction(Actions.insertTableColumnRight, setEditorState)}>
+              Sett inn kolonne til høyre
+            </ActionMenu.Item>
+          </ActionMenu.SubContent>
+        </ActionMenu.Sub>
 
-          <CM.Sub>
-            <CM.SubTrigger css={menuItemStyles}>
-              Slett&nbsp;celler
-              <ChevronRightIcon
-                aria-hidden
-                css={css`
-                  margin-left: auto;
-                `}
-                fontSize="1rem"
-              />
-            </CM.SubTrigger>
+        <ActionMenu.Sub>
+          <ActionMenu.SubTrigger>Sett inn rad</ActionMenu.SubTrigger>
+          <ActionMenu.SubContent css={menuSize}>
+            <ActionMenu.Item onSelect={() => applyAction(Actions.insertTableRowAbove, setEditorState)}>
+              Sett inn rad over
+            </ActionMenu.Item>
+            <ActionMenu.Item onSelect={() => applyAction(Actions.insertTableRowBelow, setEditorState)}>
+              Sett inn rad under
+            </ActionMenu.Item>
+          </ActionMenu.SubContent>
+        </ActionMenu.Sub>
 
-            <CM.SubContent css={menuContentStyles} sideOffset={4}>
-              <DeleteCellsSubMenu
-                onDelete={(choice) => {
-                  if (choice === "row") applyAction(Actions.removeTableRow, setEditorState);
-                  if (choice === "col") applyAction(Actions.removeTableColumn, setEditorState);
-                  if (choice === "table") applyAction(Actions.removeTable, setEditorState);
-                }}
-              />
-            </CM.SubContent>
-          </CM.Sub>
-        </CM.Content>
-      </CM.Portal>
-    </CM.Root>
+        <ActionMenu.Divider />
+
+        <ActionMenu.Sub>
+          <ActionMenu.SubTrigger>Slett&nbsp;celler</ActionMenu.SubTrigger>
+          <ActionMenu.SubContent css={menuSize}>
+            <ActionMenu.Item
+              icon={<TrashIcon aria-hidden fontSize="1.25rem" />}
+              onSelect={() => applyAction(Actions.removeTableRow, setEditorState)}
+              variant="danger"
+            >
+              Slett rad
+            </ActionMenu.Item>
+            <ActionMenu.Item
+              icon={<TrashIcon aria-hidden fontSize="1.25rem" />}
+              onSelect={() => applyAction(Actions.removeTableColumn, setEditorState)}
+              variant="danger"
+            >
+              Slett kolonne
+            </ActionMenu.Item>
+            <ActionMenu.Item
+              icon={<TrashIcon aria-hidden fontSize="1.25rem" />}
+              onSelect={() => applyAction(Actions.removeTable, setEditorState)}
+              variant="danger"
+            >
+              Slett tabell
+            </ActionMenu.Item>
+          </ActionMenu.SubContent>
+        </ActionMenu.Sub>
+      </TableContextMenu>
+    </>
   );
 };
 
