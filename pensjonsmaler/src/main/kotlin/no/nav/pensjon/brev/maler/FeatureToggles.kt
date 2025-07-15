@@ -28,4 +28,5 @@ object FeatureToggles {
     val endringAvAlderspensjonSivilstand = FeatureToggle("endringAvAlderspensjonSivilstand")
     val vedtakOmFjerningAvOmsorgspoeng = FeatureToggle("vedtakOmFjerningAvOmsorgspoeng")
     val vedtakEndringOpptjeningEndret = FeatureToggle("vedtakEndringOpptjeningEndret")
+    val vedtakStansFlyttingMellomLand = FeatureToggle("vedtakStansFlyttingMellomLand")
 }
