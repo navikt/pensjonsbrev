@@ -40,10 +40,10 @@ fun createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() =
             behandlingKontekst = VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto.BehandlingKontekst(
                 konteksttypeErKorrigeringopptjening = false
             ),
-            orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
-            maanedligPensjonFoerSkattDto = Fixtures.create(MaanedligPensjonFoerSkattDto::class),
-            maanedligPensjonFoerSkattAP2025Dto = Fixtures.create(MaanedligPensjonFoerSkattAP2025Dto::class),
-            opplysningerBruktIBeregningenAlderDto = createOpplysningerBruktIBeregningAlderDto(),
-            opplysningerBruktIBeregningenAlderAP2025Dto = createOpplysningerBruktIBeregningAlderAP2025Dto()
+            orienteringOmRettigheterOgPlikter = createOrienteringOmRettigheterOgPlikterDto(),
+            maanedligPensjonFoerSkatt = Fixtures.create(MaanedligPensjonFoerSkattDto::class),
+            maanedligPensjonFoerSkattAP2025 = Fixtures.create(MaanedligPensjonFoerSkattAP2025Dto::class),
+            opplysningerBruktIBeregningenAlder = createOpplysningerBruktIBeregningAlderDto(),
+            opplysningerBruktIBeregningenAlderAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto()
         )
     )
