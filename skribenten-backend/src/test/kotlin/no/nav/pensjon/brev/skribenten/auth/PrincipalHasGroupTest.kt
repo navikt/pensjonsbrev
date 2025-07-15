@@ -5,6 +5,7 @@ import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
 import io.ktor.client.plugins.auth.providers.basic
 import io.ktor.client.request.*
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.authenticate
@@ -63,6 +64,16 @@ class PrincipalHasGroupTest {
                     }
                     get {
                         call.respond(HttpStatusCode.OK, "Multiple group sets passed")
+                    }
+                }
+
+                route("/alternativeRejectResponse") {
+                    install(PrincipalHasGroup) {
+                        requireOneOf(setOf(ADGroups.pensjonSaksbehandler, ADGroups.attestant))
+                        onRejection { respond(HttpStatusCode.NotFound, "Alternative rejection response") }
+                    }
+                    get {
+                        call.respond(HttpStatusCode.OK, "Alternative rejection response")
                     }
                 }
             }
@@ -135,5 +146,15 @@ class PrincipalHasGroupTest {
         val result = client.get("/multipleGroupSets")
 
         assertThat(result.status, equalTo(HttpStatusCode.Forbidden))
+    }
+
+    @Test
+    fun `faar overstyrt avvisningsrespons`() = basicAuthTestApplication(
+        MockPrincipal(navIdent, "Ansatt, Veldig Bra")
+    ) { client ->
+        val result = client.get("/alternativeRejectResponse")
+
+        assertThat(result.status, equalTo(HttpStatusCode.NotFound))
+        assertThat(result.bodyAsText(), equalTo("Alternative rejection response"))
     }
 }

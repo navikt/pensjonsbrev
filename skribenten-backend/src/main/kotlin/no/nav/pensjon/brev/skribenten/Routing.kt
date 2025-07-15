@@ -4,6 +4,7 @@ import com.typesafe.config.Config
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.plugins.swagger.swaggerUI
+import io.ktor.server.response.respond
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
@@ -46,15 +47,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
         authenticate(authConfig.name) {
             install(PrincipalInContext)
             install(PrincipalHasGroup) {
-                requireOneOf(
-                    setOf(
-                        ADGroups.pensjonSaksbehandler,
-                        ADGroups.attestant,
-                        ADGroups.veileder,
-                        ADGroups.okonomi,
-                        ADGroups.brukerhjelpA
-                    )
-                )
+                requireOneOf(ADGroups.alleBrukergrupper)
             }
 
             setupServiceStatus(
@@ -87,6 +80,15 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
             brev(brevredigeringService, dto2ApiService, pdlService, penService)
             tjenestebussIntegrasjonRoute(samhandlerService, tjenestebussIntegrasjonService)
             meRoute(navansattService)
+
+        }
+
+        authenticate(authConfig.name) {
+            install(PrincipalInContext)
+            install(PrincipalHasGroup) {
+                requireOneOf(ADGroups.alleBrukergrupper)
+                onRejection { respond(emptyList<String>()) }
+            }
 
             externalAPI(externalAPIService)
         }
