@@ -8,7 +8,7 @@ interface InsertTableDialogProps {
   onInsert: (cols: number, rows: number) => void;
 }
 
-export default function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps) {
+function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps) {
   const [columnCount, setColumnCount] = useState("3");
   const [rowCount, setRowCount] = useState("2");
 
@@ -105,3 +105,4 @@ export default function InsertTableDialog({ open, onCancel, onInsert }: InsertTa
     </Modal>
   );
 }
+export default InsertTableDialog;
