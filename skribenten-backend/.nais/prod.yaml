@@ -22,7 +22,7 @@ groups:
   #0000-GA-Strengt_Fortrolig_Adresse
   - name: "Strengt_Fortrolig_Adresse"
     id: "ad7b87a6-9180-467c-affc-20a566b0fec0"
-  # 0000-GA-PENSJON_ATTESTERING
+  #0000-GA-PENSJON_ATTESTERING
   - name: "Attestant"
     id: "11053fd7-e674-4552-9a88-f9fcedfa70b3"
   #0000-GA-Pensjon_VEILEDER
