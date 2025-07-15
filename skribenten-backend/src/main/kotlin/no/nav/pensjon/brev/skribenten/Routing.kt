@@ -4,7 +4,6 @@ import com.typesafe.config.Config
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.plugins.swagger.swaggerUI
-import io.ktor.server.response.respond
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AzureADService

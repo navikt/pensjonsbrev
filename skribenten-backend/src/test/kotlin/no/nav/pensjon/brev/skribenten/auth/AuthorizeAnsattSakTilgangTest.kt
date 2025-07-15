@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.auth
 
-import com.typesafe.config.ConfigValueFactory
 import io.ktor.client.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
