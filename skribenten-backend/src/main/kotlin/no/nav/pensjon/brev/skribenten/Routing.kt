@@ -83,14 +83,6 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
 
         }
 
-        authenticate(authConfig.name) {
-            install(PrincipalInContext)
-            install(PrincipalHasGroup) {
-                requireOneOf(ADGroups.alleBrukergrupper)
-                onRejection { respond(emptyList<String>()) }
-            }
-
-            externalAPI(externalAPIService)
-        }
+        externalAPI(authConfig, externalAPIService)
     }
 }
