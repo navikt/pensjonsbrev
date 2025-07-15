@@ -5,8 +5,10 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.plugins.swagger.swaggerUI
 import io.ktor.server.routing.*
+import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
+import no.nav.pensjon.brev.skribenten.auth.PrincipalHasGroup
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.routes.*
@@ -43,6 +45,17 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
 
         authenticate(authConfig.name) {
             install(PrincipalInContext)
+            install(PrincipalHasGroup) {
+                requireOneOf(
+                    setOf(
+                        ADGroups.pensjonSaksbehandler,
+                        ADGroups.attestant,
+                        ADGroups.veileder,
+                        ADGroups.okonomi,
+                        ADGroups.brukerhjelpA
+                    )
+                )
+            }
 
             setupServiceStatus(
                 safService,

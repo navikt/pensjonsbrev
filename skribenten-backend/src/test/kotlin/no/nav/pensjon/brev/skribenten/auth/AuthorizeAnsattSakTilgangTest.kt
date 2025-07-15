@@ -16,6 +16,7 @@ import io.ktor.server.util.*
 import io.mockk.coEvery
 import io.mockk.mockk
 import no.nav.pensjon.brev.skribenten.MockPrincipal
+import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
@@ -26,7 +27,6 @@ import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.Month
@@ -66,17 +66,7 @@ private val generellSak0002 = Pen.SakSelection(
 
 class AuthorizeAnsattSakTilgangTest {
     init {
-        ADGroups.init(
-            ConfigValueFactory.fromMap(
-                mapOf(
-                    "pensjonUtland" to "ad gruppe id for Pensjon_Utland",
-                    "pensjonSaksbehandler" to "ad gruppe id for PENSJON_SAKSBEHANDLER",
-                    "fortroligAdresse" to "ad gruppe id for Fortrolig_Adresse",
-                    "strengtFortroligAdresse" to "ad gruppe id for Strengt_Fortrolig_Adresse",
-                    "attestant" to "ad gruppe id for Attestant",
-                )
-            ).toConfig()
-        )
+        initADGroups()
     }
 
     private val creds = BasicAuthCredentials("test", "123")
