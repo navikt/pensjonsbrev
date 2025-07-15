@@ -18,11 +18,14 @@ class ADGroupsTest {
         assertThat(ADGroups.fortroligAdresse.id).isNotBlank()
         assertThat(ADGroups.strengtFortroligAdresse.id).isNotBlank()
         assertThat(ADGroups.attestant.id).isNotBlank()
+        assertThat(ADGroups.veileder.id).isNotBlank()
+        assertThat(ADGroups.okonomi.id).isNotBlank()
+        assertThat(ADGroups.brukerhjelpA.id).isNotBlank()
     }
 
 }
 
-fun lesInnADGrupper(): Config = ConfigFactory
+private fun lesInnADGrupper(): Config = ConfigFactory
     .load("application-local", defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
     .getConfig("skribenten")
     .getConfig("groups")

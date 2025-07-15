@@ -32,8 +32,8 @@ object ADGroups {
     val brukerhjelpA: ADGroup
         get() = ADGroup(_brukerhjelpA)
 
-    val alleBrukergrupper: Set<ADGroup> =
-        setOf(pensjonSaksbehandler, attestant, veileder, okonomi, brukerhjelpA)
+    val alleBrukergrupper: Set<ADGroup>
+        get() = setOf(pensjonSaksbehandler, attestant, veileder, okonomi, brukerhjelpA)
 
     fun init(groupsConfig: Config) {
         _pensjonUtland = groupsConfig.getString("pensjonUtland")
