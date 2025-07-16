@@ -27,11 +27,11 @@ data class VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
         val behandlingKontekst: BehandlingKontekst,
-        val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
-        val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
-        val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
-        val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto,
-        val opplysningerBruktIBeregningenAlderAP2025Dto: OpplysningerBruktIBeregningenAlderAP2025Dto?,
+        val orienteringOmRettigheterOgPlikter: OrienteringOmRettigheterOgPlikterDto,
+        val maanedligPensjonFoerSkatt: MaanedligPensjonFoerSkattDto?,
+        val maanedligPensjonFoerSkattAP2025: MaanedligPensjonFoerSkattAP2025Dto?,
+        val opplysningerBruktIBeregningenAlder: OpplysningerBruktIBeregningenAlderDto?,
+        val opplysningerBruktIBeregningenAlderAP2025: OpplysningerBruktIBeregningenAlderAP2025Dto?,
     ) : BrevbakerBrevdata
 
     data class Krav(

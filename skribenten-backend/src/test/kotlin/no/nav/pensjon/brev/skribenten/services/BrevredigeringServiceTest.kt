@@ -14,9 +14,9 @@ import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
-import no.nav.pensjon.brev.skribenten.auth.lesInnADGrupper
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
+import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.isInstanceOfSatisfying
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
@@ -59,7 +59,7 @@ class BrevredigeringServiceTest {
     private val postgres = PostgreSQLContainer("postgres:15-alpine")
 
     init {
-        ADGroups.init(lesInnADGrupper())
+        initADGroups()
     }
 
     @BeforeAll

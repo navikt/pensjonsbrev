@@ -48,6 +48,7 @@ object Constants {
     const val SKATTEETATEN_PENSJONIST_URL = "$SKATTEETATEN_URL/pensjonist"
     const val SKJEMA_URL = "$NAV_URL/skjema"
     const val SKRIV_TIL_OSS_URL = "$NAV_URL/skriv-til-oss"
+    const val SUPPLERENDE_STOENAD_URL = "$NAV_URL/supplerende"
     const val TELEFON_HELSE = "800 HELSE (800 43 573)"
     const val UFOERETRYGD_ENDRING_URL = "$NAV_URL/uforetrygd-endring"
     const val UFOERETRYGD_URL = "$NAV_URL/uforetrygd"
