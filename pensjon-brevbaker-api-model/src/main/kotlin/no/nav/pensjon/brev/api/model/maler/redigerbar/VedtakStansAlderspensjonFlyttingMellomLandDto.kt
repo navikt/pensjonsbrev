@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.EksportForbudKode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import java.time.LocalDate
@@ -17,10 +18,12 @@ data class VedtakStansAlderspensjonFlyttingMellomLandDto(
 
     data class PesysData(
         val brukersBostedsland: String,
+        val eksportForbudKode: EksportForbudKode, // hentes fra enten v1.InngangOgEksportVurdering, eller hvis avdød finnes - hentes fra v1.InngangOgEksportVurderingAvdod
         val garantipensjonInnvilget: Boolean,
+        val harEksportForbud: Boolean,
         val harEksportForbudAvdod: Boolean,
+        val kravVirkDatoFom: LocalDate,
         val minst20ArTrygdetid: Boolean,
         val regelverkType: AlderspensjonRegelverkType,
-        val virkDatoFom: LocalDate,
         ) : BrevbakerBrevdata
 }
