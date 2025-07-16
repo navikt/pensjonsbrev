@@ -28,10 +28,8 @@ const tableStyles = css`
     font-weight: 600;
   }
 `;
-const selectedRowStyles = css`
-  background: var(--a-surface-info-subtle, #d0e7ff);
-`;
-const cellSelectedStyles = css`
+
+const selectedBackgroundStyle = css`
   background: var(--a-surface-info-subtle, #d0e7ff);
 `;
 
@@ -46,8 +44,11 @@ type CellIndexes = {
   itemIndex: number;
   itemContentIndex: number;
 };
+
 const renderCellText = (cell: CellType, _: number, idx: CellIndexes) =>
-  cell.text.filter((t) => t.type === LITERAL).map((lit, i) => <TableCellContent key={i} lit={lit} litIndex={idx} />);
+  cell.text
+    .filter((txt) => txt.type === LITERAL)
+    .map((lit, i) => <TableCellContent key={i} lit={lit} litIndex={idx} />);
 
 const TableView: React.FC<{
   node: Table;
@@ -105,7 +106,7 @@ const TableView: React.FC<{
               tableSelection.rowIndex === rowIdx;
 
             return (
-              <tr css={isRowSelected && selectedRowStyles} key={rowIdx}>
+              <tr css={isRowSelected && selectedBackgroundStyle} key={rowIdx}>
                 {row.cells.map((cell, cellIdx) => {
                   const isCellSelected =
                     editorState.contextMenuCell &&
@@ -115,7 +116,7 @@ const TableView: React.FC<{
                     editorState.contextMenuCell.colIndex === cellIdx;
 
                   return (
-                    <td css={isCellSelected && cellSelectedStyles} key={cellIdx}>
+                    <td css={isCellSelected && selectedBackgroundStyle} key={cellIdx}>
                       {renderCellText(cell, cellIdx, {
                         blockIndex,
                         contentIndex,
