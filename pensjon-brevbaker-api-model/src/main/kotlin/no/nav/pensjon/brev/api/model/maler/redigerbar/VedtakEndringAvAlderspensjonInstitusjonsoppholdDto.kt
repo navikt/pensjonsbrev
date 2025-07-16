@@ -30,7 +30,7 @@ data class VedtakEndringAvAlderspensjonInstitusjonsoppholdDto(
         val institusjonsoppholdVedVirk: InstitusjonsoppholdVedVirk,
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
-        val maanedligPensjonFoerSkattAlderspensjonDto: MaanedligPensjonFoerSkattAlderspensjonDto
+        val maanedligPensjonFoerSkattAlderspensjonDto: MaanedligPensjonFoerSkattAlderspensjonDto?
     ) : BrevbakerBrevdata {
 
         data class BeregnetPensjonPerManedVedVirk(
