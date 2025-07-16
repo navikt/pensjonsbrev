@@ -8,10 +8,10 @@ ingresses:
 
 groups:
   #0000-GA-PENSJON_BRUKERHJELPA
-  - name: "PENSJON_BRUKERHJELPA"
+  - name: "BrukerhjelpA"
     id: "9e122ddd-e542-4cc1-a7eb-92c99140fe0e"
   #0000-GA-PENSJON_SAKSBEHANDLER
-  - name: "PENSJON_SAKSBEHANDLER"
+  - name: "Saksbehandler"
     id: "8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf"
   #0000-GA-Pensjon_Utland
   - name: "Pensjon_Utland"
@@ -25,6 +25,12 @@ groups:
   #0000-GA-PENSJON_ATTESTERING
   - name: "Attestant"
     id: "63f46f74-84a8-4d1c-87a8-78532ab3ae60"
+  #0000-GA-Pensjon_VEILEDER
+  - name: "Veileder"
+    id: "a3f91493-1ab8-4b64-a544-0a77cbba9240"
+  #0000-GA-Pensjon_Okonomi
+  - name: "Okonomi"
+    id: "05ae245b-7b47-428a-9074-4ff6b59eddbc"
 
 inboundRules:
   - application: skribenten-web
