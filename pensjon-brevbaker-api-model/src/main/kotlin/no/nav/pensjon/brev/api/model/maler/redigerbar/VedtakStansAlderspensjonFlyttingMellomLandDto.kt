@@ -21,7 +21,7 @@ data class VedtakStansAlderspensjonFlyttingMellomLandDto(
         val eksportForbudKode: EksportForbudKode, // hentes fra enten v1.InngangOgEksportVurdering, eller hvis avdød finnes - hentes fra v1.InngangOgEksportVurderingAvdod
         val garantipensjonInnvilget: Boolean,
         val harEksportForbud: Boolean,
-        val harEksportForbudAvdod: Boolean,
+        val harEksportForbudAvdod: Boolean, //
         val kravVirkDatoFom: LocalDate,
         val minst20ArTrygdetid: Boolean,
         val regelverkType: AlderspensjonRegelverkType,
