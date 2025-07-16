@@ -4,6 +4,8 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.EksportForbudKode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
 
 @Suppress("unused")
@@ -13,7 +15,8 @@ data class VedtakStansAlderspensjonFlyttingMellomLandDto(
 ) : RedigerbarBrevdata<VedtakStansAlderspensjonFlyttingMellomLandDto.SaksbehandlerValg, VedtakStansAlderspensjonFlyttingMellomLandDto.PesysData> {
 
     data class SaksbehandlerValg(
-        val abc: Boolean
+        @DisplayText("Hvis reduksjon tilbake i tid")
+        val feilutbetaling: Boolean
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -21,9 +24,10 @@ data class VedtakStansAlderspensjonFlyttingMellomLandDto(
         val eksportForbudKode: EksportForbudKode, // hentes fra enten v1.InngangOgEksportVurdering, eller hvis avdød finnes - hentes fra v1.InngangOgEksportVurderingAvdod
         val garantipensjonInnvilget: Boolean,
         val harEksportForbud: Boolean,
-        val harEksportForbudAvdod: Boolean, //
+        val harAvdod: Boolean, //
         val kravVirkDatoFom: LocalDate,
         val minst20ArTrygdetid: Boolean,
         val regelverkType: AlderspensjonRegelverkType,
+        val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
         ) : BrevbakerBrevdata
 }
