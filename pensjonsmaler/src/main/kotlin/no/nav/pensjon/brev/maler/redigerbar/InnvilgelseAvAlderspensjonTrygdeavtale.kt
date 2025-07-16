@@ -285,7 +285,11 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
 
             includePhrase(
                 HjemlerInnvilgelseForAP2011AP2016(
-                    garantipensjonInnvilget, godkjentYrkesskade, innvilgetFor67, pensjonstilleggInnvilget, regelverkType
+                    garantipensjonInnvilget = garantipensjonInnvilget,
+                    godkjentYrkesskade = godkjentYrkesskade,
+                    innvilgetFor67 = innvilgetFor67,
+                    pensjonstilleggInnvilget = pensjonstilleggInnvilget,
+                    regelverkType = regelverkType
                 )
             )
             includePhrase(SkjermingstilleggHjemmel(skjermingstilleggInnvilget))

@@ -43,18 +43,23 @@ data class HjemlerInnvilgelseForAP2011AP2016(
                 )
                 showIf(pensjonstilleggInnvilget) {
                     text(
-                        Bokmal to "19-10",
-                        Nynorsk to "19-10",
-                        English to "19-10"
+                        Bokmal to "19-9",
+                        Nynorsk to "19-9",
+                        English to "19-9"
                     )
                 }.orShow {
                     // minste pensjonsnivå
                     text(
-                        Bokmal to "19-8, 19-10",
-                        Nynorsk to "19-8, 19-10",
-                        English to "19-8, 19-10"
+                        Bokmal to "19-8",
+                        Nynorsk to "19-8",
+                        English to "19-8"
                     )
                 }
+                text(
+                    Bokmal to ", 19-10",
+                    Nynorsk to ", 19-10",
+                    English to ", 19-10"
+                )
                 showIf(innvilgetFor67) {
                     text(
                         Bokmal to ", 19-11",
