@@ -1,6 +1,7 @@
+import type { Draft } from "immer";
 import { produce } from "immer";
 
-import type { AnyBlock, Cell, ParagraphBlock, Row } from "~/types/brevbakerTypes";
+import type { AnyBlock, Cell, ParagraphBlock, Row, Table } from "~/types/brevbakerTypes";
 import { LITERAL, PARAGRAPH, TABLE } from "~/types/brevbakerTypes";
 
 import { isItemContentIndex, makeBlankRow, newLiteral } from "../actions/common";
@@ -240,78 +241,67 @@ export function rowIsEmpty(row: Row): boolean {
 }
 
 /**
- * Handles Backspace when the caret is inside a table cell.
- * Returns true if it consumed the key (jumped left or deleted the row).
+ * Handles **Shift + Backspace** inside a table cell.
+ *
+ * • When the caret is at the very beginning (offset 0 or 1) of *any* cell in a
+ *   row **and the entire row is empty**, the row is deleted.
+ * • If it was the last remaining row, the whole table is replaced by a blank
+ *   paragraph.
+ *
+ * Returns **true** when the key event is consumed; otherwise **false** so the
+ * browser performs its normal action.
  */
 export function handleBackspaceInTableCell(
   event: React.KeyboardEvent,
+
   editorState: LetterEditorState,
-  updateEditorState: (updater: (prevState: LetterEditorState) => LetterEditorState) => void,
+  updateEditorState: (updater: (prev: LetterEditorState) => LetterEditorState) => void,
 ): boolean {
-  if (event.key !== "Backspace") return false;
+  if (event.key !== "Backspace" || !event.shiftKey) return false;
   if (!isItemContentIndex(editorState.focus)) return false;
 
   const focus = editorState.focus;
+
+  // header row: let the browser delete text normally
   if (focus.itemIndex === -1) return false;
+
   const paragraphBlock = editorState.redigertBrev.blocks[focus.blockIndex];
   const tableContent = paragraphBlock.content[focus.contentIndex];
   if (tableContent?.type !== TABLE) return false;
 
   const cursorOffset = getCursorOffset();
   const currentRow = tableContent.rows[focus.itemIndex];
-  const currentCell = currentRow.cells[focus.itemContentIndex];
 
-  // Non-empty cell: let browser delete characters.
-  // Empty cell: we take over whenever offset ≤ 1.
-  // (offset may be 1 because of the zero-width placeholder)
-  if (!isCellEmpty(currentCell)) return false;
-  if (cursorOffset > 1) return false;
+  const caretAtStartOfCell = cursorOffset <= 1;
+  if (!caretAtStartOfCell || !rowIsEmpty(currentRow)) return false;
 
   event.preventDefault();
 
-  // Not first column: jump one cell left
-  if (focus.itemContentIndex > 0) {
-    updateEditorState((prevState) =>
-      produce(prevState, (draftState) => {
-        if (isItemContentIndex(draftState.focus)) {
-          draftState.focus.itemContentIndex -= 1;
-          draftState.focus.cursorPosition = 0;
-        }
-      }),
-    );
-    return true;
-  }
+  updateEditorState((prev) =>
+    produce(prev, (draft) => {
+      const table = draft.redigertBrev.blocks[focus.blockIndex].content[focus.contentIndex] as Draft<Table>;
 
-  // First column: delete row if every cell empty
-  if (rowIsEmpty(currentRow)) {
-    updateEditorState((prevState) =>
-      produce(prevState, (draftState) => {
-        const tableDraft = draftState.redigertBrev.blocks[focus.blockIndex].content[focus.contentIndex];
-        if (tableDraft?.type !== TABLE) return;
+      const [removed] = table.rows.splice(focus.itemIndex, 1);
+      if (removed?.id != null) table.deletedRows.push(removed.id);
 
-        tableDraft.rows.splice(focus.itemIndex, 1);
-        const [removedRow] = tableDraft.rows.splice(focus.itemIndex, 1);
-        if (removedRow?.id != null) tableDraft.deletedRows.push(removedRow.id);
-        if (tableDraft.rows.length === 0) {
-          const paragraphDraft = draftState.redigertBrev.blocks[focus.blockIndex];
-          paragraphDraft.content.splice(focus.contentIndex, 1, newLiteral({ editedText: "" }));
-          draftState.focus = { blockIndex: focus.blockIndex, contentIndex: focus.contentIndex, cursorPosition: 0 };
-        } else {
-          const newRowIndex = Math.min(focus.itemIndex, tableDraft.rows.length - 1);
-          draftState.focus = {
-            blockIndex: focus.blockIndex,
-            contentIndex: focus.contentIndex,
-            itemIndex: newRowIndex,
-            itemContentIndex: 0,
-            cursorPosition: 0,
-          };
-        }
-        draftState.isDirty = true;
-      }),
-    );
-    return true;
-  }
+      if (table.rows.length === 0) {
+        const paragraph = draft.redigertBrev.blocks[focus.blockIndex] as Draft<ParagraphBlock>;
+        paragraph.content.splice(focus.contentIndex, 1, newLiteral({ editedText: "" }));
+        draft.focus = { blockIndex: focus.blockIndex, contentIndex: focus.contentIndex, cursorPosition: 0 };
+      } else {
+        const newRowIndex = Math.min(focus.itemIndex, table.rows.length - 1);
+        draft.focus = {
+          blockIndex: focus.blockIndex,
+          contentIndex: focus.contentIndex,
+          itemIndex: newRowIndex,
+          itemContentIndex: 0,
+          cursorPosition: 0,
+        };
+      }
 
-  // First column but other cells contain text: do nothing special
-  return false;
+      draft.isDirty = true;
+    }),
+  );
+
+  return true;
 }
