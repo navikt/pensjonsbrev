@@ -60,14 +60,14 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
-        val kravVirkDatoFom = pesysData.kravVirkDatoFom
         val brukersBostedsland = pesysData.brukersBostedsland
         val eksportForbudKode = pesysData.eksportForbudKode
-        val regelverkType = pesysData.regelverkType
-        val minst20ArTrygdetid = pesysData.minst20ArTrygdetid
-        val harEksportForbud = pesysData.harEksportForbud
-        val harAvdod = pesysData.harAvdod
         val garantipensjonInnvilget = pesysData.garantipensjonInnvilget
+        val harAvdod = pesysData.harAvdod
+        val harEksportForbud = pesysData.harEksportForbud
+        val kravVirkDatoFom = pesysData.kravVirkDatoFom
+        val minst20ArTrygdetid = pesysData.minst20ArTrygdetid
+        val regelverkType = pesysData.regelverkType
 
         title {
             textExpr(
@@ -181,6 +181,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                     )
                 }
             }.orShow {
+                // flyttingAPHjemmel
                 paragraph {
                     text(
                         Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3 og 22-12.",
