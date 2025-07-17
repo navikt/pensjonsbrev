@@ -252,6 +252,7 @@ export function handleBackspaceInTableCell(
   if (!isItemContentIndex(editorState.focus)) return false;
 
   const focus = editorState.focus;
+  if (focus.itemIndex === -1) return false;
   const paragraphBlock = editorState.redigertBrev.blocks[focus.blockIndex];
   const tableContent = paragraphBlock.content[focus.contentIndex];
   if (tableContent?.type !== TABLE) return false;
