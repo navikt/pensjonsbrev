@@ -25,7 +25,7 @@ const tableStyles = css`
 
   th {
     background: var(--a-gray-100);
-    font-weight: 600;
+    font-weight: 400;
   }
 `;
 
