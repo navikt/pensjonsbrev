@@ -21,10 +21,23 @@ export function nextTableFocus(editorState: LetterEditorState, direction: "forwa
   const currentTable = currentBlock.content[currentFocus.contentIndex];
   if (currentTable?.type !== TABLE) return currentFocus;
 
+  const inHeaderRow = currentFocus.itemIndex === -1;
+  const headerColumns = currentTable.header.colSpec.length;
+
   const totalRows = currentTable.rows.length;
   const totalColumns = currentTable.rows[currentFocus.itemIndex]?.cells.length ?? 0;
 
   if (direction === "forward") {
+    if (inHeaderRow) {
+      if (currentFocus.itemContentIndex < headerColumns - 1) {
+        return { ...currentFocus, itemContentIndex: currentFocus.itemContentIndex + 1, cursorPosition: 0 };
+      }
+      if (totalRows > 0) {
+        return { ...currentFocus, itemIndex: 0, itemContentIndex: 0, cursorPosition: 0 };
+      }
+      return "EXIT_FORWARD";
+    }
+
     if (currentFocus.itemContentIndex < totalColumns - 1) {
       return { ...currentFocus, itemContentIndex: currentFocus.itemContentIndex + 1, cursorPosition: 0 };
     }
@@ -33,9 +46,17 @@ export function nextTableFocus(editorState: LetterEditorState, direction: "forwa
     }
     return "EXIT_FORWARD";
   } else {
+    if (inHeaderRow) {
+      if (currentFocus.itemContentIndex > 0) {
+        return { ...currentFocus, itemContentIndex: currentFocus.itemContentIndex - 1, cursorPosition: 0 };
+      }
+      return "EXIT_BACKWARD";
+    }
+
     if (currentFocus.itemContentIndex > 0) {
       return { ...currentFocus, itemContentIndex: currentFocus.itemContentIndex - 1, cursorPosition: 0 };
     }
+
     if (currentFocus.itemIndex > 0) {
       const previousRowColumns = currentTable.rows[currentFocus.itemIndex - 1].cells.length;
       return {
@@ -44,6 +65,10 @@ export function nextTableFocus(editorState: LetterEditorState, direction: "forwa
         itemContentIndex: previousRowColumns - 1,
         cursorPosition: 0,
       };
+    }
+
+    if (headerColumns > 0) {
+      return { ...currentFocus, itemIndex: -1, itemContentIndex: headerColumns - 1, cursorPosition: 0 };
     }
     return "EXIT_BACKWARD";
   }
@@ -139,6 +164,8 @@ export function selectTableRow(state: LetterEditorState, direction: "up" | "down
   // Move selection up or down
   const selectedRowIndex = state.tableSelection.rowIndex;
 
+  if (selectedRowIndex === undefined) return "AT_TOP";
+
   if (direction === "up") {
     if (selectedRowIndex === 0) return "AT_TOP";
     return {
@@ -168,7 +195,7 @@ export function deleteRow(
       const table = draftState.redigertBrev.blocks[selection.blockIndex].content[selection.contentIndex];
       if (table?.type !== TABLE) return;
 
-      const [removedRow] = table.rows.splice(selection.rowIndex, 1);
+      const [removedRow] = table.rows.splice(selection.rowIndex ?? 0, 1);
       if (removedRow?.id != null) table.deletedRows.push(removedRow.id);
 
       // When no rows remain, delete the table entirely
@@ -181,7 +208,7 @@ export function deleteRow(
           cursorPosition: 0,
         };
       } else {
-        const newRowIndex = Math.min(selection.rowIndex, table.rows.length - 1);
+        const newRowIndex = Math.min(selection.rowIndex ?? 0, table.rows.length - 1);
         draftState.focus = {
           blockIndex: selection.blockIndex,
           contentIndex: selection.contentIndex,
