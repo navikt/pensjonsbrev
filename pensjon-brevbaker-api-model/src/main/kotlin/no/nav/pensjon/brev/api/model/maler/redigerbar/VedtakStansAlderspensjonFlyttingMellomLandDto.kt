@@ -21,8 +21,8 @@ data class VedtakStansAlderspensjonFlyttingMellomLandDto(
     ) : BrevbakerBrevdata
 
     data class PesysData(
-        val brukersBostedsland: String,
-        val eksportForbudKode: EksportForbudKode, // hentes fra enten v1.InngangOgEksportVurdering, eller hvis avdød finnes - hentes fra v1.InngangOgEksportVurderingAvdod
+        val brukersBostedsland: String?,
+        val eksportForbudKode: EksportForbudKode?, // hentes fra enten v1.InngangOgEksportVurdering, eller hvis avdød finnes - hentes fra v1.InngangOgEksportVurderingAvdod
         val garantipensjonInnvilget: Boolean,
         val harAvdod: Boolean, //
         val harEksportForbud: Boolean,
@@ -30,6 +30,6 @@ data class VedtakStansAlderspensjonFlyttingMellomLandDto(
         val minst20ArTrygdetid: Boolean,
         val regelverkType: AlderspensjonRegelverkType,
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
-        val vedleggInformasjonOmMedlemskapOgHelserettigheterDto: InformasjonOmMedlemskapOgHelserettigheterDto
+        val informasjonOmMedlemskapOgHelserettigheterDto: InformasjonOmMedlemskapOgHelserettigheterDto
         ) : BrevbakerBrevdata
 }

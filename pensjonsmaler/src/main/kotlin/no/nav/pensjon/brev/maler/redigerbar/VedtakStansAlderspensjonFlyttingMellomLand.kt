@@ -8,15 +8,17 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.brukersBostedsland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.brukersBostedsland_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.eksportForbudKode
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.eksportForbudKode_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.harAvdod
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.harEksportForbud
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.informasjonOmMedlemskapOgHelserettigheterDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.minst20ArTrygdetid
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.vedleggInformasjonOmMedlemskapOgHelserettigheterDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.saksbehandlerValg
@@ -32,6 +34,7 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -60,8 +63,8 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
-        val brukersBostedsland = pesysData.brukersBostedsland
-        val eksportForbudKode = pesysData.eksportForbudKode
+        val brukersBostedsland = pesysData.brukersBostedsland_safe.ifNull(then = "BOSTEDSLAND")
+        val eksportForbudKode = pesysData.eksportForbudKode_safe
         val garantipensjonInnvilget = pesysData.garantipensjonInnvilget
         val harAvdod = pesysData.harAvdod
         val harEksportForbud = pesysData.harEksportForbud
@@ -82,34 +85,36 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
             // flyttingAPstans
             paragraph {
                 textExpr(
-                    Bokmal to "Vi har fått melding om at du har flyttet til ".expr() + brukersBostedsland,
-                    Nynorsk to "Vi har fått melding om at du har flytta ti ".expr() + brukersBostedsland,
-                    English to "We have received notice that you have moved to ".expr() + brukersBostedsland
+                    Bokmal to "Vi har fått melding om at du har flyttet til ".expr() + brukersBostedsland + ".",
+                    Nynorsk to "Vi har fått melding om at du har flytta ti ".expr() + brukersBostedsland + ".",
+                    English to "We have received notice that you have moved to ".expr() + brukersBostedsland + "."
                 )
             }
-            showIf(eksportForbudKode.isOneOf(UFOR25_ALDER)) {
-                // eksportUngUforStans
-                paragraph {
-                    text(
-                        Bokmal to "Når du flytter til utlandet har du ikke lenger rett til pensjon etter reglene for unge uføre. "
-                                + "Derfor stanser vi utbetalingen av alderspensjonen din.",
-                        Nynorsk to "Når du flyttar til utlandet har du ikkje lenger rett til alderspensjon etter reglane for unge uføre. "
-                                + "Derfor stansar vi utbetalinga av alderspensjonen din.",
-                        English to "When you move abroad, you are no longer eligible for retirement pension calculated in accordance with the regulations for young people with disabilities, "
-                                + "you have to live in Norway. We are therefore stopping your retirement pension.",
-                    )
-                }
-            }.orShowIf(eksportForbudKode.isOneOf(FLYKT_ALDER)) {
-                // eksportFlyktningStans
-                paragraph {
-                    text(
-                        Bokmal to "Når du flytter til et land utenfor EØS-området har du ikke lenger rett til alderspensjon etter reglene for flyktninger. "
-                                + "Derfor stanser vi utbetalingen av alderspensjonen din.",
-                        Nynorsk to "Når du flyttar til eit land utanfor EØS-området har du ikkje lenger rett til alderspensjon etter reglane for flyktningar. "
-                                + "Derfor stansar vi utbetalinga av alderspensjonen din.",
-                        English to "When you move to a country outside the EEA region, you are no longer eligible for retirement pension calculated in accordance with the regulations for refugees. "
-                                + "We are therefore stopping your retirement pension.",
-                    )
+            ifNotNull(eksportForbudKode) { eksportForbudKode ->
+                showIf(eksportForbudKode.isOneOf(UFOR25_ALDER)) {
+                    // eksportUngUforStans
+                    paragraph {
+                        text(
+                            Bokmal to "Når du flytter til utlandet har du ikke lenger rett til pensjon etter reglene for unge uføre. "
+                                    + "Derfor stanser vi utbetalingen av alderspensjonen din.",
+                            Nynorsk to "Når du flyttar til utlandet har du ikkje lenger rett til alderspensjon etter reglane for unge uføre. "
+                                    + "Derfor stansar vi utbetalinga av alderspensjonen din.",
+                            English to "When you move abroad, you are no longer eligible for retirement pension calculated in accordance with the regulations for young people with disabilities, "
+                                    + "you have to live in Norway. We are therefore stopping your retirement pension.",
+                        )
+                    }
+                }.orShowIf(eksportForbudKode.isOneOf(FLYKT_ALDER)) {
+                    // eksportFlyktningStans
+                    paragraph {
+                        text(
+                            Bokmal to "Når du flytter til et land utenfor EØS-området har du ikke lenger rett til alderspensjon etter reglene for flyktninger. "
+                                    + "Derfor stanser vi utbetalingen av alderspensjonen din.",
+                            Nynorsk to "Når du flyttar til eit land utanfor EØS-området har du ikkje lenger rett til alderspensjon etter reglane for flyktningar. "
+                                    + "Derfor stansar vi utbetalinga av alderspensjonen din.",
+                            English to "When you move to a country outside the EEA region, you are no longer eligible for retirement pension calculated in accordance with the regulations for refugees. "
+                                    + "We are therefore stopping your retirement pension.",
+                        )
+                    }
                 }
             }
             showIf(regelverkType.isOneOf(AP2011, AP2016) and not(harEksportForbud) and not(minst20ArTrygdetid)) {
@@ -215,8 +220,8 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
             }
             paragraph {
                 text(
-                    Bokmal to "Questions about tax liability to Norway after moving abroad must be directed to the Tax Administration. "
-                            + "You must clarify questions about tax liability to your country of residence with the local tax authorities.",
+                    Bokmal to "Spørsmål om skatteplikt til Norge etter flytting til utlandet må rettes til skatteetaten. "
+                            + "Du må selv avklare spørsmål om skatteplikt til det landet du bor i med skattemyndighetene der.",
                     Nynorsk to "Spørsmål om skatteplikt til Noreg etter flytting til utlandet må du rette til skatteetaten. "
                             + "Du må sjølv avklare spørsmål om skatteplikt til det landet du bur i, med skatteorgana der.",
                     English to "Questions about tax liability to Norway after moving abroad must be directed to the Tax Administration. "
@@ -228,8 +233,8 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
             includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
+        includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheter, pesysData.informasjonOmMedlemskapOgHelserettigheterDto)
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, pesysData.dineRettigheterOgMulighetTilAaKlageDto
         )
-        includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheter, pesysData.vedleggInformasjonOmMedlemskapOgHelserettigheterDto)
     }
 }
