@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFl
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.minst20ArTrygdetid
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.regelverkType
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.vedleggInformasjonOmMedlemskapOgHelserettigheterDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.feilutbetaling
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.saksbehandlerValg
@@ -23,6 +24,7 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.FeilutbetalingAP
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
+import no.nav.pensjon.brev.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheter
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -227,6 +229,6 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, pesysData.dineRettigheterOgMulighetTilAaKlageDto
         )
-        //includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheter, pesysData.vedleggInformasjonOmMedlemskapOgHelserettigheterDto)
+        includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheter, pesysData.vedleggInformasjonOmMedlemskapOgHelserettigheterDto)
     }
 }
