@@ -1,9 +1,10 @@
 package no.nav.pensjon.brev.skribenten
 
+import com.typesafe.config.ConfigValueFactory
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import org.assertj.core.api.AbstractAssert
@@ -12,9 +13,6 @@ import java.util.function.Consumer
 
 inline fun <reified T> AbstractAssert<*, *>.isInstanceOfSatisfying(block: Consumer<T>) =
     isInstanceOfSatisfying(T::class.java, block)!!
-
-inline fun <reified T> AbstractAssert<*, *>.isInstanceOf() =
-    isInstanceOf(T::class.java)!!
 
 data class MockPrincipal(override val navIdent: NavIdent, override val fullName: String, val groups: Set<ADGroup> = emptySet()) : UserPrincipal {
     override val accessToken: UserAccessToken
@@ -32,10 +30,27 @@ data class MockPrincipal(override val navIdent: NavIdent, override val fullName:
 
 }
 
-enum class Testbrevkoder : Brevkode.Redigerbart {
-    TESTBREV;
+fun initADGroups() {
+    ADGroups.init(
+        ConfigValueFactory.fromMap(
+            mapOf(
+                "pensjonUtland" to "ad gruppe id for Pensjon_Utland",
+                "fortroligAdresse" to "ad gruppe id for Fortrolig_Adresse",
+                "strengtFortroligAdresse" to "ad gruppe id for Strengt_Fortrolig_Adresse",
+                "pensjonSaksbehandler" to "ad gruppe id for PENSJON_SAKSBEHANDLER",
+                "attestant" to "ad gruppe id for Attestant",
+                "veileder" to "ad gruppe id for veileder",
+                "okonomi" to "ad gruppe id for okonomi",
+                "brukerhjelpA" to "ad gruppe id for brukerhjelpA",
+            )
+        ).toConfig()
+    )
+}
 
-    override fun kode() = name
+object Testbrevkoder {
+    val TESTBREV = RedigerbarBrevkode("TESTBREV")
+    val INFORMASJONSBREV = RedigerbarBrevkode("INFORMASJONSBREV")
+    val VEDTAKSBREV = RedigerbarBrevkode("VEDTAKSBREV")
 }
 
 data class EksempelRedigerbartDto(

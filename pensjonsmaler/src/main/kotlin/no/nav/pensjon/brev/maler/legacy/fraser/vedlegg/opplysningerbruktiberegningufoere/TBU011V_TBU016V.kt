@@ -26,12 +26,16 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 
 data class TBU011V_TBU016V(val pe: Expression<PE>): OutlinePhrase<LangBokmalNynorskEnglish>(){
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -188,10 +192,10 @@ data class TBU011V_TBU016V(val pe: Expression<PE>): OutlinePhrase<LangBokmalNyno
                 //[TBU011V-TBU016V]
 
                 paragraph {
-                    text (
-                        Bokmal to "Du hadde inntekt i utlandet i minst ett av de fem siste årene før du ble ufør. Vi bruker ikke denne inntekten når vi beregner uføretrygden din. For å kompensere for dette, erstatter vi disse årene med et gjennomsnitt av årene du har hatt inntekt i Norge i denne femårsperioden. Du kan se hvilke år vi har brukt i tabellen «Inntekt lagt til grunn for beregning av uføretrygden din».",
-                        Nynorsk to "Du hadde inntekt i utlandet i minst eitt av dei fem siste åra før du blei ufør. Vi bruker ikkje denne inntekta når vi bereknar uføretrygda di. For å kompensere for dette erstattar vi desse åra med eit gjennomsnitt av åra du har hatt inntekt i Noreg i denne femårsperioden. Du kan sjå kva år vi har brukt, i tabellen «Inntekt lagd til grunn for berekning av uføretrygda di».",
-                        English to "You had income abroad for at least one of the last five years prior to the onset of your disability. This income will not be included when we calculate your disability benefit. To compensate, we will instead apply an average of your income from Norway during this five-year period. You can see which years we have applied in the table called \"Income included in the basis for calculation of your disability benefit\".",
+                    textExpr (
+                        Bokmal to "Du hadde inntekt i utlandet i minst ett av de fem siste årene før du ble ufør. Vi bruker ikke denne inntekten når vi beregner uføretrygden din. For å kompensere for dette, erstatter vi disse årene med et gjennomsnitt av årene du har hatt inntekt i Norge i denne femårsperioden. Du kan se hvilke år vi har brukt i tabellen ".expr() + quoted("Inntekt lagt til grunn for beregning av uføretrygden din") +".",
+                        Nynorsk to "Du hadde inntekt i utlandet i minst eitt av dei fem siste åra før du blei ufør. Vi bruker ikkje denne inntekta når vi bereknar uføretrygda di. For å kompensere for dette erstattar vi desse åra med eit gjennomsnitt av åra du har hatt inntekt i Noreg i denne femårsperioden. Du kan sjå kva år vi har brukt, i tabellen ".expr() + quoted("Inntekt lagd til grunn for berekning av uføretrygda di") +".",
+                        English to "You had income abroad for at least one of the last five years prior to the onset of your disability. This income will not be included when we calculate your disability benefit. To compensate, we will instead apply an average of your income from Norway during this five-year period. You can see which years we have applied in the table called ".expr() + quoted("Income included in the basis for calculation of your disability benefit") + ".",
                     )
                 }
             }

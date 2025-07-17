@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
@@ -50,13 +51,13 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
                 harEndretPensjon = true
             ),
             ytelseskomponentInformasjon = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.YtelseskomponentInformasjon(
-                beloepEndring = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.BeloepEndring.ENDR_OKT
+                beloepEndring = BeloepEndring.ENDR_OKT
             ),
             gjenlevendetilleggKapittel19VedVirk = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.GjenlevendetilleggKapittel19VedVirk(
                 apKap19utenGJR = 90
             ),
             beregnetPensjonPerManedVedVirk = VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.BeregnetPensjonPerManedVedVirk(
-                inntektspensjon = 100,
+                inntektspensjon = Kroner(100),
                 gjenlevendetilleggKap19 = Kroner(2500),
                 gjenlevendetillegg = Kroner(750),
                 antallBeregningsperioderPensjon = 2
@@ -67,7 +68,6 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
                 beregnetPensjonPerManedGjeldende = MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed(
                     inntektspensjon = Kroner(1000),
                     totalPensjon = Kroner(2000),
-                    garantipensjonInnvilget = Kroner(500),
                     garantipensjon = Kroner(1000),
                     minstenivaIndividuell = Kroner(0),
                     virkDatoFom = LocalDate.now(),

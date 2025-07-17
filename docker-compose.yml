@@ -48,40 +48,10 @@ services:
       - ./skribenten-backend/secrets/unleash.env
     environment:
       - NAIS_APP_NAME=skribenten-backend
-      - BREVBAKER_SCOPE=api://dev-gcp.pensjonsbrev.pensjon-brevbaker/.default
-      - BREVBAKER_URL=http://pensjon-brevbaker:8080
-      - BREVMETADATA_URL=https://pensjon-brevmetadata-q2.intern.dev.nav.no
-      - CORS_ALLOW_HOST=*
       - DB_HOST=skribenten-backend-db
-      - DB_PORT=5432
-      - DB_DATABASE=postgres
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=pass
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5017
-      - KRR_SCOPE=api://dev-gcp.team-rocket.digdir-krr-proxy/.default
-      - KRR_URL=https://digdir-krr-proxy.intern.dev.nav.no
-      - PDL_SCOPE=api://dev-fss.pdl.pdl-api/.default
-      - PDL_URL=https://pdl-api.dev.intern.nav.no/graphql
-      - PEN_SCOPE=api://dev-fss.pensjon-q2.pensjon-pen-q2/.default
-      - PEN_URL=https://pensjon-pen-q2.dev.adeo.no/pen/api/
-      - PENSJON_PERSONDATA_SCOPE=api://dev-fss.pensjon-person.pensjon-persondata-q2/.default
-      - PENSJON_PERSONDATA_URL=https://pensjon-persondata-q2.dev-fss-pub.nais.io
-      - SAF_SCOPE=api://dev-fss.teamdokumenthandtering.saf/.default
-      - SAF_URL=https://saf-q2.dev-fss-pub.nais.io/graphql
-      - SAF_REST_URL=https://saf-q2.dev.intern.nav.no/rest
-      - SAMHANDLER_PROXY_SCOPE=api://dev-fss.pensjon-q2.pensjon-samhandler-proxy-q2/.default
-      - SAMHANDLER_PROXY_URL=https://pensjon-samhandler-proxy-q2.dev-fss-pub.nais.io
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5017 -Dconfig.resource=application-local.conf
       - TJENESTEBUSS_INTEGRASJON_URL=http://tjenestebuss-integrasjon:8080
       - TJENESTEBUSS_INTEGRASJON_SCOPE=api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-lokal/.default
-      - NAVANSATT_URL=https://navansatt.dev-fss-pub.nais.io
-      - NAVANSATT_SCOPE=api://dev-fss.teampensjon.navansatt/.default
-      - AD_GROUP_PENSJON_SAKSBEHANDLER=8bb9b8d1-f46a-4ade-8ee8-5895eccdf8cf
-      - AD_GROUP_Pensjon_Utland=bda6bd68-77e6-4c00-96b9-7ecf5df7413c
-      - AD_GROUP_Fortrolig_Adresse=ea930b6b-9397-44d9-b9e6-f4cf527a632a
-      - AD_GROUP_Strengt_Fortrolig_Adresse=5ef775f2-61f8-4283-bf3d-8d03f428aa14
-      - AD_GROUP_EndreStrengtFortroligUtland=fc792042-93d8-4d5e-a501-55c45c03c576
-      - AD_GROUP_Attestant=63f46f74-84a8-4d1c-87a8-78532ab3ae60
-      - NORG2_URL=https://norg2.intern.dev.nav.no/norg2/
 
   skribenten-backend-db:
     profiles:

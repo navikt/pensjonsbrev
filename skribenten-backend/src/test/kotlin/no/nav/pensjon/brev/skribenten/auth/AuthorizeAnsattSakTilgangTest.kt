@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.auth
 
-import com.typesafe.config.ConfigValueFactory
 import io.ktor.client.*
 import io.ktor.client.plugins.auth.*
 import io.ktor.client.plugins.auth.providers.*
@@ -16,6 +15,7 @@ import io.ktor.server.util.*
 import io.mockk.coEvery
 import io.mockk.mockk
 import no.nav.pensjon.brev.skribenten.MockPrincipal
+import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
@@ -26,7 +26,6 @@ import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.ServiceResult
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.Month
@@ -66,18 +65,7 @@ private val generellSak0002 = Pen.SakSelection(
 
 class AuthorizeAnsattSakTilgangTest {
     init {
-        ADGroups.init(
-            ConfigValueFactory.fromMap(
-                mapOf(
-                    "pensjonUtland" to "ad gruppe id for Pensjon_Utland",
-                    "pensjonSaksbehandler" to "ad gruppe id for PENSJON_SAKSBEHANDLER",
-                    "fortroligAdresse" to "ad gruppe id for Fortrolig_Adresse",
-                    "strengtFortroligAdresse" to "ad gruppe id for Strengt_Fortrolig_Adresse",
-                    "strengtFortroligUtland" to "ad gruppe id for EndreStrengtFortroligUtland",
-                    "attestant" to "ad gruppe id for Attestant",
-                )
-            ).toConfig()
-        )
+        initADGroups()
     }
 
     private val creds = BasicAuthCredentials("test", "123")
@@ -178,7 +166,7 @@ class AuthorizeAnsattSakTilgangTest {
     }
 
     @Test
-    fun `krever at ansatt har gruppe for StrengtFortroligUtland`() = basicAuthTestApplication { client ->
+    fun `krever at ansatt har gruppe for StrengtFortrolig for utland`() = basicAuthTestApplication { client ->
         coEvery {
             pdlService.hentAdressebeskyttelse(testSak.foedselsnr, ALDER.behandlingsnummer)
         } returns ServiceResult.Ok(listOf(Pdl.Gradering.STRENGT_FORTROLIG_UTLAND))
@@ -213,7 +201,7 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `ansatt med gruppe for StrengtFortroligUtland faar svar`() =
-        basicAuthTestApplication(MockPrincipal(navIdent, "Hemmelig ansatt", setOf(ADGroups.strengtFortroligUtland))) { client ->
+        basicAuthTestApplication(MockPrincipal(navIdent, "Hemmelig ansatt", setOf(ADGroups.strengtFortroligAdresse))) { client ->
             coEvery {
                 pdlService.hentAdressebeskyttelse(testSak.foedselsnr, ALDER.behandlingsnummer)
             } returns ServiceResult.Ok(listOf(Pdl.Gradering.STRENGT_FORTROLIG_UTLAND))

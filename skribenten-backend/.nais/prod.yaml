@@ -1,11 +1,17 @@
 app-name: "skribenten-backend"
 
+database:
+  auditlog: "on"
+
+ingresses:
+  - "https://pensjon-skribenten-api.intern.nav.no"
+
 groups:
   #0000-GA-PENSJON_BRUKERHJELPA
-  - name: "PENSJON_BRUKERHJELPA"
+  - name: "BrukerhjelpA"
     id: "7845a796-1516-4d14-b500-fd65c001f35c"
   #0000-GA-PENSJON_SAKSBEHANDLER
-  - name: "PENSJON_SAKSBEHANDLER"
+  - name: "Saksbehandler"
     id: "0af3955f-df85-4eb0-b5b2-45bf2c8aeb9e"
   #0000-GA-Pensjon_Utland
   - name: "Pensjon_Utland"
@@ -16,17 +22,24 @@ groups:
   #0000-GA-Strengt_Fortrolig_Adresse
   - name: "Strengt_Fortrolig_Adresse"
     id: "ad7b87a6-9180-467c-affc-20a566b0fec0"
-  #0000-GA-Person-EndreStrengtFortroligUtland
-  - name: "EndreStrengtFortroligUtland"
-    id: "d9555b40-e0ab-4c6d-ba0b-0f1b9ecc252b"
-  # 0000-GA-PENSJON_ATTESTERING
+  #0000-GA-PENSJON_ATTESTERING
   - name: "Attestant"
     id: "11053fd7-e674-4552-9a88-f9fcedfa70b3"
+  #0000-GA-Pensjon_VEILEDER
+  - name: "Veileder"
+    id: "959ead5b-99b5-466b-a0ff-5fdbc687517b"
+  #0000-GA-Pensjon_Okonomi
+  - name: "Okonomi"
+    id: "70ef8e7f-7456-4298-95e0-b13c0ef2422b"
 
 inboundRules:
   - application: skribenten-web
     namespace: pensjonsbrev
     cluster: prod-gcp
+
+  - application: pensjon-pen
+    namespace: pensjondeployer
+    cluster: prod-fss
 
 outboundRules:
   - application: pensjon-brevbaker
@@ -106,3 +119,6 @@ env:
 
   - name: NORG2_URL
     value: "https://norg2.intern.nav.no/norg2/"
+
+  - name: SKRIBENTEN_WEB_URL
+    value: "https://pensjon-skribenten.intern.nav.no"

@@ -73,6 +73,8 @@ object Felles {
         }
 
         companion object {
+            val familiepleie = HarDuSpoersmaal(Constants.FAMILIEPLEIER_URL, Constants.NAV_KONTAKTSENTER_TELEFON)
+            val gjenlevende = HarDuSpoersmaal(Constants.GJENLEVENDEPENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON)
             val ufoeretrygd = HarDuSpoersmaal(Constants.UFOERETRYGD_URL, Constants.NAV_KONTAKTSENTER_TELEFON)
             val omsorg = HarDuSpoersmaal(Constants.OMSORGSOPPTJENING_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON)
             val alder = HarDuSpoersmaal(Constants.PENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON)
@@ -138,10 +140,7 @@ object Felles {
     }
 
     fun Expression<Bruker>.fulltNavn(): Expression<String> =
-        Expression.UnaryInvoke(
-            value = this,
-            operation = UnaryOperation.BrukerFulltNavn
-        )
+        UnaryOperation.BrukerFulltNavn(this)
 
     object ReturTilEtterstadOslo : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -219,4 +218,17 @@ object Felles {
         }
 
     }
+
+    object FlereBeregningsperioder : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            paragraph {
+                text(
+                    Bokmal to "Du kan lese mer om andre beregningsperioder i vedlegget.",
+                    Nynorsk to "Du kan lese meir om andre berekningsperiodar i vedlegget.",
+                    English to "There is more information about other calculation periods in the attachment."
+                )
+            }
+        }
+    }
+
 }

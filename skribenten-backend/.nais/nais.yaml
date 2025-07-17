@@ -48,6 +48,11 @@ spec:
         databases:
           - envVarPrefix: DB
             name: skribentendb
+        flags:
+          - name: "cloudsql.enable_pgaudit"
+            value: "{{database.auditlog}}"
+          - name: "pgaudit.log"
+            value: "read,write,ddl,role"
   azure:
     application:
       enabled: true
@@ -80,6 +85,10 @@ spec:
             namespace: {{rule.namespace}}
             cluster: {{rule.cluster}}
         {{/each}}
+  ingresses:
+    {{#each ingresses as |url|}}
+    - {{url}}
+    {{/each}}
   env:
     {{#each env as |e|}}
       - name: {{e.name}}

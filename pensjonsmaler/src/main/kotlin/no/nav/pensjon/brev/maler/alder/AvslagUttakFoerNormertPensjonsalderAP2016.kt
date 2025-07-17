@@ -31,7 +31,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
 
 @TemplateModelHelpers
 object AvslagUttakFoerNormertPensjonsalderAP2016 : RedigerbarTemplate<AvslagUttakFoerNormertPensjonsalderAP2016Dto> {
@@ -46,7 +45,7 @@ object AvslagUttakFoerNormertPensjonsalderAP2016 : RedigerbarTemplate<AvslagUtta
             displayTitle = "Vedtak - avslag tidlig uttak av alderspensjon - AP2016",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-            brevtype = INFORMASJONSBREV, // todo: skal være vedtaksbrev (når attestering er ferdig)
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
         title {

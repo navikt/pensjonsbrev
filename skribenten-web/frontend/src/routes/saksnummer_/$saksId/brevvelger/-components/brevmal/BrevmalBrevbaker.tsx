@@ -220,7 +220,7 @@ const BrevmalBrevbaker = (props: {
             </VStack>
             <SelectEnhet />
             <SelectLanguage preferredLanguage={props.preferredLanguage} sorterteSpråk={props.displayLanguages} />
-            <BrevmalAlternativer brevkode={props.letterTemplate.id} displaySingle="required" />
+            <BrevmalAlternativer brevkode={props.letterTemplate.id} onlyShowRequired />
           </VStack>
           {opprettBrevMutation.isError && <ApiError error={opprettBrevMutation.error} title="Bestilling feilet" />}
         </BrevmalFormWrapper>
