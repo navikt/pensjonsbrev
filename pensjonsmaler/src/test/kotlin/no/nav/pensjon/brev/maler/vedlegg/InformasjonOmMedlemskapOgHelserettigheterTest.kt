@@ -33,7 +33,7 @@ class InformasjonOmMedlemskapOgHelserettigheterTest {
 
     companion object {
         @JvmStatic
-        fun sakstyperOgSpraak() = listOf(Language.Bokmal, Language.English)
+        fun sakstyperOgSpraak() = listOf(Language.Bokmal, Language.Nynorsk, Language.English)
             .flatMap { spraak -> listOf(true, false).map { Arguments.of(Sakstype.ALDER, spraak, it) } }
     }
 }

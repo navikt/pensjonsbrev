@@ -186,3 +186,9 @@ enum class BeloepEndring {
     ENDR_RED,
     UENDRET
 }
+
+enum class EksportForbudKode {
+    FLYKT_ALDER,
+    TPUNGUFOR_ALDER,
+    UFOR25_ALDER
+}
