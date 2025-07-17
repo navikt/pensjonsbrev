@@ -14,6 +14,7 @@ groups:
   - "63f46f74-84a8-4d1c-87a8-78532ab3ae60" #0000-GA-PENSJON_ATTESTERING
   - "a3f91493-1ab8-4b64-a544-0a77cbba9240" #0000-GA-Pensjon_VEILEDER
   - "05ae245b-7b47-428a-9074-4ff6b59eddbc" #0000-GA-Pensjon_Okonomi
+  - "02505029-3f2e-48a9-b2a8-ff274dacca52" #0000-GA-PENSJON_KLAGEBEH
 
 vaultPaths:
   - kvPath: "/kv/preprod/fss/pensjonsbrev-tjenestebuss-q2/pensjonsbrev"
