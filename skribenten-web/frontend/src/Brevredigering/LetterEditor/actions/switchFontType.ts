@@ -12,6 +12,7 @@ import type {
   Table,
   VariableValue,
 } from "~/types/brevbakerTypes";
+import { LITERAL } from "~/types/brevbakerTypes";
 import { handleSwitchContent, handleSwitchTextContent } from "~/utils/brevbakerUtils";
 
 import type { Action } from "../lib/actions";
@@ -31,6 +32,20 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
     const contentAtFocus = block.content[literalIndex.contentIndex];
     if (contentAtFocus?.type === "TABLE" && isItemContentIndex(literalIndex)) {
       const table = contentAtFocus as Draft<Table>;
+
+      if (literalIndex.itemIndex === -1) {
+        // itemIndex === -1 means header row
+        const colSpec = table.header.colSpec[literalIndex.itemContentIndex];
+        const headerLiteral = colSpec.headerContent.text.find((txt) => txt.type === LITERAL);
+
+        if (headerLiteral) {
+          headerLiteral.editedFontType = headerLiteral.editedFontType === fontType ? null : fontType;
+        }
+        draft.focus = { ...draft.focus, cursorPosition: 0 };
+        draft.isDirty = true;
+        return;
+      }
+
       const row: Draft<Row> = table.rows[literalIndex.itemIndex];
       const cell: Draft<Cell> = row.cells[literalIndex.itemContentIndex];
 
