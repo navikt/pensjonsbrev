@@ -123,6 +123,24 @@ object Api {
         val redigertBrevHash: EditLetterHash,
     )
 
+    // TODO: Intensjonen er at denne skal brukes for å returnere alle feil i Skribenten, men vi tar det gradvis.
+    interface ErrorResponse<Code : Enum<Code>, Payload> {
+        val code: Code
+        val message: String
+        val description: Payload?
+
+        data class Brevredigering<Payload>(
+            override val code: BrevredigeringException.FeilType,
+            override val message: String,
+            override val description: Payload?,
+        ) : ErrorResponse<BrevredigeringException.FeilType, Payload> {
+            companion object {
+                operator fun invoke(code: BrevredigeringException.FeilType, message: String): Brevredigering<Unit> =
+                    Brevredigering(code, message, null)
+            }
+        }
+    }
+
     data class NavAnsatt(val id: NavIdent, val navn: String?)
 
     data class SakContext(
