@@ -29,16 +29,13 @@ const renumberHeaderDefaultText = (table: Table) => {
   });
 };
 
-export const insertTable: Action<LetterEditorState, [focus: Focus, rows?: number, cols?: number]> = produce(
-  (draft, focus, rows = 2, cols = 2) => {
+export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number, cols: number]> = produce(
+  (draft, focus, rows, cols) => {
     const block = draft.redigertBrev.blocks[focus.blockIndex];
     if (block.type !== PARAGRAPH) return;
 
     block.content.splice(focus.contentIndex + 1, 0, newTable(rows, cols));
-    draft.focus = {
-      blockIndex: focus.blockIndex,
-      contentIndex: focus.contentIndex + 1,
-    };
+    draft.focus = { blockIndex: focus.blockIndex, contentIndex: focus.contentIndex + 1 };
     draft.isDirty = true;
   },
 );
