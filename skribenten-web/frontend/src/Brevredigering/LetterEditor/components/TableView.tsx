@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { TrashIcon } from "@navikt/aksel-icons";
+import { PlusIcon, TrashIcon } from "@navikt/aksel-icons";
 import { ActionMenu } from "@navikt/ds-react";
 import React, { useState } from "react";
 
@@ -24,18 +24,13 @@ const tableStyles = css`
   }
 
   th {
-    background: var(--a-gray-100);
+    background: var(--a-surface-subtle);
     font-weight: 400;
   }
 `;
 
 const selectedBackgroundStyle = css`
   background: var(--a-surface-info-subtle, #d0e7ff);
-`;
-
-const menuSize = css`
-  width: 260px;
-  min-width: 260px;
 `;
 
 type CellIndexes = {
@@ -73,12 +68,10 @@ const TableView: React.FC<{
           const rowIndex = (cell.parentElement as HTMLTableRowElement).rowIndex - 1;
           const colIndex = (cell as HTMLTableCellElement).cellIndex;
 
-          //save selection so actions know what to delete/insert
           setEditorState((prev) => ({
             ...prev,
             contextMenuCell: { blockIndex, contentIndex, rowIndex, colIndex },
           }));
-          // open context-menu at mouse position
           setMenuAnchor({ x: e.clientX, y: e.clientY });
         }}
       >
@@ -136,61 +129,57 @@ const TableView: React.FC<{
         anchor={menuAnchor}
         onClose={() => {
           setMenuAnchor(null);
-          setEditorState((prevState) => ({ ...prevState, contextMenuCell: undefined }));
+          setEditorState((prev) => ({ ...prev, contextMenuCell: undefined }));
         }}
       >
-        <ActionMenu.Sub>
-          <ActionMenu.SubTrigger>Sett inn kolonne</ActionMenu.SubTrigger>
-          <ActionMenu.SubContent css={menuSize}>
-            <ActionMenu.Item onSelect={() => applyAction(Actions.insertTableColumnLeft, setEditorState)}>
-              Sett inn kolonne til venstre
-            </ActionMenu.Item>
-            <ActionMenu.Item onSelect={() => applyAction(Actions.insertTableColumnRight, setEditorState)}>
-              Sett inn kolonne til høyre
-            </ActionMenu.Item>
-          </ActionMenu.SubContent>
-        </ActionMenu.Sub>
-
-        <ActionMenu.Sub>
-          <ActionMenu.SubTrigger>Sett inn rad</ActionMenu.SubTrigger>
-          <ActionMenu.SubContent css={menuSize}>
-            <ActionMenu.Item onSelect={() => applyAction(Actions.insertTableRowAbove, setEditorState)}>
-              Sett inn rad over
-            </ActionMenu.Item>
-            <ActionMenu.Item onSelect={() => applyAction(Actions.insertTableRowBelow, setEditorState)}>
-              Sett inn rad under
-            </ActionMenu.Item>
-          </ActionMenu.SubContent>
-        </ActionMenu.Sub>
+        <ActionMenu.Item
+          icon={<PlusIcon aria-hidden fontSize="1.25rem" />}
+          onSelect={() => applyAction(Actions.insertTableRowAbove, setEditorState)}
+        >
+          Sett inn rad over
+        </ActionMenu.Item>
+        <ActionMenu.Item
+          icon={<PlusIcon aria-hidden fontSize="1.25rem" />}
+          onSelect={() => applyAction(Actions.insertTableRowBelow, setEditorState)}
+        >
+          Sett inn rad under
+        </ActionMenu.Item>
+        <ActionMenu.Item
+          icon={<PlusIcon aria-hidden fontSize="1.25rem" />}
+          onSelect={() => applyAction(Actions.insertTableColumnLeft, setEditorState)}
+        >
+          Sett inn kolonne til venstre
+        </ActionMenu.Item>
+        <ActionMenu.Item
+          icon={<PlusIcon aria-hidden fontSize="1.25rem" />}
+          onSelect={() => applyAction(Actions.insertTableColumnRight, setEditorState)}
+        >
+          Sett inn kolonne til høyre
+        </ActionMenu.Item>
 
         <ActionMenu.Divider />
 
-        <ActionMenu.Sub>
-          <ActionMenu.SubTrigger>Slett&nbsp;celler</ActionMenu.SubTrigger>
-          <ActionMenu.SubContent css={menuSize}>
-            <ActionMenu.Item
-              icon={<TrashIcon aria-hidden fontSize="1.25rem" />}
-              onSelect={() => applyAction(Actions.removeTableRow, setEditorState)}
-              variant="danger"
-            >
-              Slett rad
-            </ActionMenu.Item>
-            <ActionMenu.Item
-              icon={<TrashIcon aria-hidden fontSize="1.25rem" />}
-              onSelect={() => applyAction(Actions.removeTableColumn, setEditorState)}
-              variant="danger"
-            >
-              Slett kolonne
-            </ActionMenu.Item>
-            <ActionMenu.Item
-              icon={<TrashIcon aria-hidden fontSize="1.25rem" />}
-              onSelect={() => applyAction(Actions.removeTable, setEditorState)}
-              variant="danger"
-            >
-              Slett tabell
-            </ActionMenu.Item>
-          </ActionMenu.SubContent>
-        </ActionMenu.Sub>
+        <ActionMenu.Item
+          icon={<TrashIcon aria-hidden fontSize="1.25rem" />}
+          onSelect={() => applyAction(Actions.removeTableRow, setEditorState)}
+          variant="danger"
+        >
+          Slett rad
+        </ActionMenu.Item>
+        <ActionMenu.Item
+          icon={<TrashIcon aria-hidden fontSize="1.25rem" />}
+          onSelect={() => applyAction(Actions.removeTableColumn, setEditorState)}
+          variant="danger"
+        >
+          Slett kolonne
+        </ActionMenu.Item>
+        <ActionMenu.Item
+          icon={<TrashIcon aria-hidden fontSize="1.25rem" />}
+          onSelect={() => applyAction(Actions.removeTable, setEditorState)}
+          variant="danger"
+        >
+          Slett tabellen
+        </ActionMenu.Item>
       </TableContextMenu>
     </>
   );
