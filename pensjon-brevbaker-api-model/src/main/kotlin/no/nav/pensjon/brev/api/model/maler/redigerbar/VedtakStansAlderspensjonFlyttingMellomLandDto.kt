@@ -21,14 +21,14 @@ data class VedtakStansAlderspensjonFlyttingMellomLandDto(
     ) : BrevbakerBrevdata
 
     data class PesysData(
-        val brukersBostedsland: String?,
-        val eksportForbudKode: EksportForbudKode?, // hentes fra enten v1.InngangOgEksportVurdering, eller hvis avdød finnes - hentes fra v1.InngangOgEksportVurderingAvdod
-        val garantipensjonInnvilget: Boolean,
-        val harAvdod: Boolean, //
-        val harEksportForbud: Boolean,
-        val kravVirkDatoFom: LocalDate,
-        val minst20ArTrygdetid: Boolean,
-        val regelverkType: AlderspensjonRegelverkType,
+        val brukersBostedsland: String?,  // v3.Person
+        val eksportForbudKode: EksportForbudKode?, // Hentes fra enten v1.InngangOgEksportVurdering, eller hvis avdød finnes - hentes fra v1.InngangOgEksportVurderingAvdod
+        val garantipensjonInnvilget: Boolean,  // AlderspensjonVedVirk - v4.Alderspensjon
+        val harAvdod: Boolean, // Tom avdodFnr i v1.Avdod? v1.Avdod brukes ikke til malen i doksys per i dag.
+        val harEksportForbud: Boolean, // Hvis en eksportForbudKode finnes - hentes fra v1.InngangOgEksportVurdering, eller hvis avdød finnes - hentes fra v1.InngangOgEksportVurderingAvdod
+        val kravVirkDatoFom: LocalDate,  // v3.Krav
+        val minst20ArTrygdetid: Boolean, // hentes fra v1.InngangOgEksportVurdering, eller hvis avdød finnes - hentes fra v1.InngangOgEksportVurderingAvdod
+        val regelverkType: AlderspensjonRegelverkType,  // AlderspensjonVedVirk - v4.Alderspensjon
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
         val informasjonOmMedlemskapOgHelserettigheterDto: InformasjonOmMedlemskapOgHelserettigheterDto
         ) : BrevbakerBrevdata
