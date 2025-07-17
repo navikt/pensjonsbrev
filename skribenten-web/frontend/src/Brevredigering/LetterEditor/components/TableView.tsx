@@ -133,25 +133,25 @@ const TableView: React.FC<{
         }}
       >
         <ActionMenu.Item
-          icon={<PlusIcon aria-hidden fontSize="1.25rem" />}
+          icon={<PlusIcon fontSize="1.25rem" />}
           onSelect={() => applyAction(Actions.insertTableRowAbove, setEditorState)}
         >
           Sett inn rad over
         </ActionMenu.Item>
         <ActionMenu.Item
-          icon={<PlusIcon aria-hidden fontSize="1.25rem" />}
+          icon={<PlusIcon fontSize="1.25rem" />}
           onSelect={() => applyAction(Actions.insertTableRowBelow, setEditorState)}
         >
           Sett inn rad under
         </ActionMenu.Item>
         <ActionMenu.Item
-          icon={<PlusIcon aria-hidden fontSize="1.25rem" />}
+          icon={<PlusIcon fontSize="1.25rem" />}
           onSelect={() => applyAction(Actions.insertTableColumnLeft, setEditorState)}
         >
           Sett inn kolonne til venstre
         </ActionMenu.Item>
         <ActionMenu.Item
-          icon={<PlusIcon aria-hidden fontSize="1.25rem" />}
+          icon={<PlusIcon fontSize="1.25rem" />}
           onSelect={() => applyAction(Actions.insertTableColumnRight, setEditorState)}
         >
           Sett inn kolonne til høyre
@@ -160,21 +160,21 @@ const TableView: React.FC<{
         <ActionMenu.Divider />
 
         <ActionMenu.Item
-          icon={<TrashIcon aria-hidden fontSize="1.25rem" />}
+          icon={<TrashIcon fontSize="1.25rem" />}
           onSelect={() => applyAction(Actions.removeTableRow, setEditorState)}
           variant="danger"
         >
           Slett rad
         </ActionMenu.Item>
         <ActionMenu.Item
-          icon={<TrashIcon aria-hidden fontSize="1.25rem" />}
+          icon={<TrashIcon fontSize="1.25rem" />}
           onSelect={() => applyAction(Actions.removeTableColumn, setEditorState)}
           variant="danger"
         >
           Slett kolonne
         </ActionMenu.Item>
         <ActionMenu.Item
-          icon={<TrashIcon aria-hidden fontSize="1.25rem" />}
+          icon={<TrashIcon fontSize="1.25rem" />}
           onSelect={() => applyAction(Actions.removeTable, setEditorState)}
           variant="danger"
         >
