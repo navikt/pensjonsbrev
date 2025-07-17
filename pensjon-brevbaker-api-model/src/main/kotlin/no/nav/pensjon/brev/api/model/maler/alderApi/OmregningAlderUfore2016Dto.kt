@@ -30,17 +30,17 @@ data class PersongrunnlagAvdod(
 )
 
 data class InngangOgEksportVurdering(
-    val eksportTrygdeavtaleAvtaleland: Boolean?,
-    val erEksportberegnet: Boolean?,
-    val eksportberegnetUtenGarantipensjon: Boolean?,
-    val borINorge: Boolean?,
-    val erEOSLand: Boolean?,
-    val eksportTrygdeavtaleEOS: Boolean?,
+    val eksportTrygdeavtaleAvtaleland: Boolean,
+    val erEksportberegnet: Boolean,
+    val eksportberegnetUtenGarantipensjon: Boolean,
+    val borINorge: Boolean,
+    val erEOSLand: Boolean,
+    val eksportTrygdeavtaleEOS: Boolean,
     val avtaleland: String?,
-    val oppfyltVedSammenleggingKap19: Boolean?,
-    val oppfyltVedSammenleggingKap20: Boolean?,
-    val oppfyltVedSammenleggingFemArKap19: Boolean?,
-    val oppfyltVedSammenleggingFemArKap20: Boolean?,
+    val oppfyltVedSammenleggingKap19: Boolean,
+    val oppfyltVedSammenleggingKap20: Boolean,
+    val oppfyltVedSammenleggingFemArKap19: Boolean,
+    val oppfyltVedSammenleggingFemArKap20: Boolean,
 )
 
 

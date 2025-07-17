@@ -90,7 +90,7 @@ data class OmregningAlderUfore2016Felles(
             )
         }
 
-        showIf(beregningsperioder.greaterThan(1) and totalPensjon.greaterThan(0)) {
+        showIf(antallBeregningsperioder.greaterThan(1) and totalPensjon.greaterThan(0)) {
             paragraph {
                 text(
                     Bokmal to "Du kan lese mer om andre beregningsperioder i vedlegget.",
