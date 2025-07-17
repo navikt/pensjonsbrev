@@ -12,10 +12,20 @@ export const updateContentText: Action<LetterEditorState, [literalIndex: Literal
   (draft, literalIndex, text) => {
     const focus = literalIndex;
     const paragraph = draft.redigertBrev.blocks[focus.blockIndex];
-
     const paraContent = paragraph.content[focus.contentIndex];
 
     if (paraContent?.type === TABLE && isItemContentIndex(focus)) {
+      // Here itmeIndex === -1 means the table header row.
+      if (focus.itemIndex === -1) {
+        const colSpec = paraContent.header.colSpec[focus.itemContentIndex];
+        const literal = colSpec?.headerContent.text.find((txt) => txt.type === LITERAL);
+        if (literal) {
+          updateLiteralText(literal, text);
+          draft.isDirty = true;
+        }
+        return;
+      }
+      // the table body.
       const row = paraContent.rows[focus.itemIndex];
       const cell = row?.cells[focus.itemContentIndex];
       const literal = cell?.text[0];
