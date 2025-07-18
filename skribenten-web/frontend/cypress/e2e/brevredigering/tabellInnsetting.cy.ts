@@ -1,4 +1,4 @@
-// Helpers
+//Hjelpere
 const openInsertTableModal = () => {
   cy.get("[data-testid=toolbar-table-btn]").should("be.visible").click();
   return cy.get("[data-testid=insert-table-modal]", { timeout: 5000 }).should("be.visible");
@@ -17,7 +17,7 @@ const rightClickCell = (r: number, c: number) => cy.get(`[data-testid=table-cell
 
 const waitAfterAutosave = () => cy.wait("@autosave").then(() => cy.wait(5000));
 
-// Tests
+//Tester
 describe("Tabell innsetting og redigering via kontekstmeny", () => {
   beforeEach(() => {
     cy.setupSakStubs();
@@ -56,66 +56,60 @@ describe("Tabell innsetting og redigering via kontekstmeny", () => {
       });
   });
 
-  it("legger til kolonne til høyre via kontekstmenyen", () => {
-    insertTable(3, 2);
-    waitAfterAutosave();
+  context("med en eksisterende 3x2-tabell", () => {
+    beforeEach(() => {
+      insertTable(3, 2);
+      waitAfterAutosave();
+    });
 
-    rightClickCell(0, 1);
-    cy.contains("[role=menuitem]", "Sett inn kolonne til høyre").click();
-    waitAfterAutosave();
+    it("legger til kolonne til høyre via kontekstmenyen", () => {
+      rightClickCell(0, 1);
+      cy.contains("[role=menuitem]", "Sett inn kolonne til høyre").click();
+      waitAfterAutosave();
 
-    cy.get("[data-testid=letter-table] tbody tr:first td").should("have.length", 4);
-  });
+      cy.get("[data-testid=table-cell-0-2]").should("exist");
+      cy.get("[data-testid=letter-table] tbody tr:first td").should("have.length", 4);
+    });
 
-  it("legger til rad under via kontekstmenyen", () => {
-    insertTable(3, 2);
-    waitAfterAutosave();
+    it("legger til rad under via kontekstmenyen", () => {
+      rightClickCell(0, 0);
+      cy.contains("[role=menuitem]", "Sett inn rad under").click();
+      waitAfterAutosave();
 
-    rightClickCell(0, 0);
-    cy.contains("[role=menuitem]", "Sett inn rad under").click();
-    waitAfterAutosave();
+      cy.get("[data-testid=table-cell-1-0]").should("exist");
+      cy.get("[data-testid=letter-table] tbody tr").should("have.length", 3);
+    });
 
-    cy.get("[data-testid=letter-table] tbody tr").should("have.length", 3);
-  });
+    it("sletter en rad via kontekstmenyen", () => {
+      rightClickCell(0, 0);
+      cy.contains("[role=menuitem]", "Sett inn rad under").click();
+      waitAfterAutosave();
 
-  it("sletter en rad via kontekstmenyen", () => {
-    insertTable(3, 2);
-    waitAfterAutosave();
+      rightClickCell(1, 0);
+      cy.contains("[role=menuitem]", "Slett rad").click();
+      waitAfterAutosave();
 
-    rightClickCell(0, 0);
-    cy.contains("[role=menuitem]", "Sett inn rad under").click();
-    waitAfterAutosave();
+      cy.get("[data-testid=letter-table] tbody tr").should("have.length", 2);
+    });
 
-    rightClickCell(1, 0);
-    cy.contains("[role=menuitem]", "Slett rad").click();
-    waitAfterAutosave();
+    it("sletter en kolonne via kontekstmenyen", () => {
+      rightClickCell(0, 1);
+      cy.contains("[role=menuitem]", "Sett inn kolonne til høyre").click();
+      waitAfterAutosave();
 
-    cy.get("[data-testid=letter-table] tbody tr").should("have.length", 2);
-  });
+      rightClickCell(0, 2);
+      cy.contains("[role=menuitem]", "Slett kolonne").click();
+      waitAfterAutosave();
 
-  it("sletter en kolonne via kontekstmenyen", () => {
-    insertTable(3, 2);
-    waitAfterAutosave();
+      cy.get("[data-testid=letter-table] tbody tr:first td").should("have.length", 3);
+    });
 
-    rightClickCell(0, 1);
-    cy.contains("[role=menuitem]", "Sett inn kolonne til høyre").click();
-    waitAfterAutosave();
+    it("sletter hele tabellen via kontekstmenyen", () => {
+      rightClickCell(0, 0);
+      cy.contains("[role=menuitem]", "Slett tabellen").click();
+      waitAfterAutosave();
 
-    rightClickCell(0, 2);
-    cy.contains("[role=menuitem]", "Slett kolonne").click();
-    waitAfterAutosave();
-
-    cy.get("[data-testid=letter-table] tbody tr:first td").should("have.length", 3);
-  });
-
-  it("sletter hele tabellen via kontekstmenyen", () => {
-    insertTable(3, 2);
-    waitAfterAutosave();
-
-    rightClickCell(0, 0);
-    cy.contains("[role=menuitem]", "Slett tabellen").click();
-    waitAfterAutosave();
-
-    cy.get("body").find("[data-testid=letter-table]").should("not.exist");
+      cy.get("body").find("[data-testid=letter-table]").should("not.exist");
+    });
   });
 });
