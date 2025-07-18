@@ -1,4 +1,6 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import org.gradle.kotlin.dsl.register
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val javaTarget: String by System.getProperties()
@@ -53,11 +55,11 @@ tasks {
         }
         testLogging {
             events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
-            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+            exceptionFormat = TestExceptionFormat.FULL
         }
     }
 
-    task<Test>("integrationTest") {
+    register<Test>("integrationTest") {
         outputs.doNotCacheIf("Output of this task is pdf from pdf-bygger which is not cached") { true }
         systemProperties["junit.jupiter.execution.parallel.enabled"] = true
         systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
@@ -69,17 +71,17 @@ tasks {
         }
         testLogging {
             events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
-            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+            exceptionFormat = TestExceptionFormat.FULL
         }
     }
-    task<Test>("manualTest") {
+    register<Test>("manualTest") {
         group = LifecycleBasePlugin.VERIFICATION_GROUP
         useJUnitPlatform {
             includeTags = setOf("manual-test")
         }
         testLogging {
             events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
-            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+            exceptionFormat = TestExceptionFormat.FULL
         }
     }
 }
@@ -122,6 +124,9 @@ dependencies {
     implementation(libs.jackson.datatype.jsr310) {
         because("we require deserialization/serialization of java.time.LocalDate")
     }
+
+    implementation(project(":pdf-bygger-protos"))
+    implementation(libs.grpc.netty)
 
     implementation(libs.unleash)
 

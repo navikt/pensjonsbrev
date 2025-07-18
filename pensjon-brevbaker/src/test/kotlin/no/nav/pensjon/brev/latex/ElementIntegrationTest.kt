@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test
 @Tag(TestTags.INTEGRATION_TEST)
 class ElementIntegrationTest {
 
-    private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
+    private val laTeXCompilerService = LaTeXCompilerHttpService(PDF_BUILDER_URL, maxRetries = 0)
 
 
     @Test

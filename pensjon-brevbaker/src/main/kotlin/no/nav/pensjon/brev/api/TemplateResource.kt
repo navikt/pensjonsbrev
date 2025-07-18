@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.api.model.BrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.latex.LaTeXCompilerHttpService
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterImpl
@@ -24,7 +24,7 @@ private val objectMapper = brevbakerJacksonObjectMapper()
 abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>, Request : BrevRequest<Kode>>(
     val name: String,
     templates: Set<T>,
-    laTeXCompilerService: LaTeXCompilerService,
+    laTeXCompilerService: LaTeXCompilerHttpService,
 ) {
     abstract suspend fun renderPDF(brevbestilling: Request): LetterResponse
 
