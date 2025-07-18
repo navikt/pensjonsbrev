@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.kotlin.dsl.register
@@ -23,6 +24,10 @@ ktor {
     fatJar {
         archiveFileName.set("${project.name}.jar")
     }
+}
+
+tasks.named<ShadowJar>("shadowJar") {
+    mergeServiceFiles()
 }
 
 repositories {
