@@ -21,7 +21,7 @@ import no.nav.brev.brevbaker.LatexTimeoutException
 import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.converters.LetterResponseFileConverter
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.latex.LaTeXCompilerHttpService
 import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
@@ -120,7 +120,7 @@ fun Application.brevbakerModule(
     } else null
 
 
-    val latexCompilerService = LaTeXCompilerService(
+    val latexCompilerHttpService = LaTeXCompilerHttpService(
         pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
@@ -134,7 +134,7 @@ fun Application.brevbakerModule(
     konfigurerUnleash(brevbakerConfig)
 
     configureMetrics()
-    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerService, templates, latexAsyncCompilerService)
+    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerHttpService, templates, latexAsyncCompilerService)
 }
 
 private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {

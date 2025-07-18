@@ -9,7 +9,7 @@ import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.latex.LaTeXCompilerHttpService
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.Testmaler
 import no.nav.pensjon.brev.template.ExpressionScope
@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test
 class RedigerbarTemplateResourceTest {
     private val pdfInnhold = "generert redigerbar pdf"
     private val pdf = pdfInnhold.toByteArray()
-    private val latexMock = mockk<LaTeXCompilerService> {
+    private val latexMock = mockk<LaTeXCompilerHttpService> {
         coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(pdf)
     }
     private val redigerbar = RedigerbarTemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), latexMock)

@@ -7,7 +7,7 @@ import no.nav.brev.brevbaker.Fixtures
 import no.nav.brev.brevbaker.PDF_BUILDER_URL
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestPDF
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.latex.LaTeXCompilerHttpService
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
@@ -32,8 +32,7 @@ private const val FIND_FAILING_CHARACTERS = false
 class PensjonLatexITest {
     private val logger = LoggerFactory.getLogger(PensjonLatexITest::class.java)
     private val brevData = TestTemplateDto("Ole")
-
-    private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
+    private val laTeXCompilerService = LaTeXCompilerHttpService(PDF_BUILDER_URL, maxRetries = 0)
 
     @Test
     fun canRender() {
@@ -61,7 +60,7 @@ class PensjonLatexITest {
 
     @Test
     fun `Ping pdf builder`() {
-        runBlocking { LaTeXCompilerService(PDF_BUILDER_URL).ping() }
+        runBlocking { LaTeXCompilerHttpService(PDF_BUILDER_URL).ping() }
     }
 
     // To figure out which character makes the compilation fail, set the FIND_FAILING_CHARACTERS to true.

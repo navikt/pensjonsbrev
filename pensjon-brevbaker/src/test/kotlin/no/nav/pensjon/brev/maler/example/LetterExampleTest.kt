@@ -5,7 +5,7 @@ import no.nav.brev.brevbaker.PDF_BUILDER_URL
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.fixtures.createLetterExampleDto
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.latex.LaTeXCompilerHttpService
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterImpl
 import org.junit.jupiter.api.Tag
@@ -21,6 +21,6 @@ class LetterExampleTest {
             createLetterExampleDto(),
             Language.Bokmal,
             Fixtures.fellesAuto
-        ).renderTestPDF("EKSEMPELBREV_BOKMAL", pdfByggerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0))
+        ).renderTestPDF("EKSEMPELBREV_BOKMAL", pdfByggerService = LaTeXCompilerHttpService(PDF_BUILDER_URL, maxRetries = 0))
     }
 }

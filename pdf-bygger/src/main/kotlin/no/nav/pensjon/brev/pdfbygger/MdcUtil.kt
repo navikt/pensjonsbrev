@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.pdfbygger
 
+import kotlinx.coroutines.slf4j.MDCContext
+import kotlinx.coroutines.withContext
 import org.slf4j.MDC
 
 fun <R> mdc(vararg pairs: Pair<String, Any?>, block: () -> R): R {
@@ -14,3 +16,8 @@ fun <R> mdc(vararg pairs: Pair<String, Any?>, block: () -> R): R {
     }
 }
 
+suspend inline fun <R> withMdc(vararg pairs: Pair<String, String>, crossinline block: suspend () -> R): R =
+    withContext(MDCContext()) {
+        pairs.forEach { MDC.put(it.first, it.second) }
+        block()
+    }

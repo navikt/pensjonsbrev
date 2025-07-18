@@ -34,7 +34,7 @@ import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class LaTeXCompilerService(
+class LaTeXCompilerHttpService(
     private val pdfByggerUrl: String,
     maxRetries: Int = 30,
     private val timeout: Duration = 300.seconds,

@@ -6,9 +6,10 @@ import io.ktor.server.application.*
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import no.nav.pensjon.brev.pdfbygger.latex.LATEX_CONFIG_PATH
 import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 
-fun Application.kafkaModule(latexCompileService: LatexCompileService) {
+fun Application.kafkaModule() {
     val config = environment.config.config("pdfBygger.kafka")
     routing {
         get("/isAlive") {
@@ -21,7 +22,7 @@ fun Application.kafkaModule(latexCompileService: LatexCompileService) {
     }
 
     val pdfRequestConsumer = PdfRequestConsumer(
-        latexCompileService = latexCompileService,
+        latexCompileService = LatexCompileService(environment.config.config(LATEX_CONFIG_PATH)),
         kafkaConfig = config,
         renderTopic = config.property("topic").getString(),
     )

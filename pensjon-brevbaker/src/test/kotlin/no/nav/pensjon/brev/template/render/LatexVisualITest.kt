@@ -7,7 +7,7 @@ import no.nav.brev.brevbaker.copy
 import no.nav.brev.brevbaker.renderTestPdfOutline
 import no.nav.brev.brevbaker.renderTestVedleggPdf
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
+import no.nav.pensjon.brev.latex.LaTeXCompilerHttpService
 import no.nav.pensjon.brev.maler.example.lipsums
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -27,7 +27,7 @@ import org.junit.jupiter.params.provider.MethodSource
 @Tag(TestTags.INTEGRATION_TEST)
 class LatexVisualITest {
 
-    private val laTeXCompilerService = LaTeXCompilerService(PDF_BUILDER_URL, maxRetries = 0)
+    private val laTeXCompilerService = LaTeXCompilerHttpService(PDF_BUILDER_URL, maxRetries = 0)
 
     private fun render(
         overrideName: String? = null,

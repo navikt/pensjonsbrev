@@ -1,5 +1,6 @@
 import json
 import os
+import threading
 import urllib.request
 from dataclasses import dataclass
 from datetime import datetime, timedelta
@@ -33,3 +34,17 @@ def fetch_token():
     response.close()
 
     return AccessToken(token['access_token'], int(token['expires_in']))
+
+class ThreadSafeToken:
+    def __init__(self):
+        self._lock = threading.Lock()
+        self._token = fetch_token()
+
+    def get(self):
+        if self._token.is_valid():
+            return self._token.token
+        else:
+            with self._lock:
+                if not self._token.is_valid():
+                    self._token = fetch_token()
+            return self._token.token
