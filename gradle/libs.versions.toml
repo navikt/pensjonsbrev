@@ -39,6 +39,7 @@ io-github-classgraph = { module = "io.github.classgraph:classgraph", version.ref
 jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jacksonJsr310Version" }
 kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version.ref = "kotlinxHtmlVersion" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesVersion" }
+kotlinx-coroutines-slf4j = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j", version.ref = "kotlinxCoroutinesVersion" }
 ksp-symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "kotlinKspVersion"}
 ksp-symbol-processing-aa = { module = "com.google.devtools.ksp:symbol-processing-aa", version.ref = "kotlinKspVersion"}
 ksp-symbol-processing-common = { module = "com.google.devtools.ksp:symbol-processing-common-deps", version.ref = "kotlinKspVersion"}
@@ -92,6 +93,7 @@ flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql
 
 # gRPC
 grpc-protobuf = { group = "io.grpc", name = "grpc-protobuf", version.ref = "grpcVersion" }
+grpc-netty = { group = "io.grpc", name = "grpc-netty", version.ref = "grpcVersion" }
 grpc-kotlin-stub = { group = "io.grpc", name = "grpc-kotlin-stub", version = "1.4.3" }
 protobuf-kotlin = { group = "com.google.protobuf", name = "protobuf-kotlin", version = "3.25.3" }
 # Test

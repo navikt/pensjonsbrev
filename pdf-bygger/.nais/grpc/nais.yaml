@@ -1,0 +1,63 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: "pensjon-pdf-bygger-grpc"
+  namespace: "pensjonsbrev"
+  labels:
+    "team": "pensjonsbrev"
+spec:
+  image: {{image}}
+  port: 8080
+  terminationGracePeriodSeconds: 60
+  service:
+    port: 80
+    protocol: grpc
+  liveness:
+    path: "/isAlive"
+    port: 8081
+    initialDelay: 20
+    timeout: 60
+  readiness:
+    path: "/isReady"
+    port: 8081
+    initialDelay: 20
+    timeout: 5
+  replicas:
+    min: 2
+    max: 150
+    cpuThresholdPercentage: 50
+  observability:
+    autoInstrumentation:
+      enabled: true
+      runtime: java
+    logging:
+      destinations:
+        - id: elastic
+        - id: loki
+  resources:
+    requests:
+      cpu: "1"
+      memory: "1024Mi"
+    limits:
+      memory: "8192Mi"
+  accessPolicy:
+    inbound:
+      rules:
+        - application: "pensjon-brevbaker"
+  filesFrom:
+    - emptyDir:
+        medium: Memory
+      mountPath: /app/tmp
+  env:
+    - name: PDF_BYGGER_COMPILE_TIMEOUT
+      value: "120s"
+    - name: PDF_BYGGER_LATEX_PARALLELISM
+      value: "4"
+    - name: PDF_BYGGER_COMPILE_QUEUE_WAIT_TIMEOUT
+      value: "1s"
+    - name: PDF_BYGGER_COMPILE_TMP_DIR
+      value: "/app/tmp"
+    - name: PDF_BYGGER_IS_ASYNC
+      value: "false"
+    - name: PDF_BYGGER_IS_GRPC
+      value: "true"
