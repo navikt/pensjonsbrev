@@ -12,7 +12,7 @@ data class OmregningAlderUfore2016Dto(
     val antallBeregningsperioder: Int,
     val gjenlevendetilleggKap19Innvilget: Boolean,
     val gjenlevenderettAnvendt: Boolean,
-    val inngangOgEksportVurdering: InngangOgEksportVurdering?,
+    val inngangOgEksportVurdering: InngangOgEksportVurdering,
     val pensjonstilleggInnvilget: Boolean,
     val garantipensjonInnvilget: Boolean,
     val godkjentYrkesskade: Boolean,
