@@ -15,6 +15,7 @@ const EditorTableTools = () => {
     <>
       <HStack gap="2">
         <Button
+          data-testid="toolbar-table-btn"
           icon={<TableIcon fontSize="1.5rem" title="Sett inn tabell" />}
           onClick={() => setIsInsertTableDialogOpen(true)}
           size="small"

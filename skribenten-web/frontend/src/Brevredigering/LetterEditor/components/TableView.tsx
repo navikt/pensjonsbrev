@@ -59,6 +59,7 @@ const TableView: React.FC<{
     <>
       <table
         css={tableStyles}
+        data-testid="letter-table"
         onContextMenu={(e) => {
           e.preventDefault();
 
@@ -78,7 +79,7 @@ const TableView: React.FC<{
         <thead>
           <tr>
             {node.header.colSpec.map((col: ColumnSpec, colIdx) => (
-              <th key={colIdx}>
+              <th data-testid={`table-header-${colIdx}`} key={colIdx}>
                 {renderCellText(col.headerContent, colIdx, {
                   blockIndex,
                   contentIndex,
@@ -99,7 +100,7 @@ const TableView: React.FC<{
               tableSelection.rowIndex === rowIdx;
 
             return (
-              <tr css={isRowSelected && selectedBackgroundStyle} key={rowIdx}>
+              <tr css={isRowSelected && selectedBackgroundStyle} data-testid={`table-row-${rowIdx}`} key={rowIdx}>
                 {row.cells.map((cell, cellIdx) => {
                   const isCellSelected =
                     editorState.contextMenuCell &&
@@ -109,7 +110,11 @@ const TableView: React.FC<{
                     editorState.contextMenuCell.colIndex === cellIdx;
 
                   return (
-                    <td css={isCellSelected && selectedBackgroundStyle} key={cellIdx}>
+                    <td
+                      css={isCellSelected && selectedBackgroundStyle}
+                      data-testid={`table-cell-${rowIdx}-${cellIdx}`}
+                      key={cellIdx}
+                    >
                       {renderCellText(cell, cellIdx, {
                         blockIndex,
                         contentIndex,
@@ -127,6 +132,7 @@ const TableView: React.FC<{
 
       <TableContextMenu
         anchor={menuAnchor}
+        data-testid="table-action-menu"
         onClose={() => {
           setMenuAnchor(null);
           setEditorState((prev) => ({ ...prev, contextMenuCell: undefined }));
