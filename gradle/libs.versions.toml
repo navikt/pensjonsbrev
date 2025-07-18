@@ -14,11 +14,13 @@ hikariVersion = "6.3.0"
 jacksonJsr310Version = "2.19.1"
 jupiterVersion = "5.13.2"
 kotlinxHtmlVersion = "0.12.0"
+kotlinxCoroutinesVersion = "1.10.2"
 logbackVersion = "1.5.18"
 logstashVersion = "8.1"
 micrometerVersion = "1.15.1"
 mockkVersion = "1.14.4"
 postgresqlVersion = "42.7.7"
+grpcVersion = "1.73.0"
 testcontainersPostgresqlVersion = "1.21.3"
 unleashVersion = "11.0.0"
 kafkaVersion="3.9.0"
@@ -27,6 +29,7 @@ kafkaVersion="3.9.0"
 ktor = { id = "io.ktor.plugin", version.ref = "ktorVersion" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKspVersion" }
 binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref="binaryCompatibilityValidatorVersion" }
+protobuf = { id = "com.google.protobuf", version = "0.9.5" }
 
 [libraries]
 brevbaker-common = { module = "no.nav.pensjon.brevbaker:brevbaker-api-model-common", version.ref = "commonVersion" }
@@ -35,6 +38,7 @@ hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikariVersion" }
 io-github-classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classGraphVersion" }
 jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jacksonJsr310Version" }
 kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version.ref = "kotlinxHtmlVersion" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesVersion" }
 ksp-symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "kotlinKspVersion"}
 ksp-symbol-processing-aa = { module = "com.google.devtools.ksp:symbol-processing-aa", version.ref = "kotlinKspVersion"}
 ksp-symbol-processing-common = { module = "com.google.devtools.ksp:symbol-processing-common-deps", version.ref = "kotlinKspVersion"}
@@ -86,6 +90,10 @@ exposed-java-time = { module = "org.jetbrains.exposed:exposed-java-time", versio
 flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "flywayVersion" }
 flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flywayVersion" }
 
+# gRPC
+grpc-protobuf = { group = "io.grpc", name = "grpc-protobuf", version.ref = "grpcVersion" }
+grpc-kotlin-stub = { group = "io.grpc", name = "grpc-kotlin-stub", version = "1.4.3" }
+protobuf-kotlin = { group = "com.google.protobuf", name = "protobuf-kotlin", version = "3.25.3" }
 # Test
 assertJ = { module = "org.assertj:assertj-core", version.ref = "assertJVersion" }
 hamkrest = { module = "com.natpryce:hamkrest", version.ref = "hamkrestVersion" }

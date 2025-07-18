@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package no.nav.pensjon.brev.pdfbygger.rpc;
+
+service PdfCompileService {
+  rpc CompilePdf(CompilePdfRequest) returns (CompilePdfResponse);
+}
+
+message CompilePdfRequest {
+  string letterMarkup = 1;
+  repeated string attachments = 2;
+  string language = 3;
+  string felles = 4;
+  string brevtype = 5;
+  string callId = 6;
+}
+
+message CompilePdfResponse {
+  message ClientError {
+    string reason = 1;
+    optional string output = 2;
+    optional string errorOutput = 3;
+  }
+  oneof result {
+    bytes pdf = 1;
+    ClientError error = 2; // Error message if compilation fails
+  }
+}
