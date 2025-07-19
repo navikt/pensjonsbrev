@@ -17,7 +17,7 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
 
   return (
     <Modal
-      data-testid="insert-table-modal"
+      data-cy="insert-table-modal"
       header={{ heading: "Sett inn tabell" }}
       onClose={onCancel}
       open={open}
@@ -41,7 +41,7 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
               css={css`
                 width: 5rem;
               `}
-              data-testid="input-cols"
+              data-cy="input-cols"
               hideLabel
               label="Antall kolonner"
               max={20}
@@ -75,7 +75,7 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
               css={css`
                 width: 5rem;
               `}
-              data-testid="input-rows"
+              data-cy="input-rows"
               hideLabel
               label="Antall rader"
               max={20}
@@ -97,17 +97,11 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
 
       <Modal.Footer>
         <HStack gap="4">
-          <Button
-            data-testid="insert-table-cancel-btn"
-            onClick={onCancel}
-            size="small"
-            type="button"
-            variant="secondary"
-          >
+          <Button data-cy="insert-table-cancel-btn" onClick={onCancel} size="small" type="button" variant="secondary">
             Avbryt
           </Button>
           <Button
-            data-testid="insert-table-confirm-btn"
+            data-cy="insert-table-confirm-btn"
             disabled={numCols < 1 || numRows < 1}
             onClick={() => onInsert(Math.max(1, numCols), Math.max(1, numRows))}
             size="small"

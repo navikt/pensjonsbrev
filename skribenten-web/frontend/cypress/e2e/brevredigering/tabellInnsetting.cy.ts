@@ -1,19 +1,19 @@
 //Hjelpere
 const openInsertTableModal = () => {
-  cy.get("[data-testid=toolbar-table-btn]").should("be.visible").click();
-  return cy.get("[data-testid=insert-table-modal]", { timeout: 5000 }).should("be.visible");
+  cy.get("[data-cy=toolbar-table-btn]").should("be.visible").click();
+  return cy.get("[data-cy=insert-table-modal]", { timeout: 5000 }).should("be.visible");
 };
 
 const insertTable = (cols: number, rows: number) => {
   openInsertTableModal().within(() => {
-    cy.get("[data-testid=input-cols]").clear().type(String(cols));
-    cy.get("[data-testid=input-rows]").clear().type(String(rows));
+    cy.get("[data-cy=input-cols]").clear().type(String(cols));
+    cy.get("[data-cy=input-rows]").clear().type(String(rows));
     cy.contains("button", "Sett inn tabell").click();
   });
-  cy.get("[data-testid=insert-table-modal]").should("not.be.visible");
+  cy.get("[data-cy=insert-table-modal]").should("not.be.visible");
 };
 
-const rightClickCell = (r: number, c: number) => cy.get(`[data-testid=table-cell-${r}-${c}]`).rightclick();
+const rightClickCell = (r: number, c: number) => cy.get(`[data-cy=table-cell-${r}-${c}]`).rightclick();
 
 const waitAfterAutosave = () => cy.wait("@autosave").then(() => cy.wait(5000));
 
@@ -48,7 +48,7 @@ describe("Tabell innsetting og redigering via kontekstmeny", () => {
     insertTable(3, 2);
     waitAfterAutosave();
 
-    cy.get("[data-testid=letter-table]")
+    cy.get("[data-cy=letter-table]")
       .should("have.length", 1)
       .within(() => {
         cy.get("tbody tr").should("have.length", 2);
@@ -67,8 +67,8 @@ describe("Tabell innsetting og redigering via kontekstmeny", () => {
       cy.contains("[role=menuitem]", "Sett inn kolonne til høyre").click();
       waitAfterAutosave();
 
-      cy.get("[data-testid=table-cell-0-2]").should("exist");
-      cy.get("[data-testid=letter-table] tbody tr:first td").should("have.length", 4);
+      cy.get("[data-cy=table-cell-0-2]").should("exist");
+      cy.get("[data-cy=letter-table] tbody tr:first td").should("have.length", 4);
     });
 
     it("legger til rad under via kontekstmenyen", () => {
@@ -76,8 +76,8 @@ describe("Tabell innsetting og redigering via kontekstmeny", () => {
       cy.contains("[role=menuitem]", "Sett inn rad under").click();
       waitAfterAutosave();
 
-      cy.get("[data-testid=table-cell-1-0]").should("exist");
-      cy.get("[data-testid=letter-table] tbody tr").should("have.length", 3);
+      cy.get("[data-cy=table-cell-1-0]").should("exist");
+      cy.get("[data-cy=letter-table] tbody tr").should("have.length", 3);
     });
 
     it("sletter en rad via kontekstmenyen", () => {
@@ -89,7 +89,7 @@ describe("Tabell innsetting og redigering via kontekstmeny", () => {
       cy.contains("[role=menuitem]", "Slett rad").click();
       waitAfterAutosave();
 
-      cy.get("[data-testid=letter-table] tbody tr").should("have.length", 2);
+      cy.get("[data-cy=letter-table] tbody tr").should("have.length", 2);
     });
 
     it("sletter en kolonne via kontekstmenyen", () => {
@@ -101,7 +101,7 @@ describe("Tabell innsetting og redigering via kontekstmeny", () => {
       cy.contains("[role=menuitem]", "Slett kolonne").click();
       waitAfterAutosave();
 
-      cy.get("[data-testid=letter-table] tbody tr:first td").should("have.length", 3);
+      cy.get("[data-cy=letter-table] tbody tr:first td").should("have.length", 3);
     });
 
     it("sletter hele tabellen via kontekstmenyen", () => {
@@ -109,7 +109,7 @@ describe("Tabell innsetting og redigering via kontekstmeny", () => {
       cy.contains("[role=menuitem]", "Slett tabellen").click();
       waitAfterAutosave();
 
-      cy.get("body").find("[data-testid=letter-table]").should("not.exist");
+      cy.get("body").find("[data-cy=letter-table]").should("not.exist");
     });
   });
 });
