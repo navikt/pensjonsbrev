@@ -13,9 +13,12 @@ const insertTable = (cols: number, rows: number) => {
   cy.get("[data-cy=insert-table-modal]").should("not.be.visible");
 };
 
-const rightClickCell = (r: number, c: number) => cy.get(`[data-cy=table-cell-${r}-${c}]`).rightclick();
+const rightClickCell = (row: number, col: number) => cy.get(`[data-cy=table-cell-${row}-${col}]`).rightclick();
 
-const waitAfterAutosave = () => cy.wait("@autosave").then(() => cy.wait(5000));
+const waitAfterAutosave = () => {
+  cy.tick(5000);
+  cy.wait("@autosave");
+};
 
 //Tester
 describe("Tabell innsetting og redigering via kontekstmeny", () => {
@@ -42,6 +45,7 @@ describe("Tabell innsetting og redigering via kontekstmeny", () => {
 
     cy.visit("/saksnummer/123456/brev/1");
     cy.wait(["@brev", "@reservasjon", "@modelSpec"]);
+    cy.clock();
   });
 
   it("oppretter en 3x2-tabell", () => {

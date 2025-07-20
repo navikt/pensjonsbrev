@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 import { ActionMenu } from "@navikt/ds-react";
 import { useEffect, useRef } from "react";
 
-type Props = {
+type TableContextMenuProps = {
   anchor: { x: number; y: number } | null;
   onClose: () => void;
   children: React.ReactNode;
@@ -12,7 +12,7 @@ type Props = {
  * A right-click ActionMenu positioned at absolute screen coordinates.
  * Uses an invisible trigger <button> so ActionMenu’s focus & a11y logic work.
  */
-export default function TableContextMenu({ anchor, onClose, children }: Props) {
+export default function TableContextMenu({ anchor, onClose, children }: TableContextMenuProps) {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const open = Boolean(anchor);
 
