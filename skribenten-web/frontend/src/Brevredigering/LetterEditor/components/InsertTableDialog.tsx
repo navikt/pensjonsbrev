@@ -43,6 +43,7 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
               `}
               data-cy="input-cols"
               hideLabel
+              id="num-cols"
               label="Antall kolonner"
               max={20}
               min={1}
@@ -77,6 +78,7 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
               `}
               data-cy="input-rows"
               hideLabel
+              id="num-rows"
               label="Antall rader"
               max={20}
               min={1}
