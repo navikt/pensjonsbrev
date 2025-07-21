@@ -35,7 +35,7 @@ fun Application.brevRouting(
         }
 
         route("/letter") {
-            post<BestillBrevRequest<Brevkode.Automatisk>>("/pdfGrpc") { brevbestilling ->
+            post<BestillBrevRequest<Brevkode.Automatisk>>("/pdfGrpc-unauth") { brevbestilling ->
                 installBrevkodeInCallContext(brevbestilling.kode)
                 call.respond(autobrev.renderPDFGrpc(brevbestilling))
                 autobrev.countLetter(brevbestilling.kode)
