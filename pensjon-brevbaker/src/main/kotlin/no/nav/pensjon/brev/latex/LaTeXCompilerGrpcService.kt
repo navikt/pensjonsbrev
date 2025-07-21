@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.latex
 
 import io.grpc.ManagedChannelBuilder
 import io.grpc.Status
+import io.grpc.health.v1.HealthGrpc
 import io.ktor.callid.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,7 +22,7 @@ class LaTeXCompilerGrpcService(host: String, port: Int) : PDFByggerService {
             .forAddress(host, port)
             .defaultServiceConfig(serviceConfig)
             .enableRetry()
-            .usePlaintext()
+//            .usePlaintext()
             .build(),
     )
 
@@ -53,7 +54,7 @@ class LaTeXCompilerGrpcService(host: String, port: Int) : PDFByggerService {
 private val serviceConfig = mapOf(
     "loadBalancingConfig" to listOf(mapOf("pick_first" to emptyMap<String, String>())),
     "healthCheckConfig" to mapOf(
-        "serviceName" to PdfCompileServiceGrpc.SERVICE_NAME
+        "serviceName" to HealthGrpc.SERVICE_NAME,
     ),
     "retryThrottling" to mapOf(
         "maxTokens" to "10",
