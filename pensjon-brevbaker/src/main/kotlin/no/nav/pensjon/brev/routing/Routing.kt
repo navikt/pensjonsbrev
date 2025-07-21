@@ -25,7 +25,7 @@ fun Application.brevRouting(
     latexAsyncCompilerService: LatexAsyncCompilerService?,
 ) =
     routing {
-        val latexCompilerGrpcService = LaTeXCompilerGrpcService("pensjon-pdf-bygger-grpc-headless", 80)
+        val latexCompilerGrpcService = LaTeXCompilerGrpcService("pensjon-pdf-bygger-grpc-headless", System.getenv()["GRPC_PORT"]?.toInt() ?: 80)
         val autobrev = AutobrevTemplateResource("autobrev", brevProvider.hentAutobrevmaler(), latexCompilerService, latexAsyncCompilerService, latexCompilerGrpcService)
         val redigerbareBrev = RedigerbarTemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), latexCompilerService)
 
