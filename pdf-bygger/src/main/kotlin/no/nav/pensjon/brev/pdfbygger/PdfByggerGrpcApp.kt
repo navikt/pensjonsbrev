@@ -20,6 +20,7 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import kotlinx.coroutines.delay
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LATEX_CONFIG_PATH
@@ -35,6 +36,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.slf4j.LoggerFactory
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.cancellation.CancellationException
 
 fun main(args: Array<String>) =
     if (System.getenv("PDF_BYGGER_IS_GRPC") == "true") {
@@ -94,41 +96,48 @@ class PdfCompileService(context: CoroutineContext, val latexCompileService: Bloc
     private val objectMapper = pdfByggerObjectMapper()
 
     override suspend fun compilePdf(request: PdfCompile.CompilePdfRequest) =
-        withMdc("x_correlationId" to request.callId) {
-            compilePdfResponse {
-                val pdfRequest = request.toPDFRequest()
+        try {
+            withMdc("x_correlationId" to request.callId) {
+                logger.info("Received PDF compilation request")
+                compilePdfResponse {
+                    val pdfRequest = request.toPDFRequest()
 
-                val result = LatexDocumentRenderer.render(pdfRequest)
-                    .let { latexCompileService.producePDF(it.files) }
+                    val result = LatexDocumentRenderer.render(pdfRequest)
+                        .let { latexCompileService.producePDF(it.files) }
 
-                logResult(result)
+                    logResult(result)
 
-                when (result) {
-                    is PDFCompilationResponse.Success -> {
-                        pdf = result.pdfCompilationOutput.bytes.toByteString()
-                    }
+                    when (result) {
+                        is PDFCompilationResponse.Success -> {
+                            pdf = result.pdfCompilationOutput.bytes.toByteString()
+                        }
 
-                    is PDFCompilationResponse.Failure.Client -> {
-                        error = clientError {
-                            reason = result.reason
-                            if (result.output != null) {
-                                output = result.output
-                            }
-                            if (result.error != null) {
-                                errorOutput = result.error
+                        is PDFCompilationResponse.Failure.Client -> {
+                            error = clientError {
+                                reason = result.reason
+                                if (result.output != null) {
+                                    output = result.output
+                                }
+                                if (result.error != null) {
+                                    errorOutput = result.error
+                                }
                             }
                         }
-                    }
-                    is PDFCompilationResponse.Failure.Server -> {
-                        throw StatusException(Status.UNKNOWN.withDescription(result.reason))
-                    }
 
-                    is PDFCompilationResponse.Failure.QueueTimeout,
-                    is PDFCompilationResponse.Failure.Timeout -> {
-                        throw StatusException(Status.UNAVAILABLE.withDescription(result.reason))
+                        is PDFCompilationResponse.Failure.Server -> {
+                            throw StatusException(Status.UNKNOWN.withDescription(result.reason))
+                        }
+
+                        is PDFCompilationResponse.Failure.QueueTimeout,
+                        is PDFCompilationResponse.Failure.Timeout -> {
+                            throw StatusException(Status.UNAVAILABLE.withDescription(result.reason))
+                        }
                     }
                 }
             }
+        } catch (e: CancellationException) {
+            logger.warn("PDF compilation request cancelled: ${request.callId}", e)
+            throw e
         }
 
     private fun logResult(result: PDFCompilationResponse) =

@@ -47,7 +47,6 @@ fun Application.brevbakerModule(
             !ignorePaths.contains(it.request.path())
         }
         mdc("x_response_code") { it.response.status()?.value?.toString() }
-        mdc("x_response_time") { it.processingTimeMillis(::getTimeMillis).toString() }
         mdc("x_brevkode") { it.useBrevkodeFromCallContext() }
     }
 

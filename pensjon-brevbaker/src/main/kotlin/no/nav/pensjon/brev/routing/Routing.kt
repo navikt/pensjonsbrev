@@ -34,6 +34,14 @@ fun Application.brevRouting(
             templateRoutes(redigerbareBrev)
         }
 
+        route("/letter") {
+            post<BestillBrevRequest<Brevkode.Automatisk>>("/pdfGrpc") { brevbestilling ->
+                installBrevkodeInCallContext(brevbestilling.kode)
+                call.respond(autobrev.renderPDFGrpc(brevbestilling))
+                autobrev.countLetter(brevbestilling.kode)
+            }
+        }
+
         authenticate(authenticationNames) {
             route("/letter") {
                 autobrevRoutes(autobrev)

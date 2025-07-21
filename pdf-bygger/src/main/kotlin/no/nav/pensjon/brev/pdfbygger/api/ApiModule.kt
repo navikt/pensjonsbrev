@@ -63,7 +63,6 @@ fun Application.restModule(
             !ignorePaths.contains(it.request.path())
         }
         mdc("x_response_code") { it.response.status()?.value?.toString() }
-        mdc("x_response_time") { it.processingTimeMillis(::getTimeMillis).toString() }
     }
 
     install(StatusPages) {

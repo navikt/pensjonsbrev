@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.latex
 import io.grpc.ManagedChannelBuilder
 import io.grpc.Status
 import io.ktor.callid.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequest
@@ -11,7 +13,6 @@ import no.nav.pensjon.brev.pdfbygger.rpc.PdfCompileServiceGrpcKt
 import no.nav.pensjon.brev.pdfbygger.rpc.compilePdfRequest
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import kotlin.coroutines.coroutineContext
 
 class LaTeXCompilerGrpcService(host: String, port: Int) : PDFByggerService {
     private val objectMapper = brevbakerJacksonObjectMapper()
@@ -24,28 +25,29 @@ class LaTeXCompilerGrpcService(host: String, port: Int) : PDFByggerService {
             .build(),
     )
 
-    override suspend fun producePDF(pdfRequest: PDFRequest, path: String): PDFCompilationOutput {
-        return client.compilePdf(
-            compilePdfRequest {
-                letterMarkup = objectMapper.writeValueAsString(pdfRequest.letterMarkup)
-                attachments.addAll(pdfRequest.attachments.map<LetterMarkup.Attachment, String> {
-                    objectMapper.writeValueAsString(
-                        it
-                    )
-                })
-                language = pdfRequest.language.name
-                felles = objectMapper.writeValueAsString(pdfRequest.felles)
-                brevtype = pdfRequest.brevtype.name
-                callId = coroutineContext[KtorCallIdContextElement]?.callId ?: "unknown-call-id"
-            }
-        ).let {
-            if (it.hasPdf()) {
-                PDFCompilationOutput(it.pdf.toByteArray())
-            } else {
-                throw Exception("PDF compilation failed: ${it.error.reason} ")
+    override suspend fun producePDF(pdfRequest: PDFRequest, path: String): PDFCompilationOutput =
+        withContext(Dispatchers.IO) {
+            client.compilePdf(
+                compilePdfRequest {
+                    letterMarkup = objectMapper.writeValueAsString(pdfRequest.letterMarkup)
+                    attachments.addAll(pdfRequest.attachments.map<LetterMarkup.Attachment, String> {
+                        objectMapper.writeValueAsString(
+                            it
+                        )
+                    })
+                    language = pdfRequest.language.name
+                    felles = objectMapper.writeValueAsString(pdfRequest.felles)
+                    brevtype = pdfRequest.brevtype.name
+                    callId = coroutineContext[KtorCallIdContextElement]?.callId ?: "unknown-call-id"
+                }
+            ).let {
+                if (it.hasPdf()) {
+                    PDFCompilationOutput(it.pdf.toByteArray())
+                } else {
+                    throw Exception("PDF compilation failed: ${it.error.reason} ")
+                }
             }
         }
-    }
 }
 
 private val serviceConfig = mapOf(
@@ -54,7 +56,7 @@ private val serviceConfig = mapOf(
         "serviceName" to PdfCompileServiceGrpc.SERVICE_NAME
     ),
     "retryThrottling" to mapOf(
-        "maxTokens" to "20",
+        "maxTokens" to "10",
         "tokenRatio" to 0.1,
     ),
     "methodConfig" to listOf(
@@ -70,7 +72,7 @@ private val serviceConfig = mapOf(
             "retryPolicy" to mapOf(
                 "maxAttempts" to "5",
                 "initialBackoff" to "0.2s",
-                "maxBackoff" to "5s",
+                "maxBackoff" to "100s",
                 "backoffMultiplier" to 2.0,
                 "retryableStatusCodes" to listOf(Status.Code.UNAVAILABLE, Status.Code.UNKNOWN).map { it.name },
             )
