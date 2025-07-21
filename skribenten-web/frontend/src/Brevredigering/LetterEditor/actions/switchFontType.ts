@@ -12,7 +12,6 @@ import type {
   Table,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { LITERAL } from "~/types/brevbakerTypes";
 import { handleSwitchContent, handleSwitchTextContent } from "~/utils/brevbakerUtils";
 
 import type { Action } from "../lib/actions";
