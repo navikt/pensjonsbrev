@@ -48,6 +48,10 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
       //   draft.isDirty = true;
       //   return;
       // }
+      if (literalIndex.itemIndex === -1) {
+        // We no longer allow bold/italic on header cells we just ignore the request.
+        return;
+      }
 
       const row: Draft<Row> = table.rows[literalIndex.itemIndex];
       const cell: Draft<Cell> = row.cells[literalIndex.itemContentIndex];
