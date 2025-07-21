@@ -52,7 +52,7 @@ class LaTeXCompilerGrpcService(host: String, port: Int) : PDFByggerService {
 }
 
 private val serviceConfig = mapOf(
-    "loadBalancingConfig" to listOf(mapOf("pick_first" to emptyMap<String, String>())),
+    "loadBalancingConfig" to listOf(mapOf("round_robin" to emptyMap<String, String>())),
     "healthCheckConfig" to mapOf(
         "serviceName" to HealthGrpc.SERVICE_NAME,
     ),
