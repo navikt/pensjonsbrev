@@ -34,6 +34,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensj
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonInstitusjonsoppholdDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.HvorKanDuFaaViteMerOmAlderspensjonenDin
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoPensjonFraAndreAP
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
@@ -364,7 +365,7 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
 
             showIf(saksbehandlerValg.hvisEndringIPensjon) {
                 // skattAPendring_001
-                includePhrase(Vedtak.EndringKanHaBetydningForSkatt)
+                includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
             }
 
             // pensjonFraAndreInfoOverskrift_001
@@ -405,6 +406,6 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
         includeAttachment(vedleggOrienteringOmRettigheterOgPlikter, pesysData.orienteringOmRettigheterOgPlikterDto)
-        includeAttachment(maanedligPensjonFoerSkattAlderspensjon, pesysData.maanedligPensjonFoerSkattAlderspensjonDto)
+        includeAttachmentIfNotNull(maanedligPensjonFoerSkattAlderspensjon, pesysData.maanedligPensjonFoerSkattAlderspensjonDto)
     }
 }

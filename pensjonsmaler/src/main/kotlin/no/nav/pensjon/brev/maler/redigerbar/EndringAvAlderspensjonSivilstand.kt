@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.MetaforceSivilstand.SAMBOER_3_2
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaIndividuellInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaPensjonsistParInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
@@ -127,6 +128,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
         val vedtakEtterbetaling = pesysData.vedtakEtterbetaling
         val uttaksgrad = pesysData.alderspensjonVedVirk.uttaksgrad.ifNull(then = (0))
         val grunnbelop = pesysData.beregnetPensjonPerManedVedVirk.grunnbelop
+        val innvilgetFor67 = pesysData.alderspensjonVedVirk.innvilgetFor67
 
 
 
@@ -746,16 +748,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
             showIf(uforeKombinertMedAlder) {
                 // innvilgelseAPogUTInnledn
-                paragraph {
-                    textExpr(
-                        Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom + "." +
-                                " Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
-                        Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom + "." +
-                                " Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
-                        English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from ".expr() + kravVirkDatoFom + "." +
-                                " You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit."
-                    )
-                }
+                includePhrase(UfoereAlder.DuFaar(pesysData.beregnetPensjonPerManedVedVirk.totalPensjon, pesysData.kravVirkDatoFom))
             }.orShow {
                 paragraph {
                     // innvilgelseAPInnledn
@@ -945,7 +938,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 // Hvis endring i pensjonen (Selectable) - skattAPendring
                 // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(saksbehandlerValg.endringPensjon) {
-                    includePhrase(Vedtak.EndringKanHaBetydningForSkatt)
+                    includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
                 }
 
                 // Hvis etterbetaling (Selectable) - etterbetalingAP_002
@@ -959,6 +952,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 ) {
                     includePhrase(
                         ArbeidsinntektOgAlderspensjon(
+                            innvilgetFor67 = innvilgetFor67,
                             uttaksgrad = uttaksgrad.ifNull(then = (0)),
                             uforeKombinertMedAlder = uforeKombinertMedAlder
                         )

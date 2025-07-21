@@ -22,6 +22,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselInnholfDTOSelectors.avviksBeloep
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselInnholfDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselInnholfDTOSelectors.dagensDato
@@ -140,9 +141,9 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
 
                 paragraph {
                     text(
-                        Language.Bokmal to "Du kan få etterbetalt omstillingsstønad hvis du har vært i minst 50 prosent aktivitet eller har fått unntak for aktivitetsplikten. Du kan lese om aktivitetsplikten på nav.no/omstillingsstonad#aktivitet.",
-                        Language.Nynorsk to "Du kan få etterbetalt omstillingsstønad dersom du har vore i minst 50 prosent aktivitet eller har fått unntak for aktivitetsplikta. Du kan lese meir om aktivitetsplikta på nav.no/omstillingsstonad#aktivitet.",
-                        Language.English to "You can receive post-payment of adjustment allowance if you have had a minimum of 50 percent activity or if you have been granted an exemption from the activity obligation. You can read about the activity obligation at: nav.no/omstillingsstonad#aktivitet."
+                        Language.Bokmal to "Du kan få etterbetalt omstillingsstønad hvis du har vært i minst 50 prosent aktivitet eller har fått unntak for aktivitetsplikten. Du kan lese om aktivitetsplikten på ${Constants.OMS_AKTIVITET_URL}.",
+                        Language.Nynorsk to "Du kan få etterbetalt omstillingsstønad dersom du har vore i minst 50 prosent aktivitet eller har fått unntak for aktivitetsplikta. Du kan lese meir om aktivitetsplikta på ${Constants.OMS_AKTIVITET_URL}.",
+                        Language.English to "You can receive post-payment of adjustment allowance if you have had a minimum of 50 percent activity or if you have been granted an exemption from the activity obligation. You can read about the activity obligation at: ${Constants.OMS_AKTIVITET_URL}."
                     )
                 }
             }
