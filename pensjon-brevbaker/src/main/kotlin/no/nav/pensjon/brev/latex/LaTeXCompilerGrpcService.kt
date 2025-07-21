@@ -22,7 +22,7 @@ class LaTeXCompilerGrpcService(host: String, port: Int) : PDFByggerService {
             .forAddress(host, port)
             .defaultServiceConfig(serviceConfig)
             .enableRetry()
-//            .usePlaintext()
+            .usePlaintext()
             .build(),
     )
 
