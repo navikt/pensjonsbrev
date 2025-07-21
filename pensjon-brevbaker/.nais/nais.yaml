@@ -62,6 +62,7 @@ spec:
     outbound:
       rules:
         - application: {{pdf-bygger-app}}
+        - application: pensjon-pdf-bygger-grpc
       external:
         - host: teampensjon-unleash-api.nav.cloud.nais.io
     inbound:
