@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.model
 
 import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.maler.fraser.common.ResultatAvVurderingenTextMappingStorBokstav
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -120,3 +119,53 @@ private fun borMedSivilstand(sivilstand: BorMedSivilstand, language: Language, b
             replaceFirstChar { it.uppercase() }
         } else this
     }
+
+@JvmName("formatSakstype")
+fun Expression<Sakstype?>.format(): Expression<String?> = SaksType().invoke(this, Expression.FromScope.Language)
+
+class SaksType() : BinaryOperation<Sakstype?, Language, String?>() {
+    override fun apply(first: Sakstype?, second: Language): String? = if(first != null) sakstype(first, second) else null
+    override fun stableHashCode(): Int = "SaksType".hashCode()
+
+
+    private fun sakstype(sakstype: Sakstype, language: Language): String? =
+        when(sakstype) {
+            Sakstype.AFP -> "AFP"
+            Sakstype.AFP_PRIVAT -> when(language) {
+                Bokmal -> "AFP i privat sektor"
+                Nynorsk -> "AFP i privat sektor"
+                English -> "contractual pension (AFP) in the private sector"
+            }
+            Sakstype.ALDER -> when(language) {
+                Bokmal -> "alderspensjon"
+                Nynorsk ->  "alderspensjon"
+                English -> "retirement pension"
+            }
+            Sakstype.BARNEP -> when(language) {
+                Bokmal -> "barnepensjon"
+                Nynorsk ->  "barnepensjon"
+                English -> "children’s pension"
+            }
+            Sakstype.FAM_PL -> when(language) {
+                Bokmal -> "ytelse til tidligere familiepleier"
+                Nynorsk ->  "yting til tidligare familiepleiarar"
+                English -> "previous family carers benefits"
+            }
+            Sakstype.GJENLEV -> when(language) {
+                Bokmal -> "gjenlevendepensjon"
+                Nynorsk ->  "attlevandepensjon"
+                English -> "survivor's pension"
+            }
+            Sakstype.UFOREP -> when(language) {
+                Bokmal -> "uføretrygd"
+                Nynorsk ->  "uføretrygd"
+                English -> "disability benefit"
+            }
+
+            Sakstype.GAM_YRK,
+            Sakstype.GENRL,
+            Sakstype.GRBL,
+            Sakstype.KRIGSP,
+            Sakstype.OMSORG -> null
+        }
+}

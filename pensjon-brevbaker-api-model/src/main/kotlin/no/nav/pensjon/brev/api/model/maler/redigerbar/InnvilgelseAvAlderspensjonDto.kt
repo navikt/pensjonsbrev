@@ -55,8 +55,7 @@ data class InnvilgelseAvAlderspensjonDto(
         val faktiskBostedsland: String?,  // v3.Person
         val fullTrygdtid: Boolean,  // v4.AlderspensjonPerManed
         val gjenlevendetilleggKap19: Kroner?,  // v4.AlderspensjonPerManed
-        val harAvdod: Boolean,  // -> "true" når avdodFnr finnes
-        val inngangOgEksportVurdering: InngangOgEksportVurdering?,
+        val inngangOgEksportVurdering: InngangOgEksportVurdering,
         val kravVirkDatoFom: LocalDate,
         val norgeBehandlendeLand: Boolean,  // v3.Krav
         val regelverkType: AlderspensjonRegelverkType,

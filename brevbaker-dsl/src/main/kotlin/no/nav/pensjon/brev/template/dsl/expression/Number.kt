@@ -27,8 +27,15 @@ fun Expression<Int>.toYear(): Expression<Year> =
 fun Expression<Double>.format(scale: Int = 2): Expression<String> =
     format(formatter = LocalizedFormatter.DoubleFormat(scale))
 
+@JvmName("formatDoubleNullable")
+fun Expression<Double?>.format(scale: Int = 2): Expression<String?> =
+    format(formatter = LocalizedFormatter.DoubleFormat(scale))
+
 @JvmName("formatInt")
 fun Expression<Int>.format(): Expression<String> = format(formatter = LocalizedFormatter.IntFormat)
+
+@JvmName("formatIntOrNull")
+fun Expression<Int?>.format(): Expression<String?> = format(formatter = LocalizedFormatter.IntFormat)
 
 operator fun Expression<Int>.plus(other: Int) = plus(other.expr())
 

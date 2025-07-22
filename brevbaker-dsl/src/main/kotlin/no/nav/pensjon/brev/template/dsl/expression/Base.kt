@@ -7,6 +7,11 @@ fun <Data : Any, Field> Expression<Data>.select(
 ): Expression<Field> =
     UnaryOperation.Select(selector).invoke(this)
 
+@JvmName("selectOrNull")
+fun <Data : Any, Field> Expression<Data?>.select(
+    selector: TemplateModelSelector<Data, Field>
+) = UnaryOperation.SafeCall(selector).invoke(this)
+
 fun <T> T.expr(): Expression<T> = Expression.Literal(this)
 
 fun <T : Any> Expression<T?>.ifNull(then: T): Expression<T> =
@@ -67,3 +72,7 @@ infix fun <T> Expression<T>.equalTo(other: Expression<T>): Expression<Boolean> =
 
 fun <T> Expression<T>.format(formatter: LocalizedFormatter<T>): StringExpression =
     formatter(this, Expression.FromScope.Language)
+
+@JvmName("formatNullable")
+fun <T> Expression<T?>.format(formatter: LocalizedFormatter<T>): Expression<String?> =
+    BinaryOperation.SafeCall(formatter).invoke(this, Expression.FromScope.Language)
