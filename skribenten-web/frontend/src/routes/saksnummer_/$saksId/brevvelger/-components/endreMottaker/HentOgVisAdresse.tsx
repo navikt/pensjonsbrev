@@ -80,9 +80,7 @@ const ValgtKontaktAdresseOppsummering = (properties: { saksId: string; adresse: 
 
   return (
     <div>
-      <BodyShort size="small">
-        {navn ? humanizeName(navn) : undefined} ({getAdresseTypeName(properties.adresse.type)})
-      </BodyShort>
+      <BodyShort size="small">{navn ? humanizeName(navn) : undefined}</BodyShort>
       <VStack gap="0">
         {properties.adresse.adresselinjer.map((linje) => (
           <BodyShort key={linje} size="small">
