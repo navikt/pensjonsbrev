@@ -6,6 +6,7 @@ import {
   BodyShort,
   Button,
   Detail,
+  HStack,
   Label,
   Loader,
   Radio,
@@ -211,15 +212,15 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
             <div>
               <Detail textColor="subtle">Mottaker</Detail>
               {props.brev.mottaker ? (
-                <VStack align="start" gap="0">
+                <HStack align="start" gap="8">
                   <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle={false} />
                   {!erLåst && edit}
-                </VStack>
+                </HStack>
               ) : (
-                <VStack align="start" gap="0">
+                <HStack align="start" gap="8">
                   <OppsummeringAvMottaker mottaker={null} saksId={props.saksId} withTitle={false} />
                   {!erLåst && edit}
-                </VStack>
+                </HStack>
               )}
             </div>
           )}
