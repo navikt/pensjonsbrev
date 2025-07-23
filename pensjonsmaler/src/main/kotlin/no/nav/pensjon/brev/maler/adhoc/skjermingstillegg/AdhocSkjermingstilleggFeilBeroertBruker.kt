@@ -1,11 +1,9 @@
 package no.nav.pensjon.brev.maler.adhoc.skjermingstillegg
 
-import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.alderApi.AdhocAlderspensjonSkjermingstilleggDto
+import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -13,12 +11,12 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object AdhocOppryddingSkjermingstilleggBeroertBruker : RedigerbarTemplate<AdhocAlderspensjonSkjermingstilleggDto> {
-    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ADHOC_2025_SKJERMINGSTILLEGG_BEROERT_BRUKER
+object AdhocSkjermingstilleggFeilBeroertBruker : AutobrevTemplate<EmptyBrevdata> {
+    override val kode = Pesysbrevkoder.AutoBrev.PE_AP_ADHOC_2025_SKJERMT_FEIL_BEROERT_BRUKER
 
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = AdhocAlderspensjonSkjermingstilleggDto::class,
+        letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "skjermingstillegg placeholder",
@@ -79,8 +77,8 @@ object AdhocOppryddingSkjermingstilleggBeroertBruker : RedigerbarTemplate<AdhocA
                 list {
                     item {
                         text(
-                        Bokmal to "navnet ditt"
-                    )
+                            Bokmal to "navnet ditt"
+                        )
                     }
                     item {
                         text(
@@ -149,10 +147,4 @@ object AdhocOppryddingSkjermingstilleggBeroertBruker : RedigerbarTemplate<AdhocA
 
         }
     }
-
-    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
-
-    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
-
-    override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
 }
