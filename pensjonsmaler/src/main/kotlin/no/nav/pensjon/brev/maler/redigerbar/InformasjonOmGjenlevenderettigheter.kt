@@ -54,7 +54,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
         }
         outline {
             paragraph {
-                val avdoedesNavn = fritekst("avdødes navn")
+                val avdoedesNavn = fritekst("avdød navn")
                 textExpr(
                     Bokmal to "Vi skriver til deg fordi vi har mottatt melding om at ".expr() + avdoedesNavn + " er død, og du kan ha rettigheter etter avdøde.",
                     Nynorsk to "Vi skriv til deg fordi vi har fått melding om at ".expr() + avdoedesNavn + " er død, og du kan ha rettar etter avdøde.",

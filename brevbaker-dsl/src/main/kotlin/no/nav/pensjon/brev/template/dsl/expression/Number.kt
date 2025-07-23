@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.expression.toKroner
 import no.nav.pensjon.brev.template.expression.IntToKroner
 import no.nav.pensjon.brev.template.expression.IntToYear
 import no.nav.pensjon.brevbaker.api.model.IntValue

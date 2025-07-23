@@ -50,8 +50,6 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
         }
         outline {
             val pe = pesysData.pe
-            val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
-            val ufoeregradFritekst = fritekst("nåværende uføregrad")
 
             //IF(PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_uu" AND PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_ys" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "endring_ifu" AND FF_GetArrayElement_String(PE_Vedtaksdata_Kravhode_Kravlinjeliste_Kravlinje_Kravlinjetype) = "ut" AND PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_okn_ug") THEN      INCLUDE ENDIF
             showIf(
@@ -250,7 +248,13 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 }
 
                 paragraph {
-                    eval(fritekst("Forklar nærmere hvilken dokumentasjon vi ba om, og hvorfor vi ikke kan behandle søknaden uten disse opplysningene")) }
+                    val forklarFritekst = fritekst("Forklar nærmere hvilken dokumentasjon vi ba om, og hvorfor vi ikke kan behandle søknaden uten disse opplysningene")
+                    textExpr(
+                        Bokmal to forklarFritekst,
+                        Nynorsk to forklarFritekst,
+                        English to forklarFritekst,
+                    )
+                }
 
                 paragraph {
                     text(
@@ -722,6 +726,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2414NN, TBU2414EN, TBU2414]
 
                 paragraph {
+                    val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
                     textExpr(
                         Bokmal to begrunnelseFritekst + ". ",
                         Nynorsk to begrunnelseFritekst + ". ",
@@ -761,6 +766,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2415NN, TBU2415EN, TBU2415]
 
                 paragraph {
+                    val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
                     textExpr(
                         Bokmal to begrunnelseFritekst + ". ",
                         Nynorsk to begrunnelseFritekst + ". ",
@@ -773,6 +779,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     )
                 }
                 paragraph {
+                    val ufoeregradFritekst = fritekst("nåværende uføregrad")
                     textExpr(
                         Bokmal to "Fordi behandling og arbeidsrettede tiltak ikke er gjennomført, kan vi ikke ta stilling til om inntektsevnen din er varig nedsatt med mer enn ".expr() + ufoeregradFritekst + " prosent.",
                         Nynorsk to "Fordi du ikkje har gjennomført behandling og arbeidsretta tiltak, kan vi ikkje ta stilling til om inntektsevna di er varig nedsett med meir enn ".expr() + ufoeregradFritekst + " prosent.",
@@ -800,6 +807,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2416NN, TBU2416EN, TBU2416]
 
                 paragraph {
+                    val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
                     textExpr(
                         Bokmal to begrunnelseFritekst + ". ",
                         Nynorsk to begrunnelseFritekst + ". ",
@@ -839,6 +847,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2417NN, TBU2417EN, TBU2417]
 
                 paragraph {
+                    val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
                     textExpr(
                         Bokmal to begrunnelseFritekst + ". ",
                         Nynorsk to begrunnelseFritekst + ". ",
@@ -851,6 +860,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     )
                 }
                 paragraph {
+                    val ufoeregradFritekst = fritekst("nåværende uføregrad")
                     textExpr(
                         Bokmal to "Det er sannsynlig at du senere vil kunne være i aktivitet og gjennomføre arbeidsrettede tiltak. Vi kan derfor ikke ta stilling til om inntektsevnen din er varig nedsatt med mer enn ".expr() + ufoeregradFritekst + " prosent.",
                         Nynorsk to "Det er sannsynleg at du seinare vil kunne vere i aktivitet og gjennomføre arbeidsretta tiltak. Vi kan derfor ikkje ta stilling til om inntektsevna di er varig sett ned med meir enn ".expr() + ufoeregradFritekst + " prosent.",
@@ -878,6 +888,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2418NN, TBU2418EN, TBU2418]
 
                 paragraph {
+                    val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
                     textExpr(
                         Bokmal to begrunnelseFritekst + ". ",
                         Nynorsk to begrunnelseFritekst + ". ",
@@ -918,6 +929,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2419NN, TBU2419EN, TBU2419]
 
                 paragraph {
+                    val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
                     textExpr(
                         Bokmal to begrunnelseFritekst + ". ",
                         Nynorsk to begrunnelseFritekst + ". ",
@@ -930,6 +942,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     )
                 }
                 paragraph {
+                    val ufoeregradFritekst = fritekst("nåværende uføregrad")
                     textExpr(
                         Bokmal to "Det er ingen åpenbare grunner til at du ikke kan gjennomføre arbeidsrettede tiltak. Vi kan derfor ikke ta stilling til om inntektsevnen din er varig nedsatt med mer enn ".expr() + ufoeregradFritekst + " prosent. ",
                         Nynorsk to "Det er ingen openberre grunnar til at du ikkje kan gjennomføre arbeidsretta tiltak. Vi kan derfor ikkje ta stilling til om inntektsevna di er varig sett ned med meir enn ".expr() + ufoeregradFritekst + " prosent.",
@@ -958,6 +971,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2420NN, TBU2420EN, TBU2420]
 
                 paragraph {
+                    val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
                     textExpr(
                         Bokmal to begrunnelseFritekst + ". ",
                         Nynorsk to begrunnelseFritekst + ". ",
@@ -997,6 +1011,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                 //[TBU2421NN, TBU2421EN, TBU2421]
 
                 paragraph {
+                    val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
                     textExpr(
                         Bokmal to begrunnelseFritekst + ". ",
                         Nynorsk to begrunnelseFritekst + ". ",
@@ -1009,6 +1024,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     )
                 }
                 paragraph {
+                    val ufoeregradFritekst = fritekst("nåværende uføregrad")
                     textExpr(
                         Bokmal to "Vi kan derfor ikke ta stilling til om inntektsevnen din er varig nedsatt med mer enn ".expr() + ufoeregradFritekst + " prosent.",
                         Nynorsk to "Vi kan derfor ikkje ta stilling til om inntektsevna di er varig sett ned med meir enn ".expr() + ufoeregradFritekst + " prosent.",
@@ -1044,6 +1060,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     //[TBU2424NN, TBU2424EN, TBU2424]
 
                     paragraph {
+                        val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
                         textExpr(
                             Bokmal to begrunnelseFritekst + ". ",
                             Nynorsk to begrunnelseFritekst + ". ",
@@ -1082,6 +1099,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     //[TBU2425NN, TBU2425EN, TBU2425]
 
                     paragraph {
+                        val begrunnelseFritekst = fritekst("legg inn konkret begrunnelse der det er nødvendig")
                         textExpr(
                             Bokmal to begrunnelseFritekst + ". ",
                             Nynorsk to begrunnelseFritekst + ". ",
@@ -1204,6 +1222,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     //[TBU2431NN, TBU2431EN, TBU2431]
 
                     paragraph {
+                        val ufoeregradFritekst = fritekst("nåværende uføregrad")
                         textExpr(
                             Bokmal to "Du mottar ".expr() + ufoeregradFritekst + " prosent uføretrygd. Uføregraden kan økes dersom inntektsevnen blir varig nedsatt med mer enn dette, på grunn av sykdom eller skade.",
                             Nynorsk to "Du får ".expr() + ufoeregradFritekst + " prosent uføretrygd. Uføregraden kan aukast dersom inntektsevna blir varig sett ned med meir enn dette på grunn av sjukdom eller skade.",
