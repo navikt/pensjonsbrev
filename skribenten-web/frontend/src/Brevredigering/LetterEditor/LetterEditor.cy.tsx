@@ -32,6 +32,7 @@ function EditorWithState({ initial, focus }: { initial: EditedLetter; focus?: Fo
       journalpostId: null,
       vedtaksId: null,
       brevtype: "INFORMASJONSBREV",
+      saksId: "22981081",
     },
     redigertBrev: initial,
     redigertBrevHash: "hash1",

@@ -43,6 +43,8 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
+
+// V00006 i metaforce
 @TemplateModelHelpers
 val opplysningerOmAvdoedBruktIBeregning =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>(

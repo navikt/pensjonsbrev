@@ -57,7 +57,7 @@ object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<Omstillingss
                     text(
                         Bokmal to "Hvordan kan du melde fra?",
                         Nynorsk to "Korleis kan du melde frå?",
-                        English to "How can I submit information?",
+                        English to "How do i report changes?",
                     )
                 }
                 paragraph {
