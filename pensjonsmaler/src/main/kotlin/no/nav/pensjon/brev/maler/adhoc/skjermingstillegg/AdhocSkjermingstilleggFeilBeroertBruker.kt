@@ -25,6 +25,11 @@ object AdhocSkjermingstilleggFeilBeroertBruker : AutobrevTemplate<EmptyBrevdata>
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
     ) {
+        title {
+            text(
+                Bokmal to "Placeholder title",
+            )
+        }
         outline {
             title2 {
                 text(
