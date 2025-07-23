@@ -19,7 +19,7 @@ object AdhocSkjermingstilleggFeilMottaker : AutobrevTemplate<EmptyBrevdata> {
         letterDataType = EmptyBrevdata::class,
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "skjermingstillegg placeholder",
+            displayTitle = "Nav har sendt deg feil brev",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
@@ -27,15 +27,10 @@ object AdhocSkjermingstilleggFeilMottaker : AutobrevTemplate<EmptyBrevdata> {
     ) {
         title {
             text(
-                Bokmal to "Placeholder title",
+                Bokmal to "Vi har ved en feil gitt deg tilgang til noen andres personopplysninger",
             )
         }
         outline {
-            title2 {
-                text(
-                    Bokmal to "Vi har ved en feil gitt deg tilgang til noen andres personopplysninger"
-                )
-            }
             paragraph {
                 text(
                     Bokmal to "Nav har ved en feil sendt deg et brev som gjelder ektefellen, partneren eller samboeren din."
