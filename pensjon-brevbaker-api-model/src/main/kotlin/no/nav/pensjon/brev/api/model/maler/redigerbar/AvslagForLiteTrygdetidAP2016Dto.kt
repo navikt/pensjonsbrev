@@ -1,28 +1,25 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDto.*
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
-import java.time.LocalDate
+import no.nav.pensjon.brev.api.model.vedlegg.Trygdetid
 
 @Suppress("unused")
 
-data class AvslagForLiteTrygdetidAPDto(
+data class AvslagForLiteTrygdetidAP2016Dto(
     override val pesysData: PesysData,
     override val saksbehandlerValg: EmptyBrevdata,
-) : RedigerbarBrevdata<EmptyBrevdata,
-        PesysData> {
+) : RedigerbarBrevdata<EmptyBrevdata, AvslagForLiteTrygdetidAP2016Dto.PesysData> {
+
 
     data class PesysData(
         val avtaleland: String,
         val bostedsland: String,
         val erAvtaleland: Boolean,
         val erEOSland: Boolean,
-        val regelverkType: AlderspensjonRegelverkType,
         val trygdeperioderNorge: List<Trygdetid>,
         val trygdeperioderEOSland: List<Trygdetid>,
         val trygdeperioderAvtaleland: List<Trygdetid>,
@@ -30,9 +27,4 @@ data class AvslagForLiteTrygdetidAPDto(
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
     ) : BrevbakerBrevdata
 
-    data class Trygdetid(
-        val fom: LocalDate,
-        val tom: LocalDate,
-        val land: String,
-    )
 }

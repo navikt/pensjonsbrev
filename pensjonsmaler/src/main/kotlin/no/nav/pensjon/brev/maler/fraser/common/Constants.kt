@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenad
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 

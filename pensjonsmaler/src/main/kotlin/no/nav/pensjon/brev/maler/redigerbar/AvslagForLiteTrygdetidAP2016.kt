@@ -1,48 +1,34 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.ALDER
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse.*
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.avtaleland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.bostedsland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.erAvtaleland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.erEOSland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.regelverkType
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderAvtaleland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderEOSland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderNorge
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.vedtaksBegrunnelse
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.pesysData
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagAPUttakAlderU62Begrunn
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagAPUttakAlderU62Info
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder1aar3aar5aarTT
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder1aarHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagUnder3aar5aarHjemmelAvtaleAuto
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.NysoknadAPInfo
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.OpptjeningstidEOSAvtaleland
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilAPFolketrygdsak
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilAPMedEOSAvtalelandOg3aar5aarTT
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenad
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.TrygdeperioderAvtalelandTabell
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.TrygdeperioderEOSlandTabell
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.TrygdeperioderNorgeTabell
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAP2016Dto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAP2016DtoSelectors.PesysDataSelectors.avtaleland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAP2016DtoSelectors.PesysDataSelectors.bostedsland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAP2016DtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAP2016DtoSelectors.PesysDataSelectors.erAvtaleland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAP2016DtoSelectors.PesysDataSelectors.erEOSland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAP2016DtoSelectors.PesysDataSelectors.trygdeperioderAvtaleland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAP2016DtoSelectors.PesysDataSelectors.trygdeperioderEOSland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAP2016DtoSelectors.PesysDataSelectors.trygdeperioderNorge
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAP2016DtoSelectors.PesysDataSelectors.vedtaksBegrunnelse
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAP2016DtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagForLiteTrygdetidAP
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagForLiteTrygdetidAP.TrygdeperioderAvtalelandTabell
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagForLiteTrygdetidAP.TrygdeperioderEOSlandTabell
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.AvslagForLiteTrygdetidAP.TrygdeperioderNorgeTabell
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
@@ -51,22 +37,20 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 // Doksys redigermal: MF_000066, tvilling autobrev: MF_000177
 @TemplateModelHelpers
 
-object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto> {
+object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidAP2016Dto> {
 
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_FOR_LITE_TRYGDETID_AP2016
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(ALDER)
-
-
     override val template = createTemplate(
         name = kode.name,
-        letterDataType = AvslagForLiteTrygdetidAPDto::class,
+        letterDataType = AvslagForLiteTrygdetidAP2016Dto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag på søknad om alderspensjon",
             isSensitiv = false,
-            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
@@ -78,6 +62,7 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
         val trygdeperioderAvtaleland = pesysData.trygdeperioderAvtaleland
         val trygdeperioderEOSland = pesysData.trygdeperioderEOSland
         val trygdeperioderNorge = pesysData.trygdeperioderNorge
+        val regelverkType = AlderspensjonRegelverkType.AP2016.expr()
 
         title {
             text(
@@ -102,12 +87,12 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                                     + "You do not meet any of these requirements, therefore we have declined your application.",
                         )
                     }
-                    includePhrase(AvslagUnder1aar3aar5aarTT)
+                    includePhrase(AvslagForLiteTrygdetidAP.AvslagUnder1aar3aar5aarTT)
                     includePhrase(
-                        AvslagUnder1aarHjemmel(
-                            avtaleland,
-                            erEOSland,
-                            regelverkType = pesysData.regelverkType
+                        AvslagForLiteTrygdetidAP.AvslagUnder1aarHjemmel(
+                            avtaleland = avtaleland,
+                            erEOSland = erEOSland,
+                            regelverkType = regelverkType
                         )
                     )
 
@@ -115,21 +100,21 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
 
                     showIf(not(erAvtaleland) and not(erEOSland)) { // Mindre enn tre års trygdetid - folketrygdsak:
                         includePhrase(
-                            RettTilAPFolketrygdsak(
+                            AvslagForLiteTrygdetidAP.RettTilAPFolketrygdsak(
                                 avslagsBegrunnelse,
-                                regelverkType = pesysData.regelverkType
+                                regelverkType = regelverkType
                             )
                         )
-                        includePhrase(AvslagUnder1aar3aar5aarTT)
+                        includePhrase(AvslagForLiteTrygdetidAP.AvslagUnder1aar3aar5aarTT)
 
                     }.orShowIf(erEOSland and not(erAvtaleland)) { // Mindre enn tre års trygdetid - EØSsak:
-                        includePhrase(OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
+                        includePhrase(AvslagForLiteTrygdetidAP.OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
                         includePhrase(
-                            RettTilAPMedEOSAvtalelandOg3aar5aarTT(
+                            AvslagForLiteTrygdetidAP.RettTilAPMedEOSAvtalelandOg3aar5aarTT(
                                 avslagsBegrunnelse,
                                 erAvtaleland,
                                 erEOSland,
-                                regelverkType = pesysData.regelverkType
+                                regelverkType = regelverkType
                             ),
                         )
                         // avslagAP2016Under3aarHjemmelEOS
@@ -141,13 +126,13 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                             )
                         }
                     }.orShow { // Mindre enn tre års avtalesak, eller både avtaleland og EØSland
-                        includePhrase(OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
+                        includePhrase(AvslagForLiteTrygdetidAP.OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
                         includePhrase(
-                            RettTilAPMedEOSAvtalelandOg3aar5aarTT(
-                                avslagsBegrunnelse,
-                                erAvtaleland,
-                                erEOSland,
-                                regelverkType = pesysData.regelverkType
+                            AvslagForLiteTrygdetidAP.RettTilAPMedEOSAvtalelandOg3aar5aarTT(
+                                avslagsbegrunnelse = avslagsBegrunnelse,
+                                erAvtaleland = erAvtaleland,
+                                erEOSland = erEOSland,
+                                regelverkType = regelverkType
                             )
                         )
                     }
@@ -156,12 +141,12 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                     showIf(not(erAvtaleland) and not(erEOSland)) { // Mindre enn fem års trygdetid - folketrygdsak:
 
                         includePhrase(
-                            RettTilAPFolketrygdsak(
+                            AvslagForLiteTrygdetidAP.RettTilAPFolketrygdsak(
                                 avslagsBegrunnelse,
-                                regelverkType = pesysData.regelverkType
+                                regelverkType = regelverkType
                             )
                         )
-                        includePhrase(AvslagUnder1aar3aar5aarTT)
+                        includePhrase(AvslagForLiteTrygdetidAP.AvslagUnder1aar3aar5aarTT)
 
                         // avslagAP2016Under5aarHjemmel
                         paragraph {
@@ -172,13 +157,13 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                             )
                         }
                     }.orShowIf(erEOSland and not(erAvtaleland)) { // Mindre enn fem års trygdetid - EØSsak:
-                        includePhrase(OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
+                        includePhrase(AvslagForLiteTrygdetidAP.OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
                         includePhrase(
-                            RettTilAPMedEOSAvtalelandOg3aar5aarTT(
-                                avslagsBegrunnelse,
-                                erAvtaleland,
-                                erEOSland,
-                                regelverkType = pesysData.regelverkType
+                            AvslagForLiteTrygdetidAP.RettTilAPMedEOSAvtalelandOg3aar5aarTT(
+                                avslagsbegrunnelse = avslagsBegrunnelse,
+                                erAvtaleland = erAvtaleland,
+                                erEOSland = erEOSland,
+                                regelverkType = regelverkType
                             )
                         )
                         // avslagAP2016Under5aarHjemmelEOS
@@ -190,13 +175,13 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                             )
                         }
                     }.orShow { // avtalelandsak eller (sak med både EØS- og avtaleland)
-                        includePhrase(OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
+                        includePhrase(AvslagForLiteTrygdetidAP.OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
                         includePhrase(
-                            RettTilAPMedEOSAvtalelandOg3aar5aarTT(
-                                avslagsBegrunnelse,
-                                erAvtaleland,
-                                erEOSland,
-                                regelverkType = pesysData.regelverkType
+                            AvslagForLiteTrygdetidAP.RettTilAPMedEOSAvtalelandOg3aar5aarTT(
+                                avslagsbegrunnelse = avslagsBegrunnelse,
+                                erAvtaleland = erAvtaleland,
+                                erEOSland = erEOSland,
+                                regelverkType = regelverkType
                             )
                         )
                     }
@@ -204,11 +189,11 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
 
                 showIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT) and erAvtaleland) {
                     includePhrase(
-                        AvslagUnder3aar5aarHjemmelAvtaleAuto(
-                            avtaleland,
-                            erAvtaleland,
-                            erEOSland,
-                            regelverkType = pesysData.regelverkType
+                        AvslagForLiteTrygdetidAP.AvslagUnder3aar5aarHjemmelAvtaleAuto(
+                            avtaleland = avtaleland,
+                            erAvtaleland = erAvtaleland,
+                            erEOSland = erEOSland,
+                            regelverkType = regelverkType
 
                         )
                     )
@@ -246,24 +231,12 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                         UNDER_1_AR_TT
                     )
                 ) {
-                    includePhrase(
-                        TrygdeperioderNorgeTabell(
-                            trygdeperioderNorge = trygdeperioderNorge
-                        )
-                    )
-                    includePhrase(
-                        TrygdeperioderEOSlandTabell(
-                            trygdeperioderEOSland = trygdeperioderEOSland
-                        )
-                    )
-                    includePhrase(
-                        TrygdeperioderAvtalelandTabell(
-                            trygdeperioderAvtaleland = trygdeperioderAvtaleland
-                        )
-                    )
+                    includePhrase(TrygdeperioderNorgeTabell(trygdeperioderNorge))
+                    includePhrase(TrygdeperioderEOSlandTabell(trygdeperioderEOSland))
+                    includePhrase(TrygdeperioderAvtalelandTabell(trygdeperioderAvtaleland))
                 }
             }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_62)) {
-                includePhrase(AvslagAPUttakAlderU62Begrunn)
+                includePhrase(AvslagForLiteTrygdetidAP.AvslagAPUttakAlderU62Begrunn)
                 // avslagAP2016UttakAlderU62Hjemmel
                 paragraph {
                     text(
@@ -272,10 +245,10 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                         English to "This decision was made pursuant to the provisions of §§ 19-4 and 20-2 of the National Insurance Act.",
                     )
                 }
-                includePhrase(AvslagAPUttakAlderU62Info)
-                includePhrase(NysoknadAPInfo)
+                includePhrase(AvslagForLiteTrygdetidAP.AvslagAPUttakAlderU62Info)
+                includePhrase(AvslagForLiteTrygdetidAP.NysoknadAPInfo)
             }
-            includePhrase(SupplerendeStoenad)
+            includePhrase(AvslagForLiteTrygdetidAP.SupplerendeStoenad)
             includePhrase(Felles.RettTilAAKlage(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
             includePhrase(Felles.RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
             includePhrase(Felles.HarDuSpoersmaal.alder)
