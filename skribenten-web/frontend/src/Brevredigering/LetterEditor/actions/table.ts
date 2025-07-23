@@ -1,3 +1,4 @@
+import type { Draft } from "immer";
 import { produce } from "immer";
 
 import type { LiteralValue, Table } from "~/types/brevbakerTypes";
@@ -6,15 +7,27 @@ import { LITERAL, PARAGRAPH, TABLE } from "~/types/brevbakerTypes";
 import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { newTable, pushCol, pushRow } from "../model/tableHelpers";
-import { newColSpec, newRow } from "./common";
+import { newColSpec, newRow, text } from "./common";
 
-const renumberHeaderDefaultText = (table: Table) => {
+/**
+ * Re‑number default header labels (“Kolonne N”) so they match the current
+ * column order.
+ *
+ * Scenario: User inserts a column between “Kolonne 1” and “Kolonne 2”.
+ * This helper updates the auto‑generated labels to
+ * “Kolonne 1  Kolonne 2  Kolonne 3”.
+ *
+ * • Only overwrites cells that are blank or still have the default pattern
+ *   /^Kolonne \d+$/ – customised header text is preserved.
+ */
+
+const updateDefaultHeaderLabels = (table: Draft<Table>) => {
   table.header.colSpec.forEach((col, idx) => {
     const litIdx = col.headerContent.text.findIndex((txt) => txt.type === LITERAL);
     if (litIdx === -1) return;
 
     const literal = col.headerContent.text[litIdx] as LiteralValue;
-    const shown = (literal.editedText ?? literal.text).trim();
+    const shown = text(literal).trim();
 
     const isDefaultHeaderText = shown === "" || /^Kolonne \d+$/.test(shown);
     if (!isDefaultHeaderText) return;
@@ -56,7 +69,7 @@ export const addTableColumn: Action<LetterEditorState, [blockIdx: number, conten
     if (content?.type !== TABLE) return;
 
     pushCol(content);
-    renumberHeaderDefaultText(content);
+    updateDefaultHeaderLabels(content);
     draft.isDirty = true;
   },
 );
@@ -80,7 +93,7 @@ export const removeTableColumn = produce<LetterEditorState>((draft) => {
 
   table.header.colSpec.splice(col, 1);
   table.rows.forEach((row) => row.cells.splice(col, 1));
-  renumberHeaderDefaultText(table);
+  updateDefaultHeaderLabels(table);
   draft.isDirty = true;
 });
 
@@ -101,7 +114,7 @@ export const insertTableColumnLeft: Action<LetterEditorState, []> = produce((dra
 
   table.header.colSpec.splice(at, 0, ...newColSpec(1));
   table.rows.forEach((row) => row.cells.splice(at, 0, newRow(1).cells[0]));
-  renumberHeaderDefaultText(table);
+  updateDefaultHeaderLabels(table);
   draft.isDirty = true;
 });
 
@@ -114,7 +127,7 @@ export const insertTableColumnRight: Action<LetterEditorState, []> = produce((dr
 
   table.header.colSpec.splice(at, 0, ...newColSpec(1));
   table.rows.forEach((row) => row.cells.splice(at, 0, newRow(1).cells[0]));
-  renumberHeaderDefaultText(table);
+  updateDefaultHeaderLabels(table);
   draft.isDirty = true;
 });
 
