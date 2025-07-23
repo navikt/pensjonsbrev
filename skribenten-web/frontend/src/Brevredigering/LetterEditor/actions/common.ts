@@ -253,6 +253,15 @@ export function newParagraph(args: {
 }
 
 export function newTable(rows: Row[]): Table {
+  if (rows.length === 0) {
+    throw new Error("newTable: rows must contain at least one row");
+  }
+
+  const colCount = rows[0].cells.length;
+
+  if (!rows.every((row) => row.cells.length === colCount)) {
+    throw new Error("newTable: all rows must have an identical column count");
+  }
   return {
     type: TABLE,
     id: null,
@@ -260,7 +269,7 @@ export function newTable(rows: Row[]): Table {
     header: {
       id: null,
       parentId: null,
-      colSpec: [] as ColumnSpec[],
+      colSpec: newColSpec(colCount),
     },
     rows,
     deletedRows: [],
@@ -355,7 +364,7 @@ export function getMergeIds(sourceId: number, target: MergeTarget): [number, num
 
 export function insertEmptyParagraphAfterBlock(draft: Draft<LetterEditorState>, blockIndex: number) {
   const emptyPara = newParagraph({
-    content: [newLiteral({ editedText: "", fontType: FontType.PLAIN })],
+    content: [newLiteral()],
   });
 
   addElements([emptyPara], blockIndex + 1, draft.redigertBrev.blocks, draft.redigertBrev.deletedBlocks);
@@ -367,7 +376,7 @@ export function insertEmptyParagraphAfterBlock(draft: Draft<LetterEditorState>, 
   };
 }
 
-export function makeBlankRow(colCount: number): Row {
+export function newRow(colCount: number): Row {
   return {
     id: null,
     parentId: null,
@@ -378,7 +387,7 @@ export function makeBlankRow(colCount: number): Row {
     })),
   };
 }
-export function makeDefaultColSpec(colCount: number): ColumnSpec[] {
+export function newColSpec(colCount: number): ColumnSpec[] {
   return Array.from({ length: colCount }, (_, i) => ({
     id: null,
     parentId: null,

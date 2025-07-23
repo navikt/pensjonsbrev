@@ -6,7 +6,7 @@ import { LITERAL, PARAGRAPH, TABLE } from "~/types/brevbakerTypes";
 import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { newTable, pushCol, pushRow } from "../model/tableHelpers";
-import { makeBlankRow, makeDefaultColSpec } from "./common";
+import { newColSpec, newRow } from "./common";
 
 const renumberHeaderDefaultText = (table: Table) => {
   table.header.colSpec.forEach((col, idx) => {
@@ -99,8 +99,8 @@ export const insertTableColumnLeft: Action<LetterEditorState, []> = produce((dra
   const table = draft.redigertBrev.blocks[selection.blockIndex].content[selection.contentIndex] as Table;
   const at = selection.colIndex;
 
-  table.header.colSpec.splice(at, 0, ...makeDefaultColSpec(1));
-  table.rows.forEach((row) => row.cells.splice(at, 0, makeBlankRow(1).cells[0]));
+  table.header.colSpec.splice(at, 0, ...newColSpec(1));
+  table.rows.forEach((row) => row.cells.splice(at, 0, newRow(1).cells[0]));
   renumberHeaderDefaultText(table);
   draft.isDirty = true;
 });
@@ -112,8 +112,8 @@ export const insertTableColumnRight: Action<LetterEditorState, []> = produce((dr
   const table = draft.redigertBrev.blocks[selection.blockIndex].content[selection.contentIndex] as Table;
   const at = selection.colIndex + 1;
 
-  table.header.colSpec.splice(at, 0, ...makeDefaultColSpec(1));
-  table.rows.forEach((row) => row.cells.splice(at, 0, makeBlankRow(1).cells[0]));
+  table.header.colSpec.splice(at, 0, ...newColSpec(1));
+  table.rows.forEach((row) => row.cells.splice(at, 0, newRow(1).cells[0]));
   renumberHeaderDefaultText(table);
   draft.isDirty = true;
 });
@@ -123,7 +123,7 @@ export const insertTableRowAbove: Action<LetterEditorState, []> = produce((draft
   if (!selection || selection.rowIndex === undefined) return;
 
   const table = draft.redigertBrev.blocks[selection.blockIndex].content[selection.contentIndex] as Table;
-  table.rows.splice(selection.rowIndex, 0, makeBlankRow(table.header.colSpec.length));
+  table.rows.splice(selection.rowIndex, 0, newRow(table.header.colSpec.length));
 
   draft.isDirty = true;
 });
@@ -133,7 +133,7 @@ export const insertTableRowBelow: Action<LetterEditorState, []> = produce((draft
   if (!selection || selection.rowIndex === undefined) return;
 
   const table = draft.redigertBrev.blocks[selection.blockIndex].content[selection.contentIndex] as Table;
-  table.rows.splice(selection.rowIndex + 1, 0, makeBlankRow(table.header.colSpec.length));
+  table.rows.splice(selection.rowIndex + 1, 0, newRow(table.header.colSpec.length));
 
   draft.isDirty = true;
 });

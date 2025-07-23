@@ -4,7 +4,7 @@ import { produce } from "immer";
 import type { AnyBlock, Cell, ParagraphBlock, Row, Table } from "~/types/brevbakerTypes";
 import { LITERAL, PARAGRAPH, TABLE } from "~/types/brevbakerTypes";
 
-import { isItemContentIndex, makeBlankRow, newLiteral } from "../actions/common";
+import { isItemContentIndex, newLiteral, newRow } from "../actions/common";
 import type { Focus, LetterEditorState } from "../model/state";
 import { getCursorOffset } from "./caretUtils";
 
@@ -100,7 +100,7 @@ export function addRow(
 
     const columnCount =
       currentTable.header.colSpec.length > 0 ? currentTable.header.colSpec.length : currentTable.rows[0].cells.length;
-    const updatedRows = isLastRow ? [...currentTable.rows, makeBlankRow(columnCount)] : currentTable.rows;
+    const updatedRows = isLastRow ? [...currentTable.rows, newRow(columnCount)] : currentTable.rows;
 
     const updatedTable = { ...currentTable, rows: updatedRows };
 
