@@ -20,7 +20,7 @@ object AdhocSkjermingstilleggFeilMottaker : AutobrevTemplate<EmptyBrevdata> {
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Nav har sendt deg feil brev",
-            isSensitiv = true,
+            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
@@ -57,9 +57,12 @@ object AdhocSkjermingstilleggFeilMottaker : AutobrevTemplate<EmptyBrevdata> {
                 text(
                     Bokmal to "Ut fra det vi kan se, har Nav sendt deg et brev datert 17. juli 2025, " +
                             "adressert til ektefellen, samboeren eller partneren din som du bodde sammen med da brevet ble sendt. " +
-                            "Hvis du fortsatt har brevet, må du slette det så raskt som mulig. Vi minner om at du ikke har lov til å bruke eller dele andres personopplysninger. " +
-                            "\n" +
-                            "Nav vil sørge for at riktig person får brevet. Du trenger ikke å dele brevet med vedkommende. " +
+                            "Hvis du fortsatt har brevet, må du slette det så raskt som mulig. Vi minner om at du ikke har lov til å bruke eller dele andres personopplysninger."
+                )
+            }
+            paragraph {
+                text(
+                    Bokmal to "Nav vil sørge for at riktig person får brevet. Du trenger ikke å dele brevet med vedkommende. " +
                             "Du skal bare slette brevet."
                 )
             }
@@ -95,7 +98,7 @@ object AdhocSkjermingstilleggFeilMottaker : AutobrevTemplate<EmptyBrevdata> {
             paragraph {
                 text(
                     Bokmal to "På nav.no/kontakt kan du chatte eller skrive til oss. " +
-                            "Du kan også ringe oss på telefon 55553334 hverdager kl.09.00-15.00."
+                            "Du kan også ringe oss på telefon 55 55 33 34 hverdager kl.09.00-15.00."
                 )
             }
 

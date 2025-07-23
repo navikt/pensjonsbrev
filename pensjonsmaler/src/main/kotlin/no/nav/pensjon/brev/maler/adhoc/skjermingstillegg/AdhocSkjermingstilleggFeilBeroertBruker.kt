@@ -20,7 +20,7 @@ object AdhocSkjermingstilleggFeilBeroertBruker : AutobrevTemplate<EmptyBrevdata>
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Nav har sendt ditt brev til feil mottaker",
-            isSensitiv = true,
+            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
@@ -33,11 +33,9 @@ object AdhocSkjermingstilleggFeilBeroertBruker : AutobrevTemplate<EmptyBrevdata>
         outline {
             paragraph {
                 text(
-                    Bokmal to "Nav har sendt brev om alderspensjonen din til en person du bodde sammen med da brevet ble sendt. Vi hadde ikke lov til å dele opplysningene i brevet med den personen. \n" +
-                            "\n" +
-                            "Dette er et brudd på Navs taushetsplikt og er et personvernbrudd. Feilen er rettet opp ved at fremtidige brev sendes til riktig person  \n" +
-                            "\n" +
-                            "Det kan være du har fått eller lest brevet allerede. Vi vil uansett sende deg riktig brev.  "
+                    Bokmal to "Nav har sendt brev om alderspensjonen din til en person du bodde sammen med da brevet ble sendt. Vi hadde ikke lov til å dele opplysningene i brevet med den personen. " +
+                            "Dette er et brudd på Navs taushetsplikt og er et personvernbrudd. Feilen er rettet opp ved at fremtidige brev sendes til riktig person " +
+                            "Det kan være du har fått eller lest brevet allerede. Vi vil uansett sende deg riktig brev."
                 )
             }
 
@@ -72,7 +70,7 @@ object AdhocSkjermingstilleggFeilBeroertBruker : AutobrevTemplate<EmptyBrevdata>
             paragraph {
                 text(
                     Bokmal to "Personen har fått tilgang til opplysningene som står i brevet fra Nav. " +
-                            "Brevet inneholder følgende opplysninger: "
+                            "Brevet inneholder følgende opplysninger:"
                 )
                 list {
                     item {
@@ -135,7 +133,7 @@ object AdhocSkjermingstilleggFeilBeroertBruker : AutobrevTemplate<EmptyBrevdata>
             paragraph {
                 text(
                     Bokmal to "På nav.no/kontakt kan du chatte eller skrive til oss. " +
-                            "Du kan også ringe oss på telefon 55553334 hverdager kl.09.00-15.00."
+                            "Du kan også ringe oss på telefon 55 55 33 34 hverdager kl.09.00-15.00."
                 )
             }
 
