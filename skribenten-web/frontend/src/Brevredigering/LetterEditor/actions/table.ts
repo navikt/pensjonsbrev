@@ -8,6 +8,7 @@ import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { newTable, pushCol, pushRow } from "../model/tableHelpers";
 import { newColSpec, newRow, text } from "./common";
+import { updateLiteralText } from "./updateContentText";
 
 /**
  * Re‑number default header labels (“Kolonne N”) so they match the current
@@ -32,13 +33,7 @@ const updateDefaultHeaderLabels = (table: Draft<Table>) => {
     const isDefaultHeaderText = shown === "" || /^Kolonne \d+$/.test(shown);
     if (!isDefaultHeaderText) return;
 
-    const newDefaultLabel = `Kolonne ${idx + 1}`;
-
-    col.headerContent.text[litIdx] = {
-      ...literal,
-      text: newDefaultLabel,
-      editedText: literal.editedText !== null ? newDefaultLabel : literal.editedText,
-    };
+    updateLiteralText(literal, `Kolonne ${idx + 1}`);
   });
 };
 
