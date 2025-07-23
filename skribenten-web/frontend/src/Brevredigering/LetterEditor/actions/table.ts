@@ -1,13 +1,13 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
-import type { LiteralValue, Table } from "~/types/brevbakerTypes";
+import type { Content, LiteralValue, Table } from "~/types/brevbakerTypes";
 import { LITERAL, PARAGRAPH, TABLE } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { newTable, pushCol, pushRow } from "../model/tableHelpers";
-import { newColSpec, newRow, text } from "./common";
+import { addElements, newColSpec, newRow, text } from "./common";
 import { updateLiteralText } from "./updateContentText";
 
 /**
@@ -42,7 +42,12 @@ export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number,
     const block = draft.redigertBrev.blocks[focus.blockIndex];
     if (block.type !== PARAGRAPH) return;
 
-    block.content.splice(focus.contentIndex + 1, 0, newTable(rows, cols));
+    addElements(
+      [newTable(rows, cols)],
+      focus.contentIndex + 1,
+      block.content as Draft<Content[]>,
+      block.deletedContent,
+    );
     draft.focus = { blockIndex: focus.blockIndex, contentIndex: focus.contentIndex + 1 };
     draft.isDirty = true;
   },
