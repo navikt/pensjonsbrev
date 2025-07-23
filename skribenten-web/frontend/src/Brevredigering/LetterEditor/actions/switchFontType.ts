@@ -17,7 +17,7 @@ import { handleSwitchContent, handleSwitchTextContent } from "~/utils/brevbakerU
 import type { Action } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
 import { getCursorOffset } from "../services/caretUtils";
-import { isItemContentIndex, newLiteral } from "./common";
+import { isItemContentIndex, isTable, isTableContentIndex, newLiteral } from "./common";
 
 // TODO: Denne bør skrives om til å gjenbruke funksjonalitet (addElements, removeElements, osv).
 export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralIndex, fontType: FontType]> = produce(
@@ -29,7 +29,7 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
     }
 
     const contentAtFocus = block.content[literalIndex.contentIndex];
-    if (contentAtFocus?.type === "TABLE" && isItemContentIndex(literalIndex)) {
+    if (isTable(contentAtFocus) && isTableContentIndex(literalIndex)) {
       const table = contentAtFocus as Draft<Table>;
 
       // Commented out to disable bold/italic on
