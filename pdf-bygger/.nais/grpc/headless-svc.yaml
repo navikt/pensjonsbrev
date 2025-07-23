@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: pensjon-pdf-bygger-grpc
+    team: pensjonsbrev
+  name: pensjon-pdf-bygger-grpc-headless
+  namespace: pensjonsbrev
+spec:
+  clusterIP: None
+  ports:
+  - name: grpc
+    port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: pensjon-pdf-bygger-grpc
+  sessionAffinity: None
+  type: ClusterIP
