@@ -118,6 +118,33 @@ sealed class Expression<out Out> : StableHash {
         override fun hashCode() = Objects.hash(value, operation)
     }
 
+    class NullSafeApplication<In : Any, Out> private constructor(
+        val input: Expression<In?>,
+        val assigned: FromScope.Assigned<In>,
+        val application: Expression<Out?>,
+    ) : Expression<Out?>(), StableHash by StableHash.of(input, assigned, application) {
+
+        companion object {
+            operator fun <In: Any, Out> invoke(value: Expression<In?>, block: Expression<In>.() -> Expression<Out>): NullSafeApplication<In, Out> =
+                FromScope.Assigned<In>(value.stableHashCode()).let {
+                    NullSafeApplication(value, it, it.block())
+                }
+        }
+
+        override fun eval(scope: ExpressionScope<*>): Out? =
+            input.eval(scope)?.let {
+                application.eval(scope.assign(it, assigned))
+            }
+
+        override fun equals(other: Any?): Boolean {
+            if (other !is NullSafeApplication<*, *>) return false
+            return input == other.input && assigned == other.assigned && application == other.application
+        }
+
+        override fun hashCode() = Objects.hash(input, assigned, application)
+
+    }
+
     class BinaryInvoke<In1, In2, out Out>(
         val first: Expression<In1>,
         val second: Expression<In2>,
