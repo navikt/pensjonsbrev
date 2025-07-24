@@ -1,9 +1,11 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse.UNDER_3_AR_TT
+import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse.UNDER_5_AR_TT
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetid
 import no.nav.pensjon.brev.maler.alder.AvslagUttakFoerNormertPensjonsalder.fritekst
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
@@ -127,41 +129,45 @@ object AvslagForLiteTrygdetidAP {
 
     // avslagAP2011Under3aar, avslagAP2011Under5aar, avslagAP2016Under3aar, avslagAP2016Under5aar
     data class RettTilAPFolketrygdsak(
-        val avslagsbegrunnelse: Expression<VedtaksBegrunnelse>,
-        val regelverkType: Expression<AlderspensjonRegelverkType>
+        val avslagsbegrunnelse: VedtaksBegrunnelse,
+        val regelverkType: AlderspensjonRegelverkType
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                textExpr(
-                    Bokmal to "For å ha rett til alderspensjon må du ha minst ".expr()
-                            + ifElse(avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT), ifTrue = "tre", ifFalse = "fem")
-                            + " års trygdetid".expr()
-                            + ifElse(
-                        regelverkType.isOneOf(AP2016),
-                        ifTrue = ", eller ha tjent opp inntektspensjon.",
-                        ifFalse = "."
+            val under3Aar = avslagsbegrunnelse == UNDER_3_AR_TT
+            val under5Aar = avslagsbegrunnelse == UNDER_5_AR_TT
+            val erAp2016 = regelverkType == AP2016
+            if(under3Aar || under5Aar) {
+                paragraph {
+                    text(
+                        Bokmal to "For å ha rett til alderspensjon må du ha minst ",
+                        Nynorsk to "For å ha rett til alderspensjon må du ha minst ",
+                        English to "To be eligible for retirement pension, you must have at least ",
                     )
-                            + " Det har du ikke, og derfor har vi avslått søknaden din.",
-                    Nynorsk to "For å ha rett til alderspensjon må du ha minst ".expr()
-                            + ifElse(avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT), ifTrue = "tre", ifFalse = "fem")
-                            + " års trygdetid".expr()
-                            + ifElse(
-                        regelverkType.isOneOf(AP2016),
-                        ifTrue = ", eller ha tent opp inntektspensjon.",
-                        ifFalse = "."
-                    )
-                            + " Det har du ikkje, og derfor har vi avslått søknaden din.",
 
-                    English to "To be eligible for retirement pension, you must have at least ".expr()
-                            + ifElse(avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT), ifTrue = "three", ifFalse = "five")
-                            + " years of national insurance coverage".expr()
-                            + ifElse(
-                        regelverkType.isOneOf(AP2016),
-                        ifTrue = ", or have had a pensionable income.",
-                        ifFalse = "."
+                    if(under3Aar) {
+                        text(Bokmal to "tre", Nynorsk to "tre", English to "three")
+                    } else {
+                        text(Bokmal to "fem", Nynorsk to "fem", English to "five")
+                    }
+
+                    text(
+                        Bokmal to " års trygdetid",
+                        Nynorsk to " års trygdetid",
+                        English to " years of national insurance coverage",
                     )
-                            + " You do not meet this requirement, therefore we have declined your application.",
-                )
+                    if(erAp2016) {
+                        text(
+                            Bokmal to ", eller ha tjent opp inntektspensjon",
+                            Nynorsk to ", eller ha tent opp inntektspensjon",
+                            English to ", or have had a pensionable income",
+                        )
+                    }
+                    text(
+                        Bokmal to ". Det har du ikke, og derfor har vi avslått søknaden din.",
+                        Nynorsk to ". Det har du ikkje, og derfor har vi avslått søknaden din.",
+                        English to ". You do not meet this requirement, therefore we have declined your application.",
+                    )
+                }
             }
         }
     }
@@ -175,96 +181,100 @@ object AvslagForLiteTrygdetidAP {
         val regelverkType: Expression<AlderspensjonRegelverkType>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-            paragraph {
-                textExpr(
-                    Bokmal to "For å ha rett til alderspensjon må du til sammen ha minst ".expr()
-                            + ifElse(
-                        avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT),
-                        ifTrue = "tre",
-                        ifFalse = "fem"
-                    ) + " års trygdetid i Norge og annet ",
-                    Nynorsk to "For å ha rett til alderspensjon må du til saman ha minst ".expr()
-                            + ifElse(
-                        avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT),
-                        ifTrue = "tre",
-                        ifFalse = "fem"
-                    ) + " års trygdetid i Noreg og anna ",
-                    English to "To be eligible for retirement pension, you must have in total at least ".expr()
-                            + ifElse(
-                        avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT),
-                        ifTrue = "three",
-                        ifFalse = "five"
-                    ) + " years of national insurance coverage in Norway and "
-                )
-                showIf(erEOSland and not(erAvtaleland)) {
-                    textExpr(
-                        Bokmal to "EØS-land".expr()
-                                + ifElse(
-                            regelverkType.isOneOf(AP2016),
-                            ifTrue = ", eller ha tjent opp inntektspensjon. ",
-                            ifFalse = ". "
-                        ),
-                        Nynorsk to "EØS-land".expr()
-                                + ifElse(
-                            regelverkType.isOneOf(AP2016),
-                            ifTrue = ", eller ha tent opp inntektspensjon. ",
-                            ifFalse = ". "
-                        ),
-                        English to "an other EEA country".expr()
-                                + ifElse(
-                            regelverkType.isOneOf(AP2016),
-                            ifTrue = ", or have had a pensionable income. ",
-                            ifFalse = ". "
-                        )
+            showIf(avslagsbegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT)) {
+
+                paragraph {
+                    text(
+                        Bokmal to "For å ha rett til alderspensjon må du til sammen ha minst ",
+                        Nynorsk to "For å ha rett til alderspensjon må du til saman ha minst ",
+                        English to "To be eligible for retirement pension, you must have in total at least ",
                     )
-                }.orShowIf(erAvtaleland and not(erEOSland)) {
-                    textExpr(
-                        Bokmal to "avtaleland".expr()
-                                + ifElse(
-                            regelverkType.isOneOf(AP2016),
-                            ifTrue = ", eller ha tjent opp inntektspensjon. ",
-                            ifFalse = ". "
-                        ),
-                        Nynorsk to "avtaleland".expr()
-                                + ifElse(
-                            regelverkType.isOneOf(AP2016),
-                            ifTrue = ", eller ha tent opp inntektspensjon. ",
-                            ifFalse = ". "
-                        ),
-                        English to "an other signatory country".expr()
-                                + ifElse(
-                            regelverkType.isOneOf(AP2016),
-                            ifTrue = ", or have had a pensionable income. ",
-                            ifFalse = ". "
-                        )
+                    showIf(avslagsbegrunnelse.equalTo(UNDER_3_AR_TT)) {
+                        text(Bokmal to "tre", Nynorsk to "tre", English to "three")
+                    }.orShowIf(avslagsbegrunnelse.equalTo(UNDER_5_AR_TT)){
+                        text(Bokmal to "fem", Nynorsk to "fem", English to "five")
+                    }
+                    text(
+                        Bokmal to " års trygdetid i Norge og annet ",
+                        " års trygdetid i Noreg og anna ",
+                        " years of national insurance coverage in Norway and ",,
+                        Nynorsk to " års trygdetid i Norge og annet ",
+                        " års trygdetid i Noreg og anna ",
+                        " years of national insurance coverage in Norway and ",,
+                        English to " års trygdetid i Norge og annet ",
+                        " års trygdetid i Noreg og anna ",
+                        " years of national insurance coverage in Norway and ",,
                     )
-                }.orShowIf(erEOSland and erAvtaleland) {
-                    textExpr(
-                        Bokmal to "EØS- og avtaleland".expr()
-                                + ifElse(
-                            regelverkType.isOneOf(AP2016),
-                            ifTrue = ", eller ha tjent opp inntektspensjon. ",
-                            ifFalse = ". "
-                        ),
-                        Nynorsk to "EØS- og avtaleland".expr()
-                                + ifElse(
-                            regelverkType.isOneOf(AP2016),
-                            ifTrue = ", eller ha tent opp inntektspensjon. ",
-                            ifFalse = ". "
-                        ),
-                        English to "other EEA and signatory countries".expr()
-                                + ifElse(
-                            regelverkType.isOneOf(AP2016),
-                            ifTrue = ", or have had a pensionable income. ",
-                            ifFalse = ". "
+                    showIf(erEOSland and not(erAvtaleland)) {
+                        textExpr(
+                            Bokmal to "EØS-land".expr()
+                                    + ifElse(
+                                regelverkType.isOneOf(AP2016),
+                                ifTrue = ", eller ha tjent opp inntektspensjon. ",
+                                ifFalse = ". "
+                            ),
+                            Nynorsk to "EØS-land".expr()
+                                    + ifElse(
+                                regelverkType.isOneOf(AP2016),
+                                ifTrue = ", eller ha tent opp inntektspensjon. ",
+                                ifFalse = ". "
+                            ),
+                            English to "an other EEA country".expr()
+                                    + ifElse(
+                                regelverkType.isOneOf(AP2016),
+                                ifTrue = ", or have had a pensionable income. ",
+                                ifFalse = ". "
+                            )
                         )
+                    }.orShowIf(erAvtaleland and not(erEOSland)) {
+                        textExpr(
+                            Bokmal to "avtaleland".expr()
+                                    + ifElse(
+                                regelverkType.isOneOf(AP2016),
+                                ifTrue = ", eller ha tjent opp inntektspensjon. ",
+                                ifFalse = ". "
+                            ),
+                            Nynorsk to "avtaleland".expr()
+                                    + ifElse(
+                                regelverkType.isOneOf(AP2016),
+                                ifTrue = ", eller ha tent opp inntektspensjon. ",
+                                ifFalse = ". "
+                            ),
+                            English to "an other signatory country".expr()
+                                    + ifElse(
+                                regelverkType.isOneOf(AP2016),
+                                ifTrue = ", or have had a pensionable income. ",
+                                ifFalse = ". "
+                            )
+                        )
+                    }.orShowIf(erEOSland and erAvtaleland) {
+                        textExpr(
+                            Bokmal to "EØS- og avtaleland".expr()
+                                    + ifElse(
+                                regelverkType.isOneOf(AP2016),
+                                ifTrue = ", eller ha tjent opp inntektspensjon. ",
+                                ifFalse = ". "
+                            ),
+                            Nynorsk to "EØS- og avtaleland".expr()
+                                    + ifElse(
+                                regelverkType.isOneOf(AP2016),
+                                ifTrue = ", eller ha tent opp inntektspensjon. ",
+                                ifFalse = ". "
+                            ),
+                            English to "other EEA and signatory countries".expr()
+                                    + ifElse(
+                                regelverkType.isOneOf(AP2016),
+                                ifTrue = ", or have had a pensionable income. ",
+                                ifFalse = ". "
+                            )
+                        )
+                    }
+                    text(
+                        Bokmal to "Det har du ikke, og derfor har vi avslått søknaden din.",
+                        Nynorsk to "Det har du ikkje, og derfor har vi avslått søknaden din.",
+                        English to "You do not meet this requirement, therefore we have declined your application.",
                     )
                 }
-                text(
-                    Bokmal to "Det har du ikke, og derfor har vi avslått søknaden din.",
-                    Nynorsk to "Det har du ikkje, og derfor har vi avslått søknaden din.",
-                    English to "You do not meet this requirement, therefore we have declined your application.",
-                )
             }
         }
     }

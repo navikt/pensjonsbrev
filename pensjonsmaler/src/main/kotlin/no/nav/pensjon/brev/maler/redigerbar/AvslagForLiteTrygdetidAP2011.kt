@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.ALDER
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -67,7 +67,7 @@ object AvslagForLiteTrygdetidAP2011 : RedigerbarTemplate<AvslagForLiteTrygdetidA
         val trygdeperioderAvtaleland = pesysData.trygdeperioderAvtaleland
         val trygdeperioderEOSland = pesysData.trygdeperioderEOSland
         val trygdeperioderNorge = pesysData.trygdeperioderNorge
-        val regelverkType = AlderspensjonRegelverkType.AP2011.expr()
+        val regelverkType = AP2011.expr()
 
 
         title {
@@ -99,9 +99,9 @@ object AvslagForLiteTrygdetidAP2011 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                     )
                 )
 
-            }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT)) {
+            }.orShowIf(avslagsBegrunnelse.equalTo(UNDER_3_AR_TT)) {
                 showIf(not(erAvtaleland) and not(erEOSland)) { // Mindre enn tre års trygdetid - folketrygdsak:
-                    includePhrase(RettTilAPFolketrygdsak(avslagsBegrunnelse, regelverkType))
+                    includePhrase(RettTilAPFolketrygdsak(UNDER_3_AR_TT, AP2011))
                     includePhrase(AvslagUnder1aar3aar5aarTT)
                     includePhrase(AvslagAP2011FolketrygdsakHjemmel)
 
@@ -131,7 +131,7 @@ object AvslagForLiteTrygdetidAP2011 : RedigerbarTemplate<AvslagForLiteTrygdetidA
             }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_5_AR_TT)) {
 
                 showIf(not(erAvtaleland) and not(erEOSland)) { // Mindre enn fem års trygdetid - folketrygdsak:
-                    includePhrase(RettTilAPFolketrygdsak(avslagsBegrunnelse, regelverkType = regelverkType))
+                    includePhrase(RettTilAPFolketrygdsak(UNDER_5_AR_TT, AP2011))
                     includePhrase(AvslagUnder1aar3aar5aarTT)
                     includePhrase(AvslagAP2011FolketrygdsakHjemmel)
 

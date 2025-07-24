@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.ALDER
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -62,7 +63,7 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
         val trygdeperioderAvtaleland = pesysData.trygdeperioderAvtaleland
         val trygdeperioderEOSland = pesysData.trygdeperioderEOSland
         val trygdeperioderNorge = pesysData.trygdeperioderNorge
-        val regelverkType = AlderspensjonRegelverkType.AP2016.expr()
+        val regelverkType = AP2016.expr()
 
         title {
             text(
@@ -100,10 +101,7 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
 
                     showIf(not(erAvtaleland) and not(erEOSland)) { // Mindre enn tre års trygdetid - folketrygdsak:
                         includePhrase(
-                            AvslagForLiteTrygdetidAP.RettTilAPFolketrygdsak(
-                                avslagsBegrunnelse,
-                                regelverkType = regelverkType
-                            )
+                            AvslagForLiteTrygdetidAP.RettTilAPFolketrygdsak(UNDER_3_AR_TT, AP2016)
                         )
                         includePhrase(AvslagForLiteTrygdetidAP.AvslagUnder1aar3aar5aarTT)
 
@@ -111,9 +109,9 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                         includePhrase(AvslagForLiteTrygdetidAP.OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
                         includePhrase(
                             AvslagForLiteTrygdetidAP.RettTilAPMedEOSAvtalelandOg3aar5aarTT(
-                                avslagsBegrunnelse,
-                                erAvtaleland,
-                                erEOSland,
+                                avslagsbegrunnelse = avslagsBegrunnelse,
+                                erAvtaleland = erAvtaleland,
+                                erEOSland = erEOSland,
                                 regelverkType = regelverkType
                             ),
                         )
@@ -140,12 +138,7 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
 
                     showIf(not(erAvtaleland) and not(erEOSland)) { // Mindre enn fem års trygdetid - folketrygdsak:
 
-                        includePhrase(
-                            AvslagForLiteTrygdetidAP.RettTilAPFolketrygdsak(
-                                avslagsBegrunnelse,
-                                regelverkType = regelverkType
-                            )
-                        )
+                        includePhrase(AvslagForLiteTrygdetidAP.RettTilAPFolketrygdsak(UNDER_5_AR_TT, AP2016))
                         includePhrase(AvslagForLiteTrygdetidAP.AvslagUnder1aar3aar5aarTT)
 
                         // avslagAP2016Under5aarHjemmel
@@ -194,7 +187,6 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                             erAvtaleland = erAvtaleland,
                             erEOSland = erEOSland,
                             regelverkType = regelverkType
-
                         )
                     )
                 }
