@@ -88,7 +88,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
             paragraph {
                 textExpr(
                     Bokmal to "Vi har fått melding om at du har flyttet til ".expr() + brukersBostedsland + ".",
-                    Nynorsk to "Vi har fått melding om at du har flytta ti ".expr() + brukersBostedsland + ".",
+                    Nynorsk to "Vi har fått melding om at du har flytta til ".expr() + brukersBostedsland + ".",
                     English to "We have received notice that you have moved to ".expr() + brukersBostedsland + "."
                 )
             }
