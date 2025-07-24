@@ -267,9 +267,9 @@ object Skatteplikt : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
-                Bokmal to "Spørsmål om skatteplikt til Norge etter flytting til utlandet må rettes til skatteetaten." +
+                Bokmal to "Spørsmål om skatteplikt til Norge etter flytting til utlandet må rettes til Skatteetaten." +
                         " Du må selv avklare spørsmål om skatteplikt til det landet du bor i med skattemyndighetene der.",
-                Nynorsk to "Spørsmål om skatteplikt til Noreg etter flytting til utlandet må rettast til skatteetaten. " +
+                Nynorsk to "Spørsmål om skatteplikt til Noreg etter flytting til utlandet må rettast til Skatteetaten. " +
                         " Du må sjølv avklare spørsmål om skatteplikt til det landet du bur i med skatteorgana der.",
                 English to "Questions about tax liability to Norway after moving abroad must be directed to the Norwegian Tax Administration." +
                         " You must clarify questions about tax liability to your country of residence with the local tax authorities."
