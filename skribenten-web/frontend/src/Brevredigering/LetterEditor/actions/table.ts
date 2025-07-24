@@ -7,7 +7,7 @@ import { LITERAL, PARAGRAPH } from "~/types/brevbakerTypes";
 import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { newTable } from "../model/tableHelpers";
-import { addElements, newColSpec, newRow, text } from "./common";
+import { addElements, newColSpec, newRow, removeElements, text } from "./common";
 import { updateLiteralText } from "./updateContentText";
 
 /**
@@ -58,7 +58,7 @@ export const removeTableRow = produce<LetterEditorState>((draft) => {
   if (!selection || selection.rowIndex === undefined || selection.rowIndex < 0) return;
 
   const table = draft.redigertBrev.blocks[selection.blockIndex].content[selection.contentIndex] as Table;
-  table.rows.splice(selection.rowIndex, 1);
+  removeElements(selection.rowIndex, 1, { content: table.rows, deletedContent: table.deletedRows, id: table.id });
 
   draft.isDirty = true;
 });
@@ -80,7 +80,12 @@ export const removeTable = produce<LetterEditorState>((draft) => {
   const selection = draft.tableSelection ?? draft.contextMenuCell;
   if (!selection) return;
 
-  draft.redigertBrev.blocks[selection.blockIndex].content.splice(selection.contentIndex, 1);
+  const parentBlock = draft.redigertBrev.blocks[selection.blockIndex];
+  removeElements(selection.contentIndex, 1, {
+    content: parentBlock.content,
+    deletedContent: parentBlock.deletedContent,
+    id: parentBlock.id,
+  });
   draft.isDirty = true;
 });
 
@@ -90,7 +95,8 @@ export const insertTableColumnLeft: Action<LetterEditorState, []> = produce((dra
 
   const table = draft.redigertBrev.blocks[selection.blockIndex].content[selection.contentIndex] as Table;
   const at = selection.colIndex;
-
+  // TODO: When Header/Row get deleted* arrays (e.g. header.deletedColSpecs, row.deletedCells),
+  //replace these splices with addElements/removeElements to keep deleted* in sync.
   table.header.colSpec.splice(at, 0, ...newColSpec(1));
   table.rows.forEach((row) => row.cells.splice(at, 0, newRow(1).cells[0]));
   updateDefaultHeaderLabels(table);
@@ -103,7 +109,8 @@ export const insertTableColumnRight: Action<LetterEditorState, []> = produce((dr
 
   const table = draft.redigertBrev.blocks[selection.blockIndex].content[selection.contentIndex] as Table;
   const at = selection.colIndex + 1;
-
+  // TODO: When Header/Row get deleted* arrays (e.g. header.deletedColSpecs, row.deletedCells),
+  // replace these splices with addElements/removeElements to keep deleted* in sync.
   table.header.colSpec.splice(at, 0, ...newColSpec(1));
   table.rows.forEach((row) => row.cells.splice(at, 0, newRow(1).cells[0]));
   updateDefaultHeaderLabels(table);
@@ -115,7 +122,7 @@ export const insertTableRowAbove: Action<LetterEditorState, []> = produce((draft
   if (!selection || selection.rowIndex === undefined) return;
 
   const table = draft.redigertBrev.blocks[selection.blockIndex].content[selection.contentIndex] as Table;
-  table.rows.splice(selection.rowIndex, 0, newRow(table.header.colSpec.length));
+  addElements([newRow(table.header.colSpec.length)], selection.rowIndex, table.rows, table.deletedRows);
 
   draft.isDirty = true;
 });
@@ -125,7 +132,7 @@ export const insertTableRowBelow: Action<LetterEditorState, []> = produce((draft
   if (!selection || selection.rowIndex === undefined) return;
 
   const table = draft.redigertBrev.blocks[selection.blockIndex].content[selection.contentIndex] as Table;
-  table.rows.splice(selection.rowIndex + 1, 0, newRow(table.header.colSpec.length));
+  addElements([newRow(table.header.colSpec.length)], selection.rowIndex + 1, table.rows, table.deletedRows);
 
   draft.isDirty = true;
 });
