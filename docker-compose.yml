@@ -47,6 +47,7 @@ services:
       - ./skribenten-backend/secrets/azuread.env
       - ./skribenten-backend/secrets/unleash.env
     environment:
+      - PORT=8080
       - NAIS_APP_NAME=skribenten-backend
       - DB_HOST=skribenten-backend-db
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5017 -Dconfig.resource=application-local.conf
