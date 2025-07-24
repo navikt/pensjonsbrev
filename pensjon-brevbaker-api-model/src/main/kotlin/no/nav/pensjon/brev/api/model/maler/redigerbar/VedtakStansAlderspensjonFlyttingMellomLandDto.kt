@@ -22,10 +22,10 @@ data class VedtakStansAlderspensjonFlyttingMellomLandDto(
 
     data class PesysData(
         val brukersBostedsland: String?,  // v3.Person
-        val eksportForbudKode: EksportForbudKode?, // Hentes fra enten v1.InngangOgEksportVurdering, eller hvis avdød finnes - hentes fra v1.InngangOgEksportVurderingAvdod
+        val eksportForbudKode: EksportForbudKode?, // Hentes fra v1.InngangOgEksportVurdering
+        val eksportForbudKodeAvdoed: EksportForbudKode?, //, Hvis avdød finnes - hentes fra v1.InngangOgEksportVurderingAvdod
         val garantipensjonInnvilget: Boolean,  // AlderspensjonVedVirk - v4.Alderspensjon
         val harAvdod: Boolean, // Tom avdodFnr i v1.Avdod? v1.Avdod brukes ikke til malen i doksys per i dag.
-        val harEksportForbud: Boolean, // Hvis en eksportForbudKode finnes - hentes fra v1.InngangOgEksportVurdering, eller hvis avdød finnes - hentes fra v1.InngangOgEksportVurderingAvdod
         val kravVirkDatoFom: LocalDate,  // v3.Krav
         val minst20ArTrygdetid: Boolean, // hentes fra v1.InngangOgEksportVurdering, eller hvis avdød finnes - hentes fra v1.InngangOgEksportVurderingAvdod
         val regelverkType: AlderspensjonRegelverkType,  // AlderspensjonVedVirk - v4.Alderspensjon
