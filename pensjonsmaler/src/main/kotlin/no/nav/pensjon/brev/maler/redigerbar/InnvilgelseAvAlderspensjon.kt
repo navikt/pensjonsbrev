@@ -105,7 +105,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         )
     ) {
         val afpPrivatResultatFellesKontoret = pesysData.afpPrivatResultatFellesKontoret_safe.ifNull(then = false)
-        val avdodNavn = pesysData.avdodNavn_safe.fritekstIfNull("Avdødes navn")
+        val avdodNavn = pesysData.avdodNavn_safe.ifNull(fritekst("Avdødes navn"))
         val avtalelandNavn = pesysData.avtalelandNavn_safe
         val borIAvtaleland = pesysData.borIAvtaleland
         val borINorge = pesysData.borINorge
@@ -117,7 +117,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         val erEOSLand = pesysData.erEOSLand
         val erEksportberegnet = pesysData.alderspensjonVedVirk.erEksportberegnet
         val erForstegangsbehandlingNorgeUtland = pesysData.erForstegangsbehandletNorgeUtland
-        val faktiskBostedsland = pesysData.faktiskBostedsland_safe.fritekstIfNull("Bostedsland")
+        val faktiskBostedsland = pesysData.faktiskBostedsland_safe.ifNull(fritekst("Bostedsland"))
         val fullTrygdetid = pesysData.fullTrygdtid
         val garantipensjonInnvilget = pesysData.alderspensjonVedVirk.garantipensjonInnvilget
         val garantitilleggInnvilget = pesysData.alderspensjonVedVirk.garantitilleggInnvilget

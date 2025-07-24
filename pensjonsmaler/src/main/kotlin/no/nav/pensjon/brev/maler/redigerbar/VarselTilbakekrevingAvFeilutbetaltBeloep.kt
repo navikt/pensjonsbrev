@@ -47,7 +47,7 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
             brevtype = INFORMASJONSBREV
         )
     ) {
-        val sakstype = pesysData.sakstype.format().fritekstIfNull("ytelse")
+        val sakstype = pesysData.sakstype.format().ifNull(fritekst("ytelse"))
         title {
             textExpr(
                 Bokmal to "Vi vurderer om du må betale tilbake ".expr() + sakstype,

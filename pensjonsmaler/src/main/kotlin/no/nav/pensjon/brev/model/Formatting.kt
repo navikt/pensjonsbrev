@@ -1,9 +1,15 @@
 package no.nav.pensjon.brev.model
 
-import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.api.model.BorMedSivilstand
+import no.nav.pensjon.brev.api.model.MetaforceSivilstand
+import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.template.BinaryOperation
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.LocalizedFormatter
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.safe
 
 @JvmName("formatBormedSivilstandTabell")
 fun Expression<BorMedSivilstand>.tableFormat() = format(formatter = FormatBorMedSivilstandTabell)
@@ -120,13 +126,14 @@ private fun borMedSivilstand(sivilstand: BorMedSivilstand, language: Language, b
         } else this
     }
 
-@JvmName("formatSakstype")
-fun Expression<Sakstype?>.format(): Expression<String?> = SaksType().invoke(this, Expression.FromScope.Language)
+fun Expression<Sakstype>.format(): Expression<String?> = SakstypeNavn(this, Expression.FromScope.Language)
 
-class SaksType() : BinaryOperation<Sakstype?, Language, String?>() {
-    override fun apply(first: Sakstype?, second: Language): String? = if(first != null) sakstype(first, second) else null
-    override fun stableHashCode(): Int = "SaksType".hashCode()
+@JvmName("formatSakstypeNullable")
+fun Expression<Sakstype?>.format(): Expression<String?> = safe(SakstypeNavn, Expression.FromScope.Language)
 
+object SakstypeNavn : BinaryOperation<Sakstype, Language, String?>() {
+    override fun apply(first: Sakstype, second: Language): String? = sakstype(first, second)
+    override fun stableHashCode(): Int = "SakstypeNavn".hashCode()
 
     private fun sakstype(sakstype: Sakstype, language: Language): String? =
         when(sakstype) {
