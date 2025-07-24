@@ -2,10 +2,10 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 
 import type { LiteralValue } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
+import { isItemList, isLiteral } from "../model/utils";
 import { cleanseText, isTable, isTableContentIndex } from "./common";
 
 export const updateContentText: Action<LetterEditorState, [literalIndex: LiteralIndex, text: string]> = produce(
@@ -18,7 +18,7 @@ export const updateContentText: Action<LetterEditorState, [literalIndex: Literal
       // Here itmeIndex === -1 means the table header row.
       if (focus.itemIndex === -1) {
         const colSpec = paraContent.header.colSpec[focus.itemContentIndex];
-        const literal = colSpec?.headerContent.text.find((txt) => txt.type === LITERAL);
+        const literal = colSpec?.headerContent.text.find((txt) => isLiteral(txt));
         if (literal) {
           updateLiteralText(literal, text);
           draft.isDirty = true;
@@ -29,18 +29,18 @@ export const updateContentText: Action<LetterEditorState, [literalIndex: Literal
       const row = paraContent.rows[focus.itemIndex];
       const cell = row?.cells[focus.itemContentIndex];
       const literal = cell?.text[0];
-      if (literal?.type === LITERAL) {
+      if (isLiteral(literal)) {
         updateLiteralText(literal, text);
         draft.isDirty = true;
       }
       return;
-    } else if (paraContent.type === LITERAL) {
+    } else if (isLiteral(paraContent)) {
       updateLiteralText(paraContent, text);
       draft.isDirty = true;
-    } else if (paraContent.type === ITEM_LIST) {
+    } else if (isItemList(paraContent)) {
       if ("itemIndex" in literalIndex) {
         const itemContent = paraContent.items[literalIndex.itemIndex].content[literalIndex.itemContentIndex];
-        if (itemContent.type === LITERAL) {
+        if (isLiteral(itemContent)) {
           updateLiteralText(itemContent, text);
           draft.isDirty = true;
         } else {
