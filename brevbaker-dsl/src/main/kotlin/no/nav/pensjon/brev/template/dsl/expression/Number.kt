@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.dsl.expression.toKroner
 import no.nav.pensjon.brev.template.expression.IntToKroner
 import no.nav.pensjon.brev.template.expression.IntToYear
 import no.nav.pensjon.brevbaker.api.model.IntValue
@@ -27,8 +26,15 @@ fun Expression<Int>.toYear(): Expression<Year> =
 fun Expression<Double>.format(scale: Int = 2): Expression<String> =
     format(formatter = LocalizedFormatter.DoubleFormat(scale))
 
+@JvmName("formatDoubleNullable")
+fun Expression<Double?>.format(scale: Int = 2): Expression<String?> =
+    format(formatter = LocalizedFormatter.DoubleFormat(scale))
+
 @JvmName("formatInt")
 fun Expression<Int>.format(): Expression<String> = format(formatter = LocalizedFormatter.IntFormat)
+
+@JvmName("formatIntOrNull")
+fun Expression<Int?>.format(): Expression<String?> = format(formatter = LocalizedFormatter.IntFormat)
 
 operator fun Expression<Int>.plus(other: Int) = plus(other.expr())
 

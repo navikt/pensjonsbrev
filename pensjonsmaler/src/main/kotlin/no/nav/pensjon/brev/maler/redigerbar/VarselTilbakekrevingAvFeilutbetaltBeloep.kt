@@ -14,8 +14,8 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselTilbakekrevingAvFeil
 import no.nav.pensjon.brev.maler.fraser.common.Constants.BESKJED_TIL_NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ETTERSENDELSE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.common.Redigerbar.SaksType
 import no.nav.pensjon.brev.maler.fraser.vedlegg.vedleggVarselTilbakekreving
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -47,42 +47,34 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
             brevtype = INFORMASJONSBREV
         )
     ) {
+        val sakstype = pesysData.sakstype.format().fritekstIfNull("ytelse")
         title {
-            text(
-                Bokmal to "Vi vurderer om du må betale tilbake ",
-                Nynorsk to "Vi vurderer om du må betale tilbake ",
-                English to "We are considering demanding repayment of incorrectly paid ",
+            textExpr(
+                Bokmal to "Vi vurderer om du må betale tilbake ".expr() + sakstype,
+                Nynorsk to "Vi vurderer om du må betale tilbake ".expr() + sakstype,
+                English to "We are considering demanding repayment of incorrectly paid ".expr() + sakstype,
             )
-            includePhrase(SaksType(pesysData.sakstype))
         }
         outline {
             paragraph {
+                val dato = fritekst("dato")
                 textExpr(
                     Bokmal to "Vi viser til vedtaket vårt ".expr()
                             + felles.dokumentDato.format() +
                             ". Du har fått " + fritekst("beløp") +
-                            " kroner for mye utbetalt i ",
+                            " kroner for mye utbetalt i " + sakstype + " fra og med ".expr()
+                            + dato + " til og med " + dato + ".",
 
                     Nynorsk to "Vi viser til vedtaket vårt ".expr()
                             + felles.dokumentDato.format() +
                             ". Du har fått " + fritekst("beløp") +
-                            " kroner for mykje utbetalt i ",
+                            " kroner for mykje utbetalt i " + sakstype + " frå og med ".expr()
+                            + dato + " til og med " + dato + ".",
 
                     English to "We refer to our decision dated ".expr()
-                            + felles.dokumentDato.format() +
-                            ". You have received NOK " + fritekst("beløp") +
-                            " too much in ",
-                )
-
-                includePhrase(SaksType(pesysData.sakstype))
-
-                textExpr(
-                    Bokmal to " fra og med ".expr() + fritekst("dato") + " til og med " +
-                            fritekst("dato") + ".",
-                    Nynorsk to " frå og med ".expr() + fritekst("dato") + " til og med " +
-                            fritekst("dato") + ".",
-                    English to " starting from ".expr() + fritekst("dato") + " up to and including " +
-                            fritekst("dato") + ".",
+                            + felles.dokumentDato.format() + ". You have received NOK " + fritekst("beløp") +
+                            " too much in " + sakstype + " starting from ".expr() + dato +
+                            " up to and including " + dato + ".",
                 )
             }
 
@@ -212,7 +204,7 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
                     English to "How to make a statement",
                 )
             }
-            showIf(pesysData.sakstype.equalTo(Sakstype.ALDER)) {
+            showIf(pesysData.sakstype.equalTo(ALDER)) {
                 paragraph {
                     textExpr(
                         Bokmal to "Du kan sende uttalelsen din ved å logge deg inn på Din Pensjon og velge ".expr() + quoted("Kontakt Nav om pensjon") +", eller logge deg inn på $BESKJED_TIL_NAV_URL og velge "+ quoted("Send beskjed til Nav") +". Du kan også sende uttalelsen din til oss i posten. Adressen finner du på $ETTERSENDELSE_URL.",

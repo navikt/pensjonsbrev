@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.BESKJED_TIL_NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ETTERSENDELSE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -49,39 +50,14 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
         )
     ) {
         val sakstype = pesysData.sakstype
+        val sakstypeText = sakstype.format().fritekstIfNull("ytelse")
         title {
             showIf(saksbehandlerValg.tittelValg.isOneOf(VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett)) {
-                text(
-                    Bokmal to "Vi vurderer om du fortsatt har rett til ",
-                    Nynorsk to "Vi vurderer om du framleis har rett til ",
-                    English to "We are considering if you are still entitled to "
+                textExpr(
+                    Bokmal to "Vi vurderer om du fortsatt har rett til ".expr() + sakstypeText,
+                    Nynorsk to "Vi vurderer om du framleis har rett til ".expr() + sakstypeText,
+                    English to "We are considering if you are still entitled to ".expr() + sakstypeText,
                 )
-                showIf(sakstype.isOneOf(AFP)) {
-                    text(
-                        Bokmal to "AFP",
-                        Nynorsk to "AFP",
-                        English to "contractual pension (AFP)",
-                    )
-                }.orShowIf(sakstype.isOneOf(AFP_PRIVAT)) {
-                    text(
-                        Bokmal to "AFP i privat sektor",
-                        Nynorsk to "AFP i privat sektor",
-                        English to "contractual pension (AFP) in the private sector",
-                    )
-                }.orShowIf(sakstype.isOneOf(ALDER)) {
-                    text(
-                        Bokmal to "alderspensjon",
-                        Nynorsk to "alderspensjon",
-                        English to "retirement pension",
-                    )
-                }.orShow {
-                    val ytelse = fritekst("ytelse")
-                    textExpr(
-                        Bokmal to ytelse,
-                        Nynorsk to ytelse,
-                        English to ytelse,
-                    )
-                }
             }.orShowIf(saksbehandlerValg.tittelValg.isOneOf(VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon)) {
                 text(
                     Bokmal to "Vi vurderer om pensjonen din skal reduseres",
@@ -94,81 +70,20 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
         outline {
             showIf(saksbehandlerValg.tittelValg.isOneOf(VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett)) {
                 paragraph {
-                    text(
-                        Bokmal to "Dette er et varsel om at vi vurderer om du fortsatt har rett til ",
-                        Nynorsk to "Dette er eit varsel om at vi vurderer om du framleis har rett til ",
-                        English to "This letter is a notification that we are considering if you are still entitled to receive ",
+                    textExpr(
+                        Bokmal to "Dette er et varsel om at vi vurderer om du fortsatt har rett til " .expr() + sakstypeText + ".",
+                        Nynorsk to "Dette er eit varsel om at vi vurderer om du framleis har rett til " .expr() + sakstypeText + ".",
+                        English to "This letter is a notification that we are considering if you are still entitled to receive " .expr() + sakstypeText + ".",
                     )
-                    showIf(sakstype.isOneOf(AFP)) {
-                        text(
-                            Bokmal to "AFP",
-                            Nynorsk to "AFP",
-                            English to "contractual pension (AFP)",
-                        )
-                    }.orShowIf(sakstype.isOneOf(AFP_PRIVAT)) {
-                        text(
-                            Bokmal to "AFP i privat sektor",
-                            Nynorsk to "AFP i privat sektor",
-                            English to "contractual pension (AFP) in the private sector",
-                        )
-                    }.orShowIf(sakstype.isOneOf(ALDER)) {
-                        text(
-                            Bokmal to "alderspensjon",
-                            Nynorsk to "alderspensjon",
-                            English to "retirement pension",
-                        )
-                    }.orShow {
-                        val ytelse = fritekst("ytelse")
-                        textExpr(
-                            Bokmal to ytelse,
-                            Nynorsk to ytelse,
-                            English to ytelse,
-                        )
-                    }
-                    text(
-                        Bokmal to ".",
-                        Nynorsk to ".",
-                        English to ".",
-                    )
+
                 }
             }
             showIf(saksbehandlerValg.tittelValg.isOneOf(VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingReduksjon)) {
                 paragraph {
-                    text(
-                        Bokmal to "Dette er et varsel om at vi vurderer om din ",
-                        Nynorsk to "Dette er eit varsel om at vi vurderer om din ",
-                        English to "This letter is a notification that we are considering if your ",
-                    )
-                    showIf(sakstype.isOneOf(AFP)) {
-                        text(
-                            Bokmal to "AFP",
-                            Nynorsk to "AFP",
-                            English to "contractual pension (AFP)",
-                        )
-                    }.orShowIf(sakstype.isOneOf(AFP_PRIVAT)) {
-                        text(
-                            Bokmal to "AFP i privat sektor",
-                            Nynorsk to "AFP i privat sektor",
-                            English to "contractual pension (AFP) in the private sector",
-                        )
-                    }.orShowIf(sakstype.isOneOf(ALDER)) {
-                        text(
-                            Bokmal to "alderspensjon",
-                            Nynorsk to "alderspensjon",
-                            English to "retirement pension",
-                        )
-                    }.orShow {
-                        val ytelse = fritekst("ytelse")
-                        textExpr(
-                            Bokmal to ytelse,
-                            Nynorsk to ytelse,
-                            English to ytelse,
-                        )
-                    }
-                    text(
-                        Bokmal to " skal beregnes på nytt på grunn av nye opplysninger.",
-                        Nynorsk to " skal bli berekna på nytt på grunn av nye opplysningar.",
-                        English to " will be recalculated based on new information.",
+                    textExpr(
+                        Bokmal to "Dette er et varsel om at vi vurderer om din ".expr() + sakstypeText + " skal beregnes på nytt på grunn av nye opplysninger.",
+                        Nynorsk to "Dette er eit varsel om at vi vurderer om din ".expr() + sakstypeText +" skal bli berekna på nytt på grunn av nye opplysningar.",
+                        English to "This letter is a notification that we are considering if your ".expr() + sakstypeText + " will be recalculated based on new information.",
                     )
                 }
             }
@@ -227,9 +142,11 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                 }
             }
             includePhrase(Felles.RettTilInnsynRedigerbarebrev)
-            showIf(sakstype.equalTo(FAM_PL)) {includePhrase(Felles.HarDuSpoersmaal.familiepleie)
-            }.orShowIf(sakstype.equalTo(GJENLEV)) {includePhrase(Felles.HarDuSpoersmaal.gjenlevende)
-            }.orShow{includePhrase(Felles.HarDuSpoersmaal.alder)}
+            showIf(sakstype.equalTo(FAM_PL)) {
+                includePhrase(Felles.HarDuSpoersmaal.familiepleie)
+            }.orShowIf(sakstype.equalTo(GJENLEV)) {
+                includePhrase(Felles.HarDuSpoersmaal.gjenlevende)
+            }.orShow { includePhrase(Felles.HarDuSpoersmaal.alder) }
         }
     }
 }
