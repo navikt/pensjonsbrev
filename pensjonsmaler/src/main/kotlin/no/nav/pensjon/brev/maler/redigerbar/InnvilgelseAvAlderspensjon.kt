@@ -1,13 +1,13 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.Sakstype.*
+import no.nav.pensjon.brev.api.model.Sakstype.ALDER
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.erEksportberegnet_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.erEksportberegnet
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.garantitilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.gjenlevenderettAnvendt
@@ -21,15 +21,16 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.uforeKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.eksportForbud_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.eksportTrygdeavtaleAvtaleland_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.eksportTrygdeavtaleEOS_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.harOppfyltVedSammenlegging_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.minst20ArBotidKap19Avdod_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.minst20ArTrygdetidKap20Avdod_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.minst20ArTrygdetid_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.eksportForbud
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.eksportTrygdeavtaleAvtaleland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.eksportTrygdeavtaleEOS
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.harOppfyltVedSammenlegging
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.minst20ArBotidKap19Avdod
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.minst20ArTrygdetid
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.InngangOgEksportVurderingSelectors.minst20ArTrygdetidKap20Avdod
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.afpPrivatResultatFellesKontoret_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.avdodFnr_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.avdodNavn_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.avtalelandNavn_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.borIAvtaleland
@@ -40,7 +41,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.faktiskBostedsland_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.fullTrygdtid
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.gjenlevendetilleggKap19_safe
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.harAvdod_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.harFlereBeregningsperioder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.inngangOgEksportVurdering
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.kravVirkDatoFom
@@ -61,60 +61,25 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.supplerendeStoenad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.AP2025TidligUttakHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.AfpPrivatErBrukt
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.BilateralAvtaleHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.EOSLandAvtaleHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.GarantitilleggHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.GjenlevendetilleggKap19Hjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.HjemlerInnvilgelseForAP2011AP2016
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoPensjonFraAndreAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPForeloepigBeregning
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPUttakEndr
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgetGjRettKap19For2024
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvAlderspensjon
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvGjenlevendetillegg
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilKlageUtland
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.SkjermingstilleggHjemmel
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.SkattAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.Skatteplikt
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.SoktAFPPrivatInfo
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenadAP
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.*
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
-import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
+import no.nav.pensjon.brev.maler.vedlegg.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.lessThan
-import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.or
-import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 // MF_000092 / AP_INNV_MAN
 /* Tekster og logikk mht ektefelletillegg og barnetillegg er fjernet fra brevmalen etter en samtale med Ingrid Strand:
@@ -140,19 +105,19 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         )
     ) {
         val afpPrivatResultatFellesKontoret = pesysData.afpPrivatResultatFellesKontoret_safe.ifNull(then = false)
-        val avdodNavn = pesysData.avdodNavn_safe.ifNull(then = "AVDØDSNAVN")
-        val avtalelandNavn = pesysData.avtalelandNavn_safe.ifNull(then = "AVTALELAND")
+        val avdodNavn = pesysData.avdodNavn_safe.ifNull(fritekst("Avdødes navn"))
+        val avtalelandNavn = pesysData.avtalelandNavn_safe
         val borIAvtaleland = pesysData.borIAvtaleland
         val borINorge = pesysData.borINorge
-        val eksportForbud = pesysData.inngangOgEksportVurdering.eksportForbud_safe.ifNull(then = false)
+        val eksportForbud = pesysData.inngangOgEksportVurdering.eksportForbud
         val eksportTrygdeavtaleAvtaleland =
-            pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland_safe.ifNull(then = false)
+            pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland
         val eksportTrygdeavtaleEOS =
-            pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleEOS_safe.ifNull(then = false)
+            pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleEOS
         val erEOSLand = pesysData.erEOSLand
-        val erEksportberegnet = pesysData.alderspensjonVedVirk.erEksportberegnet_safe.ifNull(then = false)
+        val erEksportberegnet = pesysData.alderspensjonVedVirk.erEksportberegnet
         val erForstegangsbehandlingNorgeUtland = pesysData.erForstegangsbehandletNorgeUtland
-        val faktiskBostedsland = pesysData.faktiskBostedsland_safe.ifNull(then = "BOSTEDSLAND")
+        val faktiskBostedsland = pesysData.faktiskBostedsland_safe.ifNull(fritekst("Bostedsland"))
         val fullTrygdetid = pesysData.fullTrygdtid
         val garantipensjonInnvilget = pesysData.alderspensjonVedVirk.garantipensjonInnvilget
         val garantitilleggInnvilget = pesysData.alderspensjonVedVirk.garantitilleggInnvilget
@@ -161,17 +126,15 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         val gjenlevendetilleggKap19 = pesysData.gjenlevendetilleggKap19_safe.ifNull(then = Kroner(0))
         val gjenlevendetilleggKap19Innvilget = pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget
         val godkjentYrkesskade = pesysData.alderspensjonVedVirk.godkjentYrkesskade
-        val harAvdod = pesysData.harAvdod_safe.ifNull(then = false)
+        val harAvdod = pesysData.avdodFnr_safe.notNull()
         val harFlereBeregningsperioder = pesysData.harFlereBeregningsperioder
         val harOppfyltVedSammenlegging =
-            pesysData.inngangOgEksportVurdering.harOppfyltVedSammenlegging_safe.ifNull(then = false)
+            pesysData.inngangOgEksportVurdering.harOppfyltVedSammenlegging
         val innvilgetFor67 = pesysData.alderspensjonVedVirk.innvilgetFor67
         val kravVirkDatoFom = pesysData.kravVirkDatoFom.format()
-        val minst20ArBotidKap19Avdod =
-            pesysData.inngangOgEksportVurdering.minst20ArBotidKap19Avdod_safe.ifNull(then = false)
-        val minst20ArTrygdetid = pesysData.inngangOgEksportVurdering.minst20ArTrygdetid_safe.ifNull(then = false)
-        val minst20ArTrygdetidKap20Avdod =
-            pesysData.inngangOgEksportVurdering.minst20ArTrygdetidKap20Avdod_safe.ifNull(then = false)
+        val minst20ArBotidKap19Avdod = pesysData.inngangOgEksportVurdering.minst20ArBotidKap19Avdod
+        val minst20ArTrygdetid = pesysData.inngangOgEksportVurdering.minst20ArTrygdetid
+        val minst20ArTrygdetidKap20Avdod = pesysData.inngangOgEksportVurdering.minst20ArTrygdetidKap20Avdod
         val norgeBehandlendeLand = pesysData.norgeBehandlendeLand
         val pensjonstilleggInnvilget = pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget
         val privatAFPErBrukt = pesysData.alderspensjonVedVirk.privatAFPErBrukt
@@ -229,9 +192,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                         Nynorsk to "Du får ".expr() + totalPensjon.format() + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom,
                         English to "You will receive NOK ".expr() + totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom
                     )
-                    showIf(
-                        uforeKombinertMedAlder and innvilgetFor67
-                    ) {
+                    showIf(uforeKombinertMedAlder and innvilgetFor67) {
                         // innvilgelseAPogUTInnledn -> Hvis løpende uføretrygd
                         text(
                             Bokmal to ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
@@ -267,9 +228,8 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             showIf(harAvdod) {
                 showIf(
                     saksbehandlerValg.harGjenlevenderett
-                            and gjenlevenderettAnvendt and not(gjenlevendetilleggKap19Innvilget) and not(
-                        gjenlevendetilleggInnvilget
-                    )
+                            and gjenlevenderettAnvendt and not(gjenlevendetilleggKap19Innvilget)
+                            and not(gjenlevendetilleggInnvilget)
                 ) {
                     paragraph {
                         textExpr(
@@ -448,17 +408,17 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             )
             includePhrase(
                 EOSLandAvtaleHjemmel(
-                    borINorge,
-                    eksportTrygdeavtaleEOS,
-                    erEOSLand,
+                    borINorge = borINorge,
+                    eksportTrygdeavtaleEOS = eksportTrygdeavtaleEOS,
+                    erEOSLand = erEOSLand,
                     harOppfyltVedSammenlegging = harOppfyltVedSammenlegging
                 )
             )
             includePhrase(
                 BilateralAvtaleHjemmel(
-                    avtalelandNavn,
-                    eksportTrygdeavtaleAvtaleland,
-                    erEOSLand,
+                    avtalelandNavn = avtalelandNavn,
+                    eksportTrygdeavtaleAvtaleland = eksportTrygdeavtaleAvtaleland,
+                    erEOSLand = erEOSLand,
                     harOppfyltVedSammenlegging = borINorge
                 )
             )

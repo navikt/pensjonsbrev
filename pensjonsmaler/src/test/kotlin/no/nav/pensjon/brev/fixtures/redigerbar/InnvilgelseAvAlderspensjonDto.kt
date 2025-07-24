@@ -51,7 +51,6 @@ fun createInnvilgelseAvAlderspensjonDto() =
             faktiskBostedsland = null,
             fullTrygdtid = false,
             gjenlevendetilleggKap19 = Kroner(0),
-            harAvdod = false,
             harFlereBeregningsperioder = false,
             inngangOgEksportVurdering = InnvilgelseAvAlderspensjonDto.InngangOgEksportVurdering(
                 eksportForbud = false,
