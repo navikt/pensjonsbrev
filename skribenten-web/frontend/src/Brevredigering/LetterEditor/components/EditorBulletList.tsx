@@ -9,6 +9,7 @@ import Actions from "../actions";
 import type { CallbackReceiver } from "../lib/actions";
 import { applyAction } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
+import { isItemList } from "../model/utils";
 import { getCursorOffset } from "../services/caretUtils";
 
 const EditorBulletList = (props: {
@@ -19,9 +20,7 @@ const EditorBulletList = (props: {
   //dette fører til en error
   const block = props.editorState.redigertBrev.blocks[props.editorState.focus.blockIndex];
 
-  const erAlleElementerIBlockenItemList = block.content.every(
-    (contentItem): contentItem is ItemList => (contentItem as Content).type === ITEM_LIST,
-  );
+  const erAlleElementerIBlockenItemList = block.content.every(isItemList);
 
   return (
     <div>
