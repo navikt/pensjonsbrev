@@ -2,19 +2,19 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 
 import type { LiteralValue } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, TABLE } from "~/types/brevbakerTypes";
+import { ITEM_LIST, LITERAL } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
-import { cleanseText, isItemContentIndex } from "./common";
+import { cleanseText, isTable, isTableContentIndex } from "./common";
 
 export const updateContentText: Action<LetterEditorState, [literalIndex: LiteralIndex, text: string]> = produce(
   (draft, literalIndex, text) => {
     const focus = literalIndex;
-    const paragraph = draft.redigertBrev.blocks[focus.blockIndex];
-    const paraContent = paragraph.content[focus.contentIndex];
+    const block = draft.redigertBrev.blocks[focus.blockIndex];
+    const paraContent = block.content[focus.contentIndex];
 
-    if (paraContent?.type === TABLE && isItemContentIndex(focus)) {
+    if (isTable(paraContent) && isTableContentIndex(focus)) {
       // Here itmeIndex === -1 means the table header row.
       if (focus.itemIndex === -1) {
         const colSpec = paraContent.header.colSpec[focus.itemContentIndex];
@@ -34,9 +34,7 @@ export const updateContentText: Action<LetterEditorState, [literalIndex: Literal
         draft.isDirty = true;
       }
       return;
-    }
-
-    if (paraContent.type === LITERAL) {
+    } else if (paraContent.type === LITERAL) {
       updateLiteralText(paraContent, text);
       draft.isDirty = true;
     } else if (paraContent.type === ITEM_LIST) {
