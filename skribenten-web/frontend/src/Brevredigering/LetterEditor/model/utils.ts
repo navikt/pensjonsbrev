@@ -63,19 +63,16 @@ export function isEmptyContentGroup(group: ContentGroup) {
 }
 
 export function isEmptyItem(item: Item): boolean {
-  return item.content.length === 0 || (item.content.length === 1 && !!isEmptyContent(item.content[0]));
+  return item.content.length === 0 || (item.content.length === 1 && isEmptyContent(item.content[0]));
 }
 
-export function isEmptyContentList(content: Content[] | undefined | null): boolean {
+export function isEmptyContentList(content: Content[]): boolean {
   if (!Array.isArray(content)) return true;
-  return content.length === 0 || (content.length === 1 && !!isEmptyContent(content[0]));
+  return content.length === 0 || (content.length === 1 && isEmptyContent(content[0]));
 }
 
 export function isEmptyBlock(block: AnyBlock): boolean {
-  if ("content" in block && Array.isArray(block.content)) {
-    return isEmptyContentList(block.content);
-  }
-  return false;
+  return isEmptyContentList(block.content);
 }
 
 export function isParagraph(block: AnyBlock | undefined | null): block is ParagraphBlock {
