@@ -17,15 +17,3 @@ export const newTable = (rows = 2, cols = 2): Table => ({
   rows: Array.from({ length: rows }, () => newRow(cols)),
   deletedRows: [],
 });
-
-/** Add an empty row to the bottom of the table */
-export const pushRow = (table: Table): void => {
-  table.rows.push(newRow(table.header.colSpec.length));
-};
-
-/** Add one column to the right side of the table */
-export const pushCol = (table: Table): void => {
-  table.header.colSpec.push(...newColSpec(1));
-  const blankCell = newRow(1).cells[0];
-  table.rows.forEach((row) => row.cells.push({ ...blankCell }));
-};
