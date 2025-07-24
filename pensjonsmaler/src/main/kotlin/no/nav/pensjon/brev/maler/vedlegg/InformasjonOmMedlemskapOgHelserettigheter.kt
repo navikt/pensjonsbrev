@@ -144,7 +144,7 @@ val vedleggInformasjonOmMedlemskapOgHelserettigheter =
             paragraph {
                 text(
                     Bokmal to "Trygdeavgift skal du imidlertid kun betale til ett land av gangen. Dersom du også betaler slik avgift i bostedslandet, ber vi deg ta dette opp med trygdemyndighetene der.",
-                    Nynorsk to "",
+                    Nynorsk to "Trygdeavgift skal du kun betale til eitt land av gongen. Dersom du også betalar slik avgift i bustadslandet, ber vi deg ta dette opp med trygdemyndigheitene der.",
                     English to "However, you will only pay national insurance contributions to one country at a time. If you also pay such a contribution in your country of residence, please take this up with the social security authorities there."
                 )
             }
