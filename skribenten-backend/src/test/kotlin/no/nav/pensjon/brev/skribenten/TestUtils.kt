@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.skribenten
 
-import com.typesafe.config.ConfigValueFactory
+import com.typesafe.config.ConfigFactory
+import com.typesafe.config.ConfigParseOptions.defaults
+import com.typesafe.config.ConfigResolveOptions
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -30,22 +32,12 @@ data class MockPrincipal(override val navIdent: NavIdent, override val fullName:
 
 }
 
-fun initADGroups() {
-    ADGroups.init(
-        ConfigValueFactory.fromMap(
-            mapOf(
-                "pensjonUtland" to "ad gruppe id for Pensjon_Utland",
-                "fortroligAdresse" to "ad gruppe id for Fortrolig_Adresse",
-                "strengtFortroligAdresse" to "ad gruppe id for Strengt_Fortrolig_Adresse",
-                "pensjonSaksbehandler" to "ad gruppe id for PENSJON_SAKSBEHANDLER",
-                "attestant" to "ad gruppe id for Attestant",
-                "veileder" to "ad gruppe id for veileder",
-                "okonomi" to "ad gruppe id for okonomi",
-                "brukerhjelpA" to "ad gruppe id for brukerhjelpA",
-            )
-        ).toConfig()
-    )
-}
+fun initADGroups() = ADGroups.init(
+ConfigFactory
+    .load("application-local", defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
+    .getConfig("skribenten")
+    .getConfig("groups")
+)
 
 object Testbrevkoder {
     val TESTBREV = RedigerbarBrevkode("TESTBREV")

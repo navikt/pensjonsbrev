@@ -31,6 +31,9 @@ groups:
   #0000-GA-Pensjon_Okonomi
   - name: "Okonomi"
     id: "05ae245b-7b47-428a-9074-4ff6b59eddbc"
+  #0000-GA-PENSJON_KLAGEBEH
+  - name: "Klagebehandler"
+    id: "02505029-3f2e-48a9-b2a8-ff274dacca52"
 
 inboundRules:
   - application: skribenten-web
