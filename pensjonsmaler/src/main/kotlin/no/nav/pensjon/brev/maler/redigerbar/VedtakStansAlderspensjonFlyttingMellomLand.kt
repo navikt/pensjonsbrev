@@ -38,6 +38,7 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
@@ -94,7 +95,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                     English to "We have received notice that you have moved to "
                 )
                 showIf(pesysData.brukersBostedsland_safe.notNull()) {
-                    pesysData.brukersBostedsland
+                    eval(pesysData.brukersBostedsland.ifNull(""))
                 }.orShow {
                     fritekst("BOSTEDSLAND")
                 }
@@ -175,7 +176,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                         Nynorsk to "Verken du eller avdøde har vært medlem i folketrygda i minst 20 år".expr()
                                 + ifElse(
                             regelverkType.isOneOf(AP2016),
-                            ifTrue = ", rett til tilleggspensjon eller inntektspensjon",
+                            ifTrue = ", rett til tilleggspensjon eller inntektspensjon. ",
                             ifFalse = " eller har rett til tilleggspensjon. "
                         )
                                 + "Da har du ikkje rett til å få utbetalt alderspensjon når du flyttar til dette landet. "
