@@ -2,9 +2,6 @@ import { css } from "@emotion/react";
 import { BulletListIcon } from "@navikt/aksel-icons";
 import { Button } from "@navikt/ds-react";
 
-import type { Content, ItemList } from "~/types/brevbakerTypes";
-import { ITEM_LIST } from "~/types/brevbakerTypes";
-
 import Actions from "../actions";
 import type { CallbackReceiver } from "../lib/actions";
 import { applyAction } from "../lib/actions";
