@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -50,7 +51,7 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
         )
     ) {
         val sakstype = pesysData.sakstype
-        val sakstypeText = sakstype.format().fritekstIfNull("ytelse")
+        val sakstypeText = sakstype.format().ifNull(fritekst("ytelse"))
         title {
             showIf(saksbehandlerValg.tittelValg.isOneOf(VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett)) {
                 textExpr(

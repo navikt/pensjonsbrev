@@ -8,9 +8,11 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
-import no.nav.pensjon.brev.template.BrevTemplateTest.EksempelBrev.fritekstIfNull
+import no.nav.pensjon.brev.template.BrevTemplateTest.EksempelBrev.fritekst
+import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -30,7 +32,7 @@ private class BrevTemplateTest {
         override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
         override val sakstyper = Sakstype.all
         override val kode = RedigerbarBrevkode.TESTBREV
-        override val template: LetterTemplate<*, EmptyRedigerbarBrevdata> =
+        override val template =
             createTemplate(
                 name = "test",
                 letterDataType = EmptyRedigerbarBrevdata::class,
@@ -49,20 +51,29 @@ private class BrevTemplateTest {
     }
 
     @Test
-    fun `fritekstOrNull gir fritekst om null`() {
+    fun `kan bruke fritekst som ifNull`() {
         with(EksempelBrev.template) {
-            val text = "fritekst"
-            assertThat(null.expr<String?>().fritekstIfNull(text)
-                .eval(testExpressionScope), equalTo(text))
+            with(TemplateRootScope<LangBokmal, EmptyRedigerbarBrevdata>()) {
+                val text = "fritekst"
+                assertThat(
+                    null.expr<String?>().ifNull(fritekst(text))
+                        .eval(testExpressionScope),
+                    equalTo(text)
+                )
+            }
         }
     }
 
     @Test
     fun `gir ikke fritekst om verdi er satt`() {
         with(EksempelBrev.template) {
-            val text = "ikkeFriTekst"
-            assertThat(text.expr<String?>().fritekstIfNull("bla")
-                .eval(testExpressionScope), equalTo(text))
+            with(TemplateRootScope<LangBokmal, EmptyRedigerbarBrevdata>()) {
+                val text = "ikkeFriTekst"
+                assertThat(
+                    text.expr<String?>().ifNull(fritekst("bla"))
+                        .eval(testExpressionScope), equalTo(text)
+                )
+            }
         }
     }
 
