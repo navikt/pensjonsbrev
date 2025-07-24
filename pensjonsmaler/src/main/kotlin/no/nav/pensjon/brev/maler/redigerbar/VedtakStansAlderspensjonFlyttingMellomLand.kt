@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.brukersBostedsland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.brukersBostedsland_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.eksportForbudKode_safe
@@ -33,9 +34,9 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -64,7 +65,6 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
-        val brukersBostedsland = pesysData.brukersBostedsland_safe.ifNull(then = "BOSTEDSLAND")
         val eksportForbudKode = pesysData.eksportForbudKode_safe
         val garantipensjonInnvilget = pesysData.garantipensjonInnvilget
         val harAvdod = pesysData.harAvdod
@@ -85,10 +85,20 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
 
             // flyttingAPstans
             paragraph {
-                textExpr(
-                    Bokmal to "Vi har fått melding om at du har flyttet til ".expr() + brukersBostedsland + ".",
-                    Nynorsk to "Vi har fått melding om at du har flytta til ".expr() + brukersBostedsland + ".",
-                    English to "We have received notice that you have moved to ".expr() + brukersBostedsland + "."
+                text(
+                    Bokmal to "Vi har fått melding om at du har flyttet til ",
+                    Nynorsk to "Vi har fått melding om at du har flytta til ",
+                    English to "We have received notice that you have moved to "
+                )
+                showIf(pesysData.brukersBostedsland_safe.notNull()) {
+                    pesysData.brukersBostedsland
+                }.orShow {
+                    fritekst("BOSTEDSLAND")
+                }
+                text(
+                    Bokmal to ".",
+                    Nynorsk to ".",
+                    English to ".",
                 )
             }
             ifNotNull(eksportForbudKode) { eksportForbudKode ->
