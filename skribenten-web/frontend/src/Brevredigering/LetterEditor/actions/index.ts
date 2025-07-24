@@ -2,8 +2,6 @@ import { addNewLine } from "~/Brevredigering/LetterEditor/actions/addNewLine";
 import { cursorPosition } from "~/Brevredigering/LetterEditor/actions/cursorPosition";
 import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
 import {
-  addTableColumn,
-  addTableRow,
   insertTable,
   insertTableColumnLeft,
   insertTableColumnRight,
@@ -34,8 +32,7 @@ const Actions = {
   toggleBulletList,
   switchFontType,
   insertTable,
-  addTableRow,
-  addTableColumn,
+
   removeTableRow,
   removeTableColumn,
   removeTable,

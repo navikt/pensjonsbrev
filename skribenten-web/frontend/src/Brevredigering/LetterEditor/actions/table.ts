@@ -2,11 +2,11 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 
 import type { Content, LiteralValue, Table } from "~/types/brevbakerTypes";
-import { LITERAL, PARAGRAPH, TABLE } from "~/types/brevbakerTypes";
+import { LITERAL, PARAGRAPH } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
-import { newTable, pushCol, pushRow } from "../model/tableHelpers";
+import { newTable } from "../model/tableHelpers";
 import { addElements, newColSpec, newRow, text } from "./common";
 import { updateLiteralText } from "./updateContentText";
 
@@ -49,27 +49,6 @@ export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number,
       block.deletedContent,
     );
     draft.focus = { blockIndex: focus.blockIndex, contentIndex: focus.contentIndex + 1 };
-    draft.isDirty = true;
-  },
-);
-
-export const addTableRow: Action<LetterEditorState, [blockIdx: number, contentIdx: number]> = produce(
-  (draft, blockIdx, contentIdx) => {
-    const content = draft.redigertBrev.blocks[blockIdx].content[contentIdx];
-    if (content?.type !== TABLE) return;
-
-    pushRow(content);
-    draft.isDirty = true;
-  },
-);
-
-export const addTableColumn: Action<LetterEditorState, [blockIdx: number, contentIdx: number]> = produce(
-  (draft, blockIdx, contentIdx) => {
-    const content = draft.redigertBrev.blocks[blockIdx].content[contentIdx];
-    if (content?.type !== TABLE) return;
-
-    pushCol(content);
-    updateDefaultHeaderLabels(content);
     draft.isDirty = true;
   },
 );
