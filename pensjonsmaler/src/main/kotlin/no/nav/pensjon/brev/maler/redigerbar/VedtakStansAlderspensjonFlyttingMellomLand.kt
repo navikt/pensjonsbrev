@@ -163,7 +163,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                 paragraph {
                     text(
                         Bokmal to "Verken du eller avdøde har vært medlem i folketrygden i minst 20 år",
-                        Nynorsk to "Verken du eller avdøde har vært medlem i folketrygda i minst 20 år",
+                        Nynorsk to "Verken du eller avdøde har vore medlem i folketrygda i minst 20 år",
                         English to "Neither you nor the deceased have been a member of the Norwegian National Insurance Scheme for at least 20 years"
                     )
                     showIf(regelverkType.equalTo(AP2016)) {
