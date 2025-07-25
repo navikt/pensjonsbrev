@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.ALDER
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -11,7 +10,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDt
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.avtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.bostedsland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.erAvtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.erEOSland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderAvtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderEOSland
@@ -26,13 +24,9 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKl
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // Doksys redigermal: MF_000066, tvilling autobrev: MF_000177
@@ -59,7 +53,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
         val avslagsBegrunnelse = pesysData.vedtaksBegrunnelse
         val avtaleland = pesysData.avtaleland.ifNull(then = "angi avtaleland")
         val bostedsland = pesysData.bostedsland.ifNull(then = "angi bostedsland")
-        val erAvtaleland = pesysData.erAvtaleland
+        val erAvtaleland = pesysData.avtaleland.notNull()
         val erEOSland = pesysData.erEOSland
         val trygdeperioderAvtaleland = pesysData.trygdeperioderAvtaleland
         val trygdeperioderEOSland = pesysData.trygdeperioderEOSland
@@ -67,6 +61,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
         val regelverkType = AP2011.expr()
         val erAp2011 = regelverkType.equalTo(AP2011)
         val erAp2016 = regelverkType.equalTo(AP2016)
+        val erAp2025 = regelverkType.equalTo(AP2025)
 
         title {
             text(
@@ -76,7 +71,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
             )
         }
         outline {
-            showIf(avslagsBegrunnelse.isOneOf(UNDER_1_AR_TT)) {
+            showIf(avslagsBegrunnelse.isOneOf(UNDER_1_AR_TT) and erAp2011 or erAp2016) {
                 showIf(erAp2011) {
                     //avslagAP2011Under1aar_001
                     paragraph {
@@ -126,7 +121,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                     }
                 }
 
-            }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT)) {
+            }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT) and erAp2011 or erAp2016) {
 
                 showIf(not(erAvtaleland) and not(erEOSland)) {
                     paragraph {
@@ -338,8 +333,6 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                         }
                         text(Bokmal to ".", Nynorsk to ".", English to ".")
                     }
-
-
                 }
             }
 
@@ -457,7 +450,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                 }
 
             }
-            showIf(avslagsBegrunnelse.isOneOf(UNDER_62) and erAp2016) {
+            showIf(avslagsBegrunnelse.isOneOf(UNDER_62)) {
                 paragraph {
                     text(
                         Bokmal to "Du har søkt om å ta ut alderspensjon før du fyller 62 år. For å ha rett til alderspensjon må du være 62 år. Derfor har vi avslått søknaden din.",
@@ -466,12 +459,23 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                     )
                 }
                 // avslagAP2016UttakAlderU62Hjemmel
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-4 og 20-2.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-4 og 20-2.",
-                        English to "This decision was made pursuant to the provisions of §§ 19-4 and 20-2 of the National Insurance Act.",
-                    )
+                showIf(erAp2016) {
+                    paragraph {
+                        text(
+                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-4 og 20-2.",
+                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-4 og 20-2.",
+                            English to "This decision was made pursuant to the provisions of §§ 19-4 and 20-2 of the National Insurance Act.",
+                        )
+                    }
+                }
+                showIf(erAp2025) {
+                    paragraph {
+                        text(
+                            Bokmal to "Vedtaket er gjort etter folketrygdloven § 20-2.",
+                            Nynorsk to "Vedtaket er gjort etter folketrygdlova § 20-2.",
+                            English to "This decision was made pursuant to the provisions of § 20-2 of the National Insurance Act.",
+                        )
+                    }
                 }
                 title1 {
                     text(
@@ -490,12 +494,11 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
 
                 paragraph {
                     text(
-                        Bokmal to "Du må sende oss en ny søknad når du ønsker å ta ut alderspensjon. En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden.2",
+                        Bokmal to "Du må sende oss en ny søknad når du ønsker å ta ut alderspensjon. En eventuell endring kan tidligst skje måneden etter at vi har mottatt søknaden.",
                         Nynorsk to "Du må sende oss ein ny søknad når du ønskjer å ta ut alderspensjonen. Ei eventuell endring kan tidlegast skje månaden etter at vi har mottatt søknaden.",
                         English to "You have to submit an application when you want to start drawing your retirement pension. Any change will be implemented at the earliest the month after we have received the application."
                     )
                 }
-
             }
             title1 {
                 text(

@@ -18,7 +18,6 @@ data class AvslagForLiteTrygdetidAPDto(
     data class PesysData(
         val avtaleland: String?,
         val bostedsland: String?,
-        val erAvtaleland: Boolean,
         val erEOSland: Boolean,
         val trygdeperioderNorge: List<Trygdetid>,
         val trygdeperioderEOSland: List<Trygdetid>,
