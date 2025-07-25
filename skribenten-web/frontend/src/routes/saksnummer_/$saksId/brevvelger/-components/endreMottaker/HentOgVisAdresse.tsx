@@ -5,7 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { getKontaktAdresseQuery, getNavnQuery, hentSamhandlerAdresseQuery } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { Adresse, KontaktAdresseResponse } from "~/types/apiTypes";
-import { getAdresseTypeName } from "~/types/nameMappings";
 import { humanizeName } from "~/utils/stringUtils";
 
 import { erAdresseKontaktAdresse } from "./EndreMottakerUtils";
@@ -80,9 +79,7 @@ const ValgtKontaktAdresseOppsummering = (properties: { saksId: string; adresse: 
 
   return (
     <div>
-      <BodyShort size="small">
-        {navn ? humanizeName(navn) : undefined} ({getAdresseTypeName(properties.adresse.type)})
-      </BodyShort>
+      <BodyShort size="small">{navn ? humanizeName(navn) : undefined}</BodyShort>
       <VStack gap="0">
         {properties.adresse.adresselinjer.map((linje) => (
           <BodyShort key={linje} size="small">
