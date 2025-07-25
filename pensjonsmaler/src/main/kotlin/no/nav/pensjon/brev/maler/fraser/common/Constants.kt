@@ -57,4 +57,5 @@ object Constants {
     const val UTBETALINGER_URL = "$NAV_URL/utbetalinger"
     const val UTBETALINGSOVERSIKT_URL = "$NAV_URL/utbetalingsoversikt"
     const val SAKSBEHANDLINGSTID_URL = "$NAV_URL/saksbehandlingstider"
+    const val SUPPLERENDE_STOENAD = "$NAV_URL/supplerende"
 }
