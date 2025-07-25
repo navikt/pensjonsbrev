@@ -231,48 +231,37 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 }
             }
 
-            showIf(initiertAvBrukerEllerVerge) {
-                // avslagGJRettAPGiftUnder5aarSøknad_001
-                paragraph {
+            // avslagGJRettAPGiftUnder5aarSøknad_001 / avslagGjRettAPVilkårGift5aarNav_001
+            paragraph {
+                text(
+                    Bokmal to "For å ha rettigheter som gift må du og avdøde ha vært gift i minst fem år eller ha felles barn.",
+                    Nynorsk to "For å ha rettar som gift må du og avdøde ha vore gifte i minst fem år eller ha felles barn.",
+                    English to "To have rights as a married person, you and the deceased must have been married for at least five years or have joint children."
+                )
+            }
+            paragraph {
+                textExpr(
+                    Bokmal to "Du og ".expr() + saksbehandlerValg.avdoedNavn + " har ikke vært gift i minst fem år. Ekteskapet ble inngått " + fritekst(
+                        "dato"
+                    ) + " og ektefellen din døde " + fritekst("dato") + ". Dere har heller ikke felles barn. ",
+                    Nynorsk to "Du og ".expr() + saksbehandlerValg.avdoedNavn + " har ikkje vore gifte i minst fem år. Ekteskapet blei inngått " + fritekst(
+                        "dato"
+                    ) + ", og ektefellen din døydde " + fritekst("dato") + ". De har heller ikkje felles barn. ",
+                    English to "You and ".expr() + saksbehandlerValg.avdoedNavn + " have not been married for at least five years. Your marriage took place on " + fritekst(
+                        "dato"
+                    ) + " and your spouse died on " + fritekst("dato") + ". You also have no joint children. "
+                )
+                showIf(initiertAvBrukerEllerVerge) {
                     text(
-                        Bokmal to "For å ha rettigheter som gift må du og avdøde ha vært gift i minst fem år eller ha felles barn.",
-                        Nynorsk to "For å ha rettar som gift må du og avdøde ha vore gifte i minst fem år eller ha felles barn.",
-                        English to "To have rights as a married person, you and the deceased must have been married for at least five years or have joint children."
+                        Bokmal to "Derfor har vi avslått søknaden din.",
+                        Nynorsk to "Derfor har vi avslått søknaden din.",
+                        English to "We have declined your application for this reason."
                     )
-                }
-                paragraph {
-                    textExpr(
-                        Bokmal to "Du og ".expr() + saksbehandlerValg.avdoedNavn + " har ikke vært gift i minst fem år. Ekteskapet ble inngått " + fritekst(
-                            "dato"
-                        ) + " og ektefellen din døde " + fritekst("dato") + ". Dere har heller ikke felles barn. Derfor har vi avslått søknaden din.",
-                        Nynorsk to "Du og ".expr() + saksbehandlerValg.avdoedNavn + " har ikkje vore gifte i minst fem år. Ekteskapet blei inngått " + fritekst(
-                            "dato"
-                        ) + ", og ektefellen din døydde " + fritekst("dato") + ". De har heller ikkje felles barn. Derfor har vi avslått søknaden din.",
-                        English to "You and ".expr() + saksbehandlerValg.avdoedNavn + " have not been married for at least five years. Your marriage took place on " + fritekst(
-                            "dato"
-                        ) + " and your spouse died on " + fritekst("dato") + ". You also have no joint children. We have declined your application for this reason."
-                    )
-                }
-            }.orShowIf(initiertAvNav) {
-                // avslagGjRettAPVilkårGift5aarNav_001
-                paragraph {
+                }.orShowIf(initiertAvNav) {
                     text(
-                        Bokmal to "For å ha rettigheter som gift må du og avdøde ha vært gift i minst fem år eller ha felles barn.",
-                        Nynorsk to "For å ha rettar som gift må du og avdøde ha vore gifte i minst fem år eller ha felles barn.",
-                        English to "To have rights as a married person, you and the deceased must have been married for at least five years or have joint children."
-                    )
-                }
-                paragraph {
-                    textExpr(
-                        Bokmal to "Du og ".expr() + saksbehandlerValg.avdoedNavn + " har ikke vært gift i minst fem år. Ekteskapet ble inngått " + fritekst(
-                            "dato"
-                        ) + " og ektefellen din døde " + fritekst("dato") + ". Dere har heller ikke felles barn. Derfor har du ikke rettigheter etter avdøde.",
-                        Nynorsk to "Du og ".expr() + saksbehandlerValg.avdoedNavn + " har ikkje vore gifte i minst fem år. Ekteskapet blei inngått " + fritekst(
-                            "dato"
-                        ) + ", og ektefellen din døydde " + fritekst("dato") + ". De har heller ikkje felles barn. Derfor har du ikkje rettar etter avdøde.",
-                        English to "You and ".expr() + saksbehandlerValg.avdoedNavn + " have not been married for at least five years. Your marriage took place on " + fritekst(
-                            "dato"
-                        ) + " and your spouse died on " + fritekst("dato") + ". You also have no joint children. You have no survivor’s rights in your retirement pension for this reason."
+                        Bokmal to "Derfor har du ikke rettigheter etter avdøde.",
+                        Nynorsk to "Derfor har du ikkje rettar etter avdøde.",
+                        English to "You have no survivor’s rights in your retirement pension for this reason."
                     )
                 }
             }
