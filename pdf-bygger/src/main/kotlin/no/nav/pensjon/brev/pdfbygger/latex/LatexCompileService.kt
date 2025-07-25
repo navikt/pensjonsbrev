@@ -5,7 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
-import kotlinx.serialization.Serializable
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brev.template.render.DocumentFile
