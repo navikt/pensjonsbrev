@@ -11,7 +11,8 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmFjerningAvOmsorgso
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -37,7 +38,7 @@ object VedtakOmFjerningAvOmsorgsopptjening : RedigerbarTemplate<VedtakOmFjerning
         letterDataType = VedtakOmFjerningAvOmsorgsopptjeningDto::class,
         languages(Bokmal, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak om fjerning av omsorgsopptjening",
+            displayTitle = "Vedtak - fjerning av omsorgsopptjening",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
@@ -65,7 +66,7 @@ object VedtakOmFjerningAvOmsorgsopptjening : RedigerbarTemplate<VedtakOmFjerning
             }
             paragraph {
                 text(
-                    Bokmal to "Du ble godskrevet omsorgsopptjening ved feil. Vi har derfor gjort om vedtaket etter Forvaltningsloven § 35 første ledd bokstav c.",
+                    Bokmal to "Du ble godskrevet omsorgsopptjening ved en feil. Vi har derfor gjort om vedtaket etter Forvaltningsloven § 35 første ledd bokstav c.",
                     English to "You were credited with care credits by mistake. We have therefore reversed the decision pursuant to the Public Administration Act § 35 first paragraph letter c."
                 )
             }
