@@ -7,15 +7,23 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDtoSelectors.PesysDataSelectors.grunnbeloep
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDtoSelectors.PesysDataSelectors.orienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDtoSelectors.SaksbehandlerValgSelectors.relasjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmEndringDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -51,8 +59,8 @@ object VedtakOmEndring : RedigerbarTemplate<VedtakOmEndringDto> {
         outline {
             paragraph {
                 textExpr(
-                    Bokmal to "Nav viser til varsel om inntektskontroll datert ".expr() + fritekst("dato") +". Vi har endret alderspensjonen din fordi inntekten til ektefellen din er høyere enn tidligere registrert. Endringen gjelder fra " + fritekst("dato") + ". Du får " + fritekst("sum") + " kroner i alderspensjon hver måned før skatt.",
-                    Nynorsk to "Nav viser til varsel om inntektskontroll datert ".expr() + fritekst("dato") + ". Vi har endra alderspensjonen din fordi inntekta til ektefellen din er høgare enn tidlegare registrert. Endringa gjeld frå " + fritekst("dato") + ". Du får " + fritekst("sum") + " kroner i alderspensjon kvar månad før skatt."
+                    Bokmal to "Nav viser til varsel om inntektskontroll datert ".expr() + fritekst("dato") +". Vi har endret alderspensjonen din fordi inntekten til " + saksbehandlerValg.relasjon.bestemtForm() + " din er høyere enn tidligere registrert. Endringen gjelder fra " + fritekst("dato") + ". Du får " + fritekst("sum") + " kroner i alderspensjon hver måned før skatt.",
+                    Nynorsk to "Nav viser til varsel om inntektskontroll datert ".expr() + fritekst("dato") + ". Vi har endra alderspensjonen din fordi inntekta til " + saksbehandlerValg.relasjon.bestemtForm() + " din er høgare enn tidlegare registrert. Endringa gjeld frå " + fritekst("dato") + ". Du får " + fritekst("sum") + " kroner i alderspensjon kvar månad før skatt."
                 )
             }
             includePhrase(Vedtak.BegrunnelseOverskrift)
@@ -79,9 +87,10 @@ object VedtakOmEndring : RedigerbarTemplate<VedtakOmEndringDto> {
                 Nynorsk to "Nav har rett til å kontrollere om vilkåra for retten til å motta ei yting er oppfylt. Vi har som følgje av dette gjort ein inntektskontroll basert på opplysningar mottatt frå deg og Skatteetaten for å vurdere om retten til full grunnpensjon framleis er oppfylt."
             }
             paragraph {
+                val bestemtForm = saksbehandlerValg.relasjon.bestemtForm()
                 textExpr(
-                    Bokmal to fritekst("Da du søkte om alderspensjon, oppga du at / Da pensjonen din ble konvertert til alderspensjon ble det lagt til grunn at ektefellen/samboeren/partneren") + "din hadde inntekt under to ganger grunnbeløpet. Opplysninger fra Skatteetaten viser at " + fritekst("ektefellen/samboeren/partneren") + " din har hatt inntekt over to ganger grunnbeløpet i årene " + fritekst("(sett inn riktig år/perioder)") + ". Grunnpensjonen din " + fritekst("(og legg til eventuelle andre endringer)") + " skulle vært redusert fra " + fritekst("dato") + ".",
-                    Nynorsk to fritekst("Då du søkte om alderspensjon, opplyste du at / Då pensjonen din vart konvertert til alderspensjon vart det lagt til grunn at ektefellen/sambuaren/partnaren") + " din hadde inntekt under to gangar grunnbeløpet. Opplysningar frå Skatteetaten viser at " + fritekst("ektefellen/sambuaren/partnaren") + " din har hatt inntekt over to gangar grunnbeløpet i åra " + fritekst("(set inn riktig år/periodar)") + ". Grunnpensjonen din " + fritekst("(og legg til eventuelle andre endringar)") + " skulle vore redusert frå " + fritekst("dato") + "."
+                    Bokmal to fritekst("Da du søkte om alderspensjon, oppga du at / Da pensjonen din ble konvertert til alderspensjon ble det lagt til grunn at ") + bestemtForm + "din hadde inntekt under to ganger grunnbeløpet. Opplysninger fra Skatteetaten viser at "  + bestemtForm + " din har hatt inntekt over to ganger grunnbeløpet i årene " + fritekst("(sett inn riktig år/perioder)") + ". Grunnpensjonen din " + fritekst("(og legg til eventuelle andre endringer)") + " skulle vært redusert fra " + fritekst("dato") + ".",
+                    Nynorsk to fritekst("Då du søkte om alderspensjon, opplyste du at / Då pensjonen din vart konvertert til alderspensjon vart det lagt til grunn at ") + bestemtForm + " din hadde inntekt under to gangar grunnbeløpet. Opplysningar frå Skatteetaten viser at " + bestemtForm + " din har hatt inntekt over to gangar grunnbeløpet i åra " + fritekst("(set inn riktig år/periodar)") + ". Grunnpensjonen din " + fritekst("(og legg til eventuelle andre endringar)") + " skulle vore redusert frå " + fritekst("dato") + "."
                 )
             }
             paragraph {
@@ -111,4 +120,25 @@ object VedtakOmEndring : RedigerbarTemplate<VedtakOmEndringDto> {
         includeAttachment(vedleggOrienteringOmRettigheterOgPlikter, pesysData.orienteringOmRettigheterOgPlikterDto)
         includeAttachment(vedleggMaanedligPensjonFoerSkatt, pesysData.maanedligPensjonFoerSkattDto)
     }
+}
+
+private fun Expression<VedtakOmEndringDto.Relasjon>.bestemtForm() = format(formatter = RelasjonBestemt)
+
+object RelasjonBestemt : LocalizedFormatter<VedtakOmEndringDto.Relasjon>() {
+    override fun apply(first: VedtakOmEndringDto.Relasjon, second: Language) =
+        when (first) {
+            VedtakOmEndringDto.Relasjon.EKTEFELLE -> "ektefellen"
+            VedtakOmEndringDto.Relasjon.PARTNER -> when (second) {
+                Bokmal -> "partneren"
+                Nynorsk -> "partnaren"
+                English -> throw NotImplementedError()
+            }
+            VedtakOmEndringDto.Relasjon.SAMBOER -> when (second) {
+                Bokmal -> "samboeren"
+                Nynorsk -> "sambuaren"
+                English -> throw NotImplementedError()
+            }
+        }
+
+    override fun stableHashCode() = this::class.simpleName.hashCode()
 }
