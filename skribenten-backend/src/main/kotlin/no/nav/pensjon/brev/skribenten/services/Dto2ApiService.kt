@@ -25,7 +25,10 @@ class Dto2ApiService(
 
     suspend fun toApi(info: Dto.BrevInfo): Api.BrevInfo {
         val template = brevbakerService.getRedigerbarTemplate(info.brevkode)
-            ?: throw BrevredigeringException.BrevmalFinnesIkke("Fant ikke mal for brevkode i brevbaker: ${info.brevkode}")
+            ?: throw BrevredigeringException(
+                BrevredigeringException.FeilType.BREVMAL_FINNES_IKKE,
+                "Fant ikke mal for brevkode i brevbaker: ${info.brevkode}"
+            )
 
         return Api.BrevInfo(
             id = info.id,
