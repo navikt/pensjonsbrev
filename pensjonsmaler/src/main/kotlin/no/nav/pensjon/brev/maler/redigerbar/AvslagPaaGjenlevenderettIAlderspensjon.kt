@@ -123,16 +123,11 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
             showIf(initiertAvNav) {
                 // avslagGjRettAPAvdod_001
                 paragraph {
+                    val dato = fritekst("dato")
                     textExpr(
-                        Bokmal to "Vi har fått beskjed om at ".expr() + saksbehandlerValg.avdoedNavn + " døde " + fritekst(
-                            "dato"
-                        ) + ".",
-                        Nynorsk to "Vi har fått beskjed om at ".expr() + saksbehandlerValg.avdoedNavn + " døydde " + fritekst(
-                            "dato"
-                        ) + ".",
-                        English to "We have received notice that ".expr() + saksbehandlerValg.avdoedNavn + " died " + fritekst(
-                            "dato"
-                        ) + "."
+                        Bokmal to "Vi har fått beskjed om at ".expr() + saksbehandlerValg.avdoedNavn + " døde " + dato + ".",
+                        Nynorsk to "Vi har fått beskjed om at ".expr() + saksbehandlerValg.avdoedNavn + " døydde " + dato + ".",
+                        English to "We have received notice that ".expr() + saksbehandlerValg.avdoedNavn + " died " + dato + "."
                     )
                 }
             }
