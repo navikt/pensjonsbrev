@@ -21,12 +21,10 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDt
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SUPPLERENDE_STOENAD
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -78,10 +76,9 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
             )
         }
         outline {
-            includePhrase(Vedtak.Overskrift)
-
             showIf(avslagsBegrunnelse.isOneOf(UNDER_1_AR_TT)) {
                 showIf(erAp2011) {
+                    //avslagAP2011Under1aar_001
                     paragraph {
                         text(
                             Bokmal to "For å ha rett til alderspensjon må du ha bodd eller arbeidet i Norge i minst ett år. Det har du ikke, og derfor har vi avslått søknaden din.",
@@ -93,45 +90,39 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                     // avslagAP2016Under1aar
                     paragraph {
                         text(
-                            Bokmal to "For å ha rett til alderspensjon må du ha bodd eller arbeidet i Norge i minst ett år eller ha tjent opp inntektspensjon. "
-                                    + "Det har du ikke, og derfor har vi avslått søknaden din.",
-                            Nynorsk to "For å ha rett til alderspensjon må du ha budd eller arbeidd i Noreg i minst eit år eller ha tent opp inntektspensjon. "
-                                    + "Det har du ikkje, og derfor har vi avslått søknaden din.",
-                            English to "To be eligible for retirement pension, you must have been registered as living in Norway for at least one year or have had a pensionable income. "
-                                    + "You do not meet any of these requirements, therefore we have declined your application.",
+                            Bokmal to "For å ha rett til alderspensjon må du ha bodd eller arbeidet i Norge i minst ett år eller ha tjent opp inntektspensjon. Det har du ikke, og derfor har vi avslått søknaden din.",
+                            Nynorsk to "For å ha rett til alderspensjon må du ha budd eller arbeidd i Noreg i minst eit år eller ha tent opp inntektspensjon. Det har du ikkje, og derfor har vi avslått søknaden din.",
+                            English to "To be eligible for retirement pension, you must have been registered as living in Norway for at least one year or have had a pensionable income. You do not meet any of these requirements, therefore we have declined your application.",
                         )
                     }
                 }
-                includePhrase(AvslagUnder1aar3aar5aarTT)
+                avslagUnder1aar3aar5aarTT()
                 paragraph {
+                    text(
+                        Bokmal to "Vedtaket er gjort etter folketrygdloven § 19-2",
+                        Nynorsk to "Vedtaket er gjort etter folketrygdlova § 19-2",
+                        English to "This decision was made pursuant to the provisions of § 19-2",
+                    )
+                    showIf(regelverkType.equalTo(AP2016)) {
+                        text(
+                            Bokmal to ", 20-5, 20-8, 20-10",
+                            Nynorsk to ", 20-5, 20-8, 20-10",
+                            English to ", 20-5, 20-8, 20-10",
+                        )
+                    }
                     showIf(erEOSland) {
                         text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven § 19-2",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova § 19-2",
-                            English to "This decision was made pursuant to the provisions of § 19-2",
+                            Bokmal to " og EØS-avtalens forordning 883/2004 artikkel 57.",
+                            Nynorsk to " og EØS-avtalens forordning 883/2004 artikkel 57.",
+                            English to " of the National Insurance Act and Article 57 of Regulation (EC) 883/2004.",
                         )
-                        showIf(regelverkType.equalTo(AP2016)) {
-                            text(
-                                Bokmal to ", 20-5, 20-8, 20-10",
-                                Nynorsk to ", 20-5, 20-8, 20-10",
-                                English to ", 20-5, 20-8, 20-10",
-                            )
-                        }
-                        showIf(erEOSland) {
-                            text(
-                                Bokmal to " og EØS-avtalens forordning 883/2004 artikkel 57.",
-                                Nynorsk to " og EØS-avtalens forordning 883/2004 artikkel 57.",
-                                English to " of the National Insurance Act and Article 57 of Regulation (EC) 883/2004.",
-                            )
-                        }.orShow {
-                            textExpr(
-                                Bokmal to " og reglene i trygdeavtalen med ".expr() + avtaleland + ".",
-                                Nynorsk to " og reglane i trygdeavtalen med ".expr() + avtaleland + ".",
-                                English to " of the National Insurance Act and to the rules of the Article of the Social Security Agreement with ".expr()
-                                        + avtaleland + ".",
-                            )
-                        }
-
+                    }.orShow {
+                        textExpr(
+                            Bokmal to " og reglene i trygdeavtalen med ".expr() + avtaleland + ".",
+                            Nynorsk to " og reglane i trygdeavtalen med ".expr() + avtaleland + ".",
+                            English to " of the National Insurance Act and to the rules of the Article of the Social Security Agreement with ".expr()
+                                    + avtaleland + ".",
+                        )
                     }
                 }
 
@@ -170,9 +161,8 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                         )
                     }
 
+                    avslagUnder1aar3aar5aarTT()
 
-
-                    includePhrase(AvslagUnder1aar3aar5aarTT)
                     showIf(erAp2011) {
                         paragraph {
                             text(
@@ -182,16 +172,13 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                             )
                         }
                     }.orShow {
-                        // TODO mangler det en hjemmel her for AP2016 folketrygd under 3 år?
-                        // avslagAP2016Under5aarHjemmel
-                        showIf(avslagsBegrunnelse.equalTo(UNDER_5_AR_TT)) {
-                            paragraph {
-                                text(
-                                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2, 20-5 til 20-8 og 20-10.",
-                                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2, 20-5 til 20-8 og 20-10.",
-                                    English to "This decision was made pursuant to the provisions of §§ 19-2, 20-5 to 20-8 and 20-10 of the National Insurance Act.",
-                                )
-                            }
+                        // avslagAP2016Under5aarHjemmel,  avslagAP2016Under3aarHjemmel
+                        paragraph {
+                            text(
+                                Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2, 20-5 til 20-8 og 20-10.",
+                                Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2, 20-5 til 20-8 og 20-10.",
+                                English to "This decision was made pursuant to the provisions of §§ 19-2, 20-5 to 20-8 and 20-10 of the National Insurance Act.",
+                            )
                         }
                     }
                 }.orShow {
@@ -534,18 +521,24 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
             pesysData.dineRettigheterOgMulighetTilAaKlageDto
         )
     }
-}
 
-private object AvslagUnder1aar3aar5aarTT : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+    private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, AvslagForLiteTrygdetidAPDto>.avslagUnder1aar3aar5aarTT() {
         paragraph {
-            text(
-                Bokmal to "Våre opplysninger viser at du har bodd eller arbeidet i Norge i X antall dager/måneder. /Våre opplysninger viser at du ikke har bodd eller arbeidet i Norge.",
-                Nynorsk to "Våre opplysningar viser at du har budd eller arbeidd i Noreg i X antall dager/måneder. /Våre opplysningar viser at du ikkje har budd eller arbeidd i Noreg.",
-                English to "We have registered that you have been living or working in Norway X days/months. /We have no record of you living or working in Norway.",
+            textExpr(
+                Bokmal to "Våre opplysninger viser at du har bodd eller arbeidet i Norge i ".expr()
+                        + fritekst("X antall dager/måneder") +
+                        ". /Våre opplysninger viser at du ikke har bodd eller arbeidet i Norge.",
+
+                Nynorsk to "Våre opplysningar viser at du har budd eller arbeidd i Noreg i ".expr()
+                        + fritekst("X antall dager/måneder") +
+                        ". /Våre opplysningar viser at du ikkje har budd eller arbeidd i Noreg.",
+
+                English to "We have registered that you have been living or working in Norway ".expr()
+                        + fritekst("X days/months") +
+                        ". /We have no record of you living or working in Norway.",
             )
         }
-
     }
 }
+
 
