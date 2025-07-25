@@ -5,6 +5,7 @@ import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateC
 import { isFritekst, isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
 import type { BrevResponse } from "~/types/brev";
 import type {
+  ColumnSpec,
   Content,
   ElementTags,
   Identifiable,
@@ -13,6 +14,8 @@ import type {
   LiteralValue,
   NewLine,
   ParagraphBlock,
+  Row,
+  Table,
   TextContent,
   TITLE1,
   Title1Block,
@@ -20,10 +23,17 @@ import type {
   Title2Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { FontType, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
+import { FontType, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, TABLE, VARIABLE } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
 import type { BlockContentIndex, Focus, ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
+
+export interface TableContentIndex extends ItemContentIndex {
+  // itemIndex: -1 = header row, ≥0 = body row.
+  itemIndex: number;
+  //itemContentIndex => column index
+  itemContentIndex: number;
+}
 
 export function cleanseText(text: string): string {
   return text.replaceAll("<br>", "").replaceAll("&nbsp;", " ").replaceAll("\n", " ").replaceAll("\r", "");
@@ -35,6 +45,20 @@ export function isEditableContent(content: Content | undefined | null): boolean 
 
 export function isBlockContentIndex(f: Focus | LiteralIndex): f is BlockContentIndex {
   return !isItemContentIndex(f);
+}
+
+export function isTableContentIndex(idx: Focus | LiteralIndex | undefined): idx is TableContentIndex {
+  return (
+    idx !== undefined &&
+    "itemIndex" in idx &&
+    idx.itemIndex !== undefined &&
+    "itemContentIndex" in idx &&
+    idx.itemContentIndex !== undefined
+  );
+}
+
+export function isTable(content: Content | undefined | null): content is Table {
+  return content?.type === TABLE;
 }
 
 export function isItemContentIndex(f: Focus | LiteralIndex | undefined): f is ItemContentIndex {
@@ -249,16 +273,42 @@ export function newParagraph(args: {
   };
 }
 
-export function newLiteral(args?: {
-  id?: Nullable<number>;
-  parentId?: Nullable<number>;
-  text?: string;
-  editedText?: Nullable<string>;
-  fontType?: Nullable<FontType>;
-  // TODO: Gir ikke mening å sette editedFontType i nye literals.
-  editedFontType?: Nullable<FontType>;
-  tags?: ElementTags[];
-}): LiteralValue {
+export function newTable(rows: Row[]): Table {
+  if (rows.length === 0) {
+    throw new Error("newTable: rows must contain at least one row");
+  }
+
+  const colCount = rows[0].cells.length;
+
+  if (!rows.every((row) => row.cells.length === colCount)) {
+    throw new Error("newTable: all rows must have an identical column count");
+  }
+  return {
+    type: TABLE,
+    id: null,
+    parentId: null,
+    header: {
+      id: null,
+      parentId: null,
+      colSpec: newColSpec(colCount),
+    },
+    rows,
+    deletedRows: [],
+  };
+}
+
+export function newLiteral(
+  args: {
+    id?: Nullable<number>;
+    parentId?: Nullable<number>;
+    text?: string;
+    editedText?: Nullable<string>;
+    fontType?: Nullable<FontType>;
+    // TODO: Gir ikke mening å sette editedFontType i nye literals.
+    editedFontType?: Nullable<FontType>;
+    tags?: ElementTags[];
+  } = {},
+): LiteralValue {
   return {
     type: LITERAL,
     id: args?.id ?? null,
@@ -331,4 +381,48 @@ export function getMergeIds(sourceId: number, target: MergeTarget): [number, num
       return [sourceId, sourceId + 1];
     }
   }
+}
+
+export function insertEmptyParagraphAfterBlock(draft: Draft<LetterEditorState>, blockIndex: number) {
+  const emptyPara = newParagraph({
+    content: [newLiteral()],
+  });
+
+  addElements([emptyPara], blockIndex + 1, draft.redigertBrev.blocks, draft.redigertBrev.deletedBlocks);
+
+  draft.focus = {
+    blockIndex: blockIndex + 1,
+    contentIndex: 0,
+    cursorPosition: 0,
+  };
+}
+
+export function newRow(colCount: number): Row {
+  return {
+    id: null,
+    parentId: null,
+    cells: Array.from({ length: colCount }, () => ({
+      id: null,
+      parentId: null,
+      text: [newLiteral({ editedText: "" })],
+    })),
+  };
+}
+export function newColSpec(colCount: number): ColumnSpec[] {
+  return Array.from({ length: colCount }, (_, i) => ({
+    id: null,
+    parentId: null,
+    alignment: "LEFT" as const,
+    span: 1,
+    headerContent: {
+      id: null,
+      parentId: null,
+      text: [
+        newLiteral({
+          editedText: `Kolonne ${i + 1}`,
+          fontType: FontType.PLAIN,
+        }),
+      ],
+    },
+  }));
 }

@@ -13,7 +13,7 @@ import type {
 } from "~/types/brevbakerTypes";
 
 import { text } from "../../../Brevredigering/LetterEditor/actions/common";
-import { ElementTags, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, VARIABLE } from "../../../types/brevbakerTypes";
+import { ElementTags, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, TABLE, VARIABLE } from "../../../types/brevbakerTypes";
 import type { ContentGroup } from "./state";
 
 export function isTextContent(obj: Draft<Identifiable | null | undefined>): obj is Draft<TextContent>;
@@ -51,6 +51,10 @@ export function isEmptyContent(content: Content) {
     case ITEM_LIST: {
       return content.items.length === 1 && isEmptyItem(content.items[0]);
     }
+    case TABLE: {
+      // A table counts as “non-empty” if it has at least one row.
+      return content.rows.length === 0;
+    }
   }
 }
 
@@ -62,9 +66,11 @@ export function isEmptyItem(item: Item): boolean {
   return item.content.length === 0 || (item.content.length === 1 && isEmptyContent(item.content[0]));
 }
 
-export function isEmptyContentList(content: Content[]) {
+export function isEmptyContentList(content: Content[]): boolean {
+  if (!Array.isArray(content)) return true;
   return content.length === 0 || (content.length === 1 && isEmptyContent(content[0]));
 }
+
 export function isEmptyBlock(block: AnyBlock): boolean {
   return isEmptyContentList(block.content);
 }

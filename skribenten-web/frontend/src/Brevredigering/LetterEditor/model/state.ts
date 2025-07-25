@@ -12,10 +12,25 @@ export type LiteralIndex = BlockContentIndex | ItemContentIndex;
 
 export type Focus = LiteralIndex & { cursorPosition?: number };
 
+export type TableRowSelection = {
+  blockIndex: number;
+  contentIndex: number;
+  rowIndex?: number;
+  colIndex?: number;
+};
+export type CellTarget = {
+  blockIndex: number;
+  contentIndex: number;
+  rowIndex: number;
+  colIndex: number;
+};
+
 export type LetterEditorState = {
   info: BrevInfo;
   redigertBrev: EditedLetter;
   redigertBrevHash: string;
   isDirty: boolean;
   focus: Focus;
+  tableSelection?: TableRowSelection;
+  contextMenuCell?: CellTarget;
 };
