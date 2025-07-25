@@ -3,9 +3,11 @@ package no.nav.pensjon.brev.maler.adhoc
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -121,29 +123,8 @@ object AdhocAlderspensjonFraFolketrygden : AutobrevTemplate<EmptyBrevdata> {
                             + "You can find out what you are required to report at ${Constants.PENSJON_ENDRING_URL}."
                 )
             }
-            title1 {
-                text(
-                    Bokmal to "Har du spørsmål?",
-                    Nynorsk to "Har du spørsmål?",
-                    English to "Do you have questions?"
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du finner mer informasjon på ${Constants.REGULERING_ALDERSPENSJON_URL}."
-                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
-                            + " Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
-                            + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
-                    Nynorsk to "Du finn meir informasjon på ${Constants.REGULERING_ALDERSPENSJON_URL}."
-                            + " På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
-                            + " Viss du ikkje finner svar på $NAV_URL, kan du ringje oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
-                            + " kvardagar kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}.",
-                    English to "You can find more information at ${Constants.REGULERING_ALDERSPENSJON_URL}."
-                            + " At ${Constants.KONTAKT_URL}, you can chat or write to us."
-                            + " If you do not find the answer at $NAV_URL, you can call us at: +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON},"
-                            + " weekdays ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
-                )
-            }
+
+            includePhrase(Felles.HarDuSpoersmaal(Constants.REGULERING_ALDERSPENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
         }
     }
 }
