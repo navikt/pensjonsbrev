@@ -11,12 +11,7 @@ class CollectionTest {
     private val emptyScope: ExpressionScope<Unit> =
         ExpressionScope(Unit, FellesFactory.felles, Language.Bokmal)
 
-    private val selector = object : TemplateModelSelector<Foedselsnummer, String> {
-        override val className = "FakeFoedselsnummerSelector"
-        override val propertyName = "value"
-        override val propertyType = "String"
-        override val selector = Foedselsnummer::value
-    }
+    private val selector = SimpleSelector(Foedselsnummer::value)
 
     @Test
     fun `isEmpty checks that collection is empty`() {

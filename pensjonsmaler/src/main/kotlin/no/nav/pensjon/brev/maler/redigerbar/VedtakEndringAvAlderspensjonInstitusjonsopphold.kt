@@ -406,6 +406,6 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
         includeAttachment(vedleggOrienteringOmRettigheterOgPlikter, pesysData.orienteringOmRettigheterOgPlikterDto)
-        includeAttachment(maanedligPensjonFoerSkattAlderspensjon, pesysData.maanedligPensjonFoerSkattAlderspensjonDto)
+        includeAttachmentIfNotNull(maanedligPensjonFoerSkattAlderspensjon, pesysData.maanedligPensjonFoerSkattAlderspensjonDto)
     }
 }
