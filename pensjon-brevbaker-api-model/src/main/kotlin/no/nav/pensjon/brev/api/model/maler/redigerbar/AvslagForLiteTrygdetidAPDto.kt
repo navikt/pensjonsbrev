@@ -4,20 +4,20 @@ import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDto.*
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetid
 
 @Suppress("unused")
 
-data class AvslagForLiteTrygdetidAP2016Dto(
+data class AvslagForLiteTrygdetidAPDto(
     override val pesysData: PesysData,
     override val saksbehandlerValg: EmptyBrevdata,
-) : RedigerbarBrevdata<EmptyBrevdata, AvslagForLiteTrygdetidAP2016Dto.PesysData> {
-
+) : RedigerbarBrevdata<EmptyBrevdata, PesysData> {
 
     data class PesysData(
-        val avtaleland: String,
-        val bostedsland: String,
+        val avtaleland: String?,
+        val bostedsland: String?,
         val erAvtaleland: Boolean,
         val erEOSland: Boolean,
         val trygdeperioderNorge: List<Trygdetid>,

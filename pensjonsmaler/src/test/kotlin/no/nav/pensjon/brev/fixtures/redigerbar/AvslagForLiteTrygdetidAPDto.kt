@@ -3,15 +3,15 @@ package no.nav.pensjon.brev.fixtures.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAP2011Dto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDto
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.Trygdetid
 import java.time.LocalDate
 
-fun createAvslagForLiteTrygdetidAP2011Dto() =
-    AvslagForLiteTrygdetidAP2011Dto(
+fun createAvslagForLiteTrygdetidAPDto() =
+    AvslagForLiteTrygdetidAPDto(
         saksbehandlerValg = EmptyBrevdata,
-        pesysData = AvslagForLiteTrygdetidAP2011Dto.PesysData(
+        pesysData = AvslagForLiteTrygdetidAPDto.PesysData(
             avtaleland = "Avtaleland",
             bostedsland = "Bostedsland",
             erAvtaleland = false,

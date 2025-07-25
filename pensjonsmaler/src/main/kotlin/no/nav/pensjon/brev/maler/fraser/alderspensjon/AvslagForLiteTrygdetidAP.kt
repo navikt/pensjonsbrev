@@ -258,7 +258,6 @@ object AvslagForLiteTrygdetidAP {
     }
 
 // Trygdeperiodertabeller
-
     data class TrygdeperioderNorgeTabell(
         val trygdeperioderNorge: Expression<List<Trygdetid>>,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -408,38 +407,33 @@ object AvslagForLiteTrygdetidAP {
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             paragraph {
-                textExpr(
-                    Bokmal to "Vedtaket er gjort etter folketrygdloven ".expr()
-                            + ifElse(
-                        regelverkType.isOneOf(AP2016),
-                        ifTrue = "§§ 19-2, 20-5 til 20-8 og 20-10,",
-                        ifFalse = "§ 19-2"
-                    ) + " og reglene i trygdeavtalen med ".expr()
-                            + avtaleland,
-                    Nynorsk to "Vedtaket er gjort etter folketrygdlova ".expr()
-                            + ifElse(
-                        regelverkType.isOneOf(AP2016),
-                        ifTrue = "§§ 19-2, 20-5 til 20-8 og 20-10,",
-                        ifFalse = "§ 19-2"
-                    ) + " og reglane i trygdeavtalen med ".expr()
-                            + avtaleland,
-                    English to "This decision was made pursuant to the provision of ".expr()
-                            + ifElse(
-                        regelverkType.isOneOf(AP2016),
-                        ifTrue = "§§ 19-2, 20-5 til 20-8 og 20-10,",
-                        ifFalse = "§ 19-2"
-                    ) + " of the National Insurance Act and to the provisions of the social security agreement with ".expr()
-                            + avtaleland
+                text(
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven § 19-2",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova § 19-2",
+                    English to "This decision was made pursuant to the provision of § 19-2",
                 )
-                showIf(erAvtaleland and not(erEOSland)) {
-                    text(Bokmal to ".", Nynorsk to ".", English to ".")
-                }.orShowIf(erAvtaleland and erEOSland) {
+
+                showIf(regelverkType.isOneOf(AP2016)) {
                     text(
-                        Bokmal to ", og EØS-avtalens forordning 883/2004 artikkel 6.",
-                        Nynorsk to ", og EØS-avtalens forordning 883/2004 artikkel 6.",
-                        English to ", and Article 6 of regulation (EC) 883/2004."
+                        Bokmal to ", 20-5 til 20-8 og 20-10,",
+                        Nynorsk to ", 20-5 til 20-8 og 20-10,",
+                        English to ", 20-5 til 20-8 og 20-10,",
                     )
                 }
+                textExpr(
+                    Bokmal to " og reglene i trygdeavtalen med ".expr() + avtaleland,
+                    Nynorsk to " og reglane i trygdeavtalen med ".expr() + avtaleland,
+                    English to " of the National Insurance Act and to the provisions of the social security agreement with ".expr() + avtaleland,
+                )
+
+                showIf(erAvtaleland and erEOSland) {
+                    text(
+                        Bokmal to ", og EØS-avtalens forordning 883/2004 artikkel 6",
+                        Nynorsk to ", og EØS-avtalens forordning 883/2004 artikkel 6",
+                        English to ", and Article 6 of regulation (EC) 883/200."
+                    )
+                }
+                text(Bokmal to ".", Nynorsk to ".", English to ".")
             }
         }
     }
