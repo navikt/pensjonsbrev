@@ -18,7 +18,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIA
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvtalelandSelectors.erEOSLand
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.AvtalelandSelectors.navn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.BeregnetPensjonPerManedSelectors.antallBeregningsperioderPensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.BrukerSelectors.faktiskBostedsland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.BrukerSelectors.faktiskBostedsland_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.KravSelectors.kravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
@@ -59,6 +59,7 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
@@ -201,14 +202,18 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
             }
 
             // avslagGjRettAPUnder20aar_001
-            ifNotNull(pesysData.bruker.faktiskBostedsland) { bostedsland ->
-                paragraph {
-                    textExpr(
-                        Bokmal to "For at du skal ha rett til å få utbetalt alderspensjon med gjenlevenderett når du bor i ".expr() + bostedsland + ", må avdøde ha hatt 20 års botid i Norge eller rett til tilleggspensjon.",
-                        Nynorsk to "For at du skal ha rett til å få utbetalt alderspensjon med attlevanderett når du bur i ".expr() + bostedsland + ", må avdøde ha hatt 20 års butid i Noreg eller ha rett til tilleggspensjon.",
-                        English to "To be eligible for your retirement pension with survivor`s rights when you live in ".expr() + bostedsland + ", the deceased must have 20 years of residence in Norway or be entitled to a supplementary pension."
-                    )
-                }
+            paragraph {
+                text(
+                    Bokmal to "For at du skal ha rett til å få utbetalt alderspensjon med gjenlevenderett når du bor i ",
+                    Nynorsk to "For at du skal ha rett til å få utbetalt alderspensjon med attlevanderett når du bur i ",
+                    English to "To be eligible for your retirement pension with survivor`s rights when you live in "
+                )
+                eval(pesysData.bruker.faktiskBostedsland_safe.ifNull(fritekst("BOSTEDSLAND")))
+                text(
+                    Bokmal to ", må avdøde ha hatt 20 års botid i Norge eller rett til tilleggspensjon.",
+                    Nynorsk to ", må avdøde ha hatt 20 års butid i Noreg eller ha rett til tilleggspensjon.",
+                    English to ", the deceased must have 20 years of residence in Norway or be entitled to a supplementary pension."
+                )
             }
             paragraph {
                 showIf(initiertAvBrukerEllerVerge) {
