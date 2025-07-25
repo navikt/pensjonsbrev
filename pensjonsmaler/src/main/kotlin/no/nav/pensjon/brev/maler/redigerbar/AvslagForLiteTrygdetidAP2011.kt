@@ -99,13 +99,13 @@ object AvslagForLiteTrygdetidAP2011 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                     )
                 )
 
-            }.orShowIf(avslagsBegrunnelse.equalTo(UNDER_3_AR_TT)) {
-                showIf(not(erAvtaleland) and not(erEOSland)) { // Mindre enn tre års trygdetid - folketrygdsak:
-                    includePhrase(RettTilAPFolketrygdsak(UNDER_3_AR_TT, AP2011))
+            }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT)) {
+                showIf(not(erAvtaleland) and not(erEOSland)) {
+                    includePhrase(RettTilAPFolketrygdsak(avslagsBegrunnelse, regelverkType))
                     includePhrase(AvslagUnder1aar3aar5aarTT)
                     includePhrase(AvslagAP2011FolketrygdsakHjemmel)
 
-                }.orShowIf(erEOSland and not(erAvtaleland)) { // Mindre enn tre års trygdetid - EØSsak:
+                }.orShowIf(erEOSland and not(erAvtaleland)) {
                     includePhrase(AvslagForLiteTrygdetidAP.OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
                     includePhrase(
                         AvslagForLiteTrygdetidAP.RettTilAPMedEOSAvtalelandOg3aar5aarTT(
@@ -116,37 +116,7 @@ object AvslagForLiteTrygdetidAP2011 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                         )
                     )
                     includePhrase(AvslagForLiteTrygdetidAP.AvslagAP2011Under3aar5aarHjemmel)
-
-                }.orShow { // erAvtaleland or (erEOSland and erAvtaleland)
-                    includePhrase(AvslagForLiteTrygdetidAP.OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
-                    includePhrase(
-                        AvslagForLiteTrygdetidAP.RettTilAPMedEOSAvtalelandOg3aar5aarTT(
-                            avslagsbegrunnelse = avslagsBegrunnelse,
-                            erAvtaleland = erAvtaleland,
-                            erEOSland = erEOSland,
-                            regelverkType = regelverkType
-                        )
-                    )
-                }
-            }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_5_AR_TT)) {
-
-                showIf(not(erAvtaleland) and not(erEOSland)) { // Mindre enn fem års trygdetid - folketrygdsak:
-                    includePhrase(RettTilAPFolketrygdsak(UNDER_5_AR_TT, AP2011))
-                    includePhrase(AvslagUnder1aar3aar5aarTT)
-                    includePhrase(AvslagAP2011FolketrygdsakHjemmel)
-
-                }.orShowIf(erEOSland and not(erAvtaleland)) { // Mindre enn fem års trygdetid - EØSsak:
-                    includePhrase(AvslagForLiteTrygdetidAP.OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
-                    includePhrase(
-                        AvslagForLiteTrygdetidAP.RettTilAPMedEOSAvtalelandOg3aar5aarTT(
-                            avslagsbegrunnelse = avslagsBegrunnelse,
-                            erAvtaleland = erAvtaleland,
-                            erEOSland = erEOSland,
-                            regelverkType = regelverkType
-                        )
-                    )
-                    includePhrase(AvslagForLiteTrygdetidAP.AvslagAP2011Under3aar5aarHjemmel)
-                }.orShow { // avtalelandsak eller (sak med både EØS- og avtaleland)
+                }.orShow {
                     includePhrase(AvslagForLiteTrygdetidAP.OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
                     includePhrase(
                         AvslagForLiteTrygdetidAP.RettTilAPMedEOSAvtalelandOg3aar5aarTT(
@@ -158,7 +128,6 @@ object AvslagForLiteTrygdetidAP2011 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                     )
                 }
             }
-
             showIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT) and erAvtaleland) {
                 includePhrase(
                     AvslagForLiteTrygdetidAP.AvslagUnder3aar5aarHjemmelAvtaleAuto(

@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.ALDER
@@ -97,14 +96,22 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                         )
                     )
 
-                }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT)) {
+                }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT)) {
 
                     showIf(not(erAvtaleland) and not(erEOSland)) { // Mindre enn tre års trygdetid - folketrygdsak:
-                        includePhrase(
-                            AvslagForLiteTrygdetidAP.RettTilAPFolketrygdsak(UNDER_3_AR_TT, AP2016)
-                        )
+                        includePhrase(AvslagForLiteTrygdetidAP.RettTilAPFolketrygdsak(avslagsBegrunnelse, regelverkType))
                         includePhrase(AvslagForLiteTrygdetidAP.AvslagUnder1aar3aar5aarTT)
 
+                        // avslagAP2016Under5aarHjemmel
+                        showIf(avslagsBegrunnelse.equalTo(UNDER_5_AR_TT)) {
+                            paragraph {
+                                text(
+                                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2, 20-5 til 20-8 og 20-10.",
+                                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2, 20-5 til 20-8 og 20-10.",
+                                    English to "This decision was made pursuant to the provisions of §§ 19-2, 20-5 to 20-8 and 20-10 of the National Insurance Act.",
+                                )
+                            }
+                        }
                     }.orShowIf(erEOSland and not(erAvtaleland)) { // Mindre enn tre års trygdetid - EØSsak:
                         includePhrase(AvslagForLiteTrygdetidAP.OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
                         includePhrase(
@@ -115,12 +122,12 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                                 regelverkType = regelverkType
                             ),
                         )
-                        // avslagAP2016Under3aarHjemmelEOS
+                        // avslagAP2016Under3aarHjemmelEOS,
                         paragraph {
                             text(
                                 Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2, 20-5 til 20-8 og 20-10 og EØS-avtalens forordning 883/2004 artikkel 6.",
                                 Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2, 20-5 til 20-8 og 20-10 og EØS-avtalens forordning 883/2004 artikkel 6.",
-                                English to "This decision was made pursuant to the provisions of §§ 19-2, 20-5 to 20-8 and 20-10 of the National Insurance Act and Article 6 of Regulation (EC) 883/2004",
+                                English to "This decision was made pursuant to the provisions of §§ 19-2, 20-5 to 20-8 and 20-10 of the National Insurance Act and Article 6 of Regulation (EC) 883/2004.",
                             )
                         }
                     }.orShow { // Mindre enn tre års avtalesak, eller både avtaleland og EØSland
@@ -134,61 +141,18 @@ object AvslagForLiteTrygdetidAP2016 : RedigerbarTemplate<AvslagForLiteTrygdetidA
                             )
                         )
                     }
-                }.orShowIf(avslagsBegrunnelse.isOneOf(UNDER_5_AR_TT)) {
 
-                    showIf(not(erAvtaleland) and not(erEOSland)) { // Mindre enn fem års trygdetid - folketrygdsak:
-
-                        includePhrase(AvslagForLiteTrygdetidAP.RettTilAPFolketrygdsak(UNDER_5_AR_TT, AP2016))
-                        includePhrase(AvslagForLiteTrygdetidAP.AvslagUnder1aar3aar5aarTT)
-
-                        // avslagAP2016Under5aarHjemmel
-                        paragraph {
-                            text(
-                                Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2, 20-5 til 20-8 og 20-10.",
-                                Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2, 20-5 til 20-8 og 20-10.",
-                                English to "This decision was made pursuant to the provisions of §§ 19-2, 20-5 to 20-8 and 20-10 of the National Insurance Act",
-                            )
-                        }
-                    }.orShowIf(erEOSland and not(erAvtaleland)) { // Mindre enn fem års trygdetid - EØSsak:
-                        includePhrase(AvslagForLiteTrygdetidAP.OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
+                    showIf(erAvtaleland) {
                         includePhrase(
-                            AvslagForLiteTrygdetidAP.RettTilAPMedEOSAvtalelandOg3aar5aarTT(
-                                avslagsbegrunnelse = avslagsBegrunnelse,
+                            AvslagForLiteTrygdetidAP.AvslagUnder3aar5aarHjemmelAvtaleAuto(
+                                avtaleland = avtaleland,
                                 erAvtaleland = erAvtaleland,
                                 erEOSland = erEOSland,
                                 regelverkType = regelverkType
                             )
                         )
-                        // avslagAP2016Under5aarHjemmelEOS
-                        paragraph {
-                            text(
-                                Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-2, 20-5 til 20-8 og 20-10 og EØS-avtalens forordning 883/2004 artikkel 6.",
-                                Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-2, 20-5 til 20-8 og 20-10 og EØS-avtalens forordning 883/2004 artikkel 6.",
-                                English to "This decision was made pursuant to the provisions of §§ 19-2, 20-5 to 20-8 and 20-10 of the National Insurance Act and Article 6 of Regulation (EC) 883/2004.",
-                            )
-                        }
-                    }.orShow { // avtalelandsak eller (sak med både EØS- og avtaleland)
-                        includePhrase(AvslagForLiteTrygdetidAP.OpptjeningstidEOSAvtaleland(erAvtaleland, erEOSland))
-                        includePhrase(
-                            AvslagForLiteTrygdetidAP.RettTilAPMedEOSAvtalelandOg3aar5aarTT(
-                                avslagsbegrunnelse = avslagsBegrunnelse,
-                                erAvtaleland = erAvtaleland,
-                                erEOSland = erEOSland,
-                                regelverkType = regelverkType
-                            )
-                        )
+
                     }
-                }
-
-                showIf(avslagsBegrunnelse.isOneOf(UNDER_3_AR_TT, UNDER_5_AR_TT) and erAvtaleland) {
-                    includePhrase(
-                        AvslagForLiteTrygdetidAP.AvslagUnder3aar5aarHjemmelAvtaleAuto(
-                            avtaleland = avtaleland,
-                            erAvtaleland = erAvtaleland,
-                            erEOSland = erEOSland,
-                            regelverkType = regelverkType
-                        )
-                    )
                 }
 
                 showIf(avslagsBegrunnelse.isOneOf(UNDER_20_AR_BO_2016)) {
