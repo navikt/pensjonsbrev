@@ -187,6 +187,12 @@ enum class BeloepEndring {
     UENDRET
 }
 
+enum class EksportForbudKode {
+    FLYKT_ALDER,
+    TPUNGUFOR_ALDER,
+    UFOR25_ALDER
+}
+
 enum class VedtaksBegrunnelse{
     ANNEN_HAR_ET,
     ANNULERING,

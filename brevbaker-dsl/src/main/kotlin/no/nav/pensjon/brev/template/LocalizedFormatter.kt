@@ -25,16 +25,16 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
     }
 
     object MonthYearFormatter : LocalizedFormatter<LocalDate>() {
-        override fun apply(date: LocalDate, second: Language): String {
-            return date.format(DateTimeFormatter.ofPattern("MMMM yyyy", second.locale()))
+        override fun apply(first: LocalDate, second: Language): String {
+            return first.format(DateTimeFormatter.ofPattern("MMMM yyyy", second.locale()))
         }
 
         override fun stableHashCode(): Int =  StableHash.of("MaanedAarFormatter").hashCode()
     }
 
     object YearMonthFormatter : LocalizedFormatter<YearMonth>() {
-        override fun apply(date: YearMonth, second: Language): String {
-            return MonthYearFormatter.apply(date.atDay(1), second)
+        override fun apply(first: YearMonth, second: Language): String {
+            return MonthYearFormatter.apply(first.atDay(1), second)
         }
 
         override fun stableHashCode(): Int =  StableHash.of("MaanedAarFormatter").hashCode()
@@ -89,5 +89,3 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
 
     }
 }
-
-private fun ch(): Char = NON_BREAKING_SPACE

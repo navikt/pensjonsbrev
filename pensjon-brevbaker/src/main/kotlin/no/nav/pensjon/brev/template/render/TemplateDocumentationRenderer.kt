@@ -12,6 +12,8 @@ import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression.*
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression.Invoke.Operation
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
+private typealias AssignedReplacements = Map<Expression.FromScope.Assigned<*>, Expression<*>>
+
 object TemplateDocumentationRenderer {
 
     fun render(template: LetterTemplate<*, *>, lang: Language, modelSpecification: TemplateModelSpecification): TemplateDocumentation =
@@ -26,8 +28,8 @@ object TemplateDocumentationRenderer {
         TemplateDocumentation.Attachment(
             title = renderText(attachment.template.title, lang),
             outline = renderOutline(attachment.template.outline, lang),
-            include = renderExpression(attachment.predicate),
-            attachmentData = renderExpression(attachment.data),
+            include = renderExpression(attachment.predicate, emptyMap()),
+            attachmentData = renderExpression(attachment.data, emptyMap()),
         )
 
     private fun <T : Element<*>, R : TemplateDocumentation.Element> renderContentOrStructure(
@@ -47,7 +49,7 @@ object TemplateDocumentationRenderer {
                 val elseIf = liftNestedIfElse(contentOrStructure.showElse, mapper)
                 listOf(
                     TemplateDocumentation.ContentOrControlStructure.Conditional(
-                        predicate = renderExpression(contentOrStructure.predicate),
+                        predicate = renderExpression(contentOrStructure.predicate, emptyMap()),
                         showIf = renderContentOrStructure(contentOrStructure.showIf, mapper),
                         elseIf = elseIf.first,
                         showElse = elseIf.second,
@@ -57,7 +59,8 @@ object TemplateDocumentationRenderer {
 
             is ContentOrControlStructure.ForEach<*, T, *> -> listOf(
                 TemplateDocumentation.ContentOrControlStructure.ForEach(
-                    items = renderExpression(contentOrStructure.items),
+                    // TODO: consider if Next-expression should be assigned in renderExpression
+                    items = renderExpression(contentOrStructure.items, emptyMap()),
                     body = renderContentOrStructure(contentOrStructure.body.toList(), mapper),
                 )
             )
@@ -72,7 +75,7 @@ object TemplateDocumentationRenderer {
             liftNestedIfElse(first.showElse, mapper).let { (nestedIfElse, nestedElse) ->
                 listOf(
                     TemplateDocumentation.ContentOrControlStructure.Conditional.ElseIf(
-                        renderExpression(first.predicate),
+                        renderExpression(first.predicate, emptyMap()),
                         renderContentOrStructure(first.showIf, mapper)
                     )
                 ).plus(nestedIfElse) to nestedElse
@@ -165,118 +168,123 @@ object TemplateDocumentationRenderer {
             if (it is Expression.Literal<String>) {
                 TemplateDocumentation.Element.ParagraphContent.Text.Literal(it.value)
             } else {
-                TemplateDocumentation.Element.ParagraphContent.Text.Expression(renderExpression(it))
+                TemplateDocumentation.Element.ParagraphContent.Text.Expression(renderExpression(it, emptyMap()))
             }
         }
 
-    private fun renderExpression(expr: Expression<*>): TemplateDocumentation.Expression =
+    private fun renderExpression(
+        expr: Expression<*>,
+        assignments: AssignedReplacements,
+    ): TemplateDocumentation.Expression =
         when (expr) {
-            is Expression.BinaryInvoke<*, *, *> -> renderBinaryInvoke(expr)
+            is Expression.BinaryInvoke<*, *, *> -> renderBinaryInvoke(expr, assignments)
             is Expression.FromScope.Language -> LetterData("language")
             is Expression.FromScope.Felles -> LetterData("felles")
             is Expression.FromScope.Argument -> LetterData("argument")
-            is Expression.FromScope.Assigned -> LetterData("forEach_item")
+            is Expression.FromScope.Assigned ->
+                assignments[expr]
+                    ?.let { renderExpression(it, assignments) }
+                    ?: LetterData("forEach_item")
+
             is Expression.Literal -> Literal(expr.value.toString())
-            is Expression.UnaryInvoke<*, *> -> renderUnaryInvoke(expr)
+            is Expression.UnaryInvoke<*, *> -> renderUnaryInvoke(expr, assignments)
+            is Expression.NullSafeApplication<*, *> -> renderExpression(
+                expr = expr.application,
+                assignments = assignments + (expr.assigned to expr.input)
+            )
         }
 
-    private fun renderBinaryInvoke(expr: Expression.BinaryInvoke<*, *, *>) =
+    private fun renderBinaryInvoke(expr: Expression.BinaryInvoke<*, *, *>, assignments: AssignedReplacements) =
         when (expr.operation) {
-            is LocalizedFormatter<*> -> renderExpression(expr.first)
+            is LocalizedFormatter<*> -> renderExpression(expr.first, assignments)
             is BinaryOperation.IfNull<*> ->
                 if (expr.second is Expression.Literal && (expr.second as Expression.Literal<Any?>).value == false) {
-                    renderExpression(expr.first)
+                    renderExpression(expr.first, assignments)
                 } else {
-                    renderAnyBinaryInvoke(expr)
+                    renderAnyBinaryInvoke(expr, assignments)
                 }
 
-            else -> renderAnyBinaryInvoke(expr)
+            else -> renderAnyBinaryInvoke(expr, assignments)
         }
 
-    private fun renderAnyBinaryInvoke(expr: Expression.BinaryInvoke<*, *, *>) =
+    private fun renderAnyBinaryInvoke(
+        expr: Expression.BinaryInvoke<*, *, *>,
+        assignments: AssignedReplacements,
+    ) =
         Invoke(
             renderOperation(expr.operation),
-            renderExpression(expr.first),
-            renderExpression(expr.second),
+            renderExpression(expr.first, assignments),
+            renderExpression(expr.second, assignments),
             "TODO"
         )
 
-    private fun renderUnaryInvoke(expr: Expression.UnaryInvoke<*, *>): TemplateDocumentation.Expression =
-        when (expr.operation) {
-            is UnaryOperation.AbsoluteValue -> Invoke(
-                operator = Operation("abs", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value),
-            )
+    private fun renderUnaryInvoke(
+        expr: Expression.UnaryInvoke<*, *>,
+        assignments: AssignedReplacements,
+    ): TemplateDocumentation.Expression {
 
-            is UnaryOperation.AbsoluteValueKroner -> Invoke(
-                operator = Operation("abs", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value)
+        // Representation of expression corresponding to `!(a == b) ` as `a != b`.
+        if (expr.operation is UnaryOperation.Not
+            && expr.value is Expression.BinaryInvoke<*, *, *>
+            && (expr.value as Expression.BinaryInvoke<*, *, *>).operation is BinaryOperation.Equal<*>
+        ) {
+            return Invoke(
+                operator = Operation("!=", Documentation.Notation.INFIX),
+                first = renderExpression(
+                    (expr.value as Expression.BinaryInvoke<*, *, *>).first,
+                    assignments
+                ),
+                second = renderExpression(
+                    (expr.value as Expression.BinaryInvoke<*, *, *>).second,
+                    assignments
+                ),
             )
+        }
+        // Representation of expression corresponding to `a.value` as `a` when they are IntValue.
+        if (expr.operation is UnaryOperation.Select
+            && (expr.operation as UnaryOperation.Select<*, *>).selector != intValueSelector
+        ) {
+            renderExpression(expr.value, assignments)
+        }
+
+        return Invoke(
+            operator = renderOperation(expr.operation),
+            first = renderExpression(expr.value, assignments),
+        )
+    }
+
+    private fun renderOperation(operation: UnaryOperation<*, *>): Operation =
+        when (operation) {
+            is UnaryOperation.AbsoluteValue -> Operation("abs", Documentation.Notation.FUNCTION)
+
+            is UnaryOperation.AbsoluteValueKroner -> Operation("abs", Documentation.Notation.FUNCTION)
 
             is UnaryOperation.MapCollection<*, *> -> TODO()
-            is UnaryOperation.Not -> if (expr.value is Expression.BinaryInvoke<*, *, *> && (expr.value as Expression.BinaryInvoke<*, *, *>).operation is BinaryOperation.Equal<*>) {
-                Invoke(
-                    operator = Operation("!=", Documentation.Notation.INFIX),
-                    first = renderExpression((expr.value as Expression.BinaryInvoke<*, *, *>).first),
-                    second = renderExpression((expr.value as Expression.BinaryInvoke<*, *, *>).second),
-                )
-            } else Invoke(
-                operator = Operation("!", Documentation.Notation.PREFIX),
-                first = renderExpression(expr.value),
+            is UnaryOperation.Not -> Operation("!", Documentation.Notation.PREFIX)
+
+            // TODO: We currently skip over representing `?` of safeCalls.
+            is UnaryOperation.SafeCall -> renderOperation(operation.operation)
+
+            is UnaryOperation.Select -> Operation(
+                ".${operation.selector.propertyName}",
+                Documentation.Notation.POSTFIX
             )
 
-            is UnaryOperation.SafeCall -> Invoke(
-                operator = Operation("?.${(expr.operation as UnaryOperation.SafeCall<out Any, Any>).selector.propertyName}", Documentation.Notation.POSTFIX),
-                first = renderExpression(expr.value),
-                type = (expr.operation as UnaryOperation.SafeCall<out Any, Any>).selector.propertyType,
-            )
+            is UnaryOperation.SizeOf -> Operation("size", Documentation.Notation.POSTFIX)
 
-            is UnaryOperation.Select -> if ((expr.operation as UnaryOperation.Select<*, *>).selector != intValueSelector) {
-                Invoke(
-                    operator = Operation(".${(expr.operation as UnaryOperation.Select<*, *>).selector.propertyName}", Documentation.Notation.POSTFIX),
-                    first = renderExpression(expr.value),
-                    type = (expr.operation as UnaryOperation.Select<*, *>).selector.propertyType,
-                )
-            } else {
-                renderExpression(expr.value)
-            }
+            is UnaryOperation.ToString -> Operation("str", Documentation.Notation.FUNCTION)
 
-            is UnaryOperation.SizeOf -> Invoke(
-                operator = Operation("size", Documentation.Notation.POSTFIX),
-                first = renderExpression(expr.value),
-            )
+            is UnaryOperation.IsEmpty -> Operation(text = "isEmpty", Documentation.Notation.FUNCTION)
 
-            is UnaryOperation.ToString -> Invoke(
-                operator = Operation("str", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value),
-            )
+            is UnaryOperation.FunksjonsbryterEnabled -> Operation(text = "enabled", Documentation.Notation.FUNCTION)
 
-            is UnaryOperation.IsEmpty -> Invoke(
-                operator = Operation(text = "isEmpty", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value)
-            )
+            is UnaryOperation.BrukerFulltNavn -> Operation("fulltNavn", Documentation.Notation.FUNCTION)
 
-            is UnaryOperation.FunksjonsbryterEnabled -> Invoke(
-                operator = Operation(text = "enabled", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value)
-            )
+            is UnaryOperation.MapValue<*, *> -> Operation(operation.mapper.name, Documentation.Notation.FUNCTION)
 
-            is UnaryOperation.BrukerFulltNavn -> Invoke(
-                operator = Operation("fulltNavn", Documentation.Notation.FUNCTION),
-                first = renderExpression(expr.value),
-            )
+            is UnaryOperation.QuotationEnd -> Operation(text = "\"", Documentation.Notation.POSTFIX)
 
-            is UnaryOperation.MapValue<*, *> -> renderExpression(expr.value)
-
-            is UnaryOperation.QuotationEnd -> Invoke(
-                operator = Operation(text = "\"", Documentation.Notation.POSTFIX),
-                first = renderExpression(expr.value),
-            )
-
-            is UnaryOperation.QuotationStart -> Invoke(
-                operator = Operation(text = "\"", Documentation.Notation.PREFIX),
-                first = renderExpression(expr.value),
-            )
+            is UnaryOperation.QuotationStart -> Operation(text = "\"", Documentation.Notation.PREFIX)
         }
 
     private fun renderOperation(operation: BinaryOperation<*, *, *>): Operation =
