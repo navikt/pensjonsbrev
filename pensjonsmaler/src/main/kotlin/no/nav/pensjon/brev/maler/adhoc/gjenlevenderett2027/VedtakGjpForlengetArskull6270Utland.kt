@@ -19,7 +19,8 @@ import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnitt
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig3GTabell
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -28,7 +29,6 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.includeAttachment
 import no.nav.pensjon.brev.template.includePhrase
-import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -161,25 +161,7 @@ object VedtakGjpForlengetArskull6270Utland : AutobrevTemplate<Gjenlevenderett202
             }
 
             includePhrase(Felles.RettTilAAKlage(vedleggGjpDineRettigheterOgPlikter))
-
-            title1 {
-                text(
-                    Bokmal to "Du har rett til innsyn ",
-                    English to "You have the right to access your file "
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg ",
-                    English to "You have the right to access all the documents relevant to your case. In the attached "
-                )
-                namedReference(vedleggGjpDineRettigheterOgPlikter)
-                text(
-                    Bokmal to " for informasjon om hvordan du går fram.   ",
-                    English to ", you can read more about how to proceed.   "
-                )
-
-            }
+            includePhrase(Felles.RettTilInnsyn(vedleggGjpDineRettigheterOgPlikter))
 
             title1 {
                 text(

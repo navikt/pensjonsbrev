@@ -18,14 +18,13 @@ import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnitt
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig3GTabell
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.includePhrase
-import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -154,24 +153,7 @@ object VedtakGjpForlengetArskull6270 : AutobrevTemplate<Gjenlevenderett2027Dto> 
             }
 
             includePhrase(Felles.RettTilAAKlage(vedleggGjpDineRettigheterOgPlikter))
-
-            title1 {
-                text(
-                    Bokmal to "Du har rett til innsyn ",
-                    Nynorsk to "Du har rett på innsyn "
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg ",
-                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegget "
-                )
-                namedReference(vedleggGjpDineRettigheterOgPlikter)
-                text(
-                    Bokmal to "for informasjon om hvordan du går fram.",
-                    Nynorsk to " for informasjon om korleis du går fram."
-                )
-            }
+            includePhrase(Felles.RettTilInnsyn(vedleggGjpDineRettigheterOgPlikter))
 
             title1 {
                 text(
