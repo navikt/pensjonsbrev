@@ -14,7 +14,6 @@ fun createAvslagForLiteTrygdetidAPDto() =
         pesysData = AvslagForLiteTrygdetidAPDto.PesysData(
             avtaleland = "Avtaleland",
             bostedsland = "Bostedsland",
-            erAvtaleland = false,
             erEOSland = true,
             trygdeperioderNorge = listOf(
                 Trygdetid(
