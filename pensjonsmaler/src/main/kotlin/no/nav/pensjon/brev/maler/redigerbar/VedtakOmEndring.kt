@@ -34,7 +34,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object VedtakOmEndring : RedigerbarTemplate<VedtakOmEndringDto> {
-    override val kode = Pesysbrevkoder.Redigerbar.PE_VEDTAK_OM_ENDRING
+    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_VEDTAK_OM_ENDRING
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = Sakstype.pensjon // Trur eg?
