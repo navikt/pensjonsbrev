@@ -136,28 +136,7 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AdhocAlderspensjonGjtO
 
             includePhrase(Felles.RettTilAAKlage(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
             includePhrase(Felles.RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
-
-            title1 {
-                text(
-                    Bokmal to "Har du spørsmål?",
-                    Nynorsk to "Har du spørsmål?",
-                    English to "Do you have questions?",
-                )
-            }
-
-            paragraph {
-                text(
-                    Bokmal to "Du finner mer informasjon på nav.no/pensjon. På nav.no/kontakt kan du chatte eller skrive til oss. " +
-                            "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon " +
-                            "+47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, hverdager kl. 09.00-15.00.",
-                    Nynorsk to "Du finn meir informasjon på nav.no/pensjon. På nav.no/kontakt kan du chatte eller skrive til oss. " +
-                            "Om du ikkje finn svar på nav.no, kan du ringe oss på telefon " +
-                            "+47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, kvardagar kl. 09.00-15.00.",
-                    English to "You can find more information at nav.no/pensjon. At nav.no/kontakt, you can chat or write to us. " +
-                            "If you do not find the answer at nav.no, you can call us at: " +
-                            "+47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, weekdays 09:00-15:00.",
-                )
-            }
+            includePhrase(Felles.HarDuSpoersmaal(Constants.PENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
         }
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)

@@ -208,30 +208,7 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
                 )
             }
             includePhrase(Felles.RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
-
-            title1 {
-                text(
-                    Bokmal to "Har du spørsmål?",
-                    Nynorsk to "Har du spørsmål?",
-                    English to "Do you have questions?"
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du finner mer informasjon på ${Constants.GJENLEVENDEPENSJON_URL}. "
-                            + "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. "
-                            + "Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, "
-                            + "hverdager kl. 09.00-15.00.",
-                    Nynorsk to "Du finn meir informasjon på ${Constants.GJENLEVENDEPENSJON_URL}. "
-                            + "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. "
-                            + "Om du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, "
-                            + "kvardagar kl. 09.00-15.00.",
-                    English to "You can find more information at ${Constants.GJENLEVENDEPENSJON_URL}. "
-                            + "At ${Constants.KONTAKT_URL} you can chat or write to us. "
-                            + "If you do not find the answer at ${Constants.NAV_URL}, you can call us at +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, "
-                            + "Monday to Friday from 09:00 to 15:00."
-                )
-            }
+            includePhrase(Felles.HarDuSpoersmaal(Constants.GJENLEVENDEPENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
         }
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
     }

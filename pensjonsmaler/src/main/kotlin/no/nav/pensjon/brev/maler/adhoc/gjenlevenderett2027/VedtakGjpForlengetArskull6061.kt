@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevende
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.DineInntekterTabell
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig2GTabell
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig3GTabell
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -191,30 +192,7 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
                 )
             }
 
-            title1 {
-                text(
-                    Bokmal to "Har du spørsmål? ",
-                    Nynorsk to "Har du spørsmål? ",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du finner mer informasjon på nav.no/gjenlevendepensjon. ",
-                    Nynorsk to "Du finn meir informasjon på nav.no/gjenlevendepensjon. "
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "På nav.no/kontakt kan du chatte eller skrive til oss. ",
-                    Nynorsk to "Du kan skrive til eller chatte med oss på nav.no/kontakt. "
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 34, hverdager 09:00-15:00. ",
-                    Nynorsk to "Dersom du ikkje finn svar på nav.no, kan du ringje oss på telefon 55 55 33 34, kvardagar 09.00–15.00. "
-                )
-            }
+            includePhrase(Felles.HarDuSpoersmaal(Constants.GJENLEVENDEPENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
         }
 
         includeAttachment(vedleggGjpDineRettigheterOgPlikter)
