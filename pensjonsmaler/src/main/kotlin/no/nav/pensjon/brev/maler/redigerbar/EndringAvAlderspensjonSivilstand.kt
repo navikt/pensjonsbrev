@@ -129,6 +129,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
         val uttaksgrad = pesysData.alderspensjonVedVirk.uttaksgrad.ifNull(then = (0))
         val grunnbelop = pesysData.beregnetPensjonPerManedVedVirk.grunnbelop
         val innvilgetFor67 = pesysData.alderspensjonVedVirk.innvilgetFor67
+        val epsNavn = fritekst("navn")
 
 
 
@@ -156,11 +157,10 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 showIf(sivilstand.isOneOf(GIFT) and borSammenMedBruker) {
                     // endringSivilstandGiftUnder2G, endringSisvilstandGiftOver2G, endringSisvilstandGiftYtelse
                     paragraph {
-                        val navn = fritekst("navn")
                         textExpr(
-                            Bokmal to "Du har giftet deg med ".expr() + navn + ",",
-                            Nynorsk to "Du har gifta deg med ".expr() + navn + ",",
-                            English to "You have married ".expr() + navn + ","
+                            Bokmal to "Du har giftet deg med ".expr() + epsNavn + ",",
+                            Nynorsk to "Du har gifta deg med ".expr() + epsNavn + ",",
+                            English to "You have married ".expr() + epsNavn + ","
                         )
                         showIf(mottarPensjon) {
                             text(
@@ -185,24 +185,23 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }.orShowIf(sivilstand.isOneOf(SAMBOER_3_2)) {
                     // endringSisvilstand3-2samboer
                     paragraph {
-                        val navn = fritekst("navn")
                         textExpr(
-                            Bokmal to "Du har bodd sammen med ".expr() + navn + " i 12 av de siste 18 månedene.",
-                            Nynorsk to "Du har budd saman med ".expr() + navn + " i 12 av dei siste 18 månadene.",
-                            English to "You have been living with ".expr() + navn + " for 12 out of the past 18 months."
+                            Bokmal to "Du har bodd sammen med ".expr() + epsNavn + " i 12 av de siste 18 månedene.",
+                            Nynorsk to "Du har budd saman med ".expr() + epsNavn + " i 12 av dei siste 18 månadene.",
+                            English to "You have been living with ".expr() + epsNavn + " for 12 out of the past 18 months."
                         )
                     }
                 }.orShowIf(sivilstand.isOneOf(SAMBOER_1_5)) {
                     // Radio knapper: Velg type § 1-5 samboer
                     // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
+
                     showIf(saksbehandlerValg.samboereMedFellesBarn) {
                         paragraph {
                             // endringSivilstand1-5samboerBarn
-                            val navn = fritekst("navn")
                             textExpr(
-                                Bokmal to "Du har flyttet sammen med ".expr() + navn + ", og dere har barn sammen.",
-                                Nynorsk to "Du har flytta saman med ".expr() + navn + ", og dere har barn saman.",
-                                English to "You have moved together with ".expr() + navn + ", with whom you have children."
+                                Bokmal to "Du har flyttet sammen med ".expr() + epsNavn + ", og dere har barn sammen.",
+                                Nynorsk to "Du har flytta saman med ".expr() + epsNavn + ", og dere har barn saman.",
+                                English to "You have moved together with ".expr() + epsNavn + ", with whom you have children."
 
                             )
                         }
@@ -211,11 +210,10 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     showIf(saksbehandlerValg.samboereTidligereGift) {
                         // endringSivilstand1-5samboerTidlGift
                         paragraph {
-                            val navn = fritekst("navn")
                             textExpr(
-                                Bokmal to "Du har flyttet sammen med ".expr() + navn + ", og dere har vært tidligere.",
-                                Nynorsk to "Du har flytta saman med ".expr() + navn + ", og dere har vore gift tidlegare.",
-                                English to "You have moved together with ".expr() + navn + ", with whom you were previously married."
+                                Bokmal to "Du har flyttet sammen med ".expr() + epsNavn + ", og dere har vært tidligere.",
+                                Nynorsk to "Du har flytta saman med ".expr() + epsNavn + ", og dere har vore gift tidlegare.",
+                                English to "You have moved together with ".expr() + epsNavn + ", with whom you were previously married."
                             )
                         }
                     }
@@ -355,11 +353,10 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
             ) {
                 // flyttetEPS
                 paragraph {
-                    val navn = fritekst("navn")
                     textExpr(
-                        Bokmal to "Du og ".expr() + navn + " bor ikke lenger sammen.",
-                        Nynorsk to "Du og ".expr() + navn + "bur ikkje lenger saman.",
-                        English to "You and ".expr() + navn + "no longer live together."
+                        Bokmal to "Du og ".expr() + epsNavn + " bor ikke lenger sammen.",
+                        Nynorsk to "Du og ".expr() + epsNavn + "bur ikkje lenger saman.",
+                        English to "You and ".expr() + epsNavn + "no longer live together."
                     )
                 }
 

@@ -34,7 +34,7 @@ object AdhocSkjermingstilleggFeilBeroertBruker : AutobrevTemplate<EmptyBrevdata>
             paragraph {
                 text(
                     Bokmal to "Nav har sendt brev om alderspensjonen din til en person du bodde sammen med da brevet ble sendt. Vi hadde ikke lov til å dele opplysningene i brevet med den personen. " +
-                            "Dette er et brudd på Navs taushetsplikt og er et personvernbrudd. Feilen er rettet opp ved at fremtidige brev sendes til riktig person " +
+                            "Dette er et brudd på Navs taushetsplikt og er et personvernbrudd. Feilen er rettet opp ved at fremtidige brev sendes til riktig person. " +
                             "Det kan være du har fått eller lest brevet allerede. Vi vil uansett sende deg riktig brev."
                 )
             }

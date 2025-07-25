@@ -1,10 +1,15 @@
 package no.nav.pensjon.brev.model
 
-import no.nav.pensjon.brev.api.model.*
-import no.nav.pensjon.brev.maler.fraser.common.ResultatAvVurderingenTextMappingStorBokstav
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.api.model.BorMedSivilstand
+import no.nav.pensjon.brev.api.model.MetaforceSivilstand
+import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.template.BinaryOperation
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.LocalizedFormatter
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.safe
 
 @JvmName("formatBormedSivilstandTabell")
 fun Expression<BorMedSivilstand>.tableFormat() = format(formatter = FormatBorMedSivilstandTabell)
@@ -120,3 +125,54 @@ private fun borMedSivilstand(sivilstand: BorMedSivilstand, language: Language, b
             replaceFirstChar { it.uppercase() }
         } else this
     }
+
+fun Expression<Sakstype>.format(): Expression<String?> = SakstypeNavn(this, Expression.FromScope.Language)
+
+@JvmName("formatSakstypeNullable")
+fun Expression<Sakstype?>.format(): Expression<String?> = safe(SakstypeNavn, Expression.FromScope.Language)
+
+object SakstypeNavn : BinaryOperation<Sakstype, Language, String?>() {
+    override fun apply(first: Sakstype, second: Language): String? = sakstype(first, second)
+    override fun stableHashCode(): Int = "SakstypeNavn".hashCode()
+
+    private fun sakstype(sakstype: Sakstype, language: Language): String? =
+        when(sakstype) {
+            Sakstype.AFP -> "AFP"
+            Sakstype.AFP_PRIVAT -> when(language) {
+                Bokmal -> "AFP i privat sektor"
+                Nynorsk -> "AFP i privat sektor"
+                English -> "contractual pension (AFP) in the private sector"
+            }
+            Sakstype.ALDER -> when(language) {
+                Bokmal -> "alderspensjon"
+                Nynorsk ->  "alderspensjon"
+                English -> "retirement pension"
+            }
+            Sakstype.BARNEP -> when(language) {
+                Bokmal -> "barnepensjon"
+                Nynorsk ->  "barnepensjon"
+                English -> "children’s pension"
+            }
+            Sakstype.FAM_PL -> when(language) {
+                Bokmal -> "ytelse til tidligere familiepleier"
+                Nynorsk ->  "yting til tidligare familiepleiarar"
+                English -> "previous family carers benefits"
+            }
+            Sakstype.GJENLEV -> when(language) {
+                Bokmal -> "gjenlevendepensjon"
+                Nynorsk ->  "attlevandepensjon"
+                English -> "survivor's pension"
+            }
+            Sakstype.UFOREP -> when(language) {
+                Bokmal -> "uføretrygd"
+                Nynorsk ->  "uføretrygd"
+                English -> "disability benefit"
+            }
+
+            Sakstype.GAM_YRK,
+            Sakstype.GENRL,
+            Sakstype.GRBL,
+            Sakstype.KRIGSP,
+            Sakstype.OMSORG -> null
+        }
+}

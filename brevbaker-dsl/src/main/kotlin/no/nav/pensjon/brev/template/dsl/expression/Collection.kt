@@ -44,5 +44,8 @@ fun <In1, In2, Out> Expression<Collection<In2>>.map(
 fun <In> Expression<Collection<In>>.map(mapper: BinaryOperation<In, Language, String>): Expression<Collection<String>> =
     map(mapper, Expression.FromScope.Language)
 
+@JvmName("formatCollection")
 fun Expression<Collection<String>>.format(): StringExpression = format(formatter = LocalizedFormatter.CollectionFormat)
+@JvmName("formatCollectionNullable")
+fun Expression<Collection<String>?>.format(): Expression<String?> = format(formatter = LocalizedFormatter.CollectionFormat)
 
