@@ -10,18 +10,22 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.ParagraphPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -487,4 +491,23 @@ object TrygdetidTittel : OutlinePhrase<LangBokmalNynorskEnglish>() {
             )
         }
     }
+}
+
+data class DerforHar(val initiertAvBrukerEllerVerge: Expression<Boolean>, val initiertAvNav: Expression<Boolean>) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
+    override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(initiertAvBrukerEllerVerge) {
+            text(
+                Bokmal to "Derfor har vi avslått søknaden din.",
+                Nynorsk to "Derfor har vi avslått søknaden din.",
+                English to "We have declined your application for this reason."
+            )
+        }.orShowIf(initiertAvNav) {
+            text(
+                Bokmal to "Derfor har du ikke rettigheter etter avdøde.",
+                Nynorsk to "Derfor har du ikkje rettar etter avdøde.",
+                English to "You have no survivor’s rights in your retirement pension for this reason."
+            )
+        }
+    }
+
 }

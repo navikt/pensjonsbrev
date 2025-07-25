@@ -35,6 +35,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIA
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.samboerUtenFellesBarn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.DerforHar
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.DuFaarHverMaaned
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.TrygdetidTittel
@@ -154,24 +155,12 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                     ) + "."
                 )
                 textExpr(
-                    Bokmal to " I følge opplysningene våre har ".expr() + saksbehandlerValg.avdoedNavn + " aldri bodd eller arbeidet i Norge.",
-                    Nynorsk to " Ifølgje opplysningane våre har ".expr() + saksbehandlerValg.avdoedNavn + " aldri budd eller arbeidd i Noreg.",
-                    English to " According to our information, ".expr() + saksbehandlerValg.avdoedNavn + " has never lived or worked in Norway."
+                    Bokmal to " I følge opplysningene våre har ".expr() + saksbehandlerValg.avdoedNavn + " aldri bodd eller arbeidet i Norge. ",
+                    Nynorsk to " Ifølgje opplysningane våre har ".expr() + saksbehandlerValg.avdoedNavn + " aldri budd eller arbeidd i Noreg. ",
+                    English to " According to our information, ".expr() + saksbehandlerValg.avdoedNavn + " has never lived or worked in Norway. "
                 )
 
-                showIf(initiertAvBrukerEllerVerge) {
-                    text(
-                        Bokmal to " Derfor har vi avslått søknaden din.",
-                        Nynorsk to " Derfor har vi avslått søknaden din.",
-                        English to " We have declined your application for this reason."
-                    )
-                }.orShowIf(initiertAvNav) {
-                    text(
-                        Bokmal to " Du har derfor ikke rettigheter etter avdøde.",
-                        Nynorsk to " Du har derfor ikkje rettar etter avdøde.",
-                        English to " Therefore, you do not have survivor’s rights in your retirement pension."
-                    )
-                }
+                includePhrase(DerforHar(initiertAvBrukerEllerVerge = initiertAvBrukerEllerVerge, initiertAvNav = initiertAvNav))
             }
 
             // avslagGjRettAPUnder3aar_001
@@ -251,19 +240,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                         "dato"
                     ) + " and your spouse died on " + fritekst("dato") + ". You also have no joint children. "
                 )
-                showIf(initiertAvBrukerEllerVerge) {
-                    text(
-                        Bokmal to "Derfor har vi avslått søknaden din.",
-                        Nynorsk to "Derfor har vi avslått søknaden din.",
-                        English to "We have declined your application for this reason."
-                    )
-                }.orShowIf(initiertAvNav) {
-                    text(
-                        Bokmal to "Derfor har du ikke rettigheter etter avdøde.",
-                        Nynorsk to "Derfor har du ikkje rettar etter avdøde.",
-                        English to "You have no survivor’s rights in your retirement pension for this reason."
-                    )
-                }
+                includePhrase(DerforHar(initiertAvBrukerEllerVerge = initiertAvBrukerEllerVerge, initiertAvNav = initiertAvNav))
             }
 
             showIf(saksbehandlerValg.samboerUtenFellesBarn) {
@@ -278,23 +255,11 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
 
                 paragraph {
                     textExpr(
-                        Bokmal to "Du og ".expr() + saksbehandlerValg.avdoedNavn + " har ikke tidligere vært gift i minst fem år. Dere var heller ikke samboere med felles barn.",
-                        Nynorsk to "Du og ".expr() + saksbehandlerValg.avdoedNavn + " har ikkje tidlegare vore gifte i minst fem år. De var heller ikkje sambuarar med felles barn.",
-                        English to "You and ".expr() + saksbehandlerValg.avdoedNavn + " have not been previously married for at least five years. You were also not cohabiting partners with joint children."
+                        Bokmal to "Du og ".expr() + saksbehandlerValg.avdoedNavn + " har ikke tidligere vært gift i minst fem år. Dere var heller ikke samboere med felles barn. ",
+                        Nynorsk to "Du og ".expr() + saksbehandlerValg.avdoedNavn + " har ikkje tidlegare vore gifte i minst fem år. De var heller ikkje sambuarar med felles barn. ",
+                        English to "You and ".expr() + saksbehandlerValg.avdoedNavn + " have not been previously married for at least five years. You were also not cohabiting partners with joint children. "
                     )
-                    showIf(initiertAvBrukerEllerVerge) {
-                        text(
-                            Bokmal to "Derfor har vi avslått søknaden din.",
-                            Nynorsk to "Derfor har vi avslått søknaden din.",
-                            English to "We have declined your application for this reason."
-                        )
-                    }.orShowIf(initiertAvNav) {
-                        text(
-                            Bokmal to "Derfor har du ikke rettigheter etter avdøde.",
-                            Nynorsk to "Derfor har du ikkje rettar etter avdøde.",
-                            English to "You have no survivor’s rights in your retirement pension for this reason."
-                        )
-                    }
+                    includePhrase(DerforHar(initiertAvBrukerEllerVerge = initiertAvBrukerEllerVerge, initiertAvNav = initiertAvNav))
                 }
             }
             // omregnetEnsligAP_002
