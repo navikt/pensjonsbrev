@@ -35,6 +35,7 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
@@ -109,7 +110,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                 pesysData.eksportForbudKode_safe,
                 pesysData.eksportForbudKodeAvdoed_safe
             ) { eksportForbudKode, eksportForbudKodeAvdoed ->
-                showIf(eksportForbudKode.isOneOf(UFOR25_ALDER)) {
+                showIf(eksportForbudKode.equalTo(UFOR25_ALDER)) {
                     // eksportUngUforStans
                     paragraph {
                         text(
@@ -121,7 +122,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                                     + "you have to live in Norway. We are therefore stopping your retirement pension.",
                         )
                     }
-                }.orShowIf(eksportForbudKode.isOneOf(FLYKT_ALDER) or eksportForbudKodeAvdoed.isOneOf(FLYKT_ALDER)) {
+                }.orShowIf(eksportForbudKode.equalTo(FLYKT_ALDER) or eksportForbudKodeAvdoed.equalTo(FLYKT_ALDER)) {
                     // eksportFlyktningStans
                     paragraph {
                         text(
@@ -141,19 +142,19 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                     paragraph {
                         textExpr(
                             Bokmal to "For å få utbetalt alderspensjonen din når du flytter til dette landet må du enten ha vært medlem i folketrygden i minst 20 år".expr() + ifElse(
-                                regelverkType.isOneOf(AP2016),
+                                regelverkType.equalTo(AP2016),
                                 ifTrue = ", ha rett til tilleggspensjon eller ha tjent opp inntektspensjon.",
                                 ifFalse = " eller ha rett til tilleggspensjon. "
                             )
                                     + "Det har du ikke, og derfor stanser vi utbetalingen av alderspensjonen din.",
                             Nynorsk to "For få utbetalt alderspensjonen din når du flyttar til dette landet må du anten ha vore medlem i folketrygda i minst 20 år".expr() + ifElse(
-                                regelverkType.isOneOf(AP2016),
+                                regelverkType.equalTo(AP2016),
                                 ifTrue = ", ha rett til tilleggspensjon eller ha tent opp inntektspensjon. ",
                                 ifFalse = " eller ha rett til tilleggspensjon. "
                             )
                                     + "Det har du ikkje, og derfor stansar vi utbetalinga av alderspensjonen din.",
                             English to "To be eligible for your retirement pension when you move to this country you must have been a member of the Norwegian National Insurance Scheme for at least 20 years".expr() + ifElse(
-                                regelverkType.isOneOf(AP2016),
+                                regelverkType.equalTo(AP2016),
                                 ifTrue = ", be entitled to a supplementary pension or have had a pensionable income.",
                                 ifFalse = " or be entitled to a supplementary pension. "
                             )
@@ -167,7 +168,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                     textExpr(
                         Bokmal to "Verken du eller avdøde har vært medlem i folketrygden i minst 20 år".expr()
                                 + ifElse(
-                            regelverkType.isOneOf(AP2016),
+                            regelverkType.equalTo(AP2016),
                             ifTrue = ", rett til tilleggspensjon eller ha tjent opp inntektspensjon. ",
                             ifFalse = " eller har rett til tilleggspensjon. "
                         )
@@ -175,7 +176,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                                 + "Derfor stanser vi utbetalingen av alderspensjonen din.",
                         Nynorsk to "Verken du eller avdøde har vært medlem i folketrygda i minst 20 år".expr()
                                 + ifElse(
-                            regelverkType.isOneOf(AP2016),
+                            regelverkType.equalTo(AP2016),
                             ifTrue = ", rett til tilleggspensjon eller inntektspensjon. ",
                             ifFalse = " eller har rett til tilleggspensjon. "
                         )
@@ -183,7 +184,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                                 + "Derfor stansar vi utbetalinga av alderspensjonen din.",
                         English to "Neither you nor the deceased have been a member of the Norwegian National Insurance Scheme for at least 20 years".expr()
                                 + ifElse(
-                            regelverkType.isOneOf(AP2016),
+                            regelverkType.equalTo(AP2016),
                             ifTrue = ", are entitled to a supplementary pension or income-based pension. ",
                             ifFalse = " or are entitled to a supplementary pension. "
                         )
