@@ -29,7 +29,7 @@ fun createAvslagPaaGjenlevenderettIAlderspensjon() = AvslagPaaGjenlevenderettIAl
         ytelseskomponentInformasjon = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.YtelseskomponentInformasjon(
             beloepEndring = BeloepEndring.ENDR_OKT
         ),
-        beregnetPensjonPerManed = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.BeregnetPensjonPerManed(
+        beregnetPensjonPerMaaned = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.BeregnetPensjonPerManed(
             antallBeregningsperioderPensjon = 4
         ),
         avtaleland = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.Avtaleland(
@@ -39,8 +39,8 @@ fun createAvslagPaaGjenlevenderettIAlderspensjon() = AvslagPaaGjenlevenderettIAl
         bruker = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.Bruker(
             faktiskBostedsland = "Benin"
         ),
-        dineRettigheterOgMulighetTilAaKlageDto = createDineRettigheterOgMulighetTilAaKlageDto(),
-        maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
-        maanedligPensjonFoerSkattAP2025Dto = createMaanedligPensjonFoerSkattAP2025()
+        dineRettigheterOgMulighetTilAaKlage = createDineRettigheterOgMulighetTilAaKlageDto(),
+        maanedligPensjonFoerSkatt = createMaanedligPensjonFoerSkatt(),
+        maanedligPensjonFoerSkattAP2025 = createMaanedligPensjonFoerSkattAP2025()
     )
 )
