@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.brukersBostedsland
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.brukersBostedsland_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.eksportForbudKodeAvdoed_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.eksportForbudKode_safe
@@ -43,7 +42,6 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -95,11 +93,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                     Nynorsk to "Vi har fått melding om at du har flytta til ",
                     English to "We have received notice that you have moved to "
                 )
-                showIf(pesysData.brukersBostedsland_safe.notNull()) {
-                    eval(pesysData.brukersBostedsland.ifNull(""))
-                }.orShow {
-                    fritekst("BOSTEDSLAND")
-                }
+                eval(pesysData.brukersBostedsland.ifNull(fritekst("BOSTEDSLAND")))
                 text(
                     Bokmal to ".",
                     Nynorsk to ".",
