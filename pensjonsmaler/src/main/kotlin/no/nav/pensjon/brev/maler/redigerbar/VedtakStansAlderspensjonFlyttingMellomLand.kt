@@ -142,7 +142,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                             text(
                                 Bokmal to ", ha rett til tilleggspensjon eller ha tjent opp inntektspensjon.",
                                 Nynorsk to ", ha rett til tilleggspensjon eller ha tent opp inntektspensjon. ",
-                                English to " or be entitled to a supplementary pension. "
+                                English to ", be entitled to a supplementary pension or have had a pensionable income. "
                             )
                         }.orShow {
                             text(
@@ -170,7 +170,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                         text(
                             Bokmal to ", rett til tilleggspensjon eller ha tjent opp inntektspensjon. ",
                             Nynorsk to ", rett til tilleggspensjon eller inntektspensjon. ",
-                            English to " or are entitled to a supplementary pension. "
+                            English to ", are entitled to a supplementary pension or income-based pension. "
                         )
                     }.orShow {
                         text(
