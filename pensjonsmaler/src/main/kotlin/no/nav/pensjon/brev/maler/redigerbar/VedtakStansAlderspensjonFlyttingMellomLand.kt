@@ -216,7 +216,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                     Nynorsk to "Du må sjølv gi oss beskjed dersom du flyttar tilbake til Noreg eller til eit anna land. "
                             + "Da vil vi vurdere retten din til alderspensjon på nytt.",
                     English to "You must give us notice if you move back to Norway or to another country. "
-                            + "We will then review your right to retirement pension",
+                            + "We will then review your right to retirement pension.",
                 )
             }
 
