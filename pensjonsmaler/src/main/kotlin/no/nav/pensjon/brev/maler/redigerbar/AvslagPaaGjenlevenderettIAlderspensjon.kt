@@ -385,13 +385,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                                 "Legg inn aktuelle artikler om sammenlegging og eksport"
                             ) + " in the social security agreement with "
                         )
-                        ifNotNull(land.navn) { navn ->
-                            textExpr(
-                                Bokmal to navn + ".",
-                                Nynorsk to navn + ".",
-                                English to navn + "."
-                            )
-                        }
+                        ifNotNull(land.navn) { eval(it + ".") }
                     }
                 }
             }
