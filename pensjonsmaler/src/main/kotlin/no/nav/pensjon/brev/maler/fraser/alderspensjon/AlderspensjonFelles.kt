@@ -288,9 +288,9 @@ object Skatteplikt : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
-                Bokmal to "Spørsmål om skatteplikt til Norge etter flytting til utlandet må rettes til skatteetaten." +
+                Bokmal to "Spørsmål om skatteplikt til Norge etter flytting til utlandet må rettes til Skatteetaten." +
                         " Du må selv avklare spørsmål om skatteplikt til det landet du bor i med skattemyndighetene der.",
-                Nynorsk to "Spørsmål om skatteplikt til Noreg etter flytting til utlandet må rettast til skatteetaten. " +
+                Nynorsk to "Spørsmål om skatteplikt til Noreg etter flytting til utlandet må rettast til Skatteetaten. " +
                         " Du må sjølv avklare spørsmål om skatteplikt til det landet du bur i med skatteorgana der.",
                 English to "Questions about tax liability to Norway after moving abroad must be directed to the Norwegian Tax Administration." +
                         " You must clarify questions about tax liability to your country of residence with the local tax authorities."
@@ -462,6 +462,25 @@ object UfoereAlder {
             }
         }
 
+    }
+}
+
+object FeilutbetalingAP  : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Feilutbetaling",
+                Nynorsk to "Feilutbetaling",
+                English to "Incorrect payment"
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Vi har redusert pensjonen din tilbake i tid. Derfor har du fått for mye utbetalt. Vi vil sende deg et eget varselbrev om en eventuell tilbakebetaling.",
+                Nynorsk to "Vi har redusert pensjonen din tilbake i tid. Derfor har du fått for mykje utbetalt. Vi vil sende deg eit eige varselbrev om ei eventuell tilbakebetaling.",
+                English to "We have reduced your retirement pension for a previous period. You have therefore been paid too much. We will send you a separate notice letter concerning possible repayment.",
+            )
+        }
     }
 }
 

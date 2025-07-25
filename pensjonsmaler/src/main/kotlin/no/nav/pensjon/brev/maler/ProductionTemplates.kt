@@ -126,6 +126,7 @@ object ProductionTemplates : AllTemplates {
         VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge,
         VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge,
         VedtakOmFjerningAvOmsorgsopptjening,
+        VedtakStansAlderspensjonFlyttingMellomLand,
     )
 
     override fun hentAutobrevmaler() = autobrev
