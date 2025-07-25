@@ -1,5 +1,8 @@
 package no.nav.pensjon.brev.skribenten
 
+import com.typesafe.config.ConfigFactory
+import com.typesafe.config.ConfigParseOptions.defaults
+import com.typesafe.config.ConfigResolveOptions
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -28,6 +31,13 @@ data class MockPrincipal(override val navIdent: NavIdent, override val fullName:
     }
 
 }
+
+fun initADGroups() = ADGroups.init(
+ConfigFactory
+    .load("application-local", defaults(), ConfigResolveOptions.defaults().setAllowUnresolved(true))
+    .getConfig("skribenten")
+    .getConfig("groups")
+)
 
 object Testbrevkoder {
     val TESTBREV = RedigerbarBrevkode("TESTBREV")

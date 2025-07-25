@@ -27,6 +27,8 @@ object FeatureToggles {
     val vedtakEndringAvUttaksgrad = FeatureToggle("vedtakEndringAvUttaksgrad")
     val vedtakEndringAvUttaksgradStans = FeatureToggle("vedtakEndringAvUttaksgradStans")
     val endringAvAlderspensjonSivilstand = FeatureToggle("endringAvAlderspensjonSivilstand")
+    val innvilgelseAvAlderspensjon = FeatureToggle("innvilgelseAvAlderspensjon")
+    val innvilgelseAvAlderspensjonTrygdeavtale = FeatureToggle("innvilgelseAvAlderspensjonTrygdeavtale")
     val vedtakOmFjerningAvOmsorgspoeng = FeatureToggle("vedtakOmFjerningAvOmsorgspoeng")
     val vedtakEndringOpptjeningEndret = FeatureToggle("vedtakEndringOpptjeningEndret")
 }

@@ -19,11 +19,20 @@ fun Foedselsnummer.format() =
 @JvmName("formatTelefonnummer")
 fun Expression<Telefonnummer>.format() = format(formatter = LocalizedFormatter.TelefonnummerFormat)
 
+@JvmName("formatTelefonnummerNullable")
+fun Expression<Telefonnummer?>.format() = format(formatter = LocalizedFormatter.TelefonnummerFormat)
+
 @JvmName("formatFoedselsnummer")
 fun Expression<Foedselsnummer>.format() = format(formatter = LocalizedFormatter.FoedselsnummerFormat)
 
+@JvmName("formatFoedselsnummerNullable")
+fun Expression<Foedselsnummer?>.format() = format(formatter = LocalizedFormatter.FoedselsnummerFormat)
+
 @JvmName("formatKroner")
 fun Expression<Kroner>.format() = select(intValueSelector).format(formatter = LocalizedFormatter.CurrencyFormat)
+@JvmName("formatKronerNullable")
+fun Expression<Kroner?>.format() = select(intValueSelector).format(formatter = LocalizedFormatter.CurrencyFormat)
 
 @JvmName("formatIntValue")
 fun Expression<IntValue>.format() = select(intValueSelector).format()
+fun Expression<IntValue?>.format() = select(intValueSelector).format()

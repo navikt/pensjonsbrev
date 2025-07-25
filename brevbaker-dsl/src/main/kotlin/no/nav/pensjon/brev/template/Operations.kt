@@ -74,9 +74,11 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: Boolean): Boolean = input.not()
     }
 
-    class SafeCall<In : Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In?, Out?>() {
-        override fun apply(input: In?): Out? = input?.let { selector.selector(it) }
-        override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.SafeCall"), selector).stableHashCode()
+    class SafeCall<In : Any, Out>(val operation: UnaryOperation<In, Out>) : UnaryOperation<In?, Out?>() {
+        constructor(selector: TemplateModelSelector<In, Out>): this(Select(selector))
+
+        override fun apply(input: In?): Out? = input?.let { operation.apply(it) }
+        override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.SafeCall"), operation).stableHashCode()
     }
 
     class Select<In : Any, Out>(val selector: TemplateModelSelector<In, Out>) : UnaryOperation<In, Out>() {
