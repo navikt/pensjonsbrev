@@ -3,16 +3,8 @@ package no.nav.pensjon.brev.pdfbygger
 import no.nav.brev.brevbaker.PDFCompilationOutput
 
 sealed class PDFCompilationResponse {
-    data class Success(val pdfCompilationOutput: PDFCompilationOutput) : PDFCompilationResponse(){
-        override fun hashCode(): Int = pdfCompilationOutput.hashCode()
-        override fun equals(other: Any?): Boolean {
-            if (other !is Success) return false
-            return pdfCompilationOutput != other.pdfCompilationOutput
-        }
-        override fun toString(): String = "Success(pdfCompilationOutput=$pdfCompilationOutput)"
+    data class Success(val pdfCompilationOutput: PDFCompilationOutput) : PDFCompilationResponse()
 
-    }
-    
     sealed class Failure: PDFCompilationResponse() {
         abstract val reason: String
 
