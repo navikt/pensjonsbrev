@@ -141,15 +141,11 @@ const ArkivertBrev = (props: { brev: BrevInfo }) => {
       {/* TODO - copy-pasted fra <ÅpentBrev /> - Ha denne biten som en del av <OppsummeringAvMottaker /> */}
       <div>
         <Detail textColor="subtle">Mottaker</Detail>
-        {props.brev.mottaker ? (
-          <OppsummeringAvMottaker
-            mottaker={props.brev.mottaker}
-            saksId={sakContext.sak.saksId.toString()}
-            withTitle={false}
-          />
-        ) : (
-          <OppsummeringAvMottaker mottaker={null} saksId={sakContext.sak.saksId.toString()} withTitle={false} />
-        )}
+        <OppsummeringAvMottaker
+          mottaker={props.brev.mottaker ?? null}
+          saksId={sakContext.sak.saksId.toString()}
+          withTitle={false}
+        />
       </div>
 
       <BodyShort size="small">
@@ -211,17 +207,14 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           overrideOppsummering={(edit) => (
             <div>
               <Detail textColor="subtle">Mottaker</Detail>
-              {props.brev.mottaker ? (
-                <HStack align="start" gap="8">
-                  <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle={false} />
-                  {!erLåst && edit}
-                </HStack>
-              ) : (
-                <HStack align="start" gap="8">
-                  <OppsummeringAvMottaker mottaker={null} saksId={props.saksId} withTitle={false} />
-                  {!erLåst && edit}
-                </HStack>
-              )}
+              <HStack align="start" gap="8">
+                <OppsummeringAvMottaker
+                  mottaker={props.brev.mottaker ?? null}
+                  saksId={props.saksId}
+                  withTitle={false}
+                />
+                {!erLåst && edit}
+              </HStack>
             </div>
           )}
           saksId={props.saksId}
