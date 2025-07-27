@@ -7,6 +7,7 @@ import { LITERAL, PARAGRAPH } from "~/types/brevbakerTypes";
 import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { newTable } from "../model/tableHelpers";
+import { isTableCellIndex } from "../model/utils";
 import { addElements, newColSpec, newRow, removeElements, text } from "./common";
 import { updateLiteralText } from "./updateContentText";
 
@@ -54,21 +55,21 @@ export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number,
 );
 
 export const removeTableRow = produce<LetterEditorState>((draft) => {
-  const selection = draft.tableSelection ?? draft.contextMenuCell;
-  if (!selection || selection.rowIndex === undefined || selection.rowIndex < 0) return;
+  if (!isTableCellIndex(draft.focus)) return;
+  const { blockIndex, contentIndex, rowIndex } = draft.focus;
+  if (rowIndex < 0) return;
 
-  const table = draft.redigertBrev.blocks[selection.blockIndex].content[selection.contentIndex] as Table;
-  removeElements(selection.rowIndex, 1, { content: table.rows, deletedContent: table.deletedRows, id: table.id });
+  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex] as Table;
+  removeElements(rowIndex, 1, { content: table.rows, deletedContent: table.deletedRows, id: table.id });
 
   draft.isDirty = true;
 });
 
 export const removeTableColumn = produce<LetterEditorState>((draft) => {
-  const selection = draft.tableSelection ?? draft.contextMenuCell;
-  if (!selection || selection.colIndex === undefined) return;
+  if (!isTableCellIndex(draft.focus)) return;
+  const { blockIndex, contentIndex, cellIndex: col } = draft.focus;
 
-  const col = selection.colIndex!;
-  const table = draft.redigertBrev.blocks[selection.blockIndex].content[selection.contentIndex] as Table;
+  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex] as Table;
 
   table.header.colSpec.splice(col, 1);
   table.rows.forEach((row) => row.cells.splice(col, 1));
@@ -77,11 +78,11 @@ export const removeTableColumn = produce<LetterEditorState>((draft) => {
 });
 
 export const removeTable = produce<LetterEditorState>((draft) => {
-  const selection = draft.tableSelection ?? draft.contextMenuCell;
-  if (!selection) return;
+  if (!isTableCellIndex(draft.focus)) return;
+  const { blockIndex, contentIndex } = draft.focus;
 
-  const parentBlock = draft.redigertBrev.blocks[selection.blockIndex];
-  removeElements(selection.contentIndex, 1, {
+  const parentBlock = draft.redigertBrev.blocks[blockIndex];
+  removeElements(contentIndex, 1, {
     content: parentBlock.content,
     deletedContent: parentBlock.deletedContent,
     id: parentBlock.id,
@@ -90,11 +91,10 @@ export const removeTable = produce<LetterEditorState>((draft) => {
 });
 
 export const insertTableColumnLeft: Action<LetterEditorState, []> = produce((draft) => {
-  const selection = draft.tableSelection ?? draft.contextMenuCell;
-  if (!selection || selection.colIndex === undefined) return;
+  if (!isTableCellIndex(draft.focus)) return;
+  const { blockIndex, contentIndex, cellIndex: at } = draft.focus;
 
-  const table = draft.redigertBrev.blocks[selection.blockIndex].content[selection.contentIndex] as Table;
-  const at = selection.colIndex;
+  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex] as Table;
   // TODO: When Header/Row get deleted* arrays (e.g. header.deletedColSpecs, row.deletedCells),
   //replace these splices with addElements/removeElements to keep deleted* in sync.
   table.header.colSpec.splice(at, 0, ...newColSpec(1));
@@ -104,11 +104,11 @@ export const insertTableColumnLeft: Action<LetterEditorState, []> = produce((dra
 });
 
 export const insertTableColumnRight: Action<LetterEditorState, []> = produce((draft) => {
-  const selection = draft.tableSelection ?? draft.contextMenuCell;
-  if (!selection || selection.colIndex === undefined) return;
+  if (!isTableCellIndex(draft.focus)) return;
+  const { blockIndex, contentIndex, cellIndex } = draft.focus;
 
-  const table = draft.redigertBrev.blocks[selection.blockIndex].content[selection.contentIndex] as Table;
-  const at = selection.colIndex + 1;
+  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex] as Table;
+  const at = cellIndex + 1;
   // TODO: When Header/Row get deleted* arrays (e.g. header.deletedColSpecs, row.deletedCells),
   // replace these splices with addElements/removeElements to keep deleted* in sync.
   table.header.colSpec.splice(at, 0, ...newColSpec(1));
@@ -118,21 +118,21 @@ export const insertTableColumnRight: Action<LetterEditorState, []> = produce((dr
 });
 
 export const insertTableRowAbove: Action<LetterEditorState, []> = produce((draft) => {
-  const selection = draft.tableSelection ?? draft.contextMenuCell;
-  if (!selection || selection.rowIndex === undefined) return;
+  if (!isTableCellIndex(draft.focus)) return;
+  const { blockIndex, contentIndex, rowIndex } = draft.focus;
 
-  const table = draft.redigertBrev.blocks[selection.blockIndex].content[selection.contentIndex] as Table;
-  addElements([newRow(table.header.colSpec.length)], selection.rowIndex, table.rows, table.deletedRows);
-
+  if (rowIndex < 0) return;
+  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex] as Table;
+  addElements([newRow(table.header.colSpec.length)], rowIndex, table.rows, table.deletedRows);
   draft.isDirty = true;
 });
 
 export const insertTableRowBelow: Action<LetterEditorState, []> = produce((draft) => {
-  const selection = draft.tableSelection ?? draft.contextMenuCell;
-  if (!selection || selection.rowIndex === undefined) return;
+  if (!isTableCellIndex(draft.focus)) return;
+  const { blockIndex, contentIndex, rowIndex } = draft.focus;
 
-  const table = draft.redigertBrev.blocks[selection.blockIndex].content[selection.contentIndex] as Table;
-  addElements([newRow(table.header.colSpec.length)], selection.rowIndex + 1, table.rows, table.deletedRows);
-
+  if (rowIndex < 0) return;
+  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex] as Table;
+  addElements([newRow(table.header.colSpec.length)], rowIndex + 1, table.rows, table.deletedRows);
   draft.isDirty = true;
 });

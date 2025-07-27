@@ -14,7 +14,7 @@ import type {
 
 import { text } from "../../../Brevredigering/LetterEditor/actions/common";
 import { ElementTags, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, TABLE, VARIABLE } from "../../../types/brevbakerTypes";
-import type { ContentGroup } from "./state";
+import type { ContentGroup, Focus, LiteralIndex, TableCellIndex } from "./state";
 
 export function isTextContent(obj: Draft<Identifiable | null | undefined>): obj is Draft<TextContent>;
 export function isTextContent(obj: Content | null | undefined): obj is TextContent;
@@ -77,4 +77,16 @@ export function isEmptyBlock(block: AnyBlock): boolean {
 
 export function isParagraph(block: AnyBlock | undefined | null): block is ParagraphBlock {
   return block?.type === PARAGRAPH;
+}
+
+export function isTableCellIndex(idx: Focus | LiteralIndex | undefined): idx is TableCellIndex {
+  return (
+    idx !== undefined &&
+    "rowIndex" in idx &&
+    typeof idx.rowIndex === "number" &&
+    "cellIndex" in idx &&
+    typeof idx.cellIndex === "number" &&
+    "cellContentIndex" in idx &&
+    typeof idx.cellContentIndex === "number"
+  );
 }

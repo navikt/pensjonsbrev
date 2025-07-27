@@ -30,13 +30,7 @@ import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
 import { NEW_LINE, TABLE } from "~/types/brevbakerTypes";
 import { ElementTags, FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
-import {
-  addRow,
-  deleteRow,
-  handleBackspaceInTableCell,
-  nextTableFocus,
-  selectTableRow,
-} from "../services/tableCaretUtils";
+import { addRow, handleBackspaceInTableCell, nextTableFocus } from "../services/tableCaretUtils";
 
 /**
  * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
@@ -425,27 +419,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         );
       }}
       onKeyDown={(event) => {
-        if ((event.key === "Backspace" || event.key === "Delete") && editorState.tableSelection) {
-          event.preventDefault();
-          deleteRow(editorState, setEditorState);
-          return;
-        }
-
         if (event.key === "Backspace") {
           if (handleBackspaceInTableCell(event, editorState, setEditorState)) return;
 
           handleBackspace(event);
-          return;
-        }
-
-        if (event.altKey && event.shiftKey && (event.key === "ArrowUp" || event.key === "ArrowDown")) {
-          const direction = event.key === "ArrowUp" ? "up" : "down";
-          const selectionResult = selectTableRow(editorState, direction);
-          setEditorState((prevState) => ({
-            ...prevState,
-            tableSelection: typeof selectionResult === "string" ? undefined : selectionResult,
-          }));
-          event.preventDefault();
           return;
         }
 

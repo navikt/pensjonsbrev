@@ -4,10 +4,12 @@ import { ActionMenu } from "@navikt/ds-react";
 import React, { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
+import { Text } from "~/Brevredigering/LetterEditor/components/Text";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
-import { type Cell as CellType, type ColumnSpec, LITERAL, type Table } from "~/types/brevbakerTypes";
+import { type Cell as CellType, type ColumnSpec, LITERAL, type Table, VARIABLE } from "~/types/brevbakerTypes";
 
+import type { TableCellIndex } from "../model/state";
 import { TableCellContent } from "./TableCellContent";
 import TableContextMenu from "./TableContextMenu";
 
@@ -33,27 +35,51 @@ const selectedBackgroundStyle = css`
   background: var(--a-surface-info-subtle, #d0e7ff);
 `;
 
-type CellIndexes = {
-  blockIndex: number;
-  contentIndex: number;
-  itemIndex: number;
-  itemContentIndex: number;
-};
+// TODO: render <ContentGroup> once that component
+// can accept TableCellIndex (rowIndex/cellIndex)
+const renderCellText = (cell: CellType, _: number, idx: TableCellIndex) =>
+  cell.text.map((txt, i) => {
+    if (txt.type === LITERAL) {
+      return (
+        <TableCellContent
+          key={i}
+          lit={txt}
+          litIndex={{
+            blockIndex: idx.blockIndex,
+            contentIndex: idx.contentIndex,
+            itemIndex: idx.rowIndex,
+            itemContentIndex: idx.cellIndex,
+          }}
+        />
+      );
+    }
 
-const renderCellText = (cell: CellType, _: number, idx: CellIndexes) =>
-  cell.text
-    .filter((txt) => txt.type === LITERAL)
-    .map((lit, i) => <TableCellContent key={i} lit={lit} litIndex={idx} />);
+    if (txt.type === VARIABLE) {
+      return (
+        <Text
+          content={txt}
+          key={i}
+          literalIndex={{
+            blockIndex: idx.blockIndex,
+            contentIndex: idx.contentIndex,
+          }}
+        />
+      );
+    }
+
+    //NEW_LINE
+    return <br key={i} />;
+  });
 
 const TableView: React.FC<{
   node: Table;
   blockIndex: number;
   contentIndex: number;
 }> = ({ node, blockIndex, contentIndex }) => {
-  const { editorState, setEditorState } = useEditor();
-  const { tableSelection } = editorState;
+  const { setEditorState } = useEditor();
 
   const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | null>(null);
+  const [highlight, setHighlight] = useState<{ row: number; col: number } | null>(null);
 
   return (
     <>
@@ -71,8 +97,15 @@ const TableView: React.FC<{
 
           setEditorState((prev) => ({
             ...prev,
-            contextMenuCell: { blockIndex, contentIndex, rowIndex, colIndex },
+            focus: {
+              blockIndex,
+              contentIndex,
+              rowIndex,
+              cellIndex: colIndex,
+              cellContentIndex: 0,
+            },
           }));
+          setHighlight({ row: rowIndex, col: colIndex });
           setMenuAnchor({ x: e.clientX, y: e.clientY });
         }}
       >
@@ -83,8 +116,9 @@ const TableView: React.FC<{
                 {renderCellText(col.headerContent, colIdx, {
                   blockIndex,
                   contentIndex,
-                  itemIndex: -1,
-                  itemContentIndex: colIdx,
+                  rowIndex: -1,
+                  cellIndex: colIdx,
+                  cellContentIndex: 0,
                 })}
               </th>
             ))}
@@ -93,33 +127,22 @@ const TableView: React.FC<{
 
         <tbody>
           {node.rows.map((row, rowIdx) => {
-            const isRowSelected =
-              tableSelection &&
-              tableSelection.blockIndex === blockIndex &&
-              tableSelection.contentIndex === contentIndex &&
-              tableSelection.rowIndex === rowIdx;
-
             return (
-              <tr css={isRowSelected && selectedBackgroundStyle} data-cy={`table-row-${rowIdx}`} key={rowIdx}>
+              <tr data-cy={`table-row-${rowIdx}`} key={rowIdx}>
                 {row.cells.map((cell, cellIdx) => {
-                  const isCellSelected =
-                    editorState.contextMenuCell &&
-                    editorState.contextMenuCell.blockIndex === blockIndex &&
-                    editorState.contextMenuCell.contentIndex === contentIndex &&
-                    editorState.contextMenuCell.rowIndex === rowIdx &&
-                    editorState.contextMenuCell.colIndex === cellIdx;
-
+                  const isHighLight = highlight && highlight.row === rowIdx && highlight.col === cellIdx;
                   return (
                     <td
-                      css={isCellSelected && selectedBackgroundStyle}
+                      css={isHighLight && selectedBackgroundStyle}
                       data-cy={`table-cell-${rowIdx}-${cellIdx}`}
                       key={cellIdx}
                     >
                       {renderCellText(cell, cellIdx, {
                         blockIndex,
                         contentIndex,
-                        itemIndex: rowIdx,
-                        itemContentIndex: cellIdx,
+                        rowIndex: rowIdx,
+                        cellIndex: cellIdx,
+                        cellContentIndex: 0,
                       })}
                     </td>
                   );
@@ -135,7 +158,7 @@ const TableView: React.FC<{
         data-cy="table-action-menu"
         onClose={() => {
           setMenuAnchor(null);
-          setEditorState((prev) => ({ ...prev, contextMenuCell: undefined }));
+          setHighlight(null);
         }}
       >
         <ActionMenu.Item
