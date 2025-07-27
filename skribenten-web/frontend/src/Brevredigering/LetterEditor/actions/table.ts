@@ -95,8 +95,9 @@ export const insertTableColumnLeft: Action<LetterEditorState, []> = produce((dra
   const { blockIndex, contentIndex, cellIndex: at } = draft.focus;
 
   const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex] as Table;
-  // TODO: When Header/Row get deleted* arrays (e.g. header.deletedColSpecs, row.deletedCells),
-  //replace these splices with addElements/removeElements to keep deleted* in sync.
+  //TODO: Once Header and Row have their own deleted* arrays
+  // (e.g. header.deletedColSpecs, row.deletedCells),
+  // replace these direct splices with addElements(...)
   table.header.colSpec.splice(at, 0, ...newColSpec(1));
   table.rows.forEach((row) => row.cells.splice(at, 0, newRow(1).cells[0]));
   updateDefaultHeaderLabels(table);
@@ -109,8 +110,9 @@ export const insertTableColumnRight: Action<LetterEditorState, []> = produce((dr
 
   const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex] as Table;
   const at = cellIndex + 1;
-  // TODO: When Header/Row get deleted* arrays (e.g. header.deletedColSpecs, row.deletedCells),
-  // replace these splices with addElements/removeElements to keep deleted* in sync.
+  //TODO: Once Header and Row have their own deleted* arrays
+  // (e.g. header.deletedColSpecs, row.deletedCells),
+  // replace these direct splices with addElements(...)
   table.header.colSpec.splice(at, 0, ...newColSpec(1));
   table.rows.forEach((row) => row.cells.splice(at, 0, newRow(1).cells[0]));
   updateDefaultHeaderLabels(table);
