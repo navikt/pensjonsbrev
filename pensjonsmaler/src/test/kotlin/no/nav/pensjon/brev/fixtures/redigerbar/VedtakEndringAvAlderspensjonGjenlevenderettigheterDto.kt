@@ -4,9 +4,9 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkattAP2025
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -64,18 +64,7 @@ fun createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() =
             ),
             orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
             maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
-            maanedligPensjonFoerSkattAP2025Dto = MaanedligPensjonFoerSkattAP2025Dto(
-                beregnetPensjonPerManedGjeldende = MaanedligPensjonFoerSkattAP2025Dto.AlderspensjonPerManed(
-                    inntektspensjon = Kroner(1000),
-                    totalPensjon = Kroner(2000),
-                    garantipensjon = Kroner(1000),
-                    minstenivaIndividuell = Kroner(0),
-                    virkDatoFom = LocalDate.now(),
-                    virkDatoTom = null
-                ),
-                beregnetPensjonperManed = listOf(),
-                kravVirkFom = LocalDate.now()
-            ),
+                maanedligPensjonFoerSkattAP2025Dto = createMaanedligPensjonFoerSkattAP2025(),
             opplysningerOmAvdoedBruktIBeregningDto = OpplysningerOmAvdoedBruktIBeregningDto(
                 bruker = OpplysningerOmAvdoedBruktIBeregningDto.Bruker(
                     foedselsdato = LocalDate.now()
