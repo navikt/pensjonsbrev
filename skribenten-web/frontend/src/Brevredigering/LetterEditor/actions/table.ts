@@ -8,7 +8,7 @@ import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { newTable } from "../model/tableHelpers";
 import { isTableCellIndex } from "../model/utils";
-import { addElements, newColSpec, newRow, removeElements, text } from "./common";
+import { addElements, isTable, newColSpec, newRow, removeElements, text } from "./common";
 import { updateLiteralText } from "./updateContentText";
 
 /**
@@ -59,7 +59,8 @@ export const removeTableRow = produce<LetterEditorState>((draft) => {
   const { blockIndex, contentIndex, rowIndex } = draft.focus;
   if (rowIndex < 0) return;
 
-  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex] as Table;
+  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
+  if (!isTable(table)) return;
   removeElements(rowIndex, 1, { content: table.rows, deletedContent: table.deletedRows, id: table.id });
 
   draft.isDirty = true;
@@ -69,7 +70,8 @@ export const removeTableColumn = produce<LetterEditorState>((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, cellIndex: col } = draft.focus;
 
-  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex] as Table;
+  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
+  if (!isTable(table)) return;
 
   table.header.colSpec.splice(col, 1);
   table.rows.forEach((row) => row.cells.splice(col, 1));
@@ -94,7 +96,8 @@ export const insertTableColumnLeft: Action<LetterEditorState, []> = produce((dra
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, cellIndex: at } = draft.focus;
 
-  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex] as Table;
+  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
+  if (!isTable(table)) return;
   //TODO: Once Header and Row have their own deleted* arrays
   // (e.g. header.deletedColSpecs, row.deletedCells),
   // replace these direct splices with addElements(...)
@@ -108,7 +111,8 @@ export const insertTableColumnRight: Action<LetterEditorState, []> = produce((dr
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, cellIndex } = draft.focus;
 
-  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex] as Table;
+  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
+  if (!isTable(table)) return;
   const at = cellIndex + 1;
   //TODO: Once Header and Row have their own deleted* arrays
   // (e.g. header.deletedColSpecs, row.deletedCells),
@@ -124,7 +128,8 @@ export const insertTableRowAbove: Action<LetterEditorState, []> = produce((draft
   const { blockIndex, contentIndex, rowIndex } = draft.focus;
 
   if (rowIndex < 0) return;
-  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex] as Table;
+  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
+  if (!isTable(table)) return;
   addElements([newRow(table.header.colSpec.length)], rowIndex, table.rows, table.deletedRows);
   draft.isDirty = true;
 });
@@ -134,7 +139,8 @@ export const insertTableRowBelow: Action<LetterEditorState, []> = produce((draft
   const { blockIndex, contentIndex, rowIndex } = draft.focus;
 
   if (rowIndex < 0) return;
-  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex] as Table;
+  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
+  if (!isTable(table)) return;
   addElements([newRow(table.header.colSpec.length)], rowIndex + 1, table.rows, table.deletedRows);
   draft.isDirty = true;
 });
