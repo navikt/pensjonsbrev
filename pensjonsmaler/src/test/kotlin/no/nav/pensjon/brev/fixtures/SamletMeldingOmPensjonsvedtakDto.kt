@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures
 
+import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.Penger
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
@@ -9,7 +10,6 @@ import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.Avsl
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.GrunnlagInnvilget
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.InnvilgetPensjon
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.Institusjon
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.Landkode
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.P1Person
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.Pensjonstype
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.Reduksjonsgrunnlag
@@ -28,7 +28,7 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             adresselinje = "Lillevik Torg",
             poststed = "Lillevik",
             postnummer = "4321",
-            landkode = Landkode.NO
+            landkode = Landkode("NO")
         ),
         forsikrede = P1Person(
             fornavn = "Lars",
@@ -38,7 +38,7 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             adresselinje = "Storgata 1",
             poststed = "Lillevik vestre",
             postnummer = "4320",
-            landkode = Landkode.NO,
+            landkode = Landkode("NO"),
         ),
         sakstype = Sakstype.ALDER,
         kravMottattDato = LocalDate.of(1983, Month.FEBRUARY, 2),
@@ -290,7 +290,7 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             adresselinje = "Lilleviksgrenda",
             poststed = "Lillevik",
             postnummer = "4322",
-            landkode = Landkode.NO,
+            landkode = Landkode("NO"),
             institusjonsID = "NFPL1",
             faksnummer = "12134412",
             telefonnummer = "+123 45678901",

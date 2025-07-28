@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler
 
+import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -102,16 +103,6 @@ data class SamletMeldingOmPensjonsvedtakDto(
         val dato: LocalDate,
         val underskrift: String,
     )
-
-    @JvmInline
-    value class Landkode(val landkode: String) {
-        init {
-            require(landkode.length == 2)
-        }
-        companion object {
-            val NO = Landkode("NO")
-        }
-    }
 }
 
 data class Penger(val verdi: BigDecimal, val valuta: Valuta)

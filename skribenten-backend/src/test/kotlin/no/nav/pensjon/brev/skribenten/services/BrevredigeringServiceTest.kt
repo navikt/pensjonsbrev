@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import io.ktor.http.*
 import io.mockk.*
 import kotlinx.coroutines.*
+import no.nav.brev.Landkode
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.Sakstype
@@ -23,7 +24,6 @@ import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype.SENTRALPRINT
-import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brevbaker.api.model.*
