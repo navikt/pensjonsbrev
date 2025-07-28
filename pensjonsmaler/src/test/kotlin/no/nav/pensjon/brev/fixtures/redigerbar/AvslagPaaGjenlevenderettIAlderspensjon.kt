@@ -12,7 +12,16 @@ import no.nav.pensjon.brevbaker.api.model.Percent
 fun createAvslagPaaGjenlevenderettIAlderspensjon() = AvslagPaaGjenlevenderettIAlderspensjonDto(
     saksbehandlerValg = AvslagPaaGjenlevenderettIAlderspensjonDto.SaksbehandlerValg(
         samboerUtenFellesBarn = false,
-        avdoedNavn = "Peder Ås"
+        avdoedNavn = "Peder Ås",
+        underEttAarsMedlemstidEOESEllerAvtaleland = true,
+        underTreFemAarsMedlemstidNasjonalSak = false,
+        underTreFemAarsMedlemstidEOESSak = false,
+        underTrefemAarsMedlemstidAvtalesak = true,
+        under20AarBotid = true,
+        ekteskapUnderFemAar = true,
+        hjemmelEOES = true,
+        hjemmelAvtaleland = false,
+        redusertTrygdetid = true
     ),
     pesysData = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData(
         alderspensjonVedVirk = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.AlderspensjonVedVirk(

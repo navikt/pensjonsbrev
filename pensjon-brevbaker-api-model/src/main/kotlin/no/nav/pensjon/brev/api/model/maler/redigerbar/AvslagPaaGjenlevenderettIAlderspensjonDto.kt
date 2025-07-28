@@ -15,7 +15,19 @@ data class AvslagPaaGjenlevenderettIAlderspensjonDto(
     override val saksbehandlerValg: SaksbehandlerValg,
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<AvslagPaaGjenlevenderettIAlderspensjonDto.SaksbehandlerValg, AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData> {
-    data class SaksbehandlerValg(val samboerUtenFellesBarn: Boolean, val avdoedNavn: String) : BrevbakerBrevdata
+    data class SaksbehandlerValg(
+        val samboerUtenFellesBarn: Boolean,
+        val avdoedNavn: String,
+        val underEttAarsMedlemstidEOESEllerAvtaleland: Boolean,
+        val underTreFemAarsMedlemstidNasjonalSak: Boolean,
+        val underTreFemAarsMedlemstidEOESSak: Boolean,
+        val underTrefemAarsMedlemstidAvtalesak: Boolean,
+        val under20AarBotid: Boolean,
+        val ekteskapUnderFemAar: Boolean,
+        val hjemmelEOES: Boolean,
+        val hjemmelAvtaleland: Boolean,
+        val redusertTrygdetid: Boolean,
+    ) : BrevbakerBrevdata
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val krav: Krav,
