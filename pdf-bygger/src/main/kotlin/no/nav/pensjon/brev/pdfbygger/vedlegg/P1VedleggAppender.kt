@@ -1,9 +1,12 @@
 package no.nav.pensjon.brev.pdfbygger.vedlegg
 
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
+import java.time.LocalDate
+import java.time.format.FormatStyle
 
 internal object P1VedleggAppender {
 
@@ -37,7 +40,7 @@ internal object P1VedleggAppender {
             spraak
         )
         settOppSide4(
-            unwrapped.institusjon,
+            unwrapped.utfyllendeInstitusjon,
             merger,
             target,
             totaltAntallSider = totaltAntallSider,
@@ -54,23 +57,21 @@ internal object P1VedleggAppender {
             "holder-fornavn" to unwrapped.innehaver.fornavn,
             "holder-etternavn" to unwrapped.innehaver.etternavn,
             "holder-etternavnVedFoedsel" to unwrapped.innehaver.etternavnVedFoedsel,
-            "holder-foedselsdato" to unwrapped.innehaver.foedselsdato,
+            "holder-foedselsdato" to unwrapped.innehaver.foedselsdato?.formater(),
             "holder-adresselinje" to unwrapped.innehaver.adresselinje,
-            "holder-poststed" to unwrapped.innehaver.poststed,
-            "holder-postnummer" to unwrapped.innehaver.postnummer,
-            "holder-landkode" to unwrapped.innehaver.landkode,
-            "holder-poststed" to unwrapped.innehaver.poststed
+            "holder-poststed" to unwrapped.innehaver.poststed.value,
+            "holder-postnummer" to unwrapped.innehaver.postnummer.value,
+            "holder-landkode" to unwrapped.innehaver.landkode.landkode,
         )
         val forsikrede = mapOf(
             "insured-fornavn" to unwrapped.forsikrede.fornavn,
             "insured-etternavn" to unwrapped.forsikrede.etternavn,
             "insured-etternavnVedFoedsel" to unwrapped.forsikrede.etternavnVedFoedsel,
-            "insured-foedselsdato" to unwrapped.forsikrede.foedselsdato,
+            "insured-foedselsdato" to unwrapped.forsikrede.foedselsdato?.formater(),
             "insured-adresselinje" to unwrapped.forsikrede.adresselinje,
-            "insured-poststed" to unwrapped.forsikrede.poststed,
-            "insured-postnummer" to unwrapped.forsikrede.postnummer,
-            "insured-landkode" to unwrapped.forsikrede.landkode,
-            "insured-poststed" to unwrapped.forsikrede.poststed
+            "insured-poststed" to unwrapped.forsikrede.poststed.value,
+            "insured-postnummer" to unwrapped.forsikrede.postnummer.value,
+            "insured-landkode" to unwrapped.forsikrede.landkode.landkode,
         )
 
 
@@ -78,7 +79,7 @@ internal object P1VedleggAppender {
             it.setValues(
                 innehaver
                     .plus(forsikrede)
-                    .plus("kravMottattDato" to unwrapped.kravMottattDato)
+                    .plus("kravMottattDato" to unwrapped.kravMottattDato.formater())
                     .plus("sakstype" to unwrapped.sakstype.name)
                     .plus("page" to "1/$totaltAntallSider")
             )
@@ -109,7 +110,7 @@ internal object P1VedleggAppender {
     private fun flettInnInnvilgetPensjon(radnummer: Int, pensjon: SamletMeldingOmPensjonsvedtakDto.InnvilgetPensjon) =
         mapOf(
             "$radnummer-institusjon" to pensjon.institusjon,
-            "$radnummer-pensjonstype" to pensjon.pensjonstype.formater(),
+            "$radnummer-pensjonstype" to pensjon.pensjonstype.nummer,
             "$radnummer-datoFoersteUtbetaling" to pensjon.datoFoersteUtbetaling,
             "$radnummer-bruttobeloep" to pensjon.bruttobeloep,
             "$radnummer-grunnlagInnvilget" to pensjon.grunnlagInnvilget.nummer,
@@ -141,7 +142,7 @@ internal object P1VedleggAppender {
     private fun flettInnAvslaattPensjon(radnummer: Int, pensjon: SamletMeldingOmPensjonsvedtakDto.AvslaattPensjon) =
         mapOf(
             "$radnummer-institusjon" to pensjon.institusjon,
-            "$radnummer-pensjonstype" to pensjon.pensjonstype.formater(),
+            "$radnummer-pensjonstype" to pensjon.pensjonstype.nummer,
             "$radnummer-avslagsbegrunnelse" to pensjon.avslagsbegrunnelse.nummer,
             "$radnummer-vurderingsperiode" to pensjon.vurderingsperiode,
             "$radnummer-adresseNyVurdering" to pensjon.adresseNyVurdering.formater(),
@@ -160,14 +161,14 @@ internal object P1VedleggAppender {
                     mapOf(
                         "navn" to institution.navn,
                         "adresselinje" to institution.adresselinje,
-                        "poststed" to institution.poststed,
-                        "postnummer" to institution.postnummer,
-                        "landkode" to institution.landkode,
+                        "poststed" to institution.poststed.value,
+                        "postnummer" to institution.postnummer.value,
+                        "landkode" to institution.landkode.landkode,
                         "institusjonsID" to institution.institusjonsID,
                         "faksnummer" to institution.faksnummer,
-                        "telefonnummer" to institution.telefonnummer,
-                        "epost" to institution.epost,
-                        "dato" to institution.epost,
+                        "telefonnummer" to institution.telefonnummer?.value,
+                        "epost" to institution.epost.value,
+                        "dato" to institution.dato.formater(),
                         "underskrift" to institution.underskrift,
                         "page" to "${totaltAntallSider}/${totaltAntallSider}"
                     )
@@ -179,13 +180,6 @@ internal object P1VedleggAppender {
     private fun lesInnPDF(filnavn: String, spraak: LanguageCode): PDDocument =
         PDDocument.load(javaClass.getResourceAsStream("/vedlegg/P1/${spraak.name}/$filnavn"))
 
-    private fun Sakstype.formater() = when (this) {
-        Sakstype.ALDER -> 1
-        Sakstype.UFOREP -> 2
-        Sakstype.GJENLEV -> 3
-        else -> throw NotImplementedError("Denne malen forventa ikke sakstype ${this.name}")
-    }
-
     private fun SamletMeldingOmPensjonsvedtakDto.Adresse.formater() =
         listOfNotNull(adresselinje1, adresselinje2, adresselinje3).joinToString(System.lineSeparator()) +
                 System.lineSeparator() + "$postnummer $poststed" + System.lineSeparator() + landkode
@@ -193,3 +187,5 @@ internal object P1VedleggAppender {
 
 internal fun List<Map<String, Any?>>.flatten(): Map<String, String?> =
     this.flatMap { it.entries }.associate { it.key to it.value?.toString() }
+
+private fun LocalDate.formater() = dateFormatter(Language.English, FormatStyle.LONG).format(this)
