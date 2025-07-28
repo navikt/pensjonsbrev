@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
-import java.math.BigDecimal
 import java.time.LocalDate
 
 data class SamletMeldingOmPensjonsvedtakDto(
@@ -105,7 +104,7 @@ data class SamletMeldingOmPensjonsvedtakDto(
     )
 }
 
-data class Penger(val verdi: BigDecimal, val valuta: Valuta)
+data class Penger(val verdi: Int, val valuta: Valuta)
 
 @JvmInline
 value class Valuta(val valuta: String) {
