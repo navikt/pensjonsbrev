@@ -2,7 +2,9 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
+import java.time.Period
 
 data class SamletMeldingOmPensjonsvedtakDto(
     val innehaver: P1Person,
@@ -20,8 +22,8 @@ data class SamletMeldingOmPensjonsvedtakDto(
         val etternavnVedFoedsel: String,
         val foedselsdato: LocalDate?,
         val adresselinje: String,
-        val poststed: String,
-        val postnummer: String,
+        val poststed: Poststed,
+        val postnummer: Postnummer,
         val landkode: Landkode,
     )
 
@@ -32,7 +34,7 @@ data class SamletMeldingOmPensjonsvedtakDto(
         val bruttobeloep: Penger,
         val grunnlagInnvilget: GrunnlagInnvilget,
         val reduksjonsgrunnlag: Reduksjonsgrunnlag?,
-        val vurderingsperiode: String,
+        val vurderingsperiode: Period,
         val adresseNyVurdering: Adresse,
     )
 
@@ -40,7 +42,7 @@ data class SamletMeldingOmPensjonsvedtakDto(
         val institusjon: String,
         val pensjonstype: Pensjonstype,
         val avslagsbegrunnelse: Avslagsbegrunnelse,
-        val vurderingsperiode: String,
+        val vurderingsperiode: Period,
         val adresseNyVurdering: Adresse,
     )
 
@@ -85,23 +87,49 @@ data class SamletMeldingOmPensjonsvedtakDto(
         val adresselinje2: String?,
         val adresselinje3: String?,
         val landkode: Landkode,
-        val postnummer: String,
-        val poststed: String,
+        val postnummer: Postnummer,
+        val poststed: Poststed,
     )
 
     data class Institusjon(
         val navn: String,
         val adresselinje: String,
-        val poststed: String,
-        val postnummer: String,
+        val poststed: Poststed,
+        val postnummer: Postnummer,
         val landkode: Landkode,
         val institusjonsID: String,
         val faksnummer: String?,
-        val telefonnummer: String?,
-        val epost: String,
+        val telefonnummer: Telefonnummer?,
+        val epost: Epost,
         val dato: LocalDate,
         val underskrift: String,
     )
+
+    @JvmInline
+    value class Postnummer(val value: String) {
+        init {
+            require(value.length < 30) { "Postnumre er jo ikke kjempelange. $value er ${value.length} lang."}
+        }
+    }
+
+    @JvmInline
+    value class Poststed(val value: String) {
+        init {
+            require(value.length < 300) { "Poststed er ikke kjempelange. $value er ${value.length} lang." }
+        }
+    }
+
+    @JvmInline
+    value class Epost(val value: String) {
+        init {
+            require(value.contains("@")) { "Epost må inneholde @"}
+            require(value.contains(".")) { "Epost må inneholde ."}
+            require(value.substringBefore("@").isNotEmpty()) { "Epost må ha verdi før @"}
+            require(value.substringAfter("@").isNotEmpty()) { "Epost må ha verdi etter @"}
+            require(value.substringBefore(".").isNotEmpty()) { "Epost må ha verdi før ."}
+            require(value.substringAfter("@").isNotEmpty()) { "Epost må ha verdi etter ."}
+        }
+    }
 }
 
 data class Penger(val verdi: Int, val valuta: Valuta)
