@@ -20,13 +20,13 @@ fun createVedtakStansAlderspensjonFlyttingMellomLandDto() =
             harAvdod = true,
             kravVirkDatoFom = LocalDate.of(2025, 8, 1),
             minst20ArTrygdetid = false,
-            minst20AarAvdoed = false,
+            minst20AarTrygdetidKap20Avdoed = false,
             regelverkType = AP2016,
-            dineRettigheterOgMulighetTilAaKlageDto = DineRettigheterOgMulighetTilAaKlageDto(
+            dineRettigheterOgMulighetTilAaKlage = DineRettigheterOgMulighetTilAaKlageDto(
                 sakstype = Sakstype.ALDER,
                 brukerUnder18Aar = false
             ),
-            informasjonOmMedlemskapOgHelserettigheterDto = InformasjonOmMedlemskapOgHelserettigheterDto(
+            informasjonOmMedlemskapOgHelserettigheter = InformasjonOmMedlemskapOgHelserettigheterDto(
                 erEOSLand = false,
             )
         )
