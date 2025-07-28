@@ -10,11 +10,6 @@ import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.pdfbygger.api.restModule
 import no.nav.pensjon.brev.pdfbygger.kafka.kafkaModule
-import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
-import java.nio.file.Path
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
-
 
 fun main(args: Array<String>) = EngineMain.main(args)
 
@@ -35,13 +30,6 @@ fun Application.module() {
         registry = prometheusMeterRegistry
     }
 
-    val latexCompileService = LatexCompileService(
-        compileTimeout = getPropertyOrNull("pdfBygger.latex.compileTimeout")?.let { Duration.parse(it) } ?: 300.seconds,
-        latexCommand = getPropertyOrNull("pdfBygger.latex.latexCommand")
-            ?: "xelatex --interaction=nonstopmode -halt-on-error",
-        tmpBaseDir = Path.of(environment.config.property("pdfBygger.latex.compileTmpDir").getString()),
-    )
-
     routing {
         get("/metrics") {
             call.respond(prometheusMeterRegistry.scrape())
@@ -49,9 +37,9 @@ fun Application.module() {
     }
 
     if (getPropertyOrNull("pdfBygger.isAsyncWorker")?.toBoolean() == true) {
-        kafkaModule(latexCompileService)
+        kafkaModule()
     } else {
-        restModule(latexCompileService, prometheusMeterRegistry)
+        restModule(prometheusMeterRegistry)
     }
 }
 

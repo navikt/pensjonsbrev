@@ -207,7 +207,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     paragraph {
                         textExpr(
                             Bokmal to "Vi oppjusterer din inntekt og annen forelders inntekt for neste år, fordi du ikke har meldt inn inntekt for ".expr() + virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden pr 1. mai " + virkningFom.year.minus(
-                                1.expr()
+                                1
                             ).format() + ".",
                             Nynorsk to "".expr()
                         )
@@ -222,7 +222,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     paragraph {
                         textExpr(
                             Bokmal to "Vi oppjusterer annen forelders inntekt neste år, fordi du ikke har meldt inn inntekt for ".expr() + virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden pr 1. mai " + virkningFom.year.minus(
-                                1.expr()
+                                1
                             ).format() + ".",
                             Nynorsk to "".expr()
                         )
@@ -238,7 +238,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 paragraph {
                     textExpr(
                         Bokmal to "Vi oppjusterer din inntekt neste år, fordi du ikke har meldt inn inntekt for ".expr() + virkningFom.year.format() + ". Vi tar utgangspunkt i årets inntekt og justerer den ut fra endringer i grunnbeløpet (G) i folketrygden pr 1. mai " + virkningFom.year.minus(
-                            1.expr()
+                            1
                         ).format() + ".",
                         Nynorsk to "".expr()
                     )
@@ -247,7 +247,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
 
             paragraph {
                 textExpr(
-                    Bokmal to "Fikk du innvilget uføretrygd etter januar ".expr() + virkningFom.year.minus(1.expr())
+                    Bokmal to "Fikk du innvilget uføretrygd etter januar ".expr() + virkningFom.year.minus(1)
                         .format() + ", er inntekten justert opp slik at den gjelder for hele " + virkningFom.year.format() + ". ",
                     Nynorsk to "".expr()
                 )
@@ -267,9 +267,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 showIf(barnetilleggFellesbarn.inntektAnnenForelder.greaterThan(0)) {
                     paragraph {
                         textExpr(
-                            Bokmal to "Den årlige inntekten vi vil bruke for annen forelder er ".expr() + barnetilleggFellesbarn.inntektAnnenForelder.format(
-                                CurrencyFormat
-                            ) + "kroner. Dette påvirker bare utbetalingen av barnetillegget.",
+                            Bokmal to "Den årlige inntekten vi vil bruke for annen forelder er ".expr() + barnetilleggFellesbarn.inntektAnnenForelder.format(CurrencyFormat) + " kroner. " +
+                                    "Dette påvirker bare utbetalingen av barnetillegget.",
                             Nynorsk to "".expr()
                         )
                     }

@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.MetaforceSivilstand.SAMBOER_3_2
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaIndividuellInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaaPensjonsistParInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.EndringAvAlderspensjonSivilstandDtoSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
@@ -127,6 +128,8 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
         val vedtakEtterbetaling = pesysData.vedtakEtterbetaling
         val uttaksgrad = pesysData.alderspensjonVedVirk.uttaksgrad.ifNull(then = (0))
         val grunnbelop = pesysData.beregnetPensjonPerManedVedVirk.grunnbelop
+        val innvilgetFor67 = pesysData.alderspensjonVedVirk.innvilgetFor67
+        val epsNavn = fritekst("navn")
 
 
 
@@ -154,11 +157,10 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 showIf(sivilstand.isOneOf(GIFT) and borSammenMedBruker) {
                     // endringSivilstandGiftUnder2G, endringSisvilstandGiftOver2G, endringSisvilstandGiftYtelse
                     paragraph {
-                        val navn = fritekst("navn")
                         textExpr(
-                            Bokmal to "Du har giftet deg med ".expr() + navn + ",",
-                            Nynorsk to "Du har gifta deg med ".expr() + navn + ",",
-                            English to "You have married ".expr() + navn + ","
+                            Bokmal to "Du har giftet deg med ".expr() + epsNavn + ",",
+                            Nynorsk to "Du har gifta deg med ".expr() + epsNavn + ",",
+                            English to "You have married ".expr() + epsNavn + ","
                         )
                         showIf(mottarPensjon) {
                             text(
@@ -183,35 +185,35 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }.orShowIf(sivilstand.isOneOf(SAMBOER_3_2)) {
                     // endringSisvilstand3-2samboer
                     paragraph {
-                        val navn = fritekst("navn")
                         textExpr(
-                            Bokmal to "Du har bodd sammen med ".expr() + navn + " i 12 av de siste 18 månedene.",
-                            Nynorsk to "Du har budd saman med ".expr() + navn + " i 12 av dei siste 18 månadene.",
-                            English to "You have been living with ".expr() + navn + " for 12 out of the past 18 months."
+                            Bokmal to "Du har bodd sammen med ".expr() + epsNavn + " i 12 av de siste 18 månedene.",
+                            Nynorsk to "Du har budd saman med ".expr() + epsNavn + " i 12 av dei siste 18 månadene.",
+                            English to "You have been living with ".expr() + epsNavn + " for 12 out of the past 18 months."
                         )
                     }
                 }.orShowIf(sivilstand.isOneOf(SAMBOER_1_5)) {
                     // Radio knapper: Velg type § 1-5 samboer
+                    // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
+
                     showIf(saksbehandlerValg.samboereMedFellesBarn) {
                         paragraph {
                             // endringSivilstand1-5samboerBarn
-                            val navn = fritekst("navn")
                             textExpr(
-                                Bokmal to "Du har flyttet sammen med ".expr() + navn + ", og dere har barn sammen.",
-                                Nynorsk to "Du har flytta saman med ".expr() + navn + ", og dere har barn saman.",
-                                English to "You have moved together with ".expr() + navn + ", with whom you have children."
+                                Bokmal to "Du har flyttet sammen med ".expr() + epsNavn + ", og dere har barn sammen.",
+                                Nynorsk to "Du har flytta saman med ".expr() + epsNavn + ", og dere har barn saman.",
+                                English to "You have moved together with ".expr() + epsNavn + ", with whom you have children."
 
                             )
                         }
                     }
+                    // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                     showIf(saksbehandlerValg.samboereTidligereGift) {
                         // endringSivilstand1-5samboerTidlGift
                         paragraph {
-                            val navn = fritekst("navn")
                             textExpr(
-                                Bokmal to "Du har flyttet sammen med ".expr() + navn + ", og dere har vært tidligere.",
-                                Nynorsk to "Du har flytta saman med ".expr() + navn + ", og dere har vore gift tidlegare.",
-                                English to "You have moved together with ".expr() + navn + ", with whom you were previously married."
+                                Bokmal to "Du har flyttet sammen med ".expr() + epsNavn + ", og dere har vært tidligere.",
+                                Nynorsk to "Du har flytta saman med ".expr() + epsNavn + ", og dere har vore gift tidlegare.",
+                                English to "You have moved together with ".expr() + epsNavn + ", with whom you were previously married."
                             )
                         }
                     }
@@ -266,6 +268,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
             // Radioknapper: Velg endring i EPS inntekt
             // endringInntektOktEPS, endringInntektRedusertEPS
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(kravArsakType.isOneOf(KravArsakType.EPS_ENDRET_INNTEKT) and saksbehandlerValg.epsInntektOekningReduksjon) {
                 paragraph {
                     val epsInntektsendringNB = fritekst("økt/redusert")
@@ -344,19 +347,20 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
             }
 
             // Radioknapper: Hva er årsaken til sivilstandsendringen?
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(
                 kravArsakType.isOneOf(KravArsakType.SIVILSTANDSENDRING) and not(borSammenMedBruker) and saksbehandlerValg.fraFlyttet
             ) {
                 // flyttetEPS
                 paragraph {
-                    val navn = fritekst("navn")
                     textExpr(
-                        Bokmal to "Du og ".expr() + navn + " bor ikke lenger sammen.",
-                        Nynorsk to "Du og ".expr() + navn + "bur ikkje lenger saman.",
-                        English to "You and ".expr() + navn + "no longer live together."
+                        Bokmal to "Du og ".expr() + epsNavn + " bor ikke lenger sammen.",
+                        Nynorsk to "Du og ".expr() + epsNavn + "bur ikkje lenger saman.",
+                        English to "You and ".expr() + epsNavn + "no longer live together."
                     )
                 }
 
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(kravArsakType.isOneOf(KravArsakType.SIVILSTANDSENDRING) and not(borSammenMedBruker) and saksbehandlerValg.giftBorIkkeSammen) {
                     // endirngSivilstandGiftBorIkkeSammen
                     paragraph {
@@ -369,6 +373,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }
                 // Radioknapper: Alders- og sykehjem eller EPS på annen institusjon
                 // endringSykehjem, endringSykehjemEPS, endringSykkehjemBegge, endringInstitusjonEPS
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(kravArsakType.isOneOf(KravArsakType.INSTOPPHOLD) and saksbehandlerValg.institusjonsopphold) {
                     paragraph {
                         textExpr(
@@ -554,6 +559,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
             // Radioknapper: Forsørger EPS over 60 år. Særskilt sats for minste pensjonsnivå
             showIf(kravArsakType.isOneOf(VURDER_SERSKILT_SATS)) {
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(saksbehandlerValg.epsIkkeFylt62Aar) {
                     // SaerSatsBruktEpsUnder62
                     paragraph {
@@ -564,6 +570,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         )
                     }
                 }
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(saksbehandlerValg.epsIkkeRettTilFullAlderspensjon) {
                     // SaerSatsBruktEpsIkkeRettTilAP
                     paragraph {
@@ -575,6 +582,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     }
                 }
                 showIf(saksbehandlerValg.epsAvkallPaaEgenAlderspenspensjon) {
+                    // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                     // SaerSatsBruktEpsGittAvkallAP
                     paragraph {
                         textExpr(
@@ -584,6 +592,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         )
                     }
                 }
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(saksbehandlerValg.epsAvkallPaaEgenUfoeretrygd) {
                     // SaerSatsBruktEpsGittAvkallUT
                     paragraph {
@@ -594,6 +603,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         )
                     }
                 }
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt. (brevet kunne vært delt opp basert på kravårsak.
                 showIf(saksbehandlerValg.epsHarInntektOver1G) {
                     // SaerSatsIkkeBruktEpsInntektOver1G, SaerSatsIkkeBruktEpsRettTilFullAP, SaerSatsIkkeBruktEpsMottarAP, SaerSatsIkkeBruktEpsMottarAfp, SaerSatsIkkeBruktEpsMottarUT
                     paragraph {
@@ -604,6 +614,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         )
                     }
                 }
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(saksbehandlerValg.epsHarRettTilFullAlderspensjon) {
                     // SaerSatsIkkeBruktEpsRettTilFullAP
                     paragraph {
@@ -614,6 +625,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         )
                     }
                 }
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(saksbehandlerValg.epsTarUtAlderspensjon) {
                     // SaerSatsIkkeBruktEpsMottarAP
                     paragraph {
@@ -624,6 +636,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         )
                     }
                 }
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(saksbehandlerValg.epsTarUtAlderspensjonIStatligSektor) {
                     // SaerSatsIkkeBruktEpsMottarAfp
                     paragraph {
@@ -634,6 +647,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         )
                     }
                 }
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(saksbehandlerValg.epsTarUtUfoeretrygd) {
                     // SaerSatsIkkeBruktEpsMottarUT
                     paragraph {
@@ -678,6 +692,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 regelverkType.isOneOf(AP2011, AP2016)
                         and saerskiltSatsErBrukt
             ) {
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(saksbehandlerValg.ingenBetydning) {
                     // ingenEndringBelop
                     paragraph {
@@ -689,6 +704,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                     }
 
                 }
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(saksbehandlerValg.pensjonenOeker) {
                     // nyBeregningAPØkning
                     paragraph {
@@ -699,6 +715,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         )
                     }
                 }
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(saksbehandlerValg.pensjonenRedusert) {
                     // nyBeregningAPReduksjon
                     paragraph {
@@ -711,6 +728,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }
             }
 
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(kravArsakType.isOneOf(VURDER_SERSKILT_SATS) and saksbehandlerValg.aarligKontrollEPS) {
                 // SaerSatsInfoAarligKontrollEps
                 paragraph {
@@ -727,16 +745,12 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
             showIf(uforeKombinertMedAlder) {
                 // innvilgelseAPogUTInnledn
-                paragraph {
-                    textExpr(
-                        Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra ".expr() + kravVirkDatoFom + "." +
-                                " Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
-                        Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå ".expr() + kravVirkDatoFom + "." +
-                                " Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
-                        English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from ".expr() + kravVirkDatoFom + "." +
-                                " You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit."
+                includePhrase(
+                    UfoereAlder.DuFaar(
+                        pesysData.beregnetPensjonPerManedVedVirk.totalPensjon,
+                        pesysData.kravVirkDatoFom
                     )
-                }
+                )
             }.orShow {
                 paragraph {
                     // innvilgelseAPInnledn
@@ -906,25 +920,14 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
 
                 // Selectable - Hvis reduksjon tilbake i tid - feilutbetalingAP
                 showIf(saksbehandlerValg.feilutbetaling) {
-                    title1 {
-                        text(
-                            Bokmal to "Feilutbetaling",
-                            Nynorsk to "Feilutbetaling",
-                            English to "Incorrect payment"
-                        )
-                    }
-                    paragraph {
-                        text(
-                            Bokmal to "Vi har redusert pensjonen din tilbake i tid. Derfor har du fått for mye utbetalt. Vi vil sende deg et eget varselbrev om en eventuell tilbakebetaling.",
-                            Nynorsk to "Vi har redusert pensjonen din tilbake i tid. Derfor har du fått for mykje utbetalt. Vi vil sende deg eit eige varselbrev om ei eventuell tilbakebetaling.",
-                            English to "We have reduced your retirement pension for a previous period. You have therefore been paid too much. We will send you a separate notice letter concerning possible repayment.",
-                        )
-                    }
+                    // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
+                    includePhrase(FeilutbetalingAP)
                 }
 
                 // Hvis endring i pensjonen (Selectable) - skattAPendring
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(saksbehandlerValg.endringPensjon) {
-                    includePhrase(Vedtak.EndringKanHaBetydningForSkatt)
+                    includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
                 }
 
                 // Hvis etterbetaling (Selectable) - etterbetalingAP_002
@@ -938,6 +941,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 ) {
                     includePhrase(
                         ArbeidsinntektOgAlderspensjon(
+                            innvilgetFor67 = innvilgetFor67,
                             uttaksgrad = uttaksgrad.ifNull(then = (0)),
                             uforeKombinertMedAlder = uforeKombinertMedAlder
                         )

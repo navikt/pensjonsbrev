@@ -1,42 +1,25 @@
 package no.nav.pensjon.brev.pdfbygger.api
 
 import com.fasterxml.jackson.core.JacksonException
-import io.ktor.http.ContentType
-import io.ktor.http.HttpStatusCode
-import io.ktor.serialization.jackson.jackson
-import io.ktor.server.application.Application
-import io.ktor.server.application.install
-import io.ktor.server.application.log
-import io.ktor.server.plugins.callid.CallId
-import io.ktor.server.plugins.callid.callIdMdc
-import io.ktor.server.plugins.callid.generate
-import io.ktor.server.plugins.calllogging.CallLogging
-import io.ktor.server.plugins.calllogging.processingTimeMillis
-import io.ktor.server.plugins.compression.Compression
-import io.ktor.server.plugins.compression.deflate
-import io.ktor.server.plugins.compression.gzip
-import io.ktor.server.plugins.compression.matchContentType
-import io.ktor.server.plugins.compression.minimumSize
-import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.plugins.statuspages.StatusPages
-import io.ktor.server.request.path
-import io.ktor.server.request.receive
-import io.ktor.server.response.respond
-import io.ktor.server.response.respondText
-import io.ktor.server.routing.RoutingContext
-import io.ktor.server.routing.get
-import io.ktor.server.routing.post
-import io.ktor.server.routing.routing
-import io.ktor.util.date.getTimeMillis
-import io.ktor.util.logging.Logger
+import io.ktor.http.*
+import io.ktor.serialization.jackson.*
+import io.ktor.server.application.*
+import io.ktor.server.plugins.callid.*
+import io.ktor.server.plugins.calllogging.*
+import io.ktor.server.plugins.compression.*
+import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.util.logging.*
 import io.micrometer.core.instrument.Tag
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
-import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
-import no.nav.pensjon.brev.pdfbygger.getPropertyOrNull
 import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
-import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
+import no.nav.pensjon.brev.pdfbygger.latex.LATEX_CONFIG_PATH
+import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.pdfByggerConfig
 import no.nav.pensjon.brev.pdfbygger.vedlegg.PDFVedleggAppender
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -45,23 +28,14 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
 fun Application.restModule(
-    latexCompileService: LatexCompileService,
     prometheusMeterRegistry: PrometheusMeterRegistry
 ) {
-    val parallelism =
-        getPropertyOrNull("pdfBygger.latex.latexParallelism")?.toInt() ?: Runtime.getRuntime().availableProcessors()
-    val blockingLatexService = BlockingLatexService(
-        queueWaitTimeout = getPropertyOrNull("pdfBygger.latex.compileQueueWaitTimeout")?.let {
-            Duration.Companion.parse(it)
-        }?: 4.seconds,
-        latexParallelism = parallelism,
-        latexCompileService = latexCompileService,
-    )
+    val blockingLatexService = BlockingLatexService(environment.config.config(LATEX_CONFIG_PATH))
 
     val activityCounter =
         ActiveCounter(prometheusMeterRegistry, "pensjonsbrev_pdf_compile_active", listOf(Tag.of("hpa", "value")))
 
-    log.info("Target parallelism : $parallelism")
+    log.info("Target parallelism : ${blockingLatexService.latexParallelism}")
 
     install(ContentNegotiation) {
         jackson {
@@ -93,7 +67,6 @@ fun Application.restModule(
             !ignorePaths.contains(it.request.path())
         }
         mdc("x_response_code") { it.response.status()?.value?.toString() }
-        mdc("x_response_time") { it.processingTimeMillis(::getTimeMillis).toString() }
     }
 
     install(StatusPages) {
@@ -126,9 +99,9 @@ fun Application.restModule(
 
         get("/isReady") {
             val currentActivity = activityCounter.currentCount()
-            if (currentActivity > parallelism) {
+            if (currentActivity > blockingLatexService.latexParallelism) {
                 val msg =
-                    "Application not ready: pdf compilation activity of $currentActivity above target of $parallelism"
+                    "Application not ready: pdf compilation activity of $currentActivity above target of ${blockingLatexService.latexParallelism}"
                 call.application.log.info(msg)
                 call.respondText(msg, ContentType.Text.Plain, HttpStatusCode.ServiceUnavailable)
             } else {

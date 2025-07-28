@@ -163,7 +163,6 @@ enum class KravInitiertAv {
     KONV,
     ADVOKAT
 }
-
 enum class KravArsakType{
     ALDERSOVERGANG,
     ENDRET_OPPTJENING,
@@ -180,4 +179,16 @@ enum class KravArsakType{
     UTTAKSGRAD,
     UTVANDRET,
     VURDER_SERSKILT_SATS
+}
+
+enum class BeloepEndring {
+    ENDR_OKT,
+    ENDR_RED,
+    UENDRET
+}
+
+enum class EksportForbudKode {
+    FLYKT_ALDER,
+    TPUNGUFOR_ALDER,
+    UFOR25_ALDER
 }

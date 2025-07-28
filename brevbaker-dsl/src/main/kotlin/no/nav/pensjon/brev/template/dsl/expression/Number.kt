@@ -26,29 +26,46 @@ fun Expression<Int>.toYear(): Expression<Year> =
 fun Expression<Double>.format(scale: Int = 2): Expression<String> =
     format(formatter = LocalizedFormatter.DoubleFormat(scale))
 
+@JvmName("formatDoubleNullable")
+fun Expression<Double?>.format(scale: Int = 2): Expression<String?> =
+    format(formatter = LocalizedFormatter.DoubleFormat(scale))
+
 @JvmName("formatInt")
 fun Expression<Int>.format(): Expression<String> = format(formatter = LocalizedFormatter.IntFormat)
 
+@JvmName("formatIntOrNull")
+fun Expression<Int?>.format(): Expression<String?> = format(formatter = LocalizedFormatter.IntFormat)
+
+operator fun Expression<Int>.plus(other: Int) = plus(other.expr())
+
 operator fun Expression<Int>.plus(other: Expression<Int>): Expression<Int> =
     BinaryOperation.IntPlus(this, other)
+
+@JvmName("kronerPlusInt")
+operator fun Expression<Kroner>.plus(other: Int) = plus(other.expr().toKroner())
 
 @JvmName("kronerPlus")
 operator fun Expression<Kroner>.plus(other: Expression<Kroner>): Expression<Kroner> =
     (this.value + other.value).toKroner()
 
 @JvmName("yearPlus")
-operator fun Expression<Year>.plus(other: Expression<Year>): Expression<Year> = (this.value + other.value).toYear()
+operator fun Expression<Year>.plus(other: Int): Expression<Year> = (this.value + other).toYear()
+
+operator fun Expression<Int>.minus(other: Int): Expression<Int> = minus(other.expr())
 
 operator fun Expression<Int>.minus(other: Expression<Int>): Expression<Int> =
     BinaryOperation.IntMinus(this, other)
+
+@JvmName("kronerMinusInt")
+operator fun Expression<Kroner>.minus(other: Int): Expression<Kroner> = minus(other.expr().toKroner())
 
 @JvmName("kronerMinus")
 operator fun Expression<Kroner>.minus(other: Expression<Kroner>): Expression<Kroner> =
     (this.value - other.value).toKroner()
 
 @JvmName("yearMinus")
-operator fun Expression<Year>.minus(other: Expression<Year>): Expression<Year> =
-    (this.value - other.value).toYear()
+operator fun Expression<Year>.minus(other: Int): Expression<Year> =
+    (this.value - other).toYear()
 
 infix fun <T : Comparable<T>> Expression<T>.greaterThan(compareTo: Expression<T>): Expression<Boolean> =
     BinaryOperation.GreaterThan<T>().invoke(this, compareTo)
