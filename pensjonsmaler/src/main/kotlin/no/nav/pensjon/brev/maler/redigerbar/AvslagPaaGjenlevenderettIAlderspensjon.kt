@@ -383,15 +383,13 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                     // avslagUnder1aarTTAvdod_001
                     paragraph {
                         textExpr(
-                            Bokmal to "Våre opplysninger viser at ".expr() + saksbehandlerValg.avdoedNavn + " " + fritekst(
-                                "har bodd eller arbeidet i Norge i angi antall dager/ måneder / ikke har bodd eller arbeidet i Norge"
-                            ) + ".",
-                            Nynorsk to "Ifølgje våre opplysningar har ".expr() + saksbehandlerValg.avdoedNavn + " " + fritekst(
-                                " budd eller arbeidd i Noreg i angi antall dagar/ månader / ikkje budd eller arbeidd i Noreg"
-                            ) + ".",
-                            English to fritekst("We have registered that / We have no record of") + " " + saksbehandlerValg.avdoedNavn + " " + fritekst(
-                                " has been living or working in Norway for angi antall days/ months /  living or working in Norway."
-                            ) + ".",
+                            Bokmal to "Våre opplysninger viser at ".expr() + saksbehandlerValg.avdoedNavn + " har bodd eller arbeidet i Norge i  "
+                                    + fritekst("angi antall dager/ måneder") + fritekst(" eller ") + " ikke har bodd eller arbeidet i Norge.",
+                            Nynorsk to "Ifølgje våre opplysningar har ".expr() + saksbehandlerValg.avdoedNavn + " budd eller arbeidd i Noreg i "
+                                    + fritekst("angi antall dagar/ månader") + fritekst(" eller ") +" ikkje budd eller arbeidd i Noreg.",
+                            English to fritekst("We have registered that / We have no record of") + " " + saksbehandlerValg.avdoedNavn
+                                    + " has been living or working in Norway for " + fritekst("angi antall days/ months") + fritekst(" eller ") +
+                                    "living or working in Norway."
                         )
                     }
                 }
