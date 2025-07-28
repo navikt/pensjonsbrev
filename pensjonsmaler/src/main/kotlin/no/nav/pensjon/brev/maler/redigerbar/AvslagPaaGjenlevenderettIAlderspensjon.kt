@@ -72,7 +72,6 @@ import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -364,10 +363,9 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 }
             }
 
-            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-            showIf((pesysData.avdoed.redusertTrygdetidNorge or pesysData.avdoed.redusertTrygdetidEOS or pesysData.avdoed.redusertTrygdetidAvtaleland)
-                and saksbehandlerValg.redusertTrygdetid
-            ) {
+            // TODO: Doksys sjekka her på om du hadde minst en trygdetidsperiode etter avdøde. Kanskje er det her nyttig å sjekke på at antall trygdetidsperioder er større enn 0
+            // Den logikken var ikke helt åpenbar, og dette er uansett styrt av saksbehandlervalg nå, så under migrering lot vi dette være sånn
+            showIf(saksbehandlerValg.redusertTrygdetid) {
                 // norskTTAvdodInfoAvslag_001
                 includePhrase(TrygdetidTittel)
                 paragraph {
