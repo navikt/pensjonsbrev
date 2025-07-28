@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brevbaker.api.model.PDFVedleggType
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import java.util.Objects
 
@@ -49,4 +51,16 @@ class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any> inter
     override fun hashCode() = Objects.hash(title, outline, includeSakspart)
     override fun toString() = "AttachmentTemplate(title=$title, outline=$outline, includeSakspart=$includeSakspart)"
 
+}
+
+class PDFTemplate<AttachmentData : BrevbakerBrevdata>(
+    val type: PDFVedleggType,
+    val data: Expression<AttachmentData>
+) : StableHash by StableHash.of(StableHash.of(type), data) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is PDFTemplate<*>) return false
+        return type == other.type && data == other.data
+    }
+    override fun hashCode() = Objects.hash(type, data)
+    override fun toString() = "PDFTemplate(type=$type, data=$data)"
 }

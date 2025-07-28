@@ -1,6 +1,7 @@
-package no.nav.pensjon.brev.skribenten.model
+package no.nav.brev
 
 import java.util.Locale
+import java.util.Objects
 
 @JvmInline
 value class Landkode(val landkode: String) {
@@ -11,10 +12,17 @@ value class Landkode(val landkode: String) {
     }
 }
 
-data class Land(
+class Land(
     val kode: Landkode,
     val navn: String
-)
+) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is Land) return false
+        return kode == other.kode && navn == other.navn
+    }
+    override fun hashCode() = Objects.hash(kode, navn)
+    override fun toString() = "Land(kode=$kode, navn='$navn')"
+}
 
 /**
  * Verktøy for å 2-bokstavers landkoder i henhold til iso3166-1 alfa-2.
@@ -25,7 +33,7 @@ object Landkoder {
         Land(Landkode(it), Locale.of("", it).getDisplayCountry(Locale.of("NB", "NO")))
     }
 
-    fun isValidLandkode(landkode: String): Boolean =
+    internal fun isValidLandkode(landkode: String): Boolean =
         landkode.length == 2 && alleLandkoder.contains(landkode.uppercase())
 
 }

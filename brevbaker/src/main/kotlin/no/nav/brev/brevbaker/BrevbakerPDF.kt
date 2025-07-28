@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.template.render.LetterWithAttachmentsMarkup
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brev.template.toScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 
 internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
@@ -19,7 +20,8 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
                     attachments = it.attachments,
                     language = letter.language.toCode(),
                     felles = letter.felles,
-                    brevtype = letter.template.letterMetadata.brevtype
+                    brevtype = letter.template.letterMetadata.brevtype,
+                    pdfVedlegg = renderPDFAttachments(letter)
                 )
             )
         }.let { pdf ->
@@ -40,3 +42,8 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
         )
     }
 }
+
+internal fun renderPDFAttachments(letter: Letter<*>) =
+    letter.template.pdfAttachments
+        .map { it.type to it.data.eval(letter.toScope()) }
+        .map { PDFVedlegg(it.first, it.second) }

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brev.pdfbygger.vedlegg.VedleggModule
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl
@@ -101,6 +102,7 @@ fun pdfByggerObjectMapper() = jacksonObjectMapper().apply { pdfByggerConfig() }
 fun ObjectMapper.pdfByggerConfig() {
     registerModule(JavaTimeModule())
     registerModule(LetterMarkupModule)
+    registerModule(VedleggModule)
     enable(SerializationFeature.INDENT_OUTPUT)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)

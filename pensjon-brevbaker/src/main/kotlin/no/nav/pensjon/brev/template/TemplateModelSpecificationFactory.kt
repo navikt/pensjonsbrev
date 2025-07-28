@@ -9,7 +9,9 @@ import no.nav.pensjon.brevbaker.api.model.ObjectTypeSpecification
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
-import kotlin.reflect.*
+import java.time.Period
+import kotlin.reflect.KClass
+import kotlin.reflect.KType
 import kotlin.reflect.full.primaryConstructor
 
 class TemplateModelSpecificationError(msg: String) : Error(msg)
@@ -95,7 +97,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                     toProcess.add(theClassifier)
                     FieldType.Object(isMarkedNullable, qname, displayText = displayText.firstOrNull())
                 }
-                Telefonnummer::class.qualifiedName, Foedselsnummer::class.qualifiedName, Broek::class.qualifiedName -> {
+                Telefonnummer::class.qualifiedName, Foedselsnummer::class.qualifiedName, Broek::class.qualifiedName, Period::class.qualifiedName -> {
                     toProcess.add(theClassifier)
                     FieldType.Object(isMarkedNullable, qname!!, displayText = displayText.firstOrNull())
                 }
