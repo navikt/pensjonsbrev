@@ -316,11 +316,11 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const lastRow = table.rows.length - 1;
     const lastCol = table.rows[0].cells.length - 1;
 
-    const atLastCell = direction === "forward" && focus.itemIndex === lastRow && focus.itemContentIndex === lastCol;
+    const atLastCell = focus.itemIndex === lastRow && focus.itemContentIndex === lastCol;
 
     event.preventDefault();
 
-    if (atLastCell) {
+    if (direction === "forward" && atLastCell) {
       addRow(editorState, setEditorState, event);
       return true;
     }
