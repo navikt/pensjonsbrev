@@ -35,8 +35,9 @@ class PdfByggerAppTest {
             sakspart = LetterMarkupImpl.SakspartImpl(
                 gjelderNavn = "Navn Navnesen",
                 gjelderFoedselsnummer = "12345678901",
+                vergeNavn = null,
                 saksnummer = "123",
-                dokumentDato = LocalDate.of(2025, 1, 1).format(DateTimeFormatter.ISO_LOCAL_DATE)
+                dokumentDato = LocalDate.of(2025, 1, 1)
             ),
             blocks = listOf(),
             signatur = LetterMarkupImpl.SignaturImpl(

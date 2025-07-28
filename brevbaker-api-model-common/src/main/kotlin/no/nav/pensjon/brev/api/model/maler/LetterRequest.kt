@@ -56,7 +56,8 @@ class BestillBrevRequestAsync<T : Brevkode<T>>(
 class BestillRedigertBrevRequest<T : Brevkode<T>>(
     val kode: T,
     val letterData: RedigerbarBrevdata<*, *>,
-    val felles: Felles,
+    // TODO: Kan fjernes så snart pdf-bygger er deployet uten avhengighet til felles
+    val felles: Felles?,
     val language: LanguageCode,
     val letterMarkup: LetterMarkup,
 ) : BrevRequest<T> {

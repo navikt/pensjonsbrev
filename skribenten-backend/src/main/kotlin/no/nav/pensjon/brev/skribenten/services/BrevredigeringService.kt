@@ -472,7 +472,6 @@ class BrevredigeringService(
             signaturAttestant = signaturAttestant ?: brev.info.signaturAttestant,
         )
 
-    @OptIn(InterneDataklasser::class)
     private suspend fun rendreBrev(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
@@ -525,6 +524,7 @@ class BrevredigeringService(
                     pesysData = pesysData.brevdata,
                     saksbehandlerValg = brevredigering.saksbehandlerValg,
                 ),
+                // TODO: Kan fjerne felles her når brevbaker ikke lenger trenger felles-data for redigerbare brev
                 felles = pesysData.felles.medSignerendeSaksbehandlere(SignerendeSaksbehandlere(
                     saksbehandler = brevredigering.info.signaturSignerende,
                     attesterendeSaksbehandler = brevredigering.info.signaturAttestant,
