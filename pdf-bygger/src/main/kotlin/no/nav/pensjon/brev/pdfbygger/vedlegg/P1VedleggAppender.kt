@@ -6,6 +6,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
 import java.time.LocalDate
+import java.time.Period
 import java.time.format.FormatStyle
 
 internal object P1VedleggAppender {
@@ -112,10 +113,10 @@ internal object P1VedleggAppender {
             "$radnummer-institusjon" to pensjon.institusjon,
             "$radnummer-pensjonstype" to pensjon.pensjonstype.nummer,
             "$radnummer-datoFoersteUtbetaling" to pensjon.datoFoersteUtbetaling,
-            "$radnummer-bruttobeloep" to pensjon.bruttobeloep,
+            "$radnummer-bruttobeloep" to pensjon.bruttobeloep.let { it.verdi.toString() + " " + it.valuta.valuta },
             "$radnummer-grunnlagInnvilget" to pensjon.grunnlagInnvilget.nummer,
             "$radnummer-reduksjonsgrunnlag" to pensjon.reduksjonsgrunnlag?.nummer,
-            "$radnummer-vurderingsperiode" to pensjon.vurderingsperiode,
+            "$radnummer-vurderingsperiode" to pensjon.vurderingsperiode.formater(),
             "$radnummer-adresseNyVurdering" to pensjon.adresseNyVurdering.formater(),
         )
 
@@ -144,7 +145,7 @@ internal object P1VedleggAppender {
             "$radnummer-institusjon" to pensjon.institusjon,
             "$radnummer-pensjonstype" to pensjon.pensjonstype.nummer,
             "$radnummer-avslagsbegrunnelse" to pensjon.avslagsbegrunnelse.nummer,
-            "$radnummer-vurderingsperiode" to pensjon.vurderingsperiode,
+            "$radnummer-vurderingsperiode" to pensjon.vurderingsperiode.formater(),
             "$radnummer-adresseNyVurdering" to pensjon.adresseNyVurdering.formater(),
         )
 
@@ -182,10 +183,12 @@ internal object P1VedleggAppender {
 
     private fun SamletMeldingOmPensjonsvedtakDto.Adresse.formater() =
         listOfNotNull(adresselinje1, adresselinje2, adresselinje3).joinToString(System.lineSeparator()) +
-                System.lineSeparator() + "$postnummer $poststed" + System.lineSeparator() + landkode
+                System.lineSeparator() + "${postnummer.value} ${poststed.value}" + System.lineSeparator() + landkode.landkode
 }
 
 internal fun List<Map<String, Any?>>.flatten(): Map<String, String?> =
     this.flatMap { it.entries }.associate { it.key to it.value?.toString() }
 
 private fun LocalDate.formater() = dateFormatter(Language.English, FormatStyle.LONG).format(this)
+
+private fun Period.formater() = this.toString() // TODO: Formater periode ordentleg
