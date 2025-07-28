@@ -140,8 +140,4 @@ value class Valuta(val valuta: String) {
     init {
         require(valuta.length == 3)
     }
-
-    companion object {
-        val NOK = Valuta("NOK")
-    }
 }
