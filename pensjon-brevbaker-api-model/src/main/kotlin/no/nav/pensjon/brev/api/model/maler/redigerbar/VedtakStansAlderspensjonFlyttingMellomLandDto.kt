@@ -25,7 +25,7 @@ data class VedtakStansAlderspensjonFlyttingMellomLandDto(
         val eksportForbudKode: EksportForbudKode?,
         val eksportForbudKodeAvdoed: EksportForbudKode?,
         val garantipensjonInnvilget: Boolean,
-        val harAvdod: Boolean,
+        val harAvdoed: Boolean,
         val kravVirkDatoFom: LocalDate,
         val minst20ArTrygdetid: Boolean,
         val minst20AarTrygdetidKap20Avdoed: Boolean,

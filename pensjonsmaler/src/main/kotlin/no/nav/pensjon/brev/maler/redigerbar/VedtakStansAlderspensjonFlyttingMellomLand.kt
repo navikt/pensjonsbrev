@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFl
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.eksportForbudKodeAvdoed_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.eksportForbudKode_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.garantipensjonInnvilget
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.harAvdod
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.harAvdoed
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.informasjonOmMedlemskapOgHelserettigheter
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.kravVirkDatoFom
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLandDtoSelectors.PesysDataSelectors.minst20AarTrygdetidKap20Avdoed
@@ -158,7 +158,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                         )
                 }
             }
-            showIf(regelverkType.isOneOf(AP2011, AP2016) and pesysData.eksportForbudKodeAvdoed_safe.isNull() and pesysData.harAvdod and not(pesysData.minst20AarTrygdetidKap20Avdoed)) {
+            showIf(regelverkType.isOneOf(AP2011, AP2016) and pesysData.eksportForbudKodeAvdoed_safe.isNull() and pesysData.harAvdoed and not(pesysData.minst20AarTrygdetidKap20Avdoed)) {
                 // eksportAP2016Under20aarStansAvdod, eksportAP2011Under20aarStansAvdod,
                 paragraph {
                     text(
