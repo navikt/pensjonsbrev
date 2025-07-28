@@ -5,8 +5,8 @@ import type { LiteralValue } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
-import { isItemList, isLiteral } from "../model/utils";
-import { cleanseText, isTable, isTableContentIndex } from "./common";
+import { isItemList, isLiteral, isTableCellIndex } from "../model/utils";
+import { cleanseText, isTable } from "./common";
 
 export const updateContentText: Action<LetterEditorState, [literalIndex: LiteralIndex, text: string]> = produce(
   (draft, literalIndex, text) => {
@@ -14,10 +14,10 @@ export const updateContentText: Action<LetterEditorState, [literalIndex: Literal
     const block = draft.redigertBrev.blocks[focus.blockIndex];
     const paraContent = block.content[focus.contentIndex];
 
-    if (isTable(paraContent) && isTableContentIndex(focus)) {
-      // Here itmeIndex === -1 means the table header row.
-      if (focus.itemIndex === -1) {
-        const colSpec = paraContent.header.colSpec[focus.itemContentIndex];
+    if (isTable(paraContent) && isTableCellIndex(focus)) {
+      // Here rowIndex === -1 means the table header row.
+      if (focus.rowIndex === -1) {
+        const colSpec = paraContent.header.colSpec[focus.cellIndex];
         const literal = colSpec?.headerContent.text.find((txt) => isLiteral(txt));
         if (literal) {
           updateLiteralText(literal, text);
@@ -26,8 +26,8 @@ export const updateContentText: Action<LetterEditorState, [literalIndex: Literal
         return;
       }
       // the table body.
-      const row = paraContent.rows[focus.itemIndex];
-      const cell = row?.cells[focus.itemContentIndex];
+      const row = paraContent.rows[focus.rowIndex];
+      const cell = row?.cells[focus.cellIndex];
       const literal = cell?.text[0];
       if (isLiteral(literal)) {
         updateLiteralText(literal, text);

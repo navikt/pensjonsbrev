@@ -16,8 +16,9 @@ import { handleSwitchContent, handleSwitchTextContent } from "~/utils/brevbakerU
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
+import { isLiteral, isTableCellIndex } from "../model/utils";
 import { getCursorOffset } from "../services/caretUtils";
-import { isItemContentIndex, isTable, isTableContentIndex, newLiteral } from "./common";
+import { isItemContentIndex, isTable, newLiteral } from "./common";
 
 // TODO: Denne bør skrives om til å gjenbruke funksjonalitet (addElements, removeElements, osv).
 export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralIndex, fontType: FontType]> = produce(
@@ -29,32 +30,24 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
     }
 
     const contentAtFocus = block.content[literalIndex.contentIndex];
-    if (isTable(contentAtFocus) && isTableContentIndex(literalIndex)) {
-      const table = contentAtFocus as Draft<Table>;
+    if (isTable(contentAtFocus) && isTableCellIndex(literalIndex)) {
+      const table = contentAtFocus;
 
-      // Commented out to disable bold/italic on
-      // table header literals. The pdf maker will take care of that.
-      // Body-cells will still work.
+      if (literalIndex.rowIndex === -1) {
+        // rowIndex === -1 means header row
+        const colSpec = table.header.colSpec[literalIndex.cellIndex];
+        const headerLiteral = colSpec.headerContent.text.find((txt) => isLiteral(txt));
 
-      // if (literalIndex.itemIndex === -1) {
-      //   // itemIndex === -1 means header row
-      //   const colSpec = table.header.colSpec[literalIndex.itemContentIndex];
-      //   const headerLiteral = colSpec.headerContent.text.find((txt) => txt.type === LITERAL);
-
-      //   if (headerLiteral) {
-      //     headerLiteral.editedFontType = headerLiteral.editedFontType === fontType ? null : fontType;
-      //   }
-      //   draft.focus = { ...draft.focus, cursorPosition: 0 };
-      //   draft.isDirty = true;
-      //   return;
-      // }
-      if (literalIndex.itemIndex === -1) {
-        // We no longer allow bold/italic on header cells we just ignore the request.
+        if (headerLiteral) {
+          headerLiteral.editedFontType = headerLiteral.editedFontType === fontType ? null : fontType;
+        }
+        draft.focus = { ...draft.focus, cursorPosition: 0 };
+        draft.isDirty = true;
         return;
       }
 
-      const row: Draft<Row> = table.rows[literalIndex.itemIndex];
-      const cell: Draft<Cell> = row.cells[literalIndex.itemContentIndex];
+      const row: Draft<Row> = table.rows[literalIndex.rowIndex];
+      const cell: Draft<Cell> = row.cells[literalIndex.cellIndex];
 
       // we assume one literal per cell
       const literal = cell.text[0] as Draft<LiteralValue>;

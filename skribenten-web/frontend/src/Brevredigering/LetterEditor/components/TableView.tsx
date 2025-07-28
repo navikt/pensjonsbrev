@@ -47,8 +47,9 @@ const renderCellText = (cell: CellType, _: number, idx: TableCellIndex) =>
           litIndex={{
             blockIndex: idx.blockIndex,
             contentIndex: idx.contentIndex,
-            itemIndex: idx.rowIndex,
-            itemContentIndex: idx.cellIndex,
+            rowIndex: idx.rowIndex,
+            cellIndex: idx.cellIndex,
+            cellContentIndex: 0,
           }}
         />
       );

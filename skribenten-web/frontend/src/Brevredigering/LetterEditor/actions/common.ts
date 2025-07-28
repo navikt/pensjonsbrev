@@ -28,13 +28,6 @@ import type { Nullable } from "~/types/Nullable";
 
 import type { BlockContentIndex, Focus, ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
 
-export interface TableContentIndex extends ItemContentIndex {
-  // itemIndex: -1 = header row, ≥0 = body row.
-  itemIndex: number;
-  //itemContentIndex => column index
-  itemContentIndex: number;
-}
-
 export function cleanseText(text: string): string {
   return text.replaceAll("<br>", "").replaceAll("&nbsp;", " ").replaceAll("\n", " ").replaceAll("\r", "");
 }
@@ -45,16 +38,6 @@ export function isEditableContent(content: Content | undefined | null): boolean 
 
 export function isBlockContentIndex(f: Focus | LiteralIndex): f is BlockContentIndex {
   return !isItemContentIndex(f);
-}
-
-export function isTableContentIndex(idx: Focus | LiteralIndex | undefined): idx is TableContentIndex {
-  return (
-    idx !== undefined &&
-    "itemIndex" in idx &&
-    idx.itemIndex !== undefined &&
-    "itemContentIndex" in idx &&
-    idx.itemContentIndex !== undefined
-  );
 }
 
 export function isTable(content: Content | undefined | null): content is Table {
