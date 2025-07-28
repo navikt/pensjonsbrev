@@ -48,7 +48,6 @@ object Favourites : Table() {
 internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
     registerModule(Edit.JacksonModule)
-    registerModule(BrevbakerBrevdataModule)
     registerModule(LetterMarkupModule)
 }
 
@@ -201,15 +200,3 @@ private fun createJdbcUrl(config: Config): String =
         val dbName = getString("name")
         return "jdbc:postgresql://$url:$port/$dbName"
     }
-
-private object BrevbakerBrevdataModule : SimpleModule() {
-    private fun readResolve(): Any = BrevbakerBrevdataModule
-
-    init {
-        addDeserializer(BrevbakerBrevdata::class.java, BrevdataDeserializer)
-    }
-
-    private object BrevdataDeserializer : JsonDeserializer<BrevbakerBrevdata>() {
-        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): BrevbakerBrevdata = ctxt.readValue(parser, SaksbehandlerValg::class.java)
-    }
-}
