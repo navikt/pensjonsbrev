@@ -49,11 +49,11 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
       const row: Draft<Row> = table.rows[literalIndex.rowIndex];
       const cell: Draft<Cell> = row.cells[literalIndex.cellIndex];
 
-      // we assume one literal per cell
-      const literal = cell.text[0] as Draft<LiteralValue>;
+      const textContent = cell.text[literalIndex.cellContentIndex];
 
-      // Toggle the font: plain to bold/italic, keep existing italic/bold combo
-      literal.editedFontType = literal.editedFontType === fontType ? null : fontType;
+      if (isLiteral(textContent)) {
+        textContent.editedFontType = textContent.editedFontType === fontType ? null : fontType;
+      }
 
       draft.focus = { ...draft.focus, cursorPosition: 0 };
       draft.isDirty = true;
