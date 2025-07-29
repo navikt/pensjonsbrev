@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
@@ -35,5 +36,7 @@ fun createAvslagForLiteTrygdetidAPDto() =
                 sakstype = Sakstype.ALDER,
                 brukerUnder18Aar = false
             ),
+            regelverkType = AlderspensjonRegelverkType.AP2016,
+            borINorge = true,
         )
     )

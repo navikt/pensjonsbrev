@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*
@@ -64,5 +65,18 @@ object Vedtak {
                 )
             }
         }
+    }
+
+    object TrygdetidOverskrift: OutlinePhrase<LangBokmalNynorskEnglish>(){
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title1 { includePhrase(TrygdetidText) }
+        }
+    }
+
+    object TrygdetidText: PlainTextOnlyPhrase<LangBokmalNynorskEnglish> (){
+        override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            text(Bokmal to "Trygdetid", Nynorsk to "Trygdetid", English to "Period of national insurance coverage")
+        }
+
     }
 }

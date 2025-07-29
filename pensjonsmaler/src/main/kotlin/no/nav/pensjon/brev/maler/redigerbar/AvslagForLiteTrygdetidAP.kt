@@ -8,22 +8,28 @@ import no.nav.pensjon.brev.api.model.VedtaksBegrunnelse.*
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.avtaleland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.borINorge
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.bostedsland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.erEOSland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderAvtaleland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderEOSland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderNorge
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.vedtaksBegrunnelse
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.SUPPLERENDE_STOENAD
+import no.nav.pensjon.brev.maler.fraser.common.Constants.SUPPLERENDE_STOENAD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -31,7 +37,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // Doksys redigermal: MF_000066, tvilling autobrev: MF_000177
 @TemplateModelHelpers
-
 object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto> {
 
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_FOR_LITE_TRYGDETID
@@ -51,14 +56,14 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
         )
     ) {
         val avslagsBegrunnelse = pesysData.vedtaksBegrunnelse
-        val avtaleland = pesysData.avtaleland.ifNull(then = "angi avtaleland")
-        val bostedsland = pesysData.bostedsland.ifNull(then = "angi bostedsland")
+        val avtaleland = pesysData.avtaleland.ifNull(fritekst("angi avtaleland"))
+        val bostedsland = pesysData.bostedsland.ifNull(fritekst("angi bostedsland"))
         val erAvtaleland = pesysData.avtaleland.notNull()
         val erEOSland = pesysData.erEOSland
         val trygdeperioderAvtaleland = pesysData.trygdeperioderAvtaleland
         val trygdeperioderEOSland = pesysData.trygdeperioderEOSland
         val trygdeperioderNorge = pesysData.trygdeperioderNorge
-        val regelverkType = AP2011.expr()
+        val regelverkType = pesysData.regelverkType
         val erAp2011 = regelverkType.equalTo(AP2011)
         val erAp2016 = regelverkType.equalTo(AP2016)
         val erAp2025 = regelverkType.equalTo(AP2025)
@@ -71,13 +76,13 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
             )
         }
         outline {
-            showIf(avslagsBegrunnelse.isOneOf(UNDER_1_AR_TT) and erAp2011 or erAp2016) {
+            showIf(avslagsBegrunnelse.equalTo(UNDER_1_AR_TT) and (erAp2011 or erAp2016)) {
                 showIf(erAp2011) {
                     //avslagAP2011Under1aar_001
                     paragraph {
                         text(
                             Bokmal to "For å ha rett til alderspensjon må du ha bodd eller arbeidet i Norge i minst ett år. Det har du ikke, og derfor har vi avslått søknaden din.",
-                            Nynorsk to "For å ha rett til alderspensjon må du ha budd eller arbeidd i Noreg i minst eit år. Det har du ikkje, og derfor har vi avslått søknaden din.",
+                            Nynorsk to "For å ha rett til alderspensjon må du ha budd eller arbeidd i Noreg i minst eitt år. Det har du ikkje, og derfor har vi avslått søknaden din.",
                             English to "To be eligible for retirement pension, you must have been registered as living or working in Norway for at least one year. You do not meet this requirement, therefore we have declined your application.",
                         )
                     }
@@ -86,7 +91,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                     paragraph {
                         text(
                             Bokmal to "For å ha rett til alderspensjon må du ha bodd eller arbeidet i Norge i minst ett år eller ha tjent opp inntektspensjon. Det har du ikke, og derfor har vi avslått søknaden din.",
-                            Nynorsk to "For å ha rett til alderspensjon må du ha budd eller arbeidd i Noreg i minst eit år eller ha tent opp inntektspensjon. Det har du ikkje, og derfor har vi avslått søknaden din.",
+                            Nynorsk to "For å ha rett til alderspensjon må du ha budd eller arbeidd i Noreg i minst eitt år eller ha tent opp inntektspensjon. Det har du ikkje, og derfor har vi avslått søknaden din.",
                             English to "To be eligible for retirement pension, you must have been registered as living in Norway for at least one year or have had a pensionable income. You do not meet any of these requirements, therefore we have declined your application.",
                         )
                     }
@@ -98,7 +103,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                         Nynorsk to "Vedtaket er gjort etter folketrygdlova § 19-2",
                         English to "This decision was made pursuant to the provisions of § 19-2",
                     )
-                    showIf(regelverkType.equalTo(AP2016)) {
+                    showIf(erAp2016) {
                         text(
                             Bokmal to ", 20-5, 20-8, 20-10",
                             Nynorsk to ", 20-5, 20-8, 20-10",
@@ -111,7 +116,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                             Nynorsk to " og EØS-avtalens forordning 883/2004 artikkel 57.",
                             English to " of the National Insurance Act and Article 57 of Regulation (EC) 883/2004.",
                         )
-                    }.orShow {
+                    }.orShowIf(erAvtaleland) {
                         textExpr(
                             Bokmal to " og reglene i trygdeavtalen med ".expr() + avtaleland + ".",
                             Nynorsk to " og reglane i trygdeavtalen med ".expr() + avtaleland + ".",
@@ -142,7 +147,7 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                             Nynorsk to " års trygdetid",
                             English to " years of national insurance coverage",
                         )
-                        showIf(regelverkType.equalTo(AP2016)) {
+                        showIf(erAp2016) {
                             text(
                                 Bokmal to ", eller ha tjent opp inntektspensjon",
                                 Nynorsk to ", eller ha tent opp inntektspensjon",
@@ -183,45 +188,13 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                             Nynorsk to "Vi har fått opplyst at du har ".expr() + fritekst("Angi antall") + " månader oppteningstid i anna ",
                             English to "We have been informed that you have ".expr() + fritekst("Angi antall") + " months of national insurance coverage in "
                         )
-                        showIf(erEOSland and not(erAvtaleland)) {
-                            text(Bokmal to "EØS-land. ", Nynorsk to "EØS-land. ", English to "an other EEA country. ")
-                        }
-                        showIf(erAvtaleland and not(erEOSland)) {
-                            text(
-                                Bokmal to "avtaleland. ",
-                                Nynorsk to "avtaleland. ",
-                                English to "an other signatory country. "
-                            )
-                        }
-                        showIf(erEOSland and erAvtaleland) {
-                            text(
-                                Bokmal to "EØS- og avtaleland. ",
-                                Nynorsk to "EØS- og avtaleland. ",
-                                English to "other EEA and signatory countries. "
-                            )
-                        }
+                        includePhrase(EOSogEllerAvtaleland(erEOSland, erAvtaleland))
                         text(
-                            Bokmal to "Den samlede trygdetiden din i Norge og ",
-                            Nynorsk to "Den samla trygdetida din i Noreg og ",
-                            English to "Your total national insurance coverage in Norway and "
+                            Bokmal to ". Den samlede trygdetiden din i Norge og ",
+                            Nynorsk to ". Den samla trygdetida din i Noreg og ",
+                            English to ". Your total national insurance coverage in Norway and "
                         )
-                        showIf(erEOSland and not(erAvtaleland)) {
-                            text(Bokmal to "EØS-land", Nynorsk to "EØS-land", English to "an other EEA country")
-                        }
-                        showIf(erAvtaleland and not(erEOSland)) {
-                            text(
-                                Bokmal to "avtaleland",
-                                Nynorsk to "avtaleland",
-                                English to "an other signatory country"
-                            )
-                        }
-                        showIf(erEOSland and erAvtaleland) {
-                            text(
-                                Bokmal to "EØS- og avtaleland",
-                                Nynorsk to "EØS- og avtaleland",
-                                English to "other EEA and signatory countries"
-                            )
-                        }
+                        includePhrase(EOSogEllerAvtaleland(erEOSland, erAvtaleland))
                         textExpr(
                             Bokmal to " er ".expr() + fritekst("Angi samlet trygdetid") + ".",
                             Nynorsk to " er ".expr() + fritekst("Angi samlet trygdetid") + ".",
@@ -247,26 +220,9 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                                 Nynorsk to " års trygdetid i Noreg og anna ",
                                 English to " years of national insurance coverage in Norway and ",
                             )
-                            showIf(erEOSland and not(erAvtaleland)) {
-                                text(
-                                    Bokmal to "EØS-land",
-                                    Nynorsk to "EØS-land",
-                                    English to "an other EEA country",
-                                )
-                            }.orShowIf(erAvtaleland and not(erEOSland)) {
-                                text(
-                                    Bokmal to "avtaleland",
-                                    Nynorsk to "avtaleland",
-                                    English to "an other signatory country",
-                                )
-                            }.orShowIf(erEOSland and erAvtaleland) {
-                                text(
-                                    Bokmal to "EØS- og avtaleland",
-                                    Nynorsk to "EØS- og avtaleland",
-                                    English to "other EEA and signatory countries",
-                                )
-                            }
-                            showIf(regelverkType.isOneOf(AP2016)) {
+                            includePhrase(EOSogEllerAvtaleland(erEOSland, erAvtaleland))
+
+                            showIf(erAp2016) {
                                 text(
                                     Bokmal to ", eller ha tjent opp inntektspensjon",
                                     Nynorsk to ", eller ha tent opp inntektspensjon",
@@ -301,37 +257,37 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                             }
                         }
                     }
-                }
 
-                showIf(erAvtaleland) {
-                    paragraph {
-                        text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven § 19-2",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova § 19-2",
-                            English to "This decision was made pursuant to the provision of § 19-2",
-                        )
-
-                        showIf(regelverkType.isOneOf(AP2016)) {
+                    showIf(erAvtaleland) {
+                        paragraph {
                             text(
-                                Bokmal to ", 20-5 til 20-8 og 20-10,",
-                                Nynorsk to ", 20-5 til 20-8 og 20-10,",
-                                English to ", 20-5 til 20-8 og 20-10,",
+                                Bokmal to "Vedtaket er gjort etter folketrygdloven § 19-2",
+                                Nynorsk to "Vedtaket er gjort etter folketrygdlova § 19-2",
+                                English to "This decision was made pursuant to the provision of § 19-2",
                             )
-                        }
-                        textExpr(
-                            Bokmal to " og reglene i trygdeavtalen med ".expr() + avtaleland,
-                            Nynorsk to " og reglane i trygdeavtalen med ".expr() + avtaleland,
-                            English to " of the National Insurance Act and to the provisions of the social security agreement with ".expr() + avtaleland,
-                        )
 
-                        showIf(erAvtaleland and erEOSland) {
-                            text(
-                                Bokmal to ", og EØS-avtalens forordning 883/2004 artikkel 6",
-                                Nynorsk to ", og EØS-avtalens forordning 883/2004 artikkel 6",
-                                English to ", and Article 6 of regulation (EC) 883/200"
+                            showIf(erAp2016) {
+                                text(
+                                    Bokmal to ", 20-5 til 20-8 og 20-10,",
+                                    Nynorsk to ", 20-5 til 20-8 og 20-10,",
+                                    English to ", 20-5 til 20-8 og 20-10,",
+                                )
+                            }
+                            textExpr(
+                                Bokmal to " og reglene i trygdeavtalen med ".expr() + avtaleland,
+                                Nynorsk to " og reglane i trygdeavtalen med ".expr() + avtaleland,
+                                English to " of the National Insurance Act and to the provisions of the social security agreement with ".expr() + avtaleland,
                             )
+
+                            showIf(erAvtaleland and erEOSland) {
+                                text(
+                                    Bokmal to ", og EØS-avtalens forordning 883/2004 artikkel 6",
+                                    Nynorsk to ", og EØS-avtalens forordning 883/2004 artikkel 6",
+                                    English to ", and Article 6 of regulation (EC) 883/200"
+                                )
+                            }
+                            text(Bokmal to ".", Nynorsk to ".", English to ".")
                         }
-                        text(Bokmal to ".", Nynorsk to ".", English to ".")
                     }
                 }
             }
@@ -390,13 +346,9 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
             ) {
                 showIf(trygdeperioderNorge.isNotEmpty()) {
                     //trygdetidOverskrift
-                    title1 {
-                        text(
-                            Bokmal to "Trygdetid",
-                            Nynorsk to "Trygdetid",
-                            English to "Period of national insurance coverage"
-                        )
-                    }
+                    includePhrase(Vedtak.TrygdetidOverskrift)
+
+                    // TODO skal vi ha denne?, isåfall, hvorfor ikke EØS og avtaleland varianten?
                     //norskTTInfoGenerell_001
                     paragraph {
                         text(
@@ -442,20 +394,23 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                         )
                     }
 
-                    includePhrase(
-                        OpplysningerBruktIBeregningenTrygdetidTabeller.UtenlandskTrygdetid(
-                            trygdeperioderAvtaleland
-                        )
-                    )
+                    includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.UtenlandskTrygdetid(trygdeperioderAvtaleland))
                 }
 
             }
-            showIf(avslagsBegrunnelse.isOneOf(UNDER_62)) {
+            showIf(avslagsBegrunnelse.equalTo(UNDER_62)) {
                 paragraph {
                     text(
                         Bokmal to "Du har søkt om å ta ut alderspensjon før du fyller 62 år. For å ha rett til alderspensjon må du være 62 år. Derfor har vi avslått søknaden din.",
                         Nynorsk to "For å ha rett til alderspensjon må du vere 62 år. Du har søkt om å ta ut alderspensjon før du fyller 62 år. Derfor har vi avslått søknaden din.",
                         English to "In order to be eligible for retirement pension you have to be 62 years. You have applied for retirement pension from a date prior to having turned 62. Therefore, we have declined your application.",
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Vi har ikke vurdert om du oppfyller de andre kravene for å få alderspensjon fra folketrygden.",
+                        Nynorsk to "Vi har ikkje vurdert om du fyller dei andre vilkåra for å få alderspensjon frå folketrygda.",
+                        English to "We have not assessed whether you meet the other requirements for retirement pension through the National Insurance Act.",
                     )
                 }
                 // avslagAP2016UttakAlderU62Hjemmel
@@ -500,19 +455,21 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                     )
                 }
             }
-            title1 {
-                text(
-                    Bokmal to "Supplerende stønad",
-                    Nynorsk to "Supplerande stønad",
-                    English to "Supplementary benefit"
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Hvis du har kort botid i Norge når du fyller 67 år, kan du søke om supplerende stønad. Du kan lese mer om supplerende stønad på vår nettside $SUPPLERENDE_STOENAD.",
-                    Nynorsk to "Dersom du har kort butid i Noreg når du fyller 67 år, kan du søke om supplerande stønad. Du kan lese meir om supplerande stønad på vår nettside $SUPPLERENDE_STOENAD.",
-                    English to "If you have only lived a short period in Norway before reaching 67 years of age, you can apply for supplementary benefit. You can read more about supplementary benefit at our website $SUPPLERENDE_STOENAD.",
-                )
+            showIf(pesysData.borINorge and avslagsBegrunnelse.isOneOf(UNDER_1_AR_TT, UNDER_3_AR_TT, UNDER_5_AR_TT)) {
+                title1 {
+                    text(
+                        Bokmal to "Supplerende stønad",
+                        Nynorsk to "Supplerande stønad",
+                        English to "Supplementary benefit"
+                    )
+                }
+                paragraph {
+                    text(
+                        Bokmal to "Hvis du har kort botid i Norge når du fyller 67 år, kan du søke om supplerende stønad. Du kan lese mer om supplerende stønad på vår nettside $SUPPLERENDE_STOENAD_URL.",
+                        Nynorsk to "Dersom du har kort butid i Noreg når du fyller 67 år, kan du søke om supplerande stønad. Du kan lese meir om supplerande stønad på vår nettside $SUPPLERENDE_STOENAD_URL.",
+                        English to "If you have only lived a short period in Norway before reaching 67 years of age, you can apply for supplementary benefit. You can read more about supplementary benefit at our website $SUPPLERENDE_STOENAD_URL.",
+                    )
+                }
             }
 
             includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgMulighetTilAaKlage))
@@ -541,6 +498,32 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
                         ". /We have no record of you living or working in Norway.",
             )
         }
+    }
+
+    private data class EOSogEllerAvtaleland(val erEOSland: Expression<Boolean>, val erAvtaleland: Expression<Boolean>): TextOnlyPhrase<LangBokmalNynorskEnglish>(){
+        override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            showIf(erEOSland and not(erAvtaleland)) {
+                text(
+                    Bokmal to "EØS-land",
+                    Nynorsk to "EØS-land",
+                    English to "an other EEA country",
+                )
+            }.orShowIf(erAvtaleland and not(erEOSland)) {
+                text(
+                    Bokmal to "avtaleland",
+                    Nynorsk to "avtaleland",
+                    English to "an other signatory country",
+                )
+            }.orShowIf(erEOSland and erAvtaleland) {
+                text(
+                    Bokmal to "EØS- og avtaleland",
+                    Nynorsk to "EØS- og avtaleland",
+                    English to "other EEA and signatory countries",
+                )
+            }
+
+        }
+
     }
 }
 
