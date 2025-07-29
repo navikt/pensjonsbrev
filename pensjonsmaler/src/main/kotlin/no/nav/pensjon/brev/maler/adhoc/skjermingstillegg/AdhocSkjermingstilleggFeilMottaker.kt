@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.maler.adhoc.skjermingstillegg
 
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.PERSONVERNERKLAERING_URL
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.createTemplate
@@ -86,7 +88,7 @@ object AdhocSkjermingstilleggFeilMottaker : AutobrevTemplate<EmptyBrevdata> {
             }
             paragraph {
                 text(
-                    Bokmal to "Du kan lese mer på nav.no/personvernerklaering."
+                    Bokmal to "Du kan lese mer på $PERSONVERNERKLAERING_URL."
                 )
             }
 
@@ -97,7 +99,7 @@ object AdhocSkjermingstilleggFeilMottaker : AutobrevTemplate<EmptyBrevdata> {
             }
             paragraph {
                 text(
-                    Bokmal to "På nav.no/kontakt kan du chatte eller skrive til oss. " +
+                    Bokmal to "På $KONTAKT_URL kan du chatte eller skrive til oss. " +
                             "Du kan også ringe oss på telefon 55 55 33 34 hverdager kl.09.00-15.00."
                 )
             }

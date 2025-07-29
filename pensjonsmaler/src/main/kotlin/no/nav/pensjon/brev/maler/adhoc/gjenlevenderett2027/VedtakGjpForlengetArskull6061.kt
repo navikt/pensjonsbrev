@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.DineInntekte
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig2GTabell
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig3GTabell
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -172,8 +173,8 @@ object VedtakGjpForlengetArskull6061 : AutobrevTemplate<Gjenlevenderett2027Dto> 
                 )
                 namedReference(vedleggGjpDineRettigheterOgPlikter)
                 text(
-                    Bokmal to " får du vite mer om hvordan du går fram. Du finner skjema og informasjon på nav.no/klage.",
-                    Nynorsk to " kan du lese meir om korleis du går fram. Du finn skjema og informasjon på nav.no/klage."
+                    Bokmal to " får du vite mer om hvordan du går fram. Du finner skjema og informasjon på $KLAGE_URL.",
+                    Nynorsk to " kan du lese meir om korleis du går fram. Du finn skjema og informasjon på $KLAGE_URL."
                 )
             }
 

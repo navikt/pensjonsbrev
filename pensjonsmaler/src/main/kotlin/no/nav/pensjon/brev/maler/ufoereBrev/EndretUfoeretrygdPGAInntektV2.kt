@@ -31,6 +31,10 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTP
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.uforetrygd
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.virkningFom
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
+import no.nav.pensjon.brev.maler.fraser.common.Constants.INNTEKTSPLANLEGGEREN_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.MELDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -255,8 +259,8 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
 
             paragraph {
                 text(
-                    Bokmal to "Hvis du mener inntekten vi har brukt i denne beregningen er feil, kan du selv legge inn ny forventet inntekt på nav.no/inntektsplanleggeren eller kontakte oss på 55 55 33 33. ",
-                    Nynorsk to "Dersom du meiner at vi har brukt feil inntekt i denne utrekninga, kan du leggje inn forventa inntekt sjølv på nav.no/inntektsplanleggeren eller kontakte oss på 55 55 33 33. ",
+                    Bokmal to "Hvis du mener inntekten vi har brukt i denne beregningen er feil, kan du selv legge inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL eller kontakte oss på 55 55 33 33. ",
+                    Nynorsk to "Dersom du meiner at vi har brukt feil inntekt i denne utrekninga, kan du leggje inn forventa inntekt sjølv på $INNTEKTSPLANLEGGEREN_URL eller kontakte oss på 55 55 33 33. ",
                 )
             }
             paragraph {
@@ -503,15 +507,15 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
 
             paragraph {
                 text(
-                    Bokmal to "Du kan melde inn forventet inntekt i Inntektsplanleggeren på nav.no/inntektsplanleggeren. ",
-                    Nynorsk to "Du kan melde inn forventa inntekt i inntektsplanleggjaren på nav.no/inntektsplanleggeren "
+                    Bokmal to "Du kan melde inn forventet inntekt i Inntektsplanleggeren på $INNTEKTSPLANLEGGEREN_URL. ",
+                    Nynorsk to "Du kan melde inn forventa inntekt i inntektsplanleggjaren på $INNTEKTSPLANLEGGEREN_URL. "
                 )
             }
 
             paragraph {
                 text(
-                    Bokmal to "Alle andre endringer kan du melde inn på nav.no/uforetrygd#melde. ",
-                    Nynorsk to "Alle andre endringar kan meldast inn på nav.no/uforetrygd#melde. "
+                    Bokmal to "Alle andre endringer kan du melde inn på $MELDE_URL. ",
+                    Nynorsk to "Alle andre endringar kan meldast inn på $MELDE_URL. "
                 )
             }
 
@@ -668,8 +672,8 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                 )
                 namedReference(vedleggDineRettigheterOgPlikterUfoere)
                 text(
-                    Bokmal to " får du vite mer om hvordan du går fram. Du finner skjema og informasjon på nav.no/klage. ",
-                    Nynorsk to " kan du lese meir om korleis du går fram. Du finn skjema og informasjon på nav.no/klage. "
+                    Bokmal to " får du vite mer om hvordan du går fram. Du finner skjema og informasjon på $KLAGE_URL. ",
+                    Nynorsk to " kan du lese meir om korleis du går fram. Du finn skjema og informasjon på $KLAGE_URL. "
                 )
             }
 
@@ -684,9 +688,9 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
             paragraph {
                 text(
                     Bokmal to "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. " +
-                            "Du kan se alle utbetalingene du har mottatt på nav.no/dittnav. Her kan du også endre kontonummeret ditt. ",
+                            "Du kan se alle utbetalingene du har mottatt på $DITT_NAV. Her kan du også endre kontonummeret ditt. ",
                     Nynorsk to "Du får utbetalt uføretrygd den 20. kvar månad, eller seinast siste verkedag før denne datoen. " +
-                            "Du kan sjå alle utbetalingane du har fått, på nav.no/dittnav. Her kan du også endre kontonummeret ditt. "
+                            "Du kan sjå alle utbetalingane du har fått, på $DITT_NAV. Her kan du også endre kontonummeret ditt. "
                 )
             }
 

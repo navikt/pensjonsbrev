@@ -2,10 +2,19 @@ package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON_GJENLEVENDE_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON_GJENLEVENDE_URL_EN
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_ENG_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -112,11 +121,11 @@ object AdhocAlderspensjonGjtVarselBrev : AutobrevTemplate<EmptyBrevdata> {
             paragraph {
                 text(
                     Bokmal to "Du har rett til å uttale deg i saken. Fristen for å uttale deg er 14 dager etter at du " +
-                            "har fått dette brevet. Uttalelsen bør være skriftlig. Du kan skrive til oss på nav.no/kontakt",
+                            "har fått dette brevet. Uttalelsen bør være skriftlig. Du kan skrive til oss på $KONTAKT_URL",
                     Nynorsk to "Du har rett til å uttale deg i saka. Fristen for å uttale deg er 14 dagar etter at du " +
-                            "har fått dette brevet. Fråsegna bør vere skriftleg. Du kan skrive til oss på nav.no/kontakt",
+                            "har fått dette brevet. Fråsegna bør vere skriftleg. Du kan skrive til oss på $KONTAKT_URL",
                     English to "You have the right to submit a statement on your case. The deadline for commenting is " +
-                            "14 days after you receive this letter. You can submit a statement by logging in to nav.no/contact",
+                            "14 days after you receive this letter. You can submit a statement by logging in to $KONTAKT_URL",
                 )
             }
 
@@ -131,14 +140,14 @@ object AdhocAlderspensjonGjtVarselBrev : AutobrevTemplate<EmptyBrevdata> {
 
             paragraph {
                 text(
-                    Bokmal to "Du finner mer informasjon om gjenlevendetillegg på nav.no/alderspensjon-gjenlevende. " +
-                            "På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no, " +
+                    Bokmal to "Du finner mer informasjon om gjenlevendetillegg på $ALDERSPENSJON_GJENLEVENDE_URL. " +
+                            "På $KONTAKT_URL kan du chatte eller skrive til oss. Hvis du ikke finner svar på $NAV_URL, " +
                             "kan du ringe oss på telefon 55 55 33 34, hverdager kl. 09:00-15:00.",
-                    Nynorsk to "Du finn meir informasjon om attlevandetillegg på nav.no/alderspensjon-gjenlevende. " +
-                            "På nav.no/kontakt kan du chatte eller skrive til oss. Om du ikkje finn svar på nav.no, " +
+                    Nynorsk to "Du finn meir informasjon om attlevandetillegg på $ALDERSPENSJON_GJENLEVENDE_URL. " +
+                            "På $KONTAKT_URL kan du chatte eller skrive til oss. Om du ikkje finn svar på $NAV_URL, " +
                             "kan du ringje oss på telefon 55 55 33 34, kvardagar kl. 09:00-15:00.",
-                    English to "You can find more information about survivor's pension at nav.no/alderspensjon/en. " +
-                            "At nav.no/contact you can chat or write to us. If you do not find the answer at nav.no, " +
+                    English to "You can find more information about survivor's pension at $ALDERSPENSJON_GJENLEVENDE_URL_EN. " +
+                            "At $KONTAKT_ENG_URL you can chat or write to us. If you do not find the answer at $NAV_URL, " +
                             "you can call us at +47 55 55 33 34, weekdays 09:00–15:00.",
                 )
             }
