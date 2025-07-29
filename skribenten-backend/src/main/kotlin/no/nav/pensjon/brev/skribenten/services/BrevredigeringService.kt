@@ -520,7 +520,7 @@ class BrevredigeringService(
                     pesysData = pesysData.brevdata,
                     saksbehandlerValg = brevredigering.saksbehandlerValg,
                 ),
-                // TODO: Kan fjerne felles her når brevbaker ikke lenger trenger felles-data for redigerbare brev
+                // TODO: Kan fjerne oppdatering av felles.signatur her når brevbaker ikke bruker felles.signatur til rendring
                 felles = pesysData.felles.medSignerendeSaksbehandlere(SignerendeSaksbehandlere(
                     saksbehandler = signaturSaksbehandler(brevredigering),
                     attesterendeSaksbehandler = brevredigering.redigertBrev.signatur.attesterendeSaksbehandlerNavn,

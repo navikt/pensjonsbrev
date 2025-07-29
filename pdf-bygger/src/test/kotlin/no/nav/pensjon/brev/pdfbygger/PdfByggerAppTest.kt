@@ -147,4 +147,5 @@ fun ObjectMapper.brevbakerConfig() {
     enable(SerializationFeature.INDENT_OUTPUT)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 }

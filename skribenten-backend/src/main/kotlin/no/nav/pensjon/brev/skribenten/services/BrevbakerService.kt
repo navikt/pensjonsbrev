@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -53,6 +54,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
                 registerModule(TemplateModelSpecificationModule)
                 registerModule(FlexibleLocalDateModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             }
         }
         callIdAndOnBehalfOfClient(config.getString("scope"), authService)
