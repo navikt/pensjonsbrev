@@ -322,7 +322,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             }
 
             showIf(aarsakUtvandret and
-                not(pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.UENDRET)) and
+                pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET) and
                 pesysData.inngangOgEksportVurdering.eksportForbudKode.isNull() and
                 not(pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND)) and
                     not(pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND))
@@ -343,120 +343,111 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                     }
                 }
 
-                showIf(pesysData.beregnetpensjonPerMaanedVedVirk.grunnnpensjon.greaterThan(0) and
-                        not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and
-                        pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget and
-                        not(pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget) and
-                        not(pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget) and
-                        pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET)
+                showIf(pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET)
+                    and pesysData.beregnetpensjonPerMaanedVedVirk.grunnnpensjon.greaterThan(0)
                 ) {
-                    // omregningGP_PenT_001
-                    paragraph {
-                        text(
-                            Bokmal to "Derfor har vi beregnet grunnpensjonen og pensjonstillegget ditt på nytt.",
-                            Nynorsk to "Derfor har vi berekna grunnpensjonen og pensjonstillegget ditt på nytt.",
-                            English to "We have therefore recalculated your basic pension and pension supplement."
-                        )
+                    showIf( not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and
+                            pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget and
+                            not(pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget) and
+                            not(pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_PenT_001
+                        paragraph {
+                            text(
+                                Bokmal to "Derfor har vi beregnet grunnpensjonen og pensjonstillegget ditt på nytt.",
+                                Nynorsk to "Derfor har vi berekna grunnpensjonen og pensjonstillegget ditt på nytt.",
+                                English to "We have therefore recalculated your basic pension and pension supplement."
+                            )
+                        }
                     }
-                }
 
-                showIf(pesysData.beregnetpensjonPerMaanedVedVirk.grunnnpensjon.greaterThan(0) and
-                        not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and
-                        not(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) and
-                        (pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget or pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget) and
-                        not(pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.UENDRET))
-                ) {
-                    // omregningGP_MNT_001
-                    paragraph {
-                        text(
-                            Bokmal to "Derfor har vi beregnet grunnpensjonen og minstenivåtillegget ditt på nytt.",
-                            Nynorsk to "Derfor har vi berekna grunnpensjonen og minstenivåtillegget ditt på nytt.",
-                            English to "We have therefore recalculated your basic pension and minimum pension supplement."
-                        )
+                    showIf(not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and
+                            not(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) and
+                            (pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget or pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_MNT_001
+                        paragraph {
+                            text(
+                                Bokmal to "Derfor har vi beregnet grunnpensjonen og minstenivåtillegget ditt på nytt.",
+                                Nynorsk to "Derfor har vi berekna grunnpensjonen og minstenivåtillegget ditt på nytt.",
+                                English to "We have therefore recalculated your basic pension and minimum pension supplement."
+                            )
+                        }
                     }
-                }
 
-                showIf(pesysData.beregnetpensjonPerMaanedVedVirk.grunnnpensjon.greaterThan(0) and
-                        not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and
-                        pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget and
-                        (pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget or pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget) and
-                        pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET)
-                ) {
-                    // omregningGP_PenT_MNT_001
-                    paragraph {
-                        text(
-                            Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget og minstenivåtillegget ditt på nytt.",
-                            Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget og minstenivåtillegget ditt på nytt.",
-                            English to "We have therefore recalculated your basic pension, supplementary pension and minimum pension supplement."
-                        )
+                    showIf(not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and
+                            pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget and
+                            (pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget or pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_PenT_MNT_001
+                        paragraph {
+                            text(
+                                Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget og minstenivåtillegget ditt på nytt.",
+                                Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget og minstenivåtillegget ditt på nytt.",
+                                English to "We have therefore recalculated your basic pension, supplementary pension and minimum pension supplement."
+                            )
+                        }
                     }
-                }
 
-                showIf(pesysData.beregnetpensjonPerMaanedVedVirk.grunnnpensjon.greaterThan(0) and
-                        pesysData.alderspensjonVedVirk.garantipensjonInnvilget and
-                        not(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) and
-                        not(pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget) and
-                        not(pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget) and
-                        pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET)
-                ) {
-                    // omregningGP_GarantiPen_001
-                    paragraph {
-                        text(
-                            Bokmal to "Derfor har vi beregnet grunnpensjonen og garantipensjonen din på nytt.",
-                            Nynorsk to "Derfor har vi berekna grunnpensjonen og garantipensjonen din på nytt.",
-                            English to "We have therefore recalculated your basic pension and guaranteed pension."
-                        )
+                    showIf(pesysData.alderspensjonVedVirk.garantipensjonInnvilget and
+                            not(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) and
+                            not(pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget) and
+                            not(pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_GarantiPen_001
+                        paragraph {
+                            text(
+                                Bokmal to "Derfor har vi beregnet grunnpensjonen og garantipensjonen din på nytt.",
+                                Nynorsk to "Derfor har vi berekna grunnpensjonen og garantipensjonen din på nytt.",
+                                English to "We have therefore recalculated your basic pension and guaranteed pension."
+                            )
+                        }
                     }
-                }
 
-                showIf(pesysData.beregnetpensjonPerMaanedVedVirk.grunnnpensjon.greaterThan(0) and
-                        pesysData.alderspensjonVedVirk.garantipensjonInnvilget and
-                        pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget and
-                        not(pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget) and
-                        not(pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget) and
-                        pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET)
-                ) {
-                    // omregningGP_PenT_GarantiPen_001
-                    paragraph {
-                        text(
-                            Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget og garantipensjonen din på nytt.",
-                            Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget og garantipensjonen din på nytt.",
-                            English to "We have therefore recalculated your basic pension, supplementary pension and guaranteed pension."
-                        )
+                    showIf(pesysData.alderspensjonVedVirk.garantipensjonInnvilget and
+                            pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget and
+                            not(pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget) and
+                            not(pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_PenT_GarantiPen_001
+                        paragraph {
+                            text(
+                                Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget og garantipensjonen din på nytt.",
+                                Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget og garantipensjonen din på nytt.",
+                                English to "We have therefore recalculated your basic pension, supplementary pension and guaranteed pension."
+                            )
+                        }
                     }
-                }
 
-                showIf(pesysData.beregnetpensjonPerMaanedVedVirk.grunnnpensjon.greaterThan(0) and
-                        pesysData.alderspensjonVedVirk.garantipensjonInnvilget and
-                        not(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) and
-                        (pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget or pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget) and
-                        pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET)
-                ) {
-                    // omregningGP_GarantiPen_MNT_001
-                    paragraph {
-                        text(
-                            Bokmal to "Derfor har vi beregnet grunnpensjonen, garantipensjonen og minstenivåtillegget ditt på nytt.",
-                            Nynorsk to "Derfor har vi berekna grunnpensjonen, garantipensjonen og minstenivåtillegget ditt på nytt.",
-                            English to "We have therefore recalculated your basic pension, guaranteed pension and minimum pension supplement."
-                        )
+                    showIf(pesysData.alderspensjonVedVirk.garantipensjonInnvilget and
+                            not(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) and
+                            (pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget or pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_GarantiPen_MNT_001
+                        paragraph {
+                            text(
+                                Bokmal to "Derfor har vi beregnet grunnpensjonen, garantipensjonen og minstenivåtillegget ditt på nytt.",
+                                Nynorsk to "Derfor har vi berekna grunnpensjonen, garantipensjonen og minstenivåtillegget ditt på nytt.",
+                                English to "We have therefore recalculated your basic pension, guaranteed pension and minimum pension supplement."
+                            )
+                        }
                     }
-                }
 
 
-                showIf(pesysData.beregnetpensjonPerMaanedVedVirk.grunnnpensjon.greaterThan(0) and
-                        pesysData.alderspensjonVedVirk.garantipensjonInnvilget and
-                        pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget and
-                        (pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget or pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget) and
-                        pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET)
-                ) {
-                    // omregningGP_PenT_GarantiPen_MNT_001
-                    paragraph {
-                        text(
-                            Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt.",
-                            Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt.",
-                            English to "We have therefore recalculated your basic pension, supplementary pension, guaranteed pension and minimum pension supplement."
-                        )
+                    showIf(pesysData.alderspensjonVedVirk.garantipensjonInnvilget and
+                            pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget and
+                            (pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget or pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_PenT_GarantiPen_MNT_001
+                        paragraph {
+                            text(
+                                Bokmal to "Derfor har vi beregnet grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt.",
+                                Nynorsk to "Derfor har vi berekna grunnpensjonen, pensjonstillegget, garantipensjonen og minstenivåtillegget ditt på nytt.",
+                                English to "We have therefore recalculated your basic pension, supplementary pension, guaranteed pension and minimum pension supplement."
+                            )
+                        }
                     }
+
                 }
             }
 
