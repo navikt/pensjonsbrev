@@ -687,15 +687,14 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
             }
 
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(
                 pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_OKT)
                         and pesysData.vedtak.erEtterbetaling1Maaned
+                        and saksbehandlerValg.etterbetaling
             ) {
                 // etterbetalingAP_002
-                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                showIf(saksbehandlerValg.etterbetaling) {
-                    includePhrase(Vedtak.Etterbetaling(pesysData.krav.virkDatoFom))
-                }
+                includePhrase(Vedtak.Etterbetaling(pesysData.krav.virkDatoFom))
             }
 
             includePhrase(VedtakAlderspensjon.ArbeidsinntektOgAlderspensjon)
