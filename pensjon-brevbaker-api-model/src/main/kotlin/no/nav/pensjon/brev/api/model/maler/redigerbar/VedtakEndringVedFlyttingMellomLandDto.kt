@@ -75,6 +75,6 @@ data class VedtakEndringVedFlyttingMellomLandDto(
 
     enum class Opphoersbegrunnelse {
         BRUKER_FLYTTET_IKKE_AVT_LAND,
-        ANNET
+        ANNET // Map alle som ikke er BRUKER_FLYTTET_IKKE_AVT_LAND til denne
     }
 }
