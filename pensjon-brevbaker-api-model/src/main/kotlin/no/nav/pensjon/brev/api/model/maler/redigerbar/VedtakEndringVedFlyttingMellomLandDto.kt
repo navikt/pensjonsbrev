@@ -74,6 +74,7 @@ data class VedtakEndringVedFlyttingMellomLandDto(
     }
 
     enum class Opphoersbegrunnelse {
-        BRUKER_FLYTTET_IKKE_AVT_LAND
+        BRUKER_FLYTTET_IKKE_AVT_LAND,
+        ANNET
     }
 }
