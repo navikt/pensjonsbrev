@@ -3,9 +3,9 @@ import { Button, Label } from "@navikt/ds-react";
 import type { ReactNode } from "react";
 import React from "react";
 
-import { fontTypeOf, isItemContentIndex } from "~/Brevredigering/LetterEditor/actions/common";
-import { isItemList, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
-import { FontType, TABLE } from "~/types/brevbakerTypes";
+import { fontTypeOf, isItemContentIndex, isTable } from "~/Brevredigering/LetterEditor/actions/common";
+import { isItemList, isTableCellIndex, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
+import { FontType } from "~/types/brevbakerTypes";
 
 import Actions from "../actions";
 import type { CallbackReceiver } from "../lib/actions";
@@ -17,9 +17,9 @@ const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontT
   const focus = editorState.focus;
   const focusedContent = block.content[focus.contentIndex];
 
-  if (focusedContent?.type === TABLE && isItemContentIndex(focus)) {
-    const focusedRow = focusedContent.rows[focus.itemIndex];
-    const focusedCell = focusedRow?.cells[focus.itemContentIndex];
+  if (isTable(focusedContent) && isTableCellIndex(focus)) {
+    const focusedRow = focusedContent.rows[focus.rowIndex];
+    const focusedCell = focusedRow?.cells[focus.cellIndex];
     const firstTextContent = focusedCell?.text[0];
 
     return isTextContent(firstTextContent) ? fontTypeOf(firstTextContent) : FontType.PLAIN;
