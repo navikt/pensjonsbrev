@@ -94,6 +94,7 @@ object ProductionTemplates : AllTemplates {
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
+        AvslagPaaGjenlevenderettIAlderspensjon,
         AvslagGradsendringFoerNormertPensjonsalder,
         AvslagGradsendringFoerNormertPensjonsalderAP2016,
         AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
