@@ -37,6 +37,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderA
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.trygdetidsdetaljerKap20VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.vedtak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.vilkarsVedtak
+import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenGarantipensjon
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -301,13 +302,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
         )
 
         showIf(beregningKap20VedVirk.redusertTrygdetid and not(avslattGarantipensjon)) {
-            title1 {
-                text(
-                    Bokmal to "Trygdetid",
-                    Nynorsk to "Trygdetid",
-                    English to "Period of national insurance coverage",
-                )
-            }
+            includePhrase(Vedtak.TrygdetidOverskrift)
             showIf(trygdetidNorge.size().greaterThan(0)) {
                 includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetidInnledning)
             }
