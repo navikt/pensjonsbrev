@@ -7,7 +7,7 @@ public final class no/nav/brev/brevbaker/Brevbaker {
 	public fun <init> (Lno/nav/brev/brevbaker/PDFByggerService;)V
 	public final fun renderHTML (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brev/api/model/LetterResponse;
 	public final fun renderLetterMarkup (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
-	public final fun renderLetterWithAttachmentsMarkup (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brev/template/render/LetterWithAttachmentsMarkup;
+	public final fun renderLetterWithAttachmentsMarkup (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/brev/brevbaker/template/render/LetterWithAttachmentsMarkup;
 	public final fun renderPDF (Lno/nav/pensjon/brev/template/Letter;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun renderRedigertBrevHTML (Lno/nav/pensjon/brev/template/Letter;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)Lno/nav/pensjon/brev/api/model/LetterResponse;
 	public final fun renderRedigertBrevPDF (Lno/nav/pensjon/brev/template/Letter;Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -56,6 +56,14 @@ public final class no/nav/brev/brevbaker/PDFByggerService$DefaultImpls {
 	public static fun validateResponse (Lno/nav/brev/brevbaker/PDFByggerService;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class no/nav/brev/brevbaker/template/render/LetterWithAttachmentsMarkup {
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAttachments ()Ljava/util/List;
+	public final fun getLetterMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
+	public fun hashCode ()I
+}
+
 public abstract interface class no/nav/pensjon/brev/template/Letter {
 	public abstract fun getArgument ()Ljava/lang/Object;
 	public abstract fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
@@ -67,14 +75,6 @@ public final class no/nav/pensjon/brev/template/render/HTMLDocument : no/nav/pen
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public fun getFiles ()Ljava/util/List;
 	public final fun getIndexHTML ()Lno/nav/pensjon/brev/template/render/DocumentFile;
-}
-
-public final class no/nav/pensjon/brev/template/render/LetterWithAttachmentsMarkup {
-	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getAttachments ()Ljava/util/List;
-	public final fun getLetterMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
-	public fun hashCode ()I
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/BrukerSelectors {
