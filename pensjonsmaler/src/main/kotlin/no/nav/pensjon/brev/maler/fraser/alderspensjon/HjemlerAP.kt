@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.*
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP1967
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2025
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -11,7 +13,6 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
@@ -250,7 +251,7 @@ data class EOSLandAvtaleHjemmel(
 }
 
 data class BilateralAvtaleHjemmel(
-    val avtalelandNavn: Expression<String?>,
+    val avtalelandNavn: Expression<String>,
     val eksportTrygdeavtaleAvtaleland: Expression<Boolean>,
     val erEOSLand: Expression<Boolean>,
     val harOppfyltVedSammenlegging: Expression<Boolean>,
@@ -259,15 +260,9 @@ data class BilateralAvtaleHjemmel(
         showIf((harOppfyltVedSammenlegging or eksportTrygdeavtaleAvtaleland) and not(erEOSLand)) {
             paragraph {
                 textExpr(
-                    Bokmal to "Vedtaket er også gjort etter reglene i trygdeavtalen med ".expr() + avtalelandNavn.ifNull(
-                        then = "AVTALELAND"
-                    ) + ".",
-                    Nynorsk to "Vedtaket er også gjort etter reglane i trygdeavtalen med ".expr() + avtalelandNavn.ifNull(
-                        then = "AVTALELAND"
-                    ) + ".",
-                    English to "This decision was also made pursuant the provisions of the Social Security Agreement with ".expr() + avtalelandNavn.ifNull(
-                        then = "AVTALELAND"
-                    ) + "."
+                    Bokmal to "Vedtaket er også gjort etter reglene i trygdeavtalen med ".expr() + avtalelandNavn + ".",
+                    Nynorsk to "Vedtaket er også gjort etter reglane i trygdeavtalen med ".expr() + avtalelandNavn + ".",
+                    English to "This decision was also made pursuant the provisions of the Social Security Agreement with ".expr() + avtalelandNavn + "."
                 )
             }
         }
