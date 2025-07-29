@@ -4,10 +4,9 @@ import { ActionMenu } from "@navikt/ds-react";
 import React, { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import { Text } from "~/Brevredigering/LetterEditor/components/Text";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
-import { type Cell as CellType, type ColumnSpec, LITERAL, type Table, VARIABLE } from "~/types/brevbakerTypes";
+import { type Cell as CellType, type ColumnSpec, type Table } from "~/types/brevbakerTypes";
 
 import type { TableCellIndex } from "../model/state";
 import { TableCellContent } from "./TableCellContent";
@@ -38,39 +37,9 @@ const selectedBackgroundStyle = css`
 // TODO: render <ContentGroup> once that component
 // can accept TableCellIndex (rowIndex/cellIndex)
 const renderCellText = (cell: CellType, _: number, idx: TableCellIndex) =>
-  cell.text.map((txt, i) => {
-    if (txt.type === LITERAL) {
-      return (
-        <TableCellContent
-          key={i}
-          lit={txt}
-          litIndex={{
-            blockIndex: idx.blockIndex,
-            contentIndex: idx.contentIndex,
-            rowIndex: idx.rowIndex,
-            cellIndex: idx.cellIndex,
-            cellContentIndex: 0,
-          }}
-        />
-      );
-    }
-
-    if (txt.type === VARIABLE) {
-      return (
-        <Text
-          content={txt}
-          key={i}
-          literalIndex={{
-            blockIndex: idx.blockIndex,
-            contentIndex: idx.contentIndex,
-          }}
-        />
-      );
-    }
-
-    //NEW_LINE
-    return <br key={i} />;
-  });
+  cell.text.map((txt, i) => (
+    <TableCellContent content={txt} key={i} tableCellIndex={{ ...idx, cellContentIndex: i }} />
+  ));
 
 const TableView: React.FC<{
   node: Table;
