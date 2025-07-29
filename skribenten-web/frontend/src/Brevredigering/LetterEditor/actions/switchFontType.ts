@@ -9,7 +9,6 @@ import type {
   LiteralValue,
   ParagraphBlock,
   Row,
-  Table,
   VariableValue,
 } from "~/types/brevbakerTypes";
 import { handleSwitchContent, handleSwitchTextContent } from "~/utils/brevbakerUtils";
