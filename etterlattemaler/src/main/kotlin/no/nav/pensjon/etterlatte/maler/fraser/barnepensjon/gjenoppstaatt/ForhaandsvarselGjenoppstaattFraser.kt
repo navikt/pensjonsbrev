@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
+import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.NAV_URL
 
 object ForhaandsvarselGjenoppstaattFraser {
 
@@ -115,9 +116,9 @@ object ForhaandsvarselGjenoppstaattFraser {
             }.orShow {
                 paragraph {
                     text(
-                        Language.Bokmal to "Hvis du logger på nav.no med BankID, Buypass eller Comfides, kan du endre kontonummer i «Personopplysninger» på www.${Constants.NAV_URL}. Hvis du ikke kan melde fra digitalt, kan du melde om endringer via post.",
-                        Language.Nynorsk to "Dersom du loggar på nav.no med BankID, Buypass eller Comfides, kan du endre kontonummer under «Personopplysningar» på www.${Constants.NAV_URL}. Dersom du ikkje kan melde frå digitalt, melder du i staden frå om endringane via post.",
-                        Language.English to "If you log on to nav.no using BankID, Buypass or Commfides, you can change the account number in «Personal information» at www.${Constants.NAV_URL}. If you cannot notify us digitally, you can notify of any changes by post.",
+                        Language.Bokmal to "Hvis du logger på $NAV_URL med BankID, Buypass eller Comfides, kan du endre kontonummer i «Personopplysninger» på www.${NAV_URL}. Hvis du ikke kan melde fra digitalt, kan du melde om endringer via post.",
+                        Language.Nynorsk to "Dersom du loggar på $NAV_URL med BankID, Buypass eller Comfides, kan du endre kontonummer under «Personopplysningar» på www.${NAV_URL}. Dersom du ikkje kan melde frå digitalt, melder du i staden frå om endringane via post.",
+                        Language.English to "If you log on to $NAV_URL using BankID, Buypass or Commfides, you can change the account number in «Personal information» at www.${NAV_URL}. If you cannot notify us digitally, you can notify of any changes by post.",
                     )
                 }
                 paragraph {
