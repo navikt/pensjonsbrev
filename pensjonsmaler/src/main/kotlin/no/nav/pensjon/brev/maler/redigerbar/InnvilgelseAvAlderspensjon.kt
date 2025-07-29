@@ -539,17 +539,6 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
             includePhrase(InnvilgelseAPUttakEndr(uforeKombinertMedAlder))
 
-            showIf(uforeKombinertMedAlder and innvilgetFor67) {
-                // innvilgelseAPUttakEndrUT
-                paragraph {
-                    text(
-                        Bokmal to "Summen av uføregraden og alderspensjonen din kan ikke overstige 100 prosent.",
-                        Nynorsk to "Summen av uføregraden og alderspensjonen din kan ikkje gå over 100 prosent.",
-                        English to "The percentage of disability benefit and the percentage of retirement pension combined may not exceed 100 percent."
-                    )
-                }
-            }
-
             includePhrase(
                 ArbeidsinntektOgAlderspensjon(
                     innvilgetFor67, uttaksgrad, uforeKombinertMedAlder
