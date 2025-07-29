@@ -18,19 +18,21 @@ import no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027.Gjenlevende
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.DineInntekterTabell
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig2GTabell
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig3GTabell
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
@@ -213,24 +215,7 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
             }
 
             includePhrase(Felles.RettTilAAKlage(vedleggGjpDineRettigheterOgPlikter))
-
-            title1 {
-                text(
-                    Bokmal to "Du har rett til innsyn ",
-                    Nynorsk to "Du har rett på innsyn "
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg ",
-                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegget "
-                )
-                namedReference(vedleggGjpDineRettigheterOgPlikter)
-                text(
-                    Bokmal to " for informasjon om hvordan du går fram. ",
-                    Nynorsk to " for informasjon om korleis du går fram. "
-                )
-            }
+            includePhrase(Felles.RettTilInnsyn(vedleggGjpDineRettigheterOgPlikter))
 
             title1 {
                 text(
@@ -245,30 +230,7 @@ object VedtakGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
                 )
             }
 
-            title1 {
-                text(
-                    Bokmal to "Har du spørsmål? ",
-                    Nynorsk to "Har du spørsmål? "
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du finner mer informasjon på nav.no/gjenlevendepensjon. ",
-                    Nynorsk to "Du finn meir informasjon på nav.no/gjenlevendepensjon. "
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "På nav.no/kontakt kan du chatte eller skrive til oss. ",
-                    Nynorsk to "Du kan skrive til eller chatte med oss på nav.no/kontakt. "
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 34, hverdager 09:00-15:00. ",
-                    Nynorsk to "Dersom du ikkje finn svar på nav.no, kan du ringje oss på telefon 55 55 33 34, kvardagar 09.00–15.00. "
-                )
-            }
+            includePhrase(Felles.HarDuSpoersmaal(Constants.GJENLEVENDEPENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
         }
         includeAttachment(vedleggGjpDineRettigheterOgPlikter)
     }

@@ -30,6 +30,8 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTP
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.totalNetto
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.uforetrygd
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.virkningFom
+import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -39,10 +41,18 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brev.template.namedReference
@@ -663,23 +673,7 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                 )
             }
 
-            title1 {
-                text(
-                    Bokmal to "Du har rett til innsyn ",
-                    Nynorsk to "Du har rett på innsyn "
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg ",
-                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegget "
-                )
-                namedReference(vedleggDineRettigheterOgPlikterUfoere)
-                text(
-                    Bokmal to " for informasjon om hvordan du går fram. ",
-                    Nynorsk to " for meir informasjon om korleis du går fram. "
-                )
-            }
+            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
 
             title1 {
                 text(
@@ -728,18 +722,7 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                 }
             }
 
-            title1 {
-                text(
-                    Bokmal to "Har du spørsmål? ",
-                    Nynorsk to "Har du spørsmål? "
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du finner mer informasjon på nav.no/uforetrygd. På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 33, hverdager kl. 09:00-15:00. ",
-                    Nynorsk to "Du finn meir informasjon på nav.no/uforetrygd. På nav.no/kontakt kan du chatte med eller skrive til oss. Dersom du ikkje finn svar på nav.no, kan du ringje oss på telefon 55 55 33 33, kvardagar kl. 09:00–15:00. "
-                )
-            }
+            includePhrase(Felles.HarDuSpoersmaal(Constants.UFOERETRYGD_URL, Constants.NAV_KONTAKTSENTER_TELEFON))
         }
 
 

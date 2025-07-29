@@ -3,15 +3,15 @@ package no.nav.pensjon.brev.maler.adhoc
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-
 
 
 object AdhocUfoeretrygdEtterbetalingDagpenger : AutobrevTemplate<EmptyBrevdata> {
@@ -82,20 +82,7 @@ object AdhocUfoeretrygdEtterbetalingDagpenger : AutobrevTemplate<EmptyBrevdata> 
                     Bokmal to "Har du annen pensjonsgivende inntekt må denne legges inn i inntektsplanleggeren på Dine side på nav.no på vanlig måte."
                 )
             }
-            title1 {
-                text(
-                    Bokmal to "Har du spørsmål?"
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss."
-                )
-                text(
-                    Bokmal to "Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON},"
-                            + " hverdager kl. ${Constants.NAV_KONTAKTSENTER_AAPNINGSTID}."
-                )
-            }
+            includePhrase(Felles.HarDuSpoersmaal(Constants.NAV_URL, Constants.NAV_KONTAKTSENTER_TELEFON))
         }
     }
 }

@@ -2,12 +2,20 @@ package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.quoted
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -104,20 +112,7 @@ object AdhocAlderspensjonFraFolketrygden2 : AutobrevTemplate<EmptyBrevdata> {
                     English to "If you have changes in your family situation or you plan to live abroad, this may influence your benefits. You are obliged to notify Nav as soon as you are aware of any of these changes. You can find out what you are required to report at nav.no/pensjon-endring.",
                 )
             }
-            title1 {
-                text(
-                    Bokmal to "Har du spørsmål?",
-                    Nynorsk to "Har du spørsmål?",
-                    English to "Do you have questions?",
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du finner mer informasjon på nav.no/reguleringalderspensjon . På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 34, hverdager kl. 09:00-15:00.",
-                    Nynorsk to "Du finn meir informasjon på nav.no/reguleringalderspensjon . På nav.no/kontakt kan du chatte eller skrive til oss. Viss du ikkje finner svar på nav.no, kan du ringje oss på telefon 55 55 33 34, kvardagar kl. 09:00-15:00.",
-                    English to "You can find more information at nav.no/reguleringalderspensjon . At nav.no/kontakt, you can chat or write to us. If you do not find the answer at nav.no, you can call us at: +47 55 55 33 34, weekdays 09:00-15:00.",
-                )
-            }
+            includePhrase(Felles.HarDuSpoersmaal(Constants.REGULERING_ALDERSPENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
 
         }
     }

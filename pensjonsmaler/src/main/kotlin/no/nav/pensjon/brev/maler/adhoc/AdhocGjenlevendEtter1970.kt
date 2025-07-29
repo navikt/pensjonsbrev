@@ -2,18 +2,17 @@ package no.nav.pensjon.brev.maler.adhoc
 
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
+import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
@@ -208,43 +207,8 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
                             + "You will find forms and information at nav.no/klage."
                 )
             }
-            title1 {
-                text(
-                    Bokmal to "Du har rett til innsyn",
-                    Nynorsk to "Du har rett til innsyn",
-                    English to "You have the right to access your file"
-                )
-            }
-            paragraph {
-                textExpr(
-                    Bokmal to "Du har rett til å se dokumentene i saken din. I vedlegget får du vite hvordan du går fram.".expr(),
-                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. I vedlegget får du vite korleis du går fram.".expr(),
-                    English to "You are entitled to see your case documents. Refer to the attachment ".expr() + quoted("Your rights and how to appeal") + " for information about how to proceed."
-                )
-            }
-            title1 {
-                text(
-                    Bokmal to "Har du spørsmål?",
-                    Nynorsk to "Har du spørsmål?",
-                    English to "Do you have questions?"
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du finner mer informasjon på ${Constants.GJENLEVENDEPENSJON_URL}. "
-                            + "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. "
-                            + "Hvis du ikke finner svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, "
-                            + "hverdager kl. 09.00-15.00.",
-                    Nynorsk to "Du finn meir informasjon på ${Constants.GJENLEVENDEPENSJON_URL}. "
-                            + "På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. "
-                            + "Om du ikkje finn svar på ${Constants.NAV_URL}, kan du ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, "
-                            + "kvardagar kl. 09.00-15.00.",
-                    English to "You can find more information at ${Constants.GJENLEVENDEPENSJON_URL}. "
-                            + "At ${Constants.KONTAKT_URL} you can chat or write to us. "
-                            + "If you do not find the answer at ${Constants.NAV_URL}, you can call us at +47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, "
-                            + "Monday to Friday from 09:00 to 15:00."
-                )
-            }
+            includePhrase(Felles.RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
+            includePhrase(Felles.HarDuSpoersmaal(Constants.GJENLEVENDEPENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
         }
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
     }
