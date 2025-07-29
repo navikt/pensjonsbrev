@@ -4,8 +4,9 @@ import { produce } from "immer";
 import type { AnyBlock, Cell, ParagraphBlock, Row, Table } from "~/types/brevbakerTypes";
 import { LITERAL, PARAGRAPH, TABLE } from "~/types/brevbakerTypes";
 
-import { isItemContentIndex, newLiteral, newRow } from "../actions/common";
+import { newLiteral, newRow } from "../actions/common";
 import type { Focus, LetterEditorState } from "../model/state";
+import { isTableCellIndex } from "../model/utils";
 import { getCursorOffset } from "./caretUtils";
 
 // Result of a Tab move from inside a table cell.
@@ -16,60 +17,60 @@ export type MoveResult = Focus | "EXIT_FORWARD" | "EXIT_BACKWARD";
  */
 export function nextTableFocus(editorState: LetterEditorState, direction: "forward" | "backward"): MoveResult {
   const currentFocus = editorState.focus;
-  if (!isItemContentIndex(currentFocus)) return currentFocus;
+  if (!isTableCellIndex(currentFocus)) return currentFocus;
 
   const currentBlock = editorState.redigertBrev.blocks[currentFocus.blockIndex];
   const currentTable = currentBlock.content[currentFocus.contentIndex];
   if (currentTable?.type !== TABLE) return currentFocus;
 
-  const inHeaderRow = currentFocus.itemIndex === -1;
+  const inHeaderRow = currentFocus.rowIndex === -1;
   const headerColumns = currentTable.header.colSpec.length;
 
   const totalRows = currentTable.rows.length;
-  const totalColumns = currentTable.rows[currentFocus.itemIndex]?.cells.length ?? 0;
+  const totalColumns = currentTable.rows[currentFocus.rowIndex]?.cells.length ?? 0;
 
   if (direction === "forward") {
     if (inHeaderRow) {
-      if (currentFocus.itemContentIndex < headerColumns - 1) {
-        return { ...currentFocus, itemContentIndex: currentFocus.itemContentIndex + 1, cursorPosition: 0 };
+      if (currentFocus.cellContentIndex < headerColumns - 1) {
+        return { ...currentFocus, cellContentIndex: currentFocus.cellContentIndex + 1, cursorPosition: 0 };
       }
       if (totalRows > 0) {
-        return { ...currentFocus, itemIndex: 0, itemContentIndex: 0, cursorPosition: 0 };
+        return { ...currentFocus, rowIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
       }
       return "EXIT_FORWARD";
     }
 
-    if (currentFocus.itemContentIndex < totalColumns - 1) {
-      return { ...currentFocus, itemContentIndex: currentFocus.itemContentIndex + 1, cursorPosition: 0 };
+    if (currentFocus.cellContentIndex < totalColumns - 1) {
+      return { ...currentFocus, cellContentIndex: currentFocus.cellContentIndex + 1, cursorPosition: 0 };
     }
-    if (currentFocus.itemIndex < totalRows - 1) {
-      return { ...currentFocus, itemIndex: currentFocus.itemIndex + 1, itemContentIndex: 0, cursorPosition: 0 };
+    if (currentFocus.rowIndex < totalRows - 1) {
+      return { ...currentFocus, rowIndex: currentFocus.rowIndex + 1, cellContentIndex: 0, cursorPosition: 0 };
     }
     return "EXIT_FORWARD";
   } else {
     if (inHeaderRow) {
-      if (currentFocus.itemContentIndex > 0) {
-        return { ...currentFocus, itemContentIndex: currentFocus.itemContentIndex - 1, cursorPosition: 0 };
+      if (currentFocus.cellContentIndex > 0) {
+        return { ...currentFocus, cellContentIndex: currentFocus.cellContentIndex - 1, cursorPosition: 0 };
       }
       return "EXIT_BACKWARD";
     }
 
-    if (currentFocus.itemContentIndex > 0) {
-      return { ...currentFocus, itemContentIndex: currentFocus.itemContentIndex - 1, cursorPosition: 0 };
+    if (currentFocus.cellContentIndex > 0) {
+      return { ...currentFocus, cellContentIndex: currentFocus.cellContentIndex - 1, cursorPosition: 0 };
     }
 
-    if (currentFocus.itemIndex > 0) {
-      const previousRowColumns = currentTable.rows[currentFocus.itemIndex - 1].cells.length;
+    if (currentFocus.rowIndex > 0) {
+      const previousRowColumns = currentTable.rows[currentFocus.rowIndex - 1].cells.length;
       return {
         ...currentFocus,
-        itemIndex: currentFocus.itemIndex - 1,
-        itemContentIndex: previousRowColumns - 1,
+        rowIndex: currentFocus.rowIndex - 1,
+        cellContentIndex: previousRowColumns - 1,
         cursorPosition: 0,
       };
     }
 
     if (headerColumns > 0) {
-      return { ...currentFocus, itemIndex: -1, itemContentIndex: headerColumns - 1, cursorPosition: 0 };
+      return { ...currentFocus, rowIndex: -1, cellContentIndex: headerColumns - 1, cursorPosition: 0 };
     }
     return "EXIT_BACKWARD";
   }
@@ -83,19 +84,19 @@ export function addRow(
   const currentBlock = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
   const currentContent = currentBlock.content[editorState.focus.contentIndex];
 
-  if (currentContent?.type !== TABLE || !isItemContentIndex(editorState.focus)) {
+  if (currentContent?.type !== TABLE || !isTableCellIndex(editorState.focus)) {
     return false;
   }
 
   keyboardEvent.preventDefault();
   updateEditorState((prevState) => {
-    if (!isItemContentIndex(prevState.focus)) return prevState;
+    if (!isTableCellIndex(prevState.focus)) return prevState;
     const currentTable = prevState.redigertBrev.blocks[prevState.focus.blockIndex].content[
       prevState.focus.contentIndex
     ] as typeof currentContent;
 
-    const currentRowIndex = prevState.focus.itemIndex;
-    const currentColIndex = prevState.focus.itemContentIndex;
+    const currentRowIndex = prevState.focus.rowIndex;
+    const currentColIndex = prevState.focus.cellContentIndex;
     const isLastRow = currentRowIndex === currentTable.rows.length - 1;
 
     const columnCount =
@@ -126,8 +127,8 @@ export function addRow(
       },
       focus: {
         ...prevState.focus,
-        itemIndex: isLastRow ? updatedRows.length - 1 : currentRowIndex + 1,
-        itemContentIndex: currentColIndex,
+        rowIndex: isLastRow ? updatedRows.length - 1 : currentRowIndex + 1,
+        cellContentIndex: currentColIndex,
         cursorPosition: 0,
       },
     };
@@ -169,19 +170,19 @@ export function handleBackspaceInTableCell(
   updateEditorState: (updater: (prev: LetterEditorState) => LetterEditorState) => void,
 ): boolean {
   if (event.key !== "Backspace" || !event.shiftKey) return false;
-  if (!isItemContentIndex(editorState.focus)) return false;
+  if (!isTableCellIndex(editorState.focus)) return false;
 
   const focus = editorState.focus;
 
   // header row: let the browser delete text normally
-  if (focus.itemIndex === -1) return false;
+  if (focus.rowIndex === -1) return false;
 
   const paragraphBlock = editorState.redigertBrev.blocks[focus.blockIndex];
   const tableContent = paragraphBlock.content[focus.contentIndex];
   if (tableContent?.type !== TABLE) return false;
 
   const cursorOffset = getCursorOffset();
-  const currentRow = tableContent.rows[focus.itemIndex];
+  const currentRow = tableContent.rows[focus.rowIndex];
 
   const caretAtStartOfCell = cursorOffset <= 1;
   if (!caretAtStartOfCell || !rowIsEmpty(currentRow)) return false;
@@ -192,7 +193,7 @@ export function handleBackspaceInTableCell(
     produce(prev, (draft) => {
       const table = draft.redigertBrev.blocks[focus.blockIndex].content[focus.contentIndex] as Draft<Table>;
 
-      const [removed] = table.rows.splice(focus.itemIndex, 1);
+      const [removed] = table.rows.splice(focus.rowIndex, 1);
       if (removed?.id != null) table.deletedRows.push(removed.id);
 
       if (table.rows.length === 0) {
@@ -200,12 +201,12 @@ export function handleBackspaceInTableCell(
         paragraph.content.splice(focus.contentIndex, 1, newLiteral({ editedText: "" }));
         draft.focus = { blockIndex: focus.blockIndex, contentIndex: focus.contentIndex, cursorPosition: 0 };
       } else {
-        const newRowIndex = Math.min(focus.itemIndex, table.rows.length - 1);
+        const newRowIndex = Math.min(focus.rowIndex, table.rows.length - 1);
         draft.focus = {
           blockIndex: focus.blockIndex,
           contentIndex: focus.contentIndex,
-          itemIndex: newRowIndex,
-          itemContentIndex: 0,
+          rowIndex: newRowIndex,
+          cellContentIndex: 0,
           cursorPosition: 0,
         };
       }
