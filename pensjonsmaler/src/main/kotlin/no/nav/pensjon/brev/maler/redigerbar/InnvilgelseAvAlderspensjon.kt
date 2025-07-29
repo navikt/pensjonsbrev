@@ -457,7 +457,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     avtalelandNavn = avtalelandNavn.ifNull(fritekst("avtaleland")),
                     eksportTrygdeavtaleAvtaleland = eksportTrygdeavtaleAvtaleland,
                     erEOSLand = erEOSLand,
-                    harOppfyltVedSammenlegging = borINorge
+                    harOppfyltVedSammenlegging = harOppfyltVedSammenlegging
                 )
             )
             title1 {
