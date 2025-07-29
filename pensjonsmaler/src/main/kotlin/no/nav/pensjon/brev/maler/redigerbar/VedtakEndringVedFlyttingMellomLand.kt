@@ -553,45 +553,44 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }
 
-            showIf(not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and not(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt)) {
-                // flyttingAPHjemmel_001
-                paragraph {
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-3",
+                    English to "This decision was made pursuant to the provisions of §§ 19-3"
+                )
+                showIf(not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and not(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt)) {
+                    // flyttingAPHjemmel_001
                     text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3 og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-3 og 22-12.",
-                        English to "This decision was made pursuant to the provisions of §§ 19-3 and 22-12 of the National Insurance Act."
+                        Bokmal to " og 22-12.",
+                        Nynorsk to " og 22-12.",
+                        English to " and 22-12 of the National Insurance Act."
+                    )
+                }.orShowIf(pesysData.alderspensjonVedVirk.garantipensjonInnvilget and not(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt)) {
+                    // flyttingAPGarantipensjonHjemmel_001
+                    text(
+                        Bokmal to ", 20-10 og 22-12.",
+                        Nynorsk to ", 20-10 og 22-12.",
+                        English to ", 20-10 and 22-12 of the National Insurance Act."
                     )
                 }
-            }.orShowIf(pesysData.alderspensjonVedVirk.garantipensjonInnvilget and not(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt)) {
-                // flyttingAPGarantipensjonHjemmel_001
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3, 20-10 og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-3, 20-10 og 22-12.",
-                        English to "This decision was made pursuant to the provisions of §§ 19-3, 20-10 and 22-12 of the National Insurance Act."
-                    )
-                }
+                    .orShowIf(not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt) {
+                        //  flyttingAPGjenlevendeHjemmel_001
+                        text(
+                            Bokmal to ", 19-16 jamfør 17-4 og 22-12.",
+                            Nynorsk to ", 19-16 jamfør 17-4 og 22-12.",
+                            English to ", 19-16 confer 17-4 and 22-12 of the National Insurance Act."
+                        )
+                    }
+                    .orShowIf(pesysData.alderspensjonVedVirk.garantipensjonInnvilget and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt) {
+                        // flyttingAP2016GjenlevendeGarantipensjonHjemmel_001
+                        text(
+                            Bokmal to ", 19-16 jamfør 17-4, 20-10, 20-19a og 22-12.",
+                            Nynorsk to ", 19-16 jamfør 17-4, 20-10, 20-19a og 22-12.",
+                            English to ", 19-16 confer 17-4, 20-10, 20-19a and 22-12 of the National Insurance Act."
+                        )
+                    }
             }
-                .orShowIf(not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt) {
-                    //  flyttingAPGjenlevendeHjemmel_001
-                    paragraph {
-                        text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3, 19-16 jamfør 17-4 og 22-12.",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdloven §§ 19-3, 19-16 jamfør 17-4 og 22-12.",
-                            English to "The decision is made pursuant to §§ 19-3, 19-16 confer 17-4 and 22-12 of the National Insurance Act."
-                        )
-                    }
-                }
-                .orShowIf(pesysData.alderspensjonVedVirk.garantipensjonInnvilget and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt) {
-                    // flyttingAP2016GjenlevendeGarantipensjonHjemmel_001
-                    paragraph {
-                        text(
-                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3, 19-16 jamfør 17-4, 20-10, 20-19a og 22-12.",
-                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-3, 19-16 jamfør 17-4, 20-10, 20-19a og 22-12.",
-                            English to "The decision is made pursuant to §§ 19-3, 19-16 confer 17-4, 20-10, 20-19a and 22-12 of the National Insurance Act."
-                        )
-                    }
-                }
 
             showIf(pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleEOES and pesysData.bruker.borIEOES) {
                 // euArt7Hjemmel_001
