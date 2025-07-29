@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.adhoc.skjermingstillegg
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.PERSONVERNERKLAERING_URL
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -136,7 +137,7 @@ object AdhocSkjermingstilleggFeilBeroertBruker : AutobrevTemplate<EmptyBrevdata>
             paragraph {
                 text(
                     Bokmal to "På $KONTAKT_URL kan du chatte eller skrive til oss. " +
-                            "Du kan også ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON hverdager kl.09.00-15.00."
+                            "Du kan også ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON hverdager kl.$NAV_KONTAKTSENTER_AAPNINGSTID."
                 )
             }
 
