@@ -190,5 +190,6 @@ enum class BeloepEndring {
 enum class EksportForbudKode {
     FLYKT_ALDER,
     TPUNGUFOR_ALDER,
-    UFOR25_ALDER
+    UFOR25_ALDER,
+    DOD26_ALDER
 }
