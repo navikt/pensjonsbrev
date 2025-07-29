@@ -35,6 +35,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.INNTEKTSPLANLEGGEREN_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.MELDE_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -259,8 +260,8 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
 
             paragraph {
                 text(
-                    Bokmal to "Hvis du mener inntekten vi har brukt i denne beregningen er feil, kan du selv legge inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL eller kontakte oss på 55 55 33 33. ",
-                    Nynorsk to "Dersom du meiner at vi har brukt feil inntekt i denne utrekninga, kan du leggje inn forventa inntekt sjølv på $INNTEKTSPLANLEGGEREN_URL eller kontakte oss på 55 55 33 33. ",
+                    Bokmal to "Hvis du mener inntekten vi har brukt i denne beregningen er feil, kan du selv legge inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL eller kontakte oss på $NAV_KONTAKTSENTER_TELEFON. ",
+                    Nynorsk to "Dersom du meiner at vi har brukt feil inntekt i denne utrekninga, kan du leggje inn forventa inntekt sjølv på $INNTEKTSPLANLEGGEREN_URL eller kontakte oss på $NAV_KONTAKTSENTER_TELEFON. ",
                 )
             }
             paragraph {
@@ -726,7 +727,7 @@ object EndretUfoeretrygdPGAInntektV2 : AutobrevTemplate<EndretUTPgaInntektDtoV2>
                 }
             }
 
-            includePhrase(Felles.HarDuSpoersmaal(Constants.UFOERETRYGD_URL, Constants.NAV_KONTAKTSENTER_TELEFON))
+            includePhrase(Felles.HarDuSpoersmaal(Constants.UFOERETRYGD_URL, NAV_KONTAKTSENTER_TELEFON))
         }
 
 

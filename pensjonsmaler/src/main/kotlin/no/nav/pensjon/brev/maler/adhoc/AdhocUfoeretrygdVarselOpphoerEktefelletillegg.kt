@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.adhoc
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -56,7 +57,7 @@ object AdhocUfoeretrygdVarselOpphoerEktefelletillegg : AutobrevTemplate<EmptyBre
                 text(Bokmal to "Uttalelsen bør være skriftlig. På $KONTAKT_URL kan du chatte eller skrive til oss.")
             }
             paragraph {
-                text(Bokmal to "Hvis du ikke finner frem på $NAV_URL kan du ringe oss på telefon 55 55 33 33, hverdager 09.00-15.00.")
+                text(Bokmal to "Hvis du ikke finner frem på $NAV_URL kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON, hverdager 09.00-15.00.")
             }
             paragraph {
                 text(Bokmal to "Hvis vi ikke hører noe fra deg, vil saken bli behandlet med de opplysningene vi har informert om ovenfor.")
