@@ -222,8 +222,14 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
 
             showIf(
                 aarsakUtvandret and
-                pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND) and
-                not(pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND))
+                        pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
+                            BRUKER_FLYTTET_IKKE_AVT_LAND
+                        ) and
+                        not(
+                            pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(
+                                BRUKER_FLYTTET_IKKE_AVT_LAND
+                            )
+                        )
             ) {
                 // eksportAPET_001
                 paragraph {
@@ -235,9 +241,11 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }.orShowIf(
                 aarsakUtvandret and
-                        not(pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
-                            BRUKER_FLYTTET_IKKE_AVT_LAND
-                        )) and
+                        not(
+                            pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
+                                BRUKER_FLYTTET_IKKE_AVT_LAND
+                            )
+                        ) and
                         pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(
                             BRUKER_FLYTTET_IKKE_AVT_LAND
                         )
@@ -271,8 +279,11 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
 
 
             // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-            showIf(pesysData.krav.aarsak.equalTo(INNVANDRET) and pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(
-                BeloepEndring.ENDR_OKT) and saksbehandlerValg.innvandret) {
+            showIf(
+                pesysData.krav.aarsak.equalTo(INNVANDRET) and pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(
+                    BeloepEndring.ENDR_OKT
+                ) and saksbehandlerValg.innvandret
+            ) {
                 // importAPRedusTT_001
                 paragraph {
                     text(
@@ -305,11 +316,20 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             val eksportForbudKodeAvdoed = pesysData.inngangOgEksportVurderingAvdoed_safe.eksportForbudKode_safe
             showIf(
                 aarsakUtvandret and
-                not(pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND)) and
-                not(pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND)) and
+                        not(
+                            pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(
+                                BRUKER_FLYTTET_IKKE_AVT_LAND
+                            )
+                        ) and
+                        not(
+                            pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
+                                BRUKER_FLYTTET_IKKE_AVT_LAND
+                            )
+                        ) and
                         (eksportForbudKode.equalTo(FLYKT_ALDER) or eksportForbudKode.equalTo(UFOR25_ALDER)
                                 or eksportForbudKodeAvdoed.equalTo(FLYKT_ALDER) or eksportForbudKodeAvdoed.equalTo(
-                            EksportForbudKode.DOD26_ALDER))
+                            EksportForbudKode.DOD26_ALDER
+                        ))
             ) {
                 // omregningAP_001
                 paragraph {
@@ -321,17 +341,27 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }
 
-            showIf(aarsakUtvandret and
-                pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET) and
-                pesysData.inngangOgEksportVurdering.eksportForbudKode.isNull() and
-                not(pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND)) and
-                    not(pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND))
+            showIf(
+                aarsakUtvandret and
+                        pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET) and
+                        pesysData.inngangOgEksportVurdering.eksportForbudKode.isNull() and
+                        not(
+                            pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(
+                                BRUKER_FLYTTET_IKKE_AVT_LAND
+                            )
+                        ) and
+                        not(
+                            pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
+                                BRUKER_FLYTTET_IKKE_AVT_LAND
+                            )
+                        )
             ) {
-                showIf(pesysData.beregnetpensjonPerMaanedVedVirk.grunnnpensjon.greaterThan(0) and
-                    not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and
-                    not(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) and
-                    not(pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget) and
-                    not(pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
+                showIf(
+                    pesysData.beregnetpensjonPerMaanedVedVirk.grunnnpensjon.greaterThan(0) and
+                            not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and
+                            not(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) and
+                            not(pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget) and
+                            not(pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
                 ) {
                     // omregningGP_001
                     paragraph {
@@ -343,8 +373,9 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                     }
                 }
 
-                showIf(pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET)
-                    and pesysData.beregnetpensjonPerMaanedVedVirk.grunnnpensjon.greaterThan(0)
+                showIf(
+                    pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET)
+                            and pesysData.beregnetpensjonPerMaanedVedVirk.grunnnpensjon.greaterThan(0)
                 ) {
                     paragraph {
                         text(
@@ -371,11 +402,11 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                                         (pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget or pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
                             ) {
                                 // omregningGP_MNT_001
-                                    text(
-                                        Bokmal to " og minstenivåtillegget ditt",
-                                        Nynorsk to " og minstenivåtillegget ditt",
-                                        English to " and minimum pension supplement"
-                                    )
+                                text(
+                                    Bokmal to " og minstenivåtillegget ditt",
+                                    Nynorsk to " og minstenivåtillegget ditt",
+                                    English to " and minimum pension supplement"
+                                )
                             }
                             .orShowIf(
                                 not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and
@@ -383,11 +414,11 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                                         (pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget or pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
                             ) {
                                 // omregningGP_PenT_MNT_001
-                                    text(
-                                        Bokmal to ", pensjonstillegget og minstenivåtillegget ditt",
-                                        Nynorsk to ", pensjonstillegget og minstenivåtillegget ditt",
-                                        English to ", supplementary pension and minimum pension supplement"
-                                    )
+                                text(
+                                    Bokmal to ", pensjonstillegget og minstenivåtillegget ditt",
+                                    Nynorsk to ", pensjonstillegget og minstenivåtillegget ditt",
+                                    English to ", supplementary pension and minimum pension supplement"
+                                )
                             }
                             .orShowIf(
                                 pesysData.alderspensjonVedVirk.garantipensjonInnvilget and
@@ -396,11 +427,11 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                                         not(pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
                             ) {
                                 // omregningGP_GarantiPen_001
-                                    text(
-                                        Bokmal to " og garantipensjonen din",
-                                        Nynorsk to " og garantipensjonen din",
-                                        English to " and guaranteed pension"
-                                    )
+                                text(
+                                    Bokmal to " og garantipensjonen din",
+                                    Nynorsk to " og garantipensjonen din",
+                                    English to " and guaranteed pension"
+                                )
                             }
                             .orShowIf(
                                 pesysData.alderspensjonVedVirk.garantipensjonInnvilget and
@@ -409,11 +440,11 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                                         not(pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
                             ) {
                                 // omregningGP_PenT_GarantiPen_001
-                                    text(
-                                        Bokmal to ", pensjonstillegget og garantipensjonen din",
-                                        Nynorsk to ", pensjonstillegget og garantipensjonen din",
-                                        English to ", supplementary pension and guaranteed pension"
-                                    )
+                                text(
+                                    Bokmal to ", pensjonstillegget og garantipensjonen din",
+                                    Nynorsk to ", pensjonstillegget og garantipensjonen din",
+                                    English to ", supplementary pension and guaranteed pension"
+                                )
                             }
                             .orShowIf(
                                 pesysData.alderspensjonVedVirk.garantipensjonInnvilget and
@@ -421,11 +452,11 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                                         (pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget or pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
                             ) {
                                 // omregningGP_GarantiPen_MNT_001
-                                    text(
-                                        Bokmal to ", garantipensjonen og minstenivåtillegget ditt",
-                                        Nynorsk to ", garantipensjonen og minstenivåtillegget ditt",
-                                        English to ", guaranteed pension and minimum pension supplement"
-                                    )
+                                text(
+                                    Bokmal to ", garantipensjonen og minstenivåtillegget ditt",
+                                    Nynorsk to ", garantipensjonen og minstenivåtillegget ditt",
+                                    English to ", guaranteed pension and minimum pension supplement"
+                                )
                             }
                             .orShowIf(
                                 pesysData.alderspensjonVedVirk.garantipensjonInnvilget and
@@ -433,11 +464,11 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                                         (pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget or pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
                             ) {
                                 // omregningGP_PenT_GarantiPen_MNT_001
-                                    text(
-                                        Bokmal to ", pensjonstillegget, garantipensjonen og minstenivåtillegget ditt",
-                                        Nynorsk to ", pensjonstillegget, garantipensjonen og minstenivåtillegget ditt",
-                                        English to ", supplementary pension, guaranteed pension and minimum pension supplement"
-                                    )
+                                text(
+                                    Bokmal to ", pensjonstillegget, garantipensjonen og minstenivåtillegget ditt",
+                                    Nynorsk to ", pensjonstillegget, garantipensjonen og minstenivåtillegget ditt",
+                                    English to ", supplementary pension, guaranteed pension and minimum pension supplement"
+                                )
                             }
                         text(
                             Bokmal to " på nytt.",
@@ -514,7 +545,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 // hvisFlyttetBosattAvtaleland_001
                 paragraph {
                     textExpr(
-                        Bokmal to "Vi forutsetter at du bor i ".expr() + bostedsland +". Hvis du skal flytte til et annet land, må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon.",
+                        Bokmal to "Vi forutsetter at du bor i ".expr() + bostedsland + ". Hvis du skal flytte til et annet land, må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon.",
                         Nynorsk to "Vi føreset at du bur i ".expr() + bostedsland + ". Dersom du skal flytte til eit anna land, må du kontakte oss slik at vi kan vurdere om du framleis har rett til alderspensjon. ",
                         English to "We presume that you live in ".expr() + bostedsland + ". If you are moving to another country, it is important that you contact Nav. We will then reassess your eligibility for retirement pension."
                     )
@@ -539,25 +570,27 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                         English to "This decision was made pursuant to the provisions of §§ 19-3, 20-10 and 22-12 of the National Insurance Act."
                     )
                 }
-            }.orShowIf(not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt) {
-                //  flyttingAPGjenlevendeHjemmel_001
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3, 19-16 jamfør 17-4 og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdloven §§ 19-3, 19-16 jamfør 17-4 og 22-12.",
-                        English to "The decision is made pursuant to §§ 19-3, 19-16 confer 17-4 and 22-12 of the National Insurance Act."
-                    )
-                }
-            }.orShowIf(pesysData.alderspensjonVedVirk.garantipensjonInnvilget and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt) {
-                // flyttingAP2016GjenlevendeGarantipensjonHjemmel_001
-                paragraph {
-                    text(
-                        Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3, 19-16 jamfør 17-4, 20-10, 20-19a og 22-12.",
-                        Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-3, 19-16 jamfør 17-4, 20-10, 20-19a og 22-12.",
-                        English to "The decision is made pursuant to §§ 19-3, 19-16 confer 17-4, 20-10, 20-19a and 22-12 of the National Insurance Act."
-                    )
-                }
             }
+                .orShowIf(not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt) {
+                    //  flyttingAPGjenlevendeHjemmel_001
+                    paragraph {
+                        text(
+                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3, 19-16 jamfør 17-4 og 22-12.",
+                            Nynorsk to "Vedtaket er gjort etter folketrygdloven §§ 19-3, 19-16 jamfør 17-4 og 22-12.",
+                            English to "The decision is made pursuant to §§ 19-3, 19-16 confer 17-4 and 22-12 of the National Insurance Act."
+                        )
+                    }
+                }
+                .orShowIf(pesysData.alderspensjonVedVirk.garantipensjonInnvilget and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt) {
+                    // flyttingAP2016GjenlevendeGarantipensjonHjemmel_001
+                    paragraph {
+                        text(
+                            Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3, 19-16 jamfør 17-4, 20-10, 20-19a og 22-12.",
+                            Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-3, 19-16 jamfør 17-4, 20-10, 20-19a og 22-12.",
+                            English to "The decision is made pursuant to §§ 19-3, 19-16 confer 17-4, 20-10, 20-19a and 22-12 of the National Insurance Act."
+                        )
+                    }
+                }
 
             showIf(pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleEOES and pesysData.bruker.borIEOES) {
                 // euArt7Hjemmel_001
@@ -574,17 +607,28 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 // avtaleEksportHjemmel_001
                 paragraph {
                     textExpr(
-                        Bokmal to "Vedtaket er også gjort etter reglene i trygdeavtalen med ".expr() + bostedsland + ", artikkel " + fritekst("legg inn aktuell artikkel om eksport") + ".",
-                        Nynorsk to "Vedtaket er også gjort etter reglane i trygdeavtalen med ".expr() + bostedsland + ", artikkel " + fritekst("legg inn aktuell artikkel om eksport") + ".",
-                        English to "This decision was also made pursuant to the provisions of the Social Security Agreement with ".expr() + bostedsland + ", Article " + fritekst("legg inn aktuell artikkel om eksport") + ".",
+                        Bokmal to "Vedtaket er også gjort etter reglene i trygdeavtalen med ".expr() + bostedsland + ", artikkel " + fritekst(
+                            "legg inn aktuell artikkel om eksport"
+                        ) + ".",
+                        Nynorsk to "Vedtaket er også gjort etter reglane i trygdeavtalen med ".expr() + bostedsland + ", artikkel " + fritekst(
+                            "legg inn aktuell artikkel om eksport"
+                        ) + ".",
+                        English to "This decision was also made pursuant to the provisions of the Social Security Agreement with ".expr() + bostedsland + ", Article " + fritekst(
+                            "legg inn aktuell artikkel om eksport"
+                        ) + ".",
 
-                    )
+                        )
                 }
             }
 
-            showIf(pesysData.krav.aarsak.equalTo(UTVANDRET)
-                and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND)
-                and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.notEqualTo(BRUKER_FLYTTET_IKKE_AVT_LAND)
+            showIf(
+                pesysData.krav.aarsak.equalTo(UTVANDRET)
+                        and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
+                    BRUKER_FLYTTET_IKKE_AVT_LAND
+                )
+                        and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.notEqualTo(
+                    BRUKER_FLYTTET_IKKE_AVT_LAND
+                )
             ) {
                 // flyttingETAPHjemmel_001
                 paragraph {
@@ -596,9 +640,14 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }
 
-            showIf(pesysData.krav.aarsak.equalTo(UTVANDRET)
-                and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.notEqualTo(BRUKER_FLYTTET_IKKE_AVT_LAND)
-                and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND)
+            showIf(
+                pesysData.krav.aarsak.equalTo(UTVANDRET)
+                        and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.notEqualTo(
+                    BRUKER_FLYTTET_IKKE_AVT_LAND
+                )
+                        and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(
+                    BRUKER_FLYTTET_IKKE_AVT_LAND
+                )
             ) {
                 // flyttingBTAPHjemmel_001
                 paragraph {
@@ -610,9 +659,14 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }
 
-            showIf(pesysData.krav.aarsak.equalTo(UTVANDRET)
-                    and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND)
-                    and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND)
+            showIf(
+                pesysData.krav.aarsak.equalTo(UTVANDRET)
+                        and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
+                    BRUKER_FLYTTET_IKKE_AVT_LAND
+                )
+                        and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(
+                    BRUKER_FLYTTET_IKKE_AVT_LAND
+                )
             ) {
                 // flyttingETBTAPHjemmel_001
                 paragraph {
@@ -646,8 +700,10 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
             }
 
-            showIf(pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_OKT)
-                    and pesysData.vedtak.erEtterbetaling1Maaned) {
+            showIf(
+                pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_OKT)
+                        and pesysData.vedtak.erEtterbetaling1Maaned
+            ) {
                 // etterbetalingAP_002
                 // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(saksbehandlerValg.etterbetaling) {
