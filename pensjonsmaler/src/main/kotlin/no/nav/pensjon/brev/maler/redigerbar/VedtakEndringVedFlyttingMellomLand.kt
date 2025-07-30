@@ -342,10 +342,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                     }
                 }
 
-                showIf(
-                    pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET)
-                            and pesysData.beregnetpensjonPerMaanedVedVirk.grunnnpensjon.greaterThan(0)
-                ) {
+                showIf(pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET)) {
                     paragraph {
                         text(
                             Bokmal to "Derfor har vi beregnet grunnpensjonen",
@@ -581,48 +578,34 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }
 
-            showIf(
-                pesysData.krav.aarsak.equalTo(UTVANDRET)
-                        and begrunnelseETErBrukerFlyttetIkkeAvtLand
-                        and not(begrunnelseBTErBrukerFlyttetIkkeAvtLand)
-            ) {
-                // flyttingETAPHjemmel_001
-                paragraph {
-                    text(
-                        Bokmal to "Ektefelletillegget er behandlet etter § 3-24 i folketrygdloven.",
-                        Nynorsk to "Ektefelletillegget er behandla etter § 3-24 i folketrygdlova.",
-                        English to "The spouse supplement has been processed pursuant to the provisions of § 3-24 of the National Insurance Act."
-                    )
-                }
-            }
-
-            showIf(
-                pesysData.krav.aarsak.equalTo(UTVANDRET)
-                        and not(begrunnelseETErBrukerFlyttetIkkeAvtLand)
-                        and begrunnelseBTErBrukerFlyttetIkkeAvtLand
-            ) {
-                // flyttingBTAPHjemmel_001
-                paragraph {
-                    text(
-                        Bokmal to "Barnetillegget er behandlet etter § 3-25 i folketrygdloven.",
-                        Nynorsk to "Barnetillegget er behandla etter § 3-25 i folketrygdlova.",
-                        English to "The child supplement has been processed pursuant to the provisions of § 3-25 of the National Insurance Act."
-                    )
-                }
-            }
-
-            showIf(
-                pesysData.krav.aarsak.equalTo(UTVANDRET)
-                        and begrunnelseETErBrukerFlyttetIkkeAvtLand
-                        and begrunnelseBTErBrukerFlyttetIkkeAvtLand
-            ) {
-                // flyttingETBTAPHjemmel_001
-                paragraph {
-                    text(
-                        Bokmal to "Ektefelle- og barnetillegget er behandlet etter §§ 3-24 og 3-25 i folketrygdloven.",
-                        Nynorsk to "Ektefelle- og barnetillegget er behandla etter §§ 3-24 og 3-25 i folketrygdlova.",
-                        English to "The spouse and child supplement has been processed pursuant to the provisions of §§ 3-24 and 3-25 of the National Insurance Act."
-                    )
+            showIf(pesysData.krav.aarsak.equalTo(UTVANDRET)) {
+                showIf(begrunnelseETErBrukerFlyttetIkkeAvtLand and not(begrunnelseBTErBrukerFlyttetIkkeAvtLand)) {
+                    // flyttingETAPHjemmel_001
+                    paragraph {
+                        text(
+                            Bokmal to "Ektefelletillegget er behandlet etter § 3-24 i folketrygdloven.",
+                            Nynorsk to "Ektefelletillegget er behandla etter § 3-24 i folketrygdlova.",
+                            English to "The spouse supplement has been processed pursuant to the provisions of § 3-24 of the National Insurance Act."
+                        )
+                    }
+                }.orShowIf(not(begrunnelseETErBrukerFlyttetIkkeAvtLand) and begrunnelseBTErBrukerFlyttetIkkeAvtLand) {
+                    // flyttingBTAPHjemmel_001
+                    paragraph {
+                        text(
+                            Bokmal to "Barnetillegget er behandlet etter § 3-25 i folketrygdloven.",
+                            Nynorsk to "Barnetillegget er behandla etter § 3-25 i folketrygdlova.",
+                            English to "The child supplement has been processed pursuant to the provisions of § 3-25 of the National Insurance Act."
+                        )
+                    }
+                }.orShowIf(begrunnelseETErBrukerFlyttetIkkeAvtLand and begrunnelseBTErBrukerFlyttetIkkeAvtLand) {
+                    // flyttingETBTAPHjemmel_001
+                    paragraph {
+                        text(
+                            Bokmal to "Ektefelle- og barnetillegget er behandlet etter §§ 3-24 og 3-25 i folketrygdloven.",
+                            Nynorsk to "Ektefelle- og barnetillegget er behandla etter §§ 3-24 og 3-25 i folketrygdlova.",
+                            English to "The spouse and child supplement has been processed pursuant to the provisions of §§ 3-24 and 3-25 of the National Insurance Act."
+                        )
+                    }
                 }
             }
 
