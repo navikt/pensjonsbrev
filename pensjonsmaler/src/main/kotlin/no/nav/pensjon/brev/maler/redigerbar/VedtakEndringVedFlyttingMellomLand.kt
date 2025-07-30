@@ -527,14 +527,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                     Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-3",
                     English to "This decision was made pursuant to the provisions of §§ 19-3"
                 )
-                showIf(not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and not(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt)) {
-                    // flyttingAPHjemmel_001
-                    text(
-                        Bokmal to "",
-                        Nynorsk to "",
-                        English to ""
-                    )
-                }.orShowIf(pesysData.alderspensjonVedVirk.garantipensjonInnvilget and not(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt)) {
+                showIf(pesysData.alderspensjonVedVirk.garantipensjonInnvilget and not(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt)) {
                     // flyttingAPGarantipensjonHjemmel_001
                     text(
                         Bokmal to ", 20-10",
