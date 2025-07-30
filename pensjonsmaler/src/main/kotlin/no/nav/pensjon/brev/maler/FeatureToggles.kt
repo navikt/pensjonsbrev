@@ -18,7 +18,6 @@ object FeatureToggles {
     val apAvslagNormertPensjonsalderAP2016 = FeatureToggle("ap_avslag_norm_redigerbar_ap2016")
     val informasjonOmGjenlevenderettigheter = FeatureToggle("informasjonOmGjenlevenderettigheter")
     val omsorgEgenManuell = FeatureToggle("omsorgEgenManuell")
-    val varselTilbakekrevingAvFeilutbetaltBeloep = FeatureToggle("varselTilbakekrevingAvFeilutbetaltBeloep")
     val vedtakTilbakekrevingAvFeilutbetaltBeloep = FeatureToggle("vedtakTilbakekrevingAvFeilutbetaltBeloep")
     val vedtakEndringAvAlderspensjonGjenlevenderettigheter = FeatureToggle("vedtakEndringAvAlderspensjonGjenlevenderettigheter")
     val vedtakEndringAvAlderspensjonInstitusjonsopphold = FeatureToggle("vedtakEndringAvAlderspensjonInstitusjonsopphold")
