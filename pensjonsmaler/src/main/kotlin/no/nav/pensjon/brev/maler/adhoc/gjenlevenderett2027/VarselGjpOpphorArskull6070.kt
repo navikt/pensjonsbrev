@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.DineInntekte
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig2GTabell
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig3GTabell
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.HELSE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -247,8 +248,8 @@ object VarselGjpOpphorArskull6070 : AutobrevTemplate<Gjenlevenderett2027Dto> {
 
             paragraph {
                 text(
-                    Bokmal to "Hvis du har helseutfordringer, kan du undersøke mulighetene for andre ytelser eller støtteordninger ved ditt lokale Nav-kontor og på nav.no/helse. ",
-                    Nynorsk to "Viss du har helseutfordringar, kan du undersøkje moglegheitene for andre ytingar eller støtteordningar ved ditt lokale Nav-kontor og på nav.no/helse. ",
+                    Bokmal to "Hvis du har helseutfordringer, kan du undersøke mulighetene for andre ytelser eller støtteordninger ved ditt lokale Nav-kontor og på $HELSE_URL. ",
+                    Nynorsk to "Viss du har helseutfordringar, kan du undersøkje moglegheitene for andre ytingar eller støtteordningar ved ditt lokale Nav-kontor og på $HELSE_URL. ",
                 )
             }
 

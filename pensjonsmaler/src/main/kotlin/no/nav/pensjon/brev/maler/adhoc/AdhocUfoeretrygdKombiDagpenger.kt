@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.adhoc
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -57,10 +58,10 @@ object AdhocUfoeretrygdKombiDagpenger : AutobrevTemplate<EmptyBrevdata> {
             }
             paragraph {
                 text(
-                    Bokmal to "Har du annen pensjonsgivende inntekt må denne legges inn i inntektsplanleggeren på Dine sider på nav.no på vanlig måte."
+                    Bokmal to "Har du annen pensjonsgivende inntekt må denne legges inn i inntektsplanleggeren på Dine sider på $NAV_URL på vanlig måte."
                 )
             }
-            includePhrase(Felles.HarDuSpoersmaal(Constants.NAV_URL, Constants.NAV_KONTAKTSENTER_TELEFON))
+            includePhrase(Felles.HarDuSpoersmaal(NAV_URL, Constants.NAV_KONTAKTSENTER_TELEFON))
         }
     }
 }

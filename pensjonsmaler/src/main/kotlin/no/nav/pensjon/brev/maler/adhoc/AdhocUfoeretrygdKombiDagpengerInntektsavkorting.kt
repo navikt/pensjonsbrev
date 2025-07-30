@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.adhoc
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -63,7 +64,7 @@ object AdhocUfoeretrygdKombiDagpengerInntektsavkorting : AutobrevTemplate<EmptyB
             }
             paragraph {
                 text(
-                    Bokmal to "Det er derfor viktig at du legger inn etterbetalingen av dagpenger i inntektsplanleggeren på Dine sider på nav.no. Dette vil gi riktig utbetaling av uføretrygd."
+                    Bokmal to "Det er derfor viktig at du legger inn etterbetalingen av dagpenger i inntektsplanleggeren på Dine sider på $NAV_URL. Dette vil gi riktig utbetaling av uføretrygd."
                 )
             }
             paragraph {

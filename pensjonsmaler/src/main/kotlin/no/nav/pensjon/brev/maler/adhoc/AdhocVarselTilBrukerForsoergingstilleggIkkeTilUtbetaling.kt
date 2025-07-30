@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants.FORSOERGINGSTILLEGG_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -110,9 +111,9 @@ object AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling : AutobrevTempla
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du ikke finner frem på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON, hverdager 09.00-15.00.",
-                    Nynorsk to "Viss du har spørsmål om saka di, kan du ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON, kvardagar 09.00-15.00.",
-                    English to "If you have questions about your case, you can call us at +47 $NAV_KONTAKTSENTER_TELEFON_PENSJON, weekdays 09:00-15:00."
+                    Bokmal to "Hvis du ikke finner frem på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON, hverdager $NAV_KONTAKTSENTER_AAPNINGSTID.",
+                    Nynorsk to "Viss du har spørsmål om saka di, kan du ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON, kvardagar $NAV_KONTAKTSENTER_AAPNINGSTID.",
+                    English to "If you have questions about your case, you can call us at +47 $NAV_KONTAKTSENTER_TELEFON_PENSJON, weekdays $NAV_KONTAKTSENTER_AAPNINGSTID."
                 )
             }
         }

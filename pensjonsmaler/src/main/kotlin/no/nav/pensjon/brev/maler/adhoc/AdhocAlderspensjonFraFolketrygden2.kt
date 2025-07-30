@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.maler.adhoc
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.PENSJON_ENDRING_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGSOVERSIKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -93,9 +95,9 @@ object AdhocAlderspensjonFraFolketrygden2 : AutobrevTemplate<EmptyBrevdata> {
             }
             paragraph {
                 text(
-                    Bokmal to "Du kan logge deg på nav.no/utbetalingsoversikt for å se utbetalingene dine.",
-                    Nynorsk to "Du kan logge deg på nav.no/utbetalingsoversikt for å sjå utbetalingane dine.",
-                    English to "Log in to nav.no/utbetalingsoversikt to see your payments.",
+                    Bokmal to "Du kan logge deg på $UTBETALINGSOVERSIKT_URL for å se utbetalingene dine.",
+                    Nynorsk to "Du kan logge deg på $UTBETALINGSOVERSIKT_URL for å sjå utbetalingane dine.",
+                    English to "Log in to $UTBETALINGSOVERSIKT_URL to see your payments.",
                 )
             }
             title1 {
@@ -107,9 +109,9 @@ object AdhocAlderspensjonFraFolketrygden2 : AutobrevTemplate<EmptyBrevdata> {
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du får endringer i familiesituasjon eller planlegger opphold i et annet land, kan det påvirke utbetalingen din. I slike tilfeller må du derfor straks melde fra til Nav. Se hva du må melde fra om på nav.no/pensjon-endring.",
-                    Nynorsk to "Viss du får endringar i familiesituasjon eller planlegg opphald i eit anna land, kan det påverke utbetalinga di. I slike tilfelle må du derfor straks melde frå til Nav. Sjå kva du må melde frå om på nav.no/pensjon-endring.",
-                    English to "If you have changes in your family situation or you plan to live abroad, this may influence your benefits. You are obliged to notify Nav as soon as you are aware of any of these changes. You can find out what you are required to report at nav.no/pensjon-endring.",
+                    Bokmal to "Hvis du får endringer i familiesituasjon eller planlegger opphold i et annet land, kan det påvirke utbetalingen din. I slike tilfeller må du derfor straks melde fra til Nav. Se hva du må melde fra om på $PENSJON_ENDRING_URL.",
+                    Nynorsk to "Viss du får endringar i familiesituasjon eller planlegg opphald i eit anna land, kan det påverke utbetalinga di. I slike tilfelle må du derfor straks melde frå til Nav. Sjå kva du må melde frå om på $PENSJON_ENDRING_URL.",
+                    English to "If you have changes in your family situation or you plan to live abroad, this may influence your benefits. You are obliged to notify Nav as soon as you are aware of any of these changes. You can find out what you are required to report at $PENSJON_ENDRING_URL.",
                 )
             }
             includePhrase(Felles.HarDuSpoersmaal(Constants.REGULERING_ALDERSPENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))

@@ -4,6 +4,9 @@ import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.ARBEID_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.HELSE_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -95,11 +98,11 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
             paragraph {
                 text(
                     Bokmal to "Nav tilbyr ulike tjenester og støtteordninger for deg som trenger hjelp til å få jobb. "
-                            + "Du kan finne jobbsøkertips og lenke til ledige jobber på nav.no/arbeid.",
+                            + "Du kan finne jobbsøkertips og lenke til ledige jobber på $ARBEID_URL.",
                     Nynorsk to "Nav tilbyr ulike tenester og støtteordningar for deg som treng hjelp til å få jobb. "
-                            + "Du kan finne jobbsøkjartips og lenkje til ledige jobbar på nav.no/arbeid.",
+                            + "Du kan finne jobbsøkjartips og lenkje til ledige jobbar på $ARBEID_URL.",
                     English to "The Norwegian Labour and Welfare Administration (Nav) offers various services and support schemes for those who need help finding employment. "
-                            + "You can find job search tips and a hyperlink to job vacancies online: nav.no/arbeid."
+                            + "You can find job search tips and a hyperlink to job vacancies online: $ARBEID_URL."
                 )
             }
             paragraph {
@@ -121,9 +124,9 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
             }
             paragraph {
                 text(
-                    Bokmal to "Du kan undersøke mulighetene for andre ytelser eller støtteordninger ved ditt lokale Nav-kontor og på nav.no/helse.",
-                    Nynorsk to "Du kan undersøkje om du kan få andre ytingar eller støtteordningar ved det lokale Nav-kontoret ditt og på nav.no/helse.",
-                    English to "If you have health issues, you can check if you are eligible for other benefits or support schemes through your local Nav office or see nav.no/helse."
+                    Bokmal to "Du kan undersøke mulighetene for andre ytelser eller støtteordninger ved ditt lokale Nav-kontor og på $HELSE_URL.",
+                    Nynorsk to "Du kan undersøkje om du kan få andre ytingar eller støtteordningar ved det lokale Nav-kontoret ditt og på $HELSE_URL.",
+                    English to "If you have health issues, you can check if you are eligible for other benefits or support schemes through your local Nav office or see $HELSE_URL."
                 )
             }
             title1 {
@@ -197,14 +200,14 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyBrevdata> {
             paragraph {
                 text(
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage innen seks uker fra den datoen du mottok vedtaket. "
-                            + "Klagen skal være skriftlig. Du finner skjema og informasjon på nav.no/klage. "
+                            + "Klagen skal være skriftlig. Du finner skjema og informasjon på $KLAGE_URL. "
                             + "I vedlegget får du vite mer om hvordan du går fram.",
                     Nynorsk to "Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen du fekk vedtaket. "
-                            + "Klaga skal vera skriftleg. Du finn skjema og informasjon på nav.no/klage. "
+                            + "Klaga skal vera skriftleg. Du finn skjema og informasjon på $KLAGE_URL. "
                             + "I vedlegget får du vite meir om korleis du går fram.\n",
                     English to "If you believe the decision is wrong, you may appeal. The deadline for appeal is six weeks from the date you received the decision. "
                             + "In the attachment “Your rights and how to appeal”, you can find out more about how to proceed. "
-                            + "You will find forms and information at nav.no/klage."
+                            + "You will find forms and information at $KLAGE_URL."
                 )
             }
             includePhrase(Felles.RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
