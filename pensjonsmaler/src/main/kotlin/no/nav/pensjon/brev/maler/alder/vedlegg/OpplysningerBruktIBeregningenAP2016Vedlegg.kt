@@ -36,6 +36,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors
 import no.nav.pensjon.brev.api.model.maler.alderApi.TrygdeperiodeUtlandSelectors.tom
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.aarOgMaanederFormattert
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.DelingstallVed67Aar
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
 import no.nav.pensjon.brev.model.format
@@ -99,13 +100,7 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
                         column(alignment = RIGHT) {}
                     }) {
                         row {
-                            cell {
-                                text(
-                                    Bokmal to "Trygdetid",
-                                    Nynorsk to "Trygdetid",
-                                    English to "National insurance coverage"
-                                )
-                            }
+                            cell { includePhrase(Vedtak.TrygdetidText) }
                             cell {
                                 textExpr(
                                     Bokmal to opplysningerKap19.trygdetidKap19.format() + " år".expr(),
@@ -273,13 +268,7 @@ val opplysningerBruktIBeregningenAP2016Vedlegg =
             }) {
                 showIf(opplysningerKap19.avslattKap19_safe.equalTo(false) and trygdetid.greaterThan(0)) {
                     row {
-                        cell {
-                            text(
-                                Bokmal to "Trygdetid",
-                                Nynorsk to "Trygdetid",
-                                English to "National insurance coverage"
-                            )
-                        }
+                        cell { includePhrase(Vedtak.TrygdetidText) }
                         cell {
                             textExpr(
                                 Bokmal to trygdetid.format() + " år".expr(),

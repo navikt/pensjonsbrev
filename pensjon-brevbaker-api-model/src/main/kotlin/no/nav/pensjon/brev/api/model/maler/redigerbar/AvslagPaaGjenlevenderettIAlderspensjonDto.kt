@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Percent
 
@@ -26,7 +27,8 @@ data class AvslagPaaGjenlevenderettIAlderspensjonDto(
         val ekteskapUnderFemAar: Boolean,
         val hjemmelEOES: Boolean,
         val hjemmelAvtaleland: Boolean,
-        val redusertTrygdetid: Boolean,
+        @DisplayText("Inkluder tekst om trygdetid")
+        val harTrygdetid: Boolean,
     ) : BrevbakerBrevdata
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
@@ -42,7 +44,7 @@ data class AvslagPaaGjenlevenderettIAlderspensjonDto(
     ) : BrevbakerBrevdata {
         data class AlderspensjonVedVirk(val totalPensjon: Kroner, val uttaksgrad: Percent)
         data class Krav(val kravInitiertAv: KravInitiertAv)
-        data class Avdoed(val redusertTrygdetidNorge: Boolean, val redusertTrygdetidEOS: Boolean, val redusertTrygdetidAvtaleland: Boolean)
+        data class Avdoed(val harTrygdetidNorge: Boolean, val harTrygdetidEOS: Boolean, val harTrygdetidAvtaleland: Boolean)
         data class YtelseskomponentInformasjon(val beloepEndring: BeloepEndring)
         data class BeregnetPensjonPerManed(val antallBeregningsperioderPensjon: Int)
         data class Avtaleland(val erEOSLand: Boolean, val navn: String?)
