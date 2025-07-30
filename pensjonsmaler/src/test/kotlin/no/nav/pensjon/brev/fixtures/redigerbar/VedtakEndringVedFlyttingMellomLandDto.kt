@@ -52,8 +52,6 @@ fun createVedtakEndringVedFlyttingMellomLandDto() = VedtakEndringVedFlyttingMell
         beregnetpensjonPerMaanedVedVirk = VedtakEndringVedFlyttingMellomLandDto.PesysData.BeregnetPensjonPerMaanedVedVirk(
             grunnnpensjon = Kroner(200)
         ),
-        vedtak = VedtakEndringVedFlyttingMellomLandDto.PesysData.Vedtak(
-            erEtterbetaling1Maaned = true
-        )
+        erEtterbetaling1Maaned = true
     )
 )
