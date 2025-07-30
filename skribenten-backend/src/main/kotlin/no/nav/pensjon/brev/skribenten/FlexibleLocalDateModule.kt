@@ -21,25 +21,28 @@ object FlexibleLocalDateModule : SimpleModule() {
     }
 
     private fun flexibleLocalDateDeserializer() = object : JsonDeserializer<LocalDate>() {
-            private val isoFormatter = DateTimeFormatter.ISO_LOCAL_DATE
-            private val noShortFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        private val isoFormatter = DateTimeFormatter.ISO_LOCAL_DATE
+        private val norwegianShortFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
 
-            override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): LocalDate {
-                val value = parser.text.trim()
-                return try {
-                    LocalDate.parse(value, isoFormatter)
-                } catch (_: Exception) {
-                    try {
-                        LocalDate.parse(value, noShortFormatter)
-                    } catch (_: Exception) {
-                        throw InvalidFormatException(
-                            parser,
-                            "Date must be ISO (yyyy-MM-dd) or Norwegian short (dd.MM.yyyy)",
-                            value,
-                            LocalDate::class.java
-                        )
+        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): LocalDate {
+            val value = parser.text.trim()
+            return try {
+                LocalDate.parse(value, isoFormatter)
+            } catch (isoFormatException: Exception) {
+                try {
+                    LocalDate.parse(value, norwegianShortFormatter)
+                } catch (norwegianFormatException: Exception) {
+                    throw InvalidFormatException(
+                        parser,
+                        "Date must be ISO (yyyy-MM-dd) or Norwegian short (dd.MM.yyyy)",
+                        value,
+                        LocalDate::class.java
+                    ).also {
+                        it.addSuppressed(isoFormatException)
+                        it.addSuppressed(norwegianFormatException)
                     }
                 }
             }
         }
+    }
 }
