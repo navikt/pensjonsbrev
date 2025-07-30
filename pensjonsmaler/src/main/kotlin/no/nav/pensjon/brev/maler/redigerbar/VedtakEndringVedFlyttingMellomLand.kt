@@ -135,9 +135,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             }
 
             val aarsakUtvandret = pesysData.krav.aarsak.equalTo(UTVANDRET)
-            showIf(
-                aarsakUtvandret and pesysData.alderspensjonVedVirk.erEksportberegnet.equalTo(true)
-            ) {
+            showIf(aarsakUtvandret and pesysData.alderspensjonVedVirk.erEksportberegnet) {
                 showIf(pesysData.inngangOgEksportVurdering.eksportForbudKode.equalTo(UFOR25_ALDER)) {
                     // eksportUngUfor_001
                     paragraph {
@@ -156,33 +154,33 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                             English to "When you move abroad, you are no longer eligible for retirement pension calculated in accordance with the regulations as the deceased was younger than 26 years old at the time of death. However, you are still eligible for a pension calculated on the basis of your own and the deceased’s accumulated pension rights."
                         )
                     }
-                }
-                    .orShowIf(pesysData.inngangOgEksportVurdering.eksportForbudKode.equalTo(FLYKT_ALDER)) {
-                        // eksportFlyktning_001
-                        paragraph {
-                            text(
-                                Bokmal to "Når du flytter til et land utenfor EØS-området har du ikke lenger rett til alderspensjon etter reglene for flyktninger. Du har fortsatt rett til pensjon etter din egen opptjening.",
-                                Nynorsk to "Når du flyttar til eit land utanfor EØS-området har du ikkje lenger rett til alderspensjon etter reglane for flyktningar. Du har framleis rett til pensjon etter di eiga opptening.",
-                                English to "When you move to a country outside the EEA region, you are no longer eligible for retirement pension determined on the basis of the regulations for refugees. However, you are still eligible for a pension calculated on the basis of your own accumulated pension rights."
-                            )
-                        }
+                }.orShowIf(pesysData.inngangOgEksportVurdering.eksportForbudKode.equalTo(FLYKT_ALDER)) {
+                    // eksportFlyktning_001
+                    paragraph {
+                        text(
+                            Bokmal to "Når du flytter til et land utenfor EØS-området har du ikke lenger rett til alderspensjon etter reglene for flyktninger. Du har fortsatt rett til pensjon etter din egen opptjening.",
+                            Nynorsk to "Når du flyttar til eit land utanfor EØS-området har du ikkje lenger rett til alderspensjon etter reglane for flyktningar. Du har framleis rett til pensjon etter di eiga opptening.",
+                            English to "When you move to a country outside the EEA region, you are no longer eligible for retirement pension determined on the basis of the regulations for refugees. However, you are still eligible for a pension calculated on the basis of your own accumulated pension rights."
+                        )
                     }
+                }
 
-                showIf(pesysData.inngangOgEksportVurderingAvdoed_safe.eksportForbudKode_safe.equalTo(FLYKT_ALDER)) {}
-                // eksportFlyktningAvdod_001
-                paragraph {
-                    text(
-                        Bokmal to "Når du flytter til et land utenfor EØS-området har du ikke lenger rett til alderspensjon etter reglene for flyktninger. Du har fortsatt rett til alderspensjon etter din egen og avdødes opptjening.",
-                        Nynorsk to "Når du flyttar til eit land utanfor EØS-området har du ikkje lenger rett til alderspensjon etter reglane for flyktningar. Du har framleis rett til pensjon etter di eiga og avdøde si opptening.",
-                        English to "When you move to a country outside the EEA region, you are no longer eligible for retirement pension determined on the basis of the regulations for refugees. However, you are still eligible for a pension calculated on the basis of your own and the deceased’s accumulated pension rights."
-                    )
+                showIf(pesysData.inngangOgEksportVurderingAvdoed_safe.eksportForbudKode_safe.equalTo(FLYKT_ALDER)) {
+                    // eksportFlyktningAvdod_001
+                    paragraph {
+                        text(
+                            Bokmal to "Når du flytter til et land utenfor EØS-området har du ikke lenger rett til alderspensjon etter reglene for flyktninger. Du har fortsatt rett til alderspensjon etter din egen og avdødes opptjening.",
+                            Nynorsk to "Når du flyttar til eit land utanfor EØS-området har du ikkje lenger rett til alderspensjon etter reglane for flyktningar. Du har framleis rett til pensjon etter di eiga og avdøde si opptening.",
+                            English to "When you move to a country outside the EEA region, you are no longer eligible for retirement pension determined on the basis of the regulations for refugees. However, you are still eligible for a pension calculated on the basis of your own and the deceased’s accumulated pension rights."
+                        )
+                    }
                 }
 
                 showIf(
                     pesysData.inngangOgEksportVurdering.eksportForbudKode.isNull() and
                             not(pesysData.inngangOgEksportVurdering.minst20AarTrygdetid) and
-                            pesysData.inngangOgEksportVurderingAvdoed.minst20ArTrygdetidKap20_safe.equalTo(true)
-                            and pesysData.inngangOgEksportVurderingAvdoed.minst20ArBotidKap19_safe.equalTo(true)
+                            pesysData.inngangOgEksportVurderingAvdoed.minst20ArTrygdetidKap20_safe.ifNull(false)
+                            and pesysData.inngangOgEksportVurderingAvdoed.minst20ArBotidKap19_safe.ifNull(false)
                 ) {
                     // eksportAPunder20aar_001
                     paragraph {
@@ -604,16 +602,11 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             showIf(pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland and not(pesysData.bruker.borIEOES) and pesysData.bruker.borIAvtaleland) {
                 // avtaleEksportHjemmel_001
                 paragraph {
+                    val fritekst = fritekst("legg inn aktuell artikkel om eksport")
                     textExpr(
-                        Bokmal to "Vedtaket er også gjort etter reglene i trygdeavtalen med ".expr() + bostedsland + ", artikkel " + fritekst(
-                            "legg inn aktuell artikkel om eksport"
-                        ) + ".",
-                        Nynorsk to "Vedtaket er også gjort etter reglane i trygdeavtalen med ".expr() + bostedsland + ", artikkel " + fritekst(
-                            "legg inn aktuell artikkel om eksport"
-                        ) + ".",
-                        English to "This decision was also made pursuant to the provisions of the Social Security Agreement with ".expr() + bostedsland + ", Article " + fritekst(
-                            "legg inn aktuell artikkel om eksport"
-                        ) + ".",
+                        Bokmal to "Vedtaket er også gjort etter reglene i trygdeavtalen med ".expr() + bostedsland + ", artikkel " + fritekst + ".",
+                        Nynorsk to "Vedtaket er også gjort etter reglane i trygdeavtalen med ".expr() + bostedsland + ", artikkel " + fritekst + ".",
+                        English to "This decision was also made pursuant to the provisions of the Social Security Agreement with ".expr() + bostedsland + ", Article " + fritekst + ".",
 
                         )
                 }
