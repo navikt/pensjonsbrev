@@ -21,7 +21,7 @@ fun createAvslagPaaGjenlevenderettIAlderspensjon() = AvslagPaaGjenlevenderettIAl
         ekteskapUnderFemAar = true,
         hjemmelEOES = true,
         hjemmelAvtaleland = false,
-        redusertTrygdetid = true
+        harTrygdetid = true
     ),
     pesysData = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData(
         alderspensjonVedVirk = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.AlderspensjonVedVirk(
@@ -31,9 +31,9 @@ fun createAvslagPaaGjenlevenderettIAlderspensjon() = AvslagPaaGjenlevenderettIAl
             kravInitiertAv = KravInitiertAv.BRUKER
         ),
         avdoed = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.Avdoed(
-            redusertTrygdetidNorge = false,
-            redusertTrygdetidEOS = false,
-            redusertTrygdetidAvtaleland = true
+            harTrygdetidNorge = false,
+            harTrygdetidEOS = false,
+            harTrygdetidAvtaleland = true
         ),
         ytelseskomponentInformasjon = AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData.YtelseskomponentInformasjon(
             beloepEndring = BeloepEndring.ENDR_OKT
