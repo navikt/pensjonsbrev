@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-// TODO: Når alle brevredigeringer har `sistredigert` nyere enn 2025-07-30 (da LetterMarkup.Sakspart.dokumentDato ble endret til LocalDate),
+// TODO: Når alle brevredigeringer har `sistreservert` nyere enn 2025-07-30 (da LetterMarkup.Sakspart.dokumentDato ble endret til LocalDate),
 //       kan denne modulen fjernes og `JavaTimeModule` brukes direkte.
 object FlexibleLocalDateModule : SimpleModule() {
 
