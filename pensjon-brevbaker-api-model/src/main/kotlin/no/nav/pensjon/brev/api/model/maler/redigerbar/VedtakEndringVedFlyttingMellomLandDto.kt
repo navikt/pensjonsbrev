@@ -25,10 +25,10 @@ data class VedtakEndringVedFlyttingMellomLandDto(
         val alderspensjonVedVirk: AlderspensjonVedVirk,
         val inngangOgEksportVurdering: InngangOgEksportVurdering,
         val inngangOgEksportVurderingAvdoed: InngangOgEksportVurderingAvdoed?,
-        val opphoersbegrunnelseVedVirk: OpphoersbegrunnelseVedVirk?,
-        val ytelseskomponentInformasjon: YtelseskomponentInformasjon?,
+        val opphoersbegrunnelseVedVirk: OpphoersbegrunnelseVedVirk,
+        val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
         val beregnetpensjonPerMaanedVedVirk: BeregnetPensjonPerMaanedVedVirk,
-        val vedtak: Vedtak,
+        val erEtterbetaling1Maaned: Boolean
     ) : BrevbakerBrevdata {
         data class Krav(val virkDatoFom: LocalDate, val aarsak: Aarsak)
         data class Bruker(val faktiskBostedsland: String?, val borIEOES: Boolean, val borIAvtaleland: Boolean)
@@ -58,14 +58,12 @@ data class VedtakEndringVedFlyttingMellomLandDto(
         )
 
         data class OpphoersbegrunnelseVedVirk(
-            val begrunnelseET: Opphoersbegrunnelse,
-            val begrunnelseBT: Opphoersbegrunnelse,
+            val begrunnelseET: Opphoersbegrunnelse?,
+            val begrunnelseBT: Opphoersbegrunnelse?,
         )
 
-        data class YtelseskomponentInformasjon(val beloepEndring: BeloepEndring)
+        data class YtelseskomponentInformasjon(val beloepEndring: BeloepEndring?)
         data class BeregnetPensjonPerMaanedVedVirk(val grunnnpensjon: Kroner)
-
-        data class Vedtak(val erEtterbetaling1Maaned: Boolean)
     }
 
     enum class Aarsak {
@@ -75,6 +73,6 @@ data class VedtakEndringVedFlyttingMellomLandDto(
 
     enum class Opphoersbegrunnelse {
         BRUKER_FLYTTET_IKKE_AVT_LAND,
-        ANNET // Map alle som ikke er BRUKER_FLYTTET_IKKE_AVT_LAND til denne
+        ANNET
     }
 }
