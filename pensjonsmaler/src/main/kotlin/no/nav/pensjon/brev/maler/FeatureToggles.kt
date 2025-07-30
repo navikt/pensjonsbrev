@@ -10,7 +10,6 @@ object FeatureToggles {
     val pl7914EndretInntektPilot = FeatureToggle("pl_7914.ut_endret_pga_inntekt_test_pilot")
     val brevMedFritekst = FeatureToggle("brevMedFritekst")
     val brevmalUtAvslag = FeatureToggle("brevmalUtAvslag")
-    val innhentingAvInformasjonFraBruker = FeatureToggle("innhentingAvInformasjonFraBruker")
     val apAvslagGjenlevenderett = FeatureToggle("apAvslagGjenlevenderett")
     val apAvslagGradsendringNormertPensjonsalder = FeatureToggle("ap_avslag_gradsendring_norm_redigerbar")
     val apAvslagGradsendringNormertPensjonsalderAP2016 = FeatureToggle("ap_avslag_gradsendring_norm_redigerbar_ap2016")
