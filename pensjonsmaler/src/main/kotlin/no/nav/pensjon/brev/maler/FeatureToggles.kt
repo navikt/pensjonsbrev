@@ -11,6 +11,7 @@ object FeatureToggles {
     val brevMedFritekst = FeatureToggle("brevMedFritekst")
     val brevmalUtAvslag = FeatureToggle("brevmalUtAvslag")
     val innhentingAvInformasjonFraBruker = FeatureToggle("innhentingAvInformasjonFraBruker")
+    val apAvslagGjenlevenderett = FeatureToggle("apAvslagGjenlevenderett")
     val apAvslagGradsendringNormertPensjonsalder = FeatureToggle("ap_avslag_gradsendring_norm_redigerbar")
     val apAvslagGradsendringNormertPensjonsalderAP2016 = FeatureToggle("ap_avslag_gradsendring_norm_redigerbar_ap2016")
     val apAvslagGradsendringNormertPensjonsalderFoerEttAar = FeatureToggle("ap_avslag_gradsendring_norm_foer_ett_aar_redigerbar")
@@ -30,4 +31,6 @@ object FeatureToggles {
     val innvilgelseAvAlderspensjonTrygdeavtale = FeatureToggle("innvilgelseAvAlderspensjonTrygdeavtale")
     val vedtakOmFjerningAvOmsorgspoeng = FeatureToggle("vedtakOmFjerningAvOmsorgspoeng")
     val vedtakEndringOpptjeningEndret = FeatureToggle("vedtakEndringOpptjeningEndret")
+    val vedtakStansFlyttingMellomLand = FeatureToggle("vedtakStansFlyttingMellomLand")
+    val avslagForLiteTrygdetidAP = FeatureToggle("avslagForLiteTrygdetidAP")
 }

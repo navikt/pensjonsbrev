@@ -279,7 +279,7 @@ describe("attestering", () => {
     //------Forhåndsvisning------
     cy.contains("Information about application processing time").should("exist");
     cy.contains("Mottaker").should("exist");
-    cy.contains("Tydelig Bakke (Bruker)").should("exist");
+    cy.contains("Tydelig Bakke").should("exist");
     cy.contains("Mauråsveien 29").should("exist");
     cy.contains("4844 Arendal").should("exist");
     cy.contains("Distribusjonstype").should("exist");

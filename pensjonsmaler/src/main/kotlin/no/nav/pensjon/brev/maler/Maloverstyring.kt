@@ -21,6 +21,7 @@ fun isEnabled(kode: String) = when (kode) {
     Pesysbrevkoder.Redigerbar.PE_OVERSETTELSE_AV_DOKUMENTER.kode() -> FeatureToggles.brevMedFritekst
     Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD.kode() -> FeatureToggles.brevmalUtAvslag
     Pesysbrevkoder.Redigerbar.PE_AP_INNHENTING_INFORMASJON_FRA_BRUKER.kode() -> FeatureToggles.innhentingAvInformasjonFraBruker
+    Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GJENLEVENDERETT.kode() -> FeatureToggles.apAvslagGjenlevenderett
     Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER.kode() -> FeatureToggles.apAvslagGradsendringNormertPensjonsalder
     Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_AP2016.kode() -> FeatureToggles.apAvslagGradsendringNormertPensjonsalderAP2016
     Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_ETT_AAR.kode() -> FeatureToggles.apAvslagGradsendringNormertPensjonsalderFoerEttAar
@@ -41,6 +42,8 @@ fun isEnabled(kode: String) = when (kode) {
     Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_PGA_OPPTJENING.kode() -> FeatureToggles.vedtakEndringOpptjeningEndret
     Pesysbrevkoder.Redigerbar.PE_AP_INNVILGELSE.kode() -> FeatureToggles.innvilgelseAvAlderspensjon
     Pesysbrevkoder.Redigerbar.PE_AP_INNVILGELSE_TRYGDEAVTALE.kode() -> FeatureToggles.innvilgelseAvAlderspensjonTrygdeavtale
+    Pesysbrevkoder.Redigerbar.PE_AP_STANS_FLYTTING_MELLOM_LAND.kode() -> FeatureToggles.vedtakStansFlyttingMellomLand
+    Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_FOR_LITE_TRYGDETID.kode() -> FeatureToggles.avslagForLiteTrygdetidAP
 
     else -> null
 }?.let { FeatureToggleSingleton.isEnabled(it) } ?: true

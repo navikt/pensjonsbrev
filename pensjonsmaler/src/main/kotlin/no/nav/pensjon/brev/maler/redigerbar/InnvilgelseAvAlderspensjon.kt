@@ -61,17 +61,55 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.supplerendeStoenad
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.*
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.AP2025TidligUttakHjemmel
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.AfpPrivatErBrukt
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.BilateralAvtaleHjemmel
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.EOSLandAvtaleHjemmel
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.GarantitilleggHjemmel
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.GjenlevendetilleggKap19Hjemmel
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.HjemlerInnvilgelseForAP2011AP2016
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoPensjonFraAndreAP
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPForeloepigBeregning
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPUttakEndr
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgetGjRettKap19For2024
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvAlderspensjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvGjenlevendetillegg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilKlageUtland
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.SkattAP
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.Skatteplikt
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.SkjermingstilleggHjemmel
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.SoktAFPPrivatInfo
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenadAP
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
-import no.nav.pensjon.brev.maler.vedlegg.*
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -399,11 +437,11 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
 
             includePhrase(GarantitilleggHjemmel(garantitilleggInnvilget))
 
-            includePhrase(GjenlevendetilleggKap19Hjemmel(gjenlevendetilleggKap19Innvilget = garantipensjonInnvilget))
+            includePhrase(GjenlevendetilleggKap19Hjemmel(gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget))
             includePhrase(
                 InnvilgetGjRettKap19For2024(
-                    gjenlevenderettAnvendt,
-                    gjenlevendetilleggKap19Innvilget
+                    gjenlevenderettAnvendt = gjenlevenderettAnvendt,
+                    gjenlevendetilleggKap19Innvilget = gjenlevendetilleggKap19Innvilget
                 )
             )
             includePhrase(
@@ -416,19 +454,12 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             )
             includePhrase(
                 BilateralAvtaleHjemmel(
-                    avtalelandNavn = avtalelandNavn,
+                    avtalelandNavn = avtalelandNavn.ifNull(fritekst("avtaleland")),
                     eksportTrygdeavtaleAvtaleland = eksportTrygdeavtaleAvtaleland,
                     erEOSLand = erEOSLand,
-                    harOppfyltVedSammenlegging = borINorge
+                    harOppfyltVedSammenlegging = harOppfyltVedSammenlegging
                 )
             )
-            title1 {
-                text(
-                    Bokmal to "Andre utbetalinger",
-                    Nynorsk to "Andre utbetalingar",
-                    English to "Other payments"
-                )
-            }
             title1 {
                 text(
                     Bokmal to "Andre utbetalinger",
@@ -507,17 +538,6 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
             }
 
             includePhrase(InnvilgelseAPUttakEndr(uforeKombinertMedAlder))
-
-            showIf(uforeKombinertMedAlder and innvilgetFor67) {
-                // innvilgelseAPUttakEndrUT
-                paragraph {
-                    text(
-                        Bokmal to "Summen av uføregraden og alderspensjonen din kan ikke overstige 100 prosent.",
-                        Nynorsk to "Summen av uføregraden og alderspensjonen din kan ikkje gå over 100 prosent.",
-                        English to "The percentage of disability benefit and the percentage of retirement pension combined may not exceed 100 percent."
-                    )
-                }
-            }
 
             includePhrase(
                 ArbeidsinntektOgAlderspensjon(
