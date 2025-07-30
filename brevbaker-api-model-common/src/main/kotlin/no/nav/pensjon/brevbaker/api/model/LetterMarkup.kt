@@ -1,6 +1,9 @@
 package no.nav.pensjon.brevbaker.api.model
 
+import java.time.LocalDate
+
 interface LetterMarkup {
+    // TODO: Må endres til List<Text> slik at den kan redigeres.
     val title: String
     val sakspart: Sakspart
     val blocks: List<Block>
@@ -14,15 +17,17 @@ interface LetterMarkup {
 
     interface Sakspart {
         val gjelderNavn: String
+        // TODO: Når Foedselsnummer er konvertert til value class så burde den brukes her.
         val gjelderFoedselsnummer: String
+        val vergeNavn: String?
         val saksnummer: String
-        val dokumentDato: String
+        val dokumentDato: LocalDate
     }
 
     interface Signatur {
         val hilsenTekst: String
         val saksbehandlerRolleTekst: String
-        val saksbehandlerNavn: String
+        val saksbehandlerNavn: String?
         val attesterendeSaksbehandlerNavn: String?
         val navAvsenderEnhet: String
     }

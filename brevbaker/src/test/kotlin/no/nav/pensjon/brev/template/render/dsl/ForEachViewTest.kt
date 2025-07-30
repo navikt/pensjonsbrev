@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.render.hasBlocks
 import org.junit.jupiter.api.Test
 
