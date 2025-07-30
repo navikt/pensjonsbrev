@@ -530,33 +530,38 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 showIf(not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and not(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt)) {
                     // flyttingAPHjemmel_001
                     text(
-                        Bokmal to " og 22-12.",
-                        Nynorsk to " og 22-12.",
-                        English to " and 22-12 of the National Insurance Act."
+                        Bokmal to "",
+                        Nynorsk to "",
+                        English to ""
                     )
                 }.orShowIf(pesysData.alderspensjonVedVirk.garantipensjonInnvilget and not(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt)) {
                     // flyttingAPGarantipensjonHjemmel_001
                     text(
-                        Bokmal to ", 20-10 og 22-12.",
-                        Nynorsk to ", 20-10 og 22-12.",
-                        English to ", 20-10 and 22-12 of the National Insurance Act."
+                        Bokmal to ", 20-10",
+                        Nynorsk to ", 20-10",
+                        English to ", 20-10"
                     )
                 }.orShowIf(not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt) {
                         //  flyttingAPGjenlevendeHjemmel_001
                         text(
-                            Bokmal to ", 19-16 jamfør 17-4 og 22-12.",
-                            Nynorsk to ", 19-16 jamfør 17-4 og 22-12.",
-                            English to ", 19-16 confer 17-4 and 22-12 of the National Insurance Act."
+                            Bokmal to ", 19-16 jamfør 17-4",
+                            Nynorsk to ", 19-16 jamfør 17-4",
+                            English to ", 19-16 confer 17-4"
                         )
                     }
                     .orShowIf(pesysData.alderspensjonVedVirk.garantipensjonInnvilget and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt) {
                         // flyttingAP2016GjenlevendeGarantipensjonHjemmel_001
                         text(
-                            Bokmal to ", 19-16 jamfør 17-4, 20-10, 20-19a og 22-12.",
-                            Nynorsk to ", 19-16 jamfør 17-4, 20-10, 20-19a og 22-12.",
-                            English to ", 19-16 confer 17-4, 20-10, 20-19a and 22-12 of the National Insurance Act."
+                            Bokmal to ", 19-16 jamfør 17-4, 20-10, 20-19a",
+                            Nynorsk to ", 19-16 jamfør 17-4, 20-10, 20-19a",
+                            English to ", 19-16 confer 17-4, 20-10, 20-19a"
                         )
                     }
+                text(
+                    Bokmal to " og 22-12.",
+                    Nynorsk to " og 22-12.",
+                    English to " and 22-12 of the National Insurance Act."
+                )
             }
 
             showIf(pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleEOES and pesysData.bruker.borIEOES) {
