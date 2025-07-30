@@ -94,7 +94,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
         letterDataType = VedtakEndringVedFlyttingMellomLandDto::class,
         languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - endring ved flytting mellom land",
+            displayTitle = "Vedtak - endring av alderspensjon ved flytting mellom land",
             isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
@@ -102,10 +102,11 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
     ) {
         title {
             // nyBeregningAPTittel_001
+            val virkDato = pesysData.krav.virkDatoFom.format()
             textExpr(
-                Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ".expr() + pesysData.krav.virkDatoFom.format(),
-                Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + pesysData.krav.virkDatoFom.format(),
-                English to "We have recalculated your retirement pension from ".expr() + pesysData.krav.virkDatoFom.format()
+                Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ".expr() + virkDato,
+                Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + virkDato,
+                English to "We have recalculated your retirement pension from ".expr() + virkDato
             )
         }
 
@@ -176,11 +177,14 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                     }
                 }
 
+                val minst20AarTrygdetid = pesysData.inngangOgEksportVurdering.minst20AarTrygdetid
+                val minst20AarTrygdetidAvdoed = pesysData.inngangOgEksportVurderingAvdoed.minst20ArTrygdetidKap20_safe.ifNull(false)
+                val minst20AarBotidAvdoed = pesysData.inngangOgEksportVurderingAvdoed.minst20ArBotidKap19_safe.ifNull(false)
                 showIf(
                     pesysData.inngangOgEksportVurdering.eksportForbudKode.isNull() and
-                            not(pesysData.inngangOgEksportVurdering.minst20AarTrygdetid) and
-                            pesysData.inngangOgEksportVurderingAvdoed.minst20ArTrygdetidKap20_safe.ifNull(false)
-                            and pesysData.inngangOgEksportVurderingAvdoed.minst20ArBotidKap19_safe.ifNull(false)
+                            not(minst20AarTrygdetid) and
+                            minst20AarTrygdetidAvdoed
+                            and minst20AarBotidAvdoed
                 ) {
                     // eksportAPunder20aar_001
                     paragraph {
@@ -200,11 +204,8 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                     }
                 }.orShowIf(
                     pesysData.inngangOgEksportVurderingAvdoed_safe.eksportForbudKode_safe.isNull() and
-                            pesysData.inngangOgEksportVurdering.minst20AarTrygdetid and
-                            (pesysData.inngangOgEksportVurderingAvdoed_safe.minst20ArTrygdetidKap20_safe.equalTo(false) or
-                                    (pesysData.inngangOgEksportVurderingAvdoed_safe.minst20ArBotidKap19_safe.equalTo(
-                                        false
-                                    )))
+                            minst20AarTrygdetid and
+                            (not(minst20AarTrygdetidAvdoed) or not(minst20AarBotidAvdoed))
                 ) {
                     // eksportAPUnder20aarAvdod_001
                     paragraph {
@@ -217,16 +218,13 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }
 
-            showIf(
-                aarsakUtvandret and
-                        pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
-                            BRUKER_FLYTTET_IKKE_AVT_LAND
-                        ) and
-                        not(
-                            pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(
-                                BRUKER_FLYTTET_IKKE_AVT_LAND
-                            )
-                        )
+            val begrunnelseETErBrukerFlyttetIkkeAvtLand = pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
+                BRUKER_FLYTTET_IKKE_AVT_LAND
+            )
+            val begrunnelseBTErBrukerFlyttetIkkeAvtLand = pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(
+                BRUKER_FLYTTET_IKKE_AVT_LAND
+            )
+            showIf(aarsakUtvandret and begrunnelseETErBrukerFlyttetIkkeAvtLand and not(begrunnelseBTErBrukerFlyttetIkkeAvtLand)
             ) {
                 // eksportAPET_001
                 paragraph {
@@ -237,15 +235,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                     )
                 }
             }.orShowIf(
-                aarsakUtvandret and
-                        not(
-                            pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
-                                BRUKER_FLYTTET_IKKE_AVT_LAND
-                            )
-                        ) and
-                        pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(
-                            BRUKER_FLYTTET_IKKE_AVT_LAND
-                        )
+                aarsakUtvandret and not(begrunnelseETErBrukerFlyttetIkkeAvtLand) and begrunnelseBTErBrukerFlyttetIkkeAvtLand
             ) {
                 // eksportAPBT_001
                 paragraph {
@@ -256,13 +246,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                     )
                 }
             }.orShowIf(
-                aarsakUtvandret and
-                        pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
-                            BRUKER_FLYTTET_IKKE_AVT_LAND
-                        ) and
-                        pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(
-                            BRUKER_FLYTTET_IKKE_AVT_LAND
-                        )
+                aarsakUtvandret and begrunnelseETErBrukerFlyttetIkkeAvtLand and begrunnelseBTErBrukerFlyttetIkkeAvtLand
             ) {
                 // eksportAPETBT_001
                 paragraph {
@@ -314,14 +298,10 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             showIf(
                 aarsakUtvandret and
                         not(
-                            pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(
-                                BRUKER_FLYTTET_IKKE_AVT_LAND
-                            )
+                            begrunnelseBTErBrukerFlyttetIkkeAvtLand
                         ) and
                         not(
-                            pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
-                                BRUKER_FLYTTET_IKKE_AVT_LAND
-                            )
+                            begrunnelseETErBrukerFlyttetIkkeAvtLand
                         ) and
                         (eksportForbudKode.equalTo(FLYKT_ALDER) or eksportForbudKode.equalTo(UFOR25_ALDER)
                                 or eksportForbudKodeAvdoed.equalTo(FLYKT_ALDER) or eksportForbudKodeAvdoed.equalTo(
@@ -342,16 +322,8 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 aarsakUtvandret and
                         pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET) and
                         pesysData.inngangOgEksportVurdering.eksportForbudKode.isNull() and
-                        not(
-                            pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(
-                                BRUKER_FLYTTET_IKKE_AVT_LAND
-                            )
-                        ) and
-                        not(
-                            pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
-                                BRUKER_FLYTTET_IKKE_AVT_LAND
-                            )
-                        )
+                        not(begrunnelseBTErBrukerFlyttetIkkeAvtLand) and
+                        not(begrunnelseETErBrukerFlyttetIkkeAvtLand)
             ) {
                 showIf(
                     pesysData.beregnetpensjonPerMaanedVedVirk.grunnnpensjon.greaterThan(0) and
@@ -569,8 +541,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                         Nynorsk to ", 20-10 og 22-12.",
                         English to ", 20-10 and 22-12 of the National Insurance Act."
                     )
-                }
-                    .orShowIf(not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt) {
+                }.orShowIf(not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt) {
                         //  flyttingAPGjenlevendeHjemmel_001
                         text(
                             Bokmal to ", 19-16 jamfør 17-4 og 22-12.",
@@ -614,12 +585,8 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
 
             showIf(
                 pesysData.krav.aarsak.equalTo(UTVANDRET)
-                        and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
-                    BRUKER_FLYTTET_IKKE_AVT_LAND
-                )
-                        and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.notEqualTo(
-                    BRUKER_FLYTTET_IKKE_AVT_LAND
-                )
+                        and begrunnelseETErBrukerFlyttetIkkeAvtLand
+                        and not(begrunnelseBTErBrukerFlyttetIkkeAvtLand)
             ) {
                 // flyttingETAPHjemmel_001
                 paragraph {
@@ -633,12 +600,8 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
 
             showIf(
                 pesysData.krav.aarsak.equalTo(UTVANDRET)
-                        and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.notEqualTo(
-                    BRUKER_FLYTTET_IKKE_AVT_LAND
-                )
-                        and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(
-                    BRUKER_FLYTTET_IKKE_AVT_LAND
-                )
+                        and not(begrunnelseETErBrukerFlyttetIkkeAvtLand)
+                        and begrunnelseBTErBrukerFlyttetIkkeAvtLand
             ) {
                 // flyttingBTAPHjemmel_001
                 paragraph {
@@ -652,12 +615,8 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
 
             showIf(
                 pesysData.krav.aarsak.equalTo(UTVANDRET)
-                        and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
-                    BRUKER_FLYTTET_IKKE_AVT_LAND
-                )
-                        and pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(
-                    BRUKER_FLYTTET_IKKE_AVT_LAND
-                )
+                        and begrunnelseETErBrukerFlyttetIkkeAvtLand
+                        and begrunnelseBTErBrukerFlyttetIkkeAvtLand
             ) {
                 // flyttingETBTAPHjemmel_001
                 paragraph {
