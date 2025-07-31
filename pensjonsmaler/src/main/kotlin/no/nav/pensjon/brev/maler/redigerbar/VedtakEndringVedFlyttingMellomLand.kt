@@ -564,9 +564,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                         English to "This decision was also made pursuant to the provisions of Article 7 of Regulation (EC) 883/2004."
                     )
                 }
-            }
-
-            showIf(pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland and not(pesysData.bruker.borIEOES) and pesysData.bruker.borIAvtaleland) {
+            }.orShowIf(pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland and not(pesysData.bruker.borIEOES) and pesysData.bruker.borIAvtaleland) {
                 // avtaleEksportHjemmel_001
                 paragraph {
                     val fritekst = fritekst("legg inn aktuell artikkel om eksport")
