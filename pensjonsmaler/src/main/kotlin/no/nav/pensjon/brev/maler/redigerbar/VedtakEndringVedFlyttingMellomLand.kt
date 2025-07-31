@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.BeloepEndring
-import no.nav.pensjon.brev.api.model.EksportForbudKode
+import no.nav.pensjon.brev.api.model.EksportForbudKode.DOD26_ALDER
 import no.nav.pensjon.brev.api.model.EksportForbudKode.FLYKT_ALDER
 import no.nav.pensjon.brev.api.model.EksportForbudKode.UFOR25_ALDER
 import no.nav.pensjon.brev.api.model.Sakstype
@@ -168,7 +168,9 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                             English to "To be eligible for retirement pension calculated in accordance with the regulations for young people with disabilities, you have to live in Norway. However, you are still eligible for a pension calculated on the basis of your own accumulated pension rights."
                         )
                     }
-                }.orShowIf(eksportForbudKode.equalTo(EksportForbudKode.DOD26_ALDER)) {
+                }
+
+                showIf(eksportForbudKodeAvdoed.equalTo(DOD26_ALDER)) {
                     // eksportUngUforAvdod_001
                     paragraph {
                         text(
@@ -177,7 +179,9 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                             English to "When you move abroad, you are no longer eligible for retirement pension calculated in accordance with the regulations as the deceased was younger than 26 years old at the time of death. However, you are still eligible for a pension calculated on the basis of your own and the deceased’s accumulated pension rights."
                         )
                     }
-                }.orShowIf(eksportForbudKode.equalTo(FLYKT_ALDER)) {
+                }
+
+                showIf(eksportForbudKode.equalTo(FLYKT_ALDER)) {
                     // eksportFlyktning_001
                     paragraph {
                         text(
@@ -309,26 +313,30 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                             English to "When you live in Norway you are eligible for retirement pension calculated in accordance with the regulations for young people with disabilities. We have therefore recalculated your pension."
                         )
                     }
-                }.orShowIf(saksbehandlerValg.aarsakTilAtPensjonenOeker.equalTo(AarsakTilAtPensjonenOeker.EKSPORTFORBUD_FLYKTNING)) {
-                    // importAPflyktninger_001
-                    paragraph {
-                        text(
-                            Bokmal to "Når du bor i Norge eller et EØS-land har du rett til alderspensjon etter reglene for flyktninger igjen. Derfor har vi beregnet pensjonen din på nytt.",
-                            Nynorsk to "Når du bur i Noreg eller eit EØS-land har du rett til alderspensjon etter reglane for flyktningar igjen. Derfor har vi berekna pensjonen din på nytt.",
-                            English to "When you live in Norway or an EEA country you are eligible for retirement pension determined on the basis of the regulations for refugees. We have therefore recalculated your pension."
-                        )
-                    }
                 }
+                    .orShowIf(saksbehandlerValg.aarsakTilAtPensjonenOeker.equalTo(AarsakTilAtPensjonenOeker.EKSPORTFORBUD_FLYKTNING)) {
+                        // importAPflyktninger_001
+                        paragraph {
+                            text(
+                                Bokmal to "Når du bor i Norge eller et EØS-land har du rett til alderspensjon etter reglene for flyktninger igjen. Derfor har vi beregnet pensjonen din på nytt.",
+                                Nynorsk to "Når du bur i Noreg eller eit EØS-land har du rett til alderspensjon etter reglane for flyktningar igjen. Derfor har vi berekna pensjonen din på nytt.",
+                                English to "When you live in Norway or an EEA country you are eligible for retirement pension determined on the basis of the regulations for refugees. We have therefore recalculated your pension."
+                            )
+                        }
+                    }
             }
 
             showIf(
                 aarsakUtvandret and
                         not(begrunnelseBTErBrukerFlyttetIkkeAvtLand) and
                         not(begrunnelseETErBrukerFlyttetIkkeAvtLand) and
-                        (eksportForbudKode.equalTo(FLYKT_ALDER) or eksportForbudKode.equalTo(UFOR25_ALDER)
-                                or eksportForbudKodeAvdoed.equalTo(FLYKT_ALDER) or eksportForbudKodeAvdoed.equalTo(
-                            EksportForbudKode.DOD26_ALDER
-                        ))
+                        (
+                                eksportForbudKode.equalTo(UFOR25_ALDER)
+                                        or eksportForbudKode.equalTo(FLYKT_ALDER)
+                                        or eksportForbudKodeAvdoed.equalTo(UFOR25_ALDER)
+                                        or eksportForbudKodeAvdoed.equalTo(FLYKT_ALDER)
+                                        or eksportForbudKodeAvdoed.equalTo(DOD26_ALDER)
+                                )
             ) {
                 // omregningAP_001
                 paragraph {
