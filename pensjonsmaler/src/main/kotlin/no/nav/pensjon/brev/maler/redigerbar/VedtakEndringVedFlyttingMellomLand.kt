@@ -373,81 +373,75 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                             Nynorsk to " og pensjonstillegget ditt",
                             English to " and pension supplement"
                         )
+                    }.orShowIf(
+                        not(garantipensjonInnvilget) and
+                                not(pensjonstilleggInnvilget) and
+                                (minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_MNT_001
+                        text(
+                            Bokmal to " og minstenivåtillegget ditt",
+                            Nynorsk to " og minstenivåtillegget ditt",
+                            English to " and minimum pension supplement"
+                        )
+                    }.orShowIf(
+                        not(garantipensjonInnvilget) and
+                                pensjonstilleggInnvilget and
+                                (minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_PenT_MNT_001
+                        text(
+                            Bokmal to ", pensjonstillegget og minstenivåtillegget ditt",
+                            Nynorsk to ", pensjonstillegget og minstenivåtillegget ditt",
+                            English to ", supplementary pension and minimum pension supplement"
+                        )
+                    }.orShowIf(
+                        garantipensjonInnvilget and
+                                not(pensjonstilleggInnvilget) and
+                                not(minstenivaaIndividuellInnvilget) and
+                                not(minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_GarantiPen_001
+                        text(
+                            Bokmal to " og garantipensjonen din",
+                            Nynorsk to " og garantipensjonen din",
+                            English to " and guaranteed pension"
+                        )
+                    }.orShowIf(
+                        garantipensjonInnvilget and
+                                pensjonstilleggInnvilget and
+                                not(minstenivaaIndividuellInnvilget) and
+                                not(minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_PenT_GarantiPen_001
+                        text(
+                            Bokmal to ", pensjonstillegget og garantipensjonen din",
+                            Nynorsk to ", pensjonstillegget og garantipensjonen din",
+                            English to ", supplementary pension and guaranteed pension"
+                        )
+                    }.orShowIf(
+                        garantipensjonInnvilget and
+                                not(pensjonstilleggInnvilget) and
+                                (minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_GarantiPen_MNT_001
+                        text(
+                            Bokmal to ", garantipensjonen og minstenivåtillegget ditt",
+                            Nynorsk to ", garantipensjonen og minstenivåtillegget ditt",
+                            English to ", guaranteed pension and minimum pension supplement"
+                        )
+                    }.orShowIf(
+                        garantipensjonInnvilget and
+                                pensjonstilleggInnvilget and
+                                (minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_PenT_GarantiPen_MNT_001
+                        text(
+                            Bokmal to ", pensjonstillegget, garantipensjonen og minstenivåtillegget ditt",
+                            Nynorsk to ", pensjonstillegget, garantipensjonen og minstenivåtillegget ditt",
+                            English to ", supplementary pension, guaranteed pension and minimum pension supplement"
+                        )
                     }
-                        .orShowIf(
-                            not(garantipensjonInnvilget) and
-                                    not(pensjonstilleggInnvilget) and
-                                    (minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget)
-                        ) {
-                            // omregningGP_MNT_001
-                            text(
-                                Bokmal to " og minstenivåtillegget ditt",
-                                Nynorsk to " og minstenivåtillegget ditt",
-                                English to " and minimum pension supplement"
-                            )
-                        }
-                        .orShowIf(
-                            not(garantipensjonInnvilget) and
-                                    pensjonstilleggInnvilget and
-                                    (minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget)
-                        ) {
-                            // omregningGP_PenT_MNT_001
-                            text(
-                                Bokmal to ", pensjonstillegget og minstenivåtillegget ditt",
-                                Nynorsk to ", pensjonstillegget og minstenivåtillegget ditt",
-                                English to ", supplementary pension and minimum pension supplement"
-                            )
-                        }
-                        .orShowIf(
-                            garantipensjonInnvilget and
-                                    not(pensjonstilleggInnvilget) and
-                                    not(minstenivaaIndividuellInnvilget) and
-                                    not(minstenivaaPensjonistParInnvilget)
-                        ) {
-                            // omregningGP_GarantiPen_001
-                            text(
-                                Bokmal to " og garantipensjonen din",
-                                Nynorsk to " og garantipensjonen din",
-                                English to " and guaranteed pension"
-                            )
-                        }
-                        .orShowIf(
-                            garantipensjonInnvilget and
-                                    pensjonstilleggInnvilget and
-                                    not(minstenivaaIndividuellInnvilget) and
-                                    not(minstenivaaPensjonistParInnvilget)
-                        ) {
-                            // omregningGP_PenT_GarantiPen_001
-                            text(
-                                Bokmal to ", pensjonstillegget og garantipensjonen din",
-                                Nynorsk to ", pensjonstillegget og garantipensjonen din",
-                                English to ", supplementary pension and guaranteed pension"
-                            )
-                        }
-                        .orShowIf(
-                            garantipensjonInnvilget and
-                                    not(pensjonstilleggInnvilget) and
-                                    (minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget)
-                        ) {
-                            // omregningGP_GarantiPen_MNT_001
-                            text(
-                                Bokmal to ", garantipensjonen og minstenivåtillegget ditt",
-                                Nynorsk to ", garantipensjonen og minstenivåtillegget ditt",
-                                English to ", guaranteed pension and minimum pension supplement"
-                            )
-                        }
-                        .orShowIf(
-                            garantipensjonInnvilget and
-                                    pensjonstilleggInnvilget and
-                                    (minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget)
-                        ) {
-                            // omregningGP_PenT_GarantiPen_MNT_001
-                            text(
-                                Bokmal to ", pensjonstillegget, garantipensjonen og minstenivåtillegget ditt",
-                                Nynorsk to ", pensjonstillegget, garantipensjonen og minstenivåtillegget ditt",
-                                English to ", supplementary pension, guaranteed pension and minimum pension supplement"
-                            )
-                        }
                     text(
                         Bokmal to " på nytt.",
                         Nynorsk to " på nytt.",
@@ -548,15 +542,14 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                         Nynorsk to ", 19-16 jamfør 17-4",
                         English to ", 19-16 confer 17-4"
                     )
+                }.orShowIf(garantipensjonInnvilget and gjenlevenderettAnvendt) {
+                    // flyttingAP2016GjenlevendeGarantipensjonHjemmel_001
+                    text(
+                        Bokmal to ", 19-16 jamfør 17-4, 20-10, 20-19a",
+                        Nynorsk to ", 19-16 jamfør 17-4, 20-10, 20-19a",
+                        English to ", 19-16 confer 17-4, 20-10, 20-19a"
+                    )
                 }
-                    .orShowIf(garantipensjonInnvilget and gjenlevenderettAnvendt) {
-                        // flyttingAP2016GjenlevendeGarantipensjonHjemmel_001
-                        text(
-                            Bokmal to ", 19-16 jamfør 17-4, 20-10, 20-19a",
-                            Nynorsk to ", 19-16 jamfør 17-4, 20-10, 20-19a",
-                            English to ", 19-16 confer 17-4, 20-10, 20-19a"
-                        )
-                    }
                 text(
                     Bokmal to " og 22-12.",
                     Nynorsk to " og 22-12.",
@@ -658,8 +651,8 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             includePhrase(InformasjonOmAlderspensjon)
 
             includePhrase(MeldFraOmEndringer2)
-            // rett til klage
-            // rett til innsyn
+            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
             includePhrase(Felles.HarDuSpoersmaal(Constants.PENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
 
         }
