@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.routing
 
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.contains
 import com.natpryce.hamkrest.containsSubstring
@@ -105,6 +107,24 @@ class LetterRoutesITest {
         }
         assertEquals(ContentType.Application.Pdf, response.contentType())
         assertEquals(HttpStatusCode.OK, response.status)
+    }
+
+    @Test
+    fun `render pdf can deserialize standard JavaTimeModule formatted localdate`() {
+        val pesysJackson = jacksonObjectMapper().apply {
+            registerModule(JavaTimeModule())
+        }
+        println(pesysJackson.writeValueAsString(autoBrevRequest))
+
+        testBrevbakerApp { client2 ->
+            val response = client.post("/letter/autobrev/pdf") {
+                accept(ContentType.Application.Pdf)
+                contentType(ContentType.Application.Json)
+                setBody(pesysJackson.writeValueAsString(autoBrevRequest))
+            }
+            assertEquals(ContentType.Application.Pdf, response.contentType())
+            assertEquals(HttpStatusCode.OK, response.status)
+        }
     }
 
     @Test
