@@ -80,7 +80,6 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -106,18 +105,25 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
+        val virkDatoFom = pesysData.krav.virkDatoFom.format()
         title {
             // nyBeregningAPTittel_001
-            val virkDato = pesysData.krav.virkDatoFom.format()
             textExpr(
-                Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ".expr() + virkDato,
-                Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + virkDato,
-                English to "We have recalculated your retirement pension from ".expr() + virkDato
+                Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ".expr() + virkDatoFom,
+                Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + virkDatoFom,
+                English to "We have recalculated your retirement pension from ".expr() + virkDatoFom
             )
         }
 
         outline {
             val bostedsland = pesysData.bruker.faktiskBostedsland_safe.ifNull(fritekst("bostedsland"))
+            val garantipensjonInnvilget = pesysData.alderspensjonVedVirk.garantipensjonInnvilget
+            val pensjonstilleggInnvilget = pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget
+            val minstenivaaIndividuellInnvilget = pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget
+            val minstenivaaPensjonistParInnvilget = pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget
+
+            val totalPensjon = pesysData.alderspensjonVedVirk.totalPensjon.format()
+            val aarsakUtvandret = pesysData.krav.aarsak.equalTo(UTVANDRET)
 
             includePhrase(Vedtak.Overskrift)
 
@@ -141,7 +147,6 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }
 
-            val aarsakUtvandret = pesysData.krav.aarsak.equalTo(UTVANDRET)
             showIf(aarsakUtvandret and pesysData.alderspensjonVedVirk.erEksportberegnet) {
                 showIf(pesysData.inngangOgEksportVurdering.eksportForbudKode.equalTo(UFOR25_ALDER)) {
                     // eksportUngUfor_001
@@ -304,12 +309,8 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             val eksportForbudKodeAvdoed = pesysData.inngangOgEksportVurderingAvdoed_safe.eksportForbudKode_safe
             showIf(
                 aarsakUtvandret and
-                        not(
-                            begrunnelseBTErBrukerFlyttetIkkeAvtLand
-                        ) and
-                        not(
-                            begrunnelseETErBrukerFlyttetIkkeAvtLand
-                        ) and
+                        not(begrunnelseBTErBrukerFlyttetIkkeAvtLand) and
+                        not(begrunnelseETErBrukerFlyttetIkkeAvtLand) and
                         (eksportForbudKode.equalTo(FLYKT_ALDER) or eksportForbudKode.equalTo(UFOR25_ALDER)
                                 or eksportForbudKodeAvdoed.equalTo(FLYKT_ALDER) or eksportForbudKodeAvdoed.equalTo(
                             EksportForbudKode.DOD26_ALDER
@@ -325,14 +326,15 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }
 
+            val beloepUendret = pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.UENDRET)
             showIf(
                 aarsakUtvandret and
-                        pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET) and
-                        pesysData.inngangOgEksportVurdering.eksportForbudKode.isNull() and
+                        not(beloepUendret) and
+                        eksportForbudKode.isNull() and
                         not(begrunnelseBTErBrukerFlyttetIkkeAvtLand) and
                         not(begrunnelseETErBrukerFlyttetIkkeAvtLand)
             ) {
-                showIf(pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.notEqualTo(BeloepEndring.UENDRET)) {
+                showIf(not(beloepUendret)) {
                     paragraph {
                         text(
                             Bokmal to "Derfor har vi beregnet grunnpensjonen",
@@ -340,10 +342,10 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                             English to "We have therefore recalculated your basic pension"
                         )
                         showIf(
-                            not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and
-                                    pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget and
-                                    not(pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget) and
-                                    not(pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
+                            not(garantipensjonInnvilget) and
+                                    pensjonstilleggInnvilget and
+                                    not(minstenivaaIndividuellInnvilget) and
+                                    not(minstenivaaPensjonistParInnvilget)
                         ) {
                             // omregningGP_PenT_001
                             text(
@@ -353,9 +355,9 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                             )
                         }
                             .orShowIf(
-                                not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and
-                                        not(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) and
-                                        (pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget or pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
+                                not(garantipensjonInnvilget) and
+                                        not(pensjonstilleggInnvilget) and
+                                        (minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget)
                             ) {
                                 // omregningGP_MNT_001
                                 text(
@@ -365,9 +367,9 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                                 )
                             }
                             .orShowIf(
-                                not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and
-                                        pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget and
-                                        (pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget or pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
+                                not(garantipensjonInnvilget) and
+                                        pensjonstilleggInnvilget and
+                                        (minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget)
                             ) {
                                 // omregningGP_PenT_MNT_001
                                 text(
@@ -377,10 +379,10 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                                 )
                             }
                             .orShowIf(
-                                pesysData.alderspensjonVedVirk.garantipensjonInnvilget and
-                                        not(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) and
-                                        not(pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget) and
-                                        not(pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
+                                garantipensjonInnvilget and
+                                        not(pensjonstilleggInnvilget) and
+                                        not(minstenivaaIndividuellInnvilget) and
+                                        not(minstenivaaPensjonistParInnvilget)
                             ) {
                                 // omregningGP_GarantiPen_001
                                 text(
@@ -390,10 +392,10 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                                 )
                             }
                             .orShowIf(
-                                pesysData.alderspensjonVedVirk.garantipensjonInnvilget and
-                                        pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget and
-                                        not(pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget) and
-                                        not(pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
+                                garantipensjonInnvilget and
+                                        pensjonstilleggInnvilget and
+                                        not(minstenivaaIndividuellInnvilget) and
+                                        not(minstenivaaPensjonistParInnvilget)
                             ) {
                                 // omregningGP_PenT_GarantiPen_001
                                 text(
@@ -403,9 +405,9 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                                 )
                             }
                             .orShowIf(
-                                pesysData.alderspensjonVedVirk.garantipensjonInnvilget and
-                                        not(pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget) and
-                                        (pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget or pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
+                                garantipensjonInnvilget and
+                                        not(pensjonstilleggInnvilget) and
+                                        (minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget)
                             ) {
                                 // omregningGP_GarantiPen_MNT_001
                                 text(
@@ -415,9 +417,9 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                                 )
                             }
                             .orShowIf(
-                                pesysData.alderspensjonVedVirk.garantipensjonInnvilget and
-                                        pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget and
-                                        (pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget or pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget)
+                                garantipensjonInnvilget and
+                                        pensjonstilleggInnvilget and
+                                        (minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget)
                             ) {
                                 // omregningGP_PenT_GarantiPen_MNT_001
                                 text(
@@ -435,7 +437,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }
 
-            showIf(pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.UENDRET)) {
+            showIf(beloepUendret) {
                 // ingenEndringPensjon_001
                 paragraph {
                     text(
@@ -463,23 +465,22 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                     )
                 }
             }
-
             showIf(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder) {
                 // innvilgelseAPogUTInnledn_001
                 paragraph {
                     textExpr(
-                        Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
-                        Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner kvar månad før skatt frå " + pesysData.krav.virkDatoFom.format() + ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
-                        English to "You will receive NOK ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " every month before tax from " + pesysData.krav.virkDatoFom.format() + ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit."
+                        Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra " + virkDatoFom + ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
+                        Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå " + virkDatoFom + ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
+                        English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from " + virkDatoFom + ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit."
                     )
                 }
             }.orShow {
                 // innvilgelseAPInnledn_001
                 paragraph {
                     textExpr(
-                        Bokmal to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner hver måned før skatt fra " + pesysData.krav.virkDatoFom.format() + " i alderspensjon fra folketrygden.",
-                        Nynorsk to "Du får ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " kroner kvar månad før skatt frå " + pesysData.krav.virkDatoFom.format() + " i alderspensjon frå folketrygda.",
-                        English to "You will receive NOK ".expr() + pesysData.alderspensjonVedVirk.totalPensjon.format() + " every month before tax from " + pesysData.krav.virkDatoFom.format() + " as retirement pension from the National Insurance Scheme."
+                        Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra " + virkDatoFom + " i alderspensjon fra folketrygden.",
+                        Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå " + virkDatoFom + " i alderspensjon frå folketrygda.",
+                        English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from " + virkDatoFom + " as retirement pension from the National Insurance Scheme."
                     )
                 }
             }
