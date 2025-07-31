@@ -133,6 +133,9 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             val beloepRedusert =
                 pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_RED)
 
+            val eksportForbudKode = pesysData.inngangOgEksportVurdering.eksportForbudKode
+            val eksportForbudKodeAvdoed = pesysData.inngangOgEksportVurderingAvdoed_safe.eksportForbudKode_safe
+
             includePhrase(Vedtak.Overskrift)
 
             ifNotNull(pesysData.bruker.faktiskBostedsland) {
@@ -156,7 +159,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             }
 
             showIf(aarsakUtvandret and pesysData.alderspensjonVedVirk.erEksportberegnet) {
-                showIf(pesysData.inngangOgEksportVurdering.eksportForbudKode.equalTo(UFOR25_ALDER)) {
+                showIf(eksportForbudKode.equalTo(UFOR25_ALDER)) {
                     // eksportUngUfor_001
                     paragraph {
                         text(
@@ -165,7 +168,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                             English to "To be eligible for retirement pension calculated in accordance with the regulations for young people with disabilities, you have to live in Norway. However, you are still eligible for a pension calculated on the basis of your own accumulated pension rights."
                         )
                     }
-                }.orShowIf(pesysData.inngangOgEksportVurdering.eksportForbudKode.equalTo(EksportForbudKode.DOD26_ALDER)) {
+                }.orShowIf(eksportForbudKode.equalTo(EksportForbudKode.DOD26_ALDER)) {
                     // eksportUngUforAvdod_001
                     paragraph {
                         text(
@@ -174,7 +177,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                             English to "When you move abroad, you are no longer eligible for retirement pension calculated in accordance with the regulations as the deceased was younger than 26 years old at the time of death. However, you are still eligible for a pension calculated on the basis of your own and the deceased’s accumulated pension rights."
                         )
                     }
-                }.orShowIf(pesysData.inngangOgEksportVurdering.eksportForbudKode.equalTo(FLYKT_ALDER)) {
+                }.orShowIf(eksportForbudKode.equalTo(FLYKT_ALDER)) {
                     // eksportFlyktning_001
                     paragraph {
                         text(
@@ -185,7 +188,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                     }
                 }
 
-                showIf(pesysData.inngangOgEksportVurderingAvdoed_safe.eksportForbudKode_safe.equalTo(FLYKT_ALDER)) {
+                showIf(eksportForbudKodeAvdoed.equalTo(FLYKT_ALDER)) {
                     // eksportFlyktningAvdod_001
                     paragraph {
                         text(
@@ -202,7 +205,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 val minst20AarBotidAvdoed =
                     pesysData.inngangOgEksportVurderingAvdoed.minst20ArBotidKap19_safe.ifNull(false)
                 showIf(
-                    pesysData.inngangOgEksportVurdering.eksportForbudKode.isNull() and
+                    eksportForbudKode.isNull() and
                             not(minst20AarTrygdetid) and
                             minst20AarTrygdetidAvdoed
                             and minst20AarBotidAvdoed
@@ -224,7 +227,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                         )
                     }
                 }.orShowIf(
-                    pesysData.inngangOgEksportVurderingAvdoed_safe.eksportForbudKode_safe.isNull() and
+                    eksportForbudKodeAvdoed.isNull() and
                             minst20AarTrygdetid and
                             (not(minst20AarTrygdetidAvdoed) or not(minst20AarBotidAvdoed))
                 ) {
@@ -318,8 +321,6 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }
 
-            val eksportForbudKode = pesysData.inngangOgEksportVurdering.eksportForbudKode
-            val eksportForbudKodeAvdoed = pesysData.inngangOgEksportVurderingAvdoed_safe.eksportForbudKode_safe
             showIf(
                 aarsakUtvandret and
                         not(begrunnelseBTErBrukerFlyttetIkkeAvtLand) and
