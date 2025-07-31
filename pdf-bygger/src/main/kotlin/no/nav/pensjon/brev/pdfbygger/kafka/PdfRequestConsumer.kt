@@ -194,6 +194,8 @@ private fun createKafkaConfig(kafkaConfig: ApplicationConfig): Map<String, Strin
     "ssl.truststore.type" to "JKS",
     "ssl.truststore.location" to kafkaConfig.getProperty("ssl.truststore.location"),
     "ssl.truststore.password" to kafkaConfig.getProperty("ssl.truststore.password"),
+    // must be prefixed with application ID assigned by NAIS for the stream to work properly.
+    "application.id" to kafkaConfig.getProperty("application.id.prefix") + "_pdf_bygger",
 )
 
 private fun createKafkaConsumerConfig(kafkaConfig: ApplicationConfig, paralellism: Int) =
