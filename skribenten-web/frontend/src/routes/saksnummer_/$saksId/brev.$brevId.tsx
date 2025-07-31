@@ -1,18 +1,6 @@
 import { css } from "@emotion/react";
 import { ArrowCirclepathIcon, ArrowRightIcon } from "@navikt/aksel-icons";
-import {
-  BodyLong,
-  Box,
-  Button,
-  Heading,
-  HStack,
-  Label,
-  Modal,
-  Skeleton,
-  Tabs,
-  TextField,
-  VStack,
-} from "@navikt/ds-react";
+import { BodyLong, Box, Button, Heading, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -29,7 +17,6 @@ import {
 } from "~/api/brev-queries";
 import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import {
   SaksbehandlerValgModelEditor,
   usePartitionedModelSpecification,
@@ -40,6 +27,7 @@ import {
   ManagedLetterEditorContextProvider,
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
+import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
@@ -365,18 +353,7 @@ function RedigerBrev({
                 {brevmal.data?.name}
               </Heading>
               <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
-              <TextField
-                autoComplete={"on"}
-                defaultValue={editorState.redigertBrev.signatur.saksbehandlerNavn ?? ""}
-                error={
-                  (editorState.redigertBrev.signatur.saksbehandlerNavn?.length ?? 0) > 0
-                    ? undefined
-                    : "Signatur må oppgis"
-                }
-                label="Signatur"
-                onChange={(e) => applyAction(Actions.updateSaksbehandlerSignatur, setEditorState, e.target.value)}
-                size="small"
-              />
+              <UnderskriftTextField of="Saksbehandler" />
             </VStack>
             <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
           </div>

@@ -60,7 +60,7 @@ sealed class BrevredigeringException(override val message: String) : Exception()
     class KanIkkeAttestereException(message: String) : BrevredigeringException(message)
     class AlleredeAttestertException(message: String) : BrevredigeringException(message)
     class BrevmalFinnesIkke(message: String) : BrevredigeringException(message)
-    class VedtaksbrevKreverVedtaksId(message: String): BrevredigeringException(message)
+    class VedtaksbrevKreverVedtaksId(message: String) : BrevredigeringException(message)
 }
 
 class BrevredigeringService(
@@ -138,7 +138,8 @@ class BrevredigeringService(
                 rendreBrev(
                     brev = brevDto,
                     saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg,
-                    signaturSignerende = signatur ?: signaturSaksbehandler(nyttRedigertbrev ?: brevDto.redigertBrev),
+                    signaturSignerende = signatur ?: nyttRedigertbrev?.signatur?.saksbehandlerNavn,
+                    signaturAttestant = nyttRedigertbrev?.signatur?.attesterendeSaksbehandlerNavn,
                 ).map { rendretBrev ->
                     val principal = PrincipalInContext.require()
                     transaction {
@@ -243,10 +244,7 @@ class BrevredigeringService(
     suspend fun hentBrevAttestering(saksId: Long, brevId: Long, reserverForRedigering: Boolean = false): ServiceResult<Dto.Brevredigering>? =
         if (reserverForRedigering) {
             hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-                val principal = PrincipalInContext.require()
-                val signaturAttestant = brevDb.signaturAttestant
-                    ?: navansattService.hentNavansatt(principal.navIdent.id)?.let { "${it.fornavn} ${it.etternavn}" }
-                    ?: principal.fullName
+                val signaturAttestant = brevDto.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?: principalSignatur()
 
                 if (brevDb.signaturAttestant == null) {
                     transaction { brevDb.signaturAttestant = signaturAttestant }
@@ -319,8 +317,7 @@ class BrevredigeringService(
 
             val signaturAttestant = signaturAttestant
                 ?: brevDto.redigertBrev.signatur.attesterendeSaksbehandlerNavn
-                ?: navansattService.hentNavansatt(principal.navIdent.id)?.let { "${it.fornavn} ${it.etternavn}" }
-                ?: principal.fullName
+                ?: principalSignatur()
 
             rendreBrev(
                 brev = brevDto,
@@ -417,7 +414,11 @@ class BrevredigeringService(
                 }
         }
 
-    private suspend fun <T> hentBrevMedReservasjon(brevId: Long, saksId: Long? = null, block: suspend ReservertBrevScope.() -> T): T? {
+    private suspend fun <T> hentBrevMedReservasjon(
+        brevId: Long,
+        saksId: Long? = null,
+        block: suspend ReservertBrevScope.() -> T
+    ): T? {
         val principal = PrincipalInContext.require()
 
         return transaction(Connection.TRANSACTION_REPEATABLE_READ) {
@@ -432,7 +433,10 @@ class BrevredigeringService(
             val redigeresAv = reservertBrevScope.brevDto.info.redigeresAv
 
             if (reservertBrevScope.brevDto.info.journalpostId != null) {
-                throw ArkivertBrevException(reservertBrevScope.brevDto.info.id, journalpostId = reservertBrevScope.brevDto.info.journalpostId)
+                throw ArkivertBrevException(
+                    reservertBrevScope.brevDto.info.id,
+                    journalpostId = reservertBrevScope.brevDto.info.journalpostId
+                )
             } else if (redigeresAv == principal.navIdent) {
                 reservertBrevScope.block()
             } else throw KanIkkeReservereBrevredigeringException(
@@ -489,7 +493,12 @@ class BrevredigeringService(
                         pesysData = pesysData.brevdata,
                         saksbehandlerValg = saksbehandlerValg,
                     ),
-                    felles = pesysData.felles.medSignerendeSaksbehandlere(SignerendeSaksbehandlere(signaturSignerende, signaturAttestant))
+                    felles = pesysData.felles.medSignerendeSaksbehandlere(
+                        SignerendeSaksbehandlere(
+                            saksbehandler = signaturSignerende,
+                            attesterendeSaksbehandler = signaturAttestant
+                        )
+                    )
                 )
             }
 
@@ -520,11 +529,8 @@ class BrevredigeringService(
                     pesysData = pesysData.brevdata,
                     saksbehandlerValg = brevredigering.saksbehandlerValg,
                 ),
-                // TODO: Kan fjerne oppdatering av felles.signatur her når brevbaker ikke bruker felles.signatur til rendring
-                felles = pesysData.felles.medSignerendeSaksbehandlere(SignerendeSaksbehandlere(
-                    saksbehandler = signaturSaksbehandler(brevredigering.redigertBrev),
-                    attesterendeSaksbehandler = brevredigering.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
-                )),
+                // Brevbaker bruker signaturer fra redigertBrev, men felles er nødvendig fordi den kan brukes i vedlegg.
+                felles = pesysData.felles.medSignerendeSaksbehandlere(null),
                 redigertBrev = brevredigering.redigertBrev.toMarkup()
             ).map {
                 transaction {
@@ -567,17 +573,14 @@ class BrevredigeringService(
         }
     }
 
-    suspend fun signaturSaksbehandler(redigertBrev: Edit.Letter? = null): String {
-        val principal = PrincipalInContext.require()
+    private suspend fun signaturSaksbehandler(redigertBrev: Edit.Letter? = null): String =
+        redigertBrev?.signatur?.saksbehandlerNavn
+            ?: principalSignatur()
 
-        return redigertBrev?.signatur?.saksbehandlerNavn
-            ?: navansattService.hentNavansatt(principal.navIdent.id)?.let { "${it.fornavn} ${it.etternavn}" }
-            ?: principal.fullName
-    }
-
-    suspend fun hentSignaturAttestant(saksId: Long, brevId: Long): ServiceResult<String?>? =
-        hentBrev(saksId = saksId, brevId = brevId)?.map {
-            it.info.signaturAttestant
+    private suspend fun principalSignatur(): String =
+        PrincipalInContext.require().let { principal ->
+            navansattService.hentNavansatt(principal.navIdent.id)?.let { "${it.fornavn} ${it.etternavn}" }
+                ?: principal.fullName
         }
 }
 
@@ -658,10 +661,10 @@ private fun Brevredigering.toBrevInfo(): Dto.BrevInfo =
             laastForRedigering && isVedtaksbrev ->
                 if (attestertAvNavIdent != null) {
                     Dto.BrevStatus.KLAR
-                }
-                else {
+                } else {
                     Dto.BrevStatus.ATTESTERING
                 }
+
             laastForRedigering -> Dto.BrevStatus.KLAR
 
             else -> Dto.BrevStatus.KLADD

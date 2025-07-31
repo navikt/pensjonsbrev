@@ -7,14 +7,8 @@ import type { AxiosError } from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-import {
-  getBrevAttesteringQuery,
-  getBrevReservasjon,
-  oppdaterAttestantSignatur,
-  oppdaterSaksbehandlerValg,
-} from "~/api/brev-queries";
+import { getBrevAttesteringQuery, getBrevReservasjon, oppdaterSaksbehandlerValg } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
-import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
@@ -25,6 +19,7 @@ import {
   ManagedLetterEditorContextProvider,
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
+import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
@@ -144,11 +139,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     defaultValues: defaultValuesModelEditor,
   });
 
-  const attestantSignaturMutation = useMutation<BrevResponse, AxiosError, string>({
-    mutationFn: (signatur) => oppdaterAttestantSignatur(props.brev.info.id, signatur),
-    onSuccess: (response) => onSaveSuccess(response),
-  });
-
   const saksbehandlerValgMutation = useMutation<BrevResponse, AxiosError, SaksbehandlerValg>({
     mutationFn: (saksbehandlerValg) => oppdaterSaksbehandlerValg(props.brev.info.id, saksbehandlerValg),
     onSuccess: (response) => onSaveSuccess(response),
@@ -174,15 +164,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       {
         saksbehandlerValg: values.saksbehandlerValg,
         redigertBrev: editorState.redigertBrev,
-        signatur: values.attestantSignatur,
       },
       { onSuccess: onSuccess },
     );
   };
 
-  const freeze =
-    saksbehandlerValgMutation.isPending || attestantSignaturMutation.isPending || attesterMutation.isPending;
-  const error = saksbehandlerValgMutation.isError || attestantSignaturMutation.isError || attesterMutation.isError;
+  const freeze = saksbehandlerValgMutation.isPending || attesterMutation.isPending;
+  const error = saksbehandlerValgMutation.isError || attesterMutation.isError;
 
   useEffect(() => {
     form.reset(defaultValuesModelEditor);
@@ -242,20 +230,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 >
                   Vis slettet tekst
                 </Switch>
-                <AutoSavingTextField
-                  autocomplete="Underskrift"
-                  field={"attestantSignatur"}
-                  fieldType={{
-                    type: "scalar",
-                    nullable: false,
-                    kind: "STRING",
-                    displayText: null,
-                  }}
-                  label="Underskrift"
-                  onSubmit={() => attestantSignaturMutation.mutate(form.getValues("attestantSignatur"))}
-                  timeoutTimer={2500}
-                  type={"text"}
-                />
+                <UnderskriftTextField of="Attestant" />
               </VStack>
               <Divider />
               <VStack>

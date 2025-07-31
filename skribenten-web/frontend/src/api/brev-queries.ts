@@ -102,14 +102,6 @@ export async function oppdaterSaksbehandlerValg(brevId: number, saksbehandlerVal
   ).data;
 }
 
-export const oppdaterAttestantSignatur = async (brevId: number | string, signatur: string) =>
-  (
-    await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/attestant`, signatur, {
-      //sendes som form-data hvis man ikke setter content-type til text/plain
-      headers: { "Content-Type": "text/plain" },
-    })
-  ).data;
-
 export async function tilbakestillBrev(brevId: number) {
   return (await axios.post<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/tilbakestill`)).data;
 }

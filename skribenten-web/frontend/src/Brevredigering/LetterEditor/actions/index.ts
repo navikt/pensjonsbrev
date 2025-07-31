@@ -1,7 +1,7 @@
 import { addNewLine } from "~/Brevredigering/LetterEditor/actions/addNewLine";
 import { cursorPosition } from "~/Brevredigering/LetterEditor/actions/cursorPosition";
 import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
-import { updateSaksbehandlerSignatur } from "~/Brevredigering/LetterEditor/actions/signatur";
+import { updateSignatur } from "~/Brevredigering/LetterEditor/actions/signatur";
 
 import { create } from "./common";
 import { merge } from "./merge";
@@ -20,7 +20,7 @@ const Actions = {
   split,
   switchTypography,
   updateContentText,
-  updateSaksbehandlerSignatur,
+  updateSignatur,
   toggleBulletList,
   switchFontType,
 };
