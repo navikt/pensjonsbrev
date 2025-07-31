@@ -28,16 +28,19 @@ object FlexibleLocalDateModule : SimpleModule() {
                 val value = parser.text.trim()
                 return try {
                     LocalDate.parse(value, isoFormatter)
-                } catch (_: Exception) {
+                } catch (isoFormatException: Exception) {
                     try {
                         LocalDate.parse(value, noShortFormatter)
-                    } catch (_: Exception) {
+                    } catch (norwegianFormatException: Exception) {
                         throw InvalidFormatException(
                             parser,
                             "Date must be ISO (yyyy-MM-dd) or Norwegian short (dd.MM.yyyy)",
                             value,
                             LocalDate::class.java
-                        )
+                        ).also {
+                            it.addSuppressed(isoFormatException)
+                            it.addSuppressed(norwegianFormatException)
+                        }
                     }
                 }
             }
