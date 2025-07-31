@@ -152,6 +152,35 @@ object MeldeFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
     }
 }
 
+object MeldFraOmEndringer2 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        // meldEndringerPesys_002
+        // TODO: Denne er så godt som lik mange av dei andre meld fra om endringer. Bør samkjøres og legges i felles.
+        title1 {
+            text(
+                Bokmal to "Du må melde fra om endringer",
+                Nynorsk to "Du må melde frå om endringar",
+                English to "You must notify Nav if anything changes"
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget ser du hvilke endringer du må si fra om.",
+                Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget ser du kva endringar du må seie frå om.",
+                English to "If your circumstances change, you must inform Nav immediately. The appendix specifies which changes you are obligated to notify us of."
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav.",
+                Nynorsk to "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til Nav.",
+                English to "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav."
+            )
+        }
+    }
+
+}
+
 data class ArbeidsinntektOgAlderspensjon(
     val innvilgetFor67: Expression<Boolean>,
     val uttaksgrad: Expression<Int>,

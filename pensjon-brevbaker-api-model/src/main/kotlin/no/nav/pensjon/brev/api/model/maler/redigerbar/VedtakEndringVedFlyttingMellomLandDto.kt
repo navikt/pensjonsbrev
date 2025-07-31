@@ -4,8 +4,10 @@ import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.EksportForbudKode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.brevbaker.api.model.Percent
 import java.time.LocalDate
 
 data class VedtakEndringVedFlyttingMellomLandDto(
@@ -28,7 +30,10 @@ data class VedtakEndringVedFlyttingMellomLandDto(
         val opphoersbegrunnelseVedVirk: OpphoersbegrunnelseVedVirk,
         val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
         val beregnetpensjonPerMaanedVedVirk: BeregnetPensjonPerMaanedVedVirk,
-        val erEtterbetaling1Maaned: Boolean
+        val erEtterbetaling1Maaned: Boolean,
+        val dineRettigheterOgMulighetTilAaKlage: DineRettigheterOgMulighetTilAaKlageDto,
+        val maanedligPensjonFoerSkatt: MaanedligPensjonFoerSkattDto,
+        val maanedligPensjonFoerSkattAP2025: MaanedligPensjonFoerSkattAP2025Dto
     ) : BrevbakerBrevdata {
         data class Krav(val virkDatoFom: LocalDate, val aarsak: Aarsak)
         data class Bruker(val faktiskBostedsland: String?, val borIEOES: Boolean, val borIAvtaleland: Boolean)
@@ -41,7 +46,7 @@ data class VedtakEndringVedFlyttingMellomLandDto(
             val uforeKombinertMedAlder: Boolean,
             val totalPensjon: Kroner,
             val gjenlevenderettAnvendt: Boolean,
-            val uttaksgrad: Percent,
+            val fullUttaksgrad: Boolean,
         )
 
         data class InngangOgEksportVurdering(

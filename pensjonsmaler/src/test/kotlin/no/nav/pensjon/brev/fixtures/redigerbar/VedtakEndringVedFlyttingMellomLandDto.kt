@@ -2,8 +2,10 @@ package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto
+import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkattAP2025
+import no.nav.pensjon.brev.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.brevbaker.api.model.Percent
 import java.time.LocalDate
 import java.time.Month
 
@@ -33,7 +35,7 @@ fun createVedtakEndringVedFlyttingMellomLandDto() = VedtakEndringVedFlyttingMell
             uforeKombinertMedAlder = true,
             totalPensjon = Kroner(1000),
             gjenlevenderettAnvendt = false,
-            uttaksgrad = Percent(100)
+            fullUttaksgrad = true
         ),
         inngangOgEksportVurdering = VedtakEndringVedFlyttingMellomLandDto.PesysData.InngangOgEksportVurdering(
             eksportForbudKode = null,
@@ -52,6 +54,9 @@ fun createVedtakEndringVedFlyttingMellomLandDto() = VedtakEndringVedFlyttingMell
         beregnetpensjonPerMaanedVedVirk = VedtakEndringVedFlyttingMellomLandDto.PesysData.BeregnetPensjonPerMaanedVedVirk(
             grunnnpensjon = Kroner(200)
         ),
-        erEtterbetaling1Maaned = true
+        erEtterbetaling1Maaned = true,
+        dineRettigheterOgMulighetTilAaKlage = createDineRettigheterOgMulighetTilAaKlageDto(),
+        maanedligPensjonFoerSkatt = createMaanedligPensjonFoerSkatt(),
+        maanedligPensjonFoerSkattAP2025 = createMaanedligPensjonFoerSkattAP2025()
     )
 )
