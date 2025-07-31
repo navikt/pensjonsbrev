@@ -14,7 +14,8 @@ fun createVedtakEndringVedFlyttingMellomLandDto() = VedtakEndringVedFlyttingMell
         innvandret = false,
         reduksjonTilbakeITid = true,
         endringIPensjonen = true,
-        etterbetaling = true
+        etterbetaling = true,
+        aarsakTilAtPensjonenOeker = VedtakEndringVedFlyttingMellomLandDto.AarsakTilAtPensjonenOeker.EKSPORTFORBUD_FLYKTNING,
     ),
     pesysData = VedtakEndringVedFlyttingMellomLandDto.PesysData(
         krav = VedtakEndringVedFlyttingMellomLandDto.PesysData.Krav(

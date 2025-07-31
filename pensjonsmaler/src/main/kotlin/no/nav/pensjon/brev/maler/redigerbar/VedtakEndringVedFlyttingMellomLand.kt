@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto.Aarsak.INNVANDRET
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto.Aarsak.UTVANDRET
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto.AarsakTilAtPensjonenOeker
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto.Opphoersbegrunnelse.BRUKER_FLYTTET_IKKE_AVT_LAND
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.erEksportberegnet
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.fullUttaksgrad
@@ -263,38 +264,39 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }
 
-
-            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(
                 pesysData.krav.aarsak.equalTo(INNVANDRET) and pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(
                     BeloepEndring.ENDR_OKT
-                ) and saksbehandlerValg.innvandret
+                )
             ) {
-                // importAPRedusTT_001
-                paragraph {
-                    text(
-                        Bokmal to "Når du bor i Norge har du rett til å få utbetalt hele alderspensjonen din igjen. Derfor har vi beregnet pensjonen din på nytt.",
-                        Nynorsk to "Når du bur i Noreg har du rett til å få utbetalt heile alderspensjonen din igjen. Derfor har vi berekna pensjonen din på nytt.",
-                        English to "When you live in Norway you are eligible for your full retirement pension. We have therefore recalculated your pension."
-                    )
-                }
-
-                // importAPUngUfor_001
-                paragraph {
-                    text(
-                        Bokmal to "Når du bor i Norge har du rett til alderspensjon etter reglene for unge uføre igjen. Derfor har vi beregnet pensjonen din på nytt.",
-                        Nynorsk to "Når du bur i Noreg har du rett til alderspensjon etter reglane for unge uføre igjen. Derfor har vi berekna pensjonen din på nytt.",
-                        English to "When you live in Norway you are eligible for retirement pension calculated in accordance with the regulations for young people with disabilities. We have therefore recalculated your pension."
-                    )
-                }
-
-                // importAPflyktninger_001
-                paragraph {
-                    text(
-                        Bokmal to "Når du bor i Norge eller et EØS-land har du rett til alderspensjon etter reglene for flyktninger igjen. Derfor har vi beregnet pensjonen din på nytt.",
-                        Nynorsk to "Når du bur i Noreg eller eit EØS-land har du rett til alderspensjon etter reglane for flyktningar igjen. Derfor har vi berekna pensjonen din på nytt.",
-                        English to "When you live in Norway or an EEA country you are eligible for retirement pension determined on the basis of the regulations for refugees. We have therefore recalculated your pension."
-                    )
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
+                showIf(saksbehandlerValg.innvandret.equalTo(AarsakTilAtPensjonenOeker.EKSPORTBEREGNING_MED_REDUSERT_TRYGDETID)) {
+                    // importAPRedusTT_001
+                    paragraph {
+                        text(
+                            Bokmal to "Når du bor i Norge har du rett til å få utbetalt hele alderspensjonen din igjen. Derfor har vi beregnet pensjonen din på nytt.",
+                            Nynorsk to "Når du bur i Noreg har du rett til å få utbetalt heile alderspensjonen din igjen. Derfor har vi berekna pensjonen din på nytt.",
+                            English to "When you live in Norway you are eligible for your full retirement pension. We have therefore recalculated your pension."
+                        )
+                    }
+                }.orShowIf(saksbehandlerValg.innvandret.equalTo(AarsakTilAtPensjonenOeker.EKSPORTFORBUD_UNG_UFOER)) {
+                    // importAPUngUfor_001
+                    paragraph {
+                        text(
+                            Bokmal to "Når du bor i Norge har du rett til alderspensjon etter reglene for unge uføre igjen. Derfor har vi beregnet pensjonen din på nytt.",
+                            Nynorsk to "Når du bur i Noreg har du rett til alderspensjon etter reglane for unge uføre igjen. Derfor har vi berekna pensjonen din på nytt.",
+                            English to "When you live in Norway you are eligible for retirement pension calculated in accordance with the regulations for young people with disabilities. We have therefore recalculated your pension."
+                        )
+                    }
+                }.orShowIf(saksbehandlerValg.innvandret.equalTo(AarsakTilAtPensjonenOeker.EKSPORTFORBUD_FLYKTNING)) {
+                    // importAPflyktninger_001
+                    paragraph {
+                        text(
+                            Bokmal to "Når du bor i Norge eller et EØS-land har du rett til alderspensjon etter reglene for flyktninger igjen. Derfor har vi beregnet pensjonen din på nytt.",
+                            Nynorsk to "Når du bur i Noreg eller eit EØS-land har du rett til alderspensjon etter reglane for flyktningar igjen. Derfor har vi berekna pensjonen din på nytt.",
+                            English to "When you live in Norway or an EEA country you are eligible for retirement pension determined on the basis of the regulations for refugees. We have therefore recalculated your pension."
+                        )
+                    }
                 }
             }
 

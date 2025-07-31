@@ -19,6 +19,7 @@ data class VedtakEndringVedFlyttingMellomLandDto(
         val reduksjonTilbakeITid: Boolean,
         val endringIPensjonen: Boolean,
         val etterbetaling: Boolean,
+        val aarsakTilAtPensjonenOeker: AarsakTilAtPensjonenOeker
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -33,7 +34,7 @@ data class VedtakEndringVedFlyttingMellomLandDto(
         val erEtterbetaling1Maaned: Boolean,
         val dineRettigheterOgMulighetTilAaKlage: DineRettigheterOgMulighetTilAaKlageDto,
         val maanedligPensjonFoerSkatt: MaanedligPensjonFoerSkattDto,
-        val maanedligPensjonFoerSkattAP2025: MaanedligPensjonFoerSkattAP2025Dto
+        val maanedligPensjonFoerSkattAP2025: MaanedligPensjonFoerSkattAP2025Dto,
     ) : BrevbakerBrevdata {
         data class Krav(val virkDatoFom: LocalDate, val aarsak: Aarsak)
         data class Bruker(val faktiskBostedsland: String?, val borIEOES: Boolean, val borIAvtaleland: Boolean)
@@ -79,5 +80,12 @@ data class VedtakEndringVedFlyttingMellomLandDto(
     enum class Opphoersbegrunnelse {
         BRUKER_FLYTTET_IKKE_AVT_LAND,
         ANNET
+    }
+
+    enum class AarsakTilAtPensjonenOeker {
+        INGEN,
+        EKSPORTBEREGNING_MED_REDUSERT_TRYGDETID,
+        EKSPORTFORBUD_UNG_UFOER,
+        EKSPORTFORBUD_FLYKTNING
     }
 }
