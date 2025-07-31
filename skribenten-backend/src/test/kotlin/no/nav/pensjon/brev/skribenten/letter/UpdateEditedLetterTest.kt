@@ -19,6 +19,7 @@ import org.assertj.core.api.InstanceOfAssertFactories
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.time.LocalDate
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title1 as E_Title1
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title2 as E_Title2
@@ -42,10 +43,11 @@ class UpdateRenderedLetterTest {
         val next = rendered.copy(
             title = "ny tittel11",
             sakspart = SakspartImpl(
-                "ny gjelder",
-                "nytt fødselsnummer",
-                "nytt saksnummer",
-                "ny dato"
+                gjelderNavn = "ny gjelder",
+                gjelderFoedselsnummer = "nytt fødselsnummer",
+                vergeNavn = null,
+                saksnummer = "nytt saksnummer",
+                dokumentDato = LocalDate.now(),
             ),
             signatur = SignaturImpl("ny hilsenTekst", "ny saksbehandler rolle tekst", "ny saksbehandlernavn", "ny attesterendenavn", "ny avsenderenhet"),
         )

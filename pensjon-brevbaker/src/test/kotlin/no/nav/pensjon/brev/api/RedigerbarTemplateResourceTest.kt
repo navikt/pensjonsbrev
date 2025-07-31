@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 
 class RedigerbarTemplateResourceTest {
     private val pdfInnhold = "generert redigerbar pdf"
@@ -32,20 +33,21 @@ class RedigerbarTemplateResourceTest {
         Fixtures.felles,
         LanguageCode.BOKMAL,
         LetterMarkupImpl(
-            "redigert markup",
-            LetterMarkupImpl.SakspartImpl(
-                "gjelder bruker",
-                "123abc",
-                "001",
-                "en dato"
+            title = "redigert markup",
+            sakspart = LetterMarkupImpl.SakspartImpl(
+                gjelderNavn = "gjelder bruker",
+                gjelderFoedselsnummer = "123abc",
+                vergeNavn = null,
+                saksnummer = "001",
+                dokumentDato = LocalDate.now()
             ),
-            emptyList(),
-            LetterMarkupImpl.SignaturImpl(
-                "hilsen oss",
-                "en rolle",
-                "Saksbehandlersen",
-                null,
-                "Akersgata"
+            blocks = emptyList(),
+            signatur = LetterMarkupImpl.SignaturImpl(
+                hilsenTekst = "hilsen oss",
+                saksbehandlerRolleTekst = "en rolle",
+                saksbehandlerNavn = "Saksbehandlersen",
+                attesterendeSaksbehandlerNavn = null,
+                navAvsenderEnhet = "Akersgata"
             )
         )
     )
