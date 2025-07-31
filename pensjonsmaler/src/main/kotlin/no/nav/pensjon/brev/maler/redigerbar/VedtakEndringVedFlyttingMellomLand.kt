@@ -49,9 +49,9 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.opphoersbegrunnelseVedVirk_safe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.aarsakTilAtPensjonenOeker
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.endringIPensjonen
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
-import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.innvandret
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.reduksjonTilbakeITid
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.saksbehandlerValg
@@ -288,7 +288,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 pesysData.krav.aarsak.equalTo(INNVANDRET) and beloepOekning
             ) {
                 // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                showIf(saksbehandlerValg.innvandret.equalTo(AarsakTilAtPensjonenOeker.EKSPORTBEREGNING_MED_REDUSERT_TRYGDETID)) {
+                showIf(saksbehandlerValg.aarsakTilAtPensjonenOeker.equalTo(AarsakTilAtPensjonenOeker.EKSPORTBEREGNING_MED_REDUSERT_TRYGDETID)) {
                     // importAPRedusTT_001
                     paragraph {
                         text(
@@ -297,7 +297,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                             English to "When you live in Norway you are eligible for your full retirement pension. We have therefore recalculated your pension."
                         )
                     }
-                }.orShowIf(saksbehandlerValg.innvandret.equalTo(AarsakTilAtPensjonenOeker.EKSPORTFORBUD_UNG_UFOER)) {
+                }.orShowIf(saksbehandlerValg.aarsakTilAtPensjonenOeker.equalTo(AarsakTilAtPensjonenOeker.EKSPORTFORBUD_UNG_UFOER)) {
                     // importAPUngUfor_001
                     paragraph {
                         text(
@@ -306,7 +306,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                             English to "When you live in Norway you are eligible for retirement pension calculated in accordance with the regulations for young people with disabilities. We have therefore recalculated your pension."
                         )
                     }
-                }.orShowIf(saksbehandlerValg.innvandret.equalTo(AarsakTilAtPensjonenOeker.EKSPORTFORBUD_FLYKTNING)) {
+                }.orShowIf(saksbehandlerValg.aarsakTilAtPensjonenOeker.equalTo(AarsakTilAtPensjonenOeker.EKSPORTFORBUD_FLYKTNING)) {
                     // importAPflyktninger_001
                     paragraph {
                         text(
