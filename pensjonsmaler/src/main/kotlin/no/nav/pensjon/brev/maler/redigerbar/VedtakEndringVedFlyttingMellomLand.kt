@@ -125,6 +125,11 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             val totalPensjon = pesysData.alderspensjonVedVirk.totalPensjon.format()
             val aarsakUtvandret = pesysData.krav.aarsak.equalTo(UTVANDRET)
 
+            val beloepUendret =
+                pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.UENDRET)
+            val beloepOekning = pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_OKT)
+            val beloepRedusert = pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_RED)
+
             includePhrase(Vedtak.Overskrift)
 
             ifNotNull(pesysData.bruker.faktiskBostedsland) {
@@ -277,9 +282,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             }
 
             showIf(
-                pesysData.krav.aarsak.equalTo(INNVANDRET) and pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(
-                    BeloepEndring.ENDR_OKT
-                )
+                pesysData.krav.aarsak.equalTo(INNVANDRET) and beloepOekning
             ) {
                 // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
                 showIf(saksbehandlerValg.innvandret.equalTo(AarsakTilAtPensjonenOeker.EKSPORTBEREGNING_MED_REDUSERT_TRYGDETID)) {
@@ -333,8 +336,6 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }
 
-            val beloepUendret =
-                pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.UENDRET)
             showIf(
                 aarsakUtvandret and
                         not(beloepUendret) and
@@ -452,7 +453,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                         English to "This does not affect your pension."
                     )
                 }
-            }.orShowIf(pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_RED)) {
+            }.orShowIf(beloepRedusert) {
                 // nyBeregningAPReduksjon_001
                 paragraph {
                     text(
@@ -461,7 +462,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                         English to "This leads to a reduction in your retirement pension."
                     )
                 }
-            }.orShowIf(pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_OKT)) {
+            }.orShowIf(beloepOekning) {
                 // nyBeregningAPØkning_001
                 paragraph {
                     text(
@@ -616,7 +617,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
 
             // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(
-                pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_OKT)
+                beloepOekning
                         and pesysData.erEtterbetaling1Maaned
                         and saksbehandlerValg.etterbetaling
             ) {
