@@ -84,7 +84,7 @@ class BrevredigeringService(
     ): ServiceResult<Dto.Brevredigering> =
         harTilgangTilEnhet(avsenderEnhetsId) {
             val principal = PrincipalInContext.require()
-            val signerendeSaksbehandler = signaturSaksbehandler(brev = null)
+            val signerendeSaksbehandler = signaturSaksbehandler()
 
             val vedtaksIdOmVedtaksbrev = beholdOgKrevVedtaksIdOmVedtaksbrev(vedtaksId, brevkode)
 
@@ -138,7 +138,7 @@ class BrevredigeringService(
                 rendreBrev(
                     brev = brevDto,
                     saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg,
-                    signaturSignerende = signatur ?: signaturSaksbehandler(brevDto),
+                    signaturSignerende = signatur ?: signaturSaksbehandler(nyttRedigertbrev ?: brevDto.redigertBrev),
                 ).map { rendretBrev ->
                     val principal = PrincipalInContext.require()
                     transaction {
@@ -466,7 +466,7 @@ class BrevredigeringService(
             vedtaksId = brev.info.vedtaksId,
             saksbehandlerValg = saksbehandlerValg ?: brev.saksbehandlerValg,
             avsenderEnhetsId = brev.info.avsenderEnhetId,
-            signaturSignerende = signaturSignerende ?: signaturSaksbehandler(brev),
+            signaturSignerende = signaturSignerende ?: signaturSaksbehandler(brev.redigertBrev),
             signaturAttestant = signaturAttestant ?: brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
         )
 
@@ -522,7 +522,7 @@ class BrevredigeringService(
                 ),
                 // TODO: Kan fjerne oppdatering av felles.signatur her når brevbaker ikke bruker felles.signatur til rendring
                 felles = pesysData.felles.medSignerendeSaksbehandlere(SignerendeSaksbehandlere(
-                    saksbehandler = signaturSaksbehandler(brevredigering),
+                    saksbehandler = signaturSaksbehandler(brevredigering.redigertBrev),
                     attesterendeSaksbehandler = brevredigering.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
                 )),
                 redigertBrev = brevredigering.redigertBrev.toMarkup()
@@ -567,10 +567,10 @@ class BrevredigeringService(
         }
     }
 
-    suspend fun signaturSaksbehandler(brev: Dto.Brevredigering?): String {
+    suspend fun signaturSaksbehandler(redigertBrev: Edit.Letter? = null): String {
         val principal = PrincipalInContext.require()
 
-        return brev?.redigertBrev?.signatur?.saksbehandlerNavn
+        return redigertBrev?.signatur?.saksbehandlerNavn
             ?: navansattService.hentNavansatt(principal.navIdent.id)?.let { "${it.fornavn} ${it.etternavn}" }
             ?: principal.fullName
     }

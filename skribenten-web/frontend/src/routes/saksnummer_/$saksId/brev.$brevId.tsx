@@ -1,6 +1,18 @@
 import { css } from "@emotion/react";
 import { ArrowCirclepathIcon, ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyLong, Box, Button, Heading, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
+import {
+  BodyLong,
+  Box,
+  Button,
+  Heading,
+  HStack,
+  Label,
+  Modal,
+  Skeleton,
+  Tabs,
+  TextField,
+  VStack,
+} from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -13,12 +25,11 @@ import {
   getBrevReservasjon,
   oppdaterBrev,
   oppdaterSaksbehandlerValg,
-  oppdaterSignatur,
   tilbakestillBrev,
 } from "~/api/brev-queries";
 import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import { AutoSavingTextField } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
+import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import {
   SaksbehandlerValgModelEditor,
   usePartitionedModelSpecification,
@@ -238,11 +249,6 @@ function RedigerBrev({
     onSuccess: onSaveSuccess,
   });
 
-  const signaturMutation = useMutation<BrevResponse, AxiosError, string>({
-    mutationFn: (signatur) => oppdaterSignatur(brev.info.id, signatur),
-    onSuccess: onSaveSuccess,
-  });
-
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
     mutationFn: (values) =>
       oppdaterBrev({
@@ -251,7 +257,6 @@ function RedigerBrev({
         request: {
           redigertBrev: values.redigertBrev,
           saksbehandlerValg: values.saksbehandlerValg,
-          signatur: values.signatur,
         },
       }),
     onSuccess: onSaveSuccess,
@@ -262,9 +267,8 @@ function RedigerBrev({
       saksbehandlerValg: {
         ...brev.saksbehandlerValg,
       },
-      signatur: brev.redigertBrev.signatur.saksbehandlerNavn,
     }),
-    [brev.redigertBrev.signatur.saksbehandlerNavn, brev.saksbehandlerValg],
+    [brev.saksbehandlerValg],
   );
 
   const form = useForm<RedigerBrevSidemenyFormData>({
@@ -274,11 +278,7 @@ function RedigerBrev({
   const onTekstValgAndOverstyringChange = () => {
     form.trigger().then((isValid) => {
       if (isValid) {
-        saksbehandlerValgMutation.mutate(form.getValues().saksbehandlerValg, {
-          onSuccess: () => {
-            signaturMutation.mutate(form.getValues().signatur);
-          },
-        });
+        saksbehandlerValgMutation.mutate(form.getValues().saksbehandlerValg);
       }
     });
   };
@@ -288,7 +288,6 @@ function RedigerBrev({
       {
         redigertBrev: editorState.redigertBrev,
         saksbehandlerValg: values.saksbehandlerValg,
-        signatur: values.signatur,
       },
       {
         onSuccess: () => {
@@ -308,10 +307,11 @@ function RedigerBrev({
     form.reset(defaultValuesModelEditor);
   }, [defaultValuesModelEditor, form]);
 
-  const freeze = saksbehandlerValgMutation.isPending || signaturMutation.isPending || oppdaterBrevMutation.isPending;
+  const freeze = saksbehandlerValgMutation.isPending || oppdaterBrevMutation.isPending;
 
-  const error = saksbehandlerValgMutation.isError || signaturMutation.isError || oppdaterBrevMutation.isError;
+  const error = saksbehandlerValgMutation.isError || oppdaterBrevMutation.isError;
 
+  // TODO: Trenger form å være helt ytterst her? Kunne vi hatt det lenger inn i hierarkiet, f.eks i OpprettetBrevSidemenyForm.
   return (
     <FormProvider {...form}>
       <form
@@ -365,6 +365,18 @@ function RedigerBrev({
                 {brevmal.data?.name}
               </Heading>
               <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
+              <TextField
+                autoComplete={"on"}
+                defaultValue={editorState.redigertBrev.signatur.saksbehandlerNavn ?? ""}
+                error={
+                  (editorState.redigertBrev.signatur.saksbehandlerNavn?.length ?? 0) > 0
+                    ? undefined
+                    : "Signatur må oppgis"
+                }
+                label="Signatur"
+                onChange={(e) => applyAction(Actions.updateSaksbehandlerSignatur, setEditorState, e.target.value)}
+                size="small"
+              />
             </VStack>
             <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
           </div>
@@ -426,6 +438,7 @@ enum BrevSidemenyTabs {
   OVERSTYRING = "OVERSTYRING",
 }
 
+// TODO: Funksjonelt er denne komponenten ganske lik BrevmalAlternativer.tsx. Se på om vi kan bruke samme komponent.
 const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?: () => void }) => {
   const specificationFormElements = usePartitionedModelSpecification(props.brev.info.brevkode);
 
@@ -434,27 +447,13 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
   const hasOptional = optionalFields.length > 0;
   const hasRequired = requiredFields.length > 0;
 
-  const panelContent = (fieldsToRender: "optional" | "required") => (
-    <>
-      <SaksbehandlerValgModelEditor
-        brevkode={props.brev.info.brevkode}
-        fieldsToRender={fieldsToRender}
-        specificationFormElements={specificationFormElements}
-        submitOnChange={props.submitOnChange}
-      />
-      <AutoSavingTextField
-        field={"signatur"}
-        fieldType={{
-          type: "scalar",
-          nullable: false,
-          kind: "STRING",
-          displayText: null,
-        }}
-        onSubmit={props.submitOnChange}
-        timeoutTimer={2500}
-        type={"text"}
-      />
-    </>
+  const PanelContent = ({ fieldsToRender }: { fieldsToRender: "optional" | "required" }) => (
+    <SaksbehandlerValgModelEditor
+      brevkode={props.brev.info.brevkode}
+      fieldsToRender={fieldsToRender}
+      specificationFormElements={specificationFormElements}
+      submitOnChange={props.submitOnChange}
+    />
   );
 
   const panelStyle = css`
@@ -466,13 +465,13 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
     margin-top: 1.125rem;
   `;
 
-  if (!hasOptional && !hasRequired) return panelContent("optional");
+  if (!hasOptional && !hasRequired) return <PanelContent fieldsToRender="optional" />;
 
   if (hasOptional && !hasRequired) {
     return (
       <>
         <Heading size="xsmall">Tekstvalg</Heading>
-        {panelContent("optional")}
+        <PanelContent fieldsToRender="optional" />
       </>
     );
   }
@@ -481,11 +480,11 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
     return (
       <>
         <Heading size="xsmall">Overstyring</Heading>
-        {panelContent("required")}
+        <PanelContent fieldsToRender="required" />
       </>
     );
 
-  const defaultTab = hasOptional ? BrevSidemenyTabs.TEKSTVALG : BrevSidemenyTabs.OVERSTYRING;
+  const defaultTab = BrevSidemenyTabs.TEKSTVALG;
 
   return (
     <Tabs
@@ -512,45 +511,11 @@ const OpprettetBrevSidemenyForm = (props: { brev: BrevResponse; submitOnChange?:
       </Tabs.List>
 
       <Tabs.Panel css={panelStyle} value={BrevSidemenyTabs.TEKSTVALG}>
-        <SaksbehandlerValgModelEditor
-          brevkode={props.brev.info.brevkode}
-          fieldsToRender={"optional"}
-          specificationFormElements={specificationFormElements}
-          submitOnChange={props.submitOnChange}
-        />
-        <AutoSavingTextField
-          field={"signatur"}
-          fieldType={{
-            type: "scalar",
-            nullable: false,
-            kind: "STRING",
-            displayText: null,
-          }}
-          onSubmit={props.submitOnChange}
-          timeoutTimer={2500}
-          type={"text"}
-        />
+        <PanelContent fieldsToRender="optional" />
       </Tabs.Panel>
 
       <Tabs.Panel css={panelStyle} value={BrevSidemenyTabs.OVERSTYRING}>
-        <SaksbehandlerValgModelEditor
-          brevkode={props.brev.info.brevkode}
-          fieldsToRender={"required"}
-          specificationFormElements={specificationFormElements}
-          submitOnChange={props.submitOnChange}
-        />
-        <AutoSavingTextField
-          field={"signatur"}
-          fieldType={{
-            type: "scalar",
-            nullable: false,
-            kind: "STRING",
-            displayText: null,
-          }}
-          onSubmit={props.submitOnChange}
-          timeoutTimer={2500}
-          type={"text"}
-        />
+        <PanelContent fieldsToRender="required" />
       </Tabs.Panel>
     </Tabs>
   );

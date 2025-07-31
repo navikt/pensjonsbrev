@@ -51,7 +51,6 @@ fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto
                     brevId = call.parameters.getOrFail<Long>("brevId"),
                     nyeSaksbehandlerValg = null,
                     nyttRedigertbrev = request,
-                    signatur = null,
                     frigiReservasjon = frigiReservasjon,
                 )
             )
