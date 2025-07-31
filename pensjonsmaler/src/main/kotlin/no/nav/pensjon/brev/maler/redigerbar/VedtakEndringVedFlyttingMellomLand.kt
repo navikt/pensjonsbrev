@@ -121,14 +121,17 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             val pensjonstilleggInnvilget = pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget
             val minstenivaaIndividuellInnvilget = pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget
             val minstenivaaPensjonistParInnvilget = pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget
+            val gjenlevenderettAnvendt = pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
 
             val totalPensjon = pesysData.alderspensjonVedVirk.totalPensjon.format()
             val aarsakUtvandret = pesysData.krav.aarsak.equalTo(UTVANDRET)
 
             val beloepUendret =
                 pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.UENDRET)
-            val beloepOekning = pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_OKT)
-            val beloepRedusert = pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_RED)
+            val beloepOekning =
+                pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_OKT)
+            val beloepRedusert =
+                pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_RED)
 
             includePhrase(Vedtak.Overskrift)
 
@@ -522,14 +525,14 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                     Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-3",
                     English to "This decision was made pursuant to the provisions of §§ 19-3"
                 )
-                showIf(pesysData.alderspensjonVedVirk.garantipensjonInnvilget and not(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt)) {
+                showIf(garantipensjonInnvilget and not(gjenlevenderettAnvendt)) {
                     // flyttingAPGarantipensjonHjemmel_001
                     text(
                         Bokmal to ", 20-10",
                         Nynorsk to ", 20-10",
                         English to ", 20-10"
                     )
-                }.orShowIf(not(pesysData.alderspensjonVedVirk.garantipensjonInnvilget) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt) {
+                }.orShowIf(not(garantipensjonInnvilget) and gjenlevenderettAnvendt) {
                     //  flyttingAPGjenlevendeHjemmel_001
                     text(
                         Bokmal to ", 19-16 jamfør 17-4",
@@ -537,7 +540,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                         English to ", 19-16 confer 17-4"
                     )
                 }
-                    .orShowIf(pesysData.alderspensjonVedVirk.garantipensjonInnvilget and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt) {
+                    .orShowIf(garantipensjonInnvilget and gjenlevenderettAnvendt) {
                         // flyttingAP2016GjenlevendeGarantipensjonHjemmel_001
                         text(
                             Bokmal to ", 19-16 jamfør 17-4, 20-10, 20-19a",
@@ -616,11 +619,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
             }
 
             // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-            showIf(
-                beloepOekning
-                        and pesysData.erEtterbetaling1Maaned
-                        and saksbehandlerValg.etterbetaling
-            ) {
+            showIf(beloepOekning and pesysData.erEtterbetaling1Maaned and saksbehandlerValg.etterbetaling) {
                 // etterbetalingAP_002
                 includePhrase(Vedtak.Etterbetaling(pesysData.krav.virkDatoFom))
             }
