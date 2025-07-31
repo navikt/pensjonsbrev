@@ -12,7 +12,8 @@ class PDFRequest(
     val letterMarkup: LetterMarkup,
     val attachments: List<LetterMarkup.Attachment>,
     val language: LanguageCode,
-    val felles: Felles,
+    // TODO: Kan fjernes, brukes ikke lenger av pdf-bygger
+    val felles: Felles?,
     val brevtype: LetterMetadata.Brevtype,
     val pdfVedlegg: List<PDFVedlegg> = emptyList()
 ) {

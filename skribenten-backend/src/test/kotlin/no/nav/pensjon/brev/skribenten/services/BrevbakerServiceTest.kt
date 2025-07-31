@@ -1,18 +1,21 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import no.nav.pensjon.brev.skribenten.FlexibleLocalDateModule
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.ItemListImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TableImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SakspartImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 
 
 class BrevbakerServiceTest {
@@ -24,8 +27,9 @@ class BrevbakerServiceTest {
             sakspart = SakspartImpl(
                 gjelderNavn = "about name",
                 gjelderFoedselsnummer = "12345678910",
+                vergeNavn = null,
                 saksnummer = "12345",
-                dokumentDato = "2024-05-16",
+                dokumentDato = LocalDate.now(),
             ),
             blocks = listOf(
                 BlockImpl.ParagraphImpl(
@@ -63,6 +67,9 @@ class BrevbakerServiceTest {
         )
         val mapper = jacksonObjectMapper().apply {
             registerModule(LetterMarkupModule)
+            registerModule(JavaTimeModule())
+            registerModule(FlexibleLocalDateModule)
+            disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }
 
         assertEquals(markup, mapper.readValue<LetterMarkup>(mapper.writeValueAsString(markup)))

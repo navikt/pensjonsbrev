@@ -15,22 +15,21 @@ import {
   Tag,
   VStack,
 } from "@navikt/ds-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useMemo, useState } from "react";
 
 import { type UserInfo } from "~/api/bff-endpoints";
 import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getNavnQuery } from "~/api/skribenten-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
+import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { useUserInfo } from "~/hooks/useUserInfo";
-import type { BrevStatus, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
+import type { BrevStatus, DelvisOppdaterBrevResponse } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { erBrevArkivert, erBrevLaastForRedigering, skalBrevAttesteres } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
-import { humanizeName } from "~/utils/stringUtils";
 
 import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrevmeny } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
@@ -89,24 +88,6 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
   );
 };
 
-const MottakerNavn = (properties: { mottaker: Mottaker }) => {
-  switch (properties.mottaker.type) {
-    case "Samhandler": {
-      return (
-        <BodyShort size="small">
-          {properties.mottaker.navn ?? `Fant ikke navn for ${properties.mottaker.tssId}`}
-        </BodyShort>
-      );
-    }
-    case "NorskAdresse": {
-      return <BodyShort size="small">{properties.mottaker.navn}</BodyShort>;
-    }
-    case "UtenlandskAdresse": {
-      return <BodyShort size="small">{properties.mottaker.navn}</BodyShort>;
-    }
-  }
-};
-
 const BrevItem = (properties: {
   saksId: string;
   brev: BrevInfo;
@@ -151,8 +132,6 @@ const BrevItem = (properties: {
 const ArkivertBrev = (props: { brev: BrevInfo }) => {
   const sakContext = Route.useLoaderData();
 
-  const { data: navn } = useQuery(getNavnQuery(sakContext.sak.saksId.toString()));
-
   return (
     <VStack
       css={css`
@@ -162,15 +141,11 @@ const ArkivertBrev = (props: { brev: BrevInfo }) => {
       {/* TODO - copy-pasted fra <ÅpentBrev /> - Ha denne biten som en del av <OppsummeringAvMottaker /> */}
       <div>
         <Detail textColor="subtle">Mottaker</Detail>
-        {props.brev.mottaker ? (
-          <HStack align={"center"} gap="2">
-            <MottakerNavn mottaker={props.brev.mottaker} />
-          </HStack>
-        ) : (
-          <HStack align={"center"} gap="2">
-            <BodyShort size="small">{navn ? humanizeName(navn) : "Bruker"}</BodyShort>
-          </HStack>
-        )}
+        <OppsummeringAvMottaker
+          mottaker={props.brev.mottaker ?? null}
+          saksId={sakContext.sak.saksId.toString()}
+          withTitle={false}
+        />
       </div>
 
       <BodyShort size="small">
@@ -184,10 +159,7 @@ const ArkivertBrev = (props: { brev: BrevInfo }) => {
 const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const queryClient = useQueryClient();
   const navigate = Route.useNavigate();
-  const sakContext = Route.useLoaderData();
   const { enhetsId, vedtaksId } = Route.useSearch();
-
-  const { data: navn } = useQuery(getNavnQuery(sakContext.sak.saksId.toString()));
 
   const låsForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
     mutationFn: (låst) =>
@@ -235,15 +207,14 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           overrideOppsummering={(edit) => (
             <div>
               <Detail textColor="subtle">Mottaker</Detail>
-              {props.brev.mottaker ? (
-                <HStack align={"center"} gap="2">
-                  <MottakerNavn mottaker={props.brev.mottaker} /> {!erLåst && edit}
-                </HStack>
-              ) : (
-                <HStack align={"center"} gap="2">
-                  <BodyShort size="small">{navn ? humanizeName(navn) : "Bruker"}</BodyShort> {!erLåst && edit}
-                </HStack>
-              )}
+              <HStack align="start" gap="8">
+                <OppsummeringAvMottaker
+                  mottaker={props.brev.mottaker ?? null}
+                  saksId={props.saksId}
+                  withTitle={false}
+                />
+                {!erLåst && edit}
+              </HStack>
             </div>
           )}
           saksId={props.saksId}

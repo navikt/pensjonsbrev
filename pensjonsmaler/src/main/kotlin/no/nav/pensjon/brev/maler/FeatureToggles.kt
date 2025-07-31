@@ -10,7 +10,7 @@ object FeatureToggles {
     val pl7914EndretInntektPilot = FeatureToggle("pl_7914.ut_endret_pga_inntekt_test_pilot")
     val brevMedFritekst = FeatureToggle("brevMedFritekst")
     val brevmalUtAvslag = FeatureToggle("brevmalUtAvslag")
-    val innhentingAvInformasjonFraBruker = FeatureToggle("innhentingAvInformasjonFraBruker")
+    val apAvslagGjenlevenderett = FeatureToggle("apAvslagGjenlevenderett")
     val apAvslagGradsendringNormertPensjonsalder = FeatureToggle("ap_avslag_gradsendring_norm_redigerbar")
     val apAvslagGradsendringNormertPensjonsalderAP2016 = FeatureToggle("ap_avslag_gradsendring_norm_redigerbar_ap2016")
     val apAvslagGradsendringNormertPensjonsalderFoerEttAar = FeatureToggle("ap_avslag_gradsendring_norm_foer_ett_aar_redigerbar")
@@ -18,8 +18,6 @@ object FeatureToggles {
     val apAvslagNormertPensjonsalderAP2016 = FeatureToggle("ap_avslag_norm_redigerbar_ap2016")
     val informasjonOmGjenlevenderettigheter = FeatureToggle("informasjonOmGjenlevenderettigheter")
     val omsorgEgenManuell = FeatureToggle("omsorgEgenManuell")
-    val varselRevurderingAvPensjon = FeatureToggle("varselRevideringAvPensjon")
-    val varselTilbakekrevingAvFeilutbetaltBeloep = FeatureToggle("varselTilbakekrevingAvFeilutbetaltBeloep")
     val vedtakTilbakekrevingAvFeilutbetaltBeloep = FeatureToggle("vedtakTilbakekrevingAvFeilutbetaltBeloep")
     val vedtakEndringAvAlderspensjonGjenlevenderettigheter = FeatureToggle("vedtakEndringAvAlderspensjonGjenlevenderettigheter")
     val vedtakEndringAvAlderspensjonInstitusjonsopphold = FeatureToggle("vedtakEndringAvAlderspensjonInstitusjonsopphold")
@@ -31,4 +29,5 @@ object FeatureToggles {
     val vedtakOmFjerningAvOmsorgspoeng = FeatureToggle("vedtakOmFjerningAvOmsorgspoeng")
     val vedtakEndringOpptjeningEndret = FeatureToggle("vedtakEndringOpptjeningEndret")
     val vedtakStansFlyttingMellomLand = FeatureToggle("vedtakStansFlyttingMellomLand")
+    val avslagForLiteTrygdetidAP = FeatureToggle("avslagForLiteTrygdetidAP")
 }

@@ -1,11 +1,8 @@
 package no.nav.pensjon.brev.skribenten.db
 
 import com.fasterxml.jackson.core.JacksonException
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -55,6 +52,7 @@ internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(Edit.JacksonModule)
     registerModule(BrevbakerBrevdataModule)
     registerModule(LetterMarkupModule)
+    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 }
 
 class DatabaseJsonDeserializeException(cause: JacksonException): Exception("Failed to deserialize json-column from database", cause)
@@ -83,6 +81,7 @@ object BrevredigeringTable : LongIdTable() {
     val opprettet: Column<Instant> = timestamp("opprettet")
     val sistredigert: Column<Instant> = timestamp("sistredigert")
     val sistReservert: Column<Instant?> = timestamp("sistReservert").nullable()
+    // TODO: fjern signatur kolonner (samt fra api+frontend), de skal ligge i redigertBrev fra nå av.
     val signaturSignerende: Column<String> = varchar("signaturSignerende", length = 50)
     val signaturAttestant: Column<String?> = varchar("signaturAttestant", length = 50).nullable()
     val journalpostId: Column<Long?> = long("journalpostId").nullable()

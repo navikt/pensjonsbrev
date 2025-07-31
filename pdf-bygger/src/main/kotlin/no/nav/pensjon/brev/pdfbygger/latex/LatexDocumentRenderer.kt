@@ -7,10 +7,8 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brev.template.render.LanguageSetting
-import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brev.template.render.pensjonLatexSettings
-import no.nav.pensjon.brevbaker.api.model.Bruker
-import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
@@ -30,7 +28,6 @@ internal object LatexDocumentRenderer {
         letter = pdfRequest.letterMarkup,
         attachments = pdfRequest.attachments,
         language = pdfRequest.language.toLanguage(),
-        felles = pdfRequest.felles,
         brevtype = pdfRequest.brevtype,
         pdfVedlegg = pdfRequest.pdfVedlegg,
     )
@@ -53,15 +50,14 @@ internal object LatexDocumentRenderer {
         letter: LetterMarkup,
         attachments: List<LetterMarkup.Attachment>,
         language: Language,
-        felles: Felles,
         brevtype: LetterMetadata.Brevtype,
         pdfVedlegg: List<PDFVedlegg>,
     ): LatexDocument =
         LatexDocument().apply {
             newLatexFile("params.tex") {
-                appendMasterTemplateParameters(attachments + pdfVedlegg.somAttachment(), brevtype, felles, language)
+                appendMasterTemplateParameters(letter, attachments + pdfVedlegg.somAttachment(), brevtype, language)
             }
-            newLatexFile("letter.xmpdata") { appendXmpData(letter, language, felles) }
+            newLatexFile("letter.xmpdata") { appendXmpData(letter, language) }
             newLatexFile("letter.tex") { renderLetterTemplate(letter, attachments) }
             attachments.forEachIndexed { id, attachment ->
                 newLatexFile("attachment_${id}.tex") { renderAttachment(attachment) }
@@ -69,11 +65,12 @@ internal object LatexDocumentRenderer {
         }
 
     private fun LatexAppendable.appendMasterTemplateParameters(
+        letter: LetterMarkup,
         attachments: List<LetterMarkup.Attachment>,
         brevtype: LetterMetadata.Brevtype,
-        felles: Felles,
         language: Language,
     ) {
+        // TODO: Følgende tekster finnes også i LetterMarkup: LanguageSetting.Closing.greeting, LanguageSetting.Closing.saksbehandler.
         pensjonLatexSettings.writeLanguageSettings(language) { settingName, settingValue ->
             appendNewCmd("felt$settingName") {
                 renderTextLiteral(settingValue, Text.FontType.PLAIN)
@@ -81,24 +78,17 @@ internal object LatexDocumentRenderer {
         }
 
         appendln("\\def\\pdfcreationdate{\\string ${pdfCreationTime()}}", escape = false)
-        appendNewCmd("feltsaksnummer", felles.saksnummer)
 
         vedleggCommand(attachments)
-
-        with(felles) {
-            brukerCommands(bruker)
-            saksinfoCommands(vergeNavn)
-            navEnhetCommands(avsenderEnhet)
-            appendNewCmd("feltdato", dokumentDato.format(dateFormatter(language, FormatStyle.LONG)))
-            signaturCommands(signerendeSaksbehandlere, brevtype)
-        }
+        sakspartCommands(letter.sakspart, language)
+        signaturCommands(letter.signatur, brevtype)
     }
 
-    private fun LatexAppendable.appendXmpData(letter: LetterMarkup, language: Language, felles: Felles) {
+    private fun LatexAppendable.appendXmpData(letter: LetterMarkup, language: Language) {
         appendCmd("Title", letter.title)
         appendCmd("Language", language.locale().toLanguageTag())
-        appendCmd("Publisher", felles.avsenderEnhet.navn)
-        appendCmd("Date", felles.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
+        appendCmd("Publisher", letter.signatur.navAvsenderEnhet)
+        appendCmd("Date", letter.sakspart.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))
         appendCmd("Producer", DOCUMENT_PRODUCER)
         appendCmd("Creator", DOCUMENT_PRODUCER)
     }
@@ -117,53 +107,52 @@ internal object LatexDocumentRenderer {
     }
 
     private fun LatexAppendable.signaturCommands(
-        saksbehandlere: SignerendeSaksbehandlere?,
+        signatur: LetterMarkup.Signatur,
         brevtype: LetterMetadata.Brevtype,
     ) {
-        if (saksbehandlere != null) {
-            appendNewCmd("feltsaksbehandlernavn", saksbehandlere.saksbehandler)
-            val attestant = saksbehandlere.attesterendeSaksbehandler
-                ?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
-                ?.also { appendNewCmd("feltattestantnavn", it) }
+        appendNewCmd("feltnavenhet", signatur.navAvsenderEnhet)
 
-            appendNewCmd("closingbehandlet") {
-                if (attestant != null) {
+        val saksbehandlerNavn = signatur.saksbehandlerNavn
+            ?.also { appendNewCmd("feltsaksbehandlernavn", it) }
+
+        val attestantNavn = signatur.attesterendeSaksbehandlerNavn
+            ?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV }
+            ?.also { appendNewCmd("feltattestantnavn", it) }
+
+        appendNewCmd("closingbehandlet") {
+            when {
+                saksbehandlerNavn != null && attestantNavn != null -> {
                     appendCmd("closingdoublesignature")
-                } else {
+                }
+                saksbehandlerNavn != null -> {
                     appendCmd("closingsinglesignature")
                 }
-            }
-        } else {
-            appendNewCmd("closingbehandlet") {
-                if (brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
+                brevtype == LetterMetadata.Brevtype.VEDTAKSBREV -> {
                     appendCmd("closingautosignaturevedtaksbrev")
-                } else {
+                }
+                else -> {
                     appendCmd("closingautosignatureinfobrev")
                 }
             }
         }
     }
 
-    private fun LatexAppendable.brukerCommands(bruker: Bruker) =
-        with(bruker) {
-            appendNewCmd("feltfoedselsnummerbruker", foedselsnummer.format())
-            appendNewCmd("feltnavnbruker", fulltNavn())
-        }
+    private fun LatexAppendable.sakspartCommands(sakspart: LetterMarkup.Sakspart, language: Language) {
+        appendNewCmd("feltdato", sakspart.dokumentDato.format(dateFormatter(language, FormatStyle.LONG)))
+        appendNewCmd("feltsaksnummer", sakspart.saksnummer)
+        appendNewCmd("feltfoedselsnummerbruker", Foedselsnummer(sakspart.gjelderFoedselsnummer).format())
+        appendNewCmd("feltnavnbruker", sakspart.gjelderNavn)
+        val verge = sakspart.vergeNavn?.also { appendNewCmd("feltvergenavn", it) }
 
-    private fun LatexAppendable.saksinfoCommands(verge: String?) {
-        verge?.also { appendNewCmd("feltvergenavn", it) }
         appendNewCmd("saksinfomottaker") {
             appendCmd("begin", "saksinfotable", "")
-            verge?.let {
+
+            if (verge != null) {
                 appendln("""\felt${LanguageSetting.Sakspart.vergenavn} & \feltvergenavn \\""", escape = false)
-                appendln(
-                    """\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltnavnbruker \\""",
-                    escape = false
-                )
-            } ?: appendln(
-                """\felt${LanguageSetting.Sakspart.navn} & \feltnavnbruker \\""",
-                escape = false
-            )
+                appendln("""\felt${LanguageSetting.Sakspart.gjelderNavn} & \feltnavnbruker \\""", escape = false)
+            } else {
+                appendln("""\felt${LanguageSetting.Sakspart.navn} & \feltnavnbruker \\""", escape = false)
+            }
             appendln(
                 """\felt${LanguageSetting.Sakspart.foedselsnummer} & \feltfoedselsnummerbruker \\""",
                 escape = false
@@ -176,13 +165,6 @@ internal object LatexDocumentRenderer {
             appendCmd("end", "saksinfotable")
         }
     }
-
-    private fun LatexAppendable.navEnhetCommands(navEnhet: NavEnhet) =
-        with(navEnhet) {
-            appendNewCmd("feltnavenhet", navn)
-            appendNewCmd("feltnavenhettlf", telefonnummer.format())
-            appendNewCmd("feltnavenhetnettside", nettside)
-        }
 
     private fun pdfCreationTime(): String {
         val now = ZonedDateTime.now()
