@@ -39,7 +39,7 @@ dependencies {
     implementation(libs.ktor.server.netty)
     implementation(libs.ktor.server.status.pages)
     implementation(libs.ktor.server.compression.jvm)
-    implementation(libs.kafka.streams)
+    implementation(libs.connect.runtime)
 
     implementation(libs.bundles.metrics)
 

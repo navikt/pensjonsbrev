@@ -4,6 +4,7 @@ import io.ktor.server.config.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import no.nav.brev.brevbaker.AsyncPDFCompilationOutput
 import no.nav.pensjon.brev.PDFRequestAsync
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
@@ -23,6 +24,7 @@ import org.apache.kafka.common.serialization.StringSerializer
 import org.slf4j.LoggerFactory
 import java.util.Base64
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.Executors
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
@@ -34,51 +36,54 @@ class PdfRequestConsumer(
     kafkaConfig: ApplicationConfig,
     private val renderTopic: String,
 ) {
+    private val logger = LoggerFactory.getLogger(PdfRequestConsumer::class.java)
+
     private val parallelism = Runtime.getRuntime().availableProcessors()
     private val parallelismSemaphore = parallelism.takeIf { it > 0 }?.let { Semaphore(it) }
         ?: throw IllegalStateException("Not enough cores to run async worker")
 
-    private val consumerConfig = createKafkaConsumerConfig(kafkaConfig, parallelism)
-    private val producerConfig = createKafkaProducerConfig(kafkaConfig)
-    private val replyProducers = Producers<AsyncPDFCompilationOutput>(producerConfig)
+    private val replyProducers = Producers<AsyncPDFCompilationOutput>(createKafkaProducerConfig(kafkaConfig))
 
     private val pdfEncoder = Base64.getEncoder()
-    private var shuttingDown = false
-    private lateinit var flow: Flow<ConsumerRecords<String, PDFRequestAsync>>
     private lateinit var consumerJob: Job
 
-    private val logger = LoggerFactory.getLogger(PdfRequestConsumer::class.java)
-    private val consumer = KafkaConsumer(consumerConfig, StringDeserializer(), PDFRequestAsyncDeserializer())
+    private val consumer = KafkaConsumer(
+        createKafkaConsumerConfig(kafkaConfig, parallelism),
+        StringDeserializer(),
+        PDFRequestAsyncDeserializer()
+    )
+
+    private val flowDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+    val flowScope = CoroutineScope(flowDispatcher)
 
     fun start() {
-        consumer.subscribe(listOf(renderTopic), RebalanceListener(replyProducers))
-        flow = flow()
-        @OptIn(DelicateCoroutinesApi::class)
-        consumerJob = flow.launchIn(GlobalScope)
+        consumerJob = flowScope.launch {
+            pollFlow()
+                .filter { !it.isEmpty }
+                .onEach { produceResultsForTopic(renderLetters(it)) }
+                .collect()
+        }
     }
 
     fun stop() {
-        shuttingDown = true
+        consumerJob.cancel("Shutting down kafka consumer")
+        flowScope.cancel("Shutting down ")
     }
 
-    private fun flow(): Flow<ConsumerRecords<String, PDFRequestAsync>> =
-        flow {
-            while (true) {
+
+    private fun pollFlow(): Flow<ConsumerRecords<String, PDFRequestAsync>> = flow {
+        try {
+            while (currentCoroutineContext().isActive) {
                 emit(consumer.poll(QUEUE_READ_TIMEOUT))
             }
-        }.takeWhile { !shuttingDown }
-            .filter { !it.isEmpty }
-            .onEach { renderRequests ->
-                produceResultsForTopic(renderLetters(renderRequests))
-            }.onCompletion { exception ->
-                if (exception != null) {
-                    logger.error("Application stopped unexpectedly due to exception ${exception.message}")
-                }
-                logger.info("Closing consumers and producers")
-                consumer.close()
-                replyProducers.closeAll()
-                logger.info("Closed consumers and producers")
-            }
+        } finally {
+            logger.info("Closing consumers and producers")
+            consumer.close()
+            replyProducers.closeAll()
+            logger.info("Closed consumers and producers")
+            flowDispatcher.close()
+        }
+    }
 
     private fun produceResultsForTopic(renderResults: List<RenderResult>) {
         renderResults.groupBy { it.consumedPartiton }
@@ -153,13 +158,11 @@ class PdfRequestConsumer(
             }.awaitAll()
         }
 
-    private suspend fun compile(request: PDFRequestAsync): PDFCompilationResponse {
-        parallelismSemaphore.acquire()
-        val result = LatexDocumentRenderer.render(request.request)
-            .let { latexCompileService.createLetter(it.files) }
-        parallelismSemaphore.release()
-        return result
-    }
+    private suspend fun compile(request: PDFRequestAsync): PDFCompilationResponse =
+        parallelismSemaphore.withPermit {
+            LatexDocumentRenderer.render(request.request)
+                .let { latexCompileService.createLetter(it.files) }
+        }
 
 }
 
@@ -194,8 +197,6 @@ private fun createKafkaConfig(kafkaConfig: ApplicationConfig): Map<String, Strin
     "ssl.truststore.type" to "JKS",
     "ssl.truststore.location" to kafkaConfig.getProperty("ssl.truststore.location"),
     "ssl.truststore.password" to kafkaConfig.getProperty("ssl.truststore.password"),
-    // must be prefixed with application ID assigned by NAIS for the stream to work properly.
-    "application.id" to kafkaConfig.getProperty("application.id.prefix") + "_pdf_bygger",
 )
 
 private fun createKafkaConsumerConfig(kafkaConfig: ApplicationConfig, paralellism: Int) =

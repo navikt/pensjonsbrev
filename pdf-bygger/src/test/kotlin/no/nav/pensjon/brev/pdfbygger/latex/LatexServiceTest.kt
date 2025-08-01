@@ -3,11 +3,15 @@ package no.nav.pensjon.brev.pdfbygger.latex
 import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
 import kotlinx.coroutines.*
+import kotlinx.coroutines.test.advanceTimeBy
+import kotlinx.coroutines.test.runTest
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse.Failure
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse.Success
 import no.nav.pensjon.brev.pdfbygger.getScriptPath
 import no.nav.pensjon.brev.template.render.DocumentFile
+import java.util.concurrent.Executors
+import kotlin.coroutines.CoroutineContext
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createTempFile
 import kotlin.io.path.deleteIfExists
@@ -17,6 +21,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 import kotlin.test.assertNotNull
+import kotlin.test.fail
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -45,6 +50,25 @@ class LatexServiceTest {
         assertResult<Failure.Client>(producePdf("failingSecondCompile.sh")) {
             assertEquals("feilet letter.tex", it.error?.trim())
             assertEquals("kompilerer letter.tex", it.output?.trim())
+        }
+    }
+
+    @Test
+    fun `producePDF is cancelled mid process if coroutine context is stopped`() {
+        runTest {
+            val compileService = LatexCompileService(
+                latexCommand = "/usr/bin/env bash ${getScriptPath("neverEndingCompile.sh")}",
+                compileTimeout = 10.seconds, // arbitrary long timeout, cancellation will come sooner
+                tmpBaseDir = null
+            )
+
+            val job: Deferred<PDFCompilationResponse> = async {
+                compileService.createLetter(emptyList())
+            }
+            Process
+            delay(100)
+            job.cancel()
+
         }
     }
 
