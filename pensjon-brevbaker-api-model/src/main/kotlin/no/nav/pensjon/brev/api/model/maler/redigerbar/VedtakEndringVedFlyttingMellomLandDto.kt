@@ -35,8 +35,8 @@ data class VedtakEndringVedFlyttingMellomLandDto(
         val beregnetpensjonPerMaanedVedVirk: BeregnetPensjonPerMaanedVedVirk,
         val erEtterbetaling1Maaned: Boolean,
         val dineRettigheterOgMulighetTilAaKlage: DineRettigheterOgMulighetTilAaKlageDto,
-        val maanedligPensjonFoerSkatt: MaanedligPensjonFoerSkattDto,
-        val maanedligPensjonFoerSkattAP2025: MaanedligPensjonFoerSkattAP2025Dto,
+        val maanedligPensjonFoerSkatt: MaanedligPensjonFoerSkattDto?,
+        val maanedligPensjonFoerSkattAP2025: MaanedligPensjonFoerSkattAP2025Dto?,
     ) : BrevbakerBrevdata {
         data class Krav(val virkDatoFom: LocalDate, val aarsak: Aarsak)
         data class Bruker(val faktiskBostedsland: String?, val borIEOES: Boolean, val borIAvtaleland: Boolean)
