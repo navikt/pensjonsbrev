@@ -55,6 +55,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.reduksjonTilbakeITid
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.FeilutbetalingAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InformasjonOmAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldFraOmEndringer2
@@ -107,12 +108,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
     ) {
         val virkDatoFom = pesysData.krav.virkDatoFom.format()
         title {
-            // nyBeregningAPTittel_001
-            textExpr(
-                Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ".expr() + virkDatoFom,
-                Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + virkDatoFom,
-                English to "We have recalculated your retirement pension from ".expr() + virkDatoFom
-            )
+            includePhrase(BeregnaPaaNytt(pesysData.krav.virkDatoFom))
         }
 
         outline {

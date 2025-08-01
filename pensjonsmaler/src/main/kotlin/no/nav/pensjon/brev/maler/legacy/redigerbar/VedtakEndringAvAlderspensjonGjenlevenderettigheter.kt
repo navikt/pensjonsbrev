@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP1967
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
-import no.nav.pensjon.brev.api.model.BeloepEndring.*
+import no.nav.pensjon.brev.api.model.BeloepEndring.ENDR_OKT
 import no.nav.pensjon.brev.api.model.KravInitiertAv
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -51,6 +51,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlde
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.YtelseskomponentInformasjonSelectors.beloepEndring
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.DuFaarHverMaaned
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.FlereBeregningsperioder
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.HvorKanDuFaaViteMerOmAlderspensjonenDin
@@ -119,14 +120,10 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                     Nynorsk to "Attlevandetillegg i alderspensjonen din frå ",
                     English to "Survivor's supplement in retirement pension from "
                 )
+                eval(pesysData.krav.virkDatoFom.format())
             }.orShow {
-                text(
-                    Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ",
-                    Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ",
-                    English to "We have recalculated your retirement pension from "
-                )
+                includePhrase(BeregnaPaaNytt(pesysData.krav.virkDatoFom))
             }
-            eval(pesysData.krav.virkDatoFom.format())
         }
 
         outline {

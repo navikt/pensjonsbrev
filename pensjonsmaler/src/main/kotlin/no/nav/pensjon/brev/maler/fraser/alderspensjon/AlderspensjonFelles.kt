@@ -15,8 +15,10 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.ParagraphPhrase
+import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
+import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -559,4 +561,15 @@ data class DerforHar(val initiertAvBrukerEllerVerge: Expression<Boolean>, val in
         }
     }
 
+}
+
+// nyBeregningAPTittel_001
+data class BeregnaPaaNytt(val virkDatoFom: Expression<LocalDate>) : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        textExpr(
+            Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ".expr() + virkDatoFom.format(),
+            Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + virkDatoFom.format(),
+            English to "We have recalculated your retirement pension from ".expr() + virkDatoFom.format()
+        )
+    }
 }
