@@ -38,8 +38,8 @@ spec:
         - id: loki
   resources:
     requests:
-      cpu: "1"
-      memory: "1024Mi"
+      cpu: "200m"
+      memory: "512Mi"
     limits:
       memory: "8192Mi"
   accessPolicy:
