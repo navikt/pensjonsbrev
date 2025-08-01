@@ -67,7 +67,7 @@ class PdfRequestConsumer(
 
     fun stop() {
         consumerJob.cancel("Shutting down kafka consumer")
-        flowScope.cancel("Shutting down ")
+        flowScope.cancel("Shutting down")
     }
 
 
@@ -81,7 +81,6 @@ class PdfRequestConsumer(
             consumer.close()
             replyProducers.closeAll()
             logger.info("Closed consumers and producers")
-            flowDispatcher.close()
         }
     }
 
