@@ -74,7 +74,6 @@ ktor-server-swagger = { module = "io.ktor:ktor-server-swagger", version.ref = "k
 ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktorVersion" }
 
 # Kafka
-kafka-streams = { module = "org.apache.kafka:kafka-streams", version.ref = "kafkaVersion" }
 connect-runtime = { module = "org.apache.kafka:connect-runtime", version.ref = "kafkaVersion" }
 
 # Exposed

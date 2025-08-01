@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.latex
 
 import io.ktor.server.config.*
-import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.PDFRequestAsync
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import org.apache.kafka.clients.producer.KafkaProducer

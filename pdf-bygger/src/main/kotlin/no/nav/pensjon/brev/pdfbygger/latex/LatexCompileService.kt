@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.pdfbygger.latex
 import io.ktor.server.config.ApplicationConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.brev.brevbaker.PDFCompilationOutput
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
 import java.nio.file.Path
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.io.path.createTempDirectory
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds

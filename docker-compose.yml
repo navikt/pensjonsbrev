@@ -26,11 +26,6 @@ services:
       - "5015:5015" # debug port
     env_file:
       - ./pensjon-brevbaker/secrets/unleash.env
-      - ./pensjon-brevbaker/secrets/kafka/kafka-secret.env
-    volumes:
-      - ./pensjon-brevbaker/secrets/kafka:/secrets
-      - ./pensjon-brevbaker/secrets/kafka/client.keystore.p12:/secrets/client.keystore.p12
-      - ./pensjon-brevbaker/secrets/kafka/client.truststore.jks:/secrets/client.truststore.jks
   skribenten-backend:
     profiles:
       - skribenten
