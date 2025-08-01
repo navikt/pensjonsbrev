@@ -3,8 +3,8 @@ import { Button, Label } from "@navikt/ds-react";
 import type { ReactNode } from "react";
 import React from "react";
 
-import { fontTypeOf, isItemContentIndex } from "~/Brevredigering/LetterEditor/actions/common";
-import { isItemList, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
+import { fontTypeOf, isItemContentIndex, isTable } from "~/Brevredigering/LetterEditor/actions/common";
+import { isItemList, isTableCellIndex, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import { FontType } from "~/types/brevbakerTypes";
 
 import Actions from "../actions";
@@ -14,6 +14,26 @@ import type { LetterEditorState } from "../model/state";
 
 const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontType => {
   const block = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
+  const focus = editorState.focus;
+  const focusedContent = block.content[focus.contentIndex];
+
+  if (isTable(focusedContent) && isTableCellIndex(focus)) {
+    // Header cell (rowIndex === -1)
+    if (focus.rowIndex === -1) {
+      const colSpec = focusedContent.header.colSpec[focus.cellIndex];
+      const headerTexts = colSpec?.headerContent.text ?? [];
+      const headerText = headerTexts[focus.cellContentIndex] ?? headerTexts.find(isTextContent);
+
+      return isTextContent(headerText) ? fontTypeOf(headerText) : FontType.PLAIN;
+    }
+    // Body cell
+    const row = focusedContent.rows[focus.rowIndex];
+    const cell = row?.cells[focus.cellIndex];
+    const texts = cell?.text ?? [];
+    const cellText = texts[focus.cellContentIndex] ?? texts.find(isTextContent);
+
+    return isTextContent(cellText) ? fontTypeOf(cellText) : FontType.PLAIN;
+  }
   const blockContent = block.content[editorState.focus.contentIndex];
   const textContent =
     isItemContentIndex(editorState.focus) && isItemList(blockContent)

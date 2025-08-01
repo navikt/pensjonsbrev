@@ -184,6 +184,8 @@ const ContentBody = ({ content, focus }: { content: Content; focus?: Focus }) =>
     case "LITERAL":
     case "VARIABLE":
       return textOf(content);
+    case "TABLE":
+      return null;
   }
 };
 
@@ -250,7 +252,10 @@ function isEdited(content: Content | AnyBlock): boolean {
         content.deletedContent.length > 0 ||
         content.content.some(isEdited)
       );
+    case "TABLE":
+      return false;
   }
+  return false;
 }
 
 function isEditedItem(item: Item): boolean {

@@ -10,6 +10,7 @@ import {
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { logPastedClipboard } from "~/Brevredigering/LetterEditor/actions/paste";
+import TableView from "~/Brevredigering/LetterEditor/components/TableView";
 import { Text } from "~/Brevredigering/LetterEditor/components/Text";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -26,8 +27,10 @@ import {
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
-import { NEW_LINE } from "~/types/brevbakerTypes";
+import { NEW_LINE, TABLE } from "~/types/brevbakerTypes";
 import { ElementTags, FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+
+import { addRow, handleBackspaceInTableCell, nextTableFocus } from "../services/tableCaretUtils";
 
 /**
  * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
@@ -89,6 +92,15 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
               </ul>
             );
           }
+          case TABLE:
+            return (
+              <TableView
+                blockIndex={literalIndex.blockIndex}
+                contentIndex={_contentIndex}
+                key={_contentIndex}
+                node={content}
+              />
+            );
         }
       })}
     </div>
@@ -291,13 +303,58 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
   };
 
-  const handlePaste = (event: React.ClipboardEvent<HTMLSpanElement>) => {
+  const handleTab = (event: React.KeyboardEvent<HTMLSpanElement>): boolean => {
+    const { focus } = editorState;
+    const currentBlock = editorState.redigertBrev.blocks[focus.blockIndex];
+    const currentContent = currentBlock.content[focus.contentIndex];
+
+    const insideTable = currentContent?.type === TABLE && isItemContentIndex(focus);
+    if (!insideTable) return false;
+
+    const direction = event.shiftKey ? "backward" : "forward";
+    const table = currentContent;
+    const lastRow = table.rows.length - 1;
+    const lastCol = table.rows[0].cells.length - 1;
+
+    const atLastCell = focus.itemIndex === lastRow && focus.itemContentIndex === lastCol;
+
     event.preventDefault();
 
-    if (freeze) {
-      event.stopPropagation();
-      return;
+    if (direction === "forward" && atLastCell) {
+      addRow(editorState, setEditorState, event);
+      return true;
     }
+
+    const next = nextTableFocus(editorState, direction);
+    setEditorState((prev) => {
+      if (next === "EXIT_FORWARD") {
+        return {
+          ...prev,
+          focus: {
+            blockIndex: prev.focus.blockIndex,
+            contentIndex: prev.focus.contentIndex + 1,
+            cursorPosition: 0,
+          },
+        };
+      }
+      if (next === "EXIT_BACKWARD") {
+        return {
+          ...prev,
+          focus: {
+            blockIndex: prev.focus.blockIndex,
+            contentIndex: prev.focus.contentIndex - 1,
+            cursorPosition: 0,
+          },
+        };
+      }
+      return { ...prev, focus: next };
+    });
+
+    return true;
+  };
+
+  const handlePaste = (event: React.ClipboardEvent<HTMLSpanElement>) => {
+    event.preventDefault();
     // TODO: for debugging frem til vi er ferdig å teste liming
     logPastedClipboard(event.clipboardData);
 
@@ -362,11 +419,19 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         );
       }}
       onKeyDown={(event) => {
+        if (event.key === "Backspace") {
+          if (handleBackspaceInTableCell(event, editorState, setEditorState)) return;
+
+          handleBackspace(event);
+          return;
+        }
+
+        if (event.key === "Tab") {
+          if (handleTab(event)) return;
+          return;
+        }
         if (event.key === "Enter") {
           handleEnter(event);
-        }
-        if (event.key === "Backspace") {
-          handleBackspace(event);
         }
         if (event.key === "Delete") {
           handleDelete(event);
