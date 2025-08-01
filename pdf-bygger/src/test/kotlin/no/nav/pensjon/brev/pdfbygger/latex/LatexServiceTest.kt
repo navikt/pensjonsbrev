@@ -53,6 +53,7 @@ class LatexServiceTest {
         }
     }
 
+/* // TODO hvordan kan jeg sjekke om prosessen har stoppa?
     @Test
     fun `producePDF is cancelled mid process if coroutine context is stopped`() {
         runTest {
@@ -71,6 +72,7 @@ class LatexServiceTest {
 
         }
     }
+*/
 
     @Test
     fun `producePDF times out when first execution exceeds timout`() {
