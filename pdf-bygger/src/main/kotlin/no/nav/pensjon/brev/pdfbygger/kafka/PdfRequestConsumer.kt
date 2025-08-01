@@ -60,8 +60,7 @@ class PdfRequestConsumer(
         consumerJob = flowScope.launch {
             pollFlow()
                 .filter { !it.isEmpty }
-                .onEach { produceResultsForTopic(renderLetters(it)) }
-                .collect()
+                .collect { produceResultsForTopic(renderLetters(it)) }
         }
     }
 
