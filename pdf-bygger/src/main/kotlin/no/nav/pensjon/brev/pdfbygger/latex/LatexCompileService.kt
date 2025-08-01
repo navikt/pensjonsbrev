@@ -97,36 +97,32 @@ class LatexCompileService(
         texFilename: String = "letter",
         output: Path = workingDir.resolve("process.out"),
         error: Path = workingDir.resolve("process.err"),
-    ): Execution = withContext(Dispatchers.IO) {
-        var process: Process? = null
-        try {
-            process = ProcessBuilder(latexCommand)
-                .directory(workingDir.toFile())
-                .redirectOutput(ProcessBuilder.Redirect.appendTo(output.toFile()))
-                .redirectError(ProcessBuilder.Redirect.appendTo(error.toFile()))
-                .apply { environment()["TEXINPUTS"] = ".:/app/pensjonsbrev_latex//:" }
-                .start()
+    ): Execution {
+        return withContext(Dispatchers.IO) {
+            var process: Process? = null
+            try {
+                process = ProcessBuilder(latexCommand)
+                    .directory(workingDir.toFile())
+                    .redirectOutput(ProcessBuilder.Redirect.appendTo(output.toFile()))
+                    .redirectError(ProcessBuilder.Redirect.appendTo(error.toFile()))
+                    .apply { environment()["TEXINPUTS"] = ".:/app/pensjonsbrev_latex//:" }
+                    .start()
 
-            val exitCode = suspendCancellableCoroutine { cancellableContinuation ->
-                process.onExit().thenAccept { cancellableContinuation.resumeWith(Result.success(it.exitValue())) }
+                process.onExit().await()
 
-                cancellableContinuation.invokeOnCancellation {
-                    process.destroyForcibly()
+                if (process.exitValue() == 0) {
+                    Execution.Success(pdf = workingDir.resolve("${File(texFilename).nameWithoutExtension}.pdf"))
+                } else {
+                    Execution.Failure.Compilation(
+                        output = output.toFile().readText(),
+                        error = error.toFile().readText()
+                    )
                 }
+            } catch (e: IOException) {
+                Execution.Failure.Execution(e)
+            } finally {
+                process?.destroyForcibly()
             }
-
-            if (exitCode == 0) {
-                Execution.Success(pdf = workingDir.resolve("${File(texFilename).nameWithoutExtension}.pdf"))
-            } else {
-                Execution.Failure.Compilation(
-                    output = output.toFile().readText(),
-                    error = error.toFile().readText()
-                )
-            }
-        } catch (e: IOException) {
-            Execution.Failure.Execution(e)
-        } finally {
-            process?.destroyForcibly()
         }
     }
 }
