@@ -42,7 +42,7 @@ object Api {
     data class OppdaterAttesteringRequest(
         val saksbehandlerValg: SaksbehandlerValg,
         val redigertBrev: Edit.Letter,
-        val signaturAttestant: String,
+        val signaturAttestant: String?,
     )
 
     data class BrevInfo(

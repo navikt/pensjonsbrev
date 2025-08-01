@@ -144,10 +144,11 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     onSuccess: (response) => onSaveSuccess(response),
   });
 
-  const attesterMutation = useMutation<Blob, AxiosError, OppdaterBrevRequest>({
+  const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
     mutationFn: (requestData) =>
       attesterBrev({ saksId: props.saksId, brevId: props.brev.info.id, request: requestData }),
 
+    onSuccess: onSaveSuccess,
     onError: (err) => {
       const reason = (err as AxiosError & { forbidReason?: AttestForbiddenReason }).forbidReason;
 

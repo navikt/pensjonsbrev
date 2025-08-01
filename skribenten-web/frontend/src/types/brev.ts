@@ -24,8 +24,6 @@ export type BrevResponse = {
 };
 
 export interface DelvisOppdaterBrevRequest {
-  saksId: string;
-  brevId: string | number;
   laastForRedigering?: Nullable<boolean>;
   distribusjonstype?: Nullable<Distribusjonstype>;
   mottaker?: Nullable<Mottaker>;

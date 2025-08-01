@@ -783,8 +783,8 @@ class BrevredigeringServiceTest {
                 any(),
                 any(),
                 any(),
-                match { it.signerendeSaksbehandlere?.attesterendeSaksbehandler == attestantPrincipal.fullName },
-                any()
+                any(),
+                match { it.signatur.attesterendeSaksbehandlerNavn == attestantPrincipal.fullName },
             )
         }
     }

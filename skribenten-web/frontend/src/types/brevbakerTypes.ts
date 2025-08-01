@@ -53,6 +53,7 @@ export type Sakspart = {
   readonly gjelderFoedselsnummer: string;
   readonly vergeNavn?: string;
   readonly saksnummer: string;
+  // Formatert som 'yyyy-MM-dd'
   readonly dokumentDato: string;
 };
 
