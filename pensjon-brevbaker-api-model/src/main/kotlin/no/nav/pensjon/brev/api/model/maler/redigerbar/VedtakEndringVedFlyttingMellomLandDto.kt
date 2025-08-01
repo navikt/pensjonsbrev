@@ -2,11 +2,16 @@ package no.nav.pensjon.brev.api.model.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.EksportForbudKode
+import no.nav.pensjon.brev.api.model.KravArsakType
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
+import no.nav.pensjon.brev.api.model.vedlegg.InformasjonOmMedlemskapOgHelserettigheterDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -21,7 +26,7 @@ data class VedtakEndringVedFlyttingMellomLandDto(
         val endringIPensjonen: Boolean,
         val etterbetaling: Boolean,
         @DisplayText("Relevant hvis innvandret")
-        val aarsakTilAtPensjonenOeker: AarsakTilAtPensjonenOeker
+        val aarsakTilAtPensjonenOeker: AarsakTilAtPensjonenOeker,
     ) : BrevbakerBrevdata
 
     data class PesysData(
@@ -37,8 +42,12 @@ data class VedtakEndringVedFlyttingMellomLandDto(
         val dineRettigheterOgMulighetTilAaKlage: DineRettigheterOgMulighetTilAaKlageDto,
         val maanedligPensjonFoerSkatt: MaanedligPensjonFoerSkattDto?,
         val maanedligPensjonFoerSkattAP2025: MaanedligPensjonFoerSkattAP2025Dto?,
+        val opplysningerBruktIBeregningen: OpplysningerBruktIBeregningenAlderDto?,
+        val opplysningerBruktIBeregningenAlderAP2025Dto: OpplysningerBruktIBeregningenAlderAP2025Dto?,
+        val opplysningerOmAvdoedBruktIBeregning: OpplysningerOmAvdoedBruktIBeregningDto?,
+        val informasjonOmMedlemskapOgHelserettigheterDto: InformasjonOmMedlemskapOgHelserettigheterDto?
     ) : BrevbakerBrevdata {
-        data class Krav(val virkDatoFom: LocalDate, val aarsak: Aarsak)
+        data class Krav(val virkDatoFom: LocalDate, val aarsak: KravArsakType)
         data class Bruker(val faktiskBostedsland: String?, val borIEOES: Boolean, val borIAvtaleland: Boolean)
         data class AlderspensjonVedVirk(
             val erEksportberegnet: Boolean,
@@ -71,12 +80,7 @@ data class VedtakEndringVedFlyttingMellomLandDto(
         )
 
         data class YtelseskomponentInformasjon(val beloepEndring: BeloepEndring?)
-        data class BeregnetPensjonPerMaanedVedVirk(val grunnnpensjon: Kroner)
-    }
-
-    enum class Aarsak {
-        UTVANDRET,
-        INNVANDRET
+        data class BeregnetPensjonPerMaanedVedVirk(val grunnpensjon: Kroner?)
     }
 
     enum class Opphoersbegrunnelse {

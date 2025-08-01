@@ -165,6 +165,7 @@ enum class KravInitiertAv {
 }
 enum class KravArsakType{
     ALDERSOVERGANG,
+    ANNET, // Denne er catch-all for alle de andre typene som fins i pesys, men som ikke trengs her
     ENDRET_OPPTJENING,
     EPS_ENDRET_INNTEKT,
     EPS_NY_YTELSE,
