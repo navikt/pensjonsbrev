@@ -15,8 +15,10 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.ParagraphPhrase
+import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
+import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -150,6 +152,35 @@ object MeldeFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
             )
         }
     }
+}
+
+object MeldFraOmEndringer2 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        // meldEndringerPesys_002
+        // TODO: Denne er så godt som lik mange av dei andre meld fra om endringer. Bør samkjøres og legges i felles.
+        title1 {
+            text(
+                Bokmal to "Du må melde fra om endringer",
+                Nynorsk to "Du må melde frå om endringar",
+                English to "You must notify Nav if anything changes"
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget ser du hvilke endringer du må si fra om.",
+                Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget ser du kva endringar du må seie frå om.",
+                English to "If your circumstances change, you must inform Nav immediately. The appendix specifies which changes you are obligated to notify us of."
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav.",
+                Nynorsk to "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til Nav.",
+                English to "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav."
+            )
+        }
+    }
+
 }
 
 data class ArbeidsinntektOgAlderspensjon(
@@ -465,6 +496,7 @@ object UfoereAlder {
     }
 }
 
+// feilutbetalingAP_001
 object FeilutbetalingAP  : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
@@ -529,4 +561,15 @@ data class DerforHar(val initiertAvBrukerEllerVerge: Expression<Boolean>, val in
         }
     }
 
+}
+
+// nyBeregningAPTittel_001
+data class BeregnaPaaNytt(val virkDatoFom: Expression<LocalDate>) : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        textExpr(
+            Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ".expr() + virkDatoFom.format(),
+            Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + virkDatoFom.format(),
+            English to "We have recalculated your retirement pension from ".expr() + virkDatoFom.format()
+        )
+    }
 }

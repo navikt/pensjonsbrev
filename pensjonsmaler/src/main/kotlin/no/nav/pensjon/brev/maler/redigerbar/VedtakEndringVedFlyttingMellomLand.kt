@@ -1,0 +1,660 @@
+package no.nav.pensjon.brev.maler.redigerbar
+
+import no.nav.pensjon.brev.api.model.BeloepEndring
+import no.nav.pensjon.brev.api.model.EksportForbudKode.DOD26_ALDER
+import no.nav.pensjon.brev.api.model.EksportForbudKode.FLYKT_ALDER
+import no.nav.pensjon.brev.api.model.EksportForbudKode.UFOR25_ALDER
+import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto.Aarsak.INNVANDRET
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto.Aarsak.UTVANDRET
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto.AarsakTilAtPensjonenOeker
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDto.Opphoersbegrunnelse.BRUKER_FLYTTET_IKKE_AVT_LAND
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.erEksportberegnet
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.fullUttaksgrad
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.gjenlevenderettAnvendt
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.minstenivaaIndividuellInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.minstenivaaPensjonistParInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.pensjonstilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.totalPensjon
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.AlderspensjonVedVirkSelectors.uforeKombinertMedAlder
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.BrukerSelectors.borIAvtaleland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.BrukerSelectors.borIEOES
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.BrukerSelectors.faktiskBostedsland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.BrukerSelectors.faktiskBostedsland_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.InngangOgEksportVurderingAvdoedSelectors.eksportForbudKode_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.InngangOgEksportVurderingAvdoedSelectors.minst20ArBotidKap19_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.InngangOgEksportVurderingAvdoedSelectors.minst20ArTrygdetidKap20_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.InngangOgEksportVurderingSelectors.eksportForbudKode
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.InngangOgEksportVurderingSelectors.eksportTrygdeavtaleAvtaleland
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.InngangOgEksportVurderingSelectors.eksportTrygdeavtaleEOES
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.InngangOgEksportVurderingSelectors.minst20AarTrygdetid
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.KravSelectors.aarsak
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.KravSelectors.virkDatoFom
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.OpphoersbegrunnelseVedVirkSelectors.begrunnelseBT_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.OpphoersbegrunnelseVedVirkSelectors.begrunnelseET_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.YtelseskomponentInformasjonSelectors.beloepEndring_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.alderspensjonVedVirk
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.bruker
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.dineRettigheterOgMulighetTilAaKlage
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.erEtterbetaling1Maaned
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.inngangOgEksportVurdering
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.inngangOgEksportVurderingAvdoed
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.inngangOgEksportVurderingAvdoed_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.krav
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.maanedligPensjonFoerSkattAP2025
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.opphoersbegrunnelseVedVirk_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.PesysDataSelectors.ytelseskomponentInformasjon_safe
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.aarsakTilAtPensjonenOeker
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.endringIPensjonen
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.etterbetaling
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.SaksbehandlerValgSelectors.reduksjonTilbakeITid
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringVedFlyttingMellomLandDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.FeilutbetalingAP
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.InformasjonOmAlderspensjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldFraOmEndringer2
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.UfoereAlder
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
+import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.common.Vedtak
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
+import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.isNull
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+
+@TemplateModelHelpers
+object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedFlyttingMellomLandDto> {
+    override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
+    override val sakstyper = setOf(Sakstype.ALDER)
+    override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_FLYTTING_MELLOM_LAND
+    override val template = createTemplate(
+        name = kode.name,
+        letterDataType = VedtakEndringVedFlyttingMellomLandDto::class,
+        languages(Bokmal, Nynorsk, English),
+        letterMetadata = LetterMetadata(
+            displayTitle = "Vedtak - endring av alderspensjon ved flytting mellom land",
+            isSensitiv = false,
+            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
+        )
+    ) {
+        val virkDatoFom = pesysData.krav.virkDatoFom.format()
+        title {
+            includePhrase(BeregnaPaaNytt(pesysData.krav.virkDatoFom))
+        }
+
+        outline {
+            val bostedsland = pesysData.bruker.faktiskBostedsland_safe.ifNull(fritekst("bostedsland"))
+            val garantipensjonInnvilget = pesysData.alderspensjonVedVirk.garantipensjonInnvilget
+            val pensjonstilleggInnvilget = pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget
+            val minstenivaaIndividuellInnvilget = pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget
+            val minstenivaaPensjonistParInnvilget = pesysData.alderspensjonVedVirk.minstenivaaPensjonistParInnvilget
+            val gjenlevenderettAnvendt = pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
+
+            val totalPensjon = pesysData.alderspensjonVedVirk.totalPensjon.format()
+            val aarsakUtvandret = pesysData.krav.aarsak.equalTo(UTVANDRET)
+
+            val beloepUendret =
+                pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.UENDRET)
+            val beloepOekning =
+                pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_OKT)
+            val beloepRedusert =
+                pesysData.ytelseskomponentInformasjon_safe.beloepEndring_safe.equalTo(BeloepEndring.ENDR_RED)
+
+            val eksportForbudKode = pesysData.inngangOgEksportVurdering.eksportForbudKode
+            val eksportForbudKodeAvdoed = pesysData.inngangOgEksportVurderingAvdoed_safe.eksportForbudKode_safe
+
+            includePhrase(Vedtak.Overskrift)
+
+            ifNotNull(pesysData.bruker.faktiskBostedsland) {
+                // flyttingAPmeld_001
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vi har fått melding om at du har flyttet til ".expr() + it + ".",
+                        Nynorsk to "Vi har fått melding om at du har flytta til ".expr() + it + ".",
+                        English to "We have received notice that you have moved to ".expr() + it + "."
+                    )
+                }
+            }.orShow {
+                // flyttingAPNorge_001
+                paragraph {
+                    text(
+                        Bokmal to "Du har flyttet til Norge.",
+                        Nynorsk to "Du har flytta til Noreg.",
+                        English to "You have moved to Norway."
+                    )
+                }
+            }
+
+            showIf(aarsakUtvandret and pesysData.alderspensjonVedVirk.erEksportberegnet) {
+                showIf(eksportForbudKode.equalTo(UFOR25_ALDER)) {
+                    // eksportUngUfor_001
+                    paragraph {
+                        text(
+                            Bokmal to "For å ha rett til alderspensjon etter reglene for unge uføre må du være bosatt i Norge. Du har likevel fortsatt rett til pensjon etter din egen opptjening.",
+                            Nynorsk to "For å ha rett til alderspensjon etter reglane for unge uføre må du bu i Noreg. Du har likevel framleis rett til pensjon etter di eiga opptening.",
+                            English to "To be eligible for retirement pension calculated in accordance with the regulations for young people with disabilities, you have to live in Norway. However, you are still eligible for a pension calculated on the basis of your own accumulated pension rights."
+                        )
+                    }
+                }
+
+                showIf(eksportForbudKodeAvdoed.equalTo(DOD26_ALDER)) {
+                    // eksportUngUforAvdod_001
+                    paragraph {
+                        text(
+                            Bokmal to "Når du flytter til utlandet har du ikke lenger rett til alderspensjon etter reglene som gjelder når avdøde var yngre enn 26 år ved dødsfallet. Du har fortsatt rett til alderspensjon etter din egen og avdødes opptjening.",
+                            Nynorsk to "Når du flyttar til utlandet har du ikkje lenger rett til alderspensjon etter reglane som gjeldar når avdøde var yngre enn 26 år ved dødsfallet. Du har framleis rett til pensjon etter di eiga og avdøde si opptening.",
+                            English to "When you move abroad, you are no longer eligible for retirement pension calculated in accordance with the regulations as the deceased was younger than 26 years old at the time of death. However, you are still eligible for a pension calculated on the basis of your own and the deceased’s accumulated pension rights."
+                        )
+                    }
+                }
+
+                showIf(eksportForbudKode.equalTo(FLYKT_ALDER)) {
+                    // eksportFlyktning_001
+                    paragraph {
+                        text(
+                            Bokmal to "Når du flytter til et land utenfor EØS-området har du ikke lenger rett til alderspensjon etter reglene for flyktninger. Du har fortsatt rett til pensjon etter din egen opptjening.",
+                            Nynorsk to "Når du flyttar til eit land utanfor EØS-området har du ikkje lenger rett til alderspensjon etter reglane for flyktningar. Du har framleis rett til pensjon etter di eiga opptening.",
+                            English to "When you move to a country outside the EEA region, you are no longer eligible for retirement pension determined on the basis of the regulations for refugees. However, you are still eligible for a pension calculated on the basis of your own accumulated pension rights."
+                        )
+                    }
+                }
+
+                showIf(eksportForbudKodeAvdoed.equalTo(FLYKT_ALDER)) {
+                    // eksportFlyktningAvdod_001
+                    paragraph {
+                        text(
+                            Bokmal to "Når du flytter til et land utenfor EØS-området har du ikke lenger rett til alderspensjon etter reglene for flyktninger. Du har fortsatt rett til alderspensjon etter din egen og avdødes opptjening.",
+                            Nynorsk to "Når du flyttar til eit land utanfor EØS-området har du ikkje lenger rett til alderspensjon etter reglane for flyktningar. Du har framleis rett til pensjon etter di eiga og avdøde si opptening.",
+                            English to "When you move to a country outside the EEA region, you are no longer eligible for retirement pension determined on the basis of the regulations for refugees. However, you are still eligible for a pension calculated on the basis of your own and the deceased’s accumulated pension rights."
+                        )
+                    }
+                }
+
+                val minst20AarTrygdetid = pesysData.inngangOgEksportVurdering.minst20AarTrygdetid
+                val minst20AarTrygdetidAvdoed =
+                    pesysData.inngangOgEksportVurderingAvdoed.minst20ArTrygdetidKap20_safe.ifNull(false)
+                val minst20AarBotidAvdoed =
+                    pesysData.inngangOgEksportVurderingAvdoed.minst20ArBotidKap19_safe.ifNull(false)
+                showIf(
+                    eksportForbudKode.isNull() and
+                            not(minst20AarTrygdetid) and
+                            minst20AarTrygdetidAvdoed
+                            and minst20AarBotidAvdoed
+                ) {
+                    // eksportAPunder20aar_001
+                    paragraph {
+                        textExpr(
+                            Bokmal to "For å ha rett til full alderspensjon når du bor i ".expr() + bostedsland + ", må du ha vært medlem i folketrygden i minst 20 år. Du har mindre enn 20 års medlemstid og har derfor ikke rett til full pensjon.",
+                            Nynorsk to "For å ha rett til full alderspensjon når du bur i ".expr() + bostedsland + ", må du ha vore medlem i folketrygda i minst 20 år. Du har mindre enn 20 års medlemstid og har derfor ikkje rett til full pensjon.",
+                            English to "To be eligible for a full retirement pension while living in ".expr() + bostedsland + ", you must have been a member of the National Insurance scheme earning pension rights for at least 20 years. You have been a member for less than 20 years, and are therefore not eligible for a full pension."
+                        )
+                    }
+
+                    paragraph {
+                        text(
+                            Bokmal to "I vedleggene finner du mer detaljerte opplysninger.",
+                            Nynorsk to "I vedlegga finn du meir detaljerte opplysningar.",
+                            English to "There is more detailed information in the attachments."
+                        )
+                    }
+                }.orShowIf(
+                    eksportForbudKodeAvdoed.isNull() and
+                            minst20AarTrygdetid and
+                            (not(minst20AarTrygdetidAvdoed) or not(minst20AarBotidAvdoed))
+                ) {
+                    // eksportAPUnder20aarAvdod_001
+                    paragraph {
+                        text(
+                            Bokmal to "Verken du eller avdøde har vore medlem i folketrygda i minst 20 år. Da har du ikke rett til å få utbetalt hele alderspensjonen din når du flytter til dette landet.",
+                            Nynorsk to "Verken du eller avdøde har vært medlem i folketrygden i minst 20 år. Da har du ikkje rett til å få utbetalt heila alderspensjon din når du flyttar til dette landet.",
+                            English to "Neither you or the deceased have been a member of the Norwegian National Insurance Scheme for at least 20 years. Therefore, you are not eligible for your full retirement pension when you move to this country."
+                        )
+                    }
+                }
+            }
+
+            val begrunnelseETErBrukerFlyttetIkkeAvtLand =
+                pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseET_safe.equalTo(
+                    BRUKER_FLYTTET_IKKE_AVT_LAND
+                )
+            val begrunnelseBTErBrukerFlyttetIkkeAvtLand =
+                pesysData.opphoersbegrunnelseVedVirk_safe.begrunnelseBT_safe.equalTo(
+                    BRUKER_FLYTTET_IKKE_AVT_LAND
+                )
+            showIf(
+                aarsakUtvandret and begrunnelseETErBrukerFlyttetIkkeAvtLand and not(
+                    begrunnelseBTErBrukerFlyttetIkkeAvtLand
+                )
+            ) {
+                // eksportAPET_001
+                paragraph {
+                    text(
+                        Bokmal to "Når du flytter til dette landet har du ikke lenger rett til ektefelletillegg i alderspensjonen. Derfor har vi opphørt ektefelletillegget ditt.",
+                        Nynorsk to "Når du flyttar til dette landet har du ikkje lenger rett til ektefelletillegg i alderspensjonen. Derfor har vi opphørt ektefelletillegget ditt.",
+                        English to "When you move to this country, you are no longer eligible for a spouse supplement. Therefore, we have stopped your supplement."
+                    )
+                }
+            }.orShowIf(
+                aarsakUtvandret and not(begrunnelseETErBrukerFlyttetIkkeAvtLand) and begrunnelseBTErBrukerFlyttetIkkeAvtLand
+            ) {
+                // eksportAPBT_001
+                paragraph {
+                    text(
+                        Bokmal to "Når du flytter til dette landet har du ikke lenger rett til barnetillegg i alderspensjonen din. Derfor har vi opphørt barnetillegget ditt.",
+                        Nynorsk to "Når du flyttar til dette landet har du ikkje lenger rett til barnetillegg i alderspensjonen din. Derfor har vi opphørt barnetillegget ditt.",
+                        English to "When you move to this country, you are no longer eligible for a child supplement. Therefore, we have stopped your supplement."
+                    )
+                }
+            }.orShowIf(
+                aarsakUtvandret and begrunnelseETErBrukerFlyttetIkkeAvtLand and begrunnelseBTErBrukerFlyttetIkkeAvtLand
+            ) {
+                // eksportAPETBT_001
+                paragraph {
+                    text(
+                        Bokmal to "Når du flytter til dette landet har du ikke lenger rett til ektefelle- og barnetillegg i alderspensjonen. Derfor har vi opphørt ektefelle- og barnetillegget ditt.",
+                        Nynorsk to "Når du flyttar til dette landet har du ikkje lenger rett til ektefelle- og barnetillegg i alderspensjonen din. Derfor har vi opphørt ektefelle- og barnetillegget ditt.",
+                        English to "When you move to this country, you are no longer eligible for spouse and child supplement. Therefore, we have stopped your supplement."
+                    )
+                }
+            }
+
+            showIf(
+                pesysData.krav.aarsak.equalTo(INNVANDRET) and beloepOekning
+            ) {
+                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
+                showIf(saksbehandlerValg.aarsakTilAtPensjonenOeker.equalTo(AarsakTilAtPensjonenOeker.EKSPORTBEREGNING_MED_REDUSERT_TRYGDETID)) {
+                    // importAPRedusTT_001
+                    paragraph {
+                        text(
+                            Bokmal to "Når du bor i Norge har du rett til å få utbetalt hele alderspensjonen din igjen. Derfor har vi beregnet pensjonen din på nytt.",
+                            Nynorsk to "Når du bur i Noreg har du rett til å få utbetalt heile alderspensjonen din igjen. Derfor har vi berekna pensjonen din på nytt.",
+                            English to "When you live in Norway you are eligible for your full retirement pension. We have therefore recalculated your pension."
+                        )
+                    }
+                }.orShowIf(saksbehandlerValg.aarsakTilAtPensjonenOeker.equalTo(AarsakTilAtPensjonenOeker.EKSPORTFORBUD_UNG_UFOER)) {
+                    // importAPUngUfor_001
+                    paragraph {
+                        text(
+                            Bokmal to "Når du bor i Norge har du rett til alderspensjon etter reglene for unge uføre igjen. Derfor har vi beregnet pensjonen din på nytt.",
+                            Nynorsk to "Når du bur i Noreg har du rett til alderspensjon etter reglane for unge uføre igjen. Derfor har vi berekna pensjonen din på nytt.",
+                            English to "When you live in Norway you are eligible for retirement pension calculated in accordance with the regulations for young people with disabilities. We have therefore recalculated your pension."
+                        )
+                    }
+                }
+                    .orShowIf(saksbehandlerValg.aarsakTilAtPensjonenOeker.equalTo(AarsakTilAtPensjonenOeker.EKSPORTFORBUD_FLYKTNING)) {
+                        // importAPflyktninger_001
+                        paragraph {
+                            text(
+                                Bokmal to "Når du bor i Norge eller et EØS-land har du rett til alderspensjon etter reglene for flyktninger igjen. Derfor har vi beregnet pensjonen din på nytt.",
+                                Nynorsk to "Når du bur i Noreg eller eit EØS-land har du rett til alderspensjon etter reglane for flyktningar igjen. Derfor har vi berekna pensjonen din på nytt.",
+                                English to "When you live in Norway or an EEA country you are eligible for retirement pension determined on the basis of the regulations for refugees. We have therefore recalculated your pension."
+                            )
+                        }
+                    }
+            }
+
+            showIf(
+                aarsakUtvandret and
+                        not(begrunnelseBTErBrukerFlyttetIkkeAvtLand) and
+                        not(begrunnelseETErBrukerFlyttetIkkeAvtLand) and
+                        (
+                                eksportForbudKode.equalTo(UFOR25_ALDER)
+                                        or eksportForbudKode.equalTo(FLYKT_ALDER)
+                                        or eksportForbudKodeAvdoed.equalTo(UFOR25_ALDER)
+                                        or eksportForbudKodeAvdoed.equalTo(FLYKT_ALDER)
+                                        or eksportForbudKodeAvdoed.equalTo(DOD26_ALDER)
+                                )
+            ) {
+                // omregningAP_001
+                paragraph {
+                    text(
+                        Bokmal to "Derfor har vi beregnet pensjonen din på nytt.",
+                        Nynorsk to "Derfor har vi berekna pensjonen din på nytt.",
+                        English to "We have therefore recalculated your pension."
+                    )
+                }
+            }
+
+            showIf(
+                aarsakUtvandret and
+                        not(beloepUendret) and
+                        eksportForbudKode.isNull() and
+                        not(begrunnelseBTErBrukerFlyttetIkkeAvtLand) and
+                        not(begrunnelseETErBrukerFlyttetIkkeAvtLand)
+            ) {
+                paragraph {
+                    text(
+                        Bokmal to "Derfor har vi beregnet grunnpensjonen",
+                        Nynorsk to "Derfor har vi berekna grunnpensjonen",
+                        English to "We have therefore recalculated your basic pension"
+                    )
+                    showIf(
+                        not(garantipensjonInnvilget) and
+                                pensjonstilleggInnvilget and
+                                not(minstenivaaIndividuellInnvilget) and
+                                not(minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_PenT_001
+                        text(
+                            Bokmal to " og pensjonstillegget ditt",
+                            Nynorsk to " og pensjonstillegget ditt",
+                            English to " and pension supplement"
+                        )
+                    }.orShowIf(
+                        not(garantipensjonInnvilget) and
+                                not(pensjonstilleggInnvilget) and
+                                (minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_MNT_001
+                        text(
+                            Bokmal to " og minstenivåtillegget ditt",
+                            Nynorsk to " og minstenivåtillegget ditt",
+                            English to " and minimum pension supplement"
+                        )
+                    }.orShowIf(
+                        not(garantipensjonInnvilget) and
+                                pensjonstilleggInnvilget and
+                                (minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_PenT_MNT_001
+                        text(
+                            Bokmal to ", pensjonstillegget og minstenivåtillegget ditt",
+                            Nynorsk to ", pensjonstillegget og minstenivåtillegget ditt",
+                            English to ", supplementary pension and minimum pension supplement"
+                        )
+                    }.orShowIf(
+                        garantipensjonInnvilget and
+                                not(pensjonstilleggInnvilget) and
+                                not(minstenivaaIndividuellInnvilget) and
+                                not(minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_GarantiPen_001
+                        text(
+                            Bokmal to " og garantipensjonen din",
+                            Nynorsk to " og garantipensjonen din",
+                            English to " and guaranteed pension"
+                        )
+                    }.orShowIf(
+                        garantipensjonInnvilget and
+                                pensjonstilleggInnvilget and
+                                not(minstenivaaIndividuellInnvilget) and
+                                not(minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_PenT_GarantiPen_001
+                        text(
+                            Bokmal to ", pensjonstillegget og garantipensjonen din",
+                            Nynorsk to ", pensjonstillegget og garantipensjonen din",
+                            English to ", supplementary pension and guaranteed pension"
+                        )
+                    }.orShowIf(
+                        garantipensjonInnvilget and
+                                not(pensjonstilleggInnvilget) and
+                                (minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_GarantiPen_MNT_001
+                        text(
+                            Bokmal to ", garantipensjonen og minstenivåtillegget ditt",
+                            Nynorsk to ", garantipensjonen og minstenivåtillegget ditt",
+                            English to ", guaranteed pension and minimum pension supplement"
+                        )
+                    }.orShowIf(
+                        garantipensjonInnvilget and
+                                pensjonstilleggInnvilget and
+                                (minstenivaaIndividuellInnvilget or minstenivaaPensjonistParInnvilget)
+                    ) {
+                        // omregningGP_PenT_GarantiPen_MNT_001
+                        text(
+                            Bokmal to ", pensjonstillegget, garantipensjonen og minstenivåtillegget ditt",
+                            Nynorsk to ", pensjonstillegget, garantipensjonen og minstenivåtillegget ditt",
+                            English to ", supplementary pension, guaranteed pension and minimum pension supplement"
+                        )
+                    }
+                    text(
+                        Bokmal to " på nytt.",
+                        Nynorsk to " på nytt.",
+                        English to "."
+                    )
+                }
+            }
+
+            showIf(beloepUendret) {
+                // ingenEndringPensjon_001
+                paragraph {
+                    text(
+                        Bokmal to "Dette får ingen betydning for pensjonen din.",
+                        Nynorsk to "Dette får ingen følgjer for pensjonen din.",
+                        English to "This does not affect your pension."
+                    )
+                }
+            }.orShowIf(beloepRedusert) {
+                // nyBeregningAPReduksjon_001
+                paragraph {
+                    text(
+                        Bokmal to "Dette fører til at pensjonen din blir redusert.",
+                        Nynorsk to "Dette fører til at pensjonen din blir redusert.",
+                        English to "This leads to a reduction in your retirement pension."
+                    )
+                }
+            }.orShowIf(beloepOekning) {
+                // nyBeregningAPØkning_001
+                paragraph {
+                    text(
+                        Bokmal to "Dette fører til at pensjonen din øker.",
+                        Nynorsk to "Dette fører til at pensjonen din aukar.",
+                        English to "This leads to an increase in your retirement pension."
+                    )
+                }
+            }
+            showIf(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder) {
+                // innvilgelseAPogUTInnledn_001
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra " + virkDatoFom + ". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din.",
+                        Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå " + virkDatoFom + ". Du får alderspensjon frå folketrygda ved sida av uføretrygda di.",
+                        English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from " + virkDatoFom + ". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit."
+                    )
+                }
+            }.orShow {
+                // innvilgelseAPInnledn_001
+                paragraph {
+                    textExpr(
+                        Bokmal to "Du får ".expr() + totalPensjon + " kroner hver måned før skatt fra " + virkDatoFom + " i alderspensjon fra folketrygden.",
+                        Nynorsk to "Du får ".expr() + totalPensjon + " kroner kvar månad før skatt frå " + virkDatoFom + " i alderspensjon frå folketrygda.",
+                        English to "You will receive NOK ".expr() + totalPensjon + " every month before tax from " + virkDatoFom + " as retirement pension from the National Insurance Scheme."
+                    )
+                }
+            }
+
+            includePhrase(Utbetalingsinformasjon)
+
+            showIf(pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleEOES and pesysData.bruker.borIEOES) {
+                // hvisFlyttetBosattEØS_001
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vi forutsetter at du bor i ".expr() + bostedsland + ". Hvis du skal flytte til et land utenfor EØS-området, må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon.",
+                        Nynorsk to "Vi føreset at du bur i ".expr() + bostedsland + ". Dersom du skal flytte til eit land utanfor EØS-området, må du kontakte oss slik at vi kan vurdere om du framleis har rett til alderspensjon.",
+                        English to "We presume that you live in ".expr() + bostedsland + ". If you are moving to a country outside the EEA region, it is important that you contact Nav. We will then reassess your eligibility for retirement pension."
+                    )
+                }
+            }
+
+            showIf(pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland and not(pesysData.bruker.borIEOES) and pesysData.bruker.borIAvtaleland) {
+                // hvisFlyttetBosattAvtaleland_001
+                paragraph {
+                    textExpr(
+                        Bokmal to "Vi forutsetter at du bor i ".expr() + bostedsland + ". Hvis du skal flytte til et annet land, må du kontakte oss slik at vi kan vurdere om du fortsatt har rett til alderspensjon.",
+                        Nynorsk to "Vi føreset at du bur i ".expr() + bostedsland + ". Dersom du skal flytte til eit anna land, må du kontakte oss slik at vi kan vurdere om du framleis har rett til alderspensjon. ",
+                        English to "We presume that you live in ".expr() + bostedsland + ". If you are moving to another country, it is important that you contact Nav. We will then reassess your eligibility for retirement pension."
+                    )
+                }
+            }
+
+            paragraph {
+                text(
+                    Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-3",
+                    Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-3",
+                    English to "This decision was made pursuant to the provisions of §§ 19-3"
+                )
+                showIf(garantipensjonInnvilget and not(gjenlevenderettAnvendt)) {
+                    // flyttingAPGarantipensjonHjemmel_001
+                    text(
+                        Bokmal to ", 20-10",
+                        Nynorsk to ", 20-10",
+                        English to ", 20-10"
+                    )
+                }.orShowIf(not(garantipensjonInnvilget) and gjenlevenderettAnvendt) {
+                    //  flyttingAPGjenlevendeHjemmel_001
+                    text(
+                        Bokmal to ", 19-16 jamfør 17-4",
+                        Nynorsk to ", 19-16 jamfør 17-4",
+                        English to ", 19-16 confer 17-4"
+                    )
+                }.orShowIf(garantipensjonInnvilget and gjenlevenderettAnvendt) {
+                    // flyttingAP2016GjenlevendeGarantipensjonHjemmel_001
+                    text(
+                        Bokmal to ", 19-16 jamfør 17-4, 20-10, 20-19a",
+                        Nynorsk to ", 19-16 jamfør 17-4, 20-10, 20-19a",
+                        English to ", 19-16 confer 17-4, 20-10, 20-19a"
+                    )
+                }
+                text(
+                    Bokmal to " og 22-12.",
+                    Nynorsk to " og 22-12.",
+                    English to " and 22-12 of the National Insurance Act."
+                )
+            }
+
+            showIf(pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleEOES and pesysData.bruker.borIEOES) {
+                // euArt7Hjemmel_001
+                paragraph {
+                    text(
+                        Bokmal to "Vedtaket er også gjort etter EØS-avtalens regler i forordning 883/2004, artikkel 7.",
+                        Nynorsk to "Vedtaket er også gjort etter EØS-avtalens reglar i forordning 883/2004, artikkel 7.",
+                        English to "This decision was also made pursuant to the provisions of Article 7 of Regulation (EC) 883/2004."
+                    )
+                }
+            }.orShowIf(pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland and not(pesysData.bruker.borIEOES) and pesysData.bruker.borIAvtaleland) {
+                // avtaleEksportHjemmel_001
+                paragraph {
+                    val fritekst = fritekst("legg inn aktuell artikkel om eksport")
+                    textExpr(
+                        Bokmal to "Vedtaket er også gjort etter reglene i trygdeavtalen med ".expr() + bostedsland + ", artikkel " + fritekst + ".",
+                        Nynorsk to "Vedtaket er også gjort etter reglane i trygdeavtalen med ".expr() + bostedsland + ", artikkel " + fritekst + ".",
+                        English to "This decision was also made pursuant to the provisions of the Social Security Agreement with ".expr() + bostedsland + ", Article " + fritekst + ".",
+
+                        )
+                }
+            }
+
+            showIf(pesysData.krav.aarsak.equalTo(UTVANDRET)) {
+                showIf(begrunnelseETErBrukerFlyttetIkkeAvtLand and not(begrunnelseBTErBrukerFlyttetIkkeAvtLand)) {
+                    // flyttingETAPHjemmel_001
+                    paragraph {
+                        text(
+                            Bokmal to "Ektefelletillegget er behandlet etter § 3-24 i folketrygdloven.",
+                            Nynorsk to "Ektefelletillegget er behandla etter § 3-24 i folketrygdlova.",
+                            English to "The spouse supplement has been processed pursuant to the provisions of § 3-24 of the National Insurance Act."
+                        )
+                    }
+                }.orShowIf(not(begrunnelseETErBrukerFlyttetIkkeAvtLand) and begrunnelseBTErBrukerFlyttetIkkeAvtLand) {
+                    // flyttingBTAPHjemmel_001
+                    paragraph {
+                        text(
+                            Bokmal to "Barnetillegget er behandlet etter § 3-25 i folketrygdloven.",
+                            Nynorsk to "Barnetillegget er behandla etter § 3-25 i folketrygdlova.",
+                            English to "The child supplement has been processed pursuant to the provisions of § 3-25 of the National Insurance Act."
+                        )
+                    }
+                }.orShowIf(begrunnelseETErBrukerFlyttetIkkeAvtLand and begrunnelseBTErBrukerFlyttetIkkeAvtLand) {
+                    // flyttingETBTAPHjemmel_001
+                    paragraph {
+                        text(
+                            Bokmal to "Ektefelle- og barnetillegget er behandlet etter §§ 3-24 og 3-25 i folketrygdloven.",
+                            Nynorsk to "Ektefelle- og barnetillegget er behandla etter §§ 3-24 og 3-25 i folketrygdlova.",
+                            English to "The spouse and child supplement has been processed pursuant to the provisions of §§ 3-24 and 3-25 of the National Insurance Act."
+                        )
+                    }
+                }
+            }
+
+            showIf(saksbehandlerValg.reduksjonTilbakeITid) {
+                includePhrase(FeilutbetalingAP)
+            }
+
+            showIf(saksbehandlerValg.endringIPensjonen) {
+                includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
+            }
+
+            // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
+            showIf(beloepOekning and pesysData.erEtterbetaling1Maaned and saksbehandlerValg.etterbetaling) {
+                // etterbetalingAP_002
+                includePhrase(Vedtak.Etterbetaling(pesysData.krav.virkDatoFom))
+            }
+
+            includePhrase(VedtakAlderspensjon.ArbeidsinntektOgAlderspensjon)
+
+            showIf(pesysData.alderspensjonVedVirk.fullUttaksgrad) {
+                // nyOpptjeningHelAP_001
+                paragraph {
+                    text(
+                        Bokmal to "Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig.",
+                        Nynorsk to "Dersom du har 100 prosent alderspensjon, gjeld auken frå 1. januar året etter at skatteoppgjeret ditt er ferdig.",
+                        English to "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed."
+                    )
+                }
+            }.orShow {
+                // nyOpptjeningGradertAP_001
+                paragraph {
+                    text(
+                        Bokmal to "Hvis du har lavere enn 100 prosent alderspensjon, blir økningen lagt til hvis du søker om endret grad eller ny beregning av den graden du har nå.",
+                        Nynorsk to "Dersom du har lågare enn 100 prosent alderspensjon, blir auken lagd til dersom du søkjer om endra grad eller ny berekning av den graden du har no.",
+                        English to "If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated."
+                    )
+                }
+            }
+
+            includePhrase(UfoereAlder.UfoereKombinertMedAlder(pesysData.alderspensjonVedVirk.uforeKombinertMedAlder))
+
+            includePhrase(InformasjonOmAlderspensjon)
+
+            includePhrase(MeldFraOmEndringer2)
+            includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.HarDuSpoersmaal(Constants.PENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
+
+        }
+        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, pesysData.dineRettigheterOgMulighetTilAaKlage)
+        includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, pesysData.maanedligPensjonFoerSkatt)
+        includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025)
+
+    }
+}
