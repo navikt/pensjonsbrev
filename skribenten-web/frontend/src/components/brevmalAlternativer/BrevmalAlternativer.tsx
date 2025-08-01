@@ -34,37 +34,33 @@ const BrevmalAlternativer = (props: {
       return null;
     }
     case "success": {
-      if (
-        specificationFormElements.optionalFields.length === 0 &&
-        specificationFormElements.requiredfields.length === 0
-      ) {
+      const { optionalFields, requiredfields } = specificationFormElements;
+      const hasOptional = optionalFields.length > 0;
+      const hasRequired = requiredfields.length > 0;
+
+      if (!hasOptional && !hasRequired) {
         return null;
       }
 
       if (props.onlyShowRequired) {
-        if (
-          specificationFormElements.requiredfields.length > 0 ||
-          specificationFormElements.optionalFields.length > 0
-        ) {
-          return (
-            <VStack gap="3">
-              {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
-              <SaksbehandlerValgModelEditor
-                brevkode={props.brevkode}
-                fieldsToRender={"required"}
-                specificationFormElements={specificationFormElements}
-                submitOnChange={props.submitOnChange}
-              />
-            </VStack>
-          );
-        } else {
-          return null;
-        }
+        // Boolean felter er optional med default value false, så de må registreres slik i form.
+        // Dermed må SaksbehandlerValgModelEditor også rendres om det finnes optional felter (ingenting blir synlig).
+        return (
+          <VStack gap="3">
+            {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
+            <SaksbehandlerValgModelEditor
+              brevkode={props.brevkode}
+              fieldsToRender={"required"}
+              specificationFormElements={specificationFormElements}
+              submitOnChange={props.submitOnChange}
+            />
+          </VStack>
+        );
       } else {
-        if (specificationFormElements.optionalFields.length === 0) {
+        if (!hasOptional) {
           return (
             <VStack gap="3">
-              {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
+              {props.withTitle && <Heading size="xsmall">Tekstalternativer</Heading>}
               <SaksbehandlerValgModelEditor
                 brevkode={props.brevkode}
                 fieldsToRender={"required"}
@@ -75,10 +71,10 @@ const BrevmalAlternativer = (props: {
           );
         }
 
-        if (specificationFormElements.requiredfields.length === 0) {
+        if (!hasRequired) {
           return (
             <VStack gap="3">
-              {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
+              {props.withTitle && <Heading size="xsmall">Tekstalternativer</Heading>}
               <SaksbehandlerValgModelEditor
                 brevkode={props.brevkode}
                 fieldsToRender={"optional"}

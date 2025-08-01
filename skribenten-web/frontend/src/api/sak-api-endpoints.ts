@@ -88,7 +88,6 @@ export const attesterBrev = async (args: {
       {
         saksbehandlerValg: args.request.saksbehandlerValg,
         redigertBrev: args.request.redigertBrev,
-        signaturAttestant: args.request.signatur,
       },
     )
   ).data;
