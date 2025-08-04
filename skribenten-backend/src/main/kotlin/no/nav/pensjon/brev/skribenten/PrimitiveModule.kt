@@ -19,18 +19,17 @@ object PrimitiveModule : SimpleModule() {
     private val standardStringDeserializer = StringDeserializer()
 
     // TODO: Denne kan vi fjerne når både Gjenny og Pesys bruker ny nok versjon av biblioteket, så dei sender
-    // fødselsnummer, telefonnumer og kroner som flat tekst og ikkje som innpakka objekt
+    // fødselsnummer, telefonnummer og kroner som flat tekst og ikkje som innpakka objekt
     private fun stringDeser() = object : StdDeserializer<String>(String::class.java) {
-        override fun deserialize(p: JsonParser, ctxt: DeserializationContext, ): String? {
+        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): String? {
             try {
                 return standardStringDeserializer.deserialize(p, ctxt)
             } catch (e: MismatchedInputException) {
                 val node = p.codec.readTree<JsonNode>(p)
-                return when (p.parsingContext.currentName) {
-                    "telefonnummer" -> p.codec.treeToValue(node, Map::class.java)["value"].toString()
-                    "foedselsnummer" -> p.codec.treeToValue(node, Map::class.java)["value"].toString()
-                    "kroner" -> p.codec.treeToValue(node, Map::class.java)["value"].toString()
-                    else -> throw e
+                try {
+                    return p.codec.treeToValue(node, Map::class.java)["value"].toString()
+                } catch (e2: Exception) {
+                    throw e.also { it.addSuppressed(e2) }
                 }
             }
         }
