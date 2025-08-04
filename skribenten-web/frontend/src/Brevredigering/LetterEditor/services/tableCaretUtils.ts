@@ -1,157 +1,237 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
-import type { AnyBlock, Cell, ParagraphBlock, Row, Table } from "~/types/brevbakerTypes";
-import { LITERAL, PARAGRAPH, TABLE } from "~/types/brevbakerTypes";
+import type { Cell, ParagraphBlock, Row } from "~/types/brevbakerTypes";
+import { PARAGRAPH } from "~/types/brevbakerTypes";
 
-import { newLiteral, newRow } from "../actions/common";
+import { addElements, isTable, newLiteral, newRow, removeElements } from "../actions/common";
 import type { Focus, LetterEditorState } from "../model/state";
-import { isTableCellIndex } from "../model/utils";
+import { isEmptyContentList, isTableCellIndex } from "../model/utils";
 import { getCursorOffset } from "./caretUtils";
 
-// Result of a Tab move from inside a table cell.
-export type MoveResult = Focus | "EXIT_FORWARD" | "EXIT_BACKWARD";
+export type MoveResult = Focus;
 
 /**
- * Determines the next focus when user presses Tab/Shift-Tab inside a table.
+ * Computes the next logical focus position within a table, for Tab/Shift+Tab navigation.
+ * Returns the same focus if at the start/end (caller decides whether to exit).
  */
 export function nextTableFocus(editorState: LetterEditorState, direction: "forward" | "backward"): MoveResult {
   const currentFocus = editorState.focus;
-  if (!isTableCellIndex(currentFocus)) return currentFocus;
-
-  const currentBlock = editorState.redigertBrev.blocks[currentFocus.blockIndex];
-  const currentTable = currentBlock.content[currentFocus.contentIndex];
-  if (currentTable?.type !== TABLE) return currentFocus;
-
-  const inHeaderRow = currentFocus.rowIndex === -1;
-  const headerColumns = currentTable.header.colSpec.length;
-
-  const totalRows = currentTable.rows.length;
-  const totalColumns = currentTable.rows[currentFocus.rowIndex]?.cells.length ?? 0;
-
-  if (direction === "forward") {
-    if (inHeaderRow) {
-      if (currentFocus.cellContentIndex < headerColumns - 1) {
-        return { ...currentFocus, cellContentIndex: currentFocus.cellContentIndex + 1, cursorPosition: 0 };
-      }
-      if (totalRows > 0) {
-        return { ...currentFocus, rowIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
-      }
-      return "EXIT_FORWARD";
-    }
-
-    if (currentFocus.cellContentIndex < totalColumns - 1) {
-      return { ...currentFocus, cellContentIndex: currentFocus.cellContentIndex + 1, cursorPosition: 0 };
-    }
-    if (currentFocus.rowIndex < totalRows - 1) {
-      return { ...currentFocus, rowIndex: currentFocus.rowIndex + 1, cellContentIndex: 0, cursorPosition: 0 };
-    }
-    return "EXIT_FORWARD";
-  } else {
-    if (inHeaderRow) {
-      if (currentFocus.cellContentIndex > 0) {
-        return { ...currentFocus, cellContentIndex: currentFocus.cellContentIndex - 1, cursorPosition: 0 };
-      }
-      return "EXIT_BACKWARD";
-    }
-
-    if (currentFocus.cellContentIndex > 0) {
-      return { ...currentFocus, cellContentIndex: currentFocus.cellContentIndex - 1, cursorPosition: 0 };
-    }
-
-    if (currentFocus.rowIndex > 0) {
-      const previousRowColumns = currentTable.rows[currentFocus.rowIndex - 1].cells.length;
-      return {
-        ...currentFocus,
-        rowIndex: currentFocus.rowIndex - 1,
-        cellContentIndex: previousRowColumns - 1,
-        cursorPosition: 0,
-      };
-    }
-
-    if (headerColumns > 0) {
-      return { ...currentFocus, rowIndex: -1, cellContentIndex: headerColumns - 1, cursorPosition: 0 };
-    }
-    return "EXIT_BACKWARD";
+  if (!isTableCellIndex(currentFocus)) {
+    return { ...currentFocus };
   }
+
+  const block = editorState.redigertBrev.blocks[currentFocus.blockIndex];
+  const content = block.content[currentFocus.contentIndex];
+  if (!isTable(content)) {
+    return { ...currentFocus };
+  }
+
+  const table = content;
+
+  const headerCols = table.header?.colSpec?.length ?? 0;
+  const headerPointers = Array.from({ length: headerCols }, (_, c) => ({ rowIndex: -1, cellIndex: c }));
+
+  const bodyPointers = table.rows.flatMap((row, r) => (row.cells ?? []).map((_, c) => ({ rowIndex: r, cellIndex: c })));
+
+  const pointers = [...headerPointers, ...bodyPointers];
+
+  // If there are no cells, just return a new copy of the original focus.
+  if (pointers.length === 0) {
+    return { ...currentFocus };
+  }
+
+  // Find our position in that flat list
+  const idx = pointers.findIndex((p) => p.rowIndex === currentFocus.rowIndex && p.cellIndex === currentFocus.cellIndex);
+  if (idx === -1) {
+    return { ...currentFocus };
+  }
+
+  const nextIdx = direction === "forward" ? idx + 1 : idx - 1;
+  // Off the ends? return a new copy of the original focus.
+  if (nextIdx < 0 || nextIdx >= pointers.length) {
+    return { ...currentFocus };
+  }
+
+  const { rowIndex, cellIndex } = pointers[nextIdx];
+  return {
+    ...currentFocus,
+    rowIndex,
+    cellIndex,
+    cellContentIndex: 0,
+    cursorPosition: 0,
+  };
 }
 
+/**
+ * Returns true when the current focus is on the *last addressable cell* of the table.
+ * (Rows can be ragged.)
+ */
+export function isAtLastTableCell(state: LetterEditorState): boolean {
+  const f = state.focus;
+  if (!isTableCellIndex(f)) return false;
+
+  const block = state.redigertBrev.blocks[f.blockIndex];
+  const content = block.content[f.contentIndex];
+  if (!isTable(content)) return false;
+
+  const table = content;
+  const lastRowIndex = table.rows.length - 1;
+  if (lastRowIndex < 0) return false;
+
+  const lastColIndex = (table.rows[lastRowIndex]?.cells.length ?? 0) - 1;
+
+  return f.rowIndex === lastRowIndex && f.cellIndex === lastColIndex;
+}
+
+/**
+ * Move focus out of a table cell to the next or previous editable position.
+ *
+ * @param direction
+ *   - "forward": Tab or equivalent, advance focus after the table.
+ *   - "backward": Shift+Tab or equivalent, move focus before the table.
+ */
+export const exitTable = (direction: "forward" | "backward") =>
+  produce<LetterEditorState>((draft) => {
+    const f = draft.focus;
+    if (!isTableCellIndex(f)) return;
+
+    const blocks = draft.redigertBrev.blocks;
+    const block = blocks[f.blockIndex];
+
+    if (direction === "forward") {
+      // 1) Next content in the same block
+      if (f.contentIndex + 1 < block.content.length) {
+        draft.focus = { blockIndex: f.blockIndex, contentIndex: f.contentIndex + 1, cursorPosition: 0 };
+        return;
+      }
+
+      // 2) First content in the next block
+      if (f.blockIndex + 1 < blocks.length) {
+        const nextBlock = blocks[f.blockIndex + 1];
+        if (nextBlock.content.length > 0) {
+          draft.focus = { blockIndex: f.blockIndex + 1, contentIndex: 0, cursorPosition: 0 };
+          return;
+        }
+        // If next block is an empty paragraph, insert a blank literal so it can receive focus
+        if (nextBlock.type === PARAGRAPH) {
+          const p = nextBlock as Draft<ParagraphBlock>;
+          addElements([newLiteral({ editedText: "" })], 0, p.content, p.deletedContent);
+          draft.focus = { blockIndex: f.blockIndex + 1, contentIndex: 0, cursorPosition: 0 };
+          draft.isDirty = true;
+          return;
+        }
+        // Otherwise, focus the (empty) next block
+        draft.focus = { blockIndex: f.blockIndex + 1, contentIndex: 0, cursorPosition: 0 };
+        return;
+      }
+      // 3) End of document: append an empty literal after the table
+      if (block.type === PARAGRAPH) {
+        const p = block as Draft<ParagraphBlock>;
+        addElements([newLiteral({ editedText: "" })], f.contentIndex + 1, p.content, p.deletedContent);
+        draft.focus = { blockIndex: f.blockIndex, contentIndex: f.contentIndex + 1, cursorPosition: 0 };
+        draft.isDirty = true;
+      }
+      return;
+    }
+    // Backward direction
+    // 1) Previous content in the same block
+    if (f.contentIndex - 1 >= 0) {
+      draft.focus = { blockIndex: f.blockIndex, contentIndex: f.contentIndex - 1, cursorPosition: 0 };
+      return;
+    }
+    // 2) Last content of the previous block
+    if (f.blockIndex - 1 >= 0) {
+      const prevBlock = blocks[f.blockIndex - 1];
+      if (prevBlock.content.length > 0) {
+        const last = prevBlock.content.length - 1;
+        draft.focus = { blockIndex: f.blockIndex - 1, contentIndex: last, cursorPosition: 0 };
+        return;
+      }
+      // If previous block is empty paragraph, insert a blank literal for focus
+      if (prevBlock.type === PARAGRAPH) {
+        const p = prevBlock as Draft<ParagraphBlock>;
+        addElements([newLiteral({ editedText: "" })], 0, p.content, p.deletedContent);
+        draft.focus = { blockIndex: f.blockIndex - 1, contentIndex: 0, cursorPosition: 0 };
+        draft.isDirty = true;
+        return;
+      }
+      draft.focus = { blockIndex: f.blockIndex - 1, contentIndex: 0, cursorPosition: 0 };
+      return;
+    }
+    // 3) Start of document: insert before the table so focus can land there
+    if (block.type === PARAGRAPH) {
+      const p = block as Draft<ParagraphBlock>;
+      addElements([newLiteral({ editedText: "" })], f.contentIndex, p.content, p.deletedContent);
+      draft.focus = { blockIndex: f.blockIndex, contentIndex: f.contentIndex, cursorPosition: 0 };
+      draft.isDirty = true;
+    }
+  });
+
+/**
+ * Adds a new row to the table (if currently at the last row), and focuses the new row.
+ * Returns true if a row was added, false otherwise.
+ */
 export function addRow(
   editorState: LetterEditorState,
   updateEditorState: (updater: (prevState: LetterEditorState) => LetterEditorState) => void,
   keyboardEvent: React.KeyboardEvent,
 ): boolean {
-  const currentBlock = editorState.redigertBrev.blocks[editorState.focus.blockIndex];
-  const currentContent = currentBlock.content[editorState.focus.contentIndex];
+  const focus = editorState.focus;
+  const currentBlock = editorState.redigertBrev.blocks[focus.blockIndex];
+  const contentAtFocus = currentBlock.content[focus.contentIndex];
 
-  if (currentContent?.type !== TABLE || !isTableCellIndex(editorState.focus)) {
+  if (!isTableCellIndex(focus) || !isTable(contentAtFocus)) {
     return false;
   }
 
   keyboardEvent.preventDefault();
-  updateEditorState((prevState) => {
-    if (!isTableCellIndex(prevState.focus)) return prevState;
-    const currentTable = prevState.redigertBrev.blocks[prevState.focus.blockIndex].content[
-      prevState.focus.contentIndex
-    ] as typeof currentContent;
 
-    const currentRowIndex = prevState.focus.rowIndex;
-    const currentColIndex = prevState.focus.cellContentIndex;
-    const isLastRow = currentRowIndex === currentTable.rows.length - 1;
+  updateEditorState((prev) =>
+    produce(prev, (draft) => {
+      const f = draft.focus;
+      if (!isTableCellIndex(f)) return;
 
-    const columnCount =
-      currentTable.header.colSpec.length > 0 ? currentTable.header.colSpec.length : currentTable.rows[0].cells.length;
-    const updatedRows = isLastRow ? [...currentTable.rows, newRow(columnCount)] : currentTable.rows;
+      const block = draft.redigertBrev.blocks[f.blockIndex];
+      if (block.type !== PARAGRAPH) return;
+      const paragraphDraft = block as Draft<ParagraphBlock>;
 
-    const updatedTable = { ...currentTable, rows: updatedRows };
+      const content = paragraphDraft.content[f.contentIndex];
+      if (!isTable(content)) return;
+      const table = content;
 
-    const updatedBlocks: AnyBlock[] = prevState.redigertBrev.blocks.map((block, blockIndex) => {
-      if (blockIndex !== prevState.focus.blockIndex) return block;
+      const currentRowIndex = f.rowIndex;
+      const currentColIndex = f.cellIndex;
+      const isLastRow = currentRowIndex === table.rows.length - 1;
 
-      if (block.type !== PARAGRAPH) return block;
-      const paragraph = block as ParagraphBlock;
+      const columnCount =
+        table.header.colSpec.length > 0 ? table.header.colSpec.length : (table.rows[0]?.cells.length ?? 0);
 
-      return {
-        ...paragraph,
-        content: paragraph.content.map((content, contentIndex) =>
-          contentIndex !== prevState.focus.contentIndex ? content : updatedTable,
-        ),
-      };
-    });
+      if (isLastRow) {
+        addElements([newRow(columnCount)], table.rows.length, table.rows, table.deletedRows);
+        draft.isDirty = true;
+      }
 
-    return {
-      ...prevState,
-      redigertBrev: {
-        ...prevState.redigertBrev,
-        blocks: updatedBlocks,
-      },
-      focus: {
-        ...prevState.focus,
-        rowIndex: isLastRow ? updatedRows.length - 1 : currentRowIndex + 1,
-        cellContentIndex: currentColIndex,
+      draft.focus = {
+        ...f,
+        rowIndex: isLastRow ? table.rows.length - 1 : currentRowIndex + 1,
+        cellIndex: currentColIndex,
+        cellContentIndex: 0,
         cursorPosition: 0,
-      },
-    };
-  });
+      };
+    }),
+  );
 
   return true;
 }
 
-// Zero-width space, used as a placeholder for empty cells.
-const ZERO_WIDTH = /\u200B/g;
-
 export function isCellEmpty(cell: Cell): boolean {
-  return cell.text.every((textContent) => {
-    if (textContent.type !== LITERAL) return false;
-    const cleanedText = (textContent.editedText ?? textContent.text).replace(ZERO_WIDTH, "");
-    return cleanedText.trim() === "";
-  });
+  return isEmptyContentList(cell.text);
 }
 
 export function rowIsEmpty(row: Row): boolean {
   return row.cells.every(isCellEmpty);
 }
-
 /**
  * Handles **Shift + Backspace** inside a table cell.
  *
@@ -165,47 +245,111 @@ export function rowIsEmpty(row: Row): boolean {
  */
 export function handleBackspaceInTableCell(
   event: React.KeyboardEvent,
-
   editorState: LetterEditorState,
   updateEditorState: (updater: (prev: LetterEditorState) => LetterEditorState) => void,
 ): boolean {
-  if (event.key !== "Backspace" || !event.shiftKey) return false;
+  // We only care about Backspace (plain or with Shift)
+  if (event.key !== "Backspace") return false;
   if (!isTableCellIndex(editorState.focus)) return false;
 
-  const focus = editorState.focus;
+  const f = editorState.focus;
+  const block = editorState.redigertBrev.blocks[f.blockIndex];
+  const contentAtFocus = block.content[f.contentIndex];
 
-  // header row: let the browser delete text normally
-  if (focus.rowIndex === -1) return false;
+  if (!isTable(contentAtFocus)) return false;
 
-  const paragraphBlock = editorState.redigertBrev.blocks[focus.blockIndex];
-  const tableContent = paragraphBlock.content[focus.contentIndex];
-  if (tableContent?.type !== TABLE) return false;
+  const table = contentAtFocus;
+
+  const getFocusedCell = () => {
+    if (f.rowIndex === -1) {
+      // header cell
+      const col = table.header.colSpec[f.cellIndex];
+      return col?.headerContent;
+    }
+    // body cell
+    const row = table.rows[f.rowIndex];
+    return row?.cells[f.cellIndex];
+  };
+
+  const cell = getFocusedCell();
+  if (!cell) return false;
 
   const cursorOffset = getCursorOffset();
-  const currentRow = tableContent.rows[focus.rowIndex];
+  const atStartOfThisTextNode = cursorOffset === 0;
+  const isFirstTextInCell = f.cellContentIndex === 0;
+  const cellIsEmpty = isCellEmpty(cell);
 
-  const caretAtStartOfCell = cursorOffset <= 1;
-  if (!caretAtStartOfCell || !rowIsEmpty(currentRow)) return false;
+  if (!event.shiftKey) {
+    // Prevent "merge with previous" when:
+    // - Caret is at the very start of the *first* text node in the cell, or
+    // - The cell is effectively empty (including zero-width space)
+    //
+    // In these cases, block the merge and do nothing (so one doesn't exit the table by mistake).
+    // Otherwise, allow normal character deletion inside the cell.
+    if ((isFirstTextInCell && atStartOfThisTextNode) || cellIsEmpty) {
+      event.preventDefault();
+      return true;
+    }
+    // All other cases: let browser handle (delete character within cell text)
+    return false;
+  }
+
+  if (f.rowIndex === -1) {
+    // In header cell: row deletion not allowed, let browser handle as normal
+    return false;
+  }
+
+  const currentRow = table.rows[f.rowIndex];
+  if (!currentRow) return false;
+
+  if (!(atStartOfThisTextNode && rowIsEmpty(currentRow))) return false;
 
   event.preventDefault();
 
-  updateEditorState((prev) =>
-    produce(prev, (draft) => {
-      const table = draft.redigertBrev.blocks[focus.blockIndex].content[focus.contentIndex] as Draft<Table>;
+  updateEditorState((prevState) =>
+    produce(prevState, (draft) => {
+      const df = draft.focus;
+      if (!isTableCellIndex(df)) return;
 
-      const [removed] = table.rows.splice(focus.rowIndex, 1);
-      if (removed?.id != null) table.deletedRows.push(removed.id);
+      const dBlock = draft.redigertBrev.blocks[df.blockIndex];
+      const dContent = dBlock.content[df.contentIndex];
+      if (!isTable(dContent)) return;
+      const dTable = dContent;
 
-      if (table.rows.length === 0) {
-        const paragraph = draft.redigertBrev.blocks[focus.blockIndex] as Draft<ParagraphBlock>;
-        paragraph.content.splice(focus.contentIndex, 1, newLiteral({ editedText: "" }));
-        draft.focus = { blockIndex: focus.blockIndex, contentIndex: focus.contentIndex, cursorPosition: 0 };
+      removeElements(df.rowIndex, 1, {
+        content: dTable.rows,
+        deletedContent: dTable.deletedRows,
+        id: dTable.id,
+      });
+
+      if (dTable.rows.length === 0) {
+        // Replace the whole table with a blank paragraph literal
+        const paragraphDraft = draft.redigertBrev.blocks[df.blockIndex] as Draft<ParagraphBlock>;
+
+        removeElements(df.contentIndex, 1, {
+          content: paragraphDraft.content,
+          deletedContent: paragraphDraft.deletedContent,
+          id: paragraphDraft.id,
+        });
+
+        addElements(
+          [newLiteral({ editedText: "" })],
+          df.contentIndex,
+          paragraphDraft.content,
+          paragraphDraft.deletedContent,
+        );
+
+        draft.focus = { blockIndex: df.blockIndex, contentIndex: df.contentIndex, cursorPosition: 0 };
       } else {
-        const newRowIndex = Math.min(focus.rowIndex, table.rows.length - 1);
+        const newRowIndex = Math.min(df.rowIndex, dTable.rows.length - 1);
+        const newRow = dTable.rows[newRowIndex];
+        const newColIndex = Math.min(df.cellIndex, newRow.cells.length - 1);
+
         draft.focus = {
-          blockIndex: focus.blockIndex,
-          contentIndex: focus.contentIndex,
+          blockIndex: df.blockIndex,
+          contentIndex: df.contentIndex,
           rowIndex: newRowIndex,
+          cellIndex: newColIndex,
           cellContentIndex: 0,
           cursorPosition: 0,
         };

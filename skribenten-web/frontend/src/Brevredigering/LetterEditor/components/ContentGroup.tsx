@@ -6,6 +6,7 @@ import {
   fontTypeOf,
   isBlockContentIndex,
   isItemContentIndex,
+  isTable,
   text as textOf,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
@@ -30,7 +31,14 @@ import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
 import { NEW_LINE, TABLE } from "~/types/brevbakerTypes";
 import { ElementTags, FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
 
-import { addRow, handleBackspaceInTableCell, nextTableFocus } from "../services/tableCaretUtils";
+import { isTableCellIndex } from "../model/utils";
+import {
+  addRow,
+  exitTable,
+  handleBackspaceInTableCell,
+  isAtLastTableCell,
+  nextTableFocus,
+} from "../services/tableCaretUtils";
 
 /**
  * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
@@ -108,8 +116,14 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
 }
 
 const hasFocus = (focus: Focus, literalIndex: LiteralIndex) => {
-  if (isBlockContentIndex(focus) && isBlockContentIndex(literalIndex)) {
-    return focus.blockIndex === literalIndex.blockIndex && focus.contentIndex === literalIndex.contentIndex;
+  if (isTableCellIndex(focus) && isTableCellIndex(literalIndex)) {
+    return (
+      focus.blockIndex === literalIndex.blockIndex &&
+      focus.contentIndex === literalIndex.contentIndex &&
+      focus.rowIndex === literalIndex.rowIndex &&
+      focus.cellIndex === literalIndex.cellIndex &&
+      focus.cellContentIndex === literalIndex.cellContentIndex
+    );
   } else if (isItemContentIndex(focus) && isItemContentIndex(literalIndex)) {
     return (
       focus.blockIndex === literalIndex.blockIndex &&
@@ -117,8 +131,9 @@ const hasFocus = (focus: Focus, literalIndex: LiteralIndex) => {
       focus.itemIndex === literalIndex.itemIndex &&
       focus.itemContentIndex === literalIndex.itemContentIndex
     );
+  } else if (isBlockContentIndex(focus) && isBlockContentIndex(literalIndex)) {
+    return focus.blockIndex === literalIndex.blockIndex && focus.contentIndex === literalIndex.contentIndex;
   }
-
   return false;
 };
 
@@ -305,51 +320,41 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleTab = (event: React.KeyboardEvent<HTMLSpanElement>): boolean => {
     const { focus } = editorState;
-    const currentBlock = editorState.redigertBrev.blocks[focus.blockIndex];
-    const currentContent = currentBlock.content[focus.contentIndex];
+    const block = editorState.redigertBrev.blocks[focus.blockIndex];
+    const content = block.content[focus.contentIndex];
 
-    const insideTable = currentContent?.type === TABLE && isItemContentIndex(focus);
-    if (!insideTable) return false;
+    if (!isTableCellIndex(focus) || !isTable(content)) {
+      return false;
+    }
 
     const direction = event.shiftKey ? "backward" : "forward";
-    const table = currentContent;
-    const lastRow = table.rows.length - 1;
-    const lastCol = table.rows[0].cells.length - 1;
 
-    const atLastCell = focus.itemIndex === lastRow && focus.itemContentIndex === lastCol;
-
-    event.preventDefault();
-
-    if (direction === "forward" && atLastCell) {
+    // If we're at the last cell and tabbing forward, append a row and stop here.
+    if (direction === "forward" && isAtLastTableCell(editorState)) {
+      event.preventDefault();
       addRow(editorState, setEditorState, event);
       return true;
     }
 
+    // Otherwise, ask nextTableFocus helper where to go inside the table
+    event.preventDefault();
     const next = nextTableFocus(editorState, direction);
-    setEditorState((prev) => {
-      if (next === "EXIT_FORWARD") {
-        return {
-          ...prev,
-          focus: {
-            blockIndex: prev.focus.blockIndex,
-            contentIndex: prev.focus.contentIndex + 1,
-            cursorPosition: 0,
-          },
-        };
-      }
-      if (next === "EXIT_BACKWARD") {
-        return {
-          ...prev,
-          focus: {
-            blockIndex: prev.focus.blockIndex,
-            contentIndex: prev.focus.contentIndex - 1,
-            cursorPosition: 0,
-          },
-        };
-      }
-      return { ...prev, focus: next };
-    });
 
+    // nextTableFocus returns the same focus when we're at an edge,
+    // so "no movement" means we should exit the table.
+    const didMove =
+      isTableCellIndex(next) &&
+      (next.rowIndex !== focus.rowIndex ||
+        next.cellIndex !== focus.cellIndex ||
+        next.cellContentIndex !== focus.cellContentIndex);
+
+    if (didMove) {
+      // Move caret within the table
+      setEditorState((prev) => ({ ...prev, focus: next }));
+    } else {
+      // At an edge, exit table
+      setEditorState(exitTable(direction));
+    }
     return true;
   };
 
