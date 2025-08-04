@@ -35,9 +35,11 @@ object Dto {
         val mottaker: Mottaker?,
         val avsenderEnhetId: String?,
         val spraak: LanguageCode,
+        // TODO: Skal fjernes etter at frontend er endret til å hente signatur fra redigertBrev
         val signaturSignerende: String,
         val journalpostId: Long?,
         val attestertAv: NavIdent?,
+        // TODO: Skal fjernes etter at frontend er endret til å hente signatur fra redigertBrev
         val signaturAttestant: String?,
         val status: BrevStatus,
     )

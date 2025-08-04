@@ -1,14 +1,11 @@
 package no.nav.pensjon.brev.maler.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.Sakstype.*
+import no.nav.pensjon.brev.api.model.Sakstype.ALDER
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenAlderspensjon
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.PesysDataSelectors.opplysningerBruktIBeregningenAlderspensjonAP2025
-import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDtoSelectors.AlderspensjonVedVirkSelectors.garantitilleggInnvilget
@@ -56,6 +53,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AP2025TidligUttakHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AfpPrivatErBrukt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.BilateralAvtaleHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.EOSLandAvtaleHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.GarantitilleggHjemmel
@@ -66,9 +64,9 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.InnvilgelseAPUttakEndr
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldeFraOmEndringer
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ReguleringAvAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.RettTilKlageUtland
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.SkjermingstilleggHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SkattAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Skatteplikt
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.SkjermingstilleggHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SoktAFPPrivatInfo
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.SupplerendeStoenadAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
@@ -80,7 +78,9 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
@@ -123,7 +123,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
     ) {
         val afpPrivatResultatFellesKontoret = pesysData.afpPrivatResultatFellesKontoret_safe.ifNull(false)
         val antallLandVilkarsprovd = pesysData.vedtaksresultatUtland_safe.antallLandVilkarsprovd_safe.ifNull(then = (0))
-        val avtalelandNavn = pesysData.avtalelandNavn_safe.ifNull(then = "AVTALELAND")
+        val avtalelandNavn = pesysData.avtalelandNavn_safe.ifNull(then = fritekst("AVTALELAND"))
         val borIAvtaleland = pesysData.borIAvtaleland
         val borINorge = pesysData.borINorge
         val eksportTrygdeavtaleAvtaleland =
@@ -171,11 +171,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                     )
                 }
                 showIf(saksbehandlerValg.nyBeregningAvInnvilgetAP) {
-                    textExpr(
-                        Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ".expr() + kravVirkDatoFom,
-                        Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + kravVirkDatoFom,
-                        English to "We have recalculated your retirement pension from ".expr() + kravVirkDatoFom
-                    )
+                    includePhrase(BeregnaPaaNytt(pesysData.kravVirkDatoFom))
                 }
             }
         }

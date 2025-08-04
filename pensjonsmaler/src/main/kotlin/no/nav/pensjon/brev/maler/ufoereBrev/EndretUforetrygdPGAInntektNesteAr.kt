@@ -26,6 +26,15 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTP
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.totalNettoAr
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.uforetrygd
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt.EndretUTPgaInntektDtoV2Selectors.virkningFom
+import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_UFOERETRYGD_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.INNTEKTSPLANLEGGEREN_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.MELDE_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.MINSIDE_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERE_JOBB_URL
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -35,7 +44,17 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.minus
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -291,26 +310,26 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 ifNotNull(barnetilleggFellesbarn) {
 
                     text(
-                        Bokmal to "Forventer du og/eller annen forelder en annen inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventet inntekt på nav.no/inntektsplanleggeren.",
-                        Nynorsk to "Forventar du og/eller den andre forelderen ei anna inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventa inntekt på nav.no/inntektsplanleggeren."
+                        Bokmal to "Forventer du og/eller annen forelder en annen inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL.",
+                        Nynorsk to "Forventar du og/eller den andre forelderen ei anna inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventa inntekt på $INNTEKTSPLANLEGGEREN_URL."
                     )
                 }.orShow {
                     text(
-                        Bokmal to "Forventer du en annen inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventet inntekt på nav.no/inntektsplanleggeren.",
-                        Nynorsk to "Forventar du ei anna inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventa inntekt på nav.no/inntektsplanleggeren."
+                        Bokmal to "Forventer du en annen inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL.",
+                        Nynorsk to "Forventar du ei anna inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventa inntekt på $INNTEKTSPLANLEGGEREN_URL."
                     )
                 }
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du gjør dette, får du en ny beregning og et nytt brev på nav.no/dinuføretrygd. ",
-                    Nynorsk to "Hvis du gjer dette, får du ei ny berekning og eit nytt brev på nav.no/dinuføretrygd. "
+                    Bokmal to "Hvis du gjør dette, får du en ny beregning og et nytt brev på $DIN_UFOERETRYGD_URL. ",
+                    Nynorsk to "Hvis du gjer dette, får du ei ny berekning og eit nytt brev på $DIN_UFOERETRYGD_URL. "
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "På nav.no/uføre-jobb finner du mer informasjon, og en informasjonsfilm om hvordan du bruker inntektsplanleggeren. Trenger du mer veiledning, kan du gjerne kontakte oss: nav.no/kontaktoss",
-                    Nynorsk to "På nav.no/uføre-jobb finn du meir informasjon, og ein informasjonsfilm om korleis du bruker inntektsplanleggeren. Treng du meir rettleiing, kan du gjerne kontakte oss: nav.no/kontaktoss"
+                    Bokmal to "På $UFOERE_JOBB_URL finner du mer informasjon, og en informasjonsfilm om hvordan du bruker inntektsplanleggeren. Trenger du mer veiledning, kan du gjerne kontakte oss: $KONTAKT_URL",
+                    Nynorsk to "På $UFOERE_JOBB_URL finn du meir informasjon, og ein informasjonsfilm om korleis du bruker inntektsplanleggeren. Treng du meir rettleiing, kan du gjerne kontakte oss: $KONTAKT_URL"
                 )
             }
             showIf(sokerMottarApIlaAret) {
@@ -464,14 +483,14 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
             }
             paragraph {
                 text(
-                    Bokmal to "Du kan melde inn forventet inntekt i Inntektsplanleggeren på nav.no/inntektsplanleggeren",
-                    Nynorsk to "Du kan melde inn forventa inntekt i inntektsplanleggjaren på nav.no/inntektsplanleggeren"
+                    Bokmal to "Du kan melde inn forventet inntekt i Inntektsplanleggeren på $INNTEKTSPLANLEGGEREN_URL",
+                    Nynorsk to "Du kan melde inn forventa inntekt i inntektsplanleggjaren på $INNTEKTSPLANLEGGEREN_URL"
                 )
             }
             paragraph {
                 text(
-                    Bokmal to "Alle andre endringer kan du melde inn på nav.no/uforetrygd#melde",
-                    Nynorsk to "Alle andre endringar kan meldast inn på nav.no/uforetrygd#melde"
+                    Bokmal to "Alle andre endringer kan du melde inn på $MELDE_URL",
+                    Nynorsk to "Alle andre endringar kan meldast inn på $MELDE_URL"
                 )
             }
             paragraph {
@@ -611,8 +630,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
             }
             paragraph {
                 text(
-                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du fikk vedtaket. I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på nav.no/klage.",
-                    Nynorsk to "Dersom du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Dine rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på nav.no/klage."
+                    Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du fikk vedtaket. I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på $KLAGE_URL.",
+                    Nynorsk to "Dersom du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Dine rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på $KLAGE_URL."
                 )
             }
             title1 {
@@ -627,6 +646,10 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram."
                 )
             }
+
+            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
+
+
             title1 {
                 text(
                     Bokmal to "Sjekk utbetalingene dine",
@@ -635,8 +658,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
             }
             paragraph {
                 text(
-                    Bokmal to "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. Du kan se alle utbetalingene du har mottatt på nav.no/minside. Her kan du også endre kontonummeret ditt.",
-                    Nynorsk to "Du får uføretrygd utbetalt den 20. kvar månad, eller seinast siste virkedag før denne datoen. Du kan sjå alle utbetalingane du har motteke på nav.no/minside. Her kan du også endre kontonummeret ditt."
+                    Bokmal to "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. Du kan se alle utbetalingene du har mottatt på $MINSIDE_URL. Her kan du også endre kontonummeret ditt.",
+                    Nynorsk to "Du får uføretrygd utbetalt den 20. kvar månad, eller seinast siste virkedag før denne datoen. Du kan sjå alle utbetalingane du har motteke på $MINSIDE_URL. Her kan du også endre kontonummeret ditt."
                 )
             }
             title1 {
@@ -665,18 +688,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     )
                 }
             }
-            title1 {
-                text(
-                    Bokmal to "Har du spørsmål?",
-                    Nynorsk to "Har du spørsmål?"
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du finner mer informasjon på nav.no/uforetrygd. På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 33, hverdager kl. 09:00-15:00. ",
-                    Nynorsk to "Du finn meir informasjon på nav.no/uforetrygd. På nav.no/kontakt kan du chatte eller skrive til oss. Dersom du ikkje finn svar på nav.no, kan du ringe oss på telefon 55 55 33 33, kvardagar kl. 09:00-15:00. "
-                )
-            }
+            includePhrase(Felles.HarDuSpoersmaal(Constants.UFOERETRYGD_URL, Constants.NAV_KONTAKTSENTER_TELEFON))
         }
 
         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pe)

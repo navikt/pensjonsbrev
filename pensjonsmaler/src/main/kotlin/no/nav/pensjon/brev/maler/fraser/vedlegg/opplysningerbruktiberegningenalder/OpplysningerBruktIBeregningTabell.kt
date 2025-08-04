@@ -55,6 +55,7 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderA
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.GarantipensjonVedVirkSelectors.satsType
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.TrygdetidsdetaljerKap20VedVirkSelectors.anvendtTT
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.VilkaarsVedtakSelectors.avslattGarantipensjon
+import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -692,13 +693,7 @@ private fun TableScope<LangBokmalNynorskEnglish, Unit>.flyktningstatusFraUDIrad(
 
 private fun TableScope<LangBokmalNynorskEnglish, Unit>.trygdetidAarRad(trygdetid: Expression<Int>) {
     row {
-        cell {
-            text(
-                Bokmal to "Trygdetid",
-                Nynorsk to "Trygdetid",
-                English to "National insurance coverage",
-            )
-        }
+        cell { includePhrase(Vedtak.TrygdetidText) }
         cell { includePhrase(AntallAarText(trygdetid)) }
     }
 }
