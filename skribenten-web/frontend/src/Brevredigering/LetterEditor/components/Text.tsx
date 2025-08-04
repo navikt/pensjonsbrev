@@ -1,10 +1,12 @@
 import { css } from "@emotion/react";
 
-import type { LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
+import type { Focus, LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import type { NewLine, VariableValue } from "~/types/brevbakerTypes";
 import { FontType, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
 
+import { isBlockContentIndex, isItemContentIndex } from "../actions/common";
 import { useEditor } from "../LetterEditor";
+import { isTableCellIndex } from "../model/utils";
 
 export type TextProperties = {
   content: VariableValue | NewLine;
@@ -13,9 +15,31 @@ export type TextProperties = {
 
 export const Text = ({ content, literalIndex }: TextProperties) => {
   const { editorState, setEditorState } = useEditor();
-  const isFocused =
-    editorState.focus.blockIndex === literalIndex.blockIndex &&
-    editorState.focus.contentIndex === literalIndex.contentIndex;
+  const isFocusAtContent = (focus: Focus, idx: LiteralIndex) =>
+    focus.blockIndex === idx.blockIndex && focus.contentIndex === idx.contentIndex;
+
+  const hasFocus = (focus: Focus, idx: LiteralIndex) => {
+    if (isTableCellIndex(focus) && isTableCellIndex(idx)) {
+      return (
+        isFocusAtContent(focus, idx) &&
+        focus.rowIndex === idx.rowIndex &&
+        focus.cellIndex === idx.cellIndex &&
+        focus.cellContentIndex === idx.cellContentIndex
+      );
+    } else if (isItemContentIndex(focus) && isItemContentIndex(idx)) {
+      return (
+        isFocusAtContent(focus, idx) &&
+        focus.itemIndex === idx.itemIndex &&
+        focus.itemContentIndex === idx.itemContentIndex
+      );
+    } else if (isBlockContentIndex(focus) && isBlockContentIndex(idx)) {
+      return isFocusAtContent(focus, idx);
+    } else {
+      return false;
+    }
+  };
+
+  const isFocused = hasFocus(editorState.focus, literalIndex);
 
   switch (content.type) {
     case NEW_LINE: {
