@@ -562,10 +562,11 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart {
-	public abstract fun getDokumentDato ()Ljava/lang/String;
+	public abstract fun getDokumentDato ()Ljava/time/LocalDate;
 	public abstract fun getGjelderFoedselsnummer ()Ljava/lang/String;
 	public abstract fun getGjelderNavn ()Ljava/lang/String;
 	public abstract fun getSaksnummer ()Ljava/lang/String;
+	public abstract fun getVergeNavn ()Ljava/lang/String;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur {

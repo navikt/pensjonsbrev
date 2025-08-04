@@ -124,9 +124,9 @@ class OmstillingsstoenadAktivitetspliktFraser {
 
             paragraph {
                 text(
-                    Bokmal to "Du kan melde fra til oss om endringer ved å benytte endringsskjema eller ettersende dokumentasjon på ${Constants.OMS_MELD_INN_ENDRING_URL}",
-                    Nynorsk to "Du kan melde frå om endringar ved å bruke endringsskjema eller ettersende dokumentasjon på ${Constants.OMS_MELD_INN_ENDRING_URL}",
-                    English to "You can report changes by use the change form or submit information on ${Constants.OMS_MELD_INN_ENDRING_URL}",
+                    Bokmal to "Du kan melde fra til oss om endringer ved å benytte endringsskjema eller ettersende dokumentasjon på ${Constants.OMS_MELD_INN_ENDRING_URL}.",
+                    Nynorsk to "Du kan melde frå om endringar ved å bruke endringsskjema eller ettersende dokumentasjon på ${Constants.OMS_MELD_INN_ENDRING_URL}.",
+                    English to "You can report changes by use the change form or submit information on ${Constants.OMS_MELD_INN_ENDRING_URL}.",
                 )
             }
 

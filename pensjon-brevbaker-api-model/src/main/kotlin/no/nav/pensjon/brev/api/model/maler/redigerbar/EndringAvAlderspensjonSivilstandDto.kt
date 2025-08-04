@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.KravArsakType
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAlderDto
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
@@ -101,6 +100,7 @@ data class EndringAvAlderspensjonSivilstandDto(
 
     data class AlderspensjonVedVirk(
         val garantipensjonInnvilget: Boolean,
+        val innvilgetFor67: Boolean,
         val minstenivaaIndividuellInnvilget: Boolean,
         val minstenivaaPensjonsistParInnvilget: Boolean,
         val pensjonstilleggInnvilget: Boolean,

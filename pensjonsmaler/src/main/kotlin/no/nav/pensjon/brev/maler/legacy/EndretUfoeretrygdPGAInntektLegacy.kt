@@ -6,10 +6,23 @@ import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt.EndretUfoeretrygdPGAInntektDtoSelectors.pe
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
-import no.nav.pensjon.brev.maler.legacy.fraser.*
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1120_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1121_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1122_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1123_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1133_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1214_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1253_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1254_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU2275_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU2278_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU2279_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU2280_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU3740_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
@@ -18,7 +31,20 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.enabled
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
+import no.nav.pensjon.brev.template.dsl.expression.legacyGreaterThanOrEqual
+import no.nav.pensjon.brev.template.dsl.expression.lessThan
+import no.nav.pensjon.brev.template.dsl.expression.lessThanOrEqual
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -646,9 +672,9 @@ object EndretUfoeretrygdPGAInntektLegacy : AutobrevTemplate<EndretUfoeretrygdPGA
 
                     textExpr (
                         Bokmal to "å tjene noe annet i ".expr() + pe.ut_virkningfomar()
-                            .format() + " er det viktig at du melder inn ny forventet inntekt. Dette kan du gjøre på nav.no.",
+                            .format() + " er det viktig at du melder inn ny forventet inntekt. Dette kan du gjøre på $NAV_URL.",
                         Nynorsk to "å tene noko anna i ".expr() + pe.ut_virkningfomar()
-                            .format() + " er det viktig at du melder inn ei ny forventa inntekt. Dette kan du gjere på nav.no.",
+                            .format() + " er det viktig at du melder inn ei ny forventa inntekt. Dette kan du gjere på $NAV_URL.",
                     )
                 }
             }

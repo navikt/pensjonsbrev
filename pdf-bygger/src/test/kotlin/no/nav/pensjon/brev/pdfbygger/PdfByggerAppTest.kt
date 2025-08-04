@@ -35,8 +35,9 @@ class PdfByggerAppTest {
             sakspart = LetterMarkupImpl.SakspartImpl(
                 gjelderNavn = "Navn Navnesen",
                 gjelderFoedselsnummer = "12345678901",
+                vergeNavn = null,
                 saksnummer = "123",
-                dokumentDato = LocalDate.of(2025, 1, 1).format(DateTimeFormatter.ISO_LOCAL_DATE)
+                dokumentDato = LocalDate.of(2025, 1, 1)
             ),
             blocks = listOf(),
             signatur = LetterMarkupImpl.SignaturImpl(
@@ -146,4 +147,5 @@ fun ObjectMapper.brevbakerConfig() {
     enable(SerializationFeature.INDENT_OUTPUT)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 }
