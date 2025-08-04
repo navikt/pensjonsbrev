@@ -14,14 +14,12 @@ import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.*
 import no.nav.brev.InterneDataklasser
-import no.nav.brev.brevbaker.Fixtures
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.Test
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import kotlin.test.assertEquals
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
