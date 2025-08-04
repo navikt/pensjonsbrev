@@ -317,7 +317,7 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 paragraph {
                     textExpr(
                         Bokmal to "Fordi du får alderspensjon fra ".expr() + datoForNormertPensjonsalder.format() + " er inntekten justert ut fra til antall måneder du får uføretrygd.",
-                        Nynorsk to "Fordi du får alderspensjon frå ".expr() + datoForNormertPensjonsalder.format() + ">, er inntekta justert ut frå talet på månader du får uføretrygd."
+                        Nynorsk to "Fordi du får alderspensjon frå ".expr() + datoForNormertPensjonsalder.format() + ", er inntekta justert ut frå talet på månader du får uføretrygd."
                     )
                 }
             }
@@ -476,8 +476,8 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
             }
             paragraph {
                 text(
-                    Bokmal to "Les mer om dette i vedlegget \"Dine rettigheter og plikter”.",
-                    Nynorsk to "Les meir om dette i vedlegget \"Dine rettar og plikter”."
+                    Bokmal to "Les mer om dette i vedlegget «Dine rettigheter og plikter».",
+                    Nynorsk to "Les meir om dette i vedlegget «Dine rettar og plikter»."
                 )
             }
             title1 {
@@ -556,47 +556,49 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                     item {
                         text(
                             Bokmal to "Inntekter fra salg av produksjonsmidler i forbindelse med opphør av virksomheten ",
-                            Nynorsk to "Inntekter frå sal av produksjonsmiddel i samband med opphøyr av verksemda. "
+                            Nynorsk to "Inntekter frå sal av produksjonsmiddel i samband med opphøyr av verksemda "
                         )
                     }
                     item {
                         text(
                             Bokmal to "Produksjonstillegg og andre overføringer til gårdbrukere ",
-                            Nynorsk to "Produksjonstillegg og andre overføringar til gardsbrukarar. "
+                            Nynorsk to "Produksjonstillegg og andre overføringar til gardsbrukarar "
                         )
                     }
                 }
             }
             paragraph {
                 text(
-                    Bokmal to "Dette kan gjelde inntekt fra arbeid eller virksomhet som ble helt avsluttet før du fikk innvilget uføretrygd, for eksempel: ", //TODO: Feil tekst
-                    Nynorsk to ""
+                    Bokmal to "Dette kan også gjelde store etterbetalinger og pengestøtte fra Nav, hvis pengestøtten er pensjonsgivende og etterbetalingen har skjedd i " +
+                            virkningFom.year.minus(1).format() + " eller senere.",
+                    Nynorsk to "Dette kan også gjelde store etterbetalingar og pengestøtte frå Nav, dersom pengestøtta er pensjonsgjevande og etterbetalinga har skjedd i " +
+                            virkningFom.year.minus(1).format() + " eller seinare."
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Hvis du sender oss dokumentasjon som viser at du har en slik inntekt, kan vi gjøre en ny beregning av uføretrygden din.",
-                    Nynorsk to "",
+                    Nynorsk to "Dersom du sender oss dokumentasjon som viser at du har slik inntekt, kan vi gjere ei ny utrekning av uføretrygda di.",
                 )
             }
             ifNotNull(barnetilleggFellesbarn) {
                 paragraph {
                     text(
                         Bokmal to "Hva kan holdes utenfor personinntekten til den andre forelderen? ",
-                        Nynorsk to "",
+                        Nynorsk to "Kva kan haldast utanfor personinntekta til den andre forelderen? ",
                     )
 
                     list {
                         item {
                             text(
                                 Bokmal to "Erstatningsoppgjør for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon fra Nav",
-                                Nynorsk to ""
+                                Nynorsk to "Erstatningsoppgjer for inntektstap dersom den andre forelderen mottar uføretrygd eller alderspensjon frå Nav"
                             )
                         }
                     }
                     text(
                         Bokmal to "Dersom vi mottar dokumentasjon fra deg som bekrefter slik inntekt, kan vi gjøre en ny beregning. ",
-                        Nynorsk to "",
+                        Nynorsk to "Dersom vi mottar dokumentasjon frå deg som stadfestar slik inntekt, kan vi gjere ei ny berekning. ",
                     )
 
                 }
@@ -604,75 +606,75 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
             title1 {
                 text(
                     Bokmal to "Du har rett til å klage",
-                    Nynorsk to ""
+                    Nynorsk to "Du har rett til å klage"
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du fikk vedtaket. I vedlegget «Dine rettigheter og plikter» får du vite mer om hvordan du går fram. Du finner skjema og informasjon på nav.no/klage.",
-                    Nynorsk to ""
+                    Nynorsk to "Dersom du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. I vedlegget «Dine rettar og plikter» får du vite meir om korleis du går fram. Du finn skjema og informasjon på nav.no/klage."
                 )
             }
             title1 {
                 text(
                     Bokmal to "Du har rett til innsyn",
-                    Nynorsk to ""
+                    Nynorsk to "Du har rett til innsyn"
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram./klage.",
-                    Nynorsk to ""
+                    Nynorsk to "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram."
                 )
             }
             title1 {
                 text(
                     Bokmal to "Sjekk utbetalingene dine",
-                    Nynorsk to ""
+                    Nynorsk to "Sjekk utbetalingane dine"
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. Du kan se alle utbetalingene du har mottatt på nav.no/minside. Her kan du også endre kontonummeret ditt.",
-                    Nynorsk to ""
+                    Nynorsk to "Du får uføretrygd utbetalt den 20. kvar månad, eller seinast siste virkedag før denne datoen. Du kan sjå alle utbetalingane du har motteke på nav.no/minside. Her kan du også endre kontonummeret ditt."
                 )
             }
             title1 {
                 text(
                     Bokmal to "Skattekort",
-                    Nynorsk to ""
+                    Nynorsk to "Skattekort"
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Uføretrygd skattlegges som lønnsinntekt. Du trenger ikke levere skattekortet ditt til oss, vi får skatteopplysningene dine elektronisk fra Skatteetaten. Du bør likevel sjekke at skattekortet ditt er riktig. Skattekortet kan du endre på skatteetaten.no. Du kan også få hjelp av Skatteetaten hvis du har spørsmål om skatt. ",
-                    Nynorsk to ""
+                    Nynorsk to "Uføretrygd blir skattlagt som lønsinntekt. Du treng ikkje levere skattekort ditt til oss, då vi får skatteopplysningane dine elektronisk frå Skatteetaten. Du bør likevel sjekke at skattekortet ditt stemmer. Ved behov kan du endre skattekortet på skatteetaten.no. Du kan også få hjelp frå Skatteetaten dersom du har spørsmål om skatt. "
                 )
             }
             showIf(not(brukerBorINorge)) {
                 title1 {
                     text(
                         Bokmal to "Skatt for deg som bor i utlandet ",
-                        Nynorsk to ""
+                        Nynorsk to "Skatt for deg som bur i utlandet "
                     )
                 }
                 paragraph {
                     text(
                         Bokmal to "Bor du i utlandet og betaler kildeskatt, finner du mer informasjon om kildeskatt på skatteetaten.no. Hvis du er bosatt i utlandet og betaler skatt i annet land enn Norge, kan du kontakte skattemyndighetene der du bor.",
-                        Nynorsk to ""
+                        Nynorsk to "Bur du i utlandet og betaler kildeskatt, finn du meir informasjon om kildeskatt på skatteetaten.no. Dersom du er busett i utlandet og betaler skatt i eit anna land enn Noreg, kan du kontakte skattemyndigheitene der du bur."
                     )
                 }
             }
             title1 {
                 text(
                     Bokmal to "Har du spørsmål?",
-                    Nynorsk to ""
+                    Nynorsk to "Har du spørsmål?"
                 )
             }
             paragraph {
                 text(
                     Bokmal to "Du finner mer informasjon på nav.no/uforetrygd. På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon 55 55 33 33, hverdager kl. 09:00-15:00. ",
-                    Nynorsk to ""
+                    Nynorsk to "Du finn meir informasjon på nav.no/uforetrygd. På nav.no/kontakt kan du chatte eller skrive til oss. Dersom du ikkje finn svar på nav.no, kan du ringe oss på telefon 55 55 33 33, kvardagar kl. 09:00-15:00. "
                 )
             }
         }
