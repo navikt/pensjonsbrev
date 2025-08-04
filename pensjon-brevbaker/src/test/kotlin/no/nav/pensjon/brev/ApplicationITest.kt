@@ -13,10 +13,12 @@ import io.ktor.http.contentType
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.BREVBAKER_URL
 import no.nav.brev.brevbaker.Fixtures
+import no.nav.brev.brevbaker.TestTags
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
 class ApplicationITest {
@@ -33,23 +35,25 @@ class ApplicationITest {
         }
     }
 
+    @Tag(TestTags.MANUAL_TEST)
     @Test
     fun `deserialiser value class`() = testBrevbakerApp { client ->
         val response = client.post("/letter/autobrev/pdf") {
             contentType(ContentType.Application.Json)
             setBody(reqValue)
         }
-//        assertThat(response.bodyAsText(), containsSubstring("value failed for JSON property "))
+        assertThat(response.bodyAsText(), containsSubstring("file"))
         assertThat(response.status, equalTo(HttpStatusCode.OK))
     }
 
+    @Tag(TestTags.MANUAL_TEST)
     @Test
     fun `deserialiser wrapped`() = testBrevbakerApp { client ->
         val response = client.post("/letter/autobrev/pdf") {
             contentType(ContentType.Application.Json)
             setBody(reqWrapped)
         }
-//        assertThat(response.bodyAsText(), containsSubstring("value failed for JSON property "))
+        assertThat(response.bodyAsText(), containsSubstring("file"))
         assertThat(response.status, equalTo(HttpStatusCode.OK))
     }
 

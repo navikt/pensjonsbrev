@@ -4,19 +4,18 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
+import com.fasterxml.jackson.databind.deser.std.StringDeserializer
+import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.IntNode
 import com.fasterxml.jackson.databind.node.TextNode
 import no.nav.pensjon.brevbaker.api.model.Days
 import no.nav.pensjon.brevbaker.api.model.DaysWrapper
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.IntWrapper
-import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Months
 import no.nav.pensjon.brevbaker.api.model.MonthsWrapper
 import no.nav.pensjon.brevbaker.api.model.Percent
 import no.nav.pensjon.brevbaker.api.model.PercentWrapper
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import no.nav.pensjon.brevbaker.api.model.Year
 import no.nav.pensjon.brevbaker.api.model.YearWrapper
 import org.slf4j.LoggerFactory
@@ -32,9 +31,27 @@ object PrimitiveModule : SimpleModule() {
         addDeserializer(Months::class.java, monthsDeserializer())
         addDeserializer(Days::class.java, daysDeserializer())
         addDeserializer(Percent::class.java, percentDeserializer())
-        addDeserializer(Telefonnummer::class.java, telefonnummerDeserializer())
-        addDeserializer(Foedselsnummer::class.java, foedselsnummerDeserializer())
-        addDeserializer(Kroner::class.java, kronerDeserializer())
+        addDeserializer(String::class.java, stringDeser())
+    }
+
+    private val standardStringDeserializer = StringDeserializer()
+
+    // TODO: Denne kan vi fjerne når både Gjenny og Pesys bruker ny nok versjon av biblioteket, så dei sender
+    // fødselsnummer, telefonnumer og kroner som flat tekst og ikkje som innpakka objekt
+    private fun stringDeser() = object : StdDeserializer<String>(String::class.java) {
+        override fun deserialize(p: JsonParser, ctxt: DeserializationContext, ): String? {
+            try {
+                return standardStringDeserializer.deserialize(p, ctxt)
+            } catch (e: MismatchedInputException) {
+                val node = p.codec.readTree<JsonNode>(p)
+                return when (p.parsingContext.currentName) {
+                    "telefonnummer" -> p.codec.treeToValue(node, Map::class.java)["value"].toString()
+                    "foedselsnummer" -> p.codec.treeToValue(node, Map::class.java)["value"].toString()
+                    "kroner" -> p.codec.treeToValue(node, Map::class.java)["value"].toString()
+                    else -> throw e
+                }
+            }
+        }
     }
 
     private inline fun <reified T: IntWrapper> unwrap(p: JsonParser, node: JsonNode?): Int = p.codec.treeToValue(node, T::class.java).value
@@ -74,36 +91,6 @@ object PrimitiveModule : SimpleModule() {
                 is IntNode -> Percent(p.codec.treeToValue(node, Int::class.java))
                 is TextNode -> Percent(p.codec.treeToValue(node, String::class.java).toInt())
                 else -> Percent(unwrap<PercentWrapper>(p, node))
-            }
-    }
-
-    private fun telefonnummerDeserializer() = object : StdDeserializer<Telefonnummer>(Telefonnummer::class.java) {
-        override fun deserialize(p: JsonParser, ctxt: DeserializationContext) =
-            when (val node = p.codec.readTree<JsonNode>(p)) {
-                is IntNode -> Telefonnummer(p.codec.treeToValue(node, Int::class.java).toString())
-                is TextNode -> Telefonnummer(p.codec.treeToValue(node, String::class.java))
-//                else -> Telefonnummer(p.codec.treeToValue(node, TelefonnummerWrapper::class.java).value).also { log(
-//                    TelefonnummerWrapper::class.java) }
-//                else -> ctxt.findRootValueDeserializer(ctxt.constructType(Telefonnummer::class.java)).deserialize(p, ctxt) as Telefonnummer
-                else -> Telefonnummer(p.codec.treeToValue(node, Map::class.java)["value"].toString())
-            }
-    }
-
-    private fun foedselsnummerDeserializer() = object : StdDeserializer<Foedselsnummer>(Foedselsnummer::class.java) {
-        override fun deserialize(p: JsonParser, ctxt: DeserializationContext) =
-            when (val node = p.codec.readTree<JsonNode>(p)) {
-                is IntNode -> Foedselsnummer(p.codec.treeToValue(node, Int::class.java).toString())
-                is TextNode -> Foedselsnummer(p.codec.treeToValue(node, String::class.java))
-                else -> Foedselsnummer(p.codec.treeToValue(node, Map::class.java)["value"].toString())
-            }
-    }
-
-    private fun kronerDeserializer() = object : StdDeserializer<Kroner>(Kroner::class.java) {
-        override fun deserialize(p: JsonParser, ctxt: DeserializationContext) =
-            when (val node = p.codec.readTree<JsonNode>(p)) {
-                is IntNode -> Kroner(p.codec.treeToValue(node, Int::class.java))
-                is TextNode -> Kroner(p.codec.treeToValue(node, String::class.java).toInt())
-                else -> Kroner(p.codec.treeToValue(node, Map::class.java)["value"].toString().toInt())
             }
     }
 
