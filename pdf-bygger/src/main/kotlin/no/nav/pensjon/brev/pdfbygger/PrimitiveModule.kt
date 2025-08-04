@@ -28,7 +28,10 @@ object PrimitiveModule : SimpleModule() {
             } catch (e: MismatchedInputException) {
                 val node = p.codec.readTree<JsonNode>(p)
                 try {
-                    return p.codec.treeToValue(node, Map::class.java)["value"].toString()
+                    val treeToValue = p.codec.treeToValue(node, Map::class.java)
+                    require(treeToValue.size == 1,  { "custom-deserialisering kun for wrapper-klasser" })
+                    require(treeToValue.keys.contains("value"))
+                    return treeToValue["value"].toString()
                 } catch (e2: Exception) {
                     throw e.also { it.addSuppressed(e2) }
                 }
