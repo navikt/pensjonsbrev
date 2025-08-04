@@ -46,6 +46,7 @@ public final class no/nav/pensjon/brev/api/model/FeatureToggleSingleton {
 }
 
 public final class no/nav/pensjon/brev/model/GenerellFormattingKt {
+	public static final fun format (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun format-GIDhiCA (Ljava/lang/String;)Ljava/lang/String;
 	public static final fun format-IJP8My8 (Ljava/lang/String;)Ljava/lang/String;
 	public static final fun formatFoedselsnummer (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
