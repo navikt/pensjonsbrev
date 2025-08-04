@@ -257,17 +257,6 @@ public final class no/nav/pensjon/brevbaker/api/model/Days : no/nav/pensjon/brev
 	public final synthetic fun unbox-impl ()I
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/DaysWrapper : no/nav/pensjon/brevbaker/api/model/IntWrapper {
-	public fun <init> (I)V
-	public final fun component1 ()I
-	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/DaysWrapper;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/DaysWrapper;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/DaysWrapper;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getValue ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public abstract interface annotation class no/nav/pensjon/brevbaker/api/model/DisplayText : java/lang/annotation/Annotation {
 	public abstract fun text ()Ljava/lang/String;
 }
@@ -309,10 +298,6 @@ public final class no/nav/pensjon/brevbaker/api/model/Foedselsnummer {
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/IntValue {
-	public abstract fun getValue ()I
-}
-
-public abstract interface class no/nav/pensjon/brevbaker/api/model/IntWrapper {
 	public abstract fun getValue ()I
 }
 
@@ -613,17 +598,6 @@ public final class no/nav/pensjon/brevbaker/api/model/Months : no/nav/pensjon/br
 	public final synthetic fun unbox-impl ()I
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/MonthsWrapper : no/nav/pensjon/brevbaker/api/model/IntWrapper {
-	public fun <init> (I)V
-	public final fun component1 ()I
-	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/MonthsWrapper;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/MonthsWrapper;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/MonthsWrapper;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getValue ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class no/nav/pensjon/brevbaker/api/model/NavEnhet {
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -646,17 +620,6 @@ public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/b
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (I)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()I
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/PercentWrapper : no/nav/pensjon/brevbaker/api/model/IntWrapper {
-	public fun <init> (I)V
-	public final fun component1 ()I
-	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/PercentWrapper;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/PercentWrapper;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/PercentWrapper;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getValue ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere {
@@ -789,16 +752,5 @@ public final class no/nav/pensjon/brevbaker/api/model/Year : no/nav/pensjon/brev
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (I)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()I
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/YearWrapper : no/nav/pensjon/brevbaker/api/model/IntWrapper {
-	public fun <init> (I)V
-	public final fun component1 ()I
-	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/YearWrapper;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/YearWrapper;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/YearWrapper;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getValue ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
