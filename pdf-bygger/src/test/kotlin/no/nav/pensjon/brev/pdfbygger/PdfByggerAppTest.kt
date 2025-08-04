@@ -50,7 +50,6 @@ class PdfByggerAppTest {
         ),
         attachments = listOf(),
         language = LanguageCode.BOKMAL,
-        felles = Fixtures.felles,
         brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
     )
     private val objectMapper = jacksonObjectMapper().apply { brevbakerConfig() }
