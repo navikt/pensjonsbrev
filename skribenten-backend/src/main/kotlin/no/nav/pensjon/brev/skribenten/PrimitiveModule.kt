@@ -10,16 +10,13 @@ import com.fasterxml.jackson.databind.node.TextNode
 import no.nav.pensjon.brevbaker.api.model.Days
 import no.nav.pensjon.brevbaker.api.model.DaysWrapper
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.FoedselsnummerWrapper
 import no.nav.pensjon.brevbaker.api.model.IntWrapper
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.brevbaker.api.model.KronerWrapper
 import no.nav.pensjon.brevbaker.api.model.Months
 import no.nav.pensjon.brevbaker.api.model.MonthsWrapper
 import no.nav.pensjon.brevbaker.api.model.Percent
 import no.nav.pensjon.brevbaker.api.model.PercentWrapper
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
-import no.nav.pensjon.brevbaker.api.model.TelefonnummerWrapper
 import no.nav.pensjon.brevbaker.api.model.Year
 import no.nav.pensjon.brevbaker.api.model.YearWrapper
 import org.slf4j.LoggerFactory
@@ -82,32 +79,23 @@ object PrimitiveModule : SimpleModule() {
 
     private fun telefonnummerDeserializer() = object : StdDeserializer<Telefonnummer>(Telefonnummer::class.java) {
         override fun deserialize(p: JsonParser, ctxt: DeserializationContext) =
-            tolkTelefonnummer(p, p.codec.readTree(p))
-    }
-
-    private fun tolkTelefonnummer(p: JsonParser, node: JsonNode?) =
-        when (node) {
-            is IntNode -> Telefonnummer(p.codec.treeToValue(node, Int::class.java).toString())
-            is TextNode -> Telefonnummer(p.codec.treeToValue(node, String::class.java))
-            else -> Telefonnummer(p.codec.treeToValue(node, TelefonnummerWrapper::class.java).value).also {
-                log(
-                    TelefonnummerWrapper::class.java
-                )
+            when (val node = p.codec.readTree<JsonNode>(p)) {
+                is IntNode -> Telefonnummer(p.codec.treeToValue(node, Int::class.java).toString())
+                is TextNode -> Telefonnummer(p.codec.treeToValue(node, String::class.java))
+//                else -> Telefonnummer(p.codec.treeToValue(node, TelefonnummerWrapper::class.java).value).also { log(
+//                    TelefonnummerWrapper::class.java) }
+//                else -> ctxt.findRootValueDeserializer(ctxt.constructType(Telefonnummer::class.java)).deserialize(p, ctxt) as Telefonnummer
+                else -> Telefonnummer(p.codec.treeToValue(node, Map::class.java)["value"].toString())
             }
-        }
+    }
 
     private fun foedselsnummerDeserializer() = object : StdDeserializer<Foedselsnummer>(Foedselsnummer::class.java) {
-        override fun deserialize(p: JsonParser, ctxt: DeserializationContext) = tolkFoedselsnummer(p, p.codec.readTree(p))
-    }
-
-    private fun tolkFoedselsnummer(p: JsonParser, readTree: JsonNode?): Foedselsnummer = when (val node = readTree) {
-        is IntNode -> Foedselsnummer(p.codec.treeToValue(node, Int::class.java).toString())
-        is TextNode -> Foedselsnummer(p.codec.treeToValue(node, String::class.java))
-        else -> Foedselsnummer(p.codec.treeToValue(node, FoedselsnummerWrapper::class.java).value).also {
-            log(
-                FoedselsnummerWrapper::class.java
-            )
-        }
+        override fun deserialize(p: JsonParser, ctxt: DeserializationContext) =
+            when (val node = p.codec.readTree<JsonNode>(p)) {
+                is IntNode -> Foedselsnummer(p.codec.treeToValue(node, Int::class.java).toString())
+                is TextNode -> Foedselsnummer(p.codec.treeToValue(node, String::class.java))
+                else -> Foedselsnummer(p.codec.treeToValue(node, Map::class.java)["value"].toString())
+            }
     }
 
     private fun kronerDeserializer() = object : StdDeserializer<Kroner>(Kroner::class.java) {
@@ -115,7 +103,7 @@ object PrimitiveModule : SimpleModule() {
             when (val node = p.codec.readTree<JsonNode>(p)) {
                 is IntNode -> Kroner(p.codec.treeToValue(node, Int::class.java))
                 is TextNode -> Kroner(p.codec.treeToValue(node, String::class.java).toInt())
-                else -> Kroner(unwrap<KronerWrapper>(p, node))
+                else -> Kroner(p.codec.treeToValue(node, Map::class.java)["value"].toString().toInt())
             }
     }
 

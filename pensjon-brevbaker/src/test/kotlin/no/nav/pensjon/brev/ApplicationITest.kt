@@ -2,9 +2,13 @@ package no.nav.pensjon.brev
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
-import io.ktor.client.request.*
+import com.natpryce.hamkrest.equalTo
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.BREVBAKER_URL
@@ -27,6 +31,26 @@ class ApplicationITest {
                 throw Exception("Failed to ping brevbaker at: $BREVBAKER_URL", e)
             }
         }
+    }
+
+    @Test
+    fun `deserialiser value class`() = testBrevbakerApp { client ->
+        val response = client.post("/letter/autobrev/pdf") {
+            contentType(ContentType.Application.Json)
+            setBody(reqValue)
+        }
+//        assertThat(response.bodyAsText(), containsSubstring("value failed for JSON property "))
+        assertThat(response.status, equalTo(HttpStatusCode.OK))
+    }
+
+    @Test
+    fun `deserialiser wrapped`() = testBrevbakerApp { client ->
+        val response = client.post("/letter/autobrev/pdf") {
+            contentType(ContentType.Application.Json)
+            setBody(reqWrapped)
+        }
+//        assertThat(response.bodyAsText(), containsSubstring("value failed for JSON property "))
+        assertThat(response.status, equalTo(HttpStatusCode.OK))
     }
 
     @Test
@@ -60,3 +84,57 @@ class ApplicationITest {
         assertThat(response.bodyAsText(), containsSubstring("Missing required creator property"))
     }
 }
+
+private val reqValue = """
+    {
+        "kode":"TESTBREV",
+        "letterData":{"pensjonInnvilget":true,"datoInnvilget":"2025-08-04","navneliste":[],"tilleggEksempel":[],"datoAvslaatt":"2025-08-04","pensjonBeloep":100},
+        "felles":{
+            "dokumentDato":"2020-01-01",
+            "saksnummer":"1337123",
+            "avsenderEnhet":{
+                "nettside":"nav.no",
+                "navn":"Nav Familie- og pensjonsytelser Porsgrunn",
+                "telefonnummer":"55553334"
+            },
+            "bruker":{
+                "foedselsnummer":"01019878910",
+                "fornavn":"Test",
+                "mellomnavn":"\"bruker\"",
+                "etternavn":"Testerson"
+            },
+            "vergeNavn":null,
+            "signerendeSaksbehandlere":null
+        },
+        "language":"BOKMAL"
+    }
+""".trimIndent()
+
+private val reqWrapped = """
+    {
+        "kode":"TESTBREV",
+        "letterData":{"pensjonInnvilget":true,"datoInnvilget":"2025-08-04","navneliste":[],"tilleggEksempel":[],"datoAvslaatt":"2025-08-04","pensjonBeloep":100},
+        "felles":{
+            "dokumentDato":"2020-01-01",
+            "saksnummer":"1337123",
+            "avsenderEnhet":{
+                "nettside":"nav.no",
+                "navn":"Nav Familie- og pensjonsytelser Porsgrunn",
+                "telefonnummer": { 
+                    "value":"55553334"
+                }
+            },
+            "bruker":{
+                "foedselsnummer":{
+                    "value":"01019878910"
+                },
+                "fornavn":"Test",
+                "mellomnavn":"\"bruker\"",
+                "etternavn":"Testerson"
+            },
+            "vergeNavn":null,
+            "signerendeSaksbehandlere":null
+        },
+        "language":"BOKMAL"
+    }
+""".trimIndent()
