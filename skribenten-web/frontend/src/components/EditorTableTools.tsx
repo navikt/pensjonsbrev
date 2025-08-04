@@ -6,10 +6,12 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import InsertTableDialog from "~/Brevredigering/LetterEditor/components/InsertTableDialog";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
+import type { Focus } from "~/Brevredigering/LetterEditor/model/state";
 
 const EditorTableTools = () => {
   const { editorState, setEditorState } = useEditor();
   const [isInsertTableDialogOpen, setIsInsertTableDialogOpen] = useState(false);
+  const [focusAtOpen, setFocusAtOpen] = useState<Focus | null>(null);
 
   return (
     <>
@@ -17,7 +19,10 @@ const EditorTableTools = () => {
         <Button
           data-cy="toolbar-table-btn"
           icon={<TableIcon fontSize="1.5rem" title="Sett inn tabell" />}
-          onClick={() => setIsInsertTableDialogOpen(true)}
+          onClick={() => {
+            setFocusAtOpen(editorState.focus);
+            setIsInsertTableDialogOpen(true);
+          }}
           size="small"
           type="button"
           variant="tertiary-neutral"
@@ -27,7 +32,8 @@ const EditorTableTools = () => {
       <InsertTableDialog
         onCancel={() => setIsInsertTableDialogOpen(false)}
         onInsert={(columnCount, rowCount) => {
-          applyAction(Actions.insertTable, setEditorState, editorState.focus, rowCount, columnCount);
+          const focus = focusAtOpen ?? editorState.focus;
+          applyAction(Actions.insertTable, setEditorState, focus, rowCount, columnCount);
           setIsInsertTableDialogOpen(false);
         }}
         open={isInsertTableDialogOpen}
