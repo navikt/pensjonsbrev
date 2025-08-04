@@ -3,27 +3,42 @@ package no.nav.pensjon.brev.skribenten.letter
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
+import java.time.LocalDate
 
 
 fun letter(vararg blocks: LetterMarkup.Block) =
     LetterMarkupImpl(
         title = "En tittel",
-        sakspart = SakspartImpl("Test Testeson", "1234568910", "1234", "20.12.2022"),
+        sakspart = SakspartImpl(
+            gjelderNavn = "Test Testeson",
+            gjelderFoedselsnummer = "1234568910",
+            vergeNavn = null,
+            saksnummer = "1234",
+            dokumentDato = LocalDate.now()
+        ),
         blocks = blocks.toList(),
         signatur = SignaturImpl("Med vennlig hilsen", "Saksbehandler", "Kjersti Saksbehandler", null, "Nav Familie- og pensjonsytelser Porsgrunn")
     )
 
 fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet(), fixParentIds: Boolean = true): Edit.Letter =
     Edit.Letter(
-        "En tittel",
-        SakspartImpl("Test Testeson", "1234568910", "1234", "20.12.2022"),
-        blocks.toList().let {
-            if (fixParentIds) {
-                blocks.map { it.fixParentIds(null) }
-            } else it
-        },
-        SignaturImpl("Med vennlig hilsen", "Saksbehandler", "Kjersti Saksbehandler", null, "Nav Familie- og pensjonsytelser Porsgrunn"),
-        deleted
+        title = "En tittel",
+        sakspart = SakspartImpl(
+            gjelderNavn = "Test Testeson",
+            gjelderFoedselsnummer = "1234568910",
+            vergeNavn = null,
+            saksnummer = "1234",
+            dokumentDato = LocalDate.now()
+        ),
+        blocks = if (fixParentIds) { blocks.map { it.fixParentIds(null) }.toList() } else blocks.toList(),
+        signatur = SignaturImpl(
+            hilsenTekst = "Med vennlig hilsen",
+            saksbehandlerRolleTekst = "Saksbehandler",
+            saksbehandlerNavn = "Kjersti Saksbehandler",
+            attesterendeSaksbehandlerNavn = null,
+            navAvsenderEnhet = "Nav Familie- og pensjonsytelser Porsgrunn"
+        ),
+        deletedBlocks = deleted
     )
 
 fun Edit.Letter.fixParentIds(): Edit.Letter =

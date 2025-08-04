@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
-import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test1
 import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test2
 import no.nav.pensjon.brev.template.render.hasBlocks

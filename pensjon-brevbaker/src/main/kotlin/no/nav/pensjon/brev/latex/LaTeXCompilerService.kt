@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.latex
 
+import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.callid.KtorCallIdContextElement
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -43,7 +44,9 @@ class LaTeXCompilerService(
     private val objectmapper = brevbakerJacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
-            jackson()
+            jackson {
+                disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            }
         }
         HttpResponseValidator {
             validateResponse { validateResponse(it.status.value, { msg -> logger.warn(msg) }) { it.body<String>() } }

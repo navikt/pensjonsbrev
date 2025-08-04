@@ -2,14 +2,23 @@ package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.Institusjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.OMSTILLINGSSTOENAD_URL
 import no.nav.pensjon.brev.maler.fraser.ufoer.Barnetillegg.DuHarFaattUtbetaltBarnetilleggTidligereIAar
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -766,9 +775,9 @@ data class SoekGjenlevendetilleggEtter2024(val borIAvtaleLand: Expression<Boolea
         }
         paragraph {
             text(
-                Bokmal to "Du finner mer informasjon og søknad på nav.no/omstillingsstonad.",
-                Nynorsk to "Du finn informasjon og søknad på nav.no/omstillingsstonad.",
-                English to "You will find information and the application form at nav.no/omstillingsstonad.",
+                Bokmal to "Du finner mer informasjon og søknad på $OMSTILLINGSSTOENAD_URL.",
+                Nynorsk to "Du finn informasjon og søknad på $OMSTILLINGSSTOENAD_URL.",
+                English to "You will find information and the application form at $OMSTILLINGSSTOENAD_URL.",
             )
         }
         showIf(borIAvtaleLand) {

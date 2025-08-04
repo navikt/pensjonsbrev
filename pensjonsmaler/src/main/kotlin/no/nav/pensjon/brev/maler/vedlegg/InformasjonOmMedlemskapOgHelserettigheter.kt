@@ -8,9 +8,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.MEDLEMSKAP_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.TELEFON_HELSE
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -23,7 +20,7 @@ val vedleggInformasjonOmMedlemskapOgHelserettigheter =
     createAttachment<LangBokmalNynorskEnglish, InformasjonOmMedlemskapOgHelserettigheterDto>(
         title = newText(
             Bokmal to "Informasjon om medlemskap og rett til helsetjenester",
-            Language.Nynorsk to "Informasjon om medlemskap og rett til helsetenester",
+            Nynorsk to "Informasjon om medlemskap og rett til helsetenester",
             English to "Information about membership and entitlement to health services",
         ),
         includeSakspart = false

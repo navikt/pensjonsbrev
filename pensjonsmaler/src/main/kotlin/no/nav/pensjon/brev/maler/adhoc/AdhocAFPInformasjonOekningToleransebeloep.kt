@@ -3,10 +3,9 @@ package no.nav.pensjon.brev.maler.adhoc
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.fraser.common.Constants.AFP_OFFENTLIG_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SEND_BESKJED_URL
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -99,30 +98,7 @@ object AdhocAFPInformasjonOekningToleransebeloep : AutobrevTemplate<EmptyBrevdat
                 )
             }
 
-            title1 {
-                text(
-                    Bokmal to "Har du spørsmål?",
-                    Nynorsk to "Har du spørsmål?"
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Du finner mer informasjon på $AFP_OFFENTLIG_URL.",
-                    Nynorsk to "Du finn meir informasjon på $AFP_OFFENTLIG_URL."
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "På $KONTAKT_URL kan du chatte eller skrive til oss.",
-                    Nynorsk to "På $KONTAKT_URL kan du chatte eller skrive til oss."
-                )
-            }
-            paragraph {
-                text(
-                    Bokmal to "Hvis du ikke finner svar på $NAV_URL, kan du ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON, hverdager 09:00-15:00.",
-                    Nynorsk to "Om du ikkje finn svar på $NAV_URL, kan du ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON, kvardagar 09:00-15:00."
-                )
-            }
+            includePhrase(Felles.HarDuSpoersmaal(AFP_OFFENTLIG_URL, NAV_KONTAKTSENTER_TELEFON_PENSJON))
         }
     }
 }

@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.http.HttpStatusCode
-import kotlinx.coroutines.coroutineScope
-import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -86,9 +84,7 @@ class BrevredigeringService(
     ): ServiceResult<Dto.Brevredigering> =
         harTilgangTilEnhet(avsenderEnhetsId) {
             val principal = PrincipalInContext.require()
-            val signerendeSaksbehandler = navansattService.hentNavansatt(principal.navIdent.id)
-                ?.let { "${it.fornavn} ${it.etternavn}" }
-                ?: principal.fullName
+            val signerendeSaksbehandler = signaturSaksbehandler(brev = null)
 
             val vedtaksIdOmVedtaksbrev = beholdOgKrevVedtaksIdOmVedtaksbrev(vedtaksId, brevkode)
 
@@ -133,6 +129,7 @@ class BrevredigeringService(
         brevId: Long,
         nyeSaksbehandlerValg: SaksbehandlerValg?,
         nyttRedigertbrev: Edit.Letter?,
+        // TODO: kan fjernes når frontend sender signatur som en del av nyttRedigertBrev
         signatur: String? = null,
         frigiReservasjon: Boolean = false,
     ): ServiceResult<Dto.Brevredigering>? =
@@ -141,7 +138,7 @@ class BrevredigeringService(
                 rendreBrev(
                     brev = brevDto,
                     saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg,
-                    signaturSignerende = signatur ?: brevDto.info.signaturSignerende,
+                    signaturSignerende = signatur ?: signaturSaksbehandler(brevDto),
                 ).map { rendretBrev ->
                     val principal = PrincipalInContext.require()
                     transaction {
@@ -191,6 +188,7 @@ class BrevredigeringService(
                 transaction {
                     brevDb.apply {
                         redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev)
+                        // TODO: Skal fjernes etter at frontend er endret til å hente signatur fra redigertBrev
                         this.signaturSignerende = signaturSignerende
                     }.toDto()
                 }
@@ -320,7 +318,7 @@ class BrevredigeringService(
             // TODO: burde vi sjekke om brevet er et vedtaksbrev før vi gjennomfører attestering?
 
             val signaturAttestant = signaturAttestant
-                ?: brevDto.info.signaturAttestant
+                ?: brevDto.redigertBrev.signatur.attesterendeSaksbehandlerNavn
                 ?: navansattService.hentNavansatt(principal.navIdent.id)?.let { "${it.fornavn} ${it.etternavn}" }
                 ?: principal.fullName
 
@@ -468,11 +466,10 @@ class BrevredigeringService(
             vedtaksId = brev.info.vedtaksId,
             saksbehandlerValg = saksbehandlerValg ?: brev.saksbehandlerValg,
             avsenderEnhetsId = brev.info.avsenderEnhetId,
-            signaturSignerende = signaturSignerende ?: brev.info.signaturSignerende,
-            signaturAttestant = signaturAttestant ?: brev.info.signaturAttestant,
+            signaturSignerende = signaturSignerende ?: signaturSaksbehandler(brev),
+            signaturAttestant = signaturAttestant ?: brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
         )
 
-    @OptIn(InterneDataklasser::class)
     private suspend fun rendreBrev(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
@@ -482,7 +479,7 @@ class BrevredigeringService(
         avsenderEnhetsId: String?,
         signaturSignerende: String,
         signaturAttestant: String? = null,
-    ): ServiceResult<LetterMarkup> = coroutineScope {
+    ): ServiceResult<LetterMarkup> =
         penService.hentPesysBrevdata(saksId = saksId, vedtaksId = vedtaksId, brevkode = brevkode, avsenderEnhetsId = avsenderEnhetsId)
             .then { pesysData ->
                 brevbakerService.renderMarkup(
@@ -492,10 +489,9 @@ class BrevredigeringService(
                         pesysData = pesysData.brevdata,
                         saksbehandlerValg = saksbehandlerValg,
                     ),
-                    felles = pesysData.felles.medSignerendeSaksbehandlere(signerendeSaksbehandlere = SignerendeSaksbehandlere(signaturSignerende, signaturAttestant))
+                    felles = pesysData.felles.medSignerendeSaksbehandlere(SignerendeSaksbehandlere(signaturSignerende, signaturAttestant))
                 )
             }
-    }
 
     private suspend fun <T> harTilgangTilEnhet(enhetsId: String?, then: suspend () -> ServiceResult<T>): ServiceResult<T> {
         return if (enhetsId == null) {
@@ -510,7 +506,6 @@ class BrevredigeringService(
         }
     }
 
-    @OptIn(InterneDataklasser::class)
     private suspend fun opprettPdf(brevredigering: Dto.Brevredigering): ServiceResult<ByteArray> {
         return penService.hentPesysBrevdata(
             saksId = brevredigering.info.saksId,
@@ -525,9 +520,10 @@ class BrevredigeringService(
                     pesysData = pesysData.brevdata,
                     saksbehandlerValg = brevredigering.saksbehandlerValg,
                 ),
+                // TODO: Kan fjerne oppdatering av felles.signatur her når brevbaker ikke bruker felles.signatur til rendring
                 felles = pesysData.felles.medSignerendeSaksbehandlere(SignerendeSaksbehandlere(
-                    saksbehandler = brevredigering.info.signaturSignerende,
-                    attesterendeSaksbehandler = brevredigering.info.signaturAttestant,
+                    saksbehandler = signaturSaksbehandler(brevredigering),
+                    attesterendeSaksbehandler = brevredigering.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
                 )),
                 redigertBrev = brevredigering.redigertBrev.toMarkup()
             ).map {
@@ -569,6 +565,14 @@ class BrevredigeringService(
         } else {
             null
         }
+    }
+
+    suspend fun signaturSaksbehandler(brev: Dto.Brevredigering?): String {
+        val principal = PrincipalInContext.require()
+
+        return brev?.redigertBrev?.signatur?.saksbehandlerNavn
+            ?: navansattService.hentNavansatt(principal.navIdent.id)?.let { "${it.fornavn} ${it.etternavn}" }
+            ?: principal.fullName
     }
 
     suspend fun hentSignaturAttestant(saksId: Long, brevId: Long): ServiceResult<String?>? =

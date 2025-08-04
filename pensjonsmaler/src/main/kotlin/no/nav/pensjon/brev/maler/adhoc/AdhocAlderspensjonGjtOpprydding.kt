@@ -9,11 +9,17 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.dsl.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.namedReference
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -129,58 +135,8 @@ object AdhocAlderspensjonGjtOpprydding : AutobrevTemplate<AdhocAlderspensjonGjtO
             }
 
             includePhrase(Felles.RettTilAAKlage(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
-
-            title1 {
-                text(
-                    Bokmal to "Du har rett til innsyn",
-                    Nynorsk to "Du har rett til innsyn",
-                    English to "You have the right to access your file",
-                )
-            }
-
-            paragraph {
-                text(
-                    Bokmal to "Du har rett til å se dokumentene i saken din.",
-                    Nynorsk to "Du har rett til å sjå dokumenta i saka di.",
-                    English to "You have the right to access all documents pertaining to your case.",
-                )
-            }
-
-            paragraph {
-                text(
-                    Bokmal to "I vedlegget ",
-                    Nynorsk to "I vedlegget ",
-                    English to "The attachment "
-                )
-                namedReference(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
-                text(
-                    Bokmal to " finner du mer informasjon om klage, innsyn og hvordan du går fram.",
-                    Nynorsk to " finn du meir informasjon om klage, innsyn og korleis du går fram.",
-                    English to " includes information on how to proceed.",
-                )
-            }
-
-            title1 {
-                text(
-                    Bokmal to "Har du spørsmål?",
-                    Nynorsk to "Har du spørsmål?",
-                    English to "Do you have questions?",
-                )
-            }
-
-            paragraph {
-                text(
-                    Bokmal to "Du finner mer informasjon på nav.no/pensjon. På nav.no/kontakt kan du chatte eller skrive til oss. " +
-                            "Hvis du ikke finner svar på nav.no, kan du ringe oss på telefon " +
-                            "+47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, hverdager kl. 09.00-15.00.",
-                    Nynorsk to "Du finn meir informasjon på nav.no/pensjon. På nav.no/kontakt kan du chatte eller skrive til oss. " +
-                            "Om du ikkje finn svar på nav.no, kan du ringe oss på telefon " +
-                            "+47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, kvardagar kl. 09.00-15.00.",
-                    English to "You can find more information at nav.no/pensjon. At nav.no/kontakt, you can chat or write to us. " +
-                            "If you do not find the answer at nav.no, you can call us at: " +
-                            "+47 ${Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON}, weekdays 09:00-15:00.",
-                )
-            }
+            includePhrase(Felles.RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
+            includePhrase(Felles.HarDuSpoersmaal(Constants.PENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
         }
 
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
