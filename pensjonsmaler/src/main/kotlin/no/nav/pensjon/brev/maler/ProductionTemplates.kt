@@ -76,6 +76,7 @@ import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringAvAlderspensjonInstitus
 import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge
 import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringAvUttaksgradStansInitiertAvBrukerEllerVerge
 import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringVedFlyttingMellomLand
+import no.nav.pensjon.brev.maler.redigerbar.VedtakOmEndring
 import no.nav.pensjon.brev.maler.redigerbar.VedtakOmFjerningAvOmsorgsopptjening
 import no.nav.pensjon.brev.maler.redigerbar.VedtakStansAlderspensjonFlyttingMellomLand
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUfoeretrygdPGAInntektV2
