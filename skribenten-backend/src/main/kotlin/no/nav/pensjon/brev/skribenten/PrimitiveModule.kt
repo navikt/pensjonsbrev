@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.IntNode
 import com.fasterxml.jackson.databind.node.TextNode
-import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.Days
 import no.nav.pensjon.brevbaker.api.model.DaysWrapper
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
@@ -17,7 +16,6 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.KronerWrapper
 import no.nav.pensjon.brevbaker.api.model.Months
 import no.nav.pensjon.brevbaker.api.model.MonthsWrapper
-import no.nav.pensjon.brevbaker.api.model.NavEnhet
 import no.nav.pensjon.brevbaker.api.model.Percent
 import no.nav.pensjon.brevbaker.api.model.PercentWrapper
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
@@ -33,8 +31,6 @@ object PrimitiveModule : SimpleModule() {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     init {
-        addDeserializer(NavEnhet::class.java, navEnhetDeserializer())
-        addDeserializer(Bruker::class.java, brukerDeserializer())
         addDeserializer(Year::class.java, yearDeserializer())
         addDeserializer(Months::class.java, monthsDeserializer())
         addDeserializer(Days::class.java, daysDeserializer())
@@ -99,29 +95,6 @@ object PrimitiveModule : SimpleModule() {
                 )
             }
         }
-
-    private fun navEnhetDeserializer() = object : StdDeserializer<NavEnhet>(NavEnhet::class.java) {
-        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): NavEnhet? {
-            val tree = p.codec.readTree<JsonNode>(p)
-            return NavEnhet(
-                nettside = tree["nettside"].asText(),
-                navn = tree["navn"].asText(),
-                telefonnummer = tolkTelefonnummer(p, tree["telefonnummer"])
-            )
-        }
-    }
-
-    private fun brukerDeserializer() = object : StdDeserializer<Bruker>(Bruker::class.java) {
-        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Bruker? {
-            val tree = p.codec.readTree<JsonNode>(p)
-            return Bruker(
-                foedselsnummer = tolkFoedselsnummer(p, tree["foedselsnummer"]),
-                fornavn = tree["fornavn"].asText(),
-                mellomnavn = tree["mellomnavn"]?.takeIf { !it.isNull }?.asText(),
-                etternavn = tree["etternavn"].asText(),
-            )
-        }
-    }
 
     private fun foedselsnummerDeserializer() = object : StdDeserializer<Foedselsnummer>(Foedselsnummer::class.java) {
         override fun deserialize(p: JsonParser, ctxt: DeserializationContext) = tolkFoedselsnummer(p, p.codec.readTree(p))
