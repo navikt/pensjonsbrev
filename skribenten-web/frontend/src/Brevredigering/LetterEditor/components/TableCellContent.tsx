@@ -12,42 +12,23 @@ type TableCellContentProps = {
   tableCellIndex: TableCellIndex;
 };
 
-// we’re importing EditableText from ContentGroup. Because ContentGroup renders TableView, and TableView renders TableCellContent, this creates a circular dependency chain.
-// ContentGroup -> TableView -> TableCellContent -> ContentGroup, if bundler can't handle it and
-// EditableText is undefined at runtime, move EditableText into its own module (e.g. components/EditableText.tsx).
-
 export function TableCellContent({ content, tableCellIndex }: TableCellContentProps) {
+  const literalIndex: LiteralIndex = {
+    blockIndex: tableCellIndex.blockIndex,
+    contentIndex: tableCellIndex.contentIndex,
+    rowIndex: tableCellIndex.rowIndex,
+    cellIndex: tableCellIndex.cellIndex,
+    cellContentIndex: tableCellIndex.cellContentIndex,
+  };
+
   switch (content.type) {
-    case LITERAL: {
-      // Keyboard/caret logic that still depends on itemIndex/itemContentIndex
-      // will continue to work while we also keep rowIndex/cellIndex/cellContentIndex for future use.
-      const litIndex: LiteralIndex = {
-        blockIndex: tableCellIndex.blockIndex,
-        contentIndex: tableCellIndex.contentIndex,
-        itemIndex: tableCellIndex.rowIndex,
-        itemContentIndex: tableCellIndex.cellIndex,
-        rowIndex: tableCellIndex.rowIndex,
-        cellIndex: tableCellIndex.cellIndex,
-        cellContentIndex: tableCellIndex.cellContentIndex,
-      };
+    case LITERAL:
+      return <EditableText content={content as LiteralValue} literalIndex={literalIndex} />;
 
-      return <EditableText content={content as LiteralValue} literalIndex={litIndex} />;
-    }
+    case VARIABLE:
+      return <Text content={content} literalIndex={literalIndex} />;
 
-    case VARIABLE: {
-      return (
-        <Text
-          content={content}
-          literalIndex={{
-            blockIndex: tableCellIndex.blockIndex,
-            contentIndex: tableCellIndex.contentIndex,
-          }}
-        />
-      );
-    }
-
-    case NEW_LINE: {
+    case NEW_LINE:
       return <br />;
-    }
   }
 }
