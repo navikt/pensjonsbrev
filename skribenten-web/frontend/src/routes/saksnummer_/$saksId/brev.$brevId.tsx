@@ -424,15 +424,6 @@ const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevRespons
   const hasOptional = optionalFields.length > 0;
   const hasRequired = requiredFields.length > 0;
 
-  const PanelContent = ({ fieldsToRender }: { fieldsToRender: "optional" | "required" }) => (
-    <SaksbehandlerValgModelEditor
-      brevkode={brev.info.brevkode}
-      fieldsToRender={fieldsToRender}
-      specificationFormElements={specificationFormElements}
-      submitOnChange={submitOnChange}
-    />
-  );
-
   const panelStyle = css`
     &[data-state="active"] {
       display: flex;
@@ -442,13 +433,27 @@ const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevRespons
     margin-top: 1.125rem;
   `;
 
-  if (!hasOptional && !hasRequired) return <PanelContent fieldsToRender="optional" />;
+  if (!hasOptional && !hasRequired) {
+    return (
+      <SaksbehandlerValgModelEditor
+        brevkode={brev.info.brevkode}
+        fieldsToRender="optional"
+        specificationFormElements={specificationFormElements}
+        submitOnChange={submitOnChange}
+      />
+    );
+  }
 
   if (hasOptional && !hasRequired) {
     return (
       <>
         <Heading size="xsmall">Tekstvalg</Heading>
-        <PanelContent fieldsToRender="optional" />
+        <SaksbehandlerValgModelEditor
+          brevkode={brev.info.brevkode}
+          fieldsToRender="optional"
+          specificationFormElements={specificationFormElements}
+          submitOnChange={submitOnChange}
+        />
       </>
     );
   }
@@ -457,7 +462,12 @@ const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevRespons
     return (
       <>
         <Heading size="xsmall">Overstyring</Heading>
-        <PanelContent fieldsToRender="required" />
+        <SaksbehandlerValgModelEditor
+          brevkode={brev.info.brevkode}
+          fieldsToRender="required"
+          specificationFormElements={specificationFormElements}
+          submitOnChange={submitOnChange}
+        />
       </>
     );
 
@@ -488,11 +498,21 @@ const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevRespons
       </Tabs.List>
 
       <Tabs.Panel css={panelStyle} value={BrevSidemenyTabs.TEKSTVALG}>
-        <PanelContent fieldsToRender="optional" />
+        <SaksbehandlerValgModelEditor
+          brevkode={brev.info.brevkode}
+          fieldsToRender="optional"
+          specificationFormElements={specificationFormElements}
+          submitOnChange={submitOnChange}
+        />
       </Tabs.Panel>
 
       <Tabs.Panel css={panelStyle} value={BrevSidemenyTabs.OVERSTYRING}>
-        <PanelContent fieldsToRender="required" />
+        <SaksbehandlerValgModelEditor
+          brevkode={brev.info.brevkode}
+          fieldsToRender="required"
+          specificationFormElements={specificationFormElements}
+          submitOnChange={submitOnChange}
+        />
       </Tabs.Panel>
     </Tabs>
   );

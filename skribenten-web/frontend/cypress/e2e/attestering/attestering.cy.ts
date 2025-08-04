@@ -28,7 +28,7 @@ describe("attestering", () => {
     }).as("saksbehandlerValg");
 
     cy.intercept("PUT", "/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=false", (req) => {
-      req.reply(200, { ...vedtaksBrev, redigertBrev: req.body });
+      req.reply({ ...vedtaksBrev, redigertBrev: req.body });
     }).as("oppdaterBrevtekst");
 
     cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1?frigiReservasjon=true", (req) =>
@@ -41,12 +41,15 @@ describe("attestering", () => {
     ).as("lagreBrev");
 
     cy.visit("/saksnummer/123456/brev/1");
-    cy.wait("@hentBrev");
+    cy.wait("@hentBrev", { timeout: 10000 });
 
     cy.contains("Underskrift").click().type("{selectall}{backspace}Dette er en signatur");
 
+    cy.clock();
     cy.contains("ankomst til Norge.").focus().type("{end}{enter}Dette er en ny tekstblokk");
-    cy.wait("@oppdaterBrevtekst");
+    cy.tick(5000);
+    cy.clock().invoke("restore");
+    cy.wait("@oppdaterBrevtekst", { timeout: 10000 });
 
     cy.get("p:contains('Dette er en signatur')").should("exist");
     cy.contains("Dette er en ny tekstblokk").should("exist");
