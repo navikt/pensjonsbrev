@@ -309,14 +309,14 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
             paragraph {
                 ifNotNull(barnetilleggFellesbarn) {
 
-                    text(
-                        Bokmal to "Forventer du og/eller annen forelder en annen inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL.",
-                        Nynorsk to "Forventar du og/eller den andre forelderen ei anna inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventa inntekt på $INNTEKTSPLANLEGGEREN_URL."
+                    textExpr(
+                        Bokmal to "Forventer du og/eller annen forelder en annen inntekt i ".expr() + virkningFom.year.format() + ", er det viktig at du melder inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL.",
+                        Nynorsk to "Forventar du og/eller den andre forelderen ei anna inntekt i ".expr() + virkningFom.year.format() + ", er det viktig at du melder inn ny forventa inntekt på $INNTEKTSPLANLEGGEREN_URL."
                     )
                 }.orShow {
-                    text(
-                        Bokmal to "Forventer du en annen inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL.",
-                        Nynorsk to "Forventar du ei anna inntekt i " + virkningFom.year.format() + ", er det viktig at du melder inn ny forventa inntekt på $INNTEKTSPLANLEGGEREN_URL."
+                    textExpr(
+                        Bokmal to "Forventer du en annen inntekt i ".expr() + virkningFom.year.format() + ", er det viktig at du melder inn ny forventet inntekt på $INNTEKTSPLANLEGGEREN_URL.",
+                        Nynorsk to "Forventar du ei anna inntekt i ".expr() + virkningFom.year.format() + ", er det viktig at du melder inn ny forventa inntekt på $INNTEKTSPLANLEGGEREN_URL."
                     )
                 }
             }
@@ -587,10 +587,10 @@ object EndretUforetrygdPGAInntektNesteAr : AutobrevTemplate<EndretUTPgaInntektDt
                 }
             }
             paragraph {
-                text(
-                    Bokmal to "Dette kan også gjelde store etterbetalinger og pengestøtte fra Nav, hvis pengestøtten er pensjonsgivende og etterbetalingen har skjedd i " +
+                textExpr(
+                    Bokmal to "Dette kan også gjelde store etterbetalinger og pengestøtte fra Nav, hvis pengestøtten er pensjonsgivende og etterbetalingen har skjedd i ".expr() +
                             virkningFom.year.minus(1).format() + " eller senere.",
-                    Nynorsk to "Dette kan også gjelde store etterbetalingar og pengestøtte frå Nav, dersom pengestøtta er pensjonsgjevande og etterbetalinga har skjedd i " +
+                    Nynorsk to "Dette kan også gjelde store etterbetalingar og pengestøtte frå Nav, dersom pengestøtta er pensjonsgjevande og etterbetalinga har skjedd i ".expr() +
                             virkningFom.year.minus(1).format() + " eller seinare."
                 )
             }
