@@ -33,6 +33,10 @@ class TemplateResourceTest {
         fixtures: T,
         spraak: Language,
     ) {
+        if (!template.language.supports(spraak)) {
+            println("Mal ${template.name} fins ikke på språk ${spraak.javaClass.simpleName}, tester ikke denne")
+            return
+        }
         val letter = LetterTestImpl(template, fixtures, spraak, Fixtures.felles)
 
         letter.renderTestPDF(filnavn(etterlatteBrevKode, spraak))
@@ -41,11 +45,15 @@ class TemplateResourceTest {
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
     fun <T : Any> testHtml(
-        template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
+        template: LetterTemplate<LanguageSupport, T>,
         etterlatteBrevKode: Brevkode.Automatisk,
         fixtures: T,
         spraak: Language,
     ) {
+        if (!template.language.supports(spraak)) {
+            println("Mal ${template.name} fins ikke på språk ${spraak.javaClass.simpleName}, tester ikke denne")
+            return
+        }
         LetterTestImpl(
             template,
             fixtures,
@@ -60,11 +68,15 @@ class TemplateResourceTest {
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
     fun <T : Any> jsontest(
-        template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
+        template: LetterTemplate<LanguageSupport, T>,
         etterlatteBrevKode: Brevkode.Automatisk,
         fixtures: T,
         spraak: Language,
     ) {
+        if (!template.language.supports(spraak)) {
+            println("Mal ${template.name} fins ikke på språk ${spraak.javaClass.simpleName}, tester ikke denne")
+            return
+        }
         val erHovedmal = fixtures.instanceOf(BrevDTO::class) && !listOf(
             Delmal::class,
             Vedlegg::class,
