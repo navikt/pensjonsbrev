@@ -6,12 +6,10 @@ class LetterMarkupValidator {
     companion object {
         fun validate(letterMarkup: LetterMarkup) = validate(letterMarkup.blocks)
 
-        private fun validate(blocks: List<LetterMarkup.Block>) {
-            val feil = blocks.flatMap { validate(it) }
-            if (feil.isNotEmpty()) {
-                throw IllegalLetterMarkupException(feil.joinToString(", ") { it.name })
+        private fun validate(blocks: List<LetterMarkup.Block>) =
+            blocks.flatMap { validate(it) }.takeIf { it.isNotEmpty() }?.let {
+                throw IllegalLetterMarkupException(it.joinToString(", ") { it.name })
             }
-        }
 
         private fun validate(block: LetterMarkup.Block) = when (block) {
             is LetterMarkup.Block.Paragraph -> validateParagraph(block)
@@ -25,7 +23,7 @@ class LetterMarkupValidator {
                 feil.add(LetterMarkupValideringsfeil.TOMT_AVSNITT)
             }
             if (block.content.all { it.erTom() }) {
-                feil.add(LetterMarkupValideringsfeil.TOMT_AVSNITT)
+                feil.add(LetterMarkupValideringsfeil.AVSNITT_UTEN_INNHOLD)
             }
             if (harToEtterfoelgendeNewLine(block)) {
                 feil.add(LetterMarkupValideringsfeil.TO_ETTERFOELGENDE_NEWLINE)
@@ -35,8 +33,12 @@ class LetterMarkupValidator {
         }
 
         private fun harToEtterfoelgendeNewLine(block: LetterMarkup.Block.Paragraph) = block.content
-            .mapIndexedNotNull{ index, elem -> index.takeIf{ elem is NewLine } }
-            .any { block.content.subList(it, block.content.lastIndex + 1).takeWhile { elem -> elem.erTom() }.filter { tomt -> tomt is NewLine }.size > 1 }
+            .mapIndexedNotNull { index, elem -> index.takeIf { elem is NewLine } }
+            .any {
+                block.content.subList(it, block.content.lastIndex + 1)
+                    .takeWhile { it.erTom() }
+                    .filter { it is NewLine }.size > 1
+            }
 
         private fun validateParagraphContent(content: LetterMarkup.ParagraphContent) =
             when (content) {
@@ -80,6 +82,7 @@ private fun LetterMarkup.ParagraphContent.erTom() =
 
 enum class LetterMarkupValideringsfeil {
     TOMT_AVSNITT,
+    AVSNITT_UTEN_INNHOLD,
     FORSKJELLIG_ANTALL_KOLONNER_I_RADER,
     FORSKJELLIG_ANTALL_KOLONNER_HEADER_RADER,
     TO_ETTERFOELGENDE_NEWLINE,
