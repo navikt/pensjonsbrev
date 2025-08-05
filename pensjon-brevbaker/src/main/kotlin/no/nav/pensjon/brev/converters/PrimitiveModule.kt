@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.deser.std.StringDeserializer
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.databind.module.SimpleModule
-import kotlin.jvm.java
+
 
 // TODO: Vi bør kunne rydde bort denne igjen etter at pesys er oppdatert
 object PrimitiveModule : SimpleModule() {
@@ -41,12 +41,13 @@ object PrimitiveModule : SimpleModule() {
         }
     }
 
-    private val standardIntDeserializer = NumberDeserializers.NumberDeserializer.instance
+    private val standardIntDeserializer = NumberDeserializers.IntegerDeserializer(Int::class.java, null)
 
     private fun intDeser() = object : StdDeserializer<Int>(Int::class.java) {
+
         override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Int? {
             try {
-                return standardIntDeserializer.deserialize(p, ctxt) as? Int
+                return standardIntDeserializer.deserialize(p, ctxt)
             } catch (e: MismatchedInputException) {
                 val node = p.codec.readTree<JsonNode>(p)
                 try {
