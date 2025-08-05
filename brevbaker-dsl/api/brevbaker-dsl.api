@@ -1,9 +1,8 @@
 public final class no/nav/pensjon/brev/PDFRequest {
-	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;)V
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAttachments ()Ljava/util/List;
 	public final fun getBrevtype ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
-	public final fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
 	public final fun getLanguage ()Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
 	public final fun getLetterMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
 	public fun hashCode ()I

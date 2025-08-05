@@ -1,7 +1,5 @@
 import { format, formatISO } from "date-fns";
 
-import type { BrevResponse } from "~/types/brev";
-
 import { nyBrevResponse } from "../../utils/brevredigeringTestUtils";
 
 const defaultBrev = nyBrevResponse({});
@@ -9,32 +7,26 @@ describe("attestant redigering", () => {
   beforeEach(() => {
     cy.setupSakStubs();
 
-    cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
-      fixture: "modelSpecification.json",
-    }).as("modelSpecification");
-
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/attestering?reserver=true", (req) =>
       req.reply(defaultBrev),
     ).as("loadBrev");
     cy.intercept("put", "/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", (req) => {
-      req.reply(defaultBrev);
+      req.reply({ ...defaultBrev, redigertBrev: req.body });
     }).as("hurtiglagreRedigertBrev");
-
-    cy.intercept("GET", "/bff/skribenten-backend/brev/1/reservasjon", {
-      fixture: "brevreservasjon.json",
-    }).as("reservasjon");
 
     cy.viewport(1200, 1400);
   });
 
   it("Autolagrer brev etter redigering", () => {
     const hurtiglagreTidspunkt = formatISO(new Date());
-    cy.fixture("brevResponseEtterLagring.json").then((brev: BrevResponse) => {
-      brev.info.sistredigert = hurtiglagreTidspunkt;
-      cy.intercept("put", "/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", brev).as(
-        "hurtiglagreRedigertBrev",
-      );
-    });
+
+    cy.intercept("put", "/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=false", (req) =>
+      req.reply({
+        ...defaultBrev,
+        info: { ...defaultBrev.info, sistredigert: hurtiglagreTidspunkt },
+        redigertBrev: req.body,
+      }),
+    ).as("hurtiglagreRedigertBrev");
 
     cy.visit("/saksnummer/123456/attester/1/redigering");
     cy.contains("Lagret 25.09.2024 ").should("exist");
@@ -47,18 +39,11 @@ describe("attestant redigering", () => {
   });
 
   it("lagrer underskrift", () => {
-    cy.intercept("put", "/bff/skribenten-backend/brev/1/attestant", (req) => {
-      const newBrev = nyBrevResponse({
+    cy.intercept("put", "/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=false", (req) => {
+      req.reply({
         ...defaultBrev,
-        redigertBrev: {
-          ...defaultBrev.redigertBrev,
-          signatur: {
-            ...defaultBrev.redigertBrev.signatur,
-            attesterendeSaksbehandlerNavn: "Den nye attestanten",
-          },
-        },
+        redigertBrev: req.body,
       });
-      req.reply(newBrev);
     }).as("lagreUnderskrift");
 
     cy.visit("/saksnummer/123456/attester/1/redigering");

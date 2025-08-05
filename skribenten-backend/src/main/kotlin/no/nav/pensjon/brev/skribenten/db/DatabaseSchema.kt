@@ -11,7 +11,6 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.skribenten.FlexibleLocalDateModule
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Landkode
@@ -45,7 +44,6 @@ object Favourites : Table() {
 internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
     registerModule(Edit.JacksonModule)
-    registerModule(FlexibleLocalDateModule)
     registerModule(LetterMarkupModule)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 }
@@ -76,9 +74,6 @@ object BrevredigeringTable : LongIdTable() {
     val opprettet: Column<Instant> = timestamp("opprettet")
     val sistredigert: Column<Instant> = timestamp("sistredigert")
     val sistReservert: Column<Instant?> = timestamp("sistReservert").nullable()
-    // TODO: fjern signatur kolonner (samt fra api+frontend), de skal ligge i redigertBrev fra nå av.
-    val signaturSignerende: Column<String> = varchar("signaturSignerende", length = 50)
-    val signaturAttestant: Column<String?> = varchar("signaturAttestant", length = 50).nullable()
     val journalpostId: Column<Long?> = long("journalpostId").nullable()
     val attestertAvNavIdent: Column<String?> = varchar("attestertAvNavIdent", length = 50).nullable()
 }
@@ -101,12 +96,10 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var opprettet by BrevredigeringTable.opprettet
     var sistredigert by BrevredigeringTable.sistredigert
     var sistReservert by BrevredigeringTable.sistReservert
-    var signaturSignerende by BrevredigeringTable.signaturSignerende
     var journalpostId by BrevredigeringTable.journalpostId
     val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
     val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
     var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
-    var signaturAttestant by BrevredigeringTable.signaturAttestant
 
     companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
         fun findByIdAndSaksId(id: Long, saksId: Long?) =
