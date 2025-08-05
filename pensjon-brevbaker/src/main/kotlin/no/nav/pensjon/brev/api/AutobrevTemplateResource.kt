@@ -48,7 +48,6 @@ class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brevb
                             letterMarkup = it.letterMarkup,
                             attachments = it.attachments,
                             language = letter.language.toCode(),
-                            felles = letter.felles,
                             brevtype = letter.template.letterMetadata.brevtype
                         ),
                         messageId = brevbestillingAsync.messageId,
