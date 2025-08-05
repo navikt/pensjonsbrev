@@ -578,7 +578,6 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfei
 	public static final field AVSNITT_UTEN_INNHOLD Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
 	public static final field FORSKJELLIG_ANTALL_KOLONNER_HEADER_RADER Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
 	public static final field FORSKJELLIG_ANTALL_KOLONNER_I_RADER Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
-	public static final field TOMT_AVSNITT Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
 	public static final field TO_ETTERFOELGENDE_NEWLINE Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;

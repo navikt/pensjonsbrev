@@ -40,8 +40,8 @@ class LetterMarkupValidatorTest {
     }
 
     @Test
-    fun `feiler ved tomme avsnitt`() {
-        assertThrows<IllegalLetterMarkupException> {
+    fun `tolererer tomme avsnitt`() {
+        assertDoesNotThrow {
             letter(
                 LetterMarkupImpl.BlockImpl.ParagraphImpl(
                     id = 1,

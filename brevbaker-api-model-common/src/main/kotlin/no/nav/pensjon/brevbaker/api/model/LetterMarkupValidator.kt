@@ -19,10 +19,7 @@ class LetterMarkupValidator {
 
         private fun validateParagraph(block: LetterMarkup.Block.Paragraph): List<LetterMarkupValideringsfeil> {
             val feil = mutableListOf<LetterMarkupValideringsfeil>()
-            if (block.content.isEmpty()) {
-                feil.add(LetterMarkupValideringsfeil.TOMT_AVSNITT)
-            }
-            if (block.content.all { it.erTom() }) {
+            if (block.content.isNotEmpty() && block.content.all { it.erTom() }) {
                 feil.add(LetterMarkupValideringsfeil.AVSNITT_UTEN_INNHOLD)
             }
             if (harToEtterfoelgendeNewLine(block)) {
@@ -72,7 +69,7 @@ private fun LetterMarkup.ParagraphContent.erTom() =
     when (this) {
         is LetterMarkup.ParagraphContent.Form.MultipleChoice -> prompt.isEmpty()
         is LetterMarkup.ParagraphContent.Form.Text -> prompt.isEmpty()
-        is LetterMarkup.ParagraphContent.ItemList -> items.isEmpty()
+        is LetterMarkup.ParagraphContent.ItemList -> false
         is LetterMarkup.ParagraphContent.Table -> rows.isEmpty() && header.colSpec.isEmpty()
         is LetterMarkup.ParagraphContent.Text.Literal -> text.isBlank()
         is NewLine -> true
@@ -81,7 +78,6 @@ private fun LetterMarkup.ParagraphContent.erTom() =
 
 
 enum class LetterMarkupValideringsfeil {
-    TOMT_AVSNITT,
     AVSNITT_UTEN_INNHOLD,
     FORSKJELLIG_ANTALL_KOLONNER_I_RADER,
     FORSKJELLIG_ANTALL_KOLONNER_HEADER_RADER,
