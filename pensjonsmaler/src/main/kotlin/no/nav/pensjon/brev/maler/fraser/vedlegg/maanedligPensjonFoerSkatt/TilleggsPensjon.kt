@@ -43,8 +43,7 @@ data class MaanedligPensjonFoerSkattTilleggsPensjon(
             val harTilleggspensjonUtbetalt = beregnetPensjonPerManedGjeldende.tilleggspensjon
                 .ifNull(Kroner(0)).greaterThan(0)
             showIf(
-                (tilleggspensjon.notNull()
-                        and not(tilleggspensjon.erRedusert)
+                (not(tilleggspensjon.erRedusert)
                         and not(tilleggspensjon.kombinertMedAvdod)
                         and regelverkstype.isOneOf(AP2011, AP2016)
                         ) or (harTilleggspensjonUtbetalt and regelverkstype.isOneOf(AP1967))
