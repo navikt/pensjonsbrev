@@ -3,8 +3,6 @@ package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
@@ -64,7 +62,7 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
         createTemplate(
             name = kode.name,
             letterDataType = EtteroppgjoerVedtakBrevDTO::class,
-            languages = languages(Bokmal, Nynorsk, English),
+            languages = languages(Bokmal),
             letterMetadata =
             LetterMetadata(
                 displayTitle = "Vedtak - Etteroppgjør",
@@ -76,8 +74,6 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
             title {
                 text(
                     Bokmal to "Vedtak om etteroppgjør",
-                    Nynorsk to "",
-                    English to "",
                 )
             }
 
@@ -87,8 +83,6 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                 paragraph {
                     text(
                         Language.Bokmal to "Hvert år sjekker Nav inntekten din for å se om du har fått utbetalt riktig beløp i omstillingsstønad året før.",
-                        Language.Nynorsk to "",
-                        Language.English to "",
                     )
                 }
 
@@ -97,8 +91,6 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     paragraph {
                         textExpr(
                             Language.Bokmal to "Vår beregning viser at du har fått ".expr() + data.avviksBeloep.absoluteValue().format() + " kroner for mye omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger ett rettsgebyr, som betyr at du må betale tilbake det feilutbetalte beløpet.",
-                            Language.Nynorsk to "".expr(),
-                            Language.English to "".expr()
                         )
                     }
                 }
@@ -108,8 +100,6 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     paragraph {
                         textExpr(
                             Language.Bokmal to "Vår beregning viser at du har fått utbetalt ".expr() + data.avviksBeloep.absoluteValue().format() + " kroner for lite omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger 25 prosent av rettsgebyret og du har oppfylt aktivitetsplikten. Du får derfor etterbetalt for lite utbetalt omstillingsstønad.",
-                            Language.Nynorsk to "".expr(),
-                            Language.English to "".expr()
                         )
                     }
                 }
@@ -117,16 +107,12 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                 paragraph {
                     text(
                         Language.Bokmal to "Se beregningen av omstillingsstønaden din i vedlegget “Opplysninger om etteroppgjøret”.",
-                        Language.Nynorsk to "",
-                        Language.English to "",
                     )
                 }
 
                 paragraph {
                     text(
                         Language.Bokmal to "Vedtaket er gjort etter bestemmelsene om omstillingsstønad i folketrygdloven § 17-9 og omstillingsstønadsforskriften § 9.",
-                        Language.Nynorsk to "",
-                        Language.English to "",
                     )
                 }
 
@@ -135,15 +121,11 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     title2 {
                         text(
                             Bokmal to "Du vil få informasjon om hvordan du kan betale tilbake etter fire uker",
-                            Nynorsk to "",
-                            English to "",
                         )
                     }
                     paragraph {
                         text(
                             Bokmal to "Du vil få en faktura med informasjon fra Skatteetaten ved avdelingen “Innkrevingssentralen for bidrag og tilbakebetalingskrav”, etter fire uker om når og hvordan du kan betale tilbake pengene. Før du kan få svar på spørsmål om saken din eller kan betale tilbake, må du ha mottatt betalingsinformasjon fra Skatteetaten. Fordi du har betalt skatt av det du har fått for mye utbetalt, vil vi trekke fra skatt fra beløpet du skal betale tilbake. I betalingsinformasjonen du får fra Skatteetaten står det hvor mye du faktisk skal betale tilbake. Du kan lese mer om tilbakebetaling i vedlegget «Praktisk informasjon om etteroppgjøret».",
-                            Nynorsk to "",
-                            English to "",
                         )
                     }
                 }
@@ -153,23 +135,17 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     title2 {
                         text(
                             Bokmal to "Etterbetaling av beløpet",
-                            Nynorsk to "",
-                            English to "",
                         )
                     }
                     paragraph {
                         textExpr(
                             Bokmal to "Du får etterbetalt stønad for ".expr() + data.etteroppgjoersAar.format() + ". Vanligvis vil du få denne i løpet av tre uker. Hvis Skatteetaten eller andre ordninger har krav i etterbetalingen kan denne bli forsinket. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen.",
-                            Nynorsk to "".expr(),
-                            English to "".expr(),
                         )
                     }
 
                     paragraph {
                         text(
                             Bokmal to "Etterbetalingen gjelder tidligere år derfor trekker Nav skatt etter Skatteetatens standardsatser. Du kan lese mer om satsene på nav.no/skattetrekk#etterbetaling.",
-                            Nynorsk to "",
-                            English to "",
                         )
                     }
                 }
@@ -177,24 +153,18 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                 title2 {
                     text(
                         Bokmal to "Du må melde fra om endringer",
-                        Nynorsk to "",
-                        English to "",
                     )
                 }
 
                 paragraph {
                     textExpr(
                         Bokmal to "Du får ".expr() + data.utbetaltBeloep.format() + " kroner hver måned i omstillingsstønad per i dag.",
-                        Nynorsk to "".expr(),
-                        English to "".expr(),
                     )
                 }
 
                 paragraph {
                     text(
                         Bokmal to "Se hvordan og hvilke endringer du skal melde fra om i vedlegget “Dine rettigheter og plikter”.",
-                        Nynorsk to "",
-                        English to "",
                     )
                 }
 
@@ -203,8 +173,6 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     paragraph {
                         text(
                             Bokmal to "Du må som hovedregel begynne å betale tilbake selv om du klager på vedtaket, se forvaltningsloven § 42.",
-                            Nynorsk to "",
-                            English to "",
                         )
                     }
                 }
