@@ -571,13 +571,15 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupValidator {
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupValidator$Companion {
-	public final fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)V
+	public final fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)Ljava/lang/Void;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil : java/lang/Enum {
+	public static final field AVSNITT_UTEN_INNHOLD Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
 	public static final field FORSKJELLIG_ANTALL_KOLONNER_HEADER_RADER Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
 	public static final field FORSKJELLIG_ANTALL_KOLONNER_I_RADER Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
 	public static final field TOMT_AVSNITT Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
+	public static final field TO_ETTERFOELGENDE_NEWLINE Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
 	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValideringsfeil;
