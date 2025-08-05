@@ -23,6 +23,7 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
+    testImplementation(libs.bundles.junit)
 }
 
 publishing {
@@ -49,6 +50,9 @@ kotlin {
     }
 }
 tasks {
+    test {
+        useJUnitPlatform()
+    }
     compileJava {
         targetCompatibility = apiModelJavaTarget
     }
