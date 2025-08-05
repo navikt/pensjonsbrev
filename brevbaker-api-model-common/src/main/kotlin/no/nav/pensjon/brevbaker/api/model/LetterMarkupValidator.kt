@@ -1,5 +1,7 @@
 package no.nav.pensjon.brevbaker.api.model
 
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.NewLine
+
 class LetterMarkupValidator {
     companion object {
         fun validate(letterMarkup: LetterMarkup) = validate(letterMarkup.blocks)
@@ -32,16 +34,9 @@ class LetterMarkupValidator {
             return feil
         }
 
-        private fun harToEtterfoelgendeNewLine(block: LetterMarkup.Block.Paragraph): Boolean {
-            block.content.mapIndexedNotNull{ index, elem -> index.takeIf{ elem is LetterMarkup.ParagraphContent.Text.NewLine } }.forEach {
-                val tomme = block.content.subList(it, block.content.lastIndex)
-                    .takeWhile { elem -> elem.erTom() }
-                if (tomme.filter { tomt -> tomt is LetterMarkup.ParagraphContent.Text.NewLine }.size > 1) {
-                    return true
-                }
-            }
-            return false
-        }
+        private fun harToEtterfoelgendeNewLine(block: LetterMarkup.Block.Paragraph) = block.content
+            .mapIndexedNotNull{ index, elem -> index.takeIf{ elem is NewLine } }
+            .any { block.content.subList(it, block.content.lastIndex).takeWhile { elem -> elem.erTom() }.filter { tomt -> tomt is NewLine }.size > 1 }
 
         private fun validateParagraphContent(content: LetterMarkup.ParagraphContent) =
             when (content) {
@@ -50,7 +45,7 @@ class LetterMarkupValidator {
                 is LetterMarkup.ParagraphContent.Form.Text,
                 is LetterMarkup.ParagraphContent.ItemList,
                 is LetterMarkup.ParagraphContent.Text.Literal,
-                is LetterMarkup.ParagraphContent.Text.NewLine,
+                is NewLine,
                 is LetterMarkup.ParagraphContent.Text.Variable,
                     -> listOf()
             }
@@ -78,7 +73,7 @@ private fun LetterMarkup.ParagraphContent.erTom() =
         is LetterMarkup.ParagraphContent.ItemList -> items.isEmpty()
         is LetterMarkup.ParagraphContent.Table -> rows.isEmpty() && header.colSpec.isEmpty()
         is LetterMarkup.ParagraphContent.Text.Literal -> text.isBlank()
-        is LetterMarkup.ParagraphContent.Text.NewLine -> true
+        is NewLine -> true
         is LetterMarkup.ParagraphContent.Text.Variable -> false
     }
 
