@@ -25,8 +25,22 @@ class LetterMarkupValidator {
             if (block.content.all { it.erTom() }) {
                 feil.add(LetterMarkupValideringsfeil.TOMT_AVSNITT)
             }
+            if (harToEtterfoelgendeNewLine(block)) {
+                feil.add(LetterMarkupValideringsfeil.TO_ETTERFOELGENDE_NEWLINE)
+            }
             feil.addAll(block.content.flatMap { validateParagraphContent(it) })
             return feil
+        }
+
+        private fun harToEtterfoelgendeNewLine(block: LetterMarkup.Block.Paragraph): Boolean {
+            block.content.mapIndexedNotNull{ index, elem -> index.takeIf{ elem is LetterMarkup.ParagraphContent.Text.NewLine } }.forEach {
+                val tomme = block.content.subList(it, block.content.lastIndex)
+                    .takeWhile { elem -> elem.erTom() }
+                if (tomme.filter { tomt -> tomt is LetterMarkup.ParagraphContent.Text.NewLine }.size > 1) {
+                    return true
+                }
+            }
+            return false
         }
 
         private fun validateParagraphContent(content: LetterMarkup.ParagraphContent) =
@@ -64,7 +78,7 @@ private fun LetterMarkup.ParagraphContent.erTom() =
         is LetterMarkup.ParagraphContent.ItemList -> items.isEmpty()
         is LetterMarkup.ParagraphContent.Table -> rows.isEmpty() && header.colSpec.isEmpty()
         is LetterMarkup.ParagraphContent.Text.Literal -> text.isBlank()
-        is LetterMarkup.ParagraphContent.Text.NewLine -> false
+        is LetterMarkup.ParagraphContent.Text.NewLine -> true
         is LetterMarkup.ParagraphContent.Text.Variable -> false
     }
 
@@ -72,5 +86,6 @@ private fun LetterMarkup.ParagraphContent.erTom() =
 enum class LetterMarkupValideringsfeil {
     TOMT_AVSNITT,
     FORSKJELLIG_ANTALL_KOLONNER_I_RADER,
-    FORSKJELLIG_ANTALL_KOLONNER_HEADER_RADER
+    FORSKJELLIG_ANTALL_KOLONNER_HEADER_RADER,
+    TO_ETTERFOELGENDE_NEWLINE,
 }

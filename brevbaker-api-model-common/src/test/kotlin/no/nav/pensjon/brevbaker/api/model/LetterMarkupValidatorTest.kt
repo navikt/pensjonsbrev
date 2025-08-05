@@ -61,6 +61,26 @@ class LetterMarkupValidatorTest {
     }
 
     @Test
+    fun `feiler ved to newlines paa rad`() {
+        assertThrows<IllegalLetterMarkupException> {
+            letter(
+                LetterMarkupImpl.BlockImpl.ParagraphImpl(
+                    id = 1,
+                    editable = false,
+                    content = listOf(
+                        LetterMarkupImpl.ParagraphContentImpl.TextImpl.NewLineImpl(2),
+                        LetterMarkupImpl.ParagraphContentImpl.TextImpl.NewLineImpl(3),
+                        LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
+                            id = 4,
+                            text = "hei"
+                        )
+                    )
+                )
+            )
+        }
+    }
+
+    @Test
     fun `feiler viss rader og header har ulikt antall celler`() {
         assertThrows<IllegalLetterMarkupException> {
             letter(
