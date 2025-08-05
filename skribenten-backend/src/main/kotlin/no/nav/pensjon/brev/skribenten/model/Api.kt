@@ -30,7 +30,7 @@ object Api {
         val saksbehandlerValg: SaksbehandlerValg,
         val redigertBrev: Edit.Letter,
         // TODO: Kan fjernes når frontend er endret til å endre signatur i redigertBrev
-        val signatur: String,
+        val signatur: String?,
     )
 
     data class DelvisOppdaterBrevRequest(
