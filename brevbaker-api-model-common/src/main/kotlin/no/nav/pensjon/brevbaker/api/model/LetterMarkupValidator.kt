@@ -36,7 +36,7 @@ class LetterMarkupValidator {
 
         private fun harToEtterfoelgendeNewLine(block: LetterMarkup.Block.Paragraph) = block.content
             .mapIndexedNotNull{ index, elem -> index.takeIf{ elem is NewLine } }
-            .any { block.content.subList(it, block.content.lastIndex).takeWhile { elem -> elem.erTom() }.filter { tomt -> tomt is NewLine }.size > 1 }
+            .any { block.content.subList(it, block.content.lastIndex + 1).takeWhile { elem -> elem.erTom() }.filter { tomt -> tomt is NewLine }.size > 1 }
 
         private fun validateParagraphContent(content: LetterMarkup.ParagraphContent) =
             when (content) {

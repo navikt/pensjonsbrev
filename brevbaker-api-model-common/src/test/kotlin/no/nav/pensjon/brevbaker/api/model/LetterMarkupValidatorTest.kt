@@ -22,7 +22,17 @@ class LetterMarkupValidatorTest {
                         LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
                             id = 2,
                             text = "hei"
-                        )
+                        ),
+                        LetterMarkupImpl.ParagraphContentImpl.TextImpl.NewLineImpl(3),
+                        LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
+                            id = 4,
+                            text = "hallo"
+                        ),
+                        LetterMarkupImpl.ParagraphContentImpl.TextImpl.NewLineImpl(5),
+                        LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
+                            id = 7,
+                            text = "hallois"
+                        ),
                     )
                 )
             )
@@ -61,7 +71,7 @@ class LetterMarkupValidatorTest {
     }
 
     @Test
-    fun `feiler ved to newlines paa rad`() {
+    fun `feiler ved to newlines paa rad i starten av avsnittet`() {
         assertThrows<IllegalLetterMarkupException> {
             letter(
                 LetterMarkupImpl.BlockImpl.ParagraphImpl(
@@ -74,6 +84,30 @@ class LetterMarkupValidatorTest {
                             id = 4,
                             text = "hei"
                         )
+                    )
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `feiler ved to newlines paa rad paa slutten av avsnittet`() {
+        assertThrows<IllegalLetterMarkupException> {
+            letter(
+                LetterMarkupImpl.BlockImpl.ParagraphImpl(
+                    id = 1,
+                    editable = false,
+                    content = listOf(
+                        LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
+                            id = 2,
+                            text = "hei"
+                        ),
+                        LetterMarkupImpl.ParagraphContentImpl.TextImpl.NewLineImpl(3),
+                        LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
+                            id = 4,
+                            text = ""
+                        ),
+                        LetterMarkupImpl.ParagraphContentImpl.TextImpl.NewLineImpl(5)
                     )
                 )
             )
