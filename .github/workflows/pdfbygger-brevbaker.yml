@@ -167,9 +167,9 @@ jobs:
           "java-version": ${{ env.JavaVersion }}
       - name: "run integration tests"
         run: |
-          ./gradlew :brevbaker-api-model-common:publishToMavenLocal --no-configuration-cache
-          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal --no-configuration-cache
-          ./gradlew :pensjon-brevbaker:integrationTest --no-configuration-cache
+          ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
+          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal 
+          ./gradlew :pensjon-brevbaker:integrationTest
         env:
           "GITHUB_TOKEN": "${{ secrets.GITHUB_TOKEN }}"
       - name: Publish Test Report
