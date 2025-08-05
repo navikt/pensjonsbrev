@@ -46,15 +46,15 @@ public final class no/nav/pensjon/brev/api/model/FeatureToggleSingleton {
 
 public final class no/nav/pensjon/brev/model/GenerellFormattingKt {
 	public static final fun format (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun format-GIDhiCA (Ljava/lang/String;)Ljava/lang/String;
-	public static final fun format-IJP8My8 (Ljava/lang/String;)Ljava/lang/String;
 	public static final fun formatFoedselsnummer (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatFoedselsnummerNullable (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun formatFoedselsnummerStandard (Ljava/lang/String;)Ljava/lang/String;
 	public static final fun formatIntValue (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatKroner (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatKronerNullable (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatTelefonnummer (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatTelefonnummerNullable (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun formatTelefonnummerStandard (Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/template/AttachmentTemplate : no/nav/pensjon/brev/template/HasModel, no/nav/pensjon/brev/template/StableHash {
