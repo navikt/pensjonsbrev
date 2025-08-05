@@ -38,7 +38,7 @@ object EtteroppgjoerVedtakRedigerbartUtfall:
     override val template = createTemplate(
         name = kode.name,
         letterDataType = EtteroppgjoerVedtakRedigerbartUtfallBrevDTO::class,
-        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
+        languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Etteroppgjør Innhold",
             isSensitiv = true,
@@ -49,8 +49,6 @@ object EtteroppgjoerVedtakRedigerbartUtfall:
         title {
             text(
                 Language.Bokmal to "",
-                Language.Nynorsk to "",
-                Language.English to "",
             )
         }
         outline {
@@ -59,16 +57,12 @@ object EtteroppgjoerVedtakRedigerbartUtfall:
                 paragraph {
                     textExpr(
                         Language.Bokmal to "Vi viser til forhåndsvarselet vårt om etteroppgjør på omstillingsstønaden din av ".expr() + data.forhaandsvarselSendtDato.format() + "og din tilbakemelding som vi mottok ".expr() + mottattSvarDato.format() + ". Omstillingsstønaden din er endret for " + data.etteroppgjoersAar.format(),
-                        Language.Nynorsk to "".expr(),
-                        Language.English to "".expr(),
                     )
                 }
             }.orShow {
                 paragraph {
                     textExpr(
                         Language.Bokmal to "Vi viser til forhåndsvarselet vårt om etteroppgjør på omstillingsstønaden din av ".expr() + data.forhaandsvarselSendtDato.format() + ". Omstillingsstønaden din er endret for " + data.etteroppgjoersAar.format(),
-                        Language.Nynorsk to "".expr(),
-                        Language.English to "".expr(),
                     )
                 }
             }
