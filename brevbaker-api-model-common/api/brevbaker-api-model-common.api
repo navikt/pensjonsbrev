@@ -566,11 +566,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$Paragraph
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupValidator {
-	public static final field Companion Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValidator$Companion;
-	public fun <init> ()V
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupValidator$Companion {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/LetterMarkupValidator;
 	public final fun validate (Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;)Ljava/lang/Void;
 }
 

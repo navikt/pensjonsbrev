@@ -3,6 +3,7 @@ package no.nav.pensjon.brevbaker.api.model
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SakspartImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -52,6 +53,7 @@ class LetterMarkupValidatorTest {
         }
     }
 
+    @Disabled // Vi kan ikke skru på denne så lenge etterlatte har maler med tomt innhold
     @Test
     fun `feiler ved avsnitt med tomt tekstinnhold`() {
         assertThrows<IllegalLetterMarkupException> {
