@@ -6,10 +6,6 @@ public abstract interface annotation class no/nav/brev/InterneDataklasser : java
 
 public final class no/nav/brev/Land {
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1-Tm84e0M ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun copy-vxKHvE0 (Ljava/lang/String;Ljava/lang/String;)Lno/nav/brev/Land;
-	public static synthetic fun copy-vxKHvE0$default (Lno/nav/brev/Land;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lno/nav/brev/Land;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getKode-Tm84e0M ()Ljava/lang/String;
 	public final fun getNavn ()Ljava/lang/String;
@@ -34,7 +30,6 @@ public final class no/nav/brev/Landkode {
 public final class no/nav/brev/Landkoder {
 	public static final field INSTANCE Lno/nav/brev/Landkoder;
 	public final fun getLandkoderMedNavn ()Ljava/util/List;
-	public final fun isValidLandkode (Ljava/lang/String;)Z
 }
 
 public final class no/nav/brev/brevbaker/AsyncPDFCompilationOutput {
