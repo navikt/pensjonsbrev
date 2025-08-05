@@ -16,6 +16,7 @@ import no.nav.brev.brevbaker.Fixtures
 import no.nav.brev.brevbaker.TestTags
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.junit.jupiter.api.Tag
@@ -92,7 +93,31 @@ class ApplicationITest {
 private val reqValue = """
     {
         "kode":"TESTBREV",
-        "letterData":{"pensjonInnvilget":true,"datoInnvilget":"2025-08-04","navneliste":[],"tilleggEksempel":[],"datoAvslaatt":"2025-08-04","pensjonBeloep":100},
+        "letterData":{
+            "pensjonInnvilget":true,
+            "datoInnvilget":"2025-08-04",
+            "navneliste":[],
+            "tilleggEksempel": [ 
+                {
+                  "navn" : "Test testerson 1",
+                  "tillegg1" : 300,
+                  "tillegg2" : null,
+                  "tillegg3" : 500
+                }, {
+                  "navn" : "Test testerson 2",
+                  "tillegg1" : 100,
+                  "tillegg2" : 600,
+                  "tillegg3" : null
+                }, {
+                  "navn" : "Test testerson 3",
+                  "tillegg1" : null,
+                  "tillegg2" : 300,
+                  "tillegg3" : null
+                } 
+            ],
+            "datoAvslaatt":"2025-08-04",
+            "pensjonBeloep":100
+            },
         "felles":{
             "dokumentDato":"2020-01-01",
             "saksnummer":"1337123",
@@ -117,7 +142,37 @@ private val reqValue = """
 private val reqWrapped = """
     {
         "kode":"TESTBREV",
-        "letterData":{"pensjonInnvilget":true,"datoInnvilget":"2025-08-04","navneliste":[],"tilleggEksempel":[],"datoAvslaatt":"2025-08-04","pensjonBeloep":100},
+        "letterData":{
+            "pensjonInnvilget":true,
+            "datoInnvilget":"2025-08-04",
+            "navneliste":[],
+            "tilleggEksempel": [ 
+                {
+                  "navn" : "Test testerson 1",
+                  "tillegg1" : {
+                    "value": "300"
+                  },
+                  "tillegg2" : null,
+                  "tillegg3" : {
+                    "value":"500"
+                  }                
+                }, {
+                  "navn" : "Test testerson 2",
+                  "tillegg1" : 100,
+                  "tillegg2" : 600,
+                  "tillegg3" : null
+                }, {
+                  "navn" : "Test testerson 3",
+                  "tillegg1" : null,
+                  "tillegg2" : {
+                    "value": "300"
+                    },
+                  "tillegg3" : null
+                } 
+            ],
+            "datoAvslaatt":"2025-08-04",
+            "pensjonBeloep":100
+            },
         "felles":{
             "dokumentDato":"2020-01-01",
             "saksnummer":"1337123",

@@ -3,10 +3,12 @@ package no.nav.pensjon.brev.converters
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.deser.std.NumberDeserializers
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.deser.std.StringDeserializer
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.databind.module.SimpleModule
+import kotlin.jvm.java
 
 // TODO: Vi bør kunne rydde bort denne igjen etter at pesys er oppdatert
 object PrimitiveModule : SimpleModule() {
@@ -14,6 +16,7 @@ object PrimitiveModule : SimpleModule() {
 
     init {
         addDeserializer(String::class.java, stringDeser())
+        addDeserializer(Int::class.java, intDeser())
     }
 
     private val standardStringDeserializer = StringDeserializer()
@@ -28,9 +31,29 @@ object PrimitiveModule : SimpleModule() {
                 val node = p.codec.readTree<JsonNode>(p)
                 try {
                     val treeToValue = p.codec.treeToValue(node, Map::class.java)
-                    require(treeToValue.size == 1,  { "custom-deserialisering kun for wrapper-klasser" })
+                    require(treeToValue.size == 1, { "custom-deserialisering kun for wrapper-klasser" })
                     require(treeToValue.keys.contains("value"))
                     return treeToValue["value"].toString()
+                } catch (e2: Exception) {
+                    throw e.also { it.addSuppressed(e2) }
+                }
+            }
+        }
+    }
+
+    private val standardIntDeserializer = NumberDeserializers.NumberDeserializer.instance
+
+    private fun intDeser() = object : StdDeserializer<Int>(Int::class.java) {
+        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Int? {
+            try {
+                return standardIntDeserializer.deserialize(p, ctxt) as? Int
+            } catch (e: MismatchedInputException) {
+                val node = p.codec.readTree<JsonNode>(p)
+                try {
+                    val treeToValue = p.codec.treeToValue(node, Map::class.java)
+                    require(treeToValue.size == 1, { "custom-deserialisering kun for wrapper-klasser" })
+                    require(treeToValue.keys.contains("value"))
+                    return treeToValue["value"].toString().toInt()
                 } catch (e2: Exception) {
                     throw e.also { it.addSuppressed(e2) }
                 }
