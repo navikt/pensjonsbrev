@@ -676,10 +676,10 @@ class BrevredigeringServiceTest {
         ).resultOrNull()!!
 
         val attesteringsResultat = withPrincipal(attestantPrincipal) {
-            brevredigeringService.oppdaterSignaturAttestant(brev.info.id, "Lars Holm")
+            val oppdatert = brevredigeringService.oppdaterSignaturAttestant(brev.info.id, "Lars Holm")
             assertEquals(
                 "Lars Holm",
-                brevredigeringService.hentSignaturAttestant(sak1.saksId, brev.info.id)?.resultOrNull()
+                oppdatert?.resultOrNull()?.redigertBrev?.signatur?.attesterendeSaksbehandlerNavn,
             )
             brevredigeringService.delvisOppdaterBrev(
                 saksId = sak1.saksId,
@@ -783,8 +783,8 @@ class BrevredigeringServiceTest {
                 any(),
                 any(),
                 any(),
-                match { it.signerendeSaksbehandlere?.attesterendeSaksbehandler == attestantPrincipal.fullName },
-                any()
+                any(),
+                match { it.signatur.attesterendeSaksbehandlerNavn == attestantPrincipal.fullName },
             )
         }
     }
