@@ -157,3 +157,5 @@ interface LetterMarkup {
         }
     }
 }
+
+class IllegalLetterMarkupException(message: String) : Exception(message)
