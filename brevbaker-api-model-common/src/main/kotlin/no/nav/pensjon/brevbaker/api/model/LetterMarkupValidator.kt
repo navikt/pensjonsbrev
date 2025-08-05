@@ -13,8 +13,8 @@ class LetterMarkupValidator {
 
         private fun validate(block: LetterMarkup.Block) = when (block) {
             is LetterMarkup.Block.Paragraph -> validateParagraph(block)
-            is LetterMarkup.Block.Title1 -> TODO()
-            is LetterMarkup.Block.Title2 -> TODO()
+            is LetterMarkup.Block.Title1 -> listOf()
+            is LetterMarkup.Block.Title2 -> listOf()
         }
 
         private fun validateParagraph(block: LetterMarkup.Block.Paragraph): List<LetterMarkupValideringsfeil> {
