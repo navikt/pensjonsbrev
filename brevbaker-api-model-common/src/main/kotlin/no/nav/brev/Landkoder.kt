@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.skribenten.model
+package no.nav.brev
 
 import java.util.Locale
 
