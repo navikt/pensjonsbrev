@@ -28,7 +28,7 @@ export const updateContentText: Action<LetterEditorState, [literalIndex: Literal
       // the table body.
       const row = paraContent.rows[focus.rowIndex];
       const cell = row?.cells[focus.cellIndex];
-      const literal = cell?.text[0];
+      const literal = cell?.text[focus.cellContentIndex];
       if (isLiteral(literal)) {
         updateLiteralText(literal, text);
         draft.isDirty = true;
