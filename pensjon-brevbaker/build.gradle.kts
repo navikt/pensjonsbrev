@@ -53,12 +53,7 @@ tasks {
         useJUnitPlatform {
             excludeTags = setOf("integration-test", "manual-test")
         }
-        testLogging {
-            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
-            exceptionFormat = TestExceptionFormat.FULL
-        }
     }
-
     val test by testing.suites.existing(JvmTestSuite::class)
     register<Test>("integrationTest") {
         testClassesDirs = files(test.map { it.sources.output.classesDirs })
@@ -72,19 +67,13 @@ tasks {
         useJUnitPlatform {
             includeTags = setOf("integration-test")
         }
-        testLogging {
-            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
-            exceptionFormat = TestExceptionFormat.FULL
-        }
     }
     register<Test>("manualTest") {
+        testClassesDirs = files(test.map { it.sources.output.classesDirs })
+        classpath = files(test.map { it.sources.runtimeClasspath })
         group = LifecycleBasePlugin.VERIFICATION_GROUP
         useJUnitPlatform {
             includeTags = setOf("manual-test")
-        }
-        testLogging {
-            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
-            exceptionFormat = TestExceptionFormat.FULL
         }
     }
 }
