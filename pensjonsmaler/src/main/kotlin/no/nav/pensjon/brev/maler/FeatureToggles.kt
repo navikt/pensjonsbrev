@@ -31,4 +31,5 @@ object FeatureToggles {
     val vedtakEndringVedFlyttingMellomLand = FeatureToggle("vedtakEndringVedFlyttingMellomLand")
     val vedtakStansFlyttingMellomLand = FeatureToggle("vedtakStansFlyttingMellomLand")
     val avslagForLiteTrygdetidAP = FeatureToggle("avslagForLiteTrygdetidAP")
+    val vedtakOmEndring = FeatureToggle("vedtakOmEndring")
 }
