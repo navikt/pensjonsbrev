@@ -33,5 +33,3 @@ jobs:
         run: |
           ./gradlew :brevbaker-api-model-common:publishToMavenLocal
           ./gradlew :template-model-generator:build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

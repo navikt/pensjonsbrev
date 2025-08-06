@@ -14,9 +14,6 @@ class UpdateEditedLetterException(message: String) : RuntimeException(message)
 fun Edit.Letter.updateEditedLetter(renderedLetter: LetterMarkup): Edit.Letter =
     UpdateEditedLetter(this, renderedLetter).build()
 
-
-// TODO: Fjern `parentId = edited.parentId ?: rendered.parentId` fra alle `edited.copy` kall. De er kun lagt til for å oppdatere redigerte brev i databasen.
-
 class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup) {
     private val rendered = rendered.toEdit()
     private val variableValues = this.rendered.variablesValueMap()
@@ -101,17 +98,14 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
         when (edited) {
             is Edit.Block.Paragraph -> edited.copy(
                 content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeParagraphContent, ::updateVariableValues),
-                parentId = edited.parentId ?: rendered.parentId
             )
 
             is Edit.Block.Title1 -> edited.copy(
                 content = mergeListText(edited, edited.content, rendered, edited.deletedContent),
-                parentId = edited.parentId ?: rendered.parentId
             )
 
             is Edit.Block.Title2 -> edited.copy(
                 content = mergeListText(edited, edited.content, rendered, edited.deletedContent),
-                parentId = edited.parentId ?: rendered.parentId
             )
         }
 
@@ -155,7 +149,6 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
                 if (rendered is Edit.ParagraphContent.ItemList) {
                     edited.copy(
                         items = mergeList(edited, edited.items, rendered.items, edited.deletedItems, ::mergeItems, ::updateVariableValues),
-                        parentId = edited.parentId ?: rendered.parentId
                     )
                 } else {
                     throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
@@ -173,7 +166,6 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
                     edited.copy(
                         header = mergeTableHeader(edited.header, rendered.header),
                         rows = mergeList(edited, edited.rows, rendered.rows, rendered.deletedRows, ::mergeRows, ::updateVariableValues),
-                        parentId = edited.parentId ?: rendered.parentId,
                     )
                 } else {
                     throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
@@ -183,31 +175,27 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
     private fun mergeTableHeader(edited: Edit.ParagraphContent.Table.Header, rendered: Edit.ParagraphContent.Table.Header): Edit.ParagraphContent.Table.Header =
         edited.copy(
             colSpec = mergeList(edited, edited.colSpec, rendered.colSpec, emptySet(), ::mergeColumnSpec, ::updateVariableValues),
-            parentId = edited.parentId ?: rendered.parentId
         )
 
     private fun mergeColumnSpec(
         edited: Edit.ParagraphContent.Table.ColumnSpec,
         rendered: Edit.ParagraphContent.Table.ColumnSpec,
     ): Edit.ParagraphContent.Table.ColumnSpec =
-        edited.copy(headerContent = mergeCell(edited.headerContent, rendered.headerContent), parentId = edited.parentId ?: rendered.parentId)
+        edited.copy(headerContent = mergeCell(edited.headerContent, rendered.headerContent))
 
     private fun mergeCell(edited: Edit.ParagraphContent.Table.Cell, rendered: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell =
         edited.copy(
             text = mergeList(edited, edited.text, rendered.text, emptySet(), ::mergeTextContent, ::updateVariableValues),
-            parentId = edited.parentId ?: rendered.parentId
         )
 
     private fun mergeRows(edited: Edit.ParagraphContent.Table.Row, rendered: Edit.ParagraphContent.Table.Row): Edit.ParagraphContent.Table.Row =
         edited.copy(
             cells = mergeList(edited, edited.cells, rendered.cells, emptySet(), ::mergeCell, ::updateVariableValues),
-            parentId = edited.parentId ?: rendered.parentId
         )
 
     private fun mergeItems(edited: Edit.ParagraphContent.ItemList.Item, rendered: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item =
         edited.copy(
             content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeTextContent, ::updateVariableValues),
-            parentId = edited.parentId ?: rendered.parentId
         )
 
     private fun updateVariableValues(edited: Edit.Block): Edit.Block =
@@ -229,7 +217,12 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
             is Edit.ParagraphContent.Text.Literal -> content
             is Edit.ParagraphContent.Text.Variable -> variableValues[content.id]
                 ?.let { content.copy(text = it) }
-                ?: Edit.ParagraphContent.Text.Literal(content.id, content.text, content.fontType, parentId = content.parentId)
+                ?: Edit.ParagraphContent.Text.Literal(
+                    id = content.id,
+                    text = content.text,
+                    fontType = content.fontType,
+                    parentId = content.parentId
+                )
 
             is Edit.ParagraphContent.Text.NewLine -> content
         }
