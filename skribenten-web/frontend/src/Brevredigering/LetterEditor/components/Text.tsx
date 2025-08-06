@@ -15,30 +15,6 @@ export type TextProperties = {
 
 export const Text = ({ content, literalIndex }: TextProperties) => {
   const { editorState, setEditorState } = useEditor();
-  const isFocusAtContent = (focus: Focus, idx: LiteralIndex) =>
-    focus.blockIndex === idx.blockIndex && focus.contentIndex === idx.contentIndex;
-
-  const hasFocus = (focus: Focus, idx: LiteralIndex) => {
-    if (isTableCellIndex(focus) && isTableCellIndex(idx)) {
-      return (
-        isFocusAtContent(focus, idx) &&
-        focus.rowIndex === idx.rowIndex &&
-        focus.cellIndex === idx.cellIndex &&
-        focus.cellContentIndex === idx.cellContentIndex
-      );
-    } else if (isItemContentIndex(focus) && isItemContentIndex(idx)) {
-      return (
-        isFocusAtContent(focus, idx) &&
-        focus.itemIndex === idx.itemIndex &&
-        focus.itemContentIndex === idx.itemContentIndex
-      );
-    } else if (isBlockContentIndex(focus) && isBlockContentIndex(idx)) {
-      return isFocusAtContent(focus, idx);
-    } else {
-      return false;
-    }
-  };
-
   const isFocused = hasFocus(editorState.focus, literalIndex);
 
   switch (content.type) {
@@ -71,5 +47,26 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
         </span>
       );
     }
+  }
+};
+
+const hasFocus = (focus: Focus, idx: LiteralIndex) => {
+  const isBlockContentFocused = focus.blockIndex === idx.blockIndex && focus.contentIndex === idx.contentIndex;
+
+  if (isTableCellIndex(focus) && isTableCellIndex(idx)) {
+    return (
+      isBlockContentFocused &&
+      focus.rowIndex === idx.rowIndex &&
+      focus.cellIndex === idx.cellIndex &&
+      focus.cellContentIndex === idx.cellContentIndex
+    );
+  } else if (isItemContentIndex(focus) && isItemContentIndex(idx)) {
+    return (
+      isBlockContentFocused && focus.itemIndex === idx.itemIndex && focus.itemContentIndex === idx.itemContentIndex
+    );
+  } else if (isBlockContentIndex(focus) && isBlockContentIndex(idx)) {
+    return isBlockContentFocused;
+  } else {
+    return false;
   }
 };
