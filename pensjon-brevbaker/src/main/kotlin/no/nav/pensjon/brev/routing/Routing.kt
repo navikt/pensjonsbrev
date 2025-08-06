@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.RedigerbarTemplateResource
+import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillBrevRequestAsync
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.etterlatte.EtterlatteMaler
@@ -47,6 +48,10 @@ fun Application.brevRouting(
 
             route("etterlatte") {
                 autobrevRoutes(AutobrevTemplateResource("", EtterlatteMaler.hentAutobrevmaler(), latexCompilerService, latexAsyncCompilerService))
+
+                post<BestillBrevRequest<Brevkode.Automatisk>>("/json/slate") {
+                    call.respond(autobrev.renderJSON(it).let { EtterlatteMaler.somSlate(it) })
+                }
             }
             get("/ping_authorized") {
                 val principal = call.authentication.principal<JWTPrincipal>()

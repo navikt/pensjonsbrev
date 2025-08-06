@@ -9,7 +9,7 @@ import kotlin.collections.ifEmpty
 import kotlin.collections.isNotEmpty
 import kotlin.collections.toList
 
-object BlockTilSlateKonverterer {
+internal object BlockTilSlateKonverterer {
     internal fun konverter(it: LetterMarkup): Slate =
         it.blocks
             .flatMap { block -> tilSlateElement(block) }
