@@ -18,8 +18,8 @@ export const updateContentText: Action<LetterEditorState, [literalIndex: Literal
       // Here rowIndex === -1 means the table header row.
       if (focus.rowIndex === -1) {
         const colSpec = paraContent.header.colSpec[focus.cellIndex];
-        const literal = colSpec?.headerContent.text.find((txt) => isLiteral(txt));
-        if (literal) {
+        const literal = colSpec?.headerContent.text[focus.cellContentIndex];
+        if (isLiteral(literal)) {
           updateLiteralText(literal, text);
           draft.isDirty = true;
         }
