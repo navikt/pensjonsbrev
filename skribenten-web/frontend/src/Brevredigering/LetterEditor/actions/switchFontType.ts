@@ -35,9 +35,9 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
       if (literalIndex.rowIndex === -1) {
         // rowIndex === -1 means header row
         const colSpec = table.header.colSpec[literalIndex.cellIndex];
-        const headerLiteral = colSpec.headerContent.text.find((txt) => isLiteral(txt));
+        const headerLiteral = colSpec.headerContent.text[literalIndex.cellContentIndex];
 
-        if (headerLiteral) {
+        if (isLiteral(headerLiteral)) {
           headerLiteral.editedFontType = headerLiteral.editedFontType === fontType ? null : fontType;
         }
         draft.focus = { ...draft.focus, cursorPosition: 0 };
