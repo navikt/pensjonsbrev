@@ -1,18 +1,14 @@
 package no.nav.pensjon.brev.skribenten.db
 
 import com.fasterxml.jackson.core.JacksonException
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.DeserializationContext
-import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.module.SimpleModule
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.typesafe.config.Config
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -48,8 +44,8 @@ object Favourites : Table() {
 internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
     registerModule(Edit.JacksonModule)
-    registerModule(BrevbakerBrevdataModule)
     registerModule(LetterMarkupModule)
+    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 }
 
 class DatabaseJsonDeserializeException(cause: JacksonException): Exception("Failed to deserialize json-column from database", cause)
@@ -78,8 +74,6 @@ object BrevredigeringTable : LongIdTable() {
     val opprettet: Column<Instant> = timestamp("opprettet")
     val sistredigert: Column<Instant> = timestamp("sistredigert")
     val sistReservert: Column<Instant?> = timestamp("sistReservert").nullable()
-    val signaturSignerende: Column<String> = varchar("signaturSignerende", length = 50)
-    val signaturAttestant: Column<String?> = varchar("signaturAttestant", length = 50).nullable()
     val journalpostId: Column<Long?> = long("journalpostId").nullable()
     val attestertAvNavIdent: Column<String?> = varchar("attestertAvNavIdent", length = 50).nullable()
 }
@@ -102,12 +96,10 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var opprettet by BrevredigeringTable.opprettet
     var sistredigert by BrevredigeringTable.sistredigert
     var sistReservert by BrevredigeringTable.sistReservert
-    var signaturSignerende by BrevredigeringTable.signaturSignerende
     var journalpostId by BrevredigeringTable.journalpostId
     val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
     val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
     var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
-    var signaturAttestant by BrevredigeringTable.signaturAttestant
 
     companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
         fun findByIdAndSaksId(id: Long, saksId: Long?) =
@@ -201,15 +193,3 @@ private fun createJdbcUrl(config: Config): String =
         val dbName = getString("name")
         return "jdbc:postgresql://$url:$port/$dbName"
     }
-
-private object BrevbakerBrevdataModule : SimpleModule() {
-    private fun readResolve(): Any = BrevbakerBrevdataModule
-
-    init {
-        addDeserializer(BrevbakerBrevdata::class.java, BrevdataDeserializer)
-    }
-
-    private object BrevdataDeserializer : JsonDeserializer<BrevbakerBrevdata>() {
-        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): BrevbakerBrevdata = ctxt.readValue(parser, SaksbehandlerValg::class.java)
-    }
-}

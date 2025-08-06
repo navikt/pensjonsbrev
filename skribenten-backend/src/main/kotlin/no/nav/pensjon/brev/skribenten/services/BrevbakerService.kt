@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -24,14 +25,8 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
-import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SakspartImpl
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
-import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
+import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.slf4j.LoggerFactory
 
@@ -51,6 +46,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
                 registerModule(LetterMarkupModule)
                 registerModule(TemplateModelSpecificationModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             }
         }
         callIdAndOnBehalfOfClient(config.getString("scope"), authService)
@@ -200,6 +196,8 @@ object LetterMarkupModule : SimpleModule() {
 }
 
 object TemplateModelSpecificationModule : SimpleModule() {
+    // Kreves pga Serializable
+    @Suppress("unused")
     private fun readResolve(): Any = TemplateModelSpecificationModule
 
     init {

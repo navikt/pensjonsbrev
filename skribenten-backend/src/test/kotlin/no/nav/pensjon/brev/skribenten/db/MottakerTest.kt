@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.testcontainers.containers.PostgreSQLContainer
 import java.time.Instant
+import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 class MottakerTest {
@@ -96,13 +97,24 @@ class MottakerTest {
             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             redigertBrev = Edit.Letter(
                 "a",
-                LetterMarkupImpl.SakspartImpl("b", "c", "d", "e"),
+                LetterMarkupImpl.SakspartImpl(
+                    gjelderNavn = "b",
+                    gjelderFoedselsnummer = "c",
+                    vergeNavn = null,
+                    saksnummer = "d",
+                    dokumentDato = LocalDate.now(),
+                ),
                 emptyList(),
-                LetterMarkupImpl.SignaturImpl("f", "g", "h", "i", "j"),
+                LetterMarkupImpl.SignaturImpl(
+                    hilsenTekst = "f",
+                    saksbehandlerRolleTekst = "g",
+                    saksbehandlerNavn = "en signatur",
+                    attesterendeSaksbehandlerNavn = "i",
+                    navAvsenderEnhet = "j",
+                ),
                 emptySet(),
             )
             sistRedigertAvNavIdent = principal
-            signaturSignerende = "en signatur"
         }
     }
 }

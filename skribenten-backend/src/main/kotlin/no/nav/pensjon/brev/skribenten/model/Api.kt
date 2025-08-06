@@ -29,7 +29,6 @@ object Api {
     data class OppdaterBrevRequest(
         val saksbehandlerValg: SaksbehandlerValg,
         val redigertBrev: Edit.Letter,
-        val signatur: String,
     )
 
     data class DelvisOppdaterBrevRequest(
@@ -41,7 +40,6 @@ object Api {
     data class OppdaterAttesteringRequest(
         val saksbehandlerValg: SaksbehandlerValg,
         val redigertBrev: Edit.Letter,
-        val signaturAttestant: String,
     )
 
     data class BrevInfo(

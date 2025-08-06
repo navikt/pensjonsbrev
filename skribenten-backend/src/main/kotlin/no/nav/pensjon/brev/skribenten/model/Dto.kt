@@ -35,10 +35,8 @@ object Dto {
         val mottaker: Mottaker?,
         val avsenderEnhetId: String?,
         val spraak: LanguageCode,
-        val signaturSignerende: String,
         val journalpostId: Long?,
         val attestertAv: NavIdent?,
-        val signaturAttestant: String?,
         val status: BrevStatus,
     )
 
