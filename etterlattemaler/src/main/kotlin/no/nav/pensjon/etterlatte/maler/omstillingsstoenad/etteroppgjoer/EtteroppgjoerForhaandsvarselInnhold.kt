@@ -113,9 +113,9 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
             }
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Per 31. Desember ".expr() + data.etteroppgjoersAar.format() + " er ett rettsgebyr " + data.rettsgebyrBeloep.format() + " kroner.",
+                    Language.Bokmal to "Per 31. desember ".expr() + data.etteroppgjoersAar.format() + " er ett rettsgebyr " + data.rettsgebyrBeloep.format() + " kroner.",
                     Language.Nynorsk to "Per 31. desember ".expr() + data.etteroppgjoersAar.format() + " er eitt rettsgebyr " + data.rettsgebyrBeloep.format() + " kroner.",
-                    Language.English to "As of 31 December ".expr() + data.etteroppgjoersAar.format() + " a standard court fee is NOK " + data.rettsgebyrBeloep.format() + ".",
+                    Language.English to "As of 31 december ".expr() + data.etteroppgjoersAar.format() + " a standard court fee is NOK " + data.rettsgebyrBeloep.format() + ".",
                 )
             }
 
