@@ -28,12 +28,12 @@ data class OmregningAlderUfore2016Dto(
     val fullTrygdetid: Boolean,
     val persongrunnlagAvdod: PersongrunnlagAvdod,
     val faktiskBostedsland: String,
-    val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto,
-    val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto,
-    val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto,
-    val maanedligPensjonFoerSkattAlderspensjonDto: MaanedligPensjonFoerSkattAlderspensjonDto,
-    val informasjonOmMedlemskapOgHelserettigheterDto: InformasjonOmMedlemskapOgHelserettigheterDto,
-    val opplysningerBruktIBeregningenAlderAP2025Dto: OpplysningerBruktIBeregningenAlderAP2025Dto
+    val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
+    val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto?,
+    val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto?,
+    val maanedligPensjonFoerSkattAlderspensjonDto: MaanedligPensjonFoerSkattAlderspensjonDto?,
+    val informasjonOmMedlemskapOgHelserettigheterDto: InformasjonOmMedlemskapOgHelserettigheterDto?,
+    val opplysningerBruktIBeregningenAlderAP2025Dto: OpplysningerBruktIBeregningenAlderAP2025Dto?
 
     ):BrevbakerBrevdata
 
