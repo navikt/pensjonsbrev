@@ -4,12 +4,11 @@ import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.Broek
 import no.nav.pensjon.brevbaker.api.model.DisplayText
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.ObjectTypeSpecification
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
-import kotlin.reflect.*
+import kotlin.reflect.KClass
+import kotlin.reflect.KType
 import kotlin.reflect.full.primaryConstructor
 
 class TemplateModelSpecificationError(msg: String) : Error(msg)
@@ -95,7 +94,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                     toProcess.add(theClassifier)
                     FieldType.Object(isMarkedNullable, qname, displayText = displayText.firstOrNull())
                 }
-                Telefonnummer::class.qualifiedName, Foedselsnummer::class.qualifiedName, Broek::class.qualifiedName -> {
+                Broek::class.qualifiedName -> {
                     toProcess.add(theClassifier)
                     FieldType.Object(isMarkedNullable, qname!!, displayText = displayText.firstOrNull())
                 }
