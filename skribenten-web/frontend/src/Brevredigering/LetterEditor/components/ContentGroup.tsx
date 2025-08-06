@@ -328,16 +328,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
 
     const direction = event.shiftKey ? "backward" : "forward";
-
+    event.preventDefault();
     // If we're at the last cell and tabbing forward, append a row and stop here.
     if (direction === "forward" && isAtLastTableCell(editorState)) {
-      event.preventDefault();
       addRow(editorState, setEditorState, event);
       return true;
     }
 
     // Otherwise, ask nextTableFocus helper where to go inside the table
-    event.preventDefault();
     const next = nextTableFocus(editorState, direction);
 
     // nextTableFocus returns the same focus when we're at an edge,
