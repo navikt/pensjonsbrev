@@ -43,12 +43,7 @@ export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number,
     const block = draft.redigertBrev.blocks[focus.blockIndex];
     if (block.type !== PARAGRAPH) return;
 
-    addElements(
-      [newTable(rows, cols)],
-      focus.contentIndex + 1,
-      block.content as Draft<Content[]>,
-      block.deletedContent,
-    );
+    addElements([newTable(rows, cols)], focus.contentIndex + 1, block.content, block.deletedContent);
     draft.focus = { blockIndex: focus.blockIndex, contentIndex: focus.contentIndex + 1 };
     draft.isDirty = true;
   },
