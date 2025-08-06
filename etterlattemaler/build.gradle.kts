@@ -76,7 +76,9 @@ tasks {
             includeTags = setOf("integration-test")
         }
     }
-    task<Test>("manualTest") {
+    register<Test>("manualTest") {
+        testClassesDirs = files(test.map { it.sources.output.classesDirs })
+        classpath = files(test.map { it.sources.runtimeClasspath })
         group = LifecycleBasePlugin.VERIFICATION_GROUP
         useJUnitPlatform {
             includeTags = setOf("manual-test")
