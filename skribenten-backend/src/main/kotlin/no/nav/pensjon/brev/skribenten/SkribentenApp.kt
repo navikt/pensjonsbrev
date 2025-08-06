@@ -136,6 +136,7 @@ fun Application.skribentenContenNegotiation() {
             registerModule(Edit.JacksonModule)
             registerModule(BrevkodeModule)
             registerModule(LetterMarkupModule)
+            registerModule(PrimitiveModule)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }
