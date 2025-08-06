@@ -114,7 +114,7 @@ object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto
         includeAttachmentIfNotNull(opplysningerOmAvdoedBruktIBeregning,opplysningerOmAvdoedBruktIBeregningDto )
         includeAttachmentIfNotNull(maanedligPensjonFoerSkattAlderspensjon,maanedligPensjonFoerSkattAlderspensjonDto )
         //includeAttachmentIfNotNull(afpforskatt,pesysData.maanedligPensjonFoerSkattDto ) todo mangler
-        //includeAttachmentIfNotNull(vedleggInformasjonOmMedlemskapOgHelserettigheter,pesysData.informasjonOmMedlemskapOgHelserettigheterDto )
+        includeAttachmentIfNotNull(vedleggInformasjonOmMedlemskapOgHelserettigheter,informasjonOmMedlemskapOgHelserettigheterDto)
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025,opplysningerBruktIBeregningenAlderAP2025Dto )
     }
 }
