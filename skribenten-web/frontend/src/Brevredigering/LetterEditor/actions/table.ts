@@ -79,11 +79,7 @@ export const removeTable = produce<LetterEditorState>((draft) => {
   const { blockIndex, contentIndex } = draft.focus;
 
   const parentBlock = draft.redigertBrev.blocks[blockIndex];
-  removeElements(contentIndex, 1, {
-    content: parentBlock.content,
-    deletedContent: parentBlock.deletedContent,
-    id: parentBlock.id,
-  });
+  removeElements(contentIndex, 1, parentBlock);
   draft.isDirty = true;
 });
 
