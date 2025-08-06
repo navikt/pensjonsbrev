@@ -18,19 +18,12 @@ const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontT
   const focusedContent = block.content[focus.contentIndex];
 
   if (isTable(focusedContent) && isTableCellIndex(focus)) {
-    // Header cell (rowIndex === -1)
-    if (focus.rowIndex === -1) {
-      const colSpec = focusedContent.header.colSpec[focus.cellIndex];
-      const headerTexts = colSpec?.headerContent.text ?? [];
-      const headerText = headerTexts[focus.cellContentIndex] ?? headerTexts.find(isTextContent);
+    const cell =
+      focus.rowIndex === -1
+        ? focusedContent.header.colSpec[focus.cellIndex]?.headerContent
+        : focusedContent.rows[focus.rowIndex]?.cells[focus.cellIndex];
 
-      return isTextContent(headerText) ? fontTypeOf(headerText) : FontType.PLAIN;
-    }
-    // Body cell
-    const row = focusedContent.rows[focus.rowIndex];
-    const cell = row?.cells[focus.cellIndex];
-    const texts = cell?.text ?? [];
-    const cellText = texts[focus.cellContentIndex] ?? texts.find(isTextContent);
+    const cellText = cell?.text.at(focus.cellContentIndex);
 
     return isTextContent(cellText) ? fontTypeOf(cellText) : FontType.PLAIN;
   }
