@@ -5,7 +5,7 @@ import { Text } from "~/Brevredigering/LetterEditor/components/Text";
 import type { LiteralValue, TextContent } from "~/types/brevbakerTypes";
 import { LITERAL, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
 
-import type { LiteralIndex, TableCellIndex } from "../model/state";
+import type { TableCellIndex } from "../model/state";
 
 type TableCellContentProps = {
   content: TextContent;
@@ -13,20 +13,12 @@ type TableCellContentProps = {
 };
 
 export function TableCellContent({ content, tableCellIndex }: TableCellContentProps) {
-  const literalIndex: LiteralIndex = {
-    blockIndex: tableCellIndex.blockIndex,
-    contentIndex: tableCellIndex.contentIndex,
-    rowIndex: tableCellIndex.rowIndex,
-    cellIndex: tableCellIndex.cellIndex,
-    cellContentIndex: tableCellIndex.cellContentIndex,
-  };
-
   switch (content.type) {
     case LITERAL:
-      return <EditableText content={content as LiteralValue} literalIndex={literalIndex} />;
+      return <EditableText content={content as LiteralValue} literalIndex={tableCellIndex} />;
 
     case VARIABLE:
-      return <Text content={content} literalIndex={literalIndex} />;
+      return <Text content={content} literalIndex={tableCellIndex} />;
 
     case NEW_LINE:
       return <br />;
