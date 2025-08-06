@@ -59,7 +59,10 @@ tasks {
         }
     }
 
+    val test by testing.suites.existing(JvmTestSuite::class)
     register<Test>("integrationTest") {
+        testClassesDirs = files(test.map { it.sources.output.classesDirs })
+        classpath = files(test.map { it.sources.runtimeClasspath })
         outputs.doNotCacheIf("Output of this task is pdf from pdf-bygger which is not cached") { true }
         systemProperties["junit.jupiter.execution.parallel.enabled"] = true
         systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
