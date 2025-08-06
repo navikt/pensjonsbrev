@@ -25,7 +25,6 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.PrimitiveModule
-import no.nav.pensjon.brev.skribenten.FlexibleLocalDateModule
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
