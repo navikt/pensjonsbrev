@@ -125,7 +125,7 @@ fun Application.brevbakerModule(
     )
 
     val kafkaConfig = brevbakerConfig.config("kafka")
-    val kafkaIsEnabled = kafkaConfig.propertyOrNull("enabled")?.getString() == "true"
+    val kafkaIsEnabled = kafkaConfig.propertyOrNull("enabled")?.getString() == "yep"
     val latexAsyncCompilerService = if (brukAsyncProducer && kafkaIsEnabled) {
         log.info("Oppretter Latex async compiler service")
         LatexAsyncCompilerService(kafkaConfig)
