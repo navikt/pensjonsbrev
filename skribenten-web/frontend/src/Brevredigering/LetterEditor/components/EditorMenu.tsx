@@ -8,6 +8,7 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import { VerticalDivider } from "~/components/Divider";
+import EditorTableTools from "~/components/EditorTableTools";
 import { formatTime } from "~/utils/dateUtils";
 
 import type { CallbackReceiver } from "../lib/actions";
@@ -77,6 +78,8 @@ export const EditorMenu = () => {
         <EditorFonts editorState={editorState} setEditorState={setEditorState} />
         <VerticalDivider />
         <EditorBulletList editorState={editorState} setEditorState={setEditorState} />
+        <VerticalDivider />
+        <EditorTableTools />
         <VerticalDivider />
         <SelectTypography editorState={editorState} setEditorState={setEditorState} />
       </HStack>

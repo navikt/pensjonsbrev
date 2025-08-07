@@ -1,13 +1,23 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
-import type { Content, FontType, ItemList, LiteralValue, ParagraphBlock, VariableValue } from "~/types/brevbakerTypes";
+import type {
+  Cell,
+  Content,
+  FontType,
+  ItemList,
+  LiteralValue,
+  ParagraphBlock,
+  Row,
+  VariableValue,
+} from "~/types/brevbakerTypes";
 import { handleSwitchContent, handleSwitchTextContent } from "~/utils/brevbakerUtils";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
+import { isLiteral, isTableCellIndex } from "../model/utils";
 import { getCursorOffset } from "../services/caretUtils";
-import { isItemContentIndex, newLiteral } from "./common";
+import { isItemContentIndex, isTable, newLiteral } from "./common";
 
 // TODO: Denne bør skrives om til å gjenbruke funksjonalitet (addElements, removeElements, osv).
 export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralIndex, fontType: FontType]> = produce(
@@ -17,6 +27,38 @@ export const switchFontType: Action<LetterEditorState, [literalIndex: LiteralInd
     if (block.type !== "PARAGRAPH") {
       return;
     }
+
+    const contentAtFocus = block.content[literalIndex.contentIndex];
+    if (isTable(contentAtFocus) && isTableCellIndex(literalIndex)) {
+      const table = contentAtFocus;
+
+      if (literalIndex.rowIndex === -1) {
+        // rowIndex === -1 means header row
+        const colSpec = table.header.colSpec[literalIndex.cellIndex];
+        const headerLiteral = colSpec.headerContent.text[literalIndex.cellContentIndex];
+
+        if (isLiteral(headerLiteral)) {
+          headerLiteral.editedFontType = headerLiteral.editedFontType === fontType ? null : fontType;
+        }
+        draft.focus = { ...draft.focus, cursorPosition: 0 };
+        draft.isDirty = true;
+        return;
+      }
+
+      const row: Draft<Row> = table.rows[literalIndex.rowIndex];
+      const cell: Draft<Cell> = row.cells[literalIndex.cellIndex];
+
+      const textContent = cell.text[literalIndex.cellContentIndex];
+
+      if (isLiteral(textContent)) {
+        textContent.editedFontType = textContent.editedFontType === fontType ? null : fontType;
+      }
+
+      draft.focus = { ...draft.focus, cursorPosition: 0 };
+      draft.isDirty = true;
+      return;
+    }
+
     draft.isDirty = true;
 
     const contentBeforeTheLiteralWeAreOn = block.content.slice(0, literalIndex.contentIndex);

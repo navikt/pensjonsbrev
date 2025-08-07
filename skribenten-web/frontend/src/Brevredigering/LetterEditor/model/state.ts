@@ -8,7 +8,14 @@ export type ItemContentIndex = BlockContentIndex & {
   itemIndex: number;
   itemContentIndex: number;
 };
-export type LiteralIndex = BlockContentIndex | ItemContentIndex;
+
+export type TableCellIndex = BlockContentIndex & {
+  rowIndex: number;
+  cellIndex: number;
+  cellContentIndex: number;
+};
+
+export type LiteralIndex = BlockContentIndex | ItemContentIndex | TableCellIndex;
 
 export type Focus = LiteralIndex & { cursorPosition?: number };
 
