@@ -428,7 +428,7 @@ data class OpplysningerBruktIBeregningTabellKap19(
                     }
 
                     //tabellSkjermingstilleggSkjermingsgrad_001
-                    showIf(beregningKap19VedVirk.skjermingsgrad.greaterThan(0)) {
+                    showIf(beregningKap19VedVirk.skjermingsgrad.greaterThan(0.0)) {
                         row {
                             cell {
                                 text(

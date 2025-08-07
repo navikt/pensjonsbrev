@@ -135,7 +135,6 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
                         it.letterMarkup,
                         it.attachments,
                         language.toCode(),
-                        felles,
                         template.letterMetadata.brevtype
                     )
                 )

@@ -161,13 +161,8 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const navigate = Route.useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
 
-  const låsForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
-    mutationFn: (låst) =>
-      delvisOppdaterBrev({
-        saksId: props.saksId,
-        brevId: props.brev.id,
-        laastForRedigering: låst,
-      }),
+  const laasForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
+    mutationFn: (laast) => delvisOppdaterBrev(props.saksId, props.brev.id, { laastForRedigering: laast }),
     onSuccess: (response) => {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === props.brev.id ? response.info : brev)),
@@ -177,11 +172,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
 
   const distribusjonstypeMutation = useMutation<DelvisOppdaterBrevResponse, Error, Distribusjonstype, unknown>({
     mutationFn: (distribusjonstype) =>
-      delvisOppdaterBrev({
-        saksId: props.saksId,
-        brevId: props.brev.id,
-        distribusjonstype: distribusjonstype,
-      }),
+      delvisOppdaterBrev(props.saksId, props.brev.id, { distribusjonstype: distribusjonstype }),
     onSuccess: (response) => {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === props.brev.id ? response.info : brev)),
@@ -189,7 +180,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
     },
   });
 
-  const erLåst = useMemo(() => erBrevLaastForRedigering(props.brev), [props.brev]);
+  const erLaast = useMemo(() => erBrevLaastForRedigering(props.brev), [props.brev]);
 
   return (
     <div>
@@ -203,7 +194,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         <EndreMottakerMedOppsummeringOgApiHåndtering
           brev={props.brev}
           endreAsIcon
-          kanTilbakestilleMottaker={!erLåst}
+          kanTilbakestilleMottaker={!erLaast}
           overrideOppsummering={(edit) => (
             <div>
               <Detail textColor="subtle">Mottaker</Detail>
@@ -213,7 +204,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
                   saksId={props.saksId}
                   withTitle={false}
                 />
-                {!erLåst && edit}
+                {!erLaast && edit}
               </HStack>
             </div>
           )}
@@ -221,23 +212,23 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         />
 
         <Switch
-          checked={erLåst}
-          loading={låsForRedigeringMutation.isPending}
-          onChange={(event) => låsForRedigeringMutation.mutate(event.target.checked)}
+          checked={erLaast}
+          loading={laasForRedigeringMutation.isPending}
+          onChange={(event) => laasForRedigeringMutation.mutate(event.target.checked)}
           size="small"
         >
           {skalBrevAttesteres(props.brev) ? "Brevet er klart for attestering" : "Brevet er klart for sending"}
         </Switch>
 
-        {låsForRedigeringMutation.isError && (
+        {laasForRedigeringMutation.isError && (
           <Alert size="small" variant="error">
-            {typeof (låsForRedigeringMutation.error as AxiosError).response?.data === "string"
-              ? ((låsForRedigeringMutation.error as AxiosError).response?.data as string)
+            {typeof (laasForRedigeringMutation.error as AxiosError).response?.data === "string"
+              ? ((laasForRedigeringMutation.error as AxiosError).response?.data as string)
               : "Noe gikk galt"}
           </Alert>
         )}
 
-        {!erLåst && (
+        {!erLaast && (
           <VStack
             css={css`
               align-items: flex-start;
@@ -260,7 +251,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           </VStack>
         )}
 
-        {erLåst && (
+        {erLaast && (
           <RadioGroup
             data-cy="brevbehandler-distribusjonstype"
             description={
@@ -299,7 +290,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           </RadioGroup>
         )}
 
-        {props.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && erLåst && <LokalPrintInfoAlerts />}
+        {props.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && erLaast && <LokalPrintInfoAlerts />}
       </div>
     </div>
   );

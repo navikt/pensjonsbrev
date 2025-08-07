@@ -88,6 +88,7 @@ updates:
           - "*eslint*"
           - "prettier"
           - "typescript"
+          - "@typescript-eslint*"
           - "stylelint*"
       frontend:
         patterns:

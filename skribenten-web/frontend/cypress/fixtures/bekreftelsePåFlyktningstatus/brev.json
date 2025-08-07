@@ -122,7 +122,7 @@
             "hilsenTekst": "Med vennlig hilsen",
             "saksbehandlerRolleTekst": "Saksbehandler",
             "saksbehandlerNavn": "F_Z990297 E_Z990297",
-            "attesterendeSaksbehandlerNavn": "",
+            "attesterendeSaksbehandlerNavn": null,
             "navAvsenderEnhet": "Nav familie- og pensjonsytelser Steinkjer"
         },
         "deletedBlocks": []

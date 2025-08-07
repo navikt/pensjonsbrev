@@ -128,7 +128,6 @@ class LatexDocumentRendererTest {
             letterMarkup = letterMarkup.letterMarkup,
             attachments = letterMarkup.attachments,
             language = LanguageCode.BOKMAL,
-            felles = felles,
             brevtype = EksempelbrevRedigerbart.template.letterMetadata.brevtype,
         )
         val rendered = LatexDocumentRenderer.render(pdfRequest)
@@ -166,7 +165,6 @@ class LatexDocumentRendererTest {
                     letterMarkup = markup.letterMarkup,
                     attachments = markup.attachments,
                     language = letter.language.toCode(),
-                    felles = letter.felles,
                     brevtype = letter.template.letterMetadata.brevtype,
                 )
             )

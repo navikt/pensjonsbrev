@@ -18,8 +18,6 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
                     letterMarkup = it.letterMarkup,
                     attachments = it.attachments,
                     language = letter.language.toCode(),
-                    // TODO: Fjern felles her så snart pdf-bygger er deployet uten avhengighet til felles
-                    felles = letter.felles,
                     brevtype = letter.template.letterMetadata.brevtype
                 )
             )

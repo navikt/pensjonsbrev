@@ -301,11 +301,9 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             )
         )
 
-        showIf(beregningKap20VedVirk.redusertTrygdetid and not(avslattGarantipensjon)) {
+        showIf(beregningKap20VedVirk.redusertTrygdetid and not(avslattGarantipensjon) and trygdetidNorge.size().greaterThan(0)) {
             includePhrase(Vedtak.TrygdetidOverskrift)
-            showIf(trygdetidNorge.size().greaterThan(0)) {
-                includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetidInnledning)
-            }
+            includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetidInnledning)
             includePhrase(OpplysningerBruktIBeregningenTrygdetidTabeller.NorskTrygdetid(trygdetidNorge))
         }
         //vedleggBeregnPensjonsOpptjeningKap20_001

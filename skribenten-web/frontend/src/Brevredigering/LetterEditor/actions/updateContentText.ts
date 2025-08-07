@@ -2,23 +2,45 @@ import type { Draft } from "immer";
 import { produce } from "immer";
 
 import type { LiteralValue } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { LetterEditorState, LiteralIndex } from "../model/state";
-import { cleanseText } from "./common";
+import { isItemList, isLiteral, isTableCellIndex } from "../model/utils";
+import { cleanseText, isTable } from "./common";
 
 export const updateContentText: Action<LetterEditorState, [literalIndex: LiteralIndex, text: string]> = produce(
   (draft, literalIndex, text) => {
-    const content = draft.redigertBrev.blocks[literalIndex.blockIndex].content[literalIndex.contentIndex];
+    const focus = literalIndex;
+    const block = draft.redigertBrev.blocks[focus.blockIndex];
+    const paraContent = block.content[focus.contentIndex];
 
-    if (content.type === LITERAL) {
-      updateLiteralText(content, text);
+    if (isTable(paraContent) && isTableCellIndex(focus)) {
+      // Here rowIndex === -1 means the table header row.
+      if (focus.rowIndex === -1) {
+        const colSpec = paraContent.header.colSpec[focus.cellIndex];
+        const literal = colSpec?.headerContent.text[focus.cellContentIndex];
+        if (isLiteral(literal)) {
+          updateLiteralText(literal, text);
+          draft.isDirty = true;
+        }
+        return;
+      }
+      // the table body.
+      const row = paraContent.rows[focus.rowIndex];
+      const cell = row?.cells[focus.cellIndex];
+      const literal = cell?.text[focus.cellContentIndex];
+      if (isLiteral(literal)) {
+        updateLiteralText(literal, text);
+        draft.isDirty = true;
+      }
+      return;
+    } else if (isLiteral(paraContent)) {
+      updateLiteralText(paraContent, text);
       draft.isDirty = true;
-    } else if (content.type === ITEM_LIST) {
+    } else if (isItemList(paraContent)) {
       if ("itemIndex" in literalIndex) {
-        const itemContent = content.items[literalIndex.itemIndex].content[literalIndex.itemContentIndex];
-        if (itemContent.type === LITERAL) {
+        const itemContent = paraContent.items[literalIndex.itemIndex].content[literalIndex.itemContentIndex];
+        if (isLiteral(itemContent)) {
           updateLiteralText(itemContent, text);
           draft.isDirty = true;
         } else {

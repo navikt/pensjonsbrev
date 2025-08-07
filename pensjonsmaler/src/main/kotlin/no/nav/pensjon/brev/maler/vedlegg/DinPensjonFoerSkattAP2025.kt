@@ -31,7 +31,7 @@ val vedleggMaanedligPensjonFoerSkattAp2025 =
         showIf(beregnetPensjonperManed.size().greaterThan(1)) {
             includePhrase(TabellMaanedligPensjonFlerePerioderInnledning(kravVirkFom))
             forEach(beregnetPensjonperManed) {
-                TabellMaanedligPensjonKap20(it)
+                includePhrase(TabellMaanedligPensjonKap20(it))
             }
         }
     }

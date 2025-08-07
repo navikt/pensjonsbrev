@@ -196,43 +196,44 @@ data class TabellMaanedligPensjonKap19(
                         cell { includePhrase(KronerText(it)) }
                     }
                 }
-
-                ifNotNull(beregnetPensjon.ektefelletillegg) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Ektefelletillegg",
-                                Nynorsk to "Ektefelletillegg",
-                                English to "Spouse supplement",
-                            )
+                showIf(beregnetPensjon.virkDatoFom.year.lessThan(2025)) {
+                    ifNotNull(beregnetPensjon.ektefelletillegg) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Ektefelletillegg",
+                                    Nynorsk to "Ektefelletillegg",
+                                    English to "Spouse supplement",
+                                )
+                            }
+                            cell { includePhrase(KronerText(it)) }
                         }
-                        cell { includePhrase(KronerText(it)) }
                     }
-                }
 
-                ifNotNull(beregnetPensjon.barnetilleggSB) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Barnetillegg særkullsbarn",
-                                Nynorsk to "Barnetillegg særkullsbarn",
-                                English to "Supplement for child(ren) of former marriages/relationships",
-                            )
+                    ifNotNull(beregnetPensjon.barnetilleggSB) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Barnetillegg særkullsbarn",
+                                    Nynorsk to "Barnetillegg særkullsbarn",
+                                    English to "Supplement for child(ren) of former marriages/relationships",
+                                )
+                            }
+                            cell { includePhrase(KronerText(it)) }
                         }
-                        cell { includePhrase(KronerText(it)) }
                     }
-                }
 
-                ifNotNull(beregnetPensjon.barnetilleggFB) {
-                    row {
-                        cell {
-                            text(
-                                Bokmal to "Barnetillegg fellesbarn",
-                                Nynorsk to "Barnetillegg fellesbarn",
-                                English to "Supplement for child(ren) of the marriages/relationship",
-                            )
+                    ifNotNull(beregnetPensjon.barnetilleggFB) {
+                        row {
+                            cell {
+                                text(
+                                    Bokmal to "Barnetillegg fellesbarn",
+                                    Nynorsk to "Barnetillegg fellesbarn",
+                                    English to "Supplement for child(ren) of the marriages/relationship",
+                                )
+                            }
+                            cell { includePhrase(KronerText(it)) }
                         }
-                        cell { includePhrase(KronerText(it)) }
                     }
                 }
 
@@ -533,9 +534,9 @@ data class TabellMaanedligPensjonKap19og20(
                 }
             }
             showIf(
-                beregnetPensjon.ektefelletillegg_safe .ifNull(Kroner(0)).greaterThan(0)
+                (beregnetPensjon.ektefelletillegg_safe .ifNull(Kroner(0)).greaterThan(0)
                         or beregnetPensjon.barnetilleggSB_safe.ifNull(Kroner(0)).greaterThan(0)
-                        or beregnetPensjon.barnetilleggFB_safe.ifNull(Kroner(0)).greaterThan(0)
+                        or beregnetPensjon.barnetilleggFB_safe.ifNull(Kroner(0)).greaterThan(0))
                         and beregnetPensjon.virkDatoFom.year.lessThan(2025)
             ) {
                 table(header = {

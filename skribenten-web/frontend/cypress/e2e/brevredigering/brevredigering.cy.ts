@@ -52,13 +52,13 @@ describe("Brevredigering", () => {
         land: "Mars",
         svartidUker: "10",
       });
-      expect(req.body.signatur).deep.equal("Det nye saksbehandlernavnet");
+      expect(req.body.redigertBrev.signatur.saksbehandlerNavn).to.equal("Det nye saksbehandlernavnet");
       req.reply(brev);
     }).as("lagreBrev");
 
     cy.visit("/saksnummer/123456/brev/1");
     cy.contains("Land").click().type("{selectall}{backspace}").type("Mars");
-    cy.contains("Signatur").click().type("{selectall}{backspace}").type("Det nye saksbehandlernavnet");
+    cy.contains("Underskrift").click().type("{selectall}{backspace}").type("Det nye saksbehandlernavnet");
     cy.contains("Fortsett").click();
 
     cy.wait("@lagreBrev", { timeout: 20000 }).should((req) => {

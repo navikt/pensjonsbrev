@@ -108,14 +108,13 @@ class MottakerTest {
                 LetterMarkupImpl.SignaturImpl(
                     hilsenTekst = "f",
                     saksbehandlerRolleTekst = "g",
-                    saksbehandlerNavn = "h",
+                    saksbehandlerNavn = "en signatur",
                     attesterendeSaksbehandlerNavn = "i",
                     navAvsenderEnhet = "j",
                 ),
                 emptySet(),
             )
             sistRedigertAvNavIdent = principal
-            signaturSignerende = "en signatur"
         }
     }
 }

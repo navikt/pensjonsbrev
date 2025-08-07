@@ -46,8 +46,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import no.nav.brev.InternKonstruktoer
 
                     @TemplateModelHelpers
-                    @OptIn(InternKonstruktoer::class)
-                    object MyClass {}
+                    object MyClass
                 """.trimIndent()
             ).generateSelectors()
         }
