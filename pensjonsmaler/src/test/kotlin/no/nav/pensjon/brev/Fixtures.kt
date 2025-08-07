@@ -103,6 +103,7 @@ import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDtoUfoere
 import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDtoYrkesskadeGjeldende
 import no.nav.pensjon.brev.fixtures.createOrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.fixtures.createPE
+import no.nav.pensjon.brev.fixtures.createSamletMeldingOmPensjonsvedtakDto
 import no.nav.pensjon.brev.fixtures.createUfoerOmregningEnsligDto
 import no.nav.pensjon.brev.fixtures.createUngUfoerAutoDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createAvslagForLiteTrygdetidAPDto
