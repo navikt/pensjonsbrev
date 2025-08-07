@@ -38,6 +38,8 @@ object FeatureToggleHandler : FeatureToggleService {
         }
     }
 
+    internal fun alleDefinerteBrytere() = unleash.more().featureToggleNames
+
     fun shutdown() = unleash.shutdown()
 }
 
