@@ -139,7 +139,7 @@ export type ColumnSpec = Identifiable & {
 export type ColumnAlignment = "LEFT" | "RIGHT";
 
 export type TextContent = LiteralValue | VariableValue | NewLine;
-export type Content = ItemList | TextContent;
+export type Content = ItemList | TextContent | Table;
 
 export type Block = Identifiable & {
   readonly type: string;
