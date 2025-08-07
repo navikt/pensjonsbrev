@@ -1,26 +1,27 @@
 [versions]
 kotlinVersion = "2.2.0"
 kotlinKspVersion = "2.2.0-2.0.2"
-ktorVersion = "3.2.0"
+ktorVersion = "3.2.3"
 assertJVersion = "3.27.3"
-binaryCompatibilityValidatorVersion = "0.18.0"
-classGraphVersion = "4.8.180"
-commonsCodecVersion = "1.18.0"
-commonVersion = "1.17.0"
+binaryCompatibilityValidatorVersion = "0.18.1"
+classGraphVersion = "4.8.181"
+commonsCodecVersion = "1.19.0"
+commonVersion = "1.20.0"
 exposedVersion = "0.61.0"
-flywayVersion = "11.10.0"
+flywayVersion = "11.10.5"
 hamkrestVersion = "1.8.0.1"
-hikariVersion = "6.3.0"
-jacksonJsr310Version = "2.19.1"
-jupiterVersion = "5.13.2"
+hikariVersion = "7.0.0"
+jacksonJsr310Version = "2.19.2"
+jupiterVersion = "5.13.4"
 kotlinxHtmlVersion = "0.12.0"
+kotlinxCoroutinesVersion = "1.10.2"
 logbackVersion = "1.5.18"
 logstashVersion = "8.1"
-micrometerVersion = "1.15.1"
-mockkVersion = "1.14.4"
+micrometerVersion = "1.15.2"
+mockkVersion = "1.14.5"
 postgresqlVersion = "42.7.7"
 testcontainersPostgresqlVersion = "1.21.3"
-unleashVersion = "11.0.0"
+unleashVersion = "11.0.2"
 kafkaVersion="3.9.0"
 
 [plugins]
@@ -35,6 +36,7 @@ hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikariVersion" }
 io-github-classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classGraphVersion" }
 jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jacksonJsr310Version" }
 kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version.ref = "kotlinxHtmlVersion" }
+kotlinx-coroutines-slf4j = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j", version.ref = "kotlinxCoroutinesVersion" }
 ksp-symbol-processing-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "kotlinKspVersion"}
 ksp-symbol-processing-aa = { module = "com.google.devtools.ksp:symbol-processing-aa", version.ref = "kotlinKspVersion"}
 ksp-symbol-processing-common = { module = "com.google.devtools.ksp:symbol-processing-common-deps", version.ref = "kotlinKspVersion"}
@@ -91,7 +93,7 @@ assertJ = { module = "org.assertj:assertj-core", version.ref = "assertJVersion" 
 hamkrest = { module = "com.natpryce:hamkrest", version.ref = "hamkrestVersion" }
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "jupiterVersion" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter",  version.ref = "jupiterVersion" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "1.13.2" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "1.13.4" }
 kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlinVersion" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockkVersion" }
 testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainersPostgresqlVersion"}

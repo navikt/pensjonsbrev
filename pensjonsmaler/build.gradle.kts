@@ -1,7 +1,6 @@
-import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val apiModelVersion = 205
+val apiModelVersion = 218
 
 val apiModelJavaTarget: String by System.getProperties()
 
@@ -27,6 +26,7 @@ dependencies {
 
     testImplementation(libs.bundles.junit)
     testImplementation(testFixtures(project(":brevbaker")))
+    testImplementation(testFixtures(libs.brevbaker.common))
 }
 
 tasks.test {
@@ -62,30 +62,23 @@ tasks {
         useJUnitPlatform {
             excludeTags = setOf("integration-test", "manual-test")
         }
-        testLogging {
-            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
-            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-        }
     }
 
-    task<Test>("integrationTest") {
+    val test by testing.suites.existing(JvmTestSuite::class)
+    register<Test>("integrationTest") {
+        testClassesDirs = files(test.map { it.sources.output.classesDirs })
+        classpath = files(test.map { it.sources.runtimeClasspath })
         group = LifecycleBasePlugin.VERIFICATION_GROUP
         useJUnitPlatform {
             includeTags = setOf("integration-test")
         }
-        testLogging {
-            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
-            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
-        }
     }
-    task<Test>("manualTest") {
+    register<Test>("manualTest") {
+        testClassesDirs = files(test.map { it.sources.output.classesDirs })
+        classpath = files(test.map { it.sources.runtimeClasspath })
         group = LifecycleBasePlugin.VERIFICATION_GROUP
         useJUnitPlatform {
             includeTags = setOf("manual-test")
-        }
-        testLogging {
-            events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
-            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
         }
     }
 }

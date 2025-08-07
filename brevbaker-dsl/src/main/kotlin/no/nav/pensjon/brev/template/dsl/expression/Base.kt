@@ -1,16 +1,26 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.UnaryOperation
 
 fun <Data : Any, Field> Expression<Data>.select(
     selector: TemplateModelSelector<Data, Field>
 ): Expression<Field> =
     UnaryOperation.Select(selector).invoke(this)
 
+@JvmName("selectOrNull")
+fun <Data : Any, Field> Expression<Data?>.select(
+    selector: TemplateModelSelector<Data, Field>
+) = safe(UnaryOperation.Select(selector))
+
 fun <T> T.expr(): Expression<T> = Expression.Literal(this)
 
+fun <T : Any> Expression<T?>.ifNull(then: Expression<T>): Expression<T> =
+    BinaryOperation.IfNull<T>().invoke(this, then)
+
 fun <T : Any> Expression<T?>.ifNull(then: T): Expression<T> =
-    BinaryOperation.IfNull<T>().invoke(this, then.expr())
+    ifNull(then.expr())
 
 fun <T : Any> Expression<T?>.notNull(): Expression<Boolean> = notEqualTo(null)
 
@@ -67,3 +77,20 @@ infix fun <T> Expression<T>.equalTo(other: Expression<T>): Expression<Boolean> =
 
 fun <T> Expression<T>.format(formatter: LocalizedFormatter<T>): StringExpression =
     formatter(this, Expression.FromScope.Language)
+
+@JvmName("formatNullable")
+fun <T> Expression<T?>.format(formatter: LocalizedFormatter<T>): Expression<String?> =
+    safe(formatter, Expression.FromScope.Language)
+
+fun <In : Any, Out> Expression<In?>.safe(operation: UnaryOperation<In, Out>): Expression<Out?> =
+    UnaryOperation.SafeCall(operation).invoke(this)
+
+fun <In1 : Any, In2, Out> Expression<In1?>.safe(
+    operation: BinaryOperation<In1, In2 & Any, Out>,
+    other: Expression<In2>
+): Expression<Out?> =
+    Expression.BinaryInvoke(this, other, BinaryOperation.SafeCall(operation))
+
+fun <In : Any, Out> Expression<In?>.safe(block: Expression<In>.() -> Expression<Out>): Expression<Out?> =
+    Expression.NullSafeApplication(this, block)
+

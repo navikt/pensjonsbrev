@@ -1,6 +1,7 @@
 import { addNewLine } from "~/Brevredigering/LetterEditor/actions/addNewLine";
 import { cursorPosition } from "~/Brevredigering/LetterEditor/actions/cursorPosition";
 import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
+import { updateSignatur } from "~/Brevredigering/LetterEditor/actions/signatur";
 import {
   insertTable,
   insertTableColumnLeft,
@@ -29,6 +30,7 @@ const Actions = {
   split,
   switchTypography,
   updateContentText,
+  updateSignatur,
   toggleBulletList,
   switchFontType,
   insertTable,

@@ -6,7 +6,6 @@ import Actions from "../actions";
 import type { CallbackReceiver } from "../lib/actions";
 import { applyAction } from "../lib/actions";
 import type { LetterEditorState } from "../model/state";
-import { isItemList } from "../model/utils";
 import { getCursorOffset } from "../services/caretUtils";
 
 const EditorBulletList = (props: {
@@ -16,8 +15,8 @@ const EditorBulletList = (props: {
   //TODO - bug - om du bare taster i vei i tastaturet mens du lager nye avsnitt, og trykker fortsett før lagring, vil focus være på et avsnitt som ikke eksister i blocks
   //dette fører til en error
   const block = props.editorState.redigertBrev.blocks[props.editorState.focus.blockIndex];
-
-  const erAlleElementerIBlockenItemList = block.content.every(isItemList);
+  const erAlleElementerIBlockenItemList =
+    block?.content.every((contentItem) => contentItem.type === "ITEM_LIST") ?? true;
 
   return (
     <div>

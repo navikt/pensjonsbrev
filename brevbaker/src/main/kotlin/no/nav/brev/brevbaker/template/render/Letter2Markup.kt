@@ -1,7 +1,10 @@
-package no.nav.pensjon.brev.template.render
+package no.nav.brev.brevbaker.template.render
 
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.render.LanguageSetting
+import no.nav.pensjon.brev.template.render.fulltNavn
+import no.nav.pensjon.brev.template.render.pensjonLatexSettings
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
@@ -12,7 +15,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.NewLineImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
-import java.time.format.FormatStyle
 import java.util.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -53,17 +55,17 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             sakspart = SakspartImpl(
                 gjelderNavn = scope.felles.bruker.fulltNavn(),
                 gjelderFoedselsnummer = scope.felles.bruker.foedselsnummer.value,
+                vergeNavn = scope.felles.vergeNavn,
                 saksnummer = scope.felles.saksnummer,
-                dokumentDato = scope.felles.dokumentDato.format(dateFormatter(scope.language, FormatStyle.SHORT)),
+                dokumentDato = scope.felles.dokumentDato,
             ),
             blocks = renderOutline(scope, template.outline),
-            // TODO: Attesterende saksbehandler må kunne være null for informasjonsskriv som ikke attesteres
             signatur = scope.felles.signerendeSaksbehandlere.let { sign ->
                 SignaturImpl(
                     hilsenTekst = languageSettings.getSetting(scope.language, LanguageSetting.Closing.greeting),
                     saksbehandlerRolleTekst = languageSettings.getSetting(scope.language, LanguageSetting.Closing.saksbehandler),
-                    saksbehandlerNavn = sign?.saksbehandler ?: "",
-                    attesterendeSaksbehandlerNavn = sign?.attesterendeSaksbehandler ?: "",
+                    saksbehandlerNavn = sign?.saksbehandler,
+                    attesterendeSaksbehandlerNavn = sign?.attesterendeSaksbehandler,
                     navAvsenderEnhet = scope.felles.avsenderEnhet.navn,
                 )
             }

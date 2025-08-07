@@ -19,6 +19,7 @@ import org.assertj.core.api.InstanceOfAssertFactories
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import java.time.LocalDate
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title1 as E_Title1
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title2 as E_Title2
@@ -42,10 +43,11 @@ class UpdateRenderedLetterTest {
         val next = rendered.copy(
             title = "ny tittel11",
             sakspart = SakspartImpl(
-                "ny gjelder",
-                "nytt fødselsnummer",
-                "nytt saksnummer",
-                "ny dato"
+                gjelderNavn = "ny gjelder",
+                gjelderFoedselsnummer = "nytt fødselsnummer",
+                vergeNavn = null,
+                saksnummer = "nytt saksnummer",
+                dokumentDato = LocalDate.now(),
             ),
             signatur = SignaturImpl("ny hilsenTekst", "ny saksbehandler rolle tekst", "ny saksbehandlernavn", "ny attesterendenavn", "ny avsenderenhet"),
         )
@@ -1076,51 +1078,4 @@ class UpdateRenderedLetterTest {
         assertEquals(edited, edited.updateEditedLetter(next))
     }
 
-    @Test
-    fun `parentIds will be fixed for edited letters that does not have them`() {
-        val next = letter(
-            ParagraphImpl(
-                1, true,
-                listOf(
-                    LiteralImpl(11, "lit1"),
-                    VariableImpl(12, "var2"),
-                    ItemListImpl(13, listOf(ItemImpl(131, listOf(LiteralImpl(1311, "punkt1"))))),
-                    LiteralImpl(14, "lit2"),
-                    TableImpl(
-                        15,
-                        listOf(RowImpl(152, listOf(CellImpl(1521, listOf(LiteralImpl(15211, "cell 1")))))),
-                        HeaderImpl(151, listOf(ColumnSpecImpl(1511, CellImpl(15111, listOf(LiteralImpl(151111, "title cell 1"))), ColumnAlignment.LEFT, 1))),
-                    ),
-                )
-            )
-        )
-        val edited = editedLetter(
-            E_Paragraph(
-                1, true,
-                listOf(
-                    E_Literal(11, "lit1"),
-                    E_Variable(12, "var2"),
-                    E_ItemList(13, listOf(E_Item(131, listOf(E_Literal(1311, "punkt1"))))),
-                    E_Literal(14, "lit2"),
-                    E_Table(
-                        15,
-                        listOf(E_Row(152, listOf(E_Cell(1521, listOf(E_Literal(15211, "cell 1")))))),
-                        E_Header(151, listOf(E_ColumnSpec(1511, E_Cell(15111, listOf(E_Literal(151111, "title cell 1"))), E_Table.ColumnAlignment.LEFT, 1))),
-                    ),
-                )
-            ),
-            fixParentIds = false,
-        )
-
-        assertThat(edited.identifiable.toList()).allSatisfy { assertThat(it).extracting(E_Identifiable::parentId).isNull() }
-
-        val updated = edited.updateEditedLetter(next)
-        assertThat(updated.identifiable.filter { it !is Edit.Block }.toList()).allSatisfy {
-            assertThat(it).extracting(
-                E_Identifiable::parentId,
-                InstanceOfAssertFactories.INTEGER
-            )
-        }
-        assertEquals(edited.fixParentIds(), updated)
-    }
 }

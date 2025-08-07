@@ -10,7 +10,7 @@ import java.time.LocalDate
 @Suppress("unused")
 data class OpplysningerBruktIBeregningenAlderDto(
     val beregnetPensjonPerManedVedVirk: AlderspensjonPerManed,
-    val beregnetSomEnsligPgaInstitusjon : Boolean, //aldersEllerSykehjem ,ensligPgaInst ,epsPaInstitusjon ,fengsel eller helseinstitusjon
+    val beregnetSomEnsligPgaInstitusjon : Boolean,
     val alderspensjonVedVirk: AlderspensjonVedVirk,
     val trygdetidsdetaljerKap19VedVirk: TrygdetidsdetaljerKap19VedVirk,
     val trygdetidsdetaljerKap20VedVirk: TrygdetidsdetaljerKap20VedVirk?,
@@ -59,7 +59,7 @@ data class OpplysningerBruktIBeregningenAlderDto(
         val poengAre91: Int?,
         val poengarNevner: Int?,
         val poengArTeller: Int?,
-        val skjermingsgrad: Int,
+        val skjermingsgrad: Double,
         val forholdstall67Soeker: Double,
         val uforegradVed67: Int,
         val forholdstallLevealder: Double,

@@ -3,64 +3,62 @@ package no.nav.pensjon.brev.converters
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.deser.std.NumberDeserializers
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
+import com.fasterxml.jackson.databind.deser.std.StringDeserializer
+import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.databind.module.SimpleModule
-import com.fasterxml.jackson.databind.node.IntNode
-import com.fasterxml.jackson.databind.node.TextNode
-import no.nav.pensjon.brevbaker.api.model.Days
-import no.nav.pensjon.brevbaker.api.model.DaysWrapper
-import no.nav.pensjon.brevbaker.api.model.Months
-import no.nav.pensjon.brevbaker.api.model.MonthsWrapper
-import no.nav.pensjon.brevbaker.api.model.Percent
-import no.nav.pensjon.brevbaker.api.model.PercentWrapper
-import no.nav.pensjon.brevbaker.api.model.Year
-import no.nav.pensjon.brevbaker.api.model.YearWrapper
+
 
 // TODO: Vi bør kunne rydde bort denne igjen etter at pesys er oppdatert
 object PrimitiveModule : SimpleModule() {
     private fun readResolve(): Any = PrimitiveModule
 
     init {
-        addDeserializer(Year::class.java, yearDeserializer())
-        addDeserializer(Months::class.java, monthsDeserializer())
-        addDeserializer(Days::class.java, daysDeserializer())
-        addDeserializer(Percent::class.java, percentDeserializer())
+        addDeserializer(String::class.java, stringDeser())
+        addDeserializer(Int::class.java, intDeser())
     }
 
-    private fun yearDeserializer() = object : StdDeserializer<Year>(Year::class.java) {
-        override fun deserialize(p: JsonParser, ctxt: DeserializationContext) =
-            when (val node = p.codec.readTree<JsonNode>(p)) {
-                is IntNode -> Year(p.codec.treeToValue(node, Int::class.java))
-                is TextNode -> Year(p.codec.treeToValue(node, String::class.java).toInt())
-                else -> Year(p.codec.treeToValue(node, YearWrapper::class.java).value)
+    private val standardStringDeserializer = StringDeserializer()
+
+    // TODO: Denne kan vi fjerne når både Gjenny og Pesys bruker ny nok versjon av biblioteket, så dei sender
+    // fødselsnummer, telefonnummer og kroner som flat tekst og ikkje som innpakka objekt
+    private fun stringDeser() = object : StdDeserializer<String>(String::class.java) {
+        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): String? {
+            try {
+                return standardStringDeserializer.deserialize(p, ctxt)
+            } catch (e: MismatchedInputException) {
+                val node = p.codec.readTree<JsonNode>(p)
+                try {
+                    val treeToValue = p.codec.treeToValue(node, Map::class.java)
+                    require(treeToValue.size == 1, { "custom-deserialisering kun for wrapper-klasser" })
+                    require(treeToValue.keys.contains("value"))
+                    return treeToValue["value"].toString()
+                } catch (e2: Exception) {
+                    throw e.also { it.addSuppressed(e2) }
+                }
             }
+        }
     }
 
-    private fun monthsDeserializer() = object : StdDeserializer<Months>(Months::class.java) {
-        override fun deserialize(p: JsonParser, ctxt: DeserializationContext) =
-            when (val node = p.codec.readTree<JsonNode>(p)) {
-                is IntNode -> Months(p.codec.treeToValue(node, Int::class.java))
-                is TextNode -> Months(p.codec.treeToValue(node, String::class.java).toInt())
-                else -> Months(p.codec.treeToValue(node, MonthsWrapper::class.java).value)
-            }
-    }
+    private val standardIntDeserializer = NumberDeserializers.IntegerDeserializer(Int::class.java, null)
 
-    private fun daysDeserializer() = object : StdDeserializer<Days>(Days::class.java) {
-        override fun deserialize(p: JsonParser, ctxt: DeserializationContext) =
-            when (val node = p.codec.readTree<JsonNode>(p)) {
-                is IntNode -> Days(p.codec.treeToValue(node, Int::class.java))
-                is TextNode -> Days(p.codec.treeToValue(node, String::class.java).toInt())
-                else -> Days(p.codec.treeToValue(node, DaysWrapper::class.java).value)
-            }
-    }
+    private fun intDeser() = object : StdDeserializer<Int>(Int::class.java) {
 
-
-    private fun percentDeserializer() = object : StdDeserializer<Percent>(Percent::class.java) {
-        override fun deserialize(p: JsonParser, ctxt: DeserializationContext) =
-            when (val node = p.codec.readTree<JsonNode>(p)) {
-                is IntNode -> Percent(p.codec.treeToValue(node, Int::class.java))
-                is TextNode -> Percent(p.codec.treeToValue(node, String::class.java).toInt())
-                else -> Percent(p.codec.treeToValue(node, PercentWrapper::class.java).value)
+        override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Int? {
+            try {
+                return standardIntDeserializer.deserialize(p, ctxt)
+            } catch (e: MismatchedInputException) {
+                val node = p.codec.readTree<JsonNode>(p)
+                try {
+                    val treeToValue = p.codec.treeToValue(node, Map::class.java)
+                    require(treeToValue.size == 1, { "custom-deserialisering kun for wrapper-klasser" })
+                    require(treeToValue.keys.contains("value"))
+                    return treeToValue["value"].toString().toInt()
+                } catch (e2: Exception) {
+                    throw e.also { it.addSuppressed(e2) }
+                }
             }
+        }
     }
 }

@@ -32,7 +32,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
-import no.nav.pensjon.brev.template.render.Letter2Markup
+import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -135,7 +135,6 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
                         it.letterMarkup,
                         it.attachments,
                         language.toCode(),
-                        felles,
                         template.letterMetadata.brevtype
                     )
                 )

@@ -51,14 +51,16 @@ export type LanguageCode = "BOKMAL" | "NYNORSK" | "ENGLISH";
 export type Sakspart = {
   readonly gjelderNavn: string;
   readonly gjelderFoedselsnummer: string;
+  readonly vergeNavn?: string;
   readonly saksnummer: string;
+  // Formatert som 'yyyy-MM-dd'
   readonly dokumentDato: string;
 };
 
 export type Signatur = {
   readonly hilsenTekst: string;
   readonly saksbehandlerRolleTekst: string;
-  readonly saksbehandlerNavn: string;
+  readonly saksbehandlerNavn?: string;
   readonly attesterendeSaksbehandlerNavn?: string;
   readonly navAvsenderEnhet: string;
 };

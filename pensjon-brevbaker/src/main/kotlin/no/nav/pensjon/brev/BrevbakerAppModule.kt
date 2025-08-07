@@ -47,7 +47,6 @@ fun Application.brevbakerModule(
             !ignorePaths.contains(it.request.path())
         }
         mdc("x_response_code") { it.response.status()?.value?.toString() }
-        mdc("x_response_time") { it.processingTimeMillis(::getTimeMillis).toString() }
         mdc("x_brevkode") { it.useBrevkodeFromCallContext() }
     }
 
@@ -128,8 +127,12 @@ fun Application.brevbakerModule(
     val kafkaConfig = brevbakerConfig.config("kafka")
     val kafkaIsEnabled = kafkaConfig.propertyOrNull("enabled")?.getString() == "true"
     val latexAsyncCompilerService = if (brukAsyncProducer && kafkaIsEnabled) {
+        log.info("Oppretter Latex async compiler service")
         LatexAsyncCompilerService(kafkaConfig)
-    } else null
+    } else {
+        log.info("Starter uten Latex async compiler service")
+        null
+    }
 
     konfigurerUnleash(brevbakerConfig)
 

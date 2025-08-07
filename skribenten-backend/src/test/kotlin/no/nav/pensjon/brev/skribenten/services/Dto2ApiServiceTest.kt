@@ -111,10 +111,8 @@ class Dto2ApiServiceTest {
         mottaker = mottaker,
         avsenderEnhetId = avsenderEnhetId,
         spraak = LanguageCode.BOKMAL,
-        signaturSignerende = "Z 123",
         journalpostId = null,
         attestertAv = attestertAv,
-        signaturAttestant = "Peder Ås",
         status = Dto.BrevStatus.KLADD
     )
 

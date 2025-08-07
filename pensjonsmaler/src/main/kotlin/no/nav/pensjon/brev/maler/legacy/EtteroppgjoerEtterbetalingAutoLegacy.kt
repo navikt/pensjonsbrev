@@ -4,16 +4,49 @@ import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDto
 import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDtoSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDtoSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.ufoer.HarDuSpoersmaalEtteroppgjoer
-import no.nav.pensjon.brev.maler.legacy.fraser.*
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1091_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU1092_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU2278_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU2366_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU3301_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU3304_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU3305_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU3306_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU3307_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU3308_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU3309_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU3317_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU3325_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU4018_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU4019_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU4020_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU4024_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU4025_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU4026_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU4027_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU4028_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU4029_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU4030_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU4050_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU4051_Generated
+import no.nav.pensjon.brev.maler.legacy.fraser.TBU4096_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.opplysningerOmETteroppgjoeretUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.legacyGreaterThan
+import no.nav.pensjon.brev.template.dsl.expression.legacyLessThan
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.year
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -155,7 +188,7 @@ object EtteroppgjoerEtterbetalingAutoLegacy : AutobrevTemplate<EtteroppgjoerEtte
             includePhrase(TBU2366_Generated)
             includePhrase(TBU2278_Generated(pe))
             includePhrase(Felles.RettTilAAKlage(vedleggDineRettigheterOgPlikterUfoere))
-            includePhrase(HarDuSpoersmaalEtteroppgjoer)
+            includePhrase(Felles.HarDuSpoersmaal(Constants.ETTEROPPGJOR_URL, Constants.NAV_KONTAKTSENTER_TELEFON))
         }
         includeAttachment(opplysningerOmETteroppgjoeretUTLegacy, pe, pe.inkludervedleggopplysningerometteroppgjoeret())
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)

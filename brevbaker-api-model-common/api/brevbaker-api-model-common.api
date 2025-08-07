@@ -4,6 +4,34 @@ public abstract interface annotation class no/nav/brev/InternKonstruktoer : java
 public abstract interface annotation class no/nav/brev/InterneDataklasser : java/lang/annotation/Annotation {
 }
 
+public final class no/nav/brev/Land {
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getKode-Tm84e0M ()Ljava/lang/String;
+	public final fun getNavn ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/Landkode {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/brev/Landkode;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getLandkode ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/Landkoder {
+	public static final field INSTANCE Lno/nav/brev/Landkoder;
+	public final fun getLandkoderMedNavn ()Ljava/util/List;
+}
+
 public final class no/nav/brev/brevbaker/AsyncPDFCompilationOutput {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -233,10 +261,10 @@ public final class no/nav/pensjon/brevbaker/api/model/Broek {
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Bruker {
-	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/Foedselsnummer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getEtternavn ()Ljava/lang/String;
-	public final fun getFoedselsnummer ()Lno/nav/pensjon/brevbaker/api/model/Foedselsnummer;
+	public final fun getFoedselsnummer-0fes7jg ()Ljava/lang/String;
 	public final fun getFornavn ()Ljava/lang/String;
 	public final fun getMellomnavn ()Ljava/lang/String;
 	public fun hashCode ()I
@@ -255,17 +283,6 @@ public final class no/nav/pensjon/brevbaker/api/model/Days : no/nav/pensjon/brev
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (I)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()I
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/DaysWrapper : no/nav/pensjon/brevbaker/api/model/IntWrapper {
-	public fun <init> (I)V
-	public final fun component1 ()I
-	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/DaysWrapper;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/DaysWrapper;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/DaysWrapper;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getValue ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface annotation class no/nav/pensjon/brevbaker/api/model/DisplayText : java/lang/annotation/Annotation {
@@ -295,29 +312,35 @@ public final class no/nav/pensjon/brevbaker/api/model/Felles {
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Foedselsnummer {
-	public fun <init> (Ljava/lang/String;)V
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/Foedselsnummer;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
 	public final fun getValue ()Ljava/lang/String;
 	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/IntValue {
 	public abstract fun getValue ()I
 }
 
-public abstract interface class no/nav/pensjon/brevbaker/api/model/IntWrapper {
-	public abstract fun getValue ()I
-}
-
 public final class no/nav/pensjon/brevbaker/api/model/Kroner : no/nav/pensjon/brevbaker/api/model/IntValue {
-	public fun <init> (I)V
-	public final fun component1 ()I
-	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/Kroner;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/Kroner;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/Kroner;
+	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/Kroner;
+	public static fun constructor-impl (I)I
 	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
 	public fun getValue ()I
 	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
 	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LanguageCode : java/lang/Enum {
@@ -530,10 +553,11 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart {
-	public abstract fun getDokumentDato ()Ljava/lang/String;
+	public abstract fun getDokumentDato ()Ljava/time/LocalDate;
 	public abstract fun getGjelderFoedselsnummer ()Ljava/lang/String;
 	public abstract fun getGjelderNavn ()Ljava/lang/String;
 	public abstract fun getSaksnummer ()Ljava/lang/String;
+	public abstract fun getVergeNavn ()Ljava/lang/String;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur {
@@ -602,23 +626,12 @@ public final class no/nav/pensjon/brevbaker/api/model/Months : no/nav/pensjon/br
 	public final synthetic fun unbox-impl ()I
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/MonthsWrapper : no/nav/pensjon/brevbaker/api/model/IntWrapper {
-	public fun <init> (I)V
-	public final fun component1 ()I
-	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/MonthsWrapper;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/MonthsWrapper;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/MonthsWrapper;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getValue ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class no/nav/pensjon/brevbaker/api/model/NavEnhet {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/Telefonnummer;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getNavn ()Ljava/lang/String;
 	public final fun getNettside ()Ljava/lang/String;
-	public final fun getTelefonnummer ()Lno/nav/pensjon/brevbaker/api/model/Telefonnummer;
+	public final fun getTelefonnummer-ACoMRe8 ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -637,17 +650,6 @@ public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/b
 	public final synthetic fun unbox-impl ()I
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/PercentWrapper : no/nav/pensjon/brevbaker/api/model/IntWrapper {
-	public fun <init> (I)V
-	public final fun component1 ()I
-	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/PercentWrapper;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/PercentWrapper;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/PercentWrapper;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getValue ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class no/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -659,11 +661,17 @@ public final class no/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere {
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Telefonnummer {
-	public fun <init> (Ljava/lang/String;)V
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/Telefonnummer;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
 	public final fun getValue ()Ljava/lang/String;
 	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
 	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification {
@@ -772,16 +780,5 @@ public final class no/nav/pensjon/brevbaker/api/model/Year : no/nav/pensjon/brev
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (I)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()I
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/YearWrapper : no/nav/pensjon/brevbaker/api/model/IntWrapper {
-	public fun <init> (I)V
-	public final fun component1 ()I
-	public final fun copy (I)Lno/nav/pensjon/brevbaker/api/model/YearWrapper;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brevbaker/api/model/YearWrapper;IILjava/lang/Object;)Lno/nav/pensjon/brevbaker/api/model/YearWrapper;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun getValue ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 

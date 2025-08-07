@@ -14,14 +14,12 @@ import io.ktor.server.config.*
 import io.ktor.server.testing.*
 import kotlinx.coroutines.*
 import no.nav.brev.InterneDataklasser
-import no.nav.brev.brevbaker.Fixtures
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.Test
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import kotlin.test.assertEquals
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -35,8 +33,9 @@ class PdfByggerAppTest {
             sakspart = LetterMarkupImpl.SakspartImpl(
                 gjelderNavn = "Navn Navnesen",
                 gjelderFoedselsnummer = "12345678901",
+                vergeNavn = null,
                 saksnummer = "123",
-                dokumentDato = LocalDate.of(2025, 1, 1).format(DateTimeFormatter.ISO_LOCAL_DATE)
+                dokumentDato = LocalDate.of(2025, 1, 1)
             ),
             blocks = listOf(),
             signatur = LetterMarkupImpl.SignaturImpl(
@@ -49,7 +48,6 @@ class PdfByggerAppTest {
         ),
         attachments = listOf(),
         language = LanguageCode.BOKMAL,
-        felles = Fixtures.felles,
         brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
     )
     private val objectMapper = jacksonObjectMapper().apply { brevbakerConfig() }
@@ -146,4 +144,5 @@ fun ObjectMapper.brevbakerConfig() {
     enable(SerializationFeature.INDENT_OUTPUT)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     enable(DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES)
+    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 }

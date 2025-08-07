@@ -26,13 +26,6 @@ tasks {
     }
 }
 
-tasks.named("compileTestKotlin", KotlinCompilationTask::class.java) {
-    compilerOptions {
-        // Denne kreves for å kunne kompilere kotlin i unit tester.
-        freeCompilerArgs.add("-opt-in=org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi")
-    }
-}
-
 tasks {
     test {
         useJUnitPlatform()

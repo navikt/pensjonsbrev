@@ -10,17 +10,24 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.ParagraphPhrase
+import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
+import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.quoted
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.Kroner
@@ -62,6 +69,22 @@ object Utbetalingsinformasjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 English to "If you have occupational pensions from other schemes, this will be paid in addition to your retirement pension. " +
                         "Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at $UTBETALINGER_URL."
             )
+        }
+    }
+}
+
+class FlereBeregningsperioder(val antallPerioder: Expression<Int>, val totalPensjon: Expression<Kroner>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    // flereBeregningsperioderVedlegg_001
+    // TODO: Bør vi ikke heller her sjekke om dataene til vedlegget er med?
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(antallPerioder.greaterThan(1) and totalPensjon.greaterThan(0)) {
+            paragraph {
+                text(
+                    Bokmal to "Du kan lese mer om andre beregningsperioder i vedlegget.",
+                    Nynorsk to "Du kan lese meir om andre berekningsperiodar i vedlegget.",
+                    English to "There is more information about other calculation periods in the attachment."
+                )
+            }
         }
     }
 }
@@ -129,6 +152,35 @@ object MeldeFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
             )
         }
     }
+}
+
+object MeldFraOmEndringer2 : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        // meldEndringerPesys_002
+        // TODO: Denne er så godt som lik mange av dei andre meld fra om endringer. Bør samkjøres og legges i felles.
+        title1 {
+            text(
+                Bokmal to "Du må melde fra om endringer",
+                Nynorsk to "Du må melde frå om endringar",
+                English to "You must notify Nav if anything changes"
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget ser du hvilke endringer du må si fra om.",
+                Nynorsk to "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget ser du kva endringar du må seie frå om.",
+                English to "If your circumstances change, you must inform Nav immediately. The appendix specifies which changes you are obligated to notify us of."
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav.",
+                Nynorsk to "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til Nav.",
+                English to "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav."
+            )
+        }
+    }
+
 }
 
 data class ArbeidsinntektOgAlderspensjon(
@@ -267,9 +319,9 @@ object Skatteplikt : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
-                Bokmal to "Spørsmål om skatteplikt til Norge etter flytting til utlandet må rettes til skatteetaten." +
+                Bokmal to "Spørsmål om skatteplikt til Norge etter flytting til utlandet må rettes til Skatteetaten." +
                         " Du må selv avklare spørsmål om skatteplikt til det landet du bor i med skattemyndighetene der.",
-                Nynorsk to "Spørsmål om skatteplikt til Noreg etter flytting til utlandet må rettast til skatteetaten. " +
+                Nynorsk to "Spørsmål om skatteplikt til Noreg etter flytting til utlandet må rettast til Skatteetaten. " +
                         " Du må sjølv avklare spørsmål om skatteplikt til det landet du bur i med skatteorgana der.",
                 English to "Questions about tax liability to Norway after moving abroad must be directed to the Norwegian Tax Administration." +
                         " You must clarify questions about tax liability to your country of residence with the local tax authorities."
@@ -441,5 +493,83 @@ object UfoereAlder {
             }
         }
 
+    }
+}
+
+// feilutbetalingAP_001
+object FeilutbetalingAP  : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Feilutbetaling",
+                Nynorsk to "Feilutbetaling",
+                English to "Incorrect payment"
+            )
+        }
+        paragraph {
+            text(
+                Bokmal to "Vi har redusert pensjonen din tilbake i tid. Derfor har du fått for mye utbetalt. Vi vil sende deg et eget varselbrev om en eventuell tilbakebetaling.",
+                Nynorsk to "Vi har redusert pensjonen din tilbake i tid. Derfor har du fått for mykje utbetalt. Vi vil sende deg eit eige varselbrev om ei eventuell tilbakebetaling.",
+                English to "We have reduced your retirement pension for a previous period. You have therefore been paid too much. We will send you a separate notice letter concerning possible repayment.",
+            )
+        }
+    }
+}
+
+// beløpAP_001
+class DuFaarHverMaaned(val totalPensjon: Expression<Kroner>) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(totalPensjon.greaterThan(0)) {
+            paragraph {
+                textExpr(
+                    Bokmal to "Du får ".expr() + totalPensjon.format() + " i alderspensjon fra folketrygden hver måned før skatt.",
+                    Nynorsk to "Du får ".expr() + totalPensjon.format() + " i alderspensjon frå folketrygda kvar månad før skatt.",
+                    English to "You will receive ".expr() + totalPensjon.format() + " every month before tax as retirement pension through the National Insurance Act."
+                )
+            }
+        }
+    }
+
+}
+
+object TrygdetidTittel : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                Bokmal to "Trygdetid",
+                Nynorsk to "Trygdetid",
+                English to "National insurance coverage"
+            )
+        }
+    }
+}
+
+data class DerforHar(val initiertAvBrukerEllerVerge: Expression<Boolean>, val initiertAvNav: Expression<Boolean>) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
+    override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(initiertAvBrukerEllerVerge) {
+            text(
+                Bokmal to "Derfor har vi avslått søknaden din.",
+                Nynorsk to "Derfor har vi avslått søknaden din.",
+                English to "We have declined your application for this reason."
+            )
+        }.orShowIf(initiertAvNav) {
+            text(
+                Bokmal to "Derfor har du ikke rettigheter etter avdøde.",
+                Nynorsk to "Derfor har du ikkje rettar etter avdøde.",
+                English to "You have no survivor’s rights in your retirement pension for this reason."
+            )
+        }
+    }
+
+}
+
+// nyBeregningAPTittel_001
+data class BeregnaPaaNytt(val virkDatoFom: Expression<LocalDate>) : PlainTextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        textExpr(
+            Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ".expr() + virkDatoFom.format(),
+            Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + virkDatoFom.format(),
+            English to "We have recalculated your retirement pension from ".expr() + virkDatoFom.format()
+        )
     }
 }

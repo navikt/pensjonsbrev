@@ -27,7 +27,8 @@ const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState): FontT
 
     return isTextContent(cellText) ? fontTypeOf(cellText) : FontType.PLAIN;
   }
-  const blockContent = block.content[editorState.focus.contentIndex];
+
+  const blockContent = block?.content[editorState.focus.contentIndex];
   const textContent =
     isItemContentIndex(editorState.focus) && isItemList(blockContent)
       ? blockContent.items[editorState.focus.itemIndex]?.content[editorState.focus.itemContentIndex]
