@@ -391,7 +391,7 @@ export function newRow(colCount: number): Row {
     })),
   };
 }
-export function newColSpec(colCount: number): ColumnSpec[] {
+export function newColSpec(colCount: number, headers?: { text: string; font?: FontType }[]): ColumnSpec[] {
   return Array.from({ length: colCount }, (_, i) => ({
     id: null,
     parentId: null,
@@ -402,8 +402,8 @@ export function newColSpec(colCount: number): ColumnSpec[] {
       parentId: null,
       text: [
         newLiteral({
-          editedText: `Kolonne ${i + 1}`,
-          fontType: FontType.PLAIN,
+          editedText: headers?.[i]?.text ?? `Kolonne ${i + 1}`,
+          fontType: headers?.[i]?.font ?? FontType.PLAIN,
         }),
       ],
     },
