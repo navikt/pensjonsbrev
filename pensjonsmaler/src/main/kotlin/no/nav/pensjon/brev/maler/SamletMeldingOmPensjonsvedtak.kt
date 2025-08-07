@@ -2,13 +2,15 @@ package no.nav.pensjon.brev.maler
 
 
 import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.sakstype
-import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.PesysDataSelectors.sakstype
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.pesysData
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.LanguageSupport
+import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
@@ -19,8 +21,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // Mal 000090 i doksys
 @TemplateModelHelpers
-object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsvedtakDto> {
-    override val kode = Pesysbrevkoder.AutoBrev.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK // 000090
+object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjonsvedtakDto> {
+    override val kode = Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK // 000090
+    override val kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
+    override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
+    override val sakstyper = setOf(Sakstype.ALDER, Sakstype.UFOREP, Sakstype.GJENLEV, Sakstype.BARNEP)
 
     override val template = createTemplate(
         name = kode.name,
@@ -88,20 +93,25 @@ object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsv
     }
 
     private fun ParagraphOnlyScope<LanguageSupport.Double<Bokmal, English>, SamletMeldingOmPensjonsvedtakDto>.inkluderSakstype() =
-        showIf(sakstype.equalTo(Sakstype.UFOREP)) {
+        showIf(pesysData.sakstype.equalTo(Sakstype.UFOREP)) {
             text(
                 Bokmal to "uføretrygd",
                 English to "invalidity pension"
             )
-        }.orShowIf(sakstype.equalTo(Sakstype.ALDER)) {
+        }.orShowIf(pesysData.sakstype.equalTo(Sakstype.ALDER)) {
             text(
                 Bokmal to "alderspensjon",
                 English to "old age pension"
             )
-        }.orShowIf(sakstype.equalTo(Sakstype.GJENLEV)) {
+        }.orShowIf(pesysData.sakstype.equalTo(Sakstype.GJENLEV)) {
             text(
                 Bokmal to "etterlattepensjon",
                 English to "survivors pension"
+            )
+        }.orShowIf(pesysData.sakstype.equalTo(Sakstype.BARNEP)) {
+            text(
+                Bokmal to "barnepensjon",
+                English to "children’s pension"
             )
         }
 }

@@ -4,9 +4,14 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import java.time.LocalDate
 
 data class SamletMeldingOmPensjonsvedtakDto(
-    val sakstype: Sakstype,
-    val vedlegg: P1Dto,
-) : BrevbakerBrevdata
+    override val saksbehandlerValg: EmptyBrevdata,
+    override val pesysData: PesysData
+) : RedigerbarBrevdata<EmptyBrevdata, SamletMeldingOmPensjonsvedtakDto.PesysData> {
+    data class PesysData(
+        val sakstype: Sakstype,
+        val vedlegg: P1Dto
+    ) : BrevbakerBrevdata
+}
 
 data class P1Dto(
     val kravMottattDato: LocalDate
