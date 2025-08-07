@@ -1,23 +1,31 @@
 package no.nav.pensjon.brev.maler
 
+
 import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.sakstype
-import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.PesysDataSelectors.sakstype
+import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.pesysData
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggType
 
+// Mal 000090 i doksys
 @TemplateModelHelpers
-object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsvedtakDto> {
-    override val kode = Pesysbrevkoder.AutoBrev.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK // 000090
+object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjonsvedtakDto> {
+    override val kode = Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK // 000090
+    override val kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
+    override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
+    override val sakstyper = setOf(Sakstype.ALDER, Sakstype.UFOREP, Sakstype.GJENLEV, Sakstype.BARNEP)
 
     override val template = createTemplate(
         name = kode.name,
@@ -37,6 +45,8 @@ object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsv
             )
         }
         outline {
+            val sakstype = pesysData.sakstype.format().ifNull(fritekst("sakstype"))
+
             title1 {
                 text(
                     Bokmal to "P1 – Samlet melding om pensjonsvedtak",
@@ -48,22 +58,7 @@ object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsv
                     Bokmal to "I forbindelse med din søknad om ",
                     English to "Your application for "
                 )
-                showIf(sakstype.equalTo(Sakstype.UFOREP)) {
-                    text(
-                        Bokmal to "uføretrygd",
-                        English to "invalidity pension"
-                    )
-                }.orShowIf(sakstype.equalTo(Sakstype.ALDER)) {
-                    text(
-                        Bokmal to "alderspensjon",
-                        English to "old age pension"
-                    )
-                }.orShowIf(sakstype.equalTo(Sakstype.GJENLEV)) {
-                    text(
-                        Bokmal to "etterlattepensjon",
-                        English to "survivors pension"
-                    )
-                }
+                eval(sakstype)
                 text(
                     Bokmal to " fra EUs og EØS medlemsland legger vi ved",
                     English to " from EU/EEA member countries, we enclose:"
@@ -88,29 +83,17 @@ object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsv
                     Bokmal to "P1 gir deg oversikt over pensjonsvedtak fattet av trygdemyndigheter som har behandlet din søknad om ",
                     English to "The P1 form provides an overview of the decisions taken in your case by the various institutions in the EU/EEA member countries."
                 )
-                showIf(sakstype.equalTo(Sakstype.UFOREP)) {
-                    text(
-                        Bokmal to "uføretrygd",
-                        English to ""
-                    )
-                }.orShowIf(sakstype.equalTo(Sakstype.ALDER)) {
-                    text(
-                        Bokmal to "alderspensjon",
-                        English to ""
-                    )
-                }.orShowIf(sakstype.equalTo(Sakstype.GJENLEV)) {
-                    text(
-                        Bokmal to "etterlattepensjon",
-                        English to ""
-                    )
-                }
+                eval(sakstype)
                 text(
                     Bokmal to ".",
                     English to ""
                 )
             }
         }
+//        includeAttachment(PDFVedleggType.P1, argument) // TODO: Vedlegga kommer i et seinere steg
+//        includeAttachment(PDFVedleggType.InformasjonOmP1)
         includeAttachment(PDFVedleggType.P1, argument)
         includeAttachment(PDFVedleggType.InformasjonOmP1)
     }
+
 }

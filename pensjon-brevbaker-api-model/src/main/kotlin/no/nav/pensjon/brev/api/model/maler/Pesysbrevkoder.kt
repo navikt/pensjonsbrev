@@ -63,6 +63,7 @@ object Pesysbrevkoder {
 
     enum class Redigerbar : Redigerbart {
         INFORMASJON_OM_SAKSBEHANDLINGSTID,
+        P1_SAMLET_MELDING_OM_PENSJONSVEDTAK,
         PE_AP_AVSLAG_FOR_LITE_TRYGDETID,
         PE_AP_AVSLAG_GJENLEVENDERETT,
         PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER,

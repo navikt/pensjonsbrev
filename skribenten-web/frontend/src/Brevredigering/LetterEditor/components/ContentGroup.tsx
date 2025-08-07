@@ -6,10 +6,12 @@ import {
   fontTypeOf,
   isBlockContentIndex,
   isItemContentIndex,
+  isTable,
   text as textOf,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { logPastedClipboard } from "~/Brevredigering/LetterEditor/actions/paste";
+import TableView from "~/Brevredigering/LetterEditor/components/TableView";
 import { Text } from "~/Brevredigering/LetterEditor/components/Text";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -26,8 +28,17 @@ import {
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
-import { NEW_LINE } from "~/types/brevbakerTypes";
+import { NEW_LINE, TABLE } from "~/types/brevbakerTypes";
 import { ElementTags, FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+
+import { isTableCellIndex } from "../model/utils";
+import {
+  addRow,
+  exitTable,
+  handleBackspaceInTableCell,
+  isAtLastTableCell,
+  nextTableFocus,
+} from "../services/tableCaretUtils";
 
 /**
  * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
@@ -89,6 +100,15 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
               </ul>
             );
           }
+          case TABLE:
+            return (
+              <TableView
+                blockIndex={literalIndex.blockIndex}
+                contentIndex={_contentIndex}
+                key={_contentIndex}
+                node={content}
+              />
+            );
         }
       })}
     </div>
@@ -96,8 +116,14 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
 }
 
 const hasFocus = (focus: Focus, literalIndex: LiteralIndex) => {
-  if (isBlockContentIndex(focus) && isBlockContentIndex(literalIndex)) {
-    return focus.blockIndex === literalIndex.blockIndex && focus.contentIndex === literalIndex.contentIndex;
+  if (isTableCellIndex(focus) && isTableCellIndex(literalIndex)) {
+    return (
+      focus.blockIndex === literalIndex.blockIndex &&
+      focus.contentIndex === literalIndex.contentIndex &&
+      focus.rowIndex === literalIndex.rowIndex &&
+      focus.cellIndex === literalIndex.cellIndex &&
+      focus.cellContentIndex === literalIndex.cellContentIndex
+    );
   } else if (isItemContentIndex(focus) && isItemContentIndex(literalIndex)) {
     return (
       focus.blockIndex === literalIndex.blockIndex &&
@@ -105,8 +131,9 @@ const hasFocus = (focus: Focus, literalIndex: LiteralIndex) => {
       focus.itemIndex === literalIndex.itemIndex &&
       focus.itemContentIndex === literalIndex.itemContentIndex
     );
+  } else if (isBlockContentIndex(focus) && isBlockContentIndex(literalIndex)) {
+    return focus.blockIndex === literalIndex.blockIndex && focus.contentIndex === literalIndex.contentIndex;
   }
-
   return false;
 };
 
@@ -291,13 +318,46 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
   };
 
+  const handleTab = (event: React.KeyboardEvent<HTMLSpanElement>): boolean => {
+    const { focus } = editorState;
+    const block = editorState.redigertBrev.blocks[focus.blockIndex];
+    const content = block.content[focus.contentIndex];
+
+    if (!isTableCellIndex(focus) || !isTable(content)) {
+      return false;
+    }
+
+    const direction = event.shiftKey ? "backward" : "forward";
+    event.preventDefault();
+    // If we're at the last cell and tabbing forward, append a row and stop here.
+    if (direction === "forward" && isAtLastTableCell(editorState)) {
+      addRow(editorState, setEditorState, event);
+      return true;
+    }
+
+    // Otherwise, ask nextTableFocus helper where to go inside the table
+    const next = nextTableFocus(editorState, direction);
+
+    // nextTableFocus returns the same focus when we're at an edge,
+    // so "no movement" means we should exit the table.
+    const didMove =
+      isTableCellIndex(next) &&
+      (next.rowIndex !== focus.rowIndex ||
+        next.cellIndex !== focus.cellIndex ||
+        next.cellContentIndex !== focus.cellContentIndex);
+
+    if (didMove) {
+      // Move caret within the table
+      setEditorState((prev) => ({ ...prev, focus: next }));
+    } else {
+      // At an edge, exit table
+      setEditorState(exitTable(direction));
+    }
+    return true;
+  };
+
   const handlePaste = (event: React.ClipboardEvent<HTMLSpanElement>) => {
     event.preventDefault();
-
-    if (freeze) {
-      event.stopPropagation();
-      return;
-    }
     // TODO: for debugging frem til vi er ferdig å teste liming
     logPastedClipboard(event.clipboardData);
 
@@ -362,11 +422,19 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         );
       }}
       onKeyDown={(event) => {
+        if (event.key === "Backspace") {
+          if (handleBackspaceInTableCell(event, editorState, setEditorState)) return;
+
+          handleBackspace(event);
+          return;
+        }
+
+        if (event.key === "Tab") {
+          if (handleTab(event)) return;
+          return;
+        }
         if (event.key === "Enter") {
           handleEnter(event);
-        }
-        if (event.key === "Backspace") {
-          handleBackspace(event);
         }
         if (event.key === "Delete") {
           handleDelete(event);

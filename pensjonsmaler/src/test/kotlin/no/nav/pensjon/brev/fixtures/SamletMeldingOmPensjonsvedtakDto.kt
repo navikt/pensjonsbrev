@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.fixtures
 
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
+import no.nav.pensjon.brev.api.model.maler.P1Dto
 import no.nav.pensjon.brev.api.model.maler.Penger
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto.Adresse
@@ -22,8 +24,16 @@ import java.time.LocalDate
 import java.time.Month
 import java.time.Period
 
-fun createSamletMeldingOmPensjonsvedtakDto() =
-    SamletMeldingOmPensjonsvedtakDto(
+fun createSamletMeldingOmPensjonsvedtakDto() = SamletMeldingOmPensjonsvedtakDto(
+    saksbehandlerValg = EmptyBrevdata,
+    pesysData = SamletMeldingOmPensjonsvedtakDto.PesysData(
+        sakstype = Sakstype.ALDER,
+        vedlegg = createP1Dto()
+    ),
+)
+
+fun createP1Dto() =
+    P1Dto(
         innehaver = P1Person(
             fornavn = "Peder",
             etternavn = "Ås",
@@ -302,7 +312,7 @@ fun createSamletMeldingOmPensjonsvedtakDto() =
             dato = LocalDate.now(),
             underskrift = "Lars Holm, saksbehandler",
         )
-    )
+)
 
 private fun avslaattPensjon() = AvslaattPensjon(
     institusjon = "NAY 4",

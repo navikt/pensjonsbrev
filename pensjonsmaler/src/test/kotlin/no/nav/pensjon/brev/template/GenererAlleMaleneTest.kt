@@ -9,19 +9,17 @@ import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.ProductionTemplates
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.LetterExample
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertAll
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
 
-val filterForPDF = listOf(Pesysbrevkoder.AutoBrev.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK)
+val filterForPDF = listOf(LetterExample.kode)
 
 class GenererAlleMaleneTest {
 
@@ -35,7 +33,7 @@ class GenererAlleMaleneTest {
         spraak: Language,
     ) {
         if (!template.language.supports(spraak)) {
-            println("Mal ${template.name} fins ikke på språk ${spraak.javaClass.simpleName}, tester ikke denne")
+            println("Mal ${template.name} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return
         }
         val letter = LetterTestImpl(template, fixtures, spraak, Fixtures.felles)
@@ -52,7 +50,7 @@ class GenererAlleMaleneTest {
         spraak: Language,
     ) {
         if (!template.language.supports(spraak)) {
-            println("Mal ${template.name} fins ikke på språk ${spraak.javaClass.simpleName}, tester ikke denne")
+            println("Mal ${template.name} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return
         }
         LetterTestImpl(
@@ -66,14 +64,14 @@ class GenererAlleMaleneTest {
     private fun filnavn(brevkode: Brevkode<*>, spraak: Language) =
         "${brevkode.kode()}_${spraak.javaClass.simpleName}"
 
-
     @Test
     fun `alle maler skal bruke en unik brevkode`() {
-        val malKoder = (ProductionTemplates.hentRedigerbareMaler() + ProductionTemplates.hentRedigerbareMaler())
+        val malKoder = (ProductionTemplates.hentAutobrevmaler() + ProductionTemplates.hentRedigerbareMaler())
             .map { it.kode.kode() }
 
         malKoder.sorted().zipWithNext { a, b ->
-            assert(a != b) {"Alle brevmaler må bruke egne unike brevkoder! Brevkode $a brukes i flere brev."} }
+            assert(a != b) { "Alle brevmaler må bruke egne unike brevkoder! Brevkode $a brukes i flere brev." }
+        }
     }
 
     companion object {
@@ -91,11 +89,7 @@ class GenererAlleMaleneTest {
                         ProductionTemplates.hentRedigerbareMaler()
                         + LetterExample
                         + EksempelbrevRedigerbart
-                        ).filter {
-                        filter.isEmpty() || filter.any { f ->
-                            it.kode.kode() == f.kode()
-                        }
-                    }
+                        ).filter { filter.isEmpty() || filter.any { f -> it.kode.kode() == f.kode() } }
                     .map { Arguments.of(it.template, it.kode, Fixtures.create(it.template.letterDataType), spraak) }
             }
         }

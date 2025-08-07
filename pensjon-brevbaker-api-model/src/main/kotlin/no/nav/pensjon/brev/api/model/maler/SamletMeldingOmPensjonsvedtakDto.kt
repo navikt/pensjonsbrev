@@ -7,6 +7,16 @@ import java.time.LocalDate
 import java.time.Period
 
 data class SamletMeldingOmPensjonsvedtakDto(
+    override val saksbehandlerValg: EmptyBrevdata,
+    override val pesysData: PesysData
+) : RedigerbarBrevdata<EmptyBrevdata, SamletMeldingOmPensjonsvedtakDto.PesysData> {
+    data class PesysData(
+        val sakstype: Sakstype,
+        val vedlegg: P1Dto
+    ) : BrevbakerBrevdata
+}
+
+data class P1Dto(
     val innehaver: P1Person,
     val forsikrede: P1Person,
     val sakstype: Sakstype,
