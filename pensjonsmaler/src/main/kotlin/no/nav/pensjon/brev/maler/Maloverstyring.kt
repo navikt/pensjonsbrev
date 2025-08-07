@@ -41,6 +41,7 @@ fun isEnabled(kode: String) = when (kode) {
     Pesysbrevkoder.Redigerbar.PE_AP_INNVILGELSE_TRYGDEAVTALE.kode() -> FeatureToggles.innvilgelseAvAlderspensjonTrygdeavtale
     Pesysbrevkoder.Redigerbar.PE_AP_STANS_FLYTTING_MELLOM_LAND.kode() -> FeatureToggles.vedtakStansFlyttingMellomLand
     Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_FOR_LITE_TRYGDETID.kode() -> FeatureToggles.avslagForLiteTrygdetidAP
+    Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_FLYTTING_MELLOM_LAND.kode() -> FeatureToggles.vedtakEndringVedFlyttingMellomLand
 
     else -> null
 }?.let { FeatureToggleSingleton.isEnabled(it) } ?: true

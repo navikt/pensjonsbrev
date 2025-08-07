@@ -6,6 +6,7 @@ import axios from "axios";
 import type {
   BestillBrevResponse,
   BrevInfo,
+  BrevResponse,
   DelvisOppdaterBrevRequest,
   DelvisOppdaterBrevResponse,
   OppdaterBrevRequest,
@@ -42,13 +43,9 @@ export const hentPdfForBrevFunction = async (saksId: string, brevId: string | nu
       })
   )?.data ?? null;
 
-export const delvisOppdaterBrev = async (argz: DelvisOppdaterBrevRequest) =>
-  (
-    await axios.patch<DelvisOppdaterBrevResponse>(
-      `${SKRIBENTEN_API_BASE_PATH}/sak/${argz.saksId}/brev/${argz.brevId}`,
-      argz,
-    )
-  ).data;
+export const delvisOppdaterBrev = async (saksId: string, brevId: string | number, body: DelvisOppdaterBrevRequest) =>
+  (await axios.patch<DelvisOppdaterBrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, body))
+    .data;
 
 export const slettBrev = async (saksId: string, brevId: string | number) =>
   (await axios.delete<void>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`)).data;
@@ -83,12 +80,11 @@ export const attesterBrev = async (args: {
   const frigiReservasjon = args.frigiReservasjon ?? true;
 
   return (
-    await axios.put<Blob>(
+    await axios.put<BrevResponse>(
       `${SKRIBENTEN_API_BASE_PATH}/sak/${args.saksId}/brev/${args.brevId}/attestering?frigiReservasjon=${frigiReservasjon}`,
       {
         saksbehandlerValg: args.request.saksbehandlerValg,
         redigertBrev: args.request.redigertBrev,
-        signaturAttestant: args.request.signatur,
       },
     )
   ).data;

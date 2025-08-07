@@ -138,9 +138,8 @@ fun <ParameterType : Any> Letter<ParameterType>.renderTestPDF(
                         it.letterMarkup,
                         it.attachments,
                         language.toCode(),
-                        felles,
                         template.letterMetadata.brevtype,
-                        pdfVedlegg = renderPDFAttachments(this@renderTestPDF)
+                        renderPDFAttachments(this@renderTestPDF)
                     )
                 )
             }.bytes

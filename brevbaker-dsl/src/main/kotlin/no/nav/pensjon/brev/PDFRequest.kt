@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev
 
-import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -12,8 +11,6 @@ class PDFRequest(
     val letterMarkup: LetterMarkup,
     val attachments: List<LetterMarkup.Attachment>,
     val language: LanguageCode,
-    // TODO: Kan fjernes, brukes ikke lenger av pdf-bygger
-    val felles: Felles?,
     val brevtype: LetterMetadata.Brevtype,
     val pdfVedlegg: List<PDFVedlegg> = emptyList()
 ) {
@@ -22,14 +19,13 @@ class PDFRequest(
         return letterMarkup == other.letterMarkup
                 && attachments == other.attachments
                 && language == other.language
-                && felles == other.felles
                 && brevtype == other.brevtype
                 && pdfVedlegg == other.pdfVedlegg
     }
 
-    override fun hashCode() = Objects.hash(letterMarkup, language, felles, attachments, language, brevtype, pdfVedlegg)
+    override fun hashCode() = Objects.hash(letterMarkup, language, attachments, language, brevtype, pdfVedlegg)
     override fun toString(): String {
-        return "PDFRequest(letterMarkup=$letterMarkup, attachments=$attachments, language=$language, felles=$felles, brevtype=$brevtype, pdfVedlegg=$pdfVedlegg)"
+        return "PDFRequest(letterMarkup=$letterMarkup, attachments=$attachments, language=$language, brevtype=$brevtype, pdfVedlegg=$pdfVedlegg)"
     }
 }
 

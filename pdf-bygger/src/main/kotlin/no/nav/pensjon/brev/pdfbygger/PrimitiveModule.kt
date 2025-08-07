@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.converters
+package no.nav.pensjon.brev.pdfbygger
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext

@@ -53,6 +53,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AP2025TidligUttakHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AfpPrivatErBrukt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.BilateralAvtaleHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.EOSLandAvtaleHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.GarantitilleggHjemmel
@@ -170,11 +171,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                     )
                 }
                 showIf(saksbehandlerValg.nyBeregningAvInnvilgetAP) {
-                    textExpr(
-                        Bokmal to "Vi har beregnet alderspensjonen din på nytt fra ".expr() + kravVirkDatoFom,
-                        Nynorsk to "Vi har berekna alderspensjonen din på nytt frå ".expr() + kravVirkDatoFom,
-                        English to "We have recalculated your retirement pension from ".expr() + kravVirkDatoFom
-                    )
+                    includePhrase(BeregnaPaaNytt(pesysData.kravVirkDatoFom))
                 }
             }
         }
