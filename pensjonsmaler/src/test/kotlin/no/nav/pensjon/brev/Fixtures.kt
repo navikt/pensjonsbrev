@@ -178,6 +178,8 @@ object Fixtures {
             MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned::class -> createMaanedligUfoeretrygdFoerSkattDtoUfoeretrygdPerMaaned() as T
             MaanedligUfoeretrygdFoerSkattDto::class -> createMaanedligUfoeretrygdFoerSkattDto() as T
             MaanedligPensjonFoerSkattAP2025Dto::class -> createMaanedligPensjonFoerSkattAP2025() as T
+            OmregningAlderUfore2016Dto::class -> createOmregningAlderUfore2016Dto() as T
+            OmregningAlderUfore2016RedigerbarDto::class -> createOmregningAlderUfore2016RedigerbarDto() as T
             OmsorgEgenAutoDto::class -> createOmsorgEgenAutoDto() as T
             OmsorgEgenManuellDto::class -> createOmsorgManuellDto() as T
             OpphoerBarnetilleggAutoDto::class -> createOpphoerBarnetilleggAutoDto() as T
