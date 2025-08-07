@@ -1,8 +1,8 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
-import type { Cell, ParagraphBlock, Row } from "~/types/brevbakerTypes";
-import { PARAGRAPH } from "~/types/brevbakerTypes";
+import type { Cell, ParagraphBlock, Row, Title1Block, Title2Block } from "~/types/brevbakerTypes";
+import { PARAGRAPH, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
 
 import { addElements, isTable, newLiteral, newRow, removeElements } from "../actions/common";
 import type { Focus, LetterEditorState } from "../model/state";
@@ -84,6 +84,14 @@ export function isAtLastTableCell(state: LetterEditorState): boolean {
   return f.rowIndex === lastRowIndex && f.cellIndex === lastColIndex;
 }
 
+function insertBlankLiteralIfEmptyBlock(block: ParagraphBlock | Title1Block | Title2Block, contentIndex: number) {
+  if (block.type === PARAGRAPH || block.type === TITLE1 || block.type === TITLE2) {
+    addElements([newLiteral({ editedText: "" })], contentIndex, block.content, block.deletedContent);
+    return true;
+  }
+  return false;
+}
+
 /**
  * Move focus out of a table cell to the next or previous editable position.
  *
@@ -114,9 +122,7 @@ export const exitTable = (direction: "forward" | "backward") =>
           return;
         }
         // If next block is an empty paragraph, insert a blank literal so it can receive focus
-        if (nextBlock.type === PARAGRAPH) {
-          const p = nextBlock as Draft<ParagraphBlock>;
-          addElements([newLiteral({ editedText: "" })], 0, p.content, p.deletedContent);
+        if (insertBlankLiteralIfEmptyBlock(nextBlock, 0)) {
           draft.focus = { blockIndex: f.blockIndex + 1, contentIndex: 0, cursorPosition: 0 };
           draft.isDirty = true;
           return;
@@ -126,9 +132,8 @@ export const exitTable = (direction: "forward" | "backward") =>
         return;
       }
       // 3) End of document: append an empty literal after the table
-      if (block.type === PARAGRAPH) {
-        const p = block as Draft<ParagraphBlock>;
-        addElements([newLiteral({ editedText: "" })], f.contentIndex + 1, p.content, p.deletedContent);
+      const inserted = insertBlankLiteralIfEmptyBlock(block, f.contentIndex + 1);
+      if (inserted) {
         draft.focus = { blockIndex: f.blockIndex, contentIndex: f.contentIndex + 1, cursorPosition: 0 };
         draft.isDirty = true;
       }
@@ -149,9 +154,7 @@ export const exitTable = (direction: "forward" | "backward") =>
         return;
       }
       // If previous block is empty paragraph, insert a blank literal for focus
-      if (prevBlock.type === PARAGRAPH) {
-        const p = prevBlock as Draft<ParagraphBlock>;
-        addElements([newLiteral({ editedText: "" })], 0, p.content, p.deletedContent);
+      if (insertBlankLiteralIfEmptyBlock(prevBlock, 0)) {
         draft.focus = { blockIndex: f.blockIndex - 1, contentIndex: 0, cursorPosition: 0 };
         draft.isDirty = true;
         return;
@@ -160,9 +163,8 @@ export const exitTable = (direction: "forward" | "backward") =>
       return;
     }
     // 3) Start of document: insert before the table so focus can land there
-    if (block.type === PARAGRAPH) {
-      const p = block as Draft<ParagraphBlock>;
-      addElements([newLiteral({ editedText: "" })], f.contentIndex, p.content, p.deletedContent);
+    const inserted = insertBlankLiteralIfEmptyBlock(block, f.contentIndex);
+    if (inserted) {
       draft.focus = { blockIndex: f.blockIndex, contentIndex: f.contentIndex, cursorPosition: 0 };
       draft.isDirty = true;
     }
