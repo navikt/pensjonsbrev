@@ -66,7 +66,7 @@ class GenererAlleMaleneTest {
 
     @Test
     fun `alle maler skal bruke en unik brevkode`() {
-        val malKoder = (ProductionTemplates.hentRedigerbareMaler() + ProductionTemplates.hentRedigerbareMaler())
+        val malKoder = (ProductionTemplates.hentAutobrevmaler() + ProductionTemplates.hentRedigerbareMaler())
             .map { it.kode.kode() }
 
         malKoder.sorted().zipWithNext { a, b ->
