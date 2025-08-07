@@ -22,6 +22,10 @@ export const handleSwitchContent = <T, U, V, W>(args: {
     case "NEW_LINE": {
       return args.onNewLine(args.content);
     }
+    case "TABLE": {
+      // TABLE content is handled elsewhere (e.g. see switchFontType for direct table handling)
+      return undefined;
+    }
   }
 };
 

@@ -37,7 +37,7 @@ services:
     build: ./skribenten-backend
     depends_on:
       skribenten-backend-db:
-          condition: service_healthy
+        condition: service_healthy
     ports:
       - "8082:8080"
       - "5017:5017"
@@ -57,11 +57,11 @@ services:
   skribenten-backend-db:
     profiles:
       - skribenten
-    image: 'postgres:14-alpine'
+    image: "postgres:14-alpine"
     ports:
       - "5432:5432"
     healthcheck:
-      test: [ 'CMD', 'pg_isready', '-U', 'postgres' ]
+      test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 3s
     restart: always
     environment:
