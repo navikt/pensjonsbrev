@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
+// Mal 000090 i doksys
 @TemplateModelHelpers
 object SamletMeldingOmPensjonsvedtak : AutobrevTemplate<SamletMeldingOmPensjonsvedtakDto> {
     override val kode = Pesysbrevkoder.AutoBrev.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK // 000090
