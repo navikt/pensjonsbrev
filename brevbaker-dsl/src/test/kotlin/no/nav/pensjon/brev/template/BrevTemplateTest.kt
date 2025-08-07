@@ -19,7 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Test
 
 private enum class RedigerbarBrevkode : Brevkode.Redigerbart {
-    TESTBREV;
+    TESTBREV_REDIGERBART;
 
     override fun kode() = name
 }
@@ -31,7 +31,7 @@ private class BrevTemplateTest {
         override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
         override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
         override val sakstyper = Sakstype.all
-        override val kode = RedigerbarBrevkode.TESTBREV
+        override val kode = RedigerbarBrevkode.TESTBREV_REDIGERBART
         override val template =
             createTemplate(
                 name = "test",

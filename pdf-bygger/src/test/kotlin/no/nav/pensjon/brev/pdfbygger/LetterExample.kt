@@ -33,7 +33,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 
 enum class LetterExampleBrevkode : Brevkode.Automatisk {
-    TESTBREV;
+    TESTBREV_PDFBYGGER;
 
     override fun kode() = name
 }
@@ -41,7 +41,7 @@ enum class LetterExampleBrevkode : Brevkode.Automatisk {
 @TemplateModelHelpers
 object LetterExample : AutobrevTemplate<LetterExampleDto> {
 
-    override val kode: Brevkode.Automatisk = LetterExampleBrevkode.TESTBREV
+    override val kode: Brevkode.Automatisk = LetterExampleBrevkode.TESTBREV_PDFBYGGER
 
     override val template = createTemplate(
         name = "EKSEMPEL_BREV", //Letter ID
