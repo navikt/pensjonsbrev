@@ -24,8 +24,6 @@ import no.nav.pensjon.brev.pdfbygger.pdfByggerConfig
 import no.nav.pensjon.brev.pdfbygger.vedlegg.PDFVedleggAppender
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
-import kotlin.time.Duration
-import kotlin.time.Duration.Companion.seconds
 
 fun Application.restModule(
     prometheusMeterRegistry: PrometheusMeterRegistry
