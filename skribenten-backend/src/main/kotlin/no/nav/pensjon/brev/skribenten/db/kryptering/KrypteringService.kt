@@ -7,42 +7,33 @@ import javax.crypto.spec.SecretKeySpec
 import kotlin.io.encoding.Base64
 
 class KrypteringService(private val krypteringsnoekkel: String) {
+    val algorithm: String = "AES/CBC/PKCS5Padding"
 
     fun krypterData(data: ByteArray): ByteArray = krypter(hentNoekkel(), data)
 
     fun dekrypterData(data: ByteArray): ByteArray = dekrypter(hentNoekkel(), data)
 
-    fun krypterString(data: String): String = String(krypterData(data.toByteArray()))
-
-    fun dekrypterString(data: String): String = String(dekrypterData(data.toByteArray()))
-
-
     private val transformation = "AES"
-    private val provider = "BC"
 
     private fun krypter(noekkel: SecretKey, data: ByteArray): ByteArray {
         val keydata = noekkel.encoded
         val skeySpec = SecretKeySpec(keydata, 0, keydata.size, transformation)
-        val cipher = Cipher.getInstance(transformation, provider)
+        val cipher = Cipher.getInstance(algorithm)
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec, IvParameterSpec(ByteArray(cipher.blockSize)))
         return cipher.doFinal(data)
     }
 
     private fun dekrypter(noekkel: SecretKey, data: ByteArray): ByteArray {
-        val cipher = Cipher.getInstance(transformation, provider)
+        val cipher = Cipher.getInstance(algorithm)
         cipher.init(Cipher.DECRYPT_MODE, noekkel, IvParameterSpec(ByteArray(cipher.blockSize)))
         return cipher.doFinal(data)
     }
-
-
 
     private fun hentNoekkel(): SecretKey {
         if (krypteringsnoekkel.isEmpty()) {
             throw Exception("Kunne ikke finne krypteringsnøkkel. Er ENV \"CRYPTKEY\" satt?")
         }
-
         val decodedNoekkel = Base64.decode(krypteringsnoekkel)
-
         return SecretKeySpec(decodedNoekkel, 0, decodedNoekkel.size, transformation)
     }
 }
