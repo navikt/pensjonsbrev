@@ -1,11 +1,12 @@
 package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.brev.Landkode
-import no.nav.brev.brevbaker.vedlegg.PDFVedlegg
-import no.nav.brev.brevbaker.vedlegg.PDFVedlegg.Side
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
+import no.nav.pensjon.brevbaker.api.model.PDFVedlegg.Side
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.VedleggType
 import java.time.LocalDate
 import java.time.Period
 import java.time.format.DateTimeFormatter
@@ -217,7 +218,7 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
         "institution-underskrift" to utfyllendeInstitusjon.underskrift,
     )
 
-    return PDFVedlegg(innvilgedePensjoner + avslaattePensjoner + side1 + side4)
+    return PDFVedlegg(type = VedleggType("P1", "P1"), data = EmptyBrevdata, innvilgedePensjoner + avslaattePensjoner + side1 + side4)
 }
 
 private fun List<*>.tilAntallSider() = Math.ceilDiv(this.size, RADER_PER_SIDE)

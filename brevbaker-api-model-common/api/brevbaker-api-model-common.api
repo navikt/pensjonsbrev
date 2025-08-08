@@ -49,28 +49,6 @@ public final class no/nav/brev/brevbaker/PDFCompilationOutput {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/brev/brevbaker/vedlegg/PDFVedlegg {
-	public fun <init> (Ljava/util/Map;)V
-	public final fun antallSider ()I
-	public fun equals (Ljava/lang/Object;)Z
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class no/nav/brev/brevbaker/vedlegg/PDFVedlegg$Side {
-	public static final synthetic fun box-impl (I)Lno/nav/brev/brevbaker/vedlegg/PDFVedlegg$Side;
-	public static fun constructor-impl (I)I
-	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl (ILjava/lang/Object;)Z
-	public static final fun equals-impl0 (II)Z
-	public final fun getSidenummer ()I
-	public fun hashCode ()I
-	public static fun hashCode-impl (I)I
-	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl (I)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()I
-}
-
 public final class no/nav/pensjon/brev/api/model/BestillBrevRequest : no/nav/pensjon/brev/api/model/BrevRequest {
 	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -659,21 +637,27 @@ public final class no/nav/pensjon/brevbaker/api/model/NavEnhet {
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/PDFVedlegg {
-	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;)V
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Ljava/util/Map;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
-	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;
+	public final fun getSider ()Ljava/util/Map;
+	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/PDFVedleggType : java/lang/Enum {
-	public static final field InformasjonOmP1 Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;
-	public static final field P1 Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public final fun getTittel ()Ljava/lang/String;
-	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;
-	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;
+public final class no/nav/pensjon/brevbaker/api/model/PDFVedlegg$Side {
+	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/PDFVedlegg$Side;
+	public static fun constructor-impl (I)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public final fun getSidenummer ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/brevbaker/api/model/IntValue {
