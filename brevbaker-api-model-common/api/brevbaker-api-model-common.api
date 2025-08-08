@@ -798,10 +798,10 @@ public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/VedleggType {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/util/Map;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getName ()Ljava/lang/String;
-	public final fun getTittel ()Ljava/lang/String;
+	public final fun getTittel ()Ljava/util/Map;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }

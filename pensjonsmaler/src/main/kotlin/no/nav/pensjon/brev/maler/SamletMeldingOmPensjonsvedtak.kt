@@ -19,7 +19,6 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.VedleggType
 
 // Mal 000090 i doksys
 @TemplateModelHelpers
@@ -92,6 +91,7 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
                 )
             }
         }
+
         includeAttachment(Vedleggtyper.P1, pesysData.vedlegg)
         includeAttachment(Vedleggtyper.InformasjonOmP1)
     }

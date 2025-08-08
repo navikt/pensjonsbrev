@@ -5,7 +5,7 @@ import kotlin.collections.map
 
 class VedleggType(
     val name: String,
-    val tittel: String
+    val tittel: Map<LanguageCode, String>
 ) {
     override fun equals(other: Any?): Boolean {
         if (other !is VedleggType) { return false}

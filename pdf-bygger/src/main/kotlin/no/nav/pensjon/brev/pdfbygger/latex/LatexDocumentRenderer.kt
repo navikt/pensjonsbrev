@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.pensjonLatexSettings
+import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.*
@@ -31,12 +32,13 @@ internal object LatexDocumentRenderer {
     )
 
     @OptIn(InterneDataklasser::class)
-    private fun List<PDFVedlegg>.asAttachment(): List<LetterMarkup.Attachment> = this.map {
+    private fun List<PDFVedlegg>.asAttachment(language: Language): List<LetterMarkup.Attachment> = this.map {
         LetterMarkupImpl.AttachmentImpl(
             title = listOf(
+                // TODO: Dette kjens litt hacky. Burde kunne finne på noko lurt med expression for å unngå dette
                 LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
                     id = it.hashCode(),
-                    text = it.type.tittel,
+                    text = it.type.tittel.get(language.toCode())!!,
                 )
             ),
             blocks = listOf(),
@@ -53,7 +55,7 @@ internal object LatexDocumentRenderer {
     ): LatexDocument =
         LatexDocument().apply {
             newLatexFile("params.tex") {
-                appendMasterTemplateParameters(letter, attachments + pdfVedlegg.asAttachment(), brevtype, language)
+                appendMasterTemplateParameters(letter, attachments + pdfVedlegg.asAttachment(language), brevtype, language)
             }
             newLatexFile("letter.xmpdata") { appendXmpData(letter, language) }
             newLatexFile("letter.tex") { renderLetterTemplate(letter, attachments) }

@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
@@ -57,7 +56,7 @@ class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any> inter
 class PDFTemplate<AttachmentData : PDFVedleggData>(
     val type: VedleggType,
     val data: Expression<AttachmentData>
-) : StableHash by StableHash.of(StableHash.of(type.name+type.tittel), data) {
+) : StableHash by StableHash.of(StableHash.of(type.name), StableHash.of(type.tittel.entries.joinToString()),data) {
     override fun equals(other: Any?): Boolean {
         if (other !is PDFTemplate<*>) return false
         return type == other.type && data == other.data
