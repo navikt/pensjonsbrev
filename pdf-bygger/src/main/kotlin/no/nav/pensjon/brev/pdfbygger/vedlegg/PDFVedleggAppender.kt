@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.pdfbygger.vedlegg.P1VedleggAppender.lesInnP1
 import no.nav.pensjon.brev.pdfbygger.vedlegg.P1VedleggAppender.lesInnP1Vedlegg
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
-import no.nav.pensjon.brevbaker.api.model.PDFVedleggType
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
 import org.apache.pdfbox.pdmodel.PDPage
@@ -39,9 +38,10 @@ internal object PDFVedleggAppender {
     }
 
     private fun lesInnVedlegg(attachment: PDFVedlegg, spraak: LanguageCode): PDDocument =
-        when (attachment.type) {
-            PDFVedleggType.P1 -> lesInnP1(attachment.data as SamletMeldingOmPensjonsvedtakDto, spraak)
-            PDFVedleggType.InformasjonOmP1 -> lesInnP1Vedlegg(spraak)
+        when (attachment.type.name) {
+            "P1"  -> lesInnP1(attachment.data as SamletMeldingOmPensjonsvedtakDto, spraak)
+            "InformasjonOmP1" -> lesInnP1Vedlegg(spraak)
+            else -> throw NotImplementedError()
         }
 
     private fun leggPaaBlankPartallsside(

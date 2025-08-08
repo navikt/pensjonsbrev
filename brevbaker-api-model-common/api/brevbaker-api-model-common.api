@@ -808,6 +808,15 @@ public final class no/nav/pensjon/brevbaker/api/model/TemplateModelSpecification
 	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/TemplateModelSpecification$FieldType$Type;
 }
 
+public final class no/nav/pensjon/brevbaker/api/model/VedleggType {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getName ()Ljava/lang/String;
+	public final fun getTittel ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class no/nav/pensjon/brevbaker/api/model/Year : no/nav/pensjon/brevbaker/api/model/IntValue {
 	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/Year;
 	public static fun constructor-impl (I)I

@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brevbaker.api.model.PDFVedleggType
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
+import no.nav.pensjon.brevbaker.api.model.VedleggType
 import java.util.Objects
 
 fun <Lang : LanguageSupport, LetterData : Any> createAttachment(
@@ -54,9 +54,9 @@ class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : Any> inter
 }
 
 class PDFTemplate<AttachmentData : BrevbakerBrevdata>(
-    val type: PDFVedleggType,
+    val type: VedleggType,
     val data: Expression<AttachmentData>
-) : StableHash by StableHash.of(StableHash.of(type), data) {
+) : StableHash by StableHash.of(StableHash.of(type.name+type.tittel), data) {
     override fun equals(other: Any?): Boolean {
         if (other !is PDFTemplate<*>) return false
         return type == other.type && data == other.data

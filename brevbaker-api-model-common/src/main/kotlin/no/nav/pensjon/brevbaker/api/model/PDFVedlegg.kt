@@ -3,13 +3,20 @@ package no.nav.pensjon.brevbaker.api.model
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import java.util.Objects
 
-enum class PDFVedleggType(val tittel: String) {
-    P1("P1 – Samlet melding om pensjonsvedtak"),
-    InformasjonOmP1("Informasjon om skjemaet P1 og hvordan det brukes")
+class VedleggType(
+    val name: String,
+    val tittel: String
+) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is VedleggType) { return false}
+        return name == other.name && tittel == other.tittel
+    }
+    override fun hashCode() = Objects.hash(name, tittel)
+    override fun toString() = "VedleggType(name='$name', tittel='$tittel')"
 }
 
 class PDFVedlegg(
-    val type: PDFVedleggType,
+    val type: VedleggType,
     val data: BrevbakerBrevdata
 ) {
     override fun equals(other: Any?): Boolean {

@@ -48,14 +48,14 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     }
 
     fun <AttachmentData : BrevbakerBrevdata> includeAttachment(
-        type: PDFVedleggType,
+        type: VedleggType,
         attachmentData: Expression<AttachmentData>
     ) {
         pdfAttachments.add(PDFTemplate(type, attachmentData))
     }
 
     fun includeAttachment(
-        type: PDFVedleggType
+        type: VedleggType
     ) {
         pdfAttachments.add(PDFTemplate(type, EmptyBrevdata.expr()))
     }

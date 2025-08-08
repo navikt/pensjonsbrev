@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.PDFVedleggType
+import no.nav.pensjon.brevbaker.api.model.VedleggType
 
 // Mal 000090 i doksys
 @TemplateModelHelpers
@@ -90,8 +90,8 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
                 )
             }
         }
-        includeAttachment(PDFVedleggType.P1, argument)
-        includeAttachment(PDFVedleggType.InformasjonOmP1)
+        includeAttachment(VedleggType("P1", "P1 – Samlet melding om pensjonsvedtak"), argument)
+        includeAttachment(VedleggType("InformasjonOmP1", "Informasjon om skjemaet P1 og hvordan det brukes"))
     }
 
 }
