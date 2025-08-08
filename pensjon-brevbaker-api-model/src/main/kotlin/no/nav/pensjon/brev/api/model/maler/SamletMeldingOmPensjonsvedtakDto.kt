@@ -169,20 +169,20 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
             val felt = innvilgedePensjoner.getOrNull(radnummer)
                 ?.let { innvilgetPensjon(Radnummer((radnummer % RADER_PER_SIDE) + 1), it) }
                 ?: emptyMap()
-            Side(sidenummer = index, originalSide = 2) to felt
+            Side(sidenummer = index, originalSide = 2, felt)
         }
-    }.toMap()
+    }
 
     val avslaattePensjoner = (0..<avslaattePensjoner.tilAntallSider()).flatMap { index ->
         index.tilRaderPerSide().mapNotNull { radnummer ->
             val felt = avslaattePensjoner.getOrNull(radnummer)
                 ?.let { avslaattPensjon(Radnummer((radnummer % RADER_PER_SIDE) + 1),it) }
                 ?: emptyMap()
-            Side(sidenummer = index, originalSide = 3) to felt
+            Side(sidenummer = index, originalSide = 3, felt)
         }
-    }.toMap()
+    }
 
-    val side1 = Side(1) to mapOf(
+    val side1 = Side(1, felt = mapOf(
             // innehaver
             "holder-fornavn" to innehaver.fornavn,
             "holder-etternavn" to innehaver.etternavn,
@@ -204,9 +204,9 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
 
             "kravMottattDato" to kravMottattDato.formater(),
             "sakstype" to sakstype.name // TODO denne er vel for enkel
-        )
+        ))
 
-    val side4 = Side(4) to mapOf(
+    val side4 = Side(4, felt = mapOf(
         // utfyllende institusjon
         "institution-navn" to utfyllendeInstitusjon.navn,
         "institution-adresselinje" to utfyllendeInstitusjon.adresselinje,
@@ -219,7 +219,7 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
         "institution-epost" to utfyllendeInstitusjon.epost.value,
         "institution-dato" to utfyllendeInstitusjon.dato.formater(),
         "institution-underskrift" to utfyllendeInstitusjon.underskrift,
-    )
+    ))
 
     return PDFVedlegg(type = VedleggType("P1", "P1"), innvilgedePensjoner + avslaattePensjoner + side1 + side4)
 }

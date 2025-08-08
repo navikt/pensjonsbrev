@@ -14,7 +14,7 @@ internal object VedleggAppender {
         val merger = PDFMergerUtility()
         val sider = vedlegg.sider
 
-        sider.entries.forEach {
+        sider.forEach {
             merger.leggTilSide(target, settOppSide(vedlegg.type, it, sider.size, spraak))
         }
 
@@ -23,12 +23,12 @@ internal object VedleggAppender {
 
     private fun settOppSide(
         type: VedleggType,
-        side: Map.Entry<Side, Map<String, String?>>,
+        side: Side,
         antallSider: Int,
         spraak: LanguageCode,
     ): PDDocument =
-        lesInnPDF(type, "${type.name}-side${side.key.originalSide}.pdf", spraak).also { pdf ->
-            pdf.setValues(side.value + ("page" to "${side.key.sidenummer}/$antallSider"))
+        lesInnPDF(type, "${type.name}-side${side.originalSide}.pdf", spraak).also { pdf ->
+            pdf.setValues(side.felt + ("page" to "${side.sidenummer}/$antallSider"))
         }
 
     private fun lesInnPDF(vedleggType: VedleggType, filnavn: String, spraak: LanguageCode): PDDocument =

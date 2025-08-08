@@ -15,15 +15,11 @@ class VedleggType(
     override fun toString() = "VedleggType(name='$name', tittel='$tittel')"
 }
 
-class PDFVedlegg(
-    val type: VedleggType,
-    val sider: Map<Side, Map<String, String?>>
-) {
-
+class PDFVedlegg(val type: VedleggType, val sider: List<Side>) {
     init {
-        require(sider.keys.size == sider.keys.map { it.sidenummer }.distinct().size)
-        require(sider.keys.minOf { it.sidenummer } == 1)
-        require(sider.keys.maxOf { it.sidenummer } == sider.keys.size + 1)
+        require(sider.size == sider.map { it.sidenummer }.distinct().size)
+        require(sider.minOf { it.sidenummer } == 1)
+        require(sider.maxOf { it.sidenummer } == sider.size + 1)
     }
     override fun equals(other: Any?): Boolean {
         if (other !is PDFVedlegg) return false
@@ -33,7 +29,7 @@ class PDFVedlegg(
     override fun toString() = "PDFVedlegg(type=$type, sider=$sider)"
 }
 
-class Side(val sidenummer: Int, val originalSide: Int = sidenummer) {
+class Side(val sidenummer: Int, val originalSide: Int = sidenummer, val felt: Map<String, String?>) {
     override fun equals(other: Any?): Boolean {
         if (other !is Side) { return false}
         return sidenummer == other.sidenummer && originalSide == other.originalSide

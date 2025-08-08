@@ -637,9 +637,9 @@ public final class no/nav/pensjon/brevbaker/api/model/NavEnhet {
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/PDFVedlegg {
-	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;Ljava/util/Map;)V
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;Ljava/util/List;)V
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getSider ()Ljava/util/Map;
+	public final fun getSider ()Ljava/util/List;
 	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -660,9 +660,10 @@ public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/b
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Side {
-	public fun <init> (II)V
-	public synthetic fun <init> (IIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (IILjava/util/Map;)V
+	public synthetic fun <init> (IILjava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFelt ()Ljava/util/Map;
 	public final fun getOriginalSide ()I
 	public final fun getSidenummer ()I
 	public fun hashCode ()I
