@@ -29,7 +29,7 @@ class PDFVedlegg(val type: VedleggType, val sider: List<Side>) {
     override fun toString() = "PDFVedlegg(type=$type, sider=$sider)"
 }
 
-class Side(val sidenummer: Int, val originalSide: Int = sidenummer, val felt: Map<String, String?>) {
+class Side(val sidenummer: Int, val originalSide: Int, val felt: Map<String, String?>) {
     override fun equals(other: Any?): Boolean {
         if (other !is Side) { return false}
         return sidenummer == other.sidenummer && originalSide == other.originalSide

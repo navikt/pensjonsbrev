@@ -168,7 +168,7 @@ private const val RADER_PER_SIDE = 5
 fun P1Dto.somVedlegg(): PDFVedlegg {
     var gjeldendeSide = 0
 
-    val side1 = Side(++gjeldendeSide, felt = mapOf(
+    val side1 = Side(++gjeldendeSide, 1, felt = mapOf(
             // innehaver
             "holder-fornavn" to innehaver.fornavn,
             "holder-etternavn" to innehaver.etternavn,
@@ -212,7 +212,7 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
     }
     gjeldendeSide += avslaattePensjoner.size
 
-    val side4 = Side(++gjeldendeSide, felt = mapOf(
+    val side4 = Side(++gjeldendeSide, 4, felt = mapOf(
         // utfyllende institusjon
         "institution-navn" to utfyllendeInstitusjon.navn,
         "institution-adresselinje" to utfyllendeInstitusjon.adresselinje,
@@ -227,7 +227,7 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
         "institution-underskrift" to utfyllendeInstitusjon.underskrift,
     ))
 
-    return PDFVedlegg(type = VedleggType("P1", "P1"), innvilgedePensjoner + avslaattePensjoner + side1 + side4)
+    return PDFVedlegg(type = VedleggType("P1", "P1"), (innvilgedePensjoner + avslaattePensjoner + side1 + side4).sortedBy { it.sidenummer },)
 }
 
 private fun List<*>.tilAntallSider() = Math.ceilDiv(this.size, RADER_PER_SIDE)

@@ -670,7 +670,6 @@ public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/b
 
 public final class no/nav/pensjon/brevbaker/api/model/Side {
 	public fun <init> (IILjava/util/Map;)V
-	public synthetic fun <init> (IILjava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getFelt ()Ljava/util/Map;
 	public final fun getOriginalSide ()I
