@@ -12,6 +12,11 @@ class KrypteringService(private val krypteringsnoekkel: String) {
 
     fun dekrypterData(data: ByteArray): ByteArray = dekrypter(hentNoekkel(), data)
 
+    fun krypterString(data: String): String = String(krypterData(data.toByteArray()))
+
+    fun dekrypterString(data: String): String = String(dekrypterData(data.toByteArray()))
+
+
     private val transformation = "AES"
     private val provider = "BC"
 
@@ -28,6 +33,8 @@ class KrypteringService(private val krypteringsnoekkel: String) {
         cipher.init(Cipher.DECRYPT_MODE, noekkel, IvParameterSpec(ByteArray(cipher.blockSize)))
         return cipher.doFinal(data)
     }
+
+
 
     private fun hentNoekkel(): SecretKey {
         if (krypteringsnoekkel.isEmpty()) {
