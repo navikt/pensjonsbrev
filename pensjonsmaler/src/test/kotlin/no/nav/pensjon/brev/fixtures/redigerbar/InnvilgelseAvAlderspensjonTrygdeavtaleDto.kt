@@ -15,7 +15,6 @@ fun createInnvilgelseAvAlderspensjonTrygdeavtaleDto() =
     InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         saksbehandlerValg = InnvilgelseAvAlderspensjonTrygdeavtaleDto.SaksbehandlerValg(
             nyBeregningAvInnvilgetAP = false,
-            innvilgelseAPellerOektUttaksgrad = true,
             medfoererInnvilgelseAvAPellerOektUttaksgrad = false,
             oekningIPensjonen = false,
             reduksjonIPensjonen = false,
