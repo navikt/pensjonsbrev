@@ -38,6 +38,10 @@ class Side(val sidenummer: Int, val originalSide: Int = sidenummer, val felt: Ma
     override fun toString() = "Side(sidenummer=$sidenummer, originalSide=$originalSide)"
 }
 
-interface PDFVedleggData
+interface PDFVedleggData {
+    fun tilPDFVedlegg(): PDFVedlegg
+}
 
-object EmptyPDFVedleggData : PDFVedleggData
+object EmptyPDFVedleggData : PDFVedleggData {
+    override fun tilPDFVedlegg() = PDFVedlegg(type = VedleggType("tomt", "tomt"), listOf())
+}

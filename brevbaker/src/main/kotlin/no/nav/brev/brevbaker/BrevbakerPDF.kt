@@ -9,7 +9,6 @@ import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkup
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brev.template.toScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 
 internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
@@ -44,5 +43,5 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
 
 internal fun mapPDFAttachments(letter: Letter<*>) =
     letter.template.pdfAttachments
-        .map { it.type to it.data.eval(letter.toScope()) }
-        .map { PDFVedlegg(it.first, listOf()) } // TODO: Faktisk ta med data her. Transformer frå Expression til vanleg map
+        .map { it.data.eval(letter.toScope()) }
+        .map { it.tilPDFVedlegg() }

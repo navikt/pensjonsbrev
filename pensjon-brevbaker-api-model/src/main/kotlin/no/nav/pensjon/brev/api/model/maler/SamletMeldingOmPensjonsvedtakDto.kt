@@ -33,6 +33,7 @@ data class P1Dto(
     val avslaattePensjoner: List<AvslaattPensjon>,
     val utfyllendeInstitusjon: Institusjon, // I praksis Nav eller Nav-enheten
 ) : BrevbakerBrevdata, PDFVedleggData {
+    override fun tilPDFVedlegg() = somVedlegg()
 
     data class P1Person(
         val fornavn: String,
