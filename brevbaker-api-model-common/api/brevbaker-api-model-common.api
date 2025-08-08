@@ -49,6 +49,28 @@ public final class no/nav/brev/brevbaker/PDFCompilationOutput {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class no/nav/brev/brevbaker/vedlegg/PDFVedlegg {
+	public fun <init> (Ljava/util/Map;)V
+	public final fun antallSider ()I
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/brev/brevbaker/vedlegg/PDFVedlegg$Side {
+	public static final synthetic fun box-impl (I)Lno/nav/brev/brevbaker/vedlegg/PDFVedlegg$Side;
+	public static fun constructor-impl (I)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public final fun getSidenummer ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
 public final class no/nav/pensjon/brev/api/model/BestillBrevRequest : no/nav/pensjon/brev/api/model/BrevRequest {
 	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/Brevkode;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brevbaker/api/model/LanguageCode;)V
 	public fun equals (Ljava/lang/Object;)Z
