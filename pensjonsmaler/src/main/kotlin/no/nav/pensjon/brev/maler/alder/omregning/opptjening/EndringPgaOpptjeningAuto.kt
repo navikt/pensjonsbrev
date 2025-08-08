@@ -13,12 +13,12 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoS
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.sisteGyldigeOpptjeningsAar
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.uforeKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.virkFom
+import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittBegrunnelseForVedtaket
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittEndringPensjon
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittFlereBeregningsperioder
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittHjemmel
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittUtbetalingPerMaaned
-import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.BeskrivelseVedKorrigering
-import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.BeskrivelseVedTilvekst
+import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittBeskrivelse
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
@@ -54,12 +54,12 @@ object EndringPgaOpptjeningAuto : AutobrevTemplate<EndringPgaOpptjeningAutoDto> 
             )
         }
         outline {
-            includePhrase(BeskrivelseVedTilvekst(opptjening, sisteGyldigeOpptjeningsAar))
-            includePhrase(BeskrivelseVedKorrigering(opptjening, antallAarEndretOpptjening))
+            includePhrase(AvsnittBeskrivelse(opptjening, sisteGyldigeOpptjeningsAar, antallAarEndretOpptjening))
             includePhrase(AvsnittEndringPensjon(belopEndring))
             includePhrase(AvsnittUtbetalingPerMaaned(uforeKombinertMedAlder, beregnetPensjonPerMaanedGjeldende))
             includePhrase(AvsnittFlereBeregningsperioder(beregnetPensjonPerMaaned, beregnetPensjonPerMaanedVedVirk, regelverkType))
             includePhrase(AvsnittHjemmel(opptjening, regelverkType, beregnetPensjonPerMaanedVedVirk, erFoerstegangsbehandling))
+            includePhrase(AvsnittBegrunnelseForVedtaket(opptjening, antallAarEndretOpptjening, regelverkType))
 
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }

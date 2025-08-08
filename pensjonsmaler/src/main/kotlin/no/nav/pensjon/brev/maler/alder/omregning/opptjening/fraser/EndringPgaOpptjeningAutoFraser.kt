@@ -22,9 +22,10 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
 
-data class BeskrivelseVedTilvekst(
+data class AvsnittBeskrivelse(
     val opptjening: Expression<Opptjening>,
     val sisteGyldigeOpptjeningsAar: Expression<Int>,
+    val antallAarEndretOpptjening: Expression<Int>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(opptjening.equalTo(Opptjening.TILVEKST)) {
@@ -36,14 +37,6 @@ data class BeskrivelseVedTilvekst(
                 )
             }
         }
-    }
-}
-
-data class BeskrivelseVedKorrigering(
-    val opptjening: Expression<Opptjening>,
-    val antallAarEndretOpptjening: Expression<Int>,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(opptjening.equalTo(Opptjening.KORRIGERING)) {
             showIf(antallAarEndretOpptjening.equalTo(0)) {
                 paragraph {
@@ -153,7 +146,7 @@ data class AvsnittFlereBeregningsperioder(
                         Language.English to "Information about your calculation",
                     )
                 }
-                showIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2011)) {
+                showIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) {
                     text(
                         Language.Bokmal to "Slik har vi beregnet pensjonen din",
                         Language.Nynorsk to "Slik har vi berekna pensjonen din",
@@ -361,6 +354,113 @@ data class AvsnittHjemmel(
                         )
                     }
                 }
+            }
+        }
+    }
+}
+
+data class AvsnittBegrunnelseForVedtaket(
+    val opptjening: Expression<Opptjening>,
+    val antallAarEndretOpptjening: Expression<Int>,
+    val regelverkType: Expression<AlderspensjonRegelverkType>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title2 {
+            text(
+                Language.Bokmal to "Begrunnelse for vedtaket",
+                Language.Nynorsk to "Grunngiving for vedtaket",
+                Language.English to "Grounds for the decision"
+            )
+        }
+
+        paragraph {
+            showIf(opptjening.equalTo(Opptjening.TILVEKST)) {
+                text(
+                    Language.Bokmal to "Pensjonsopptjeningen din kan være endret av en eller flere grunner:",
+                    Language.Nynorsk to "Pensjonsoppteninga di kan vere endra av ein eller fleire grunnar:",
+                    Language.English to "There can be several reasons why your pension earnings have been changed:"
+                )
+                list {
+                    item {
+                        text(
+                            Language.Bokmal to "Du har fått medregnet inntekten din for dette året.",
+                            Language.Nynorsk to "Du har fått rekna med inntekta di for dette året.",
+                            Language.English to "Your pensionable income for this year has been added to your pension reserves."
+                        )
+                        text(
+                            Language.Bokmal to "Du har fått medregnet omsorgsopptjening for dette året fordi du har hatt omsorg for små barn eller pleietrengende personer.",
+                            Language.Nynorsk to "Du har fått rekna med omsorgsopptening for dette året fordi du har hatt omsorg for små barn eller pleietrengande personar.",
+                            Language.English to "You have been granted pension rights for unpaid care work. (Care for sick, disabled or elderly people, or care for children under the age of six years.)"
+                        )
+                        text(
+                            Language.Bokmal to "Du har fått lagt til trygdetid for dette året.",
+                            Language.Nynorsk to "Du har fått lagt til trygdetid for dette året.",
+                            Language.English to "You have been granted national insurance coverage for this year."
+                        )
+                    }
+                }
+
+                text(
+                    Language.Bokmal to "Du kan finne mer informasjon i vedlegget \"",
+                    Language.Nynorsk to "Du kan finne meir informasjon i vedlegget \"",
+                    Language.English to "You will find more information in the appendix \""
+                )
+                showIf(
+                    regelverkType.equalTo(AlderspensjonRegelverkType.AP2011) or regelverkType.equalTo(
+                        AlderspensjonRegelverkType.AP2016
+                    )
+                ) {
+                    text(
+                        Language.Bokmal to "Opplysninger brukt i beregningen",
+                        Language.Nynorsk to "Opplysningar brukte i berekninga",
+                        Language.English to "Information about your calculation",
+                    )
+                }
+                showIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) {
+                    text(
+                        Language.Bokmal to "Slik har vi beregnet pensjonen din",
+                        Language.Nynorsk to "Slik har vi berekna pensjonen din",
+                        Language.English to "This is how we have calculated your pension",
+                    )
+                }
+                text(
+                    Language.Bokmal to "\".",
+                    Language.Nynorsk to "\".",
+                    Language.English to "\".",
+                )
+            }
+            showIf(opptjening.equalTo(Opptjening.KORRIGERING) and antallAarEndretOpptjening.greaterThan(0)) {
+                text(
+                    Language.Bokmal to "Pensjonsopptjeningen kan være endret av flere grunner:",
+                    Language.Nynorsk to "Pensjonsoppteninga kan vere endra av fleire grunnar:",
+                    Language.English to "There can be several reasons why your pension earnings have been changed: "
+                )
+                list {
+                    item {
+                        text(
+                            Language.Bokmal to "Skatteetaten har endret skatteoppgjøret ditt.",
+                            Language.Nynorsk to "Skatteetaten har endra skatteoppgjeret.",
+                            Language.English to "The Norwegian Tax Administration has amended one or several tax returns."
+                        )
+                        text(
+                            Language.Bokmal to "Skatteetaten har endret din pensjonsgivende inntekt.",
+                            Language.Nynorsk to "Skatteetaten har endra den pensjonsgivande inntekta di.",
+                            Language.English to "The Norwegian Tax Administration has amended your pensionable income"
+                        )
+                        text(
+                            Language.Bokmal to "Du har fått ny eller endret omsorgsopptjening.",
+                            Language.Nynorsk to "Du har fått ny eller endra omsorgsopptening.",
+                            Language.English to "You have been granted pension rights for unpaid care work, or this pension rights have been changed. (Care for sick, disabled or elderly people, or care for children under the age of six years.)"
+                        )
+                    }
+                }
+            }
+            showIf(opptjening.equalTo(Opptjening.KORRIGERING) and antallAarEndretOpptjening.equalTo(0)) {
+                text(
+                    Language.Bokmal to "Pensjonsopptjeningen til den avdøde er endret.",
+                    Language.Nynorsk to "Pensjonsoppteninga til den avdøde er endra.",
+                    Language.English to "The accumulated rights earned by the deceased have been changed."
+                )
             }
         }
     }
