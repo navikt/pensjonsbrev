@@ -37,3 +37,7 @@ class Side(val sidenummer: Int, val originalSide: Int = sidenummer, val felt: Ma
     override fun hashCode() = Objects.hash(sidenummer, originalSide)
     override fun toString() = "Side(sidenummer=$sidenummer, originalSide=$originalSide)"
 }
+
+interface PDFVedleggData
+
+object EmptyPDFVedleggData : PDFVedleggData
