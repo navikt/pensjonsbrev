@@ -60,9 +60,6 @@ class PdfRequestConsumer(
     val flowScope = CoroutineScope(flowDispatcher)
     fun start() {
         consumerJob = flowScope.launch {
-            AdminClient.create(createKafkaProducerConfig(kafkaConfig))
-                .listTransactions().all().cancel(true)
-
             pollFlow()
                 .filter { !it.isEmpty }
                 .collect { produceResultsForTopic(renderLetters(it)) }
