@@ -42,7 +42,7 @@ object AvslagUttakFoerNormertPensjonsalderAP2016 : RedigerbarTemplate<AvslagUtta
         letterDataType = AvslagUttakFoerNormertPensjonsalderAP2016Dto::class,
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - avslag tidlig uttak av alderspensjon - AP2016",
+            displayTitle = "Vedtak - avslag tidlig uttak av alderspensjon",
             isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
