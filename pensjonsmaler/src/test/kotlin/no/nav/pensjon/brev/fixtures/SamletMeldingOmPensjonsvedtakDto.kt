@@ -4,7 +4,18 @@ import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptyBrevdata
 import no.nav.pensjon.brev.api.model.maler.P1Dto
-import no.nav.pensjon.brev.api.model.maler.P1Dto.*
+import no.nav.pensjon.brev.api.model.maler.P1Dto.Adresse
+import no.nav.pensjon.brev.api.model.maler.P1Dto.AvslaattPensjon
+import no.nav.pensjon.brev.api.model.maler.P1Dto.Avslagsbegrunnelse
+import no.nav.pensjon.brev.api.model.maler.P1Dto.Epost
+import no.nav.pensjon.brev.api.model.maler.P1Dto.GrunnlagInnvilget
+import no.nav.pensjon.brev.api.model.maler.P1Dto.InnvilgetPensjon
+import no.nav.pensjon.brev.api.model.maler.P1Dto.Institusjon
+import no.nav.pensjon.brev.api.model.maler.P1Dto.P1Person
+import no.nav.pensjon.brev.api.model.maler.P1Dto.Pensjonstype
+import no.nav.pensjon.brev.api.model.maler.P1Dto.Postnummer
+import no.nav.pensjon.brev.api.model.maler.P1Dto.Poststed
+import no.nav.pensjon.brev.api.model.maler.P1Dto.Reduksjonsgrunnlag
 import no.nav.pensjon.brev.api.model.maler.Penger
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
 import no.nav.pensjon.brev.api.model.maler.Valuta
@@ -13,16 +24,16 @@ import java.time.LocalDate
 import java.time.Month
 import java.time.Period
 
-fun createSamletMeldingOmPensjonsvedtakDto() = SamletMeldingOmPensjonsvedtakDto(
-    saksbehandlerValg = EmptyBrevdata,
-    pesysData = SamletMeldingOmPensjonsvedtakDto.PesysData(
-        sakstype = Sakstype.ALDER,
-        vedlegg = createP1Dto()
-    ),
-)
+fun createSamletMeldingOmPensjonsvedtakDto() =
+    SamletMeldingOmPensjonsvedtakDto(
+        saksbehandlerValg = EmptyBrevdata,
+        pesysData = SamletMeldingOmPensjonsvedtakDto.PesysData(
+            sakstype = Sakstype.ALDER,
+            vedlegg = createP1Dto()
+        )
+    )
 
-fun createP1Dto() =
-    P1Dto(
+fun createP1Dto() = P1Dto(
         innehaver = P1Person(
             fornavn = "Peder",
             etternavn = "Ås",
@@ -301,7 +312,7 @@ fun createP1Dto() =
             dato = LocalDate.now(),
             underskrift = "Lars Holm, saksbehandler",
         )
-)
+    )
 
 private fun avslaattPensjon() = AvslaattPensjon(
     institusjon = "NAY 4",

@@ -8,11 +8,11 @@ import java.time.Period
 
 data class SamletMeldingOmPensjonsvedtakDto(
     override val saksbehandlerValg: EmptyBrevdata,
-    override val pesysData: PesysData
+    override val pesysData: PesysData,
 ) : RedigerbarBrevdata<EmptyBrevdata, SamletMeldingOmPensjonsvedtakDto.PesysData> {
     data class PesysData(
         val sakstype: Sakstype,
-        val vedlegg: P1Dto
+        val vedlegg: P1Dto,
     ) : BrevbakerBrevdata
 }
 
@@ -85,7 +85,10 @@ data class P1Dto(
     enum class Avslagsbegrunnelse(val nummer: Int, val fullTekst: String) {
         IngenOpptjeningsperioder(4, "No insurance periods"),
         OpptjeningsperiodePaaMindreEnnEttAar(5, "Insurance periods less than one year"),
-        KravTilKvalifiseringsperiodeEllerAndreKvalifiseringskravErIkkeOppfylt(6, "qualifying period not completed or eligibility requirements not met"),
+        KravTilKvalifiseringsperiodeEllerAndreKvalifiseringskravErIkkeOppfylt(
+            6,
+            "qualifying period not completed or eligibility requirements not met"
+        ),
         VilkaarOmUfoerhetErIkkeOppfylt(7, "no partial disability or invalidity was found"),
         InntektstakErOverskredet(8, "income ceiling is exceeded"),
         PensjonsalderErIkkeNaadd(9, "pension age not yet reached"),
@@ -118,7 +121,7 @@ data class P1Dto(
     @JvmInline
     value class Postnummer(val value: String) {
         init {
-            require(value.length < 30) { "Postnumre er jo ikke kjempelange. $value er ${value.length} lang."}
+            require(value.length < 30) { "Postnumre er jo ikke kjempelange. $value er ${value.length} lang." }
         }
     }
 
@@ -132,12 +135,12 @@ data class P1Dto(
     @JvmInline
     value class Epost(val value: String) {
         init {
-            require(value.contains("@")) { "Epost må inneholde @"}
-            require(value.contains(".")) { "Epost må inneholde ."}
-            require(value.substringBefore("@").isNotEmpty()) { "Epost må ha verdi før @"}
-            require(value.substringAfter("@").isNotEmpty()) { "Epost må ha verdi etter @"}
-            require(value.substringBefore(".").isNotEmpty()) { "Epost må ha verdi før ."}
-            require(value.substringAfter("@").isNotEmpty()) { "Epost må ha verdi etter ."}
+            require(value.contains("@")) { "Epost må inneholde @" }
+            require(value.contains(".")) { "Epost må inneholde ." }
+            require(value.substringBefore("@").isNotEmpty()) { "Epost må ha verdi før @" }
+            require(value.substringAfter("@").isNotEmpty()) { "Epost må ha verdi etter @" }
+            require(value.substringBefore(".").isNotEmpty()) { "Epost må ha verdi før ." }
+            require(value.substringAfter("@").isNotEmpty()) { "Epost må ha verdi etter ." }
         }
     }
 }
