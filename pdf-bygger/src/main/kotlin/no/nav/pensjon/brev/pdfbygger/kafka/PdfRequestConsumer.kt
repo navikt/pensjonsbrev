@@ -59,6 +59,7 @@ class PdfRequestConsumer(
     private val flowDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     val flowScope = CoroutineScope(flowDispatcher)
     fun start() {
+        consumer.subscribe(listOf(renderTopic), RebalanceListener(replyProducers))
         consumerJob = flowScope.launch {
             pollFlow()
                 .filter { !it.isEmpty }
