@@ -20,7 +20,7 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
                     attachments = it.attachments,
                     language = letter.language.toCode(),
                     brevtype = letter.template.letterMetadata.brevtype,
-                    pdfVedlegg = renderPDFAttachments(letter)
+                    pdfVedlegg = mapPDFAttachments(letter)
                 )
             )
         }.let { pdf ->
@@ -42,7 +42,7 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
     }
 }
 
-internal fun renderPDFAttachments(letter: Letter<*>) =
+internal fun mapPDFAttachments(letter: Letter<*>) =
     letter.template.pdfAttachments
         .map { it.type to it.data.eval(letter.toScope()) }
         .map { PDFVedlegg(it.first, it.second) }
