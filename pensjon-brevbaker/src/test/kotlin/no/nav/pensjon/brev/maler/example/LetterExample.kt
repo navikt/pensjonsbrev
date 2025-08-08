@@ -131,7 +131,7 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
             }
 
             paragraph {
-                showIf(FeatureToggles.pl7231ForventetSvartid.expr().enabled() and true.expr()) {
+                showIf(FeatureToggles.pl7231ForventetSvartid.toggle().expr().enabled() and true.expr()) {
                     text(
                         Bokmal to "a",
                         Nynorsk to "b",
