@@ -637,9 +637,8 @@ public final class no/nav/pensjon/brevbaker/api/model/NavEnhet {
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/PDFVedlegg {
-	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;Ljava/util/Map;)V
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;Ljava/util/Map;)V
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getData ()Lno/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata;
 	public final fun getSider ()Ljava/util/Map;
 	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
 	public fun hashCode ()I
@@ -647,17 +646,13 @@ public final class no/nav/pensjon/brevbaker/api/model/PDFVedlegg {
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/PDFVedlegg$Side {
-	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/PDFVedlegg$Side;
-	public static fun constructor-impl (I)I
+	public fun <init> (II)V
+	public synthetic fun <init> (IIILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl (ILjava/lang/Object;)Z
-	public static final fun equals-impl0 (II)Z
+	public final fun getOriginalSide ()I
 	public final fun getSidenummer ()I
 	public fun hashCode ()I
-	public static fun hashCode-impl (I)I
 	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl (I)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()I
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/brevbaker/api/model/IntValue {

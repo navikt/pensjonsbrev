@@ -45,4 +45,4 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService) {
 internal fun mapPDFAttachments(letter: Letter<*>) =
     letter.template.pdfAttachments
         .map { it.type to it.data.eval(letter.toScope()) }
-        .map { PDFVedlegg(it.first, it.second, mapOf()) }
+        .map { PDFVedlegg(it.first, mapOf()) } // TODO: Faktisk ta med data her. Transformer frå Expression til vanleg map

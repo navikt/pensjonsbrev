@@ -169,7 +169,7 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
             val felt = innvilgedePensjoner.getOrNull(radnummer)
                 ?.let { innvilgetPensjon(Radnummer((radnummer % RADER_PER_SIDE) + 1), it) }
                 ?: emptyMap()
-            Side(index) to felt
+            Side(sidenummer = index, originalSide = 2) to felt
         }
     }.toMap()
 
@@ -178,7 +178,7 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
             val felt = avslaattePensjoner.getOrNull(radnummer)
                 ?.let { avslaattPensjon(Radnummer((radnummer % RADER_PER_SIDE) + 1),it) }
                 ?: emptyMap()
-            Side(index) to felt
+            Side(sidenummer = index, originalSide = 3) to felt
         }
     }.toMap()
 
@@ -201,6 +201,9 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
             "insured-poststed" to forsikrede.poststed.value,
             "insured-postnummer" to forsikrede.postnummer.value,
             "insured-landkode" to forsikrede.landkode.landkode,
+
+            "kravMottattDato" to kravMottattDato.formater(),
+            "sakstype" to sakstype.name // TODO denne er vel for enkel
         )
 
     val side4 = Side(4) to mapOf(
@@ -218,7 +221,7 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
         "institution-underskrift" to utfyllendeInstitusjon.underskrift,
     )
 
-    return PDFVedlegg(type = VedleggType("P1", "P1"), data = EmptyBrevdata, innvilgedePensjoner + avslaattePensjoner + side1 + side4)
+    return PDFVedlegg(type = VedleggType("P1", "P1"), innvilgedePensjoner + avslaattePensjoner + side1 + side4)
 }
 
 private fun List<*>.tilAntallSider() = Math.ceilDiv(this.size, RADER_PER_SIDE)

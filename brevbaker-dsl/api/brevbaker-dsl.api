@@ -790,10 +790,10 @@ public abstract class no/nav/pensjon/brev/template/OutlinePhrase {
 }
 
 public final class no/nav/pensjon/brev/template/PDFTemplate : no/nav/pensjon/brev/template/StableHash {
-	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;Lno/nav/pensjon/brev/template/Expression;)V
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;Lno/nav/pensjon/brev/template/Expression;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getData ()Lno/nav/pensjon/brev/template/Expression;
-	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;
+	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -1214,8 +1214,8 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)V
-	public final fun includeAttachment (Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;)V
-	public final fun includeAttachment (Lno/nav/pensjon/brevbaker/api/model/PDFVedleggType;Lno/nav/pensjon/brev/template/Expression;)V
+	public final fun includeAttachment (Lno/nav/pensjon/brevbaker/api/model/VedleggType;)V
+	public final fun includeAttachment (Lno/nav/pensjon/brevbaker/api/model/VedleggType;Lno/nav/pensjon/brev/template/Expression;)V
 	public static synthetic fun includeAttachment$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
 	public static synthetic fun includeAttachment$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
 	public final fun includeAttachmentIfNotNull (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V

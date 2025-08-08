@@ -39,7 +39,7 @@ internal object PDFVedleggAppender {
 
     private fun lesInnVedlegg(attachment: PDFVedlegg, spraak: LanguageCode): PDDocument =
         when (attachment.type.name) {
-            "P1"  -> lesInnP1(attachment.data as SamletMeldingOmPensjonsvedtakDto, spraak)
+            "P1"  -> lesInnP1(attachment, spraak)
             "InformasjonOmP1" -> lesInnP1Vedlegg(spraak)
             else -> throw NotImplementedError()
         }
