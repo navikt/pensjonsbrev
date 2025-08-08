@@ -90,8 +90,6 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
                 )
             }
         }
-//        includeAttachment(PDFVedleggType.P1, argument) // TODO: Vedlegga kommer i et seinere steg
-//        includeAttachment(PDFVedleggType.InformasjonOmP1)
         includeAttachment(PDFVedleggType.P1, argument)
         includeAttachment(PDFVedleggType.InformasjonOmP1)
     }
