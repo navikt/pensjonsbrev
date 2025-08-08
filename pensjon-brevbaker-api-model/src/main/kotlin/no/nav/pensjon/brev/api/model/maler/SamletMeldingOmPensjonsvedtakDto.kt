@@ -1,8 +1,9 @@
 package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.brev.Landkode
+import no.nav.brev.brevbaker.vedlegg.PDFVedlegg
+import no.nav.brev.brevbaker.vedlegg.PDFVedlegg.Side
 import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.maler.PDFVedlegg.*
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
@@ -166,8 +167,8 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
         index.tilRaderPerSide().mapNotNull { radnummer ->
             val felt = innvilgedePensjoner.getOrNull(radnummer)
                 ?.let { innvilgetPensjon(Radnummer((radnummer % RADER_PER_SIDE) + 1), it) }
-                ?: emptyList()
-            Side(index) to FlettefeltPerSide(felt)
+                ?: emptyMap()
+            Side(index) to felt
         }
     }.toMap()
 
@@ -175,8 +176,8 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
         index.tilRaderPerSide().mapNotNull { radnummer ->
             val felt = avslaattePensjoner.getOrNull(radnummer)
                 ?.let { avslaattPensjon(Radnummer((radnummer % RADER_PER_SIDE) + 1),it) }
-                ?: emptyList()
-            Side(index) to FlettefeltPerSide(felt)
+                ?: emptyMap()
+            Side(index) to felt
         }
     }.toMap()
 
@@ -199,7 +200,7 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
             "insured-poststed" to forsikrede.poststed.value,
             "insured-postnummer" to forsikrede.postnummer.value,
             "insured-landkode" to forsikrede.landkode.landkode,
-        ).map { Flettefelt(it.key, it.value) }.let { FlettefeltPerSide(it) }
+        )
 
     val side4 = Side(4) to mapOf(
         // utfyllende institusjon
@@ -214,7 +215,7 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
         "institution-epost" to utfyllendeInstitusjon.epost.value,
         "institution-dato" to utfyllendeInstitusjon.dato.formater(),
         "institution-underskrift" to utfyllendeInstitusjon.underskrift,
-    ).map { Flettefelt(it.key, it.value) }.let { FlettefeltPerSide(it) }
+    )
 
     return PDFVedlegg(innvilgedePensjoner + avslaattePensjoner + side1 + side4)
 }
@@ -223,7 +224,7 @@ private fun List<*>.tilAntallSider() = Math.ceilDiv(this.size, RADER_PER_SIDE)
 
 private fun Int.tilRaderPerSide(): IntRange = (this * RADER_PER_SIDE)..(this * RADER_PER_SIDE) + 4
 
-private fun innvilgetPensjon(radnummer: Radnummer, pensjon: P1Dto.InnvilgetPensjon): List<Flettefelt> =
+private fun innvilgetPensjon(radnummer: Radnummer, pensjon: P1Dto.InnvilgetPensjon) =
     mapOf(
         "$radnummer-institusjon" to pensjon.institusjon,
         "$radnummer-pensjonstype" to pensjon.pensjonstype.nummer.toString(),
@@ -233,17 +234,17 @@ private fun innvilgetPensjon(radnummer: Radnummer, pensjon: P1Dto.InnvilgetPensj
         "$radnummer-reduksjonsgrunnlag" to pensjon.reduksjonsgrunnlag?.nummer.toString(),
         "$radnummer-vurderingsperiode" to pensjon.vurderingsperiode.formater(),
         "$radnummer-adresseNyVurdering" to pensjon.adresseNyVurdering.formater(),
-    ).map { Flettefelt(it.key, it.value) }
+    )
 
 
-private fun avslaattPensjon(radnummer: Radnummer, pensjon: P1Dto.AvslaattPensjon): List<Flettefelt> =
+private fun avslaattPensjon(radnummer: Radnummer, pensjon: P1Dto.AvslaattPensjon) =
     mapOf(
         "$radnummer-institusjon" to pensjon.institusjon,
         "$radnummer-pensjonstype" to pensjon.pensjonstype.nummer.toString(),
         "$radnummer-avslagsbegrunnelse" to pensjon.avslagsbegrunnelse.nummer.toString(),
         "$radnummer-vurderingsperiode" to pensjon.vurderingsperiode.formater(),
         "$radnummer-adresseNyVurdering" to pensjon.adresseNyVurdering.formater(),
-    ).map { Flettefelt(it.key, it.value) }
+    )
 
 private fun LocalDate.formater(): String? =
     dateFormatter(LanguageCode.ENGLISH, FormatStyle.LONG).format(this) // TODO: Denne bør vel liggje ein annan plass
@@ -267,27 +268,3 @@ fun LanguageCode.locale(): Locale =
 
 @JvmInline
 private value class Radnummer(val rad: Int)
-
-
-
-
-// Dette er datastrukturen som bør liggje i brevbaker-api-model-common
-data class PDFVedlegg(private val sider: Map<Side, FlettefeltPerSide>) {
-    @JvmInline
-    value class Side(val sidenummer: Int)
-
-    init {
-        require(sider.keys.size == sider.keys.map { it.sidenummer }.distinct().size)
-        require(sider.keys.minOf { it.sidenummer } == 1)
-        require(sider.keys.maxOf { it.sidenummer } == sider.keys.size + 1)
-    }
-
-    data class FlettefeltPerSide(val felt: List<Flettefelt>)
-
-    data class Flettefelt(
-        val key: String,
-        val value: String?
-    )
-
-    fun antallSider() = sider.keys.size
-}
