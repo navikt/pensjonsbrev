@@ -13,10 +13,13 @@ import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.mdc
 import no.nav.pensjon.brev.pdfbygger.pdfByggerObjectMapper
+import org.apache.kafka.clients.admin.AbortTransactionSpec
+import org.apache.kafka.clients.admin.AdminClient
 import org.apache.kafka.clients.consumer.*
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.TopicPartition
+import org.apache.kafka.common.errors.UnknownTopicOrPartitionException
 import org.apache.kafka.common.serialization.Deserializer
 import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -33,7 +36,7 @@ private val QUEUE_READ_TIMEOUT = 1.seconds.toJavaDuration()
 
 class PdfRequestConsumer(
     private val latexCompileService: LatexCompileService,
-    kafkaConfig: ApplicationConfig,
+    private val kafkaConfig: ApplicationConfig,
     private val renderTopic: String,
 ) {
     private val logger = LoggerFactory.getLogger(PdfRequestConsumer::class.java)
@@ -55,9 +58,11 @@ class PdfRequestConsumer(
 
     private val flowDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
     val flowScope = CoroutineScope(flowDispatcher)
-
     fun start() {
         consumerJob = flowScope.launch {
+            AdminClient.create(createKafkaProducerConfig(kafkaConfig))
+                .listTransactions().all().cancel(true)
+
             pollFlow()
                 .filter { !it.isEmpty }
                 .collect { produceResultsForTopic(renderLetters(it)) }
