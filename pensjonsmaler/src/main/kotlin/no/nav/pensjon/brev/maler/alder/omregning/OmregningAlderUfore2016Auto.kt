@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSe
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.gjenlevenderettAnvendt
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.gjenlevendetilleggKap19Innvilget
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.godkjentYrkesskade
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.informasjonOmMedlemskapOgHelserettigheterDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.inngangOgEksportVurdering
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.innvilgetFor67
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016DtoSelectors.maanedligPensjonFoerSkattAlderspensjonDto
@@ -38,7 +39,8 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdodSelectors
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdodSelectors.avdodNavn
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.maler.vedlegg.maanedligPensjonFoerSkattAlderspensjon
-import no.nav.pensjon.brev.maler.vedlegg.opplysningerOmAvdoedBruktIBeregning
+import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerOmAvdoedBruktIBeregning
+import no.nav.pensjon.brev.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheter
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
@@ -110,11 +112,10 @@ object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto
         }
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)
-        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, opplysningerBruktIBeregningenAlderDto) //Burde dette være UT?
-        includeAttachmentIfNotNull(opplysningerOmAvdoedBruktIBeregning,opplysningerOmAvdoedBruktIBeregningDto )
-        includeAttachmentIfNotNull(maanedligPensjonFoerSkattAlderspensjon,maanedligPensjonFoerSkattAlderspensjonDto )
-        //includeAttachmentIfNotNull(afpforskatt,pesysData.maanedligPensjonFoerSkattDto ) todo mangler
+        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, opplysningerBruktIBeregningenAlderDto)
+        includeAttachmentIfNotNull(vedleggOpplysningerOmAvdoedBruktIBeregning,opplysningerOmAvdoedBruktIBeregningDto)
+        includeAttachmentIfNotNull(maanedligPensjonFoerSkattAlderspensjon,maanedligPensjonFoerSkattAlderspensjonDto)
         includeAttachmentIfNotNull(vedleggInformasjonOmMedlemskapOgHelserettigheter,informasjonOmMedlemskapOgHelserettigheterDto)
-        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025,opplysningerBruktIBeregningenAlderAP2025Dto )
+        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025,opplysningerBruktIBeregningenAlderAP2025Dto)
     }
 }
