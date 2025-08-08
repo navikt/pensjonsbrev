@@ -13,7 +13,9 @@ import no.nav.pensjon.brev.skribenten.db.Document
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.db.Mottaker
 import no.nav.pensjon.brev.skribenten.db.MottakerType
+import no.nav.pensjon.brev.skribenten.db.kryptering.DekryptertByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
+import no.nav.pensjon.brev.skribenten.db.kryptering.KryptertByteArray
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.klarTilSending
 import no.nav.pensjon.brev.skribenten.letter.toEdit
@@ -277,7 +279,7 @@ class BrevredigeringService(
             )
         }
 
-    suspend fun hentEllerOpprettPdf(saksId: Long, brevId: Long): ServiceResult<ByteArray>? {
+    suspend fun hentEllerOpprettPdf(saksId: Long, brevId: Long): ServiceResult<DekryptertByteArray>? {
         val (brevredigering, document) = transaction {
             Brevredigering.findByIdAndSaksId(brevId, saksId).let { it?.toDto() to it?.document?.firstOrNull()?.toDto() }
         }
@@ -354,7 +356,7 @@ class BrevredigeringService(
                         enhetId = brev.info.avsenderEnhetId,
                         templateDescription = template,
                         brevkode = brev.info.brevkode,
-                        pdf = krypteringService.dekrypterData(document.pdf),
+                        pdf = krypteringService.dekrypterData(document.pdf).byteArray,
                         eksternReferanseId = "skribenten:${brev.info.id}",
                         mottaker = brev.info.mottaker?.toPen(),
                     ),
@@ -502,7 +504,7 @@ class BrevredigeringService(
         }
     }
 
-    private suspend fun opprettPdf(brevredigering: Dto.Brevredigering): ServiceResult<ByteArray> {
+    private suspend fun opprettPdf(brevredigering: Dto.Brevredigering): ServiceResult<DekryptertByteArray> {
         return penService.hentPesysBrevdata(
             saksId = brevredigering.info.saksId,
             vedtaksId = brevredigering.info.vedtaksId,
@@ -523,13 +525,13 @@ class BrevredigeringService(
                 transaction {
                     val update: Document.() -> Unit = {
                         this.brevredigering = Brevredigering[brevredigering.info.id]
-                        pdf = ExposedBlob(krypteringService.krypterData(it.file))
+                        pdf = ExposedBlob(krypteringService.krypterData(DekryptertByteArray(it.file)).byteArray)
                         dokumentDato = pesysData.felles.dokumentDato
                         this.redigertBrevHash = brevredigering.redigertBrevHash
                     }
                     (Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf?.bytes
                         ?: Document.new(update).pdf.bytes)
-                        .let { krypteringService.dekrypterData(it) }
+                        .let { krypteringService.dekrypterData(KryptertByteArray(it)) }
                 }
             }
         }
@@ -680,7 +682,7 @@ private fun Document.toDto(): Dto.Document =
     Dto.Document(
         brevredigeringId = brevredigering.id.value,
         dokumentDato = dokumentDato,
-        pdf = pdf.bytes,
+        pdf = KryptertByteArray(pdf.bytes),
         redigertBrevHash = redigertBrevHash
     )
 

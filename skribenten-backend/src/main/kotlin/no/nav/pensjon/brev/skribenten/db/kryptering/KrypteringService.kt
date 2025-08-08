@@ -9,24 +9,24 @@ import kotlin.io.encoding.Base64
 class KrypteringService(private val krypteringsnoekkel: String) {
     val algorithm: String = "AES/CBC/PKCS5Padding"
 
-    fun krypterData(data: ByteArray): ByteArray = krypter(hentNoekkel(), data)
+    fun krypterData(data: DekryptertByteArray): KryptertByteArray = krypter(hentNoekkel(), data)
 
-    fun dekrypterData(data: ByteArray): ByteArray = dekrypter(hentNoekkel(), data)
+    fun dekrypterData(data: KryptertByteArray): DekryptertByteArray = dekrypter(hentNoekkel(), data)
 
     private val transformation = "AES"
 
-    private fun krypter(noekkel: SecretKey, data: ByteArray): ByteArray {
+    private fun krypter(noekkel: SecretKey, data: DekryptertByteArray): KryptertByteArray {
         val keydata = noekkel.encoded
         val skeySpec = SecretKeySpec(keydata, 0, keydata.size, transformation)
         val cipher = Cipher.getInstance(algorithm)
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec, IvParameterSpec(ByteArray(cipher.blockSize)))
-        return cipher.doFinal(data)
+        return cipher.doFinal(data.byteArray).let { KryptertByteArray(it) }
     }
 
-    private fun dekrypter(noekkel: SecretKey, data: ByteArray): ByteArray {
+    private fun dekrypter(noekkel: SecretKey, data: KryptertByteArray): DekryptertByteArray {
         val cipher = Cipher.getInstance(algorithm)
         cipher.init(Cipher.DECRYPT_MODE, noekkel, IvParameterSpec(ByteArray(cipher.blockSize)))
-        return cipher.doFinal(data)
+        return cipher.doFinal(data.byteArray).let { DekryptertByteArray(it) }
     }
 
     private fun hentNoekkel(): SecretKey {
@@ -37,3 +37,9 @@ class KrypteringService(private val krypteringsnoekkel: String) {
         return SecretKeySpec(decodedNoekkel, 0, decodedNoekkel.size, transformation)
     }
 }
+
+@JvmInline
+value class DekryptertByteArray(val byteArray: ByteArray)
+
+@JvmInline
+value class KryptertByteArray(val byteArray: ByteArray)
