@@ -2,8 +2,6 @@ package no.nav.pensjon.brev.pdfbygger.vedlegg
 
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
-import no.nav.pensjon.brev.pdfbygger.vedlegg.P1VedleggAppender.lesInnP1
-import no.nav.pensjon.brev.pdfbygger.vedlegg.P1VedleggAppender.lesInnP1Vedlegg
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
 import org.apache.pdfbox.multipdf.PDFMergerUtility
@@ -30,19 +28,12 @@ internal object PDFVedleggAppender {
         val originaltDokument = pdfCompilationResponse.pdfCompilationOutput.bytes.let { PDDocument.load(it) }
         merger.leggTilSide(target, originaltDokument)
         leggPaaBlankPartallsside(originaltDokument, merger, target)
-        attachments.map { lesInnVedlegg(it, spraak) }.forEach {
+        attachments.map { VedleggAppender.lesInnVedlegg(it, spraak) }.forEach {
             leggPaaBlankPartallsside(it, merger, target)
             merger.leggTilSide(target, it)
         }
         return tilByteArray(target).also { target.close() }
     }
-
-    private fun lesInnVedlegg(attachment: PDFVedlegg, spraak: LanguageCode): PDDocument =
-        when (attachment.type.name) {
-            "P1"  -> lesInnP1(attachment, spraak)
-            "InformasjonOmP1" -> lesInnP1Vedlegg(spraak)
-            else -> throw NotImplementedError()
-        }
 
     private fun leggPaaBlankPartallsside(
         originaltDokument: PDDocument,
