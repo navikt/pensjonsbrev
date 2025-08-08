@@ -13,9 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.NavEnhet
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -33,7 +31,7 @@ internal object LatexDocumentRenderer {
     )
 
     @OptIn(InterneDataklasser::class)
-    private fun List<PDFVedlegg>.somAttachment(): List<LetterMarkup.Attachment> = this.map {
+    private fun List<PDFVedlegg>.asAttachment(): List<LetterMarkup.Attachment> = this.map {
         LetterMarkupImpl.AttachmentImpl(
             title = listOf(
                 LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
@@ -55,7 +53,7 @@ internal object LatexDocumentRenderer {
     ): LatexDocument =
         LatexDocument().apply {
             newLatexFile("params.tex") {
-                appendMasterTemplateParameters(letter, attachments + pdfVedlegg.somAttachment(), brevtype, language)
+                appendMasterTemplateParameters(letter, attachments + pdfVedlegg.asAttachment(), brevtype, language)
             }
             newLatexFile("letter.xmpdata") { appendXmpData(letter, language) }
             newLatexFile("letter.tex") { renderLetterTemplate(letter, attachments) }
