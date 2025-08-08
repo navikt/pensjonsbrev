@@ -297,7 +297,8 @@ public final class no/nav/pensjon/brevbaker/api/model/ElementTags : java/lang/En
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/EmptyPDFVedleggData : no/nav/pensjon/brevbaker/api/model/PDFVedleggData {
-	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/EmptyPDFVedleggData;
+	public fun <init> (Lno/nav/pensjon/brevbaker/api/model/VedleggType;)V
+	public final fun getType ()Lno/nav/pensjon/brevbaker/api/model/VedleggType;
 	public fun tilPDFVedlegg ()Lno/nav/pensjon/brevbaker/api/model/PDFVedlegg;
 }
 

@@ -56,7 +56,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     fun includeAttachment(
         type: VedleggType
     ) {
-        pdfAttachments.add(PDFTemplate(type, EmptyPDFVedleggData.expr()))
+        pdfAttachments.add(PDFTemplate(type, EmptyPDFVedleggData(type).expr()))
     }
 
     fun includeAttachment(

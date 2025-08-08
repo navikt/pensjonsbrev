@@ -42,6 +42,6 @@ interface PDFVedleggData {
     fun tilPDFVedlegg(): PDFVedlegg
 }
 
-object EmptyPDFVedleggData : PDFVedleggData {
-    override fun tilPDFVedlegg() = PDFVedlegg(type = VedleggType("tomt", "tomt"), listOf())
+class EmptyPDFVedleggData(val type: VedleggType) : PDFVedleggData {
+    override fun tilPDFVedlegg() = PDFVedlegg(type = type, listOf())
 }
