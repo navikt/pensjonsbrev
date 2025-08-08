@@ -7,13 +7,12 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.PesysDataSelectors.sakstype
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.pesysData
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -45,6 +44,8 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
             )
         }
         outline {
+            val sakstype = pesysData.sakstype.format().ifNull(fritekst("sakstype"))
+
             title1 {
                 text(
                     Bokmal to "P1 – Samlet melding om pensjonsvedtak",
@@ -56,7 +57,7 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
                     Bokmal to "I forbindelse med din søknad om ",
                     English to "Your application for "
                 )
-                inkluderSakstype()
+                eval(sakstype)
                 text(
                     Bokmal to " fra EUs og EØS medlemsland legger vi ved",
                     English to " from EU/EEA member countries, we enclose:"
@@ -81,7 +82,7 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
                     Bokmal to "P1 gir deg oversikt over pensjonsvedtak fattet av trygdemyndigheter som har behandlet din søknad om ",
                     English to "The P1 form provides an overview of the decisions taken in your case by the various institutions in the EU/EEA member countries."
                 )
-                inkluderSakstype()
+                eval(sakstype)
                 text(
                     Bokmal to ".",
                     English to ""
@@ -92,26 +93,4 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
 //        includeAttachment(PDFVedleggType.InformasjonOmP1)
     }
 
-    private fun ParagraphOnlyScope<LanguageSupport.Double<Bokmal, English>, SamletMeldingOmPensjonsvedtakDto>.inkluderSakstype() =
-        showIf(pesysData.sakstype.equalTo(Sakstype.UFOREP)) {
-            text(
-                Bokmal to "uføretrygd",
-                English to "invalidity pension"
-            )
-        }.orShowIf(pesysData.sakstype.equalTo(Sakstype.ALDER)) {
-            text(
-                Bokmal to "alderspensjon",
-                English to "old age pension"
-            )
-        }.orShowIf(pesysData.sakstype.equalTo(Sakstype.GJENLEV)) {
-            text(
-                Bokmal to "etterlattepensjon",
-                English to "survivors pension"
-            )
-        }.orShowIf(pesysData.sakstype.equalTo(Sakstype.BARNEP)) {
-            text(
-                Bokmal to "barnepensjon",
-                English to "children’s pension"
-            )
-        }
 }
