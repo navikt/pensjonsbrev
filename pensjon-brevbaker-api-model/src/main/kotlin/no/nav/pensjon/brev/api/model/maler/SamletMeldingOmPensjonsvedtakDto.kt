@@ -165,25 +165,9 @@ value class Valuta(val valuta: String) {
 private const val RADER_PER_SIDE = 5
 
 fun P1Dto.somVedlegg(): PDFVedlegg {
-    val innvilgedePensjoner = (0..<innvilgedePensjoner.tilAntallSider()).flatMap { index ->
-        index.tilRaderPerSide().mapNotNull { radnummer ->
-            val felt = innvilgedePensjoner.getOrNull(radnummer)
-                ?.let { innvilgetPensjon(Radnummer((radnummer % RADER_PER_SIDE) + 1), it) }
-                ?: emptyMap()
-            Side(sidenummer = index, originalSide = 2, felt)
-        }
-    }
+    var gjeldendeSide = 0
 
-    val avslaattePensjoner = (0..<avslaattePensjoner.tilAntallSider()).flatMap { index ->
-        index.tilRaderPerSide().mapNotNull { radnummer ->
-            val felt = avslaattePensjoner.getOrNull(radnummer)
-                ?.let { avslaattPensjon(Radnummer((radnummer % RADER_PER_SIDE) + 1),it) }
-                ?: emptyMap()
-            Side(sidenummer = index, originalSide = 3, felt)
-        }
-    }
-
-    val side1 = Side(1, felt = mapOf(
+    val side1 = Side(++gjeldendeSide, felt = mapOf(
             // innehaver
             "holder-fornavn" to innehaver.fornavn,
             "holder-etternavn" to innehaver.etternavn,
@@ -207,7 +191,27 @@ fun P1Dto.somVedlegg(): PDFVedlegg {
             "sakstype" to sakstype.name // TODO denne er vel for enkel
         ))
 
-    val side4 = Side(4, felt = mapOf(
+    val innvilgedePensjoner: List<Side> = (0..<innvilgedePensjoner.tilAntallSider()).map { index ->
+        val felt = index.tilRaderPerSide().mapNotNull { radnummer ->
+            innvilgedePensjoner.getOrNull(radnummer)
+                ?.let { innvilgetPensjon(Radnummer((radnummer % RADER_PER_SIDE) + 1), it) }
+                ?: emptyMap()
+        }.reduce { acc, map -> acc + map }
+        Side(sidenummer = (index + 1) + gjeldendeSide, originalSide = 2, felt)
+    }
+    gjeldendeSide += innvilgedePensjoner.size
+
+    val avslaattePensjoner = (0..<avslaattePensjoner.tilAntallSider()).map { index ->
+        val felt = index.tilRaderPerSide().mapNotNull { radnummer ->
+            avslaattePensjoner.getOrNull(radnummer)
+                ?.let { avslaattPensjon(Radnummer((radnummer % RADER_PER_SIDE) + 1),it) }
+                ?: emptyMap()
+        }.reduce { acc, map -> acc + map }
+        Side(sidenummer = (index + 1) +gjeldendeSide, originalSide = 3, felt)
+    }
+    gjeldendeSide += avslaattePensjoner.size
+
+    val side4 = Side(++gjeldendeSide, felt = mapOf(
         // utfyllende institusjon
         "institution-navn" to utfyllendeInstitusjon.navn,
         "institution-adresselinje" to utfyllendeInstitusjon.adresselinje,
@@ -231,24 +235,24 @@ private fun Int.tilRaderPerSide(): IntRange = (this * RADER_PER_SIDE)..(this * R
 
 private fun innvilgetPensjon(radnummer: Radnummer, pensjon: P1Dto.InnvilgetPensjon) =
     mapOf(
-        "$radnummer-institusjon" to pensjon.institusjon,
-        "$radnummer-pensjonstype" to pensjon.pensjonstype.nummer.toString(),
-        "$radnummer-datoFoersteUtbetaling" to pensjon.datoFoersteUtbetaling.formater(),
-        "$radnummer-bruttobeloep" to pensjon.bruttobeloep.let { it.verdi.toString() + " " + it.valuta.valuta },
-        "$radnummer-grunnlagInnvilget" to pensjon.grunnlagInnvilget.nummer.toString(),
-        "$radnummer-reduksjonsgrunnlag" to pensjon.reduksjonsgrunnlag?.nummer.toString(),
-        "$radnummer-vurderingsperiode" to pensjon.vurderingsperiode.formater(),
-        "$radnummer-adresseNyVurdering" to pensjon.adresseNyVurdering.formater(),
+        "${radnummer.rad}-institusjon" to pensjon.institusjon,
+        "${radnummer.rad}-pensjonstype" to pensjon.pensjonstype.nummer.toString(),
+        "${radnummer.rad}-datoFoersteUtbetaling" to pensjon.datoFoersteUtbetaling.formater(),
+        "${radnummer.rad}-bruttobeloep" to pensjon.bruttobeloep.let { it.verdi.toString() + " " + it.valuta.valuta },
+        "${radnummer.rad}-grunnlagInnvilget" to pensjon.grunnlagInnvilget.nummer.toString(),
+        "${radnummer.rad}-reduksjonsgrunnlag" to pensjon.reduksjonsgrunnlag?.nummer.toString(),
+        "${radnummer.rad}-vurderingsperiode" to pensjon.vurderingsperiode.formater(),
+        "${radnummer.rad}-adresseNyVurdering" to pensjon.adresseNyVurdering.formater(),
     )
 
 
 private fun avslaattPensjon(radnummer: Radnummer, pensjon: P1Dto.AvslaattPensjon) =
     mapOf(
-        "$radnummer-institusjon" to pensjon.institusjon,
-        "$radnummer-pensjonstype" to pensjon.pensjonstype.nummer.toString(),
-        "$radnummer-avslagsbegrunnelse" to pensjon.avslagsbegrunnelse.nummer.toString(),
-        "$radnummer-vurderingsperiode" to pensjon.vurderingsperiode.formater(),
-        "$radnummer-adresseNyVurdering" to pensjon.adresseNyVurdering.formater(),
+        "${radnummer.rad}-institusjon" to pensjon.institusjon,
+        "${radnummer.rad}-pensjonstype" to pensjon.pensjonstype.nummer.toString(),
+        "${radnummer.rad}-avslagsbegrunnelse" to pensjon.avslagsbegrunnelse.nummer.toString(),
+        "${radnummer.rad}-vurderingsperiode" to pensjon.vurderingsperiode.formater(),
+        "${radnummer.rad}-adresseNyVurdering" to pensjon.adresseNyVurdering.formater(),
     )
 
 private fun LocalDate.formater(): String? =

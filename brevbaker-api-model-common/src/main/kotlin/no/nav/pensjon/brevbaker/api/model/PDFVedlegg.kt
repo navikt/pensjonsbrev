@@ -18,8 +18,8 @@ class VedleggType(
 class PDFVedlegg(val type: VedleggType, val sider: List<Side>) {
     init {
         require(sider.size == sider.map { it.sidenummer }.distinct().size)
-        require(sider.minOf { it.sidenummer } == 1)
-        require(sider.maxOf { it.sidenummer } == sider.size + 1)
+        require(sider.isEmpty() || sider.minOf { it.sidenummer } == 1)
+        require(sider.isEmpty() || sider.maxOf { it.sidenummer } == sider.size)
     }
     override fun equals(other: Any?): Boolean {
         if (other !is PDFVedlegg) return false
