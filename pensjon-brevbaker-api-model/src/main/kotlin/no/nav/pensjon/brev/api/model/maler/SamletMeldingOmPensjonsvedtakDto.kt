@@ -4,7 +4,7 @@ import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg.Side
+import no.nav.pensjon.brevbaker.api.model.Side
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import no.nav.pensjon.brevbaker.api.model.VedleggType
 import java.time.LocalDate

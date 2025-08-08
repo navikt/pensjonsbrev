@@ -645,16 +645,6 @@ public final class no/nav/pensjon/brevbaker/api/model/PDFVedlegg {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/PDFVedlegg$Side {
-	public fun <init> (II)V
-	public synthetic fun <init> (IIILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getOriginalSide ()I
-	public final fun getSidenummer ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/brevbaker/api/model/IntValue {
 	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/Percent;
 	public static fun constructor-impl (I)I
@@ -667,6 +657,16 @@ public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/b
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (I)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()I
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/Side {
+	public fun <init> (II)V
+	public synthetic fun <init> (IIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getOriginalSide ()I
+	public final fun getSidenummer ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere {

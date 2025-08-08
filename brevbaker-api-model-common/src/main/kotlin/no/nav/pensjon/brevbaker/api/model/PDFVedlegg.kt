@@ -19,14 +19,6 @@ class PDFVedlegg(
     val type: VedleggType,
     val sider: Map<Side, Map<String, String?>>
 ) {
-    class Side(val sidenummer: Int, val originalSide: Int = sidenummer) {
-        override fun equals(other: Any?): Boolean {
-            if (other !is Side) { return false}
-            return sidenummer == other.sidenummer && originalSide == other.originalSide
-        }
-        override fun hashCode() = Objects.hash(sidenummer, originalSide)
-        override fun toString() = "Side(sidenummer=$sidenummer, originalSide=$originalSide)"
-    }
 
     init {
         require(sider.keys.size == sider.keys.map { it.sidenummer }.distinct().size)
@@ -39,4 +31,13 @@ class PDFVedlegg(
     }
     override fun hashCode() = Objects.hash(type, sider)
     override fun toString() = "PDFVedlegg(type=$type, sider=$sider)"
+}
+
+class Side(val sidenummer: Int, val originalSide: Int = sidenummer) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is Side) { return false}
+        return sidenummer == other.sidenummer && originalSide == other.originalSide
+    }
+    override fun hashCode() = Objects.hash(sidenummer, originalSide)
+    override fun toString() = "Side(sidenummer=$sidenummer, originalSide=$originalSide)"
 }

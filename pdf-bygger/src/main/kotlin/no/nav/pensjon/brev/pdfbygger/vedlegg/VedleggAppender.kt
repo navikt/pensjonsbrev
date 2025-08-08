@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.pdfbygger.vedlegg
 
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.PDFVedlegg
-import no.nav.pensjon.brevbaker.api.model.PDFVedlegg.Side
+import no.nav.pensjon.brevbaker.api.model.Side
 import no.nav.pensjon.brevbaker.api.model.VedleggType
 import org.apache.pdfbox.multipdf.PDFMergerUtility
 import org.apache.pdfbox.pdmodel.PDDocument
