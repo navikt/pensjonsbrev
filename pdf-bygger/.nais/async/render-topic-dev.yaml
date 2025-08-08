@@ -16,3 +16,6 @@ spec:
       access: read
   config:
     partitions: 100
+    cleanupPolicy: "delete"
+    retentionBytes: -1
+    retentionHours: 336 # 2 uker for å agere på feil.
