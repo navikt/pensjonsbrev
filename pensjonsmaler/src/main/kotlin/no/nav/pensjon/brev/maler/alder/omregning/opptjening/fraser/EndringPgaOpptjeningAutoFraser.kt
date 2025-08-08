@@ -1,8 +1,15 @@
 package no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser
 
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedGjeldende
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedGjeldendeSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedGjeldendeSelectors.virkFom
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaaned
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.antallBeregningsperioderPensjon
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.garantipensjonInnvilget
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.gjenlevenderettAnvendt
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.minstenivaIndividuellInnvilget
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.minstenivaPensjonistParInnvilget
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.pensjonstilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.totalPensjon
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.virkFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.Opptjening
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.model.format
@@ -86,7 +93,7 @@ data class AvsnittEndringPensjon(
 
 data class AvsnittUtbetalingPerMaaned(
     val uforeKombinertMedAlder: Expression<Boolean>,
-    val beregnetPensjonPerMaanedGjeldende: Expression<BeregnetPensjonPerMaanedGjeldende>,
+    val beregnetPensjonPerMaanedGjeldende: Expression<BeregnetPensjonPerMaaned>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(uforeKombinertMedAlder.not()) {
@@ -114,6 +121,247 @@ data class AvsnittUtbetalingPerMaaned(
                 Language.Nynorsk to "Dersom du har andre pensjonsytingar som for eksempel AFP eller tenestepensjon, kjem slik utbetaling i tillegg til alderspensjonen. Alderspensjonen din blir betalt ut innan den 20. i kvar månad. Du finn meir informasjon om utbetalingane dine på ${Constants.UTBETALINGER_URL}.",
                 Language.English to "If you have occupational pensions from other schemes, this will be paid in addition to your retirement pension. Your pension will be paid at the latest on the 20th of each month. See the more detailed information on what you will receive at ${Constants.UTBETALINGER_URL}."
             )
+        }
+    }
+}
+
+data class AvsnittFlereBeregningsperioder(
+    val beregnetPensjonPerMaaned: Expression<BeregnetPensjonPerMaaned>,
+    val beregnetPensjonPerMaanedVedVirk: Expression<BeregnetPensjonPerMaaned>,
+    val regelverkType: Expression<AlderspensjonRegelverkType>
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(
+            beregnetPensjonPerMaaned.antallBeregningsperioderPensjon.greaterThan(1) and beregnetPensjonPerMaanedVedVirk.totalPensjon.greaterThan(
+                0
+            )
+        ) {
+            paragraph {
+                text(
+                    Language.Bokmal to "I vedlegget \"",
+                    Language.Nynorsk to "I vedlegget \"",
+                    Language.English to "In the appendix \"",
+                )
+                showIf(
+                    regelverkType.equalTo(AlderspensjonRegelverkType.AP2011) or regelverkType.equalTo(
+                        AlderspensjonRegelverkType.AP2016
+                    )
+                ) {
+                    text(
+                        Language.Bokmal to "Opplysninger brukt i beregningen",
+                        Language.Nynorsk to "Opplysningar brukte i berekninga",
+                        Language.English to "Information about your calculation",
+                    )
+                }
+                showIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2011)) {
+                    text(
+                        Language.Bokmal to "Slik har vi beregnet pensjonen din",
+                        Language.Nynorsk to "Slik har vi berekna pensjonen din",
+                        Language.English to "This is how we have calculated your pension",
+                    )
+                }
+                text(
+                    Language.Bokmal to "\" finner du detaljer om din månedlige pensjon.",
+                    Language.Nynorsk to "\" finn du detaljar om din månadlege pensjon.",
+                    Language.English to "\" you will find more details about your monthly pension.",
+                )
+            }
+        }
+    }
+}
+
+data class AvsnittHjemmel(
+    val opptjening: Expression<Opptjening>,
+    val regelverkType: Expression<AlderspensjonRegelverkType>,
+    val beregnetPensjonPerMaanedVedVirk: Expression<BeregnetPensjonPerMaaned>,
+    val erFoerstegangsbehandling: Expression<Boolean>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2011)) {
+            showIf(opptjening.equalTo(Opptjening.KORRIGERING)) {
+                paragraph {
+                    text(
+                        Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 3-15",
+                        Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 3-15",
+                        Language.English to "This decision was made pursuant to the provisions of §§ 3-15"
+                    )
+                    showIf(beregnetPensjonPerMaanedVedVirk.pensjonstilleggInnvilget and beregnetPensjonPerMaanedVedVirk.minstenivaPensjonistParInnvilget) {
+                        text(
+                            Language.Bokmal to ", 19-8, 19-9",
+                            Language.Nynorsk to ", 19-8, 19-9",
+                            Language.English to ", 19-8, 19-9"
+                        )
+                    }
+                    text(
+                        Language.Bokmal to ", 19-13",
+                        Language.Nynorsk to ", 19-13",
+                        Language.English to ", 19-13"
+                    )
+                    showIf(beregnetPensjonPerMaanedVedVirk.minstenivaIndividuellInnvilget) {
+                        text(
+                            Language.Bokmal to ", 19-14",
+                            Language.Nynorsk to ", 19-14",
+                            Language.English to ", 19-14"
+                        )
+                    }
+                    showIf(beregnetPensjonPerMaanedVedVirk.gjenlevenderettAnvendt) {
+                        text(
+                            Language.Bokmal to ", 19-16",
+                            Language.Nynorsk to ", 19-16",
+                            Language.English to ", 19-16"
+                        )
+                    }
+                    text(
+                        Language.Bokmal to " og 22-12.",
+                        Language.Nynorsk to " og 22-12.",
+                        Language.English to " and 22-12 of the National Insurance Act."
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        Language.Bokmal to "Vedtaket er gjort etter folketrygdloven § 19-13.",
+                        Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova § 19-13.",
+                        Language.English to "This decision was made pursuant to the provisions of § 19-13 of the National Insurance Act."
+                    )
+                }
+            }
+        }
+
+        showIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2016)) {
+            showIf(opptjening.equalTo(Opptjening.KORRIGERING)) {
+                paragraph {
+                    text(
+                        Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 3-15",
+                        Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 3-15",
+                        Language.English to "This decision was made pursuant to the provisions of §§ 3-15"
+                    )
+                    showIf(beregnetPensjonPerMaanedVedVirk.pensjonstilleggInnvilget and beregnetPensjonPerMaanedVedVirk.minstenivaPensjonistParInnvilget) {
+                        text(
+                            Language.Bokmal to ", 19-8, 19-9",
+                            Language.Nynorsk to ", 19-8, 19-9",
+                            Language.English to ", 19-8, 19-9"
+                        )
+                    }
+                    text(
+                        Language.Bokmal to ", 19-13",
+                        Language.Nynorsk to ", 19-13",
+                        Language.English to ", 19-13"
+                    )
+                    showIf(beregnetPensjonPerMaanedVedVirk.minstenivaIndividuellInnvilget) {
+                        text(
+                            Language.Bokmal to ", 19-14",
+                            Language.Nynorsk to ", 19-14",
+                            Language.English to ", 19-14"
+                        )
+                    }
+                    showIf(beregnetPensjonPerMaanedVedVirk.gjenlevenderettAnvendt) {
+                        text(
+                            Language.Bokmal to ", 19-16",
+                            Language.Nynorsk to ", 19-16",
+                            Language.English to ", 19-16"
+                        )
+                    }
+                    showIf(beregnetPensjonPerMaanedVedVirk.garantipensjonInnvilget) {
+                        text(
+                            Language.Bokmal to ", 20-9",
+                            Language.Nynorsk to ", 20-9",
+                            Language.English to ", 20-9"
+                        )
+                    }
+                    text(
+                        Language.Bokmal to ", 22-17",
+                        Language.Nynorsk to ", 20-17",
+                        Language.English to ", 20-17"
+                    )
+                    showIf(beregnetPensjonPerMaanedVedVirk.minstenivaIndividuellInnvilget) {
+                        text(
+                            Language.Bokmal to ", 20-18",
+                            Language.Nynorsk to ", 20-18",
+                            Language.English to ", 20-18"
+                        )
+                    }
+                    showIf(beregnetPensjonPerMaanedVedVirk.gjenlevenderettAnvendt) {
+                        text(
+                            Language.Bokmal to ", 20-19a",
+                            Language.Nynorsk to ", 20-19a",
+                            Language.English to ", 20-19a"
+                        )
+                    }
+                    text(
+                        Language.Bokmal to " og 22-12.",
+                        Language.Nynorsk to " og 22-12.",
+                        Language.English to " and 22-12 of the National Insurance Act."
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 19-13, 19-15, 20-17 og 20-19.",
+                        Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 19-13, 19-15, 20-17 og 20-19.",
+                        Language.English to "This decision was made pursuant to the provisions of §§ 19-13, 19-15, 20-17 and 20-19 of the National Insurance Act."
+                    )
+                }
+            }
+        }
+
+        showIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) {
+            showIf(opptjening.equalTo(Opptjening.KORRIGERING)) {
+                paragraph {
+                    text(
+                        Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 3-15",
+                        Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 3-15",
+                        Language.English to "This decision was made pursuant to the provisions of §§ 3-15"
+                    )
+                    showIf(beregnetPensjonPerMaanedVedVirk.gjenlevenderettAnvendt) {
+                        text(
+                            Language.Bokmal to ", 19-16",
+                            Language.Nynorsk to ", 19-16",
+                            Language.English to ", 19-16"
+                        )
+                    }
+                    showIf(beregnetPensjonPerMaanedVedVirk.garantipensjonInnvilget) {
+                        text(
+                            Language.Bokmal to ", 20-9",
+                            Language.Nynorsk to ", 20-9",
+                            Language.English to ", 20-9"
+                        )
+                    }
+                    text(
+                        Language.Bokmal to ", 22-17",
+                        Language.Nynorsk to ", 20-17",
+                        Language.English to ", 20-17"
+                    )
+                    showIf(beregnetPensjonPerMaanedVedVirk.minstenivaIndividuellInnvilget) {
+                        text(
+                            Language.Bokmal to ", 20-18",
+                            Language.Nynorsk to ", 20-18",
+                            Language.English to ", 20-18"
+                        )
+                    }
+                    text(
+                        Language.Bokmal to " og 22-12.",
+                        Language.Nynorsk to " og 22-12.",
+                        Language.English to " and 22-12 of the National Insurance Act."
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    showIf(erFoerstegangsbehandling) {
+                        text(
+                            Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13.",
+                            Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova §§ 20-2, 20-3, 20-9 til 20-15, 22-12 og 22-13.",
+                            Language.English to "This decision was made pursuant to the provisions of §§ 20-2, 20-3, 20-9 to 20-15, 22-12 and 22-13 of the National Insurance Act."
+                        )
+                    }.orShow {
+                        text(
+                            Language.Bokmal to "Vedtaket er gjort etter folketrygdloven § 20-17.",
+                            Language.Nynorsk to "Vedtaket er gjort etter folketrygdlova § 20-17.",
+                            Language.English to "This decision was made pursuant to the provision of § 20-17 of the National Insurance Act."
+                        )
+                    }
+                }
+            }
         }
     }
 }

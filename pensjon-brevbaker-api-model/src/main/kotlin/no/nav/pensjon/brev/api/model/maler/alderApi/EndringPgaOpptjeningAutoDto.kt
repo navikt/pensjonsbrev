@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.api.model.maler.alderApi
 
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
-import java.time.Year
 
 
 @Suppress("unused")
@@ -15,7 +15,11 @@ data class EndringPgaOpptjeningAutoDto(
     val endretOpptjeningsAar: Set<Int>,
     val belopEndring: String,
     val uforeKombinertMedAlder: Boolean,
-    val beregnetPensjonPerMaanedGjeldende: BeregnetPensjonPerMaanedGjeldende,
+    val beregnetPensjonPerMaanedGjeldende: BeregnetPensjonPerMaaned,
+    val beregnetPensjonPerMaaned: BeregnetPensjonPerMaaned,
+    val beregnetPensjonPerMaanedVedVirk: BeregnetPensjonPerMaaned,
+    val regelverkType: AlderspensjonRegelverkType,
+    val erFoerstegangsbehandling: Boolean,
 ) : BrevbakerBrevdata
 
 enum class Opptjening {
@@ -23,7 +27,13 @@ enum class Opptjening {
     KORRIGERING,
 }
 
-data class BeregnetPensjonPerMaanedGjeldende(
+data class BeregnetPensjonPerMaaned(
     val totalPensjon: Kroner,
     val virkFom: LocalDate,
+    val antallBeregningsperioderPensjon: Int,
+    val pensjonstilleggInnvilget: Boolean,
+    val minstenivaPensjonistParInnvilget: Boolean,
+    val minstenivaIndividuellInnvilget: Boolean,
+    val gjenlevenderettAnvendt: Boolean,
+    val garantipensjonInnvilget: Boolean,
 )

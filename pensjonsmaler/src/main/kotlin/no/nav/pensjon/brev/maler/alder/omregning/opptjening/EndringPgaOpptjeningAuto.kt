@@ -4,12 +4,18 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.antallAarEndretOpptjening
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.belopEndring
+import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.beregnetPensjonPerMaaned
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.beregnetPensjonPerMaanedGjeldende
+import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.beregnetPensjonPerMaanedVedVirk
+import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.erFoerstegangsbehandling
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.opptjening
+import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.regelverkType
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.sisteGyldigeOpptjeningsAar
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.uforeKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittEndringPensjon
+import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittFlereBeregningsperioder
+import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittHjemmel
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittUtbetalingPerMaaned
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.BeskrivelseVedKorrigering
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.BeskrivelseVedTilvekst
@@ -52,7 +58,8 @@ object EndringPgaOpptjeningAuto : AutobrevTemplate<EndringPgaOpptjeningAutoDto> 
             includePhrase(BeskrivelseVedKorrigering(opptjening, antallAarEndretOpptjening))
             includePhrase(AvsnittEndringPensjon(belopEndring))
             includePhrase(AvsnittUtbetalingPerMaaned(uforeKombinertMedAlder, beregnetPensjonPerMaanedGjeldende))
-
+            includePhrase(AvsnittFlereBeregningsperioder(beregnetPensjonPerMaaned, beregnetPensjonPerMaanedVedVirk, regelverkType))
+            includePhrase(AvsnittHjemmel(opptjening, regelverkType, beregnetPensjonPerMaanedVedVirk, erFoerstegangsbehandling))
 
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
