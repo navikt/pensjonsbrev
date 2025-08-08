@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.db.Document
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.db.Mottaker
 import no.nav.pensjon.brev.skribenten.db.MottakerType
+import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.klarTilSending
 import no.nav.pensjon.brev.skribenten.letter.toEdit
@@ -67,6 +68,7 @@ class BrevredigeringService(
     private val brevbakerService: BrevbakerService,
     private val navansattService: NavansattService,
     private val penService: PenService,
+    private val krypteringService: KrypteringService,
 ) {
     companion object {
         val RESERVASJON_TIMEOUT = 10.minutes.toJavaDuration()
@@ -282,7 +284,7 @@ class BrevredigeringService(
 
         return brevredigering?.let {
             if (document != null && document.redigertBrevHash == brevredigering.redigertBrevHash) {
-                Ok(document.pdf)
+                Ok(krypteringService.dekrypterData(document.pdf))
             } else {
                 opprettPdf(brevredigering)
             }
@@ -352,7 +354,7 @@ class BrevredigeringService(
                         enhetId = brev.info.avsenderEnhetId,
                         templateDescription = template,
                         brevkode = brev.info.brevkode,
-                        pdf = document.pdf,
+                        pdf = krypteringService.dekrypterData(document.pdf),
                         eksternReferanseId = "skribenten:${brev.info.id}",
                         mottaker = brev.info.mottaker?.toPen(),
                     ),
@@ -521,12 +523,13 @@ class BrevredigeringService(
                 transaction {
                     val update: Document.() -> Unit = {
                         this.brevredigering = Brevredigering[brevredigering.info.id]
-                        pdf = ExposedBlob(it.file)
+                        pdf = ExposedBlob(krypteringService.krypterData(it.file))
                         dokumentDato = pesysData.felles.dokumentDato
                         this.redigertBrevHash = brevredigering.redigertBrevHash
                     }
-                    Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf?.bytes
-                        ?: Document.new(update).pdf.bytes
+                    (Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf?.bytes
+                        ?: Document.new(update).pdf.bytes)
+                        .let { krypteringService.dekrypterData(it) }
                 }
             }
         }
