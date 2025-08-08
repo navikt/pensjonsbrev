@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaaned
 import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.antallBeregningsperioderPensjon
 import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.garantipensjonInnvilget
@@ -12,6 +13,9 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSele
 import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.virkFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.Opptjening
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
+import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -21,6 +25,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import java.time.LocalDate
 
 data class AvsnittBeskrivelse(
     val opptjening: Expression<Opptjening>,
@@ -60,10 +65,10 @@ data class AvsnittBeskrivelse(
 }
 
 data class AvsnittEndringPensjon(
-    val belopEndring: Expression<String>,
+    val belopEndring: Expression<BeloepEndring>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(belopEndring.equalTo("ENDR_OKT")) {
+        showIf(belopEndring.equalTo(BeloepEndring.ENDR_OKT)) {
             paragraph {
                 text(
                     Language.Bokmal to "Dette fører til at pensjonen din øker.",
@@ -72,7 +77,7 @@ data class AvsnittEndringPensjon(
                 )
             }
         }
-        showIf(belopEndring.equalTo("ENDR_RED")) {
+        showIf(belopEndring.equalTo(BeloepEndring.ENDR_RED)) {
             paragraph {
                 text(
                     Language.Bokmal to "Dette fører til at pensjonen din blir redusert.",
@@ -460,6 +465,128 @@ data class AvsnittBegrunnelseForVedtaket(
                     Language.Bokmal to "Pensjonsopptjeningen til den avdøde er endret.",
                     Language.Nynorsk to "Pensjonsoppteninga til den avdøde er endra.",
                     Language.English to "The accumulated rights earned by the deceased have been changed."
+                )
+            }
+        }
+    }
+}
+
+data class AvsnittEtterbetaling(
+    val virkFom: Expression<LocalDate>,
+    val opptjening: Expression<Opptjening>,
+    val beloepEndring: Expression<BeloepEndring>,
+    val antallAarEndretOpptjening: Expression<Int>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(
+            opptjening.equalTo(Opptjening.KORRIGERING) and
+                    beloepEndring.equalTo(BeloepEndring.ENDR_OKT) and
+                    antallAarEndretOpptjening.greaterThan(0) and
+                    virkFom.greaterThan(LocalDate.now())
+        ) {
+            title2 {
+                text(
+                    Language.Bokmal to "Etterbetaling",
+                    Language.Nynorsk to "Etterbetaling",
+                    Language.English to "Retroactive payment"
+                )
+            }
+            paragraph {
+                textExpr(
+                    Language.Bokmal to "Du får etterbetalt pensjon fra ".expr() + virkFom.format() + ". Etterbetalingen vil vanligvis bli utbetalt i løpet av syv virkedager. Du kan sjekke eventuelle fradrag i utbetalingsmeldingen på $DITT_NAV.",
+                    Language.Nynorsk to "Du får etterbetalt pensjon frå ".expr() + virkFom.format() + ". Etterbetalinga blir vanlegvis betalt ut i løpet av sju yrkedagar. Du kan sjekke eventuelle frådrag i utbetalingsmeldinga på $DITT_NAV.",
+                    Language.English to "You will receive retroactive pension payments from ".expr() + virkFom.format() + ". The retroactive payments will normally be made in the course of seven working days. You can check if there are any deductions from the payment notice at $DITT_NAV."
+                )
+            }
+
+            paragraph {
+                text(
+                    Language.Bokmal to "Hvis etterbetalingen gjelder tidligere år, trekker vi skatt etter skatteetatens standardsatser.",
+                    Language.Nynorsk to "Dersom etterbetalinga gjeld tidlegare år, vil vi trekkje skatt etter standardsatsane til skatteetaten.",
+                    Language.English to "If the retroactive payment refers to earlier years, we will deduct tax at the Tax Administration's standard rates."
+                )
+            }
+        }
+    }
+}
+
+data class AvsnittSkattApEndring(
+    val borINorge: Expression<Boolean>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf(borINorge) {
+            title2 {
+                text(
+                    Language.Bokmal to "Endring av alderspensjon kan ha betydning for skatt",
+                    Language.Nynorsk to "Endring av alderspensjon kan ha betyding for skatt",
+                    Language.English to "The change in your retirement pension may affect how much tax you pay"
+                )
+            }
+            paragraph {
+                text(
+                    Language.Bokmal to "Du bør kontrollere om skattekortet ditt er riktig når alderspensjonen blir endret. Dette kan du gjøre selv på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister.",
+                    Language.Nynorsk to "Du bør kontrollere om skattekortet ditt er riktig når alderspensjonen blir endra. Dette kan du gjere sjølv på $SKATTEETATEN_PENSJONIST_URL. Der får du også meir informasjon om skattekort for pensjonistar.",
+                    Language.English to "When your retirement pension has been changed, you should check if your tax deduction card is correctly calculated. You can change your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL. There you will find more information regarding tax deduction card for pensioners."
+                )
+            }
+
+            paragraph {
+                text(
+                    Language.Bokmal to "På $DIN_PENSJON_URL får du vite hva du betaler i skatt. Her kan du også legge inn ekstra skattetrekk om du ønsker det. Dersom du endrer skattetrekket vil dette gjelde fra måneden etter at vi har fått beskjed.",
+                    Language.Nynorsk to "På $DIN_PENSJON_URL får du vite kva du betaler i skatt. Her kan du også leggje inn tilleggsskatt om du ønskjer det. Dersom du endrar skattetrekket, vil dette gjelde frå månaden etter at vi har fått beskjed.",
+                    Language.English to "At $DIN_PENSJON_URL you can see how much tax you are paying. Here you can also add surtax, if you want. If you change your income tax rate, this will be applied from the month after we have been notified of the change."
+                )
+            }
+        }
+    }
+}
+
+data class AvsnittArbeidsinntekt(
+    val uttaksgrad: Expression<Int>,
+    val uforeKombinertMedAlder: Expression<Boolean>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title2 {
+            text(
+                Language.Bokmal to "Arbeidsinntekt og alderspensjon",
+                Language.Nynorsk to "Arbeidsinntekt og alderspensjon",
+                Language.English to "Earned income and retirement pension"
+            )
+        }
+        paragraph {
+            text(
+                Language.Bokmal to "Du kan arbeide så mye du vil uten at alderspensjonen din blir redusert. Det kan føre til at pensjonen din øker.",
+                Language.Nynorsk to "Du kan arbeide så mykje du vil utan at alderspensjonen din blir redusert. Det kan føre til at pensjonen din aukar.",
+                Language.English to "You can work as much as you want without your retirement pension being reduced. This may lead to an increase in your pension."
+            )
+        }
+
+        showIf(uttaksgrad.equalTo(100)) {
+            paragraph {
+                text(
+                    Language.Bokmal to "Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig.",
+                    Language.Nynorsk to "Dersom du har 100 prosent alderspensjon, gjeld auken frå 1. januar året etter at skatteoppgjeret ditt er ferdig.",
+                    Language.English to "If you are receiving a full (100 percent) retirement pension, the increase will come into effect from 1 January the year after your final tax settlement has been completed."
+                )
+            }
+        }
+
+        showIf(uttaksgrad.lessThan(100)) {
+            paragraph {
+                text(
+                    Language.Bokmal to "Hvis du har lavere enn 100 prosent alderspensjon, blir økningen lagt til hvis du søker om endret grad eller ny beregning av den graden du har nå.",
+                    Language.Nynorsk to "Dersom du har lågare enn 100 prosent alderspensjon, blir auken lagd til dersom du søkjer om endra grad eller ny berekning av den graden du har no.",
+                    Language.English to "If you are receiving retirement pension at a reduced rate (lower than 100 percent), the increase will come into effect if you apply to have the rate changed or have your current rate recalculated."
+                )
+            }
+        }
+
+        showIf(uforeKombinertMedAlder) {
+            paragraph {
+                text(
+                    Language.Bokmal to "Uføretrygden din kan fortsatt bli redusert på grunn av inntekt. Du finner informasjon om inntektsgrensen i vedtak om uføretrygd.",
+                    Language.Nynorsk to "Uføretrygda di kan framleis bli redusert på grunn av inntekt. Du finn informasjon om inntektsgrensa i vedtak om uføretrygd.",
+                    Language.English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit."
                 )
             }
         }

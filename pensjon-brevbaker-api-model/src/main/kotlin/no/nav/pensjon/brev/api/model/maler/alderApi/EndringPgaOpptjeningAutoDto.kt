@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.alderApi
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
@@ -13,13 +14,14 @@ data class EndringPgaOpptjeningAutoDto(
     val sisteGyldigeOpptjeningsAar: Int,
     val antallAarEndretOpptjening: Int,
     val endretOpptjeningsAar: Set<Int>,
-    val belopEndring: String,
+    val belopEndring: BeloepEndring,
     val uforeKombinertMedAlder: Boolean,
     val beregnetPensjonPerMaanedGjeldende: BeregnetPensjonPerMaaned,
     val beregnetPensjonPerMaaned: BeregnetPensjonPerMaaned,
     val beregnetPensjonPerMaanedVedVirk: BeregnetPensjonPerMaaned,
     val regelverkType: AlderspensjonRegelverkType,
     val erFoerstegangsbehandling: Boolean,
+    val borINorge: Boolean,
 ) : BrevbakerBrevdata
 
 enum class Opptjening {
@@ -36,4 +38,5 @@ data class BeregnetPensjonPerMaaned(
     val minstenivaIndividuellInnvilget: Boolean,
     val gjenlevenderettAnvendt: Boolean,
     val garantipensjonInnvilget: Boolean,
+    val uttaksgrad: Int,
 )
