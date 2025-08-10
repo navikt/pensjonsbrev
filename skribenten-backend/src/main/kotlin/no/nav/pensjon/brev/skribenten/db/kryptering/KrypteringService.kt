@@ -1,41 +1,67 @@
 package no.nav.pensjon.brev.skribenten.db.kryptering
 
+import java.nio.ByteBuffer
+import java.security.SecureRandom
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
-import javax.crypto.spec.IvParameterSpec
+import javax.crypto.SecretKeyFactory
+import javax.crypto.spec.GCMParameterSpec
+import javax.crypto.spec.PBEKeySpec
 import javax.crypto.spec.SecretKeySpec
-import kotlin.io.encoding.Base64
 
 class KrypteringService(private val krypteringsnoekkel: String) {
-    val algorithm: String = "AES/CBC/PKCS5Padding"
-
-    fun krypterData(data: DekryptertByteArray): KryptertByteArray = krypter(hentNoekkel(), data)
-
-    fun dekrypterData(data: KryptertByteArray): DekryptertByteArray = dekrypter(hentNoekkel(), data)
-
-    private val transformation = "AES"
-
-    private fun krypter(noekkel: SecretKey, data: DekryptertByteArray): KryptertByteArray {
-        val keydata = noekkel.encoded
-        val skeySpec = SecretKeySpec(keydata, 0, keydata.size, transformation)
-        val cipher = Cipher.getInstance(algorithm)
-        cipher.init(Cipher.ENCRYPT_MODE, skeySpec, IvParameterSpec(ByteArray(cipher.blockSize)))
-        return cipher.doFinal(data.byteArray).let { KryptertByteArray(it) }
+    companion object {
+        private const val ALGORITHM = "AES/GCM/NoPadding"
+        private const val FACTORY_INSTANCE = "PBKDF2WithHmacSHA256"
+        private const val TAG_LENGTH_BIT = 128
+        private const val IV_LENGTH_BYTE = 12
+        private const val SALT_LENGTH_BYTE = 16
+        private const val ALGORITHM_TYPE = "AES"
     }
 
-    private fun dekrypter(noekkel: SecretKey, data: KryptertByteArray): DekryptertByteArray {
-        val cipher = Cipher.getInstance(algorithm)
-        cipher.init(Cipher.DECRYPT_MODE, noekkel, IvParameterSpec(ByteArray(cipher.blockSize)))
-        return cipher.doFinal(data.byteArray).let { DekryptertByteArray(it) }
+    fun krypter(klartekst: DekryptertByteArray): KryptertByteArray {
+        val salt = getRandomNonce(SALT_LENGTH_BYTE)
+        val iv = getRandomNonce(IV_LENGTH_BYTE)
+        val kryptertMelding = initCipher(Cipher.ENCRYPT_MODE, getSecretKey(salt), iv).doFinal(klartekst.byteArray)
+
+        return KryptertByteArray(
+            ByteBuffer.allocate(iv.size + salt.size + kryptertMelding.size)
+                .put(iv)
+                .put(salt)
+                .put(kryptertMelding)
+                .array()
+        )
     }
 
-    private fun hentNoekkel(): SecretKey {
-        if (krypteringsnoekkel.isEmpty()) {
-            throw Exception("Kunne ikke finne krypteringsnøkkel. Er ENV \"CRYPTKEY\" satt?")
-        }
-        val decodedNoekkel = Base64.decode(krypteringsnoekkel)
-        return SecretKeySpec(decodedNoekkel, 0, decodedNoekkel.size, transformation)
+    fun dekrypter(kryptertMelding: KryptertByteArray): DekryptertByteArray {
+        val byteBuffer = ByteBuffer.wrap(kryptertMelding.byteArray)
+
+        val iv = ByteArray(IV_LENGTH_BYTE)
+        byteBuffer.get(iv)
+
+        val salt = ByteArray(SALT_LENGTH_BYTE)
+        byteBuffer.get(salt)
+
+        val encryptedByte = ByteArray(byteBuffer.remaining())
+        byteBuffer.get(encryptedByte)
+
+        return DekryptertByteArray(initCipher(Cipher.DECRYPT_MODE, getSecretKey(salt), iv).doFinal(encryptedByte))
     }
+
+    private fun initCipher(mode: Int, secretKey: SecretKey, iv: ByteArray) = Cipher.getInstance(ALGORITHM)
+        .also { it.init(mode, secretKey, GCMParameterSpec(TAG_LENGTH_BIT, iv)) }
+
+    private fun getRandomNonce(length: Int): ByteArray {
+        val nonce = ByteArray(length)
+        SecureRandom().nextBytes(nonce)
+        return nonce
+    }
+
+    private fun getSecretKey(salt: ByteArray) = SecretKeySpec(
+        SecretKeyFactory.getInstance(FACTORY_INSTANCE)
+            .generateSecret(PBEKeySpec(krypteringsnoekkel.toCharArray(), salt, 65536, 256)).encoded,
+        ALGORITHM_TYPE
+    )
 }
 
 @JvmInline
@@ -47,4 +73,7 @@ value class DekryptertByteArray(val byteArray: ByteArray) {
 @JvmInline
 value class KryptertByteArray(val byteArray: ByteArray) {
     fun contentEquals(other: KryptertByteArray) = byteArray.contentEquals(other.byteArray)
-    fun contentHashCode() = byteArray.contentHashCode()}
+    fun contentHashCode() = byteArray.contentHashCode()
+}
+
+val STANDARD_TEGNSETT = Charsets.UTF_8

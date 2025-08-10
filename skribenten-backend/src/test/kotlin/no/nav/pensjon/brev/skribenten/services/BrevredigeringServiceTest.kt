@@ -565,7 +565,7 @@ class BrevredigeringServiceTest {
             val brevredigering = Brevredigering[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
             assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
-            assertThat(brevredigering.document.first().pdf.bytes).isEqualTo(krypteringService.krypterData(
+            assertThat(brevredigering.document.first().pdf.bytes).isEqualTo(krypteringService.krypter(
                 DekryptertByteArray(stagetPDF)).byteArray)
         }
     }

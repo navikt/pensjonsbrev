@@ -286,7 +286,7 @@ class BrevredigeringService(
 
         return brevredigering?.let {
             if (document != null && document.redigertBrevHash == brevredigering.redigertBrevHash) {
-                Ok(krypteringService.dekrypterData(document.pdf))
+                Ok(krypteringService.dekrypter(document.pdf))
             } else {
                 opprettPdf(brevredigering)
             }
@@ -356,7 +356,7 @@ class BrevredigeringService(
                         enhetId = brev.info.avsenderEnhetId,
                         templateDescription = template,
                         brevkode = brev.info.brevkode,
-                        pdf = krypteringService.dekrypterData(document.pdf),
+                        pdf = krypteringService.dekrypter(document.pdf),
                         eksternReferanseId = "skribenten:${brev.info.id}",
                         mottaker = brev.info.mottaker?.toPen(),
                     ),
@@ -525,13 +525,13 @@ class BrevredigeringService(
                 transaction {
                     val update: Document.() -> Unit = {
                         this.brevredigering = Brevredigering[brevredigering.info.id]
-                        pdf = ExposedBlob(krypteringService.krypterData(DekryptertByteArray(it.file)).byteArray)
+                        pdf = ExposedBlob(krypteringService.krypter(DekryptertByteArray(it.file)).byteArray)
                         dokumentDato = pesysData.felles.dokumentDato
                         this.redigertBrevHash = brevredigering.redigertBrevHash
                     }
                     (Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf?.bytes
                         ?: Document.new(update).pdf.bytes)
-                        .let { krypteringService.dekrypterData(KryptertByteArray(it)) }
+                        .let { krypteringService.dekrypter(KryptertByteArray(it)) }
                 }
             }
         }

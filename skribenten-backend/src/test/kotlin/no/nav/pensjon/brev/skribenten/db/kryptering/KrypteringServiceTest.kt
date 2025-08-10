@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.db.kryptering
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.nio.charset.Charset
+
 
 class KrypteringServiceTest {
 
@@ -10,12 +10,12 @@ class KrypteringServiceTest {
 
     @Test
     fun `krypter data og les tilbake`() {
-        val bytes = "Test string".toByteArray(Charset.defaultCharset())
+        val bytes = "Test string".toByteArray(STANDARD_TEGNSETT)
 
-        val kryptertBytes = service.krypterData(DekryptertByteArray(bytes))
+        val kryptertBytes = service.krypter(DekryptertByteArray(bytes))
         assertThat(kryptertBytes.byteArray).isNotEqualTo(bytes)
 
-        val dekryptertBytes = service.dekrypterData(kryptertBytes)
+        val dekryptertBytes = service.dekrypter(kryptertBytes)
         assertThat(dekryptertBytes.byteArray).isEqualTo(bytes)
     }
 }
