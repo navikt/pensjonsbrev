@@ -66,16 +66,18 @@ private inline fun <reified T> readJsonColumn(json: String): T =
         throw DatabaseJsonDeserializeException(e)
     }
 
+private const val base64Key = "base64"
+
 private fun <T> krypterOgSkriv(objekt: T): String {
     val somString = databaseObjectMapper.writeValueAsString(objekt)
     val byteArray = DekryptertByteArray(somString.toByteArray(Charset.defaultCharset()))
     val kryptert = krypteringService.krypterData(byteArray)
-    return """{"base64": "${Base64.encode(kryptert.byteArray)}"}"""
+    return """{"$base64Key": "${Base64.encode(kryptert.byteArray)}"}"""
 }
 
 private inline fun <reified T> lesOgDekrypter(json: String): T {
     try {
-        val kryptertBase64 = databaseObjectMapper.readValue<Map<String, String>>(json)["base64"]
+        val kryptertBase64 = databaseObjectMapper.readValue<Map<String, String>>(json)[base64Key]
         val kryptert = KryptertByteArray(Base64.decode(kryptertBase64!!))
         val dekryptert = krypteringService.dekrypterData(kryptert)
         return readJsonColumn(String(dekryptert.byteArray))
