@@ -60,7 +60,7 @@ object Dto {
 
             if (brevredigeringId != other.brevredigeringId) return false
             if (dokumentDato != other.dokumentDato) return false
-            if (!pdf.byteArray.contentEquals(other.pdf.byteArray)) return false
+            if (!pdf.contentEquals(other.pdf)) return false
             if (redigertBrevHash != other.redigertBrevHash) return false
 
             return true
@@ -69,7 +69,7 @@ object Dto {
         override fun hashCode(): Int {
             var result = brevredigeringId.hashCode()
             result = 31 * result + dokumentDato.hashCode()
-            result = 31 * result + pdf.byteArray.contentHashCode()
+            result = 31 * result + pdf.contentHashCode()
             result = 31 * result + redigertBrevHash.hashCode()
             return result
         }

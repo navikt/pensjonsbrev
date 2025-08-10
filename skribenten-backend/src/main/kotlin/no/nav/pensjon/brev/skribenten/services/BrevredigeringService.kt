@@ -356,7 +356,7 @@ class BrevredigeringService(
                         enhetId = brev.info.avsenderEnhetId,
                         templateDescription = template,
                         brevkode = brev.info.brevkode,
-                        pdf = krypteringService.dekrypterData(document.pdf).byteArray,
+                        pdf = krypteringService.dekrypterData(document.pdf),
                         eksternReferanseId = "skribenten:${brev.info.id}",
                         mottaker = brev.info.mottaker?.toPen(),
                     ),

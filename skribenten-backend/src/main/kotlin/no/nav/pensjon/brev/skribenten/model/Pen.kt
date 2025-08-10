@@ -1,8 +1,10 @@
 package no.nav.pensjon.brev.skribenten.model
 
+import io.netty.util.AsciiString.contentEquals
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.skribenten.db.kryptering.DekryptertByteArray
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B222
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B255
@@ -10,6 +12,7 @@ import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B280
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B359
 import java.time.LocalDate
 import java.time.LocalDateTime
+import kotlin.collections.contentEquals
 import no.nav.pensjon.brev.api.model.Sakstype as BrevbakerSakstype
 
 object Pen {
@@ -117,7 +120,7 @@ object Pen {
         val saksId: Long,
         val brevkode: Brevkode.Redigerbart,
         val enhetId: String?,
-        val pdf: ByteArray,
+        val pdf: DekryptertByteArray,
         val eksternReferanseId: String,
         val mottaker: Mottaker?
     ) {

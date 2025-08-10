@@ -12,10 +12,10 @@ class KrypteringServiceTest {
     fun `krypter data og les tilbake`() {
         val bytes = "Test string".toByteArray(Charset.defaultCharset())
 
-        val kryptertBytes = service.krypterData(bytes)
-        assertThat(kryptertBytes).isNotEqualTo(bytes)
+        val kryptertBytes = service.krypterData(DekryptertByteArray(bytes))
+        assertThat(kryptertBytes.byteArray).isNotEqualTo(bytes)
 
         val dekryptertBytes = service.dekrypterData(kryptertBytes)
-        assertThat(dekryptertBytes).isEqualTo(bytes)
+        assertThat(dekryptertBytes.byteArray).isEqualTo(bytes)
     }
 }

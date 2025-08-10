@@ -17,6 +17,8 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
+import no.nav.pensjon.brev.skribenten.db.kryptering.DekryptertByteArray
+import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.isInstanceOfSatisfying
 import no.nav.pensjon.brev.skribenten.letter.letter
@@ -139,6 +141,7 @@ class BrevredigeringServiceTest {
     )
 
     private val penService: PenService = mockk()
+    private val krypteringService: KrypteringService = KrypteringService("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
     private val navAnsattService = mockk<NavansattService> {
         coEvery { harTilgangTilEnhet(any(), any()) } returns ServiceResult.Ok(false)
         coEvery {
@@ -173,6 +176,7 @@ class BrevredigeringServiceTest {
         brevbakerService = brevbakerMock,
         navansattService = navAnsattService,
         penService = penService,
+        krypteringService = krypteringService
     )
 
     private val bestillBrevresponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
@@ -553,14 +557,15 @@ class BrevredigeringServiceTest {
         assertThat(
             withPrincipal(saksbehandler1Principal) {
                 brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
-            }
+            }?.byteArray
         ).isEqualTo(stagetPDF)
 
         transaction {
             val brevredigering = Brevredigering[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
             assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
-            assertThat(brevredigering.document.first().pdf.bytes).isEqualTo(stagetPDF)
+            assertThat(brevredigering.document.first().pdf.bytes).isEqualTo(krypteringService.krypterData(
+                DekryptertByteArray(stagetPDF)).byteArray)
         }
     }
 
@@ -642,7 +647,7 @@ class BrevredigeringServiceTest {
 
         withPrincipal(saksbehandler1Principal) {
             val pdf = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
-            assertThat(pdf?.resultOrNull()?.toString(Charsets.UTF_8)).isEqualTo(stagetPDF.toString(Charsets.UTF_8))
+            assertThat(pdf?.resultOrNull()?.byteArray?.toString(Charsets.UTF_8)).isEqualTo(stagetPDF.toString(Charsets.UTF_8))
         }
     }
 
@@ -661,6 +666,7 @@ class BrevredigeringServiceTest {
 
             stagePdf("min andre pdf".encodeToByteArray())
             val pdf = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
+                ?.byteArray
                 ?.toString(Charsets.UTF_8)
 
             assertEquals("min andre pdf", pdf)
@@ -677,7 +683,7 @@ class BrevredigeringServiceTest {
             stagePdf("min andre pdf".encodeToByteArray())
             val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
 
-            assertThat(first).isEqualTo(second)
+            assertThat(first!!.byteArray).isEqualTo(second!!.byteArray)
         }
     }
 
@@ -850,7 +856,7 @@ class BrevredigeringServiceTest {
                         saksId = 1234,
                         brevkode = Testbrevkoder.INFORMASJONSBREV,
                         enhetId = principalNavEnhetId,
-                        pdf = stagetPDF,
+                        pdf = DekryptertByteArray(stagetPDF),
                         eksternReferanseId = "skribenten:${brev.info.id}",
                         mottaker = null,
                     )
@@ -905,7 +911,7 @@ class BrevredigeringServiceTest {
                         saksId = 1234,
                         brevkode = Testbrevkoder.INFORMASJONSBREV,
                         enhetId = principalNavEnhetId,
-                        pdf = stagetPDF,
+                        pdf = DekryptertByteArray(stagetPDF),
                         eksternReferanseId = "skribenten:${brev.info.id}",
                         mottaker = null,
                     )
@@ -1305,7 +1311,7 @@ class BrevredigeringServiceTest {
                         saksId = sak1.saksId,
                         brevkode = Testbrevkoder.INFORMASJONSBREV,
                         enhetId = principalNavEnhetId,
-                        pdf = stagetPDF,
+                        pdf = DekryptertByteArray(stagetPDF),
                         eksternReferanseId = "skribenten:${brev.info.id}",
                         mottaker = Pen.SendRedigerbartBrevRequest.Mottaker(
                             Pen.SendRedigerbartBrevRequest.Mottaker.Type.TSS_ID,
