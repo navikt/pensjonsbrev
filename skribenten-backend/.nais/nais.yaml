@@ -100,3 +100,4 @@ spec:
     {{/each}}
   envFrom:
     - secret: "{{ app-name }}-unleash-api-token"
+    - secret: "krypteringsnoekkel"
