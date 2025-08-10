@@ -75,5 +75,3 @@ value class KryptertByteArray(val byteArray: ByteArray) {
     fun contentEquals(other: KryptertByteArray) = byteArray.contentEquals(other.byteArray)
     fun contentHashCode() = byteArray.contentHashCode()
 }
-
-val STANDARD_TEGNSETT = Charsets.UTF_8

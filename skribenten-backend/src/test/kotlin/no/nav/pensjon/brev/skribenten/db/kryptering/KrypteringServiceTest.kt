@@ -10,7 +10,7 @@ class KrypteringServiceTest {
 
     @Test
     fun `krypter data og les tilbake`() {
-        val bytes = "Test string".toByteArray(STANDARD_TEGNSETT)
+        val bytes = "Test string".encodeToByteArray()
 
         val kryptertBytes = service.krypter(DekryptertByteArray(bytes))
         assertThat(kryptertBytes.byteArray).isNotEqualTo(bytes)

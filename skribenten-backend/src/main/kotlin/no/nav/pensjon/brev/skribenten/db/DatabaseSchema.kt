@@ -70,7 +70,7 @@ private const val base64Key = "base64"
 
 private fun <T> krypterOgSkriv(objekt: T): String {
     val somString = databaseObjectMapper.writeValueAsString(objekt)
-    val byteArray = DekryptertByteArray(somString.toByteArray(Charset.defaultCharset()))
+    val byteArray = DekryptertByteArray(somString.encodeToByteArray())
     val kryptert = krypteringService.krypter(byteArray)
     return """{"$base64Key": "${Base64.encode(kryptert.byteArray)}"}"""
 }

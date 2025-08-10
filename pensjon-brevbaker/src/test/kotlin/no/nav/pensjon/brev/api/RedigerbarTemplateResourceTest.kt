@@ -21,7 +21,7 @@ import java.time.LocalDate
 
 class RedigerbarTemplateResourceTest {
     private val pdfInnhold = "generert redigerbar pdf"
-    private val pdf = pdfInnhold.toByteArray()
+    private val pdf = pdfInnhold.encodeToByteArray()
     private val latexMock = mockk<LaTeXCompilerService> {
         coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(pdf)
     }
