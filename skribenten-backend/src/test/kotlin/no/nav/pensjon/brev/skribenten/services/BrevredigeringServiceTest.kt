@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.db.kryptering.DekryptertByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
+import no.nav.pensjon.brev.skribenten.db.kryptering.KryptertByteArray
 import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.isInstanceOfSatisfying
 import no.nav.pensjon.brev.skribenten.letter.letter
@@ -565,8 +566,8 @@ class BrevredigeringServiceTest {
             val brevredigering = Brevredigering[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
             assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
-            assertThat(brevredigering.document.first().pdf.bytes).isEqualTo(krypteringService.krypter(
-                DekryptertByteArray(stagetPDF)).byteArray)
+            assertTrue(krypteringService.dekrypter(KryptertByteArray(brevredigering.document.first().pdf.bytes)).contentEquals(
+                DekryptertByteArray(stagetPDF)))
         }
     }
 
