@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.db
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -32,6 +33,7 @@ import org.jetbrains.exposed.sql.javatime.date
 import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.json.json
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
+import org.slf4j.LoggerFactory
 import java.nio.charset.Charset
 import java.time.Instant
 import java.time.LocalDate
@@ -53,6 +55,8 @@ internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 }
 
+private val logger = LoggerFactory.getLogger(BrevredigeringTable::class.java)
+
 class DatabaseJsonDeserializeException(cause: JacksonException): Exception("Failed to deserialize json-column from database", cause)
 
 private inline fun <reified T> readJsonColumn(json: String): T =
@@ -70,10 +74,18 @@ private fun <T> krypterOgSkriv(objekt: T): String {
 }
 
 private inline fun <reified T> lesOgDekrypter(json: String): T {
-    val kryptertBase64 = databaseObjectMapper.readValue<Map<String, String>>(json)["base64"]
-    val kryptert = KryptertByteArray(Base64.decode(kryptertBase64!!))
-    val dekryptert = krypteringService.dekrypterData(kryptert)
-    return readJsonColumn(String(dekryptert.byteArray))
+    try {
+        val kryptertBase64 = databaseObjectMapper.readValue<Map<String, String>>(json)["base64"]
+        val kryptert = KryptertByteArray(Base64.decode(kryptertBase64!!))
+        val dekryptert = krypteringService.dekrypterData(kryptert)
+        return readJsonColumn(String(dekryptert.byteArray))
+    } catch (e: MismatchedInputException) {
+        if (e.message?.startsWith("""Cannot deserialize value of type `java.lang.String` from Object value (token `JsonToken.START_OBJECT`)""") == true) {
+            logger.warn("Leste inn brevredigeringsrad fra databasen som ikke var kryptert")
+            return readJsonColumn(json)
+        }
+        throw e
+    }
 }
 
 object BrevredigeringTable : LongIdTable() {
