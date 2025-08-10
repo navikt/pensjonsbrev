@@ -183,6 +183,7 @@ class BrevredigeringServiceTest {
 
     @BeforeEach
     fun clearMocks() {
+        no.nav.pensjon.brev.skribenten.krypteringService = krypteringService
         clearMocks(brevbakerMock, penService)
         coEvery {
             brevbakerMock.renderMarkup(

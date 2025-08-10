@@ -14,6 +14,9 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.brev.Landkode
+import no.nav.pensjon.brev.skribenten.db.kryptering.DekryptertByteArray
+import no.nav.pensjon.brev.skribenten.db.kryptering.KryptertByteArray
+import no.nav.pensjon.brev.skribenten.krypteringService
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
@@ -29,9 +32,11 @@ import org.jetbrains.exposed.sql.javatime.date
 import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.json.json
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
+import java.nio.charset.Charset
 import java.time.Instant
 import java.time.LocalDate
 import javax.sql.DataSource
+import kotlin.io.encoding.Base64
 
 @Suppress("unused")
 object Favourites : Table() {
@@ -57,6 +62,25 @@ private inline fun <reified T> readJsonColumn(json: String): T =
         throw DatabaseJsonDeserializeException(e)
     }
 
+private fun <T> krypterOgSkriv(a: T): String {
+    val somString = databaseObjectMapper.writeValueAsString(a)
+    val byteArray = somString.toByteArray(Charset.defaultCharset())
+    val dekryptertByteArray = DekryptertByteArray(byteArray)
+    val kryptert = krypteringService.krypterData(dekryptertByteArray)
+    val kryptertByteArray = kryptert.byteArray
+    val kryptertString = Base64.encode(kryptertByteArray)
+    return kryptertString.let { """{"base64": "$it"}""" }
+}
+
+private inline fun <reified T> lesOgDekrypter(json: String): T {
+    val kryptertMap = databaseObjectMapper.readValue<Map<String, String>>(json)
+    val kryptertByteArray = kryptertMap["base64"]!!
+    val utenBase64 = Base64.decode(kryptertByteArray)
+    val kryptertObj = utenBase64.let { KryptertByteArray(it) }
+    val dekryptert = krypteringService.dekrypterData(kryptertObj)
+    return readJsonColumn(String(dekryptert.byteArray))
+}
+
 object BrevredigeringTable : LongIdTable() {
     val saksId: Column<Long> = long("saksId").index()
     val vedtaksId: Column<Long?> = long("vedtaksId").nullable()
@@ -64,7 +88,7 @@ object BrevredigeringTable : LongIdTable() {
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
     val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
-    val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
+    val redigertBrev = json<Edit.Letter>("redigertBrev", ::krypterOgSkriv, ::lesOgDekrypter)
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
