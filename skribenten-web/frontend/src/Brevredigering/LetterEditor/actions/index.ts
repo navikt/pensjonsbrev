@@ -8,6 +8,7 @@ import {
   insertTableColumnRight,
   insertTableRowAbove,
   insertTableRowBelow,
+  promoteRowToHeader,
   removeTable,
   removeTableColumn,
   removeTableRow,
@@ -42,5 +43,6 @@ const Actions = {
   insertTableColumnRight,
   insertTableRowAbove,
   insertTableRowBelow,
+  promoteRowToHeader,
 };
 export default Actions;
