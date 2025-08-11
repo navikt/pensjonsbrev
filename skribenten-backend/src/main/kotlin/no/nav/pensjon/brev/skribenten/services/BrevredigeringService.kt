@@ -283,7 +283,6 @@ class BrevredigeringService(
         return brevredigering?.let {
             if (document != null && document.redigertBrevHash == brevredigering.redigertBrevHash) {
                 Ok(document.pdf)
-//                Ok(krypteringService.dekrypter(document.pdf))
             } else {
                 opprettPdf(brevredigering)
             }
@@ -526,8 +525,8 @@ class BrevredigeringService(
                         dokumentDato = pesysData.felles.dokumentDato
                         this.redigertBrevHash = brevredigering.redigertBrevHash
                     }
-                    (Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdfz?.bytes
-                        ?: Document.new(update).pdfz.bytes)
+                    Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdfz?.bytes
+                        ?: Document.new(update).pdfz.bytes
                 }
             }
         }

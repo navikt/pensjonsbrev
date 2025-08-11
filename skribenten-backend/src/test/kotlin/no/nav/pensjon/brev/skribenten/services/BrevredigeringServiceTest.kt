@@ -556,14 +556,14 @@ class BrevredigeringServiceTest {
         assertThat(
             withPrincipal(saksbehandler1Principal) {
                 brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
-            }?.contentHashCode()
-        ).isEqualTo(stagetPDF.contentHashCode())
+            }
+        ).isEqualTo(stagetPDF)
 
         transaction {
             val brevredigering = Brevredigering[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
             assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
-            assertTrue(brevredigering.document.first().pdfz.bytes.contentEquals(stagetPDF))
+            assertThat(brevredigering.document.first().pdfz.bytes).isEqualTo(stagetPDF)
         }
     }
 
@@ -645,7 +645,7 @@ class BrevredigeringServiceTest {
 
         withPrincipal(saksbehandler1Principal) {
             val pdf = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
-            assertThat(pdf?.resultOrNull()?.contentHashCode()).isEqualTo(stagetPDF.contentHashCode())
+            assertThat(pdf?.resultOrNull()?.toString(Charsets.UTF_8)).isEqualTo(stagetPDF.toString(Charsets.UTF_8))
         }
     }
 
@@ -680,7 +680,7 @@ class BrevredigeringServiceTest {
             stagePdf("min andre pdf".encodeToByteArray())
             val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
 
-            assertThat(first!!).isEqualTo(second!!)
+            assertThat(first).isEqualTo(second)
         }
     }
 
