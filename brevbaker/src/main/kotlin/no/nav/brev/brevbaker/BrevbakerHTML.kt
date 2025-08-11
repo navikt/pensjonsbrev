@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkup
 import no.nav.pensjon.brev.template.toScope
+import no.nav.pensjon.brevbaker.api.model.DekryptertByteArray
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 internal object BrevbakerHTML {
@@ -15,7 +16,7 @@ internal object BrevbakerHTML {
             .let { HTMLDocumentRenderer.render(it.letterMarkup, it.attachments, letter) }
             .let { html ->
                 LetterResponse(
-                    file = html.indexHTML.content.encodeToByteArray(),
+                    file = DekryptertByteArray(html.indexHTML.content.encodeToByteArray()),
                     contentType = ContentTypes.TEXT_HTML_UTF8,
                     letterMetadata = letter.template.letterMetadata,
                 )

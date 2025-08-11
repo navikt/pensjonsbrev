@@ -86,7 +86,7 @@ class BrevredigeringServiceTest {
     private val letter = letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"))))
         .medSignatur(saksbehandler = saksbehandler1Principal.fullName, attestant = null)
 
-    private val stagetPDF = "nesten en pdf".encodeToByteArray()
+    private val stagetPDF = "nesten en pdf".encodeToDekryptertByteArray()
 
     private val informasjonsbrev = TemplateDescription.Redigerbar(
         name = Testbrevkoder.INFORMASJONSBREV.kode(),
@@ -557,15 +557,14 @@ class BrevredigeringServiceTest {
         assertThat(
             withPrincipal(saksbehandler1Principal) {
                 brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
-            }?.byteArray
-        ).isEqualTo(stagetPDF)
+            }?.contentHashCode()
+        ).isEqualTo(stagetPDF.contentHashCode())
 
         transaction {
             val brevredigering = Brevredigering[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
             assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
-            assertTrue(krypteringService.dekrypter(KryptertByteArray(brevredigering.document.first().pdf.bytes)).contentEquals(
-                DekryptertByteArray(stagetPDF)))
+            assertTrue(krypteringService.dekrypter(KryptertByteArray(brevredigering.document.first().pdf.bytes)).contentEquals(stagetPDF))
         }
     }
 
@@ -647,14 +646,14 @@ class BrevredigeringServiceTest {
 
         withPrincipal(saksbehandler1Principal) {
             val pdf = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
-            assertThat(pdf?.resultOrNull()?.byteArray?.toString(Charsets.UTF_8)).isEqualTo(stagetPDF.toString(Charsets.UTF_8))
+            assertThat(pdf?.resultOrNull()?.contentHashCode()).isEqualTo(stagetPDF.contentHashCode())
         }
     }
 
     @Test
     fun `hentPdf rendrer ny pdf om den ikke er basert paa gjeldende redigertBrev`(): Unit = runBlocking {
         val brev = opprettBrev().resultOrNull()!!
-        stagePdf("min første pdf".encodeToByteArray())
+        stagePdf("min første pdf".encodeToDekryptertByteArray())
 
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
@@ -664,7 +663,7 @@ class BrevredigeringServiceTest {
                     letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
             }
 
-            stagePdf("min andre pdf".encodeToByteArray())
+            stagePdf("min andre pdf".encodeToDekryptertByteArray())
             val pdf = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
                 ?.byteArray
                 ?.toString(Charsets.UTF_8)
@@ -677,10 +676,10 @@ class BrevredigeringServiceTest {
     fun `hentPdf rendrer ikke ny pdf om den er basert paa gjeldende redigertBrev`(): Unit = runBlocking {
         val brev = opprettBrev().resultOrNull()!!
         withPrincipal(saksbehandler1Principal) {
-            stagePdf("min første pdf".encodeToByteArray())
+            stagePdf("min første pdf".encodeToDekryptertByteArray())
             val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
 
-            stagePdf("min andre pdf".encodeToByteArray())
+            stagePdf("min andre pdf".encodeToDekryptertByteArray())
             val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)?.resultOrNull()
 
             assertThat(first!!.byteArray).isEqualTo(second!!.byteArray)
@@ -856,7 +855,7 @@ class BrevredigeringServiceTest {
                         saksId = 1234,
                         brevkode = Testbrevkoder.INFORMASJONSBREV,
                         enhetId = principalNavEnhetId,
-                        pdf = DekryptertByteArray(stagetPDF),
+                        pdf = stagetPDF,
                         eksternReferanseId = "skribenten:${brev.info.id}",
                         mottaker = null,
                     )
@@ -911,7 +910,7 @@ class BrevredigeringServiceTest {
                         saksId = 1234,
                         brevkode = Testbrevkoder.INFORMASJONSBREV,
                         enhetId = principalNavEnhetId,
-                        pdf = DekryptertByteArray(stagetPDF),
+                        pdf = stagetPDF,
                         eksternReferanseId = "skribenten:${brev.info.id}",
                         mottaker = null,
                     )
@@ -1311,7 +1310,7 @@ class BrevredigeringServiceTest {
                         saksId = sak1.saksId,
                         brevkode = Testbrevkoder.INFORMASJONSBREV,
                         enhetId = principalNavEnhetId,
-                        pdf = DekryptertByteArray(stagetPDF),
+                        pdf = stagetPDF,
                         eksternReferanseId = "skribenten:${brev.info.id}",
                         mottaker = Pen.SendRedigerbartBrevRequest.Mottaker(
                             Pen.SendRedigerbartBrevRequest.Mottaker.Type.TSS_ID,
@@ -1506,7 +1505,7 @@ class BrevredigeringServiceTest {
         )
     }
 
-    private fun stagePdf(pdf: ByteArray) {
+    private fun stagePdf(pdf: DekryptertByteArray) {
         coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(
             LetterResponse(
                 file = pdf,

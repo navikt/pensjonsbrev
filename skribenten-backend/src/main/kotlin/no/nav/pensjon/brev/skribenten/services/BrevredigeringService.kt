@@ -525,7 +525,7 @@ class BrevredigeringService(
                 transaction {
                     val update: Document.() -> Unit = {
                         this.brevredigering = Brevredigering[brevredigering.info.id]
-                        pdf = ExposedBlob(krypteringService.krypter(DekryptertByteArray(it.file)).byteArray)
+                        pdf = ExposedBlob(krypteringService.krypter(it.file).byteArray)
                         dokumentDato = pesysData.felles.dokumentDato
                         this.redigertBrevHash = brevredigering.redigertBrevHash
                     }

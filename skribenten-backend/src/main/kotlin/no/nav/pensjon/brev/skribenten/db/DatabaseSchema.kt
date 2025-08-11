@@ -68,8 +68,7 @@ private inline fun <reified T> readJsonColumn(json: String): T =
 private const val base64Key = "base64"
 
 private fun <T> krypterOgSkriv(objekt: T): String {
-    val somString = databaseObjectMapper.writeValueAsString(objekt)
-    val byteArray = DekryptertByteArray(somString.encodeToByteArray())
+    val byteArray = DekryptertByteArray(databaseObjectMapper.writeValueAsBytes(objekt))
     val kryptert = krypteringService.krypter(byteArray)
     return """{"$base64Key": "${Base64.encode(kryptert.byteArray)}"}"""
 }

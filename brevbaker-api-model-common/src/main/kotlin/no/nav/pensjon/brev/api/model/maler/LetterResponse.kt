@@ -1,9 +1,10 @@
 package no.nav.pensjon.brev.api.model
 
+import no.nav.pensjon.brevbaker.api.model.DekryptertByteArray
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @Suppress("unused")
-class LetterResponse(val file: ByteArray, val contentType: String, val letterMetadata: LetterMetadata) {
+class LetterResponse(val file: DekryptertByteArray, val contentType: String, val letterMetadata: LetterMetadata) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

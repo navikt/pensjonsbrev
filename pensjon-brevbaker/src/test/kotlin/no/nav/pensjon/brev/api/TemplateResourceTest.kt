@@ -16,7 +16,9 @@ import no.nav.pensjon.brev.fixtures.createLetterExampleDto
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.maler.example.Testmaler
+import no.nav.pensjon.brevbaker.api.model.DekryptertByteArray
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.encodeToDekryptertByteArray
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -24,7 +26,7 @@ import org.junit.jupiter.api.assertThrows
 
 class TemplateResourceTest {
     private val pdfInnhold = "generert pdf"
-    private val pdf = pdfInnhold.encodeToByteArray()
+    private val pdf = DekryptertByteArray(pdfInnhold.encodeToByteArray())
     private val latexMock = mockk<LaTeXCompilerService> {
         coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(pdf)
     }
@@ -50,7 +52,7 @@ class TemplateResourceTest {
     fun `can renderPDF with valid letterData`(): Unit = runBlocking {
         val result = autobrev.renderPDF(validAutobrevRequest)
         assertEquals(
-            LetterResponse(pdfInnhold.encodeToByteArray(), ContentType.Application.Pdf.toString(), LetterExample.template.letterMetadata),
+            LetterResponse(pdfInnhold.encodeToDekryptertByteArray(), ContentType.Application.Pdf.toString(), LetterExample.template.letterMetadata),
             result
         )
     }

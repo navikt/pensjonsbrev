@@ -5,7 +5,12 @@ package no.nav.pensjon.brevbaker.api.model
 value class DekryptertByteArray(val byteArray: ByteArray) {
     fun contentEquals(other: DekryptertByteArray) = byteArray.contentEquals(other.byteArray)
     fun contentHashCode() = byteArray.contentHashCode()
+    fun contentToString() = byteArray.contentToString()
+    val size: Int
+        get() = byteArray.size
 }
+
+fun String.encodeToDekryptertByteArray() = DekryptertByteArray(encodeToByteArray())
 
 @JvmInline
 value class KryptertByteArray(val byteArray: ByteArray) {

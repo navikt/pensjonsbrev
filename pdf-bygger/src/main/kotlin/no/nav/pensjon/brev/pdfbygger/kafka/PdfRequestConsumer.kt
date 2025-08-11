@@ -134,7 +134,7 @@ class PdfRequestConsumer(
 
     private fun base64PDForNull(result: RenderResult): String? =
         (result.pDFCompilationResponse as? PDFCompilationResponse.Success)
-            ?.pdfCompilationOutput?.bytes?.let { pdfEncoder.encodeToString(it) }
+            ?.pdfCompilationOutput?.bytes?.byteArray?.let { pdfEncoder.encodeToString(it) }
 
     private suspend fun renderLetters(
         renderRequests: ConsumerRecords<String, PDFRequestAsync>,
