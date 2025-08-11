@@ -19,22 +19,20 @@ class KrypteringService(private val krypteringsnoekkel: String) {
         private const val ALGORITHM_TYPE = "AES"
     }
 
-    fun krypter(klartekst: DekryptertByteArray): KryptertByteArray {
+    fun krypter(klartekst: ByteArray): ByteArray {
         val salt = getRandomNonce(SALT_LENGTH_BYTE)
         val iv = getRandomNonce(IV_LENGTH_BYTE)
-        val kryptertMelding = initCipher(Cipher.ENCRYPT_MODE, getSecretKey(salt), iv).doFinal(klartekst.byteArray)
+        val kryptertMelding = initCipher(Cipher.ENCRYPT_MODE, getSecretKey(salt), iv).doFinal(klartekst)
 
-        return KryptertByteArray(
-            ByteBuffer.allocate(iv.size + salt.size + kryptertMelding.size)
+        return ByteBuffer.allocate(iv.size + salt.size + kryptertMelding.size)
                 .put(iv)
                 .put(salt)
                 .put(kryptertMelding)
                 .array()
-        )
     }
 
-    fun dekrypter(kryptertMelding: KryptertByteArray): DekryptertByteArray {
-        val byteBuffer = ByteBuffer.wrap(kryptertMelding.byteArray)
+    fun dekrypter(kryptertMelding: ByteArray): ByteArray {
+        val byteBuffer = ByteBuffer.wrap(kryptertMelding)
 
         val iv = ByteArray(IV_LENGTH_BYTE)
         byteBuffer.get(iv)
@@ -45,7 +43,7 @@ class KrypteringService(private val krypteringsnoekkel: String) {
         val encryptedByte = ByteArray(byteBuffer.remaining())
         byteBuffer.get(encryptedByte)
 
-        return DekryptertByteArray(initCipher(Cipher.DECRYPT_MODE, getSecretKey(salt), iv).doFinal(encryptedByte))
+        return initCipher(Cipher.DECRYPT_MODE, getSecretKey(salt), iv).doFinal(encryptedByte)
     }
 
     private fun initCipher(mode: Int, secretKey: SecretKey, iv: ByteArray) = Cipher.getInstance(ALGORITHM)
@@ -63,9 +61,3 @@ class KrypteringService(private val krypteringsnoekkel: String) {
         ALGORITHM_TYPE
     )
 }
-
-@JvmInline
-value class DekryptertByteArray(val byteArray: ByteArray)
-
-@JvmInline
-value class KryptertByteArray(val byteArray: ByteArray)

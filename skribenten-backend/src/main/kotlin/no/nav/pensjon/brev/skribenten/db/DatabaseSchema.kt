@@ -19,8 +19,6 @@ import no.nav.pensjon.brev.skribenten.krypteringService
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
-import no.nav.pensjon.brev.skribenten.db.kryptering.DekryptertByteArray
-import no.nav.pensjon.brev.skribenten.db.kryptering.KryptertByteArray
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.dao.LongEntity
@@ -68,17 +66,17 @@ private inline fun <reified T> readJsonColumn(json: String): T =
 private const val base64Key = "base64"
 
 private fun <T> krypterOgSkriv(objekt: T): String {
-    val byteArray = DekryptertByteArray(databaseObjectMapper.writeValueAsBytes(objekt))
+    val byteArray = databaseObjectMapper.writeValueAsBytes(objekt)
     val kryptert = krypteringService.krypter(byteArray)
-    return """{"$base64Key": "${Base64.encode(kryptert.byteArray)}"}"""
+    return """{"$base64Key": "${Base64.encode(kryptert)}"}"""
 }
 
 private inline fun <reified T> lesOgDekrypter(json: String): T {
     try {
         val kryptertBase64 = databaseObjectMapper.readValue<Map<String, String>>(json)[base64Key]
-        val kryptert = KryptertByteArray(Base64.decode(kryptertBase64!!))
+        val kryptert = Base64.decode(kryptertBase64!!)
         val dekryptert = krypteringService.dekrypter(kryptert)
-        return readJsonColumn(String(dekryptert.byteArray))
+        return readJsonColumn(String(dekryptert))
     } catch (e: MismatchedInputException) {
         if (e.message?.startsWith("""Cannot deserialize value of type `java.lang.String` from Object value (token `JsonToken.START_OBJECT`)""") == true) {
             logger.warn("Leste inn brevredigeringsrad fra databasen som ikke var kryptert")
@@ -158,9 +156,9 @@ class Document(id: EntityID<Long>) : LongEntity(id) {
     var redigertBrevHash by DocumentTable.redigertBrevHash.editLetterHash()
 
     var pdf: ExposedBlob
-        get() = ExposedBlob(krypteringService.dekrypter(KryptertByteArray(kryptertPdf.bytes)).byteArray)
+        get() = ExposedBlob(krypteringService.dekrypter(kryptertPdf.bytes))
         set(value) {
-            this.kryptertPdf = ExposedBlob(krypteringService.krypter(DekryptertByteArray(value.bytes)).byteArray)
+            this.kryptertPdf = ExposedBlob(krypteringService.krypter(value.bytes))
         }
 
     companion object : LongEntityClass<Document>(DocumentTable)
