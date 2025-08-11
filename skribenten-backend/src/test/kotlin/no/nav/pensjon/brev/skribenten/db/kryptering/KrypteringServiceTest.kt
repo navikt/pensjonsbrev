@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.db.kryptering
 
-import no.nav.pensjon.brevbaker.api.model.DekryptertByteArray
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

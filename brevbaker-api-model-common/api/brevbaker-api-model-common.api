@@ -285,25 +285,6 @@ public final class no/nav/pensjon/brevbaker/api/model/Days : no/nav/pensjon/brev
 	public final synthetic fun unbox-impl ()I
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/DekryptertByteArray {
-	public static final synthetic fun box-impl ([B)Lno/nav/pensjon/brevbaker/api/model/DekryptertByteArray;
-	public static fun constructor-impl ([B)[B
-	public static final fun contentEquals-0gYJRks ([B[B)Z
-	public static final fun contentHashCode-impl ([B)I
-	public static final fun contentToString-impl ([B)Ljava/lang/String;
-	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl ([BLjava/lang/Object;)Z
-	public static final fun equals-impl0 ([B[B)Z
-	public final fun getByteArray ()[B
-	public static final fun getSize-impl ([B)I
-	public fun hashCode ()I
-	public static fun hashCode-impl ([B)I
-	public static final fun somString-impl ([B)Ljava/lang/String;
-	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl ([B)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()[B
-}
-
 public abstract interface annotation class no/nav/pensjon/brevbaker/api/model/DisplayText : java/lang/annotation/Annotation {
 	public abstract fun text ()Ljava/lang/String;
 }
@@ -360,22 +341,6 @@ public final class no/nav/pensjon/brevbaker/api/model/Kroner : no/nav/pensjon/br
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (I)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()I
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/KryptertByteArray {
-	public static final synthetic fun box-impl ([B)Lno/nav/pensjon/brevbaker/api/model/KryptertByteArray;
-	public static fun constructor-impl ([B)[B
-	public static final fun contentEquals-HFsSdNg ([B[B)Z
-	public static final fun contentHashCode-impl ([B)I
-	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl ([BLjava/lang/Object;)Z
-	public static final fun equals-impl0 ([B[B)Z
-	public final fun getByteArray ()[B
-	public fun hashCode ()I
-	public static fun hashCode-impl ([B)I
-	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl ([B)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()[B
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LanguageCode : java/lang/Enum {

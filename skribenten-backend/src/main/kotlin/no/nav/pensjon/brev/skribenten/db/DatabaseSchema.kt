@@ -19,8 +19,8 @@ import no.nav.pensjon.brev.skribenten.krypteringService
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
-import no.nav.pensjon.brevbaker.api.model.DekryptertByteArray
-import no.nav.pensjon.brevbaker.api.model.KryptertByteArray
+import no.nav.pensjon.brev.skribenten.db.kryptering.DekryptertByteArray
+import no.nav.pensjon.brev.skribenten.db.kryptering.KryptertByteArray
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.dao.LongEntity

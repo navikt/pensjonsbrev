@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.skribenten.db.kryptering
 
-import no.nav.pensjon.brevbaker.api.model.DekryptertByteArray
-import no.nav.pensjon.brevbaker.api.model.KryptertByteArray
 import java.nio.ByteBuffer
 import java.security.SecureRandom
 import javax.crypto.Cipher
