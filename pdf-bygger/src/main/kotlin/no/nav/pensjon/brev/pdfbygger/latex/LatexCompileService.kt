@@ -8,7 +8,6 @@ import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brev.template.render.DocumentFile
-import no.nav.pensjon.brevbaker.api.model.DekryptertByteArray
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
@@ -50,7 +49,7 @@ class LatexCompileService(
             when (val result: Execution = compile(tmpDir)) {
                 is Execution.Success -> {
                     result.pdf.toFile().readBytes()
-                        .let { PDFCompilationResponse.Success(PDFCompilationOutput(DekryptertByteArray(it))) }
+                        .let { PDFCompilationResponse.Success(PDFCompilationOutput(it)) }
                 }
 
                 is Execution.Failure.Compilation ->

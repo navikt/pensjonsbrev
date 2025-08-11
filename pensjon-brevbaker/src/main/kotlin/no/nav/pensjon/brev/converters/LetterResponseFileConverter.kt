@@ -16,7 +16,7 @@ object LetterResponseFileConverter : ContentConverter {
         return if (value is LetterResponse) {
             ContentType.parse(value.contentType)
                 .takeIf { contentType.withCharset(charset).match(it) }
-                ?.let { ByteArrayContent(value.file.byteArray, it) }
+                ?.let { ByteArrayContent(value.file, it) }
         } else null
     }
 }

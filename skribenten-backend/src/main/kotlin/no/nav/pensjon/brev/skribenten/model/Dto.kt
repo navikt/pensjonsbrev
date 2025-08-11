@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.norskAdresse
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.samhandler
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.utenlandskAdresse
-import no.nav.pensjon.brevbaker.api.model.KryptertByteArray
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import java.time.Instant
 import java.time.LocalDate
@@ -49,7 +48,7 @@ object Dto {
     data class Document(
         val brevredigeringId: Long,
         val dokumentDato: LocalDate,
-        val pdf: KryptertByteArray,
+        val pdf: ByteArray,
         val redigertBrevHash: EditLetterHash,
     ) {
         override fun equals(other: Any?): Boolean {

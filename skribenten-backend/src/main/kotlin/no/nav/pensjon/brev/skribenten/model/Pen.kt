@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B222
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B255
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B280
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B359
-import no.nav.pensjon.brevbaker.api.model.DekryptertByteArray
 import java.time.LocalDate
 import java.time.LocalDateTime
 import no.nav.pensjon.brev.api.model.Sakstype as BrevbakerSakstype
@@ -118,7 +117,7 @@ object Pen {
         val saksId: Long,
         val brevkode: Brevkode.Redigerbart,
         val enhetId: String?,
-        val pdf: DekryptertByteArray,
+        val pdf: ByteArray,
         val eksternReferanseId: String,
         val mottaker: Mottaker?
     ) {

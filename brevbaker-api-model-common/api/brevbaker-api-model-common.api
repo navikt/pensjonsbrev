@@ -42,9 +42,9 @@ public final class no/nav/brev/brevbaker/AsyncPDFCompilationOutput {
 }
 
 public final class no/nav/brev/brevbaker/PDFCompilationOutput {
-	public synthetic fun <init> ([BLkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> ([B)V
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getBytes-I1sJZAM ()[B
+	public final fun getBytes ()[B
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -89,10 +89,10 @@ public abstract interface class no/nav/pensjon/brev/api/model/BrevRequest {
 }
 
 public final class no/nav/pensjon/brev/api/model/LetterResponse {
-	public synthetic fun <init> ([BLjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> ([BLjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getContentType ()Ljava/lang/String;
-	public final fun getFile-I1sJZAM ()[B
+	public final fun getFile ()[B
 	public final fun getLetterMetadata ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -269,10 +269,6 @@ public final class no/nav/pensjon/brevbaker/api/model/Bruker {
 	public final fun getMellomnavn ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/ByteArraysKt {
-	public static final fun encodeToDekryptertByteArray (Ljava/lang/String;)[B
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/Days : no/nav/pensjon/brevbaker/api/model/IntValue {

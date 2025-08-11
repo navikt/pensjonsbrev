@@ -13,7 +13,6 @@ import no.nav.pensjon.brev.skribenten.db.Document
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.db.Mottaker
 import no.nav.pensjon.brev.skribenten.db.MottakerType
-import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.klarTilSending
 import no.nav.pensjon.brev.skribenten.letter.toEdit
@@ -32,8 +31,6 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.BrevLaast
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.KanIkkeReservereBrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brev.skribenten.services.ServiceResult.Ok
-import no.nav.pensjon.brevbaker.api.model.DekryptertByteArray
-import no.nav.pensjon.brevbaker.api.model.KryptertByteArray
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -70,7 +67,6 @@ class BrevredigeringService(
     private val brevbakerService: BrevbakerService,
     private val navansattService: NavansattService,
     private val penService: PenService,
-    private val krypteringService: KrypteringService,
 ) {
     companion object {
         val RESERVASJON_TIMEOUT = 10.minutes.toJavaDuration()
@@ -279,14 +275,15 @@ class BrevredigeringService(
             )
         }
 
-    suspend fun hentEllerOpprettPdf(saksId: Long, brevId: Long): ServiceResult<DekryptertByteArray>? {
+    suspend fun hentEllerOpprettPdf(saksId: Long, brevId: Long): ServiceResult<ByteArray>? {
         val (brevredigering, document) = transaction {
             Brevredigering.findByIdAndSaksId(brevId, saksId).let { it?.toDto() to it?.document?.firstOrNull()?.toDto() }
         }
 
         return brevredigering?.let {
             if (document != null && document.redigertBrevHash == brevredigering.redigertBrevHash) {
-                Ok(krypteringService.dekrypter(document.pdf))
+                Ok(document.pdf)
+//                Ok(krypteringService.dekrypter(document.pdf))
             } else {
                 opprettPdf(brevredigering)
             }
@@ -356,7 +353,7 @@ class BrevredigeringService(
                         enhetId = brev.info.avsenderEnhetId,
                         templateDescription = template,
                         brevkode = brev.info.brevkode,
-                        pdf = krypteringService.dekrypter(document.pdf),
+                        pdf = document.pdf,
                         eksternReferanseId = "skribenten:${brev.info.id}",
                         mottaker = brev.info.mottaker?.toPen(),
                     ),
@@ -504,7 +501,7 @@ class BrevredigeringService(
         }
     }
 
-    private suspend fun opprettPdf(brevredigering: Dto.Brevredigering): ServiceResult<DekryptertByteArray> {
+    private suspend fun opprettPdf(brevredigering: Dto.Brevredigering): ServiceResult<ByteArray> {
         return penService.hentPesysBrevdata(
             saksId = brevredigering.info.saksId,
             vedtaksId = brevredigering.info.vedtaksId,
@@ -525,13 +522,12 @@ class BrevredigeringService(
                 transaction {
                     val update: Document.() -> Unit = {
                         this.brevredigering = Brevredigering[brevredigering.info.id]
-                        pdf = ExposedBlob(krypteringService.krypter(it.file).byteArray)
+                        pdfz = ExposedBlob(it.file)
                         dokumentDato = pesysData.felles.dokumentDato
                         this.redigertBrevHash = brevredigering.redigertBrevHash
                     }
-                    (Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf?.bytes
-                        ?: Document.new(update).pdf.bytes)
-                        .let { krypteringService.dekrypter(KryptertByteArray(it)) }
+                    (Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdfz?.bytes
+                        ?: Document.new(update).pdfz.bytes)
                 }
             }
         }
@@ -682,7 +678,7 @@ private fun Document.toDto(): Dto.Document =
     Dto.Document(
         brevredigeringId = brevredigering.id.value,
         dokumentDato = dokumentDato,
-        pdf = KryptertByteArray(pdf.bytes),
+        pdf = pdfz.bytes,
         redigertBrevHash = redigertBrevHash
     )
 

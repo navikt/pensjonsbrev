@@ -154,8 +154,14 @@ object DocumentTable : LongIdTable() {
 class Document(id: EntityID<Long>) : LongEntity(id) {
     var brevredigering by Brevredigering referencedOn DocumentTable.brevredigering
     var dokumentDato by DocumentTable.dokumentDato
-    var pdf by DocumentTable.pdf
+    private var pdf by DocumentTable.pdf
     var redigertBrevHash by DocumentTable.redigertBrevHash.editLetterHash()
+
+    var pdfz: ExposedBlob
+        get() = krypteringService.dekrypter(KryptertByteArray(pdf.bytes)).let { ExposedBlob(it.byteArray) }
+        set(value) {
+            this.pdf = krypteringService.krypter(DekryptertByteArray(value.bytes)).let { ExposedBlob(it.byteArray) }
+        }
 
     companion object : LongEntityClass<Document>(DocumentTable)
 }

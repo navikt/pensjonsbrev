@@ -34,7 +34,6 @@ import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.toCode
-import no.nav.pensjon.brevbaker.api.model.DekryptertByteArray
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.nio.file.Path
@@ -59,10 +58,10 @@ fun requestLetter(client: HttpClient, letterRequest: BestillBrevRequest<Brevkode
         }.body()
     }
 
-fun writeTestPDF(pdfFileName: String, pdf: DekryptertByteArray, path: Path = Path.of("build", "test_pdf")) {
+fun writeTestPDF(pdfFileName: String, pdf: ByteArray, path: Path = Path.of("build", "test_pdf")) {
     val file = path.resolve("${pdfFileName.replace(" ", "_")}.pdf").toFile()
     file.parentFile.mkdirs()
-    file.writeBytes(pdf.byteArray)
+    file.writeBytes(pdf)
     println("Test-file written to file:${"\\".repeat(3)}${file.absolutePath}".replace('\\', '/'))
 }
 

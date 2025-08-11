@@ -11,8 +11,6 @@ value class DekryptertByteArray(val byteArray: ByteArray) {
         get() = byteArray.size
 }
 
-fun String.encodeToDekryptertByteArray() = DekryptertByteArray(encodeToByteArray())
-
 @JvmInline
 value class KryptertByteArray(val byteArray: ByteArray) {
     fun contentEquals(other: KryptertByteArray) = byteArray.contentEquals(other.byteArray)

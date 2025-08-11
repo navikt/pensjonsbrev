@@ -1,10 +1,9 @@
 package no.nav.brev.brevbaker
 
-import no.nav.pensjon.brevbaker.api.model.DekryptertByteArray
 import java.util.Objects
 
 @Suppress("unused")
-class PDFCompilationOutput(val bytes: DekryptertByteArray) {
+class PDFCompilationOutput(val bytes: ByteArray) {
     override fun equals(other: Any?): Boolean {
         if (other !is PDFCompilationOutput) return false
         return bytes.contentEquals(other.bytes)

@@ -96,7 +96,7 @@ class LetterRoutesITest {
         }.body<LetterResponse>()
 
         assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8).toString(), responseBody.contentType)
-        assertThat(String(responseBody.file.byteArray, Charsets.UTF_8), contains(Regex("<html.*>")))
+        assertThat(String(responseBody.file, Charsets.UTF_8), contains(Regex("<html.*>")))
     }
 
     @Test
@@ -157,7 +157,7 @@ class LetterRoutesITest {
 
         assertEquals(HttpStatusCode.OK, response.status)
         val body = response.body<LetterResponse>()
-        assertThat(String(body.file.byteArray, Charsets.UTF_8), containsSubstring(redigertBestilling.letterMarkup.title))
+        assertThat(String(body.file, Charsets.UTF_8), containsSubstring(redigertBestilling.letterMarkup.title))
     }
 
     @Test
