@@ -63,3 +63,9 @@ class KrypteringService(private val krypteringsnoekkel: String) {
         ALGORITHM_TYPE
     )
 }
+
+@JvmInline
+value class DekryptertByteArray(val byteArray: ByteArray)
+
+@JvmInline
+value class KryptertByteArray(val byteArray: ByteArray)
