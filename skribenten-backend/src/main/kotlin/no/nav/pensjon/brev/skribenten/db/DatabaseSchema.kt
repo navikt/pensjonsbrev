@@ -15,12 +15,12 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.brev.Landkode
-import no.nav.pensjon.brev.skribenten.db.kryptering.DekryptertByteArray
-import no.nav.pensjon.brev.skribenten.db.kryptering.KryptertByteArray
 import no.nav.pensjon.brev.skribenten.krypteringService
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
+import no.nav.pensjon.brevbaker.api.model.DekryptertByteArray
+import no.nav.pensjon.brevbaker.api.model.KryptertByteArray
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.dao.LongEntity
@@ -34,7 +34,6 @@ import org.jetbrains.exposed.sql.javatime.timestamp
 import org.jetbrains.exposed.sql.json.json
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
 import org.slf4j.LoggerFactory
-import java.nio.charset.Charset
 import java.time.Instant
 import java.time.LocalDate
 import javax.sql.DataSource
