@@ -152,7 +152,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
 
 
         title {
-            showIf(not(erMellombehandling) and saksbehandlerValg.nyBeregningAvInnvilgetAP) {
+            showIf(not(erMellombehandling)) {
                 includePhrase(BeregnaPaaNytt(pesysData.kravVirkDatoFom))
             }.orShow {
                 textExpr(
