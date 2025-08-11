@@ -145,21 +145,18 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
 object DocumentTable : LongIdTable() {
     val brevredigering: Column<EntityID<Long>> = reference("brevredigering", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val dokumentDato: Column<LocalDate> = date("dokumentDato")
-    val pdf: Column<ExposedBlob> = blob("brevpdf")
+    val pdf: Column<ExposedBlob> = blob("brevpdf").transform(
+        wrap = { ExposedBlob(krypteringService.dekrypter(it.bytes)) },
+        unwrap = { ExposedBlob(krypteringService.krypter(it.bytes)) }
+    )
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
 }
 
 class Document(id: EntityID<Long>) : LongEntity(id) {
     var brevredigering by Brevredigering referencedOn DocumentTable.brevredigering
     var dokumentDato by DocumentTable.dokumentDato
-    private var kryptertPdf by DocumentTable.pdf
+    var pdf by DocumentTable.pdf
     var redigertBrevHash by DocumentTable.redigertBrevHash.editLetterHash()
-
-    var pdf: ExposedBlob
-        get() = ExposedBlob(krypteringService.dekrypter(kryptertPdf.bytes))
-        set(value) {
-            this.kryptertPdf = ExposedBlob(krypteringService.krypter(value.bytes))
-        }
 
     companion object : LongEntityClass<Document>(DocumentTable)
 }
