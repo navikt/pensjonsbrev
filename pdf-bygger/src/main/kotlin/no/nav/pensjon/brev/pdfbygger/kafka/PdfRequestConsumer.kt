@@ -2,7 +2,9 @@ package no.nav.pensjon.brev.pdfbygger.kafka
 
 import io.ktor.server.config.*
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import no.nav.brev.brevbaker.AsyncPDFCompilationOutput
@@ -13,21 +15,23 @@ import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.mdc
 import no.nav.pensjon.brev.pdfbygger.pdfByggerObjectMapper
-import org.apache.kafka.clients.admin.AbortTransactionSpec
-import org.apache.kafka.clients.admin.AdminClient
-import org.apache.kafka.clients.consumer.*
+import org.apache.kafka.clients.consumer.ConsumerRebalanceListener
+import org.apache.kafka.clients.consumer.ConsumerRecords
+import org.apache.kafka.clients.consumer.KafkaConsumer
+import org.apache.kafka.clients.consumer.OffsetAndMetadata
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.TopicPartition
-import org.apache.kafka.common.errors.UnknownTopicOrPartitionException
+import org.apache.kafka.common.errors.AuthorizationException
 import org.apache.kafka.common.serialization.Deserializer
 import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.kafka.common.serialization.StringSerializer
 import org.slf4j.LoggerFactory
-import java.util.Base64
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.Executors
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 
@@ -36,7 +40,7 @@ private val QUEUE_READ_TIMEOUT = 1.seconds.toJavaDuration()
 
 class PdfRequestConsumer(
     private val latexCompileService: LatexCompileService,
-    private val kafkaConfig: ApplicationConfig,
+    kafkaConfig: ApplicationConfig,
     private val renderTopic: String,
 ) {
     private val logger = LoggerFactory.getLogger(PdfRequestConsumer::class.java)
@@ -46,12 +50,13 @@ class PdfRequestConsumer(
         ?: throw IllegalStateException("Not enough cores to run async worker")
 
     private val replyProducers = Producers<AsyncPDFCompilationOutput>(createKafkaProducerConfig(kafkaConfig))
+    private val validReplyTopicCache = Cache<String, Boolean>(5.minutes)
 
     private val pdfEncoder = Base64.getEncoder()
     private lateinit var consumerJob: Job
 
     private val consumer = KafkaConsumer(
-        createKafkaConsumerConfig(kafkaConfig, parallelism),
+        createKafkaConsumerConfig(kafkaConfig = kafkaConfig, paralellism = parallelism),
         StringDeserializer(),
         PDFRequestAsyncDeserializer()
     )
@@ -69,7 +74,6 @@ class PdfRequestConsumer(
 
     fun stop() {
         consumerJob.cancel("Shutting down kafka consumer")
-        flowScope.cancel("Shutting down")
     }
 
 
@@ -102,16 +106,29 @@ class PdfRequestConsumer(
                     results.forEach { result ->
                         val error = errorMessage(result)
                         mdc("messageId" to result.renderRequest.messageId) {
-                            replyProducer.send(
-                                ProducerRecord(
-                                    result.renderRequest.replyTopic,
-                                    result.renderRequest.messageId,
-                                    AsyncPDFCompilationOutput(
-                                        base64PDF = base64PDForNull(result),
-                                        error = error?.also { logger.error(it) },
+                            // TODO bør jeg bruke admin client istedenfor?.
+                            val replyTopic = result.renderRequest.replyTopic
+                            val hasValidReplyTopic = validReplyTopicCache.cached(replyTopic) {
+                                try {
+                                    replyProducer.partitionsFor(replyTopic).isNotEmpty()
+                                } catch (e: AuthorizationException) {
+                                    logger.error("PDF reply producer was not authorized for reply topic $replyTopic: " + e.message)
+                                    false
+                                }
+                            }
+
+                            if (hasValidReplyTopic) {
+                                replyProducer.send(
+                                    ProducerRecord(
+                                        replyTopic,
+                                        result.renderRequest.messageId,
+                                        AsyncPDFCompilationOutput(
+                                            base64PDF = base64PDForNull(result),
+                                            error = error?.also { logger.error(it) },
+                                        )
                                     )
                                 )
-                            )
+                            }
                         }
                     }
                     replyProducer.commitTransaction()
@@ -121,6 +138,7 @@ class PdfRequestConsumer(
                 }
             }
     }
+
 
     private fun errorMessage(result: RenderResult): String? = when (val response = result.pDFCompilationResponse) {
         is PDFCompilationResponse.Failure.QueueTimeout -> response.reason
@@ -166,6 +184,7 @@ class PdfRequestConsumer(
         }
 
 }
+
 
 private class PDFRequestAsyncDeserializer : Deserializer<PDFRequestAsync> {
     private val mapper = pdfByggerObjectMapper()
