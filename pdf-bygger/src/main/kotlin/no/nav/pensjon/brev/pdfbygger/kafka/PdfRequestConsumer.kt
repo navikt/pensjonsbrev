@@ -24,6 +24,7 @@ import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.TopicPartition
 import org.apache.kafka.common.acl.AclOperation
+import org.apache.kafka.common.errors.UnknownTopicOrPartitionException
 import org.apache.kafka.common.serialization.Deserializer
 import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -78,7 +79,6 @@ class PdfRequestConsumer(
         consumerJob.cancel("Shutting down kafka consumer")
     }
 
-
     private fun pollFlow(): Flow<ConsumerRecords<String, PDFRequestAsync>> = flow {
         try {
             while (currentCoroutineContext().isActive) {
@@ -110,7 +110,7 @@ class PdfRequestConsumer(
                         mdc("messageId" to result.renderRequest.messageId) {
                             val replyTopic = result.renderRequest.replyTopic
 
-                            if (applicationHasAccessToTopic(replyTopic)) {
+                            if (validateHasTopicAccess(replyTopic)) {
                                 replyProducer.send(
                                     ProducerRecord(
                                         replyTopic,
@@ -122,7 +122,7 @@ class PdfRequestConsumer(
                                     )
                                 )
                             } else {
-                                logger.error("Skipping message ${result.renderRequest.messageId} for reply topic $replyTopic. Either the topic does not exist or pdf-bygger does not have access to it.")
+                                logger.error("Pdfbygger does not have access to $replyTopic. Skipping message.")
                             }
                         }
                     }
@@ -134,11 +134,14 @@ class PdfRequestConsumer(
             }
     }
 
-    private fun applicationHasAccessToTopic(replyTopic: String): Boolean = validReplyTopicCache.cached(replyTopic) {
-        adminClient.describeTopics(listOf(replyTopic))
-            .topicNameValues().any {
-                it.value.get().authorizedOperations().contains(AclOperation.WRITE)
-            }
+    private fun validateHasTopicAccess(replyTopic: String): Boolean = validReplyTopicCache.cached(replyTopic) {
+        try {
+            adminClient.describeTopics(listOf(replyTopic))
+                .topicNameValues().any { it.value.get().authorizedOperations().contains(AclOperation.WRITE) }
+        } catch (e: UnknownTopicOrPartitionException) {
+            logger.error("Reply topic $replyTopic does not exist. Skipping message.")
+            return@cached false
+        }
     }
 
     private fun errorMessage(result: RenderResult): String? = when (val response = result.pDFCompilationResponse) {
