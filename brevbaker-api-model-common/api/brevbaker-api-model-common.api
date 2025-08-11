@@ -302,6 +302,7 @@ public final class no/nav/pensjon/brevbaker/api/model/DekryptertByteArray {
 	public static final fun getSize-impl ([B)I
 	public fun hashCode ()I
 	public static fun hashCode-impl ([B)I
+	public static final fun somString-impl ([B)Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl ([B)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()[B

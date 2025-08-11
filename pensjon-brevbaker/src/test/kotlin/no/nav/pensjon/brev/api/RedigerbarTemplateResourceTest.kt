@@ -56,7 +56,7 @@ class RedigerbarTemplateResourceTest {
 
     @Test
     fun `renderHTML redigertBrev uses letterMarkup from argument and includes attachments`() {
-        val result = String(redigerbar.renderHTML(validRedigertBrevRequest).file.byteArray)
+        val result = redigerbar.renderHTML(validRedigertBrevRequest).file.somString()
         val anAttachmentTitle = LetterTestRenderer.renderAttachmentsOnly(
             validRedigertBrevRequest.let { ExpressionScope(it.letterData, it.felles, Language.Bokmal) },
             EksempelbrevRedigerbart.template

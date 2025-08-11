@@ -287,6 +287,6 @@ class LatexServiceTest {
             ).producePDF(files)
         }
 
-    private fun Success.decodePlaintext(): String = String(this.pdfCompilationOutput.bytes.byteArray)
+    private fun Success.decodePlaintext(): String = this.pdfCompilationOutput.bytes.somString()
 
 }

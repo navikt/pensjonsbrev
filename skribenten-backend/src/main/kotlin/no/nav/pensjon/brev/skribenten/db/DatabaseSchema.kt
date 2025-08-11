@@ -78,7 +78,7 @@ private inline fun <reified T> lesOgDekrypter(json: String): T {
         val kryptertBase64 = databaseObjectMapper.readValue<Map<String, String>>(json)[base64Key]
         val kryptert = KryptertByteArray(Base64.decode(kryptertBase64!!))
         val dekryptert = krypteringService.dekrypter(kryptert)
-        return readJsonColumn(String(dekryptert.byteArray))
+        return readJsonColumn(dekryptert.somString())
     } catch (e: MismatchedInputException) {
         if (e.message?.startsWith("""Cannot deserialize value of type `java.lang.String` from Object value (token `JsonToken.START_OBJECT`)""") == true) {
             logger.warn("Leste inn brevredigeringsrad fra databasen som ikke var kryptert")
