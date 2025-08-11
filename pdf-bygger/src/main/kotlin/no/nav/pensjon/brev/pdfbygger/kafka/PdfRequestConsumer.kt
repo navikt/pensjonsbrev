@@ -122,13 +122,13 @@ class PdfRequestConsumer(
                                     )
                                 )
                             } else {
-                                logger.error("Pdfbygger does not have access to $replyTopic. Skipping message.")
+                                logger.error("Pdfbygger does not have write access to $replyTopic. Skipping message.")
                             }
                         }
                     }
                     replyProducer.commitTransaction()
                 } catch (e: Exception) {
-                    logger.error("Failed to commit message to transaction with exception: ${e.message}. Aborting transaction.")
+                    logger.error("Failed to commit message to transaction with exception: ${e.message}. Aborting transaction. ${e.stackTrace}")
                     replyProducer.abortTransaction()
                 }
             }
@@ -136,7 +136,7 @@ class PdfRequestConsumer(
 
     private fun validateHasTopicAccess(replyTopic: String): Boolean = validReplyTopicCache.cached(replyTopic) {
         try {
-            adminClient.describeTopics(listOf(replyTopic))
+            return@cached adminClient.describeTopics(listOf(replyTopic))
                 .topicNameValues().any { it.value.get().authorizedOperations().contains(AclOperation.WRITE) }
         } catch (e: UnknownTopicOrPartitionException) {
             logger.error("Reply topic $replyTopic does not exist. Skipping message.")
@@ -186,7 +186,6 @@ class PdfRequestConsumer(
             LatexDocumentRenderer.render(request.request)
                 .let { latexCompileService.createLetter(it.files) }
         }
-
 }
 
 
