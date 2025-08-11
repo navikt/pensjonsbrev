@@ -26,7 +26,7 @@ import org.junit.jupiter.api.assertThrows
 
 class TemplateResourceTest {
     private val pdfInnhold = "generert pdf"
-    private val pdf = DekryptertByteArray(pdfInnhold.encodeToByteArray())
+    private val pdf = pdfInnhold.encodeToDekryptertByteArray()
     private val latexMock = mockk<LaTeXCompilerService> {
         coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(pdf)
     }

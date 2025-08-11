@@ -17,12 +17,13 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.DekryptertByteArray
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
+import no.nav.pensjon.brevbaker.api.model.encodeToDekryptertByteArray
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 class RedigerbarTemplateResourceTest {
     private val pdfInnhold = "generert redigerbar pdf"
-    private val pdf = DekryptertByteArray(pdfInnhold.encodeToByteArray())
+    private val pdf = pdfInnhold.encodeToDekryptertByteArray()
     private val latexMock = mockk<LaTeXCompilerService> {
         coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(pdf)
     }
