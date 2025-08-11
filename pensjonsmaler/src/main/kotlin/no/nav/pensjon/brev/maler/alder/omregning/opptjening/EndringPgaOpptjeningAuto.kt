@@ -15,15 +15,8 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoS
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.sisteGyldigeOpptjeningsAar
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.uforeKombinertMedAlder
 import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDtoSelectors.virkFom
-import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittArbeidsinntekt
-import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittBegrunnelseForVedtaket
-import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittEndringPensjon
-import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittFlereBeregningsperioder
-import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittHjemmel
-import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittUtbetalingPerMaaned
-import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittBeskrivelse
-import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittEtterbetaling
-import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.AvsnittSkattApEndring
+import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
+import no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser.*
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
@@ -68,7 +61,10 @@ object EndringPgaOpptjeningAuto : AutobrevTemplate<EndringPgaOpptjeningAutoDto> 
             includePhrase(AvsnittEtterbetaling(virkFom, opptjening, belopEndring, antallAarEndretOpptjening))
             includePhrase(AvsnittSkattApEndring(borINorge))
             includePhrase(AvsnittArbeidsinntekt(beregnetPensjonPerMaanedVedVirk.uttaksgrad, uforeKombinertMedAlder))
-
+            includePhrase(AvsnittLesMerOmAlderspensjon())
+            includePhrase(AvsnittMeldFraOmEndringer())
+            includePhrase(Felles.RettTilAAKlage(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
+            includePhrase(Felles.RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
             includePhrase(Felles.HarDuSpoersmaal.alder)
         }
     }

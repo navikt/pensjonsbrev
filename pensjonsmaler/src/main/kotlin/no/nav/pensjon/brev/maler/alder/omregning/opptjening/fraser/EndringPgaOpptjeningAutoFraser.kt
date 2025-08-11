@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSele
 import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.virkFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.Opptjening
 import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST_URL
@@ -589,6 +590,57 @@ data class AvsnittArbeidsinntekt(
                     Language.English to "Your disability benefit may still be reduced as a result of income. You can find information on the income limit in the decision on disability benefit."
                 )
             }
+        }
+    }
+}
+
+class AvsnittLesMerOmAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title2 {
+            text(
+                Language.Bokmal to "Hvor kan du få vite mer om alderspensjonen din?",
+                Language.Nynorsk to "Kvar kan du få vite meir om alderspensjonen din?",
+                Language.English to "Where can you find out more about your retirement pension?"
+            )
+        }
+
+        paragraph {
+            text(
+                Language.Bokmal to "Du finner mer informasjon om hvordan alderspensjon er satt sammen og oversikter over grunnbeløp og aktuelle satser på $ALDERSPENSJON. " +
+                        "Informasjon om utbetalingene dine finner du på $DITT_NAV. Her kan du også endre kontonummeret ditt.",
+                Language.Nynorsk to "Du finn meir informasjon om korleis alderspensjonen er sett saman, og oversikter over grunnbeløp og aktuelle satsar på $ALDERSPENSJON. " +
+                        "Informasjon om utbetalingane dine finn du på $DITT_NAV. Her kan du også endre kontonummeret ditt.",
+                Language.English to "There is more information on how retirement pension is calculated, with overviews of basic amounts and relevant rates, at $$ALDERSPENSJON. " +
+                        "You can find more detailed information on what you will receive at $DITT_NAV. Here you can also change your bank account number."
+            )
+        }
+    }
+}
+
+class AvsnittMeldFraOmEndringer : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title2 {
+            text(
+                Language.Bokmal to "Du må melde fra om endringer",
+                Language.Nynorsk to "Du må melde frå om endringar",
+                Language.English to "You must notify Nav if anything changes "
+            )
+        }
+
+        paragraph {
+            text(
+                Language.Bokmal to "Hvis du får endringer i familiesituasjon, planlegger opphold i utlandet, eller ektefellen eller samboeren din får endringer i inntekten, kan det ha betydning for beløpet du får utbetalt fra Nav. I slike tilfeller må du derfor straks melde fra til oss. I vedlegget ser du hvilke endringer du må si fra om.",
+                Language.Nynorsk to "Dersom du får endringar i familiesituasjonen, planlegg opphald i utlandet, eller ektefellen, partnaren eller sambuaren din får endringar i inntekta, kan det få noko å seie for beløpet du får utbetalt frå Nav. I slike tilfelle må du derfor straks melde frå til oss. I vedlegget ser du kva endringar du må seie frå om.",
+                Language.English to "If there are changes in your family situation or you are planning a long-term stay abroad, or there are changes in the income of your spouse or co-habiting partner, these might affect the payments you receive from Nav. In such cases, you must notify Nav immediately. The appendix specifies which changes you are obligated to notify us of."
+            )
+        }
+
+        paragraph {
+            text(
+                Language.Bokmal to "Hvis du har fått utbetalt for mye fordi du ikke har gitt oss beskjed, må du vanligvis betale tilbake pengene. Du er selv ansvarlig for å holde deg orientert om bevegelser på kontoen din, og du må melde fra om eventuelle feil til Nav.",
+                Language.Nynorsk to "Dersom du har fått utbetalt for mykje fordi du ikkje har gitt oss beskjed, må du vanlegvis betale tilbake pengane. Du er sjølv ansvarleg for å halde deg orientert om rørsler på kontoen din, og du må melde frå om eventuelle feil til Nav.",
+                Language.English to "If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav."
+            )
         }
     }
 }
