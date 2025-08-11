@@ -521,12 +521,12 @@ class BrevredigeringService(
                 transaction {
                     val update: Document.() -> Unit = {
                         this.brevredigering = Brevredigering[brevredigering.info.id]
-                        pdfz = ExposedBlob(it.file)
+                        pdf = ExposedBlob(it.file)
                         dokumentDato = pesysData.felles.dokumentDato
                         this.redigertBrevHash = brevredigering.redigertBrevHash
                     }
-                    Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdfz?.bytes
-                        ?: Document.new(update).pdfz.bytes
+                    Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf?.bytes
+                        ?: Document.new(update).pdf.bytes
                 }
             }
         }
@@ -677,7 +677,7 @@ private fun Document.toDto(): Dto.Document =
     Dto.Document(
         brevredigeringId = brevredigering.id.value,
         dokumentDato = dokumentDato,
-        pdf = pdfz.bytes,
+        pdf = pdf.bytes,
         redigertBrevHash = redigertBrevHash
     )
 
