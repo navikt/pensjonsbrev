@@ -1,14 +1,25 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
 
-import type { LiteralValue, Table } from "~/types/brevbakerTypes";
-import { LITERAL, PARAGRAPH } from "~/types/brevbakerTypes";
+import type { LiteralValue, Table, TextContent } from "~/types/brevbakerTypes";
+import { LITERAL, NEW_LINE, PARAGRAPH, VARIABLE } from "~/types/brevbakerTypes";
 
 import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { newTable } from "../model/tableHelpers";
 import { isTableCellIndex } from "../model/utils";
-import { addElements, isTable, newColSpec, newRow, removeElements, text } from "./common";
+import {
+  addElements,
+  createNewLine,
+  hasHeaderContentCols,
+  isTable,
+  newColSpec,
+  newLiteral,
+  newRow,
+  newVariable,
+  removeElements,
+  text,
+} from "./common";
 import { updateLiteralText } from "./updateContentText";
 
 /**
@@ -133,5 +144,59 @@ export const insertTableRowBelow: Action<LetterEditorState, []> = produce((draft
   const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
   if (!isTable(table)) return;
   addElements([newRow(table.header.colSpec.length)], rowIndex + 1, table.rows, table.deletedRows);
+  draft.isDirty = true;
+});
+
+// Deep-clone TextContent[] into fresh, “new” values (ids reset)
+function cloneTexts(source: Draft<TextContent[]>): TextContent[] {
+  return source.map((t) => {
+    switch (t.type) {
+      case LITERAL:
+        return newLiteral({
+          editedText: text(t),
+          fontType: t.editedFontType ?? t.fontType,
+          editedFontType: t.editedFontType ?? null,
+          tags: t.tags,
+        });
+      case VARIABLE:
+        return newVariable({ text: t.text, fontType: t.fontType });
+      case NEW_LINE:
+        return createNewLine();
+    }
+  });
+}
+
+/**
+ * Promote a body row to header:
+ * - Copies cell text into existing header colSpec (keeps alignment/span/ids).
+ * - Clears any remaining header cells (no default “Kolonne N” left behind).
+ * - Removes the body row via `removeElements`
+ */
+export const promoteRowToHeader: Action<
+  LetterEditorState,
+  [blockIndex: number, contentIndex: number, rowIndex: number]
+> = produce((draft, blockIndex, contentIndex, rowIndex) => {
+  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
+  if (!isTable(table)) return;
+  if (rowIndex < 0 || rowIndex >= table.rows.length) return;
+
+  // if header already has meaningful content, do nothing
+  if (hasHeaderContentCols(table.header?.colSpec)) return;
+
+  const row = table.rows[rowIndex];
+
+  const colCount = table.header.colSpec.length;
+  if (row.cells.length !== colCount) return;
+
+  // Copy body row text into header cells
+  for (let c = 0; c < colCount; c++) {
+    const sourceTexts = row.cells[c].text;
+    table.header.colSpec[c].headerContent.text =
+      sourceTexts.length > 0 ? cloneTexts(sourceTexts) : [newLiteral({ editedText: "" })];
+  }
+  // Remove promoted row from body
+  removeElements(rowIndex, 1, { content: table.rows, deletedContent: table.deletedRows, id: table.id });
+
+  draft.focus = { blockIndex, contentIndex, rowIndex: -1, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
   draft.isDirty = true;
 });
