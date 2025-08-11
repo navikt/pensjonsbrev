@@ -391,6 +391,7 @@ export function newRow(colCount: number): Row {
     })),
   };
 }
+
 export function newColSpec(colCount: number, headers?: { text: string; font?: FontType }[]): ColumnSpec[] {
   return Array.from({ length: colCount }, (_, i) => ({
     id: null,
@@ -408,4 +409,17 @@ export function newColSpec(colCount: number, headers?: { text: string; font?: Fo
       ],
     },
   }));
+}
+
+const stripZeroWidth = (s: string) => s.replaceAll("\u200B", "");
+
+export function isMeaningfulHeaderToken(txt: TextContent): boolean {
+  const raw = text(txt) ?? "";
+  const cleaned = stripZeroWidth(cleanseText(raw)).trim();
+  // Ignore empty and "Kolonne N"
+  return cleaned !== "" && !/^Kolonne\s+\d+$/i.test(cleaned);
+}
+
+export function hasHeaderContentCols(cols?: ColumnSpec[] | null): boolean {
+  return !!cols && cols.length > 0 && cols.some((col) => col.headerContent.text.some(isMeaningfulHeaderToken));
 }
