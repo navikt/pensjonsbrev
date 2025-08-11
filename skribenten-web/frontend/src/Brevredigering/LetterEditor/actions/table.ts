@@ -43,8 +43,12 @@ export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number,
     const block = draft.redigertBrev.blocks[focus.blockIndex];
     if (block.type !== PARAGRAPH) return;
 
-    addElements([newTable(rows, cols)], focus.contentIndex + 1, block.content, block.deletedContent);
-    draft.focus = { blockIndex: focus.blockIndex, contentIndex: focus.contentIndex + 1 };
+    // If content was emptied (e.g. a table was just deleted) ensure we insert at 0
+    const safeContentIndex = Math.min(focus.contentIndex, block.content.length - 1);
+    const insertAt = block.content.length === 0 ? 0 : safeContentIndex + 1;
+
+    addElements([newTable(rows, cols)], insertAt, block.content, block.deletedContent);
+    draft.focus = { blockIndex: focus.blockIndex, contentIndex: insertAt };
     draft.isDirty = true;
   },
 );
@@ -80,6 +84,11 @@ export const removeTable = produce<LetterEditorState>((draft) => {
 
   const parentBlock = draft.redigertBrev.blocks[blockIndex];
   removeElements(contentIndex, 1, parentBlock);
+
+  // Adjust focus to a valid position
+  const newContentIndex = Math.max(0, Math.min(contentIndex - 1, parentBlock.content.length - 1));
+  draft.focus = { blockIndex, contentIndex: newContentIndex, cursorPosition: 0 };
+
   draft.isDirty = true;
 });
 
