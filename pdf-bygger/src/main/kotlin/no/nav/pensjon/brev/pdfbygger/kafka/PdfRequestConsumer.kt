@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.pdfbygger.latex.LatexCompileService
 import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.mdc
 import no.nav.pensjon.brev.pdfbygger.pdfByggerObjectMapper
+import org.apache.kafka.clients.admin.AdminClient
 import org.apache.kafka.clients.consumer.ConsumerRebalanceListener
 import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -22,7 +23,7 @@ import org.apache.kafka.clients.consumer.OffsetAndMetadata
 import org.apache.kafka.clients.producer.KafkaProducer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.TopicPartition
-import org.apache.kafka.common.errors.AuthorizationException
+import org.apache.kafka.common.acl.AclOperation
 import org.apache.kafka.common.serialization.Deserializer
 import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringDeserializer
@@ -49,6 +50,7 @@ class PdfRequestConsumer(
     private val parallelismSemaphore = parallelism.takeIf { it > 0 }?.let { Semaphore(it) }
         ?: throw IllegalStateException("Not enough cores to run async worker")
 
+    private val adminClient = AdminClient.create(createKafkaProducerConfig(kafkaConfig))
     private val replyProducers = Producers<AsyncPDFCompilationOutput>(createKafkaProducerConfig(kafkaConfig))
     private val validReplyTopicCache = Cache<String, Boolean>(5.minutes)
 
@@ -106,18 +108,9 @@ class PdfRequestConsumer(
                     results.forEach { result ->
                         val error = errorMessage(result)
                         mdc("messageId" to result.renderRequest.messageId) {
-                            // TODO bør jeg bruke admin client istedenfor?.
                             val replyTopic = result.renderRequest.replyTopic
-                            val hasValidReplyTopic = validReplyTopicCache.cached(replyTopic) {
-                                try {
-                                    replyProducer.partitionsFor(replyTopic).isNotEmpty()
-                                } catch (e: AuthorizationException) {
-                                    logger.error("PDF reply producer was not authorized for reply topic $replyTopic: " + e.message)
-                                    false
-                                }
-                            }
 
-                            if (hasValidReplyTopic) {
+                            if (applicationHasAccessToTopic(replyTopic)) {
                                 replyProducer.send(
                                     ProducerRecord(
                                         replyTopic,
@@ -128,6 +121,8 @@ class PdfRequestConsumer(
                                         )
                                     )
                                 )
+                            } else {
+                                logger.error("Skipping message ${result.renderRequest.messageId} for reply topic $replyTopic. Either the topic does not exist or pdf-bygger does not have access to it.")
                             }
                         }
                     }
@@ -139,6 +134,12 @@ class PdfRequestConsumer(
             }
     }
 
+    private fun applicationHasAccessToTopic(replyTopic: String): Boolean = validReplyTopicCache.cached(replyTopic) {
+        adminClient.describeTopics(listOf(replyTopic))
+            .topicNameValues().any {
+                it.value.get().authorizedOperations().contains(AclOperation.WRITE)
+            }
+    }
 
     private fun errorMessage(result: RenderResult): String? = when (val response = result.pDFCompilationResponse) {
         is PDFCompilationResponse.Failure.QueueTimeout -> response.reason
