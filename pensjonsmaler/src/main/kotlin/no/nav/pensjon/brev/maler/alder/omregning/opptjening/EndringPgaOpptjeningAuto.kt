@@ -29,6 +29,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
+// Konvertert tidligere 120-brev fra Doksys
 @TemplateModelHelpers
 object EndringPgaOpptjeningAuto : AutobrevTemplate<EndringPgaOpptjeningAutoDto> {
     override val kode = Pesysbrevkoder.AutoBrev.PE_AP_ENDRING_PGA_OPPTJENING_AUTO
