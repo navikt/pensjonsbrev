@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.krypteringService
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
@@ -63,16 +62,7 @@ private inline fun <reified T> readJsonColumn(json: String): T =
         throw DatabaseJsonDeserializeException(e)
     }
 
-private const val base64Key = "base64"
-
-private fun <T> krypterOgSkriv(objekt: T): String {
-    val byteArray = databaseObjectMapper.writeValueAsBytes(objekt)
-    val kryptert = krypteringService.krypter(byteArray)
-    return """{"$base64Key": "${Base64.encode(kryptert)}"}"""
-}
-
-private inline fun <reified T> lesOgDekrypter(json: ByteArray, krypteringService: KrypteringService): T {
-        val kryptert = Base64.decode(json)
+private inline fun <reified T> lesOgDekrypter(kryptert: ByteArray, krypteringService: KrypteringService): T {
         val dekryptert = krypteringService.dekrypter(kryptert)
         return readJsonColumn(String(dekryptert))
 }
@@ -85,7 +75,7 @@ object BrevredigeringTable : LongIdTable() {
     val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
     val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
     val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
-    val redigertBrevKryptert: Column<ByteArray> = blob(name = "redigertBrevKryptert")
+    val redigertBrevKryptert: Column<ByteArray> = binary(name = "redigertBrevKryptert")
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
@@ -151,10 +141,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
 object DocumentTable : LongIdTable() {
     val brevredigering: Column<EntityID<Long>> = reference("brevredigering", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val dokumentDato: Column<LocalDate> = date("dokumentDato")
-    val pdf: Column<ExposedBlob> = blob("brevpdf").transform(
-        wrap = { ExposedBlob(krypteringService.dekrypter(it.bytes)) },
-        unwrap = { ExposedBlob(krypteringService.krypter(it.bytes)) }
-    )
+    val pdf: Column<ExposedBlob> = blob("brevpdf")
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
 }
 
@@ -163,6 +150,12 @@ class Document(id: EntityID<Long>) : LongEntity(id) {
     var dokumentDato by DocumentTable.dokumentDato
     var pdf by DocumentTable.pdf
     var redigertBrevHash by DocumentTable.redigertBrevHash.editLetterHash()
+
+    fun skrivPdf(pdf: ExposedBlob, krypteringService: KrypteringService) {
+        this.pdf = ExposedBlob(krypteringService.krypter(pdf.bytes))
+    }
+    fun lesPdf(krypteringService: KrypteringService) = ExposedBlob(krypteringService.dekrypter(pdf.bytes))
+
 
     companion object : LongEntityClass<Document>(DocumentTable)
 }

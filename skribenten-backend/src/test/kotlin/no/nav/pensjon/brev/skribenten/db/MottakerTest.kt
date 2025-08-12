@@ -13,7 +13,6 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.testcontainers.containers.PostgreSQLContainer
@@ -29,11 +28,6 @@ class MottakerTest {
     fun startDb() {
         postgres.start()
         initDatabase(postgres.jdbcUrl, postgres.username, postgres.password)
-    }
-
-    @BeforeEach
-    fun settOppKryptering() {
-        no.nav.pensjon.brev.skribenten.krypteringService = krypteringService
     }
 
     @AfterAll

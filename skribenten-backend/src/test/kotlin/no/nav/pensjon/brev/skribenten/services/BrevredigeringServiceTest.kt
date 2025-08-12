@@ -174,14 +174,14 @@ class BrevredigeringServiceTest {
     private val brevredigeringService: BrevredigeringService = BrevredigeringService(
         brevbakerService = brevbakerMock,
         navansattService = navAnsattService,
-        penService = penService
+        penService = penService,
+        krypteringService = krypteringService
     )
 
     private val bestillBrevresponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
     @BeforeEach
     fun clearMocks() {
-        no.nav.pensjon.brev.skribenten.krypteringService = krypteringService
         clearMocks(brevbakerMock, penService)
         coEvery {
             brevbakerMock.renderMarkup(
@@ -563,7 +563,7 @@ class BrevredigeringServiceTest {
             val brevredigering = Brevredigering[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
             assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
-            assertThat(brevredigering.document.first().pdf.bytes).isEqualTo(stagetPDF)
+            assertThat(brevredigering.document.first().lesPdf(krypteringService).bytes).isEqualTo(stagetPDF)
         }
     }
 
