@@ -13,13 +13,13 @@ import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import io.ktor.util.date.*
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.brev.brevbaker.LatexCompileException
 import no.nav.brev.brevbaker.LatexInvalidException
 import no.nav.brev.brevbaker.LatexTimeoutException
 import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
+import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.converters.LetterResponseFileConverter
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
@@ -150,9 +150,7 @@ private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
             environment = stringProperty("environment")
             host = stringProperty("host")
             apiToken = stringProperty("apiToken")
-        }.also { require(FeatureToggles.entries.filterNot {
-            FeatureToggleHandler.alleDefinerteBrytere().contains("pensjonsbrev.brevbaker.${it.toggle().name}")
-        }.isEmpty()) { "Alle toggles må være definert i Unleash" } }
+        }.also { FeatureToggleSingleton.verifiserAtAlleBrytereErDefinert(FeatureToggles.entries.map { it.toggle() }) }
     }
 }
 

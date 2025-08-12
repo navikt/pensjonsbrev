@@ -21,6 +21,7 @@ public final class no/nav/pensjon/brev/PDFRequestAsync {
 
 public abstract interface class no/nav/pensjon/brev/api/FeatureToggleService {
 	public abstract fun isEnabled (Lno/nav/pensjon/brev/api/model/FeatureToggle;)Z
+	public abstract fun verifiserAtAlleBrytereErDefinert (Ljava/util/List;)V
 }
 
 public final class no/nav/pensjon/brev/api/UtilsKt {
@@ -42,6 +43,7 @@ public final class no/nav/pensjon/brev/api/model/FeatureToggleSingleton {
 	public final fun init (Lno/nav/pensjon/brev/api/FeatureToggleService;)V
 	public final fun isEnabled (Lno/nav/pensjon/brev/api/model/FeatureToggle;)Z
 	public final fun isInitialized ()Z
+	public final fun verifiserAtAlleBrytereErDefinert (Ljava/util/List;)V
 }
 
 public final class no/nav/pensjon/brev/model/GenerellFormattingKt {
