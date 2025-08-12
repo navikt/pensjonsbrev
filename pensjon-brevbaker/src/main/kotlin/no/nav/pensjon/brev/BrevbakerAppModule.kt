@@ -23,6 +23,7 @@ import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.converters.LetterResponseFileConverter
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
@@ -149,7 +150,9 @@ private fun konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
             environment = stringProperty("environment")
             host = stringProperty("host")
             apiToken = stringProperty("apiToken")
-        }
+        }.also { require(FeatureToggles.entries.filterNot {
+            FeatureToggleHandler.alleDefinerteBrytere().contains("pensjonsbrev.brevbaker.${it.toggle().name}")
+        }.isEmpty()) { "Alle toggles må være definert i Unleash" } }
     }
 }
 
