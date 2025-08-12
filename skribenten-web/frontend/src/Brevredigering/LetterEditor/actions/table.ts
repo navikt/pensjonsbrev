@@ -8,7 +8,7 @@ import type { Action } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { newTable } from "../model/tableHelpers";
 import { isTableCellIndex } from "../model/utils";
-import { addElements, isTable, newColSpec, newRow, removeElements, text } from "./common";
+import { addElements, isTable, newColSpec, newRow, removeElements, safeIndex, text } from "./common";
 import { updateLiteralText } from "./updateContentText";
 
 /**
@@ -44,7 +44,7 @@ export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number,
     if (block.type !== PARAGRAPH) return;
 
     // If content was emptied (e.g. a table was just deleted) ensure we insert at 0
-    const safeContentIndex = Math.min(focus.contentIndex, block.content.length - 1);
+    const safeContentIndex = safeIndex(focus.contentIndex, block.content);
     const insertAt = block.content.length === 0 ? 0 : safeContentIndex + 1;
 
     addElements([newTable(rows, cols)], insertAt, block.content, block.deletedContent);
@@ -86,7 +86,7 @@ export const removeTable = produce<LetterEditorState>((draft) => {
   removeElements(contentIndex, 1, parentBlock);
 
   // Adjust focus to a valid position
-  const newContentIndex = Math.max(0, Math.min(contentIndex - 1, parentBlock.content.length - 1));
+  const newContentIndex = safeIndex(contentIndex - 1, parentBlock.content);
   draft.focus = { blockIndex, contentIndex: newContentIndex, cursorPosition: 0 };
 
   draft.isDirty = true;
