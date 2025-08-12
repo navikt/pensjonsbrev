@@ -18,6 +18,7 @@ fun hentMuligOverstyrtMal(kode: String) = when {
 }
 
 fun isEnabled(kode: String) = when (kode) {
+    Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK.kode() -> FeatureToggles.samletMeldingOmPensjonsvedtak
     Pesysbrevkoder.Redigerbar.PE_OVERSETTELSE_AV_DOKUMENTER.kode() -> FeatureToggles.brevMedFritekst
     Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD.kode() -> FeatureToggles.brevmalUtAvslag
     Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_GJENLEVENDERETT.kode() -> FeatureToggles.apAvslagGjenlevenderett
@@ -42,6 +43,8 @@ fun isEnabled(kode: String) = when (kode) {
     Pesysbrevkoder.Redigerbar.PE_AP_STANS_FLYTTING_MELLOM_LAND.kode() -> FeatureToggles.vedtakStansFlyttingMellomLand
     Pesysbrevkoder.Redigerbar.PE_AP_AVSLAG_FOR_LITE_TRYGDETID.kode() -> FeatureToggles.avslagForLiteTrygdetidAP
     Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_FLYTTING_MELLOM_LAND.kode() -> FeatureToggles.vedtakEndringVedFlyttingMellomLand
+    Pesysbrevkoder.Redigerbar.PE_ORIENTERING_OM_FORLENGET_SAKSBEHANDLINGSTID.kode() -> FeatureToggles.orienteringOmForlengetSaksbehandlingstid
+
 
     else -> null
 }?.let { FeatureToggleSingleton.isEnabled(it) } ?: true

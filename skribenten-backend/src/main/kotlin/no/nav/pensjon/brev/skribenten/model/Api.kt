@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.model
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.EditLetterHash
@@ -29,8 +30,6 @@ object Api {
     data class OppdaterBrevRequest(
         val saksbehandlerValg: SaksbehandlerValg,
         val redigertBrev: Edit.Letter,
-        // TODO: Kan fjernes når frontend er endret til å endre signatur i redigertBrev
-        val signatur: String?,
     )
 
     data class DelvisOppdaterBrevRequest(
@@ -42,7 +41,6 @@ object Api {
     data class OppdaterAttesteringRequest(
         val saksbehandlerValg: SaksbehandlerValg,
         val redigertBrev: Edit.Letter,
-        val signaturAttestant: String?,
     )
 
     data class BrevInfo(

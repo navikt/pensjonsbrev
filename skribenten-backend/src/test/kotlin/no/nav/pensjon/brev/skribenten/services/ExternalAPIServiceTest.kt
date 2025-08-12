@@ -35,10 +35,8 @@ class ExternalAPIServiceTest {
         mottaker = null,
         avsenderEnhetId = "0001",
         spraak = LanguageCode.BOKMAL,
-        signaturSignerende = "Sak Sakeson",
         journalpostId = null,
         attestertAv = null,
-        signaturAttestant = null,
         status = Dto.BrevStatus.KLADD
     )
     val brevmal = TemplateDescription.Redigerbar(

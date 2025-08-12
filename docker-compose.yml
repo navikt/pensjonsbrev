@@ -37,7 +37,7 @@ services:
     build: ./skribenten-backend
     depends_on:
       skribenten-backend-db:
-          condition: service_healthy
+        condition: service_healthy
     ports:
       - "8082:8080"
       - "5017:5017"
@@ -53,15 +53,16 @@ services:
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5017 -Dconfig.resource=application-local.conf
       - TJENESTEBUSS_INTEGRASJON_URL=http://tjenestebuss-integrasjon:8080
       - TJENESTEBUSS_INTEGRASJON_SCOPE=api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-lokal/.default
+      - BREVBAKER_URL=http://pensjon-brevbaker:8080
 
   skribenten-backend-db:
     profiles:
       - skribenten
-    image: 'postgres:14-alpine'
+    image: "postgres:14-alpine"
     ports:
       - "5432:5432"
     healthcheck:
-      test: [ 'CMD', 'pg_isready', '-U', 'postgres' ]
+      test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 3s
     restart: always
     environment:
