@@ -2,16 +2,19 @@ package no.nav.pensjon.brev.maler.alder.omregning.opptjening.fraser
 
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaaned
+import no.nav.pensjon.brev.api.model.maler.alderApi.*
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedGjeldendeSelectors.totalPensjon
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedGjeldendeSelectors.virkFom
 import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.antallBeregningsperioderPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.garantipensjonInnvilget
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.gjenlevenderettAnvendt
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.minstenivaIndividuellInnvilget
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.minstenivaPensjonistParInnvilget
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.pensjonstilleggInnvilget
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.totalPensjon
-import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedSelectors.virkFom
-import no.nav.pensjon.brev.api.model.maler.alderApi.Opptjening
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedVedVirkSelectors.garantipensjonInnvilget
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedVedVirkSelectors.gjenlevenderettAnvendt
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedVedVirkSelectors.minstenivaIndividuellInnvilget
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedVedVirkSelectors.minstenivaPensjonistParInnvilget
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedVedVirkSelectors.pensjonstilleggInnvilget
+import no.nav.pensjon.brev.api.model.maler.alderApi.BeregnetPensjonPerMaanedVedVirkSelectors.totalPensjon
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpptjeningSelectors.antallAarEndretOpptjening
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpptjeningSelectors.endretOpptjeningsAar
+import no.nav.pensjon.brev.api.model.maler.alderApi.OpptjeningSelectors.sisteGyldigeOpptjeningsAar
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
@@ -29,22 +32,28 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import java.time.LocalDate
 
 data class AvsnittBeskrivelse(
+    val opptjeningType: Expression<OpptjeningType>,
     val opptjening: Expression<Opptjening>,
-    val sisteGyldigeOpptjeningsAar: Expression<Int>,
-    val antallAarEndretOpptjening: Expression<Int>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(opptjening.equalTo(Opptjening.TILVEKST)) {
+        title2 {
+            text(
+                Language.Bokmal to "Vedtak",
+                Language.Nynorsk to "Vedtak",
+                Language.English to "Decision",
+            )
+        }
+        showIf(opptjeningType.equalTo(OpptjeningType.TILVEKST)) {
             paragraph {
                 textExpr(
-                    Language.Bokmal to "Skatteoppgjøret for ".expr() + sisteGyldigeOpptjeningsAar.format() + " er klart og den nye opptjeningen er lagt til alderspensjonen din.",
-                    Language.Nynorsk to "Skatteoppgjeret for ".expr() + sisteGyldigeOpptjeningsAar.format() + " er klart og den nye oppteninga er lagt til alderspensjonen din.",
-                    Language.English to "The final tax settlement for ".expr() + sisteGyldigeOpptjeningsAar.format() + " has been completed and the new pension earnings have been added to your retirement pension.",
+                    Language.Bokmal to "Skatteoppgjøret for ".expr() + opptjening.sisteGyldigeOpptjeningsAar.format() + " er klart og den nye opptjeningen er lagt til alderspensjonen din.",
+                    Language.Nynorsk to "Skatteoppgjeret for ".expr() + opptjening.sisteGyldigeOpptjeningsAar.format() + " er klart og den nye oppteninga er lagt til alderspensjonen din.",
+                    Language.English to "The final tax settlement for ".expr() + opptjening.sisteGyldigeOpptjeningsAar.format() + " has been completed and the new pension earnings have been added to your retirement pension.",
                 )
             }
         }
-        showIf(opptjening.equalTo(Opptjening.KORRIGERING)) {
-            showIf(antallAarEndretOpptjening.equalTo(0)) {
+        showIf(opptjeningType.equalTo(OpptjeningType.KORRIGERING)) {
+            showIf(opptjening.antallAarEndretOpptjening.equalTo(0)) {
                 paragraph {
                     text(
                         Language.Bokmal to "Pensjonsopptjeningen er endret.",
@@ -59,8 +68,19 @@ data class AvsnittBeskrivelse(
                     Language.Nynorsk to "Pensjonsoppteninga di er endra for: ",
                     Language.English to "Your pension earnings have been changed for the following income year(-s): "
                 )
+                newline()
+                list {
+                    forEach(opptjening.endretOpptjeningsAar) { aar ->
+                        item {
+                            textExpr(
+                                Language.Bokmal to aar.format(),
+                                Language.Nynorsk to aar.format(),
+                                Language.English to aar.format()
+                            )
+                        }
+                    }
+                }
             }
-            // todo list years..
         }
     }
 }
@@ -92,7 +112,7 @@ data class AvsnittEndringPensjon(
 
 data class AvsnittUtbetalingPerMaaned(
     val uforeKombinertMedAlder: Expression<Boolean>,
-    val beregnetPensjonPerMaanedGjeldende: Expression<BeregnetPensjonPerMaaned>,
+    val beregnetPensjonPerMaanedGjeldende: Expression<BeregnetPensjonPerMaanedGjeldende>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(uforeKombinertMedAlder.not()) {
@@ -126,7 +146,7 @@ data class AvsnittUtbetalingPerMaaned(
 
 data class AvsnittFlereBeregningsperioder(
     val beregnetPensjonPerMaaned: Expression<BeregnetPensjonPerMaaned>,
-    val beregnetPensjonPerMaanedVedVirk: Expression<BeregnetPensjonPerMaaned>,
+    val beregnetPensjonPerMaanedVedVirk: Expression<BeregnetPensjonPerMaanedVedVirk>,
     val regelverkType: Expression<AlderspensjonRegelverkType>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
@@ -170,14 +190,14 @@ data class AvsnittFlereBeregningsperioder(
 }
 
 data class AvsnittHjemmel(
-    val opptjening: Expression<Opptjening>,
+    val opptjeningType: Expression<OpptjeningType>,
     val regelverkType: Expression<AlderspensjonRegelverkType>,
-    val beregnetPensjonPerMaanedVedVirk: Expression<BeregnetPensjonPerMaaned>,
+    val beregnetPensjonPerMaanedVedVirk: Expression<BeregnetPensjonPerMaanedVedVirk>,
     val erFoerstegangsbehandling: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2011)) {
-            showIf(opptjening.equalTo(Opptjening.KORRIGERING)) {
+            showIf(opptjeningType.equalTo(OpptjeningType.KORRIGERING)) {
                 paragraph {
                     text(
                         Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 3-15",
@@ -228,7 +248,7 @@ data class AvsnittHjemmel(
         }
 
         showIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2016)) {
-            showIf(opptjening.equalTo(Opptjening.KORRIGERING)) {
+            showIf(opptjeningType.equalTo(OpptjeningType.KORRIGERING)) {
                 paragraph {
                     text(
                         Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 3-15",
@@ -305,7 +325,7 @@ data class AvsnittHjemmel(
         }
 
         showIf(regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) {
-            showIf(opptjening.equalTo(Opptjening.KORRIGERING)) {
+            showIf(opptjeningType.equalTo(OpptjeningType.KORRIGERING)) {
                 paragraph {
                     text(
                         Language.Bokmal to "Vedtaket er gjort etter folketrygdloven §§ 3-15",
@@ -366,7 +386,7 @@ data class AvsnittHjemmel(
 }
 
 data class AvsnittBegrunnelseForVedtaket(
-    val opptjening: Expression<Opptjening>,
+    val opptjeningType: Expression<OpptjeningType>,
     val antallAarEndretOpptjening: Expression<Int>,
     val regelverkType: Expression<AlderspensjonRegelverkType>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -380,7 +400,7 @@ data class AvsnittBegrunnelseForVedtaket(
         }
 
         paragraph {
-            showIf(opptjening.equalTo(Opptjening.TILVEKST)) {
+            showIf(opptjeningType.equalTo(OpptjeningType.TILVEKST)) {
                 text(
                     Language.Bokmal to "Pensjonsopptjeningen din kan være endret av en eller flere grunner:",
                     Language.Nynorsk to "Pensjonsoppteninga di kan vere endra av ein eller fleire grunnar:",
@@ -440,7 +460,7 @@ data class AvsnittBegrunnelseForVedtaket(
                 Language.English to "\".",
             )
         }
-        showIf(opptjening.equalTo(Opptjening.KORRIGERING) and antallAarEndretOpptjening.greaterThan(0)) {
+        showIf(opptjeningType.equalTo(OpptjeningType.KORRIGERING) and antallAarEndretOpptjening.greaterThan(0)) {
             paragraph {
                 text(
                     Language.Bokmal to "Pensjonsopptjeningen kan være endret av flere grunner:",
@@ -474,7 +494,7 @@ data class AvsnittBegrunnelseForVedtaket(
             }
         }
 
-        showIf(opptjening.equalTo(Opptjening.KORRIGERING) and antallAarEndretOpptjening.equalTo(0)) {
+        showIf(opptjeningType.equalTo(OpptjeningType.KORRIGERING) and antallAarEndretOpptjening.equalTo(0)) {
             paragraph {
                 text(
                     Language.Bokmal to "Pensjonsopptjeningen til den avdøde er endret.",
@@ -489,13 +509,13 @@ data class AvsnittBegrunnelseForVedtaket(
 
 data class AvsnittEtterbetaling(
     val virkFom: Expression<LocalDate>,
-    val opptjening: Expression<Opptjening>,
+    val opptjeningType: Expression<OpptjeningType>,
     val beloepEndring: Expression<BeloepEndring>,
     val antallAarEndretOpptjening: Expression<Int>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(
-            opptjening.equalTo(Opptjening.KORRIGERING) and
+            opptjeningType.equalTo(OpptjeningType.KORRIGERING) and
                     beloepEndring.equalTo(BeloepEndring.ENDR_OKT) and
                     antallAarEndretOpptjening.greaterThan(0) and
                     virkFom.greaterThan(LocalDate.now())

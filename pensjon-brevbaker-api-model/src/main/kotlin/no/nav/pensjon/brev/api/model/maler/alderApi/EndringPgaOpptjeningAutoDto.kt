@@ -10,29 +10,41 @@ import java.time.LocalDate
 @Suppress("unused")
 data class EndringPgaOpptjeningAutoDto(
     val virkFom: LocalDate,
+    val opptjeningType: OpptjeningType,
     val opptjening: Opptjening,
-    val sisteGyldigeOpptjeningsAar: Int,
-    val antallAarEndretOpptjening: Int,
-    val endretOpptjeningsAar: Set<Int>,
     val belopEndring: BeloepEndring,
     val uforeKombinertMedAlder: Boolean,
-    val beregnetPensjonPerMaanedGjeldende: BeregnetPensjonPerMaaned,
+    val beregnetPensjonPerMaanedGjeldende: BeregnetPensjonPerMaanedGjeldende,
     val beregnetPensjonPerMaaned: BeregnetPensjonPerMaaned,
-    val beregnetPensjonPerMaanedVedVirk: BeregnetPensjonPerMaaned,
+    val beregnetPensjonPerMaanedVedVirk: BeregnetPensjonPerMaanedVedVirk,
     val regelverkType: AlderspensjonRegelverkType,
     val erFoerstegangsbehandling: Boolean,
     val borINorge: Boolean,
 ) : BrevbakerBrevdata
 
-enum class Opptjening {
+enum class OpptjeningType {
     TILVEKST,
     KORRIGERING,
 }
 
+data class Opptjening(
+    val sisteGyldigeOpptjeningsAar: Int,
+    val antallAarEndretOpptjening: Int,
+    val endretOpptjeningsAar: Set<Int>,
+)
+
 data class BeregnetPensjonPerMaaned(
+    val antallBeregningsperioderPensjon: Int,
+)
+
+data class BeregnetPensjonPerMaanedGjeldende(
     val totalPensjon: Kroner,
     val virkFom: LocalDate,
-    val antallBeregningsperioderPensjon: Int,
+)
+
+data class BeregnetPensjonPerMaanedVedVirk(
+    val totalPensjon: Kroner,
+    val virkFom: LocalDate,
     val pensjonstilleggInnvilget: Boolean,
     val minstenivaPensjonistParInnvilget: Boolean,
     val minstenivaIndividuellInnvilget: Boolean,
