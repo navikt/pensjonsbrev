@@ -28,7 +28,7 @@ enum class OpptjeningType {
 }
 
 data class Opptjening(
-    val sisteGyldigeOpptjeningsAar: Int,
+    val sisteGyldigeOpptjeningsAar: Int?,
     val antallAarEndretOpptjening: Int,
     val endretOpptjeningsAar: Set<Int>,
 )

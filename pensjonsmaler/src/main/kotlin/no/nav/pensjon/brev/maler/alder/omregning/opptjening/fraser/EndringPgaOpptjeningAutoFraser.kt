@@ -44,12 +44,14 @@ data class AvsnittBeskrivelse(
             )
         }
         showIf(opptjeningType.equalTo(OpptjeningType.TILVEKST)) {
-            paragraph {
-                textExpr(
-                    Language.Bokmal to "Skatteoppgjøret for ".expr() + opptjening.sisteGyldigeOpptjeningsAar.format() + " er klart og den nye opptjeningen er lagt til alderspensjonen din.",
-                    Language.Nynorsk to "Skatteoppgjeret for ".expr() + opptjening.sisteGyldigeOpptjeningsAar.format() + " er klart og den nye oppteninga er lagt til alderspensjonen din.",
-                    Language.English to "The final tax settlement for ".expr() + opptjening.sisteGyldigeOpptjeningsAar.format() + " has been completed and the new pension earnings have been added to your retirement pension.",
-                )
+            ifNotNull(opptjening.sisteGyldigeOpptjeningsAar) { sisteGyldigeOpptjeningsAar ->
+                paragraph {
+                    textExpr(
+                        Language.Bokmal to "Skatteoppgjøret for ".expr() + sisteGyldigeOpptjeningsAar.format() + " er klart og den nye opptjeningen er lagt til alderspensjonen din.",
+                        Language.Nynorsk to "Skatteoppgjeret for ".expr() + sisteGyldigeOpptjeningsAar.format() + " er klart og den nye oppteninga er lagt til alderspensjonen din.",
+                        Language.English to "The final tax settlement for ".expr() + sisteGyldigeOpptjeningsAar.format() + " has been completed and the new pension earnings have been added to your retirement pension.",
+                    )
+                }
             }
         }
         showIf(opptjeningType.equalTo(OpptjeningType.KORRIGERING)) {
