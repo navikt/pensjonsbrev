@@ -133,20 +133,24 @@ object DocumentTable : LongIdTable() {
     val brevredigering: Column<EntityID<Long>> = reference("brevredigering", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val dokumentDato: Column<LocalDate> = date("dokumentDato")
     val pdf: Column<ExposedBlob> = blob("brevpdf")
+    val pdfKryptert: Column<ByteArray?> = binary("pdfKryptert").nullable()
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
 }
 
 class Document(id: EntityID<Long>) : LongEntity(id) {
     var brevredigering by Brevredigering referencedOn DocumentTable.brevredigering
     var dokumentDato by DocumentTable.dokumentDato
-    var pdf by DocumentTable.pdf
+    private var pdf by DocumentTable.pdf
+    private var pdfKryptert by DocumentTable.pdfKryptert
+
     var redigertBrevHash by DocumentTable.redigertBrevHash.editLetterHash()
 
     fun skrivPdf(pdf: ExposedBlob, krypteringService: KrypteringService) {
+        this.pdfKryptert = krypteringService.krypter(pdf.bytes)
         this.pdf = ExposedBlob(krypteringService.krypter(pdf.bytes))
     }
-    fun lesPdf(krypteringService: KrypteringService) = ExposedBlob(krypteringService.dekrypter(pdf.bytes))
-
+    fun lesPdf(krypteringService: KrypteringService) =
+        pdfKryptert?.let { krypteringService.dekrypter(it) } ?.let { ExposedBlob(it) } ?: pdf
 
     companion object : LongEntityClass<Document>(DocumentTable)
 }
