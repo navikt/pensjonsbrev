@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.skribenten.db
 import com.fasterxml.jackson.core.JacksonException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -15,6 +14,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.brev.Landkode
+import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.krypteringService
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
@@ -71,19 +71,10 @@ private fun <T> krypterOgSkriv(objekt: T): String {
     return """{"$base64Key": "${Base64.encode(kryptert)}"}"""
 }
 
-private inline fun <reified T> lesOgDekrypter(json: String): T {
-    try {
-        val kryptertBase64 = databaseObjectMapper.readValue<Map<String, String>>(json)[base64Key]
-        val kryptert = Base64.decode(kryptertBase64!!)
+private inline fun <reified T> lesOgDekrypter(json: ByteArray, krypteringService: KrypteringService): T {
+        val kryptert = Base64.decode(json)
         val dekryptert = krypteringService.dekrypter(kryptert)
         return readJsonColumn(String(dekryptert))
-    } catch (e: MismatchedInputException) {
-        if (e.message?.startsWith("""Cannot deserialize value of type `java.lang.String` from Object value (token `JsonToken.START_OBJECT`)""") == true) {
-            logger.warn("Leste inn brevredigeringsrad fra databasen som ikke var kryptert")
-            return readJsonColumn(json)
-        }
-        throw e
-    }
 }
 
 object BrevredigeringTable : LongIdTable() {
@@ -93,7 +84,8 @@ object BrevredigeringTable : LongIdTable() {
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
     val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
     val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
-    val redigertBrev = json<Edit.Letter>("redigertBrev", ::krypterOgSkriv, ::lesOgDekrypter)
+    val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
+    val redigertBrevKryptert: Column<ByteArray> = blob(name = "redigertBrevKryptert")
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
@@ -115,7 +107,8 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var spraak by BrevredigeringTable.spraak
     var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
     var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
-    var redigertBrev by BrevredigeringTable.redigertBrev.writeHashTo(BrevredigeringTable.redigertBrevHash)
+    private var redigertBrev by BrevredigeringTable.redigertBrev.writeHashTo(BrevredigeringTable.redigertBrevHash)
+    private var redigertBrevKryptert by BrevredigeringTable.redigertBrevKryptert
     val redigertBrevHash by BrevredigeringTable.redigertBrevHash.editLetterHash()
     var laastForRedigering by BrevredigeringTable.laastForRedigering
     var distribusjonstype by BrevredigeringTable.distribusjonstype
@@ -129,6 +122,19 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
     val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
     var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
+
+    fun lesRedigertBrev(krypteringService: KrypteringService): Edit.Letter =
+        if (redigertBrevKryptert.isNotEmpty()) {
+            lesOgDekrypter(redigertBrevKryptert, krypteringService)
+        } else {
+            redigertBrev
+        }
+
+    fun skrivRedigertBrev(letter: Edit.Letter, krypteringService: KrypteringService) {
+        val byteArray = databaseObjectMapper.writeValueAsBytes(letter)
+        redigertBrevKryptert = krypteringService.krypter(byteArray)
+        redigertBrev = letter
+    }
 
     companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
         fun findByIdAndSaksId(id: Long, saksId: Long?) =

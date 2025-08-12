@@ -628,8 +628,9 @@ class BrevredigeringServiceTest {
         val firstHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
 
         transaction {
-            Brevredigering[brev.info.id].redigertBrev =
-                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
+            Brevredigering[brev.info.id].skrivRedigertBrev(
+                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit(),
+                krypteringService)
         }
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
@@ -658,8 +659,9 @@ class BrevredigeringServiceTest {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
 
             transaction {
-                Brevredigering[brev.info.id].redigertBrev =
-                    letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
+                Brevredigering[brev.info.id].skrivRedigertBrev(
+                    letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit(),
+                    krypteringService)
             }
 
             stagePdf("min andre pdf".encodeToByteArray())
@@ -1024,7 +1026,7 @@ class BrevredigeringServiceTest {
             }
         }
         transaction {
-            assertThat(Brevredigering[brev.info.id].redigertBrev == brev.redigertBrev)
+            assertThat(Brevredigering[brev.info.id].lesRedigertBrev(krypteringService) == brev.redigertBrev)
         }
     }
 
@@ -1223,8 +1225,9 @@ class BrevredigeringServiceTest {
         assertThat(hash1.hex).isEqualTo(Hex.encodeHexString(WithEditLetterHash.hashBrev(letter.toEdit())))
 
         transaction {
-            Brevredigering[brev.info.id].redigertBrev =
-                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
+            Brevredigering[brev.info.id].skrivRedigertBrev(
+                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit(),
+                krypteringService)
         }
 
         val hash2 = transaction { Brevredigering[brev.info.id].redigertBrevHash }
@@ -1333,7 +1336,7 @@ class BrevredigeringServiceTest {
             )
         }
 
-        assertEquals("en ny signatur", transaction { Brevredigering[brev.info.id].redigertBrev.signatur.saksbehandlerNavn })
+        assertEquals("en ny signatur", transaction { Brevredigering[brev.info.id].lesRedigertBrev(krypteringService).signatur.saksbehandlerNavn })
     }
 
     @Test

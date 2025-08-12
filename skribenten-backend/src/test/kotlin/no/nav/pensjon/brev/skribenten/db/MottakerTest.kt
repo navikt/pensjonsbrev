@@ -103,7 +103,7 @@ class MottakerTest {
             redigeresAvNavIdent = principal
             opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-            redigertBrev = Edit.Letter(
+            skrivRedigertBrev(Edit.Letter(
                 "a",
                 LetterMarkupImpl.SakspartImpl(
                     gjelderNavn = "b",
@@ -121,7 +121,7 @@ class MottakerTest {
                     navAvsenderEnhet = "j",
                 ),
                 emptySet(),
-            )
+            ), krypteringService)
             sistRedigertAvNavIdent = principal
         }
     }

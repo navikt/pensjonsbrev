@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.db.Document
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.db.Mottaker
 import no.nav.pensjon.brev.skribenten.db.MottakerType
+import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.klarTilSending
 import no.nav.pensjon.brev.skribenten.letter.toEdit
@@ -67,6 +68,7 @@ class BrevredigeringService(
     private val brevbakerService: BrevbakerService,
     private val navansattService: NavansattService,
     private val penService: PenService,
+    private val krypteringService: KrypteringService
 ) {
     companion object {
         val RESERVASJON_TIMEOUT = 10.minutes.toJavaDuration()
@@ -112,9 +114,9 @@ class BrevredigeringService(
                         sistReservert = Instant.now().truncatedTo(ChronoUnit.MILLIS).takeIf { reserverForRedigering }
                         opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-                        redigertBrev = letter.toEdit()
                         sistRedigertAvNavIdent = principal.navIdent
                     }.also {
+                        it.skrivRedigertBrev(letter.toEdit(), krypteringService)
                         if (mottaker != null) {
                             Mottaker.new(it.id.value) { oppdater(mottaker) }
                         }
@@ -141,7 +143,7 @@ class BrevredigeringService(
                     val principal = PrincipalInContext.require()
                     transaction {
                         brevDb.apply {
-                            redigertBrev = (nyttRedigertbrev ?: brevDto.redigertBrev).updateEditedLetter(rendretBrev)
+                            this.skrivRedigertBrev((nyttRedigertbrev ?: brevDto.redigertBrev).updateEditedLetter(rendretBrev), krypteringService)
                             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                             saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
                             sistRedigertAvNavIdent = principal.navIdent
@@ -184,7 +186,7 @@ class BrevredigeringService(
             rendreBrev(brev = brevDto, signaturSignerende = signaturSignerende).map { rendretBrev ->
                 transaction {
                     brevDb.apply {
-                        redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev)
+                        skrivRedigertBrev(brevDto.redigertBrev.updateEditedLetter(rendretBrev), krypteringService)
                     }.toDto()
                 }
             }
@@ -195,7 +197,7 @@ class BrevredigeringService(
             rendreBrev(brev = brevDto, signaturAttestant = signaturAttestant).map { rendretBrev ->
                 transaction {
                     brevDb.apply {
-                        redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev)
+                        skrivRedigertBrev(brevDto.redigertBrev.updateEditedLetter(rendretBrev), krypteringService)
                     }.toDto()
                 }
             }
@@ -225,7 +227,7 @@ class BrevredigeringService(
             hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
                 rendreBrev(brev = brevDto).map { rendretBrev ->
                     transaction {
-                        brevDb.apply { redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev) }.toDto()
+                        brevDb.apply { skrivRedigertBrev(brevDto.redigertBrev.updateEditedLetter(rendretBrev), krypteringService) }.toDto()
                     }
                 }
             }
@@ -241,7 +243,7 @@ class BrevredigeringService(
 
                 rendreBrev(brev = brevDto, signaturAttestant = signaturAttestant).map { rendretBrev ->
                     transaction {
-                        brevDb.apply { redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev) }.toDto()
+                        brevDb.apply { skrivRedigertBrev(brevDto.redigertBrev.updateEditedLetter(rendretBrev), krypteringService) }.toDto()
                     }
                 }
             }
@@ -312,7 +314,7 @@ class BrevredigeringService(
             ).map { rendretBrev ->
                 transaction {
                     brevDb.apply {
-                        redigertBrev = (nyttRedigertbrev ?: brevDto.redigertBrev).updateEditedLetter(rendretBrev)
+                        skrivRedigertBrev((nyttRedigertbrev ?: brevDto.redigertBrev).updateEditedLetter(rendretBrev), krypteringService)
                         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
                         sistRedigertAvNavIdent = principal.navIdent
@@ -392,7 +394,7 @@ class BrevredigeringService(
                         transaction {
                             brevDb.apply {
                                 saksbehandlerValg = tilbakestiltValg
-                                redigertBrev = rendretBrev.toEdit()
+                                skrivRedigertBrev(rendretBrev.toEdit(), krypteringService)
                             }.toDto()
                         }
                     }
@@ -611,7 +613,7 @@ private class ReservertBrevScope(val brevDb: Brevredigering) {
 private fun Brevredigering.toDto(): Dto.Brevredigering =
     Dto.Brevredigering(
         info = toBrevInfo(),
-        redigertBrev = redigertBrev,
+        redigertBrev = lesRedigertBrev(krypteringService),
         redigertBrevHash = redigertBrevHash,
         saksbehandlerValg = saksbehandlerValg,
     )

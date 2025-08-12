@@ -16,8 +16,6 @@ import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.tjenestebussIntegrasjonRoute
 import no.nav.pensjon.brev.skribenten.services.*
 
-lateinit var krypteringService: KrypteringService
-
 fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config) {
     val authService = AzureADService(authConfig)
     val servicesConfig = skribentenConfig.getConfig("services")
@@ -35,7 +33,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val legacyBrevService = LegacyBrevService(brevmetadataService, safService, penService, navansattService)
     val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
     val norg2Service = Norg2Service(servicesConfig.getConfig("norg2"))
-    krypteringService = KrypteringService(skribentenConfig.getString("krypteringsnoekkel"))
+    val krypteringService = KrypteringService(skribentenConfig.getString("krypteringsnoekkel"))
     val brevredigeringService =
         BrevredigeringService(brevbakerService, navansattService, penService)
     val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
