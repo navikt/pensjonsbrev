@@ -185,6 +185,12 @@ class Mottaker(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) 
     companion object : LongEntityClass<Mottaker>(MottakerTable)
 }
 
+object OneShotJobTable : IdTable<String>() {
+    override val id: Column<EntityID<String>> = varchar("name", 255).entityId()
+    val completedAt: Column<Instant> = timestamp("completedAt")
+    override val primaryKey: PrimaryKey = PrimaryKey(id)
+}
+
 fun initDatabase(config: Config) =
     config.getConfig("database").let {
         initDatabase(createJdbcUrl(it), it.getString("username"), it.getString("password"))
