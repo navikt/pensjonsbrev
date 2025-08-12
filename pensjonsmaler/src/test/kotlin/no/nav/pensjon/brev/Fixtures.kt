@@ -19,6 +19,8 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.AvslagUttakFoerNormertPensjonsalderDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.InfoAlderspensjonOvergang67AarAutoDto
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Dto
+import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016RedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDto
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
@@ -69,6 +71,8 @@ import no.nav.pensjon.brev.fixtures.alder.createAvslagUttakFoerNormertPensjonsal
 import no.nav.pensjon.brev.fixtures.alder.createAvslagUttakFoerNormertPensjonsalderAutoDto
 import no.nav.pensjon.brev.fixtures.alder.createAvslagUttakFoerNormertPensjonsalderDto
 import no.nav.pensjon.brev.fixtures.alder.createInfoAlderspensjonOvergang67AarAutoDto
+import no.nav.pensjon.brev.fixtures.alder.createOmregningAlderUfore2016Dto
+import no.nav.pensjon.brev.fixtures.alder.createOmregningAlderUfore2016RedigerbarDto
 import no.nav.pensjon.brev.fixtures.createAvslagUfoeretrygdDto
 import no.nav.pensjon.brev.fixtures.createEgenerklaeringOmsorgsarbeidDto
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto

@@ -3,6 +3,10 @@ package no.nav.pensjon.brev.fixtures.alder
 import no.nav.pensjon.brev.api.model.maler.alderApi.InngangOgEksportVurdering
 import no.nav.pensjon.brev.api.model.maler.alderApi.OmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.api.model.maler.alderApi.PersongrunnlagAvdod
+import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
+import no.nav.pensjon.brev.maler.vedlegg.createMaanedligPensjonFoerSkattAlderspensjonDto
+import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
+import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.time.LocalDate
 
@@ -39,6 +43,12 @@ fun createOmregningAlderUfore2016Dto() =
             persongrunnlagAvdod = PersongrunnlagAvdod(
                 avdodNavn = "Per",
                 avdodFnr = "13377331"
-            )
+            ),
+            maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
+            opplysningerBruktIBeregningenAlderDto = createOpplysningerBruktIBeregningAlderDto(),
+            opplysningerOmAvdoedBruktIBeregningDto = null,
+            maanedligPensjonFoerSkattAlderspensjonDto = createMaanedligPensjonFoerSkattAlderspensjonDto(),
+            informasjonOmMedlemskapOgHelserettigheterDto = null,
+            opplysningerBruktIBeregningenAlderAP2025Dto = createOpplysningerBruktIBeregningAlderAP2025Dto()
         )
 
