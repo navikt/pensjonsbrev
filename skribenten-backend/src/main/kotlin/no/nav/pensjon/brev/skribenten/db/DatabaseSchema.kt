@@ -62,11 +62,6 @@ private inline fun <reified T> readJsonColumn(json: String): T =
         throw DatabaseJsonDeserializeException(e)
     }
 
-private inline fun <reified T> lesOgDekrypter(kryptert: ByteArray, krypteringService: KrypteringService): T {
-        val dekryptert = krypteringService.dekrypter(kryptert)
-        return readJsonColumn(String(dekryptert))
-}
-
 object BrevredigeringTable : LongIdTable() {
     val saksId: Column<Long> = long("saksId").index()
     val vedtaksId: Column<Long?> = long("vedtaksId").nullable()
@@ -115,14 +110,13 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
 
     fun lesRedigertBrev(krypteringService: KrypteringService): Edit.Letter =
         if (redigertBrevKryptert.isNotEmpty()) {
-            lesOgDekrypter(redigertBrevKryptert, krypteringService)
+            readJsonColumn(String(krypteringService.dekrypter(redigertBrevKryptert)))
         } else {
             redigertBrev
         }
 
     fun skrivRedigertBrev(letter: Edit.Letter, krypteringService: KrypteringService) {
-        val byteArray = databaseObjectMapper.writeValueAsBytes(letter)
-        redigertBrevKryptert = krypteringService.krypter(byteArray)
+        redigertBrevKryptert = krypteringService.krypter(databaseObjectMapper.writeValueAsBytes(letter))
         redigertBrev = letter
     }
 
