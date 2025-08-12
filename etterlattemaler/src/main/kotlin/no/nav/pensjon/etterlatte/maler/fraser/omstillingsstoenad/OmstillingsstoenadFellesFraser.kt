@@ -224,7 +224,7 @@ object OmstillingsstoenadFellesFraser {
                     text(
                         Bokmal to "Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, må du sende brev til Nav skanning, Postboks 1400, 0109 OSLO.",
                         Nynorsk to "Dersom du ikkje har BankID eller andre måtar å logge deg på heimesida vår, nav.no, må du sende brev til Nav skanning, Postboks 1400, 0109 OSLO.",
-                        English to "If you do not have BankID or other means of logging into our home page nav.no, you must send a letter to Nav skanning, P.O. Box 1400, 0109 OSLO, Norway.",
+                        English to "If you do not have BankID or other means of logging into our home page nav.no, you must send a letter to Nav skanning, P.O. Box 1400, 0109 OSLO.",
                     )
                 }
             }

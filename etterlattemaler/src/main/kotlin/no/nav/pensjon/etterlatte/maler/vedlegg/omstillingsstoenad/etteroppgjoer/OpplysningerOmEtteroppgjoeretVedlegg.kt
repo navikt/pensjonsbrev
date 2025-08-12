@@ -160,9 +160,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.hv
     showIf(utbetalingData.avviksBeloep.absoluteValue().equalTo(0)) {
         paragraph {
             textExpr(
-                Bokmal to "Tabellen viser at du har fått utbetalt riktig stønad i ".expr() + etteroppgjoersAar.format(),
-                Nynorsk to "Tabellen viser at du har fått utbetalt rett stønad i ".expr() + etteroppgjoersAar.format(),
-                English to "The table shows that you have been paid the correct amount of allowance in ".expr() + etteroppgjoersAar.format(),
+                Bokmal to "Tabellen viser at du har fått utbetalt riktig stønad i ".expr() + etteroppgjoersAar.format() + ".",
+                Nynorsk to "Tabellen viser at du har fått utbetalt rett stønad i ".expr() + etteroppgjoersAar.format() + ".",
+                English to "The table shows that you have been paid the correct amount of allowance in ".expr() + etteroppgjoersAar.format() + ".",
             )
         }
     }
