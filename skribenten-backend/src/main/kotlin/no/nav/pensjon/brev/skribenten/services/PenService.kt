@@ -13,6 +13,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.skribenten.PrimitiveModule
 import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
@@ -35,6 +36,7 @@ class PenService(config: Config, authService: AzureADService) : ServiceStatus {
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
+                registerModule(PrimitiveModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }

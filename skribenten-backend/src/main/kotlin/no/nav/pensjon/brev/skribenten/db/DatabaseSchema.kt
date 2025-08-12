@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
-import no.nav.pensjon.brev.skribenten.model.Landkode
+import no.nav.brev.Landkode
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.LetterMarkupModule
@@ -158,6 +158,12 @@ class Mottaker(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) 
     var landkode by MottakerTable.landkode.wrap(::Landkode, Landkode::landkode)
 
     companion object : LongEntityClass<Mottaker>(MottakerTable)
+}
+
+object OneShotJobTable : IdTable<String>() {
+    override val id: Column<EntityID<String>> = varchar("name", 255).entityId()
+    val completedAt: Column<Instant> = timestamp("completedAt")
+    override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
 fun initDatabase(config: Config) =

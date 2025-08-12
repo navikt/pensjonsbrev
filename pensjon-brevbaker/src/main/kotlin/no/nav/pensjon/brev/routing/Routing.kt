@@ -36,6 +36,7 @@ fun Application.brevRouting(
                 autobrevRoutes(autobrev)
                 redigerbarRoutes(redigerbareBrev)
                 if (latexAsyncCompilerService != null) {
+                    log.info("registrert endepunkt for async kompilering av brev")
                     post<BestillBrevRequestAsync<Brevkode.Automatisk>>("/${autobrev.name}/pdfAsync") { brevbestillingAsync ->
                         installBrevkodeInCallContext(brevbestillingAsync.kode)
                         autobrev.renderPdfAsync(brevbestillingAsync)
