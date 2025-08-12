@@ -70,7 +70,7 @@ object BrevredigeringTable : LongIdTable() {
     val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
     val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
     val redigertBrev = json<Edit.Letter>("redigertBrev", databaseObjectMapper::writeValueAsString, ::readJsonColumn)
-    val redigertBrevKryptert: Column<ByteArray> = binary(name = "redigertBrevKryptert")
+    val redigertBrevKryptert: Column<ByteArray?> = binary(name = "redigertBrevKryptert").nullable()
     val redigertBrevHash: Column<ByteArray> = hashColumn("redigertBrevHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
@@ -109,11 +109,8 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
 
     fun lesRedigertBrev(krypteringService: KrypteringService): Edit.Letter =
-        if (redigertBrevKryptert.isNotEmpty()) {
-            readJsonColumn(String(krypteringService.dekrypter(redigertBrevKryptert)))
-        } else {
-            redigertBrev
-        }
+        redigertBrevKryptert?.let { readJsonColumn(String(krypteringService.dekrypter(it))) }
+            ?: redigertBrev
 
     fun skrivRedigertBrev(letter: Edit.Letter, krypteringService: KrypteringService) {
         redigertBrevKryptert = krypteringService.krypter(databaseObjectMapper.writeValueAsBytes(letter))
