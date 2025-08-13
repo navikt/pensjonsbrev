@@ -89,13 +89,14 @@ class LegacyBrevServiceTest {
             redigerExstreamBrev(eq(journalpostId))
         } returns ServiceResult.Ok(Pen.RedigerDokumentResponse(EXPECTED_EXSTREAM_URL))
     }
-    private val navansattService = mockk<NavansattService> {
-        coEvery {
-            hentNavansatt(eq(principalIdent.id))
-        } returns Navansatt(emptyList(), "verdens", "beste", "saksbehandler")
-        coEvery { harTilgangTilEnhet(eq(principalIdent.id), any()) } returns ServiceResult.Ok(false)
-        coEvery { harTilgangTilEnhet(eq(principalIdent.id), eq(principalSinNAVEnhet.id)) } returns ServiceResult.Ok(true)
-    }
+
+    private val navansattService = FakeNavansattService(
+        harTilgangTilEnhet = mapOf(
+            Pair(principalIdent.id, principalSinNAVEnhet.id) to true
+        ),
+        navansatte = mapOf(principalIdent.id to "verdens beste saksbehandler")
+    )
+
 
     private val legacyBrevService = LegacyBrevService(
         brevmetadataService = brevmetadataService,
