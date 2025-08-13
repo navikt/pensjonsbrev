@@ -12,6 +12,7 @@ import {
   isBlockContentIndex,
   isItemContentIndex,
   isNew,
+  isTable,
   newColSpec,
   newItem,
   newItemList,
@@ -30,6 +31,7 @@ import type {
   ItemContentIndex,
   LetterEditorState,
   LiteralIndex,
+  TableCellIndex,
 } from "~/Brevredigering/LetterEditor/model/state";
 import type {
   AnyBlock,
@@ -42,7 +44,7 @@ import type {
 } from "~/types/brevbakerTypes";
 import { FontType, TABLE } from "~/types/brevbakerTypes";
 
-import { isEmptyBlock, isItemList, isLiteral, isParagraph, isTextContent } from "../model/utils";
+import { isEmptyBlock, isItemList, isLiteral, isParagraph, isTableCellIndex, isTextContent } from "../model/utils";
 
 export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offset: number, clipboard: DataTransfer]> =
   produce((draft, literalIndex, offset, clipboard) => {
@@ -133,28 +135,42 @@ type InsertTextContext = {
   setContentIndex(focus: Draft<Focus>, value: number): void;
 };
 
+// Ensures there's a Literal at `index` inside a TextContent[]; creates one if needed.
+function ensureLiteralAtIndex(arr: Draft<TextContent[]>, index: number): Draft<LiteralValue> {
+  while (arr.length <= index) {
+    arr.push(newLiteral({ editedText: "" }));
+  }
+  const candidate = arr[index];
+  if (isLiteral(candidate)) return candidate;
+  const lit = newLiteral({ editedText: "" });
+  arr.splice(index, 0, lit);
+  return lit;
+}
+
 function getInsertTextContentContext(draft: Draft<LetterEditorState>): InsertTextContext | undefined {
   const focus = draft.focus;
   const currentBlock = draft.redigertBrev.blocks[focus.blockIndex];
 
   const blockContent = currentBlock.content[focus.contentIndex];
 
-  if (blockContent?.type === TABLE && isItemContentIndex(focus)) {
-    const currentRow = blockContent.rows[focus.itemIndex];
-    const currentCell = currentRow?.cells[focus.itemContentIndex];
+  if (isTable(blockContent) && isTableCellIndex(focus)) {
+    const row = blockContent.rows[focus.rowIndex];
+    const cell = row?.cells[focus.cellIndex];
+    if (!cell) return undefined;
 
-    if (!currentCell) return undefined;
+    // Make sure we have a literal to edit at the target slot
+    const literal = ensureLiteralAtIndex(cell.text as Draft<TextContent[]>, focus.cellContentIndex ?? 0);
 
     return {
-      content: currentCell.text[0],
+      content: literal,
+      // cells don't track deletedContent; pass an empty array
       parent: {
-        content: currentCell.text as Draft<TextContent[]>,
+        content: cell.text as unknown as Draft<Content[]>,
         deletedContent: [] as Draft<number[]>,
       },
-      getContentIndex: (currentFocus) => (currentFocus as ItemContentIndex).itemContentIndex,
-
-      setContentIndex: (focusToUpdate: Draft<Focus>, newItemContentIndex: number) => {
-        (focusToUpdate as Draft<ItemContentIndex>).itemContentIndex = newItemContentIndex;
+      getContentIndex: () => focus.cellContentIndex ?? 0,
+      setContentIndex: (f, value) => {
+        (f as Draft<TableCellIndex>).cellContentIndex = value;
       },
     };
   }
@@ -220,6 +236,16 @@ function insertHtmlClipboardInLetter(draft: Draft<LetterEditorState>, clipboard:
   draft.isDirty = true;
 }
 
+function normalizeCells(cells: ReadonlyArray<TableCell>, colCount: number): TableCell[] {
+  // Build exactly colCount cells, using existing ones when present.
+  return Array.from({ length: Math.max(0, colCount) }, (_, i) => {
+    const src = cells[i];
+    const content = Array.isArray(src?.content) ? src!.content : [];
+    // Return a fresh object; keep content as-is (the pipeline later wraps these into Literals)
+    return { content };
+  });
+}
+
 function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]) {
   elements.forEach((el) => {
     switch (el.type) {
@@ -244,62 +270,71 @@ function insertTraversedElements(draft: Draft<LetterEditorState>, elements: Trav
         break;
       }
       case "TABLE": {
-        // --- Determine header cells and column count ---
-        // Support both pasted tables with explicit headers (from th elements)
-        // and fallback to defaults when pasting from sources without headers.
-
-        // Get header cells (if present in the traversed table)
         const headerCells = el.headerCells ?? [];
-        const colCount = headerCells.length > 0 ? headerCells.length : (el.rows[0]?.cells.length ?? 1);
 
-        // Prepare header content array (text + font for each column)
-        const headers: { text: string; font?: FontType }[] = Array.from({ length: colCount }, (_, i) => ({
-          text: headerCells[i]?.content?.[0]?.text ?? `Kolonne ${i + 1}`,
-          font: headerCells[i]?.content?.[0]?.font ?? FontType.PLAIN,
-        }));
+        const bodyColMax = Math.max(1, ...el.rows.map((r) => r.cells.length));
+        const colCount = headerCells.length > 0 ? headerCells.length : bodyColMax;
 
-        // Use newColSpec to build the header colSpec array
-        const colSpec = newColSpec(colCount, headers);
+        // If no header parsed, promote first body row to header automatically
+        const shouldPromoteFirstRowToHeader = headerCells.length === 0 && el.rows.length > 0;
 
-        // Build table rows
-        const rows: Row[] = el.rows.map<Row>((row) => ({
+        const headerSpecSource =
+          headerCells.length > 0
+            ? headerCells.map((cell) => ({
+                text: cleansePastedText(cell.content.map((t) => t.text).join(" ")),
+                font: cell.content[0]?.font ?? FontType.PLAIN,
+              }))
+            : (() => {
+                const normalizedFirst = normalizeCells(el.rows[0].cells, colCount);
+                return normalizedFirst.map((cell) => ({
+                  text: cleansePastedText(cell.content.map((t) => t.text).join(" ")),
+                  font: cell.content[0]?.font ?? FontType.PLAIN,
+                }));
+              })();
+
+        const colSpec = newColSpec(colCount, headerSpecSource);
+
+        // Use remaining rows as body if we promoted the first row to header
+        const effectiveRows = shouldPromoteFirstRowToHeader ? el.rows.slice(1) : el.rows;
+
+        // Rows (pad/trim to colCount; ensure at least one literal per cell)
+        const rows: Row[] = effectiveRows.map<Row>((row) => ({
           id: null,
           parentId: null,
-          cells: row.cells.map<Cell>((cell) => ({
+          cells: normalizeCells(row.cells, colCount).map<Cell>((cell) => ({
             id: null,
             parentId: null,
-            text: cell.content.map((textContent) =>
-              newLiteral({ editedText: textContent.text, fontType: textContent.font }),
-            ),
+            text:
+              cell.content.length > 0
+                ? cell.content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }))
+                : [newLiteral({ editedText: "" })],
           })),
         }));
 
-        // Compose the Table object
         const tableContent: BrevbakerTable = {
           type: TABLE,
           id: null,
           parentId: null,
-          header: {
-            id: null,
-            parentId: null,
-            colSpec,
-          },
+          header: { id: null, parentId: null, colSpec },
           deletedRows: [],
           rows,
         };
 
-        // Insert into editor
         const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
         if (isBlockContentIndex(draft.focus) && isParagraph(currentBlock)) {
           splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
           addElements([tableContent], draft.focus.contentIndex + 1, currentBlock.content, currentBlock.deletedContent);
+
           draft.focus = {
             blockIndex: draft.focus.blockIndex,
             contentIndex: draft.focus.contentIndex + 1,
-            itemIndex: 0,
-            itemContentIndex: 0,
+            rowIndex: 0,
+            cellIndex: 0,
+            cellContentIndex: 0,
             cursorPosition: 0,
           };
+
+          draft.isDirty = true;
         }
         break;
       }
@@ -528,8 +563,32 @@ function traverseTable(element: HTMLTableElement, font: FontType): Table {
   let headerCells: TableCell[] | undefined = undefined;
 
   const rowElements = Array.from(element.querySelectorAll("tr"));
-  if (rowElements.length > 0) {
-    // Check if the first row is a header (all <th> or any <th>)
+
+  // Only extract header if <thead> or <th> is present
+  const thead = element.querySelector("thead");
+  if (thead) {
+    const headerRow = thead.querySelector("tr");
+    if (headerRow) {
+      const ths = headerRow.querySelectorAll("th");
+      if (ths.length > 0) {
+        headerCells = Array.from(ths).map((cellElement) => ({
+          content: traverseChildren(cellElement, font).flatMap((child) =>
+            child.type === "TEXT"
+              ? [child]
+              : child.type === "P"
+                ? child.content
+                : child.type === "ITEM"
+                  ? child.content
+                  : [],
+          ),
+        }));
+        const headerRowIndex = rowElements.indexOf(headerRow);
+        if (headerRowIndex !== -1) {
+          rowElements.splice(headerRowIndex, 1);
+        }
+      }
+    }
+  } else if (rowElements.length > 0) {
     const firstRow = rowElements[0];
     const ths = firstRow.querySelectorAll("th");
     if (ths.length > 0) {
@@ -544,11 +603,11 @@ function traverseTable(element: HTMLTableElement, font: FontType): Table {
                 : [],
         ),
       }));
-      // Skip header row for body parsing
       rowElements.shift();
     }
   }
 
+  // We do not generate default headers if none are present
   for (const tableRowElement of rowElements) {
     const tableCells: TableCell[] = [];
     tableRowElement.querySelectorAll("td,th").forEach((cellElement) => {
