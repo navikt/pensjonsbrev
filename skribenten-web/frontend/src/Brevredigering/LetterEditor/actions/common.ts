@@ -411,15 +411,24 @@ export function newColSpec(colCount: number, headers?: { text: string; font?: Fo
   }));
 }
 
-const stripZeroWidth = (s: string) => s.replaceAll("\u200B", "");
-
-export function isMeaningfulHeaderToken(txt: TextContent): boolean {
-  const raw = text(txt) ?? "";
-  const cleaned = stripZeroWidth(cleanseText(raw)).trim();
-  // Ignore empty and "Kolonne N"
-  return cleaned !== "" && !/^Kolonne\s+\d+$/i.test(cleaned);
+export function safeIndex(index: number, array: unknown[]) {
+  return Math.max(0, Math.min(index, array.length - 1));
 }
 
-export function hasHeaderContentCols(cols?: ColumnSpec[] | null): boolean {
-  return !!cols && cols.length > 0 && cols.some((col) => col.headerContent.text.some(isMeaningfulHeaderToken));
+const stripZeroWidth = (s: string) => s.replaceAll("\u200B", "");
+
+/**
+ * Returns true if any provided column contains header content.
+ * Counts VARIABLES and any non-empty literal (including “Kolonne N”).
+ */
+export function hasHeaderContentCols(colSpec?: ColumnSpec[]): boolean {
+  if (!colSpec || colSpec.length === 0) return false;
+  return colSpec.some((col) =>
+    col.headerContent.text.some((txt) => {
+      if (txt.type === VARIABLE) return true;
+      const raw = text(txt) ?? "";
+      const cleaned = stripZeroWidth(cleanseText(raw)).trim();
+      return cleaned.length > 0;
+    }),
+  );
 }
