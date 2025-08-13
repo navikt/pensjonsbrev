@@ -466,9 +466,9 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     }
                     item {
                         text(
-                            Bokmal to "har en arbeidsevnevurdering fra ditt lokale Nav-kontor som sier at du ikke kan arbeide",
-                            Nynorsk to "har ei arbeidsevnevurdering frå det lokale Nav-kontoret ditt på at du ikkje kan jobbe",
-                            English to "have completed the work capability assessment from your local Nav office that proves you cannot be employed",
+                            Bokmal to "har en arbeidsevnevurdering eller annen dokumentasjon fra din lokale arbeidsformidling eller annen instans som viser i hvor stor grad du kan arbeide",
+                            Nynorsk to "har ei arbeidsevnevurdering eller annan dokumentasjon frå den lokale arbeidsformidlinga eller ein annan instans som viser i kor stor grad du kan arbeide",
+                            English to "have an assessment of your capacity for work or other documentation from your local job centre or other relevant body that specifies the degree to which you are able to work",
                         )
                     }
                 }
@@ -476,5 +476,4 @@ class OmstillingsstoenadAktivitetspliktFraser {
 
         }
     }
-
 }
