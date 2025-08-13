@@ -16,7 +16,8 @@ fun createEndretUTPgaInntektDtoV2() =
             inntektBruktIAvkortning = 0,
             nettoPerAr = 300000,
             nettoAkkumulert = 1000000,
-            nettoRestbelop = 2000000
+            nettoRestbelop = 2000000,
+            totalNettoInnevarendeAr = 300000
         ),
         barnetilleggFellesbarn = null,
         barnetilleggSaerkullsbarn = null,
