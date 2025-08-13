@@ -27,10 +27,37 @@ import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
 import no.nav.pensjon.brevbaker.api.model.Felles
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
+import kotlin.jvm.java
 
-private val logger = LoggerFactory.getLogger(PenService::class.java)
+private val logger = LoggerFactory.getLogger(PenServiceImpl::class.java)
 
-class PenService(config: Config, authService: AuthService) : ServiceStatus {
+interface PenService {
+    suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection>
+    suspend fun bestillDoksysBrev(
+        request: Api.BestillDoksysBrevRequest,
+        enhetsId: String,
+        saksId: Long
+    ): ServiceResult<Pen.BestillDoksysBrevResponse>
+    suspend fun bestillExstreamBrev(
+        bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest,
+    ): ServiceResult<BestillExstreamBrevResponse>
+    suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): ServiceResult<Pen.RedigerDokumentResponse>
+    suspend fun redigerExstreamBrev(journalpostId: String): ServiceResult<Pen.RedigerDokumentResponse>
+    suspend fun hentAvtaleland(): ServiceResult<List<Pen.Avtaleland>>
+    suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): ServiceResult<Boolean>
+    suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): ServiceResult<KravStoettetAvDatabyggerResult>
+    suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse.Data>
+    suspend fun sendbrev(
+        sendRedigerbartBrevRequest: SendRedigerbartBrevRequest,
+        distribuer: Boolean,
+    ): ServiceResult<Pen.BestillBrevResponse>
+
+    data class KravStoettetAvDatabyggerResult(
+        val kravStoettet: Map<String, Boolean> = emptyMap()
+    )
+}
+
+class PenServiceImpl(config: Config, authService: AuthService) : PenService, ServiceStatus {
     private val penUrl = config.getString("url")
     private val penScope = config.getString("scope")
 
@@ -59,7 +86,7 @@ class PenService(config: Config, authService: AuthService) : ServiceStatus {
     private suspend fun fetchSak(saksId: String): ServiceResult<SakResponseDto> =
         client.get("brev/skribenten/sak/$saksId").toServiceResult(::handlePenErrorResponse)
 
-    suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> =
+    override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> =
         when (val sak = fetchSak(saksId)) {
             is ServiceResult.Error -> ServiceResult.Error(sak.error, sak.statusCode)
             is ServiceResult.Ok ->
@@ -78,7 +105,7 @@ class PenService(config: Config, authService: AuthService) : ServiceStatus {
                 }
         }
 
-    suspend fun bestillDoksysBrev(
+    override suspend fun bestillDoksysBrev(
         request: Api.BestillDoksysBrevRequest,
         enhetsId: String,
         saksId: Long
@@ -96,7 +123,7 @@ class PenService(config: Config, authService: AuthService) : ServiceStatus {
             contentType(ContentType.Application.Json)
         }.toServiceResult(::handlePenErrorResponse)
 
-    suspend fun bestillExstreamBrev(
+    override suspend fun bestillExstreamBrev(
         bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest,
     ): ServiceResult<BestillExstreamBrevResponse> =
         client.post("brev/pjoark030/bestillbrev") {
@@ -108,15 +135,15 @@ class PenService(config: Config, authService: AuthService) : ServiceStatus {
             }
         }
 
-    suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): ServiceResult<Pen.RedigerDokumentResponse> =
+    override suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): ServiceResult<Pen.RedigerDokumentResponse> =
         client.get("brev/dokument/metaforce/$journalpostId/$dokumentId")
             .toServiceResult(::handlePenErrorResponse)
 
-    suspend fun redigerExstreamBrev(journalpostId: String): ServiceResult<Pen.RedigerDokumentResponse> =
+    override suspend fun redigerExstreamBrev(journalpostId: String): ServiceResult<Pen.RedigerDokumentResponse> =
         client.get("brev/dokument/exstream/$journalpostId")
             .toServiceResult(::handlePenErrorResponse)
 
-    suspend fun hentAvtaleland(): ServiceResult<List<Pen.Avtaleland>> =
+    override suspend fun hentAvtaleland(): ServiceResult<List<Pen.Avtaleland>> =
         client.get("brev/skribenten/avtaleland").toServiceResult(::handlePenErrorResponse)
 
     override val name = "PEN"
@@ -125,13 +152,13 @@ class PenService(config: Config, authService: AuthService) : ServiceStatus {
             .toServiceResult<String>()
             .map { true }
 
-    suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): ServiceResult<Boolean> =
+    override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): ServiceResult<Boolean> =
         client.get("brev/skribenten/vedtak/$vedtaksId/isKravPaaGammeltRegelverk").toServiceResult<Boolean>(::handlePenErrorResponse)
 
-    suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): ServiceResult<KravStoettetAvDatabyggerResult> =
-        client.get("brev/skribenten/vedtak/$vedtaksId/isKravStoettetAvDatabygger").toServiceResult<KravStoettetAvDatabyggerResult>(::handlePenErrorResponse)
+    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): ServiceResult<PenService.KravStoettetAvDatabyggerResult> =
+        client.get("brev/skribenten/vedtak/$vedtaksId/isKravStoettetAvDatabygger").toServiceResult<PenService.KravStoettetAvDatabyggerResult>(::handlePenErrorResponse)
 
-    suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse.Data> =
+    override suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): ServiceResult<BrevdataResponse.Data> =
         client.get("brev/skribenten/sak/$saksId/brevdata/${brevkode.kode()}") {
             if (avsenderEnhetsId != null) {
                 url {
@@ -150,7 +177,7 @@ class PenService(config: Config, authService: AuthService) : ServiceStatus {
                 }
             }
 
-    suspend fun sendbrev(
+    override suspend fun sendbrev(
         sendRedigerbartBrevRequest: SendRedigerbartBrevRequest,
         distribuer: Boolean,
     ): ServiceResult<Pen.BestillBrevResponse> =
@@ -175,9 +202,6 @@ class PenService(config: Config, authService: AuthService) : ServiceStatus {
         val foedselsdato: LocalDate,
         val sakType: Pen.SakType,
         val enhetId: String?,
-    )
-    data class KravStoettetAvDatabyggerResult(
-        val kravStoettet: Map<String, Boolean> = emptyMap()
     )
 }
 

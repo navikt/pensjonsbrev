@@ -20,7 +20,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val servicesConfig = skribentenConfig.getConfig("services")
     initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopping) { db.close() } }
     val safService = SafServiceImpl(servicesConfig.getConfig("saf"), authService)
-    val penService = PenService(servicesConfig.getConfig("pen"), authService)
+    val penService = PenServiceImpl(servicesConfig.getConfig("pen"), authService)
     val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
     val pdlService = PdlServiceImpl(servicesConfig.getConfig("pdl"), authService)
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
