@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequestAsync
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
+import no.nav.pensjon.brev.latex.PDFByggerAsync
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -17,7 +17,7 @@ class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brevb
     name: String,
     templates: Set<T>,
     pdfByggerService: PDFByggerService,
-    private val laTeXAsyncCompilerService: LatexAsyncCompilerService?,
+    private val pDFByggerAsync: PDFByggerAsync?,
 
     ) : TemplateResource<Kode, T, BestillBrevRequest<Kode>>(name, templates, pdfByggerService) {
 
@@ -42,7 +42,7 @@ class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Brevb
         }
         brevbaker.renderLetterWithAttachmentsMarkup(letter)
             .let {
-                laTeXAsyncCompilerService!!.renderAsync(
+                pDFByggerAsync!!.renderAsync(
                     PDFRequestAsync(
                         request = PDFRequest(
                             letterMarkup = it.letterMarkup,

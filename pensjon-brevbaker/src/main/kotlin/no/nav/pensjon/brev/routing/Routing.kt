@@ -23,17 +23,17 @@ import no.nav.pensjon.brev.api.RedigerbarTemplateResource
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillBrevRequestAsync
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
+import no.nav.pensjon.brev.latex.PDFByggerAsync
 import no.nav.pensjon.etterlatte.EtterlatteMaler
 
 fun Application.brevRouting(
     authenticationNames: Array<String>?,
     pdfByggerService: PDFByggerService,
     brevProvider: AllTemplates,
-    latexAsyncCompilerService: LatexAsyncCompilerService?,
+    pDFByggerAsync: PDFByggerAsync?,
 ) =
     routing {
-        val autobrev = AutobrevTemplateResource("autobrev", brevProvider.hentAutobrevmaler(), pdfByggerService, latexAsyncCompilerService)
+        val autobrev = AutobrevTemplateResource("autobrev", brevProvider.hentAutobrevmaler(), pdfByggerService, pDFByggerAsync)
         val redigerbareBrev = RedigerbarTemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), pdfByggerService)
 
         route("/templates") {
@@ -45,7 +45,7 @@ fun Application.brevRouting(
             route("/letter") {
                 autobrevRoutes(autobrev)
                 redigerbarRoutes(redigerbareBrev)
-                if (latexAsyncCompilerService != null) {
+                if (pDFByggerAsync != null) {
                     log.info("registrert endepunkt for async kompilering av brev")
                     post<BestillBrevRequestAsync<Brevkode.Automatisk>>("/${autobrev.name}/pdfAsync") { brevbestillingAsync ->
                         installBrevkodeInCallContext(brevbestillingAsync.kode)
@@ -57,7 +57,7 @@ fun Application.brevRouting(
             }
 
             route("etterlatte") {
-                autobrevRoutes(AutobrevTemplateResource("", EtterlatteMaler.hentAutobrevmaler(), pdfByggerService, latexAsyncCompilerService))
+                autobrevRoutes(AutobrevTemplateResource("", EtterlatteMaler.hentAutobrevmaler(), pdfByggerService, pDFByggerAsync))
 
                 post<BestillBrevRequest<Brevkode.Automatisk>>("/json/slate") {
                     call.respond(autobrev.renderJSON(it).let { EtterlatteMaler.somSlate(it) })
