@@ -72,25 +72,9 @@ class LegacyBrevServiceTest {
             getMal("doksys")
         } returns doksysBrevmetadata
     }
-    private val safService = mockk<SafService> {
-        coEvery {
-            waitForJournalpostStatusUnderArbeid(any())
-        } returns JournalpostLoadingResult.READY
 
-        coEvery {
-            getFirstDocumentInJournal(any())
-        } returns ServiceResult.Ok(
-            SafService.HentDokumenterResponse(
-                SafService.HentDokumenterResponse.Journalposter(
-                    SafService.HentDokumenterResponse.Journalpost(
-                        journalpostId, listOf(
-                            SafService.HentDokumenterResponse.Dokument(dokumentId)
-                        )
-                    )
-                ), null
-            )
-        )
-    }
+    private val safService = FakeSafService(Pair(journalpostId, listOf(dokumentId)))
+
     private val penService = mockk<PenService> {
         coEvery {
             bestillDoksysBrev(any(), any(), any())
