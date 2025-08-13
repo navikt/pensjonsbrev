@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import com.typesafe.config.ConfigFactory
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
@@ -19,7 +20,7 @@ import kotlin.test.assertEquals
 class KrrServiceTest {
     private val service = spyk(
         KrrService(
-            config = mockk(),
+            config = ConfigFactory.parseMap(mapOf()),
             authService = FakeAuthService,
             client = mockk()
         )
