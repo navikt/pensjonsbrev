@@ -31,7 +31,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val navansattService = NavansattServiceImpl(servicesConfig.getConfig("navansatt"), authService)
     val legacyBrevService = LegacyBrevService(brevmetadataService, safService, penService, navansattService)
     val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
-    val norg2Service = Norg2Service(servicesConfig.getConfig("norg2"))
+    val norg2Service = Norg2ServiceImpl(servicesConfig.getConfig("norg2"))
     val brevredigeringService =
         BrevredigeringService(brevbakerService, navansattService, penService)
     val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)

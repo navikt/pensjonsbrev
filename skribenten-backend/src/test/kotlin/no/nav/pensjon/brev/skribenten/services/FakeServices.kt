@@ -39,3 +39,7 @@ class FakeNavansattService(val harTilgangTilEnhet: Map<Pair<String, String>, Boo
     }
 
 }
+
+class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg2Service {
+    override suspend fun getEnhet(enhetId: String) = enheter[enhetId]
+}
