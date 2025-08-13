@@ -1,5 +1,8 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerResponseDto
@@ -58,5 +61,61 @@ class FakeSamhandlerService(val navn: Map<String, String> = mapOf()): Samhandler
     }
 
     override suspend fun hentSamhandlerNavn(idTSSEkstern: String) = navn[idTSSEkstern]
+
+}
+
+class FakePenService(val saker: Map<String, Pen.SakSelection>) : PenService {
+    override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> = saker[saksId]?.let { ServiceResult.Ok(it) } ?: TODO("Not implemented")
+
+    override suspend fun bestillDoksysBrev(
+        request: Api.BestillDoksysBrevRequest,
+        enhetsId: String,
+        saksId: Long,
+    ): ServiceResult<Pen.BestillDoksysBrevResponse> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): ServiceResult<Pen.BestillExstreamBrevResponse> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun redigerDoksysBrev(
+        journalpostId: String,
+        dokumentId: String,
+    ): ServiceResult<Pen.RedigerDokumentResponse> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun redigerExstreamBrev(journalpostId: String): ServiceResult<Pen.RedigerDokumentResponse> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun hentAvtaleland(): ServiceResult<List<Pen.Avtaleland>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): ServiceResult<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): ServiceResult<PenService.KravStoettetAvDatabyggerResult> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun hentPesysBrevdata(
+        saksId: Long,
+        vedtaksId: Long?,
+        brevkode: Brevkode.Redigerbart,
+        avsenderEnhetsId: String?,
+    ): ServiceResult<BrevdataResponse.Data> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun sendbrev(
+        sendRedigerbartBrevRequest: Pen.SendRedigerbartBrevRequest,
+        distribuer: Boolean,
+    ): ServiceResult<Pen.BestillBrevResponse> {
+        TODO("Not yet implemented")
+    }
 
 }
