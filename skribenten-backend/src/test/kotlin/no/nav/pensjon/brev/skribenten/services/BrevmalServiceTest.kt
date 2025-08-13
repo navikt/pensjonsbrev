@@ -40,12 +40,11 @@ class BrevmalServiceTest {
         )
     )
 
-    private val brevmetadataService: BrevmetadataService = mockk()
     private val brevbakerService: BrevbakerService = mockk {
         coEvery { getTemplates() } returns ServiceResult.Ok(brevbakerbrev)
     }
 
-    private fun lagBrevmalService(service: PenService = FakePenService()): BrevmalService = BrevmalService(service, brevmetadataService, brevbakerService)
+    private fun lagBrevmalService(service: PenService = FakePenService(), brevmetadataService: BrevmetadataService = FakeBrevmetadataService()): BrevmalService = BrevmalService(service, brevmetadataService, brevbakerService)
     private val testOkBrev = BrevdataDto(
         redigerbart = true,
         dekode = "dekode",
@@ -86,12 +85,12 @@ class BrevmalServiceTest {
 
     @Test
     fun `eblanketter vises om forespurt`() {
-        coEvery {
-            brevmetadataService.getEblanketter()
-        } returns listOf(testOkBrev.copy(brevkodeIBrevsystem = "e-blankett-kode"))
+        val brevmetadataService = FakeBrevmetadataService(
+            eblanketter = listOf(testOkBrev.copy(brevkodeIBrevsystem = "e-blankett-kode")),
+        )
 
         runBlocking {
-            val brevmaler = lagBrevmalService().hentBrevmalerForSak(sakType = Sakstype.UFOREP, includeEblanketter = true)
+            val brevmaler = lagBrevmalService(brevmetadataService = brevmetadataService).hentBrevmalerForSak(sakType = Sakstype.UFOREP, includeEblanketter = true)
             assertThat(brevmaler).anyMatch { it.id == "e-blankett-kode" }
         }
     }
@@ -181,7 +180,9 @@ class BrevmalServiceTest {
         sakstype: Sakstype,
         isKravPaaGammeltRegelverk: Boolean = true
     ): ListAssert<Api.Brevmal> {
-        coEvery { brevmetadataService.getBrevmalerForSakstype(any()) } returns listOf(brevdataDto)
+        val brevmetadataService = FakeBrevmetadataService(
+            brevmaler = listOf(brevdataDto),
+        )
 
         val penService = FakePenService(
             kravPaaGammeltRegelverk = mapOf(TEST_VEDTAKS_ID to isKravPaaGammeltRegelverk),
@@ -189,7 +190,7 @@ class BrevmalServiceTest {
         )
 
         return runBlocking {
-            val brevmaler = lagBrevmalService(penService).hentBrevmalerForVedtak(sakstype, inkluderEblanketter, TEST_VEDTAKS_ID)
+            val brevmaler = lagBrevmalService(penService, brevmetadataService).hentBrevmalerForVedtak(sakstype, inkluderEblanketter, TEST_VEDTAKS_ID)
             return@runBlocking assertThat(brevmaler)
         }
     }
@@ -197,12 +198,10 @@ class BrevmalServiceTest {
     private fun assertThatBrevmalerInSakskontekst(brevdataDto: BrevdataDto): ListAssert<Api.Brevmal> =
         assertThatBrevmalerInSakskontekst(listOf(brevdataDto))
 
-    private fun assertThatBrevmalerInSakskontekst(brevdataDto: List<BrevdataDto>): ListAssert<Api.Brevmal> {
-        coEvery { brevmetadataService.getBrevmalerForSakstype(any()) } returns brevdataDto
-
-        return runBlocking {
-            val brevmaler = lagBrevmalService().hentBrevmalerForSak(Sakstype.UFOREP, false)
-            return@runBlocking assertThat(brevmaler)
-        }
+    private fun assertThatBrevmalerInSakskontekst(brevdataDto: List<BrevdataDto>) = runBlocking {
+        val brevmaler = lagBrevmalService(brevmetadataService = FakeBrevmetadataService(
+            brevmaler = brevdataDto,
+        )).hentBrevmalerForSak(Sakstype.UFOREP, false)
+        return@runBlocking assertThat(brevmaler)
     }
 }

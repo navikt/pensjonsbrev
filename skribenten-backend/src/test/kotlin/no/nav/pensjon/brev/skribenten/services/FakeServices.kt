@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
@@ -116,5 +117,18 @@ class FakePenService(
     ): ServiceResult<Pen.BestillBrevResponse> {
         TODO("Not yet implemented")
     }
+
+}
+
+class FakeBrevmetadataService(
+    val eblanketter: List<BrevdataDto> = listOf(),
+    val brevmaler: List<BrevdataDto> = listOf(),
+    val maler: Map<String, BrevdataDto> = mapOf(),
+) : BrevmetadataService {
+    override suspend fun getBrevmalerForSakstype(sakstype: Sakstype) = brevmaler
+
+    override suspend fun getEblanketter() = eblanketter
+
+    override suspend fun getMal(brevkode: String) = maler[brevkode] ?: TODO("Not implemented")
 
 }

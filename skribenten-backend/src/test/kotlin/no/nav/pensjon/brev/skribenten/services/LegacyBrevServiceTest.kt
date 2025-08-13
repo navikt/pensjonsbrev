@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
@@ -62,15 +60,9 @@ class LegacyBrevServiceTest {
         brevgruppe = null,
     )
 
-    private val brevmetadataService = mockk<BrevmetadataService> {
-        coEvery {
-            getMal("exstream")
-        } returns exstreamBrevMetadata
-
-        coEvery {
-            getMal("doksys")
-        } returns doksysBrevmetadata
-    }
+    private val brevmetadataService = FakeBrevmetadataService(
+        maler = mapOf("exstream" to exstreamBrevMetadata, "doksys" to doksysBrevmetadata),
+    )
 
     private val safService = FakeSafService(Pair(journalpostId, listOf(dokumentId)))
 
