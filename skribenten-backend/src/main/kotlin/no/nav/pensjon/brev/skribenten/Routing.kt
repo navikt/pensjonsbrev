@@ -25,7 +25,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val pdlService = PdlServiceImpl(servicesConfig.getConfig("pdl"), authService)
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
     val brevbakerService = BrevbakerServiceImpl(servicesConfig.getConfig("brevbaker"), authService)
-    val brevmetadataService = BrevmetadataService(servicesConfig.getConfig("brevmetadata"))
+    val brevmetadataService = BrevmetadataServiceImpl(servicesConfig.getConfig("brevmetadata"))
     val samhandlerService = SamhandlerServiceImpl(servicesConfig.getConfig("samhandlerProxy"), authService)
     val tjenestebussIntegrasjonService = TjenestebussIntegrasjonService(servicesConfig.getConfig("tjenestebussintegrasjon"), authService)
     val navansattService = NavansattServiceImpl(servicesConfig.getConfig("navansatt"), authService)
