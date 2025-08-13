@@ -6,7 +6,7 @@ assertJVersion = "3.27.3"
 binaryCompatibilityValidatorVersion = "0.18.1"
 classGraphVersion = "4.8.181"
 commonsCodecVersion = "1.19.0"
-commonVersion = "1.20.0"
+commonVersion = "1.21.0"
 exposedVersion = "0.61.0"
 flywayVersion = "11.10.5"
 hamkrestVersion = "1.8.0.1"
@@ -19,6 +19,7 @@ logbackVersion = "1.5.18"
 logstashVersion = "8.1"
 micrometerVersion = "1.15.2"
 mockkVersion = "1.14.5"
+pdfboxVersion = "2.0.33"
 postgresqlVersion = "42.7.7"
 testcontainersPostgresqlVersion = "1.21.3"
 unleashVersion = "11.0.2"
@@ -43,6 +44,7 @@ ksp-symbol-processing-common = { module = "com.google.devtools.ksp:symbol-proces
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logbackVersion" }
 logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version.ref = "logstashVersion" }
 micrometer-prometheus = { module = "io.micrometer:micrometer-registry-prometheus", version.ref = "micrometerVersion" }
+pdfbox = { module = "org.apache.pdfbox:pdfbox", version.ref = "pdfboxVersion" }
 postgresql = { module = "org.postgresql:postgresql", version.ref = "postgresqlVersion" }
 unleash = { module = "io.getunleash:unleash-client-java", version.ref = "unleashVersion" }
 
