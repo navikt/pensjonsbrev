@@ -34,6 +34,7 @@ data class EndretUTPgaInntektDtoV2 (
         val nettoPerAr: Int,
         val nettoAkkumulert: Int,
         val nettoRestbelop: Int,
+        val totalNettoInnevarendeAr: Int?,
     )
 
     data class BarnetilleggFellesbarn(
