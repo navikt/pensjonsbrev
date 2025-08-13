@@ -90,7 +90,8 @@ class FakePenService(
     val kravPaaGammeltRegelverk: Map<String, Boolean> = emptyMap(),
     val kravStoettetAvDatabygger: Map<String, PenService.KravStoettetAvDatabyggerResult> = emptyMap(),
 ) : PenService {
-    override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> = saker[saksId]?.let { ServiceResult.Ok(it) } ?: TODO("Not implemented")
+    override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> = saker[saksId]?.let { ServiceResult.Ok(it) }
+        ?: ServiceResult.Error("Sak finnes ikke", HttpStatusCode.NotFound)
 
     override suspend fun bestillDoksysBrev(
         request: Api.BestillDoksysBrevRequest,

@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.ALDER
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.GENRL
+import no.nav.pensjon.brev.skribenten.services.FakePenService
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.ServiceResult
@@ -73,15 +74,19 @@ class AuthorizeAnsattSakTilgangTest {
     private val pdlService = mockk<PdlService> {
         coEvery { hentAdressebeskyttelse(testSak.foedselsnr, ALDER.behandlingsnummer) } returns ServiceResult.Ok(emptyList())
     }
-    private val penService = mockk<PenService> {
-        coEvery { hentSak("${testSak.saksId}") } returns ServiceResult.Ok(testSak)
-        coEvery { hentSak("${sakVikafossen.saksId}") } returns ServiceResult.Ok(sakVikafossen)
-        coEvery { hentSak("${generellSak0001.saksId}") } returns ServiceResult.Ok(generellSak0001)
-        coEvery { hentSak("${generellSak0002.saksId}") } returns ServiceResult.Ok(generellSak0002)
-    }
+
+    private val defaultPenService = FakePenService(
+        saker = mapOf(
+            "${testSak.saksId}" to testSak,
+            "${sakVikafossen.saksId}" to sakVikafossen,
+            "${generellSak0001.saksId}" to generellSak0001,
+            "${generellSak0002.saksId}" to generellSak0002
+        )
+    )
 
     private fun basicAuthTestApplication(
         principal: MockPrincipal = MockPrincipal(navIdent, "Ansatt, Veldig Bra"),
+        penService: PenService = defaultPenService,
         block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit,
     ): Unit = testApplication {
         install(Authentication) {
@@ -103,7 +108,7 @@ class AuthorizeAnsattSakTilgangTest {
                 route("/sak") {
                     install(AuthorizeAnsattSakTilgang) {
                         pdlService = this@AuthorizeAnsattSakTilgangTest.pdlService
-                        penService = this@AuthorizeAnsattSakTilgangTest.penService
+                        this.penService = penService
                     }
 
                     get("/noSak/{noSak}") { call.respond("ingen sak") }
@@ -212,9 +217,7 @@ class AuthorizeAnsattSakTilgangTest {
         }
 
     @Test
-    fun `svarer med feil fra hentSak`() = basicAuthTestApplication { client ->
-        coEvery { penService.hentSak(any()) } returns ServiceResult.Error("Sak finnes ikke", HttpStatusCode.NotFound)
-
+    fun `svarer med feil fra hentSak`() = basicAuthTestApplication(penService = FakePenService()) { client ->
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
         assertEquals("Sak finnes ikke", response.bodyAsText())
