@@ -42,7 +42,26 @@ import org.slf4j.LoggerFactory
 
 class BrevbakerServiceException(msg: String) : Exception(msg)
 
-class BrevbakerService(config: Config, authService: AuthService) : ServiceStatus {
+interface BrevbakerService {
+    suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification>
+    suspend fun renderMarkup(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: Felles,
+    ): ServiceResult<LetterMarkup>
+    suspend fun renderPdf(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: Felles,
+        redigertBrev: LetterMarkup,
+    ): ServiceResult<LetterResponse>
+    suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>>
+    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
+}
+
+class BrevbakerServiceImpl(config: Config, authService: AuthService) : BrevbakerService, ServiceStatus {
     private val logger = LoggerFactory.getLogger(BrevredigeringService::class.java)!!
 
     private val brevbakerUrl = config.getString("url")
@@ -66,10 +85,10 @@ class BrevbakerService(config: Config, authService: AuthService) : ServiceStatus
     /**
      * Get model specification for a template.
      */
-    suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> =
+    override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> =
         client.get("/templates/redigerbar/${brevkode.kode()}/modelSpecification").toServiceResult()
 
-    suspend fun renderMarkup(
+    override suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
@@ -87,7 +106,7 @@ class BrevbakerService(config: Config, authService: AuthService) : ServiceStatus
             )
         }.toServiceResult()
 
-    suspend fun renderPdf(
+    override suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
@@ -107,7 +126,7 @@ class BrevbakerService(config: Config, authService: AuthService) : ServiceStatus
             )
         }.toServiceResult()
 
-    suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>> =
+    override suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>> =
         client.get("/templates/redigerbar") {
             url {
                 parameters.append("includeMetadata", "true")
@@ -115,7 +134,7 @@ class BrevbakerService(config: Config, authService: AuthService) : ServiceStatus
         }.toServiceResult()
 
     private val templateCache = Cache<Brevkode.Redigerbart, TemplateDescription.Redigerbar>()
-    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
+    override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
         templateCache.cached(brevkode) {
             client.get("/templates/redigerbar/${brevkode.kode()}").toServiceResult<TemplateDescription.Redigerbar>()
                 .onError { error, statusCode -> logger.error("Feilet ved henting av templateDescription for $brevkode: $statusCode - $error") }
