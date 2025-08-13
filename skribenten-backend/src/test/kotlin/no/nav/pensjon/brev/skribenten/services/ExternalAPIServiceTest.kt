@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.typesafe.config.ConfigValueFactory
-import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
@@ -55,8 +53,8 @@ class ExternalAPIServiceTest {
     )
     private val externalAPIService = ExternalAPIService(
         config = ConfigValueFactory.fromMap(mapOf("skribentenWebUrl" to skribentenWebUrl)).toConfig(),
-        brevredigeringService = mockk<BrevredigeringService> {
-            coEvery { hentBrevForAlleSaker(eq(setOf(saksId))) } returns listOf(brevDto)
+        brevhenter = object : Brevhenter {
+            override fun hentBrevForAlleSaker(saksIder: Set<Long>) = listOf(brevDto)
         },
         brevbakerService = FakeBrevbakerService(redigerbareMaler = mapOf(Testbrevkoder.INFORMASJONSBREV to brevmal))
     )
