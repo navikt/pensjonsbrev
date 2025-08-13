@@ -3,17 +3,22 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.jackson.*
-import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.request.accept
+import io.ktor.client.request.get
+import io.ktor.client.request.headers
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
+import io.ktor.serialization.jackson.jackson
+import no.nav.pensjon.brev.skribenten.auth.AuthService
 import org.slf4j.LoggerFactory
 
-class KrrService(config: Config, authService: AzureADService, private val client: HttpClient = krrClientFactory(config, authService)): ServiceStatus {
+class KrrService(config: Config, authService: AuthService, private val client: HttpClient = krrClientFactory(config, authService)): ServiceStatus {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     @Suppress("EnumEntryName")
@@ -102,7 +107,7 @@ class KrrService(config: Config, authService: AzureADService, private val client
 }
 
 // Denne er trekt ut for å kunne sette opp tester på denne klassa uten å måtte sette opp hele http-opplegget
-private fun krrClientFactory(config: Config, authService: AzureADService): HttpClient = HttpClient(CIO) {
+private fun krrClientFactory(config: Config, authService: AuthService): HttpClient = HttpClient(CIO) {
     defaultRequest {
         url(config.getString("url"))
     }

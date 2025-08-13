@@ -6,7 +6,6 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.context.CoroutineContextValueException
@@ -19,12 +18,23 @@ class AzureAdOnBehalfOfTest {
 
     private val principal = MockPrincipal(NavIdent("Cypher"), "Mr. Reagan")
     private val clientScope = "Matrix"
-    private val adService = mockk<AzureADService>()
+    private val authService = object : AuthService {
+        override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse {
+            return TokenResponse.OnBehalfOfToken(
+                accessToken = "",
+                refreshToken = "",
+                tokenType = "",
+                scope = "",
+                expiresIn = 1000
+            )
+        }
+
+    }
 
     private val clientWithOBOPlugin =
         HttpClient(MockEngine { respond("Principal: ${it.headers[HttpHeaders.Authorization]?.substringAfter("Bearer ")}") }) {
             install(AzureAdOnBehalfOf) {
-                authService = adService
+                this.authService = this@AzureAdOnBehalfOfTest.authService
                 scope = clientScope
             }
         }
@@ -39,7 +49,7 @@ class AzureAdOnBehalfOfTest {
     @Test
     fun `utveksler obo-token med principal fra context`(): Unit = runBlocking {
         val aToken = TokenResponse.OnBehalfOfToken("Joe Pantoliano", "", "", clientScope, 10_000)
-        coEvery { adService.getOnBehalfOfToken(eq(principal), eq(clientScope)) } returns aToken
+        coEvery { authService.getOnBehalfOfToken(eq(principal), eq(clientScope)) } returns aToken
 
         val response = withPrincipal(principal) {
             clientWithOBOPlugin.get("/something")
@@ -50,7 +60,7 @@ class AzureAdOnBehalfOfTest {
     @Test
     fun `feiler om authService svarer med feil`(): Unit = runBlocking {
         val tokenError = TokenResponse.ErrorResponse("", "", emptyList(), "", "", "", null)
-        coEvery { adService.getOnBehalfOfToken(eq(principal), eq(clientScope)) } returns tokenError
+        coEvery { authService.getOnBehalfOfToken(eq(principal), eq(clientScope)) } returns tokenError
 
         assertThrows<AzureAdOnBehalfOfAuthorizationException> {
             withPrincipal(principal) {

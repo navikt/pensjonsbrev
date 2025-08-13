@@ -11,7 +11,7 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeoutOrNull
-import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.auth.AuthService
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.seconds
 
@@ -34,7 +34,7 @@ enum class JournalpostLoadingResult {
     ERROR, NOT_READY, READY
 }
 
-class SafService(config: Config, authService: AzureADService) : ServiceStatus {
+class SafService(config: Config, authService: AuthService) : ServiceStatus {
     private val safUrl = config.getString("url")
     private val safRestUrl = config.getString("rest_url")
     private val safScope = config.getString("scope")
