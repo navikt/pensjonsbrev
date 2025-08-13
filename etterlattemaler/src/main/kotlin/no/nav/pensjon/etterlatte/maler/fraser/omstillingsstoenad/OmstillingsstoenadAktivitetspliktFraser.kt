@@ -99,9 +99,9 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     }
                     item {
                         text(
-                            Bokmal to "du skal oppholde deg utenfor Norge i en periode på mer enn seks måneder eller skal flytte til et annet land",
-                            Nynorsk to "du skal opphalde deg utanfor Noreg i meir enn seks månader, eller du skal flytte til eit anna land",
-                            English to "you intend to stay outside of Norway for a period of more than six months or intend to move to another country",
+                            Bokmal to "du skal flytte til et annet land",
+                            Nynorsk to "du skal flytte til eit anna land",
+                            English to "you are moving to another country",
                         )
                     }
                     item {
