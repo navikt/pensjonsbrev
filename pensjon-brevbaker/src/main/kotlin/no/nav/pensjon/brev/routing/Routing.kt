@@ -1,31 +1,40 @@
 package no.nav.pensjon.brev.routing
 
-import io.ktor.http.*
-import io.ktor.server.application.*
-import io.ktor.server.auth.*
-import io.ktor.server.auth.jwt.*
-import io.ktor.server.plugins.swagger.*
-import io.ktor.server.response.*
-import io.ktor.server.routing.*
-import no.nav.pensjon.brev.api.AutobrevTemplateResource
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
-import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
+import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
+import io.ktor.server.application.Application
+import io.ktor.server.application.log
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.authentication
+import io.ktor.server.auth.jwt.JWTPrincipal
+import io.ktor.server.plugins.swagger.swaggerUI
+import io.ktor.server.response.respond
+import io.ktor.server.response.respondText
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.Routing
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
+import io.ktor.server.routing.routing
 import no.nav.brev.brevbaker.AllTemplates
+import no.nav.brev.brevbaker.PDFByggerService
+import no.nav.pensjon.brev.api.AutobrevTemplateResource
 import no.nav.pensjon.brev.api.RedigerbarTemplateResource
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillBrevRequestAsync
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.latex.LatexAsyncCompilerService
 import no.nav.pensjon.etterlatte.EtterlatteMaler
 
 fun Application.brevRouting(
     authenticationNames: Array<String>?,
-    latexCompilerService: LaTeXCompilerService,
+    pdfByggerService: PDFByggerService,
     brevProvider: AllTemplates,
     latexAsyncCompilerService: LatexAsyncCompilerService?,
 ) =
     routing {
-        val autobrev = AutobrevTemplateResource("autobrev", brevProvider.hentAutobrevmaler(), latexCompilerService, latexAsyncCompilerService)
-        val redigerbareBrev = RedigerbarTemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), latexCompilerService)
+        val autobrev = AutobrevTemplateResource("autobrev", brevProvider.hentAutobrevmaler(), pdfByggerService, latexAsyncCompilerService)
+        val redigerbareBrev = RedigerbarTemplateResource("redigerbar", brevProvider.hentRedigerbareMaler(), pdfByggerService)
 
         route("/templates") {
             templateRoutes(autobrev)
@@ -48,7 +57,7 @@ fun Application.brevRouting(
             }
 
             route("etterlatte") {
-                autobrevRoutes(AutobrevTemplateResource("", EtterlatteMaler.hentAutobrevmaler(), latexCompilerService, latexAsyncCompilerService))
+                autobrevRoutes(AutobrevTemplateResource("", EtterlatteMaler.hentAutobrevmaler(), pdfByggerService, latexAsyncCompilerService))
 
                 post<BestillBrevRequest<Brevkode.Automatisk>>("/json/slate") {
                     call.respond(autobrev.renderJSON(it).let { EtterlatteMaler.somSlate(it) })
