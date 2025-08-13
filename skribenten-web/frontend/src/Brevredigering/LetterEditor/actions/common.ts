@@ -391,6 +391,7 @@ export function newRow(colCount: number): Row {
     })),
   };
 }
+
 export function newColSpec(colCount: number): ColumnSpec[] {
   return Array.from({ length: colCount }, (_, i) => ({
     id: null,
@@ -408,4 +409,8 @@ export function newColSpec(colCount: number): ColumnSpec[] {
       ],
     },
   }));
+}
+
+export function safeIndex(index: number, array: unknown[]) {
+  return Math.max(0, Math.min(index, array.length - 1));
 }
