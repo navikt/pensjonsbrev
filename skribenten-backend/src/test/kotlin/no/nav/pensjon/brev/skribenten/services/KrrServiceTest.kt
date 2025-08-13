@@ -1,13 +1,15 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.typesafe.config.ConfigFactory
-import io.ktor.client.call.body
-import io.ktor.client.statement.HttpResponse
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.mock.MockEngine
+import io.ktor.client.engine.mock.respond
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.HttpStatusCode
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.spyk
+import io.ktor.http.headersOf
+import io.ktor.serialization.jackson.jackson
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
 import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoKRRResponse
@@ -18,13 +20,24 @@ import org.junit.jupiter.api.assertNull
 import kotlin.test.assertEquals
 
 class KrrServiceTest {
-    private val service = spyk(
-        KrrService(
-            config = ConfigFactory.parseMap(mapOf()),
-            authService = FakeAuthService,
-            client = mockk()
-        )
-    )
+
+    private val objectMapper = jacksonObjectMapper()
+
+    private fun settOppClient(body: Any): HttpClient =
+        HttpClient(MockEngine {
+            respond(
+                content = objectMapper.writeValueAsString(body),
+                status = HttpStatusCode.OK,
+                headers = headersOf("Content-Type", "application/json")
+            )
+
+        }) {
+            install(ContentNegotiation) {
+                jackson {
+                    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                }
+            }
+        }
 
     @Test
     fun `kan hente foretrukket spraak fra KRR`() {
@@ -33,10 +46,11 @@ class KrrServiceTest {
             feil = mapOf()
         )
 
-        coEvery { service.doPost(any(), any()) } returns mockk<HttpResponse>().also {
-            every { it.status } returns HttpStatusCode.OK
-            coEvery { it.body<KontaktinfoKRRResponse>() } returns respons
-        }
+        val service = KrrService(
+            config = ConfigFactory.parseMap(mapOf()),
+            authService = FakeAuthService,
+            client = settOppClient(respons)
+        )
 
         runBlocking {
             val preferredLocale = service.getPreferredLocale("12345")
@@ -52,10 +66,11 @@ class KrrServiceTest {
             feil = mapOf("12345" to KrrService.Feiltype.person_ikke_funnet)
         )
 
-        coEvery { service.doPost(any(), any()) } returns mockk<HttpResponse>().also {
-            every { it.status } returns HttpStatusCode.OK
-            coEvery { it.body<KontaktinfoKRRResponse>() } returns respons
-        }
+        val service = KrrService(
+            config = ConfigFactory.parseMap(mapOf()),
+            authService = FakeAuthService,
+            client = settOppClient(respons)
+        )
 
         runBlocking {
             val preferredLocale = service.getPreferredLocale("12345")
@@ -71,10 +86,11 @@ class KrrServiceTest {
             feil = mapOf("12345" to KrrService.Feiltype.skjermet)
         )
 
-        coEvery { service.doPost(any(), any()) } returns mockk<HttpResponse>().also {
-            every { it.status } returns HttpStatusCode.OK
-            coEvery { it.body<KontaktinfoKRRResponse>() } returns respons
-        }
+        val service = KrrService(
+            config = ConfigFactory.parseMap(mapOf()),
+            authService = FakeAuthService,
+            client = settOppClient(respons)
+        )
 
         runBlocking {
             val preferredLocale = service.getPreferredLocale("12345")
