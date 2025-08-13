@@ -17,7 +17,13 @@ import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSam
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerResponseDto
 import org.slf4j.LoggerFactory
 
-class SamhandlerService(configSamhandlerProxy: Config, authService: AuthService) : ServiceStatus {
+interface SamhandlerService {
+    suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto
+    suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto
+    suspend fun hentSamhandlerNavn(idTSSEkstern: String): String?
+}
+
+class SamhandlerServiceImpl(configSamhandlerProxy: Config, authService: AuthService) : SamhandlerService, ServiceStatus {
     private val samhandlerProxyUrl = configSamhandlerProxy.getString("url")
     private val samhandlerProxyScope = configSamhandlerProxy.getString("scope")
 
@@ -33,9 +39,9 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AuthService)
         callIdAndOnBehalfOfClient(samhandlerProxyScope, authService)
     }
 
-    private val logger = LoggerFactory.getLogger(SamhandlerService::class.java)
+    private val logger = LoggerFactory.getLogger(SamhandlerServiceImpl::class.java)
 
-    suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto =
+    override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto =
         samhandlerProxyClient.post("/api/samhandler/finnSamhandler") {
             contentType(Json)
             accept(Json)
@@ -47,7 +53,7 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AuthService)
                 FinnSamhandlerResponseDto("Feil ved henting av samhandler")
             }
 
-    suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto =
+    override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto =
         samhandlerProxyClient.get("/api/samhandler/hentSamhandlerEnkel/") {
             url {
                 appendPathSegments(idTSSEkstern)
@@ -62,7 +68,7 @@ class SamhandlerService(configSamhandlerProxy: Config, authService: AuthService)
             }
 
     private val samhandlerNavnCache = Cache<String, String>()
-    suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = samhandlerNavnCache.cached(idTSSEkstern) {
+    override suspend fun hentSamhandlerNavn(idTSSEkstern: String): String? = samhandlerNavnCache.cached(idTSSEkstern) {
         hentSamhandler(idTSSEkstern).success?.navn
     }
 

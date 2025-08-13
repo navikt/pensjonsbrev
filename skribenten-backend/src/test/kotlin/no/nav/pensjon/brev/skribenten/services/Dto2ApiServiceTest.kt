@@ -22,9 +22,7 @@ class Dto2ApiServiceTest {
     private val saksbehandler = NavIdent("Z123")
     private val attestant = NavIdent("A 456")
 
-    private val samhandlerService = mockk<SamhandlerService>()
-
-    private fun lagDto2ApiService(navansattService: NavansattService = FakeNavansattService(), norg2Service: Norg2Service = FakeNorg2Service()): Dto2ApiService =
+    private fun lagDto2ApiService(navansattService: NavansattService = FakeNavansattService(), norg2Service: Norg2Service = FakeNorg2Service(), samhandlerService: SamhandlerService = FakeSamhandlerService()): Dto2ApiService =
         Dto2ApiService(
             brevbakerService = mockk {
                 coEvery { getRedigerbarTemplate(eq(Testbrevkoder.TESTBREV)) } returns TemplateDescription.Redigerbar(
@@ -86,8 +84,8 @@ class Dto2ApiServiceTest {
     @Test
     fun `henter navn paa samhandler mottaker`(): Unit = runBlocking {
         val brev = createBrev(mottaker = Dto.Mottaker.samhandler("tss123"))
-        coEvery { samhandlerService.hentSamhandlerNavn(eq("tss123")) } returns "Verdens kuleste samhandler"
-        assertThat(lagDto2ApiService().toApi(brev).mottaker).isEqualTo(
+        val samhandlerService = FakeSamhandlerService(mapOf("tss123" to "Verdens kuleste samhandler"))
+        assertThat(lagDto2ApiService(samhandlerService = samhandlerService).toApi(brev).mottaker).isEqualTo(
             Api.OverstyrtMottaker.Samhandler(
                 "tss123",
                 "Verdens kuleste samhandler"

@@ -1,5 +1,9 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerRequestDto
+import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto
+import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerResponseDto
+
 
 class FakeSafService(val journalpost: Pair<String, List<String>>?) : SafService {
     override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String) = JournalpostLoadingResult.READY
@@ -42,4 +46,17 @@ class FakeNavansattService(val harTilgangTilEnhet: Map<Pair<String, String>, Boo
 
 class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg2Service {
     override suspend fun getEnhet(enhetId: String) = enheter[enhetId]
+}
+
+class FakeSamhandlerService(val navn: Map<String, String> = mapOf()): SamhandlerService {
+    override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun hentSamhandlerNavn(idTSSEkstern: String) = navn[idTSSEkstern]
+
 }

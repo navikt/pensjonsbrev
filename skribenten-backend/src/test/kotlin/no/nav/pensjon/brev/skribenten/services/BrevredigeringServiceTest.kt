@@ -150,7 +150,6 @@ class BrevredigeringServiceTest {
             saksbehandler2Principal.navIdent.id to saksbehandler2Principal.fullName
         )
     )
-    private val samhandlerService = mockk<SamhandlerService>()
 
     private val brevredigeringService: BrevredigeringService = BrevredigeringService(
         brevbakerService = brevbakerMock,
@@ -1213,8 +1212,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan overstyre mottaker av brev`(): Unit = runBlocking {
-        coEvery { samhandlerService.hentSamhandlerNavn(eq("samhandlerId")) } returns "hei"
-
         val mottaker = Dto.Mottaker.samhandler("samhandlerId")
         val brev = opprettBrev(mottaker = mottaker)
 
@@ -1224,7 +1221,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan fjerne overstyrt mottaker av brev`(): Unit = runBlocking {
-        coEvery { samhandlerService.hentSamhandlerNavn(eq("samhandlerId")) } returns "hei"
         val mottaker = Dto.Mottaker.samhandler("samhandlerId")
         val brev = opprettBrev(mottaker = mottaker).resultOrNull()!!
         assertTrue(brevredigeringService.fjernOverstyrtMottaker(brev.info.id, sak1.saksId))
@@ -1236,8 +1232,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan oppdatere mottaker av brev`(): Unit = runBlocking {
-        coEvery { samhandlerService.hentSamhandlerNavn(eq("1")) } returns "Samhandler En"
-
         val brev = opprettBrev(mottaker = Dto.Mottaker.samhandler("1")).resultOrNull()!!
         val nyMottaker = Dto.Mottaker.norskAdresse("a", "b", "c", "d", "e", "f")
 
@@ -1268,8 +1262,6 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `brev distribueres til annen mottaker`(): Unit = runBlocking {
-        coEvery { samhandlerService.hentSamhandlerNavn(eq("987")) } returns "Ni Åtte Syv"
-
         val mottaker = Dto.Mottaker.samhandler("987")
         val brev = opprettBrev(mottaker = mottaker).resultOrNull()!!
         withPrincipal(saksbehandler1Principal) {
