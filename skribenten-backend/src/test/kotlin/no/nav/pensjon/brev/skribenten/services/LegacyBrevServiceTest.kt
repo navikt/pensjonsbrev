@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -75,20 +74,11 @@ class LegacyBrevServiceTest {
 
     private val safService = FakeSafService(Pair(journalpostId, listOf(dokumentId)))
 
-    private val penService = mockk<PenService> {
-        coEvery {
-            bestillDoksysBrev(any(), any(), any())
-        } returns ServiceResult.Ok(Pen.BestillDoksysBrevResponse(journalpostId, null))
-        coEvery {
-            bestillExstreamBrev(any())
-        } returns ServiceResult.Ok(Pen.BestillExstreamBrevResponse(journalpostId))
-        coEvery {
-            redigerDoksysBrev(eq(journalpostId), eq(dokumentId))
-        } returns ServiceResult.Ok(Pen.RedigerDokumentResponse(EXPECTED_DOKSYS_URL))
-        coEvery {
-            redigerExstreamBrev(eq(journalpostId))
-        } returns ServiceResult.Ok(Pen.RedigerDokumentResponse(EXPECTED_EXSTREAM_URL))
-    }
+    private val penService = FakePenService(
+        journalpostId = journalpostId,
+        redigerDoksys = mapOf(Pair(journalpostId, dokumentId) to EXPECTED_DOKSYS_URL),
+        redigerExstream = mapOf(journalpostId to EXPECTED_EXSTREAM_URL),
+    )
 
     private val navansattService = FakeNavansattService(
         harTilgangTilEnhet = mapOf(

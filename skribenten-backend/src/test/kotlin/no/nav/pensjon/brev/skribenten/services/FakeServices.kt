@@ -64,31 +64,31 @@ class FakeSamhandlerService(val navn: Map<String, String> = mapOf()): Samhandler
 
 }
 
-class FakePenService(val saker: Map<String, Pen.SakSelection>) : PenService {
+class FakePenService(
+    val saker: Map<String, Pen.SakSelection> = mapOf(),
+    val journalpostId: String? = null,
+    val redigerDoksys: Map<Pair<String, String>, String> = emptyMap(),
+    val redigerExstream: Map<String, String> = emptyMap(),
+) : PenService {
     override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> = saker[saksId]?.let { ServiceResult.Ok(it) } ?: TODO("Not implemented")
 
     override suspend fun bestillDoksysBrev(
         request: Api.BestillDoksysBrevRequest,
         enhetsId: String,
         saksId: Long,
-    ): ServiceResult<Pen.BestillDoksysBrevResponse> {
-        TODO("Not yet implemented")
-    }
+    ): ServiceResult<Pen.BestillDoksysBrevResponse> = ServiceResult.Ok(Pen.BestillDoksysBrevResponse(journalpostId))
 
-    override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): ServiceResult<Pen.BestillExstreamBrevResponse> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest) =
+        ServiceResult.Ok(Pen.BestillExstreamBrevResponse(journalpostId!!))
 
     override suspend fun redigerDoksysBrev(
         journalpostId: String,
         dokumentId: String,
-    ): ServiceResult<Pen.RedigerDokumentResponse> {
-        TODO("Not yet implemented")
-    }
+    ) = redigerDoksys[Pair(journalpostId, dokumentId)]?.let { ServiceResult.Ok(Pen.RedigerDokumentResponse(it)) }
+        ?: TODO("Not implemented")
 
-    override suspend fun redigerExstreamBrev(journalpostId: String): ServiceResult<Pen.RedigerDokumentResponse> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun redigerExstreamBrev(journalpostId: String) = redigerExstream[journalpostId]?.let { ServiceResult.Ok(Pen.RedigerDokumentResponse(it)) }
+        ?: TODO("Not implemented")
 
     override suspend fun hentAvtaleland(): ServiceResult<List<Pen.Avtaleland>> {
         TODO("Not yet implemented")
