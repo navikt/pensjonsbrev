@@ -21,7 +21,7 @@ class Brevbaker(pdfByggerService: PDFByggerService) {
     fun renderRedigertBrevHTML(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup): LetterResponse =
         BrevbakerHTML.renderHTML(letter, redigertBrev)
 
-    fun renderLetterMarkup(letter: Letter<BrevbakerBrevdata>): LetterMarkup =
+    fun <T: BrevbakerBrevdata> renderLetterMarkup(letter: Letter<T>): LetterMarkup =
         BrevbakerLetterMarkup.renderLetterMarkup(letter)
 
     fun renderLetterWithAttachmentsMarkup(letter: Letter<BrevbakerBrevdata>): LetterWithAttachmentsMarkup =

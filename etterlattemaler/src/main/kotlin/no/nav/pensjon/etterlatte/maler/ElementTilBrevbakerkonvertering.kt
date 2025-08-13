@@ -1,21 +1,17 @@
 package no.nav.pensjon.etterlatte.maler
 
 import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.dsl.ListScope
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.etterlatte.maler.ElementSelectors.children
 import no.nav.pensjon.etterlatte.maler.ElementSelectors.type
 import no.nav.pensjon.etterlatte.maler.InnerElementSelectors.children
 import no.nav.pensjon.etterlatte.maler.InnerElementSelectors.text
 import no.nav.pensjon.etterlatte.maler.InnerElementSelectors.type
 
-fun <D : BrevDTO> OutlineOnlyScope<LangBokmalNynorskEnglish, D>.konverterElementerTilBrevbakerformat(
+fun <L: LanguageSupport, D : BrevDTO> OutlineOnlyScope<L, D>.konverterElementerTilBrevbakerformat(
     innhold: Expression<List<Element>>,
 ) {
     forEach(innhold) { element ->
@@ -23,11 +19,7 @@ fun <D : BrevDTO> OutlineOnlyScope<LangBokmalNynorskEnglish, D>.konverterElement
             forEach(element.children) { inner ->
                 title1 {
                     ifNotNull(inner.text) {
-                        textExpr(
-                            Bokmal to it,
-                            Nynorsk to it,
-                            English to it,
-                        )
+                        eval(it)
                     }
                 }
             }
@@ -35,11 +27,7 @@ fun <D : BrevDTO> OutlineOnlyScope<LangBokmalNynorskEnglish, D>.konverterElement
             forEach(element.children) { inner ->
                 title2 {
                     ifNotNull(inner.text) {
-                        textExpr(
-                            Bokmal to it,
-                            Nynorsk to it,
-                            English to it,
-                        )
+                        eval(it)
                     }
                 }
             }
@@ -55,11 +43,7 @@ fun <D : BrevDTO> OutlineOnlyScope<LangBokmalNynorskEnglish, D>.konverterElement
                         }
                     }.orShow {
                         ifNotNull(inner.text) {
-                            textExpr(
-                                Bokmal to it,
-                                Nynorsk to it,
-                                English to it,
-                            )
+                            eval(it)
                         }
                     }
                 }
@@ -74,23 +58,19 @@ fun <D : BrevDTO> OutlineOnlyScope<LangBokmalNynorskEnglish, D>.konverterElement
     }
 }
 
-private fun <D : BrevDTO> ListScope<LangBokmalNynorskEnglish, D>.lagPunktlisteGammeltFormat(
+private fun <L: LanguageSupport, D : BrevDTO> ListScope<L, D>.lagPunktlisteGammeltFormat(
     items: Expression<List<InnerElement>>
 ) {
     forEach(items) { listItem ->
         item {
             ifNotNull(listItem.text) { text ->
-                textExpr(
-                    Bokmal to text,
-                    Nynorsk to text,
-                    English to text,
-                )
+                eval(text)
             }
         }
     }
 }
 
-private fun <D : BrevDTO> ListScope<LangBokmalNynorskEnglish, D>.lagPunktliste(
+private fun <L: LanguageSupport, D : BrevDTO> ListScope<L, D>.lagPunktliste(
     items: Expression<List<InnerElement>>
 ) {
     forEach(items) { listItem ->
@@ -98,11 +78,7 @@ private fun <D : BrevDTO> ListScope<LangBokmalNynorskEnglish, D>.lagPunktliste(
             ifNotNull(listItem.children) { children ->
                 forEach(children) { paragraph ->
                     ifNotNull(paragraph.text) { text ->
-                        textExpr(
-                            Bokmal to text,
-                            Nynorsk to text,
-                            English to text,
-                        )
+                        eval(text)
                     }
                 }
             }
