@@ -69,6 +69,8 @@ class FakePenService(
     val journalpostId: String? = null,
     val redigerDoksys: Map<Pair<String, String>, String> = emptyMap(),
     val redigerExstream: Map<String, String> = emptyMap(),
+    val kravPaaGammeltRegelverk: Map<String, Boolean> = emptyMap(),
+    val kravStoettetAvDatabygger: Map<String, PenService.KravStoettetAvDatabyggerResult> = emptyMap(),
 ) : PenService {
     override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> = saker[saksId]?.let { ServiceResult.Ok(it) } ?: TODO("Not implemented")
 
@@ -94,13 +96,10 @@ class FakePenService(
         TODO("Not yet implemented")
     }
 
-    override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): ServiceResult<Boolean> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String) = (kravPaaGammeltRegelverk[vedtaksId] ?: false).let { ServiceResult.Ok(it) }
 
-    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): ServiceResult<PenService.KravStoettetAvDatabyggerResult> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String) = kravStoettetAvDatabygger[vedtaksId]?.let { ServiceResult.Ok(it) }
+        ?: TODO("Not implemented")
 
     override suspend fun hentPesysBrevdata(
         saksId: Long,
