@@ -23,15 +23,20 @@ import org.slf4j.LoggerFactory
 private const val HENT_NAVN_QUERY_RESOURCE = "/pdl/HentNavn.graphql"
 private const val HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE = "/pdl/HentAdressebeskyttelse.graphql"
 
-private val hentNavnQuery = PdlService::class.java.getResource(HENT_NAVN_QUERY_RESOURCE)?.readText()
+private val hentNavnQuery = PdlServiceImpl::class.java.getResource(HENT_NAVN_QUERY_RESOURCE)?.readText()
     ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_NAVN_QUERY_RESOURCE")
 
-private val hentAdressebeskyttelseQuery = PdlService::class.java.getResource(HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE)?.readText()
+private val hentAdressebeskyttelseQuery = PdlServiceImpl::class.java.getResource(HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE)?.readText()
     ?: throw IllegalStateException("Kunne ikke hente query ressurs $HENT_ADRESSEBESKYTTELSE_QUERY_RESOURCE")
 
 private val logger = LoggerFactory.getLogger(PdlService::class.java)
 
-class PdlService(config: Config, authService: AuthService) : ServiceStatus {
+interface PdlService {
+    suspend fun hentNavn(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<String>
+    suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>>
+}
+
+class PdlServiceImpl(config: Config, authService: AuthService) : PdlService, ServiceStatus {
     private val pdlUrl = config.getString("url")
     private val pdlScope = config.getString("scope")
 
@@ -87,7 +92,7 @@ class PdlService(config: Config, authService: AuthService) : ServiceStatus {
         }
     }
 
-    suspend fun hentNavn(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<String> {
+    override suspend fun hentNavn(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<String> {
         return client.post("") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
@@ -109,7 +114,7 @@ class PdlService(config: Config, authService: AuthService) : ServiceStatus {
             }
     }
 
-    suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> {
+    override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> {
         return client.post("") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)

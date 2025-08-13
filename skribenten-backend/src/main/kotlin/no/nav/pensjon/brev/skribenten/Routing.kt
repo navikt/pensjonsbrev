@@ -22,7 +22,7 @@ fun Application.configureRouting(authConfig: JwtConfig, skribentenConfig: Config
     val safService = SafServiceImpl(servicesConfig.getConfig("saf"), authService)
     val penService = PenService(servicesConfig.getConfig("pen"), authService)
     val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
-    val pdlService = PdlService(servicesConfig.getConfig("pdl"), authService)
+    val pdlService = PdlServiceImpl(servicesConfig.getConfig("pdl"), authService)
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
     val brevbakerService = BrevbakerServiceImpl(servicesConfig.getConfig("brevbaker"), authService)
     val brevmetadataService = BrevmetadataService(servicesConfig.getConfig("brevmetadata"))
