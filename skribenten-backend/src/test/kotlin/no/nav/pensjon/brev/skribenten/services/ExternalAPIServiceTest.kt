@@ -58,9 +58,7 @@ class ExternalAPIServiceTest {
         brevredigeringService = mockk<BrevredigeringService> {
             coEvery { hentBrevForAlleSaker(eq(setOf(saksId))) } returns listOf(brevDto)
         },
-        brevbakerService = mockk<BrevbakerService> {
-            coEvery { getRedigerbarTemplate(Testbrevkoder.INFORMASJONSBREV) } returns brevmal
-        },
+        brevbakerService = FakeBrevbakerService(redigerbareMaler = mapOf(Testbrevkoder.INFORMASJONSBREV to brevmal))
     )
 
 

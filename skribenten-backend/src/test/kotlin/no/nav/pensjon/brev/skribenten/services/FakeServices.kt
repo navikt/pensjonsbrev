@@ -1,12 +1,20 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerResponseDto
+import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
 
 class FakeSafService(val journalpost: Pair<String, List<String>>?) : SafService {
@@ -130,5 +138,37 @@ class FakeBrevmetadataService(
     override suspend fun getEblanketter() = eblanketter
 
     override suspend fun getMal(brevkode: String) = maler[brevkode] ?: TODO("Not implemented")
+
+}
+
+class FakeBrevbakerService(val redigerbareMaler: Map<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mapOf()) : BrevbakerService {
+    override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun renderMarkup(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: Felles,
+    ): ServiceResult<LetterMarkup> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun renderPdf(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: Felles,
+        redigertBrev: LetterMarkup,
+    ): ServiceResult<LetterResponse> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
 
 }
