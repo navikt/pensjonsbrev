@@ -139,34 +139,17 @@ class BrevredigeringServiceTest {
     )
 
     private val penService: PenService = mockk()
-    private val navAnsattService = mockk<NavansattService> {
-        coEvery { harTilgangTilEnhet(any(), any()) } returns ServiceResult.Ok(false)
-        coEvery {
-            harTilgangTilEnhet(
-                eq(saksbehandler1Principal.navIdent.id),
-                eq(principalNavEnhetId)
-            )
-        } returns ServiceResult.Ok(true)
-        coEvery {
-            harTilgangTilEnhet(
-                eq(saksbehandler2Principal.navIdent.id),
-                eq(principalNavEnhetId)
-            )
-        } returns ServiceResult.Ok(true)
-        coEvery { hentNavansatt(any()) } returns null
-        coEvery { hentNavansatt(eq(saksbehandler1Principal.navIdent.id)) } returns Navansatt(
-            emptyList(),
-            saksbehandler1Principal.fullName + "navansatt",
-            saksbehandler1Principal.fullName.split(' ').first(),
-            saksbehandler1Principal.fullName.split(' ').last(),
+
+    private val navAnsattService = FakeNavansattService(
+        harTilgangTilEnhet = mapOf(
+            Pair(saksbehandler1Principal.navIdent.id, principalNavEnhetId) to true,
+            Pair(saksbehandler2Principal.navIdent.id, principalNavEnhetId) to true
+        ),
+        navansatte = mapOf(
+            saksbehandler1Principal.navIdent.id to saksbehandler1Principal.fullName,
+            saksbehandler2Principal.navIdent.id to saksbehandler2Principal.fullName
         )
-        coEvery { hentNavansatt(eq(saksbehandler2Principal.navIdent.id)) } returns Navansatt(
-            emptyList(),
-            saksbehandler2Principal.fullName + "navansatt",
-            saksbehandler2Principal.fullName.split(' ').first(),
-            saksbehandler2Principal.fullName.split(' ').last(),
-        )
-    }
+    )
     private val samhandlerService = mockk<SamhandlerService>()
 
     private val brevredigeringService: BrevredigeringService = BrevredigeringService(
