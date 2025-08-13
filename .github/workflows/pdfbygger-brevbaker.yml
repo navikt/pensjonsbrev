@@ -31,6 +31,8 @@ on:
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger-brevbaker.yml"
       - "!**/**.md"
+  schedule:
+    - cron: "0 5 1,15 * *"
 env:
   "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
   JavaDistribution: "temurin"
@@ -181,17 +183,17 @@ jobs:
           report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
       - name: Convert visual-test pdfs
         uses: routsi/ImageMagick-action@v1.1.1
-        if: ${{ (needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main') && github.event_name != 'workflow_dispatch' }}
+        if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main') && github.event_name == 'schedule') }}
         with:
           command: mogrify -path pensjon-brevbaker/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 pensjon-brevbaker/build/test_visual/pdf/*.pdf
       - uses: actions/setup-node@v4
-        if: ${{ (needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main') && github.event_name != 'workflow_dispatch' }}
+        if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main') && github.event_name == 'schedule') }}
         with:
           node-version: '22'
       - run: npm install --save-dev @percy/cli
-        if: ${{ (needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main') && github.event_name != 'workflow_dispatch' }}
+        if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main') && github.event_name == 'schedule') }}
       - name: Publish visual-tests to percy
-        if: ${{ (needs.changes.outputs.latex == 'true' || github.ref == 'refs/heads/main') && github.event_name != 'workflow_dispatch' }}
+        if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main') && github.event_name == 'schedule') }}
         run: |
           npx percy upload pensjon-brevbaker/build/test_visual/ > percy.log
           cat percy.log
