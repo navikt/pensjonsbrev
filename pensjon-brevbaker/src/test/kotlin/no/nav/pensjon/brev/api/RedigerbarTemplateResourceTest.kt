@@ -2,12 +2,11 @@ package no.nav.pensjon.brev.api
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.containsSubstring
-import io.mockk.coEvery
-import io.mockk.mockk
 import no.nav.brev.brevbaker.Fixtures
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
@@ -22,10 +21,11 @@ import java.time.LocalDate
 class RedigerbarTemplateResourceTest {
     private val pdfInnhold = "generert redigerbar pdf"
     private val pdf = pdfInnhold.toByteArray()
-    private val latexMock = mockk<PDFByggerService> {
-        coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(pdf)
+    private val fakePDFBygger = object : PDFByggerService {
+        override suspend fun producePDF(pdfRequest: PDFRequest, path: String) = PDFCompilationOutput(pdf)
     }
-    private val redigerbar = RedigerbarTemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), latexMock)
+
+    private val redigerbar = RedigerbarTemplateResource("autobrev", Testmaler.hentRedigerbareMaler(), fakePDFBygger)
 
     private val validRedigertBrevRequest = BestillRedigertBrevRequest(
         EksempelbrevRedigerbart.kode,

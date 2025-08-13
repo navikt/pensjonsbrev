@@ -2,12 +2,12 @@ package no.nav.pensjon.brev.api
 
 import io.ktor.http.ContentType
 import io.ktor.http.withCharset
-import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.brevbaker.Fixtures
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
@@ -26,10 +26,11 @@ import org.junit.jupiter.api.assertThrows
 class TemplateResourceTest {
     private val pdfInnhold = "generert pdf"
     private val pdf = pdfInnhold.toByteArray()
-    private val latexMock = mockk<PDFByggerService> {
-        coEvery { producePDF(any(), any()) } returns PDFCompilationOutput(pdf)
+    private val fakePDFBygger = object : PDFByggerService {
+        override suspend fun producePDF(pdfRequest: PDFRequest, path: String) = PDFCompilationOutput(pdf)
     }
-    private val autobrev = AutobrevTemplateResource("autobrev", Testmaler.hentAutobrevmaler(), latexMock, mockk())
+
+    private val autobrev = AutobrevTemplateResource("autobrev", Testmaler.hentAutobrevmaler(), fakePDFBygger, mockk())
 
     private val validAutobrevRequest = BestillBrevRequest(
         LetterExample.kode,
