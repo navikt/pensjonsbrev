@@ -30,18 +30,7 @@ class AzureAdOnBehalfOfTest {
     @Test
     fun `feiler om principal ikke er i context`(): Unit = runBlocking {
         assertThrows<CoroutineContextValueException> {
-            val authService = object : AuthService {
-                override suspend fun getOnBehalfOfToken(principal: UserPrincipal, scope: String): TokenResponse {
-                    return TokenResponse.OnBehalfOfToken(
-                        accessToken = "",
-                        refreshToken = "",
-                        tokenType = "",
-                        scope = "",
-                        expiresIn = 1000
-                    )
-                }
-            }
-            settOppClient(authService).get("/something")
+            settOppClient(FakeAuthService).get("/something")
         }
     }
 

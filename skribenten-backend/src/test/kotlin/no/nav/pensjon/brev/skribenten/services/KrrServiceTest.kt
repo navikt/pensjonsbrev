@@ -8,6 +8,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
 import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
 import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoKRRResponse
 import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoKRRResponseEnkeltperson
 import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoResponse
@@ -19,7 +20,7 @@ class KrrServiceTest {
     private val service = spyk(
         KrrService(
             config = mockk(),
-            authService = mockk(),
+            authService = FakeAuthService,
             client = mockk()
         )
     )
