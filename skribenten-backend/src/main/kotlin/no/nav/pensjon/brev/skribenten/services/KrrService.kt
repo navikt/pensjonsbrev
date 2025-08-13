@@ -59,17 +59,14 @@ class KrrService(config: Config, authService: AuthService, private val client: H
 
     data class KontaktinfoRequest(val personidenter: List<String>)
 
-    // Dette er en workaround for å få testene til å fungere, pga denne buggen i mockk: https://github.com/mockk/mockk/issues/944
-    suspend fun doPost(urlString: String, request: KontaktinfoRequest) = client.post(urlString) {
-        headers {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-            setBody(request)
-        }
-    }
-
     suspend fun getPreferredLocale(pid: String): KontaktinfoResponse =
-        doPost("/rest/v1/personer", KontaktinfoRequest(listOf(pid)))
+        client.post("/rest/v1/personer") {
+            headers {
+                contentType(ContentType.Application.Json)
+                accept(ContentType.Application.Json)
+                setBody(KontaktinfoRequest(listOf(pid)))
+            }
+        }
             .toServiceResult<KontaktinfoKRRResponse>()
             .map { response ->
                 if (response.feil.isEmpty()) {
