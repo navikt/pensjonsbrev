@@ -1,13 +1,14 @@
 import { css } from "@emotion/react";
-import { PlusIcon, TrashIcon } from "@navikt/aksel-icons";
+import { ArrowRightLeftIcon, PlusIcon, TrashIcon } from "@navikt/aksel-icons";
 import { ActionMenu } from "@navikt/ds-react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type Cell as CellType, type ColumnSpec, type Table } from "~/types/brevbakerTypes";
 
+import { hasHeaderContentCols } from "../actions/common";
 import type { TableCellIndex } from "../model/state";
 import { TableCellContent } from "./TableCellContent";
 import TableContextMenu from "./TableContextMenu";
@@ -31,7 +32,7 @@ const tableStyles = css`
 `;
 
 const selectedBackgroundStyle = css`
-  background: var(--a-surface-info-subtle, #d0e7ff);
+  background: var(--a-surface-info-subtle, #d0e7ff) !important;
 `;
 
 // TODO: render <ContentGroup> once that component
@@ -47,9 +48,18 @@ const TableView: React.FC<{
   contentIndex: number;
 }> = ({ node, blockIndex, contentIndex }) => {
   const { setEditorState } = useEditor();
-
   const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | null>(null);
   const [highlight, setHighlight] = useState<{ row: number; col: number } | null>(null);
+
+  const menuTargetRef = useRef<{ rowIndex: number; colIndex: number } | null>(null);
+
+  const headerHasContent = hasHeaderContentCols(node.header?.colSpec);
+  const canPromoteHeader = !headerHasContent;
+
+  const onlyOneCol = (node.header.colSpec?.length ?? 0) <= 1;
+
+  const clickedRow = menuTargetRef.current?.rowIndex;
+  const isHeaderCtx = clickedRow === -1;
 
   return (
     <>
@@ -59,11 +69,18 @@ const TableView: React.FC<{
         onContextMenu={(e) => {
           e.preventDefault();
 
-          const cell = (e.target as HTMLElement).closest("td,th");
+          const cell = (e.target as HTMLElement).closest("td,th") as HTMLTableCellElement | null;
           if (!cell) return;
+          const rowEl = cell.parentElement as HTMLTableRowElement;
 
-          const rowIndex = (cell.parentElement as HTMLTableRowElement).rowIndex - 1;
-          const colIndex = (cell as HTMLTableCellElement).cellIndex;
+          // Did our TableView render a thead?
+          const hasRenderedThead = hasHeaderContentCols(node.header?.colSpec);
+
+          // Is the clicked cell a header cell in our rendered table?
+          const isHeaderCell = cell.tagName === "TH" || (hasRenderedThead && rowEl.parentElement?.tagName === "THEAD");
+
+          const rowIndex = isHeaderCell ? -1 : rowEl.rowIndex - (hasRenderedThead ? 1 : 0);
+          const colIndex = cell.cellIndex;
 
           setEditorState((prev) => ({
             ...prev,
@@ -75,35 +92,47 @@ const TableView: React.FC<{
               cellContentIndex: 0,
             },
           }));
+          menuTargetRef.current = { rowIndex, colIndex };
           setHighlight({ row: rowIndex, col: colIndex });
           setMenuAnchor({ x: e.clientX, y: e.clientY });
         }}
       >
-        <thead>
-          <tr>
-            {node.header.colSpec.map((col: ColumnSpec, colIdx) => (
-              <th data-cy={`table-header-${colIdx}`} key={colIdx}>
-                {renderCellText(col.headerContent, colIdx, {
-                  blockIndex,
-                  contentIndex,
-                  rowIndex: -1,
-                  cellIndex: colIdx,
-                  cellContentIndex: 0,
-                })}
-              </th>
-            ))}
-          </tr>
-        </thead>
-
+        {headerHasContent && (
+          <thead>
+            <tr>
+              {node.header.colSpec.map((col: ColumnSpec, colIdx) => {
+                const isHeaderHighlighted =
+                  !!highlight && highlight.row === -1 && (highlight.col === -1 || highlight.col === colIdx);
+                return (
+                  <th
+                    css={isHeaderHighlighted && selectedBackgroundStyle}
+                    data-cy={`table-header-${colIdx}`}
+                    key={colIdx}
+                    scope="col"
+                  >
+                    {renderCellText(col.headerContent, colIdx, {
+                      blockIndex,
+                      contentIndex,
+                      rowIndex: -1,
+                      cellIndex: colIdx,
+                      cellContentIndex: 0,
+                    })}
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
+        )}
         <tbody>
           {node.rows.map((row, rowIdx) => {
             return (
               <tr data-cy={`table-row-${rowIdx}`} key={rowIdx}>
                 {row.cells.map((cell, cellIdx) => {
-                  const isHighLight = highlight && highlight.row === rowIdx && highlight.col === cellIdx;
+                  const isHighlighted =
+                    !!highlight && highlight.row === rowIdx && (highlight.col === -1 || highlight.col === cellIdx);
                   return (
                     <td
-                      css={isHighLight && selectedBackgroundStyle}
+                      css={isHighlighted && selectedBackgroundStyle}
                       data-cy={`table-cell-${rowIdx}-${cellIdx}`}
                       key={cellIdx}
                     >
@@ -129,9 +158,53 @@ const TableView: React.FC<{
         onClose={() => {
           setMenuAnchor(null);
           setHighlight(null);
+          menuTargetRef.current = null;
         }}
       >
+        {canPromoteHeader && typeof clickedRow === "number" && clickedRow >= 0 && (
+          <ActionMenu.Item
+            icon={<ArrowRightLeftIcon fontSize="1.25rem" />}
+            onMouseEnter={() => setHighlight({ row: clickedRow, col: -1 })}
+            onMouseLeave={() =>
+              setHighlight(
+                menuTargetRef.current
+                  ? { row: menuTargetRef.current.rowIndex, col: menuTargetRef.current.colIndex }
+                  : null,
+              )
+            }
+            onSelect={() => {
+              const rowIdx = menuTargetRef.current?.rowIndex ?? -1;
+              if (rowIdx >= 0) {
+                applyAction(Actions.promoteRowToHeader, setEditorState, blockIndex, contentIndex, rowIdx);
+                menuTargetRef.current = null;
+              }
+            }}
+          >
+            Gjør rad til overskrift
+          </ActionMenu.Item>
+        )}
+        {!canPromoteHeader && isHeaderCtx && (
+          <ActionMenu.Item
+            icon={<ArrowRightLeftIcon fontSize="1.25rem" />}
+            onMouseEnter={() => setHighlight({ row: -1, col: -1 })}
+            onMouseLeave={() =>
+              setHighlight(
+                menuTargetRef.current
+                  ? { row: menuTargetRef.current.rowIndex, col: menuTargetRef.current.colIndex }
+                  : null,
+              )
+            }
+            onSelect={() => {
+              applyAction(Actions.demoteHeaderToRow, setEditorState, blockIndex, contentIndex);
+              menuTargetRef.current = null;
+            }}
+          >
+            Gjør overskrift til vanlig tekst
+          </ActionMenu.Item>
+        )}
+        {isHeaderCtx && <ActionMenu.Divider />}
         <ActionMenu.Item
+          disabled={isHeaderCtx}
           icon={<PlusIcon fontSize="1.25rem" />}
           onSelect={() => applyAction(Actions.insertTableRowAbove, setEditorState)}
         >
@@ -166,6 +239,7 @@ const TableView: React.FC<{
           Slett rad
         </ActionMenu.Item>
         <ActionMenu.Item
+          disabled={onlyOneCol}
           icon={<TrashIcon fontSize="1.25rem" />}
           onSelect={() => applyAction(Actions.removeTableColumn, setEditorState)}
           variant="danger"

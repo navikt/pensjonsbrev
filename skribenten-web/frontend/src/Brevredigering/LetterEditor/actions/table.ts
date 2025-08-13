@@ -95,12 +95,38 @@ export const insertTable: Action<
 export const removeTableRow = produce<LetterEditorState>((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, rowIndex } = draft.focus;
-  if (rowIndex < 0) return;
 
   const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
   if (!isTable(table)) return;
-  removeElements(rowIndex, 1, { content: table.rows, deletedContent: table.deletedRows, id: table.id });
 
+  if (rowIndex < 0) {
+    for (const col of table.header.colSpec) {
+      col.headerContent.text = [newLiteral({ editedText: "" })];
+    }
+
+    const nextRow = table.rows.length > 0 ? 0 : 0;
+    draft.focus = {
+      blockIndex,
+      contentIndex,
+      rowIndex: nextRow,
+      cellIndex: 0,
+      cellContentIndex: 0,
+      cursorPosition: 0,
+    };
+    draft.isDirty = true;
+    return;
+  }
+
+  removeElements(rowIndex, 1, { content: table.rows, deletedContent: table.deletedRows, id: table.id });
+  const clampedRow = Math.min(rowIndex, Math.max(0, table.rows.length - 1));
+  draft.focus = {
+    blockIndex,
+    contentIndex,
+    rowIndex: clampedRow,
+    cellIndex: 0,
+    cellContentIndex: 0,
+    cursorPosition: 0,
+  };
   draft.isDirty = true;
 });
 
@@ -123,6 +149,8 @@ export const removeTable = produce<LetterEditorState>((draft) => {
 
   const parentBlock = draft.redigertBrev.blocks[blockIndex];
   removeElements(contentIndex, 1, parentBlock);
+  const newContentIndex = safeIndex(contentIndex - 1, parentBlock.content);
+  draft.focus = { blockIndex, contentIndex: newContentIndex, cursorPosition: 0 };
   draft.isDirty = true;
 });
 
@@ -172,10 +200,14 @@ export const insertTableRowBelow: Action<LetterEditorState, []> = produce((draft
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, rowIndex } = draft.focus;
 
-  if (rowIndex < 0) return;
   const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
   if (!isTable(table)) return;
-  addElements([newRow(table.header.colSpec.length)], rowIndex + 1, table.rows, table.deletedRows);
+
+  // If header is selected (rowIndex === -1), insert as first body row
+  const at = rowIndex < 0 ? 0 : rowIndex + 1;
+  addElements([newRow(table.header.colSpec.length)], at, table.rows, table.deletedRows);
+
+  draft.focus = { blockIndex, contentIndex, rowIndex: at, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
   draft.isDirty = true;
 });
 
@@ -185,7 +217,7 @@ function cloneTexts(source: Draft<TextContent[]>): TextContent[] {
     switch (t.type) {
       case LITERAL:
         return newLiteral({
-          editedText: text(t),
+          editedText: text(t) ?? "",
           fontType: t.editedFontType ?? t.fontType,
           editedFontType: t.editedFontType ?? null,
           tags: t.tags,
@@ -226,9 +258,48 @@ export const promoteRowToHeader: Action<
     table.header.colSpec[c].headerContent.text =
       sourceTexts.length > 0 ? cloneTexts(sourceTexts) : [newLiteral({ editedText: "" })];
   }
+  // If header is still empty (e.g., promoted an empty body row to header), set default labels so header renders
+  if (!hasHeaderContentCols(table.header?.colSpec)) {
+    updateDefaultHeaderLabels(table);
+  }
   // Remove promoted row from body
   removeElements(rowIndex, 1, { content: table.rows, deletedContent: table.deletedRows, id: table.id });
 
   draft.focus = { blockIndex, contentIndex, rowIndex: -1, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
   draft.isDirty = true;
 });
+
+/**
+ * Demote header to a regular first row:
+ * - Copies header colSpec text into a new first body row.
+ * - Clears header cell text so <thead> stops rendering.
+ */
+export const demoteHeaderToRow: Action<LetterEditorState, [blockIndex: number, contentIndex: number]> = produce(
+  (draft, blockIndex, contentIndex) => {
+    const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
+    if (!isTable(table)) return;
+
+    if (!hasHeaderContentCols(table.header?.colSpec)) return;
+
+    const colCount = table.header.colSpec.length;
+
+    // Build a new Row from header cells
+    const newBodyRow = newRow(colCount);
+    for (let c = 0; c < colCount; c++) {
+      const headerTexts = table.header.colSpec[c].headerContent.text as Draft<TextContent[]>;
+      const cloned = cloneTexts(headerTexts);
+      newBodyRow.cells[c].text.splice(0, newBodyRow.cells[c].text.length, ...cloned);
+    }
+
+    // Insert as first body row
+    addElements([newBodyRow], 0, table.rows, table.deletedRows);
+
+    // Clear header cell text to hide <thead>
+    for (let c = 0; c < colCount; c++) {
+      table.header.colSpec[c].headerContent.text = [newLiteral({ editedText: "" })];
+    }
+
+    draft.focus = { blockIndex, contentIndex, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
+    draft.isDirty = true;
+  },
+);
