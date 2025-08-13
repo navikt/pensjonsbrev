@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import io.mockk.coEvery
-import io.mockk.mockk
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -40,9 +38,7 @@ class BrevmalServiceTest {
         )
     )
 
-    private val brevbakerService: BrevbakerService = mockk {
-        coEvery { getTemplates() } returns ServiceResult.Ok(brevbakerbrev)
-    }
+    private val brevbakerService: BrevbakerService = FakeBrevbakerService(maler = brevbakerbrev)
 
     private fun lagBrevmalService(service: PenService = FakePenService(), brevmetadataService: BrevmetadataService = FakeBrevmetadataService()): BrevmalService = BrevmalService(service, brevmetadataService, brevbakerService)
     private val testOkBrev = BrevdataDto(

@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
+import no.nav.pensjon.brev.skribenten.Features.override
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerRequestDto
@@ -141,7 +142,10 @@ class FakeBrevmetadataService(
 
 }
 
-class FakeBrevbakerService(val redigerbareMaler: Map<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mapOf()) : BrevbakerService {
+class FakeBrevbakerService(
+    val maler: List<TemplateDescription.Redigerbar> = listOf(),
+    val redigerbareMaler: Map<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mapOf()
+) : BrevbakerService {
     override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> {
         TODO("Not yet implemented")
     }
@@ -165,9 +169,7 @@ class FakeBrevbakerService(val redigerbareMaler: Map<RedigerbarBrevkode, Templat
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>> {
-        TODO("Not yet implemented")
-    }
+    override suspend fun getTemplates() = ServiceResult.Ok(maler)
 
     override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
 
