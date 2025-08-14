@@ -40,7 +40,7 @@ class BrevmalServiceTest {
 
     private val brevbakerService: BrevbakerService = FakeBrevbakerService(maler = brevbakerbrev)
 
-    private fun lagBrevmalService(service: PenService = FakePenService(), brevmetadataService: BrevmetadataService = FakeBrevmetadataService()): BrevmalService = BrevmalService(service, brevmetadataService, brevbakerService)
+    private fun lagBrevmalService(service: PenService = object : PenService {}, brevmetadataService: BrevmetadataService = FakeBrevmetadataService()): BrevmalService = BrevmalService(service, brevmetadataService, brevbakerService)
     private val testOkBrev = BrevdataDto(
         redigerbart = true,
         dekode = "dekode",
@@ -180,10 +180,13 @@ class BrevmalServiceTest {
             brevmaler = listOf(brevdataDto),
         )
 
-        val penService = FakePenService(
-            kravPaaGammeltRegelverk = mapOf(TEST_VEDTAKS_ID to isKravPaaGammeltRegelverk),
-            kravStoettetAvDatabygger = mapOf(TEST_VEDTAKS_ID to KravStoettetAvDatabyggerResult(emptyMap()))
-        )
+        val penService = object : PenService {
+            override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String) =
+                if (vedtaksId == TEST_VEDTAKS_ID) ServiceResult.Ok(isKravPaaGammeltRegelverk) else TODO("Not yet implemented")
+
+            override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String) =
+                if (vedtaksId == TEST_VEDTAKS_ID) ServiceResult.Ok(KravStoettetAvDatabyggerResult(emptyMap())) else TODO("Not yet implemented")
+        }
 
         return runBlocking {
             val brevmaler = lagBrevmalService(penService, brevmetadataService).hentBrevmalerForVedtak(sakstype, inkluderEblanketter, TEST_VEDTAKS_ID)

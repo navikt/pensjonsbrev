@@ -15,11 +15,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.skribenten.model.Api
-import no.nav.pensjon.brev.skribenten.model.Pen
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerRequestDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.FinnSamhandlerResponseDto
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerResponseDto
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -49,65 +44,6 @@ open class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg
 
 open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : SamhandlerService {
     override suspend fun hentSamhandlerNavn(idTSSEkstern: String) = navn[idTSSEkstern]
-}
-
-open class FakePenService(
-    val saker: Map<String, ServiceResult<Pen.SakSelection>> = mapOf(),
-    val journalpostId: String? = null,
-    val redigerDoksys: Map<Pair<String, String>, String> = emptyMap(),
-    val redigerExstream: Map<String, String> = emptyMap(),
-    val kravPaaGammeltRegelverk: Map<String, Boolean> = emptyMap(),
-    val kravStoettetAvDatabygger: Map<String, PenService.KravStoettetAvDatabyggerResult> = emptyMap(),
-) : PenService {
-    override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> =
-        saker[saksId] ?: ServiceResult.Error("Sak finnes ikke", HttpStatusCode.NotFound)
-
-    override suspend fun bestillDoksysBrev(
-        request: Api.BestillDoksysBrevRequest,
-        enhetsId: String,
-        saksId: Long,
-    ): ServiceResult<Pen.BestillDoksysBrevResponse> = journalpostId?.let { ServiceResult.Ok(Pen.BestillDoksysBrevResponse(it)) } ?: TODO("Not implemented")
-
-    override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest) =
-        ServiceResult.Ok(Pen.BestillExstreamBrevResponse(journalpostId!!))
-
-    override suspend fun redigerDoksysBrev(
-        journalpostId: String,
-        dokumentId: String,
-    ) = redigerDoksys[Pair(journalpostId, dokumentId)]?.let { ServiceResult.Ok(Pen.RedigerDokumentResponse(it)) }
-        ?: TODO("Not implemented")
-
-    override suspend fun redigerExstreamBrev(journalpostId: String) =
-        redigerExstream[journalpostId]?.let { ServiceResult.Ok(Pen.RedigerDokumentResponse(it)) }
-            ?: TODO("Not implemented")
-
-    override suspend fun hentAvtaleland(): ServiceResult<List<Pen.Avtaleland>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String) =
-        (kravPaaGammeltRegelverk[vedtaksId] ?: false).let { ServiceResult.Ok(it) }
-
-    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String) =
-        kravStoettetAvDatabygger[vedtaksId]?.let { ServiceResult.Ok(it) }
-            ?: TODO("Not implemented")
-
-    override suspend fun hentPesysBrevdata(
-        saksId: Long,
-        vedtaksId: Long?,
-        brevkode: Brevkode.Redigerbart,
-        avsenderEnhetsId: String?,
-    ): ServiceResult<BrevdataResponse.Data> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun sendbrev(
-        sendRedigerbartBrevRequest: Pen.SendRedigerbartBrevRequest,
-        distribuer: Boolean,
-    ): ServiceResult<Pen.BestillBrevResponse> {
-        TODO("Not yet implemented")
-    }
-
 }
 
 open class FakeBrevmetadataService(

@@ -21,7 +21,6 @@ import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.ALDER
 import no.nav.pensjon.brev.skribenten.model.Pen.SakType.GENRL
-import no.nav.pensjon.brev.skribenten.services.FakePenService
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.ServiceResult
@@ -75,14 +74,15 @@ class AuthorizeAnsattSakTilgangTest {
         coEvery { hentAdressebeskyttelse(testSak.foedselsnr, ALDER.behandlingsnummer) } returns ServiceResult.Ok(emptyList())
     }
 
-    private val defaultPenService = FakePenService(
-        saker = mapOf(
-            "${testSak.saksId}" to ServiceResult.Ok(testSak),
-            "${sakVikafossen.saksId}" to ServiceResult.Ok(sakVikafossen),
-            "${generellSak0001.saksId}" to ServiceResult.Ok(generellSak0001),
-            "${generellSak0002.saksId}" to ServiceResult.Ok(generellSak0002)
-        )
-    )
+    private val defaultPenService = object : PenService {
+        override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> =
+            mapOf(
+                "${testSak.saksId}" to ServiceResult.Ok(testSak),
+                "${sakVikafossen.saksId}" to ServiceResult.Ok(sakVikafossen),
+                "${generellSak0001.saksId}" to ServiceResult.Ok(generellSak0001),
+                "${generellSak0002.saksId}" to ServiceResult.Ok(generellSak0002)
+            )[saksId] ?: ServiceResult.Error("Sak finnes ikke", HttpStatusCode.NotFound)
+    }
 
     private fun basicAuthTestApplication(
         principal: MockPrincipal = MockPrincipal(navIdent, "Ansatt, Veldig Bra"),
@@ -217,7 +217,9 @@ class AuthorizeAnsattSakTilgangTest {
         }
 
     @Test
-    fun `svarer med feil fra hentSak`() = basicAuthTestApplication(penService = FakePenService()) { client ->
+    fun `svarer med feil fra hentSak`() = basicAuthTestApplication(penService = object : PenService {
+        override suspend fun hentSak(saksId: String) = ServiceResult.Error<Pen.SakSelection>("Sak finnes ikke", HttpStatusCode.NotFound)
+    }) { client ->
         val response = client.get("/sak/${testSak.saksId}")
         assertEquals(HttpStatusCode.NotFound, response.status)
         assertEquals("Sak finnes ikke", response.bodyAsText())

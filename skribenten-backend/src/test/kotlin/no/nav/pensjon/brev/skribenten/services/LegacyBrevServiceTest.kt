@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -12,8 +13,8 @@ import org.junit.jupiter.api.Test
 private const val EXPECTED_EXSTREAM_URL = "http://beste-exstream-brev"
 private const val EXPECTED_DOKSYS_URL = "http://beste-doksys-brev"
 
-private const val journalpostId = "1234"
-private const val dokumentId = "5678"
+private const val forventaJournalpostId = "1234"
+private const val forventaDokumentId = "5678"
 
 class LegacyBrevServiceTest {
 
@@ -72,7 +73,7 @@ class LegacyBrevServiceTest {
                     SafService.HentDokumenterResponse.Journalposter(
                         SafService.HentDokumenterResponse.Journalpost(
                             journalpostId, listOf(
-                                SafService.HentDokumenterResponse.Dokument(dokumentId)
+                                SafService.HentDokumenterResponse.Dokument(forventaDokumentId)
                             )
                         )
                     ), null
@@ -81,11 +82,23 @@ class LegacyBrevServiceTest {
         }
     }
 
-    private val penService = FakePenService(
-        journalpostId = journalpostId,
-        redigerDoksys = mapOf(Pair(journalpostId, dokumentId) to EXPECTED_DOKSYS_URL),
-        redigerExstream = mapOf(journalpostId to EXPECTED_EXSTREAM_URL),
-    )
+    private val penService = object : PenService {
+        override suspend fun bestillDoksysBrev(
+            request: Api.BestillDoksysBrevRequest,
+            enhetsId: String,
+            saksId: Long,
+        ): ServiceResult<Pen.BestillDoksysBrevResponse> = ServiceResult.Ok(Pen.BestillDoksysBrevResponse(forventaJournalpostId))
+
+        override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest) =
+            ServiceResult.Ok(Pen.BestillExstreamBrevResponse(forventaJournalpostId))
+
+        override suspend fun redigerDoksysBrev(
+            journalpostId: String,
+            dokumentId: String,
+        ) = if (journalpostId == forventaJournalpostId && dokumentId == forventaDokumentId) ServiceResult.Ok(Pen.RedigerDokumentResponse(EXPECTED_DOKSYS_URL)) else TODO("Not implemented yet")
+
+        override suspend fun redigerExstreamBrev(journalpostId: String) = if (journalpostId == forventaJournalpostId) ServiceResult.Ok(Pen.RedigerDokumentResponse(EXPECTED_EXSTREAM_URL)) else TODO("Not implemented yet")
+    }
 
     private val navansattService = FakeNavansattService(
         harTilgangTilEnhet = mapOf(
