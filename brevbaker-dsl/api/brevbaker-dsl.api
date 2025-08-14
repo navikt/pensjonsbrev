@@ -1343,16 +1343,22 @@ public final class no/nav/pensjon/brev/template/dsl/expression/EqualsKt {
 	public static final fun equalToComparable (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun equalToIntValue (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Integer;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun equalToKroner (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalToKroner (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brevbaker/api/model/Kroner;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun equalToLanguage (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun equalToPercent (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalToPercent (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brevbaker/api/model/Percent;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun equalToYear (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalToYear (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brevbaker/api/model/Year;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notEqualTo (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Language;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notEqualToComparable (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Comparable;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notEqualToComparable (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notEqualToIntValue (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Integer;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun notEqualToKroner (Lno/nav/pensjon/brev/template/Expression;I)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notEqualToKroner (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notEqualToLanguage (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun notEqualToPercent (Lno/nav/pensjon/brev/template/Expression;I)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notEqualToPercent (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun notEqualToYear (Lno/nav/pensjon/brev/template/Expression;I)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notEqualToYear (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 

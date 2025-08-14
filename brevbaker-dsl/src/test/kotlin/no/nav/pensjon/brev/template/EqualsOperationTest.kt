@@ -78,13 +78,18 @@ class EqualsOperationTest {
         assertThat(kroner5 notEqualTo kroner2, evalsTo(true))
         assertThat(kroner5 equalTo kronerNull, evalsTo(false))
         assertThat(kroner5 notEqualTo kronerNull, evalsTo(true))
+
+        assertThat(kroner5 equalTo Kroner(5), evalsTo(true))
+        assertThat(kroner5 notEqualTo Kroner(5), evalsTo(false))
+        assertThat(kroner5 equalTo Kroner(2), evalsTo(false))
+        assertThat(kroner5 notEqualTo Kroner(2), evalsTo(true))
     }
 
     @Test
     fun `equals of Year`() {
         val year2025 = Year(2025).expr()
         val year2025Other = Year(2025).expr()
-        val year2022 = Year(2).expr()
+        val year2022 = Year(2022).expr()
         val yearNull: Expression<Year?> = null.expr()
 
         assertThat(year2025 equalTo year2025Other, evalsTo(true))
@@ -93,6 +98,11 @@ class EqualsOperationTest {
         assertThat(year2025 notEqualTo year2022, evalsTo(true))
         assertThat(year2025 equalTo yearNull, evalsTo(false))
         assertThat(year2025 notEqualTo yearNull, evalsTo(true))
+
+        assertThat(year2025 equalTo Year(2025), evalsTo(true))
+        assertThat(year2025 notEqualTo Year(2025), evalsTo(false))
+        assertThat(year2025 equalTo Year(2022), evalsTo(false))
+        assertThat(year2025 notEqualTo Year(2022), evalsTo(true))
     }
 
     @Test
@@ -108,6 +118,11 @@ class EqualsOperationTest {
         assertThat(percent50 notEqualTo percent20, evalsTo(true))
         assertThat(percent50 equalTo percentNull, evalsTo(false))
         assertThat(percent50 notEqualTo percentNull, evalsTo(true))
+
+        assertThat(percent50 equalTo Percent(50), evalsTo(true))
+        assertThat(percent50 notEqualTo Percent(50), evalsTo(false))
+        assertThat(percent50 equalTo Percent(20), evalsTo(false))
+        assertThat(percent50 notEqualTo Percent(20), evalsTo(true))
     }
 
     @Test
@@ -150,12 +165,12 @@ class EqualsOperationTest {
 
     @Test
     fun `equals of IntValue and literal`() {
-        val expr1 = Kroner(5).expr()
+        val kroner5 = Kroner(5).expr()
 
-        assertThat(expr1 equalTo 5, evalsTo(true))
-        assertThat(expr1 notEqualTo 5, evalsTo(false))
-        assertThat(expr1 equalTo 2, evalsTo(false))
-        assertThat(expr1 notEqualTo 2, evalsTo(true))
+        assertThat(kroner5 equalTo 5, evalsTo(true))
+        assertThat(kroner5 notEqualTo 5, evalsTo(false))
+        assertThat(kroner5 equalTo 2, evalsTo(false))
+        assertThat(kroner5 notEqualTo 2, evalsTo(true))
     }
 
 }
