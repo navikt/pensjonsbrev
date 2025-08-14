@@ -30,16 +30,14 @@ class FakeSafService(val journalpost: Pair<String, List<String>>?) : SafService 
     override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String) = JournalpostLoadingResult.READY
     override suspend fun getFirstDocumentInJournal(journalpostId: String): ServiceResult.Ok<SafService.HentDokumenterResponse> =
         journalpost?.let {
-            SafService.HentDokumenterResponse.Journalpost(
-                it.first, it.second.map { dok ->
-                    SafService.HentDokumenterResponse.Dokument(dok)
-                }
-            )
-        }?.let {
             ServiceResult.Ok(
                 SafService.HentDokumenterResponse(
                     SafService.HentDokumenterResponse.Journalposter(
-                        it
+                        SafService.HentDokumenterResponse.Journalpost(
+                            it.first, it.second.map { dok ->
+                                SafService.HentDokumenterResponse.Dokument(dok)
+                            }
+                        )
                     ), null
                 )
             )
@@ -48,10 +46,15 @@ class FakeSafService(val journalpost: Pair<String, List<String>>?) : SafService 
     override suspend fun hentPdfForJournalpostId(journalpostId: String) = TODO("Not yet implemented")
 }
 
-class FakeNavansattService(val harTilgangTilEnhet: Map<Pair<String, String>, Boolean> = emptyMap(), val navansatte: Map<String, String> = emptyMap()) : NavansattService {
-    override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String) = ServiceResult.Ok(harTilgangTilEnhet.getOrDefault(Pair(ansattId, enhetsId), false))
+class FakeNavansattService(
+    val harTilgangTilEnhet: Map<Pair<String, String>, Boolean> = emptyMap(),
+    val navansatte: Map<String, String> = emptyMap(),
+) : NavansattService {
+    override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String) =
+        ServiceResult.Ok(harTilgangTilEnhet.getOrDefault(Pair(ansattId, enhetsId), false))
 
-    override suspend fun hentNavansatt(ansattId: String): Navansatt? = navansatte[ansattId]?.let { Navansatt(
+    override suspend fun hentNavansatt(ansattId: String): Navansatt? = navansatte[ansattId]?.let {
+        Navansatt(
             emptyList(),
             it,
             it.split(' ').first(),
@@ -69,7 +72,7 @@ class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg2Serv
     override suspend fun getEnhet(enhetId: String) = enheter[enhetId]
 }
 
-class FakeSamhandlerService(val navn: Map<String, String> = mapOf()): SamhandlerService {
+class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : SamhandlerService {
     override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto {
         TODO("Not yet implemented")
     }
@@ -90,8 +93,9 @@ class FakePenService(
     val kravPaaGammeltRegelverk: Map<String, Boolean> = emptyMap(),
     val kravStoettetAvDatabygger: Map<String, PenService.KravStoettetAvDatabyggerResult> = emptyMap(),
 ) : PenService {
-    override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> = saker[saksId]?.let { ServiceResult.Ok(it) }
-        ?: ServiceResult.Error("Sak finnes ikke", HttpStatusCode.NotFound)
+    override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> =
+        saker[saksId]?.let { ServiceResult.Ok(it) }
+            ?: ServiceResult.Error("Sak finnes ikke", HttpStatusCode.NotFound)
 
     override suspend fun bestillDoksysBrev(
         request: Api.BestillDoksysBrevRequest,
@@ -108,17 +112,20 @@ class FakePenService(
     ) = redigerDoksys[Pair(journalpostId, dokumentId)]?.let { ServiceResult.Ok(Pen.RedigerDokumentResponse(it)) }
         ?: TODO("Not implemented")
 
-    override suspend fun redigerExstreamBrev(journalpostId: String) = redigerExstream[journalpostId]?.let { ServiceResult.Ok(Pen.RedigerDokumentResponse(it)) }
-        ?: TODO("Not implemented")
+    override suspend fun redigerExstreamBrev(journalpostId: String) =
+        redigerExstream[journalpostId]?.let { ServiceResult.Ok(Pen.RedigerDokumentResponse(it)) }
+            ?: TODO("Not implemented")
 
     override suspend fun hentAvtaleland(): ServiceResult<List<Pen.Avtaleland>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String) = (kravPaaGammeltRegelverk[vedtaksId] ?: false).let { ServiceResult.Ok(it) }
+    override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String) =
+        (kravPaaGammeltRegelverk[vedtaksId] ?: false).let { ServiceResult.Ok(it) }
 
-    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String) = kravStoettetAvDatabygger[vedtaksId]?.let { ServiceResult.Ok(it) }
-        ?: TODO("Not implemented")
+    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String) =
+        kravStoettetAvDatabygger[vedtaksId]?.let { ServiceResult.Ok(it) }
+            ?: TODO("Not implemented")
 
     override suspend fun hentPesysBrevdata(
         saksId: Long,
@@ -153,7 +160,7 @@ class FakeBrevmetadataService(
 
 class FakeBrevbakerService(
     val maler: List<TemplateDescription.Redigerbar> = listOf(),
-    val redigerbareMaler: Map<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mapOf()
+    val redigerbareMaler: Map<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mapOf(),
 ) : BrevbakerService {
     override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> {
         TODO("Not yet implemented")
