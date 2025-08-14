@@ -64,7 +64,22 @@ class LegacyBrevServiceTest {
         maler = mapOf("exstream" to exstreamBrevMetadata, "doksys" to doksysBrevmetadata),
     )
 
-    private val safService = FakeSafService(journalpost = Pair(journalpostId, listOf(dokumentId)), standardJournalpoststatus = JournalpostLoadingResult.READY)
+    private val safService = object : SafService {
+        override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String) = JournalpostLoadingResult.READY
+        override suspend fun getFirstDocumentInJournal(journalpostId: String): ServiceResult<SafService.HentDokumenterResponse> {
+            return ServiceResult.Ok(
+                SafService.HentDokumenterResponse(
+                    SafService.HentDokumenterResponse.Journalposter(
+                        SafService.HentDokumenterResponse.Journalpost(
+                            journalpostId, listOf(
+                                SafService.HentDokumenterResponse.Dokument(dokumentId)
+                            )
+                        )
+                    ), null
+                )
+            )
+        }
+    }
 
     private val penService = FakePenService(
         journalpostId = journalpostId,

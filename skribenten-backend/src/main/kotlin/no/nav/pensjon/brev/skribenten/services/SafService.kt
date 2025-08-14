@@ -36,9 +36,9 @@ enum class JournalpostLoadingResult {
 }
 
 interface SafService {
-    suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String): JournalpostLoadingResult
-    suspend fun getFirstDocumentInJournal(journalpostId: String): ServiceResult<HentDokumenterResponse>
-    suspend fun hentPdfForJournalpostId(journalpostId: String): ServiceResult<ByteArray>
+    suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String): JournalpostLoadingResult = TODO("Not yet implemented")
+    suspend fun getFirstDocumentInJournal(journalpostId: String): ServiceResult<HentDokumenterResponse> = TODO("Not yet implemented")
+    suspend fun hentPdfForJournalpostId(journalpostId: String): ServiceResult<ByteArray> = TODO("Not yet implemented")
 
     data class HentDokumenterResponse(val data: Journalposter?, val errors: JsonNode?) {
         data class Journalposter(val journalpost: Journalpost)

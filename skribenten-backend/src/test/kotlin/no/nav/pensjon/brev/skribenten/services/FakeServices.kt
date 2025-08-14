@@ -26,30 +26,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
 
-class FakeSafService(
-    val journalpost: Pair<String, List<String>>? = null,
-    val standardJournalpoststatus: JournalpostLoadingResult? = null,
-) : SafService {
-    override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String) = standardJournalpoststatus ?: TODO("Not implemented")
-    override suspend fun getFirstDocumentInJournal(journalpostId: String): ServiceResult.Ok<SafService.HentDokumenterResponse> =
-        journalpost?.let {
-            ServiceResult.Ok(
-                SafService.HentDokumenterResponse(
-                    SafService.HentDokumenterResponse.Journalposter(
-                        SafService.HentDokumenterResponse.Journalpost(
-                            it.first, it.second.map { dok ->
-                                SafService.HentDokumenterResponse.Dokument(dok)
-                            }
-                        )
-                    ), null
-                )
-            )
-        } ?: TODO("Not implemented")
-
-    override suspend fun hentPdfForJournalpostId(journalpostId: String) = TODO("Not yet implemented")
-}
-
-class FakeNavansattService(
+open class FakeNavansattService(
     val harTilgangTilEnhet: Map<Pair<String, String>, Boolean> = emptyMap(),
     val navansatte: Map<String, String> = emptyMap(),
 ) : NavansattService {
@@ -71,11 +48,11 @@ class FakeNavansattService(
 
 }
 
-class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg2Service {
+open class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg2Service {
     override suspend fun getEnhet(enhetId: String) = enheter[enhetId]
 }
 
-class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : SamhandlerService {
+open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : SamhandlerService {
     override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto {
         TODO("Not yet implemented")
     }
@@ -88,7 +65,7 @@ class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : Samhandle
 
 }
 
-class FakePenService(
+open class FakePenService(
     val saker: Map<String, ServiceResult<Pen.SakSelection>> = mapOf(),
     val journalpostId: String? = null,
     val redigerDoksys: Map<Pair<String, String>, String> = emptyMap(),
@@ -147,7 +124,7 @@ class FakePenService(
 
 }
 
-class FakeBrevmetadataService(
+open class FakeBrevmetadataService(
     val eblanketter: List<BrevdataDto> = listOf(),
     val brevmaler: List<BrevdataDto> = listOf(),
     val maler: Map<String, BrevdataDto> = mapOf(),
@@ -160,7 +137,7 @@ class FakeBrevmetadataService(
 
 }
 
-class FakeBrevbakerService(
+open class FakeBrevbakerService(
     val maler: List<TemplateDescription.Redigerbar> = listOf(),
     val redigerbareMaler: Map<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mapOf(),
 ) : BrevbakerService {
