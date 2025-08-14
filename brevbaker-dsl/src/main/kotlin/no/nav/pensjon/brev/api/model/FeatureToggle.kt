@@ -19,6 +19,9 @@ object FeatureToggleSingleton {
         return featureToggleService.isEnabled(toggle)
     }
 
+    fun verifiserAtAlleBrytereErDefinert(entries: List<FeatureToggle>) =
+        featureToggleService.verifiserAtAlleBrytereErDefinert(entries)
+
 }
 
 class FeatureToggle(val name: String) : StableHash by StableHash.of("Toggle: $name") {
@@ -28,6 +31,7 @@ class FeatureToggle(val name: String) : StableHash by StableHash.of("Toggle: $na
         if (other !is FeatureToggle) return false
         return name == other.name
     }
+
     override fun hashCode() = Objects.hash(name)
     override fun toString() = "FeatureToggle(name='$name')"
 }

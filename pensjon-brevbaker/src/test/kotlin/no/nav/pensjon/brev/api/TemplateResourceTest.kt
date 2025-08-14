@@ -42,6 +42,7 @@ class TemplateResourceTest {
         FeatureToggleSingleton.init(
             object : FeatureToggleService {
                 override fun isEnabled(toggle: FeatureToggle) = true
+                override fun verifiserAtAlleBrytereErDefinert(entries: List<FeatureToggle>) { }
             }
         )
     }
