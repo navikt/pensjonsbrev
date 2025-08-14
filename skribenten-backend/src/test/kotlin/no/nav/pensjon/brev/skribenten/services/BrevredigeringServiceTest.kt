@@ -24,7 +24,6 @@ import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype.SENTRALPRINT
-import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brevbaker.api.model.*
@@ -138,7 +137,53 @@ class BrevredigeringServiceTest {
         brevdata = Api.GeneriskBrevdata()
     )
 
+//    private fun lagFakePenService(sendBrevRespons: Pen.BestillBrevResponse? = Pen.BestillBrevResponse(123, null)) =
+//        FakePenService(
+//            saker = mapOf(sak1.saksId.toString() to sak1),
+//            pesysBrevdata = brevdataResponseData,
+//            sendBrevResponse = sendBrevRespons
+//        )
+
     private val penService: PenService = mockk()
+
+    private val fakePenService = FakePenService()
+
+    class FakePenService(
+        var saker: MutableMap<String, Pen.SakSelection> = mutableMapOf(),
+        var pesysBrevdata: BrevdataResponse.Data? = null,
+        var sendBrevResponse: ServiceResult<Pen.BestillBrevResponse>? = null,
+    ) : PenService {
+        val utfoerteHentPesysBrevdataKall = mutableListOf<PesysBrevdatakallRequest>()
+
+        data class PesysBrevdatakallRequest(
+            val saksId: Long,
+            val vedtaksId: Long?,
+            val brevkode: Brevkode.Redigerbart,
+            val avsenderEnhetsId: String?,
+        )
+
+        val utfoerteSendBrevKall = mutableListOf<Pair<Pen.SendRedigerbartBrevRequest, Boolean>>()
+
+        override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> =
+            saker[saksId]?.let { ServiceResult.Ok(it) }
+                ?: ServiceResult.Error("Sak finnes ikke", HttpStatusCode.NotFound)
+
+        override suspend fun hentPesysBrevdata(
+            saksId: Long,
+            vedtaksId: Long?,
+            brevkode: Brevkode.Redigerbart,
+            avsenderEnhetsId: String?,
+        ): ServiceResult<BrevdataResponse.Data> = ServiceResult.Ok(pesysBrevdata ?: TODO("Not implemented")).also {
+            utfoerteHentPesysBrevdataKall.add(PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
+        }
+
+        override suspend fun sendbrev(sendRedigerbartBrevRequest: Pen.SendRedigerbartBrevRequest, distribuer: Boolean) =
+            sendBrevResponse?.also {
+                utfoerteSendBrevKall.add(Pair(sendRedigerbartBrevRequest, distribuer))
+            } ?: TODO("Not implemented")
+
+    }
+
 
     private val navAnsattService = FakeNavansattService(
         harTilgangTilEnhet = mapOf(
@@ -183,6 +228,7 @@ class BrevredigeringServiceTest {
         stagePdf(stagetPDF)
 
         stageSak(sak1)
+        fakePenService.sendBrevResponse = bestillBrevresponse
         coEvery { penService.sendbrev(any(), any()) } returns bestillBrevresponse
     }
 
@@ -791,9 +837,14 @@ class BrevredigeringServiceTest {
     fun `distribuerer sentralprint brev`(): Unit = runBlocking {
         clearMocks(brevbakerMock, penService)
 
+        fakePenService.pesysBrevdata = brevdataResponseData
+
         coEvery { penService.hentPesysBrevdata(any(), isNull(), any(), any()) } returns ServiceResult.Ok(
             brevdataResponseData
         )
+
+        fakePenService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
+
         coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
         coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letterResponse)
@@ -846,10 +897,14 @@ class BrevredigeringServiceTest {
     fun `distribuerer ikke lokalprint brev`(): Unit = runBlocking {
         clearMocks(brevbakerMock, penService)
 
+        fakePenService.pesysBrevdata = brevdataResponseData
+
         coEvery { penService.hentPesysBrevdata(any(), isNull(), any(), any()) } returns ServiceResult.Ok(
             brevdataResponseData
         )
         coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
+
+        fakePenService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
         coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letterResponse)
         coEvery { brevbakerMock.renderMarkup(any(), any(), any(), any()) } returns ServiceResult.Ok(letter)
@@ -1017,6 +1072,13 @@ class BrevredigeringServiceTest {
             brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
         }
 
+        fakePenService.sendBrevResponse = ServiceResult.Ok(
+            Pen.BestillBrevResponse(
+                991,
+                Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
+            )
+        )
+
         coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(
             Pen.BestillBrevResponse(
                 991,
@@ -1105,6 +1167,13 @@ class BrevredigeringServiceTest {
             assertThat(pdf).isNotNull()
         }
 
+        fakePenService.sendBrevResponse = ServiceResult.Ok(
+            Pen.BestillBrevResponse(
+                991,
+                Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
+            )
+        )
+
         coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(
             Pen.BestillBrevResponse(
                 991,
@@ -1116,6 +1185,8 @@ class BrevredigeringServiceTest {
         }
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)?.resultOrNull()!!
         assertThat(brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)?.resultOrNull()).isNotNull()
+
+        fakePenService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(991, null))
 
         coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(991, null))
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
@@ -1305,7 +1376,9 @@ class BrevredigeringServiceTest {
             )
         }
 
-        assertEquals("en ny signatur", transaction { Brevredigering[brev.info.id].redigertBrev.signatur.saksbehandlerNavn })
+        assertEquals(
+            "en ny signatur",
+            transaction { Brevredigering[brev.info.id].redigertBrev.signatur.saksbehandlerNavn })
     }
 
     @Test
@@ -1499,6 +1572,7 @@ class BrevredigeringServiceTest {
                 any()
             )
         } returns ServiceResult.Ok(brevdataResponseData)
+        fakePenService.pesysBrevdata = brevdataResponseData
     }
 
     private fun <T> condition(description: String, predicate: Predicate<T>): Condition<T> =
