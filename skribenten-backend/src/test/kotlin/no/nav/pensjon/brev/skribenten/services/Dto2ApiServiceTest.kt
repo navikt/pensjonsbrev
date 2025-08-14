@@ -47,8 +47,10 @@ class Dto2ApiServiceTest {
         val opprettetAv = NavIdent("Z100")
         val sistredigertAv = NavIdent("Z101")
 
-        val navansattService = lagFakeNavansattService(
-            mapOf(
+        val navansattService = FakeNavansattService(
+            navansatte = mapOf(
+                saksbehandler.id to "Saksbehandler Saksbehandlersen",
+                attestant.id to "Peder AAs",
                 opprettetAv.id to "Opprettet Av",
                 sistredigertAv.id to "Sist Redigert Av"
             )
@@ -117,12 +119,5 @@ class Dto2ApiServiceTest {
         journalpostId = null,
         attestertAv = attestertAv,
         status = Dto.BrevStatus.KLADD
-    )
-
-    private fun lagFakeNavansattService(ansatte: Map<String, String> = mapOf()) = FakeNavansattService(
-        navansatte = mapOf(
-            saksbehandler.id to "Saksbehandler Saksbehandlersen",
-            attestant.id to "Peder AAs"
-        ) + ansatte
     )
 }

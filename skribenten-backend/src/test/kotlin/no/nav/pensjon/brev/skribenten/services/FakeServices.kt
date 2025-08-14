@@ -41,11 +41,6 @@ open class FakeNavansattService(
             it.split(' ').last(),
         )
     }
-
-    override suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> {
-        TODO("Not yet implemented")
-    }
-
 }
 
 open class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg2Service {

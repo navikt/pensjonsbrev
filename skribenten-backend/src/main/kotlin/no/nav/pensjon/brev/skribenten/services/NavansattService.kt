@@ -16,9 +16,9 @@ import org.slf4j.LoggerFactory
 import kotlin.jvm.java
 
 interface NavansattService {
-    suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean>
-    suspend fun hentNavansatt(ansattId: String): Navansatt?
-    suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>>
+    suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): ServiceResult<Boolean> = TODO("Not yet implemented")
+    suspend fun hentNavansatt(ansattId: String): Navansatt? = TODO("Not yet implemented")
+    suspend fun hentNavAnsattEnhetListe(ansattId: String): ServiceResult<List<NAVAnsattEnhet>> = TODO("Not yet implemented")
 }
 
 class NavansattServiceImpl(config: Config, authService: AuthService) : NavansattService, ServiceStatus {
