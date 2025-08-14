@@ -57,7 +57,6 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
@@ -399,22 +398,10 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                             // vedleggTabellKap20Trygdetid_001
                             row {
                                 cell {
-                                    textExpr(
-                                        Bokmal to "Trygdetid".expr() + ifElse(
-                                            alderspensjonVedVirk.regelverkType.equalTo(AP2016),
-                                            " etter kapittel 20",
-                                            ""
-                                        ),
-                                        Nynorsk to "Trygdetid".expr() + ifElse(
-                                            alderspensjonVedVirk.regelverkType.equalTo(
-                                                AP2016
-                                            ), " etter kapittel 20", ""
-                                        ),
-                                        English to "National insurance coverage".expr() + ifElse(
-                                            alderspensjonVedVirk.regelverkType.equalTo(
-                                                AP2016
-                                            ), " pursuant to Chapter 20", ""
-                                        )
+                                    text(
+                                        Bokmal to "Trygdetid",
+                                        Nynorsk to "Trygdetid",
+                                        English to "National insurance coverage",
                                     )
                                 }
                                 cell {
