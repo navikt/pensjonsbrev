@@ -31,6 +31,7 @@ on:
       - "pdf-bygger/**"
       - ".github/workflows/pdfbygger-brevbaker.yml"
       - "!**/**.md"
+  # Vi må kjøre Percy minst hver 30. dag for å ha en baseline for visuelle tester. Disse planlagte kjøringene er for det formålet.
   schedule:
     - cron: "0 5 1,15 * *"
 env:
