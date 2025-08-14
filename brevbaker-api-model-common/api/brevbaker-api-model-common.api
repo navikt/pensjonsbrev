@@ -356,7 +356,7 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup 
 	public abstract fun getBlocks ()Ljava/util/List;
 	public abstract fun getSakspart ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart;
 	public abstract fun getSignatur ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$Signatur;
-	public abstract fun getTitle ()Ljava/lang/String;
+	public abstract fun getTitle ()Ljava/util/List;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Attachment {
