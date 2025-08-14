@@ -14,7 +14,7 @@ val intValueSelector = object : TemplateModelSelector<IntValue, Int> {
     override val selector = IntValue::value
 }
 
-private val Expression<IntValue>.value: Expression<Int>
+val Expression<IntValue>.value: Expression<Int>
     get() = UnaryOperation.Select(intValueSelector).invoke(this)
 
 fun Expression<Int>.toKroner(): Expression<Kroner> =
@@ -118,7 +118,3 @@ infix fun Expression<IntValue>.lessThan(compareTo: Expression<IntValue>): Expres
 @JvmName("lessThanOrEqualIntValue")
 infix fun Expression<IntValue>.lessThanOrEqual(compareTo: Expression<IntValue>): Expression<Boolean> =
     value.lessThanOrEqual(compareTo.value)
-
-// IntValue equals literal
-infix fun Expression<IntValue>.equalTo(compareTo: Int): Expression<Boolean> = value.equalTo(compareTo)
-infix fun Expression<IntValue>.notEqualTo(compareTo: Int): Expression<Boolean> = value.notEqualTo(compareTo)
