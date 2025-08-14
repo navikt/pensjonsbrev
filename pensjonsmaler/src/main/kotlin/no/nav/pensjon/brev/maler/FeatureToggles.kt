@@ -34,5 +34,5 @@ enum class FeatureToggles(private val key: String) {
     vedtakStansFlyttingMellomLand("vedtakStansFlyttingMellomLand"),
     avslagForLiteTrygdetidAP("avslagForLiteTrygdetidAP");
 
-    fun toggle() = FeatureToggle(key)
+    val toggle = FeatureToggle(key)
 }
