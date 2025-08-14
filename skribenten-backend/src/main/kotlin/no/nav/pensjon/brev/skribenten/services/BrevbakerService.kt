@@ -43,22 +43,22 @@ import org.slf4j.LoggerFactory
 class BrevbakerServiceException(msg: String) : Exception(msg)
 
 interface BrevbakerService {
-    suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification>
+    suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> = TODO("Not yet implemented")
     suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
-    ): ServiceResult<LetterMarkup>
+    ): ServiceResult<LetterMarkup> = TODO("Not yet implemented")
     suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
         redigertBrev: LetterMarkup,
-    ): ServiceResult<LetterResponse>
-    suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>>
-    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
+    ): ServiceResult<LetterResponse> = TODO("Not yet implemented")
+    suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>> = TODO("Not yet implemented")
+    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? = TODO("Not yet implemented")
 }
 
 class BrevbakerServiceImpl(config: Config, authService: AuthService) : BrevbakerService, ServiceStatus {

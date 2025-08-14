@@ -9,16 +9,10 @@ import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.serialization.jackson.jackson
-import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
-import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
 
 open class FakeNavansattService(
@@ -63,29 +57,6 @@ open class FakeBrevbakerService(
     val maler: List<TemplateDescription.Redigerbar> = listOf(),
     val redigerbareMaler: Map<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mapOf(),
 ) : BrevbakerService {
-    override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun renderMarkup(
-        brevkode: Brevkode.Redigerbart,
-        spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
-        felles: Felles,
-    ): ServiceResult<LetterMarkup> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun renderPdf(
-        brevkode: Brevkode.Redigerbart,
-        spraak: LanguageCode,
-        brevdata: RedigerbarBrevdata<*, *>,
-        felles: Felles,
-        redigertBrev: LetterMarkup,
-    ): ServiceResult<LetterResponse> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getTemplates() = ServiceResult.Ok(maler)
 
     override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
