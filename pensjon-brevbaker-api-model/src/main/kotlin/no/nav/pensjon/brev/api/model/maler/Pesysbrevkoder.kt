@@ -55,7 +55,8 @@ object Pesysbrevkoder {
         GJP_VARSEL_OPPHOR_60_70_UTLAND,
         GJP_VEDTAK_FORLENGELSE_60_61_UTLAND,
         GJP_VEDTAK_FORLENGELSE_62_70_UTLAND,
-        GJP_VEDTAK_OPPHOR_60_70_UTLAND;
+        GJP_VEDTAK_OPPHOR_60_70_UTLAND,
+        UT_INFO_FEIL_BELOP_INNT_ENDR;
 
 
         override fun kode(): String = this.name
