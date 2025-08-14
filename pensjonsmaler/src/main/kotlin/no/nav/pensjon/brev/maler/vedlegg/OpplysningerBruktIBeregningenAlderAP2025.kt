@@ -258,7 +258,7 @@ val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
             }
         }
         showIf(
-            garantipensjonVedVirk.nettoUtbetaltPerManed_safe.equalTo(Kroner(0))
+            garantipensjonVedVirk.nettoUtbetaltPerManed_safe.equalTo(0)
                     and not(avslattGarantipensjon)
                     and redusertTrygdetid
         ) {
