@@ -68,6 +68,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.Percent
 
 @TemplateModelHelpers
+// 00100 i doksys
 object VedtakEndringAvUttaksgrad : RedigerbarTemplate<VedtakEndringAvUttaksgradDto> {
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
