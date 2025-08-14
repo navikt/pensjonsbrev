@@ -32,21 +32,21 @@ data class TabellPoengrekke(val pensjonspoeng: Expression<List<Pensjonspoeng>>) 
                         English to "Year"
                     )
                 }
-                column(alignment = RIGHT, columnSpan = 1) {
+                column(alignment = RIGHT, columnSpan = 2) {
                     text(
                         Bokmal to "Pensjonsgivende inntekt (kr)",
                         Nynorsk to "Pensjonsgivande inntekt (kr)",
                         English to "Pensionable income (NOK)"
                     )
                 }
-                column(alignment = RIGHT, columnSpan = 1) {
+                column(alignment = RIGHT, columnSpan = 2) {
                     text(
                         Bokmal to "Gj.snittlig G (kr)",
                         Nynorsk to "Gj.snittleg G (kr)",
                         English to "Average G (NOK)"
                     )
                 }
-                column(alignment = RIGHT, columnSpan = 1) {
+                column(alignment = RIGHT, columnSpan = 2) {
                     text(
                         Bokmal to "Pensjonspoeng",
                         Nynorsk to "Pensjonspoeng",
