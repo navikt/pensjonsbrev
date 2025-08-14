@@ -99,9 +99,9 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     }
                     item {
                         text(
-                            Bokmal to "du skal oppholde deg utenfor Norge i en periode på mer enn seks måneder eller skal flytte til et annet land",
-                            Nynorsk to "du skal opphalde deg utanfor Noreg i meir enn seks månader, eller du skal flytte til eit anna land",
-                            English to "you intend to stay outside of Norway for a period of more than six months or intend to move to another country",
+                            Bokmal to "du skal flytte til et annet land",
+                            Nynorsk to "du skal flytte til eit anna land",
+                            English to "you are moving to another country",
                         )
                     }
                     item {
@@ -258,7 +258,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
                         Bokmal to "For at du skal motta korrekt utbetaling, er det viktig at du informerer oss hvis " +
                                 "du får en forventet årsinntekt som vil overstige et halvt grunnbeløp. Dette er per i dag 65 080 kroner. " +
                                 "Grunnbeløpet blir justert hvert år fra 1. mai.",
-                        Nynorsk to "For at du få rett utbetaling, er det viktig at du gir oss beskjed viss du får ei " +
+                        Nynorsk to "For at du skal få rett utbetaling, er det viktig at du gir oss beskjed viss du får ei " +
                                 "forventa årsinntekt som vil overstige eit halvt grunnbeløp. Dette er per i dag 65 080 kroner. " +
                                 "Grunnbeløpet blir justert kvart år frå 1. mai.",
                         English to "To receive the correct amount, you are obligated to inform us about any changes to " +
@@ -466,9 +466,9 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     }
                     item {
                         text(
-                            Bokmal to "har en arbeidsevnevurdering fra ditt lokale Nav-kontor som sier at du ikke kan arbeide",
-                            Nynorsk to "har ei arbeidsevnevurdering frå det lokale Nav-kontoret ditt på at du ikkje kan jobbe",
-                            English to "have completed the work capability assessment from your local Nav office that proves you cannot be employed",
+                            Bokmal to "har en arbeidsevnevurdering eller annen dokumentasjon fra din lokale arbeidsformidling eller annen instans som viser i hvor stor grad du kan arbeide",
+                            Nynorsk to "har ei arbeidsevnevurdering eller annan dokumentasjon frå den lokale arbeidsformidlinga eller ein annan instans som viser i kor stor grad du kan arbeide",
+                            English to "have an assessment of your capacity for work or other documentation from your local job centre or other relevant body that specifies the degree to which you are able to work",
                         )
                     }
                 }
@@ -476,5 +476,4 @@ class OmstillingsstoenadAktivitetspliktFraser {
 
         }
     }
-
 }
