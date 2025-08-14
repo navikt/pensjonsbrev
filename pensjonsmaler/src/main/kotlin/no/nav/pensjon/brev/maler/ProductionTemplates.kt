@@ -87,6 +87,8 @@ import no.nav.pensjon.brev.maler.redigerbar.VedtakStansAlderspensjonFlyttingMell
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUfoeretrygdPGAInntektV2
 import no.nav.pensjon.brev.maler.ufoereBrev.EndretUforetrygdPGAInntektNesteAr
 import no.nav.pensjon.brev.maler.ufoereBrev.VarselSaksbehandlingstidAuto
+import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev
+import no.nav.pensjon.brev.maler.ufoereBrev.adhoc.FeilBelopInntekstendringsbrev.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
@@ -143,6 +145,7 @@ object ProductionTemplates : AllTemplates {
         VedtakGjpForlengetArskull6270Utland,
         VedtakGjpOpphorArskull6070,
         VedtakGjpOpphorArskull6070Utland,
+        FeilBelopInntekstendringsbrev,
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
