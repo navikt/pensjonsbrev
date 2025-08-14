@@ -35,6 +35,7 @@ import no.nav.pensjon.brev.template.dsl.textExpr
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
+//000101 i Doksys
 object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
     RedigerbarTemplate<VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto> {
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
