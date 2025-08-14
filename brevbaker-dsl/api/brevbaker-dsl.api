@@ -1281,8 +1281,6 @@ public final class no/nav/pensjon/brev/template/dsl/UtilsKt {
 
 public final class no/nav/pensjon/brev/template/dsl/expression/BaseKt {
 	public static final fun and (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun equalTo (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun equalTo (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun expr (Ljava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun format (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/LocalizedFormatter;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatNullable (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/LocalizedFormatter;)Lno/nav/pensjon/brev/template/Expression;
@@ -1296,8 +1294,6 @@ public final class no/nav/pensjon/brev/template/dsl/expression/BaseKt {
 	public static final fun isNull (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun isOneOf (Lno/nav/pensjon/brev/template/Expression;[Ljava/lang/Enum;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun not (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun notEqualTo (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun notEqualTo (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notNull (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notOperator (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun or (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
@@ -1341,6 +1337,25 @@ public final class no/nav/pensjon/brev/template/dsl/expression/DateKt {
 	public static final fun getYear (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
+public final class no/nav/pensjon/brev/template/dsl/expression/EqualsKt {
+	public static final fun equalTo (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Language;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalToComparable (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Comparable;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalToComparable (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalToIntValue (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Integer;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalToKroner (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalToLanguage (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalToPercent (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalToYear (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun notEqualTo (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Language;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun notEqualToComparable (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Comparable;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun notEqualToComparable (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun notEqualToIntValue (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Integer;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun notEqualToKroner (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun notEqualToLanguage (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun notEqualToPercent (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun notEqualToYear (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+}
+
 public final class no/nav/pensjon/brev/template/dsl/expression/LegacyKt {
 	public static final fun legacyGreaterThan (Lno/nav/pensjon/brev/template/Expression;Ljava/time/LocalDate;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun legacyGreaterThan (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
@@ -1353,7 +1368,6 @@ public final class no/nav/pensjon/brev/template/dsl/expression/LegacyKt {
 }
 
 public final class no/nav/pensjon/brev/template/dsl/expression/NumberKt {
-	public static final fun equalTo (Lno/nav/pensjon/brev/template/Expression;I)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun format (Lno/nav/pensjon/brev/template/Expression;I)Lno/nav/pensjon/brev/template/Expression;
 	public static synthetic fun format$default (Lno/nav/pensjon/brev/template/Expression;IILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatDoubleNullable (Lno/nav/pensjon/brev/template/Expression;I)Lno/nav/pensjon/brev/template/Expression;
@@ -1361,6 +1375,7 @@ public final class no/nav/pensjon/brev/template/dsl/expression/NumberKt {
 	public static final fun formatInt (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatIntOrNull (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun getIntValueSelector ()Lno/nav/pensjon/brev/template/TemplateModelSelector;
+	public static final fun getValue (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun greaterThan (Lno/nav/pensjon/brev/template/Expression;I)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun greaterThan (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Comparable;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun greaterThan (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
@@ -1383,7 +1398,6 @@ public final class no/nav/pensjon/brev/template/dsl/expression/NumberKt {
 	public static final fun lessThanOrEqualIntValue (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun minus (Lno/nav/pensjon/brev/template/Expression;I)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun minus (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun notEqualTo (Lno/nav/pensjon/brev/template/Expression;I)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun plus (Lno/nav/pensjon/brev/template/Expression;I)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun plus (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun toKroner (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
