@@ -48,16 +48,7 @@ open class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg
 }
 
 open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : SamhandlerService {
-    override suspend fun finnSamhandler(requestDto: FinnSamhandlerRequestDto): FinnSamhandlerResponseDto {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun hentSamhandler(idTSSEkstern: String): HentSamhandlerResponseDto {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun hentSamhandlerNavn(idTSSEkstern: String) = navn[idTSSEkstern]
-
 }
 
 open class FakePenService(
