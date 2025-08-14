@@ -26,8 +26,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 
 
-class FakeSafService(val journalpost: Pair<String, List<String>>?) : SafService {
-    override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String) = JournalpostLoadingResult.READY
+class FakeSafService(
+    val journalpost: Pair<String, List<String>>? = null,
+    val standardJournalpoststatus: JournalpostLoadingResult? = null,
+) : SafService {
+    override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String) = standardJournalpoststatus ?: TODO("Not implemented")
     override suspend fun getFirstDocumentInJournal(journalpostId: String): ServiceResult.Ok<SafService.HentDokumenterResponse> =
         journalpost?.let {
             ServiceResult.Ok(
@@ -86,7 +89,7 @@ class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : Samhandle
 }
 
 class FakePenService(
-    val saker: Map<String, Pen.SakSelection> = mapOf(),
+    val saker: Map<String, ServiceResult<Pen.SakSelection>> = mapOf(),
     val journalpostId: String? = null,
     val redigerDoksys: Map<Pair<String, String>, String> = emptyMap(),
     val redigerExstream: Map<String, String> = emptyMap(),
@@ -94,14 +97,13 @@ class FakePenService(
     val kravStoettetAvDatabygger: Map<String, PenService.KravStoettetAvDatabyggerResult> = emptyMap(),
 ) : PenService {
     override suspend fun hentSak(saksId: String): ServiceResult<Pen.SakSelection> =
-        saker[saksId]?.let { ServiceResult.Ok(it) }
-            ?: ServiceResult.Error("Sak finnes ikke", HttpStatusCode.NotFound)
+        saker[saksId] ?: ServiceResult.Error("Sak finnes ikke", HttpStatusCode.NotFound)
 
     override suspend fun bestillDoksysBrev(
         request: Api.BestillDoksysBrevRequest,
         enhetsId: String,
         saksId: Long,
-    ): ServiceResult<Pen.BestillDoksysBrevResponse> = ServiceResult.Ok(Pen.BestillDoksysBrevResponse(journalpostId))
+    ): ServiceResult<Pen.BestillDoksysBrevResponse> = journalpostId?.let { ServiceResult.Ok(Pen.BestillDoksysBrevResponse(it)) } ?: TODO("Not implemented")
 
     override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest) =
         ServiceResult.Ok(Pen.BestillExstreamBrevResponse(journalpostId!!))

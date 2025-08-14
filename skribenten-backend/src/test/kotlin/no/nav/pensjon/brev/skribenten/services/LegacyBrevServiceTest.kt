@@ -64,7 +64,7 @@ class LegacyBrevServiceTest {
         maler = mapOf("exstream" to exstreamBrevMetadata, "doksys" to doksysBrevmetadata),
     )
 
-    private val safService = FakeSafService(Pair(journalpostId, listOf(dokumentId)))
+    private val safService = FakeSafService(journalpost = Pair(journalpostId, listOf(dokumentId)), standardJournalpoststatus = JournalpostLoadingResult.READY)
 
     private val penService = FakePenService(
         journalpostId = journalpostId,

@@ -77,10 +77,10 @@ class AuthorizeAnsattSakTilgangTest {
 
     private val defaultPenService = FakePenService(
         saker = mapOf(
-            "${testSak.saksId}" to testSak,
-            "${sakVikafossen.saksId}" to sakVikafossen,
-            "${generellSak0001.saksId}" to generellSak0001,
-            "${generellSak0002.saksId}" to generellSak0002
+            "${testSak.saksId}" to ServiceResult.Ok(testSak),
+            "${sakVikafossen.saksId}" to ServiceResult.Ok(sakVikafossen),
+            "${generellSak0001.saksId}" to ServiceResult.Ok(generellSak0001),
+            "${generellSak0002.saksId}" to ServiceResult.Ok(generellSak0002)
         )
     )
 
