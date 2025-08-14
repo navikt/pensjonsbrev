@@ -167,8 +167,14 @@ export type Title2Block = Block & {
   readonly content: TextContent[];
 };
 
+export type Title = {
+  readonly content: TextContent[];
+  readonly deletedContent: number[];
+};
+
 export interface EditedLetter {
-  readonly title: string;
+  // TODO: Fjern string når skribenten-backend produserer Title-objekter
+  readonly title: Title | string;
   readonly sakspart: Sakspart;
   readonly blocks: AnyBlock[];
   readonly signatur: Signatur;

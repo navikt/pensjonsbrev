@@ -14,6 +14,7 @@ import ArkivertBrev from "~/components/ArkivertBrev";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { Divider } from "~/components/Divider";
+import { EditedLetterTitle } from "~/components/EditedLetterTitle";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
   ManagedLetterEditorContextProvider,
@@ -205,7 +206,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         left={
           <FormProvider {...form}>
             <VStack gap="8">
-              <Heading size="small">{props.brev.redigertBrev.title}</Heading>
+              <Heading size="small">
+                <EditedLetterTitle letter={props.brev.redigertBrev} />
+              </Heading>
               <VStack gap="4">
                 <OppsummeringAvMottaker mottaker={props.brev.info.mottaker} saksId={props.saksId} withTitle />
                 <VStack>
