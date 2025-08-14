@@ -49,6 +49,7 @@ import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.function.Predicate
+import kotlin.test.assertContains
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
@@ -137,16 +138,7 @@ class BrevredigeringServiceTest {
         brevdata = Api.GeneriskBrevdata()
     )
 
-//    private fun lagFakePenService(sendBrevRespons: Pen.BestillBrevResponse? = Pen.BestillBrevResponse(123, null)) =
-//        FakePenService(
-//            saker = mapOf(sak1.saksId.toString() to sak1),
-//            pesysBrevdata = brevdataResponseData,
-//            sendBrevResponse = sendBrevRespons
-//        )
-
-    private val penService: PenService = mockk()
-
-    private val fakePenService = FakePenService()
+    private val penService = FakePenService()
 
     class FakePenService(
         var saker: MutableMap<String, Pen.SakSelection> = mutableMapOf(),
@@ -182,6 +174,21 @@ class BrevredigeringServiceTest {
                 utfoerteSendBrevKall.add(Pair(sendRedigerbartBrevRequest, distribuer))
             } ?: TODO("Not implemented")
 
+        fun verifyHentPesysBrevdata(
+            saksId: Long,
+            vedtaksId: Long?,
+            brevkode: Brevkode.Redigerbart,
+            avsenderEnhetsId: String?,
+        ) {
+            assertContains(utfoerteHentPesysBrevdataKall.distinct(), PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
+        }
+
+        fun verifySendBrev(
+            sendRedigerbartBrevRequest: Pen.SendRedigerbartBrevRequest, distribuer: Boolean
+        ) {
+            assertContains(utfoerteSendBrevKall.distinct(), Pair(sendRedigerbartBrevRequest, distribuer))
+        }
+
     }
 
 
@@ -206,7 +213,7 @@ class BrevredigeringServiceTest {
 
     @BeforeEach
     fun clearMocks() {
-        clearMocks(brevbakerMock, penService)
+        clearMocks(brevbakerMock)
         coEvery {
             brevbakerMock.renderMarkup(
                 any(),
@@ -228,8 +235,7 @@ class BrevredigeringServiceTest {
         stagePdf(stagetPDF)
 
         stageSak(sak1)
-        fakePenService.sendBrevResponse = bestillBrevresponse
-        coEvery { penService.sendbrev(any(), any()) } returns bestillBrevresponse
+        penService.sendBrevResponse = bestillBrevresponse
     }
 
     @Test
@@ -281,25 +287,11 @@ class BrevredigeringServiceTest {
 
         val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = vedtaksId).resultOrNull()!!
         assertThat(brev.info.vedtaksId).isEqualTo(vedtaksId)
-        coVerify {
-            penService.hentPesysBrevdata(
-                eq(sak1.saksId),
-                eq(vedtaksId),
-                eq(Testbrevkoder.VEDTAKSBREV),
-                any()
-            )
-        }
+        penService.verifyHentPesysBrevdata(sak1.saksId, vedtaksId, Testbrevkoder.VEDTAKSBREV, principalNavEnhetId)
 
         val hentet = brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)?.resultOrNull()!!
         assertThat(hentet.info.vedtaksId).isEqualTo(vedtaksId)
-        coVerify {
-            penService.hentPesysBrevdata(
-                eq(sak1.saksId),
-                eq(vedtaksId),
-                eq(Testbrevkoder.VEDTAKSBREV),
-                any()
-            )
-        }
+        penService.verifyHentPesysBrevdata(sak1.saksId, vedtaksId, Testbrevkoder.VEDTAKSBREV, principalNavEnhetId)
     }
 
     @Test
@@ -736,14 +728,7 @@ class BrevredigeringServiceTest {
         }
         assertThat(attesteringsResultat?.resultOrNull()?.info?.attestertAv).isEqualTo(attestantPrincipal.navIdent)
 
-        coVerify {
-            penService.hentPesysBrevdata(
-                eq(sak1.saksId),
-                eq(1),
-                eq(Testbrevkoder.VEDTAKSBREV),
-                eq(principalNavEnhetId),
-            )
-        }
+        penService.verifyHentPesysBrevdata(sak1.saksId, 1, Testbrevkoder.VEDTAKSBREV, principalNavEnhetId)
     }
 
     @Test
@@ -770,9 +755,7 @@ class BrevredigeringServiceTest {
             }
         }
 
-        coVerify {
-            penService.hentPesysBrevdata(any(), any(), any(), any())
-        }
+        penService.verifyHentPesysBrevdata(sak1.saksId, 1, Testbrevkoder.VEDTAKSBREV, principalNavEnhetId)
     }
 
     @Test
@@ -835,17 +818,10 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `distribuerer sentralprint brev`(): Unit = runBlocking {
-        clearMocks(brevbakerMock, penService)
+        clearMocks(brevbakerMock)
 
-        fakePenService.pesysBrevdata = brevdataResponseData
-
-        coEvery { penService.hentPesysBrevdata(any(), isNull(), any(), any()) } returns ServiceResult.Ok(
-            brevdataResponseData
-        )
-
-        fakePenService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
-
-        coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
+        penService.pesysBrevdata = brevdataResponseData
+        penService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
         coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letterResponse)
         coEvery { brevbakerMock.renderMarkup(any(), any(), any(), any()) } returns ServiceResult.Ok(letter)
@@ -866,45 +842,26 @@ class BrevredigeringServiceTest {
             brevredigeringService.sendBrev(sak1.saksId, brev.info.id)
         }
 
-        coVerify {
-            penService.hentPesysBrevdata(
-                eq(sak1.saksId),
-                isNull(),
-                eq(Testbrevkoder.INFORMASJONSBREV),
-                eq(principalNavEnhetId),
-            )
-        }
-        coVerify {
-            penService.sendbrev(
-                eq(
-                    Pen.SendRedigerbartBrevRequest(
-                        templateDescription = informasjonsbrev,
-                        dokumentDato = LocalDate.now(),
-                        saksId = 1234,
-                        brevkode = Testbrevkoder.INFORMASJONSBREV,
-                        enhetId = principalNavEnhetId,
-                        pdf = stagetPDF,
-                        eksternReferanseId = "skribenten:${brev.info.id}",
-                        mottaker = null,
-                    )
-                ),
-                distribuer = eq(true)
-            )
-        }
+        penService.verifyHentPesysBrevdata(sak1.saksId, null, Testbrevkoder.INFORMASJONSBREV, principalNavEnhetId)
+
+        penService.verifySendBrev(Pen.SendRedigerbartBrevRequest(
+            templateDescription = informasjonsbrev,
+            dokumentDato = LocalDate.now(),
+            saksId = 1234,
+            brevkode = Testbrevkoder.INFORMASJONSBREV,
+            enhetId = principalNavEnhetId,
+            pdf = stagetPDF,
+            eksternReferanseId = "skribenten:${brev.info.id}",
+            mottaker = null,
+        ), true)
     }
 
     @Test
     fun `distribuerer ikke lokalprint brev`(): Unit = runBlocking {
-        clearMocks(brevbakerMock, penService)
+        clearMocks(brevbakerMock)
 
-        fakePenService.pesysBrevdata = brevdataResponseData
-
-        coEvery { penService.hentPesysBrevdata(any(), isNull(), any(), any()) } returns ServiceResult.Ok(
-            brevdataResponseData
-        )
-        coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
-
-        fakePenService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
+        penService.pesysBrevdata = brevdataResponseData
+        penService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(123, null))
 
         coEvery { brevbakerMock.renderPdf(any(), any(), any(), any(), any()) } returns ServiceResult.Ok(letterResponse)
         coEvery { brevbakerMock.renderMarkup(any(), any(), any(), any()) } returns ServiceResult.Ok(letter)
@@ -925,31 +882,18 @@ class BrevredigeringServiceTest {
             brevredigeringService.sendBrev(sak1.saksId, brev.info.id)
         }
 
-        coVerify {
-            penService.hentPesysBrevdata(
-                eq(sak1.saksId),
-                isNull(),
-                eq(Testbrevkoder.INFORMASJONSBREV),
-                eq(principalNavEnhetId),
-            )
-        }
-        coVerify {
-            penService.sendbrev(
-                eq(
-                    Pen.SendRedigerbartBrevRequest(
-                        templateDescription = informasjonsbrev,
-                        dokumentDato = LocalDate.now(),
-                        saksId = 1234,
-                        brevkode = Testbrevkoder.INFORMASJONSBREV,
-                        enhetId = principalNavEnhetId,
-                        pdf = stagetPDF,
-                        eksternReferanseId = "skribenten:${brev.info.id}",
-                        mottaker = null,
-                    )
-                ),
-                distribuer = eq(false)
-            )
-        }
+        penService.verifyHentPesysBrevdata(sak1.saksId, null, Testbrevkoder.INFORMASJONSBREV, principalNavEnhetId)
+
+        penService.verifySendBrev(Pen.SendRedigerbartBrevRequest(
+            templateDescription = informasjonsbrev,
+            dokumentDato = LocalDate.now(),
+            saksId = 1234,
+            brevkode = Testbrevkoder.INFORMASJONSBREV,
+            enhetId = principalNavEnhetId,
+            pdf = stagetPDF,
+            eksternReferanseId = "skribenten:${brev.info.id}",
+            mottaker = null,
+        ), false)
     }
 
     @Test
@@ -1072,19 +1016,13 @@ class BrevredigeringServiceTest {
             brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
         }
 
-        fakePenService.sendBrevResponse = ServiceResult.Ok(
+        penService.sendBrevResponse = ServiceResult.Ok(
             Pen.BestillBrevResponse(
                 991,
                 Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
             )
         )
 
-        coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(
-            Pen.BestillBrevResponse(
-                991,
-                Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
-            )
-        )
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)?.resultOrNull()
         assertThat(brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)?.resultOrNull()).isNotNull()
 
@@ -1167,28 +1105,21 @@ class BrevredigeringServiceTest {
             assertThat(pdf).isNotNull()
         }
 
-        fakePenService.sendBrevResponse = ServiceResult.Ok(
+        penService.sendBrevResponse = ServiceResult.Ok(
             Pen.BestillBrevResponse(
                 991,
                 Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
             )
         )
 
-        coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(
-            Pen.BestillBrevResponse(
-                991,
-                Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
-            )
-        )
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
         }
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)?.resultOrNull()!!
         assertThat(brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)?.resultOrNull()).isNotNull()
 
-        fakePenService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(991, null))
+        penService.sendBrevResponse = ServiceResult.Ok(Pen.BestillBrevResponse(991, null))
 
-        coEvery { penService.sendbrev(any(), any()) } returns ServiceResult.Ok(Pen.BestillBrevResponse(991, null))
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
 
         assertThat(transaction { Brevredigering.findById(brev.info.id) }).isNull()
@@ -1342,28 +1273,21 @@ class BrevredigeringServiceTest {
 
         brevredigeringService.sendBrev(sak1.saksId, brev.info.id)
 
-        coVerify {
-            penService.sendbrev(
-                eq(
-                    Pen.SendRedigerbartBrevRequest(
-                        templateDescription = informasjonsbrev,
-                        dokumentDato = LocalDate.now(),
-                        saksId = sak1.saksId,
-                        brevkode = Testbrevkoder.INFORMASJONSBREV,
-                        enhetId = principalNavEnhetId,
-                        pdf = stagetPDF,
-                        eksternReferanseId = "skribenten:${brev.info.id}",
-                        mottaker = Pen.SendRedigerbartBrevRequest.Mottaker(
-                            Pen.SendRedigerbartBrevRequest.Mottaker.Type.TSS_ID,
-                            mottaker.tssId,
-                            null,
-                            null
-                        )
-                    )
-                ),
-                eq(true)
+        penService.verifySendBrev(Pen.SendRedigerbartBrevRequest(
+            templateDescription = informasjonsbrev,
+            dokumentDato = LocalDate.now(),
+            saksId = sak1.saksId,
+            brevkode = Testbrevkoder.INFORMASJONSBREV,
+            enhetId = principalNavEnhetId,
+            pdf = stagetPDF,
+            eksternReferanseId = "skribenten:${brev.info.id}",
+            mottaker = Pen.SendRedigerbartBrevRequest.Mottaker(
+                Pen.SendRedigerbartBrevRequest.Mottaker.Type.TSS_ID,
+                mottaker.tssId,
+                null,
+                null
             )
-        }
+        ), true)
     }
 
     @Test
@@ -1564,15 +1488,7 @@ class BrevredigeringServiceTest {
     }
 
     private fun stageSak(sak: Pen.SakSelection) {
-        coEvery {
-            penService.hentPesysBrevdata(
-                eq(sak.saksId),
-                any(),
-                any(),
-                any()
-            )
-        } returns ServiceResult.Ok(brevdataResponseData)
-        fakePenService.pesysBrevdata = brevdataResponseData
+        penService.pesysBrevdata = brevdataResponseData
     }
 
     private fun <T> condition(description: String, predicate: Predicate<T>): Condition<T> =
