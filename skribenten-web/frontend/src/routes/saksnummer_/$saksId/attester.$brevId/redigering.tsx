@@ -207,7 +207,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           <FormProvider {...form}>
             <VStack gap="8">
               <Heading size="small">
-                <EditedLetterTitle letter={props.brev.redigertBrev} />
+                <EditedLetterTitle title={props.brev.redigertBrev.title} />
               </Heading>
               <VStack gap="4">
                 <OppsummeringAvMottaker mottaker={props.brev.info.mottaker} saksId={props.saksId} withTitle />
