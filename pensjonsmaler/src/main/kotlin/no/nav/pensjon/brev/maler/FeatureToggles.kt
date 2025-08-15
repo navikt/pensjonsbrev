@@ -6,8 +6,6 @@ enum class FeatureToggles(private val key: String) {
     // Sett inn featuretoggles her
     // val minFeature = UnleashToggle("minFeature")
     pl7231ForventetSvartid("pl_7231.foreventet_svartid"),
-    pl7822EndretInntekt("pl_7822.endringer_ut_endret_pga_inntekt"),
-    pl7914EndretInntektPilot("pl_7914.ut_endret_pga_inntekt_test_pilot"),
     brevMedFritekst("brevMedFritekst"),
     brevmalUtAvslag("brevmalUtAvslag"),
     apAvslagGjenlevenderett("apAvslagGjenlevenderett"),
