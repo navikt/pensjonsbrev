@@ -67,6 +67,7 @@ import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.quoted
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.universalText
 
 // V00005 i metaforce
 @TemplateModelHelpers
@@ -212,7 +213,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                                 )
                             }
                             cell {
-                                eval(it.format())
+                                universalText(it.format())
                             }
                         }
                     }
@@ -244,7 +245,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                                     )
                                 }
                                 cell {
-                                    eval(it.format())
+                                    universalText(it.format())
                                 }
                             }
                         }
@@ -263,7 +264,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                                         )
                                     }
                                     cell {
-                                        eval(it.format())
+                                        universalText(it.format())
                                     }
                                 }
                             }
@@ -368,7 +369,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                                     )
                                 }
                                 cell {
-                                    eval(forholdstallLevealder.format(scale = 3))
+                                    universalText(forholdstallLevealder.format(scale = 3))
                                 }
                             }
                         }
@@ -477,7 +478,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                                     )
                                 }
                                 cell {
-                                    eval(it.format())
+                                    universalText(it.format())
                                 }
                             }
                         }
@@ -493,7 +494,7 @@ val vedleggOpplysningerBruktIBeregningenEndretUttaksgrad =
                                     )
                                 }
                                 cell {
-                                    eval(it.format())
+                                    universalText(it.format())
                                 }
                             }
                         }

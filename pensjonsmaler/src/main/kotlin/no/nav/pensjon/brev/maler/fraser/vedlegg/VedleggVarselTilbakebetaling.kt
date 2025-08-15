@@ -107,15 +107,3 @@ val vedleggVarselTilbakekreving =
             universalText("Ved tilbakekreving etter § 22-15 a beregnes et rentetillegg på 10 prosent av det beløp som kreves tilbake. Ved betaling etter fastsatt betalingsfrist kreves det renter fra fristens utløp inntil tilbakebetaling skjer, beregnet på grunnlag av tilbakebetalingsbeløpet tillagt rentetillegg etter første punktum. Rentesatsen etter forsinkelsesrenteloven legges til grunn.")
         }
     }
-
-private fun TextOnlyScope<LangBokmalNynorskEnglish, VarselTilbakekrevingAvFeilutbetaltBeloepDto>.universalText(text: String) {
-    text(Bokmal to text, Nynorsk to text, English to text)
-}
-
-private fun PlainTextOnlyScope<LangBokmalNynorskEnglish, VarselTilbakekrevingAvFeilutbetaltBeloepDto>.universalText(text: String) {
-    text(Bokmal to text, Nynorsk to text, English to text)
-}
-
-private fun ParagraphOnlyScope<LangBokmalNynorskEnglish, VarselTilbakekrevingAvFeilutbetaltBeloepDto>.universalText(text: String) {
-    text(Bokmal to text, Nynorsk to text, English to text)
-}

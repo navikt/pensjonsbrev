@@ -20,6 +20,7 @@ import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.dsl.textExpr
+import no.nav.pensjon.brev.template.dsl.universalText
 
 
 data class HjemlerInnvilgelseForAP2011AP2016(
@@ -239,12 +240,13 @@ data class EOSLandAvtaleHjemmel(
                 )
                 showIf(harOppfyltVedSammenlegging and borINorge) {
                     // euArt6Og7Hjemmel
-                    text(Bokmal to ", artikkel 6.", Nynorsk to ", artikkel 6.", English to ", article 6.")
+                    text(Bokmal to ", artikkel 6", Nynorsk to ", artikkel 6", English to ", article 6")
                 }.orShowIf(harOppfyltVedSammenlegging and not(borINorge) and eksportTrygdeavtaleEOS) {
-                    text(Bokmal to ", artikkel 6 og 7.", Nynorsk to ", artikkel 6 og 7.", English to ", articles 6 and 7.")
+                    text(Bokmal to ", artikkel 6 og 7", Nynorsk to ", artikkel 6 og 7", English to ", articles 6 and 7")
                 }.orShowIf(not(harOppfyltVedSammenlegging) and not(borINorge) and eksportTrygdeavtaleEOS) {
-                    text(Bokmal to ", artikkel 7.", Nynorsk to ", artikkel 7.", English to ", article 7.")
+                    text(Bokmal to ", artikkel 7", Nynorsk to ", artikkel 7", English to ", article 7")
                 }
+                universalText(".")
             }
         }
     }
