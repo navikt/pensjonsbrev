@@ -9,14 +9,14 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import io.ktor.http.ContentType.Application.Json
 import io.ktor.serialization.jackson.*
-import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerAdresseRequestDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerAdresseResponseDto
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.HentSamhandlerAdresseResponseDto.FailureType.GENERISK
 import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.TjenestebussStatus
 import org.slf4j.LoggerFactory
 
-class TjenestebussIntegrasjonService(config: Config, authService: AzureADService) : ServiceStatus {
+class TjenestebussIntegrasjonService(config: Config, authService: AuthService) : ServiceStatus {
 
     private val tjenestebussIntegrasjonUrl = config.getString("url")
     private val tjenestebussIntegrasjonScope = config.getString("scope")

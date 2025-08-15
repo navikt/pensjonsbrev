@@ -1,9 +1,11 @@
 package no.nav.pensjon.etterlatte
 
 
-import io.mockk.mockk
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.brevbaker.Brevbaker
+import no.nav.brev.brevbaker.PDFByggerService
+import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
@@ -22,7 +24,9 @@ class BlockTilSlateKonvertererTest {
     @Test
     fun `kan lese inn letter markup fra brevbakeren`() {
         val letter = lesInnBrev(ForhaandsvarselOmregningBP.template, Fixtures.create())
-        val letterMarkup = Brevbaker(mockk()).renderLetterMarkup(letter)
+        val letterMarkup = Brevbaker(object : PDFByggerService {
+            override suspend fun producePDF(pdfRequest: PDFRequest, path: String) = PDFCompilationOutput(ByteArray(0))
+        }).renderLetterMarkup(letter)
         val konvertert = BlockTilSlateKonverterer.konverter(letterMarkup)
         assertEquals(konvertert.elements.size, letterMarkup.blocks.size)
     }

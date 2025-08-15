@@ -18,13 +18,13 @@ class LeaderServiceTest {
 
     @Test
     fun `given a url leader election is enabled`() {
-        val leaderService = LeaderService(url = "http://mocked-leader-service", clientEngine = mockClient)
+        val leaderService = LeaderServiceImpl(url = "http://mocked-leader-service", clientEngine = mockClient)
         assertThat(leaderService.isLeaderElectionEnabled).isTrue()
     }
 
     @Test
     fun `given no url leader election is disabled`() {
-        val leaderService = LeaderService(url = null, clientEngine = mockClient)
+        val leaderService = LeaderServiceImpl(url = null, clientEngine = mockClient)
         assertThat(leaderService.isLeaderElectionEnabled).isFalse()
     }
 
@@ -32,35 +32,35 @@ class LeaderServiceTest {
     fun `answers that current instance is elected leader`(): Unit = runBlocking {
         val mockClient = MockEngine {
             respond(
-                content = """{"name": "${LeaderService.thisInstanceName()}"}""",
+                content = """{"name": "${LeaderServiceImpl.thisInstanceName()}"}""",
                 status = HttpStatusCode.OK,
                 headers = headersOf("Content-Type", "application/json")
             )
         }
 
-        val leaderService = LeaderService(url = "http://mocked-leader-service", clientEngine = mockClient)
+        val leaderService = LeaderServiceImpl(url = "http://mocked-leader-service", clientEngine = mockClient)
 
         val leaderElection = leaderService.electedLeader()
         assertThat(leaderElection).isNotNull
         assertThat(leaderElection?.isThisInstanceLeader).isTrue()
         assertThat(leaderElection?.leaderName).isEqualTo(leaderElection?.thisInstanceName)
-        assertThat(leaderElection?.thisInstanceName).isEqualTo(LeaderService.thisInstanceName())
+        assertThat(leaderElection?.thisInstanceName).isEqualTo(LeaderServiceImpl.thisInstanceName())
     }
 
     @Test
     fun `answers that current instance is not elected leader`(): Unit = runBlocking {
-        val leaderService = LeaderService(url = "http://mocked-leader-service", clientEngine = mockClient)
+        val leaderService = LeaderServiceImpl(url = "http://mocked-leader-service", clientEngine = mockClient)
 
         val leaderElection = leaderService.electedLeader()
         assertThat(leaderElection).isNotNull
         assertThat(leaderElection?.isThisInstanceLeader).isFalse()
         assertThat(leaderElection?.leaderName).isEqualTo("the-elected-leader")
-        assertThat(leaderElection?.thisInstanceName).isEqualTo(LeaderService.thisInstanceName())
+        assertThat(leaderElection?.thisInstanceName).isEqualTo(LeaderServiceImpl.thisInstanceName())
     }
 
     @Test
     fun `answers with null if leader election is disabled`(): Unit = runBlocking {
-        val leaderService = LeaderService(url = null, clientEngine = mockClient)
+        val leaderService = LeaderServiceImpl(url = null, clientEngine = mockClient)
 
         val leaderElection = leaderService.electedLeader()
         assertThat(leaderElection).isNull()

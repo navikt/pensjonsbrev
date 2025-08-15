@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.latex
 
-import io.ktor.server.config.*
-import no.nav.pensjon.brev.PDFRequest
+import io.ktor.server.config.ApplicationConfig
 import no.nav.pensjon.brev.PDFRequestAsync
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import org.apache.kafka.clients.producer.KafkaProducer
@@ -9,9 +8,13 @@ import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.serialization.Serializer
 import org.apache.kafka.common.serialization.StringSerializer
 
+interface PDFByggerAsync {
+    fun renderAsync(asyncPdfRequest: PDFRequestAsync)
+}
+
 class LatexAsyncCompilerService(
     kafkaConfig: ApplicationConfig,
-) {
+) : PDFByggerAsync {
     private val topic = kafkaConfig.property("topic").getString()
     private val producer =
         KafkaProducer(
@@ -20,7 +23,7 @@ class LatexAsyncCompilerService(
             PDFRequestSerializer()
         )
 
-    fun renderAsync(asyncPdfRequest: PDFRequestAsync) {
+    override fun renderAsync(asyncPdfRequest: PDFRequestAsync) {
         producer.send(ProducerRecord(topic, asyncPdfRequest))
         producer.flush();
     }

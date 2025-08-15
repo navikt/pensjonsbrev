@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.auth
 
-import io.ktor.client.plugins.api.*
-import io.ktor.client.request.*
+import io.ktor.client.plugins.api.createClientPlugin
+import io.ktor.client.request.bearerAuth
 
 class AzureAdOnBehalfOfAuthorizationException(error: TokenResponse.ErrorResponse): Exception(
     "Feil ved token-utveksling correlation_id: ${error.correlation_id} Description:${error.error_description}"
@@ -9,7 +9,7 @@ class AzureAdOnBehalfOfAuthorizationException(error: TokenResponse.ErrorResponse
 
 class AzureAdOnBehalfOfConfig {
     lateinit var scope: String
-    lateinit var authService: AzureADService
+    lateinit var authService: AuthService
 }
 
 val AzureAdOnBehalfOf = createClientPlugin("PrincipalFromContext_AzureAdOnBehalfOf", ::AzureAdOnBehalfOfConfig) {

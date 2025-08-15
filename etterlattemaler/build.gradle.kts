@@ -27,7 +27,6 @@ dependencies {
 
     // JUnit 5
     testImplementation(libs.bundles.junit)
-    testImplementation(libs.mockk)
 
     testImplementation(testFixtures(project(":brevbaker")))
     testImplementation(libs.ktor.server.callId)

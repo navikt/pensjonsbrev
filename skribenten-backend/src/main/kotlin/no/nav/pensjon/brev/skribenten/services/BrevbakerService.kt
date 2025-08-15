@@ -9,13 +9,16 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
-import io.ktor.client.*
-import io.ktor.client.engine.cio.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.serialization.jackson.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
+import io.ktor.serialization.jackson.jackson
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
@@ -25,7 +28,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.PrimitiveModule
-import no.nav.pensjon.brev.skribenten.auth.AzureADService
+import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -39,7 +42,26 @@ import org.slf4j.LoggerFactory
 
 class BrevbakerServiceException(msg: String) : Exception(msg)
 
-class BrevbakerService(config: Config, authService: AzureADService) : ServiceStatus {
+interface BrevbakerService {
+    suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> = TODO("Not yet implemented")
+    suspend fun renderMarkup(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: Felles,
+    ): ServiceResult<LetterMarkup> = TODO("Not yet implemented")
+    suspend fun renderPdf(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        brevdata: RedigerbarBrevdata<*, *>,
+        felles: Felles,
+        redigertBrev: LetterMarkup,
+    ): ServiceResult<LetterResponse> = TODO("Not yet implemented")
+    suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>> = TODO("Not yet implemented")
+    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? = TODO("Not yet implemented")
+}
+
+class BrevbakerServiceImpl(config: Config, authService: AuthService) : BrevbakerService, ServiceStatus {
     private val logger = LoggerFactory.getLogger(BrevredigeringService::class.java)!!
 
     private val brevbakerUrl = config.getString("url")
@@ -63,10 +85,10 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
     /**
      * Get model specification for a template.
      */
-    suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> =
+    override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): ServiceResult<TemplateModelSpecification> =
         client.get("/templates/redigerbar/${brevkode.kode()}/modelSpecification").toServiceResult()
 
-    suspend fun renderMarkup(
+    override suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
@@ -84,7 +106,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
             )
         }.toServiceResult()
 
-    suspend fun renderPdf(
+    override suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
@@ -104,7 +126,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
             )
         }.toServiceResult()
 
-    suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>> =
+    override suspend fun getTemplates(): ServiceResult<List<TemplateDescription.Redigerbar>> =
         client.get("/templates/redigerbar") {
             url {
                 parameters.append("includeMetadata", "true")
@@ -112,7 +134,7 @@ class BrevbakerService(config: Config, authService: AzureADService) : ServiceSta
         }.toServiceResult()
 
     private val templateCache = Cache<Brevkode.Redigerbart, TemplateDescription.Redigerbar>()
-    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
+    override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
         templateCache.cached(brevkode) {
             client.get("/templates/redigerbar/${brevkode.kode()}").toServiceResult<TemplateDescription.Redigerbar>()
                 .onError { error, statusCode -> logger.error("Feilet ved henting av templateDescription for $brevkode: $statusCode - $error") }
