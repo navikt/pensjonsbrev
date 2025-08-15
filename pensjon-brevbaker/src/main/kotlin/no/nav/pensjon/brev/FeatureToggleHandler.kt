@@ -49,9 +49,10 @@ object FeatureToggleHandler : FeatureToggleService {
             return
         }
         val alleDefinerteBrytere = unleash.more().featureToggleNames
-        require(entries.filterNot {
+        val malerIkkeIUnleash = entries.filterNot {
             alleDefinerteBrytere.contains("pensjonsbrev.brevbaker.${it.name}")
-        }.isEmpty()) { "Alle toggles må være definert i Unleash" }
+        }
+        require(malerIkkeIUnleash.isEmpty()) { "Alle toggles må være definert i Unleash, men $malerIkkeIUnleash" }
     }
 }
 
